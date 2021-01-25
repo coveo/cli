@@ -1,0 +1,17 @@
+.ds_store
+.idea
+.nyc_output
+.size-snapshot.json
+.vscode/*
+*-debug.log
+*-error.log
+dist
+/lib
+/node_modules
+/tmp
+npm-debug.log
+package-lock.json
+reports/*.xml
+veracode
+
+!.vscode/extensions.json
