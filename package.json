@@ -7,9 +7,11 @@
   },
   "bugs": "https://github.com/coveo/cli/issues",
   "dependencies": {
+    "@coveord/platform-client": "^9.24.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^3",
+    "exponential-backoff": "^3.1.0",
     "tslib": "^1"
   },
   "devDependencies": {

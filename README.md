@@ -31,6 +31,7 @@ USAGE
 <!-- commands -->
 * [`coveo hello [FILE]`](#coveo-hello-file)
 * [`coveo help [COMMAND]`](#coveo-help-command)
+* [`coveo org:snapshot:list [FILE]`](#coveo-orgsnapshotlist-file)
 
 ## `coveo hello [FILE]`
 
@@ -47,7 +48,7 @@ OPTIONS
 
 EXAMPLE
   $ coveo hello
-  hello world from ./src/hello.ts!
+       hello world from ./src/hello.ts!
 ```
 
 _See code: [src/commands/hello.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/hello.ts)_
@@ -68,4 +69,20 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.1/src/commands/help.ts)_
+
+## `coveo org:snapshot:list [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ coveo org:snapshot:list [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/org/snapshot/list.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/org/snapshot/list.ts)_
 <!-- commandsstop -->
