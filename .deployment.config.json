@@ -23,5 +23,6 @@
   "observatory": {
     "no_endpoint": true
   },
+  "veracode": {"no_scan": true},
   "deployment_config_version": 2
 }
