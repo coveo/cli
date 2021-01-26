@@ -13,5 +13,6 @@ npm-debug.log
 package-lock.json
 reports/*.xml
 veracode
+coverage
 
 !.vscode/extensions.json
