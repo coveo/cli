@@ -48,11 +48,5 @@
     "test": "jest",
     "version": "oclif-dev readme && git add README.md"
   },
-  "nyc": {
-    "exclude": [
-      "src/**/*.spec.ts",
-      "*.js"
-    ]
-  },
   "types": "lib/index.d.ts"
 }
