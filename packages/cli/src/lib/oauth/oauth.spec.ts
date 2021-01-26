@@ -3,6 +3,11 @@ import {
   BaseTokenRequestHandler,
 } from '@openid/appauth';
 import {NodeBasedHandler} from '@openid/appauth/built/node_support';
+import {
+  PlatformEnvironment,
+  PlatformRegion,
+  platformUrl,
+} from '../platform/environment';
 import {OAuth} from './oauth';
 
 jest.mock('@openid/appauth/built/node_support');
@@ -38,23 +43,82 @@ describe('OAuth', () => {
     expect(token).toEqual('this-is-the-new-access-token');
   });
 
-  it('should use configured port to pass to @openid', async () => {
-    await new OAuth(444).getToken();
-    expect(NodeBasedHandler).toHaveBeenCalledWith(444);
+  describe('should use proper port for @openid', () => {
+    it('using default port', async () => {
+      await new OAuth().getToken();
+      expect(NodeBasedHandler).toHaveBeenCalledWith(32111);
+    });
+
+    it('using configured port', async () => {
+      await new OAuth({port: 444}).getToken();
+      expect(NodeBasedHandler).toHaveBeenCalledWith(444);
+    });
   });
 
-  it('should use proper config for @openid AuthorizationServiceConfiguration', async () => {
-    await new OAuth(1234).getToken();
-    expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
-      expect.objectContaining({
-        client_id: 'cli',
-        redirect_uri: 'http://127.0.0.1:1234',
-        scope: 'full',
-        authorization_endpoint:
-          'https://platformdev.cloud.coveo.com/oauth/authorize',
-        revocation_endpoint: 'https://platformdev.cloud.coveo.com/logout',
-        token_endpoint: 'https://platformdev.cloud.coveo.com/oauth/token',
-      })
-    );
+  describe('should use proper @openid AuthorizationServiceConfiguration', () => {
+    const endpoints = (opts?: {
+      environment?: PlatformEnvironment;
+      region?: PlatformRegion;
+    }) => ({
+      authorization_endpoint: `${platformUrl(opts)}/oauth/authorize`,
+      revocation_endpoint: `${platformUrl(opts)}/logout`,
+      token_endpoint: `${platformUrl(opts)}/oauth/token`,
+    });
+    it('in prod', async () => {
+      const opts = {environment: 'prod' as const};
+      await new OAuth(opts).getToken();
+      expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
+        expect.objectContaining({
+          client_id: 'cli',
+          redirect_uri: 'http://127.0.0.1:32111',
+          scope: 'full',
+          ...endpoints(opts),
+        })
+      );
+    });
+    it('in qa', async () => {
+      const opts = {environment: 'qa' as const};
+      await new OAuth(opts).getToken();
+      expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ...endpoints(opts),
+        })
+      );
+    });
+    it('in dev', async () => {
+      const opts = {environment: 'dev' as const};
+      await new OAuth(opts).getToken();
+      expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ...endpoints(opts),
+        })
+      );
+    });
+    it('in hipaa', async () => {
+      const opts = {environment: 'hipaa' as const};
+      await new OAuth(opts).getToken();
+      expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ...endpoints(opts),
+        })
+      );
+    });
+    it('in europe', async () => {
+      const opts = {region: 'eu-west-1' as const};
+      await new OAuth(opts).getToken();
+      expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ...endpoints(opts),
+        })
+      );
+    });
+    it('it should be us-east-1 prod by default', async () => {
+      await new OAuth().getToken();
+      expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ...endpoints({environment: 'prod', region: 'us-east-1'}),
+        })
+      );
+    });
   });
 });
