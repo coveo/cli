@@ -1,4 +1,4 @@
-const { getPullRequestTitle } = require('../github-client');
+const { getPullRequestTitle } = require('./github-client');
 
 const load = require('@commitlint/load').default;
 const lint = require('@commitlint/lint').default;
