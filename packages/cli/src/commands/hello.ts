@@ -17,7 +17,7 @@ export default class Hello extends Command {
     force: flags.boolean({char: 'f'}),
   };
 
-  static args = [{name: 'file'}];
+  static args = [{name: 'file', required: false, description: 'a dummy file'}];
 
   async run() {
     const {args, flags} = this.parse(Hello);

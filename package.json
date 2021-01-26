@@ -1,38 +1,25 @@
 {
-  "name": "@coveo/cli",
+  "name": "cli-tools",
+  "private": false,
   "version": "0.0.0",
   "author": "Coveo",
   "bin": {
     "coveo": "./bin/run"
   },
   "bugs": "https://github.com/coveo/cli/issues",
-  "dependencies": {
-    "@coveord/platform-client": "^9.24.0",
-    "@oclif/command": "^1",
-    "@oclif/config": "^1",
-    "@oclif/plugin-help": "^3",
-    "exponential-backoff": "^3.1.0",
-    "tslib": "^1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@commitlint/config-conventional": "^11.0.0",
     "@commitlint/lint": "^11.0.0",
-    "@oclif/dev-cli": "^1",
-    "@oclif/test": "^1",
-    "@types/chai": "^4",
-    "@types/mocha": "^5",
     "@types/node": "^10",
     "@typescript-eslint/eslint-plugin": "^4.14.0",
     "@typescript-eslint/parser": "^4.14.0",
-    "chai": "^4",
     "eslint": "^7.18.0",
     "eslint-config-prettier": "^7.2.0",
-    "globby": "^10",
     "gts": "^3.1.0",
     "husky": "^4.3.8",
+    "lerna": "^3.22.1",
     "lint-staged": "^10.5.3",
-    "mocha": "^5",
-    "nyc": "^14",
     "prettier": "^2.2.1",
     "ts-node": "^8",
     "typescript": "^3.3"
@@ -56,34 +43,14 @@
   "engines": {
     "node": ">=8.0.0"
   },
-  "files": [
-    "/bin",
-    "/lib",
-    "/npm-shrinkwrap.json",
-    "/oclif.manifest.json"
-  ],
-  "homepage": "https://github.com/coveo/cli",
-  "keywords": [
-    "oclif"
-  ],
-  "license": "Apache-2.0",
-  "main": "lib/index.js",
-  "oclif": {
-    "commands": "./lib/commands",
-    "bin": "coveo",
-    "plugins": [
-      "@oclif/plugin-help"
-    ]
-  },
-  "repository": "coveo/cli",
   "scripts": {
+    "setup": "npm i && lerna bootstrap",
+    "test": "lerna run test",
+    "posttest": "eslint . --ext .ts --config .eslintrc",
     "lint:check": "eslint .",
     "lint:fix": "eslint --fix .",
-    "postpack": "rm -f oclif.manifest.json",
-    "posttest": "eslint . --ext .ts --config .eslintrc",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme && git add README.md"
-  },
-  "types": "lib/index.d.ts"
+    "postpack": "rm -f oclif.manifest.json",
+    "version": "lerna run version"
+  }
 }
