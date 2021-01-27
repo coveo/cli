@@ -1,8 +1,8 @@
 import {Command, flags} from '@oclif/command';
-import {spawnSync} from 'child_process';
-import {dirname} from 'path';
+import {dirname, resolve} from 'path';
+import {spawnProcess} from '../../../lib/utils/process';
 
-export default class UiCreateVue extends Command {
+export default class Vue extends Command {
   static description = 'Create a new project powered by vue-cli-service';
 
   static hidden = true;
@@ -11,45 +11,58 @@ export default class UiCreateVue extends Command {
     help: flags.help({char: 'h'}),
     preset: flags.string({
       char: 'p',
-      description:
-        'Path to a JSON file with pre-defined options and plugins for creating a new project',
+      helpValue: 'path',
+      description: [
+        'Path to a JSON file with pre-defined options and plugins for creating a new project.',
+        'If not specified, the default TypeScript preset will be taked',
+        'For more information about Vue CLI presets, please consult https://cli.vuejs.org/guide/plugins-and-presets.html#presets',
+      ].join('\n'),
+      default: resolve(__dirname, './presets/typescript-preset.json'),
     }),
   };
+
+  static examples = [
+    '$ coveo ui:create:vue --preset path/to/my/preset.json',
+    '$ coveo ui:create:vue --help',
+  ];
 
   static args = [
     {name: 'name', description: 'application name', required: true},
   ];
 
   async run() {
-    const {args, flags} = this.parse(UiCreateVue);
-    const preset = flags.preset ?? this.getDefaultPreset();
+    const {args, flags} = this.parse(Vue);
 
-    await this.createProject(args.name, preset);
+    await this.createProject(args.name, require(flags.preset));
     await this.installPlugin(args.name);
     await this.invokePlugin(args.name);
-    await this.startServer(args.name);
+    await spawnProcess('ls', []);
+    this.startServer(args.name);
   }
 
   private installPlugin(applicationName: string) {
-    // TODO: Once plugin is published to npm, simply include it in the preset typescript-preset.json
+    // TODO: DELETE THIS METHOD ONCE THE PLUGIN IS PUBLISHED AND PART OF THE PRESET
+    // Once the coveo plugin is published to npm, simply include it in the preset typescript-preset.json
     // This will prevent from running `2 npm install` commands (one by @vue/cli, one for the plugin)
     const pathToPlugin = dirname(require.resolve('vue-cli-plugin-coveo'));
-    this.spawnSyncProcess(
+    return spawnProcess(
       'npm',
       ['install', '--save-dev', `file:${pathToPlugin}`],
-      {cwd: applicationName}
+      {
+        cwd: applicationName,
+      }
     );
   }
 
   private invokePlugin(applicationName: string) {
-    this.runVueCliCommand(['invoke', 'vue-cli-plugin-coveo'], {
+    return this.runVueCliCommand(['invoke', 'vue-cli-plugin-coveo'], {
       cwd: applicationName,
     });
   }
 
   private startServer(applicationName: string) {
-    // TODO: this method will no longer be needed once the coveo plugin is baked in preset
-    // Currently, it is not possible because for a plugin to be in a preset, it has to be published to npm
+    // TODO: DELETE THIS METHOD ONCE THE PLUGIN IS PUBLISHED AND PART OF THE PRESET
+    // The @vue/cli already logs instructions once the installation completes
     this.log(`Successfully created project ${applicationName}.`);
     this.log('Get started with the following commands:\n');
 
@@ -57,17 +70,8 @@ export default class UiCreateVue extends Command {
     this.log('$ yarn serve');
   }
 
-  private getTypeScriptPreset(): {} {
-    // TODO: also configure javascript preset
-    return require('./presets/typescript-preset.json');
-  }
-
-  private getDefaultPreset(): {} {
-    return this.getTypeScriptPreset();
-  }
-
   private createProject(name: string, preset: {}) {
-    this.runVueCliCommand([
+    return this.runVueCliCommand([
       'create',
       name,
       '--inlinePreset',
@@ -77,19 +81,6 @@ export default class UiCreateVue extends Command {
 
   private runVueCliCommand(args: string[], options = {}) {
     const executable = require.resolve('@vue/cli/bin/vue.js');
-    this.spawnSyncProcess(executable, args, options);
-  }
-
-  private spawnSyncProcess(command: string, args: string[], options = {}) {
-    const cmd = spawnSync(command, args, {
-      stdio: ['inherit', 'inherit', 'inherit'],
-      ...options,
-    });
-
-    if (cmd.status !== 0) {
-      // Any error triggered by the execution of the previous command will display.
-      // So no need to bubble up the error. Also, there is no point in continuing the process.
-      this.error(`Following command has failed: ${command} ${args.join(' ')}`);
-    }
+    return spawnProcess(executable, args, options);
   }
 }
