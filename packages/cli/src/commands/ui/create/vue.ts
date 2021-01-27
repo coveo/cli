@@ -36,7 +36,6 @@ export default class Vue extends Command {
     await this.createProject(args.name, require(flags.preset));
     await this.installPlugin(args.name);
     await this.invokePlugin(args.name);
-    await spawnProcess('ls', []);
     this.startServer(args.name);
   }
 
