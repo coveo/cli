@@ -9,12 +9,16 @@
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^3",
     "@openid/appauth": "^1.3.0",
+    "axios": "^0.21.1",
     "exponential-backoff": "^3.1.0",
+    "fs-extra": "^9.1.0",
+    "keytar": "^7.3.0",
     "tslib": "^1"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
     "@oclif/test": "^1",
+    "@types/fs-extra": "^9.0.6",
     "@types/node": "^10",
     "chai": "^4.2.0",
     "jest": "^26.6.3",

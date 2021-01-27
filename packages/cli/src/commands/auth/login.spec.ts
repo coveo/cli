@@ -1,10 +1,29 @@
 import {test} from '@oclif/test';
 import {mocked} from 'ts-jest/utils';
+import {Config} from '../../lib/config/config';
 import {OAuth} from '../../lib/oauth/oauth';
+import {Storage} from '../../lib/oauth/storage';
 jest.mock('../../lib/oauth/oauth');
+jest.mock('../../lib/oauth/storage');
+jest.mock('../../lib/config/config');
 const mockedOAuth = mocked(OAuth, true);
+const mockedStorage = mocked(Storage, true);
+const mockedConfig = mocked(Config, true);
 
 describe('auth:login', () => {
+  beforeEach(() => {
+    mockedOAuth.mockImplementationOnce(
+      () =>
+        ({
+          getToken: () =>
+            Promise.resolve({
+              accessToken: 'this-is-the-token',
+              refreshToken: 'this-is-the-refresh-token',
+            }),
+        } as OAuth)
+    );
+  });
+
   test
     .command(['auth:login', '-e', 'foo'])
     .catch(/Expected --environment=foo/)
@@ -20,9 +39,13 @@ describe('auth:login', () => {
       .stdout()
       .command(['auth:login', '-e', environment])
       .it(
-        `passes the -e=${environment} flag to oauth as an environment`,
+        `passes the -e=${environment} flag to oauth and configuration`,
         () => {
           expect(mockedOAuth.mock.calls[0][0]?.environment).toBe(environment);
+          expect(mockedConfig.mock.instances[0].set).toHaveBeenCalledWith(
+            'environment',
+            environment
+          );
         }
       );
   });
@@ -37,8 +60,12 @@ describe('auth:login', () => {
     test
       .stdout()
       .command(['auth:login', '-r', region])
-      .it(`passes the -e=${region} flag to oauth as an region`, () => {
+      .it(`passes the -e=${region} flag to oauth and configuration`, () => {
         expect(mockedOAuth.mock.calls[0][0]?.region).toBe(region);
+        expect(mockedConfig.mock.instances[0].set).toHaveBeenCalledWith(
+          'region',
+          region
+        );
       });
   });
 
@@ -50,20 +77,14 @@ describe('auth:login', () => {
     });
 
   describe('retrieves token from oauth service', () => {
-    beforeEach(() => {
-      mockedOAuth.mockImplementationOnce(
-        () =>
-          ({
-            getToken: () => Promise.resolve('this-is-the-token'),
-          } as OAuth)
-      );
-    });
-
     test
       .stdout()
       .command(['auth:login'])
-      .it('retrieves token from oauth service', (ctx) => {
-        expect(ctx.stdout).toContain('this-is-the-token');
+      .it('save token from oauth service', () => {
+        expect(mockedStorage.mock.instances[0].save).toHaveBeenCalledWith(
+          'this-is-the-token',
+          'this-is-the-refresh-token'
+        );
       });
   });
 });
