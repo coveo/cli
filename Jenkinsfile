@@ -9,6 +9,10 @@ node('linux && docker') {
         sh 'echo TODO SETUP'
       }
 
+      stage('Test') {
+        sh 'npm run test'
+      }
+
       stage('Build') {
         sh 'echo TODO BUILD'
       }
