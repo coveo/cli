@@ -5,6 +5,8 @@ import {dirname} from 'path';
 export default class UiCreateVue extends Command {
   static description = 'Create a new project powered by vue-cli-service';
 
+  static hidden = true;
+
   static flags = {
     help: flags.help({char: 'h'}),
     preset: flags.string({
