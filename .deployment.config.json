@@ -1,0 +1,28 @@
+{
+  "product": "cli",
+  "team_name": "DX",
+  "general": {
+    "team_jenkins": "searchuibuilds",
+    "notifications": {"slack_channels": ["#searchuibuilds"]},
+    "environments_order": {
+      "sequential": ["dev"]
+    },
+    "aws_regions": {
+        "sequential": [
+            "us-east-1"
+        ]
+    }
+  },
+  "phases": {
+    "terraform": {}
+  },
+  "snyk": {
+    "org": "coveo-jsui",
+    "no_container_images": true
+  },
+  "observatory": {
+    "no_endpoint": true
+  },
+  "veracode": {"no_scan": true},
+  "deployment_config_version": 2
+}
