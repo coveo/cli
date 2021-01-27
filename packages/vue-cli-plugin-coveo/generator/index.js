@@ -12,11 +12,4 @@ module.exports = (api, options, rootOptions) => {
     //   TODO: inject the appropriate file type
     ...options,
   });
-
-//   api.onCreateComplete(() => {
-//     // Injecting the appropriate type of file
-//     const fs = require('fs');
-//     const ext = api.hasPlugin('typescript') ? 'ts' : 'js';
-//     const mainPath = api.resolve(`./src/main.${ext}`);
-//   });
 };

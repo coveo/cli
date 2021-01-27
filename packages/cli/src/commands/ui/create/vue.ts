@@ -48,12 +48,13 @@ export default class UiCreateVue extends Command {
   }
 
   private startServer(applicationName: string) {
-    this.log(
-      // `Your project has been created locally and the relevant code is in the ${applicationName} directory`
-      '\n\nYou are now ready to start your app. Just execute:'
-    );
-    this.log(`$ cd ${applicationName} && npm run serve`);
-    // TODO: run the server automatically
+    // TODO: this method will no longer be needed once the coveo plugin is baked in preset
+    // Currently, it is not possible because for a plugin to be in a preset, it has to be published to npm
+    this.log(`Successfully created project ${applicationName}.`);
+    this.log('Get started with the following commands:\n');
+
+    this.log('$ cd ${applicationName}');
+    this.log('$ yarn serve');
   }
 
   private getTypeScriptPreset(): {} {
