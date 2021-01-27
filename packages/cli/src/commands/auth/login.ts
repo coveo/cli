@@ -30,9 +30,6 @@ export default class Login extends Command {
       default: 'prod',
       description: 'The platform environment inside which to login.',
     }),
-    foo: flags.boolean({
-      char: 'f',
-    }),
   };
 
   async run() {
