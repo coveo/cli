@@ -33,7 +33,13 @@ export default class Vue extends Command {
   async run() {
     const {args, flags} = this.parse(Vue);
 
-    await this.createProject(args.name, require(flags.preset));
+    let preset = '';
+    try {
+      preset = require(flags.preset);
+    } catch (error) {
+      this.error('Unable to load preset');
+    }
+    await this.createProject(args.name, preset);
     await this.installPlugin(args.name);
     await this.invokePlugin(args.name);
     this.startServer(args.name);
