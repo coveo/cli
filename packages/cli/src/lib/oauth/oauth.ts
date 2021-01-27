@@ -1,4 +1,9 @@
 import {
+  PlatformEnvironment,
+  PlatformRegion,
+  platformUrl,
+} from '../platform/environment';
+import {
   AuthorizationNotifier,
   AuthorizationRequest,
   AuthorizationServiceConfiguration,
@@ -13,8 +18,27 @@ import {
   NodeRequestor,
 } from '@openid/appauth/built/node_support';
 
+export interface OAuthOptions {
+  port: number;
+  environment: PlatformEnvironment;
+  region: PlatformRegion;
+}
+
 export class OAuth {
-  constructor(private port: number = 32111) {}
+  private opts: OAuthOptions;
+  constructor(opts?: Partial<OAuthOptions>) {
+    const baseOptions: OAuthOptions = {
+      port: 32111,
+      environment: 'prod',
+      region: 'us-east-1',
+    };
+
+    this.opts = {
+      environment: opts?.environment || baseOptions.environment,
+      port: opts?.port || baseOptions.port,
+      region: opts?.region || baseOptions.region,
+    };
+  }
 
   public async getToken() {
     // TODO: This will always spawn a new browser window/request new token every time
@@ -64,7 +88,7 @@ export class OAuth {
   ): Promise<{code: string; verifier: string}> {
     return new Promise((res) => {
       const notifier = new AuthorizationNotifier();
-      const authorizationHandler = new NodeBasedHandler(this.port);
+      const authorizationHandler = new NodeBasedHandler(this.opts.port);
       const request = new AuthorizationRequest(
         {
           ...this.clientConfig,
@@ -88,20 +112,20 @@ export class OAuth {
   private get clientConfig() {
     return {
       client_id: 'cli',
-      redirect_uri: `http://127.0.0.1:${this.port}`,
+      redirect_uri: `http://127.0.0.1:${this.opts.port}`,
       scope: 'full',
     };
   }
 
   private get authServiceConfig(): AuthorizationServiceConfigurationJson {
-    // TODO: Support for different platform environment (dev,qa,prd,hip) and regions.
-    // Should be stored in CLI config ?
-    // CDX-36
+    const baseURL = platformUrl({
+      environment: this.opts.environment,
+      region: this.opts.region,
+    });
     return {
-      authorization_endpoint:
-        'https://platformdev.cloud.coveo.com/oauth/authorize',
-      revocation_endpoint: 'https://platformdev.cloud.coveo.com/logout',
-      token_endpoint: 'https://platformdev.cloud.coveo.com/oauth/token',
+      authorization_endpoint: `${baseURL}/oauth/authorize`,
+      revocation_endpoint: `${baseURL}/logout`,
+      token_endpoint: `${baseURL}/oauth/token`,
     };
   }
 }
