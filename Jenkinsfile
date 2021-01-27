@@ -6,7 +6,7 @@ node('linux && docker') {
     withDockerContainer(image: 'node:14', args: '-u=root') {
 
       stage('Setup') {
-        sh 'echo TODO SETUP'
+        sh 'npm run setup'
       }
 
       stage('Test') {
