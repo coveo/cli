@@ -41,23 +41,19 @@ export class OAuth {
   }
 
   public async getToken() {
-    // TODO: This will always spawn a new browser window/request new token every time
-    // Need to use token locally available if possible.
-    // CDX-36
     const config = new AuthorizationServiceConfiguration({
       ...this.clientConfig,
       ...this.authServiceConfig,
     });
 
     const {code} = await this.getAuthorizationCode(config);
-    const accessToken = this.getAccessToken(config, code);
-    return accessToken;
+    return await this.getAccessToken(config, code);
   }
 
   private async getAccessToken(
     configuration: AuthorizationServiceConfiguration,
     code: string
-  ): Promise<string> {
+  ): Promise<{accessToken: string; refreshToken?: string}> {
     const tokenHandler = new BaseTokenRequestHandler(new NodeRequestor());
 
     const request = new TokenRequest({
@@ -74,9 +70,7 @@ export class OAuth {
         configuration,
         request
       );
-      // TODO: Save access token/refresh token in CLI config
-      // CDX-37
-      return response.accessToken;
+      return response;
     } catch (e) {
       console.log('ERROR: ', e);
       return e;

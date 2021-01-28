@@ -1,5 +1,7 @@
 import {Command, flags} from '@oclif/command';
+import {Config} from '../../lib/config/config';
 import {OAuth} from '../../lib/oauth/oauth';
+import {Storage} from '../../lib/oauth/storage';
 import {
   PlatformEnvironment,
   PlatformRegion,
@@ -34,10 +36,14 @@ export default class Login extends Command {
 
   async run() {
     const {flags} = this.parse(Login);
-    const tok = await new OAuth({
+    const {accessToken, refreshToken} = await new OAuth({
       environment: flags.environment as PlatformEnvironment,
       region: flags.region as PlatformRegion,
     }).getToken();
-    console.log('GOT TOKEN', tok);
+
+    await new Storage().save(accessToken, refreshToken!);
+    const cfg = new Config(this.config.configDir, this.error);
+    await cfg.set('environment', flags.environment as PlatformEnvironment);
+    await cfg.set('region', flags.region as PlatformRegion);
   }
 }
