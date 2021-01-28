@@ -40,7 +40,12 @@
     "bin": "coveo",
     "plugins": [
       "@oclif/plugin-help"
-    ]
+    ],
+    "topics": {
+      "auth": {
+        "description": "Manage authentification against the Coveo platform"
+      }
+    }
   },
   "repository": "coveo/cli",
   "scripts": {
