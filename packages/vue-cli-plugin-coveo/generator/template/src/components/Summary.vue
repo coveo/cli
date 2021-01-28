@@ -1,25 +1,26 @@
 <template>
   <section>
-    <p v-if="summary.hasResults">
-      Results {{ summary.firstResult }}-{{ summary.lastResult }} of {{ summary.total }} in {{ summary.durationInSeconds }} seconds
+    <p v-if="summary.hasResults" class="has-text-weight-bold">
+      Results {{ summary.firstResult }}-{{ summary.lastResult }} of
+      {{ summary.total }} in {{ summary.durationInSeconds }} seconds
     </p>
     <p v-else>No results for {{ summary.query }}</p>
   </section>
 </template>
 <script>
-import { buildQuerySummary } from '@coveo/headless';
+import {buildQuerySummary} from '@coveo/headless';
 import engine from '../Engine';
 export default {
   name: 'Summary',
-  data: function() {
+  data: function () {
     return {
       summary: {},
     };
   },
-  created: function() {
+  created: function () {
     this.querySummary = buildQuerySummary(engine);
     this.querySummary.subscribe(() => {
-      this.summary = { ...this.querySummary.state };
+      this.summary = {...this.querySummary.state};
     });
   },
 };

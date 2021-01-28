@@ -13,40 +13,40 @@
 
 <script>
 import engine from '../Engine';
-import { buildSearchBox, SearchBoxOptions } from '@coveo/headless';
+import {buildSearchBox, SearchBoxOptions} from '@coveo/headless';
 
 export default {
   name: 'SearchBox',
-  data: function() {
+  data: function () {
     return {
       state: {},
     };
   },
   methods: {
-    onTyping: function(v) {
+    onTyping: function (v) {
       this.searchBox.updateText(v);
     },
-    onSelect: function(v) {
+    onSelect: function (v) {
       this.searchBox.selectSuggestion(v);
     },
-    onKeyDown: function(e) {
+    onKeyDown: function (e) {
       if (e.keyCode === 13) {
         this.searchBox.submit();
       }
     },
   },
   computed: {
-    suggestions: function() {
+    suggestions: function () {
       return this.state.suggestions.map((s) => s.rawValue);
     },
   },
-  created: function() {
+  created: function () {
     const options = {
       numberOfSuggestions: 5,
     };
-    this.searchBox = buildSearchBox(engine, { options });
+    this.searchBox = buildSearchBox(engine, {options});
     this.unsubscribe = this.searchBox.subscribe(() => {
-      this.state = { ...this.searchBox.state };
+      this.state = {...this.searchBox.state};
     });
   },
 };
