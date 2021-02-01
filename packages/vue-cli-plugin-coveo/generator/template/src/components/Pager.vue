@@ -9,12 +9,12 @@
   />
 </template>
 <script>
-import { buildPager } from "@coveo/headless";
-import engine from "../Engine";
+import {buildPager} from '@coveo/headless';
+import engine from '../Engine';
 export default {
-  name: "Pager",
+  name: 'Pager',
   data: function () {
-    return { state: {} };
+    return {state: {}};
   },
   methods: {
     onChange: function (n) {

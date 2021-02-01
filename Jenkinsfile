@@ -6,7 +6,13 @@ node('linux && docker') {
     withDockerContainer(image: 'node:14', args: '-u=root') {
 
       stage('Setup') {
-        sh 'echo TODO SETUP'
+        sh 'apt update'
+        sh 'apt-get -y install libsecret-1-dev'
+        sh 'npm run setup'
+      }
+
+      stage('Test') {
+        sh 'npm run test'
       }
 
       stage('Build') {

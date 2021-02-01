@@ -3,16 +3,17 @@
     <b-checkbox
       :native-value="facetValue.state === 'selected'"
       @change.native="onChange"
-    >{{facetValue.value}} ( {{facetValue.numberOfResults}} )</b-checkbox>
+      >{{ facetValue.value }} ({{ facetValue.numberOfResults }})</b-checkbox
+    >
   </li>
 </template>
 <script>
 export default {
-  name: "FacetValue",
-  props: ["facetValue"],
+  name: 'FacetValue',
+  props: ['facetValue'],
   methods: {
     onChange: function () {
-      this.$emit("toggle", this.facetValue);
+      this.$emit('toggle', this.facetValue);
     },
   },
 };
@@ -22,5 +23,6 @@ li {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  width: 100%;
 }
-</style> >
+</style>

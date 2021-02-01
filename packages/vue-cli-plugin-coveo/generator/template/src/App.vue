@@ -1,73 +1,32 @@
 <template>
-  <div id="app" class="has-text-left container">
-    <link rel="stylesheet" href="https://cdn.materialdesignicons.com/5.3.45/css/materialdesignicons.min.css" />
-    <section class="box my-3">
-      <div class="columns">
-        <div class="column is-four-fifths">
-          <SearchBox />
-        </div>
-        <div class="column">
-          <Facets />
-        </div>
-      </div>
-      <Summary />
-    </section>
-
-    <section class="box my-3">
-      <div class="columns">
-        <div class="column">
-          <ResultList />
-        </div>
-      </div>
-    </section>
-    <section class="box my-3">
-      <div class="columns">
-        <div class="column">
-          <Pager />
-        </div>
-      </div>
-    </section>
+  <div id="app">
+    <div class="hero is-primary is-medium">
+    <Hero msg="Welcome to Your Coveo Vue.js Search Page" />
+    </div>
+    <SearchPage />
   </div>
 </template>
 
-<script>
-import Vue from 'vue';
-import Buefy from 'buefy';
-import 'buefy/dist/buefy.css';
-import 'material-design-icons';
-import ResultList from './components/ResultList.vue';
-import SearchBox from './components/SearchBox.vue';
-import Facets from './components/Facets.vue';
-import Summary from './components/Summary.vue';
-import Pager from './components/Pager.vue';
-import engine from './Engine';
-import { AnalyticsActions, SearchActions } from '@coveo/headless';
-Vue.use(Buefy);
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import Hero from './components/Hero.vue';
+import SearchPage from './components/SearchPage.vue';
 
-export default {
-  name: 'App',
+@Component({
   components: {
-    ResultList,
-    SearchBox,
-    Facets,
-    Summary,
-    Pager,
+    Hero,
+    SearchPage,
   },
-  mounted: function() {
-    this.$nextTick(function() {
-      engine.dispatch(SearchActions.executeSearch(AnalyticsActions.logInterfaceLoad()));
-    });
-  },
-};
+})
+export default class App extends Vue {}
 </script>
 
-<style>
+<style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: $family-primary;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  color: $primary !important;
 }
 </style>

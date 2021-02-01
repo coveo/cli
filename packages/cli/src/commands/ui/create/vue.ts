@@ -5,8 +5,6 @@ import {spawnProcess} from '../../../lib/utils/process';
 export default class Vue extends Command {
   static description = 'Create a new project powered by vue-cli-service';
 
-  static hidden = true;
-
   static flags = {
     help: flags.help({char: 'h'}),
     preset: flags.string({
@@ -33,7 +31,13 @@ export default class Vue extends Command {
   async run() {
     const {args, flags} = this.parse(Vue);
 
-    await this.createProject(args.name, require(flags.preset));
+    let preset = '';
+    try {
+      preset = require(flags.preset);
+    } catch (error) {
+      this.error('Unable to load preset');
+    }
+    await this.createProject(args.name, preset);
     await this.installPlugin(args.name);
     await this.invokePlugin(args.name);
     this.startServer(args.name);
