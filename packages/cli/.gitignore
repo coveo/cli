@@ -10,7 +10,6 @@ dist
 /node_modules
 /tmp
 npm-debug.log
-package-lock.json
 reports/*.xml
 veracode
 coverage
