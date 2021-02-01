@@ -39,8 +39,8 @@ describe('OAuth', () => {
           refreshToken: 'the-refresh-token',
         }),
     }));
-    const token = await new OAuth().getToken();
-    expect(token).toEqual('this-is-the-new-access-token');
+    const {accessToken} = await new OAuth().getToken();
+    expect(accessToken).toEqual('this-is-the-new-access-token');
   });
 
   describe('should use proper port for @openid', () => {
