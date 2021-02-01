@@ -14,12 +14,12 @@
     "axios": "^0.21.1",
     "cli-ux": "^5.5.1",
     "exponential-backoff": "^3.1.0",
+    "vue-cli-plugin-coveo": "^0.0.0",
     "fs-extra": "^9.1.0",
     "isomorphic-fetch": "^3.0.0",
     "isomorphic-form-data": "^2.0.0",
     "keytar": "^7.3.0",
-    "tslib": "^1",
-    "vue-cli-plugin-coveo": "^0.0.0"
+    "tslib": "^1"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
