@@ -1,3 +1,5 @@
+import {Environment, Region} from '@coveord/platform-client';
+
 type PlatformCombination =
   | {env: 'dev'; region: 'us-east-1' | 'eu-west-1' | 'eu-west-3'}
   | {env: 'qa'; region: 'us-east-1' | 'eu-west-1' | 'ap-southeast-2'}
@@ -24,4 +26,36 @@ export function platformUrl<E extends PlatformEnvironment = 'prod'>(options?: {
       : `-${options.region}`;
 
   return `https://platform${urlEnv}${urlRegion}.cloud.coveo.com`;
+}
+
+export function castEnvironmentToPlatformClient(
+  e: PlatformEnvironment
+): Environment {
+  switch (e) {
+    case 'dev':
+      return Environment.dev;
+    case 'qa':
+      return Environment.staging;
+    case 'prod':
+      return Environment.prod;
+    case 'hipaa':
+      return Environment.hipaa;
+    default:
+      return Environment.prod;
+  }
+}
+
+export function castRegionToPlatformClient(r: PlatformRegion): Region {
+  switch (r) {
+    case 'us-east-1':
+    case 'us-west-2':
+      return Region.US;
+    case 'eu-west-1':
+    case 'eu-west-3':
+      return Region.EU;
+    case 'ap-southeast-2':
+      return Region.EU;
+    default:
+      return Region.US;
+  }
 }
