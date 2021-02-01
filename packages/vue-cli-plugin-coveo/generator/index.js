@@ -4,7 +4,10 @@ module.exports = (api, options, rootOptions) => {
     dependencies: {
       '@coveo/headless': '^0.1.0',
       buefy: '^0.9.4',
-      'material-design-icons': '^3.0.1',
+    },
+    devDependencies: {
+      'node-sass': '^5.0.0',
+      'sass-loader': '^10.1.1',
     },
   });
 
