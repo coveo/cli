@@ -15,6 +15,7 @@ export default function AuthenticationRequired() {
   return function (
     target: Command,
     propertyKey: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     descriptor: TypedPropertyDescriptor<() => Promise<any>>
   ) {
     const originalRunCommand = descriptor.value!;

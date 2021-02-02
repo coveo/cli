@@ -2,6 +2,7 @@ require('isomorphic-fetch');
 require('abortcontroller-polyfill');
 require('isomorphic-form-data');
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const FormData: any;
 FormData.prototype.set = FormData.prototype.append;
 
@@ -24,12 +25,7 @@ export class AuthenticatedClient {
 
   async isLoggedIn() {
     const {accessToken, refreshToken} = await this.storage.get();
-    return (
-      accessToken !== null &&
-      accessToken !== '' &&
-      refreshToken !== null &&
-      refreshToken !== ''
-    );
+    return accessToken !== null && refreshToken !== null;
   }
 
   async isExpired() {

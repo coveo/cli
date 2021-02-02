@@ -1,0 +1,15 @@
+.truncate {
+  width: 100%;
+  position: relative;
+}
+
+.inline {
+  display: flex;
+}
+
+.truncate span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
