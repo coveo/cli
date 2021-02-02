@@ -7,6 +7,7 @@ import {
   PlatformEnvironment,
   PlatformRegion,
 } from '../../lib/platform/environment';
+import {OrganizationModel} from '@coveord/platform-client';
 
 export default class Login extends Command {
   static description = 'Log into Coveo platform using OAuth2 flow';
@@ -69,6 +70,6 @@ export default class Login extends Command {
     const orgs = await (
       await new AuthenticatedClient().getClient()
     ).organization.list();
-    return (orgs as any)[0]?.id;
+    return ((orgs as unknown) as OrganizationModel[])[0]?.id;
   }
 }
