@@ -13,5 +13,6 @@ npm-debug.log
 reports/*.xml
 veracode
 coverage
+yarn.lock
 
 !.vscode/extensions.json
