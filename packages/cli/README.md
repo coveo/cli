@@ -31,8 +31,8 @@ USAGE
 <!-- commands -->
 * [`coveo hello [FILE]`](#coveo-hello-file)
 * [`coveo help [COMMAND]`](#coveo-help-command)
-* [`coveo ui:create:vue [APP]`](#coveo-uicreatevue-app)
-* [`coveo ui:create:react [APP]`](#coveo-uicreatereact-app)
+* [`coveo ui:create:vue [NAME]`](#coveo-uicreatevue-name)
+* [`coveo ui:create:react [NAME]`](#coveo-uicreatereact-name)
 
 ## `coveo hello [FILE]`
 
@@ -74,28 +74,36 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.1/src/commands/help.ts)_
 
-## `coveo ui:create:vue [APP]`
+## `coveo ui:create:vue NAME`
 
-describe the command here
+Create a new project powered by vue-cli-service
 
 ```
 USAGE
-  $ coveo ui:create:vue [APP]
-
+  $ coveo ui:create:vue NAME
+ARGUMENTS
+  NAME  application name
 OPTIONS
-  -h, --help           show CLI help
-  -p, --preset=preset  Path to a JSON file with pre-defined options and plugins for creating a new project.
+  -h, --help         show CLI help
+  -p, --preset=path  [default: /Users/olamothe/cli/packages/cli/src/commands/ui/create/presets/typescript-preset.json]
+                     Path to a JSON file with pre-defined options and plugins for creating a new project.
+                     If not specified, the default TypeScript preset will be taked
+                     For more information about Vue CLI presets, please consult
+                     https://cli.vuejs.org/guide/plugins-and-presets.html#presets
+EXAMPLES
+  $ coveo ui:create:vue --preset path/to/my/preset.json
+  $ coveo ui:create:vue --help
 ```
 
 _See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/ui/create/vue.ts)_
 
-## `coveo ui:create:react [APP]`
+## `coveo ui:create:react [NAME]`
 
-describe the command here
+Create a search page in React powered by Coveo Headless
 
 ```
 USAGE
-  $ coveo ui:create:react [APP]
+  $ coveo ui:create:react [NAME]
 
 OPTIONS
   -h, --help       show CLI help
