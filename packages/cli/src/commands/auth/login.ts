@@ -2,10 +2,12 @@ import {Command, flags} from '@oclif/command';
 import {Config} from '../../lib/config/config';
 import {OAuth} from '../../lib/oauth/oauth';
 import {Storage} from '../../lib/oauth/storage';
+import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {
   PlatformEnvironment,
   PlatformRegion,
 } from '../../lib/platform/environment';
+import {OrganizationModel} from '@coveord/platform-client';
 
 export default class Login extends Command {
   static description = 'Log into Coveo platform using OAuth2 flow';
@@ -32,6 +34,12 @@ export default class Login extends Command {
       default: 'prod',
       description: 'The platform environment inside which to login.',
     }),
+    organization: flags.string({
+      char: 'o',
+      description:
+        'The organization inside which to login. If not specified, the first organization available will be picked. See also commands config:get, config:set, and org:list',
+      helpValue: 'myOrgID',
+    }),
   };
 
   async run() {
@@ -45,5 +53,23 @@ export default class Login extends Command {
     const cfg = new Config(this.config.configDir, this.error);
     await cfg.set('environment', flags.environment as PlatformEnvironment);
     await cfg.set('region', flags.region as PlatformRegion);
+    if (flags.organization) {
+      await cfg.set('organization', flags.organization);
+    } else {
+      const firstOrgAvailable = await this.pickFirstAvailableOrganization();
+      if (firstOrgAvailable) {
+        await cfg.set('organization', firstOrgAvailable as string);
+        this.log(
+          `No organization specified.\nYou are currently logged in ${firstOrgAvailable}.\nIf you wish to specify an organization, use the --organization parameter.`
+        );
+      }
+    }
+  }
+
+  private async pickFirstAvailableOrganization() {
+    const orgs = await (
+      await new AuthenticatedClient().getClient()
+    ).organization.list();
+    return ((orgs as unknown) as OrganizationModel[])[0]?.id;
   }
 }

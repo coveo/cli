@@ -5,7 +5,14 @@ import {PlatformEnvironment, PlatformRegion} from '../platform/environment';
 export interface Configuration {
   region: PlatformRegion;
   environment: PlatformEnvironment;
+  organization: string;
 }
+
+export const DefaultConfig: Configuration = {
+  environment: 'prod',
+  region: 'us-east-1',
+  organization: '',
+};
 
 export class Config {
   constructor(private configDir: string, private error = console.error) {}
@@ -16,13 +23,13 @@ export class Config {
       return await readJSON(this.configPath);
     } catch (e) {
       this.error(`Error while reading configuration at ${this.configPath}`);
-      await this.replace(this.defaultConfig);
+      await this.replace(DefaultConfig);
       this.error(
         `Configuration has been reset to default value: ${JSON.stringify(
-          this.defaultConfig
+          DefaultConfig
         )}`
       );
-      return this.defaultConfig;
+      return DefaultConfig;
     }
   }
 
@@ -45,18 +52,11 @@ export class Config {
     return join(this.configDir, 'config.json');
   }
 
-  private get defaultConfig(): Configuration {
-    return {
-      environment: 'prod',
-      region: 'us-east-1',
-    };
-  }
-
   private async ensureExists() {
     const exists = await pathExists(this.configPath);
     if (!exists) {
       await createFile(this.configPath);
-      await writeJSON(this.configPath, this.defaultConfig);
+      await writeJSON(this.configPath, DefaultConfig);
     }
   }
 }

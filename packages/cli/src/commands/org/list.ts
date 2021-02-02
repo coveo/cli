@@ -1,29 +1,40 @@
 import {Command} from '@oclif/command';
-import {Config} from '../../lib/config/config';
-import {Storage} from '../../lib/oauth/storage';
-import {platformUrl} from '../../lib/platform/environment';
-import * as axios from 'axios';
+import AuthenticationRequired from '../../lib/decorators/authenticationRequired';
+import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {OrganizationModel} from '@coveord/platform-client';
+import {cli} from 'cli-ux';
 
 export default class List extends Command {
-  static description = 'test command for oauth + config that list orgs';
+  static description = 'List Coveo organizations.';
 
-  static args = [{name: 'file'}];
+  static flags = {
+    ...cli.table.flags(),
+  };
 
+  @AuthenticationRequired()
   async run() {
-    // Just an example on how we'd be able to leverage the config + access token storage to perform requests
-    const {accessToken} = await new Storage().get();
-    const cfg = await new Config(this.config.configDir, this.error).get();
-    const res = await axios.default.get(
-      `${platformUrl({
-        environment: cfg.environment,
-        region: cfg.region,
-      })}/rest/organizations`,
+    const {flags} = this.parse(List);
+    const orgs = ((await (
+      await new AuthenticatedClient().getClient()
+    ).organization.list()) as unknown) as OrganizationModel[];
+    cli.table(
+      orgs,
       {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
+        id: {},
+        type: {},
+        displayName: {
+          extended: true,
         },
-      }
+        createdDate: {
+          get: (row) => row.createdDate && new Date(row.createdDate),
+          extended: true,
+        },
+        owner: {
+          get: (r) => r.owner.email,
+          extended: true,
+        },
+      },
+      {...flags}
     );
-    this.log(res.data);
   }
 }

@@ -1,5 +1,4 @@
 import {getPassword, setPassword} from 'keytar';
-import {userInfo} from 'os';
 import {mocked} from 'ts-jest/utils';
 import {Storage} from './storage';
 jest.mock('keytar', () => ({

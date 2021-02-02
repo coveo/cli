@@ -38,7 +38,7 @@ describe('auth:login', () => {
   ['dev', 'qa', 'prod', 'hipaa'].forEach((environment) => {
     test
       .stdout()
-      .command(['auth:login', '-e', environment])
+      .command(['auth:login', '-e', environment, '-o', 'foo'])
       .it(
         `passes the -e=${environment} flag to oauth and configuration`,
         () => {
@@ -60,7 +60,7 @@ describe('auth:login', () => {
   ].forEach((region) => {
     test
       .stdout()
-      .command(['auth:login', '-r', region])
+      .command(['auth:login', '-r', region, '-o', 'foo'])
       .it(`passes the -e=${region} flag to oauth and configuration`, () => {
         expect(mockedOAuth.mock.calls[0][0]?.region).toBe(region);
         expect(mockedConfig.mock.instances[0].set).toHaveBeenCalledWith(
@@ -72,7 +72,7 @@ describe('auth:login', () => {
 
   test
     .stdout()
-    .command(['auth:login', '-e', 'qa'])
+    .command(['auth:login', '-e', 'qa', '-o', 'foo'])
     .it('passed the -e=dev flag to oauth as an environment', () => {
       expect(mockedOAuth.mock.calls[0][0]?.environment).toBe('qa');
     });
@@ -80,7 +80,7 @@ describe('auth:login', () => {
   describe('retrieves token from oauth service', () => {
     test
       .stdout()
-      .command(['auth:login'])
+      .command(['auth:login', '-o', 'foo'])
       .it('save token from oauth service', () => {
         expect(mockedStorage.mock.instances[0].save).toHaveBeenCalledWith(
           'this-is-the-token',
