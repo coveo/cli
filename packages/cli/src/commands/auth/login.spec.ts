@@ -1,11 +1,12 @@
+jest.mock('../../lib/oauth/oauth');
+jest.mock('../../lib/oauth/storage');
+jest.mock('../../lib/config/config');
+jest.mock('keytar');
 import {test} from '@oclif/test';
 import {mocked} from 'ts-jest/utils';
 import {Config} from '../../lib/config/config';
 import {OAuth} from '../../lib/oauth/oauth';
 import {Storage} from '../../lib/oauth/storage';
-jest.mock('../../lib/oauth/oauth');
-jest.mock('../../lib/oauth/storage');
-jest.mock('../../lib/config/config');
 const mockedOAuth = mocked(OAuth, true);
 const mockedStorage = mocked(Storage, true);
 const mockedConfig = mocked(Config, true);

@@ -3,5 +3,6 @@ module.exports = {
   testEnvironment: 'node',
   verbose: true,
   collectCoverage: true,
-  clearMocks: true
+  clearMocks: true,
+  silent: true,
 };
