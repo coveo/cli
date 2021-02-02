@@ -31,7 +31,8 @@ USAGE
 <!-- commands -->
 * [`coveo hello [FILE]`](#coveo-hello-file)
 * [`coveo help [COMMAND]`](#coveo-help-command)
-* [`coveo ui:create:react [FILE]`](#coveo-uicreatereact-file)
+* [`coveo ui:create:vue [APP]`](#coveo-uicreatevue-app)
+* [`coveo ui:create:react [APP]`](#coveo-uicreatereact-app)
 
 ## `coveo hello [FILE]`
 
@@ -73,18 +74,31 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.1/src/commands/help.ts)_
 
-## `coveo ui:create:react [FILE]`
+## `coveo ui:create:vue [APP]`
 
 describe the command here
 
 ```
 USAGE
-  $ coveo ui:create:react [FILE]
+  $ coveo ui:create:vue [APP]
 
 OPTIONS
-  -f, --force
+  -h, --help           show CLI help
+  -p, --preset=preset  Path to a JSON file with pre-defined options and plugins for creating a new project.
+```
+
+_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/ui/create/vue.ts)_
+
+## `coveo ui:create:react [APP]`
+
+describe the command here
+
+```
+USAGE
+  $ coveo ui:create:react [APP]
+
+OPTIONS
   -h, --help       show CLI help
-  -n, --name=name  name to print
 ```
 
 _See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/ui/create/react.ts)_

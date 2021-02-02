@@ -14,5 +14,6 @@ package-lock.json
 reports/*.xml
 veracode
 coverage
+yarn.lock
 
 !.vscode/extensions.json

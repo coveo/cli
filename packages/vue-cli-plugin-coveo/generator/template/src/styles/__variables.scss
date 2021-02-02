@@ -1,0 +1,31 @@
+// 1. Import the initial variables
+@import '../../node_modules/bulma/sass/utilities/initial-variables.sass';
+@import '../../node_modules/bulma/sass/utilities/functions';
+
+// 2. Set your own initial variables
+$black: #333357;
+$black-invert: #e5e8e8;
+$family-serif: Avenir, Helvetica, Arial, sans-serif;
+
+// 3. Set the derived variables
+$primary: $black;
+$primary-invert: $black-invert;
+$family-primary: $family-serif;
+$link: #2e45ba;
+
+// 4. Setup your Custom Colors
+$blue-accent: #1cebcf;
+$blue-accent-invert: findColorInvert($blue-accent);
+
+// 5. Add new color variables to the color map.
+@import '../../node_modules/bulma/sass/utilities/derived-variables.sass';
+$addColors: (
+  'blue-accent': (
+    $blue-accent,
+    $blue-accent-invert,
+  ),
+);
+$colors: map-merge($colors, $addColors);
+
+// 6. Import the rest of Bulma
+@import '../../node_modules/bulma/';
