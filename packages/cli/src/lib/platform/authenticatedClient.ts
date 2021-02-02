@@ -24,12 +24,7 @@ export class AuthenticatedClient {
 
   async isLoggedIn() {
     const {accessToken, refreshToken} = await this.storage.get();
-    return (
-      accessToken !== null &&
-      accessToken !== '' &&
-      refreshToken !== null &&
-      refreshToken !== ''
-    );
+    return accessToken !== null && refreshToken !== null;
   }
 
   async isExpired() {
