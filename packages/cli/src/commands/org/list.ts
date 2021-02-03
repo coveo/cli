@@ -3,6 +3,10 @@ import AuthenticationRequired from '../../lib/decorators/authenticationRequired'
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {OrganizationModel} from '@coveord/platform-client';
 import {cli} from 'cli-ux';
+import {
+  buildAnalyticsFailureHook,
+  buildAnalyticsSuccessHook,
+} from '../../hooks/analytics/analytics';
 
 export default class List extends Command {
   static description = 'List Coveo organizations.';
@@ -36,5 +40,19 @@ export default class List extends Command {
       },
       {...flags}
     );
+
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsSuccessHook(this, flags)
+    );
+  }
+
+  async catch(err?: Error) {
+    const {flags} = this.parse(List);
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsFailureHook(this, flags, err)
+    );
+    throw err;
   }
 }
