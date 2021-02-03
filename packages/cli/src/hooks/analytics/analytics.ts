@@ -32,21 +32,20 @@ const hook = async function (opts: AnalyticsHook) {
 
   const analyticsClient = new CoveoAnalyticsClient({token: analyticsAPIKey});
   analyticsClient.runtime.storage = storage(authenticatedClient.cfg);
-  console.log(
-    await analyticsClient.sendCustomEvent({
-      eventType: `com.coveo.cli ${opts.commandID}`,
-      eventValue: opts.commandID,
-      customData: {
-        ...opts.flags,
-        ...opts.meta,
-        organization,
-        platform: opts.config.platform,
-      },
-      userAgent: opts.config.userAgent,
-      userDisplayName: userInfo.displayName,
-      language: 'en',
-    })
-  );
+
+  await analyticsClient.sendCustomEvent({
+    eventType: `com.coveo.cli ${opts.commandID}`,
+    eventValue: opts.commandID,
+    customData: {
+      ...opts.flags,
+      ...opts.meta,
+      organization,
+      platform: opts.config.platform,
+    },
+    userAgent: opts.config.userAgent,
+    userDisplayName: userInfo.displayName,
+    language: 'en',
+  });
 };
 
 const storage = (cfg: Config): WebStorage => {
