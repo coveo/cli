@@ -1,12 +1,15 @@
-import {Rule, Tree, SchematicContext, chain} from '@angular-devkit/schematics';
-import {CoveoSchema} from './schema';
-import {getWorkspace} from '@schematics/angular/utility/workspace';
 import {getProjectFromWorkspace} from '@angular/cdk/schematics';
+import {getWorkspace} from '@schematics/angular/utility/workspace';
 import {ProjectType} from '@schematics/angular/utility/workspace-models';
-import {addHeadlessComponents, updateNgModule} from './setup-project';
+import {Rule, Tree, chain} from '@angular-devkit/schematics';
+
+import {CoveoSchema} from './schema';
+import {updateNgModule} from './rules/ng-module';
+import {installDepedencies} from './rules/dependencies';
+import {addHeadlessComponents} from './rules/templates';
 
 export default function (options: CoveoSchema): Rule {
-  return async (tree: Tree, _context: SchematicContext) => {
+  return async (tree: Tree) => {
     const workspace = await getWorkspace(tree);
     const project = getProjectFromWorkspace(workspace, options.project);
 
@@ -14,10 +17,7 @@ export default function (options: CoveoSchema): Rule {
       return chain([
         addHeadlessComponents(options, project),
         updateNgModule(options, project),
-        // addThemeToAppStyles(options),
-        // addFontsToIndex(options),
-        // addMaterialAppStyles(options),
-        // addTypographyClass(options),
+        installDepedencies(),
       ]);
     }
 

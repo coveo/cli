@@ -2,6 +2,7 @@
 src/**/*.js
 src/**/*.js.map
 src/**/*.d.ts
+dist
 
 # IDEs
 .idea/
@@ -12,9 +13,13 @@ jsconfig.json
 node_modules/
 npm-debug.log*
 yarn-error.log*
+sandbox
 
 # Mac OSX Finder files.
 **/.DS_Store
 .DS_Store
 
-dist
+# Temporary ignores
+# no longer needed once the package is published to npm
+# CDX-71
+coveo-angular-0.0.0.tgz
