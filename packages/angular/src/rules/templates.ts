@@ -1,5 +1,4 @@
 import {normalize} from '@angular-devkit/core';
-import {ProjectDefinition} from '@angular-devkit/core/src/workspace';
 import {
   apply,
   applyTemplates,
@@ -12,7 +11,7 @@ import {
   Tree,
   url,
 } from '@angular-devkit/schematics';
-import {CoveoSchema} from '../../headless-engine/schema';
+import {CoveoSchema} from '../ng-add/schema';
 
 function overwriteIfExists(host: Tree): Rule {
   return forEach((fileEntry: FileEntry) => {
@@ -23,10 +22,7 @@ function overwriteIfExists(host: Tree): Rule {
     return fileEntry;
   });
 }
-export function addHeadlessComponents(
-  _options: CoveoSchema,
-  _project: ProjectDefinition
-): Rule {
+export function createFiles(_options: CoveoSchema): Rule {
   return (tree: Tree, context: SchematicContext) => {
     const path = './'; // Because path is already defined in the templates structure
 

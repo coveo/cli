@@ -23,6 +23,7 @@ describe('headless-engine', () => {
   const schemaOptions: CoveoSchema = {
     orgId: 'xxx',
     apiKey: '1234',
+    name: 'dsa',
   };
 
   let appTree: UnitTestTree;

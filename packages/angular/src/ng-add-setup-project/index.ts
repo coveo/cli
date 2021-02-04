@@ -4,8 +4,9 @@ import {ProjectType} from '@schematics/angular/utility/workspace-models';
 import {Rule, Tree, SchematicContext, chain} from '@angular-devkit/schematics';
 
 import {CoveoSchema} from './schema';
+import {updateNgModule} from '../rules/ng-module';
 import {createFiles} from '../rules/templates';
-import {installDepedencies} from '../rules/dependencies';
+import {addMaterialAngular} from '../rules/dependencies';
 
 export default function (options: CoveoSchema): Rule {
   return async (tree: Tree, _context: SchematicContext) => {
@@ -13,7 +14,11 @@ export default function (options: CoveoSchema): Rule {
     const project = getProjectFromWorkspace(workspace, options.project);
 
     if (project.extensions.projectType === ProjectType.Application) {
-      return chain([installDepedencies(options), createFiles(options)]);
+      return chain([
+        addMaterialAngular(options),
+        createFiles(options),
+        updateNgModule(options, project),
+      ]);
     }
     return;
   };

@@ -1,11 +1,49 @@
-import {classify} from '@angular-devkit/core/src/utils/strings';
-import {Tree} from '@angular-devkit/schematics';
 import {addDeclarationToModule} from '@angular/cdk/schematics';
-import {InsertChange} from '@schematics/angular/utility/change';
 import {basename, dirname, join} from 'path';
+import {classify} from '@angular-devkit/core/src/utils/strings';
+import {createSourceFile, ScriptTarget} from 'typescript';
+import {getAppModulePath, getProjectMainFile} from '@angular/cdk/schematics';
+import {InsertChange} from '@schematics/angular/utility/change';
+import {ProjectDefinition} from '@angular-devkit/core/src/workspace';
+import {Rule, Tree} from '@angular-devkit/schematics';
 import {SourceFile} from 'typescript';
+import {CoveoSchema} from '../ng-add/schema';
 
-export function getDefaultAppModuleContent() {
+export function updateNgModule(
+  _options: CoveoSchema, // TODO: move CoveoSchema to the root
+  _project: ProjectDefinition
+): Rule {
+  return (tree: Tree) => {
+    const appModulePath = getAppModulePath(tree, getProjectMainFile(_project));
+
+    const appModuleContent =
+      tree.get(appModulePath)?.content.toString() ||
+      getDefaultAppModuleContent();
+    const source = createSourceFile(
+      appModulePath,
+      appModuleContent,
+      ScriptTarget.Latest,
+      true
+    );
+    const updateRecorder = tree.beginUpdate(appModulePath);
+
+    // Add all Coveo components here
+    const changes = getAllComponentsToInject(tree, source, appModulePath);
+
+    // Inserting declarations
+    changes.map((change) => {
+      if (change instanceof InsertChange) {
+        updateRecorder.insertLeft(change.pos, change.toAdd);
+      }
+    });
+
+    tree.commitUpdate(updateRecorder);
+
+    return tree;
+  };
+}
+
+function getDefaultAppModuleContent() {
   return `import { BrowserModule } from '@angular/platform-browser';
     import { NgModule } from '@angular/core';
     import { AppComponent } from './app.component';
@@ -25,7 +63,7 @@ export function getDefaultAppModuleContent() {
     `;
 }
 
-export function getAllComponentsToInject(
+function getAllComponentsToInject(
   tree: Tree,
   source: SourceFile,
   appModulePath: string
