@@ -1,0 +1,16 @@
+{
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "headless-engine": {
+      "description": "The Coveo Headless engine",
+      "factory": "./headless-engine/index",
+      "schema": "./headless-engine/schema.json"
+    },
+    "ng-add": {
+      "factory": "./ng-add/index",
+      "description": "All the necessary Coveo components to run a search page",
+      "schema": "./ng-add/schema.json"
+    }
+
+  }
+}
