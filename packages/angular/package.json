@@ -1,22 +1,21 @@
 {
   "name": "@coveo/angular",
   "version": "0.0.0",
-  "description": "A blank schematics",
+  "description": "Coveo schematic for angular",
   "scripts": {
     "test": "npm run build && jasmine dist/**/*_spec.js",
     "build": "tsc -p tsconfig.json",
-    "BROKENcopy:collection": "cp src/collection.json dist/coveo-angular/collection.json",
-    "BROKENcopy:schemas": "cp src/coveo-angular/schema.json dist/coveo-angular/",
-    "BROKENcopy:files": "cp --parents -p src/*/files/** ../../dist/coveo-angular/",
-    "postbuildBROKEN": "npm run copy:schemas && npm run copy:files && npm run copy:collection",
-    "test:schematics": "npm run build && schematics .:ng-add --orgId=zxc --apiKey=\"xc345-ds\""
+    "postbuild": "node ./setup.js"
   },
   "keywords": [
-    "schematics"
+    "schematics",
+    "coveo",
+    "headless",
+    "angular"
   ],
-  "author": "",
+  "author": "Coveo",
   "license": "MIT",
-  "schematics": "./src/collection.json",
+  "schematics": "./dist/collection.json",
   "dependencies": {
     "@angular-devkit/core": "^11.1.2",
     "@angular-devkit/schematics": "^11.1.2",
@@ -28,6 +27,7 @@
   "devDependencies": {
     "@types/jasmine": "~3.5.0",
     "@types/node": "^12.11.1",
-    "jasmine": "^3.5.0"
+    "jasmine": "^3.5.0",
+    "fs-extra": "^9.1.0"
   }
 }
