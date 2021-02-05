@@ -10,10 +10,10 @@ import {InsertChange} from '@schematics/angular/utility/change';
 import {ProjectDefinition} from '@angular-devkit/core/src/workspace';
 import {Rule, Tree} from '@angular-devkit/schematics';
 import {SourceFile} from 'typescript';
-import {CoveoSchema} from '../ng-add/schema';
+import {CoveoSchema} from '../schema';
 
 export function updateNgModule(
-  _options: CoveoSchema, // TODO: move CoveoSchema to the root
+  _options: CoveoSchema,
   _project: ProjectDefinition
 ): Rule {
   return (tree: Tree) => {

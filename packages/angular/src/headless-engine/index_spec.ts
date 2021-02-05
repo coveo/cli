@@ -4,7 +4,7 @@ import {
   UnitTestTree,
 } from '@angular-devkit/schematics/testing';
 import * as path from 'path';
-import {CoveoSchema} from './schema';
+import {CoveoSchema} from '../schema';
 
 describe('headless-engine', () => {
   const collectionPath = path.join(__dirname, '../collection.json');

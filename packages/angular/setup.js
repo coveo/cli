@@ -1,3 +1,4 @@
+const {join} = require('path');
 const {copyFile, copy, ensureDir, pathExists} = require('fs-extra');
 const collection = require('./src/collection.json');
 
@@ -6,7 +7,7 @@ async function copySchemas() {
   const schematics = Object.values(collection.schematics);
   return Promise.all(
     schematics.map((sch) =>
-      copy(`${srcDir}/${sch.schema}`, `${destDir}/${sch.schema}`)
+      copyFile(join(srcDir, sch.schema), join(destDir, sch.schema))
     )
   );
 }
@@ -17,7 +18,7 @@ async function copyFiles(srcDir, destDir) {
   return Promise.all(
     schematics.map(async (sch) => {
       if (await pathExists(`${srcDir}/${sch}/files`)) {
-        return copy(`${srcDir}/${sch}/files`, `${destDir}/${sch}/files`);
+        return copy(join(srcDir, sch, 'files'), join(destDir, sch, 'files'));
       }
     })
   );
@@ -25,7 +26,10 @@ async function copyFiles(srcDir, destDir) {
 
 async function copyCollection(srcDir, destDir) {
   await ensureDir(destDir);
-  return copyFile(`${srcDir}/collection.json`, `${destDir}/collection.json`);
+  return copyFile(
+    join(srcDir, 'collection.json'),
+    join(destDir, 'collection.json')
+  );
 }
 
 const srcDir = './src';

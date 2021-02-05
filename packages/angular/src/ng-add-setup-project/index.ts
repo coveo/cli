@@ -3,7 +3,7 @@ import {getWorkspace} from '@schematics/angular/utility/workspace';
 import {ProjectType} from '@schematics/angular/utility/workspace-models';
 import {Rule, Tree, SchematicContext, chain} from '@angular-devkit/schematics';
 
-import {CoveoSchema} from './schema';
+import {CoveoSchema} from '../schema';
 import {updateNgModule} from '../rules/ng-module';
 import {createFiles} from '../rules/templates';
 import {addMaterialAngular} from '../rules/dependencies';

@@ -11,7 +11,7 @@ import {
   Tree,
   url,
 } from '@angular-devkit/schematics';
-import {CoveoSchema} from '../ng-add/schema';
+import {CoveoSchema} from '../schema';
 
 function overwriteIfExists(host: Tree): Rule {
   return forEach((fileEntry: FileEntry) => {

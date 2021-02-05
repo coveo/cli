@@ -3,8 +3,8 @@ import {getWorkspace} from '@schematics/angular/utility/workspace';
 import {ProjectType} from '@schematics/angular/utility/workspace-models';
 import {Rule, Tree, SchematicContext} from '@angular-devkit/schematics';
 
-import {CoveoSchema} from './schema';
 import {RunSchematicTask} from '@angular-devkit/schematics/tasks';
+import {CoveoSchema} from '../schema';
 
 export default function (options: CoveoSchema): Rule {
   return async (tree: Tree, context: SchematicContext) => {

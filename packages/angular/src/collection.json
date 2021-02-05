@@ -4,18 +4,18 @@
     "headless-engine": {
       "description": "Adds the Coveo Engine to the project",
       "factory": "./headless-engine/index",
-      "schema": "./headless-engine/schema.json"
+      "schema": "./schema.json"
     },
     "ng-add-setup-project": {
       "factory": "./ng-add-setup-project/index",
       "description": "Sets up the project after ng-add dependencies have been installed",
-      "schema": "./ng-add-setup-project/schema.json",
+      "schema": "./schema.json",
       "private": true
     },
     "ng-add": {
       "factory": "./ng-add/index",
       "description": "Adds Coveo Headless to the application",
-      "schema": "./ng-add/schema.json"
+      "schema": "./schema.json"
     }
   }
 }
