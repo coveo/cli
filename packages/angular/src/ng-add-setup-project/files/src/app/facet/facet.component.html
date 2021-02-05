@@ -1,0 +1,12 @@
+<p>{{ this.title }}</p>
+
+<mat-selection-list>
+  <mat-list-option *ngFor="let value of facetValues">
+    <div>
+      {{ value.value }}
+    </div>
+    <div>
+      ({{ value.numberOfResults }})
+    </div>
+  </mat-list-option>
+</mat-selection-list>
