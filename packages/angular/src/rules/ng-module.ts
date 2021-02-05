@@ -1,4 +1,7 @@
-import {addDeclarationToModule} from '@angular/cdk/schematics';
+import {
+  addDeclarationToModule,
+  addImportToModule,
+} from '@angular/cdk/schematics';
 import {basename, dirname, join} from 'path';
 import {classify} from '@angular-devkit/core/src/utils/strings';
 import {createSourceFile, ScriptTarget} from 'typescript';
@@ -19,6 +22,7 @@ export function updateNgModule(
     const appModuleContent =
       tree.get(appModulePath)?.content.toString() ||
       getDefaultAppModuleContent();
+
     const source = createSourceFile(
       appModulePath,
       appModuleContent,
@@ -27,10 +31,11 @@ export function updateNgModule(
     );
     const updateRecorder = tree.beginUpdate(appModulePath);
 
-    // Add all Coveo components here
-    const changes = getAllComponentsToInject(tree, source, appModulePath);
+    const changes = [
+      ...getAllCoveoComponentsToInject(tree, source, appModulePath),
+      ...injectMaterialImports(source, appModulePath),
+    ];
 
-    // Inserting declarations
     changes.map((change) => {
       if (change instanceof InsertChange) {
         updateRecorder.insertLeft(change.pos, change.toAdd);
@@ -63,7 +68,7 @@ function getDefaultAppModuleContent() {
     `;
 }
 
-function getAllComponentsToInject(
+function getAllCoveoComponentsToInject(
   tree: Tree,
   source: SourceFile,
   appModulePath: string
@@ -98,5 +103,34 @@ function getAllComponentsToInject(
         );
       }
     });
+  return changes;
+}
+
+export function injectMaterialImports(
+  source: SourceFile,
+  appModulePath: string
+) {
+  const modules = {
+    MatAutocompleteModule: '@angular/material/autocomplete',
+    MatFormFieldModule: '@angular/material/form-field',
+    ReactiveFormsModule: '@angular/forms',
+    MatInputModule: '@angular/material/input',
+    MatListModule: '@angular/material/list',
+    MatPaginatorModule: '@angular/material/paginator',
+  };
+
+  const changes: InsertChange[] = [];
+
+  Object.entries(modules).map(([key, value]) =>
+    changes.push(
+      ...(addImportToModule(
+        source,
+        appModulePath,
+        key,
+        value
+      ) as InsertChange[])
+    )
+  );
+
   return changes;
 }
