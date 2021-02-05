@@ -1,55 +1,74 @@
-// import { Tree } from '@angular-devkit/schematics';
+import {join} from 'path';
+import {Schema as WorkspaceOptions} from '@schematics/angular/workspace/schema';
+import {
+  Schema as ApplicationOptions,
+  Style,
+} from '@schematics/angular/application/schema';
 import {
   SchematicTestRunner,
   UnitTestTree,
 } from '@angular-devkit/schematics/testing';
-import * as path from 'path';
 import {CoveoSchema} from '../schema';
 
 describe('headless-engine', () => {
-  const collectionPath = path.join(__dirname, '../collection.json');
-  // const schematicRunner = new SchematicTestRunner('schematics', path.join(__dirname, './../collection.json'));
-
-  // const workspaceOptions: any = {
-  //   name: 'workspace',
-  //   newProjectRoot: 'projects',
-  //   version: '0.5.0',
-  // };
-
-  // const appOptions: any = {
-  //   name: 'schematest',
-  // };
-
-  const schemaOptions: CoveoSchema = {
-    orgId: 'xxx',
-    apiKey: '1234',
-    name: 'dsa',
+  const workspaceOptions: WorkspaceOptions = {
+    name: 'workspace',
+    newProjectRoot: 'projects',
+    version: '0.0.0',
   };
 
+  const defaultSchemaOptions: CoveoSchema = {
+    orgId: 'fake-org-id',
+    apiKey: 'my-fake-api-key',
+    name: 'MyTestProject',
+  };
+
+  const appOptions: ApplicationOptions = {
+    name: 'foo',
+    inlineStyle: false,
+    inlineTemplate: false,
+    routing: false,
+    style: Style.Css,
+    skipTests: false,
+    skipPackageJson: false,
+  };
+
+  const collectionPath = join(__dirname, '../collection.json');
+  const runner = new SchematicTestRunner('schematics', collectionPath);
   let appTree: UnitTestTree;
 
-  // beforeEach(() => {
-  //   appTree = schematicRunner.runExternalSchematicAsync('@schematics/angular', 'workspace', workspaceOptions);
-  //   appTree = schematicRunner.runExternalSchematicAsync('@schematics/angular', 'application', appOptions, appTree);
-  // });
-
-  // it('works', async () => {
-  //   const runner = new SchematicTestRunner('schematics', collectionPath);
-  //   const tree = await runner.runSchematicAsync('headless-engine', {}, Tree.empty()).toPromise();
-
-  //   expect(tree.files).toEqual(['/hello.ts']);
-  // });
-
-  it('works', () => {
-    const runner = new SchematicTestRunner('schematics', collectionPath);
-    runner
-      .runSchematicAsync('headless-engine', schemaOptions, appTree)
-      .toPromise()
-      .then((tree) => {
-        expect(tree.files).toEqual(['/hello.ts']);
-        // TODO: create a real component like below
-        // const appComponent = tree.readContent('/projects/schematest/src/app/app.component.ts');
-        // expect(appComponent).toContain(`name = '${schemaOptions.name}'`);
-      });
+  beforeEach(async () => {
+    appTree = await runner
+      .runExternalSchematicAsync(
+        '@schematics/angular',
+        'workspace',
+        workspaceOptions
+      )
+      .toPromise();
+    appTree = await runner
+      .runExternalSchematicAsync(
+        '@schematics/angular',
+        'application',
+        appOptions,
+        appTree
+      )
+      .toPromise();
   });
+
+  it('should create the Coveo Headless Engine', async () => {
+    const schemaOptions = {...defaultSchemaOptions};
+    const tree = await runner
+      .runSchematicAsync('headless-engine', schemaOptions, appTree)
+      .toPromise();
+
+    const packageJsonContent = tree.readContent('/package.json');
+    // The coveo headless dependency was added to package.json
+    expect(Object.keys(JSON.parse(packageJsonContent).dependencies)).toContain(
+      '@coveo/headless'
+    );
+
+    // The headless engine was added to the angular project
+    expect(tree.files).toContain('/src/app/engine.ts');
+  });
+  // TODO: check if the org ID and api key was added to the engine
 });
