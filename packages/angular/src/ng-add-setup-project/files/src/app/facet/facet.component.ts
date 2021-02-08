@@ -1,11 +1,12 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {MatSelectionListChange} from '@angular/material/list';
 import {buildFacet, Facet, FacetValue} from '@coveo/headless';
 import {engine} from '../engine';
 
 @Component({
   selector: 'app-facet',
   templateUrl: './facet.component.html',
-  styleUrls: ['./facet.component.css'],
+  styleUrls: ['./facet.component.scss'],
 })
 export class FacetComponent implements OnInit {
   @Input() field: string;
@@ -15,19 +16,33 @@ export class FacetComponent implements OnInit {
 
   constructor() {}
 
-  toggleSelect(value: FacetValue) {
+  selectionChange(change: MatSelectionListChange) {
+    change.options.forEach((option) => {
+      this.headlessFacet.toggleSelect(option.value);
+    });
+
     // TODO:
     // this.headlessFacet.toggleSelect(value);
   }
 
   showMore() {
-    // TODO:
-    // this.headlessFacet.showMoreValues();
+    this.headlessFacet.showMoreValues();
   }
 
   showLess() {
-    // TODO:
-    // this.headlessFacet.showLessValues();
+    this.headlessFacet.showLessValues();
+  }
+
+  canShowLess() {
+    return this.headlessFacet.state.canShowLessValues;
+  }
+
+  canShowMore() {
+    return this.headlessFacet.state.canShowMoreValues;
+  }
+
+  isFacetValueSelected(value: FacetValue): boolean {
+    return this.headlessFacet.isValueSelected(value);
   }
 
   get facetValues(): FacetValue[] {
@@ -45,6 +60,7 @@ export class FacetComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeController();
+
     // this.facet.subscribe(() => this.updateState());
   }
 }

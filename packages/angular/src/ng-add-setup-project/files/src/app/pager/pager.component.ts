@@ -13,7 +13,7 @@ import {engine} from '../engine';
 @Component({
   selector: 'app-pager',
   templateUrl: './pager.component.html',
-  styleUrls: ['./pager.component.css'],
+  styleUrls: ['./pager.component.scss'],
 })
 export class PagerComponent implements OnInit {
   private headlessPager: Pager;

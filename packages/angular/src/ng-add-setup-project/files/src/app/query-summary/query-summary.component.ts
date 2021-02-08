@@ -9,7 +9,7 @@ import {engine} from '../engine';
 @Component({
   selector: 'app-query-summary',
   templateUrl: './query-summary.component.html',
-  styleUrls: ['./query-summary.component.css'],
+  styleUrls: ['./query-summary.component.scss'],
 })
 export class QuerySummaryComponent implements OnInit {
   private headlessQuerySummary: QuerySummary;

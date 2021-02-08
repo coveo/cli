@@ -1,16 +1,19 @@
-<app-search-box></app-search-box>
-
-<div class="container">
-  <div class="row">
-    <div class="col-3">
-      <app-facet-list></app-facet-list>
-    </div>
-    <div class="col-9">
-      <app-query-summary></app-query-summary>
-      <app-sort></app-sort>
-      <app-result-list></app-result-list>
-    </div>
+<div class="row center-xs">
+  <div class="col-xs-12 col-sm-8 mb-5">
+    <app-search-box></app-search-box>
   </div>
 </div>
 
-<app-pager></app-pager>
+<div class="row">
+  <div class="col-xs-12 col-sm-3">
+    <app-facet-list></app-facet-list>
+  </div>
+  <div class="col-xs-12 col-sm-9 pl-3">
+    <div class="mb-4">
+      <app-query-summary></app-query-summary>
+    </div>
+      <app-sort></app-sort>
+      <app-result-list></app-result-list>
+      <app-pager></app-pager>
+  </div>
+</div>

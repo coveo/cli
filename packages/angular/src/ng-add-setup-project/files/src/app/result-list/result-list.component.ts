@@ -5,7 +5,7 @@ import {engine} from '../engine';
 @Component({
   selector: 'app-result-list',
   templateUrl: './result-list.component.html',
-  styleUrls: ['./result-list.component.css'],
+  styleUrls: ['./result-list.component.scss'],
 })
 export class ResultListComponent implements OnInit {
   private headlessResultList: ResultList;
