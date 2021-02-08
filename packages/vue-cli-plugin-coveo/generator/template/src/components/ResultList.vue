@@ -28,16 +28,16 @@
             <b>Author</b> {{ result.raw.author }}
           </div>
           <div
+            v-if="result.raw.source"
+            class="mt-2 is-size-7 has-text-grey column is-narrow"
+          >
+            <b>Source</b> {{ result.raw.source }}
+          </div>
+          <div
             v-if="result.raw.objecttype"
             class="mt-2 is-size-7 has-text-grey column is-narrow"
           >
             <b>Object Type</b> {{ result.raw.objecttype }}
-          </div>
-          <div
-            v-if="result.raw.filetype"
-            class="mt-2 is-size-7 has-text-grey column is-narrow"
-          >
-            <b>File Type</b> {{ result.raw.filetype }}
           </div>
         </div>
       </div>
