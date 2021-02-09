@@ -1,4 +1,4 @@
-<div *ngIf="state.hasResults; else noResultBlock">
+<div *ngIf="state.hasResults; else noResultBlock" class="mat-body-2">
   Results
   <b>{{ state.firstResult }}-{{ state.lastResult }}</b> of {{ state.total }} for
   <b>{{ state.query }}</b> in {{ state.durationInSeconds }} seconds

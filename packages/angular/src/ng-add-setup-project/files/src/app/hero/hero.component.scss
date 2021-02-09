@@ -1,0 +1,27 @@
+@import "~@angular/material/theming";
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+p {
+  margin: 0;
+}
+
+.hero {
+  color: #e5e8e8;
+  background-color: #333357;
+  text-align: center;
+  padding: 3rem 0 1rem;
+}
+
+a {
+  color: mat-color($mat-pink, 300);
+  text-decoration: none;
+}
