@@ -1,13 +1,11 @@
 import {Component, OnInit} from '@angular/core';
+import {MatSelectChange} from '@angular/material/select';
 import {
   buildDateSortCriterion,
   buildRelevanceSortCriterion,
   buildSort,
   Sort,
-  SortByDate,
-  SortByRelevancy,
   SortOrder,
-  SortState,
 } from '@coveo/headless';
 import {engine} from '../engine';
 
@@ -18,21 +16,33 @@ import {engine} from '../engine';
 })
 export class SortComponent implements OnInit {
   private headlessSort: Sort;
-  state: SortState;
-  relevanceSortCriterion: SortByRelevancy = buildRelevanceSortCriterion();
-  dateDescendingSortCriterion: SortByDate = buildDateSortCriterion(
-    SortOrder.Descending
-  );
-  dateAscendingSortCriterion: SortByDate = buildDateSortCriterion(
-    SortOrder.Ascending
-  );
+  sortCriterias: {caption: string; criterion: any}[];
 
   constructor() {}
 
+  selectionChange(change: MatSelectChange) {
+    this.headlessSort.sortBy(change.value);
+  }
+
   ngOnInit(): void {
+    this.sortCriterias = [
+      {
+        caption: 'Relevance',
+        criterion: buildRelevanceSortCriterion(),
+      },
+      {
+        caption: 'Date Descending',
+        criterion: buildDateSortCriterion(SortOrder.Descending),
+      },
+      {
+        caption: 'Date Ascending',
+        criterion: buildDateSortCriterion(SortOrder.Ascending),
+      },
+    ];
+
     this.headlessSort = buildSort(engine, {
       initialState: {
-        criterion: this.relevanceSortCriterion,
+        criterion: this.sortCriterias[0].criterion,
       },
     });
   }
