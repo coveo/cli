@@ -1,7 +1,7 @@
 {
     "name": "vue-cli-plugin-coveo",
     "version": "0.0.0",
-    "description": "Vue-cli 3 plugin for adding Coveo headless support",
+    "description": "Vue-cli 3 plugin for adding Coveo Headless support",
     "main": "index.js",
     "repository": {
         "type": "git",
