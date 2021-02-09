@@ -118,6 +118,7 @@ export function injectMaterialImports(
     MatListModule: '@angular/material/list',
     MatPaginatorModule: '@angular/material/paginator',
     MatSelectModule: '@angular/material/select',
+    MatButtonModule: '@angular/material/button',
   };
 
   const changes: InsertChange[] = [];
