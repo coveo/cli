@@ -20,9 +20,6 @@ export class FacetComponent implements OnInit {
     change.options.forEach((option) => {
       this.headlessFacet.toggleSelect(option.value);
     });
-
-    // TODO:
-    // this.headlessFacet.toggleSelect(value);
   }
 
   showMore() {
