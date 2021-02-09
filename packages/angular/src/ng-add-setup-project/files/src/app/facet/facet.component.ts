@@ -57,7 +57,5 @@ export class FacetComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeController();
-
-    // this.facet.subscribe(() => this.updateState());
   }
 }

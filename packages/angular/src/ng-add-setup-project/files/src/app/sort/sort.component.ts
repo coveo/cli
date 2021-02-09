@@ -28,10 +28,6 @@ export class SortComponent implements OnInit {
   );
 
   constructor() {}
-  // TODO:
-  // TODO: handleChange
-  // TODO:
-  // TODO:
 
   ngOnInit(): void {
     this.headlessSort = buildSort(engine, {

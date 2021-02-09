@@ -13,13 +13,8 @@ import {engine} from '../engine';
 })
 export class QuerySummaryComponent implements OnInit {
   private headlessQuerySummary: QuerySummary;
-  // state: QuerySummaryState;
 
   constructor() {}
-
-  // private updateState() {
-  //   this.state = this.headlessQuerySummary.state;
-  // }
 
   get state(): QuerySummaryState {
     return this.headlessQuerySummary.state;
@@ -27,6 +22,5 @@ export class QuerySummaryComponent implements OnInit {
 
   ngOnInit(): void {
     this.headlessQuerySummary = buildQuerySummary(engine);
-    // this.headlessQuerySummary.subscribe(() => this.updateState());
   }
 }
