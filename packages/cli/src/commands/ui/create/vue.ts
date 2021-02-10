@@ -45,6 +45,7 @@ export default class Vue extends Command {
 
   private installPlugin(applicationName: string) {
     // TODO: DELETE THIS METHOD ONCE THE PLUGIN IS PUBLISHED AND PART OF THE PRESET
+    // CDX-39
     // Once the coveo plugin is published to npm, simply include it in the preset typescript-preset.json
     // This will prevent from running `2 npm install` commands (one by @vue/cli, one for the plugin)
     const pathToPlugin = dirname(require.resolve('vue-cli-plugin-coveo'));
