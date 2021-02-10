@@ -40,12 +40,11 @@ export class AuthenticatedClient {
 
   async getClient() {
     const {accessToken} = await this.storage.get();
-    const {environment, region} = await this.cfg.get();
+    const {environment, region, organization} = await this.cfg.get();
     return new PlatformClient({
       environment: castEnvironmentToPlatformClient(environment),
       region: castRegionToPlatformClient(region),
-      // TODO get orgID from config
-      organizationId: '',
+      organizationId: organization,
       accessToken: accessToken!,
     });
   }
