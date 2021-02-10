@@ -30,11 +30,9 @@ export class SearchBoxComponent implements OnInit {
     this.headlessSearchBox.updateText(this.myControl.value);
   }
 
-  onKeyDown(event) {
-    if (event.keyCode === 13 && !this.headlessSearchBox.state.isLoading) {
-      this.headlessSearchBox.submit();
-      this.headlessSearchBox.hideSuggestions();
-    }
+  search() {
+    this.headlessSearchBox.submit();
+    this.headlessSearchBox.hideSuggestions();
   }
 
   private initializeController() {
