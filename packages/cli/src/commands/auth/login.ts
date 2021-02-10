@@ -68,7 +68,6 @@ export default class Login extends Command {
         );
       }
     }
-
     this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
