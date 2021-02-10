@@ -15,6 +15,7 @@
   ],
   "author": "Coveo",
   "license": "MIT",
+  "main": "index.js",
   "schematics": "./dist/collection.json",
   "dependencies": {
     "@angular-devkit/core": "^11.1.2",

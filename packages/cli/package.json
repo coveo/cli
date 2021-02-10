@@ -4,6 +4,8 @@
   "version": "0.0.0",
   "author": "Coveo",
   "dependencies": {
+    "@angular/cli": "^11.1.4",
+    "@coveo/angular": "^0.0.0",
     "@coveord/platform-client": "^9.29.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
@@ -11,8 +13,8 @@
     "@openid/appauth": "^1.3.0",
     "@vue/cli": "^4.5.11",
     "abortcontroller-polyfill": "^1.7.1",
-    "create-react-app": "^4.0.1",
     "cli-ux": "^5.5.1",
+    "create-react-app": "^4.0.1",
     "exponential-backoff": "^3.1.0",
     "fs-extra": "^9.1.0",
     "isomorphic-fetch": "^3.0.0",

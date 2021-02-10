@@ -57,6 +57,7 @@
   },
   "scripts": {
     "setup": "npm i && lerna bootstrap",
+    "build": "lerna run build",
     "test": "lerna run test",
     "posttest": "eslint . --ext .ts --config .eslintrc",
     "lint:check": "eslint .",
