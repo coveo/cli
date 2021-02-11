@@ -14,7 +14,7 @@
     "angular"
   ],
   "author": "Coveo",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "schematics": "./dist/collection.json",
   "dependencies": {
     "@angular-devkit/core": "^11.1.2",
