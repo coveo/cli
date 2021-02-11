@@ -7,8 +7,6 @@ export default class Angular extends Command {
   static description =
     'Create a search page with Angular powered by Coveo Headless';
 
-  static hidden = true;
-
   static flags = {
     defaults: flags.boolean({
       char: 'd',
@@ -25,9 +23,9 @@ export default class Angular extends Command {
     const {args, flags} = this.parse(Angular);
     await this.createProject(args.name, flags.defaults);
     await this.installLocalSchematic(args.name);
-    await this.addCoveoToProject(args.name);
+    await this.addCoveoToProject(args.name, flags.defaults);
 
-    this.exit();
+    this.exit(0);
   }
 
   private async createProject(name: string, defaults: boolean) {
@@ -48,13 +46,27 @@ export default class Angular extends Command {
     }
   }
 
-  private async addCoveoToProject(name: string) {
-    const apiKey = 'foo'; // TODO: Connect to the user's org (CDX-75)
-    const orgId = 'bar'; // TODO: Connect to the user's org (CDX-75)
+  private async addCoveoToProject(name: string, defaults: boolean) {
+    // TODO: Connect to the user's org (CDX-75)
+    // At the moment the api key and orgId have no effect since angular project
+    // will be using the public default configuration
+    const apiKey = 'foo';
+    const orgId = 'bar';
 
     const options = {
-      cliArgs: ['add', '@coveo/angular', '--orgId', orgId, '--apiKey', apiKey],
+      cliArgs: [
+        'add',
+        '@coveo/angular',
+        '--org-id',
+        orgId,
+        '--api-key',
+        apiKey,
+      ],
     };
+
+    if (defaults) {
+      options.cliArgs.push('--defaults');
+    }
 
     process.chdir(name);
     const exitCode = await cli(options);
@@ -62,8 +74,6 @@ export default class Angular extends Command {
     if (exitCode !== 0) {
       throw new Error(`Could not run Coveo schematic. Error code: ${exitCode}`);
     }
-
-    return exitCode;
   }
 
   /**

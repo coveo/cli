@@ -7,7 +7,7 @@ The `@coveo/angular` package contains the necessary components to set up a searc
 Using the command below will set up a Coveo search page in your project
 
 ```
-ng add @coveo/angular --orgId<org-id> --apiKey=<api-key>
+ng add @coveo/angular --org-id<org-id> --api-key=<api-key>
 ```
 
 <!-- TODO: add links to the appropriate documentation -->
@@ -30,7 +30,7 @@ The `ng add` schematic helps you set up an Angular CLI project that uses [@coveo
 
 Running the `headless-engine` schematic only generates the Coveo Headless engine without additional components.
 ```
-ng generate @coveo/angular:headless-engine --orgId<org-id> --apiKey=<api-key>
+ng generate @coveo/angular:headless-engine --org-id<org-id> --api-key=<api-key>
 ```
 
 ## Development
@@ -60,7 +60,7 @@ npm link /path/to/coveo-cli/packages/angular
 Run your schematic
 
 ```
-schematics @coveo/angular:headless-engine --orgId<org-id> --apiKey=<api-key> --dry-run
+schematics @coveo/angular:headless-engine --org-id<org-id> --api-key=<api-key> --dry-run
 ```
 
 ### Unit Testing
