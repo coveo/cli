@@ -11,6 +11,7 @@ You can decide to opt in or opt out at any moment by using the config:set comman
 Do you wish to enable analytics and telemetry tracking ? (y/n)`;
 
 const hook: Hook<'prerun'> = async function () {
+  console.log('YO HOK');
   const cfg = new Config(global.config.configDir);
   const configuration = await cfg.get();
   if (
