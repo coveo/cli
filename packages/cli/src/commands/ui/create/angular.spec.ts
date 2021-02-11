@@ -43,7 +43,7 @@ describe('ui:create:angular', () => {
         cliArgs: ['new', 'myapp', '--style', 'scss', '--defaults'],
       });
       expect(cli).nthCalledWith(2, {
-        // TODO: Connect to the user's org (CDX-75)
+        // TODO: Connect to the user's org (CDX-73)
         cliArgs: [
           'add',
           '@coveo/angular',
@@ -66,7 +66,7 @@ describe('ui:create:angular', () => {
         cliArgs: ['new', 'myapp', '--style', 'scss'],
       });
       expect(cli).nthCalledWith(2, {
-        // TODO: Connect to the user's org (CDX-75)
+        // TODO: Connect to the user's org (CDX-73)
         cliArgs: [
           'add',
           '@coveo/angular',

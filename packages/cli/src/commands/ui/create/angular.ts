@@ -47,7 +47,7 @@ export default class Angular extends Command {
   }
 
   private async addCoveoToProject(name: string, defaults: boolean) {
-    // TODO: Connect to the user's org (CDX-75)
+    // TODO: Connect to the user's org (CDX-73)
     // At the moment the api key and orgId have no effect since angular project
     // will be using the public default configuration
     const apiKey = 'foo';
