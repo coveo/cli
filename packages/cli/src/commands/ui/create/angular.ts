@@ -41,7 +41,7 @@ export default class Angular extends Command {
 
     if (exitCode !== 0) {
       throw new Error(
-        `Could not setup angular project. Error code: ${exitCode}`
+        `Could not setup Angular project. Error code: ${exitCode}`
       );
     }
   }
