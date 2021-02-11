@@ -23,3 +23,7 @@ sandbox
 ## no longer needed once the package is published to npm
 ## CDX-71
 coveo-angular-0.0.0.tgz
+
+## no longer needed once all the files are available
+## CDX-72
+files/
