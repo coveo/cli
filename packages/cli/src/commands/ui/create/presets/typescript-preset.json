@@ -1,18 +1,15 @@
 {
-    "useConfigFiles": true,
-    "plugins": {
-        "@vue/cli-plugin-babel": {},
-        "@vue/cli-plugin-typescript": {
-            "classComponent": true,
-            "useTsWithBabel": true
-        },
-        "@vue/cli-plugin-eslint": {
-            "config": "standard",
-            "lintOn": [
-                "save",
-                "commit"
-            ]
-        }
+  "useConfigFiles": true,
+  "plugins": {
+    "@vue/cli-plugin-babel": {},
+    "@vue/cli-plugin-typescript": {
+      "classComponent": true,
+      "useTsWithBabel": true
     },
-    "vueVersion": "2"
+    "@vue/cli-plugin-eslint": {
+      "config": "standard",
+      "lintOn": ["save", "commit"]
+    }
+  },
+  "vueVersion": "2"
 }

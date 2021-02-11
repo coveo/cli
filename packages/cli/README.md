@@ -1,7 +1,4 @@
-@coveo/cli
-==========
-
-
+# @coveo/cli
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@coveo/cli.svg)](https://npmjs.org/package/@coveo/cli)
@@ -10,11 +7,15 @@
 [![License](https://img.shields.io/npm/l/@coveo/cli.svg)](https://github.com/coveo/cli/blob/master/package.json)
 
 <!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
+
+- [Usage](#usage)
+- [Commands](#commands)
 <!-- tocstop -->
+
 # Usage
+
 <!-- usage -->
+
 ```sh-session
 $ npm install -g @coveo/cli
 $ coveo COMMAND
@@ -26,18 +27,22 @@ USAGE
   $ coveo COMMAND
 ...
 ```
+
 <!-- usagestop -->
+
 # Commands
+
 <!-- commands -->
-* [`coveo auth:login`](#coveo-authlogin)
-* [`coveo config:get`](#coveo-configget)
-* [`coveo config:set [FILE]`](#coveo-configset-file)
-* [`coveo hello [FILE]`](#coveo-hello-file)
-* [`coveo help [COMMAND]`](#coveo-help-command)
-* [`coveo ui:create:vue [NAME]`](#coveo-uicreatevue-name)
-* [`coveo ui:create:react [NAME]`](#coveo-uicreatereact-name)
-* [`coveo org:list [FILE]`](#coveo-orglist-file)
-* [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
+
+- [`coveo auth:login`](#coveo-authlogin)
+- [`coveo config:get`](#coveo-configget)
+- [`coveo config:set [FILE]`](#coveo-configset-file)
+- [`coveo hello [FILE]`](#coveo-hello-file)
+- [`coveo help [COMMAND]`](#coveo-help-command)
+- [`coveo ui:create:vue [NAME]`](#coveo-uicreatevue-name)
+- [`coveo ui:create:react [NAME]`](#coveo-uicreatereact-name)
+- [`coveo org:list [FILE]`](#coveo-orglist-file)
+- [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
 
 ## `coveo auth:login`
 
@@ -171,18 +176,20 @@ OPTIONS
 test command for oauth + config that list orgs
 
 ```
+
 USAGE
-  $ coveo org:list [FILE]
+$ coveo org:list [FILE]
 
 OPTIONS
-  -x, --extended          show extra columns
-  --columns=columns       only show provided columns (comma-separated)
-  --csv                   output is csv format [alias: --output=csv]
-  --filter=filter         filter property by partial string matching, ex: name=foo
-  --no-header             hide table header from output
-  --no-truncate           do not truncate output to fit screen
-  --output=csv|json|yaml  output in a more machine friendly format
-  --sort=sort             property to sort by (prepend '-' for descending)
+-x, --extended show extra columns
+--columns=columns only show provided columns (comma-separated)
+--csv output is csv format [alias: --output=csv]
+--filter=filter filter property by partial string matching, ex: name=foo
+--no-header hide table header from output
+--no-truncate do not truncate output to fit screen
+--output=csv|json|yaml output in a more machine friendly format
+--sort=sort property to sort by (prepend '-' for descending)
+
 ```
 
 _See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/org/list.ts)_
@@ -192,25 +199,28 @@ _See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v0.0.0/s
 Create a new project powered by vue-cli-service
 
 ```
+
 USAGE
-  $ coveo ui:create:vue NAME
+$ coveo ui:create:vue NAME
 
 ARGUMENTS
-  NAME  application name
+NAME application name
 
 OPTIONS
-  -h, --help         show CLI help
+-h, --help show CLI help
 
-  -p, --preset=path  [default: /Users/olamothe/cli/packages/cli/src/commands/ui/create/presets/typescript-preset.json]
-                     Path to a JSON file with pre-defined options and plugins for creating a new project.
-                     If not specified, the default TypeScript preset will be taked
-                     For more information about Vue CLI presets, please consult
-                     https://cli.vuejs.org/guide/plugins-and-presets.html#presets
+-p, --preset=path [default: /Users/olamothe/cli/packages/cli/src/commands/ui/create/presets/typescript-preset.json]
+Path to a JSON file with pre-defined options and plugins for creating a new project.
+If not specified, the default TypeScript preset will be taked
+For more information about Vue CLI presets, please consult
+https://cli.vuejs.org/guide/plugins-and-presets.html#presets
 
 EXAMPLES
-  $ coveo ui:create:vue --preset path/to/my/preset.json
-  $ coveo ui:create:vue --help
+$ coveo ui:create:vue --preset path/to/my/preset.json
+$ coveo ui:create:vue --help
+
 ```
 
 _See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/ui/create/react.ts)_
 <!-- commandsstop -->
+```

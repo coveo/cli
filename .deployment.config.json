@@ -8,9 +8,7 @@
       "sequential": ["dev"]
     },
     "aws_regions": {
-        "sequential": [
-            "us-east-1"
-        ]
+      "sequential": ["us-east-1"]
     }
   },
   "phases": {
