@@ -28,7 +28,10 @@ const hook = async function (opts: AnalyticsHook) {
   //}
 
   const userInfo = await platformClient.user.get();
-  const {organization} = await authenticatedClient.cfg.get();
+  const {organization, analyticsEnabled} = await authenticatedClient.cfg.get();
+  if (!analyticsEnabled) {
+    return;
+  }
 
   const analyticsClient = new CoveoAnalyticsClient({token: analyticsAPIKey});
   analyticsClient.runtime.storage = storage(authenticatedClient.cfg);

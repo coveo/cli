@@ -36,6 +36,12 @@ export default class Set extends Command {
       description: 'The organization inside which to perform operation.',
       helpValue: 'myOrgID',
     }),
+    analytics: flags.string({
+      char: 'a',
+      options: ['y', 'n'],
+      description:
+        'Wether to enable or disable analytics and telemetry tracking.',
+    }),
   };
 
   async run() {
@@ -49,6 +55,9 @@ export default class Set extends Command {
     }
     if (flags.region) {
       cfg.set('region', flags.region as PlatformRegion);
+    }
+    if (flags.analytics) {
+      cfg.set('analyticsEnabled', flags.analytics === 'y');
     }
     await this.config.runHook(
       'analytics',
