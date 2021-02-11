@@ -68,12 +68,12 @@ function getDefaultAppModuleContent() {
     `;
 }
 
-function typeScriptFilterOnly(action: Action) {
+function isTypeScriptSourceFile(action: Action) {
   const splitted = action.path.split('.');
   return splitted.indexOf('ts') !== -1 && splitted.indexOf('spec') === -1;
 }
 
-function fileToCreateOnly(action: Action) {
+function isCreateAction(action: Action) {
   return action.kind === 'c';
 }
 
@@ -85,8 +85,8 @@ function getAllCoveoComponentsToInject(
   const changes: InsertChange[] = [];
 
   tree.actions
-    .filter(typeScriptFilterOnly)
-    .filter(fileToCreateOnly)
+    .filter(isTypeScriptSourceFile)
+    .filter(isCreateAction)
     .map((action) => {
       const componentName = basename(dirname(action.path));
       const fileLocation = join(componentName, basename(action.path, '.ts'));
