@@ -8,7 +8,7 @@ import {createSourceFile, ScriptTarget} from 'typescript';
 import {getAppModulePath, getProjectMainFile} from '@angular/cdk/schematics';
 import {InsertChange} from '@schematics/angular/utility/change';
 import {ProjectDefinition} from '@angular-devkit/core/src/workspace';
-import {Rule, Tree} from '@angular-devkit/schematics';
+import {Action, Rule, Tree} from '@angular-devkit/schematics';
 import {SourceFile} from 'typescript';
 import {CoveoSchema} from '../schema';
 
@@ -68,6 +68,15 @@ function getDefaultAppModuleContent() {
     `;
 }
 
+function isTypeScriptSourceFile(action: Action) {
+  const splitted = action.path.split('.');
+  return splitted.indexOf('ts') !== -1 && splitted.indexOf('spec') === -1;
+}
+
+function isCreateAction(action: Action) {
+  return action.kind === 'c';
+}
+
 function getAllCoveoComponentsToInject(
   tree: Tree,
   source: SourceFile,
@@ -76,32 +85,20 @@ function getAllCoveoComponentsToInject(
   const changes: InsertChange[] = [];
 
   tree.actions
-    .filter((action) => {
-      // Filter out non TS files
-      const splitted = action.path.split('.');
-      return splitted.indexOf('ts') !== -1 && splitted.indexOf('spec') === -1;
-    })
+    .filter(isTypeScriptSourceFile)
+    .filter(isCreateAction)
     .map((action) => {
-      if (action.kind === 'c') {
-        // If the file needs to be added to the tree, then it should be added to the ng Module
-        const filePath = join('./files', dirname(action.path));
-        const filePathArray = filePath.split('/');
-        const componentName = filePathArray[filePathArray.length - 1];
+      const componentName = basename(dirname(action.path));
+      const fileLocation = join(componentName, basename(action.path, '.ts'));
 
-        const fileLocation = `./${componentName}/${basename(
-          action.path,
-          '.ts'
-        )}`;
-
-        changes.push(
-          ...(addDeclarationToModule(
-            source,
-            appModulePath,
-            `${classify(componentName)}Component`,
-            fileLocation
-          ) as InsertChange[])
-        );
-      }
+      changes.push(
+        ...(addDeclarationToModule(
+          source,
+          appModulePath,
+          `${classify(componentName)}Component`,
+          fileLocation
+        ) as InsertChange[])
+      );
     });
   return changes;
 }
