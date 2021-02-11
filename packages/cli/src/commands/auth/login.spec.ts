@@ -2,6 +2,7 @@ jest.mock('../../lib/oauth/oauth');
 jest.mock('../../lib/oauth/storage');
 jest.mock('../../lib/config/config');
 jest.mock('keytar');
+jest.mock('../../hooks/analytics/analytics');
 import {test} from '@oclif/test';
 import {mocked} from 'ts-jest/utils';
 import {Config} from '../../lib/config/config';

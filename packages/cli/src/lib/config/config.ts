@@ -6,6 +6,7 @@ export interface Configuration {
   region: PlatformRegion;
   environment: PlatformEnvironment;
   organization: string;
+  [k: string]: unknown;
 }
 
 export const DefaultConfig: Configuration = {
@@ -45,6 +46,27 @@ export class Config {
     await this.ensureExists();
     const config = await this.get();
     config[key] = value;
+    await this.replace(config);
+  }
+
+  public async setAny(key: string, value: unknown) {
+    await this.ensureExists();
+    const config = await this.get();
+    config[key] = value;
+    await this.replace(config);
+  }
+
+  public async delete<K extends keyof Configuration>(key: K) {
+    await this.ensureExists();
+    const config = await this.get();
+    delete config[key];
+    await this.replace(config);
+  }
+
+  public async deleteAny(key: string) {
+    await this.ensureExists();
+    const config = await this.get();
+    delete config[key];
     await this.replace(config);
   }
 

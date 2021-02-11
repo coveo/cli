@@ -8,6 +8,10 @@ import {
   PlatformRegion,
 } from '../../lib/platform/environment';
 import {OrganizationModel} from '@coveord/platform-client';
+import {
+  buildAnalyticsFailureHook,
+  buildAnalyticsSuccessHook,
+} from '../../hooks/analytics/analytics';
 
 export default class Login extends Command {
   static description = 'Log into Coveo platform using OAuth2 flow';
@@ -64,6 +68,16 @@ export default class Login extends Command {
         );
       }
     }
+    this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
+  }
+
+  async catch(err?: Error) {
+    const {flags} = this.parse(Login);
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsFailureHook(this, flags, err)
+    );
+    throw err;
   }
 
   private async pickFirstAvailableOrganization() {
