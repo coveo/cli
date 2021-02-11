@@ -47,6 +47,7 @@
     }
   },
   "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,html,vue,scss,css,md,yml}": "prettier --write",
     "**/*.ts": [
       "npm run lint:fix",
       "git add"
