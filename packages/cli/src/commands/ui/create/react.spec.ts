@@ -1,7 +1,7 @@
 import {test} from '@oclif/test';
 import {EventEmitter} from 'events';
 import * as child_process from 'child_process';
-
+jest.mock('../../../hooks/analytics/analytics');
 jest.mock('child_process', () => ({
   spawn: jest.fn().mockImplementation(() => {
     const successExitCode = 0;

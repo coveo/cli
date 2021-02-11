@@ -1,5 +1,5 @@
 import {expect, test} from '@oclif/test';
-
+jest.mock('../../../hooks/analytics/analytics');
 describe('ui:create:vue', () => {
   test
     .command(['ui:create:vue'])

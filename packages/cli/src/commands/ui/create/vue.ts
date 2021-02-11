@@ -1,5 +1,9 @@
 import {Command, flags} from '@oclif/command';
 import {dirname, resolve} from 'path';
+import {
+  buildAnalyticsFailureHook,
+  buildAnalyticsSuccessHook,
+} from '../../../hooks/analytics/analytics';
 import {spawnProcess} from '../../../lib/utils/process';
 
 export default class Vue extends Command {
@@ -41,6 +45,19 @@ export default class Vue extends Command {
     await this.installPlugin(args.name);
     await this.invokePlugin(args.name);
     this.startServer(args.name);
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsSuccessHook(this, flags)
+    );
+  }
+
+  async catch(err?: Error) {
+    const {flags} = this.parse(Vue);
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsFailureHook(this, flags, err)
+    );
+    throw err;
   }
 
   private installPlugin(applicationName: string) {

@@ -1,4 +1,8 @@
 import {Command, flags} from '@oclif/command';
+import {
+  buildAnalyticsFailureHook,
+  buildAnalyticsSuccessHook,
+} from '../../hooks/analytics/analytics';
 import {Config} from '../../lib/config/config';
 import {
   PlatformEnvironment,
@@ -46,5 +50,18 @@ export default class Set extends Command {
     if (flags.region) {
       cfg.set('region', flags.region as PlatformRegion);
     }
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsSuccessHook(this, flags)
+    );
+  }
+
+  async catch(err?: Error) {
+    const {flags} = this.parse(Set);
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsFailureHook(this, flags, err)
+    );
+    throw err;
   }
 }
