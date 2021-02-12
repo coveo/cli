@@ -1,0 +1,26 @@
+<div *ngFor="let result of results">
+  <div class="mb-5">
+    <div class="mb-2">
+      <a href="{{ result.clickUri }}">{{ result.title }}</a>
+    </div>
+
+    <div class="mb-1">
+      <div class="mat-body-1">{{ result.excerpt }}</div>
+    </div>
+
+    <div class="flex-row">
+      <div class="mr-4">
+        <div *ngIf="result.raw.source" class="mat-caption">
+          <span class="mr-1">Source</span>
+          <span>{{ result.raw.source }}</span>
+        </div>
+      </div>
+      <div class="mr-4">
+        <div *ngIf="result.raw.objecttype" class="mat-caption">
+          <span class="mr-1">Object Type</span>
+          <span>{{ result.raw.objecttype }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
