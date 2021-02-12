@@ -40,7 +40,7 @@ export default class Set extends Command {
       char: 'a',
       options: ['y', 'n'],
       description:
-        'Wether to enable or disable analytics and telemetry tracking.',
+        'Wether to enable analytics and telemetry tracking.',
     }),
   };
 
