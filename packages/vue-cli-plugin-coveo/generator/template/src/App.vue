@@ -1,14 +1,14 @@
 <template>
   <div id="app">
     <div class="hero is-primary is-medium">
-    <Hero msg="Welcome to Your Coveo Vue.js Search Page" />
+      <Hero msg="Welcome to Your Coveo Vue.js Search Page" />
     </div>
     <SearchPage />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
 import Hero from './components/Hero.vue';
 import SearchPage from './components/SearchPage.vue';
 

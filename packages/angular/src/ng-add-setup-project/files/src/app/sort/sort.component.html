@@ -2,8 +2,7 @@
   <mat-label>Sort by</mat-label>
   <mat-select (selectionChange)="selectionChange($event)">
     <mat-option *ngFor="let sort of sortCriterias" [value]="sort.criterion">
-      {{sort.caption}}
+      {{ sort.caption }}
     </mat-option>
   </mat-select>
 </mat-form-field>
-
