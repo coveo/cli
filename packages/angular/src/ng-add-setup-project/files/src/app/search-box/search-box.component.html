@@ -1,0 +1,22 @@
+<mat-form-field class="full-width">
+  <input
+    type="text"
+    placeholder="Search"
+    matInput
+    (input)="onInput()"
+    (keyup.enter)="search()"
+    [formControl]="myControl"
+    [matAutocomplete]="auto"
+  />
+  <mat-autocomplete
+    #auto="matAutocomplete"
+    (optionSelected)="onSelect($event.option.value)"
+  >
+    <mat-option
+      *ngFor="let suggestion of suggestions"
+      [value]="suggestion.rawValue"
+    >
+      {{ suggestion.rawValue }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

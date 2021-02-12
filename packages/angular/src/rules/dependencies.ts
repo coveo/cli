@@ -36,6 +36,8 @@ export function installDepedencies(_options: CoveoSchema): Rule {
 }
 
 export function addMaterialAngular(_options: CoveoSchema): Rule {
-  console.log('\nConfigure your Material Project'); // TODO: maybe not a good idea to let user choose options
-  return externalSchematic('@angular/material', 'material-shell', _options);
+  console.log('\nConfigure your Material Project');
+  // For more information about @angular/material schema options:
+  // https://github.com/angular/components/blob/e99ca0ac9b0088d20d5d680092cd7ea5624934c0/src/material/schematics/ng-add/schema.json
+  return externalSchematic('@angular/material', 'install', _options);
 }

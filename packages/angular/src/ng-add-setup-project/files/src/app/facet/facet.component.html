@@ -1,0 +1,26 @@
+<div *ngIf="facetValues.length > 0">
+  <p class="mat-subheading-2 pl-2">{{ this.title }}</p>
+
+  <mat-selection-list dense (selectionChange)="selectionChange($event)">
+    <mat-list-option
+      *ngFor="let facetValue of facetValues"
+      [value]="facetValue"
+      [selected]="isFacetValueSelected(facetValue)"
+      checkboxPosition="before"
+    >
+      <div class="space-between">
+        <div class="mat-body-1">
+          {{ facetValue.value }}
+        </div>
+        <div class="mat-caption">({{ facetValue.numberOfResults }})</div>
+      </div>
+    </mat-list-option>
+  </mat-selection-list>
+
+  <div *ngIf="canShowLess()">
+    <button mat-button color="primary" (click)="showLess()">Show Less</button>
+  </div>
+  <div *ngIf="canShowMore()">
+    <button mat-button color="primary" (click)="showMore()">Show More</button>
+  </div>
+</div>

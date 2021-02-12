@@ -1,0 +1,31 @@
+/*********************************************************************************************************
+* Custom Style
+*********************************************************************************************************/
+
+// Angular Material is missing margin and padding utility classes.
+// Here is a mixin example to generate margin classes
+@mixin spacing($prefix, $property) {
+  $sizes: (0, 0.25, 0.5, 1, 1.5, 3);
+  $spacing: 1rem;
+  @for $i from 1 through length($sizes) {
+    $size: nth($sizes, $i);
+    .#{$prefix}-#{$i - 1} {
+      #{$property}: $spacing * $size !important;
+    }
+  }
+}
+
+$rules: (
+  mb: margin-bottom,
+  mt: margin-top,
+  ml: margin-left,
+  mr: margin-right,
+  pb: padding-bottom,
+  pt: padding-top,
+  pl: padding-left,
+  pr: padding-right,
+);
+
+@each $prefix, $prop in $rules {
+  @include spacing($prefix, $prop);
+}

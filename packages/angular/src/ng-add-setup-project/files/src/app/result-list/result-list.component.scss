@@ -1,0 +1,21 @@
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: #2e45ba;
+  font-size: 20px;
+  text-decoration: none;
+}
+
+.mat-caption {
+  color: #7a7a7a;
+  span:first-child {
+    font-weight: 500;
+  }
+}
