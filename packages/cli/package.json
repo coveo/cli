@@ -59,7 +59,8 @@
     },
     "hooks": {
       "init": "./lib/hooks/init/set-global-config",
-      "analytics": "./lib/hooks/analytics/analytics"
+      "analytics": "./lib/hooks/analytics/analytics",
+      "prerun": "./lib/hooks/prerun/prerun"
     }
   },
   "repository": "coveo/cli",
