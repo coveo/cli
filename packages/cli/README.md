@@ -213,12 +213,10 @@ OPTIONS
   -h, --help
       show CLI help
 
-  -p, --preset=path
-      [default: /Users/ylakhdar/Repos/coveo-cli/packages/cli/src/commands/ui/create/presets/typescript-preset.json] Path 
-      to a JSON file with pre-defined options and plugins for creating a new project.
-      If not specified, the default TypeScript preset will be taked
-      For more information about Vue CLI presets, please consult 
-      https://cli.vuejs.org/guide/plugins-and-presets.html#presets
+  -p, --preset=path  Path to a JSON file with pre-defined options and plugins for creating a new project.
+                     If not specified, the default TypeScript preset will be taken.
+                     For more information about Vue CLI presets, please consult
+                     https://cli.vuejs.org/guide/plugins-and-presets.html#presets
 
 EXAMPLES
   $ coveo ui:create:vue --preset path/to/my/preset.json
