@@ -1,5 +1,14 @@
 import {expect, test} from '@oclif/test';
+import {EventEmitter} from 'events';
 jest.mock('../../../hooks/analytics/analytics');
+jest.mock('child_process', () => ({
+  spawn: jest.fn().mockImplementation(() => {
+    const successExitCode = 0;
+    const emitter = new EventEmitter();
+    process.nextTick(() => emitter.emit('close', successExitCode)); // To mock a sucess command
+    return emitter as child_process.ChildProcess;
+  }),
+}));
 describe('ui:create:vue', () => {
   test
     .command(['ui:create:vue'])
