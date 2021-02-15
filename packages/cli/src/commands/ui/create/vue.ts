@@ -16,10 +16,10 @@ export default class Vue extends Command {
       helpValue: 'path',
       description: [
         'Path to a JSON file with pre-defined options and plugins for creating a new project.',
-        'If not specified, the default TypeScript preset will be taked',
+        'If not specified, the default TypeScript preset will be taken.',
         'For more information about Vue CLI presets, please consult https://cli.vuejs.org/guide/plugins-and-presets.html#presets',
       ].join('\n'),
-      default: resolve(__dirname, './presets/typescript-preset.json'),
+      // default: TODO: add default preset once it is available in npm https://coveord.atlassian.net/browse/CDX-39
     }),
   };
 
@@ -35,11 +35,14 @@ export default class Vue extends Command {
   async run() {
     const {args, flags} = this.parse(Vue);
 
-    let preset = '';
-    try {
-      preset = require(flags.preset);
-    } catch (error) {
-      this.error('Unable to load preset');
+    let preset = require('./presets/typescript-preset.json');
+
+    if (flags.preset) {
+      try {
+        preset = require(resolve(process.cwd(), flags.preset));
+      } catch (error) {
+        this.error('Unable to load preset');
+      }
     }
     await this.createProject(args.name, preset);
     await this.installPlugin(args.name);
@@ -62,6 +65,7 @@ export default class Vue extends Command {
 
   private installPlugin(applicationName: string) {
     // TODO: DELETE THIS METHOD ONCE THE PLUGIN IS PUBLISHED AND PART OF THE PRESET
+    // CDX-39
     // Once the coveo plugin is published to npm, simply include it in the preset typescript-preset.json
     // This will prevent from running `2 npm install` commands (one by @vue/cli, one for the plugin)
     const pathToPlugin = dirname(require.resolve('vue-cli-plugin-coveo'));
