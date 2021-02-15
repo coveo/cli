@@ -15,6 +15,10 @@ export interface AnalyticsHook {
 const analyticsAPIKey = 'xx01ad67bb-f837-4a3e-8669-16397994a6f2';
 
 const hook = async function (opts: AnalyticsHook) {
+  if (await isLoggedOutOrExpired()) {
+    return;
+  }
+
   const {eventType, eventValue} = identifier(opts);
   const {
     environment,
@@ -107,6 +111,22 @@ const storage = (cfg: Config): WebStorage => {
       await cfg.setAny(k, v);
     },
   };
+};
+
+const isLoggedOutOrExpired = async () => {
+  const client = new AuthenticatedClient();
+
+  const isLoggedIn = await client.isLoggedIn();
+  if (!isLoggedIn) {
+    return true;
+  }
+
+  const isExpired = await client.isExpired();
+  if (isExpired) {
+    return true;
+  }
+
+  return false;
 };
 
 export type AnalyticsStatus = 'success' | 'failure';

@@ -69,9 +69,11 @@ describe('analytics hook', () => {
   };
 
   const doMockAuthenticatedClient = () => {
-    mockedAuthenticatedClient.mockImplementationOnce(
+    mockedAuthenticatedClient.mockImplementation(
       () =>
         ({
+          isLoggedIn: () => Promise.resolve(true),
+          isExpired: () => Promise.resolve(false),
           getClient: () =>
             Promise.resolve(
               mockedPlatformClient.getMockImplementation()!({
@@ -211,5 +213,16 @@ describe('analytics hook', () => {
 
     await hook(getAnalyticsHook({}));
     expect(sendCustomEvent).not.toHaveBeenCalled();
+  });
+
+  it('should not throw an error when the user is not logged in', async () => {
+    mockedAuthenticatedClient.mockImplementationOnce(
+      () =>
+        ({
+          isLoggedIn: () => Promise.resolve(false),
+        } as AuthenticatedClient)
+    );
+
+    expect(() => hook(getAnalyticsHook({}))).not.toThrow();
   });
 });
