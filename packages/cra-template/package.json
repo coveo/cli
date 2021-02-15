@@ -1,5 +1,5 @@
 {
-  "name": "cra-template-typescript",
+  "name": "@coveo/cra-template",
   "version": "1.1.1",
   "keywords": [
     "react",
@@ -11,7 +11,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/create-react-app.git",
-    "directory": "packages/cra-template-typescript"
+    "directory": "packages/cra-template"
   },
   "license": "Apache-2.0",
   "engines": {
