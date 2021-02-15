@@ -21,7 +21,6 @@ describe('auth:login', () => {
           getToken: () =>
             Promise.resolve({
               accessToken: 'this-is-the-token',
-              refreshToken: 'this-is-the-refresh-token',
             }),
         } as OAuth)
     );

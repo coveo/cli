@@ -10,9 +10,7 @@ import {
   AuthorizationServiceConfigurationJson,
   BaseTokenRequestHandler,
   GRANT_TYPE_AUTHORIZATION_CODE,
-  GRANT_TYPE_REFRESH_TOKEN,
   TokenRequest,
-  TokenResponse,
 } from '@openid/appauth';
 import {
   NodeBasedHandler,
@@ -52,29 +50,10 @@ export class OAuth {
     return await this.getAccessToken(config, code);
   }
 
-  public async refreshToken(refresh_token: string): Promise<TokenResponse> {
-    const config = new AuthorizationServiceConfiguration({
-      ...this.clientConfig,
-      ...this.authServiceConfig,
-    });
-
-    const tokenHandler = new BaseTokenRequestHandler(new NodeRequestor());
-    const request = new TokenRequest({
-      ...this.clientConfig,
-      grant_type: GRANT_TYPE_REFRESH_TOKEN,
-      refresh_token,
-      extras: {
-        client_secret: this.clientConfig.client_id,
-      },
-    });
-
-    return await tokenHandler.performTokenRequest(config, request);
-  }
-
   private async getAccessToken(
     configuration: AuthorizationServiceConfiguration,
     code: string
-  ): Promise<{accessToken: string; refreshToken?: string}> {
+  ): Promise<{accessToken: string}> {
     const tokenHandler = new BaseTokenRequestHandler(new NodeRequestor());
 
     const request = new TokenRequest({
