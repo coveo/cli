@@ -67,7 +67,6 @@
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "jest",
     "version": "oclif-dev readme && git add README.md",
     "postinstall": "patch-package"
   },
