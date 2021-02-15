@@ -24,8 +24,8 @@ export class AuthenticatedClient {
   }
 
   async isLoggedIn() {
-    const {accessToken, refreshToken} = await this.storage.get();
-    return accessToken !== null && refreshToken !== null;
+    const {accessToken} = await this.storage.get();
+    return accessToken !== null;
   }
 
   async isExpired() {
@@ -52,15 +52,6 @@ export class AuthenticatedClient {
   async getOauth() {
     const {environment, region} = await this.cfg.get();
     return new OAuth({environment, region});
-  }
-
-  async refresh() {
-    const {refreshToken} = await this.storage.get();
-    const {accessToken, refreshToken: newRefreshToken} = await (
-      await this.getOauth()
-    ).refreshToken(refreshToken!);
-
-    await this.storage.save(accessToken, newRefreshToken!);
   }
 
   async get() {
