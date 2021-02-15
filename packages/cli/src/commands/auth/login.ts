@@ -47,32 +47,15 @@ export default class Login extends Command {
   };
 
   async run() {
-    const {flags} = this.parse(Login);
-    const {accessToken, refreshToken} = await new OAuth({
-      environment: flags.environment as PlatformEnvironment,
-      region: flags.region as PlatformRegion,
-    }).getToken();
+    await this.loginAndPersistToken();
+    await this.persistRegionAndEnvironment();
+    await this.persistOrganization();
 
-    await new Storage().save(accessToken, refreshToken!);
-    const cfg = new Config(this.config.configDir, this.error);
-    await cfg.set('environment', flags.environment as PlatformEnvironment);
-    await cfg.set('region', flags.region as PlatformRegion);
-    if (flags.organization) {
-      await cfg.set('organization', flags.organization);
-    } else {
-      const firstOrgAvailable = await this.pickFirstAvailableOrganization();
-      if (firstOrgAvailable) {
-        await cfg.set('organization', firstOrgAvailable as string);
-        this.log(
-          `No organization specified.\nYou are currently logged in ${firstOrgAvailable}.\nIf you wish to specify an organization, use the --organization parameter.`
-        );
-      }
-    }
     this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
   async catch(err?: Error) {
-    const {flags} = this.parse(Login);
+    const flags = this.flags;
     await this.config.runHook(
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
@@ -80,10 +63,57 @@ export default class Login extends Command {
     throw err;
   }
 
+  private async loginAndPersistToken() {
+    const flags = this.flags;
+    const {accessToken} = await new OAuth({
+      environment: flags.environment as PlatformEnvironment,
+      region: flags.region as PlatformRegion,
+    }).getToken();
+
+    await new Storage().save(accessToken);
+  }
+
+  private async persistRegionAndEnvironment() {
+    const flags = this.flags;
+    const cfg = this.configuration;
+    await cfg.set('environment', flags.environment as PlatformEnvironment);
+    await cfg.set('region', flags.region as PlatformRegion);
+  }
+
+  private async persistOrganization() {
+    const flags = this.flags;
+    const cfg = this.configuration;
+
+    if (flags.organization) {
+      await cfg.set('organization', flags.organization);
+      return;
+    }
+
+    const firstOrgAvailable = await this.pickFirstAvailableOrganization();
+    if (firstOrgAvailable) {
+      await cfg.set('organization', firstOrgAvailable as string);
+      this.log(
+        `No organization specified.\nYou are currently logged in ${firstOrgAvailable}.\nIf you wish to specify an organization, use the --organization parameter.`
+      );
+      return;
+    }
+
+    this.log('You have no access to any organization in Coveo.');
+  }
+
   private async pickFirstAvailableOrganization() {
     const orgs = await (
       await new AuthenticatedClient().getClient()
     ).organization.list();
     return ((orgs as unknown) as OrganizationModel[])[0]?.id;
+  }
+
+  private get flags() {
+    const {flags} = this.parse(Login);
+    return flags;
+  }
+
+  private get configuration() {
+    return new Config(this.config.configDir, this.error);
   }
 }
