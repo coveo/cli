@@ -6,11 +6,13 @@ import {
   forEach,
   mergeWith,
   move,
+  filter,
   Rule,
   SchematicContext,
   Tree,
   url,
 } from '@angular-devkit/schematics';
+import {sep} from 'path';
 import {CoveoSchema} from '../schema';
 
 function overwriteIfExists(host: Tree): Rule {
@@ -21,6 +23,10 @@ function overwriteIfExists(host: Tree): Rule {
     }
     return fileEntry;
   });
+}
+
+function isNotNodeModuleFile(path: string) {
+  return path.split(sep).indexOf('node_modules') === -1;
 }
 
 /**
@@ -40,6 +46,7 @@ export function createFiles(
 ): Rule {
   return (tree: Tree, context: SchematicContext) => {
     const templateSource = apply(url(templateFilePath), [
+      filter(isNotNodeModuleFile),
       applyTemplates({
         ..._options,
       }),

@@ -14,13 +14,14 @@ export default function (options: CoveoSchema): Rule {
     const project = getProjectFromWorkspace(workspace, options.project);
 
     if (project.extensions.projectType === ProjectType.Application) {
-      // TODO: CDX-85:Publish @coveo/search-token-server to npm
-      // use search-token-server package from npm instead
-      const searchTokenRepo = dirname(
+      const searchTokenServeTemplate = dirname(
+        // eslint-disable-next-line node/no-extraneous-require
+        // TODO: need to merge #33
         require.resolve('@coveo/search-token-server')
       );
+
       return chain([
-        createFiles(options, './server', searchTokenRepo),
+        createFiles(options, './server', searchTokenServeTemplate),
         // createFilesToken(options),
         addProxyToWorkspace(options, project),
       ]);
