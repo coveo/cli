@@ -20,7 +20,7 @@
     "isomorphic-form-data": "^2.0.0",
     "keytar": "^7.3.0",
     "tslib": "^1",
-    "vue-cli-plugin-coveo": "^0.0.0"
+    "@coveo/cli-plugin-vue": "^0.0.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
