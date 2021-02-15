@@ -225,4 +225,15 @@ describe('analytics hook', () => {
 
     expect(() => hook(getAnalyticsHook({}))).not.toThrow();
   });
+
+  it('should not throw an error when the user is expired', async () => {
+    mockedAuthenticatedClient.mockImplementationOnce(
+      () =>
+        ({
+          isExpired: () => Promise.resolve(true),
+        } as AuthenticatedClient)
+    );
+
+    expect(() => hook(getAnalyticsHook({}))).not.toThrow();
+  });
 });
