@@ -39,8 +39,7 @@ export default class Set extends Command {
     analytics: flags.string({
       char: 'a',
       options: ['y', 'n'],
-      description:
-        'Wether to enable analytics and telemetry tracking.',
+      description: 'Wether to enable analytics and telemetry tracking.',
     }),
   };
 

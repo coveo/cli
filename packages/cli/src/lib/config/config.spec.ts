@@ -59,6 +59,7 @@ describe('config', () => {
         environment: 'prod' as const,
         region: 'us-east-1' as const,
         organization: 'foo',
+        analyticsEnabled: true,
       };
       await new Config('foo/bar').replace(theNewConfig);
       expect(mockedWriteJSON).toHaveBeenCalledWith(
