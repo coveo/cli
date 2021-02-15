@@ -1,15 +1,3 @@
-import {EventEmitter} from 'events';
-import * as child_process from 'child_process';
-jest.mock('../../../hooks/analytics/analytics');
-jest.mock('child_process', () => ({
-  spawn: jest.fn().mockImplementation(() => {
-    const successExitCode = 0;
-    const emitter = new EventEmitter();
-    process.nextTick(() => emitter.emit('close', successExitCode)); // To mock a sucess command
-    return emitter as child_process.ChildProcess;
-  }),
-}));
-
 describe('ui:create:vue', () => {
   it('passes', () => {
     expect(1).toBe(1);
