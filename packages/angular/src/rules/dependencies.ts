@@ -12,7 +12,7 @@ import {
 } from '@schematics/angular/utility/dependencies';
 import {CoveoSchema} from '../schema';
 
-export function installDepedencies(_options: CoveoSchema): Rule {
+export function installDependencies(_options: CoveoSchema): Rule {
   return (tree: Tree, context: SchematicContext) => {
     const headlessDependency: NodeDependency = {
       type: NodeDependencyType.Default,

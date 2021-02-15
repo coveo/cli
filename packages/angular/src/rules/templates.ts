@@ -22,15 +22,28 @@ function overwriteIfExists(host: Tree): Rule {
     return fileEntry;
   });
 }
-export function createFiles(_options: CoveoSchema): Rule {
-  return (tree: Tree, context: SchematicContext) => {
-    const path = './'; // Because path is already defined in the templates structure
 
-    const templateSource = apply(url('./files'), [
+/**
+ * Schematic rule that copies files into the Angular project.
+ *
+ * @export
+ * @param {CoveoSchema} _options
+ * @param {string} [workspaceRootPath='./']      The root path from which the applyTemplates function will start pasting files.
+ *                                               The default value is "./" because the file structure is already defined within the ./files directories
+ * @param {string} [templateFilePath='./files']  Path containing the files to copy into the Angular project
+ * @returns {Rule}
+ */
+export function createFiles(
+  _options: CoveoSchema,
+  workspaceRootPath = './',
+  templateFilePath = './files'
+): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    const templateSource = apply(url(templateFilePath), [
       applyTemplates({
         ..._options,
       }),
-      move(normalize(path)),
+      move(normalize(workspaceRootPath)),
       overwriteIfExists(tree),
     ]);
 

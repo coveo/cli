@@ -18,6 +18,7 @@ export default function (options: CoveoSchema): Rule {
       context.addTask(new RunSchematicTask('ng-add-setup-project', options), [
         taskId,
       ]);
+      context.addTask(new RunSchematicTask('search-token-server', options));
     }
     return;
   };

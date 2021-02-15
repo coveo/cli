@@ -1,7 +1,6 @@
 import cli from '@angular/cli';
 import {Command, flags} from '@oclif/command';
-import {spawnProcess} from '../../../lib/utils/process';
-import {dirname} from 'path';
+// import {spawnProcess} from '../../../lib/utils/process'; TODO: use this instead of calling the Angular CLI entry point
 
 export default class Angular extends Command {
   static description =
@@ -22,7 +21,6 @@ export default class Angular extends Command {
   async run() {
     const {args, flags} = this.parse(Angular);
     await this.createProject(args.name, flags.defaults);
-    await this.installLocalSchematic(args.name);
     await this.addCoveoToProject(args.name, flags.defaults);
 
     this.exit(0);
@@ -74,23 +72,6 @@ export default class Angular extends Command {
     if (exitCode !== 0) {
       throw new Error(`Could not run Coveo schematic. Error code: ${exitCode}`);
     }
-  }
-
-  /**
-   * TODO: CDX-71
-   * The @coveo/angular package is not yet published to npm, so we need to fetch it locally.
-   * Once the @coveo/angular schematic is published to npm, `ng add @coveo/angular ...` will fetch
-   * the schematic from the npm registry
-   */
-  private installLocalSchematic(applicationName: string) {
-    const pathToSchematic = dirname(require.resolve('@coveo/angular'));
-    return spawnProcess(
-      'npm',
-      ['install', '--save-dev', `file:${pathToSchematic}`],
-      {
-        cwd: applicationName,
-      }
-    );
   }
 
   async catch(err?: Error) {
