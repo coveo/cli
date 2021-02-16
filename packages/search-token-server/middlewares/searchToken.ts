@@ -20,7 +20,7 @@ export function ensureTokenGenerated(
     new PlatformClient({
       /**
        * The target environment.
-       * The platform.cloud.coveo.com is the default targeted host.
+       * The platform.cloud.coveo.com is the default target host.
        * However, you can target a different host by changing the environment.
        *
        * Example:
@@ -29,16 +29,16 @@ export function ensureTokenGenerated(
       environment: Environment.prod,
       /**
        * The target region.
-       * https://docs.coveo.com/en/2976/coveo-solutions/deployment-regions-and-strategies#data-residency
+       * See https://docs.coveo.com/en/2976/coveo-solutions/deployment-regions-and-strategies#data-residency
        */
       region: Region.US,
       /**
-       * Your Coveo org ID
+       * The unique identifier of your Coveo organization.
        * To retrieve your org ID, see https://docs.coveo.com/en/148/manage-an-organization/retrieve-the-organization-id
        */
       organizationId: process.env.ORGANIZATION_ID,
       /**
-       * The API key with the impersonate privilege (more info in the README).
+       * An API key with the impersonate privilege in the target organization.
        * See https://docs.coveo.com/en/1718/manage-an-organization/manage-api-keys#add-an-api-key
        */
       accessToken: process.env.API_KEY!,

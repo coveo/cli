@@ -1,6 +1,6 @@
 # Simple search token generation server
 
-An [Express](https://www.npmjs.com/package/express) server to generate [Coveo Search Tokens](https://docs.coveo.com/en/1346/).
+An [Express](https://www.npmjs.com/package/express) server to generate [Coveo search tokens](https://docs.coveo.com/en/1346/).
 
 ## Setup environment
 
@@ -18,13 +18,14 @@ npm install
 npm start
 ```
 
-This will start a server listening on port 3000. The app will return a [Coveo Search Tokens](https://docs.coveo.com/en/1346/) for requests to the url [/token](http://localhost:3000/token). For every other path, it will respond with a **404 Not Found**.
+This will start a server listening on port 3000. The app will return a [Coveo search token](https://docs.coveo.com/en/1346/) when you make a GET request to the [/token](http://localhost:3000/token) path. Every other path will respond by a **404 Not Found** error.
 
 ## Documentation
 
 ### Search Token Authentication
 
-To understand how [search tokens](https://docs.coveo.com/en/1346/) are generated, visit the [Search Token Authentication](https://docs.coveo.com/en/56/build-a-search-ui/search-token-authentication) page.
+A search token is a special JSON web token typically used to temporarily grant the privilege to execute queries as a specific user and log usage analytics events.
+To understand search tokens and how they work in more detail, visit the [Search Token Authentication](https://docs.coveo.com/en/56/build-a-search-ui/search-token-authentication) page.
 
 ### Manage API Keys
 
