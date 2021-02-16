@@ -22,7 +22,12 @@ const hook = async function (opts: AnalyticsHook) {
     region,
     userInfo,
     authenticatedClient,
+    analyticsEnabled,
   } = await platformInfoIdentifier();
+
+  if (!analyticsEnabled) {
+    return;
+  }
   //  TODO: Requires https://github.com/coveo/platform-client/pull/238
   //  We can currently assume that type === TRIAL -> clickwrapped accepted
   //  There will be a new field eventually in the license related to this.
@@ -75,12 +80,12 @@ const platformInfoIdentifier = async () => {
   await platformClient.initialize();
 
   const userInfo = await platformClient.user.get();
-  const {
-    organization,
-    environment,
-    region,
-  } = await authenticatedClient.cfg.get();
-  return {userInfo, organization, environment, region, authenticatedClient};
+  const config = await authenticatedClient.cfg.get();
+  return {
+    userInfo,
+    authenticatedClient,
+    ...config,
+  };
 };
 
 const configureAnalyticsClient = (authenticatedClient: AuthenticatedClient) => {

@@ -7,12 +7,14 @@ export interface Configuration {
   environment: PlatformEnvironment;
   organization: string;
   [k: string]: unknown;
+  analyticsEnabled: boolean | undefined;
 }
 
 export const DefaultConfig: Configuration = {
   environment: 'prod',
   region: 'us-east-1',
   organization: '',
+  analyticsEnabled: undefined,
 };
 
 export class Config {

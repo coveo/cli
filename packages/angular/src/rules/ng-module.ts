@@ -89,7 +89,7 @@ function getAllCoveoComponentsToInject(
     .filter(isCreateAction)
     .map((action) => {
       const componentName = basename(dirname(action.path));
-      const fileLocation = join(componentName, basename(action.path, '.ts'));
+      const fileLocation = `./${componentName}/${basename(action.path, '.ts')}`;
 
       changes.push(
         ...(addDeclarationToModule(
