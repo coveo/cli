@@ -36,7 +36,7 @@ export function ensureTokenGenerated(
        * Your Coveo org ID
        * To retrieve your org ID, see https://docs.coveo.com/en/148/manage-an-organization/retrieve-the-organization-id
        */
-      organizationId: process.env.ORGANIZATION,
+      organizationId: process.env.ORGANIZATION_ID,
       /**
        * The API key with the impersonate privilege (more info in the README).
        * See https://docs.coveo.com/en/1718/manage-an-organization/manage-api-keys#add-an-api-key
@@ -72,7 +72,8 @@ export function ensureTokenGenerated(
       filter: 'NOT @source="my secured source"',
     })
     .then((data: TokenModel) => {
-      next(data.token);
+      req.token = data.token;
+      next();
     })
     .catch((err) => {
       next(err);

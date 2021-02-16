@@ -3,6 +3,7 @@ import * as express from 'express';
 import {ensureTokenGenerated} from './middlewares/searchToken';
 import {config} from 'dotenv';
 import {errorHandler} from './middlewares/errorHandler';
+import {environmentCheck} from './middlewares/environmentCheck';
 config();
 
 const app = express();
@@ -18,7 +19,7 @@ declare global {
 
 app.use(express.json());
 
-app.get('/token', ensureTokenGenerated, (req, res) => {
+app.get('/token', environmentCheck, ensureTokenGenerated, (req, res) => {
   res.send({token: req.token});
 });
 
