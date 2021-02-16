@@ -26,7 +26,3 @@ This will start a server listening on port 3000. The app will return a [Coveo se
 
 A search token is a special JSON web token typically used to temporarily grant the privilege to execute queries as a specific user and log usage analytics events.
 To understand search tokens and how they work in more detail, visit the [Search Token Authentication](https://docs.coveo.com/en/56/build-a-search-ui/search-token-authentication) page.
-
-### Manage API Keys
-
-To manage your API keys from the [Coveo Cloud Administration Console](https://docs.coveo.com/en/183/), visit the [Manage API Keys](https://docs.coveo.com/en/1718) page.

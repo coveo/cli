@@ -53,7 +53,6 @@ export function ensureTokenGenerated(
        */
       userIds: [
         {
-          // The security identities to impersonate when authenticating a query with this search token.
           name: process.env.USER_EMAIL!,
           provider: 'Email Security Provider',
           type: RestUserIdType.User,
@@ -64,12 +63,17 @@ export function ensureTokenGenerated(
       /**
        * The name of the search hub to enforce when authenticating a query with this search token.
        * The search hub is a descriptive name of the search interface on which the token is to be used.
+       *
+       * Example:
+       * searchHub: 'supporthub',
        */
-      searchHub: 'supporthub',
+
       /**
        * The filter query expression to apply when authenticating a query with this search token.
+       *
+       * Example:
+       * filter: 'NOT @source="my secured source"',
        */
-      filter: 'NOT @source="my secured source"',
     })
     .then((data: TokenModel) => {
       req.token = data.token;
