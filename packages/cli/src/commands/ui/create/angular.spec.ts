@@ -1,17 +1,7 @@
 import {test} from '@oclif/test';
 import {EventEmitter} from 'events';
 import * as child_process from 'child_process';
-import cli from '@angular/cli';
 
-jest.mock('@angular/cli', () => ({
-  default: jest.fn().mockImplementation(() => {
-    const validExitCode = 0;
-    return Promise.resolve(validExitCode);
-  }),
-}));
-
-// TODO: remove spawn mock once @coveo/angular schematic is published to npm
-// CDX-71
 jest.mock('child_process', () => ({
   spawn: jest.fn().mockImplementation(() => {
     const successExitCode = 0;
@@ -22,9 +12,7 @@ jest.mock('child_process', () => ({
 }));
 
 describe('ui:create:angular', () => {
-  beforeEach(() => {
-    process.chdir = () => {};
-  });
+  const angularAppExecutable = '@angular/cli/lib/init.js';
 
   test
     .stdout()
@@ -36,46 +24,69 @@ describe('ui:create:angular', () => {
 
   test
     .stdout()
-    .command(['ui:create:angular', 'myapp', '--defaults'])
-    .catch((ctx) => {
-      expect(cli).toHaveBeenCalledTimes(2);
-      expect(cli).nthCalledWith(1, {
-        cliArgs: ['new', 'myapp', '--style', 'scss', '--defaults'],
-      });
-      expect(cli).nthCalledWith(2, {
-        // TODO: Connect to the user's org (CDX-73)
-        cliArgs: [
+    .command(['ui:create:angular', 'myapp'])
+    .it('should start a spawn process with the appropriate arguments', () => {
+      expect(child_process.spawn).toHaveBeenCalledTimes(2);
+      expect(child_process.spawn).nthCalledWith(
+        1,
+        'node',
+        [
+          expect.stringContaining(angularAppExecutable),
+          'new',
+          'myapp',
+          '--style',
+          'scss',
+        ],
+        expect.objectContaining({})
+      );
+      expect(child_process.spawn).nthCalledWith(
+        2,
+        'node',
+        [
+          expect.stringContaining(angularAppExecutable),
           'add',
           '@coveo/angular',
           '--org-id',
-          'bar',
+          'bar', // TODO: Connect to the user's org (CDX-73)
           '--api-key',
-          'foo',
-          '--defaults',
+          'foo', // TODO: Connect to the user's org (CDX-73)
         ],
-      });
-    })
-    .it('should call the angular cli using the --defaults flag');
+        expect.objectContaining({cwd: 'myapp'})
+      );
+    });
 
   test
     .stdout()
-    .command(['ui:create:angular', 'myapp'])
-    .catch((ctx) => {
-      expect(cli).toHaveBeenCalledTimes(2);
-      expect(cli).nthCalledWith(1, {
-        cliArgs: ['new', 'myapp', '--style', 'scss'],
-      });
-      expect(cli).nthCalledWith(2, {
-        // TODO: Connect to the user's org (CDX-73)
-        cliArgs: [
+    .command(['ui:create:angular', 'myapp', '--defaults'])
+    .it('should call the angular cli using the --defaults flag', () => {
+      expect(child_process.spawn).toHaveBeenCalledTimes(2);
+      expect(child_process.spawn).nthCalledWith(
+        1,
+        'node',
+        [
+          expect.stringContaining(angularAppExecutable),
+          'new',
+          'myapp',
+          '--style',
+          'scss',
+          '--defaults',
+        ],
+        expect.objectContaining({})
+      );
+      expect(child_process.spawn).nthCalledWith(
+        2,
+        'node',
+        [
+          expect.stringContaining(angularAppExecutable),
           'add',
           '@coveo/angular',
           '--org-id',
-          'bar',
+          'bar', // TODO: Connect to the user's org (CDX-73)
           '--api-key',
-          'foo',
+          'foo', // TODO: Connect to the user's org (CDX-73)
+          '--defaults',
         ],
-      });
-    })
-    .it('should call the angular cli with appropriate argument');
+        expect.objectContaining({cwd: 'myapp'})
+      );
+    });
 });
