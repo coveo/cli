@@ -2,9 +2,11 @@
 import * as express from 'express';
 import {ensureTokenGenerated} from './middlewares/searchToken';
 import {config} from 'dotenv';
+import {errorHandler} from './middlewares/errorHandler';
 config();
 
 const app = express();
+const port = 3000;
 
 declare global {
   namespace Express {
@@ -20,7 +22,9 @@ app.get('/token', ensureTokenGenerated, (req, res) => {
   res.send({token: req.token});
 });
 
+app.use(errorHandler);
+
 // start our server on port 3000
-app.listen(3000, '127.0.0.1', () => {
-  console.log('Server now listening on 3000');
+app.listen(port, () => {
+  console.log(`Listening at http://localhost:${port}`);
 });
