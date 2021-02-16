@@ -1,7 +1,4 @@
-@coveo/cli
-==========
-
-
+# @coveo/cli
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@coveo/cli.svg)](https://npmjs.org/package/@coveo/cli)
@@ -10,11 +7,15 @@
 [![License](https://img.shields.io/npm/l/@coveo/cli.svg)](https://github.com/coveo/cli/blob/master/package.json)
 
 <!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
+
+- [Usage](#usage)
+- [Commands](#commands)
 <!-- tocstop -->
+
 # Usage
+
 <!-- usage -->
+
 ```sh-session
 $ npm install -g @coveo/cli
 $ coveo COMMAND
@@ -26,9 +27,13 @@ USAGE
   $ coveo COMMAND
 ...
 ```
+
 <!-- usagestop -->
+
 # Commands
+
 <!-- commands -->
+
 - [@coveo/cli](#coveocli)
 - [Usage](#usage)
 - [Commands](#commands)
@@ -182,6 +187,7 @@ _See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob
 Create a search page in React powered by Coveo Headless
 
 ```
+
 USAGE
   $ coveo ui:create:react NAME
 
@@ -203,11 +209,12 @@ _See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v
 Create a new project powered by vue-cli-service
 
 ```
+
 USAGE
-  $ coveo ui:create:vue NAME
+$ coveo ui:create:vue NAME
 
 ARGUMENTS
-  NAME  application name
+NAME application name
 
 OPTIONS
   -h, --help
@@ -219,9 +226,15 @@ OPTIONS
                      https://cli.vuejs.org/guide/plugins-and-presets.html#presets
 
 EXAMPLES
-  $ coveo ui:create:vue --preset path/to/my/preset.json
-  $ coveo ui:create:vue --help
+$ coveo ui:create:vue --preset path/to/my/preset.json
+$ coveo ui:create:vue --help
+
 ```
 
 _See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/ui/create/vue.ts)_
+
 <!-- commandsstop -->
+
+```
+
+```

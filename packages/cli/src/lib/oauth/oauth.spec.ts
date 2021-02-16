@@ -25,7 +25,6 @@ jest.mock('@openid/appauth', () => ({
     performTokenRequest: () =>
       Promise.resolve({
         accessToken: 'the-access-token',
-        refreshToken: 'the-refresh-token',
       }),
   })),
 }));
@@ -36,7 +35,6 @@ describe('OAuth', () => {
       performTokenRequest: () =>
         Promise.resolve({
           accessToken: 'this-is-the-new-access-token',
-          refreshToken: 'the-refresh-token',
         }),
     }));
     const {accessToken} = await new OAuth().getToken();

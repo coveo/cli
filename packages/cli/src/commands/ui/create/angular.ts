@@ -1,6 +1,5 @@
-import cli from '@angular/cli';
 import {Command, flags} from '@oclif/command';
-// import {spawnProcess} from '../../../lib/utils/process'; TODO: use this instead of calling the Angular CLI entry point
+import {spawnProcess} from '../../../lib/utils/process';
 
 export default class Angular extends Command {
   static description =
@@ -22,56 +21,44 @@ export default class Angular extends Command {
     const {args, flags} = this.parse(Angular);
     await this.createProject(args.name, flags.defaults);
     await this.addCoveoToProject(args.name, flags.defaults);
-
-    this.exit(0);
   }
 
   private async createProject(name: string, defaults: boolean) {
-    const options = {
-      cliArgs: ['new', name, '--style', 'scss'],
-    };
+    const cliArgs = ['new', name, '--style', 'scss'];
 
     if (defaults) {
-      options.cliArgs.push('--defaults');
+      cliArgs.push('--defaults');
     }
 
-    const exitCode = await cli(options);
-
-    if (exitCode !== 0) {
-      throw new Error(
-        `Could not setup Angular project. Error code: ${exitCode}`
-      );
-    }
+    return this.runAngularCliCommand(cliArgs);
   }
 
-  private async addCoveoToProject(name: string, defaults: boolean) {
+  private async addCoveoToProject(applicationName: string, defaults: boolean) {
     // TODO: Connect to the user's org (CDX-73)
     // At the moment the api key and orgId have no effect since angular project
     // will be using the public default configuration
     const apiKey = 'foo';
     const orgId = 'bar';
 
-    const options = {
-      cliArgs: [
-        'add',
-        '@coveo/angular',
-        '--org-id',
-        orgId,
-        '--api-key',
-        apiKey,
-      ],
-    };
+    const cliArgs = [
+      'add',
+      '@coveo/angular',
+      '--org-id',
+      orgId,
+      '--api-key',
+      apiKey,
+    ];
 
     if (defaults) {
-      options.cliArgs.push('--defaults');
+      cliArgs.push('--defaults');
     }
 
-    process.chdir(name);
-    const exitCode = await cli(options);
+    return this.runAngularCliCommand(cliArgs, {cwd: applicationName});
+  }
 
-    if (exitCode !== 0) {
-      throw new Error(`Could not run Coveo schematic. Error code: ${exitCode}`);
-    }
+  private runAngularCliCommand(args: string[], options = {}) {
+    const executable = require.resolve('@angular/cli/lib/init.js');
+    return spawnProcess('node', [executable, ...args], options);
   }
 
   async catch(err?: Error) {

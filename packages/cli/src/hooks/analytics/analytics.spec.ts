@@ -62,6 +62,7 @@ describe('analytics hook', () => {
               environment: 'dev',
               organization: 'foo',
               region: 'us-east-1',
+              analyticsEnabled: true,
             } as Configuration),
         } as Config)
     );
@@ -195,5 +196,20 @@ describe('analytics hook', () => {
         }),
       })
     );
+  });
+
+  it('should not send any analytics if disabled', async () => {
+    mockedConfig.mockImplementation(
+      () =>
+        ({
+          get: () =>
+            Promise.resolve({
+              analyticsEnabled: false,
+            } as Configuration),
+        } as Config)
+    );
+
+    await hook(getAnalyticsHook({}));
+    expect(sendCustomEvent).not.toHaveBeenCalled();
   });
 });

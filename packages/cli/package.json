@@ -14,6 +14,7 @@
     "@vue/cli": "^4.5.11",
     "abortcontroller-polyfill": "^1.7.1",
     "cli-ux": "^5.5.1",
+    "create-react-app": "^4.0.1",
     "coveo.analytics": "^2.18.4",
     "exponential-backoff": "^3.1.0",
     "fs-extra": "^9.1.0",
@@ -21,7 +22,7 @@
     "isomorphic-form-data": "^2.0.0",
     "keytar": "^7.3.0",
     "tslib": "^1",
-    "vue-cli-plugin-coveo": "^0.0.0"
+    "@coveo/cli-plugin-vue": "^0.0.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
@@ -31,7 +32,7 @@
     "chai": "^4.2.0",
     "jest": "^26.6.3",
     "patch-package": "^6.2.2",
-    "ts-jest": "^26.4.4",
+    "ts-jest": "^26.5.1",
     "ts-node": "^8",
     "typescript": "^3.3"
   },
@@ -60,7 +61,8 @@
     },
     "hooks": {
       "init": "./lib/hooks/init/set-global-config",
-      "analytics": "./lib/hooks/analytics/analytics"
+      "analytics": "./lib/hooks/analytics/analytics",
+      "prerun": "./lib/hooks/prerun/prerun"
     }
   },
   "repository": "coveo/cli",
