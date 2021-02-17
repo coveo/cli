@@ -65,7 +65,7 @@ export function ensureTokenGenerated(
        * The name of the search hub to enforce when authenticating a query with this search token.
        * The search hub is a descriptive name of the search interface on which the token is to be used.
        *See https://docs.coveo.com/en/56/#searchhub-string-optional
-       
+
        * Example:
        * searchHub: 'supporthub',
        */
