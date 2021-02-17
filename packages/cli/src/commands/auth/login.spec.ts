@@ -21,7 +21,6 @@ describe('auth:login', () => {
           getToken: () =>
             Promise.resolve({
               accessToken: 'this-is-the-token',
-              refreshToken: 'this-is-the-refresh-token',
             }),
         } as OAuth)
     );
@@ -85,8 +84,7 @@ describe('auth:login', () => {
       .command(['auth:login', '-o', 'foo'])
       .it('save token from oauth service', () => {
         expect(mockedStorage.mock.instances[0].save).toHaveBeenCalledWith(
-          'this-is-the-token',
-          'this-is-the-refresh-token'
+          'this-is-the-token'
         );
       });
   });

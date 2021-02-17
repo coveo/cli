@@ -23,16 +23,11 @@ describe('oauth storage', () => {
   });
 
   it('should use userInfo when saving to storage', async () => {
-    await new Storage().save('foo', 'bar');
+    await new Storage().save('foo');
     expect(mockedSetPassword).toHaveBeenCalledWith(
       expect.stringContaining('com.coveo.cli'),
       'bob',
       'foo'
-    );
-    expect(mockedSetPassword).toHaveBeenCalledWith(
-      expect.stringContaining('com.coveo.cli'),
-      'bob',
-      'bar'
     );
   });
 

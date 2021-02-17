@@ -30,13 +30,9 @@ export default function AuthenticationRequired() {
 
       const isExpired = await authenticatedClient.isExpired();
       if (isExpired) {
-        try {
-          await authenticatedClient.refresh();
-        } catch (e) {
-          target.error(
-            'Authentication token is expired. Run coveo auth:login first.'
-          );
-        }
+        target.error(
+          'Authentication token is expired. Run coveo auth:login first.'
+        );
       }
 
       originalRunCommand.apply(this);
