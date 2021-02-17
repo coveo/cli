@@ -1,7 +1,7 @@
 {
   "name": "@coveo/search-token-server",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.ts",
   "license": "Apache-2.0",
   "dependencies": {
     "@coveord/platform-client": "^11.0.0",
