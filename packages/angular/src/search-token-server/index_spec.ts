@@ -10,7 +10,7 @@ import {
 } from '@angular-devkit/schematics/testing';
 import {CoveoSchema} from '../schema';
 
-describe('ng-add-setup-project', () => {
+describe('search-token-server', () => {
   const workspaceOptions: WorkspaceOptions = {
     name: 'workspace',
     newProjectRoot: 'projects',
@@ -32,11 +32,10 @@ describe('ng-add-setup-project', () => {
     skipTests: false,
     skipPackageJson: false,
   };
-
-  const runInstallProjectDependencySchematic = async () => {
+  const runSearchTokenServerSchematic = async () => {
     return await runner
       .runSchematicAsync(
-        'install-project-dependencies',
+        'search-token-server',
         {...defaultSchemaOptions},
         appTree
       )
@@ -64,15 +63,28 @@ describe('ng-add-setup-project', () => {
       .toPromise();
   });
 
-  it('should install dependencies', async () => {
-    const tree = await runInstallProjectDependencySchematic();
-    const packageJsonContent = tree.readContent('/package.json');
-    const dependencies = Object.keys(
-      JSON.parse(packageJsonContent).dependencies
-    );
+  it('should add a proxy config file', async () => {
+    const tree = await runSearchTokenServerSchematic();
+    expect(tree.files).toContain('/src/proxy.conf.json');
+  });
 
-    expect(dependencies).toContain('@coveo/headless');
-    expect(dependencies).toContain('@angular/material');
-    expect(dependencies).toContain('concurrently');
+  it('should add a server directory', async () => {
+    const tree = await runSearchTokenServerSchematic();
+    expect(tree.files).toContain('/server/server.ts');
+  });
+
+  it('should add a .env file in the server directory', async () => {
+    const tree = await runSearchTokenServerSchematic();
+    expect(tree.files).toContain('/server/.env');
+    const envContent = tree.readContent('/server/.env');
+    expect(
+      envContent.indexOf('ORGANIZATION_ID=fake-org-id')
+    ).toBeGreaterThanOrEqual(0);
+    expect(
+      envContent.indexOf('API_KEY=my-fake-api-key')
+    ).toBeGreaterThanOrEqual(0);
+    expect(
+      envContent.indexOf('PLATFORM_URL=https://platform.cloud.coveo.com')
+    ).toBeGreaterThanOrEqual(0);
   });
 });
