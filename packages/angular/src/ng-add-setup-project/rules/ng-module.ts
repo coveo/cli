@@ -2,7 +2,7 @@ import {
   addDeclarationToModule,
   addImportToModule,
 } from '@angular/cdk/schematics';
-import {basename, dirname, join} from 'path';
+import {basename, dirname} from 'path';
 import {classify} from '@angular-devkit/core/src/utils/strings';
 import {createSourceFile, ScriptTarget} from 'typescript';
 import {getAppModulePath, getProjectMainFile} from '@angular/cdk/schematics';
@@ -10,7 +10,7 @@ import {InsertChange} from '@schematics/angular/utility/change';
 import {ProjectDefinition} from '@angular-devkit/core/src/workspace';
 import {Action, Rule, Tree} from '@angular-devkit/schematics';
 import {SourceFile} from 'typescript';
-import {CoveoSchema} from '../schema';
+import {CoveoSchema} from '../../schema';
 
 export function updateNgModule(
   _options: CoveoSchema,

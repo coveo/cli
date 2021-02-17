@@ -26,14 +26,6 @@ The `ng add` schematic helps you set up an Angular CLI project that uses [@coveo
 
 ## Component schematics
 
-### Headless Engine schematic
-
-Running the `headless-engine` schematic only generates the Coveo Headless engine without additional components.
-
-```
-ng generate @coveo/angular:headless-engine --org-id<org-id> --api-key=<api-key>
-```
-
 ## Development
 
 ### Testing
@@ -65,7 +57,7 @@ npm link /path/to/coveo-cli/packages/angular
 Run your schematic
 
 ```
-schematics @coveo/angular:headless-engine --org-id<org-id> --api-key=<api-key> --dry-run
+schematics @coveo/angular --org-id<org-id> --api-key=<api-key> --dry-run
 ```
 
 ### Unit Testing
