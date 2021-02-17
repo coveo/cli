@@ -4,6 +4,7 @@ import {platformUrl} from '../../../lib/platform/environment';
 import {Storage} from '../../../lib/oauth/storage';
 import {Config} from '../../../lib/config/config';
 import {spawnProcess} from '../../../lib/utils/process';
+import {buildAnalyticsFailureHook} from '../../../hooks/analytics/analytics';
 
 export default class Angular extends Command {
   static description =
@@ -66,11 +67,10 @@ export default class Angular extends Command {
   }
 
   async catch(err?: Error) {
-    // TODO: merge PR #18 before uncommenting
-    // await this.config.runHook(
-    //   'analytics',
-    //   buildAnalyticsFailureHook(this, {}, err)
-    // );
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsFailureHook(this, {}, err)
+    );
     throw err;
   }
 
