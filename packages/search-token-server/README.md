@@ -5,6 +5,7 @@ An [Express](https://www.npmjs.com/package/express) server to generate [Coveo se
 ## Setup environment
 
 Create the `.env` file at the root of this project using `.env.example` as starting point and make sure to replace all placeholder variables `<...>` by the proper information for your organization.
+For more involved configurations, you can modify the request parameters used in the `middlewares/searchToken.ts` file.
 
 ## Installation
 
