@@ -7,18 +7,15 @@
     "template",
     "typescript"
   ],
-  "description": "The base TypeScript template for Create React App.",
+  "description": "Coveo template for Create React App.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/create-react-app.git",
+    "url": "git@github.com:coveo/cli.git",
     "directory": "packages/cra-template"
   },
   "license": "Apache-2.0",
   "engines": {
     "node": ">=10"
-  },
-  "bugs": {
-    "url": "https://github.com/facebook/create-react-app/issues"
   },
   "files": [
     "template",

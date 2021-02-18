@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "author": "Coveo",
   "dependencies": {
+    "@coveo/cli-plugin-vue": "^0.0.0",
     "@coveord/platform-client": "^9.29.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
@@ -19,10 +20,10 @@
     "isomorphic-fetch": "^3.0.0",
     "isomorphic-form-data": "^2.0.0",
     "keytar": "^7.3.0",
-    "tslib": "^1",
-    "@coveo/cli-plugin-vue": "^0.0.0"
+    "tslib": "^1"
   },
   "devDependencies": {
+    "@coveo/cra-template": "^0.0.0",
     "@oclif/dev-cli": "^1",
     "@oclif/test": "^1",
     "@types/fs-extra": "^9.0.6",
