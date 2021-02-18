@@ -57,7 +57,7 @@ npm link /path/to/coveo-cli/packages/angular
 Run your schematic
 
 ```
-schematics @coveo/angular --org-id<org-id> --api-key=<api-key> --dry-run
+schematics @coveo/angular:headless-engine --org-id<org-id> --api-key=<api-key> --dry-run
 ```
 
 ### Unit Testing
