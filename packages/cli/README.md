@@ -21,7 +21,7 @@ $ npm install -g @coveo/cli
 $ coveo COMMAND
 running command...
 $ coveo (-v|--version|version)
-@coveo/cli/0.0.0 darwin-x64 node-v12.16.0
+@coveo/cli/0.0.0 darwin-x64 node-v14.15.4
 $ coveo --help [COMMAND]
 USAGE
   $ coveo COMMAND
@@ -34,15 +34,18 @@ USAGE
 
 <!-- commands -->
 
-- [`coveo auth:login`](#coveo-authlogin)
-- [`coveo config:get`](#coveo-configget)
-- [`coveo config:set [FILE]`](#coveo-configset-file)
-- [`coveo hello [FILE]`](#coveo-hello-file)
-- [`coveo help [COMMAND]`](#coveo-help-command)
-- [`coveo ui:create:vue [NAME]`](#coveo-uicreatevue-name)
-- [`coveo ui:create:react [NAME]`](#coveo-uicreatereact-name)
-- [`coveo org:list [FILE]`](#coveo-orglist-file)
-- [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
+- [@coveo/cli](#coveocli)
+- [Usage](#usage)
+- [Commands](#commands)
+  - [`coveo auth:login`](#coveo-authlogin)
+  - [`coveo config:get`](#coveo-configget)
+  - [`coveo config:set`](#coveo-configset)
+  - [`coveo hello [FILE]`](#coveo-hello-file)
+  - [`coveo help [COMMAND]`](#coveo-help-command)
+  - [`coveo org:list`](#coveo-orglist)
+  - [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
+  - [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
+  - [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
 
 ## `coveo auth:login`
 
@@ -73,7 +76,7 @@ _See code: [src/commands/auth/login.ts](https://github.com/coveo/cli/blob/v0.0.0
 
 ## `coveo config:get`
 
-display the current configuration
+Display the current configuration.
 
 ```
 USAGE
@@ -82,18 +85,23 @@ USAGE
 
 _See code: [src/commands/config/get.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/config/get.ts)_
 
-## `coveo config:set [FILE]`
+## `coveo config:set`
 
-describe the command here
+Modify the current configuration.
 
 ```
 USAGE
-  $ coveo config:set [FILE]
+  $ coveo config:set
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -e, --environment=dev|qa|prod|hipaa                                  The platform environment inside which to perform
+                                                                       operation.
+
+  -o, --organization=myOrgID                                           The organization inside which to perform
+                                                                       operation.
+
+  -r, --region=us-east-1|eu-west-1|eu-west-3|ap-southeast-2|us-west-2  The platform region inside which to perform
+                                                                       operation. See https://docs.coveo.com/en/2976
 ```
 
 _See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/config/set.ts)_
@@ -138,61 +146,63 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.1/src/commands/help.ts)_
 
-## `coveo ui:create:vue NAME`
+## `coveo org:list`
 
-Create a new project powered by vue-cli-service
+List Coveo organizations.
 
 ```
 USAGE
-  $ coveo ui:create:vue NAME
-ARGUMENTS
-  NAME  application name
+  $ coveo org:list
+
 OPTIONS
-  -h, --help         show CLI help
-  -p, --preset=path  [default: /Users/olamothe/cli/packages/cli/src/commands/ui/create/presets/typescript-preset.json]
-                     Path to a JSON file with pre-defined options and plugins for creating a new project.
-                     If not specified, the default TypeScript preset will be taked
-                     For more information about Vue CLI presets, please consult
-                     https://cli.vuejs.org/guide/plugins-and-presets.html#presets
-EXAMPLES
-  $ coveo ui:create:vue --preset path/to/my/preset.json
-  $ coveo ui:create:vue --help
+  -x, --extended          show extra columns
+  --columns=columns       only show provided columns (comma-separated)
+  --csv                   output is csv format [alias: --output=csv]
+  --filter=filter         filter property by partial string matching, ex: name=foo
+  --no-header             hide table header from output
+  --no-truncate           do not truncate output to fit screen
+  --output=csv|json|yaml  output in a more machine friendly format
+  --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/ui/create/vue.ts)_
+_See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/org/list.ts)_
 
-## `coveo ui:create:react [NAME]`
+## `coveo ui:create:angular NAME`
+
+Create a search page with Angular powered by Coveo Headless
+
+```
+USAGE
+  $ coveo ui:create:angular NAME
+
+OPTIONS
+  -d, --defaults   Disable interactive input prompts for options with a default
+  -h, --help       show CLI help
+```
+
+_See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/ui/create/angular.ts)_
+
+## `coveo ui:create:react NAME`
 
 Create a search page in React powered by Coveo Headless
 
 ```
-USAGE
-  $ coveo ui:create:react [NAME]
-
-OPTIONS
-  -h, --help       show CLI help
-## `coveo org:list [FILE]`
-
-test command for oauth + config that list orgs
-
-```
 
 USAGE
-$ coveo org:list [FILE]
+  $ coveo ui:create:react NAME
+
+ARGUMENTS
+  NAME  application name
 
 OPTIONS
--x, --extended show extra columns
---columns=columns only show provided columns (comma-separated)
---csv output is csv format [alias: --output=csv]
---filter=filter filter property by partial string matching, ex: name=foo
---no-header hide table header from output
---no-truncate do not truncate output to fit screen
---output=csv|json|yaml output in a more machine friendly format
---sort=sort property to sort by (prepend '-' for descending)
+  -h, --help  show CLI help
 
+EXAMPLES
+  $ coveo ui:create:react myapp
+  $ coveo ui:create:react --help
 ```
 
-_See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/org/list.ts)_
+_See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/ui/create/react.ts)_
 
 ## `coveo ui:create:vue NAME`
 
@@ -207,13 +217,13 @@ ARGUMENTS
 NAME application name
 
 OPTIONS
--h, --help show CLI help
+  -h, --help
+      show CLI help
 
--p, --preset=path [default: /Users/olamothe/cli/packages/cli/src/commands/ui/create/presets/typescript-preset.json]
-Path to a JSON file with pre-defined options and plugins for creating a new project.
-If not specified, the default TypeScript preset will be taked
-For more information about Vue CLI presets, please consult
-https://cli.vuejs.org/guide/plugins-and-presets.html#presets
+  -p, --preset=path  Path to a JSON file with pre-defined options and plugins for creating a new project.
+                     If not specified, the default TypeScript preset will be taken.
+                     For more information about Vue CLI presets, please consult
+                     https://cli.vuejs.org/guide/plugins-and-presets.html#presets
 
 EXAMPLES
 $ coveo ui:create:vue --preset path/to/my/preset.json
@@ -221,6 +231,10 @@ $ coveo ui:create:vue --help
 
 ```
 
-_See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/ui/create/react.ts)_
+_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/ui/create/vue.ts)_
+
 <!-- commandsstop -->
+
+```
+
 ```
