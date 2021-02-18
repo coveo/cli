@@ -7,6 +7,7 @@ import {environmentCheck} from './middlewares/environmentCheck';
 config();
 
 const app = express();
+const port = process.env.SERVER_PORT || 3000;
 
 declare global {
   namespace Express {
@@ -24,6 +25,6 @@ app.get('/token', environmentCheck, ensureTokenGenerated, (req, res) => {
 
 app.use(errorHandler);
 
-app.listen(process.env.SERVER_PORT, () => {
-  console.log(`Listening at http://localhost:${process.env.SERVER_PORT}`);
+app.listen(port, () => {
+  console.log(`Listening at http://localhost:${port}`);
 });
