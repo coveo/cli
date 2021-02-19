@@ -4,8 +4,6 @@ require('abortcontroller-polyfill');
 import {Request, Response, NextFunction} from 'express';
 import {
   PlatformClient,
-  Environment,
-  Region,
   RestUserIdType,
   TokenModel,
 } from '@coveord/platform-client';
@@ -19,19 +17,17 @@ export function ensureTokenGenerated(
     req.app.locals.platform ||
     new PlatformClient({
       /**
-       * The target environment.
-       * The platform.cloud.coveo.com is the default target host.
-       * However, you can target a different host by changing the environment.
+       * The Plaform URL to use.
+       * https://platform.cloud.coveo.com is the default platform host.
+       * However, you can target a different environment by changing the host value.
        *
        * Example:
-       * environment: Environment.hipaa will target the HIPAA host (platformhipaa.cloud.coveo.com)
-       */
-      environment: Environment.prod,
-      /**
-       * The target region.
+       * Use "https://platformhipaa.cloud.coveo.com" if you want to target the HIPAA environment.
+       *
+       * You can also target a different region (e.g. https://platform-au.cloud.coveo.com)
        * See https://docs.coveo.com/en/2976/coveo-solutions/deployment-regions-and-strategies#data-residency
        */
-      region: Region.US,
+      host: process.env.PLATFORM_URL,
       /**
        * The unique identifier of your Coveo organization.
        * To retrieve your org ID, see https://docs.coveo.com/en/148/manage-an-organization/retrieve-the-organization-id

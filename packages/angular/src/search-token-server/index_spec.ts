@@ -72,19 +72,4 @@ describe('search-token-server', () => {
     const tree = await runSearchTokenServerSchematic();
     expect(tree.files).toContain('/server/server.ts');
   });
-
-  it('should add a .env file in the server directory', async () => {
-    const tree = await runSearchTokenServerSchematic();
-    expect(tree.files).toContain('/server/.env');
-    const envContent = tree.readContent('/server/.env');
-    expect(
-      envContent.indexOf('ORGANIZATION_ID=fake-org-id')
-    ).toBeGreaterThanOrEqual(0);
-    expect(
-      envContent.indexOf('API_KEY=my-fake-api-key')
-    ).toBeGreaterThanOrEqual(0);
-    expect(
-      envContent.indexOf('PLATFORM_URL=https://platform.cloud.coveo.com')
-    ).toBeGreaterThanOrEqual(0);
-  });
 });

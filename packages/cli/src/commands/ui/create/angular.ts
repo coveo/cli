@@ -50,8 +50,11 @@ export default class Angular extends Command {
       cfg.organization,
       '--api-key',
       storage.accessToken!,
-      '--platformUrl',
+      '--platform-url',
       platformUrl({environment: cfg.environment}),
+      // TODO: CDX-91 Extract user email from oauth flow
+      '--user',
+      'foo@acme.com',
     ];
 
     if (defaults) {

@@ -73,6 +73,7 @@ describe('ng-add-setup-project', () => {
 
     expect(dependencies).toContain('@coveo/headless');
     expect(dependencies).toContain('@angular/material');
+    expect(dependencies).toContain('@coveo/search-token-server');
     expect(dependencies).toContain('concurrently');
   });
 });
