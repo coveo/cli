@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {buildResultList, Result, ResultList} from '@coveo/headless';
-import {engine} from '../engine';
+import {EngineService} from '../engine.service';
 
 @Component({
   selector: 'app-result-list',
@@ -10,14 +10,14 @@ import {engine} from '../engine';
 export class ResultListComponent implements OnInit {
   private headlessResultList: ResultList;
 
-  constructor() {}
+  constructor(private engine: EngineService) {}
 
   get results(): Result[] {
     return this.headlessResultList.state.results;
   }
 
   private initializeController() {
-    this.headlessResultList = buildResultList(engine);
+    this.headlessResultList = buildResultList(this.engine.get());
   }
 
   ngOnInit(): void {

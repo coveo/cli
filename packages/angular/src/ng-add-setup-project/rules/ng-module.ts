@@ -1,5 +1,7 @@
 import {
+  insertImport,
   addDeclarationToModule,
+  addSymbolToNgModuleMetadata,
   addImportToModule,
 } from '@angular/cdk/schematics';
 import {basename, dirname} from 'path';
@@ -32,6 +34,7 @@ export function updateNgModule(
     const updateRecorder = tree.beginUpdate(appModulePath);
 
     const changes = [
+      ...injectInitService(source, appModulePath),
       ...getAllCoveoComponentsToInject(tree, source, appModulePath),
       ...injectMaterialImports(source, appModulePath),
     ];
@@ -75,6 +78,22 @@ function isTypeScriptSourceFile(action: Action) {
 
 function isCreateAction(action: Action) {
   return action.kind === 'c';
+}
+
+function injectInitService(source: SourceFile, appModulePath: string) {
+  const changes: InsertChange[] = [];
+
+  changes.push(
+    ...(addSymbolToNgModuleMetadata(
+      source,
+      appModulePath,
+      'providers',
+      'InitProvider',
+      './init.service'
+    ) as InsertChange[])
+  );
+
+  return changes;
 }
 
 function getAllCoveoComponentsToInject(
