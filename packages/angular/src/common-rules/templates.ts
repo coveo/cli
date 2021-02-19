@@ -42,11 +42,12 @@ function isNotNodeModuleFile(path: string) {
 export function createFiles(
   _options: CoveoSchema,
   workspaceRootPath = './',
-  templateFilePath = './files'
+  templateFilePath = './files',
+  customFilter = isNotNodeModuleFile
 ): Rule {
   return (tree: Tree, context: SchematicContext) => {
     const templateSource = apply(url(templateFilePath), [
-      filter(isNotNodeModuleFile),
+      filter(customFilter),
       applyTemplates({
         ..._options,
       }),
