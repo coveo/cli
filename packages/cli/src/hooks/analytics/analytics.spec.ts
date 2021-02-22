@@ -5,7 +5,11 @@ jest.mock('@coveord/platform-client');
 import {mocked} from 'ts-jest/utils';
 import {CoveoAnalyticsClient, IRuntimeEnvironment} from 'coveo.analytics';
 import {Configuration, Config} from '../../lib/config/config';
-import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {
+  AuthenticatedClient,
+  AuthenticationStatus,
+  getAuthenticationStatus,
+} from '../../lib/platform/authenticatedClient';
 import hook, {AnalyticsHook} from './analytics';
 import {IConfig} from '@oclif/config';
 import {PlatformClient} from '@coveord/platform-client';
@@ -14,6 +18,7 @@ const mockedAnalytics = mocked(CoveoAnalyticsClient);
 const mockedConfig = mocked(Config);
 const mockedPlatformClient = mocked(PlatformClient);
 const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+const mockedAuthenticationStatus = mocked(getAuthenticationStatus);
 
 describe('analytics hook', () => {
   let sendCustomEvent: jest.Mock;
@@ -72,8 +77,6 @@ describe('analytics hook', () => {
     mockedAuthenticatedClient.mockImplementation(
       () =>
         ({
-          isLoggedIn: () => Promise.resolve(true),
-          isExpired: () => Promise.resolve(false),
           getClient: () =>
             Promise.resolve(
               mockedPlatformClient.getMockImplementation()!({
@@ -83,6 +86,9 @@ describe('analytics hook', () => {
             ),
           cfg: mockedConfig.getMockImplementation()!('./'),
         } as AuthenticatedClient)
+    );
+    mockedAuthenticationStatus.mockImplementation(() =>
+      Promise.resolve(AuthenticationStatus.LOGGED_IN)
     );
   };
 
@@ -216,24 +222,17 @@ describe('analytics hook', () => {
   });
 
   it('should not throw an error when the user is not logged in', async () => {
-    mockedAuthenticatedClient.mockImplementationOnce(
-      () =>
-        ({
-          isLoggedIn: () => Promise.resolve(false),
-        } as AuthenticatedClient)
+    mockedAuthenticationStatus.mockImplementationOnce(() =>
+      Promise.resolve(AuthenticationStatus.LOGGED_OUT)
     );
 
-    expect(() => hook(getAnalyticsHook({}))).not.toThrow();
+    expect(async () => await hook(getAnalyticsHook({}))).not.toThrow();
   });
 
   it('should not throw an error when the user is expired', async () => {
-    mockedAuthenticatedClient.mockImplementationOnce(
-      () =>
-        ({
-          isExpired: () => Promise.resolve(true),
-        } as AuthenticatedClient)
+    mockedAuthenticationStatus.mockImplementationOnce(() =>
+      Promise.resolve(AuthenticationStatus.EXPIRED)
     );
-
-    expect(() => hook(getAnalyticsHook({}))).not.toThrow();
+    expect(async () => await hook(getAnalyticsHook({}))).not.toThrow();
   });
 });

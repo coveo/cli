@@ -3,7 +3,11 @@ import {IConfig} from '@oclif/config';
 import {CoveoAnalyticsClient} from 'coveo.analytics';
 import {WebStorage} from 'coveo.analytics/dist/definitions/storage';
 import {Config} from '../../lib/config/config';
-import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {
+  AuthenticatedClient,
+  AuthenticationStatus,
+  getAuthenticationStatus,
+} from '../../lib/platform/authenticatedClient';
 
 export interface AnalyticsHook {
   commandID: string;
@@ -15,7 +19,7 @@ export interface AnalyticsHook {
 const analyticsAPIKey = 'xx01ad67bb-f837-4a3e-8669-16397994a6f2';
 
 const hook = async function (opts: AnalyticsHook) {
-  if (await isLoggedOutOrExpired()) {
+  if (!(await isLoggedIn())) {
     return;
   }
 
@@ -113,20 +117,9 @@ const storage = (cfg: Config): WebStorage => {
   };
 };
 
-const isLoggedOutOrExpired = async () => {
-  const client = new AuthenticatedClient();
-
-  const isLoggedIn = await client.isLoggedIn();
-  if (!isLoggedIn) {
-    return true;
-  }
-
-  const isExpired = await client.isExpired();
-  if (isExpired) {
-    return true;
-  }
-
-  return false;
+const isLoggedIn = async () => {
+  const status = await getAuthenticationStatus();
+  return status === AuthenticationStatus.LOGGED_IN;
 };
 
 export type AnalyticsStatus = 'success' | 'failure';
