@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {buildSearchBox, SearchBox, SearchBoxOptions} from '@coveo/headless';
 import {FormControl} from '@angular/forms';
 import {engine} from '../engine';
@@ -31,8 +31,10 @@ export class SearchBoxComponent implements OnInit {
   }
 
   search() {
-    this.headlessSearchBox.submit();
-    this.headlessSearchBox.hideSuggestions();
+    if (!this.headlessSearchBox.state.isLoading) {
+      this.headlessSearchBox.submit();
+      this.headlessSearchBox.hideSuggestions();
+    }
   }
 
   private initializeController() {
