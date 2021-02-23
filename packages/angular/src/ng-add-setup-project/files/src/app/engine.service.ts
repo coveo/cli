@@ -16,11 +16,11 @@ export class EngineService {
         platformUrl: environment.platformUrl,
         organizationId: environment.organizationId,
         accessToken: accessToken,
-        renewAccessToken: () =>
-          window
-            .fetch(environment.tokenEndpoint)
-            .then((data) => data.json())
-            .then((data) => data.token),
+        renewAccessToken: async () => {
+          const res = await fetch(environment.tokenEndpoint);
+          const {token} = await res.json();
+          return token;
+        },
       },
       reducers: searchAppReducers,
     });

@@ -6,11 +6,12 @@ import {EngineService} from './engine.service';
   providedIn: 'root',
 })
 export class InitService {
-  constructor(private engine: EngineService) {}
+  constructor(private engineService: EngineService) {}
 
   async init() {
-    const data = await (await window.fetch(environment.tokenEndpoint)).json();
-    this.engine.init(data.token);
+    const res = await fetch(environment.tokenEndpoint);
+    const {token} = await res.json();
+    this.engineService.init(token);
   }
 }
 
