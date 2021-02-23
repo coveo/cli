@@ -5,13 +5,18 @@ const DOCKER_IMAGE_NAME = 'coveo-cli-e2e-image';
 const DOCKER_CONTAINER_NAME = 'coveo-cli-e2e-container';
 const repoHostPath = resolve(__dirname, ...new Array(3).fill('..'));
 const repoDockerPath = '/home/cli';
-const dockerEntryPoint = join(
-  '/home/cli',
-  'packages',
-  'cli-e2e',
-  'entrypoints',
-  'dockerX11Entry.sh'
-).replace(/\\/g, '/');
+const dockerEntryPoint = (() => {
+  if (process.argv[2] === '--bash') {
+    return '/bin/bash';
+  }
+  return join(
+    '/home/cli',
+    'packages',
+    'cli-e2e',
+    'entrypoints',
+    process.argv[2] === '--debug' ? 'dockerX11Entry.sh' : 'dockerHeadless.sh'
+  ).replace(/\\/g, '/');
+})();
 const dockerFilePath = resolve(repoHostPath, 'packages', 'cli-e2e', 'docker');
 
 const noSuchImage = (message) =>
@@ -49,7 +54,7 @@ if (!isImagePresent()) {
 }
 try {
   execSync(
-    `docker run --name=${DOCKER_CONTAINER_NAME} -v "${repoHostPath}:${repoDockerPath}" -it --cap-add=SYS_ADMIN ${DOCKER_IMAGE_NAME} ${dockerEntryPoint}`,
+    `docker run --name=${DOCKER_CONTAINER_NAME} -v "${repoHostPath}:${repoDockerPath}" -p "9229:9229" -it --cap-add=SYS_ADMIN ${DOCKER_IMAGE_NAME} ${dockerEntryPoint}`,
     // `docker run --name=${DOCKER_CONTAINER_NAME} -v "${repoHostPath}:${repoDockerPath}" -it --cap-add=SYS_ADMIN ${DOCKER_IMAGE_NAME} /bin/bash`,
     {stdio: 'inherit'}
   );
