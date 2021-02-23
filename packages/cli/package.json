@@ -21,7 +21,8 @@
     "isomorphic-fetch": "^3.0.0",
     "isomorphic-form-data": "^2.0.0",
     "keytar": "^7.3.0",
-    "tslib": "^1"
+    "tslib": "^1",
+    "@coveo/vue-cli-plugin-typescript": "^0.0.0"
   },
   "devDependencies": {
     "@coveo/cra-template": "^0.0.0",
