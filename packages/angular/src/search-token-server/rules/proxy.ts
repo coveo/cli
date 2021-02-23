@@ -27,7 +27,11 @@ export function addProxyConfigToWorkspace(
         JSON.stringify(workspaceConfig, null, 4)
       );
     } catch (error) {
-      console.error('Unable to add proxy to project workspace', error);
+      console.error(
+        `Unable to update the Angular workspace configuration with the proxy information.
+Make sure your angular.json file is valid and contains a "serve" target (see https://angular.io/guide/build#proxying-to-a-backend-server).`,
+        error
+      );
     }
   };
 }
