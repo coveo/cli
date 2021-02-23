@@ -11,7 +11,7 @@ export function killCliProcess(cliProcess: ChildProcessWithoutNullStreams) {
 
 export function isYesNoPrompt(data: string) {
   console.log(data);
-  return data.trimEnd().endsWith('(y/n):');
+  return data.trimEnd().toLowerCase().endsWith('(y/n):');
 }
 
 export function answerPrompt(
