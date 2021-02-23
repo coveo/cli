@@ -15,6 +15,20 @@
       "remoteRoot": "/home/cli-copy",
       "sourceMaps": true,
       "autoAttachChildProcesses": false
+    },
+    {
+      "type": "pwa-node",
+      "request": "attach",
+      "cwd": "${workspaceFolder}",
+      "name": "Brace",
+      "address": "localhost",
+      "port": 9229,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/home/cli-copy",
+      "sourceMaps": true,
+      "autoAttachChildProcesses": false,
+      "preLaunchTask": "TestDaemon",
+      "postDebugTask": "DaemonKiller"
     }
   ]
 }

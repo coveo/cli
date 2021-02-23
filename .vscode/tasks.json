@@ -1,0 +1,45 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "TestDaemon",
+      "type": "shell",
+      "windows": {
+        "options": {
+          "shell": {"executable": "powershell.exe"}
+        }
+      },
+      "command": "node ./packages/cli-e2e/entryPoints/vscodeEntry.js --debug",
+      "runOptions": {"instanceLimit": 1},
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "owner": "custom",
+          "pattern": [
+            {
+              "regexp": "^PATTERN WON'T MATCH, BUT NEEDED TO BE A VALID PROBLEM MATCHER$",
+              "file": 1,
+              "location": 2,
+              "message": 3
+            }
+          ],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "^Test daemon spooling up",
+            "endsPattern": "^For help, see: https://nodejs.org/en/docs/inspector"
+          }
+        }
+      ]
+    },
+    {
+      "label": "DaemonKiller",
+      "type": "shell",
+      "windows": {
+        "options": {
+          "shell": {"executable": "powershell.exe"}
+        }
+      },
+      "command": "node ./packages/cli-e2e/entryPoints/vsCodeExit.js"
+    }
+  ]
+}
