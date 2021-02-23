@@ -2,26 +2,20 @@ import {spawn} from 'child_process';
 import {resolve} from 'path';
 
 import retry from 'async-retry';
-import request from 'request';
+import axios from 'axios';
 import puppeteer from 'puppeteer-core';
 
 import type {Browser} from 'puppeteer-core';
 import type {ChildProcessWithoutNullStreams} from 'child_process';
 
 const CLI_EXEC_PATH = resolve(__dirname, '../../cli/bin/run');
+const CHROME_JSON_DEBUG_URL = 'http://localhost:9222/json/version';
 
 describe('auth', () => {
   const getWsUrl = async (): Promise<string> => {
-    const options = {
-      method: 'GET',
-      url: 'http://localhost:9222/json/version',
-    };
-    return new Promise<string>((resolve, reject) => {
-      request(options, (error, response) => {
-        if (error) reject(error);
-        resolve(JSON.parse(response.body)['webSocketDebuggerUrl']);
-      });
-    });
+    const chromeDebugInfoRaw = (await axios.get<string>(CHROME_JSON_DEBUG_URL))
+      .data;
+    return JSON.parse(chromeDebugInfoRaw)['webSocketDebuggerUrl'];
   };
 
   function isYesNoPrompt(data: string) {
