@@ -233,6 +233,6 @@ describe('analytics hook', () => {
     mockedAuthenticationStatus.mockImplementationOnce(() =>
       Promise.resolve(AuthenticationStatus.EXPIRED)
     );
-    await expect(() => hook(getAnalyticsHook({})))..resolves.not.toThrow();
+    await expect(() => hook(getAnalyticsHook({}))).resolves.not.toThrow();
   });
 });
