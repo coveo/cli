@@ -2,7 +2,6 @@
 .idea
 .nyc_output
 .size-snapshot.json
-.vscode/*
 *-debug.log
 *-error.log
 dist
