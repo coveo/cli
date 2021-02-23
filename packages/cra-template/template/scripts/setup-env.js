@@ -1,7 +1,8 @@
-const {writeFileSync} = require('fs-extra');
+const {resolve} = require('path');
+const {writeFileSync, pathExistsSync} = require('fs-extra');
 const argv = require('yargs-parser')(process.argv.slice(2));
 
-function createEnvFile() {
+function createEnvFile(filePath) {
   const {orgId, apiKey, platformUrl, user} = argv;
 
   const projectEnvContent = `
@@ -11,11 +12,17 @@ REACT_APP_API_KEY=${apiKey}
 
 USER_EMAIL=${user}`;
 
-  writeFileSync('.env', projectEnvContent);
+  writeFileSync(filePath, projectEnvContent);
 }
 
 function main() {
-  createEnvFile();
+  const filePath = resolve(__dirname, '.env');
+  const exists = pathExistsSync(filePath);
+  if (!exists) {
+    createEnvFile(filePath);
+  } else {
+    console.log(`file ${filePath} already exist`);
+  }
 }
 
 main();
