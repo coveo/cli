@@ -226,13 +226,13 @@ describe('analytics hook', () => {
       Promise.resolve(AuthenticationStatus.LOGGED_OUT)
     );
 
-    expect(async () => await hook(getAnalyticsHook({}))).not.toThrow();
+    await expect(() => hook(getAnalyticsHook({}))).resolves.not.toThrow();
   });
 
   it('should not throw an error when the user is expired', async () => {
     mockedAuthenticationStatus.mockImplementationOnce(() =>
       Promise.resolve(AuthenticationStatus.EXPIRED)
     );
-    expect(async () => await hook(getAnalyticsHook({}))).not.toThrow();
+    await expect(() => hook(getAnalyticsHook({})))..resolves.not.toThrow();
   });
 });
