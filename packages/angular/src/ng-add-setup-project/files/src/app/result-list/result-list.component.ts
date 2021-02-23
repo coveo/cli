@@ -10,14 +10,14 @@ import {EngineService} from '../engine.service';
 export class ResultListComponent implements OnInit {
   private headlessResultList: ResultList;
 
-  constructor(private engine: EngineService) {}
+  constructor(private engineService: EngineService) {}
 
   get results(): Result[] {
     return this.headlessResultList.state.results;
   }
 
   private initializeController() {
-    this.headlessResultList = buildResultList(this.engine.get());
+    this.headlessResultList = buildResultList(this.engineService.get());
   }
 
   ngOnInit(): void {

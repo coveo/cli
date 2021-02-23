@@ -8,10 +8,10 @@ import {EngineService} from '../engine.service';
   styleUrls: ['./search-page.component.scss'],
 })
 export class SearchPageComponent implements AfterViewInit {
-  constructor(private engine: EngineService) {}
+  constructor(private engineService: EngineService) {}
 
   executeSearch() {
-    const {dispatch} = this.engine.get();
+    const {dispatch} = this.engineService.get();
     const action = SearchActions.executeSearch(
       AnalyticsActions.logInterfaceLoad()
     );

@@ -14,7 +14,7 @@ export class FacetComponent implements OnInit {
 
   private headlessFacet: Facet;
 
-  constructor(private engine: EngineService) {}
+  constructor(private engineService: EngineService) {}
 
   selectionChange(change: MatSelectionListChange) {
     change.options.forEach((option) => {
@@ -47,7 +47,7 @@ export class FacetComponent implements OnInit {
   }
 
   private initializeController() {
-    this.headlessFacet = buildFacet(this.engine.get(), {
+    this.headlessFacet = buildFacet(this.engineService.get(), {
       options: {
         numberOfValues: 5,
         field: this.field,

@@ -14,13 +14,13 @@ import {EngineService} from '../engine.service';
 export class QuerySummaryComponent implements OnInit {
   private headlessQuerySummary: QuerySummary;
 
-  constructor(private engine: EngineService) {}
+  constructor(private engineService: EngineService) {}
 
   get state(): QuerySummaryState {
     return this.headlessQuerySummary.state;
   }
 
   ngOnInit(): void {
-    this.headlessQuerySummary = buildQuerySummary(this.engine.get());
+    this.headlessQuerySummary = buildQuerySummary(this.engineService.get());
   }
 }

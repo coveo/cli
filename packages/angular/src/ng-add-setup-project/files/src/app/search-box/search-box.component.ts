@@ -16,7 +16,7 @@ export class SearchBoxComponent implements OnInit {
     rawValue: string;
   }[];
 
-  constructor(private engine: EngineService) {}
+  constructor(private engineService: EngineService) {}
 
   updateState() {
     this.suggestions = this.headlessSearchBox.state.suggestions;
@@ -42,7 +42,7 @@ export class SearchBoxComponent implements OnInit {
       numberOfSuggestions: 3,
     };
 
-    this.headlessSearchBox = buildSearchBox(this.engine.get(), {
+    this.headlessSearchBox = buildSearchBox(this.engineService.get(), {
       options,
     });
   }

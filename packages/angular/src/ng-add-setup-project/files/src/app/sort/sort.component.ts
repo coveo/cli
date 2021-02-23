@@ -18,7 +18,7 @@ export class SortComponent implements OnInit {
   private headlessSort: Sort;
   sortCriterias: {caption: string; criterion: any}[];
 
-  constructor(private engine: EngineService) {}
+  constructor(private engineService: EngineService) {}
 
   selectionChange(change: MatSelectChange) {
     this.headlessSort.sortBy(change.value);
@@ -40,7 +40,7 @@ export class SortComponent implements OnInit {
       },
     ];
 
-    this.headlessSort = buildSort(this.engine.get(), {
+    this.headlessSort = buildSort(this.engineService.get(), {
       initialState: {
         criterion: this.sortCriterias[0].criterion,
       },

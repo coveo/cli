@@ -19,7 +19,7 @@ export class PagerComponent implements OnInit {
   private headlessPager: Pager;
   private headlessResultPerPage: ResultsPerPage;
 
-  constructor(private engine: EngineService) {}
+  constructor(private engineService: EngineService) {}
 
   get pager(): PagerState {
     return this.headlessPager.state;
@@ -52,11 +52,11 @@ export class PagerComponent implements OnInit {
   }
 
   private initializeControllers() {
-    this.headlessPager = buildPager(this.engine.get(), {
+    this.headlessPager = buildPager(this.engineService.get(), {
       options: {numberOfPages: 3},
     });
 
-    this.headlessResultPerPage = buildResultsPerPage(this.engine.get(), {
+    this.headlessResultPerPage = buildResultsPerPage(this.engineService.get(), {
       initialState: {numberOfResults: 10},
     });
   }
