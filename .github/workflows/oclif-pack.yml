@@ -9,6 +9,8 @@ jobs:
     outputs:
       upload_url: $${{ steps.create_release.outputs.upload_url }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: short-hash
         id: short_hash
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)" 
