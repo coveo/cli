@@ -1,11 +1,6 @@
-import {NextFunction, Request, Response} from 'express';
+import type {ErrorRequestHandler} from 'express';
 
-export function errorHandler(
-  err: any,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   console.error(err);
-  res.status(err.statusCode || 500).send(err.message || 'Something broke!');
-}
+  res.status(err.status || 500).send(err.message || 'Something broke!');
+};

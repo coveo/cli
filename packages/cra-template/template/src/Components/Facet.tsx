@@ -22,7 +22,7 @@ export default class Facet extends React.Component<IFacetProps, {}> {
   private headlessFacet: FacetType;
   state: FacetState;
 
-  constructor(props: any) {
+  constructor(props: IFacetProps) {
     super(props);
 
     this.headlessFacet = buildFacet(headlessEngine, {

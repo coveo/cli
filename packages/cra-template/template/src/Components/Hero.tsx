@@ -2,7 +2,7 @@ import {Typography} from '@material-ui/core';
 import React from 'react';
 import './Hero.css';
 
-function Anchor(props: any) {
+function Anchor(props: {href: string; value: string}) {
   return <a href={props.href}>{props.value}</a>;
 }
 

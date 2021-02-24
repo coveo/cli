@@ -12,9 +12,8 @@ export default class SearchBox extends React.Component {
   private headlessSearchBox: SearchBoxType;
   state: SearchBoxState;
 
-  constructor(props: any) {
+  constructor(props: {}) {
     super(props);
-
     this.headlessSearchBox = buildSearchBox(headlessEngine);
     this.state = this.headlessSearchBox.state;
   }
@@ -38,7 +37,7 @@ export default class SearchBox extends React.Component {
           this.headlessSearchBox.submit();
         }}
         options={this.state.suggestions.map(
-          (suggestion: any) => suggestion.rawValue
+          (suggestion: SearchBoxState['suggestions'][0]) => suggestion.rawValue
         )}
         freeSolo
         style={{width: 'auto'}}

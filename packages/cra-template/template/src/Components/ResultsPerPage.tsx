@@ -15,7 +15,7 @@ export default class ResultsPerPage extends React.Component {
   private headlessResultsPerPage: ResultPerPageType;
   state: ResultsPerPageState;
 
-  constructor(props: any) {
+  constructor(props: {}) {
     super(props);
 
     this.headlessResultsPerPage = buildResultsPerPage(headlessEngine, {

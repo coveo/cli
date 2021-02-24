@@ -9,7 +9,7 @@ export default class Pager extends React.Component {
   private headlessPager: PagerType;
   state: PagerState;
 
-  constructor(props: any) {
+  constructor(props: {}) {
     super(props);
 
     this.headlessPager = buildPager(headlessEngine, {

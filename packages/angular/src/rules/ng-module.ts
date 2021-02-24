@@ -2,7 +2,7 @@ import {
   addDeclarationToModule,
   addImportToModule,
 } from '@angular/cdk/schematics';
-import {basename, dirname, join} from 'path';
+import {basename, dirname} from 'path';
 import {classify} from '@angular-devkit/core/src/utils/strings';
 import {createSourceFile, ScriptTarget} from 'typescript';
 import {getAppModulePath, getProjectMainFile} from '@angular/cdk/schematics';

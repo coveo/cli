@@ -9,10 +9,12 @@ import {engine} from '../engine';
   styleUrls: ['./facet.component.scss'],
 })
 export class FacetComponent implements OnInit {
-  @Input() field: string;
-  @Input() title: string;
+  @Input()
+  field!: string;
+  @Input()
+  title!: string;
 
-  private headlessFacet: Facet;
+  private headlessFacet!: Facet;
 
   constructor() {}
 

@@ -7,6 +7,8 @@ import {
   Sort,
   SortOrder,
 } from '@coveo/headless';
+
+import type {SortCriterion} from '@coveo/headless';
 import {engine} from '../engine';
 
 @Component({
@@ -15,8 +17,8 @@ import {engine} from '../engine';
   styleUrls: ['./sort.component.scss'],
 })
 export class SortComponent implements OnInit {
-  private headlessSort: Sort;
-  sortCriterias: {caption: string; criterion: any}[];
+  private headlessSort!: Sort;
+  sortCriterias!: {caption: string; criterion: SortCriterion}[];
 
   constructor() {}
 

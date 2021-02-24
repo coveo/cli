@@ -1,6 +1,6 @@
 import React from 'react';
 import List from '@material-ui/core/List';
-import {ListItem, Box, Typography} from '@material-ui/core';
+import {ListItem, Box, Typography, ListItemProps} from '@material-ui/core';
 import {
   buildResultList,
   ResultTemplatesManager,
@@ -11,16 +11,21 @@ import {
 } from '@coveo/headless';
 import {headlessEngine} from '../Engine';
 
-type Template = (result: Result) => any;
+type Template = (result: Result) => unknown;
 
 interface FieldValueInterface {
   value: string;
   caption: string;
 }
 
-function ListItemLink(props: any) {
+interface ListItemLink extends ListItemProps {
+  title: string;
+  href: string;
+}
+
+function ListItemLink(props: ListItemLink) {
   return (
-    <ListItem style={{padding: 0}} component="a" {...props}>
+    <ListItem style={{padding: 0}} component="a" {...(props as unknown)}>
       <Typography variant="body1" color="primary">
         {props.title}
       </Typography>
@@ -50,7 +55,7 @@ export default class ResultList extends React.Component {
   private headlessResultTemplateManager: ResultTemplatesManager<Template>;
   state: ResultListState;
 
-  constructor(props: any) {
+  constructor(props: {}) {
     super(props);
 
     this.headlessResultList = buildResultList(headlessEngine);

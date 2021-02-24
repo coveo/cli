@@ -9,9 +9,9 @@ import {engine} from '../engine';
   styleUrls: ['./search-box.component.scss'],
 })
 export class SearchBoxComponent implements OnInit {
-  headlessSearchBox: SearchBox;
+  headlessSearchBox!: SearchBox;
   myControl = new FormControl();
-  suggestions: {
+  suggestions!: {
     highlightedValue: string;
     rawValue: string;
   }[];

@@ -13,6 +13,7 @@ import {headlessEngine} from '../Engine';
 import Box from '@material-ui/core/Box';
 import FormControl from '@material-ui/core/FormControl';
 import {InputLabel, MenuItem, Select} from '@material-ui/core';
+import {SelectInputProps} from '@material-ui/core/Select/SelectInput';
 
 export default class Sort extends React.Component {
   private headlessSort: SortType;
@@ -25,7 +26,7 @@ export default class Sort extends React.Component {
     SortOrder.Ascending
   );
 
-  constructor(props: any) {
+  constructor(props: {}) {
     super(props);
 
     this.headlessSort = buildSort(headlessEngine, {
@@ -45,7 +46,7 @@ export default class Sort extends React.Component {
     this.setState(this.headlessSort.state);
   }
 
-  handleChange(event: any) {
+  handleChange: SelectInputProps['onChange'] = (event) => {
     switch (event.target.value) {
       case 'relevance':
         this.headlessSort.sortBy(this.relevanceSortCriterion);
@@ -57,7 +58,7 @@ export default class Sort extends React.Component {
         this.headlessSort.sortBy(this.dateAscendingSortCriterion);
         break;
     }
-  }
+  };
 
   render() {
     return (
@@ -67,7 +68,7 @@ export default class Sort extends React.Component {
           <Select
             labelId="sort-by-label"
             id="sort-by"
-            onChange={(event: any) => this.handleChange(event)}
+            onChange={this.handleChange!.bind(this)}
             defaultValue="relevance"
           >
             <MenuItem value="relevance">Relevance</MenuItem>
