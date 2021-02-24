@@ -25,6 +25,7 @@
     "@coveo/vue-cli-plugin-typescript": "^0.0.0"
   },
   "devDependencies": {
+    "@coveo/cra-template": "^0.0.0",
     "@oclif/dev-cli": "^1",
     "@oclif/test": "^1",
     "@types/fs-extra": "^9.0.6",
