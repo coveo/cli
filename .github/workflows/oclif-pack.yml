@@ -16,9 +16,7 @@ jobs:
         run: npm run setup
       - name: oclif-dev package
         working-directory: ./packages/cli
-        run: |
-          node node_modules/patch-package/index.js
-          npx @oclif/dev-cli pack:macos
+        run: npx @oclif/dev-cli pack:macos
   package-linux:
     name: Package cli for Linux
     runs-on: ubuntu-latest
@@ -32,12 +30,10 @@ jobs:
         run: npm run setup
       - name: oclif-dev package
         working-directory: ./packages/cli
-        run: |
-          node node_modules/patch-package/index.js
-          npx @oclif/dev-cli pack:deb
+        run: npx @oclif/dev-cli pack:deb
   package-windows:
     name: Package cli for Windows
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -49,7 +45,9 @@ jobs:
       - name: oclif-dev package
         working-directory: ./packages/cli
         run: |
-          node node_modules/patch-package/index.js
+          sudo apt-get update
+          sudo apt-get install nsis          
+          sudo apt-get install p7zip-full
           npx @oclif/dev-cli pack:win
   
     
