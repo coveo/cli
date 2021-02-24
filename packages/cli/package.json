@@ -64,6 +64,9 @@
       "init": "./lib/hooks/init/set-global-config",
       "analytics": "./lib/hooks/analytics/analytics",
       "prerun": "./lib/hooks/prerun/prerun"
+    },
+    "mac": {
+      "identifier": "@coveo/cli"
     }
   },
   "repository": "coveo/cli",

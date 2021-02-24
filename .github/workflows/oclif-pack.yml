@@ -3,6 +3,22 @@ name: oclif pack
 on: push
 
 jobs:
+  package-osx:
+    name: Package cli for OSX
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+      - name: Setup
+        run: npm run setup
+      - name: oclif-dev package
+        working-directory: ./packages/cli
+        run: |
+          node node_modules/patch-package/index.js
+          npx @oclif/dev-cli pack:deb
   package-linux:
     name: Package cli for Linux
     runs-on: ubuntu-latest
@@ -16,4 +32,8 @@ jobs:
         run: npm run setup
       - name: oclif-dev package
         working-directory: ./packages/cli
-        run: npx @oclif/dev-cli pack:deb
+        run: |
+          node node_modules/patch-package/index.js
+          npx @oclif/dev-cli pack:deb
+  
+    
