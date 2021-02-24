@@ -16,15 +16,15 @@ jobs:
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
       - name: print-hash
         id: print_hash
-        run: echo ${{ steps.short_hash.sha_short }}
+        run: echo ${{ steps.short_hash.outputs.sha_short }}
       - name: create-release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.short_hash.sha_short }}
-          release_name: Release ${{ steps.short_hash.sha_short }}
+          tag_name: ${{ steps.short_hash.outputs.sha_short }}
+          release_name: Release ${{ steps.short_hash.outputs.sha_short }}
           draft: false
           prerelease: false
 
