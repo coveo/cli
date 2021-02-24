@@ -65,7 +65,7 @@
       "analytics": "./lib/hooks/analytics/analytics",
       "prerun": "./lib/hooks/prerun/prerun"
     },
-    "mac": {
+    "macos": {
       "identifier": "@coveo/cli"
     }
   },
