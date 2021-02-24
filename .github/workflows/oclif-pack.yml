@@ -17,6 +17,25 @@ jobs:
       - name: oclif-dev package
         working-directory: ./packages/cli
         run: npx @oclif/dev-cli pack:macos
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: .packages/cli/dist/macos/coveo-v0.0.0.pkg
+          asset_name: coveo-v0.0.0.pkg
+          asset_content_type: application/zip
   package-linux:
     name: Package cli for Linux
     runs-on: ubuntu-latest
@@ -49,5 +68,33 @@ jobs:
           sudo apt-get install nsis          
           sudo apt-get install p7zip-full
           npx @oclif/dev-cli pack:win
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload Release X64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: .packages/cli/dist/win/coveo-v0.0.0-x64.exe
+          asset_name: coveo-v0.0.0-x64.exe
+          asset_content_type: application/zip
+      - name: Upload Release X86
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: .packages/cli/dist/win/coveo-v0.0.0-x86.exe
+          asset_name: coveo-v0.0.0-x86.exe
+          asset_content_type: application/zip
   
     

@@ -7,45 +7,38 @@
 [![License](https://img.shields.io/npm/l/@coveo/cli.svg)](https://github.com/coveo/cli/blob/master/package.json)
 
 <!-- toc -->
-
-- [Usage](#usage)
-- [Commands](#commands)
+* [@coveo/cli](#coveocli)
+* [Usage](#usage)
+* [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
-
 ```sh-session
 $ npm install -g @coveo/cli
 $ coveo COMMAND
 running command...
 $ coveo (-v|--version|version)
-@coveo/cli/0.0.0 darwin-x64 node-v14.15.4
+@coveo/cli/0.0.0 darwin-x64 node-v14.15.1
 $ coveo --help [COMMAND]
 USAGE
   $ coveo COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-
-- [@coveo/cli](#coveocli)
-- [Usage](#usage)
-- [Commands](#commands)
-  - [`coveo auth:login`](#coveo-authlogin)
-  - [`coveo config:get`](#coveo-configget)
-  - [`coveo config:set`](#coveo-configset)
-  - [`coveo hello [FILE]`](#coveo-hello-file)
-  - [`coveo help [COMMAND]`](#coveo-help-command)
-  - [`coveo org:list`](#coveo-orglist)
-  - [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
-  - [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
-  - [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
+* [`coveo auth:login`](#coveo-authlogin)
+* [`coveo config:get`](#coveo-configget)
+* [`coveo config:set`](#coveo-configset)
+* [`coveo help [COMMAND]`](#coveo-help-command)
+* [`coveo org:list`](#coveo-orglist)
+* [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
+* [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
+* [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
 
 ## `coveo auth:login`
 
@@ -94,6 +87,9 @@ USAGE
   $ coveo config:set
 
 OPTIONS
+  -a, --analytics=y|n                                                  Wether to enable analytics and telemetry
+                                                                       tracking.
+
   -e, --environment=dev|qa|prod|hipaa                                  The platform environment inside which to perform
                                                                        operation.
 
@@ -105,29 +101,6 @@ OPTIONS
 ```
 
 _See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/config/set.ts)_
-
-## `coveo hello [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ coveo hello [FILE]
-
-ARGUMENTS
-  FILE  a dummy file
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ coveo hello
-       hello world from ./src/hello.ts!
-```
-
-_See code: [src/commands/hello.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/hello.ts)_
 
 ## `coveo help [COMMAND]`
 
@@ -175,9 +148,11 @@ Create a search page with Angular powered by Coveo Headless
 USAGE
   $ coveo ui:create:angular NAME
 
+ARGUMENTS
+  NAME  application name
+
 OPTIONS
-  -d, --defaults   Disable interactive input prompts for options with a default
-  -h, --help       show CLI help
+  -d, --defaults  Disable interactive input prompts for options with a default
 ```
 
 _See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/ui/create/angular.ts)_
@@ -187,15 +162,11 @@ _See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob
 Create a search page in React powered by Coveo Headless
 
 ```
-
 USAGE
   $ coveo ui:create:react NAME
 
 ARGUMENTS
   NAME  application name
-
-OPTIONS
-  -h, --help  show CLI help
 
 EXAMPLES
   $ coveo ui:create:react myapp
@@ -209,16 +180,14 @@ _See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v
 Create a new project powered by vue-cli-service
 
 ```
-
 USAGE
-$ coveo ui:create:vue NAME
+  $ coveo ui:create:vue NAME
 
 ARGUMENTS
-NAME application name
+  NAME  application name
 
 OPTIONS
-  -h, --help
-      show CLI help
+  -h, --help         show CLI help
 
   -p, --preset=path  Path to a JSON file with pre-defined options and plugins for creating a new project.
                      If not specified, the default TypeScript preset will be taken.
@@ -226,13 +195,11 @@ OPTIONS
                      https://cli.vuejs.org/guide/plugins-and-presets.html#presets
 
 EXAMPLES
-$ coveo ui:create:vue --preset path/to/my/preset.json
-$ coveo ui:create:vue --help
-
+  $ coveo ui:create:vue --preset path/to/my/preset.json
+  $ coveo ui:create:vue --help
 ```
 
 _See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/ui/create/vue.ts)_
-
 <!-- commandsstop -->
 
 ```
