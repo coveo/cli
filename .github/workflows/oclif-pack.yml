@@ -33,7 +33,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: .packages/cli/dist/macos/coveo-v0.0.0.pkg
+          asset_path: ./packages/cli/dist/macos/coveo-v0.0.0.pkg
           asset_name: coveo-v0.0.0.pkg
           asset_content_type: application/zip
   package-linux:
@@ -84,7 +84,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: .packages/cli/dist/win/coveo-v0.0.0-x64.exe
+          asset_path: ./packages/cli/dist/win/coveo-v0.0.0-x64.exe
           asset_name: coveo-v0.0.0-x64.exe
           asset_content_type: application/zip
       - name: Upload Release X86
@@ -93,7 +93,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: .packages/cli/dist/win/coveo-v0.0.0-x86.exe
+          asset_path: ./packages/cli/dist/win/coveo-v0.0.0-x86.exe
           asset_name: coveo-v0.0.0-x86.exe
           asset_content_type: application/zip
   
