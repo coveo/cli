@@ -1,0 +1,17 @@
+name: oclif pack
+
+on: push
+
+jobs:
+  package-linux:
+    name: Package cli for Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: oclif-dev package:deb
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+      - run: npx @oclif/dev-cli pack:deb
