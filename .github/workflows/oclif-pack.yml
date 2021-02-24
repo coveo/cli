@@ -18,7 +18,7 @@ jobs:
         working-directory: ./packages/cli
         run: |
           node node_modules/patch-package/index.js
-          npx @oclif/dev-cli pack:deb
+          npx @oclif/dev-cli pack:macos
   package-linux:
     name: Package cli for Linux
     runs-on: ubuntu-latest
