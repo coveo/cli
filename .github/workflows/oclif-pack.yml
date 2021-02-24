@@ -9,11 +9,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: oclif-dev package:deb
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v1
         with:
           node-version: '14'
-      - run: npm run setup
-      - run: cd packages/cli
-      - run: npx @oclif/dev-cli pack:deb
+      - name: Setup
+        run: npm run setup
+      - name: oclif-dev package
+        working-directory: ./packages/cli
+        run: npx @oclif/dev-cli pack:deb
