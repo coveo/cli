@@ -71,7 +71,6 @@ export default class Vue extends Command {
 
     const cliArgs = [
       'invoke',
-      // '@coveo/typescript',
       '@coveo/vue-cli-plugin-typescript',
       '--orgId',
       cfg.organization,
