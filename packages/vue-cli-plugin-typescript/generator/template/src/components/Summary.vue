@@ -9,7 +9,6 @@
 </template>
 <script>
 import {buildQuerySummary} from '@coveo/headless';
-import engine from '../Engine';
 export default {
   name: 'Summary',
   data: function () {
@@ -18,7 +17,7 @@ export default {
     };
   },
   created: function () {
-    this.querySummary = buildQuerySummary(engine);
+    this.querySummary = buildQuerySummary(this.engine);
     this.querySummary.subscribe(() => {
       this.summary = {...this.querySummary.state};
     });
