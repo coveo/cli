@@ -11,4 +11,3 @@ sudo -u notGroot npm run setup
 cd packages/cli-e2e
 sudo -u notGroot google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage >/dev/null 2>&1 & \
 sudo -u notGroot npm run-script jest:debug
-echo 'Test daemon ready'
