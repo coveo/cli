@@ -47,9 +47,6 @@ describe('auth', () => {
 
       await retry(async () => {
         const pages = await browser.pages();
-        pages.forEach((page) => {
-          console.log(page.url());
-        });
         expect(
           pages.some(
             // TODO CDX-98: URL should vary in fonction of the targeted environment.
