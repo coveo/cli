@@ -12,21 +12,26 @@ export function addProxyConfigToWorkspace(
 ): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     const workspaceBuffer = tree.read(normalize('./angular.json'));
-    if (workspaceBuffer !== null && options.project) {
-      try {
-        const workspaceConfig = JSON.parse(workspaceBuffer.toString());
+    if (workspaceBuffer === null || !options.project) {
+      return;
+    }
+    try {
+      const workspaceConfig = JSON.parse(workspaceBuffer.toString());
 
-        workspaceConfig.projects[options.project].architect.serve.options[
-          'proxyConfig'
-        ] = 'src/proxy.conf.json';
+      workspaceConfig.projects[options.project].architect.serve.options[
+        'proxyConfig'
+      ] = 'src/proxy.conf.json';
 
-        tree.overwrite(
-          normalize('./angular.json'),
-          JSON.stringify(workspaceConfig, null, 4)
-        );
-      } catch (error) {
-        console.error('Unable to add proxy to project workspace', error);
-      }
+      tree.overwrite(
+        normalize('./angular.json'),
+        JSON.stringify(workspaceConfig, null, 4)
+      );
+    } catch (error) {
+      console.error(
+        `Unable to update the Angular workspace configuration with the proxy information.
+Make sure your angular.json file is valid and contains a "serve" target (see https://angular.io/guide/build#proxying-to-a-backend-server).`,
+        error
+      );
     }
   };
 }
@@ -37,21 +42,23 @@ export function addProxyConfigToWorkspace(
 export function startProxyServerFromRootApp(_options: CoveoSchema): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     const packageJsonBuffer = tree.read(normalize('./package.json'));
-    if (packageJsonBuffer !== null) {
-      try {
-        const packageJson = JSON.parse(packageJsonBuffer.toString());
+    if (packageJsonBuffer === null) {
+      return;
+    }
 
-        packageJson.scripts['start'] =
-          'concurrently "npm run start-server" "ng serve"';
-        packageJson.scripts['start-server'] = 'node ./scripts/start-server.js';
+    try {
+      const packageJson = JSON.parse(packageJsonBuffer.toString());
 
-        tree.overwrite(
-          normalize('./package.json'),
-          JSON.stringify(packageJson, null, 4)
-        );
-      } catch (error) {
-        console.error('Unable to add proxy to project workspace', error);
-      }
+      packageJson.scripts['start'] =
+        'concurrently "npm run start-server" "ng serve"';
+      packageJson.scripts['start-server'] = 'node ./scripts/start-server.js';
+
+      tree.overwrite(
+        normalize('./package.json'),
+        JSON.stringify(packageJson, null, 4)
+      );
+    } catch (error) {
+      console.error('Unable to add proxy to project workspace', error);
     }
   };
 }

@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import Command from '@oclif/command';
 import {IConfig} from '@oclif/config';
-import {AuthenticatedClient} from '../platform/authenticatedClient';
+import {
+  AuthenticationStatus,
+  getAuthenticationStatus,
+} from '../platform/authenticatedClient';
 
 declare global {
   namespace NodeJS {
@@ -20,16 +23,13 @@ export default function AuthenticationRequired() {
   ) {
     const originalRunCommand = descriptor.value!;
     descriptor.value = async function () {
-      const authenticatedClient = new AuthenticatedClient();
+      const status = await getAuthenticationStatus();
 
-      const loggedIn = await authenticatedClient.isLoggedIn();
-
-      if (!loggedIn) {
+      if (status === AuthenticationStatus.LOGGED_OUT) {
         target.error('Not currently logged in. Run coveo auth:login first.');
       }
 
-      const isExpired = await authenticatedClient.isExpired();
-      if (isExpired) {
+      if (status === AuthenticationStatus.EXPIRED) {
         target.error(
           'Authentication token is expired. Run coveo auth:login first.'
         );
