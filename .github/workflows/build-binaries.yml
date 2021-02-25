@@ -40,4 +40,4 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./packages/cli/dist/${{ matrix.pack-command }}/**/*
           file_glob: true
-          tag: ${{ needs.create-release.outputs.tag }}
+          tag: ${{ github.ref }}
