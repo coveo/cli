@@ -15,8 +15,8 @@ jobs:
           node-version: '14'
       - name: Setup
         run: npm run setup
-      - name: Tests
-        run: npm run test
       - name: Build CLI
         working-directory: ./packages/cli
         run: tsc -b
+      - name: Tests
+        run: npm run test
