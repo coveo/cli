@@ -1,5 +1,5 @@
 const github = require('@actions/github');
-const octokit = github.getOctokit(process.env.GITHUB_CREDENTIALS);
+const octokit = github.getOctokit('1494540bf76e7929c942e6963fa79945a2f98d63');
 const owner = 'coveo';
 const repo = 'cli';
 
@@ -40,6 +40,27 @@ const updatePullRequestComment = (comment_id, body) => {
   return octokit.issues.updateComment({repo, owner, body, comment_id});
 };
 
+const getLatestTag = async () => {
+  const tags = await octokit.repos.listTags({owner, repo});
+  return tags.data[0].name;
+};
+
+const createOrUpdateReleaseDescription = async (tag, body) => {
+  try {
+    const release = await octokit.repos.getReleaseByTag({repo, owner, tag});
+    await octokit.repos.updateRelease({
+      repo,
+      owner,
+      release_id: release.data.id,
+      body,
+    });
+  } catch (e) {
+    if (e.status === 404) {
+      await octokit.repos.createRelease({owner, repo, body, tag_name: tag});
+    }
+  }
+};
+
 module.exports = {
   getPullRequestTitle,
   getPullRequestComments,
@@ -47,4 +68,6 @@ module.exports = {
   updatePullRequestComment,
   getHeadBranchName,
   getBaseBranchName,
+  getLatestTag,
+  createOrUpdateReleaseBody: createOrUpdateReleaseDescription,
 };
