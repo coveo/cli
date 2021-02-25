@@ -19,5 +19,7 @@ jobs:
         with:
           node-version: '14'
       - run: npm run setup
+      - run: git config --global user.email action@github.com
+      - run: git config --global user.name GitHub Action
       - run: node_modules/.bin/lerna changed
       - run: node_modules/.bin/lerna version ---conventional-commits -y
