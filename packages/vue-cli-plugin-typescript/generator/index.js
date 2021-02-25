@@ -1,18 +1,20 @@
-// eslint-disable-next-line no-unused-vars
 module.exports = (api, options, rootOptions) => {
   api.extendPackage({
-    dependencies: {
-      '@coveo/headless': '^0.1.0',
-      buefy: '^0.9.4',
+    scripts: {
+      postinstall: 'node ./scripts/setup-server.js',
+      start: 'concurrently --raw "npm run start-server"  "npm run serve"',
+      'start-server': 'node ./scripts/start-server.js',
     },
-    devDependencies: {
-      'node-sass': '^5.0.0',
-      'sass-loader': '^10.1.1',
+    dependencies: {
+      '@coveo/headless': 'latest',
+      '@coveo/search-token-server': 'latest',
+      buefy: '^0.9.4',
+      concurrently: '^5.3.0',
     },
   });
 
   api.render('./template', {
-    //   TODO: inject the appropriate file type
+    ...rootOptions,
     ...options,
   });
 };

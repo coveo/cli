@@ -46,7 +46,6 @@
 </template>
 
 <script>
-import engine from '../Engine';
 import {buildResultList, FieldActions} from '@coveo/headless';
 export default {
   name: 'ResultList',
@@ -57,9 +56,9 @@ export default {
   },
   created: function () {
     const fieldsToLoad = ['objecttype', 'filetype', 'author'];
-    engine.dispatch(FieldActions.registerFieldsToInclude(fieldsToLoad));
+    this.engine.dispatch(FieldActions.registerFieldsToInclude(fieldsToLoad));
 
-    this.resultList = buildResultList(engine);
+    this.resultList = buildResultList(this.engine);
     this.resultList.subscribe(() => {
       this.state = {...this.resultList.state};
     });
