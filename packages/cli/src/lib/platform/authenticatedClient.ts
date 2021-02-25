@@ -61,3 +61,23 @@ export class AuthenticatedClient {
     }
   }
 }
+
+export enum AuthenticationStatus {
+  LOGGED_IN,
+  EXPIRED,
+  LOGGED_OUT,
+}
+
+export async function getAuthenticationStatus() {
+  const authenticatedClient = new AuthenticatedClient();
+
+  if (!(await authenticatedClient.isLoggedIn())) {
+    return AuthenticationStatus.LOGGED_OUT;
+  }
+
+  if (await authenticatedClient.isExpired()) {
+    return AuthenticationStatus.EXPIRED;
+  }
+
+  return AuthenticationStatus.LOGGED_IN;
+}

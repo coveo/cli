@@ -4,8 +4,13 @@ import {ProjectType} from '@schematics/angular/utility/workspace-models';
 import {Rule, Tree, SchematicContext, chain} from '@angular-devkit/schematics';
 
 import {CoveoSchema} from '../schema';
-import {createFiles} from '../rules/templates';
-import {installDepedencies} from '../rules/dependencies';
+import {
+  addProxyConfigToWorkspace,
+  startProxyServerFromRootApp,
+} from './rules/proxy';
+import {createServerDirectory} from './rules/templates';
+import {installServerDependencies} from './rules/dependencies';
+import {createFiles} from '../common-rules/templates';
 
 export default function (options: CoveoSchema): Rule {
   return async (tree: Tree, _context: SchematicContext) => {
@@ -13,7 +18,13 @@ export default function (options: CoveoSchema): Rule {
     const project = getProjectFromWorkspace(workspace, options.project);
 
     if (project.extensions.projectType === ProjectType.Application) {
-      return chain([installDepedencies(options), createFiles(options)]);
+      return chain([
+        addProxyConfigToWorkspace(options, project),
+        createServerDirectory(options),
+        createFiles(options),
+        startProxyServerFromRootApp(options),
+        installServerDependencies(options),
+      ]);
     }
     return;
   };

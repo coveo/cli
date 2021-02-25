@@ -1,14 +1,21 @@
 {
   "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
-    "headless-engine": {
-      "description": "Adds the Coveo Engine to the project",
-      "factory": "./headless-engine/index",
-      "schema": "./schema.json"
+    "search-token-server": {
+      "factory": "./search-token-server/index",
+      "description": "Sets up a proxy server to generate Coveo search tokens.",
+      "schema": "./schema.json",
+      "private": true
     },
     "ng-add-setup-project": {
       "factory": "./ng-add-setup-project/index",
       "description": "Sets up the project after ng-add dependencies have been installed",
+      "schema": "./schema.json",
+      "private": true
+    },
+    "install-project-dependencies": {
+      "factory": "./ng-add-setup-project/index#setupDependencies",
+      "description": "Install all the necessary dependencies to run the Angular project",
       "schema": "./schema.json",
       "private": true
     },

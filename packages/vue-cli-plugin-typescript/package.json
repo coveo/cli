@@ -1,5 +1,5 @@
 {
-  "name": "@coveo/cli-plugin-vue",
+  "name": "@coveo/vue-cli-plugin-typescript",
   "version": "0.0.0",
   "description": "Vue-cli 3 plugin for adding Coveo Headless support",
   "main": "index.js",
