@@ -54,7 +54,7 @@ if (!isImagePresent()) {
 }
 try {
   execSync(
-    `docker run --name=${DOCKER_CONTAINER_NAME} -v "${repoHostPath}:${repoDockerPath}" -p "9229:9229" -it --cap-add=SYS_ADMIN ${DOCKER_IMAGE_NAME} ${dockerEntryPoint}`,
+    `docker run --name=${DOCKER_CONTAINER_NAME} -v "${repoHostPath}:${repoDockerPath}" -p "9229:9229" -t --cap-add=SYS_ADMIN ${DOCKER_IMAGE_NAME} ${dockerEntryPoint}`,
     // `docker run --name=${DOCKER_CONTAINER_NAME} -v "${repoHostPath}:${repoDockerPath}" -it --cap-add=SYS_ADMIN ${DOCKER_IMAGE_NAME} /bin/bash`,
     {stdio: ['ignore', 'inherit', 'inherit']}
   );
