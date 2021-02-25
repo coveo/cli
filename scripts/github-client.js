@@ -69,5 +69,5 @@ module.exports = {
   getHeadBranchName,
   getBaseBranchName,
   getLatestTag,
-  createOrUpdateReleaseBody: createOrUpdateReleaseDescription,
+  createOrUpdateReleaseDescription,
 };
