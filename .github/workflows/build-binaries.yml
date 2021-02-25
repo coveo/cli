@@ -9,7 +9,6 @@ on:
 jobs:
   package:
     name: Package for ${{ matrix.pack-command }}
-    needs: create-release
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
