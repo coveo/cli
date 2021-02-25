@@ -35,8 +35,11 @@ jobs:
         include:
           - os: macos-latest
             pack-command: macos
+            additional-install: echo "no additional install"
           - os: ubuntu-latest
             pack-command: win
+            additional-install: sudo apt-get install nsis p7zip-full -y
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -44,6 +47,8 @@ jobs:
           node-version: '14'
       - name: Setup
         run: npm run setup
+      - name: Additional install
+        run: ${{ matrix.additional-install }}
       - name: Create package
         working-directory: ./packages/cli
         run: npx @oclif/dev-cli pack:${{ matrix.pack-command }}
