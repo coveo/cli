@@ -1,10 +1,8 @@
 # <%- rootOptions.projectName %>
 
-## Project setup
+### Setup environment
 
-```
-npm install
-```
+You should have an `.env` file at the root of this project. You can use `.env.example` as starting point and make sure to replace all placeholder variables `<...>` by the proper information for your organization.
 
 ### Compiles and hot-reloads for development
 
