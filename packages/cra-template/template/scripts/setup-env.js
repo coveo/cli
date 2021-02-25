@@ -9,8 +9,8 @@ function createEnvFile(filePath) {
 REACT_APP_PLATFORM_URL=${platformUrl}
 REACT_APP_ORGANIZATION_ID=${orgId}
 REACT_APP_API_KEY=${apiKey}
-
-USER_EMAIL=${user}`;
+REACT_APP_TOKEN_ENDPOINT="/token"
+REACT_APP_USER_EMAIL=${user}`;
 
   writeFileSync(filePath, projectEnvContent);
 }
