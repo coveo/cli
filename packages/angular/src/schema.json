@@ -19,11 +19,16 @@
     },
     "orgId": {
       "type": "string",
-      "description": "Your organisation ID"
+      "description": "The unique identifier of the organization in which to generate a search token."
     },
     "apiKey": {
       "type": "string",
-      "description": "Your API Key"
+      "description": "An API key granting the impersonate privilege in your organization."
+    },
+    "platformUrl": {
+      "type": "string",
+      "description": "The target environment",
+      "default": "https://platform.cloud.coveo.com"
     }
   },
   "required": ["orgId", "apiKey"]

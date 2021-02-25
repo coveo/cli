@@ -7,42 +7,38 @@
 [![License](https://img.shields.io/npm/l/@coveo/cli.svg)](https://github.com/coveo/cli/blob/master/package.json)
 
 <!-- toc -->
-
-- [@coveo/cli](#coveocli)
-- [Usage](#usage)
-- [Commands](#commands)
+* [@coveo/cli](#coveocli)
+* [Usage](#usage)
+* [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
-
 ```sh-session
 $ npm install -g @coveo/cli
 $ coveo COMMAND
 running command...
 $ coveo (-v|--version|version)
-@coveo/cli/0.1.0 darwin-x64 node-v14.15.1
+@coveo/cli/0.0.0 darwin-x64 node-v14.15.1
 $ coveo --help [COMMAND]
 USAGE
   $ coveo COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-
-- [`coveo auth:login`](#coveo-authlogin)
-- [`coveo config:get`](#coveo-configget)
-- [`coveo config:set`](#coveo-configset)
-- [`coveo help [COMMAND]`](#coveo-help-command)
-- [`coveo org:list`](#coveo-orglist)
-- [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
-- [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
-- [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
+* [`coveo auth:login`](#coveo-authlogin)
+* [`coveo config:get`](#coveo-configget)
+* [`coveo config:set`](#coveo-configset)
+* [`coveo help [COMMAND]`](#coveo-help-command)
+* [`coveo org:list`](#coveo-orglist)
+* [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
+* [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
+* [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
 
 ## `coveo auth:login`
 
@@ -104,7 +100,7 @@ OPTIONS
                                                                        operation. See https://docs.coveo.com/en/2976
 ```
 
-_See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v0.1.0/src/commands/config/set.ts)_
+_See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/config/set.ts)_
 
 ## `coveo help [COMMAND]`
 
@@ -203,8 +199,7 @@ EXAMPLES
   $ coveo ui:create:vue --help
 ```
 
-_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v0.1.0/src/commands/ui/create/vue.ts)_
-
+_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v0.0.0/src/commands/ui/create/vue.ts)_
 <!-- commandsstop -->
 
 ```

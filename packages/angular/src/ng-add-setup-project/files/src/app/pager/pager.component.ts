@@ -8,7 +8,7 @@ import {
   ResultsPerPage,
   ResultsPerPageState,
 } from '@coveo/headless';
-import {engine} from '../engine';
+import {EngineService} from '../engine.service';
 
 @Component({
   selector: 'app-pager',
@@ -19,7 +19,7 @@ export class PagerComponent implements OnInit {
   private headlessPager: Pager;
   private headlessResultPerPage: ResultsPerPage;
 
-  constructor() {}
+  constructor(private engineService: EngineService) {}
 
   get pager(): PagerState {
     return this.headlessPager.state;
@@ -52,11 +52,11 @@ export class PagerComponent implements OnInit {
   }
 
   private initializeControllers() {
-    this.headlessPager = buildPager(engine, {
+    this.headlessPager = buildPager(this.engineService.get(), {
       options: {numberOfPages: 3},
     });
 
-    this.headlessResultPerPage = buildResultsPerPage(engine, {
+    this.headlessResultPerPage = buildResultsPerPage(this.engineService.get(), {
       initialState: {numberOfResults: 10},
     });
   }

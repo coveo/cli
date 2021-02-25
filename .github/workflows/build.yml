@@ -1,0 +1,22 @@
+name: Build
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+      - name: Setup
+        run: npm run setup
+      - name: Tests
+        run: npm run test
+      - name: Build CLI
+        working-directory: ./packages/cli
+        run: tsc -b

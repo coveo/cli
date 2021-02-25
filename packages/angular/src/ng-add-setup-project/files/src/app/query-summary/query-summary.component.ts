@@ -4,7 +4,7 @@ import {
   QuerySummary,
   QuerySummaryState,
 } from '@coveo/headless';
-import {engine} from '../engine';
+import {EngineService} from '../engine.service';
 
 @Component({
   selector: 'app-query-summary',
@@ -14,13 +14,13 @@ import {engine} from '../engine';
 export class QuerySummaryComponent implements OnInit {
   private headlessQuerySummary: QuerySummary;
 
-  constructor() {}
+  constructor(private engineService: EngineService) {}
 
   get state(): QuerySummaryState {
     return this.headlessQuerySummary.state;
   }
 
   ngOnInit(): void {
-    this.headlessQuerySummary = buildQuerySummary(engine);
+    this.headlessQuerySummary = buildQuerySummary(this.engineService.get());
   }
 }

@@ -12,11 +12,14 @@ export default function (options: CoveoSchema): Rule {
     const project = getProjectFromWorkspace(workspace, options.project);
 
     if (project.extensions.projectType === ProjectType.Application) {
-      const taskId = context.addTask(
-        new RunSchematicTask('headless-engine', options)
+      const dependencyInstallationTaskId = context.addTask(
+        new RunSchematicTask('install-project-dependencies', options)
       );
       context.addTask(new RunSchematicTask('ng-add-setup-project', options), [
-        taskId,
+        dependencyInstallationTaskId,
+      ]);
+      context.addTask(new RunSchematicTask('search-token-server', options), [
+        dependencyInstallationTaskId,
       ]);
     }
     return;
