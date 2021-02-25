@@ -20,4 +20,4 @@ jobs:
           node-version: '14'
       - run: npm run setup
       - run: node_modules/.bin/lerna changed
-      - run: node_modules/.bin/lerna version -y
+      - run: node_modules/.bin/lerna version ---conventional-commits -y
