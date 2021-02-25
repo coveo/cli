@@ -16,7 +16,7 @@
     "url": "git+https://github.com/coveo/cli.git"
   },
   "scripts": {
-    "test": "npm run test:headless",
+    "test-e2e": "npm run test:headless",
     "test:headless": "node ./entrypoints/entry.js",
     "test:debug": "node ./entrypoints/entry.js --debug",
     "test:bash": "node ./entrypoints/entry.js --bash",

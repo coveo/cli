@@ -59,5 +59,5 @@ try {
     {stdio: 'inherit'}
   );
 } finally {
-  execSync(`docker container rm ${DOCKER_CONTAINER_NAME}`);
+  execSync(`docker container rm ${DOCKER_CONTAINER_NAME}`, {stdio: 'inherit'});
 }
