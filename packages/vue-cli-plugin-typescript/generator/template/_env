@@ -1,0 +1,9 @@
+VUE_APP_PLATFORM_URL=<%- options.platformUrl -%>
+
+VUE_APP_ORGANIZATION_ID=<%- options.orgId -%>
+
+VUE_APP_API_KEY=<%- options.apiKey -%>
+
+VUE_APP_USER_EMAIL=<%- options.user -%>
+
+VUE_APP_TOKEN_ENDPOINT="/token"

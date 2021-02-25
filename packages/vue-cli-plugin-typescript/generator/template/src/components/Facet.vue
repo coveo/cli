@@ -16,7 +16,6 @@
 <script>
 import {buildFacet} from '@coveo/headless';
 import FacetValue from './FacetValue';
-import engine from '../Engine';
 
 export default {
   name: 'Facet',
@@ -33,7 +32,7 @@ export default {
     },
   },
   created: function () {
-    this.facet = buildFacet(engine, {
+    this.facet = buildFacet(this.engine, {
       options: {field: this.field, title: this.title},
     });
     this.facet.subscribe(() => {

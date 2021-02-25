@@ -12,8 +12,7 @@
 </template>
 
 <script>
-import engine from '../Engine';
-import {buildSearchBox, SearchBoxOptions} from '@coveo/headless';
+import {buildSearchBox} from '@coveo/headless';
 
 export default {
   name: 'SearchBox',
@@ -44,7 +43,7 @@ export default {
     const options = {
       numberOfSuggestions: 5,
     };
-    this.searchBox = buildSearchBox(engine, {options});
+    this.searchBox = buildSearchBox(this.engine, {options});
     this.unsubscribe = this.searchBox.subscribe(() => {
       this.state = {...this.searchBox.state};
     });

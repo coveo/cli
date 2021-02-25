@@ -10,7 +10,6 @@
 </template>
 <script>
 import {buildPager} from '@coveo/headless';
-import engine from '../Engine';
 export default {
   name: 'Pager',
   data: function () {
@@ -22,11 +21,11 @@ export default {
     },
   },
   created: function () {
-    this.pager = buildPager(engine);
+    this.pager = buildPager(this.engine);
     this.pager.subscribe(() => {
       this.state = {
         ...this.pager.state,
-        total: engine.state.search.response.totalCountFiltered,
+        total: this.engine.state.search.response.totalCountFiltered,
       };
     });
   },
