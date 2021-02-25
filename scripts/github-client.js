@@ -57,6 +57,8 @@ const createOrUpdateReleaseDescription = async (tag, body) => {
   } catch (e) {
     if (e.status === 404) {
       await octokit.repos.createRelease({owner, repo, body, tag_name: tag});
+    } else {
+      console.error(e);
     }
   }
 };
