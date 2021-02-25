@@ -19,6 +19,21 @@ const dockerEntryPoint = (() => {
 })();
 const dockerFilePath = resolve(repoHostPath, 'packages', 'cli-e2e', 'docker');
 
+execSync(`ls ${repoHostPath}`, {
+  stdio: 'inherit',
+});
+execSync(`ls ${repoHostPath}/packages`, {
+  stdio: 'inherit',
+});
+execSync(`ls ${repoHostPath}/packages/cli-e2e`, {
+  stdio: 'inherit',
+});
+execSync(`ls ${repoHostPath}/packages/cli-e2e/docker`, {
+  stdio: 'inherit',
+});
+execSync(`cat ${repoHostPath}/packages/cli-e2e/docker/DockerFile`, {
+  stdio: 'inherit',
+});
 const noSuchImage = (message) =>
   message.trim().startsWith('Error: No such image:');
 
