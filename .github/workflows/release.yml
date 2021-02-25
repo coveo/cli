@@ -1,0 +1,23 @@
+name: Create release
+on:
+  - workflow_dispatch
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # pulls all commits (needed for lerna to correctly version)
+          # see https://stackoverflow.com/a/60184319/9285308 & https://github.com/actions/checkout
+          fetch-depth: 0
+      # pulls all tags (needed for lerna to correctly version)
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/* # see https://stackoverflow.com/a/60184319/9285308
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+      - run: npm run setup
+      - run: node_modules/.bin/lerna changed
+      - run: node_modules/.bin/lerna version ---conventional-commits -y
