@@ -19,4 +19,5 @@ jobs:
         with:
           node-version: '14'
       - run: npm run setup
-      - run: node node_modules/lerna/cli.js version -y
+      - run: node_modules/.bin/lerna changed
+      - run: node_modules/.bin/lerna version -y
