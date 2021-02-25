@@ -1,11 +1,12 @@
 {
   "name": "@coveo/cli",
   "private": false,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "author": "Coveo",
   "dependencies": {
     "@angular/cli": "^11.1.4",
-    "@coveo/angular": "^0.0.0",
+    "@coveo/angular": "^0.1.0",
+    "@coveo/vue-cli-plugin-typescript": "^0.1.0",
     "@coveord/platform-client": "^9.29.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
@@ -14,18 +15,17 @@
     "@vue/cli": "^4.5.11",
     "abortcontroller-polyfill": "^1.7.1",
     "cli-ux": "^5.5.1",
-    "create-react-app": "^4.0.1",
     "coveo.analytics": "^2.18.4",
+    "create-react-app": "^4.0.1",
     "exponential-backoff": "^3.1.0",
     "fs-extra": "^9.1.0",
     "isomorphic-fetch": "^3.0.0",
     "isomorphic-form-data": "^2.0.0",
     "keytar": "^7.3.0",
-    "tslib": "^1",
-    "@coveo/vue-cli-plugin-typescript": "^0.0.0"
+    "tslib": "^1"
   },
   "devDependencies": {
-    "@coveo/cra-template": "^0.0.0",
+    "@coveo/cra-template": "^0.1.0",
     "@oclif/dev-cli": "^1",
     "@oclif/test": "^1",
     "@types/fs-extra": "^9.0.6",
