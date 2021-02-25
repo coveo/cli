@@ -49,15 +49,17 @@ const isImagePresent = () => {
 if (!isImagePresent()) {
   console.log('Building docker image');
   execSync(`docker build -t ${DOCKER_IMAGE_NAME} ${dockerFilePath}`, {
-    stdio: 'inherit',
+    stdio: ['ignore', 'inherit', 'inherit'],
   });
 }
 try {
   execSync(
     `docker run --name=${DOCKER_CONTAINER_NAME} -v "${repoHostPath}:${repoDockerPath}" -p "9229:9229" -it --cap-add=SYS_ADMIN ${DOCKER_IMAGE_NAME} ${dockerEntryPoint}`,
     // `docker run --name=${DOCKER_CONTAINER_NAME} -v "${repoHostPath}:${repoDockerPath}" -it --cap-add=SYS_ADMIN ${DOCKER_IMAGE_NAME} /bin/bash`,
-    {stdio: 'inherit'}
+    {stdio: ['ignore', 'inherit', 'inherit']}
   );
 } finally {
-  execSync(`docker container rm ${DOCKER_CONTAINER_NAME}`, {stdio: 'inherit'});
+  execSync(`docker container rm ${DOCKER_CONTAINER_NAME}`, {
+    stdio: ['ignore', 'inherit', 'inherit'],
+  });
 }
