@@ -1,5 +1,5 @@
 const github = require('@actions/github');
-const octokit = github.getOctokit('1494540bf76e7929c942e6963fa79945a2f98d63');
+const octokit = github.getOctokit(process.env.GITHUB_CREDENTIALS);
 const owner = 'coveo';
 const repo = 'cli';
 
