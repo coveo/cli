@@ -1,6 +1,6 @@
 import {Component, AfterViewInit} from '@angular/core';
 import {AnalyticsActions, SearchActions} from '@coveo/headless';
-import {engine} from '../engine';
+import {EngineService} from '../engine.service';
 
 @Component({
   selector: 'app-search-page',
@@ -8,10 +8,10 @@ import {engine} from '../engine';
   styleUrls: ['./search-page.component.scss'],
 })
 export class SearchPageComponent implements AfterViewInit {
-  constructor() {}
+  constructor(private engineService: EngineService) {}
 
   executeSearch() {
-    const {dispatch} = engine;
+    const {dispatch} = this.engineService.get();
     const action = SearchActions.executeSearch(
       AnalyticsActions.logInterfaceLoad()
     );

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {buildSearchBox, SearchBox, SearchBoxOptions} from '@coveo/headless';
 import {FormControl} from '@angular/forms';
-import {engine} from '../engine';
+import {EngineService} from '../engine.service';
 
 @Component({
   selector: 'app-search-box',
@@ -16,7 +16,7 @@ export class SearchBoxComponent implements OnInit {
     rawValue: string;
   }[];
 
-  constructor() {}
+  constructor(private engineService: EngineService) {}
 
   updateState() {
     this.suggestions = this.headlessSearchBox.state.suggestions;
@@ -42,7 +42,7 @@ export class SearchBoxComponent implements OnInit {
       numberOfSuggestions: 3,
     };
 
-    this.headlessSearchBox = buildSearchBox(engine, {
+    this.headlessSearchBox = buildSearchBox(this.engineService.get(), {
       options,
     });
   }
