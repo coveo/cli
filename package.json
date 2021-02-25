@@ -59,7 +59,7 @@
   "scripts": {
     "setup": "npm i && lerna bootstrap",
     "build": "lerna run build",
-    "test": "lerna run test && lerna run test-e2e --stream",
+    "test": "lerna run test",
     "posttest": "eslint . --ext .ts --config .eslintrc",
     "lint:check": "eslint .",
     "lint:fix": "eslint --fix .",
