@@ -6,9 +6,8 @@ module.exports = (api, options, rootOptions) => {
       'start-server': 'node ./scripts/start-server.js',
     },
     dependencies: {
-      '@coveo/headless': '^0.1.0',
-      '@coveo/search-token-server':
-        'file:/Users/ylakhdar/Repos/coveo-cli/packages/search-token-server/search-token-server-0.0.0.tgz',
+      '@coveo/headless': 'latest',
+      '@coveo/search-token-server': 'latest',
       buefy: '^0.9.4',
       concurrently: '^5.3.0',
     },
