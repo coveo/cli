@@ -10,7 +10,7 @@ import {
 } from '@angular-devkit/schematics/testing';
 import {CoveoSchema} from '../schema';
 
-describe('headless-engine', () => {
+describe('search-token-server', () => {
   const workspaceOptions: WorkspaceOptions = {
     name: 'workspace',
     newProjectRoot: 'projects',
@@ -32,7 +32,15 @@ describe('headless-engine', () => {
     skipTests: false,
     skipPackageJson: false,
   };
-
+  const runSearchTokenServerSchematic = async () => {
+    return await runner
+      .runSchematicAsync(
+        'search-token-server',
+        {...defaultSchemaOptions},
+        appTree
+      )
+      .toPromise();
+  };
   const collectionPath = join(__dirname, '../collection.json');
   const runner = new SchematicTestRunner('schematics', collectionPath);
   let appTree: UnitTestTree;
@@ -55,20 +63,13 @@ describe('headless-engine', () => {
       .toPromise();
   });
 
-  it('should create the Coveo Headless Engine', async () => {
-    const schemaOptions = {...defaultSchemaOptions};
-    const tree = await runner
-      .runSchematicAsync('headless-engine', schemaOptions, appTree)
-      .toPromise();
-
-    const packageJsonContent = tree.readContent('/package.json');
-    // The coveo headless dependency was added to package.json
-    expect(Object.keys(JSON.parse(packageJsonContent).dependencies)).toContain(
-      '@coveo/headless'
-    );
-
-    // The headless engine was added to the angular project
-    expect(tree.files).toContain('/src/app/engine.ts');
+  it('should add a proxy config file', async () => {
+    const tree = await runSearchTokenServerSchematic();
+    expect(tree.files).toContain('/src/proxy.conf.json');
   });
-  // TODO: check if the org ID and api key was added to the engine
+
+  it('should add a server directory', async () => {
+    const tree = await runSearchTokenServerSchematic();
+    expect(tree.files).toContain('/server/server.ts');
+  });
 });

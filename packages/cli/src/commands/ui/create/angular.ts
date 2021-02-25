@@ -1,5 +1,10 @@
+import AuthenticationRequired from '../../../lib/decorators/authenticationRequired';
 import {Command, flags} from '@oclif/command';
+import {platformUrl} from '../../../lib/platform/environment';
+import {Storage} from '../../../lib/oauth/storage';
+import {Config} from '../../../lib/config/config';
 import {spawnProcess} from '../../../lib/utils/process';
+import {buildAnalyticsFailureHook} from '../../../hooks/analytics/analytics';
 
 export default class Angular extends Command {
   static description =
@@ -17,6 +22,7 @@ export default class Angular extends Command {
     {name: 'name', description: 'application name', required: true},
   ];
 
+  @AuthenticationRequired()
   async run() {
     const {args, flags} = this.parse(Angular);
     await this.createProject(args.name, flags.defaults);
@@ -34,19 +40,21 @@ export default class Angular extends Command {
   }
 
   private async addCoveoToProject(applicationName: string, defaults: boolean) {
-    // TODO: Connect to the user's org (CDX-73)
-    // At the moment the api key and orgId have no effect since angular project
-    // will be using the public default configuration
-    const apiKey = 'foo';
-    const orgId = 'bar';
+    const cfg = await this.configuration.get();
+    const storage = await this.storage.get();
 
     const cliArgs = [
       'add',
       '@coveo/angular',
       '--org-id',
-      orgId,
+      cfg.organization,
       '--api-key',
-      apiKey,
+      storage.accessToken!,
+      '--platform-url',
+      platformUrl({environment: cfg.environment}),
+      // TODO: CDX-91 Extract user email from oauth flow
+      '--user',
+      'foo@acme.com',
     ];
 
     if (defaults) {
@@ -62,11 +70,18 @@ export default class Angular extends Command {
   }
 
   async catch(err?: Error) {
-    // TODO: merge PR #18 before uncommenting
-    // await this.config.runHook(
-    //   'analytics',
-    //   buildAnalyticsFailureHook(this, {}, err)
-    // );
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsFailureHook(this, {}, err)
+    );
     throw err;
+  }
+
+  private get configuration() {
+    return new Config(this.config.configDir, this.error);
+  }
+
+  private get storage() {
+    return new Storage();
   }
 }
