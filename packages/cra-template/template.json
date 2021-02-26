@@ -22,7 +22,7 @@
       "postinstall": "node ./scripts/setup-server.js",
       "setup-env": "node ./scripts/setup-env.js",
       "start-server": "node ./scripts/start-server.js",
-      "start": "concurrently --raw \"npm run start-server\" \"react-scripts start\""
+      "start": "concurrently --raw \"yarn start-server\" \"react-scripts start\""
     }
   }
 }
