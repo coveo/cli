@@ -5,6 +5,7 @@ import {Storage} from '../../../lib/oauth/storage';
 import {Config} from '../../../lib/config/config';
 import {spawnProcess} from '../../../lib/utils/process';
 import {buildAnalyticsFailureHook} from '../../../hooks/analytics/analytics';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 
 export default class Angular extends Command {
   static description =
@@ -42,6 +43,7 @@ export default class Angular extends Command {
   private async addCoveoToProject(applicationName: string, defaults: boolean) {
     const cfg = await this.configuration.get();
     const storage = await this.storage.get();
+    const {providerUsername} = await this.getUserInfo();
 
     const cliArgs = [
       'add',
@@ -52,9 +54,8 @@ export default class Angular extends Command {
       storage.accessToken!,
       '--platform-url',
       platformUrl({environment: cfg.environment}),
-      // TODO: CDX-91 Extract user email from oauth flow
       '--user',
-      'foo@acme.com',
+      providerUsername,
     ];
 
     if (defaults) {
@@ -83,5 +84,13 @@ export default class Angular extends Command {
 
   private get storage() {
     return new Storage();
+  }
+
+  private async getUserInfo() {
+    const authenticatedClient = new AuthenticatedClient();
+    const platformClient = await authenticatedClient.getClient();
+    await platformClient.initialize();
+
+    return await platformClient.user.get();
   }
 }

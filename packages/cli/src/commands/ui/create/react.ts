@@ -8,6 +8,7 @@ import {platformUrl} from '../../../lib/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';
 import {Storage} from '../../../lib/oauth/storage';
 import AuthenticationRequired from '../../../lib/decorators/authenticationRequired';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 
 export default class React extends Command {
   static description =
@@ -49,6 +50,7 @@ export default class React extends Command {
   private async setupEnvironmentVariables(name: string) {
     const cfg = await this.configuration.get();
     const storage = await this.storage.get();
+    const {providerUsername} = await this.getUserInfo();
 
     return spawnProcess(
       'npm',
@@ -62,9 +64,8 @@ export default class React extends Command {
         storage.accessToken!,
         '--platformUrl',
         platformUrl({environment: cfg.environment}),
-        // TODO: CDX-91 Extract user email from oauth flow
         '--user',
-        'foo@acme.com',
+        providerUsername,
       ],
       {
         cwd: name,
@@ -87,5 +88,13 @@ export default class React extends Command {
 
   private get storage() {
     return new Storage();
+  }
+
+  private async getUserInfo() {
+    const authenticatedClient = new AuthenticatedClient();
+    const platformClient = await authenticatedClient.getClient();
+    await platformClient.initialize();
+
+    return await platformClient.user.get();
   }
 }
