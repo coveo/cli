@@ -9,12 +9,12 @@ import {
   SortByRelevancy,
   SortByDate,
 } from '@coveo/headless';
-import {headlessEngine} from '../Engine';
+import {IEngineProp} from '../common/Engine';
 import Box from '@material-ui/core/Box';
 import FormControl from '@material-ui/core/FormControl';
 import {InputLabel, MenuItem, Select} from '@material-ui/core';
 
-export default class Sort extends React.Component {
+export default class Sort extends React.Component<IEngineProp> {
   private headlessSort: SortType;
   state: SortState;
   relevanceSortCriterion: SortByRelevancy = buildRelevanceSortCriterion();
@@ -28,7 +28,7 @@ export default class Sort extends React.Component {
   constructor(props: any) {
     super(props);
 
-    this.headlessSort = buildSort(headlessEngine, {
+    this.headlessSort = buildSort(this.props.engine, {
       initialState: {
         criterion: this.relevanceSortCriterion,
       },

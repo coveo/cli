@@ -9,7 +9,7 @@ import {
   ResultList as ResultListType,
   buildResultTemplatesManager,
 } from '@coveo/headless';
-import {headlessEngine} from '../Engine';
+import {IEngineProp} from '../common/Engine';
 
 type Template = (result: Result) => any;
 
@@ -45,7 +45,7 @@ function FieldValue(props: FieldValueInterface) {
   );
 }
 
-export default class ResultList extends React.Component {
+export default class ResultList extends React.Component<IEngineProp> {
   private headlessResultList: ResultListType;
   private headlessResultTemplateManager: ResultTemplatesManager<Template>;
   state: ResultListState;
@@ -53,12 +53,12 @@ export default class ResultList extends React.Component {
   constructor(props: any) {
     super(props);
 
-    this.headlessResultList = buildResultList(headlessEngine);
+    this.headlessResultList = buildResultList(this.props.engine);
 
     this.state = this.headlessResultList.state;
 
     this.headlessResultTemplateManager = buildResultTemplatesManager(
-      headlessEngine
+      this.props.engine
     );
     this.headlessResultTemplateManager.registerTemplates({
       conditions: [],

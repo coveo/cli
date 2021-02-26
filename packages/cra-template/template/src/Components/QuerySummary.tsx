@@ -4,17 +4,17 @@ import {
   QuerySummaryState,
   QuerySummary as QuerySummaryType,
 } from '@coveo/headless';
-import {headlessEngine} from '../Engine';
 import {Box, Divider} from '@material-ui/core';
+import {IEngineProp} from '../common/Engine';
 
-export default class QuerySummary extends React.Component {
+export default class QuerySummary extends React.Component<IEngineProp> {
   private headlessQuerySummary: QuerySummaryType;
   state: QuerySummaryState;
 
   constructor(props: any) {
     super(props);
 
-    this.headlessQuerySummary = buildQuerySummary(headlessEngine);
+    this.headlessQuerySummary = buildQuerySummary(this.props.engine);
 
     this.state = this.headlessQuerySummary.state;
   }

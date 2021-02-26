@@ -6,16 +6,16 @@ import {
   SearchBoxState,
   SearchBox as SearchBoxType,
 } from '@coveo/headless';
-import {headlessEngine} from '../Engine';
+import {IEngineProp} from '../common/Engine';
 
-export default class SearchBox extends React.Component {
+export default class SearchBox extends React.Component<IEngineProp> {
   private headlessSearchBox: SearchBoxType;
   state: SearchBoxState;
 
   constructor(props: any) {
     super(props);
 
-    this.headlessSearchBox = buildSearchBox(headlessEngine);
+    this.headlessSearchBox = buildSearchBox(this.props.engine);
     this.state = this.headlessSearchBox.state;
   }
 

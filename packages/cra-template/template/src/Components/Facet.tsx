@@ -5,7 +5,7 @@ import {
   buildFacet,
   FacetValue,
 } from '@coveo/headless';
-import {headlessEngine} from '../Engine';
+import {IEngineProp} from '../common/Engine';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import Box from '@material-ui/core/Box';
@@ -13,7 +13,7 @@ import List from '@material-ui/core/List';
 import './Facet.css';
 import {Divider, ListItem, ListItemText, Typography} from '@material-ui/core';
 
-interface IFacetProps {
+interface IFacetProps extends IEngineProp {
   title: string;
   field: string;
 }
@@ -24,8 +24,7 @@ export default class Facet extends React.Component<IFacetProps, {}> {
 
   constructor(props: any) {
     super(props);
-
-    this.headlessFacet = buildFacet(headlessEngine, {
+    this.headlessFacet = buildFacet(this.props.engine, {
       options: {
         numberOfValues: 5,
         field: this.props.field,

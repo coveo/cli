@@ -9,16 +9,16 @@ import {
   ResultsPerPageState,
   ResultsPerPage as ResultPerPageType,
 } from '@coveo/headless';
-import {headlessEngine} from '../Engine';
+import {IEngineProp} from '../common/Engine';
 
-export default class ResultsPerPage extends React.Component {
+export default class ResultsPerPage extends React.Component<IEngineProp> {
   private headlessResultsPerPage: ResultPerPageType;
   state: ResultsPerPageState;
 
   constructor(props: any) {
     super(props);
 
-    this.headlessResultsPerPage = buildResultsPerPage(headlessEngine, {
+    this.headlessResultsPerPage = buildResultsPerPage(this.props.engine, {
       initialState: {numberOfResults: 10},
     });
 

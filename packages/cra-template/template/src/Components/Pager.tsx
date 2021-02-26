@@ -3,16 +3,16 @@ import {Pagination} from '@material-ui/lab';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import {buildPager, PagerState, Pager as PagerType} from '@coveo/headless';
-import {headlessEngine} from '../Engine';
+import {IEngineProp} from '../common/Engine';
 
-export default class Pager extends React.Component {
+export default class Pager extends React.Component<IEngineProp> {
   private headlessPager: PagerType;
   state: PagerState;
 
   constructor(props: any) {
     super(props);
 
-    this.headlessPager = buildPager(headlessEngine, {
+    this.headlessPager = buildPager(this.props.engine, {
       options: {numberOfPages: 3},
     });
 

@@ -10,11 +10,11 @@ import Sort from './Sort';
 import FacetList from './FacetList';
 import ResultsPerPage from './ResultsPerPage';
 import {AnalyticsActions, SearchActions} from '@coveo/headless';
-import {headlessEngine} from '../Engine';
+import {IEngineProp} from '../common/Engine';
 
-export default class SearchPage extends React.Component {
+export default class SearchPage extends React.Component<IEngineProp> {
   componentDidMount() {
-    const {dispatch} = headlessEngine;
+    const {dispatch} = this.props.engine;
     const action = SearchActions.executeSearch(
       AnalyticsActions.logInterfaceLoad()
     ) as any;
@@ -26,34 +26,34 @@ export default class SearchPage extends React.Component {
       <Container maxWidth="lg">
         <Grid container justify="center">
           <Grid item md={8}>
-            <SearchBox />
+            <SearchBox engine={this.props.engine} />
           </Grid>
         </Grid>
 
         <Box my={4}>
           <Grid container>
             <Grid item md={3} sm={12}>
-              <FacetList />
+              <FacetList engine={this.props.engine} />
             </Grid>
             <Grid item md={9} sm={12}>
               <Box pl={3}>
                 <Grid container alignItems="flex-end">
                   <Grid item md={10}>
-                    <QuerySummary />
+                    <QuerySummary engine={this.props.engine} />
                   </Grid>
                   <Grid item md={2}>
-                    <Sort />
+                    <Sort engine={this.props.engine} />
                   </Grid>
                 </Grid>
-                <ResultList />
+                <ResultList engine={this.props.engine} />
               </Box>
               <Box my={4}>
                 <Grid container>
                   <Grid item md={6}>
-                    <Pager />
+                    <Pager engine={this.props.engine} />
                   </Grid>
                   <Grid item md={6}>
-                    <ResultsPerPage />
+                    <ResultsPerPage engine={this.props.engine} />
                   </Grid>
                 </Grid>
               </Box>
