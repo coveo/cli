@@ -1,0 +1,34 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "pwa-node",
+      "request": "attach",
+      "cwd": "${workspaceFolder}",
+      "name": "Attach",
+      "address": "localhost",
+      "port": 9229,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/home/cli-copy",
+      "sourceMaps": true,
+      "autoAttachChildProcesses": false
+    },
+    {
+      "type": "pwa-node",
+      "request": "attach",
+      "cwd": "${workspaceFolder}",
+      "name": "Brace",
+      "address": "localhost",
+      "port": 9229,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/home/cli-copy",
+      "sourceMaps": true,
+      "autoAttachChildProcesses": false,
+      "preLaunchTask": "TestDaemon",
+      "postDebugTask": "DaemonKiller"
+    }
+  ]
+}
