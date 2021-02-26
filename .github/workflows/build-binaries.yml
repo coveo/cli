@@ -3,9 +3,9 @@ name: Build binaries
 on:
   push:
     branches:
-      - main
+      - master
     tags:
-      - v*
+      - 'v*'
 jobs:
   package:
     name: Package for ${{ matrix.pack-command }}
