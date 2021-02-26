@@ -6,7 +6,7 @@ jobs:
   run-script:
     runs-on: ubuntu-latest
     env:
-      GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_CREDENTIALS: ${{ secrets.COMMIT_TOKEN }}
     steps:
       - uses: actions/checkout@v2
         with:
