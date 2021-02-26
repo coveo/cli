@@ -1,6 +1,6 @@
 const {join} = require('path');
 const {copyFile, copy, ensureDir, pathExists} = require('fs-extra');
-const collection = require('./src/collection.json');
+const collection = require('../src/collection.json');
 
 async function copySchemas() {
   await ensureDir(destDir);
