@@ -7,7 +7,7 @@ function getEnvVariables() {
   const searchTokenServerPort = 4000;
   var envVars = Object.assign(
     {
-      PORT: searchTokenServerPort,
+      SERVER_PORT: searchTokenServerPort,
       API_KEY: process.env.REACT_APP_API_KEY,
       ORGANIZATION_ID: process.env.REACT_APP_ORGANIZATION_ID,
       PLATFORM_URL: process.env.REACT_APP_PLATFORM_URL,

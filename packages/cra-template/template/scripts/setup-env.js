@@ -16,7 +16,7 @@ REACT_APP_USER_EMAIL=${user}`;
 }
 
 function main() {
-  const filePath = resolve(__dirname, '.env');
+  const filePath = resolve('.env');
   const exists = pathExistsSync(filePath);
   if (!exists) {
     createEnvFile(filePath);
