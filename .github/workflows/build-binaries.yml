@@ -1,11 +1,8 @@
 name: Build binaries
 
 on:
-  push:
-    branches:
-      - master
-    tags:
-      - 'v*'
+  release:
+    types: [published]
 jobs:
   package:
     name: Package for ${{ matrix.pack-command }}
