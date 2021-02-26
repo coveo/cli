@@ -6,7 +6,8 @@
     "test": "npm run build && jasmine dist/**/*_spec.js",
     "build": "tsc -p tsconfig.json",
     "prebuild": "node ./scripts/clean.js",
-    "postbuild": "node ./scripts/setup.js"
+    "postbuild": "node ./scripts/setup.js",
+    "npm:publish": "npm publish --access public"
   },
   "keywords": [
     "schematics",
