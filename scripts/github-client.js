@@ -40,6 +40,29 @@ const updatePullRequestComment = (comment_id, body) => {
   return octokit.issues.updateComment({repo, owner, body, comment_id});
 };
 
+const getLatestTag = async () => {
+  const tags = await octokit.repos.listTags({owner, repo});
+  return tags.data[0].name;
+};
+
+const createOrUpdateReleaseDescription = async (tag, body) => {
+  try {
+    const release = await octokit.repos.getReleaseByTag({repo, owner, tag});
+    await octokit.repos.updateRelease({
+      repo,
+      owner,
+      release_id: release.data.id,
+      body,
+    });
+  } catch (e) {
+    if (e.status === 404) {
+      await octokit.repos.createRelease({owner, repo, body, tag_name: tag});
+    } else {
+      console.error(e);
+    }
+  }
+};
+
 module.exports = {
   getPullRequestTitle,
   getPullRequestComments,
@@ -47,4 +70,6 @@ module.exports = {
   updatePullRequestComment,
   getHeadBranchName,
   getBaseBranchName,
+  getLatestTag,
+  createOrUpdateReleaseDescription,
 };

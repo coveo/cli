@@ -67,6 +67,7 @@
     "postpack": "rm -f oclif.manifest.json",
     "version": "lerna run version",
     "commit": "git-cz",
-    "pr:report": "node ./scripts/pr-bot.js"
+    "pr:report": "node ./scripts/pr-bot.js",
+    "release:changelog": "node ./scripts/release-changelog.js"
   }
 }
