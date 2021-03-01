@@ -24,7 +24,6 @@
     "husky": "^4.3.8",
     "lerna": "^3.22.1",
     "lint-staged": "^10.5.3",
-    "patch-package": "^6.4.2",
     "prettier": "^2.2.1",
     "ts-node": "^8",
     "typescript": "^3.3"
@@ -71,7 +70,6 @@
     "commit": "git-cz",
     "pr:report": "node ./scripts/pr-bot.js",
     "release:changelog": "node ./scripts/release-changelog.js",
-    "npm:publish": "lerna run --no-bail npm:publish",
-    "postinstall": "patch-package"
+    "npm:publish": "lerna run --no-bail npm:publish"
   }
 }
