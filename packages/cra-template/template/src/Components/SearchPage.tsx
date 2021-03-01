@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
@@ -9,51 +9,55 @@ import Pager from './Pager';
 import Sort from './Sort';
 import FacetList from './FacetList';
 import ResultsPerPage from './ResultsPerPage';
-import {AnalyticsActions, SearchActions} from '@coveo/headless';
-import {IEngineProp} from '../common/Engine';
+import {AnalyticsActions, SearchActions, Engine} from '@coveo/headless';
+import {EngineProvider} from '../common/engineContext';
 
-export default class SearchPage extends React.Component<IEngineProp> {
-  componentDidMount() {
-    const {dispatch} = this.props.engine;
+interface ISearchPageProps {
+  engine: Engine<any>;
+}
+
+const SearchPage: React.FunctionComponent<ISearchPageProps> = ({engine}) => {
+  useEffect(() => {
+    const {dispatch} = engine;
     const action = SearchActions.executeSearch(
       AnalyticsActions.logInterfaceLoad()
     ) as any;
     dispatch(action);
-  }
+  }, [engine]);
 
-  render() {
-    return (
+  return (
+    <EngineProvider value={engine}>
       <Container maxWidth="lg">
         <Grid container justify="center">
           <Grid item md={8}>
-            <SearchBox engine={this.props.engine} />
+            <SearchBox />
           </Grid>
         </Grid>
 
         <Box my={4}>
           <Grid container>
             <Grid item md={3} sm={12}>
-              <FacetList engine={this.props.engine} />
+              <FacetList />
             </Grid>
             <Grid item md={9} sm={12}>
               <Box pl={3}>
                 <Grid container alignItems="flex-end">
                   <Grid item md={10}>
-                    <QuerySummary engine={this.props.engine} />
+                    <QuerySummary />
                   </Grid>
                   <Grid item md={2}>
-                    <Sort engine={this.props.engine} />
+                    <Sort />
                   </Grid>
                 </Grid>
-                <ResultList engine={this.props.engine} />
+                <ResultList />
               </Box>
               <Box my={4}>
                 <Grid container>
                   <Grid item md={6}>
-                    <Pager engine={this.props.engine} />
+                    <Pager />
                   </Grid>
                   <Grid item md={6}>
-                    <ResultsPerPage engine={this.props.engine} />
+                    <ResultsPerPage />
                   </Grid>
                 </Grid>
               </Box>
@@ -61,6 +65,8 @@ export default class SearchPage extends React.Component<IEngineProp> {
           </Grid>
         </Box>
       </Container>
-    );
-  }
-}
+    </EngineProvider>
+  );
+};
+
+export default SearchPage;
