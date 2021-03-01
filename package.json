@@ -70,6 +70,7 @@
     "commit": "git-cz",
     "pr:report": "node ./scripts/pr-bot.js",
     "release:changelog": "node ./scripts/release-changelog.js",
-    "npm:publish": "lerna run --no-bail npm:publish"
+    "npm:publish": "lerna run --no-bail npm:publish",
+    "postinstall": "patch-package"
   }
 }
