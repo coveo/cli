@@ -50,7 +50,6 @@ const Home = () => {
           logo={logo}
           welcome="Welcome to Your Coveo React.js Search Page"
         />
-        {/* <div>dsadsadsa</div> */}
         {engine && <SearchPage engine={engine} />}
       </div>
     );
