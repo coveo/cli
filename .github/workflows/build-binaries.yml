@@ -1,8 +1,9 @@
 name: Build binaries
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - CDX-107
 jobs:
   package:
     name: Package for ${{ matrix.pack-command }}
@@ -17,6 +18,9 @@ jobs:
           - os: ubuntu-latest
             pack-command: win
             additional-install: sudo apt-get install nsis p7zip-full -y
+          - os: ubuntu-latest
+            pack-command: deb
+            additional-install: echo "no additional install"
 
     steps:
       - uses: actions/checkout@v2
@@ -29,11 +33,11 @@ jobs:
         run: ${{ matrix.additional-install }}
       - name: Create package
         working-directory: ./packages/cli
-        run: npx @oclif/dev-cli pack:${{ matrix.pack-command }}
-      - name: Upload binaries
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./packages/cli/dist/${{ matrix.pack-command }}/**/*
-          file_glob: true
-          tag: ${{ github.ref }}
+        run: node_modules/.bin/oclif-dev pack:${{ matrix.pack-command }}
+      #- name: Upload binaries
+      #  uses: svenstaro/upload-release-action@v2
+      #  with:
+      #    repo_token: ${{ secrets.GITHUB_TOKEN }}
+      #    file: ./packages/cli/dist/${{ matrix.pack-command }}/**/*
+      #    file_glob: true
+      #    tag: ${{ github.ref }}
