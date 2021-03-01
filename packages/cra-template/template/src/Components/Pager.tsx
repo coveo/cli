@@ -9,7 +9,8 @@ interface PagerProps {
   controller: HeadlessPager;
 }
 
-const PagerRenderer: FunctionComponent<PagerProps> = ({controller}) => {
+const PagerRenderer: FunctionComponent<PagerProps> = (props) => {
+  const {controller} = props;
   const [state, setState] = useState(controller.state);
 
   useEffect(() => controller.subscribe(() => setState(controller.state)), [

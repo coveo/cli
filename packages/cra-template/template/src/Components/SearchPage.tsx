@@ -16,7 +16,8 @@ interface ISearchPageProps {
   engine: Engine<any>;
 }
 
-const SearchPage: React.FunctionComponent<ISearchPageProps> = ({engine}) => {
+const SearchPage: React.FunctionComponent<ISearchPageProps> = (props) => {
+  const {engine} = props;
   useEffect(() => {
     const {dispatch} = engine;
     const action = SearchActions.executeSearch(

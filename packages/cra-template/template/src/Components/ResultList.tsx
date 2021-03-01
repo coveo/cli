@@ -48,9 +48,8 @@ function FieldValue(props: FieldValueInterface) {
   );
 }
 
-const ResultListRenderer: FunctionComponent<ResultListProps> = ({
-  controller,
-}) => {
+const ResultListRenderer: FunctionComponent<ResultListProps> = (props) => {
+  const {controller} = props;
   const engine = useContext(EngineContext)!;
   const [state, setState] = useState(controller.state);
 

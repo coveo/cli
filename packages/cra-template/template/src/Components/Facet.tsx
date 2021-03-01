@@ -18,23 +18,23 @@ interface FacetRendererProps extends FacetProps {
 }
 
 const FacetRenderer: FunctionComponent<FacetRendererProps> = (props) => {
-  const [state, setState] = useState(props.controller.state);
+  const {controller} = props;
+  const [state, setState] = useState(controller.state);
 
-  useEffect(
-    () => props.controller.subscribe(() => setState(props.controller.state)),
-    [props.controller]
-  );
+  useEffect(() => controller.subscribe(() => setState(controller.state)), [
+    controller,
+  ]);
 
   const toggleSelect = (value: FacetValue) => {
-    props.controller.toggleSelect(value);
+    controller.toggleSelect(value);
   };
 
   const showMore = () => {
-    props.controller.showMoreValues();
+    controller.showMoreValues();
   };
 
   const showLess = () => {
-    props.controller.showLessValues();
+    controller.showLessValues();
   };
 
   return (
@@ -60,7 +60,7 @@ const FacetRenderer: FunctionComponent<FacetRendererProps> = (props) => {
               <Checkbox
                 size="small"
                 edge="start"
-                checked={props.controller.isValueSelected(value)}
+                checked={controller.isValueSelected(value)}
                 tabIndex={-1}
                 disableRipple
                 inputProps={{'aria-labelledby': labelId}}

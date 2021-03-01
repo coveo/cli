@@ -18,7 +18,8 @@ export interface SortProps {
   criteria: [string, SortCriterion][];
 }
 
-const SortRenderer: FunctionComponent<SortProps> = ({controller, criteria}) => {
+const SortRenderer: FunctionComponent<SortProps> = (props) => {
+  const {controller, criteria} = props;
   const [state, setState] = React.useState(controller.state);
 
   useEffect(() => controller.subscribe(() => setState(controller.state)), [

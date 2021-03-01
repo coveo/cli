@@ -10,9 +10,8 @@ interface QuerySummaryProps {
   controller: HeadlessQuerySummary;
 }
 
-const QuerySummaryRenderer: FunctionComponent<QuerySummaryProps> = ({
-  controller,
-}) => {
+const QuerySummaryRenderer: FunctionComponent<QuerySummaryProps> = (props) => {
+  const {controller} = props;
   const [state, setState] = useState(controller.state);
 
   useEffect(() => controller.subscribe(() => setState(controller.state)), [

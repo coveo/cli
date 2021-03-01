@@ -14,19 +14,20 @@ interface ResultsPerPageProps {
   options: number[];
   controller: HeadlessResultsPerPage;
 }
-const ResultsPerPageRenderer: FunctionComponent<ResultsPerPageProps> = ({
-  controller,
-  options,
-}) => {
+const ResultsPerPageRenderer: FunctionComponent<ResultsPerPageProps> = (
+  props
+) => {
+  const {controller, options} = props;
   const [state, setState] = useState(controller.state);
 
-  useEffect(() => controller.subscribe(() => setState(controller.state)), []);
+  useEffect(() => controller.subscribe(() => setState(controller.state)), [
+    controller,
+  ]);
 
   return (
     <FormControl component="fieldset">
       <Typography>Results per page</Typography>
       <RadioGroup
-        name="dsa"
         row
         value={state.numberOfResults}
         onChange={(event) => {

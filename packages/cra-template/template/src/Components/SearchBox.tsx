@@ -12,7 +12,8 @@ interface SearchBoxProps {
   controller: HeadlessSearchBox;
 }
 
-const SearchBoxRenderer: FunctionComponent<SearchBoxProps> = ({controller}) => {
+const SearchBoxRenderer: FunctionComponent<SearchBoxProps> = (props) => {
+  const {controller} = props;
   const [state, setState] = useState(controller.state);
 
   useEffect(() => controller.subscribe(() => setState(controller.state)), [
