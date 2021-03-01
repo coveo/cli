@@ -24,3 +24,5 @@ jobs:
       - run: node_modules/.bin/lerna changed
       - run: node_modules/.bin/lerna version ---conventional-commits -y
       - run: npm run release:changelog
+      - run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }} > ~/.npmrc"
+      - run: npm run npm:publish
