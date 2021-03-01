@@ -62,20 +62,18 @@ const Hero: React.FunctionComponent<IHeroProps> = (props) => {
             href="https://docs.coveo.com/en/headless"
             value="Coveo Connect"
           />
-          .
         </li>
         <li>
           <Anchor
             href="https://connect.coveo.com/"
             value="Coveo Headless Library"
           />
-          .
         </li>
         <li>
-          <Anchor href="https://reactjs.org" value="Learn React" />.
+          <Anchor href="https://reactjs.org" value="Learn React" />
         </li>
         <li>
-          <Anchor href="https://buefy.org/documentation" value="Buefy" />.
+          <Anchor href="https://buefy.org/documentation" value="Buefy" />
         </li>
       </ul>
     </header>
