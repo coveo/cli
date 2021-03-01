@@ -25,7 +25,7 @@ const GuardedRoute = () => {
       'REACT_APP_TOKEN_ENDPOINT',
     ];
     const reducer = (previousValue: boolean, currentValue: string) =>
-      previousValue && process.env[currentValue] !== undefined;
+      previousValue && Boolean(process.env[currentValue]);
     return variables.reduce(reducer, true);
   };
 
@@ -50,6 +50,7 @@ const Home = () => {
           logo={logo}
           welcome="Welcome to Your Coveo React.js Search Page"
         />
+        {/* <div>dsadsadsa</div> */}
         {engine && <SearchPage engine={engine} />}
       </div>
     );
