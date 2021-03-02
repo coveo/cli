@@ -6,6 +6,7 @@
   "bin": {
     "coveo": "./bin/run"
   },
+  "license": "Apache-2.0",
   "bugs": "https://github.com/coveo/cli/issues",
   "dependencies": {},
   "devDependencies": {
