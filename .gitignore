@@ -11,5 +11,6 @@ dist
 npm-debug.log
 reports/*.xml
 veracode
+artifacts
 
 !.vscode/extensions.json

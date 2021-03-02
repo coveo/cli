@@ -1,10 +1,24 @@
 node('linux && docker') {
-  // TODO: Run create package command on webhook when release is created from github
+  checkout scm
 
-  /*withDockerContainer(image: '458176070654.dkr.ecr.us-east-1.amazonaws.com/jenkins/deployment_package:v7') {
+  withDockerContainer(image: 'node:14', args: '-u=root') {
 
-    stage('Deployment pipeline upload') {
-      sh "deployment-package package create --with-deploy"
+    stage('Setup') {
+      sh 'npm ci'
     }
-  }*/
+
+    stage('Download release assets') {
+      withCredentials([
+        string(credentialsId: '	github-coveobot_token', variable: 'GITHUB_CREDENTIALS')
+      ]) {
+        sh 'node ./scripts/download-release-assets.js'
+      }
+    }
+  }
+
+  withDockerContainer(image: '458176070654.dkr.ecr.us-east-1.amazonaws.com/jenkins/deployment_package:v7') {
+    stage('Create package') {
+      sh "deployment-package package create --artifacts-location ./artifacts/ --with-deploy"
+    }
+  }
 }
