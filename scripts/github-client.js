@@ -71,7 +71,8 @@ const downloadReleaseAssets = async (tag, directory) => {
     repo,
     release_id: release.data.id,
   });
-  assets.data.forEach(async (asset) => {
+
+  assets.data.forEach((asset) => {
     console.info(
       `Downloading asset ${asset.name} from ${asset.browser_download_url}.\nSize: ${asset.size} ...`
     );
