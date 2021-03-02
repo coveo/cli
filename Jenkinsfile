@@ -3,11 +3,15 @@ node('linux && docker') {
 
   withDockerContainer(image: 'node:14', args: '-u=root') {
 
+    stage('Setup') {
+      sh 'npm i'
+    }
+
     stage('Download release assets') {
       withCredentials([
-        usernameColonPassword(credentialsId: '	github-coveobot_token', variable: 'GITHUB_CREDENTIALS')
+        string(credentialsId: '	github-coveobot_token', variable: 'GITHUB_CREDENTIALS')
       ]) {
-        sh 'node script/download-release-assets.js'
+        sh 'node ./scripts/download-release-assets.js'
       }
     }
   }
