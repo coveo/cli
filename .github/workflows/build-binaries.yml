@@ -3,8 +3,6 @@ name: Build binaries
 on:
   release:
     types: [published]
-  workflow_dispatch:
-
 jobs:
   package:
     name: Package for ${{ matrix.pack-command }}
