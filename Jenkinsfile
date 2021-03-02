@@ -4,7 +4,7 @@ node('linux && docker') {
   withDockerContainer(image: 'node:14', args: '-u=root') {
 
     stage('Setup') {
-      sh 'npm i'
+      sh 'npm ci'
     }
 
     stage('Download release assets') {
