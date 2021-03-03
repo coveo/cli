@@ -6,6 +6,7 @@
   "bin": {
     "coveo": "./bin/run"
   },
+  "license": "Apache-2.0",
   "bugs": "https://github.com/coveo/cli/issues",
   "dependencies": {},
   "devDependencies": {
@@ -67,6 +68,8 @@
     "postpack": "rm -f oclif.manifest.json",
     "version": "lerna run version",
     "commit": "git-cz",
-    "pr:report": "node ./scripts/pr-bot.js"
+    "pr:report": "node ./scripts/pr-bot.js",
+    "release:changelog": "node ./scripts/release-changelog.js",
+    "npm:publish": "lerna run --no-bail npm:publish"
   }
 }

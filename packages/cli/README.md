@@ -7,38 +7,42 @@
 [![License](https://img.shields.io/npm/l/@coveo/cli.svg)](https://github.com/coveo/cli/blob/master/package.json)
 
 <!-- toc -->
-* [@coveo/cli](#coveocli)
-* [Usage](#usage)
-* [Commands](#commands)
+
+- [@coveo/cli](#coveocli)
+- [Usage](#usage)
+- [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g @coveo/cli
 $ coveo COMMAND
 running command...
 $ coveo (-v|--version|version)
-@coveo/cli/0.2.0 linux-x64 node-v14.15.5
+@coveo/cli/0.3.0 linux-x64 node-v14.15.5
 $ coveo --help [COMMAND]
 USAGE
   $ coveo COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-* [`coveo auth:login`](#coveo-authlogin)
-* [`coveo config:get`](#coveo-configget)
-* [`coveo config:set`](#coveo-configset)
-* [`coveo help [COMMAND]`](#coveo-help-command)
-* [`coveo org:list`](#coveo-orglist)
-* [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
-* [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
-* [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
+
+- [`coveo auth:login`](#coveo-authlogin)
+- [`coveo config:get`](#coveo-configget)
+- [`coveo config:set`](#coveo-configset)
+- [`coveo help [COMMAND]`](#coveo-help-command)
+- [`coveo org:list`](#coveo-orglist)
+- [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
+- [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
+- [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
 
 ## `coveo auth:login`
 
@@ -65,7 +69,7 @@ EXAMPLE
   $ coveo auth:login
 ```
 
-_See code: [src/commands/auth/login.ts](https://github.com/coveo/cli/blob/v0.2.0/src/commands/auth/login.ts)_
+_See code: [src/commands/auth/login.ts](https://github.com/coveo/cli/blob/v0.3.0/src/commands/auth/login.ts)_
 
 ## `coveo config:get`
 
@@ -76,7 +80,7 @@ USAGE
   $ coveo config:get
 ```
 
-_See code: [src/commands/config/get.ts](https://github.com/coveo/cli/blob/v0.2.0/src/commands/config/get.ts)_
+_See code: [src/commands/config/get.ts](https://github.com/coveo/cli/blob/v0.3.0/src/commands/config/get.ts)_
 
 ## `coveo config:set`
 
@@ -100,7 +104,7 @@ OPTIONS
                                                                        operation. See https://docs.coveo.com/en/2976
 ```
 
-_See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v0.2.0/src/commands/config/set.ts)_
+_See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v0.3.0/src/commands/config/set.ts)_
 
 ## `coveo help [COMMAND]`
 
@@ -138,7 +142,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v0.2.0/src/commands/org/list.ts)_
+_See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v0.3.0/src/commands/org/list.ts)_
 
 ## `coveo ui:create:angular NAME`
 
@@ -155,7 +159,7 @@ OPTIONS
   -d, --defaults  Disable interactive input prompts for options with a default
 ```
 
-_See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/v0.2.0/src/commands/ui/create/angular.ts)_
+_See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/v0.3.0/src/commands/ui/create/angular.ts)_
 
 ## `coveo ui:create:react NAME`
 
@@ -173,7 +177,7 @@ EXAMPLES
   $ coveo ui:create:react --help
 ```
 
-_See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v0.2.0/src/commands/ui/create/react.ts)_
+_See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v0.3.0/src/commands/ui/create/react.ts)_
 
 ## `coveo ui:create:vue NAME`
 
@@ -199,7 +203,8 @@ EXAMPLES
   $ coveo ui:create:vue --help
 ```
 
-_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v0.2.0/src/commands/ui/create/vue.ts)_
+_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v0.3.0/src/commands/ui/create/vue.ts)_
+
 <!-- commandsstop -->
 
 ```

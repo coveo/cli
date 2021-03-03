@@ -12,7 +12,15 @@
     }
   },
   "phases": {
-    "terraform": {}
+    "terraform": {},
+    "s3": {
+      "bucket": "{terraform.infra.infra.bucket_binaries}",
+      "directory": "proda/StaticCDN/cli",
+      "source": "./artifacts",
+      "parameters": {
+        "acl": "public-read"
+      }
+    }
   },
   "snyk": {
     "org": "coveo-jsui",

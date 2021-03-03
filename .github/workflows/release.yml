@@ -6,7 +6,7 @@ jobs:
   run-script:
     runs-on: ubuntu-latest
     env:
-      GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_CREDENTIALS: ${{ secrets.COMMIT_TOKEN }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -23,3 +23,6 @@ jobs:
       - run: git config --global user.name GitHub Action
       - run: node_modules/.bin/lerna changed
       - run: node_modules/.bin/lerna version ---conventional-commits -y
+      - run: npm run release:changelog
+      - run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }} > ~/.npmrc"
+      - run: npm run npm:publish

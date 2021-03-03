@@ -2,7 +2,7 @@ name: Build
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
 
 jobs:
@@ -20,3 +20,6 @@ jobs:
       - name: Build CLI
         working-directory: ./packages/cli
         run: tsc -b
+      - name: End-to-end Tests
+        working-directory: ./packages/cli-e2e
+        run: npm run test-e2e

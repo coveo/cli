@@ -6,6 +6,7 @@ import {
 } from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import AuthenticationRequired from '../../../lib/decorators/authenticationRequired';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {Storage} from '../../../lib/oauth/storage';
 import {platformUrl} from '../../../lib/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';
@@ -68,19 +69,19 @@ export default class Vue extends Command {
   private async invokePlugin(applicationName: string) {
     const cfg = await this.configuration.get();
     const storage = await this.storage.get();
+    const {providerUsername} = await this.getUserInfo();
 
     const cliArgs = [
-      'invoke',
-      '@coveo/vue-cli-plugin-typescript',
+      'add',
+      '@coveo/typescript',
       '--orgId',
       cfg.organization,
       '--apiKey',
       storage.accessToken!,
       '--platformUrl',
       platformUrl({environment: cfg.environment}),
-      // TODO: CDX-91 Extract user email from oauth flow
       '--user',
-      'foo@acme.com',
+      providerUsername,
     ];
 
     return this.runVueCliCommand(cliArgs, {
@@ -110,5 +111,13 @@ export default class Vue extends Command {
 
   private get storage() {
     return new Storage();
+  }
+
+  private async getUserInfo() {
+    const authenticatedClient = new AuthenticatedClient();
+    const platformClient = await authenticatedClient.getClient();
+    await platformClient.initialize();
+
+    return await platformClient.user.get();
   }
 }
