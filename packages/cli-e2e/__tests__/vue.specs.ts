@@ -5,7 +5,6 @@ import type {ChildProcessWithoutNullStreams} from 'child_process';
 
 import {CLI_EXEC_PATH, killCliProcess} from '../utils/cli';
 import {closeAllPages, getBrowser} from '../utils/browser';
-import axios from 'axios';
 
 declare const document: any;
 
@@ -18,28 +17,26 @@ describe('ui', () => {
     const searchPageEndpoint = `http://localhost:${clientPort}`;
     const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
 
-    beforeAll(async () => {
-      browser = await getBrowser();
+    beforeAll(() => {
       // TODO: build the project
       // TODO: Run the dev server
       // cliProcess = spawn(CLI_EXEC_PATH, ['ui:create:vue', projectName]);
-      // return new Promise<void>((resolve) => {
-      //   getBrowser().then((b) => (browser = b));
-      //   cliProcess = spawn('npm', ['run', 'start'], {
-      //     // cliProcess = spawn('ls', ['-al'], {
-      //     cwd: projectName,
-      //   });
-      //   setTimeout(() => {
-      //     resolve();
-      //   }, 15e1);
-      // });
-      // setTimeout(() => {
-      //   done();
-      // }, 2000);
-    });
+      return new Promise<void>((resolve) => {
+        getBrowser().then((b) => (browser = b));
+
+        cliProcess = spawn('npm', ['run', 'start'], {
+          // TODO: use project name
+          cwd: '/home/cli-copy/packages/cli/my-project',
+          // cwd: projectName,
+        });
+        setTimeout(() => {
+          resolve();
+        }, 10e3);
+      });
+    }, 30e3);
 
     afterAll(async () => {
-      // await killCliProcess(cliProcess);
+      await killCliProcess(cliProcess);
       await browser.close();
     });
 
