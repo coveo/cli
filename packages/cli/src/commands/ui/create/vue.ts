@@ -72,8 +72,8 @@ export default class Vue extends Command {
     const {providerUsername} = await this.getUserInfo();
 
     const cliArgs = [
-      'invoke',
-      '@coveo/vue-cli-plugin-typescript',
+      'add',
+      '@coveo/typescript',
       '--orgId',
       cfg.organization,
       '--apiKey',
