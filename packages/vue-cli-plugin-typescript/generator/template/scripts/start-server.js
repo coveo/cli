@@ -1,4 +1,4 @@
-const {spawnSync} = require('child_process');
+const {spawn} = require('child_process');
 const {resolve, join} = require('path');
 const {config} = require('dotenv');
 config();
@@ -22,7 +22,7 @@ function getEnvVariables() {
 
 function startServer() {
   const serverPath = join(process.cwd(), 'server');
-  const child = spawnSync('npm', ['run', 'start'], {
+  const child = spawn('npm', ['run', 'start'], {
     stdio: 'inherit',
     env: getEnvVariables(),
     cwd: resolve(serverPath),
