@@ -27,9 +27,9 @@ function startServer() {
     env: getEnvVariables(),
     cwd: resolve(serverPath),
   });
-  if (child.status !== 0) {
-    process.exit(child.status);
-  }
+  process.on('SIGINT', () => {
+    child.kill();
+  });
 }
 
 function main() {
