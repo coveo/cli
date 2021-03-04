@@ -1,6 +1,6 @@
 import {spawn} from 'child_process';
 
-import type {Browser} from 'puppeteer-core';
+import {Browser, Page} from 'puppeteer-core';
 import type {ChildProcessWithoutNullStreams} from 'child_process';
 
 import {CLI_EXEC_PATH, killCliProcess} from '../utils/cli';
@@ -17,32 +17,40 @@ describe('ui', () => {
     const searchPageEndpoint = `http://localhost:${clientPort}`;
     const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
 
-    beforeAll(() => {
+    beforeAll(async () => {
       // TODO: build the project
       // TODO: Run the dev server
       // cliProcess = spawn(CLI_EXEC_PATH, ['ui:create:vue', projectName]);
-      return new Promise<void>((resolve) => {
-        getBrowser().then((b) => (browser = b));
+      browser = await getBrowser();
+      const waitForProjectToStart = new Promise<void>((resolve) => {
+        // getBrowser().then((b) => (browser = b));
 
         cliProcess = spawn('npm', ['run', 'start'], {
           // TODO: use project name
           cwd: '/home/cli-copy/packages/cli/my-project',
+          detached: true,
           // cwd: projectName,
         });
+
         setTimeout(() => {
           resolve();
         }, 10e3);
       });
+
+      return waitForProjectToStart;
     }, 30e3);
 
     afterAll(async () => {
-      await killCliProcess(cliProcess);
+      // TODO: need to fix    Protocol error (Target.createTarget): Target closed.
       await browser.close();
+      // The npm run start command generate other spawn process that won't get killed
+      await killCliProcess(cliProcess, true);
+      // return Promise.all([browser.close(), killCliProcess(cliProcess, true)]);
     }, 5e3);
 
     afterEach(async () => {
       const pageClosePromises = await closeAllPages(browser);
-      await Promise.all(pageClosePromises);
+      return Promise.all(pageClosePromises);
     }, 5e3);
 
     // it('should get a search token', async () => {
