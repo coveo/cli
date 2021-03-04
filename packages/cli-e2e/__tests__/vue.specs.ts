@@ -38,7 +38,7 @@ describe('ui', () => {
     afterAll(async () => {
       await killCliProcess(cliProcess);
       await browser.close();
-    });
+    }, 5e3);
 
     afterEach(async () => {
       const pageClosePromises = await closeAllPages(browser);
