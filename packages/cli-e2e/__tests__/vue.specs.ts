@@ -1,64 +1,68 @@
-import {spawn} from 'child_process';
+import {spawn, spawnSync} from 'child_process';
 
-import {Browser, Page} from 'puppeteer-core';
 import type {ChildProcessWithoutNullStreams} from 'child_process';
 
 import {CLI_EXEC_PATH, killCliProcess} from '../utils/cli';
 import {closeAllPages, getBrowser} from '../utils/browser';
+import {Browser} from 'puppeteer-core';
+import {loginWithOffice} from '../utils/login';
 
+// TODO: find a better way
 declare const document: any;
 
 describe('ui', () => {
   describe('create:vue', () => {
     let browser: Browser;
-    let cliProcess: ChildProcessWithoutNullStreams;
-    const clientPort = '8080'; // TODO: find port dynamically
-    const projectName = 'my-project';
+    const cliProcesses: ChildProcessWithoutNullStreams[] = [];
+    // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
+    const clientPort = '8080';
+    const projectName = 'vue-project';
     const searchPageEndpoint = `http://localhost:${clientPort}`;
     const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
+    let waitForProjectToStartTimeout: NodeJS.Timeout;
 
     beforeAll(async () => {
-      // TODO: build the project
-      // TODO: Run the dev server
-      // cliProcess = spawn(CLI_EXEC_PATH, ['ui:create:vue', projectName]);
       browser = await getBrowser();
-      const waitForProjectToStart = new Promise<void>((resolve) => {
-        // getBrowser().then((b) => (browser = b));
 
-        cliProcess = spawn('npm', ['run', 'start'], {
-          // TODO: use project name
-          cwd: '/home/cli-copy/packages/cli/my-project',
-          detached: true,
-          // cwd: projectName,
+      await loginWithOffice(browser, cliProcesses);
+
+      const buildProcess = spawnSync(
+        CLI_EXEC_PATH,
+        // TODO: CDX-141: Add a --default flag to prevent prompts
+        ['ui:create:vue', projectName]
+        // {stdio: 'inherit'}
+      );
+
+      expect(buildProcess.status).toEqual(0);
+
+      const waitForProjectToStart = new Promise<void>((resolve) => {
+        const startServerProcess = spawn('npm', ['run', 'start'], {
+          cwd: projectName,
         });
 
-        setTimeout(() => {
+        cliProcesses.push(startServerProcess);
+
+        waitForProjectToStartTimeout = setTimeout(() => {
           resolve();
-        }, 10e3);
+          // It usually takes around 7 seconds to start both web app and search token servers
+        }, 12e3);
       });
 
       return waitForProjectToStart;
-    }, 30e3);
+    }, 240e3);
 
     afterAll(async () => {
-      // TODO: need to fix    Protocol error (Target.createTarget): Target closed.
+      clearTimeout(waitForProjectToStartTimeout);
       await browser.close();
-      // The npm run start command generate other spawn process that won't get killed
-      await killCliProcess(cliProcess, true);
-      // return Promise.all([browser.close(), killCliProcess(cliProcess, true)]);
+      return Promise.all(
+        cliProcesses.map((cliProcess) => killCliProcess(cliProcess))
+      );
     }, 5e3);
 
     afterEach(async () => {
       const pageClosePromises = await closeAllPages(browser);
       return Promise.all(pageClosePromises);
     }, 5e3);
-
-    // it('should get a search token', async () => {
-    //   const response = await axios.get(`http://localhost:4000/token`);
-    //   expect(response.data).toMatchObject({
-    //     token: expect.stringMatching(/.+/),
-    //   });
-    // });
 
     it('should contain a hero section', async () => {
       const page = await browser.newPage();
