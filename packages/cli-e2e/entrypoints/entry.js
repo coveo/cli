@@ -4,7 +4,7 @@ const {execSync, spawnSync} = require('child_process');
 const DOCKER_IMAGE_NAME = 'coveo-cli-e2e-image';
 const DOCKER_CONTAINER_NAME = 'coveo-cli-e2e-container';
 const repoHostPath = resolve(__dirname, ...new Array(3).fill('..'));
-const repoDockerPath = '/home/cli';
+const repoDockerPath = '/home/notGroot/cli';
 const dockerEntryPoint = (() => {
   if (process.argv[2] === '--bash') {
     return '/bin/bash';
@@ -53,16 +53,15 @@ if (!isImagePresent()) {
   });
 }
 try {
-
   execSync(
-    `docker run --name=${DOCKER_CONTAINER_NAME} -v "${repoHostPath}:${repoDockerPath}" -p "9229:9229" -${
+    `docker run --privileged --name=${DOCKER_CONTAINER_NAME} -v "${repoHostPath}:${repoDockerPath}" -p "9229:9229" -${
       process.argv[2] === '--bash' ? 'it' : 'i'
-    } --cap-add=SYS_ADMIN --env PLATFORM_USER_NAME=${
+    } --cap-add=SYS_ADMIN --cap-add=IPC_LOCK --env PLATFORM_USER_NAME=${
       process.env.PLATFORM_USER_NAME
     } --env PLATFORM_USER_PASSWORD=${
       process.env.PLATFORM_USER_PASSWORD
     } ${DOCKER_IMAGE_NAME} ${dockerEntryPoint}`,
-    {stdio: ['ignore', 'inherit', 'inherit']}
+    {stdio: ['inherit', 'inherit', 'inherit']}
   );
 } finally {
   if (!process.env.CI) {
