@@ -9,4 +9,4 @@ cd /home/notGroot/cli-copy
 npm run setup
 cd packages/cli-e2e
 google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage >/dev/null 2>&1 & \
-npm run-script jest:debug
+npm run-script jest
