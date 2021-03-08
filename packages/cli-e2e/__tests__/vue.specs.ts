@@ -7,9 +7,6 @@ import {closeAllPages, getBrowser} from '../utils/browser';
 import {Browser} from 'puppeteer-core';
 import {loginWithOffice} from '../utils/login';
 
-// TODO: find a better way
-declare const document: any;
-
 describe('ui', () => {
   describe('create:vue', () => {
     let browser: Browser;
@@ -62,26 +59,6 @@ describe('ui', () => {
       const pageClosePromises = await closeAllPages(browser);
       return Promise.all(pageClosePromises);
     }, 5e3);
-
-    it('should contain a hero section', async () => {
-      const page = await browser.newPage();
-      await page.goto(searchPageEndpoint, {
-        waitUntil: 'networkidle2',
-      });
-      const aHandle = await page.evaluateHandle(() =>
-        // TODO: declare document
-        document.querySelector('.hero h1')
-      );
-
-      const resultHandle = await page.evaluateHandle(
-        (element) => element.innerHTML,
-        aHandle
-      );
-
-      expect(await resultHandle.jsonValue()).toEqual(
-        'Welcome to Your Coveo Vue.js Search Page'
-      );
-    });
 
     it('should contain a search page section', async () => {
       const page = await browser.newPage();
