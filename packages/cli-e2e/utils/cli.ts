@@ -9,6 +9,16 @@ export function killCliProcess(cliProcess: ChildProcessWithoutNullStreams) {
   return waitForKill;
 }
 
+export function killCliProcessFamily(
+  cliProcessLeader: ChildProcessWithoutNullStreams
+) {
+  const waitForKill = new Promise<void>((resolve) => {
+    cliProcessLeader.on('close', () => resolve());
+  });
+  process.kill(-cliProcessLeader.pid);
+  return waitForKill;
+}
+
 export function isYesNoPrompt(data: string) {
   return data.trimEnd().toLowerCase().endsWith('(y/n):');
 }

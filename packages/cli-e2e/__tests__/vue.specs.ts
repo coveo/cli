@@ -2,7 +2,7 @@ import {spawn, spawnSync} from 'child_process';
 
 import type {ChildProcessWithoutNullStreams} from 'child_process';
 
-import {CLI_EXEC_PATH, killCliProcess} from '../utils/cli';
+import {CLI_EXEC_PATH, killCliProcessFamily} from '../utils/cli';
 import {closeAllPages, getBrowser} from '../utils/browser';
 import {Browser} from 'puppeteer-core';
 import {loginWithOffice} from '../utils/login';
@@ -30,7 +30,6 @@ describe('ui', () => {
         CLI_EXEC_PATH,
         // TODO: CDX-141: Add a --default flag to prevent prompts
         ['ui:create:vue', projectName]
-        // {stdio: 'inherit'}
       );
 
       expect(buildProcess.status).toEqual(0);
@@ -38,14 +37,14 @@ describe('ui', () => {
       const waitForProjectToStart = new Promise<void>((resolve) => {
         const startServerProcess = spawn('npm', ['run', 'start'], {
           cwd: projectName,
+          detached: true,
         });
 
         cliProcesses.push(startServerProcess);
 
         waitForProjectToStartTimeout = setTimeout(() => {
           resolve();
-          // It usually takes around 7 seconds to start both web app and search token servers
-        }, 12e3);
+        }, 15e3);
       });
 
       return waitForProjectToStart;
@@ -55,7 +54,7 @@ describe('ui', () => {
       clearTimeout(waitForProjectToStartTimeout);
       await browser.close();
       return Promise.all(
-        cliProcesses.map((cliProcess) => killCliProcess(cliProcess))
+        cliProcesses.map((cliProcess) => killCliProcessFamily(cliProcess))
       );
     }, 5e3);
 
