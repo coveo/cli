@@ -90,7 +90,6 @@ export default class Vue extends Command {
   }
 
   private createProject(name: string, preset: {}) {
-    // TODO: CDX-141: add default environment to skip prompts
     return this.runVueCliCommand([
       'create',
       name,

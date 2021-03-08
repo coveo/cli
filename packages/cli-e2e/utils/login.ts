@@ -7,28 +7,14 @@ function isLoginPage(page: Page) {
   return page.url().match(/https:\/\/platform.*cloud\.coveo\.com\/login/);
 }
 
-function isRedirectUri(page: Page) {
+function isLoggedIn(page: Page) {
   return page.url().match(/http:\/\/127\.0\.0\.1:32111/);
 }
 
-function isLoggedIn(browser: Browser) {
-  // TODO: check if can just omit the promise
-  return new Promise<void>((resolve) => {
-    browser.on('targetchanged', (page: Page) => {
-      if (isRedirectUri(page) !== null) {
-        // Logged in
-        resolve();
-      }
-    });
-  });
-}
-
 function waitForLoginPage(browser: Browser) {
-  // TODO: check if can just omit the promise
   return new Promise<Page>((resolve) => {
     browser.on('targetchanged', (page: Page) => {
-      if (isLoginPage(page) !== null) {
-        // Logged in
+      if (page.url && isLoginPage(page) !== null) {
         resolve(page);
       }
     });
@@ -67,7 +53,7 @@ export function runLoginCommand() {
   return cliProcess;
 }
 
-async function startLoginFlow(page: Page) {
+async function startLoginFlow(browser: Browser) {
   const username = process.env.PLATFORM_USER_NAME;
   const password = process.env.PLATFORM_USER_PASSWORD;
 
@@ -75,10 +61,21 @@ async function startLoginFlow(page: Page) {
     throw new Error('Missing login credentials');
   }
 
+  await waitForLoginPage(browser);
+
+  const pages = await browser.pages();
+  const page = pages.find((page) => isLoginPage(page));
+  if (!page) {
+    throw new Error('Unable to find login page');
+  }
+
   await page.waitForSelector('#loginWithOffice365');
   await page.click('#loginWithOffice365');
 
   await page.waitForNavigation();
+  if (isLoggedIn(page) !== null) {
+    return;
+  }
 
   await page.waitForSelector('input[type="email"]');
   await page.type('input[type="email"]', username);
@@ -108,19 +105,5 @@ export async function loginWithOffice(
   const loginProcess = runLoginCommand();
   cliProcesses.push(loginProcess);
 
-  if (isLoggedIn(browser)) {
-    return;
-  }
-
-  const page = await waitForLoginPage(browser);
-
-  // TODO: check if this alternative works
-  // const page = await waitForLoginPage(browser);
-  // const pages = await browser.pages();
-  // const page = pages.find((page) => isLoginPage(page));
-  // if (!page) {
-  //   throw new Error('Unable to find login page');
-  // }
-
-  await startLoginFlow(page);
+  await startLoginFlow(browser);
 }

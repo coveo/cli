@@ -23,11 +23,10 @@ describe('ui', () => {
 
       await loginWithOffice(browser, cliProcesses);
 
-      const buildProcess = spawnSync(
-        CLI_EXEC_PATH,
-        // TODO: CDX-141: Add a --default flag to prevent prompts
-        ['ui:create:vue', projectName]
-      );
+      const buildProcess = spawnSync(CLI_EXEC_PATH, [
+        'ui:create:vue',
+        projectName,
+      ]);
 
       expect(buildProcess.status).toEqual(0);
 
@@ -87,7 +86,7 @@ describe('ui', () => {
         if (
           request.method() === 'POST' &&
           request.url().indexOf(
-            // TODO: Test with Prod environment
+            // TODO: CDX-98: URL should vary in fonction of the targeted environment.
             'https://platformdev.cloud.coveo.com/rest/search/v2?organizationId'
           ) === 0
         ) {
