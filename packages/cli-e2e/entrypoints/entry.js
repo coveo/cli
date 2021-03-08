@@ -53,7 +53,6 @@ if (!isImagePresent()) {
   });
 }
 try {
-
   execSync(
     `docker run --name=${DOCKER_CONTAINER_NAME} -v "${repoHostPath}:${repoDockerPath}" -p "9229:9229" -${
       process.argv[2] === '--bash' ? 'it' : 'i'

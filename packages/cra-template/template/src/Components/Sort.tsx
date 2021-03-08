@@ -1,81 +1,76 @@
-import React from 'react';
-import {
-  Sort as SortType,
-  SortState,
-  buildSort,
-  buildRelevanceSortCriterion,
-  buildDateSortCriterion,
-  SortOrder,
-  SortByRelevancy,
-  SortByDate,
-} from '@coveo/headless';
-import {headlessEngine} from '../Engine';
+import React, {FunctionComponent, useEffect} from 'react';
 import Box from '@material-ui/core/Box';
 import FormControl from '@material-ui/core/FormControl';
+import {
+  buildSort,
+  buildRelevanceSortCriterion,
+  buildCriterionExpression,
+  buildDateSortCriterion,
+  SortOrder,
+  Sort as HeadlessSort,
+  SortCriterion,
+} from '@coveo/headless';
 import {InputLabel, MenuItem, Select} from '@material-ui/core';
+import EngineContext from '../common/engineContext';
 
-export default class Sort extends React.Component {
-  private headlessSort: SortType;
-  state: SortState;
-  relevanceSortCriterion: SortByRelevancy = buildRelevanceSortCriterion();
-  dateDescendingSortCriterion: SortByDate = buildDateSortCriterion(
-    SortOrder.Descending
-  );
-  dateAscendingSortCriterion: SortByDate = buildDateSortCriterion(
-    SortOrder.Ascending
-  );
-
-  constructor(props: any) {
-    super(props);
-
-    this.headlessSort = buildSort(headlessEngine, {
-      initialState: {
-        criterion: this.relevanceSortCriterion,
-      },
-    });
-
-    this.state = this.headlessSort.state;
-  }
-
-  componentDidMount() {
-    this.headlessSort.subscribe(() => this.updateState());
-  }
-
-  updateState() {
-    this.setState(this.headlessSort.state);
-  }
-
-  handleChange(event: any) {
-    switch (event.target.value) {
-      case 'relevance':
-        this.headlessSort.sortBy(this.relevanceSortCriterion);
-        break;
-      case 'datedescending':
-        this.headlessSort.sortBy(this.dateDescendingSortCriterion);
-        break;
-      default:
-        this.headlessSort.sortBy(this.dateAscendingSortCriterion);
-        break;
-    }
-  }
-
-  render() {
-    return (
-      <Box>
-        <FormControl>
-          <InputLabel id="sort-by-label">Sort by</InputLabel>
-          <Select
-            labelId="sort-by-label"
-            id="sort-by"
-            onChange={(event: any) => this.handleChange(event)}
-            defaultValue="relevance"
-          >
-            <MenuItem value="relevance">Relevance</MenuItem>
-            <MenuItem value="datedescending">Date Descending</MenuItem>
-            <MenuItem value="dateascending">Date Ascending</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
-    );
-  }
+export interface SortProps {
+  controller: HeadlessSort;
+  criteria: [string, SortCriterion][];
 }
+
+const SortRenderer: FunctionComponent<SortProps> = (props) => {
+  const {controller, criteria} = props;
+  const [state, setState] = React.useState(controller.state);
+
+  useEffect(() => controller.subscribe(() => setState(controller.state)), [
+    controller,
+  ]);
+
+  const getCurrentCriterion = () =>
+    criteria.find(
+      ([, criterion]) =>
+        state.sortCriteria === buildCriterionExpression(criterion)
+    )!;
+
+  const getCriterionFromName = (name: string) =>
+    criteria.find(([criterionName]) => criterionName === name)!;
+
+  return (
+    <Box>
+      <FormControl>
+        <InputLabel id="sort-by-label">Sort by</InputLabel>
+        <Select
+          labelId="sort-by-label"
+          id="sort-by"
+          onChange={(e) =>
+            controller.sortBy(getCriterionFromName(e.target.value as string)[1])
+          }
+          defaultValue={getCurrentCriterion()[0]}
+        >
+          {criteria.map(([criterionName]) => (
+            <MenuItem key={criterionName} value={criterionName}>
+              {criterionName}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Box>
+  );
+};
+
+const Sort = () => {
+  const engine = React.useContext(EngineContext)!;
+
+  const criteria: [string, SortCriterion][] = [
+    ['Relevance', buildRelevanceSortCriterion()],
+    ['Date (Ascending)', buildDateSortCriterion(SortOrder.Ascending)],
+    ['Date (Descending)', buildDateSortCriterion(SortOrder.Descending)],
+  ];
+  const initialCriterion = criteria[0][1];
+  const controller = buildSort(engine, {
+    initialState: {criterion: initialCriterion},
+  });
+
+  return <SortRenderer controller={controller} criteria={criteria} />;
+};
+export default Sort;
