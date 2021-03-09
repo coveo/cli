@@ -1,16 +1,17 @@
+const {writeFileSync} = require('fs');
 const {resolve, join} = require('path');
 const {execSync, spawnSync} = require('child_process');
 
 const DOCKER_IMAGE_NAME = 'coveo-cli-e2e-image';
 const DOCKER_CONTAINER_NAME = 'coveo-cli-e2e-container';
 const repoHostPath = resolve(__dirname, ...new Array(3).fill('..'));
-const repoDockerPath = '/home/cli';
+const repoDockerPath = '/home/notGroot/cli';
 const dockerEntryPoint = (() => {
-  if (process.argv[2] === '--bash') {
+  if (isBash()) {
     return '/bin/bash';
   }
   return join(
-    '/home/cli',
+    repoDockerPath,
     'packages',
     'cli-e2e',
     'entrypoints',
@@ -53,15 +54,12 @@ if (!isImagePresent()) {
   });
 }
 try {
+  createEnvFile();
   execSync(
     `docker run --name=${DOCKER_CONTAINER_NAME} -v "${repoHostPath}:${repoDockerPath}" -p "9229:9229" -${
       process.argv[2] === '--bash' ? 'it' : 'i'
-    } --cap-add=SYS_ADMIN --env PLATFORM_USER_NAME=${
-      process.env.PLATFORM_USER_NAME
-    } --env PLATFORM_USER_PASSWORD=${
-      process.env.PLATFORM_USER_PASSWORD
-    } ${DOCKER_IMAGE_NAME} ${dockerEntryPoint}`,
-    {stdio: ['ignore', 'inherit', 'inherit']}
+    } --env-file .env --cap-add=IPC_LOCK --cap-add=SYS_ADMIN ${DOCKER_IMAGE_NAME} ${dockerEntryPoint}`,
+    {stdio: ['inherit', 'inherit', 'inherit']}
   );
 } finally {
   if (!process.env.CI) {
@@ -69,4 +67,20 @@ try {
       stdio: 'ignore',
     });
   }
+}
+
+createEnvFile();
+function isBash() {
+  return process.argv[2] === '--bash';
+}
+
+function createEnvFile() {
+  const credentials = ['PLATFORM_USER_NAME', 'PLATFORM_USER_PASSWORD'];
+
+  writeFileSync(
+    '.env',
+    credentials
+      .map((variable) => `${variable}=${process.env[variable]}`)
+      .join('\n')
+  );
 }
