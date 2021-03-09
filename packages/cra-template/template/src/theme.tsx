@@ -11,7 +11,7 @@ const theme = createMuiTheme({
       // secondary: '#E5E8E8',
     },
     primary: {
-      main: '#2e45ba', // Ebony Clay
+      main: '#2e45ba',
     },
     secondary: {
       main: '#004990',
