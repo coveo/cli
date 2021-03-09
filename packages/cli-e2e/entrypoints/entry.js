@@ -1,3 +1,4 @@
+const {writeFileSync} = require('fs');
 const {resolve, join} = require('path');
 const {execSync, spawnSync} = require('child_process');
 
@@ -53,10 +54,11 @@ if (!isImagePresent()) {
   });
 }
 try {
+  createEnvFile();
   execSync(
     `docker run --name=${DOCKER_CONTAINER_NAME} -v "${repoHostPath}:${repoDockerPath}" -p "9229:9229" -${
       process.argv[2] === '--bash' ? 'it' : 'i'
-    } --cap-add=IPC_LOCK --cap-add=SYS_ADMIN ${DOCKER_IMAGE_NAME} ${dockerEntryPoint}`,
+    } --env-file .env --cap-add=IPC_LOCK --cap-add=SYS_ADMIN ${DOCKER_IMAGE_NAME} ${dockerEntryPoint}`,
     {stdio: ['inherit', 'inherit', 'inherit']}
   );
 } finally {
@@ -66,6 +68,19 @@ try {
     });
   }
 }
+
+createEnvFile();
 function isBash() {
   return process.argv[2] === '--bash';
+}
+
+function createEnvFile() {
+  const credentials = ['PLATFORM_USER_NAME', 'PLATFORM_USER_PASSWORD'];
+
+  writeFileSync(
+    '.env',
+    credentials
+      .map((variable) => `${variable}=${process.env[variable]}`)
+      .join('\n')
+  );
 }
