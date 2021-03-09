@@ -4,6 +4,7 @@ import {ChildProcessWithoutNullStreams, spawn} from 'child_process';
 import {answerPrompt, CLI_EXEC_PATH, isYesNoPrompt} from './cli';
 
 function isLoginPage(page: Page) {
+  // TODO: CDX-98: URL should vary in fonction of the targeted environment.
   return page.url().match(/https:\/\/platform.*cloud\.coveo\.com\/login/);
 }
 
@@ -37,7 +38,6 @@ async function possiblyAcceptCustomerAgreement(page: Page) {
 }
 
 export function runLoginCommand() {
-  // TODO: CDX-98: URL should vary in fonction of the targeted environment.
   const cliProcess = spawn(CLI_EXEC_PATH, ['auth:login', '-e=dev']);
   cliProcess.stderr.on('data', async (data) => {
     if (isYesNoPrompt(data.toString())) {
