@@ -1,4 +1,4 @@
-const {writeFileSync} = require('fs');
+const {writeFileSync, existsSync} = require('fs');
 const {resolve, join} = require('path');
 const {execSync, spawnSync} = require('child_process');
 
@@ -76,6 +76,10 @@ function isBash() {
 
 function createEnvFile() {
   const credentials = ['PLATFORM_USER_NAME', 'PLATFORM_USER_PASSWORD'];
+
+  if (existsSync('.env')) {
+    return;
+  }
 
   writeFileSync(
     '.env',
