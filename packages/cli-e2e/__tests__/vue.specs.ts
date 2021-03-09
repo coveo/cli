@@ -1,11 +1,13 @@
+import retry from 'async-retry';
 import {spawn, spawnSync} from 'child_process';
 
 import type {ChildProcessWithoutNullStreams} from 'child_process';
 
 import {CLI_EXEC_PATH, killCliProcessFamily} from '../utils/cli';
 import {closeAllPages, getBrowser} from '../utils/browser';
-import {Browser} from 'puppeteer-core';
+import {Browser, HTTPRequest, Page} from 'puppeteer-core';
 import {loginWithOffice} from '../utils/login';
+import {isSearchRequest} from '../utils/platform';
 
 describe('ui', () => {
   describe('create:vue', () => {
@@ -16,6 +18,8 @@ describe('ui', () => {
     const projectName = 'vue-project';
     const searchPageEndpoint = `http://localhost:${clientPort}`;
     const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
+    let interceptedRequests: HTTPRequest[] = [];
+    let page: Page;
     let waitForProjectToStartTimeout: NodeJS.Timeout;
 
     beforeAll(async () => {
@@ -46,6 +50,14 @@ describe('ui', () => {
       return waitForProjectToStart;
     }, 240e3);
 
+    beforeEach(async () => {
+      page = await browser.newPage();
+
+      page.on('request', (request: HTTPRequest) => {
+        interceptedRequests.push(request);
+      });
+    });
+
     afterAll(async () => {
       clearTimeout(waitForProjectToStartTimeout);
       await browser.close();
@@ -60,7 +72,6 @@ describe('ui', () => {
     }, 5e3);
 
     it('should contain a search page section', async () => {
-      const page = await browser.newPage();
       await page.goto(searchPageEndpoint, {
         waitUntil: 'networkidle2',
       });
@@ -69,7 +80,6 @@ describe('ui', () => {
     });
 
     it('should retrieve the search token on the page load', async () => {
-      const page = await browser.newPage();
       page.goto(searchPageEndpoint);
       const tokenResponse = await page.waitForResponse(tokenProxyEndpoint);
       expect(JSON.parse(await tokenResponse.text())).toMatchObject({
@@ -78,33 +88,21 @@ describe('ui', () => {
     });
 
     it('should trigger search queries', async () => {
-      const page = await browser.newPage();
       const searchboxSelector = '#search-page .autocomplete input';
-      let isInterfaceLoadSearch = true;
-
-      page.on('request', (request) => {
-        if (
-          request.method() === 'POST' &&
-          request.url().indexOf(
-            // TODO: CDX-98: URL should vary in fonction of the targeted environment.
-            'https://platformdev.cloud.coveo.com/rest/search/v2?organizationId'
-          ) === 0
-        ) {
-          const data = JSON.parse(request.postData());
-          if (!isInterfaceLoadSearch) {
-            expect(data).toMatchObject({
-              q: 'my query',
-            });
-          }
-          isInterfaceLoadSearch = false;
-        }
-      });
-
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+
+      // Request from interface load
+      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+      interceptedRequests = [];
+
       await page.waitForSelector(searchboxSelector);
       await page.focus(searchboxSelector);
       await page.keyboard.type('my query');
       await page.keyboard.press('Enter');
+
+      await retry(async () => {
+        expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+      });
     });
   });
 
