@@ -3,6 +3,9 @@
   "private": false,
   "version": "0.4.0",
   "author": "Coveo",
+  "engines": {
+    "node": ">=14.15.1"
+  },
   "dependencies": {
     "@angular/cli": "^11.1.4",
     "@coveo/angular": "^0.4.0",
@@ -76,43 +79,10 @@
     },
     "update": {
       "s3": {
-        "host": "https://staticdev.cloud.coveo.com/cli"
+        "host": "https://staticdev.cloud.coveo.com/cli",
+        "bucket": "https://staticdev.cloud.coveo.com/cli"
       }
     }
-  },
-  "oclif2": {
-    "commands": "./lib/commands",
-    "bin": "example-cli",
-    "dirname": "oclif-example-s3-cli",
-    "update": {
-      "s3": {
-        "bucket": "oclif-staging",
-        "templates": {
-          "target": {
-            "unversioned": "tarballs/<%- bin %>/<%- channel === 'stable' ? '' : 'channels/' + channel + '/' %><%- bin %>-<%- platform %>-<%- arch %><%- ext %>",
-            "versioned": "tarballs/<%- bin %>/<%- channel === 'stable' ? '' : 'channels/' + channel + '/' %><%- bin %>-v<%- version %>/<%- bin %>-v<%- version %>-<%- platform %>-<%- arch %><%- ext %>",
-            "manifest": "tarballs/<%- bin %>/<%- channel === 'stable' ? '' : 'channels/' + channel + '/' %><%- platform %>-<%- arch %>"
-          },
-          "vanilla": {
-            "unversioned": "tarballs/<%- bin %>/<%- channel === 'stable' ? '' : 'channels/' + channel + '/' %><%- bin %><%- ext %>",
-            "versioned": "tarballs/<%- bin %>/<%- channel === 'stable' ? '' : 'channels/' + channel + '/' %><%- bin %>-v<%- version %>/<%- bin %>-v<%- version %><%- ext %>",
-            "manifest": "tarballs/<%- bin %>/<%- channel === 'stable' ? '' : 'channels/' + channel + '/' %>version"
-          }
-        }
-      },
-      "node": {
-        "version": "10.4.0",
-        "targets": [
-          "darwin-x64",
-          "linux-x64",
-          "win32-x64"
-        ]
-      }
-    },
-    "plugins": [
-      "@oclif/plugin-update",
-      "@oclif/plugin-help"
-    ]
   },
   "repository": "coveo/cli",
   "scripts": {
