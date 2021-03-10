@@ -1,9 +1,9 @@
 name: Build binaries
 
 on:
-  push:
-    branches:
-      - CDX-138
+  release:
+    types: [published]
+
 jobs:
   package:
     name: Package for ${{ matrix.for }}
@@ -47,4 +47,4 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./packages/cli/dist/**/*
           file_glob: true
-          tag: v0.4.0
+          tag: ${{ github.ref }}
