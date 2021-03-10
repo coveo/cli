@@ -1,4 +1,6 @@
-import {Page} from 'puppeteer-core';
+import {deletePassword, getPassword} from 'keytar';
+import {userInfo} from 'os';
+import {Page, Target} from 'puppeteer-core';
 import type {Browser} from 'puppeteer-core';
 import {ChildProcessWithoutNullStreams, spawn} from 'child_process';
 import {answerPrompt, CLI_EXEC_PATH, isYesNoPrompt} from './cli';
@@ -8,14 +10,20 @@ function isLoginPage(page: Page) {
   return page.url().match(/https:\/\/platform.*cloud\.coveo\.com\/login/);
 }
 
-function isLoggedIn(page: Page) {
-  return page.url().match(/http:\/\/127\.0\.0\.1:32111/);
+export async function isLoggedin() {
+  const currentAccount = userInfo().username;
+  const accessToken = await getPassword(
+    'com.coveo.cli.access.token',
+    currentAccount
+  );
+  return accessToken !== null;
 }
 
 function waitForLoginPage(browser: Browser) {
   return new Promise<Page>((resolve) => {
-    browser.on('targetchanged', (page: Page) => {
-      if (page.url && isLoginPage(page) !== null) {
+    browser.on('targetchanged', async (target: Target) => {
+      const page = await target.page();
+      if (page && isLoginPage(page) !== null) {
         resolve(page);
       }
     });
@@ -73,9 +81,6 @@ async function startLoginFlow(browser: Browser) {
   await page.click('#loginWithOffice365');
 
   await page.waitForNavigation();
-  if (isLoggedIn(page) !== null) {
-    return;
-  }
 
   await page.waitForSelector('input[type="email"]');
   await page.type('input[type="email"]', username);
@@ -93,8 +98,6 @@ async function startLoginFlow(browser: Browser) {
 
   await staySignedIn(page);
 
-  await page.waitForNavigation();
-
   await possiblyAcceptCustomerAgreement(page);
 }
 
@@ -102,8 +105,17 @@ export async function loginWithOffice(
   browser: Browser,
   cliProcesses: ChildProcessWithoutNullStreams[]
 ) {
+  if (await isLoggedin()) {
+    return;
+  }
+
   const loginProcess = runLoginCommand();
   cliProcesses.push(loginProcess);
 
   await startLoginFlow(browser);
+}
+
+export async function logout() {
+  const currentAccount = userInfo().username;
+  await deletePassword('com.coveo.cli.access.token', currentAccount);
 }
