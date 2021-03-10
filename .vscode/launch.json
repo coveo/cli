@@ -12,7 +12,7 @@
       "address": "localhost",
       "port": 9229,
       "localRoot": "${workspaceFolder}",
-      "remoteRoot": "/home/cli-copy",
+      "remoteRoot": "/home/notGroot/cli-copy",
       "sourceMaps": true,
       "autoAttachChildProcesses": false
     },
@@ -24,7 +24,7 @@
       "address": "localhost",
       "port": 9229,
       "localRoot": "${workspaceFolder}",
-      "remoteRoot": "/home/cli-copy",
+      "remoteRoot": "/home/notGroot/cli-copy",
       "sourceMaps": true,
       "autoAttachChildProcesses": false,
       "preLaunchTask": "TestDaemon",
