@@ -11,7 +11,7 @@ import {Storage} from '../../../lib/oauth/storage';
 import {platformUrl} from '../../../lib/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';
 
-interface IprojectOptions {
+interface IProjectOptions {
   preset: {};
   test: boolean;
 }
@@ -98,7 +98,7 @@ export default class Vue extends Command {
     });
   }
 
-  private createProject(name: string, options: IprojectOptions) {
+  private createProject(name: string, options: IProjectOptions) {
     const cliArgs = [
       'create',
       name,
