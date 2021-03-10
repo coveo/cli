@@ -21,7 +21,7 @@
     "test:debug": "node ./entrypoints/entry.js --debug",
     "test:bash": "node ./entrypoints/entry.js --bash",
     "jest": "jest",
-    "jest:debug": "node --inspect-brk=0.0.0.0:9229 node_modules/.bin/jest --runInBand"
+    "jest:debug": "node --inspect=0.0.0.0:9229 node_modules/.bin/jest --runInBand"
   },
   "bugs": {
     "url": "https://github.com/coveo/cli/issues"
