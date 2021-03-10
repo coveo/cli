@@ -6,7 +6,7 @@ on:
       - CDX-138
 jobs:
   package:
-    name: Package for ${{ matrix.pack-command }}
+    name: Package for ${{ matrix.for }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -15,15 +15,19 @@ jobs:
           - os: macos-latest
             pack-command: :macos
             additional-install: echo "no additional install"
+            for: 'macos install kit'
           - os: ubuntu-latest
             pack-command: :win
             additional-install: sudo apt-get install nsis p7zip-full -y
+            for: 'windows install kit'
           - os: ubuntu-latest
             pack-command: :deb
             additional-install: echo "no additional install"
+            for: 'linux install kit'
           - os: ubuntu-latest
             pack-command: ''
             additional-install: echo "no additional install"
+            for: 'tarball'
 
     steps:
       - uses: actions/checkout@v2
@@ -43,4 +47,4 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./packages/cli/dist/**/*
           file_glob: true
-          tag: ${{ github.ref }}
+          tag: v0.4.0
