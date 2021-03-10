@@ -11,11 +11,20 @@ import {Storage} from '../../../lib/oauth/storage';
 import {platformUrl} from '../../../lib/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';
 
+interface IprojectOptions {
+  preset: {};
+  test: boolean;
+}
 export default class Vue extends Command {
   static description = 'Create a new project powered by vue-cli-service';
 
   static flags = {
     help: flags.help({char: 'h'}),
+    test: flags.boolean({
+      hidden: true,
+      default: false,
+      description: 'For testing only',
+    }),
     preset: flags.string({
       char: 'p',
       helpValue: 'path',
@@ -49,7 +58,7 @@ export default class Vue extends Command {
         this.error('Unable to load preset');
       }
     }
-    await this.createProject(args.name, preset);
+    await this.createProject(args.name, {preset, test: flags.test});
     await this.invokePlugin(args.name);
     await this.config.runHook(
       'analytics',
@@ -89,15 +98,20 @@ export default class Vue extends Command {
     });
   }
 
-  private createProject(name: string, preset: {}) {
-    return this.runVueCliCommand([
+  private createProject(name: string, options: IprojectOptions) {
+    const cliArgs = [
       'create',
       name,
       '--inlinePreset',
-      JSON.stringify(preset),
+      JSON.stringify(options.preset),
       '--skipGetStarted',
       '--bare',
-    ]);
+    ];
+
+    if (options.test) {
+      cliArgs.push('--no-git');
+    }
+    return this.runVueCliCommand(cliArgs);
   }
 
   private runVueCliCommand(args: string[], options = {}) {
