@@ -3,23 +3,31 @@ name: Build binaries
 on:
   release:
     types: [published]
+
 jobs:
   package:
-    name: Package for ${{ matrix.pack-command }}
+    name: Package for ${{ matrix.for }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - os: macos-latest
-            pack-command: macos
+            pack-command: :macos
             additional-install: echo "no additional install"
+            for: 'macos install kit'
           - os: ubuntu-latest
-            pack-command: win
+            pack-command: :win
             additional-install: sudo apt-get install nsis p7zip-full -y
+            for: 'windows install kit'
           - os: ubuntu-latest
-            pack-command: deb
+            pack-command: :deb
             additional-install: echo "no additional install"
+            for: 'linux install kit'
+          - os: ubuntu-latest
+            pack-command: ''
+            additional-install: echo "no additional install"
+            for: 'tarball'
 
     steps:
       - uses: actions/checkout@v2
@@ -32,11 +40,11 @@ jobs:
         run: ${{ matrix.additional-install }}
       - name: Create package
         working-directory: ./packages/cli
-        run: ./node_modules/@oclif/dev-cli/bin/run pack:${{ matrix.pack-command }}
+        run: ./node_modules/@oclif/dev-cli/bin/run pack${{ matrix.pack-command }}
       - name: Upload binaries
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./packages/cli/dist/${{ matrix.pack-command }}/**/*
+          file: ./packages/cli/dist/**/*
           file_glob: true
           tag: ${{ github.ref }}

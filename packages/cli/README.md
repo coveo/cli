@@ -7,14 +7,16 @@
 [![License](https://img.shields.io/npm/l/@coveo/cli.svg)](https://github.com/coveo/cli/blob/master/package.json)
 
 <!-- toc -->
-* [@coveo/cli](#coveocli)
-* [Usage](#usage)
-* [Commands](#commands)
+
+- [@coveo/cli](#coveocli)
+- [Usage](#usage)
+- [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g @coveo/cli
 $ coveo COMMAND
@@ -26,19 +28,22 @@ USAGE
   $ coveo COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-* [`coveo auth:login`](#coveo-authlogin)
-* [`coveo config:get`](#coveo-configget)
-* [`coveo config:set`](#coveo-configset)
-* [`coveo help [COMMAND]`](#coveo-help-command)
-* [`coveo org:list`](#coveo-orglist)
-* [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
-* [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
-* [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
+
+- [`coveo auth:login`](#coveo-authlogin)
+- [`coveo config:get`](#coveo-configget)
+- [`coveo config:set`](#coveo-configset)
+- [`coveo help [COMMAND]`](#coveo-help-command)
+- [`coveo org:list`](#coveo-orglist)
+- [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
+- [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
+- [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
+- [`coveo update [CHANNEL]`](#coveo-update-channel)
 
 ## `coveo auth:login`
 
