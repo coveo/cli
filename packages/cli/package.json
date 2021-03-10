@@ -79,8 +79,8 @@
     },
     "update": {
       "s3": {
-        "host": "https://staticdev.cloud.coveo.com/cli",
-        "bucket": "https://staticdev.cloud.coveo.com/cli"
+        "host": "https://static.cloud.coveo.com/cli",
+        "bucket": "https://static.cloud.coveo.com/cli"
       }
     }
   },
