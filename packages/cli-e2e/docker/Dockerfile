@@ -32,6 +32,8 @@ RUN apt-get install -y sudo
 RUN addgroup --system notGroot --force-badname && adduser --system --group notGroot --force-badname \
     && mkdir -p /home/notGroot/Downloads /app
 
+RUN mkdir -p /home/notGroot/cli-copy
+
 # Setup the keyring.
 RUN mkdir -p /home/notGroot/.local/share/keyrings
 RUN touch /home/notGroot/.local/share/keyrings/Default_keyring.keyring
