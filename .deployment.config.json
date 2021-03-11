@@ -5,7 +5,7 @@
     "team_jenkins": "searchuibuilds",
     "notifications": {"slack_channels": ["#searchuibuilds"]},
     "environments_order": {
-      "sequential": ["dev"]
+      "sequential": ["dev", "qa", "prd"]
     },
     "aws_regions": {
       "sequential": ["us-east-1"]
