@@ -14,7 +14,7 @@ import {
 } from '../../hooks/analytics/analytics';
 
 export default class Login extends Command {
-  static description = 'Log into Coveo platform using OAuth2 flow';
+  static description = 'Log into the Coveo platform using the OAuth2 flow.';
 
   static examples = ['$ coveo auth:login'];
 
@@ -30,18 +30,18 @@ export default class Login extends Command {
       ],
       default: 'us-east-1',
       description:
-        'The platform region inside which to login. See https://docs.coveo.com/en/2976',
+        'The platform region to log into. See https://docs.coveo.com/en/2976.',
     }),
     environment: flags.string({
       char: 'e',
       options: ['dev', 'qa', 'prod', 'hipaa'],
       default: 'prod',
-      description: 'The platform environment inside which to login.',
+      description: 'The platform environment to log into.',
     }),
     organization: flags.string({
       char: 'o',
       description:
-        'The organization inside which to login. If not specified, the first organization available will be picked. See also commands config:get, config:set, and org:list',
+        'The identifier of the organization to log into. If not specified, the CLI logs you in the first organization available. See also commands config:get, config:set, and org:list.',
       helpValue: 'myOrgID',
     }),
   };
@@ -98,7 +98,7 @@ export default class Login extends Command {
       return;
     }
 
-    this.log('You have no access to any organization in Coveo.');
+    this.log('You have no access to any Coveo organization.');
   }
 
   private async pickFirstAvailableOrganization() {

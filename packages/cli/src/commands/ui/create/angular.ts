@@ -9,18 +9,18 @@ import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 
 export default class Angular extends Command {
   static description =
-    'Create a search page with Angular powered by Coveo Headless';
+    'Create a Coveo Headless-powered search page with the Angular web framework. See https://docs.coveo.com/en/headless and https://angular.io/.';
 
   static flags = {
     defaults: flags.boolean({
       char: 'd',
       description:
-        'Disable interactive input prompts for options with a default',
+        'Automatically select the default value for all prompts where such a default value exists.',
     }),
   };
 
   static args = [
-    {name: 'name', description: 'application name', required: true},
+    {name: 'name', description: 'The target application name.', required: true},
   ];
 
   @AuthenticationRequired()

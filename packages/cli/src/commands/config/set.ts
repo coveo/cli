@@ -23,17 +23,18 @@ export default class Set extends Command {
         'us-west-2',
       ],
       description:
-        'The platform region inside which to perform operation. See https://docs.coveo.com/en/2976',
+        'The platform region inside which to perform operations. See https://docs.coveo.com/en/2976.',
     }),
     environment: flags.string({
       char: 'e',
       options: ['dev', 'qa', 'prod', 'hipaa'],
       description:
-        'The platform environment inside which to perform operation.',
+        'The platform environment inside which to perform operations.',
     }),
     organization: flags.string({
       char: 'o',
-      description: 'The organization inside which to perform operation.',
+      description:
+        'The identifier of the organization inside which to perform operations. See https://docs.coveo.com/en/1562/#organization-id-and-other-information.',
       helpValue: 'myOrgID',
     }),
     analytics: flags.string({
