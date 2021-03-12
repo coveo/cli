@@ -7,6 +7,10 @@ RUN apt-get update
 RUN apt-get install -y google-chrome-stable
 RUN update-alternatives --set x-www-browser /usr/bin/google-chrome-stable
 
+RUN apt-get install git
+RUN git config --global user.name "notgroot"
+RUN git config --global user.email "notgroot@coveo.com"
+
 # Keyring deps
 RUN apt-get install -y dbus-x11
 RUN apt-get install -y gnome-keyring

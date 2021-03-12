@@ -1,3 +1,4 @@
+import stripAnsi from 'strip-ansi';
 import type {ChildProcessWithoutNullStreams} from 'child_process';
 import {resolve} from 'path';
 
@@ -21,6 +22,16 @@ export function killCliProcessFamily(
 
 export function isYesNoPrompt(data: string) {
   return data.trimEnd().toLowerCase().endsWith('(y/n):');
+}
+
+export function isGenericYesNoPrompt(data: string) {
+  let stripedData = data;
+  try {
+    stripedData = stripAnsi(data.toString());
+  } catch (error) {
+    console.log('Unable to strip ansi from string', error);
+  }
+  return stripedData.match(/\(y\/n\)[\s:]*$/i) !== null;
 }
 
 export function answerPrompt(

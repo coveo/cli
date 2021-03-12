@@ -1,18 +1,23 @@
 import retry from 'async-retry';
-import {spawn, spawnSync} from 'child_process';
+import {EOL} from 'os';
+import {spawn} from 'child_process';
 
 import type {ChildProcessWithoutNullStreams} from 'child_process';
+import type {HTTPRequest, Browser, Page} from 'puppeteer';
 
-import {CLI_EXEC_PATH, killCliProcessFamily} from '../utils/cli';
-import {closeAllPages, getBrowser} from '../utils/browser';
-import {Browser, HTTPRequest, Page} from 'puppeteer-core';
-import {loginWithOffice} from '../utils/login';
+import {
+  answerPrompt,
+  CLI_EXEC_PATH,
+  isGenericYesNoPrompt,
+  killCliProcessFamily,
+} from '../utils/cli';
+import {getNewBrowser} from '../utils/browser';
 import {isSearchRequest} from '../utils/platform';
 
 describe('ui', () => {
   describe('create:vue', () => {
     let browser: Browser;
-    const cliProcesses: ChildProcessWithoutNullStreams[] = [];
+    let startServerProcess: ChildProcessWithoutNullStreams;
     // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
     const clientPort = '8080';
     const projectName = 'vue-project';
@@ -23,24 +28,31 @@ describe('ui', () => {
     let waitForProjectToStartTimeout: NodeJS.Timeout;
 
     beforeAll(async () => {
-      browser = await getBrowser();
+      browser = await getNewBrowser();
 
-      await loginWithOffice(browser, cliProcesses);
+      const waitForProjectToBuild = new Promise<void>((resolve) => {
+        const buildProcess = spawn(CLI_EXEC_PATH, [
+          'ui:create:vue',
+          projectName,
+        ]);
 
-      const buildProcess = spawnSync(CLI_EXEC_PATH, [
-        'ui:create:vue',
-        projectName,
-      ]);
+        buildProcess.stdout.on('close', async () => {
+          resolve();
+        });
+        buildProcess.stdout.on('data', async (data) => {
+          if (isGenericYesNoPrompt(data.toString())) {
+            await answerPrompt(`y${EOL}`, buildProcess);
+          }
+        });
+      });
 
-      expect(buildProcess.status).toEqual(0);
+      await waitForProjectToBuild;
 
       const waitForProjectToStart = new Promise<void>((resolve) => {
-        const startServerProcess = spawn('npm', ['run', 'start'], {
+        startServerProcess = spawn('npm', ['run', 'start'], {
           cwd: projectName,
           detached: true,
         });
-
-        cliProcesses.push(startServerProcess);
 
         waitForProjectToStartTimeout = setTimeout(() => {
           resolve();
@@ -61,14 +73,7 @@ describe('ui', () => {
     afterAll(async () => {
       clearTimeout(waitForProjectToStartTimeout);
       await browser.close();
-      return Promise.all(
-        cliProcesses.map((cliProcess) => killCliProcessFamily(cliProcess))
-      );
-    }, 5e3);
-
-    afterEach(async () => {
-      const pageClosePromises = await closeAllPages(browser);
-      return Promise.all(pageClosePromises);
+      return killCliProcessFamily(startServerProcess);
     }, 5e3);
 
     it('should contain a search page section', async () => {
