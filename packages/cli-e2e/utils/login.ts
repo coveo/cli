@@ -1,13 +1,16 @@
+import retry from 'async-retry';
 import {deletePassword, getPassword} from 'keytar';
 import {userInfo} from 'os';
-import {Page, Target} from 'puppeteer-core';
-import type {Browser} from 'puppeteer-core';
-import {ChildProcessWithoutNullStreams, spawn} from 'child_process';
+import type {Browser, Page, Target} from 'puppeteer';
+import {spawn} from 'child_process';
 import {answerPrompt, CLI_EXEC_PATH, isYesNoPrompt} from './cli';
+import LoginSelectors from './loginSelectors';
+import {strictEqual} from 'assert';
+import {connectToChromeBrowser} from './browser';
 
 function isLoginPage(page: Page) {
   // TODO: CDX-98: URL should vary in fonction of the targeted environment.
-  return page.url().match(/https:\/\/platform.*cloud\.coveo\.com\/login/);
+  return page.url() === 'https://platformdev.cloud.coveo.com/login';
 }
 
 export async function isLoggedin() {
@@ -31,17 +34,21 @@ function waitForLoginPage(browser: Browser) {
 }
 
 async function staySignedIn(page: Page) {
-  await page.waitForSelector('input[type="submit"]');
-  await page.click('input[type="submit"]');
+  await page.waitForSelector(LoginSelectors.SubmitInput, {
+    visible: true,
+  });
+  await page.waitForSelector(LoginSelectors.SubmitInput);
+  await page.click(LoginSelectors.SubmitInput);
 }
 
 async function possiblyAcceptCustomerAgreement(page: Page) {
-  if (page.url().match(/https:\/\/platform.*cloud\.coveo\.com\/eula.?/)) {
-    await page.waitForSelector('.coveo-checkbox-label button');
-    await page.click('.coveo-checkbox-label button');
+  // TODO: CDX-98: URL should vary in fonction of the targeted environment.
+  if (page.url().startsWith('https://platformdev.cloud.coveo.com/eula')) {
+    await page.waitForSelector(LoginSelectors.coveoCheckboxButton);
+    await page.click(LoginSelectors.coveoCheckboxButton);
     await page.waitForTimeout(200); // wait for the button to be enabled
-    await page.waitForSelector('button[type="submit"]');
-    await page.click('button[type="submit"]');
+    await page.waitForSelector(LoginSelectors.submitButton);
+    await page.click(LoginSelectors.submitButton);
   }
 }
 
@@ -77,45 +84,42 @@ async function startLoginFlow(browser: Browser) {
     throw new Error('Unable to find login page');
   }
 
-  await page.waitForSelector('#loginWithOffice365');
-  await page.click('#loginWithOffice365');
+  await page.waitForSelector(LoginSelectors.loginWithOfficeButton);
+  await page.click(LoginSelectors.loginWithOfficeButton);
 
   await page.waitForNavigation();
 
-  await page.waitForSelector('input[type="email"]');
-  await page.type('input[type="email"]', username);
-  await page.waitForSelector('input[type="submit"]');
-  await page.click('input[type="submit"]');
+  await page.waitForSelector(LoginSelectors.emailInput);
+  await page.type(LoginSelectors.emailInput, username);
+  await page.waitForSelector(LoginSelectors.SubmitInput);
+  await page.click(LoginSelectors.SubmitInput);
 
-  await page.waitForTimeout(500);
+  await page.waitForTimeout(1000);
 
-  await page.waitForSelector('input[type="password"]');
-  await page.type('input[type="password"]', password);
-  await page.waitForSelector('input[type="submit"]');
-  await page.click('input[type="submit"]');
-
-  await page.waitForTimeout(500);
+  await page.waitForSelector(LoginSelectors.passwordInput);
+  await page.type(LoginSelectors.passwordInput, password);
+  await page.waitForSelector(LoginSelectors.SubmitInput);
+  await page.click(LoginSelectors.SubmitInput);
 
   await staySignedIn(page);
 
   await possiblyAcceptCustomerAgreement(page);
+  await page.close();
 }
 
-export async function loginWithOffice(
-  browser: Browser,
-  cliProcesses: ChildProcessWithoutNullStreams[]
-) {
+export async function loginWithOffice() {
   if (await isLoggedin()) {
     return;
   }
+  const browser: Browser = await connectToChromeBrowser();
 
-  const loginProcess = runLoginCommand();
-  cliProcesses.push(loginProcess);
+  runLoginCommand();
 
   await startLoginFlow(browser);
+  await retry(async () => strictEqual(await isLoggedin(), true));
 }
 
-export async function logout() {
+export async function clearKeychain() {
   const currentAccount = userInfo().username;
   await deletePassword('com.coveo.cli.access.token', currentAccount);
 }

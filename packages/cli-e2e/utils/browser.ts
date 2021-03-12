@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-import {connect} from 'puppeteer-core';
-import type {Browser} from 'puppeteer-core';
+import puppeteer from 'puppeteer';
+import type {Browser} from 'puppeteer';
 
 const CHROME_JSON_DEBUG_URL = 'http://localhost:9222/json/version';
 
@@ -29,10 +29,24 @@ async function getWsUrl(): Promise<string> {
   return chromeDebugInfoRaw.webSocketDebuggerUrl;
 }
 
+function getChromeDefaultOptions() {
+  return [
+    '--no-first-run',
+    '--disable-dev-shm-usage',
+    '--window-size=1080,720',
+  ];
+}
 /**
  * Return the browser instance.
  */
-export async function getBrowser(): Promise<Browser> {
+export async function connectToChromeBrowser(): Promise<Browser> {
   const wsURL = await getWsUrl();
-  return connect({browserWSEndpoint: wsURL});
+  return puppeteer.connect({browserWSEndpoint: wsURL});
+}
+
+export async function getNewBrowser(): Promise<Browser> {
+  return await puppeteer.launch({
+    headless: false,
+    args: getChromeDefaultOptions(),
+  });
 }

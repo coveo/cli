@@ -64,7 +64,7 @@ const createOrUpdateReleaseDescription = async (tag, body) => {
   }
 };
 
-const downloadReleaseAssets = async (tag, directory) => {
+const downloadReleaseAssets = async (tag, determineAssetLocation) => {
   const release = await octokit.repos.getReleaseByTag({repo, owner, tag});
   const assets = await octokit.repos.listReleaseAssets({
     owner,
@@ -76,6 +76,7 @@ const downloadReleaseAssets = async (tag, directory) => {
     console.info(
       `Downloading asset ${asset.name} from ${asset.browser_download_url}.\nSize: ${asset.size} ...`
     );
+    const directory = determineAssetLocation(asset.name);
     execSync(
       `curl -L ${asset.browser_download_url} --output ${directory}/${asset.name}`
     );

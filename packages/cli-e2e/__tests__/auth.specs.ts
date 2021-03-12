@@ -1,7 +1,7 @@
 import {spawn} from 'child_process';
 import retry from 'async-retry';
 
-import type {Browser} from 'puppeteer-core';
+import type {Browser} from 'puppeteer';
 import type {ChildProcessWithoutNullStreams} from 'child_process';
 
 import {
@@ -10,7 +10,7 @@ import {
   isYesNoPrompt,
   killCliProcess,
 } from '../utils/cli';
-import {closeAllPages, getBrowser} from '../utils/browser';
+import {connectToChromeBrowser} from '../utils/browser';
 
 describe('auth', () => {
   describe('login', () => {
@@ -18,18 +18,12 @@ describe('auth', () => {
     let cliProcess: ChildProcessWithoutNullStreams;
 
     beforeAll(async () => {
-      browser = await getBrowser();
+      browser = await connectToChromeBrowser();
     });
 
     afterEach(async () => {
-      const killCliPromise = killCliProcess(cliProcess);
-      const pageClosePromises = await closeAllPages(browser);
-      await Promise.all([killCliPromise, ...pageClosePromises]);
+      await killCliProcess(cliProcess);
     }, 5e3);
-
-    afterAll(async () => {
-      await browser.close();
-    });
 
     it('should open the platform page', async () => {
       // TODO CDX-98: Remove `-e=dev`.

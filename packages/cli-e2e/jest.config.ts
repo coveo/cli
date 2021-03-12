@@ -5,4 +5,6 @@
 
 export default {
   testEnvironment: 'node',
+  globalSetup: './setup.ts',
+  globalTeardown: './teardown.ts',
 };

@@ -8,27 +8,27 @@
       "type": "pwa-node",
       "request": "attach",
       "cwd": "${workspaceFolder}",
-      "name": "Attach",
+      "name": "Debug E2E test (Start)",
       "address": "localhost",
       "port": 9229,
       "localRoot": "${workspaceFolder}",
-      "remoteRoot": "/home/cli-copy",
+      "remoteRoot": "/home/notGroot/cli-copy",
       "sourceMaps": true,
-      "autoAttachChildProcesses": false
+      "autoAttachChildProcesses": false,
+      "preLaunchTask": "TestDaemon",
+      "postDebugTask": "DaemonKiller"
     },
     {
       "type": "pwa-node",
       "request": "attach",
       "cwd": "${workspaceFolder}",
-      "name": "Brace",
+      "name": "Debug E2E test (Attach)",
       "address": "localhost",
       "port": 9229,
       "localRoot": "${workspaceFolder}",
-      "remoteRoot": "/home/cli-copy",
+      "remoteRoot": "/home/notGroot/cli-copy",
       "sourceMaps": true,
-      "autoAttachChildProcesses": false,
-      "preLaunchTask": "TestDaemon",
-      "postDebugTask": "DaemonKiller"
+      "autoAttachChildProcesses": false
     }
   ]
 }
