@@ -1,4 +1,4 @@
-import {HTTPRequest} from 'puppeteer-core';
+import {HTTPRequest} from 'puppeteer';
 
 export function isSearchRequest(request: HTTPRequest) {
   return request.url().startsWith(

@@ -1,6 +1,7 @@
 import stripAnsi from 'strip-ansi';
-import type {ChildProcessWithoutNullStreams} from 'child_process';
+import {ChildProcessWithoutNullStreams, spawn} from 'child_process';
 import {resolve} from 'path';
+import {EOL} from 'os';
 
 export function killCliProcess(cliProcess: ChildProcessWithoutNullStreams) {
   const waitForKill = new Promise<void>((resolve) => {
@@ -46,4 +47,46 @@ export function answerPrompt(
     }
   });
 }
+
+export async function setupUIProject(
+  commandArgs: string,
+  projectName: string,
+  cliProcesses: ChildProcessWithoutNullStreams[]
+) {
+  const createProjectPromise = new Promise<void>((resolve) => {
+    const buildProcess = spawn(CLI_EXEC_PATH, [commandArgs, projectName]);
+
+    buildProcess.stdout.on('close', async () => {
+      resolve();
+    });
+    buildProcess.stdout.on('data', async (data) => {
+      if (isGenericYesNoPrompt(data.toString())) {
+        await answerPrompt(`y${EOL}`, buildProcess);
+      }
+    });
+  });
+
+  await createProjectPromise;
+
+  return new Promise<void>((resolve) => {
+    const startServerProcess = spawn('npm', ['run', 'start'], {
+      cwd: projectName,
+      detached: true,
+    });
+
+    cliProcesses.push(startServerProcess);
+    setTimeout(() => {
+      resolve();
+    }, 15e3);
+  });
+}
+
+export async function teardownUIProject(
+  cliProcesses: ChildProcessWithoutNullStreams[]
+) {
+  return Promise.all(
+    cliProcesses.map((cliProcess) => killCliProcessFamily(cliProcess))
+  );
+}
+
 export const CLI_EXEC_PATH = resolve(__dirname, '../../cli/bin/run');

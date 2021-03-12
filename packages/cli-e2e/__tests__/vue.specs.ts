@@ -1,23 +1,16 @@
 import retry from 'async-retry';
-import {EOL} from 'os';
-import {spawn} from 'child_process';
 
 import type {ChildProcessWithoutNullStreams} from 'child_process';
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
 
-import {
-  answerPrompt,
-  CLI_EXEC_PATH,
-  isGenericYesNoPrompt,
-  killCliProcessFamily,
-} from '../utils/cli';
+import {setupUIProject, teardownUIProject} from '../utils/cli';
 import {getNewBrowser} from '../utils/browser';
 import {isSearchRequest} from '../utils/platform';
 
 describe('ui', () => {
   describe('create:vue', () => {
     let browser: Browser;
-    let startServerProcess: ChildProcessWithoutNullStreams;
+    const cliProcesses: ChildProcessWithoutNullStreams[] = [];
     // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
     const clientPort = '8080';
     const projectName = 'vue-project';
@@ -25,41 +18,10 @@ describe('ui', () => {
     const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
     let interceptedRequests: HTTPRequest[] = [];
     let page: Page;
-    let waitForProjectToStartTimeout: NodeJS.Timeout;
 
     beforeAll(async () => {
       browser = await getNewBrowser();
-
-      const waitForProjectToBuild = new Promise<void>((resolve) => {
-        const buildProcess = spawn(CLI_EXEC_PATH, [
-          'ui:create:vue',
-          projectName,
-        ]);
-
-        buildProcess.stdout.on('close', async () => {
-          resolve();
-        });
-        buildProcess.stdout.on('data', async (data) => {
-          if (isGenericYesNoPrompt(data.toString())) {
-            await answerPrompt(`y${EOL}`, buildProcess);
-          }
-        });
-      });
-
-      await waitForProjectToBuild;
-
-      const waitForProjectToStart = new Promise<void>((resolve) => {
-        startServerProcess = spawn('npm', ['run', 'start'], {
-          cwd: projectName,
-          detached: true,
-        });
-
-        waitForProjectToStartTimeout = setTimeout(() => {
-          resolve();
-        }, 15e3);
-      });
-
-      return waitForProjectToStart;
+      await setupUIProject('ui:create:vue', projectName, cliProcesses);
     }, 240e3);
 
     beforeEach(async () => {
@@ -71,9 +33,8 @@ describe('ui', () => {
     });
 
     afterAll(async () => {
-      clearTimeout(waitForProjectToStartTimeout);
       await browser.close();
-      return killCliProcessFamily(startServerProcess);
+      await teardownUIProject(cliProcesses);
     }, 5e3);
 
     it('should contain a search page section', async () => {
@@ -88,7 +49,7 @@ describe('ui', () => {
       page.goto(searchPageEndpoint);
       const tokenResponse = await page.waitForResponse(tokenProxyEndpoint);
       expect(JSON.parse(await tokenResponse.text())).toMatchObject({
-        token: expect.stringMatching(/.+/),
+        token: expect.stringMatching(/^eyJhb.+/),
       });
     });
 
