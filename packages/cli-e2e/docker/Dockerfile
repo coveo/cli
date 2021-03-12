@@ -29,10 +29,11 @@ RUN apt-get install -y rsync
 RUN apt-get install -y sudo
 
 # Add user so we don't need --no-sandbox.
-RUN addgroup --system notGroot --force-badname && adduser --system --group notGroot --force-badname \
-    && mkdir -p /home/notGroot/Downloads /app
+RUN addgroup --system notGroot --force-badname \
+    && adduser --system --group notGroot --force-badname
 
 RUN mkdir -p /home/notGroot/cli-copy
+RUN mkdir -p /home/notGroot/cli-cache
 
 # Setup the keyring.
 RUN mkdir -p /home/notGroot/.local/share/keyrings
@@ -50,7 +51,6 @@ RUN printf 'Default_keyring' > /home/notGroot/.local/share/keyrings/default
 
 # Give the file access to the test user.
 RUN chown -R notGroot:notGroot /home/notGroot \
-    && chown -R notGroot:notGroot /app \
     && chmod -R 600 /home/notGroot/.local/share/keyrings/Default_keyring.keyring \
     && chmod -R 644 /home/notGroot/.local/share/keyrings/default
 
