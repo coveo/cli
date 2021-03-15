@@ -17,18 +17,19 @@ jobs:
           #  pack-command: :macos
           #  additional-install: echo "no additional install"
           #  for: 'macos install kit'
-          - os: windows-latest
+          - os: ubuntu-latest
             pack-command: :win
+            additional-install: sudo apt-get install nsis p7zip-full -y
             for: 'windows install kit'
-            additional-install: echo "no additional install"
+            platform: win32
           #- os: ubuntu-latest
           #  pack-command: :deb
           #  additional-install: echo "no additional install"
           #  for: 'linux install kit'
-          #- os: ubuntu-latest
-          #  pack-command: ''
-          #  additional-install: echo "no additional install"
-          #  for: 'tarball'
+          - os: ubuntu-latest
+            pack-command: ''
+            additional-install: echo "no additional install"
+            for: 'tarball'
 
     steps:
       - uses: Vampire/setup-wsl@v1
@@ -42,7 +43,8 @@ jobs:
         run: ${{ matrix.additional-install }}
       - name: Create package
         working-directory: ./packages/cli
-        run: ./node_modules/@oclif/dev-cli/bin/run pack${{ matrix.pack-command }}
+        run: npm i --platform=${{ matrix.platform }} |
+          ./node_modules/@oclif/dev-cli/bin/run pack${{ matrix.pack-command }}
       - name: Upload binaries
         uses: svenstaro/upload-release-action@v2
         with:
