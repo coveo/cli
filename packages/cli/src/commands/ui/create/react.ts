@@ -12,7 +12,7 @@ import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 
 export default class React extends Command {
   static description =
-    'Create a search page in React powered by Coveo Headless';
+    'Create a Coveo Headless-powered search page with the React web framework. See https://docs.coveo.com/en/headless and https://reactjs.org/.';
 
   static examples = [
     '$ coveo ui:create:react myapp',
@@ -20,7 +20,7 @@ export default class React extends Command {
   ];
 
   static args = [
-    {name: 'name', description: 'application name', required: true},
+    {name: 'name', description: 'The target application name.', required: true},
   ];
 
   @AuthenticationRequired()
