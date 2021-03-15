@@ -105,6 +105,9 @@ async function startLoginFlow(browser: Browser) {
   await staySignedIn(page);
 
   await possiblyAcceptCustomerAgreement(page);
+
+  await retry(async () => strictEqual(await isLoggedin(), true));
+
   await page.close();
 }
 
@@ -114,10 +117,10 @@ export async function loginWithOffice() {
   }
   const browser: Browser = await connectToChromeBrowser();
 
-  runLoginCommand();
+  const loginProcess = runLoginCommand();
 
   await startLoginFlow(browser);
-  await retry(async () => strictEqual(await isLoggedin(), true));
+  return loginProcess;
 }
 
 export async function clearKeychain() {
