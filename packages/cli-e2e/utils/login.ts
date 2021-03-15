@@ -116,9 +116,10 @@ export async function loginWithOffice() {
   }
   const browser: Browser = await connectToChromeBrowser();
 
-  runLoginCommand();
+  const loginProcess = runLoginCommand();
 
   await startLoginFlow(browser);
+  return loginProcess;
 }
 
 export async function clearKeychain() {
