@@ -12,7 +12,8 @@ import {platformUrl} from '../../../lib/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';
 
 export default class Vue extends Command {
-  static description = 'Create a new project powered by vue-cli-service';
+  static description =
+    'Create a Coveo Headless-powered search page with the Vue.js web framework. See https://docs.coveo.com/en/headless and https://vuejs.org/';
 
   static flags = {
     help: flags.help({char: 'h'}),
@@ -21,7 +22,7 @@ export default class Vue extends Command {
       helpValue: 'path',
       description: [
         'Path to a JSON file with pre-defined options and plugins for creating a new project.',
-        'If not specified, the default TypeScript preset will be taken.',
+        'If not specified, the default TypeScript preset is used.',
         'For more information about Vue CLI presets, please consult https://cli.vuejs.org/guide/plugins-and-presets.html#presets',
       ].join('\n'),
     }),
@@ -33,7 +34,7 @@ export default class Vue extends Command {
   ];
 
   static args = [
-    {name: 'name', description: 'application name', required: true},
+    {name: 'name', description: 'The target application name.', required: true},
   ];
 
   @AuthenticationRequired()
