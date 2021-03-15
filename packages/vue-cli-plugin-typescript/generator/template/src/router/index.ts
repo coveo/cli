@@ -25,7 +25,7 @@ const routes: Array<RouteConfig> = [
       if (!isEnvValid()) {
         next('/error');
       } else {
-        const res = await fetch(process.env.VUE_APP_TOKEN_ENDPOINT);
+        const res = await fetch(process.env.VUE_APP_TOKEN_ENDPOINT!);
         const {token} = await res.json();
         const engineService = new EngineService(token);
         // Adding Coveo Headless engine as a global mixin so it can be available to all components

@@ -12,7 +12,8 @@ import {platformUrl} from '../../../lib/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';
 
 export default class Vue extends Command {
-  static description = 'Create a new project powered by vue-cli-service';
+  static description =
+    'Create a Coveo Headless-powered search page with the Vue.js web framework. See https://docs.coveo.com/en/headless and https://vuejs.org/';
 
   static flags = {
     help: flags.help({char: 'h'}),
@@ -21,7 +22,7 @@ export default class Vue extends Command {
       helpValue: 'path',
       description: [
         'Path to a JSON file with pre-defined options and plugins for creating a new project.',
-        'If not specified, the default TypeScript preset will be taken.',
+        'If not specified, the default TypeScript preset is used.',
         'For more information about Vue CLI presets, please consult https://cli.vuejs.org/guide/plugins-and-presets.html#presets',
       ].join('\n'),
     }),
@@ -33,20 +34,20 @@ export default class Vue extends Command {
   ];
 
   static args = [
-    {name: 'name', description: 'application name', required: true},
+    {name: 'name', description: 'The target application name.', required: true},
   ];
 
   @AuthenticationRequired()
   async run() {
     const {args, flags} = this.parse(Vue);
 
-    let preset = require('./presets/typescript-preset.json');
+    let preset = this.getDefaultPreset();
 
     if (flags.preset) {
       try {
         preset = require(resolve(process.cwd(), flags.preset));
       } catch (error) {
-        this.error('Unable to load preset');
+        this.error('Unable to load custom preset. Using default preset.');
       }
     }
     await this.createProject(args.name, preset);
@@ -87,6 +88,26 @@ export default class Vue extends Command {
     return this.runVueCliCommand(cliArgs, {
       cwd: applicationName,
     });
+  }
+
+  private getDefaultPreset() {
+    return {
+      useConfigFiles: true,
+      plugins: {
+        '@vue/cli-plugin-typescript': {
+          classComponent: true,
+        },
+        '@vue/cli-plugin-router': {
+          historyMode: true,
+        },
+        '@vue/cli-plugin-eslint': {
+          config: 'standard',
+          lintOn: ['commit'],
+        },
+      },
+      cssPreprocessor: 'node-sass',
+      vueVersion: '2',
+    };
   }
 
   private createProject(name: string, preset: {}) {

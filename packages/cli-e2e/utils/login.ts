@@ -7,6 +7,7 @@ import {answerPrompt, CLI_EXEC_PATH, isYesNoPrompt} from './cli';
 import LoginSelectors from './loginSelectors';
 import {strictEqual} from 'assert';
 import {connectToChromeBrowser} from './browser';
+import {isElementClickable} from './browser';
 
 function isLoginPage(page: Page) {
   // TODO: CDX-98: URL should vary in fonction of the targeted environment.
@@ -19,7 +20,7 @@ export async function isLoggedin() {
     'com.coveo.cli.access.token',
     currentAccount
   );
-  return accessToken !== null;
+  return Boolean(accessToken);
 }
 
 function waitForLoginPage(browser: Browser) {
@@ -94,7 +95,7 @@ async function startLoginFlow(browser: Browser) {
   await page.waitForSelector(LoginSelectors.SubmitInput);
   await page.click(LoginSelectors.SubmitInput);
 
-  await page.waitForTimeout(1000);
+  await isElementClickable(page, LoginSelectors.passwordInput);
 
   await page.waitForSelector(LoginSelectors.passwordInput);
   await page.type(LoginSelectors.passwordInput, password);

@@ -28,7 +28,8 @@
   },
   "devDependencies": {
     "@types/async-retry": "1.4.2",
-    "@types/jest": "26.0.20"
+    "@types/jest": "26.0.20",
+    "keytar": "^7.4.0"
   },
   "dependencies": {
     "@babel/core": "7.12.17",
