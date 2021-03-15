@@ -5,11 +5,11 @@ import {
 } from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {platformUrl} from '../../../lib/platform/environment';
-import {spawnProcess} from '../../../lib/utils/process';
+import {spawnProcess, spawnProcessStdio} from '../../../lib/utils/process';
 import {Storage} from '../../../lib/oauth/storage';
 import AuthenticationRequired from '../../../lib/decorators/authenticationRequired';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-
+import {lt} from 'semver';
 export default class React extends Command {
   static description =
     'Create a Coveo Headless-powered search page with the React web framework. See https://docs.coveo.com/en/headless and https://reactjs.org/.';
@@ -26,15 +26,23 @@ export default class React extends Command {
   @AuthenticationRequired()
   async run() {
     const {args} = this.parse(React);
+    if (!(await this.checkIfUserHasNodeGreaterThan10())) {
+      return;
+    }
+    if (!(await this.checkIfUserHasNpx())) {
+      return;
+    }
+
     await this.createProject(args.name);
     await this.setupEnvironmentVariables(args.name);
     await this.config.runHook('analytics', buildAnalyticsSuccessHook(this, {}));
   }
 
   async catch(err?: Error) {
+    const {args} = this.parse(React);
     await this.config.runHook(
       'analytics',
-      buildAnalyticsFailureHook(this, {}, err)
+      buildAnalyticsFailureHook(this, args, err)
     );
     throw err;
   }
@@ -78,8 +86,7 @@ export default class React extends Command {
   }
 
   private runReactCliCommand(args: string[], options = {}) {
-    const executable = require.resolve('create-react-app');
-    return spawnProcess(executable, args, options);
+    return spawnProcess('npx', ['create-react-app'].concat(args), options);
   }
 
   private get configuration() {
@@ -96,5 +103,66 @@ export default class React extends Command {
     await platformClient.initialize();
 
     return await platformClient.user.get();
+  }
+
+  private async checkIfUserHasNodeGreaterThan10() {
+    const stdio = await spawnProcessStdio('node', ['--version']);
+    if (stdio.stderr && stdio.stderr.match(/ENOENT/i)) {
+      this.warn(`${this.id} requires Node.js to run.`);
+      this.warnHowToInstallNode();
+      return false;
+    }
+
+    if (stdio.stderr) {
+      this.warn(`${this.id} requires a valid Node.js installation to run.`);
+      this.warn(
+        'An unknown error happened while trying to determine your node version with node --version.'
+      );
+      this.warn(stdio.stderr);
+      this.warnHowToInstallNode();
+      return false;
+    }
+
+    const requiredNodeVersionForCreateReactApp = '10.16.0';
+    if (lt(stdio.stdout, requiredNodeVersionForCreateReactApp)) {
+      this.warn(
+        `${this.id} uses create-react-app, which needs a Node.js version greater than ${requiredNodeVersionForCreateReactApp}`
+      );
+      this.warn(`Version detected: ${stdio.stdout}`);
+      this.warnHowToInstallNode();
+      return false;
+    }
+
+    return true;
+  }
+
+  private async checkIfUserHasNpx() {
+    const stdio = await spawnProcessStdio('npx', ['--version']);
+
+    if (stdio.stderr && stdio.stderr.match(/ENOENT/i)) {
+      this.warn(`${this.id} requires npx to run.`);
+      this.warn('Newer version Node.js comes bundled with npx.');
+      this.warnHowToInstallNode();
+      return false;
+    }
+
+    if (stdio.stderr) {
+      this.warn(`${this.id} requires a valid npx installation to run.`);
+      this.warn(
+        'An unknown error happened while trying to determine your npx version with npx --version.'
+      );
+      this.warn(stdio.stderr);
+      this.warnHowToInstallNode();
+      return false;
+    }
+
+    return true;
+  }
+
+  private warnHowToInstallNode() {
+    this.warn('Please visit https://nodejs.org/ for installation or upgrade.');
+    this.warn(
+      'Or use (strongly recommended) https://github.com/nvm-sh/nvm and https://github.com/coreybutler/nvm-windows to manage multiple version of Node.js'
+    );
   }
 }

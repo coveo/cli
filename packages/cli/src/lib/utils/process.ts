@@ -1,4 +1,5 @@
 import {spawn, SpawnOptions} from 'child_process';
+import {error} from 'console';
 
 /**
  *
@@ -31,6 +32,34 @@ export function spawnProcess(
       } else {
         resolve(0);
       }
+    });
+  });
+}
+
+export async function spawnProcessStdio(
+  command: string,
+  args: string[],
+  options: SpawnOptions = {}
+): Promise<{stdout: string; stderr: string}> {
+  return new Promise((resolve) => {
+    const stdio = {stdout: '', stderr: ''};
+    const child = spawn(command, args, options);
+
+    child.stdout.on('data', (d) => {
+      stdio.stdout += d;
+    });
+
+    child.stderr.on('data', (d) => {
+      stdio.stderr += d;
+    });
+
+    child.on('error', (e) => {
+      stdio.stderr += e.message;
+      resolve(stdio);
+    });
+
+    child.on('close', () => {
+      resolve(stdio);
     });
   });
 }
