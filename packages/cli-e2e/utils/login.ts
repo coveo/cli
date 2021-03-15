@@ -18,7 +18,7 @@ export async function isLoggedin() {
     'com.coveo.cli.access.token',
     currentAccount
   );
-  return accessToken !== null;
+  return Boolean(accessToken);
 }
 
 function waitForLoginPage(browser: Browser) {
