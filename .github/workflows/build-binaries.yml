@@ -26,13 +26,12 @@ jobs:
           #  pack-command: :deb
           #  additional-install: echo "no additional install"
           #  for: 'linux install kit'
-          - os: ubuntu-latest
-            pack-command: ''
-            additional-install: echo "no additional install"
-            for: 'tarball'
+          #- os: ubuntu-latest
+          #  pack-command: ''
+          #  additional-install: echo "no additional install"
+          #  for: 'tarball'
 
     steps:
-      - uses: Vampire/setup-wsl@v1
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
