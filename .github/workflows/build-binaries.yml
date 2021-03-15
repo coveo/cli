@@ -36,12 +36,14 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '14'
+      - name: Setup
+        run: npm run setup
       - name: Additional install
         run: ${{ matrix.additional-install }}
       - name: Create package
         working-directory: ./packages/cli
         run: |
-          npm i --platform=${{ matrix.platform }}
+          npm i --force --platform=${{ matrix.platform }}
           ./node_modules/@oclif/dev-cli/bin/run pack${{ matrix.pack-command }}
       - name: Upload binaries
         uses: svenstaro/upload-release-action@v2
