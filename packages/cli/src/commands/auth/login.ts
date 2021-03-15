@@ -36,7 +36,7 @@ export default class Login extends Command {
       char: 'e',
       options: ['dev', 'qa', 'prod', 'hipaa'],
       default: 'prod',
-      description: 'The platform environment to log into.',
+      description: 'The Coveo platform environment to log into.',
     }),
     organization: flags.string({
       char: 'o',
