@@ -36,8 +36,6 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '14'
-      - name: Setup
-        run: npm run setup
       - name: Additional install
         run: ${{ matrix.additional-install }}
       - name: Create package
