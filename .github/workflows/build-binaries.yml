@@ -1,8 +1,11 @@
 name: Build binaries
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - CDX-155
+#  release:
+#    types: [published]
 
 jobs:
   package:
@@ -49,4 +52,5 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./packages/cli/dist/**/*
           file_glob: true
-          tag: ${{ github.ref }}
+#          tag: ${{ github.ref }}
+          tag: v0.5.0
