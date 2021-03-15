@@ -41,13 +41,13 @@ export default class Vue extends Command {
   async run() {
     const {args, flags} = this.parse(Vue);
 
-    let preset = require('./presets/typescript-preset.json');
+    let preset = this.getDefaultPreset();
 
     if (flags.preset) {
       try {
         preset = require(resolve(process.cwd(), flags.preset));
       } catch (error) {
-        this.error('Unable to load preset');
+        this.error('Unable to load custom preset. Using default preset.');
       }
     }
     await this.createProject(args.name, preset);
@@ -88,6 +88,26 @@ export default class Vue extends Command {
     return this.runVueCliCommand(cliArgs, {
       cwd: applicationName,
     });
+  }
+
+  private getDefaultPreset() {
+    return {
+      useConfigFiles: true,
+      plugins: {
+        '@vue/cli-plugin-typescript': {
+          classComponent: true,
+        },
+        '@vue/cli-plugin-router': {
+          historyMode: true,
+        },
+        '@vue/cli-plugin-eslint': {
+          config: 'standard',
+          lintOn: ['commit'],
+        },
+      },
+      cssPreprocessor: 'node-sass',
+      vueVersion: '2',
+    };
   }
 
   private createProject(name: string, preset: {}) {
