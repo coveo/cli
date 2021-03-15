@@ -49,6 +49,7 @@ index fabe5c4..83d286a 100644
  const log_1 = require("../log");
 +
 +async function checkFileSum(fileBasedir,filePath,sumFilePath) {
++    console.log(process.platform);
 +    if(process.platform === 'win32') {
 +        const computedSum = (await qq.x(`certUtil -hashfile ${filePath} SHA256`, {cwd: fileBasedir, stdio:'pipe'})).stdout.split('\n')[1].trim();
 +        const checkSum = (await qq.x(`findstr ${path.basename(filePath)} ${sumFilePath}`,{cwd: fileBasedir, stdio:'pipe'})).stdout.split(' ')[0].trim();
