@@ -37,6 +37,7 @@
     "chai": "^4.2.0",
     "jest": "^26.6.3",
     "patch-package": "^6.2.2",
+    "rimraf": "^3.0.2",
     "ts-jest": "^26.5.1",
     "ts-node": "^8",
     "typescript": "^3.3"
@@ -85,8 +86,8 @@
   },
   "repository": "coveo/cli",
   "scripts": {
-    "postpack": "rm -f oclif.manifest.json",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "postpack": "rimraf -f oclif.manifest.json",
+    "prepack": "rimraf -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "jest",
     "version": "oclif-dev readme && git add README.md",
     "postinstall": "patch-package"

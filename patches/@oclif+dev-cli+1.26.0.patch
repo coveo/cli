@@ -1,0 +1,82 @@
+diff --git a/node_modules/@oclif/dev-cli/lib/commands/pack/index.js b/node_modules/@oclif/dev-cli/lib/commands/pack/index.js
+index 52f83a2..c2fd1db 100644
+--- a/node_modules/@oclif/dev-cli/lib/commands/pack/index.js
++++ b/node_modules/@oclif/dev-cli/lib/commands/pack/index.js
+@@ -6,8 +6,8 @@ const Tarballs = require("../../tarballs");
+ class Pack extends command_1.Command {
+     async run() {
+         const prevCwd = qq.cwd();
+-        if (process.platform === 'win32')
+-            throw new Error('pack does not function on windows');
+         const { flags } = this.parse(Pack);
+         const targets = flags.targets ? flags.targets.split(',') : undefined;
+         const buildConfig = await Tarballs.buildConfig(flags.root, { xz: flags.xz, targets });
+diff --git a/node_modules/@oclif/dev-cli/lib/commands/pack/win.js b/node_modules/@oclif/dev-cli/lib/commands/pack/win.js
+index a313991..1b5d33e 100644
+--- a/node_modules/@oclif/dev-cli/lib/commands/pack/win.js
++++ b/node_modules/@oclif/dev-cli/lib/commands/pack/win.js
+@@ -2,6 +2,7 @@
+ Object.defineProperty(exports, "__esModule", { value: true });
+ const command_1 = require("@oclif/command");
+ const qq = require("qqjs");
++const path = require("path");
+ const Tarballs = require("../../tarballs");
+ const scripts = {
+     /* eslint-disable no-useless-escape */
+@@ -207,8 +208,13 @@ class PackWin extends command_1.Command {
+             // eslint-disable-next-line no-await-in-loop
+             await qq.mv(buildConfig.workspace({ platform: 'win32', arch }), [installerBase, 'client']);
+             // eslint-disable-next-line no-await-in-loop
+-            await qq.x(`makensis ${installerBase}/${config.bin}.nsi | grep -v "\\[compress\\]" | grep -v "^File: Descending to"`);
++            if(process.platform === 'win32') {
++              await qq.x(`makensis ${path.join(installerBase,config.bin)}.nsi`);
++            } else {
++              await qq.x(`makensis ${installerBase}/${config.bin}.nsi | grep -v "\\[compress\\]" | grep -v "^File: Descending to"`);
++            }
+             // eslint-disable-next-line no-await-in-loop
+             await qq.mv([installerBase, 'installer.exe'], o);
+             this.log(`built ${o}`);
+diff --git a/node_modules/@oclif/dev-cli/lib/tarballs/node.js b/node_modules/@oclif/dev-cli/lib/tarballs/node.js
+index fabe5c4..83d286a 100644
+--- a/node_modules/@oclif/dev-cli/lib/tarballs/node.js
++++ b/node_modules/@oclif/dev-cli/lib/tarballs/node.js
+@@ -1,9 +1,22 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ const errors_1 = require("@oclif/errors");
+ const path = require("path");
+ const qq = require("qqjs");
+ const log_1 = require("../log");
++
++async function checkFileSum(fileBasedir,filePath,sumFilePath) {
++    if(process.platform === 'win32') {
++        const computedSum = (await qq.x(`certUtil -hashfile ${filePath} SHA256`, {cwd: fileBasedir, stdio:'pipe'})).stdout.split('\n')[1].trim();
++        const checkSum = (await qq.x(`findstr ${path.basename(filePath)} ${sumFilePath}`,{cwd: fileBasedir, stdio:'pipe'})).stdout.split(' ')[0].trim();
++        if(computedSum !==checkSum) {
++            throw new Error(`${filePath} checksum fail!`)
++        }
++    } else {
++        await qq.x(`grep ${path.basename(filePath)} ${sumFilePath} | shasum -a 256 -c -`, {cwd: fileBasedir})
++    }
++}
+ async function checkFor7Zip() {
+     try {
+         await qq.x('7z', { stdio: [0, null, 2] });
+@@ -41,7 +54,7 @@ async function fetchNodeBinary({ nodeVersion, output, platform, arch, tmp }) {
+         const basedir = path.dirname(tarball);
+         await qq.mkdirp(basedir);
+         await qq.download(url, tarball);
+-        await qq.x(`grep ${path.basename(tarball)} ${shasums} | shasum -a 256 -c -`, { cwd: basedir });
++        await checkFileSum(basedir, tarball, shasums)
+     };
+     const extract = async () => {
+         log_1.log(`extracting ${nodeBase}`);
+@@ -51,7 +64,7 @@ async function fetchNodeBinary({ nodeVersion, output, platform, arch, tmp }) {
+         await qq.mkdirp(path.dirname(cache));
+         if (platform === 'win32') {
+             qq.pushd(nodeTmp);
+-            await qq.x(`7z x -bd -y ${tarball} > /dev/null`);
++            await qq.x(`7z x -bd -y ${tarball} > ${process.platform=== 'win32' ? 'NUL' : '/dev/null'}`);
+             await qq.mv([nodeBase, 'node.exe'], cache);
+             qq.popd();
+         }

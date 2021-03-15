@@ -16,18 +16,17 @@ jobs:
             pack-command: :macos
             additional-install: echo "no additional install"
             for: 'macos install kit'
-          - os: ubuntu-latest
+            package-targets: 'darwin-x64'
+          - os: windows-latest
             pack-command: :win
-            additional-install: sudo apt-get install nsis p7zip-full -y
+            additional-install: echo "no additional install"
             for: 'windows install kit'
+            package-targets: 'win32-x64,win32-x86'
           - os: ubuntu-latest
             pack-command: :deb
             additional-install: echo "no additional install"
             for: 'linux install kit'
-          - os: ubuntu-latest
-            pack-command: ''
-            additional-install: echo "no additional install"
-            for: 'tarball'
+            package-targets: 'linux-x64,linux-arm'
 
     steps:
       - uses: actions/checkout@v2
@@ -38,9 +37,12 @@ jobs:
         run: npm run setup
       - name: Additional install
         run: ${{ matrix.additional-install }}
-      - name: Create package
+      - name: Create executables
         working-directory: ./packages/cli
         run: ./node_modules/@oclif/dev-cli/bin/run pack${{ matrix.pack-command }}
+      - name: Create packages
+        working-directory: ./packages/cli
+        run: ./node_modules/@oclif/dev-cli/bin/run pack -t="${{ matrix.package-targets }}"
       - name: Upload binaries
         uses: svenstaro/upload-release-action@v2
         with:

@@ -20,7 +20,7 @@ $ npm install -g @coveo/cli
 $ coveo COMMAND
 running command...
 $ coveo (-v|--version|version)
-@coveo/cli/0.5.0 linux-x64 node-v14.16.0
+@coveo/cli/0.5.0 win32-x64 node-v14.16.0
 $ coveo --help [COMMAND]
 USAGE
   $ coveo COMMAND
@@ -43,24 +43,23 @@ USAGE
 
 ## `coveo auth:login`
 
-Log into Coveo platform using OAuth2 flow
+Log into the Coveo platform using the OAuth2 flow.
 
 ```
 USAGE
   $ coveo auth:login
 
 OPTIONS
-  -e, --environment=dev|qa|prod|hipaa                                  [default: prod] The platform environment inside
-                                                                       which to login.
+  -e, --environment=dev|qa|prod|hipaa                                  [default: prod] The Coveo platform environment to
+                                                                       log into.
 
-  -o, --organization=myOrgID                                           The organization inside which to login. If not
-                                                                       specified, the first organization available will
-                                                                       be picked. See also commands config:get,
-                                                                       config:set, and org:list
+  -o, --organization=myOrgID                                           The identifier of the organization to log into.
+                                                                       If not specified, the CLI logs you in the first
+                                                                       organization available. See also commands
+                                                                       config:get, config:set, and org:list.
 
-  -r, --region=us-east-1|eu-west-1|eu-west-3|ap-southeast-2|us-west-2  [default: us-east-1] The platform region inside
-                                                                       which to login. See
-                                                                       https://docs.coveo.com/en/2976
+  -r, --region=us-east-1|eu-west-1|eu-west-3|ap-southeast-2|us-west-2  [default: us-east-1] The platform region to log
+                                                                       into. See https://docs.coveo.com/en/2976.
 
 EXAMPLE
   $ coveo auth:login
@@ -92,13 +91,15 @@ OPTIONS
                                                                        tracking.
 
   -e, --environment=dev|qa|prod|hipaa                                  The platform environment inside which to perform
-                                                                       operation.
+                                                                       operations.
 
-  -o, --organization=myOrgID                                           The organization inside which to perform
-                                                                       operation.
+  -o, --organization=myOrgID                                           The identifier of the organization inside which
+                                                                       to perform operations. See
+                                                                       https://docs.coveo.com/en/1562/#organization-id-a
+                                                                       nd-other-information.
 
   -r, --region=us-east-1|eu-west-1|eu-west-3|ap-southeast-2|us-west-2  The platform region inside which to perform
-                                                                       operation. See https://docs.coveo.com/en/2976
+                                                                       operations. See https://docs.coveo.com/en/2976.
 ```
 
 _See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v0.5.0/src/commands/config/set.ts)_
@@ -143,31 +144,31 @@ _See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v0.5.0/s
 
 ## `coveo ui:create:angular NAME`
 
-Create a search page with Angular powered by Coveo Headless
+Create a Coveo Headless-powered search page with the Angular web framework. See https://docs.coveo.com/en/headless and https://angular.io/.
 
 ```
 USAGE
   $ coveo ui:create:angular NAME
 
 ARGUMENTS
-  NAME  application name
+  NAME  The target application name.
 
 OPTIONS
-  -d, --defaults  Disable interactive input prompts for options with a default
+  -d, --defaults  Automatically select the default value for all prompts where such a default value exists.
 ```
 
 _See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/v0.5.0/src/commands/ui/create/angular.ts)_
 
 ## `coveo ui:create:react NAME`
 
-Create a search page in React powered by Coveo Headless
+Create a Coveo Headless-powered search page with the React web framework. See https://docs.coveo.com/en/headless and https://reactjs.org/.
 
 ```
 USAGE
   $ coveo ui:create:react NAME
 
 ARGUMENTS
-  NAME  application name
+  NAME  The target application name.
 
 EXAMPLES
   $ coveo ui:create:react myapp
@@ -178,20 +179,20 @@ _See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v
 
 ## `coveo ui:create:vue NAME`
 
-Create a new project powered by vue-cli-service
+Create a Coveo Headless-powered search page with the Vue.js web framework. See https://docs.coveo.com/en/headless and https://vuejs.org/
 
 ```
 USAGE
   $ coveo ui:create:vue NAME
 
 ARGUMENTS
-  NAME  application name
+  NAME  The target application name.
 
 OPTIONS
   -h, --help         show CLI help
 
   -p, --preset=path  Path to a JSON file with pre-defined options and plugins for creating a new project.
-                     If not specified, the default TypeScript preset will be taken.
+                     If not specified, the default TypeScript preset is used.
                      For more information about Vue CLI presets, please consult
                      https://cli.vuejs.org/guide/plugins-and-presets.html#presets
 
