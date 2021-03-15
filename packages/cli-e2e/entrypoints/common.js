@@ -1,5 +1,6 @@
 const {resolve, join} = require('path');
 const {execSync, spawnSync} = require('child_process');
+const {existsSync, writeFileSync} = require('fs');
 
 const DOCKER_IMAGE_NAME = 'coveo-cli-e2e-image';
 const DOCKER_CONTAINER_NAME = 'coveo-cli-e2e-container';
@@ -57,13 +58,30 @@ const ensureDockerImageIsPresent = () => {
   }
 };
 
-const startDockerContainer = () =>
-  execSync(
+const createEnvFile = () => {
+  const credentials = ['PLATFORM_USER_NAME', 'PLATFORM_USER_PASSWORD'];
+
+  if (existsSync('.env')) {
+    return;
+  }
+
+  writeFileSync(
+    '.env',
+    credentials
+      .map((variable) => `${variable}=${process.env[variable]}`)
+      .join('\n')
+  );
+};
+
+const startDockerContainer = () => {
+  createEnvFile();
+  return execSync(
     `docker run --name=${DOCKER_CONTAINER_NAME} -v "${repoHostPath}:${repoDockerPath}" -p "9229:9229" -${
       process.argv[2] === '--bash' ? 'it' : 'i'
-    } --cap-add=IPC_LOCK --cap-add=SYS_ADMIN ${DOCKER_IMAGE_NAME} ${dockerEntryPoint()}`,
+    } --env-file .env --cap-add=IPC_LOCK --cap-add=SYS_ADMIN ${DOCKER_IMAGE_NAME} ${dockerEntryPoint()}`,
     {stdio: ['inherit', 'inherit', 'inherit']}
   );
+};
 
 const cleanDockerContainer = () =>
   execSync(`docker container rm ${DOCKER_CONTAINER_NAME} -f`, {

@@ -8,6 +8,9 @@ on:
 jobs:
   run-script:
     runs-on: ubuntu-latest
+    env:
+      PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
+      PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
