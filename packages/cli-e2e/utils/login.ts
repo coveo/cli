@@ -27,7 +27,7 @@ function waitForLoginPage(browser: Browser) {
   return new Promise<Page>((resolve) => {
     browser.on('targetchanged', async (target: Target) => {
       const page = await target.page();
-      if (page && isLoginPage(page) !== null) {
+      if (page && isLoginPage(page)) {
         resolve(page);
       }
     });

@@ -15,8 +15,8 @@ import {EngineService} from '../engine.service';
   styleUrls: ['./sort.component.scss'],
 })
 export class SortComponent implements OnInit {
-  private headlessSort: Sort;
-  sortCriterias: {caption: string; criterion: any}[];
+  private headlessSort!: Sort;
+  sortCriterias!: {caption: string; criterion: any}[];
 
   constructor(private engineService: EngineService) {}
 

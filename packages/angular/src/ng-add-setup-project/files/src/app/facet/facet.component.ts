@@ -9,10 +9,12 @@ import {EngineService} from '../engine.service';
   styleUrls: ['./facet.component.scss'],
 })
 export class FacetComponent implements OnInit {
-  @Input() field: string;
-  @Input() title: string;
+  @Input()
+  field!: string;
+  @Input()
+  title!: string;
 
-  private headlessFacet: Facet;
+  private headlessFacet!: Facet;
 
   constructor(private engineService: EngineService) {}
 
