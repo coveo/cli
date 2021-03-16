@@ -8,12 +8,12 @@ import {getNewBrowser} from '../utils/browser';
 import {isSearchRequest} from '../utils/platform';
 
 describe('ui', () => {
-  describe('create:vue', () => {
+  describe('create:angular', () => {
     let browser: Browser;
     const cliProcesses: ChildProcessWithoutNullStreams[] = [];
     // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
-    const clientPort = '8080';
-    const projectName = 'vue-project';
+    const clientPort = '4200';
+    const projectName = 'angular-project';
     const searchPageEndpoint = `http://localhost:${clientPort}`;
     const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
     let interceptedRequests: HTTPRequest[] = [];
@@ -21,8 +21,12 @@ describe('ui', () => {
 
     beforeAll(async () => {
       browser = await getNewBrowser();
-      await setupUIProject(['ui:create:vue'], projectName, cliProcesses);
-    }, 240e3);
+      await setupUIProject(
+        ['ui:create:angular', '--defaults'],
+        projectName,
+        cliProcesses
+      );
+    }, 3e6);
 
     beforeEach(async () => {
       page = await browser.newPage();
@@ -42,7 +46,7 @@ describe('ui', () => {
         waitUntil: 'networkidle2',
       });
 
-      expect(await page.$('#search-page')).not.toBeNull();
+      expect(await page.$('app-search-page')).not.toBeNull();
     });
 
     it('should retrieve the search token on the page load', async () => {
@@ -54,7 +58,7 @@ describe('ui', () => {
     });
 
     it('should trigger search queries', async () => {
-      const searchboxSelector = '#search-page .autocomplete input';
+      const searchboxSelector = 'app-search-page app-search-box input';
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
 
       // Request from interface load
@@ -72,6 +76,5 @@ describe('ui', () => {
     });
   });
 
-  it.todo('should create a Vue.js project with a custom preset');
   it.todo('should redirect the user to an error page if invalid env file');
 });
