@@ -46,11 +46,16 @@ jobs:
       - name: Create packages
         working-directory: ./packages/cli
         run: ./node_modules/@oclif/dev-cli/bin/run pack -t="${{ matrix.package-targets }}"
-      - name: Upload binaries
-        uses: svenstaro/upload-release-action@v2
+      - name: Upload packages
+        uses: actions/upload-artifact@v2
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./packages/cli/dist/**/*
-          file_glob: true
-#          tag: ${{ github.ref }}
-          tag: v0.5.0
+          name: ${{matrix.os}}
+          path: packages/cli/dist
+#       - name: Upload binaries
+#         uses: svenstaro/upload-release-action@v2
+#         with:
+#           repo_token: ${{ secrets.GITHUB_TOKEN }}
+#           file: ./packages/cli/dist/**/*
+#           file_glob: true
+# #          tag: ${{ github.ref }}
+#           tag: v0.5.0
