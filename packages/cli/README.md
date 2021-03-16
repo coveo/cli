@@ -20,7 +20,7 @@ $ npm install -g @coveo/cli
 $ coveo COMMAND
 running command...
 $ coveo (-v|--version|version)
-@coveo/cli/0.5.0 win32-x64 node-v14.16.0
+@coveo/cli/0.5.0 darwin-x64 node-v14.15.4
 $ coveo --help [COMMAND]
 USAGE
   $ coveo COMMAND
