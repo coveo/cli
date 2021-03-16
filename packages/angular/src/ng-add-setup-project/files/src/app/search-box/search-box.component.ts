@@ -9,12 +9,12 @@ import {EngineService} from '../engine.service';
   styleUrls: ['./search-box.component.scss'],
 })
 export class SearchBoxComponent implements OnInit {
-  headlessSearchBox: SearchBox;
+  headlessSearchBox!: SearchBox;
   myControl = new FormControl();
   suggestions: {
     highlightedValue: string;
     rawValue: string;
-  }[];
+  }[] = [];
 
   constructor(private engineService: EngineService) {}
 

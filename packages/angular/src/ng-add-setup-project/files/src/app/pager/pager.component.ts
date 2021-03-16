@@ -16,8 +16,8 @@ import {EngineService} from '../engine.service';
   styleUrls: ['./pager.component.scss'],
 })
 export class PagerComponent implements OnInit {
-  private headlessPager: Pager;
-  private headlessResultPerPage: ResultsPerPage;
+  private headlessPager!: Pager;
+  private headlessResultPerPage!: ResultsPerPage;
 
   constructor(private engineService: EngineService) {}
 
