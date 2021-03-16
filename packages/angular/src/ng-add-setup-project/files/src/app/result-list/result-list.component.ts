@@ -8,7 +8,7 @@ import {EngineService} from '../engine.service';
   styleUrls: ['./result-list.component.scss'],
 })
 export class ResultListComponent implements OnInit {
-  private headlessResultList: ResultList;
+  private headlessResultList!: ResultList;
 
   constructor(private engineService: EngineService) {}
 

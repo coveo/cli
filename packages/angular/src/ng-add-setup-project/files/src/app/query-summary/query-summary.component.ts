@@ -12,7 +12,7 @@ import {EngineService} from '../engine.service';
   styleUrls: ['./query-summary.component.scss'],
 })
 export class QuerySummaryComponent implements OnInit {
-  private headlessQuerySummary: QuerySummary;
+  private headlessQuerySummary!: QuerySummary;
 
   constructor(private engineService: EngineService) {}
 
