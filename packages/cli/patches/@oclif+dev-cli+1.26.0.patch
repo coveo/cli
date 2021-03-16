@@ -23,8 +23,6 @@ index 52f83a2..c2fd1db 100644
          const prevCwd = qq.cwd();
 -        if (process.platform === 'win32')
 -            throw new Error('pack does not function on windows');
-+        // if (process.platform === 'win32')
-+        //     throw new Error('pack does not function on windows');
          const { flags } = this.parse(Pack);
          const targets = flags.targets ? flags.targets.split(',') : undefined;
          const buildConfig = await Tarballs.buildConfig(flags.root, { xz: flags.xz, targets });
@@ -46,7 +44,6 @@ index a313991..1b5d33e 100644
              // eslint-disable-next-line no-await-in-loop
 -            await qq.x(`makensis ${installerBase}/${config.bin}.nsi | grep -v "\\[compress\\]" | grep -v "^File: Descending to"`);
 -            const o = buildConfig.dist(`win/${config.bin}-v${buildConfig.version}-${arch}.exe`);
-+            // await qq.x(`makensis ${installerBase}/${config.bin}.nsi`);
 +            if(process.platform === 'win32') {
 +              await qq.x(`makensis ${path.join(installerBase,config.bin)}.nsi`);
 +            } else {
