@@ -17,17 +17,14 @@ jobs:
         include:
           - os: macos-latest
             pack-command: :macos
-            additional-install: echo "no additional install"
             for: 'macos install kit'
             package-targets: 'darwin-x64'
           - os: windows-latest
             pack-command: :win
-            additional-install: echo "no additional install"
             for: 'windows install kit'
             package-targets: 'win32-x64,win32-x86'
           - os: ubuntu-latest
             pack-command: :deb
-            additional-install: echo "no additional install"
             for: 'linux install kit'
             package-targets: 'linux-x64,linux-arm'
 
@@ -38,9 +35,7 @@ jobs:
           node-version: '14'
       - name: Setup
         run: npm run setup
-      - name: Additional install
-        run: ${{ matrix.additional-install }}
-      - name: Create executables
+      - name: Create install kits
         working-directory: ./packages/cli
         run: ./node_modules/@oclif/dev-cli/bin/run pack${{ matrix.pack-command }}
       - name: Create packages
@@ -48,13 +43,7 @@ jobs:
         run: |
           ./node_modules/@oclif/dev-cli/bin/run pack -t="${{ matrix.package-targets }}"
           mv ./dist/version ./dist/${{ matrix.os }}-version
-          mv ./dist/coveo-v0.5.0/coveo-v0.5.0.tar.gz ./dist/coveo-v0.5.0/${{ matrix.os }}coveo-v0.5.0.tar.gz
-      # mv ./dist/coveo-v${{ github.ref }}/coveo-${{ github.ref }}.tar.gz ./dist/coveo-v${{ github.ref }}/${{ matrix.os }}coveo-v${{ github.ref }}.tar.gz
-      # - name: Upload packages
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: ${{matrix.os}}
-      #     path: packages/cli/dist
+          mv ./dist/coveo-v0.5.0/coveo-v0.5.0.tar.gz ./dist/coveo-v0.5.0/${{ matrix.os }}-coveo-v0.5.0.tar.gz
       - name: Upload binaries
         uses: svenstaro/upload-release-action@v2
         with:
