@@ -50,18 +50,30 @@ export function answerPrompt(
   });
 }
 
+export interface ISetupUIProjectOptionsArgs {
+  flags?: string[];
+  timeout?: number;
+}
+
 export async function setupUIProject(
-  commandArgs: string[],
+  uiCommand: string,
   projectName: string,
-  cliProcesses: ChildProcessWithoutNullStreams[]
+  cliProcesses: ChildProcessWithoutNullStreams[],
+  options: ISetupUIProjectOptionsArgs = {}
 ) {
   const uiProjectFolderName = 'ui-projects';
   ensureDirSync(uiProjectFolderName);
+  const defaultOptions: ISetupUIProjectOptionsArgs = {flags: [], timeout: 15e3};
+  options = Object.assign(defaultOptions, options);
 
   const createProjectPromise = new Promise<void>((resolve) => {
-    const buildProcess = spawn(CLI_EXEC_PATH, [...commandArgs, projectName], {
-      cwd: uiProjectFolderName,
-    });
+    const buildProcess = spawn(
+      CLI_EXEC_PATH,
+      [uiCommand, projectName, ...(options.flags || [])],
+      {
+        cwd: uiProjectFolderName,
+      }
+    );
 
     buildProcess.stdout.on('close', async () => {
       resolve();
@@ -84,7 +96,7 @@ export async function setupUIProject(
     cliProcesses.push(startServerProcess);
     setTimeout(() => {
       resolve();
-    }, 30e3);
+    }, options.timeout);
   });
 }
 

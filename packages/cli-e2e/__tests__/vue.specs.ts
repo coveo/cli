@@ -21,7 +21,7 @@ describe('ui', () => {
 
     beforeAll(async () => {
       browser = await getNewBrowser();
-      await setupUIProject(['ui:create:vue'], projectName, cliProcesses);
+      await setupUIProject('ui:create:vue', projectName, cliProcesses);
     }, 240e3);
 
     beforeEach(async () => {

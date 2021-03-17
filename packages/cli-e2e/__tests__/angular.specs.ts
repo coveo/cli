@@ -21,11 +21,10 @@ describe('ui', () => {
 
     beforeAll(async () => {
       browser = await getNewBrowser();
-      await setupUIProject(
-        ['ui:create:angular', '--defaults'],
-        projectName,
-        cliProcesses
-      );
+      await setupUIProject('ui:create:angular', projectName, cliProcesses, {
+        flags: ['--defaults'],
+        timeout: 30e3,
+      });
     }, 3e6);
 
     beforeEach(async () => {

@@ -4,7 +4,10 @@ import {platformUrl} from '../../../lib/platform/environment';
 import {Storage} from '../../../lib/oauth/storage';
 import {Config} from '../../../lib/config/config';
 import {spawnProcess} from '../../../lib/utils/process';
-import {buildAnalyticsFailureHook} from '../../../hooks/analytics/analytics';
+import {
+  buildAnalyticsFailureHook,
+  buildAnalyticsSuccessHook,
+} from '../../../hooks/analytics/analytics';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 
 export default class Angular extends Command {
@@ -28,6 +31,10 @@ export default class Angular extends Command {
     const {args, flags} = this.parse(Angular);
     await this.createProject(args.name, flags.defaults);
     await this.addCoveoToProject(args.name, flags.defaults);
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsSuccessHook(this, flags)
+    );
   }
 
   private async createProject(name: string, defaults: boolean) {
@@ -71,9 +78,10 @@ export default class Angular extends Command {
   }
 
   async catch(err?: Error) {
+    const {flags} = this.parse(Angular);
     await this.config.runHook(
       'analytics',
-      buildAnalyticsFailureHook(this, {}, err)
+      buildAnalyticsFailureHook(this, flags, err)
     );
     throw err;
   }
