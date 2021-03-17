@@ -40,7 +40,7 @@ jobs:
         run: |
           ./node_modules/@oclif/dev-cli/bin/run pack -t="${{ matrix.package-targets }}"
           mv ./dist/version ./dist/${{ matrix.os }}-version
-          mv ./dist/coveo-v$GITHUB_REF/coveo-v$GITHUB_REF.tar.gz ./dist/coveo-v$GITHUB_REF/${{ matrix.os }}-coveo-v$GITHUB_REF.tar.gz
+          mv ./dist/coveo-${GITHUB_REF/refs\/tags\//}/coveo-${GITHUB_REF/refs\/tags\//}.tar.gz ./dist/coveo-${GITHUB_REF/refs\/tags\//}/${{ matrix.os }}-coveo-${GITHUB_REF/refs\/tags\//}.tar.gz
       - name: Upload binaries
         uses: svenstaro/upload-release-action@v2
         with:
