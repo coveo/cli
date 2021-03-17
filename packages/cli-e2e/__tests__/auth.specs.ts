@@ -11,25 +11,27 @@ import {
   killCliProcess,
 } from '../utils/cli';
 import {connectToChromeBrowser} from '../utils/browser';
+import {ChildProcessByStdio} from 'node:child_process';
 
 describe('auth', () => {
   describe('login', () => {
     let browser: Browser;
     let cliProcess: ChildProcessWithoutNullStreams;
-    let waaamProcess: ChildProcessWithoutNullStreams;
+    let waaamProcess: ChildProcessByStdio<null, null, null>;
 
     beforeAll(async () => {
       browser = await connectToChromeBrowser();
     });
 
     afterEach(async () => {
-      await killCliProcess(waaamProcess);
       await killCliProcess(cliProcess);
     }, 5e3);
 
     it('should open the platform page', async () => {
       process.stdout.write('*********** Logging Memory Info **********\n');
-      waaamProcess = spawn('free', ['-t', '--giga'], {stdio: ['inherit', 'inherit', 'inherit']});
+      waaamProcess = spawn('free', ['-t', '--giga'], {
+        stdio: ['inherit', 'inherit', 'inherit'],
+      });
 
       // TODO CDX-98: Remove `-e=dev`.
       cliProcess = spawn(CLI_EXEC_PATH, ['auth:login', '-e=dev']);
