@@ -5,14 +5,22 @@ import {
 } from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {platformUrl} from '../../../lib/platform/environment';
-import {spawnProcess, spawnProcessStdio} from '../../../lib/utils/process';
+import {
+  spawnProcess,
+  SpawnProcessOutput,
+  spawnProcessOutput,
+} from '../../../lib/utils/process';
 import {Storage} from '../../../lib/oauth/storage';
 import AuthenticationRequired from '../../../lib/decorators/authenticationRequired';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {lt} from 'semver';
+import {lt as isVersionLessThan} from 'semver';
+import {constants} from 'os';
+
+const linkToReadme =
+  'https://github.com/coveo/cli/wiki#coveo-uicreatereact-requirements';
+
 export default class React extends Command {
-  static description =
-    'Create a Coveo Headless-powered search page with the React web framework. See https://docs.coveo.com/en/headless and https://reactjs.org/.';
+  static description = `Create a Coveo Headless-powered search page with the React web framework. See ${linkToReadme}`;
 
   static examples = [
     '$ coveo ui:create:react myapp',
@@ -106,29 +114,33 @@ export default class React extends Command {
   }
 
   private async checkIfUserHasNodeGreaterThan10() {
-    const stdio = await spawnProcessStdio('node', ['--version']);
-    if (stdio.stderr && stdio.stderr.match(/ENOENT/i)) {
-      this.warn(`${this.id} requires Node.js to run.`);
+    const output = await spawnProcessOutput('node', ['--version']);
+    if (this.isMissingExecutable(output)) {
+      this.warn(`
+      ${this.id} requires Node.js to run.
+      `);
       this.warnHowToInstallNode();
       return false;
     }
 
-    if (stdio.stderr) {
-      this.warn(`${this.id} requires a valid Node.js installation to run.`);
-      this.warn(
-        'An unknown error happened while trying to determine your node version with node --version.'
-      );
-      this.warn(stdio.stderr);
+    if (output.stderr) {
+      this.warn(`
+      ${this.id} requires a valid Node.js installation to run.
+      An unknown error happened while trying to determine your node version with node --version
+      ${output.stderr}
+      `);
       this.warnHowToInstallNode();
       return false;
     }
 
     const requiredNodeVersionForCreateReactApp = '10.16.0';
-    if (lt(stdio.stdout, requiredNodeVersionForCreateReactApp)) {
-      this.warn(
-        `${this.id} uses create-react-app, which needs a Node.js version greater than ${requiredNodeVersionForCreateReactApp}`
-      );
-      this.warn(`Version detected: ${stdio.stdout}`);
+    if (
+      isVersionLessThan(output.stdout, requiredNodeVersionForCreateReactApp)
+    ) {
+      this.warn(`
+      ${this.id} uses create-react-app, which needs a Node.js version greater than ${requiredNodeVersionForCreateReactApp}
+      Version detected: ${output.stdout}
+      `);
       this.warnHowToInstallNode();
       return false;
     }
@@ -137,21 +149,23 @@ export default class React extends Command {
   }
 
   private async checkIfUserHasNpx() {
-    const stdio = await spawnProcessStdio('npx', ['--version']);
+    const output = await spawnProcessOutput('npx', ['--version']);
 
-    if (stdio.stderr && stdio.stderr.match(/ENOENT/i)) {
-      this.warn(`${this.id} requires npx to run.`);
-      this.warn('Newer version Node.js comes bundled with npx.');
+    if (this.isMissingExecutable(output)) {
+      this.warn(`
+      ${this.id} requires npx to run.
+      Newer version Node.js comes bundled with npx.
+      `);
       this.warnHowToInstallNode();
       return false;
     }
 
-    if (stdio.stderr) {
-      this.warn(`${this.id} requires a valid npx installation to run.`);
-      this.warn(
-        'An unknown error happened while trying to determine your npx version with npx --version.'
-      );
-      this.warn(stdio.stderr);
+    if (output.stderr) {
+      this.warn(`
+      ${this.id} requires a valid npx installation to run.
+      An unknown error happened while trying to determine your npx version with npx --version.
+      ${output.stderr}
+      `);
       this.warnHowToInstallNode();
       return false;
     }
@@ -159,10 +173,16 @@ export default class React extends Command {
     return true;
   }
 
-  private warnHowToInstallNode() {
-    this.warn('Please visit https://nodejs.org/ for installation or upgrade.');
-    this.warn(
-      'Or use (strongly recommended) https://github.com/nvm-sh/nvm and https://github.com/coreybutler/nvm-windows to manage multiple version of Node.js'
+  private isMissingExecutable(output: SpawnProcessOutput) {
+    return (
+      output.exitCode !== null &&
+      Math.abs(output.exitCode) === constants.errno.ENOENT
     );
+  }
+
+  private warnHowToInstallNode() {
+    this.warn(`
+    Please visit ${linkToReadme} for more detailed installation information.
+    `);
   }
 }
