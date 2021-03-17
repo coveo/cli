@@ -1,10 +1,12 @@
+import retry from 'async-retry';
 import {deletePassword, getPassword} from 'keytar';
 import {userInfo} from 'os';
-import type {Browser, Page, Target} from 'puppeteer-core';
-import type {ChildProcessWithoutNullStreams} from 'child_process';
+import type {Browser, Page, Target} from 'puppeteer';
 import {spawn} from 'child_process';
 import {answerPrompt, CLI_EXEC_PATH, isYesNoPrompt} from './cli';
 import LoginSelectors from './loginSelectors';
+import {strictEqual} from 'assert';
+import {connectToChromeBrowser} from './browser';
 import {isElementClickable} from './browser';
 
 function isLoginPage(page: Page) {
@@ -25,7 +27,7 @@ function waitForLoginPage(browser: Browser) {
   return new Promise<Page>((resolve) => {
     browser.on('targetchanged', async (target: Target) => {
       const page = await target.page();
-      if (page && isLoginPage(page) !== null) {
+      if (page && isLoginPage(page)) {
         resolve(page);
       }
     });
@@ -103,24 +105,25 @@ async function startLoginFlow(browser: Browser) {
   await staySignedIn(page);
 
   await possiblyAcceptCustomerAgreement(page);
+
+  await retry(async () => strictEqual(await isLoggedin(), true));
+
   await page.close();
 }
 
-export async function loginWithOffice(
-  browser: Browser,
-  cliProcesses: ChildProcessWithoutNullStreams[]
-) {
+export async function loginWithOffice() {
   if (await isLoggedin()) {
     return;
   }
+  const browser: Browser = await connectToChromeBrowser();
 
   const loginProcess = runLoginCommand();
-  cliProcesses.push(loginProcess);
 
   await startLoginFlow(browser);
+  return loginProcess;
 }
 
-export async function logout() {
+export async function clearKeychain() {
   const currentAccount = userInfo().username;
   await deletePassword('com.coveo.cli.access.token', currentAccount);
 }

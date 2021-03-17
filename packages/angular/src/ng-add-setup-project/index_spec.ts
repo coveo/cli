@@ -21,6 +21,7 @@ describe('ng-add-setup-project', () => {
     orgId: 'fake-org-id',
     apiKey: 'my-fake-api-key',
     name: 'MyTestProject',
+    user: 'alicesmith@example.com',
   };
 
   const appOptions: ApplicationOptions = {

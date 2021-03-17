@@ -21,6 +21,7 @@ describe('search-token-server', () => {
     orgId: 'fake-org-id',
     apiKey: 'my-fake-api-key',
     name: 'MyTestProject',
+    user: 'alicesmith@example.com',
   };
 
   const appOptions: ApplicationOptions = {

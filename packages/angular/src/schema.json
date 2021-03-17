@@ -25,6 +25,10 @@
       "type": "string",
       "description": "An API key granting the impersonate privilege in your organization."
     },
+    "user": {
+      "type": "string",
+      "description": "The name of the security identity to impersonate."
+    },
     "platformUrl": {
       "type": "string",
       "description": "The target environment",

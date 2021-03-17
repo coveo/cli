@@ -25,7 +25,7 @@ export class EngineService {
         organizationId: process.env.VUE_APP_ORGANIZATION_ID!,
         accessToken: token,
         renewAccessToken: async () => {
-          const res = await fetch(process.env.VUE_APP_TOKEN_ENDPOINT);
+          const res = await fetch(process.env.VUE_APP_TOKEN_ENDPOINT!);
           const {token} = await res.json();
           return token;
         },
