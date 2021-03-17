@@ -7,7 +7,7 @@ import {setupUIProject, teardownUIProject} from '../utils/cli';
 import {getNewBrowser} from '../utils/browser';
 import {isSearchRequest} from '../utils/platform';
 
-describe('ui', () => {
+describe.skip('ui', () => {
   describe('create:vue', () => {
     let browser: Browser;
     const cliProcesses: ChildProcessWithoutNullStreams[] = [];

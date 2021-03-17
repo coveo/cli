@@ -16,16 +16,21 @@ describe('auth', () => {
   describe('login', () => {
     let browser: Browser;
     let cliProcess: ChildProcessWithoutNullStreams;
+    let waaamProcess: ChildProcessWithoutNullStreams;
 
     beforeAll(async () => {
       browser = await connectToChromeBrowser();
     });
 
     afterEach(async () => {
+      await killCliProcess(waaamProcess);
       await killCliProcess(cliProcess);
     }, 5e3);
 
     it('should open the platform page', async () => {
+      process.stdout.write('*********** Logging Memory Info **********\n');
+      waaamProcess = spawn('free', ['-t', '--giga'], {stdio: ['inherit', 'inherit', 'inherit']});
+
       // TODO CDX-98: Remove `-e=dev`.
       cliProcess = spawn(CLI_EXEC_PATH, ['auth:login', '-e=dev']);
       cliProcess.stderr.on('data', async (data) => {
