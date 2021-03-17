@@ -2,14 +2,10 @@ const {join} = require('path');
 const {copyFile, copy, ensureDir, pathExists} = require('fs-extra');
 const collection = require('../src/collection.json');
 
-async function copySchemas() {
+async function copySchema() {
   await ensureDir(destDir);
-  const schematics = Object.values(collection.schematics);
-  return Promise.all(
-    schematics.map((sch) =>
-      copyFile(join(srcDir, sch.schema), join(destDir, sch.schema))
-    )
-  );
+  const schematics = collection.schematics['ng-add'].schema;
+  await copyFile(join(srcDir, schematics), join(destDir, schematics));
 }
 
 async function copyFiles(srcDir, destDir) {
@@ -36,7 +32,7 @@ const srcDir = './src';
 const destDir = './dist';
 
 Promise.all([
-  copySchemas(srcDir, destDir),
+  copySchema(srcDir, destDir),
   copyFiles(srcDir, destDir),
   copyCollection(srcDir, destDir),
 ])
