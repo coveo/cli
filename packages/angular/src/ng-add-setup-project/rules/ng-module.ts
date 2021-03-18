@@ -1,5 +1,4 @@
 import {
-  insertImport,
   addDeclarationToModule,
   addSymbolToNgModuleMetadata,
   addImportToModule,

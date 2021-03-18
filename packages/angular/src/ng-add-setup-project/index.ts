@@ -21,7 +21,7 @@ export default function (options: CoveoSchema): Rule {
   };
 }
 
-export function setupDependencies(options: CoveoSchema): Rule {
+export function setupDependencies(_options: CoveoSchema): Rule {
   return () =>
     chain([
       addToPackageJson('@angular/material'),
