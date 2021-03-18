@@ -7,7 +7,7 @@ interface IHeroProps {
   welcome: string;
 }
 
-function Anchor(props: any) {
+function Anchor(props: React.HTMLProps<HTMLAnchorElement>) {
   return <a href={props.href}>{props.value}</a>;
 }
 

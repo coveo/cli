@@ -29,7 +29,7 @@ const SearchBoxRenderer: FunctionComponent<SearchBoxProps> = (props) => {
       onChange={() => {
         controller.submit();
       }}
-      options={state.suggestions.map((suggestion: any) => suggestion.rawValue)}
+      options={state.suggestions.map((suggestion) => suggestion.rawValue)}
       freeSolo
       style={{width: 'auto'}}
       renderInput={(params) => (

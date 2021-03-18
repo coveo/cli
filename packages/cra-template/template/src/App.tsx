@@ -35,7 +35,7 @@ const GuardedRoute = () => {
 };
 
 const Home = () => {
-  const [engine, setEngine] = React.useState<Engine<any> | null>(null);
+  const [engine, setEngine] = React.useState<Engine | null>(null);
 
   useEffect(() => {
     initializeHeadlessEngine().then((engine) => {

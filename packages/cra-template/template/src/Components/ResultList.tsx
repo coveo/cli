@@ -21,7 +21,9 @@ interface ResultListProps {
   controller: HeadlessResultList;
 }
 
-function ListItemLink(props: any) {
+function ListItemLink(
+  props: ListItemProps & React.HTMLProps<HTMLAnchorElement>
+) {
   return (
     <ListItem style={{padding: 0}} component="a" {...(props as unknown)}>
       <Typography variant="body1" color="primary">
