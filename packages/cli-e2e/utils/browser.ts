@@ -58,6 +58,7 @@ export async function getNewBrowser(): Promise<Browser> {
  * @param {string} selector Selector to check
  */
 export async function isElementClickable(page: Page, selector: string) {
+  /* eslint-disable */
   await page.waitForFunction(
     (sel: string) => {
       const elem = document.querySelector(sel);
@@ -241,4 +242,5 @@ export async function isElementClickable(page: Page, selector: string) {
     {},
     selector
   );
+  /* eslint-enable */
 }
