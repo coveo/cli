@@ -10,6 +10,7 @@
   "bugs": "https://github.com/coveo/cli/issues",
   "dependencies": {},
   "devDependencies": {
+    "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
     "@commitlint/config-conventional": "^11.0.0",
     "@commitlint/config-lerna-scopes": "^11.0.0",
