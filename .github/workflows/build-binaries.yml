@@ -1,7 +1,11 @@
 name: Build binaries
 
-on: workflow_dispatch
-
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build and upload'
+        required: true
 jobs:
   package:
     name: Package for ${{ matrix.for }}
@@ -38,11 +42,11 @@ jobs:
         run: |
           ./node_modules/@oclif/dev-cli/bin/run pack -t="${{ matrix.package-targets }}"
           mv ./dist/version ./dist/${{ matrix.os }}-version
-          mv ./dist/coveo-${{GITHUB_REF/refs\/tags\//}}/coveo-${{GITHUB_REF/refs\/tags\//}}.tar.gz ./dist/coveo-${{GITHUB_REF/refs\/tags\//}}/${{ matrix.os }}-coveo-${{GITHUB_REF/refs\/tags\//}}.tar.gz
+          mv ./dist/coveo-${{ github.event.inputs.tag }}.tar.gz ./dist/coveo-${{ github.event.inputs.tag }}/${{ matrix.os }}-coveo-${{ github.event.inputs.tag }}.tar.gz
       - name: Upload binaries
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./packages/cli/dist/**/*
           file_glob: true
-          tag: $GITHUB_REF
+          tag: refs/tags/${{ github.event.inputs.tag }}
