@@ -3,6 +3,7 @@ name: Build binaries
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   package:
@@ -13,15 +14,15 @@ jobs:
       matrix:
         include:
           - os: macos-latest
-            pack-command: :macos
+            pack-command: ':macos'
             for: 'macos install kit'
             package-targets: 'darwin-x64'
           - os: windows-latest
-            pack-command: :win
+            pack-command: ':win'
             for: 'windows install kit'
             package-targets: 'win32-x64,win32-x86'
           - os: ubuntu-latest
-            pack-command: :deb
+            pack-command: ':deb'
             for: 'linux install kit'
             package-targets: 'linux-x64,linux-arm'
 
