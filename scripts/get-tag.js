@@ -1,7 +1,10 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
+const {getLatestTag} = require('./github-client');
+
 const tagRegExp = /refs\/tags\/(v[\d.]+)/;
-const getTag = () => {
+
+const getTag = async () => {
   if (github.context.eventName === 'workflow_dispatch') {
     return github.context.payload.inputs.version;
   }
@@ -12,12 +15,15 @@ const getTag = () => {
       return match[1];
     }
   }
-  throw 'Cannot determine tag!';
+  core.warning('Tag acquisition failed, fallbacking to the latest');
+  return await getLatestTag();
 };
 
-try {
-  const tag = getTag();
-  core.exportVariable('tag', tag);
-} catch (error) {
-  core.setFailed(error.message);
-}
+(async () => {
+  try {
+    const tag = await getTag();
+    core.exportVariable('tag', tag);
+  } catch (error) {
+    core.setFailed(error.message);
+  }
+})();
