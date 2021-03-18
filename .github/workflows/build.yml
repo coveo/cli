@@ -1,0 +1,28 @@
+name: Build
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    env:
+      PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
+      PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+      - name: Setup
+        run: npm run setup
+      - name: Tests
+        run: npm run test
+      - name: Build CLI
+        working-directory: ./packages/cli
+        run: tsc -b
+      - name: End-to-end Tests
+        working-directory: ./packages/cli-e2e
+        run: npm run test-e2e

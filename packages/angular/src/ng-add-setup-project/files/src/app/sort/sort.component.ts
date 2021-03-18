@@ -7,9 +7,7 @@ import {
   Sort,
   SortOrder,
 } from '@coveo/headless';
-
-import type {SortCriterion} from '@coveo/headless';
-import {engine} from '../engine';
+import {EngineService} from '../engine.service';
 
 @Component({
   selector: 'app-sort',
@@ -18,9 +16,9 @@ import {engine} from '../engine';
 })
 export class SortComponent implements OnInit {
   private headlessSort!: Sort;
-  sortCriterias!: {caption: string; criterion: SortCriterion}[];
+  sortCriterias!: {caption: string; criterion: any}[];
 
-  constructor() {}
+  constructor(private engineService: EngineService) {}
 
   selectionChange(change: MatSelectChange) {
     this.headlessSort.sortBy(change.value);
@@ -42,7 +40,7 @@ export class SortComponent implements OnInit {
       },
     ];
 
-    this.headlessSort = buildSort(engine, {
+    this.headlessSort = buildSort(this.engineService.get(), {
       initialState: {
         criterion: this.sortCriterias[0].criterion,
       },

@@ -1,13 +1,19 @@
 import {Command, flags} from '@oclif/command';
-import {dirname, resolve} from 'path';
+import {resolve} from 'path';
 import {
   buildAnalyticsFailureHook,
   buildAnalyticsSuccessHook,
 } from '../../../hooks/analytics/analytics';
+import {Config} from '../../../lib/config/config';
+import AuthenticationRequired from '../../../lib/decorators/authenticationRequired';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {Storage} from '../../../lib/oauth/storage';
+import {platformUrl} from '../../../lib/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';
 
 export default class Vue extends Command {
-  static description = 'Create a new project powered by vue-cli-service';
+  static description =
+    'Create a Coveo Headless-powered search page with the Vue.js web framework. See https://docs.coveo.com/en/headless and https://vuejs.org/';
 
   static flags = {
     help: flags.help({char: 'h'}),
@@ -16,10 +22,9 @@ export default class Vue extends Command {
       helpValue: 'path',
       description: [
         'Path to a JSON file with pre-defined options and plugins for creating a new project.',
-        'If not specified, the default TypeScript preset will be taken.',
+        'If not specified, the default TypeScript preset is used.',
         'For more information about Vue CLI presets, please consult https://cli.vuejs.org/guide/plugins-and-presets.html#presets',
       ].join('\n'),
-      // default: TODO: add default preset once it is available in npm https://coveord.atlassian.net/browse/CDX-39
     }),
   };
 
@@ -29,25 +34,24 @@ export default class Vue extends Command {
   ];
 
   static args = [
-    {name: 'name', description: 'application name', required: true},
+    {name: 'name', description: 'The target application name.', required: true},
   ];
 
+  @AuthenticationRequired()
   async run() {
     const {args, flags} = this.parse(Vue);
 
-    let preset = require('./presets/typescript-preset.json');
+    let preset = this.getDefaultPreset();
 
     if (flags.preset) {
       try {
         preset = require(resolve(process.cwd(), flags.preset));
       } catch (error) {
-        this.error('Unable to load preset');
+        this.error('Unable to load custom preset. Using default preset.');
       }
     }
     await this.createProject(args.name, preset);
-    await this.installPlugin(args.name);
     await this.invokePlugin(args.name);
-    this.startServer(args.name);
     await this.config.runHook(
       'analytics',
       buildAnalyticsSuccessHook(this, flags)
@@ -63,35 +67,47 @@ export default class Vue extends Command {
     throw err;
   }
 
-  private installPlugin(applicationName: string) {
-    // TODO: DELETE THIS METHOD ONCE THE PLUGIN IS PUBLISHED AND PART OF THE PRESET
-    // CDX-39
-    // Once the coveo plugin is published to npm, simply include it in the preset typescript-preset.json
-    // This will prevent from running `2 npm install` commands (one by @vue/cli, one for the plugin)
-    const pathToPlugin = dirname(require.resolve('vue-cli-plugin-coveo'));
-    return spawnProcess(
-      'npm',
-      ['install', '--save-dev', `file:${pathToPlugin}`],
-      {
-        cwd: applicationName,
-      }
-    );
-  }
+  private async invokePlugin(applicationName: string) {
+    const cfg = await this.configuration.get();
+    const storage = await this.storage.get();
+    const {providerUsername} = await this.getUserInfo();
 
-  private invokePlugin(applicationName: string) {
-    return this.runVueCliCommand(['invoke', 'vue-cli-plugin-coveo'], {
+    const cliArgs = [
+      'add',
+      '@coveo/typescript',
+      '--orgId',
+      cfg.organization,
+      '--apiKey',
+      storage.accessToken!,
+      '--platformUrl',
+      platformUrl({environment: cfg.environment}),
+      '--user',
+      providerUsername,
+    ];
+
+    return this.runVueCliCommand(cliArgs, {
       cwd: applicationName,
     });
   }
 
-  private startServer(applicationName: string) {
-    // TODO: DELETE THIS METHOD ONCE THE PLUGIN IS PUBLISHED AND PART OF THE PRESET
-    // The @vue/cli already logs instructions once the installation completes
-    this.log(`Successfully created project ${applicationName}.`);
-    this.log('Get started with the following commands:\n');
-
-    this.log('$ cd ${applicationName}');
-    this.log('$ yarn serve');
+  private getDefaultPreset() {
+    return {
+      useConfigFiles: true,
+      plugins: {
+        '@vue/cli-plugin-typescript': {
+          classComponent: true,
+        },
+        '@vue/cli-plugin-router': {
+          historyMode: true,
+        },
+        '@vue/cli-plugin-eslint': {
+          config: 'standard',
+          lintOn: ['commit'],
+        },
+      },
+      cssPreprocessor: 'node-sass',
+      vueVersion: '2',
+    };
   }
 
   private createProject(name: string, preset: {}) {
@@ -100,11 +116,29 @@ export default class Vue extends Command {
       name,
       '--inlinePreset',
       JSON.stringify(preset),
+      '--skipGetStarted',
+      '--bare',
     ]);
   }
 
   private runVueCliCommand(args: string[], options = {}) {
     const executable = require.resolve('@vue/cli/bin/vue.js');
     return spawnProcess(executable, args, options);
+  }
+
+  private get configuration() {
+    return new Config(this.config.configDir, this.error);
+  }
+
+  private get storage() {
+    return new Storage();
+  }
+
+  private async getUserInfo() {
+    const authenticatedClient = new AuthenticatedClient();
+    const platformClient = await authenticatedClient.getClient();
+    await platformClient.initialize();
+
+    return await platformClient.user.get();
   }
 }

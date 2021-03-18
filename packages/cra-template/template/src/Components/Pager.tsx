@@ -1,57 +1,48 @@
-import React from 'react';
+import {FunctionComponent, useEffect, useState, useContext} from 'react';
 import {Pagination} from '@material-ui/lab';
+import {buildPager, Pager as HeadlessPager} from '@coveo/headless';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import {buildPager, PagerState, Pager as PagerType} from '@coveo/headless';
-import {headlessEngine} from '../Engine';
+import EngineContext from '../common/engineContext';
 
-export default class Pager extends React.Component {
-  private headlessPager: PagerType;
-  state: PagerState;
-
-  constructor(props: {}) {
-    super(props);
-
-    this.headlessPager = buildPager(headlessEngine, {
-      options: {numberOfPages: 3},
-    });
-
-    this.state = this.headlessPager.state;
-  }
-
-  componentDidMount() {
-    this.headlessPager.subscribe(() => this.updateState());
-  }
-
-  updateState() {
-    this.setState(this.headlessPager.state);
-  }
-
-  setPage(pageNumber: number) {
-    this.headlessPager.selectPage(pageNumber);
-  }
-
-  get page() {
-    return this.headlessPager.state.currentPage;
-  }
-
-  get count() {
-    return this.headlessPager.state.maxPage;
-  }
-
-  render() {
-    return (
-      <Box>
-        <Typography gutterBottom>Current page</Typography>
-        <Pagination
-          page={this.page}
-          count={this.count}
-          onChange={(e, page) => this.setPage(page)}
-          variant="outlined"
-          shape="rounded"
-          size="small"
-        />
-      </Box>
-    );
-  }
+interface PagerProps {
+  controller: HeadlessPager;
 }
+
+const PagerRenderer: FunctionComponent<PagerProps> = (props) => {
+  const {controller} = props;
+  const [state, setState] = useState(controller.state);
+
+  useEffect(() => controller.subscribe(() => setState(controller.state)), [
+    controller,
+  ]);
+
+  const setPage = (pageNumber: number) => {
+    controller.selectPage(pageNumber);
+  };
+
+  return (
+    <Box>
+      <Typography gutterBottom>Current page</Typography>
+      <Pagination
+        page={state.currentPage}
+        count={state.maxPage}
+        onChange={(e, page) => setPage(page)}
+        variant="outlined"
+        shape="rounded"
+        size="small"
+      />
+    </Box>
+  );
+};
+
+const Pager = () => {
+  const engine = useContext(EngineContext)!;
+  const controller = buildPager(engine, {
+    options: {numberOfPages: 3},
+  });
+
+  return <PagerRenderer controller={controller} />;
+};
+
+export default Pager;

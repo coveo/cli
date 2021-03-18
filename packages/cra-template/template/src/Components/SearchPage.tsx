@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
@@ -9,20 +9,25 @@ import Pager from './Pager';
 import Sort from './Sort';
 import FacetList from './FacetList';
 import ResultsPerPage from './ResultsPerPage';
-import {AnalyticsActions, SearchActions} from '@coveo/headless';
-import {headlessEngine} from '../Engine';
+import {AnalyticsActions, SearchActions, Engine} from '@coveo/headless';
+import {EngineProvider} from '../common/engineContext';
 
-export default class SearchPage extends React.Component {
-  componentDidMount() {
-    const {dispatch} = headlessEngine;
+interface ISearchPageProps {
+  engine: Engine<any>;
+}
+
+const SearchPage: React.FunctionComponent<ISearchPageProps> = (props) => {
+  const {engine} = props;
+  useEffect(() => {
+    const {dispatch} = engine;
     const action = SearchActions.executeSearch(
       AnalyticsActions.logInterfaceLoad()
     );
     dispatch(action);
-  }
+  }, [engine]);
 
-  render() {
-    return (
+  return (
+    <EngineProvider value={engine}>
       <Container maxWidth="lg">
         <Grid container justify="center">
           <Grid item md={8}>
@@ -61,6 +66,8 @@ export default class SearchPage extends React.Component {
           </Grid>
         </Box>
       </Container>
-    );
-  }
-}
+    </EngineProvider>
+  );
+};
+
+export default SearchPage;

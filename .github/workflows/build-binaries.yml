@@ -1,0 +1,50 @@
+name: Build binaries
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  package:
+    name: Package for ${{ matrix.for }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            pack-command: :macos
+            for: 'macos install kit'
+            package-targets: 'darwin-x64'
+          - os: windows-latest
+            pack-command: :win
+            for: 'windows install kit'
+            package-targets: 'win32-x64,win32-x86'
+          - os: ubuntu-latest
+            pack-command: :deb
+            for: 'linux install kit'
+            package-targets: 'linux-x64,linux-arm'
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+      - name: Setup
+        run: npm run setup
+      - name: Create install kits
+        working-directory: ./packages/cli
+        run: ./node_modules/@oclif/dev-cli/bin/run pack${{ matrix.pack-command }}
+      - name: Create packages
+        working-directory: ./packages/cli
+        run: |
+          ./node_modules/@oclif/dev-cli/bin/run pack -t="${{ matrix.package-targets }}"
+          mv ./dist/version ./dist/${{ matrix.os }}-version
+          mv ./dist/coveo-${{GITHUB_REF/refs\/tags\//}}/coveo-${{GITHUB_REF/refs\/tags\//}}.tar.gz ./dist/coveo-${{GITHUB_REF/refs\/tags\//}}/${{ matrix.os }}-coveo-${{GITHUB_REF/refs\/tags\//}}.tar.gz
+      - name: Upload binaries
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./packages/cli/dist/**/*
+          file_glob: true
+          tag: $GITHUB_REF

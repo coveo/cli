@@ -5,14 +5,22 @@
     "team_jenkins": "searchuibuilds",
     "notifications": {"slack_channels": ["#searchuibuilds"]},
     "environments_order": {
-      "sequential": ["dev"]
+      "sequential": ["dev", "qa", "prd"]
     },
     "aws_regions": {
       "sequential": ["us-east-1"]
     }
   },
   "phases": {
-    "terraform": {}
+    "terraform": {},
+    "s3": {
+      "bucket": "{terraform.infra.infra.bucket_binaries}",
+      "directory": "proda/StaticCDN/cli",
+      "source": "./artifacts",
+      "parameters": {
+        "acl": "public-read"
+      }
+    }
   },
   "snyk": {
     "org": "coveo-jsui",
@@ -22,5 +30,8 @@
     "no_endpoint": true
   },
   "veracode": {"no_scan": true},
-  "deployment_config_version": 2
+  "deployment_config_version": 2,
+  "package_rollout": {
+    "only_consider_changesets_after": "591040c6568cce03b031c3059cd4d4de87de8d7c"
+  }
 }

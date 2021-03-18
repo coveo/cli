@@ -1,6 +1,9 @@
 {
   "name": "@coveo/cra-template",
-  "version": "0.0.0",
+  "version": "0.6.0",
+  "scripts": {
+    "npm:publish": "npm publish --access public"
+  },
   "keywords": [
     "react",
     "create-react-app",

@@ -1,22 +1,29 @@
+import AuthenticationRequired from '../../../lib/decorators/authenticationRequired';
 import {Command, flags} from '@oclif/command';
+import {platformUrl} from '../../../lib/platform/environment';
+import {Storage} from '../../../lib/oauth/storage';
+import {Config} from '../../../lib/config/config';
 import {spawnProcess} from '../../../lib/utils/process';
+import {buildAnalyticsFailureHook} from '../../../hooks/analytics/analytics';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 
 export default class Angular extends Command {
   static description =
-    'Create a search page with Angular powered by Coveo Headless';
+    'Create a Coveo Headless-powered search page with the Angular web framework. See https://docs.coveo.com/en/headless and https://angular.io/.';
 
   static flags = {
     defaults: flags.boolean({
       char: 'd',
       description:
-        'Disable interactive input prompts for options with a default',
+        'Automatically select the default value for all prompts where such a default value exists.',
     }),
   };
 
   static args = [
-    {name: 'name', description: 'application name', required: true},
+    {name: 'name', description: 'The target application name.', required: true},
   ];
 
+  @AuthenticationRequired()
   async run() {
     const {args, flags} = this.parse(Angular);
     await this.createProject(args.name, flags.defaults);
@@ -34,19 +41,21 @@ export default class Angular extends Command {
   }
 
   private async addCoveoToProject(applicationName: string, defaults: boolean) {
-    // TODO: Connect to the user's org (CDX-73)
-    // At the moment the api key and orgId have no effect since angular project
-    // will be using the public default configuration
-    const apiKey = 'foo';
-    const orgId = 'bar';
+    const cfg = await this.configuration.get();
+    const storage = await this.storage.get();
+    const {providerUsername} = await this.getUserInfo();
 
     const cliArgs = [
       'add',
       '@coveo/angular',
       '--org-id',
-      orgId,
+      cfg.organization,
       '--api-key',
-      apiKey,
+      storage.accessToken!,
+      '--platform-url',
+      platformUrl({environment: cfg.environment}),
+      '--user',
+      providerUsername,
     ];
 
     if (defaults) {
@@ -62,11 +71,26 @@ export default class Angular extends Command {
   }
 
   async catch(err?: Error) {
-    // TODO: merge PR #18 before uncommenting
-    // await this.config.runHook(
-    //   'analytics',
-    //   buildAnalyticsFailureHook(this, {}, err)
-    // );
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsFailureHook(this, {}, err)
+    );
     throw err;
+  }
+
+  private get configuration() {
+    return new Config(this.config.configDir, this.error);
+  }
+
+  private get storage() {
+    return new Storage();
+  }
+
+  private async getUserInfo() {
+    const authenticatedClient = new AuthenticatedClient();
+    const platformClient = await authenticatedClient.getClient();
+    await platformClient.initialize();
+
+    return await platformClient.user.get();
   }
 }

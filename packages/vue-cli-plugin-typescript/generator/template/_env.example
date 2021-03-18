@@ -1,0 +1,22 @@
+# The Plaform URL to use.
+# See https://docs.coveo.com/en/2976/coveo-solutions/deployment-regions-and-strategies
+VUE_APP_PLATFORM_URL=https://platform.cloud.coveo.com
+
+# The unique identifier of the organization in which to generate a search token.
+# Example: VUE_APP_ORGANIZATION_ID=mycoveoorganizationg8tp8wu3.
+# See https://docs.coveo.com/en/148/manage-an-organization/retrieve-the-organization-id
+VUE_APP_ORGANIZATION_ID=<YOUR_ORGANIZATION_ID>
+
+# An API key granting the impersonate privilege in your organization.
+# The API key should have the impersonate privilege.
+# See https://docs.coveo.com/en/1718/manage-an-organization/manage-api-keys#add-an-api-key
+VUE_APP_API_KEY=<YOUR_API_KEY>
+
+# The name of the security identity to impersonate.
+# Example: VUE_APP_USER_EMAIL="alicesmith@example.com"
+# See https://docs.coveo.com/en/56/#name-string-required.
+VUE_APP_USER_EMAIL=<YOUR_USER_EMAIL>
+
+# The path to the server returning Coveo search tokens.
+# By default, it targets server on the same host.
+VUE_APP_TOKEN_ENDPOINT="/token"

@@ -18,8 +18,3 @@ sandbox
 # Mac OSX Finder files.
 **/.DS_Store
 .DS_Store
-
-# Temporary ignores
-## no longer needed once the package is published to npm
-## CDX-71
-coveo-angular-0.0.0.tgz

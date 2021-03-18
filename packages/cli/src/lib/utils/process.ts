@@ -34,3 +34,42 @@ export function spawnProcess(
     });
   });
 }
+
+export interface SpawnProcessOutput {
+  stdout: string;
+  stderr: string;
+  exitCode: number | null;
+}
+
+export async function spawnProcessOutput(
+  command: string,
+  args: string[],
+  options: SpawnOptions = {}
+): Promise<SpawnProcessOutput> {
+  return new Promise((resolve) => {
+    const output: SpawnProcessOutput = {
+      stdout: '',
+      stderr: '',
+      exitCode: null,
+    };
+
+    const child = spawn(command, args, options);
+
+    child.stdout.on('data', (d) => {
+      output.stdout += d;
+    });
+
+    child.stderr.on('data', (d) => {
+      output.stderr += d;
+    });
+
+    child.on('error', (e) => {
+      output.stderr += e.message;
+    });
+
+    child.on('close', (code) => {
+      output.exitCode = code;
+      resolve(output);
+    });
+  });
+}

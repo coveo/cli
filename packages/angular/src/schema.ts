@@ -5,4 +5,6 @@ export interface CoveoSchema {
 
   orgId: string;
   apiKey: string;
+  user: string;
+  platformUrl?: string;
 }

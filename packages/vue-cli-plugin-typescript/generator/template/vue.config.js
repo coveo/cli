@@ -1,9 +1,6 @@
 module.exports = {
-  css: {
-    loaderOptions: {
-      sass: {
-        additionalData: `@import "~@/styles/_variables.scss";`,
-      },
-    },
+  // CDX-99: assign port dynamically
+  devServer: {
+    proxy: 'http://localhost:4000',
   },
 };
