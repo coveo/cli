@@ -15,11 +15,12 @@ export default function (options: CoveoSchema): Rule {
       const dependencyInstallationTaskId = context.addTask(
         new RunSchematicTask('install-project-dependencies', options)
       );
-      context.addTask(new RunSchematicTask('ng-add-setup-project', options), [
-        dependencyInstallationTaskId,
-      ]);
+      const setupProjectTaskId = context.addTask(
+        new RunSchematicTask('ng-add-setup-project', options),
+        [dependencyInstallationTaskId]
+      );
       context.addTask(new RunSchematicTask('search-token-server', options), [
-        dependencyInstallationTaskId,
+        setupProjectTaskId,
       ]);
     }
     return;
