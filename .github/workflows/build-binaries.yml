@@ -11,6 +11,8 @@ on:
 
 jobs:
   package:
+    env:
+      GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
     name: Package for ${{ matrix.for }}
     runs-on: ${{ matrix.os }}
     strategy:
