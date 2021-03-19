@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.1](https://github.com/coveo/cli/compare/v0.6.0...v0.6.1) (2021-03-19)
+
+
+### Bug Fixes
+
+* **angular:** add missing file to angular project ([#95](https://github.com/coveo/cli/issues/95)) ([4a406c8](https://github.com/coveo/cli/commit/4a406c81a7dc48ba49185f579a634416abd9d5f2))
+* **cli:** replace github.ref by GITHUB_REF ([#90](https://github.com/coveo/cli/issues/90)) ([eaa8f35](https://github.com/coveo/cli/commit/eaa8f357d3ac5a467cb1e264e99f5318a7de134d))
+* **react:** add missing file & dependencies to React project ([#97](https://github.com/coveo/cli/issues/97)) ([b931776](https://github.com/coveo/cli/commit/b93177664eadc49ed4e37e987404567ea313642f))
+
+
+
+
+
 # [0.6.0](https://github.com/coveo/cli/compare/v0.5.0...v0.6.0) (2021-03-17)
 
 
