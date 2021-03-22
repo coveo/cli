@@ -10,7 +10,7 @@ interface JsonVersionFile {
   webSocketDebuggerUrl: string;
 }
 
-const SCREENSHOTS_PATH = '/home/notGroot/screenshots';
+const SCREENSHOTS_PATH = '/home/notGroot/cli/packages/cli-e2e/screenshots';
 
 /**
  * Closes all pages of the targeted browser instance.
@@ -54,16 +54,22 @@ export async function getNewBrowser(): Promise<Browser> {
   });
 }
 
-export async function captureScreenshots(browser: Browser): Promise<void> {
+export async function captureScreenshots(
+  browser: Browser,
+  screenshotName?: string
+): Promise<void> {
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
   for (const page of await browser.pages()) {
+    page.url;
     try {
       await page.screenshot({
         fullPage: true,
         type: 'png',
         path: resolve(
           SCREENSHOTS_PATH,
-          expect.getState().currentTestName.trim().replace(/\W/g, '_') + '.png'
+          (screenshotName ??
+            expect.getState().currentTestName.trim().replace(/\W/g, '_')) +
+            '.png'
         ),
       });
     } catch (error) {

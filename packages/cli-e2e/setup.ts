@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import {ChildProcessWithoutNullStreams} from 'child_process';
 import type {Browser} from 'puppeteer';
-import {connectToChromeBrowser} from './utils/browser';
+import {captureScreenshots, connectToChromeBrowser} from './utils/browser';
 import {clearKeychain, loginWithOffice} from './utils/login';
 
 declare global {
@@ -28,6 +28,11 @@ export default async function () {
   const browser = await connectToChromeBrowser();
   await clearChromeBrowsingData(browser);
   await clearKeychain();
-  global.loginProcess = await loginWithOffice();
+  try {
+    global.loginProcess = await loginWithOffice();
+  } catch (e) {
+    await captureScreenshots(browser, 'jestSetup');
+    throw e;
+  }
   await clearChromeBrowsingData(browser);
 }

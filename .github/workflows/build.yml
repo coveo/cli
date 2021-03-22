@@ -26,7 +26,12 @@ jobs:
       - name: End-to-end Tests
         working-directory: ./packages/cli-e2e
         run: npm run test-e2e
+      - name: Check screenshots
+        working-directory: ./packages/cli-e2e
+        run: |
+          ls
+          ls screenshots
       - uses: actions/upload-artifact@v2
         with:
           name: test-screenshots
-          path: packages/cli-e2e/screenshots/
+          path: ./screenshots/
