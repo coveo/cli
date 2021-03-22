@@ -63,7 +63,7 @@ export async function captureScreenshots(browser: Browser): Promise<void> {
         type: 'png',
         path: resolve(
           SCREENSHOTS_PATH,
-          expect.getState().currentTestName.trim().replace(/ /g, '_') + '.png'
+          expect.getState().currentTestName.trim().replace(/\W/g, '_') + '.png'
         ),
       });
     } catch (error) {
