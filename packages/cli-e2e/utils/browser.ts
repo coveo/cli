@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {resolve} from 'path';
-import {mkdirSync} from 'fs';
 
 import puppeteer from 'puppeteer';
 import type {Browser, Page} from 'puppeteer';
@@ -10,7 +9,8 @@ interface JsonVersionFile {
   webSocketDebuggerUrl: string;
 }
 
-const SCREENSHOTS_PATH = '/home/notGroot/cli/packages/cli-e2e/screenshots';
+export const SCREENSHOTS_PATH =
+  '/home/notGroot/cli/packages/cli-e2e/screenshots';
 
 /**
  * Closes all pages of the targeted browser instance.
@@ -58,7 +58,6 @@ export async function captureScreenshots(
   browser: Browser,
   screenshotName?: string
 ): Promise<void> {
-  mkdirSync(SCREENSHOTS_PATH, {recursive: true});
   for (const page of await browser.pages()) {
     page.url;
     try {
