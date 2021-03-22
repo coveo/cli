@@ -61,7 +61,7 @@ export async function captureScreenshots(browser: Browser): Promise<void> {
       await page.screenshot({
         fullPage: true,
         type: 'png',
-        path: resolve(SCREENSHOTS_PATH, expect.getState.name),
+        path: resolve(SCREENSHOTS_PATH, expect.getState().currentTestName),
       });
     } catch (error) {
       console.warn('Failed to record screenshot.');
