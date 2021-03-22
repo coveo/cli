@@ -4,7 +4,7 @@ import type {ChildProcessWithoutNullStreams} from 'child_process';
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
 
 import {setupUIProject, teardownUIProject} from '../utils/cli';
-import {getNewBrowser} from '../utils/browser';
+import {captureScreenshots, getNewBrowser} from '../utils/browser';
 import {isSearchRequest} from '../utils/platform';
 
 describe('ui', () => {
@@ -30,6 +30,11 @@ describe('ui', () => {
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);
       });
+    });
+
+    afterEach(async () => {
+      await captureScreenshots(browser);
+      await page.close();
     });
 
     afterAll(async () => {
