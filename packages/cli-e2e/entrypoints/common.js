@@ -77,12 +77,11 @@ const createEnvFile = () => {
 
 const startDockerContainer = () => {
   createEnvFile();
-  mkdirSync('screenshotsHostPath', {recursive: true});
+  mkdirSync(screenshotsHostPath, {recursive: true});
   return execSync(
     `docker run \
     --name=${DOCKER_CONTAINER_NAME} \
     -v "${repoHostPath}:${repoDockerPath}" \
-    -v "${screenshotsHostPath}:${screenshotsDockerPath}" \
     -p "9229:9229" \
     -${process.argv[2] === '--bash' ? 'it' : 'i'} \
     --env-file .env \
