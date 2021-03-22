@@ -37,15 +37,12 @@ const Hero: React.FunctionComponent<IHeroProps> = (props) => {
         and save to reload.
       </Typography>
 
-      <Typography variant="subtitle1" component="h6">
-        Customize your search page theme
-      </Typography>
       <Typography variant="body1">
         You can customize your theme by modifying the{' '}
         <b>
           <code>src/theme.tsx</code>
-        </b>
-        . For more information about theme customization, visit{' '}
+        </b>{' '}
+        file. For more information about theme customization, visit{' '}
         <Anchor
           href="https://material-ui.com/customization/theming/"
           value="Material-ui theming"
@@ -73,7 +70,10 @@ const Hero: React.FunctionComponent<IHeroProps> = (props) => {
           <Anchor href="https://reactjs.org" value="Learn React" />
         </li>
         <li>
-          <Anchor href="https://buefy.org/documentation" value="Buefy" />
+          <Anchor
+            href="https://material-ui.com/getting-started/usage/"
+            value="Learn Material-UI"
+          />
         </li>
       </ul>
     </header>
