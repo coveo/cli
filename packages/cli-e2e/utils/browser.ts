@@ -65,6 +65,7 @@ export async function captureScreenshots(browser: Browser): Promise<void> {
       });
     } catch (error) {
       console.warn('Failed to record screenshot.');
+      console.warn(error);
     }
   }
 }
