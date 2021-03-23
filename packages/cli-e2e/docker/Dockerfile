@@ -57,6 +57,8 @@ RUN chown -R notGroot:notGroot /home/notGroot \
 
 # Ensure root pwd is set to something known
 RUN echo 'root:Docker!' | chpasswd
+RUN echo 'notGroot:Docker!' | chpasswd
+RUN usermod -aG sudo notGroot
 # Run everything after as non-privileged user.
 USER notGroot
 
