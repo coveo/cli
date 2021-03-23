@@ -49,6 +49,7 @@ export default class Login extends Command {
   async run() {
     await this.loginAndPersistToken();
     await this.persistRegionAndEnvironment();
+    await this.verifyOrganization();
     await this.persistOrganization();
     await this.feedbackOnSuccessfulLogin();
     this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
@@ -110,7 +111,7 @@ export default class Login extends Command {
       return;
     }
 
-    this.log('You have no access to any Coveo organization.');
+    this.error('You have no access to any Coveo organization!');
   }
 
   private async pickFirstAvailableOrganization() {
@@ -127,5 +128,31 @@ export default class Login extends Command {
 
   private get configuration() {
     return new Config(this.config.configDir, this.error);
+  }
+
+  private async getAllOrgsUserHasAccessTo() {
+    const orgs = await (
+      await new AuthenticatedClient().getClient()
+    ).organization.list();
+    return (orgs as unknown) as OrganizationModel[];
+  }
+
+  private async verifyOrganization() {
+    const flags = this.flags;
+    const orgs = await this.getAllOrgsUserHasAccessTo();
+    console.log(flags);
+
+    if (flags.organization) {
+      const found = orgs.find((o) => o.id === flags.organization);
+      if (!found) {
+        this.error(
+          `You either do not have access to organization ${flags.organization}, or it does not exists.`
+        );
+      }
+    }
+
+    if (orgs.length === 0) {
+      this.error('You do not have access to any Coveo organization.');
+    }
   }
 }
