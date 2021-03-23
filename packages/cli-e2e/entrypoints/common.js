@@ -86,6 +86,7 @@ const startDockerContainer = () => {
     --env-file .env \
     --cap-add=IPC_LOCK \
     --cap-add=SYS_ADMIN \
+    --privileged \
     ${DOCKER_IMAGE_NAME} ${dockerEntryPoint()}`,
     {stdio: ['inherit', 'inherit', 'inherit']}
   );
