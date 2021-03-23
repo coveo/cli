@@ -21,10 +21,20 @@ const mockedPlatformClient = mocked(PlatformClient);
 
 describe('auth:login', () => {
   const mockConfigSet = jest.fn();
+  const mockConfigGet = jest.fn();
   const mockListOrgs = jest.fn();
 
   beforeEach(() => {
     mockListOrgs.mockReturnValue(Promise.resolve([{id: 'foo'}]));
+
+    mockConfigGet.mockReturnValue(
+      Promise.resolve({
+        region: 'us-east-1',
+        organization: 'foo',
+        environment: 'prod',
+      })
+    );
+
     mockedPlatformClient.mockImplementation(
       () =>
         ({
@@ -56,12 +66,7 @@ describe('auth:login', () => {
     mockedConfig.mockImplementation(
       () =>
         (({
-          get: () =>
-            Promise.resolve({
-              region: 'us-east-1',
-              organization: 'foo',
-              environment: 'prod',
-            }),
+          get: mockConfigGet,
           set: mockConfigSet,
         } as unknown) as Config)
     );
@@ -154,4 +159,27 @@ describe('auth:login', () => {
     .it('succeed when organization flag is valid', (ctx) => {
       expect(ctx.stdout).toContain('Success');
     });
+
+  test
+    .do(() => {
+      mockListOrgs.mockReturnValueOnce(
+        Promise.resolve([{id: 'the_first_org_available'}])
+      );
+      mockConfigGet.mockReturnValueOnce(
+        Promise.resolve({
+          region: 'us-east-1',
+          organization: 'the_first_org_available',
+          environment: 'prod',
+        })
+      );
+    })
+    .stdout()
+    .command(['auth:login'])
+    .it(
+      'succeed when no organization flag is passed, and uses the first available org instead',
+      (ctx) => {
+        expect(ctx.stdout).toContain('Success');
+        expect(ctx.stdout).toContain('the_first_org_available');
+      }
+    );
 });
