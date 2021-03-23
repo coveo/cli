@@ -6,7 +6,6 @@ const DOCKER_IMAGE_NAME = 'coveo-cli-e2e-image';
 const DOCKER_CONTAINER_NAME = 'coveo-cli-e2e-container';
 const repoHostPath = resolve(__dirname, ...new Array(3).fill('..'));
 const repoDockerPath = '/home/notGroot/cli';
-const screenshotsDockerPath = '/home/notGroot/screenshots';
 const screenshotsHostPath = resolve(__dirname, '..', 'screenshots');
 const dockerFilePath = resolve(repoHostPath, 'packages', 'cli-e2e', 'docker');
 
@@ -79,7 +78,7 @@ const startDockerContainer = () => {
   createEnvFile();
   mkdirSync(screenshotsHostPath, {recursive: true});
   return execSync(
-    `docker run \
+    `${process.env.CI ? 'sudo ' : ''}docker run \
     --name=${DOCKER_CONTAINER_NAME} \
     -v "${repoHostPath}:${repoDockerPath}" \
     -p "9229:9229" \
