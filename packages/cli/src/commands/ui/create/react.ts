@@ -15,6 +15,7 @@ import AuthenticationRequired from '../../../lib/decorators/authenticationRequir
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {lt as isVersionLessThan} from 'semver';
 import {constants} from 'os';
+import {resolve} from 'path';
 
 const linkToReadme =
   'https://github.com/coveo/cli/wiki#coveo-uicreatereact-requirements';
@@ -34,12 +35,12 @@ export default class React extends Command {
   @AuthenticationRequired()
   async run() {
     const {args} = this.parse(React);
-    if (!(await this.checkIfUserHasNodeGreaterThan10())) {
-      return;
-    }
-    if (!(await this.checkIfUserHasNpx())) {
-      return;
-    }
+    // if (!(await this.checkIfUserHasNodeGreaterThan10())) {
+    //   return;
+    // }
+    // if (!(await this.checkIfUserHasNpx())) {
+    //   return;
+    // }
 
     await this.createProject(args.name);
     await this.setupEnvironmentVariables(args.name);
@@ -90,11 +91,35 @@ export default class React extends Command {
   }
 
   private getReactTemplate(): string {
-    return '@coveo/cra-template';
+    // const pathToReactTemplate = resolve(
+    //   __dirname,
+    //   '../../../../../cra-template' // Working
+    // );
+
+    // const pathToReactTemplate = resolve(
+    //   __dirname,
+    //   '../../../../../cli/scripts/',
+    //   'package.tar.gz'
+    // );
+    // console.log('*********************');
+    // console.log(pathToReactTemplate);
+    // console.log('*********************');
+
+    const pathToReactTemplate = resolve(
+      // Not working
+      this.config.root,
+      'node_modules',
+      '@coveo/cra-template'
+    );
+
+    // return '@coveo/cra-template';
+    return `file:${pathToReactTemplate}`;
+    // return pathToReactTemplate;
   }
 
   private runReactCliCommand(args: string[], options = {}) {
     return spawnProcess('npx', ['create-react-app'].concat(args), options);
+    // return spawnProcess('create-react-app', [...args], options);
   }
 
   private get configuration() {

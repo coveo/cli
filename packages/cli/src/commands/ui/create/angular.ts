@@ -6,6 +6,7 @@ import {Config} from '../../../lib/config/config';
 import {spawnProcess} from '../../../lib/utils/process';
 import {buildAnalyticsFailureHook} from '../../../hooks/analytics/analytics';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {resolve} from 'path';
 
 export default class Angular extends Command {
   static description =
@@ -40,14 +41,19 @@ export default class Angular extends Command {
     return this.runAngularCliCommand(cliArgs);
   }
 
+  private getPathToSymlink() {
+    return resolve(this.config.root, 'lib', 'templates', 'angular');
+  }
+
   private async addCoveoToProject(applicationName: string, defaults: boolean) {
     const cfg = await this.configuration.get();
     const storage = await this.storage.get();
     const {providerUsername} = await this.getUserInfo();
 
+    const pathToAngularSchematic = this.getPathToSymlink();
     const cliArgs = [
       'add',
-      '@coveo/angular',
+      pathToAngularSchematic,
       '--org-id',
       cfg.organization,
       '--api-key',

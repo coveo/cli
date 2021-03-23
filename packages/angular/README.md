@@ -32,6 +32,8 @@ The `ng add` schematic helps you set up an Angular CLI project that uses [@coveo
 
 To test the schematic locally, install `@angular-devkit/schematics-cli` globally and use the `schematics` command-line tool. That tool mimics `generate` and `add` commands of the Angular CLI.
 
+> Make sure to build with the schematic `npm run build` before testing it.
+
 Check the documentation with
 
 ```bash

@@ -22,6 +22,7 @@
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^7.18.0",
     "eslint-config-prettier": "^7.2.0",
+    "fs-extra": "^9.1.0",
     "gts": "^3.1.0",
     "husky": "^4.3.8",
     "lerna": "^3.22.1",
@@ -61,7 +62,8 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "setup": "npm i && lerna bootstrap",
+    "setup": "npm i && lerna bootstrap && npm run ensureSymlinks",
+    "ensureSymlinks": "node ./scripts/ensure-symlinks.js",
     "build": "lerna run build",
     "test": "lerna run test",
     "posttest": "eslint . --ext .ts --config .eslintrc",

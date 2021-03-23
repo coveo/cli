@@ -14,5 +14,6 @@ reports/*.xml
 veracode
 coverage
 yarn.lock
+/src/templates
 
 !.vscode/extensions.json

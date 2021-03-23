@@ -8,8 +8,6 @@
   },
   "dependencies": {
     "@angular/cli": "^11.1.4",
-    "@coveo/angular": "^0.6.1",
-    "@coveo/vue-cli-plugin-typescript": "^0.6.0",
     "@coveord/platform-client": "^9.29.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
@@ -20,7 +18,6 @@
     "abortcontroller-polyfill": "^1.7.1",
     "cli-ux": "^5.5.1",
     "coveo.analytics": "^2.18.4",
-    "create-react-app": "^4.0.3",
     "exponential-backoff": "^3.1.0",
     "fs-extra": "^9.1.0",
     "isomorphic-fetch": "^3.0.0",
@@ -30,7 +27,9 @@
     "tslib": "^1"
   },
   "devDependencies": {
+    "@coveo/angular": "^0.6.1",
     "@coveo/cra-template": "^0.6.1",
+    "@coveo/vue-cli-plugin-typescript": "^0.6.0",
     "@oclif/dev-cli": "^1.26.0",
     "@oclif/test": "^1",
     "@types/fs-extra": "^9.0.6",
@@ -88,7 +87,8 @@
   "repository": "coveo/cli",
   "scripts": {
     "postpack": "rimraf -f oclif.manifest.json",
-    "prepack": "rimraf -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rimraf -rf lib && tsc -b && npm run bundle-templates && oclif-dev manifest && oclif-dev readme",
+    "bundle-templates": "node ./scripts/bundle-templates.js",
     "test": "jest",
     "version": "oclif-dev readme && git add README.md",
     "postinstall": "patch-package"
