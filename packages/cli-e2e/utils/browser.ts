@@ -10,7 +10,7 @@ interface JsonVersionFile {
 }
 
 export const SCREENSHOTS_PATH =
-  '/home/notGroot/cli/packages/cli-e2e/screenshots';
+  '/home/notGroot/cli-copy/packages/cli-e2e/screenshots';
 
 /**
  * Closes all pages of the targeted browser instance.
