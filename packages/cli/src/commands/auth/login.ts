@@ -76,7 +76,6 @@ export default class Login extends Command {
     Environment: ${cfg.environment}
     Run auth:login --help to see available options to log into a different organization, region or environment.
     `);
-    this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
   private async loginAndPersistToken() {
