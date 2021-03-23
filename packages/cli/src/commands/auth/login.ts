@@ -50,7 +50,7 @@ export default class Login extends Command {
     await this.loginAndPersistToken();
     await this.persistRegionAndEnvironment();
     await this.persistOrganization();
-
+    await this.feedbackOnSuccessfulLogin();
     this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
@@ -61,6 +61,21 @@ export default class Login extends Command {
       buildAnalyticsFailureHook(this, flags, err)
     );
     throw err;
+  }
+
+  private async feedbackOnSuccessfulLogin() {
+    const cfg = await this.configuration.get();
+    this.log(`
+    Successfully logged in !
+    Close your browser to continue
+
+    You are currently logged in:
+    Organization: ${cfg.organization}
+    Region: ${cfg.region}
+    Environment: ${cfg.environment}
+    Run auth:login --help to see available options to log into a different organization, region or environment.
+    `);
+    this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
   private async loginAndPersistToken() {
@@ -92,9 +107,6 @@ export default class Login extends Command {
     const firstOrgAvailable = await this.pickFirstAvailableOrganization();
     if (firstOrgAvailable) {
       await cfg.set('organization', firstOrgAvailable as string);
-      this.log(
-        `No organization specified.\nYou are currently logged in ${firstOrgAvailable}.\nIf you wish to specify an organization, use the --organization parameter.`
-      );
       return;
     }
 
