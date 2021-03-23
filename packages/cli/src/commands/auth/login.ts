@@ -140,7 +140,6 @@ export default class Login extends Command {
   private async verifyOrganization() {
     const flags = this.flags;
     const orgs = await this.getAllOrgsUserHasAccessTo();
-    console.log(flags);
 
     if (flags.organization) {
       const found = orgs.find((o) => o.id === flags.organization);
