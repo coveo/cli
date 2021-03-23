@@ -1,32 +1,31 @@
-# Installation and Code Generation
+# @coveo/angular
 
-The `@coveo/angular` package contains the necessary components to set up a search page with Angular CLI.
+The `@coveo/angular` package contains the necessary components to set up a search page using [Coveo Headless](https://docs.coveo.com/headless) and [Angular Material](https://material.angular.io/) with the [Angular CLI](https://cli.angular.io/).
 
-## Install Schematic
+If you want to create a new Coveo Headless-powered search page with the Angular web framework from scratch, it is simpler to use the [`coveo ui:create:angular` command in the main Coveo CLI](https://github.com/coveo/cli/blob/master/packages/cli/README.md#coveo-uicreateangular-name). The main Coveo CLI will handle a lot of complexity for you. The `@coveo/angular` package is rather meant to help you integrate a search page to an already existing Angular project using the Angular CLI.
 
-Using the command below will set up a Coveo search page in your project
+## Installation
 
-```
-ng add @coveo/angular --org-id<org-id> --api-key=<api-key>
-```
+To add a Coveo Headless-powered search page using Material Angular to an existing Angular project, execute the following steps:
 
-<!-- TODO: add links to the appropriate documentation -->
+- Run `ng add @coveo/angular --org-id=<org-id> --api-key=<api-key>`, where you replace `<org-id>` by the unique identifier of your Coveo organization, and `<api-key>` by an API key granting the **impersonate** privilege in the target organization.
+- Answer the questions prompted by shell script to configure your interface styling.
+- In your project, navigate to the new `server` folder. This is an [Express](https://www.npmjs.com/package/express) server to generate [Coveo search tokens](https://docs.coveo.com/en/1346/).
+- The folder should contain a `.env.example` file. Create a copy of that file and rename it `.env`.
+- In that new `.env` file, replace all placeholder variables (`<...>`) by the proper information for your organization. For more involved configurations, you can modify the request parameters used in the `middlewares/searchToken.ts` file.
+- In that server directory, run `npm install` to install dependencies.
+- Still in that server directory, run `npm start` to start the server.
+- You can now serve you Angular project to try out your new search page.
 
-The `ng add` schematic helps you set up an Angular CLI project that uses [@coveo/headless](https://www.npmjs.com/package/@coveo/headless) and [Material Angular](https://material.angular.io/). Running `ng add` will:
+## Contributing
 
-- Ensure [Coveo Headless](https://www.npmjs.com/package/@coveo/headless) and [Material Angular](https://material.angular.io/) dependencies are placed in `package.json`
-- Generate the Coveo Headless Engine
-- Generate search page components (search box, result list, facets, ...)
-  <!-- - Add the [Material Icon font](./getting-started#step-6-optional-add-material-icons) to your `index.html` -->
-  <!-- - Add either a [prebuilt theme](./theming#using-a-pre-built-theme) or a [custom theme](./theming#defining-a-custom-theme) -->
-  <!-- - Add global styles to
-    - Remove margins from `body`
-    - Set `height: 100%` on `html` and `body`
-    - Make Roboto the default font of your app -->
+### Component schematics
 
-## Component schematics
+TODO
 
-## Development
+### Development
+
+TODO
 
 ### Testing
 
