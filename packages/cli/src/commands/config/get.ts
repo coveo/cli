@@ -10,6 +10,7 @@ export default class Get extends Command {
 
   async run() {
     const cfg = await new Config(this.config.configDir, this.error).get();
+    delete cfg.accessToken;
     this.log(JSON.stringify(cfg, null, 4));
     await this.config.runHook('analytics', buildAnalyticsSuccessHook(this, {}));
   }
