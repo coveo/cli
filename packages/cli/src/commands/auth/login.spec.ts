@@ -22,10 +22,6 @@ describe('auth:login', () => {
     );
   });
 
-  afterEach(() => {
-    mockedConfig.mockReset();
-  });
-
   test
     .command(['auth:login', '-e', 'foo'])
     .catch(/Expected --environment=foo/)
