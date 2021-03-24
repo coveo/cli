@@ -35,7 +35,7 @@ export default function AuthenticationRequired() {
         );
       }
 
-      originalRunCommand.apply(this);
+      await originalRunCommand.apply(this);
     };
   };
 }
