@@ -13,9 +13,7 @@ To add a Coveo Headless-powered search page using Material Angular to an existin
 - In your project, navigate to the new `server` folder. This is an [Express](https://www.npmjs.com/package/express) server which generates [Coveo search tokens](https://docs.coveo.com/en/1346/).
 - The folder should contain a `.env.example` file. Create a copy of that file and rename it `.env`.
 - In that new `.env` file, replace all placeholder variables (`<...>`) by the proper information for your organization. For more involved configurations, you can modify the request parameters used in the `middlewares/searchToken.ts` file.
-- In that server directory, run `npm install` to install dependencies.
-- Still in that server directory, run `npm start` to start the server.
-- You can now serve you Angular project to try out your new search page.
+- You can now go back to the root directory of your project and serve it by running `ng serve`.
 
 ## Contributing
 
