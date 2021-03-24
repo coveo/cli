@@ -60,6 +60,7 @@ describe('config', () => {
         region: 'us-east-1' as const,
         organization: 'foo',
         analyticsEnabled: true,
+        accessToken: 'the-token',
       };
       await new Config('foo/bar').replace(theNewConfig);
       expect(mockedWriteJSON).toHaveBeenCalledWith(
