@@ -23,6 +23,17 @@ jobs:
       - name: Build CLI
         working-directory: ./packages/cli
         run: tsc -b
+      - name: Release test versions
+        env:
+          UI_TEMPLATE_VERSION: $(node_modules/.bin/lerna list --json | node scripts/get-next-test-version.js)
+        run: |
+          echo "E2E tests should target template version $UI_TEMPLATE_VERSION"
+          git config --global user.email action@github.com
+          git config --global user.name GitHub Action
+          node_modules/.bin/lerna version $UI_TEMPLATE_VERSION -y
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }} > ~/.npmrc"
+          node_modules/.bin/lerna list --json | node scripts/wait-for-published-packages.js --version $UI_TEMPLATE_VERSION
+          npm run npm:publish
       - name: End-to-end Tests
         working-directory: ./packages/cli-e2e
         run: npm run test-e2e
