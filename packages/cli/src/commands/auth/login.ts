@@ -114,10 +114,8 @@ export default class Login extends Command {
   }
 
   private async pickFirstAvailableOrganization() {
-    const orgs = await (
-      await new AuthenticatedClient().getClient()
-    ).organization.list();
-    return ((orgs as unknown) as OrganizationModel[])[0]?.id;
+    const orgs = await this.getAllOrgsUserHasAccessTo();
+    return orgs[0]?.id;
   }
 
   private get flags() {
@@ -150,7 +148,11 @@ export default class Login extends Command {
     }
 
     if (orgs.length === 0) {
-      this.error('You do not have access to any Coveo organization.');
+      this.error(`
+      You do not have access to any Coveo organization in this region and environment.
+      Please make sure to you have access to at least one Coveo Organization, and that you are targeting the correct region and environment.
+      Run auth:login --help to see available options to log into a different organization, region or environment.
+      `);
     }
   }
 }
