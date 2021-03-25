@@ -11,8 +11,15 @@ jobs:
     env:
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
+      GITHUB_CREDENTIALS: ${{ secrets.CLI_RELEASE }}
     steps:
       - uses: actions/checkout@v2
+        with:
+          # pulls all commits (needed for lerna to correctly version)
+          # see https://stackoverflow.com/a/60184319/9285308 & https://github.com/actions/checkout
+          fetch-depth: 0
+      # pulls all tags (needed for lerna to correctly version)
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/* # see https://stackoverflow.com/a/60184319/9285308
       - uses: actions/setup-node@v1
         with:
           node-version: '14'
@@ -26,14 +33,13 @@ jobs:
       - name: Set the template version
         run: |
           echo "UI_TEMPLATE_VERSION=$(node scripts/get-next-test-version.js)" >> $GITHUB_ENV
-          echo "${{ env.UI_TEMPLATE_VERSION }}"
       - name: Release test versions
         run: |
           echo "E2E tests should target template version ${{ env.UI_TEMPLATE_VERSION }}"
           git config --global user.email action@github.com
           git config --global user.name GitHub Action
-          node_modules/.bin/lerna version ${{ env.UI_TEMPLATE_VERSION }} -y
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }} > ~/.npmrc"
+        # node_modules/.bin/lerna version ${{ env.UI_TEMPLATE_VERSION }} --no-changelog --no-push -y
+        # echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }} > ~/.npmrc"
         # Uncomment when ready
         # npm run npm:publish:template
         # node scripts/wait-for-published-packages.js -v ${{ env.UI_TEMPLATE_VERSION }}
