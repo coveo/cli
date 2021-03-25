@@ -41,3 +41,7 @@ jobs:
         working-directory: ./packages/cli-e2e
         run: echo "Running E2E tests with version $UI_TEMPLATE_VERSION"
         # run: npm run test-e2e
+      - uses: actions/upload-artifact@v2
+        with:
+          name: test-screenshots
+          path: ./packages/cli-e2e/screenshots
