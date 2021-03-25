@@ -25,7 +25,8 @@ jobs:
         run: tsc -b
       - name: Set the template version
         run: |
-          $(node scripts/get-next-test-version.js) >> $UI_TEMPLATE_VERSION
+          echo "UI_TEMPLATE_VERSION=$(node scripts/get-next-test-version.js)" >> $GITHUB_ENV
+          echo $UI_TEMPLATE_VERSION
       - name: Release test versions
         run: |
           echo "E2E tests should target template version $UI_TEMPLATE_VERSION"
