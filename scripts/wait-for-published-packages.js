@@ -1,21 +1,25 @@
 /* eslint-disable no-undef */
-const waitOn = require('wait-on');
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
-const {getUiTemplates} = require('./get-ui-templates');
+const {getUiTemplates} = require('./ui-template-utils');
+const {backOff} = require('exponential-backoff');
+const {getPackageLastTestVersion} = require('./ui-template-utils');
+
+async function isLastTestVersionAvailable(packageName, lastVersion) {
+  const response = await getPackageLastTestVersion(packageName);
+  return new Promise((resolve, reject) => {
+    return response === lastVersion ? resolve() : reject();
+  });
+}
 
 async function waitForPackage(packageName, version) {
-  const opts = {
-    resources: [`https://www.npmjs.com/package/${packageName}/v/${version}`],
-    delay: 1e3, // initial delay in ms
-    interval: 5e3, // poll interval in ms
-    timeout: 5 * 60 * 1e3, // timeout in ms
-    window: 1e3, // stabilization time in ms
-    log: true,
-  };
-
   try {
-    await waitOn(opts);
+    const pollInterval = 1e3;
+    await backOff(() => isLastTestVersionAvailable(packageName, version), {
+      delayFirstAttempt: true,
+      startingDelay: pollInterval,
+      maxDelay: pollInterval * 30,
+    });
   } catch (err) {
     console.error(`Package ${packageName}@${version} does not exist`);
   }

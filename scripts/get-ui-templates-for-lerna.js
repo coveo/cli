@@ -1,4 +1,4 @@
-const {getUiTemplates} = require('./get-ui-templates');
+const {getUiTemplates} = require('./ui-template-utils');
 
 const getUiTemplatesForLerna = () =>
   getUiTemplates()
