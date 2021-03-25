@@ -126,7 +126,7 @@ describe('auth:login', () => {
       .stdout()
       .command(['auth:login', '-o', 'foo'])
       .it('save token from oauth service', () => {
-        expect(mockedConfig.mock.instances[0].set).toHaveBeenCalledWith(
+        expect(mockConfigSet).toHaveBeenCalledWith(
           'accessToken',
           'this-is-the-token'
         );
