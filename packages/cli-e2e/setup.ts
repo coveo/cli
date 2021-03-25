@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import {ChildProcessWithoutNullStreams} from 'child_process';
+import {mkdirSync} from 'fs';
 import type {Browser} from 'puppeteer';
-import {connectToChromeBrowser} from './utils/browser';
+import {
+  captureScreenshots,
+  connectToChromeBrowser,
+  SCREENSHOTS_PATH,
+} from './utils/browser';
 import {clearKeychain, loginWithOffice} from './utils/login';
 
 declare global {
@@ -25,9 +30,15 @@ async function clearChromeBrowsingData(browser: Browser) {
 }
 
 export default async function () {
+  mkdirSync(SCREENSHOTS_PATH, {recursive: true});
   const browser = await connectToChromeBrowser();
   await clearChromeBrowsingData(browser);
   await clearKeychain();
-  global.loginProcess = await loginWithOffice();
+  try {
+    global.loginProcess = await loginWithOffice();
+  } catch (e) {
+    await captureScreenshots(browser, 'jestSetup');
+    throw e;
+  }
   await clearChromeBrowsingData(browser);
 }

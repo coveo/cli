@@ -5,12 +5,20 @@ import {Config} from '../../../lib/config/config';
 import {spawnProcess} from '../../../lib/utils/process';
 import {buildAnalyticsFailureHook} from '../../../hooks/analytics/analytics';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {getPackageVersion} from '../../../lib/utils/misc';
 
 export default class Angular extends Command {
+  static templateName = '@coveo/angular';
+
   static description =
     'Create a Coveo Headless-powered search page with the Angular web framework. See https://docs.coveo.com/en/headless and https://angular.io/.';
 
   static flags = {
+    version: flags.string({
+      char: 'v',
+      description: `Version of ${Angular.templateName} to use.`,
+      default: getPackageVersion(Angular.templateName),
+    }),
     defaults: flags.boolean({
       char: 'd',
       description:
@@ -42,10 +50,13 @@ export default class Angular extends Command {
   private async addCoveoToProject(applicationName: string, defaults: boolean) {
     const cfg = await this.configuration.get();
     const {providerUsername} = await this.getUserInfo();
+    const {flags} = this.parse(Angular);
+    const schematicVersion =
+      flags.version || getPackageVersion(Angular.templateName);
 
     const cliArgs = [
       'add',
-      '@coveo/angular',
+      `${Angular.templateName}@${schematicVersion}`,
       '--org-id',
       cfg.organization,
       '--api-key',

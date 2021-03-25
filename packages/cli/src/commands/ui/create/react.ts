@@ -1,4 +1,4 @@
-import {Command} from '@oclif/command';
+import {Command, flags} from '@oclif/command';
 import {
   buildAnalyticsFailureHook,
   buildAnalyticsSuccessHook,
@@ -14,17 +14,28 @@ import AuthenticationRequired from '../../../lib/decorators/authenticationRequir
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {lt as isVersionLessThan} from 'semver';
 import {constants} from 'os';
+import {getPackageVersion} from '../../../lib/utils/misc';
 
 const linkToReadme =
   'https://github.com/coveo/cli/wiki#coveo-uicreatereact-requirements';
 
 export default class React extends Command {
+  static templateName = '@coveo/cra-template';
+
   static description = `Create a Coveo Headless-powered search page with the React web framework. See ${linkToReadme}`;
 
   static examples = [
     '$ coveo ui:create:react myapp',
     '$ coveo ui:create:react --help',
   ];
+
+  static flags = {
+    version: flags.string({
+      char: 'v',
+      description: `Version of ${React.templateName} to use.`,
+      default: getPackageVersion(React.templateName),
+    }),
+  };
 
   static args = [
     {name: 'name', description: 'The target application name.', required: true},
@@ -55,10 +66,13 @@ export default class React extends Command {
   }
 
   private createProject(name: string) {
+    const {flags} = this.parse(React);
+    const templateVersion =
+      flags.version || getPackageVersion(React.templateName);
     return this.runReactCliCommand([
       name,
       '--template',
-      this.getReactTemplate(),
+      `${React.templateName}@${templateVersion}`,
     ]);
   }
 
@@ -85,10 +99,6 @@ export default class React extends Command {
         cwd: name,
       }
     );
-  }
-
-  private getReactTemplate(): string {
-    return '@coveo/cra-template';
   }
 
   private runReactCliCommand(args: string[], options = {}) {

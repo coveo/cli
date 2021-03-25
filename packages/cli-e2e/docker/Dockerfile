@@ -50,12 +50,15 @@ RUN printf 'Default_keyring' > /home/notGroot/.local/share/keyrings/default
 
 # Give the file access to the test user.
 RUN chown -R notGroot:notGroot /home/notGroot \
+    && chmod -R 777 /home/notGroot/ \
     && chown -R notGroot:notGroot /app \
     && chmod -R 600 /home/notGroot/.local/share/keyrings/Default_keyring.keyring \
     && chmod -R 644 /home/notGroot/.local/share/keyrings/default
 
 # Ensure root pwd is set to something known
 RUN echo 'root:Docker!' | chpasswd
+RUN echo 'notGroot:Docker!' | chpasswd
+RUN usermod -aG sudo notGroot
 # Run everything after as non-privileged user.
 USER notGroot
 

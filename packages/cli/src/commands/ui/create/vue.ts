@@ -9,13 +9,21 @@ import AuthenticationRequired from '../../../lib/decorators/authenticationRequir
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {platformUrl} from '../../../lib/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';
+import {getPackageVersion} from '../../../lib/utils/misc';
 
 export default class Vue extends Command {
+  static templateName = '@coveo/vue-cli-plugin-typescript';
+
   static description =
     'Create a Coveo Headless-powered search page with the Vue.js web framework. See https://docs.coveo.com/en/headless and https://vuejs.org/';
 
   static flags = {
     help: flags.help({char: 'h'}),
+    version: flags.string({
+      char: 'v',
+      description: `Version of ${Vue.templateName} to use.`,
+      default: getPackageVersion(Vue.templateName),
+    }),
     preset: flags.string({
       char: 'p',
       helpValue: 'path',
@@ -40,7 +48,7 @@ export default class Vue extends Command {
   async run() {
     const {args, flags} = this.parse(Vue);
 
-    let preset = this.getDefaultPreset();
+    let preset = await this.getDefaultPreset();
 
     if (flags.preset) {
       try {
@@ -70,9 +78,12 @@ export default class Vue extends Command {
     const cfg = await this.configuration.get();
     const {providerUsername} = await this.getUserInfo();
 
+    const {flags} = this.parse(Vue);
+    const presetVersion = flags.version || getPackageVersion(Vue.templateName);
+
     const cliArgs = [
       'add',
-      '@coveo/typescript',
+      `${Vue.templateName}@${presetVersion}`,
       '--orgId',
       cfg.organization,
       '--apiKey',
@@ -88,7 +99,7 @@ export default class Vue extends Command {
     });
   }
 
-  private getDefaultPreset() {
+  private async getDefaultPreset() {
     return {
       useConfigFiles: true,
       plugins: {
@@ -102,6 +113,15 @@ export default class Vue extends Command {
           config: 'standard',
           lintOn: ['commit'],
         },
+        // TODO: CDX-189: include coveo template inside the preset instead of running
+        // an additional `vue add` command.
+        // [Vue.templateName]: {
+        //   version: version,
+        //   orgId: cfg.organization,
+        //   apiKey: storage.accessToken!,
+        //   platformUrl: platformUrl({environment: cfg.environment}),
+        //   user: providerUsername,
+        // },
       },
       cssPreprocessor: 'node-sass',
       vueVersion: '2',
