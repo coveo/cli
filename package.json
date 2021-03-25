@@ -29,7 +29,9 @@
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
     "ts-node": "^8",
-    "typescript": "^3.3"
+    "typescript": "^3.3",
+    "wait-on": "^5.3.0",
+    "yargs": "^16.2.0"
   },
   "husky": {
     "hooks": {
@@ -73,6 +75,7 @@
     "commit": "git-cz",
     "pr:report": "node ./scripts/pr-bot.js",
     "release:changelog": "node ./scripts/release-changelog.js",
-    "npm:publish": "lerna run --no-bail npm:publish"
+    "npm:publish": "lerna run --no-bail npm:publish",
+    "npm:publish:template": "lerna run --no-bail npm:publish $(node ./scripts/get-ui-templates-for-lerna.js)"
   }
 }

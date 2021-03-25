@@ -3,7 +3,7 @@
 
 const {spawn} = require('child_process');
 const {inc, valid, gte} = require('semver');
-const {readArguments} = require('./read-argument');
+const {getUiTemplates} = require('./get-ui-templates');
 
 function cleanVersion(dirtyVersion) {
   const versionRegex = /([0]+)\.([0]+)\.([0-9]+)/;
@@ -48,16 +48,9 @@ function getGreatestVersion(versions = []) {
 }
 
 async function main() {
-  const args = await readArguments();
-  let packages = [];
-  try {
-    packages = JSON.parse(args);
-  } catch (error) {
-    console.error('Unable to get pckages to bump');
-  }
-  const allPackages = packages.map((p) => p.name);
+  const templates = getUiTemplates();
   const allNextVersions = await Promise.all(
-    allPackages.map((p) => getNextPatchVersion(p))
+    templates.map((p) => getNextPatchVersion(p))
   );
 
   const greatestVersion = getGreatestVersion(allNextVersions);
