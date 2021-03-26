@@ -7,6 +7,7 @@
     "build": "tsc -p tsconfig.json",
     "prebuild": "node ./scripts/clean.js",
     "postbuild": "node ./scripts/setup.js",
+    "prepublishOnly": "npm run build",
     "npm:publish": "npm publish --access public"
   },
   "keywords": [
