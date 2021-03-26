@@ -19,13 +19,21 @@ describe('ui', () => {
     let interceptedRequests: HTTPRequest[] = [];
     let page: Page;
 
+    const openNewPage = async () => {
+      const newPage = await browser.newPage();
+      if (page) {
+        await page.close();
+      }
+      return newPage;
+    };
+
     beforeAll(async () => {
       browser = await getNewBrowser();
       await setupUIProject('ui:create:vue', projectName, cliProcesses);
     }, 240e3);
 
     beforeEach(async () => {
-      page = await browser.newPage();
+      page = await openNewPage();
 
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);
@@ -34,7 +42,6 @@ describe('ui', () => {
 
     afterEach(async () => {
       await captureScreenshots(browser);
-      await page.close();
     });
 
     afterAll(async () => {
