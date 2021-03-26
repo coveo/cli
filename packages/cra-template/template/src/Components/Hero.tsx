@@ -1,20 +1,30 @@
-import {Typography} from '@material-ui/core';
+import {Grid, Typography} from '@material-ui/core';
 import React from 'react';
 import './Hero.css';
 
 interface IHeroProps {
-  logo: string;
+  logos: string[];
   welcome: string;
 }
 
-function Anchor(props: any) {
+interface IAnchorProps {
+  href: string;
+  value: string;
+}
+
+function Anchor(props: IAnchorProps) {
   return <a href={props.href}>{props.value}</a>;
 }
 
 const Hero: React.FunctionComponent<IHeroProps> = (props) => {
   return (
     <header className="App-header">
-      <img src={props.logo} className="App-logo" alt="logo" />
+      <Grid className="logo-container">
+        {props.logos.map((logo) => (
+          <img src={logo} className="App-logo" alt="logo" />
+        ))}
+      </Grid>
+
       <Typography variant="h5">{props.welcome}</Typography>
       <Typography variant="body1">
         This sample search page was built with{' '}
@@ -37,12 +47,15 @@ const Hero: React.FunctionComponent<IHeroProps> = (props) => {
         and save to reload.
       </Typography>
 
+      <Typography variant="subtitle1" component="h6">
+        Customize your search page theme
+      </Typography>
       <Typography variant="body1">
         You can customize your theme by modifying the{' '}
         <b>
           <code>src/theme.tsx</code>
-        </b>{' '}
-        file. For more information about theme customization, visit{' '}
+        </b>
+        . For more information about theme customization, visit{' '}
         <Anchor
           href="https://material-ui.com/customization/theming/"
           value="Material-ui theming"
@@ -57,22 +70,16 @@ const Hero: React.FunctionComponent<IHeroProps> = (props) => {
         <li>
           <Anchor
             href="https://docs.coveo.com/en/headless"
-            value="Coveo Connect"
+            value="Coveo Headless documentation"
           />
         </li>
         <li>
-          <Anchor
-            href="https://connect.coveo.com/"
-            value="Coveo Headless Library"
-          />
-        </li>
-        <li>
-          <Anchor href="https://reactjs.org" value="Learn React" />
+          <Anchor href="https://reactjs.org" value="React documentation" />
         </li>
         <li>
           <Anchor
-            href="https://material-ui.com/getting-started/usage/"
-            value="Learn Material-UI"
+            href="https://material-ui.com/"
+            value="Material-ui Documentation"
           />
         </li>
       </ul>

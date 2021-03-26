@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import SearchPage from './Components/SearchPage';
 import Hero from './Components/Hero';
 import logo from './logo.svg';
+import coveologo from './coveologo.svg';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import {Grid, Typography, Box} from '@material-ui/core';
 import {initializeHeadlessEngine} from './common/Engine';
@@ -47,10 +48,9 @@ const Home = () => {
     return (
       <div className="App">
         <Hero
-          logo={logo}
+          logos={[logo, coveologo]}
           welcome="Welcome to Your Coveo React.js Search Page"
         />
-        {/* <div>dsadsadsa</div> */}
         {engine && <SearchPage engine={engine} />}
       </div>
     );
