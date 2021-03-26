@@ -1,9 +1,11 @@
 /* eslint-disable no-undef */
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
-const {getUiTemplates} = require('./ui-template-utils');
 const {backOff} = require('exponential-backoff');
-const {getPackageLastTestVersion} = require('./ui-template-utils');
+const {
+  getPackageLastTestVersion,
+  getUiTemplates,
+} = require('./ui-template-utils');
 
 async function isLastTestVersionAvailable(packageName, lastVersion) {
   const response = await getPackageLastTestVersion(packageName);

@@ -38,7 +38,7 @@ jobs:
           echo "E2E tests should target template version ${{ env.UI_TEMPLATE_VERSION }}"
           git config --global user.email action@github.com
           git config --global user.name GitHub Action
-        # node_modules/.bin/lerna version ${{ env.UI_TEMPLATE_VERSION }} --no-changelog --no-push -y
+        # node_modules/.bin/lerna version ${{ env.UI_TEMPLATE_VERSION }} --force-publish=$(node ./scripts/get-ui-templates-for-lerna.js --separator=\",\") --no-push -y
         # echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }} > ~/.npmrc"
         # Uncomment when ready
         # npm run npm:publish:template

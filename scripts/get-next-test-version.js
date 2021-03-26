@@ -1,9 +1,9 @@
-#!/usr/bin/env node
 /* eslint-disable no-undef */
-
 const {inc, valid, gte} = require('semver');
-const {getPackageLastTestVersion} = require('./ui-template-utils');
-const {getUiTemplates} = require('./ui-template-utils');
+const {
+  getUiTemplates,
+  getPackageLastTestVersion,
+} = require('./ui-template-utils');
 
 async function getPackageNextTestVersion(packageName) {
   const lastVersion = await getPackageLastTestVersion(packageName);

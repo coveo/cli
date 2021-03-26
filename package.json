@@ -76,6 +76,6 @@
     "pr:report": "node ./scripts/pr-bot.js",
     "release:changelog": "node ./scripts/release-changelog.js",
     "npm:publish": "lerna run --no-bail npm:publish",
-    "npm:publish:template": "lerna run --no-bail npm:publish $(node ./scripts/get-ui-templates-for-lerna.js)"
+    "npm:publish:template": "lerna run --no-bail npm:publish $(node ./scripts/get-ui-templates-for-lerna.js --prefix=\"--scope\")"
   }
 }
