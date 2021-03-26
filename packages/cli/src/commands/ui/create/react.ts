@@ -16,6 +16,7 @@ import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {lt as isVersionLessThan} from 'semver';
 import {constants} from 'os';
 import {getPackageVersion} from '../../../lib/utils/misc';
+import {join} from 'path';
 
 const linkToReadme =
   'https://github.com/coveo/cli/wiki#coveo-uicreatereact-requirements';
@@ -82,7 +83,7 @@ export default class React extends Command {
     const storage = await this.storage.get();
     const {providerUsername} = await this.getUserInfo();
 
-    return spawnProcess(
+    const output = await spawnProcessOutput(
       'npm',
       [
         'run',
@@ -101,6 +102,19 @@ export default class React extends Command {
         cwd: name,
       }
     );
+
+    if (output.stderr) {
+      this.warn(`
+      An unknown error happened while trying to create the .env file in the project. Please refer to ${join(
+        name,
+        'README.md'
+      )} for more detail.
+      ${output.stderr}
+      `);
+      return false;
+    }
+
+    return true;
   }
 
   private runReactCliCommand(args: string[], options = {}) {
