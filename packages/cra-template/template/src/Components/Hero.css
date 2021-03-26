@@ -1,5 +1,5 @@
 .App-logo {
-  height: 40vmin;
+  height: 30vmin;
   pointer-events: none;
 }
 
@@ -31,4 +31,8 @@
 
 .App-header a {
   color: #1cebcf;
+}
+
+.logo-container {
+  margin: 2rem;
 }

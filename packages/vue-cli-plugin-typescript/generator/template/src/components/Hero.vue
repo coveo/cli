@@ -5,7 +5,7 @@
     <p>
       This sample search page was built with
       <a
-        href="https://buefy.org/documentation"
+        href="https://buefy.org"
         target="_blank"
         rel="noopener"
         class="has-text-blue-accent"
@@ -21,45 +21,47 @@
       >.
     </p>
     <p>
-      You can set your variables with Sass by modifying
+      You can modify this sample by modifying styles with
       <code>./src/styles/_variables.scss</code>
+      and components with
+      <code>./src/components/**</code>
     </p>
     <h3>Installed CLI Plugins</h3>
     <ul>
       <li>
         <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel"
+          href="https://www.npmjs.com/package/@vue/cli-plugin-babel"
           target="_blank"
           rel="noopener"
           class="has-text-blue-accent"
-          >babel</a
+          >@vue/cli-plugin-babel</a
         >
       </li>
       <li>
         <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-typescript"
+          href="https://www.npmjs.com/package/@vue/cli-plugin-typescript"
           target="_blank"
           rel="noopener"
           class="has-text-blue-accent"
-          >typescript</a
+          >@vue/cli-plugin-typescript</a
         >
       </li>
       <li>
         <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint"
+          href="https://www.npmjs.com/package/@vue/cli-plugin-eslint"
           target="_blank"
           rel="noopener"
           class="has-text-blue-accent"
-          >eslint</a
+          >@vue/cli-plugin-es-lint</a
         >
       </li>
       <li>
         <a
-          href="https://github.com/coveo/cli/packages/vue-cli-plugin-coveo"
+          href="https://www.npmjs.com/package/@coveo/vue-cli-plugin-typescript"
           target="_blank"
           rel="noopener"
           class="has-text-blue-accent"
-          >vue-cli-plugin-coveo</a
+          >@coveo/vue-cli-plugin-typescript</a
         >
       </li>
     </ul>
@@ -71,69 +73,28 @@
           target="_blank"
           rel="noopener"
           class="has-text-blue-accent"
-          >Coveo Connect</a
+          >Coveo Headless documentation</a
         >
       </li>
-      <!-- <li>
-        <a
-          href="https://connect.coveo.com/"
-          target="_blank"
-          rel="noopener"
-          class="has-text-blue-accent"
-          >Coveo Headless Library</a
-        >
-      </li> -->
       <li>
         <a
           href="https://vuejs.org"
           target="_blank"
           rel="noopener"
           class="has-text-blue-accent"
-          >Vue.js Core Docs</a
+          >Vue.js documentation</a
         >
       </li>
-      <!-- <li>
+      <li>
         <a
           href="https://buefy.org/documentation"
           target="_blank"
           rel="noopener"
           class="has-text-blue-accent"
-          >Buefy</a
+          >Buefy documentation</a
         >
-      </li> -->
+      </li>
     </ul>
-    <!-- <h3>Ecosystem</h3> -->
-    <!-- <ul>
-      <li>
-        <a href="https://router.vuejs.org" target="_blank" rel="noopener"
-          >vue-router</a
-        >
-      </li>
-      <li>
-        <a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a>
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-devtools#vue-devtools"
-          target="_blank"
-          rel="noopener"
-          >vue-devtools</a
-        >
-      </li>
-      <li>
-        <a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener"
-          >vue-loader</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/awesome-vue"
-          target="_blank"
-          rel="noopener"
-          >awesome-vue</a
-        >
-      </li>
-    </ul> -->
   </div>
 </template>
 
