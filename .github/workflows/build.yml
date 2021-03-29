@@ -38,15 +38,13 @@ jobs:
           echo "E2E tests should target template version ${{ env.UI_TEMPLATE_VERSION }}"
           git config --global user.email action@github.com
           git config --global user.name GitHub Action
-        # node_modules/.bin/lerna version ${{ env.UI_TEMPLATE_VERSION }} --force-publish=$(node ./scripts/get-ui-templates-for-lerna.js --separator=\",\") --no-push -y
-        # echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }} > ~/.npmrc"
-        # Uncomment when ready
-        # npm run npm:publish:template
-        # node scripts/wait-for-published-packages.js -v ${{ env.UI_TEMPLATE_VERSION }}
+          node_modules/.bin/lerna version ${{ env.UI_TEMPLATE_VERSION }} --force-publish=$(node ./scripts/get-ui-templates-for-lerna.js --separator=\",\") --no-push -y
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }} > ~/.npmrc"
+          npm run npm:publish:template
+          node scripts/wait-for-published-packages.js -v ${{ env.UI_TEMPLATE_VERSION }}
       - name: End-to-end Tests
         working-directory: ./packages/cli-e2e
-        run: echo "Running E2E tests with version ${{ env.UI_TEMPLATE_VERSION }}"
-        # run: npm run test-e2e
+        run: npm run test-e2e
       - uses: actions/upload-artifact@v2
         with:
           name: test-screenshots
