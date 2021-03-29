@@ -131,5 +131,5 @@ export async function clearAccessTokenFromConfig() {
 }
 
 function getConfigFilePath() {
-  return '~/.config/@coveo/cli/config.json';
+  return '/home/notGroot/.config/@coveo/cli/config.json';
 }
