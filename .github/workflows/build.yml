@@ -14,10 +14,6 @@ jobs:
       GITHUB_CREDENTIALS: ${{ secrets.CLI_RELEASE }}
     steps:
       - uses: actions/checkout@v2
-        with:
-          # Checkout HEAD^
-          fetch-depth: 2
-      - run: git checkout HEAD^ # https://github.com/actions/checkout#checkout-head
       - uses: actions/setup-node@v1
         with:
           node-version: '14'
@@ -30,13 +26,13 @@ jobs:
         run: tsc -b
       - name: Set the template version
         run: |
-          echo "UI_TEMPLATE_VERSION=$(node scripts/get-next-test-version.js)" >> $GITHUB_ENV
+          node scripts/store-next-test-version.js --variable=UI_TEMPLATE_VERSION
       - name: Release test versions
         run: |
           echo "E2E tests should target template version ${{ env.UI_TEMPLATE_VERSION }}"
           git config --global user.email action@github.com
           git config --global user.name GitHub Action
-        # node_modules/.bin/lerna version ${{ env.UI_TEMPLATE_VERSION }} --force-publish=$(node ./scripts/get-ui-templates-for-lerna.js --separator=\",\") --no-push --no-git-tag-version -y
+        # npm run npm:bump:template -- -- ${{ env.UI_TEMPLATE_VERSION }}
         # echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }} > ~/.npmrc"
         # npm run npm:publish:template
         # node scripts/wait-for-published-packages.js -v ${{ env.UI_TEMPLATE_VERSION }}
