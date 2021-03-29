@@ -4,17 +4,55 @@ jest.mock('../../lib/config/config');
 jest.mock('keytar');
 jest.mock('../../hooks/analytics/analytics');
 jest.mock('../../hooks/prerun/prerun');
+jest.mock('../../lib/platform/authenticatedClient');
+jest.mock('@coveord/platform-client');
 import {test} from '@oclif/test';
 import {mocked} from 'ts-jest/utils';
 import {Config} from '../../lib/config/config';
 import {OAuth} from '../../lib/oauth/oauth';
 import {Storage} from '../../lib/oauth/storage';
+import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {PlatformClient} from '@coveord/platform-client';
 const mockedOAuth = mocked(OAuth, true);
 const mockedStorage = mocked(Storage, true);
 const mockedConfig = mocked(Config, true);
+const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+const mockedPlatformClient = mocked(PlatformClient);
 
 describe('auth:login', () => {
+  const mockConfigSet = jest.fn();
+  const mockConfigGet = jest.fn();
+  const mockListOrgs = jest.fn();
+
   beforeEach(() => {
+    mockListOrgs.mockReturnValue(Promise.resolve([{id: 'foo'}]));
+
+    mockConfigGet.mockReturnValue(
+      Promise.resolve({
+        region: 'us-east-1',
+        organization: 'foo',
+        environment: 'prod',
+      })
+    );
+
+    mockedPlatformClient.mockImplementation(
+      () =>
+        ({
+          organization: {list: mockListOrgs} as unknown,
+        } as PlatformClient)
+    );
+    mockedAuthenticatedClient.mockImplementation(
+      () =>
+        ({
+          getClient: () =>
+            Promise.resolve(
+              mockedPlatformClient.getMockImplementation()!({
+                accessToken: 'theToken',
+                organizationId: 'foo',
+              })
+            ),
+        } as AuthenticatedClient)
+    );
     mockedOAuth.mockImplementationOnce(
       () =>
         ({
@@ -24,6 +62,18 @@ describe('auth:login', () => {
             }),
         } as OAuth)
     );
+
+    mockedConfig.mockImplementation(
+      () =>
+        (({
+          get: mockConfigGet,
+          set: mockConfigSet,
+        } as unknown) as Config)
+    );
+  });
+
+  afterEach(() => {
+    mockConfigSet.mockClear();
   });
 
   test
@@ -44,7 +94,7 @@ describe('auth:login', () => {
         `passes the -e=${environment} flag to oauth and configuration`,
         () => {
           expect(mockedOAuth.mock.calls[0][0]?.environment).toBe(environment);
-          expect(mockedConfig.mock.instances[0].set).toHaveBeenCalledWith(
+          expect(mockConfigSet).toHaveBeenCalledWith(
             'environment',
             environment
           );
@@ -64,10 +114,7 @@ describe('auth:login', () => {
       .command(['auth:login', '-r', region, '-o', 'foo'])
       .it(`passes the -e=${region} flag to oauth and configuration`, () => {
         expect(mockedOAuth.mock.calls[0][0]?.region).toBe(region);
-        expect(mockedConfig.mock.instances[0].set).toHaveBeenCalledWith(
-          'region',
-          region
-        );
+        expect(mockConfigSet).toHaveBeenCalledWith('region', region);
       });
   });
 
@@ -88,4 +135,51 @@ describe('auth:login', () => {
         );
       });
   });
+
+  test
+    .stdout()
+    .command(['auth:login', '-o', 'this_is_not_a_valid_org'])
+    .exit(2)
+    .it('fails when organization flag is invalid');
+
+  test
+    .do(() => {
+      mockListOrgs.mockReturnValueOnce(Promise.resolve([]));
+    })
+    .stdout()
+    .command(['auth:login'])
+    .exit(2)
+    .it(
+      'fails when no organization flag is passed and the user has access to no organization'
+    );
+
+  test
+    .stdout()
+    .command(['auth:login', '-o', 'foo'])
+    .it('succeed when organization flag is valid', (ctx) => {
+      expect(ctx.stdout).toContain('Success');
+    });
+
+  test
+    .do(() => {
+      mockListOrgs.mockReturnValueOnce(
+        Promise.resolve([{id: 'the_first_org_available'}])
+      );
+      mockConfigGet.mockReturnValueOnce(
+        Promise.resolve({
+          region: 'us-east-1',
+          organization: 'the_first_org_available',
+          environment: 'prod',
+        })
+      );
+    })
+    .stdout()
+    .command(['auth:login'])
+    .it(
+      'succeed when no organization flag is passed, and uses the first available org instead',
+      (ctx) => {
+        expect(ctx.stdout).toContain('Success');
+        expect(ctx.stdout).toContain('the_first_org_available');
+      }
+    );
 });

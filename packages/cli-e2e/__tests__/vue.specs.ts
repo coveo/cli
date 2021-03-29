@@ -4,7 +4,7 @@ import type {ChildProcessWithoutNullStreams} from 'child_process';
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
 
 import {setupUIProject, teardownUIProject} from '../utils/cli';
-import {getNewBrowser} from '../utils/browser';
+import {captureScreenshots, getNewBrowser} from '../utils/browser';
 import {isSearchRequest} from '../utils/platform';
 
 describe('ui', () => {
@@ -19,17 +19,29 @@ describe('ui', () => {
     let interceptedRequests: HTTPRequest[] = [];
     let page: Page;
 
+    const openNewPage = async () => {
+      const newPage = await browser.newPage();
+      if (page) {
+        await page.close();
+      }
+      return newPage;
+    };
+
     beforeAll(async () => {
       browser = await getNewBrowser();
       await setupUIProject('ui:create:vue', projectName, cliProcesses);
     }, 240e3);
 
     beforeEach(async () => {
-      page = await browser.newPage();
+      page = await openNewPage();
 
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);
       });
+    });
+
+    afterEach(async () => {
+      await captureScreenshots(browser);
     });
 
     afterAll(async () => {

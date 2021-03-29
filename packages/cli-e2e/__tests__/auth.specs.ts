@@ -10,7 +10,7 @@ import {
   isYesNoPrompt,
   killCliProcess,
 } from '../utils/cli';
-import {connectToChromeBrowser} from '../utils/browser';
+import {captureScreenshots, connectToChromeBrowser} from '../utils/browser';
 
 describe('auth', () => {
   describe('login', () => {
@@ -22,6 +22,7 @@ describe('auth', () => {
     });
 
     afterEach(async () => {
+      await captureScreenshots(browser);
       await killCliProcess(cliProcess);
     }, 5e3);
 
