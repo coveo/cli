@@ -1,7 +1,6 @@
 import {Command, flags} from '@oclif/command';
 import {Config} from '../../lib/config/config';
 import {OAuth} from '../../lib/oauth/oauth';
-import {Storage} from '../../lib/oauth/storage';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {
   PlatformEnvironment,
@@ -14,6 +13,7 @@ import {
 } from '../../hooks/analytics/analytics';
 
 export default class Login extends Command {
+  private configuration!: Config;
   static description = 'Log into the Coveo platform using the OAuth2 flow.';
 
   static examples = ['$ coveo auth:login'];
@@ -47,6 +47,7 @@ export default class Login extends Command {
   };
 
   async run() {
+    this.configuration = new Config(this.config.configDir, this.error);
     await this.loginAndPersistToken();
     await this.persistRegionAndEnvironment();
     await this.verifyOrganization();
@@ -84,8 +85,7 @@ export default class Login extends Command {
       environment: flags.environment as PlatformEnvironment,
       region: flags.region as PlatformRegion,
     }).getToken();
-
-    await new Storage().save(accessToken);
+    await this.configuration.set('accessToken', accessToken);
   }
 
   private async persistRegionAndEnvironment() {
@@ -122,11 +122,6 @@ export default class Login extends Command {
     const {flags} = this.parse(Login);
     return flags;
   }
-
-  private get configuration() {
-    return new Config(this.config.configDir, this.error);
-  }
-
   private async getAllOrgsUserHasAccessTo() {
     const orgs = await (
       await new AuthenticatedClient().getClient()
