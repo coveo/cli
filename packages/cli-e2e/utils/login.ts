@@ -1,6 +1,4 @@
 import retry from 'async-retry';
-import {deletePassword, getPassword} from 'keytar';
-import {userInfo} from 'os';
 import type {Browser, Page, Target} from 'puppeteer';
 import {spawn} from 'child_process';
 import {answerPrompt, CLI_EXEC_PATH, isYesNoPrompt} from './cli';
@@ -8,6 +6,7 @@ import LoginSelectors from './loginSelectors';
 import {strictEqual} from 'assert';
 import {connectToChromeBrowser} from './browser';
 import {isElementClickable} from './browser';
+import {readJSON, writeJSON, existsSync} from 'fs-extra';
 
 function isLoginPage(page: Page) {
   // TODO: CDX-98: URL should vary in fonction of the targeted environment.
@@ -15,12 +14,11 @@ function isLoginPage(page: Page) {
 }
 
 export async function isLoggedin() {
-  const currentAccount = userInfo().username;
-  const accessToken = await getPassword(
-    'com.coveo.cli.access.token',
-    currentAccount
-  );
-  return Boolean(accessToken);
+  if (!existsSync(getConfigFilePath())) {
+    return false;
+  }
+  const cfg = await readJSON(getConfigFilePath());
+  return Boolean(cfg.accessToken);
 }
 
 function waitForLoginPage(browser: Browser) {
@@ -123,7 +121,15 @@ export async function loginWithOffice() {
   return loginProcess;
 }
 
-export async function clearKeychain() {
-  const currentAccount = userInfo().username;
-  await deletePassword('com.coveo.cli.access.token', currentAccount);
+export async function clearAccessTokenFromConfig() {
+  if (!existsSync(getConfigFilePath())) {
+    return;
+  }
+  const cfg = await readJSON(getConfigFilePath());
+  delete cfg.accessToken;
+  await writeJSON(getConfigFilePath(), cfg);
+}
+
+function getConfigFilePath() {
+  return '~/.config/@coveo/cli/config.json';
 }
