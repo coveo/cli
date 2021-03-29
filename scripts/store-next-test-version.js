@@ -51,12 +51,14 @@ async function main() {
   const argv = yargs(hideBin(process.argv)).argv;
   if (Boolean(argv.variable) === false) {
     console.error(
-      'Specify an environment variable to store the next test version by using the --variable flag'
+      'The --variable flag is missing. Specify an environment variable to store the next test version.'
     );
     return;
   }
   if (Boolean(argv.output) === false) {
-    console.error('Missing --output flag');
+    console.error(
+      'The --output flag is missing. Specify the output to redirect the environment variable assignment.'
+    );
     return;
   }
   const nextTestVersion = await getNextTestVersion();
