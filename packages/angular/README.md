@@ -2,14 +2,14 @@
 
 The `@coveo/angular` package contains the necessary components to set up a search page using [Coveo Headless](https://docs.coveo.com/headless) and [Angular Material](https://material.angular.io/) with the [Angular CLI](https://cli.angular.io/).
 
-If you want to create a new Coveo Headless-powered search page with the Angular web framework from scratch, it is simpler to use the [`coveo ui:create:angular` command in the main Coveo CLI](https://github.com/coveo/cli/blob/master/packages/cli/README.md#coveo-uicreateangular-name). The main Coveo CLI will handle a lot of complexity for you. The `@coveo/angular` package is rather meant to help you integrate a search page to an already existing Angular project using the Angular CLI.
+If you want to create a new Coveo Headless-powered search page with the Angular web framework from scratch, it is simpler to use the [`coveo ui:create:angular` command in the Coveo CLI](https://github.com/coveo/cli/blob/master/packages/cli/README.md#coveo-uicreateangular-name). The Coveo CLI will handle a lot of complexity for you. Calling the `@coveo/angular` package directly from the Angular CLI should rather be done to help you integrate a search page to an already existing Angular project.
 
 ## Installation
 
 To add a Coveo Headless-powered search page using Material Angular to an existing Angular project, execute the following steps:
 
 - Run `ng add @coveo/angular --org-id=<org-id> --api-key=<api-key>`, where you replace `<org-id>` by the unique identifier of your Coveo organization, and `<api-key>` by an API key granting the **impersonate** privilege in the target organization.
-- Answer the questions prompted by the shell script to configure your interface styling.
+- Answer the questions prompted in your terminal to configure your interface styling.
 - In your project, navigate to the new `server` folder. This is an [Express](https://www.npmjs.com/package/express) server which generates [Coveo search tokens](https://docs.coveo.com/en/1346/).
 - The folder should contain a `.env.example` file. Create a copy of that file and rename it `.env`.
 - In that new `.env` file, replace all placeholder variables (`<...>`) by the proper information for your organization. For more involved configurations, you can modify the request parameters used in the `middlewares/searchToken.ts` file.
