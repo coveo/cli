@@ -9,7 +9,6 @@ import Preconditions, {
   IsAuthenticated,
 } from '../../../lib/decorators/preconditions';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {Storage} from '../../../lib/oauth/storage';
 import {platformUrl} from '../../../lib/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';
 import {getPackageVersion} from '../../../lib/utils/misc';
@@ -79,7 +78,6 @@ export default class Vue extends Command {
 
   private async invokePlugin(applicationName: string) {
     const cfg = await this.configuration.get();
-    const storage = await this.storage.get();
     const {providerUsername} = await this.getUserInfo();
 
     const {flags} = this.parse(Vue);
@@ -91,7 +89,7 @@ export default class Vue extends Command {
       '--orgId',
       cfg.organization,
       '--apiKey',
-      storage.accessToken!,
+      cfg.accessToken!,
       '--platformUrl',
       platformUrl({environment: cfg.environment}),
       '--user',
@@ -150,10 +148,6 @@ export default class Vue extends Command {
 
   private get configuration() {
     return new Config(this.config.configDir, this.error);
-  }
-
-  private get storage() {
-    return new Storage();
   }
 
   private async getUserInfo() {

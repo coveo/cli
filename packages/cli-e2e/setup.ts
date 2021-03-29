@@ -7,7 +7,7 @@ import {
   connectToChromeBrowser,
   SCREENSHOTS_PATH,
 } from './utils/browser';
-import {clearKeychain, loginWithOffice} from './utils/login';
+import {clearAccessTokenFromConfig, loginWithOffice} from './utils/login';
 
 declare global {
   namespace NodeJS {
@@ -33,7 +33,7 @@ export default async function () {
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
   const browser = await connectToChromeBrowser();
   await clearChromeBrowsingData(browser);
-  await clearKeychain();
+  await clearAccessTokenFromConfig();
   try {
     global.loginProcess = await loginWithOffice();
   } catch (e) {
