@@ -22,9 +22,6 @@ RUN apt-get install -y libncurses5-dev libncursesw5-dev xz-utils tk-dev
 # For headless without headless.
 RUN apt-get install xvfb -y
 
-# For Keytar see: https://github.com/atom/node-keytar#on-linux
-RUN apt-get install -y libsecret-1-dev
-
 # cp but better (need filtering abilities)
 RUN apt-get install -y rsync
 # sudo for running the test as not root while still being root.
