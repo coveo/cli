@@ -37,9 +37,7 @@ function saveValueInEnvVariable(variable, value) {
     );
     return;
   }
-  spawnSync('echo', [`"${variable}=${value}"`, '>>', '$GITHUB_ENV'], {
-    stdio: 'inherit',
-  });
+  spawnSync('echo', [`"${variable}=${value}"`, '>>', '$GITHUB_ENV']);
 }
 
 async function main() {
