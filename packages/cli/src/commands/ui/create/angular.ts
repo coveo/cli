@@ -1,4 +1,3 @@
-import AuthenticationRequired from '../../../lib/decorators/authenticationRequired';
 import {Command, flags} from '@oclif/command';
 import {platformUrl} from '../../../lib/platform/environment';
 import {Storage} from '../../../lib/oauth/storage';
@@ -7,6 +6,9 @@ import {spawnProcess} from '../../../lib/utils/process';
 import {buildAnalyticsFailureHook} from '../../../hooks/analytics/analytics';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {getPackageVersion} from '../../../lib/utils/misc';
+import Preconditions, {
+  IsAuthenticated,
+} from '../../../lib/decorators/preconditions';
 
 export default class Angular extends Command {
   static templateName = '@coveo/angular';
@@ -31,7 +33,7 @@ export default class Angular extends Command {
     {name: 'name', description: 'The target application name.', required: true},
   ];
 
-  @AuthenticationRequired()
+  @Preconditions(IsAuthenticated())
   async run() {
     const {args, flags} = this.parse(Angular);
     await this.createProject(args.name, flags.defaults);
