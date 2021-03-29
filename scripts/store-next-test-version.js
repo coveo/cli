@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
-const {spawnSync} = require('child_process');
+const {createWriteStream} = require('fs');
+const {spawn} = require('child_process');
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
 const {inc, valid, gte} = require('semver');
@@ -30,20 +31,36 @@ async function getNextTestVersion() {
   return greatestVersion;
 }
 
-function saveValueInEnvVariable(variable, value) {
-  if (Boolean(variable) === false) {
-    console.error(
-      'Please specify an environment variable to store the next test version'
-    );
-    return;
-  }
-  spawnSync('echo', [`"${variable}=${value}"`, '>>', '$GITHUB_ENV']);
+function saveValueInEnvVariable(variable, value, output) {
+  return new Promise((resolve) => {
+    const logStream = createWriteStream(output, {flags: 'a'});
+    const saveProcess = spawn('echo', [`${variable}=${value}`]);
+
+    saveProcess.stdout.pipe(logStream);
+
+    saveProcess.on('error', (error) => {
+      console.error(error);
+    });
+    saveProcess.on('close', () => {
+      resolve();
+    });
+  });
 }
 
 async function main() {
   const argv = yargs(hideBin(process.argv)).argv;
+  if (Boolean(argv.variable) === false) {
+    console.error(
+      'Specify an environment variable to store the next test version by using the --variable flag'
+    );
+    return;
+  }
+  if (Boolean(argv.output) === false) {
+    console.error('Missing --output flag');
+    return;
+  }
   const nextTestVersion = await getNextTestVersion();
-  saveValueInEnvVariable(argv.variable, nextTestVersion);
+  await saveValueInEnvVariable(argv.variable, nextTestVersion, argv.output);
 }
 
 main();
