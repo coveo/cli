@@ -76,7 +76,7 @@
     "pr:report": "node ./scripts/pr-bot.js",
     "release:changelog": "node ./scripts/release-changelog.js",
     "npm:publish": "lerna run --no-bail npm:publish",
-    "npm:publish:template": "lerna run --no-bail npm:publish",
+    "npm:publish:template": "lerna run --no-bail npm:publish:template",
     "npm:bump:template": "lerna run --no-bail npm:bump:template"
   }
 }
