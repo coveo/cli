@@ -11,6 +11,7 @@ jobs:
     env:
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -29,7 +30,7 @@ jobs:
       - name: Bump template versions
         run: |
           echo "E2E tests should target template version ${{ env.UI_TEMPLATE_VERSION }}"
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }} > ~/.npmrc"
+          echo "//registry.npmjs.org/:_authToken=${{ env.NPM_TOKEN }}" > ~/.npmrc
           npm run npm:bump:template -- -- ${{ env.UI_TEMPLATE_VERSION }}
       - name: Publish React template
         working-directory: ./packages/cra-template
