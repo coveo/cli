@@ -95,10 +95,9 @@ export default class Vue extends Command {
       providerUsername,
     ];
 
-    await this.runVueCliCommand(cliArgs, {
+    return this.runVueCliCommand(cliArgs, {
       cwd: applicationName,
     });
-    return;
   }
 
   private async getDefaultPreset() {
