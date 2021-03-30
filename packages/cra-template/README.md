@@ -1,6 +1,6 @@
 # @coveo/cra-template
 
-This is the coveo template for [Create React App](https://github.com/facebook/create-react-app).
+This is the Coveo template for [Create React App](https://github.com/facebook/create-react-app).
 
 To use this template, add `--template @coveo/cra-template` when creating a new app.
 

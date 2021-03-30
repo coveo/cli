@@ -1,6 +1,6 @@
 {
   "name": "@coveo/vue-cli-plugin-typescript",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Vue-cli 3 plugin for adding Coveo Headless support",
   "main": "index.js",
   "repository": {
@@ -9,6 +9,8 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "npm:publish": "npm publish --access public"
+    "npm:publish": "npm publish --access public",
+    "npm:publish:template": "npm publish --access public --tag ci-test",
+    "npm:bump:template": "npm --no-git-tag-version version"
   }
 }

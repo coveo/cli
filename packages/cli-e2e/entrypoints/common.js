@@ -1,11 +1,12 @@
 const {resolve, join} = require('path');
 const {execSync, spawnSync} = require('child_process');
-const {existsSync, writeFileSync} = require('fs');
+const {existsSync, mkdirSync, writeFileSync} = require('fs');
 
 const DOCKER_IMAGE_NAME = 'coveo-cli-e2e-image';
 const DOCKER_CONTAINER_NAME = 'coveo-cli-e2e-container';
 const repoHostPath = resolve(__dirname, ...new Array(3).fill('..'));
 const repoDockerPath = '/home/notGroot/cli';
+const screenshotsHostPath = resolve(__dirname, '..', 'screenshots');
 const dockerFilePath = resolve(repoHostPath, 'packages', 'cli-e2e', 'docker');
 
 const dockerEntryPoint = () => {
@@ -59,7 +60,11 @@ const ensureDockerImageIsPresent = () => {
 };
 
 const createEnvFile = () => {
-  const credentials = ['PLATFORM_USER_NAME', 'PLATFORM_USER_PASSWORD'];
+  const credentials = [
+    'PLATFORM_USER_NAME',
+    'PLATFORM_USER_PASSWORD',
+    'UI_TEMPLATE_VERSION',
+  ];
 
   if (existsSync('.env')) {
     return;
@@ -75,10 +80,18 @@ const createEnvFile = () => {
 
 const startDockerContainer = () => {
   createEnvFile();
+  mkdirSync(screenshotsHostPath, {recursive: true});
   return execSync(
-    `docker run --name=${DOCKER_CONTAINER_NAME} -v "${repoHostPath}:${repoDockerPath}" -p "9229:9229" -${
-      process.argv[2] === '--bash' ? 'it' : 'i'
-    } --env-file .env --cap-add=IPC_LOCK --cap-add=SYS_ADMIN ${DOCKER_IMAGE_NAME} ${dockerEntryPoint()}`,
+    `${process.env.CI ? 'sudo ' : ''}docker run \
+    --name=${DOCKER_CONTAINER_NAME} \
+    -v "${repoHostPath}:${repoDockerPath}" \
+    -p "9229:9229" \
+    -${process.argv[2] === '--bash' ? 'it' : 'i'} \
+    --env-file .env \
+    --cap-add=IPC_LOCK \
+    --cap-add=SYS_ADMIN \
+    --privileged \
+    ${DOCKER_IMAGE_NAME} ${dockerEntryPoint()}`,
     {stdio: ['inherit', 'inherit', 'inherit']}
   );
 };
