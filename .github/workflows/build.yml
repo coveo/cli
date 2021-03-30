@@ -41,6 +41,11 @@ jobs:
           npm run npm:bump:template -- -- ${{ env.UI_TEMPLATE_VERSION }}
           npm run npm:publish:template
           node scripts/wait-for-published-packages.js -v ${{ env.UI_TEMPLATE_VERSION }}
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: npm-logs
+          path: /home/runner/.npm/_logs/*debug.log
       - name: End-to-end Tests
         working-directory: ./packages/cli-e2e
         run: |
