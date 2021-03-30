@@ -17,11 +17,6 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '14'
-      - uses: actions/upload-artifact@v2
-        with:
-          name: npm-logs
-          path: /home/runner/.npm/_logs/*debug.log
-          retention-days: 1
       - name: Setup
         run: npm run setup
       - name: Tests
@@ -39,7 +34,7 @@ jobs:
           git config --global user.name GitHub Action
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }} > ~/.npmrc"
           npm run npm:bump:template -- -- ${{ env.UI_TEMPLATE_VERSION }}
-          npm run npm:publish:template
+          npm run build
           node scripts/wait-for-published-packages.js -v ${{ env.UI_TEMPLATE_VERSION }}
       - uses: actions/upload-artifact@v2
         if: failure()
