@@ -113,6 +113,7 @@ export default class Angular extends Command {
     
     cd ${name}
     npm run start
+    
     See package.json for other available commands.
     Happy hacking !
     `);
