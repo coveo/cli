@@ -12,7 +12,7 @@ const {valid} = require('semver');
 const getUiTemplates = () => [
   '@coveo/cra-template',
   '@coveo/vue-cli-plugin-typescript',
-  '@coveo/angular',
+  // '@coveo/angular',
 ];
 
 function cleanTestVersion(dirtyVersion) {

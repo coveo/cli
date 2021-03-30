@@ -34,7 +34,7 @@ jobs:
           git config --global user.name GitHub Action
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }} > ~/.npmrc"
           npm run npm:bump:template -- -- ${{ env.UI_TEMPLATE_VERSION }}
-          npm run build
+          npm run npm:publish:template
           node scripts/wait-for-published-packages.js -v ${{ env.UI_TEMPLATE_VERSION }}
       - uses: actions/upload-artifact@v2
         if: failure()
