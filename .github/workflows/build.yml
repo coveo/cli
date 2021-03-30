@@ -26,13 +26,25 @@ jobs:
       - name: Set the template version
         run: |
           node scripts/store-next-test-version.js --variable=UI_TEMPLATE_VERSION --output=$GITHUB_ENV
-      - name: Release test versions
+      - name: Bump template versions
         run: |
           echo "E2E tests should target template version ${{ env.UI_TEMPLATE_VERSION }}"
-          npm whoami
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }} > ~/.npmrc"
           npm run npm:bump:template -- -- ${{ env.UI_TEMPLATE_VERSION }}
+      - name: Publish React template
+        working-directory: ./packages/cra-template
+        run: |
           npm run npm:publish:template
+      - name: Publish Vue template
+        working-directory: ./packages/vue-cli-plugin-typescript
+        run: |
+          npm run npm:publish:template
+      - name: Publish Angular template
+        working-directory: ./packages/angular
+        run: |
+          npm run npm:publish:template
+      - name: wait for published packages
+        run: |
           node scripts/wait-for-published-packages.js -v ${{ env.UI_TEMPLATE_VERSION }}
       - uses: actions/upload-artifact@v2
         if: failure()
