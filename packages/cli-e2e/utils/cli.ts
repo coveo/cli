@@ -51,6 +51,7 @@ export function answerPrompt(
 }
 
 export interface ISetupUIProjectOptionsArgs {
+  flags?: string[];
   timeout?: number;
 }
 
@@ -67,7 +68,8 @@ export async function setupUIProject(
 
   const createProjectPromise = new Promise<void>((resolve) => {
     const versionToTest = process.env.UI_TEMPLATE_VERSION;
-    let command = [commandArgs, projectName];
+    let command = [commandArgs, projectName, ...(options.flags || [])];
+
     if (versionToTest) {
       command = command.concat(['-v', versionToTest]);
       process.stdout.write(
@@ -76,11 +78,15 @@ export async function setupUIProject(
     } else {
       process.stdout.write('Testing with published version of the template');
     }
-    const buildProcess = spawn(CLI_EXEC_PATH, command);
+
+    const buildProcess = spawn(CLI_EXEC_PATH, command, {
+      cwd: uiProjectFolderName,
+    });
 
     buildProcess.stdout.on('close', async () => {
       resolve();
     });
+
     buildProcess.stdout.on('data', async (data) => {
       if (isGenericYesNoPrompt(data.toString())) {
         await answerPrompt(`y${EOL}`, buildProcess);
