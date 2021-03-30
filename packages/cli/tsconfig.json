@@ -11,9 +11,7 @@
     "target": "es2017",
     "noEmitOnError": false,
     "skipLibCheck": true,
-    "composite": true
+    "typeRoots": ["typings"]
   },
-  "include": ["src/**/*"],
-  "exclude": ["**/*.spec.ts"],
-  "references": [{"path": "./tsconfig.spec.json"}]
+  "include": ["src/**/*"]
 }
