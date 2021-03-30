@@ -11,7 +11,6 @@ jobs:
     env:
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
-      GITHUB_CREDENTIALS: ${{ secrets.CLI_RELEASE }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
