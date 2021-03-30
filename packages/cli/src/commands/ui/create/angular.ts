@@ -1,7 +1,6 @@
 import AuthenticationRequired from '../../../lib/decorators/authenticationRequired';
 import {Command, flags} from '@oclif/command';
 import {platformUrl} from '../../../lib/platform/environment';
-import {Storage} from '../../../lib/oauth/storage';
 import {Config} from '../../../lib/config/config';
 import {spawnProcess} from '../../../lib/utils/process';
 import {buildAnalyticsFailureHook} from '../../../hooks/analytics/analytics';
@@ -50,7 +49,6 @@ export default class Angular extends Command {
 
   private async addCoveoToProject(applicationName: string, defaults: boolean) {
     const cfg = await this.configuration.get();
-    const storage = await this.storage.get();
     const {providerUsername} = await this.getUserInfo();
     const {flags} = this.parse(Angular);
     const schematicVersion =
@@ -62,7 +60,7 @@ export default class Angular extends Command {
       '--org-id',
       cfg.organization,
       '--api-key',
-      storage.accessToken!,
+      cfg.accessToken!,
       '--platform-url',
       platformUrl({environment: cfg.environment}),
       '--user',
@@ -91,10 +89,6 @@ export default class Angular extends Command {
 
   private get configuration() {
     return new Config(this.config.configDir, this.error);
-  }
-
-  private get storage() {
-    return new Storage();
   }
 
   private async getUserInfo() {

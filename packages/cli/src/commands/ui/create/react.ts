@@ -10,7 +10,6 @@ import {
   SpawnProcessOutput,
   spawnProcessOutput,
 } from '../../../lib/utils/process';
-import {Storage} from '../../../lib/oauth/storage';
 import AuthenticationRequired from '../../../lib/decorators/authenticationRequired';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {lt as isVersionLessThan} from 'semver';
@@ -80,7 +79,6 @@ export default class React extends Command {
 
   private async setupEnvironmentVariables(name: string) {
     const cfg = await this.configuration.get();
-    const storage = await this.storage.get();
     const {providerUsername} = await this.getUserInfo();
 
     const output = await spawnProcessOutput(
@@ -92,7 +90,7 @@ export default class React extends Command {
         '--orgId',
         cfg.organization,
         '--apiKey',
-        storage.accessToken!,
+        cfg.accessToken!,
         '--platformUrl',
         platformUrl({environment: cfg.environment}),
         '--user',
@@ -123,10 +121,6 @@ export default class React extends Command {
 
   private get configuration() {
     return new Config(this.config.configDir, this.error);
-  }
-
-  private get storage() {
-    return new Storage();
   }
 
   private async getUserInfo() {

@@ -1,7 +1,5 @@
 jest.mock('../../lib/oauth/oauth');
-jest.mock('../../lib/oauth/storage');
 jest.mock('../../lib/config/config');
-jest.mock('keytar');
 jest.mock('../../hooks/analytics/analytics');
 jest.mock('../../hooks/prerun/prerun');
 jest.mock('../../lib/platform/authenticatedClient');
@@ -10,11 +8,9 @@ import {test} from '@oclif/test';
 import {mocked} from 'ts-jest/utils';
 import {Config} from '../../lib/config/config';
 import {OAuth} from '../../lib/oauth/oauth';
-import {Storage} from '../../lib/oauth/storage';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {PlatformClient} from '@coveord/platform-client';
 const mockedOAuth = mocked(OAuth, true);
-const mockedStorage = mocked(Storage, true);
 const mockedConfig = mocked(Config, true);
 const mockedAuthenticatedClient = mocked(AuthenticatedClient);
 const mockedPlatformClient = mocked(PlatformClient);
@@ -130,7 +126,8 @@ describe('auth:login', () => {
       .stdout()
       .command(['auth:login', '-o', 'foo'])
       .it('save token from oauth service', () => {
-        expect(mockedStorage.mock.instances[0].save).toHaveBeenCalledWith(
+        expect(mockConfigSet).toHaveBeenCalledWith(
+          'accessToken',
           'this-is-the-token'
         );
       });
