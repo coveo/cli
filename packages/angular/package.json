@@ -9,7 +9,7 @@
     "postbuild": "node ./scripts/setup.js",
     "prepublishOnly": "npm run build",
     "npm:publish": "npm publish --access public",
-    "npm:publish:template": "npm publish --access public --not-tag",
+    "npm:publish:template": "npm publish --access public --no-tag",
     "npm:bump:template": "npm --no-git-tag-version version"
   },
   "keywords": [
