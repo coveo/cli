@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/coveo/cli/compare/v0.6.1...v0.7.0) (2021-03-29)
+
+
+### Bug Fixes
+
+* **cli:** do not print API key when running command `ui:create:vue` ([#117](https://github.com/coveo/cli/issues/117)) ([9cbd8c8](https://github.com/coveo/cli/commit/9cbd8c88966468fa70cc162348bb7f9318791c53))
+* **react:** add .env.example to template ([#118](https://github.com/coveo/cli/issues/118)) ([d320c68](https://github.com/coveo/cli/commit/d320c68e174ac95a50b71b81870451adbe368dfd))
+
+
+### Features
+
+* **react:** improve react hero banner + links ([#114](https://github.com/coveo/cli/issues/114)) ([c43c9f8](https://github.com/coveo/cli/commit/c43c9f840c8c158417f3ba55ccb6336d0cd4e98c))
+
+
+
+
+
 ## [0.6.1](https://github.com/coveo/cli/compare/v0.6.0...v0.6.1) (2021-03-19)
 
 

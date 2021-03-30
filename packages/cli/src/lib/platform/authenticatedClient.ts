@@ -9,7 +9,6 @@ FormData.prototype.set = FormData.prototype.append;
 import PlatformClient from '@coveord/platform-client';
 import {Config} from '../config/config';
 import {OAuth} from '../oauth/oauth';
-import {Storage} from '../oauth/storage';
 import {
   castEnvironmentToPlatformClient,
   castRegionToPlatformClient,
@@ -17,15 +16,13 @@ import {
 
 export class AuthenticatedClient {
   public cfg: Config;
-  public storage: Storage;
   constructor() {
     this.cfg = new Config(global.config.configDir);
-    this.storage = new Storage();
   }
 
   async isLoggedIn() {
-    const {accessToken} = await this.storage.get();
-    return accessToken !== null;
+    const {accessToken} = await this.cfg.get();
+    return accessToken !== undefined;
   }
 
   async isExpired() {
@@ -39,8 +36,12 @@ export class AuthenticatedClient {
   }
 
   async getClient() {
-    const {accessToken} = await this.storage.get();
-    const {environment, region, organization} = await this.cfg.get();
+    const {
+      environment,
+      region,
+      organization,
+      accessToken,
+    } = await this.cfg.get();
     return new PlatformClient({
       environment: castEnvironmentToPlatformClient(environment),
       region: castRegionToPlatformClient(region),

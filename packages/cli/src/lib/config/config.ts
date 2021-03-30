@@ -8,6 +8,7 @@ export interface Configuration {
   organization: string;
   [k: string]: unknown;
   analyticsEnabled: boolean | undefined;
+  accessToken: string | undefined;
 }
 
 export const DefaultConfig: Configuration = {
@@ -15,6 +16,7 @@ export const DefaultConfig: Configuration = {
   region: 'us-east-1',
   organization: '',
   analyticsEnabled: undefined,
+  accessToken: undefined,
 };
 
 export class Config {
