@@ -1,5 +1,6 @@
 import {Preconditions} from './preconditions';
 import type Command from '@oclif/command';
+import {getFakeCommand} from './__tests__/utils.spec';
 
 describe('preconditions', () => {
   const preconditions = new Array<jest.Mock<Boolean>>(5);
@@ -23,16 +24,12 @@ describe('preconditions', () => {
       const fakeOriginalFunction = jest.fn(async () => {
         orderChecker('final');
       });
-      const fakeCommand = {};
+      const fakeCommand = getFakeCommand();
       const fakeDescriptor = {
         value: fakeOriginalFunction,
       };
 
-      await Preconditions(...preconditions)(
-        (fakeCommand as unknown) as Command,
-        '',
-        fakeDescriptor
-      );
+      await Preconditions(...preconditions)(fakeCommand, '', fakeDescriptor);
       await fakeDescriptor.value();
 
       expect(orderChecker).toHaveBeenCalledTimes(preconditions.length + 1);
@@ -69,16 +66,12 @@ describe('preconditions', () => {
       const fakeOriginalFunction = jest.fn(async () => {
         orderChecker('final');
       });
-      const fakeCommand = {};
+      const fakeCommand = getFakeCommand();
       const fakeDescriptor = {
         value: fakeOriginalFunction,
       };
 
-      await Preconditions(...preconditions)(
-        (fakeCommand as unknown) as Command,
-        '',
-        fakeDescriptor
-      );
+      await Preconditions(...preconditions)(fakeCommand, '', fakeDescriptor);
       await fakeDescriptor.value();
 
       expect(orderChecker).toHaveBeenCalledTimes(3);

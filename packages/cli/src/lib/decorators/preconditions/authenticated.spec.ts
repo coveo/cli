@@ -7,7 +7,7 @@ import {
   getAuthenticationStatus,
 } from '../../platform/authenticatedClient';
 import {IsAuthenticated} from './authenticated';
-import type Command from '@oclif/command';
+import {getFakeCommand} from './__tests__/utils.spec';
 
 describe('authenticated', () => {
   const mockedAuthenticatedClient = mocked(getAuthenticationStatus);
@@ -41,13 +41,9 @@ describe('authenticated', () => {
     ) => {
       it(`warns '${expectedWarning}' and returns false`, async () => {
         mockedAuthenticatedClient.mockResolvedValue(authenticationStatus);
-        const fakeCommand = {
-          warn: jest.fn(),
-        };
+        const fakeCommand = getFakeCommand();
 
-        await expect(
-          IsAuthenticated()((fakeCommand as unknown) as Command)
-        ).resolves.toBe(false);
+        await expect(IsAuthenticated()(fakeCommand)).resolves.toBe(false);
         expect(fakeCommand.warn).toHaveBeenCalledTimes(1);
         expect(fakeCommand.warn).toHaveBeenCalledWith(expectedWarning);
       });
@@ -63,9 +59,7 @@ describe('authenticated', () => {
         warn: jest.fn(),
       };
 
-      await expect(
-        IsAuthenticated()((fakeCommand as unknown) as Command)
-      ).resolves.toBe(true);
+      await expect(IsAuthenticated()(fakeCommand)).resolves.toBe(true);
       expect(fakeCommand.warn).not.toHaveBeenCalled();
     });
   });

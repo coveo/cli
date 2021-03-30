@@ -5,6 +5,7 @@ import * as dedent from 'dedent';
 import {constants} from 'os';
 import {mocked} from 'ts-jest/utils';
 import {spawnProcessOutput} from '../../utils/process';
+import {getFakeCommand} from './__tests__/utils.spec';
 
 import {IsNpxInstalled} from './npx';
 
@@ -24,14 +25,9 @@ describe('IsNpxInstalled', () => {
     });
 
     it('should return false and warn', async () => {
-      const fakeCommand = {
-        id: 'foo',
-        warn: jest.fn(),
-      };
+      const fakeCommand = getFakeCommand();
 
-      await expect(
-        IsNpxInstalled()((fakeCommand as unknown) as Command)
-      ).resolves.toBe(false);
+      await expect(IsNpxInstalled()(fakeCommand)).resolves.toBe(false);
       expect(fakeCommand.warn).toHaveBeenCalledTimes(2);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
       foo requires npx to run.
@@ -53,14 +49,9 @@ describe('IsNpxInstalled', () => {
     });
 
     it('should return false and warn', async () => {
-      const fakeCommand = {
-        id: 'foo',
-        warn: jest.fn(),
-      };
+      const fakeCommand = getFakeCommand();
 
-      await expect(
-        IsNpxInstalled()((fakeCommand as unknown) as Command)
-      ).resolves.toBe(false);
+      await expect(IsNpxInstalled()(fakeCommand)).resolves.toBe(false);
       expect(fakeCommand.warn).toHaveBeenCalledTimes(2);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
         foo requires a valid npx installation to run.
@@ -83,14 +74,9 @@ describe('IsNpxInstalled', () => {
     });
 
     it('should return true and not warn', async () => {
-      const fakeCommand = {
-        id: 'foo',
-        warn: jest.fn(),
-      };
+      const fakeCommand = getFakeCommand();
 
-      await expect(
-        IsNpxInstalled()((fakeCommand as unknown) as Command)
-      ).resolves.toBe(true);
+      await expect(IsNpxInstalled()(fakeCommand)).resolves.toBe(true);
       expect(fakeCommand.warn).toHaveBeenCalledTimes(0);
     });
   });

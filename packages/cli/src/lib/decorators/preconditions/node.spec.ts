@@ -5,6 +5,7 @@ import * as dedent from 'dedent';
 import {constants} from 'os';
 import {mocked} from 'ts-jest/utils';
 import {spawnProcessOutput} from '../../utils/process';
+import {getFakeCommand} from './__tests__/utils.spec';
 
 import {IsNodeVersionAbove} from './node';
 
@@ -16,13 +17,9 @@ describe('IsNodeVersionAbove', () => {
 
   describe('when the requiredVersion is not a semver valid string', () => {
     it('should return false and warn', async () => {
-      const fakeCommand = {
-        warn: jest.fn(),
-      };
+      const fakeCommand = getFakeCommand();
 
-      await expect(
-        IsNodeVersionAbove('foo')((fakeCommand as unknown) as Command)
-      ).resolves.toBe(false);
+      await expect(IsNodeVersionAbove('foo')(fakeCommand)).resolves.toBe(false);
       expect(fakeCommand.warn).toHaveBeenCalledTimes(1);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
         Required version invalid: "foo".
@@ -41,14 +38,11 @@ describe('IsNodeVersionAbove', () => {
     });
 
     it('should return false and warn', async () => {
-      const fakeCommand = {
-        id: 'foo',
-        warn: jest.fn(),
-      };
+      const fakeCommand = getFakeCommand();
 
-      await expect(
-        IsNodeVersionAbove('0.0.1')((fakeCommand as unknown) as Command)
-      ).resolves.toBe(false);
+      await expect(IsNodeVersionAbove('0.0.1')(fakeCommand)).resolves.toBe(
+        false
+      );
       expect(fakeCommand.warn).toHaveBeenCalledTimes(2);
       expect(fakeCommand.warn).toHaveBeenCalledWith(
         'foo requires Node.js to run.'
@@ -99,14 +93,11 @@ describe('IsNodeVersionAbove', () => {
     });
 
     it('should return false and warn', async () => {
-      const fakeCommand = {
-        id: 'foo',
-        warn: jest.fn(),
-      };
+      const fakeCommand = getFakeCommand();
 
-      await expect(
-        IsNodeVersionAbove('1.0.0')((fakeCommand as unknown) as Command)
-      ).resolves.toBe(false);
+      await expect(IsNodeVersionAbove('1.0.0')(fakeCommand)).resolves.toBe(
+        false
+      );
       expect(fakeCommand.warn).toHaveBeenCalledTimes(2);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
         foo needs a Node.js version greater than 1.0.0
@@ -128,14 +119,11 @@ describe('IsNodeVersionAbove', () => {
     });
 
     it('should return true and not warn', async () => {
-      const fakeCommand = {
-        id: 'foo',
-        warn: jest.fn(),
-      };
+      const fakeCommand = getFakeCommand();
 
-      await expect(
-        IsNodeVersionAbove('1.0.0')((fakeCommand as unknown) as Command)
-      ).resolves.toBe(true);
+      await expect(IsNodeVersionAbove('1.0.0')(fakeCommand)).resolves.toBe(
+        true
+      );
       expect(fakeCommand.warn).toHaveBeenCalledTimes(0);
     });
   });
@@ -150,14 +138,11 @@ describe('IsNodeVersionAbove', () => {
     });
 
     it('should return true and not warn', async () => {
-      const fakeCommand = {
-        id: 'foo',
-        warn: jest.fn(),
-      };
+      const fakeCommand = getFakeCommand();
 
-      await expect(
-        IsNodeVersionAbove('1.0.0')((fakeCommand as unknown) as Command)
-      ).resolves.toBe(true);
+      await expect(IsNodeVersionAbove('1.0.0')(fakeCommand)).resolves.toBe(
+        true
+      );
       expect(fakeCommand.warn).toHaveBeenCalledTimes(0);
     });
   });
