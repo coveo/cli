@@ -5,9 +5,10 @@ import {spawnProcess} from '../../../lib/utils/process';
 import {buildAnalyticsFailureHook} from '../../../hooks/analytics/analytics';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {getPackageVersion} from '../../../lib/utils/misc';
-import Preconditions, {
+import {
+  Preconditions,
   IsAuthenticated,
-} from '../../../lib/decorators/preconditions';
+} from '../../../lib/decorators/preconditions/';
 
 export default class Angular extends Command {
   static templateName = '@coveo/angular';

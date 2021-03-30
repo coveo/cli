@@ -6,9 +6,10 @@ import {
   buildAnalyticsFailureHook,
   buildAnalyticsSuccessHook,
 } from '../../hooks/analytics/analytics';
-import Preconditions, {
+import {
+  Preconditions,
   IsAuthenticated,
-} from '../../lib/decorators/preconditions';
+} from '../../lib/decorators/preconditions/';
 
 export default class List extends Command {
   static description = 'List Coveo organizations.';

@@ -9,9 +9,10 @@ import {spawnProcess, spawnProcessOutput} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {join} from 'path';
-import Preconditions, {
-  IsNodeVersionAbove,
+import {
+  Preconditions,
   IsAuthenticated,
+  IsNodeVersionAbove,
   IsNpxInstalled,
 } from '../../../lib/decorators/preconditions';
 
@@ -19,7 +20,8 @@ export default class React extends Command {
   static templateName = '@coveo/cra-template';
   static requiredNodeVersion = '10.16.0';
 
-  static description = `Create a Coveo Headless-powered search page with the React web framework.`;
+  static description =
+    'Create a Coveo Headless-powered search page with the React web framework.';
 
   static examples = [
     '$ coveo ui:create:react myapp',

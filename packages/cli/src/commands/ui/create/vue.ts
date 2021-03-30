@@ -5,7 +5,8 @@ import {
   buildAnalyticsSuccessHook,
 } from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
-import Preconditions, {
+import {
+  Preconditions,
   IsAuthenticated,
 } from '../../../lib/decorators/preconditions';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
