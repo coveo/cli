@@ -165,7 +165,8 @@ export default class Vue extends Command {
     cd ${name}
     npm run start
 
-    Look at package.json for other available commands
+    See package.json for other available commands.
+    Happy hacking !
     `);
   }
 }
