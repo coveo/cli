@@ -5,7 +5,7 @@ export type PreconditionFunction = (
 ) => Boolean | Promise<Boolean>;
 
 export function Preconditions(...preconditions: PreconditionFunction[]) {
-  return async function (
+  return function (
     target: Command,
     _propertyKey: string,
     descriptor: TypedPropertyDescriptor<() => Promise<void>>
