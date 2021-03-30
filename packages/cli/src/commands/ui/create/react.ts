@@ -18,6 +18,10 @@ import {
 
 export default class React extends Command {
   static templateName = '@coveo/cra-template';
+  /**
+   * Node.JS v10.16.0 is the first version that included NPX (via NPM).
+   * Future requirement should be based on https://create-react-app.dev/docs/getting-started/#creating-an-app.
+   */
   static requiredNodeVersion = '10.16.0';
 
   static description =
