@@ -1,5 +1,5 @@
 import {Preconditions} from './preconditions';
-import {getFakeCommand} from './__tests__/utils.spec';
+import {getFakeCommand} from './testsUtils/utils';
 
 describe('preconditions', () => {
   const preconditions = new Array<jest.Mock<Boolean>>(5);

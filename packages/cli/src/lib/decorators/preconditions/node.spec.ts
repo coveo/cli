@@ -4,7 +4,7 @@ import * as dedent from 'dedent';
 import {constants} from 'os';
 import {mocked} from 'ts-jest/utils';
 import {spawnProcessOutput} from '../../utils/process';
-import {getFakeCommand} from './__tests__/utils.spec';
+import {getFakeCommand} from './testsUtils/utils';
 
 import {IsNodeVersionAbove} from './node';
 

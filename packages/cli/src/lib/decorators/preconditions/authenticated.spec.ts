@@ -7,7 +7,7 @@ import {
   getAuthenticationStatus,
 } from '../../platform/authenticatedClient';
 import {IsAuthenticated} from './authenticated';
-import {getFakeCommand} from './__tests__/utils.spec';
+import {getFakeCommand} from './testsUtils/utils';
 
 describe('authenticated', () => {
   const mockedAuthenticatedClient = mocked(getAuthenticationStatus);
@@ -55,9 +55,7 @@ describe('authenticated', () => {
       mockedAuthenticatedClient.mockResolvedValue(
         AuthenticationStatus.LOGGED_IN
       );
-      const fakeCommand = {
-        warn: jest.fn(),
-      };
+      const fakeCommand = getFakeCommand();
 
       await expect(IsAuthenticated()(fakeCommand)).resolves.toBe(true);
       expect(fakeCommand.warn).not.toHaveBeenCalled();
