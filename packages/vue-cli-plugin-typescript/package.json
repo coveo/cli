@@ -10,7 +10,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "npm:publish": "npm publish --access public",
-    "npm:publish:template": "npm publish --access public --no-tag",
+    "npm:publish:template": "npm publish --access public --tag",
     "npm:bump:template": "npm --no-git-tag-version version"
   }
 }
