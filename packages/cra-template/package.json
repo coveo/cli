@@ -3,7 +3,7 @@
   "version": "0.6.1",
   "scripts": {
     "npm:publish": "npm publish --access public",
-    "npm:publish:template": "npm publish --access public",
+    "npm:publish:template": "npm publish --access public --loglevel verbose",
     "npm:bump:template": "npm --no-git-tag-version version"
   },
   "keywords": [
