@@ -54,7 +54,17 @@ export async function setupUIProject(
   cliProcesses: ChildProcessWithoutNullStreams[]
 ) {
   const createProjectPromise = new Promise<void>((resolve) => {
-    const buildProcess = spawn(CLI_EXEC_PATH, [commandArgs, projectName]);
+    const versionToTest = process.env.UI_TEMPLATE_VERSION;
+    let command = [commandArgs, projectName];
+    if (versionToTest) {
+      command = command.concat(['-v', versionToTest]);
+      process.stdout.write(
+        `Testing with version ${versionToTest} of the template`
+      );
+    } else {
+      process.stdout.write('Testing with published version of the template');
+    }
+    const buildProcess = spawn(CLI_EXEC_PATH, command);
 
     buildProcess.stdout.on('close', async () => {
       resolve();

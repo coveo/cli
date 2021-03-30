@@ -60,7 +60,11 @@ const ensureDockerImageIsPresent = () => {
 };
 
 const createEnvFile = () => {
-  const credentials = ['PLATFORM_USER_NAME', 'PLATFORM_USER_PASSWORD'];
+  const credentials = [
+    'PLATFORM_USER_NAME',
+    'PLATFORM_USER_PASSWORD',
+    'UI_TEMPLATE_VERSION',
+  ];
 
   if (existsSync('.env')) {
     return;
