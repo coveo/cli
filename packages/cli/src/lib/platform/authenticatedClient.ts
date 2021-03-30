@@ -61,6 +61,19 @@ export class AuthenticatedClient {
       console.error('Currently not logged in.');
     }
   }
+
+  async getAllOrgsUserHasAccessTo() {
+    const platformClient = await this.getClient();
+    return platformClient.organization.list();
+  }
+
+  async getUserHasAccessToOrg(org: string) {
+    const orgs = await this.getAllOrgsUserHasAccessTo();
+    console.log(orgs);
+    const found = orgs.find((o) => o.id === org);
+    console.log(found);
+    return found !== undefined;
+  }
 }
 
 export enum AuthenticationStatus {
