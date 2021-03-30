@@ -59,6 +59,7 @@ export default class Vue extends Command {
     }
     await this.createProject(args.name, preset);
     await this.invokePlugin(args.name);
+    this.displayFeedbackAfterSuccess(args.name);
     await this.config.runHook(
       'analytics',
       buildAnalyticsSuccessHook(this, flags)
@@ -94,9 +95,10 @@ export default class Vue extends Command {
       providerUsername,
     ];
 
-    return this.runVueCliCommand(cliArgs, {
+    await this.runVueCliCommand(cliArgs, {
       cwd: applicationName,
     });
+    return;
   }
 
   private async getDefaultPreset() {
@@ -154,5 +156,16 @@ export default class Vue extends Command {
     await platformClient.initialize();
 
     return await platformClient.user.get();
+  }
+
+  private displayFeedbackAfterSuccess(name: string) {
+    this.log(`
+    To get started:
+    
+    cd ${name}
+    npm run start
+
+    Look at package.json for other available commands
+    `);
   }
 }
