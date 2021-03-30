@@ -11,7 +11,7 @@
     "target": "es2017",
     "noEmitOnError": false,
     "skipLibCheck": true,
-    "typeRoots": ["typings"]
+    "types": ["jest"]
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "typings/**/*.d.ts"]
 }
