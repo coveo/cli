@@ -11,7 +11,7 @@ import {EngineService} from '../engine.service';
 export class SearchBoxComponent implements OnInit {
   headlessSearchBox!: SearchBox;
   myControl = new FormControl();
-  suggestions!: {
+  suggestions: {
     highlightedValue: string;
     rawValue: string;
   }[] = [];
