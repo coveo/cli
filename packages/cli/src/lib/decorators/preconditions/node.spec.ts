@@ -1,6 +1,5 @@
 jest.mock('../../utils/process');
 
-import type Command from '@oclif/command';
 import * as dedent from 'dedent';
 import {constants} from 'os';
 import {mocked} from 'ts-jest/utils';
@@ -63,14 +62,11 @@ describe('IsNodeVersionAbove', () => {
     });
 
     it('should return false and warn', async () => {
-      const fakeCommand = {
-        id: 'foo',
-        warn: jest.fn(),
-      };
+      const fakeCommand = getFakeCommand();
 
-      await expect(
-        IsNodeVersionAbove('0.0.1')((fakeCommand as unknown) as Command)
-      ).resolves.toBe(false);
+      await expect(IsNodeVersionAbove('0.0.1')(fakeCommand)).resolves.toBe(
+        false
+      );
       expect(fakeCommand.warn).toHaveBeenCalledTimes(2);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
         foo requires a valid Node.js installation to run.

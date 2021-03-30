@@ -1,5 +1,4 @@
 import {Preconditions} from './preconditions';
-import type Command from '@oclif/command';
 import {getFakeCommand} from './__tests__/utils.spec';
 
 describe('preconditions', () => {

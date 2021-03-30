@@ -1,6 +1,5 @@
 jest.mock('../../utils/process');
 
-import type Command from '@oclif/command';
 import * as dedent from 'dedent';
 import {constants} from 'os';
 import {mocked} from 'ts-jest/utils';
