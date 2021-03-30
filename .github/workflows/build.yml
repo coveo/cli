@@ -17,6 +17,11 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '14'
+      - uses: actions/upload-artifact@v2
+        with:
+          name: npm-logs
+          path: /home/runner/.npm/_logs/*debug.log
+          retention-days: 1
       - name: Setup
         run: npm run setup
       - name: Tests
