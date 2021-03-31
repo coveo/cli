@@ -5,7 +5,10 @@ import {
   buildAnalyticsSuccessHook,
 } from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
-import AuthenticationRequired from '../../../lib/decorators/authenticationRequired';
+import {
+  Preconditions,
+  IsAuthenticated,
+} from '../../../lib/decorators/preconditions';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {platformUrl} from '../../../lib/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';
@@ -44,7 +47,7 @@ export default class Vue extends Command {
     {name: 'name', description: 'The target application name.', required: true},
   ];
 
-  @AuthenticationRequired()
+  @Preconditions(IsAuthenticated())
   async run() {
     const {args, flags} = this.parse(Vue);
 
@@ -59,6 +62,7 @@ export default class Vue extends Command {
     }
     await this.createProject(args.name, preset);
     await this.invokePlugin(args.name);
+    this.displayFeedbackAfterSuccess(args.name);
     await this.config.runHook(
       'analytics',
       buildAnalyticsSuccessHook(this, flags)
@@ -154,5 +158,17 @@ export default class Vue extends Command {
     await platformClient.initialize();
 
     return await platformClient.user.get();
+  }
+
+  private displayFeedbackAfterSuccess(name: string) {
+    this.log(`
+    To get started:
+    
+    cd ${name}
+    npm run start
+
+    See package.json for other available commands.
+    Happy hacking !
+    `);
   }
 }

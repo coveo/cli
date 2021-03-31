@@ -1,4 +1,3 @@
-import AuthenticationRequired from '../../../lib/decorators/authenticationRequired';
 import {Command, flags} from '@oclif/command';
 import {platformUrl} from '../../../lib/platform/environment';
 import {Config} from '../../../lib/config/config';
@@ -9,6 +8,10 @@ import {
 } from '../../../hooks/analytics/analytics';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {getPackageVersion} from '../../../lib/utils/misc';
+import {
+  Preconditions,
+  IsAuthenticated,
+} from '../../../lib/decorators/preconditions/';
 
 export default class Angular extends Command {
   static templateName = '@coveo/angular';
@@ -33,11 +36,12 @@ export default class Angular extends Command {
     {name: 'name', description: 'The target application name.', required: true},
   ];
 
-  @AuthenticationRequired()
+  @Preconditions(IsAuthenticated())
   async run() {
     const {args, flags} = this.parse(Angular);
     await this.createProject(args.name, flags.defaults);
     await this.addCoveoToProject(args.name, flags.defaults);
+    this.displayFeedbackAfterSuccess(args.name);
     await this.config.runHook(
       'analytics',
       buildAnalyticsSuccessHook(this, flags)
@@ -105,5 +109,17 @@ export default class Angular extends Command {
     await platformClient.initialize();
 
     return await platformClient.user.get();
+  }
+
+  private displayFeedbackAfterSuccess(name: string) {
+    this.log(`
+    To get started:
+    
+    cd ${name}
+    npm run start
+    
+    See package.json for other available commands.
+    Happy hacking !
+    `);
   }
 }
