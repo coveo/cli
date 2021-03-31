@@ -1,7 +1,5 @@
 {
-  "env": {
-    "es6": true
-  },
+  "extends": "../../.eslintrc",
   "rules": {
     "node/no-unpublished-import": ["off"]
   }
