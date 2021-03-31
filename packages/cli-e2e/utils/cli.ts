@@ -70,6 +70,15 @@ export async function setupUIProject(
       resolve();
     });
     buildProcess.stdout.on('data', async (data) => {
+      if (stripAnsi(data.toString()).indexOf('Pick an action:') !== -1) {
+        await new Promise<void>((resolve) => {
+          if (buildProcess.stdin.write(`\u001b[B${EOL}`)) {
+            buildProcess.stdin.once('drain', () => resolve());
+          } else {
+            process.nextTick(() => resolve);
+          }
+        });
+      }
       if (isGenericYesNoPrompt(data.toString())) {
         await answerPrompt(`y${EOL}`, buildProcess);
       }
@@ -77,17 +86,18 @@ export async function setupUIProject(
   });
 
   await createProjectPromise;
+  const startServerProcess = spawn('npm', ['run', 'start'], {
+    cwd: projectName,
+    detached: true,
+  });
 
-  return new Promise<void>((resolve) => {
-    const startServerProcess = spawn('npm', ['run', 'start'], {
-      cwd: projectName,
-      detached: true,
+  cliProcesses.push(startServerProcess);
+  await new Promise<void>((resolve) => {
+    startServerProcess.stdout.on('data', async (data) => {
+      if (stripAnsi(data.toString()).indexOf('App running at:') !== -1) {
+        resolve();
+      }
     });
-
-    cliProcesses.push(startServerProcess);
-    setTimeout(() => {
-      resolve();
-    }, 15e3);
   });
 }
 

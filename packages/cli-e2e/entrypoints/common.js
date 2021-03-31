@@ -3,15 +3,17 @@ const {execSync, spawnSync} = require('child_process');
 const {existsSync, mkdirSync, writeFileSync} = require('fs');
 
 const DOCKER_IMAGE_NAME = 'coveo-cli-e2e-image';
+const composeProjectName = 'coveo-cli-e2e'
 const DOCKER_CONTAINER_NAME = 'coveo-cli-e2e-container';
 const repoHostPath = resolve(__dirname, ...new Array(3).fill('..'));
 const repoDockerPath = '/home/notGroot/cli';
 const screenshotsHostPath = resolve(__dirname, '..', 'screenshots');
-const dockerFilePath = resolve(repoHostPath, 'packages', 'cli-e2e', 'docker');
+const dockerDirPath = resolve(repoHostPath, 'packages', 'cli-e2e', 'docker');
+const composeFilePath = resolve(dockerDirPath, 'docker-compose.yml');
 
 const dockerEntryPoint = () => {
   if (isBash()) {
-    return '/bin/bash';
+    return '';
   }
   return join(
     repoDockerPath,
@@ -53,18 +55,13 @@ const isImagePresent = () => {
 const ensureDockerImageIsPresent = () => {
   if (!isImagePresent()) {
     console.log('Building docker image');
-    execSync(`docker build -t ${DOCKER_IMAGE_NAME} ${dockerFilePath}`, {
+    execSync(`docker build -t ${DOCKER_IMAGE_NAME} ${dockerDirPath}`, {
       stdio: 'ignore',
-    });
-  }
+    });  }
 };
 
 const createEnvFile = () => {
-  const credentials = [
-    'PLATFORM_USER_NAME',
-    'PLATFORM_USER_PASSWORD',
-    'UI_TEMPLATE_VERSION',
-  ];
+  const credentials = ['PLATFORM_USER_NAME', 'PLATFORM_USER_PASSWORD'];
 
   if (existsSync('.env')) {
     return;
@@ -78,32 +75,39 @@ const createEnvFile = () => {
   );
 };
 
-const startDockerContainer = () => {
+const startDockerCompose = () => {
   createEnvFile();
   mkdirSync(screenshotsHostPath, {recursive: true});
   return execSync(
-    `${process.env.CI ? 'sudo ' : ''}docker run \
-    --name=${DOCKER_CONTAINER_NAME} \
-    -v "${repoHostPath}:${repoDockerPath}" \
-    -p "9229:9229" \
-    -${process.argv[2] === '--bash' ? 'it' : 'i'} \
-    --env-file .env \
-    --cap-add=IPC_LOCK \
-    --cap-add=SYS_ADMIN \
-    --privileged \
-    ${DOCKER_IMAGE_NAME} ${dockerEntryPoint()}`,
-    {stdio: ['inherit', 'inherit', 'inherit']}
+    `${
+      process.env.CI ? 'sudo ' : ''
+    }docker-compose -f ${composeFilePath} -p ${composeProjectName} up --force-recreate -d`,
+    {
+      stdio: ['inherit', 'inherit', 'inherit'],
+    }
   );
 };
 
-const cleanDockerContainer = () =>
-  execSync(`docker container rm ${DOCKER_CONTAINER_NAME} -f`, {
+const startTestRunning = () => {
+  return execSync(
+    `${
+      process.env.CI ? 'sudo ' : ''
+    }docker exec -it ${DOCKER_CONTAINER_NAME} /bin/bash ${dockerEntryPoint()} `,
+    {
+      stdio: ['inherit', 'inherit', 'inherit'],
+    }
+  );
+};
+
+const stopDockerContainers = () =>
+  execSync(`docker-compose -f ${composeFilePath} -p ${composeProjectName} down`, {
     stdio: 'ignore',
   });
 
 module.exports = {
   DOCKER_CONTAINER_NAME,
   ensureDockerImageIsPresent,
-  startDockerContainer,
-  cleanDockerContainer,
+  startDockerCompose,
+  startTestRunning,
+  stopDockerContainers,
 };

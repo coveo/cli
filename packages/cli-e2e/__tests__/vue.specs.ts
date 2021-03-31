@@ -1,5 +1,6 @@
 import retry from 'async-retry';
-
+import {mkdirSync, writeFileSync} from 'fs';
+import {join} from 'path';
 import type {ChildProcessWithoutNullStreams} from 'child_process';
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
 
@@ -29,6 +30,11 @@ describe('ui', () => {
 
     beforeAll(async () => {
       browser = await getNewBrowser();
+      mkdirSync(projectName, {recursive: true});
+      writeFileSync(
+        join(projectName, '.yarnrc'),
+        'registry "http://verdaccio:4873"'
+      );
       await setupUIProject('ui:create:vue', projectName, cliProcesses);
     }, 240e3);
 
