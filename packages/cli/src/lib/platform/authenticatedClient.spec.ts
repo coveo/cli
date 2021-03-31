@@ -97,12 +97,6 @@ describe('AuthenticatedClient', () => {
   });
 
   it('#getAuthenticationStatus should return proper status if token is not expired', async () => {
-    mockGet.mockReturnValueOnce({
-      accessToken: 'my_token',
-      environment: 'dev',
-      region: 'eu-west-1',
-      organization: 'my_org',
-    });
     mockInitialize.mockReturnValueOnce(Promise.resolve());
     expect(await getAuthenticationStatus()).toBe(
       AuthenticationStatus.LOGGED_IN
