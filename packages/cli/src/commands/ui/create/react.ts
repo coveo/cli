@@ -5,25 +5,27 @@ import {
 } from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {platformUrl} from '../../../lib/platform/environment';
-import {
-  spawnProcess,
-  SpawnProcessOutput,
-  spawnProcessOutput,
-} from '../../../lib/utils/process';
-import AuthenticationRequired from '../../../lib/decorators/authenticationRequired';
+import {spawnProcess, spawnProcessOutput} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {lt as isVersionLessThan} from 'semver';
-import {constants} from 'os';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {join} from 'path';
-
-const linkToReadme =
-  'https://github.com/coveo/cli/wiki#coveo-uicreatereact-requirements';
+import {
+  Preconditions,
+  IsAuthenticated,
+  IsNodeVersionAbove,
+  IsNpxInstalled,
+} from '../../../lib/decorators/preconditions';
 
 export default class React extends Command {
   static templateName = '@coveo/cra-template';
+  /**
+   * Node.JS v10.16.0 is the first version that included NPX (via NPM).
+   * Future requirement should be based on https://create-react-app.dev/docs/getting-started/#creating-an-app.
+   */
+  static requiredNodeVersion = '10.16.0';
 
-  static description = `Create a Coveo Headless-powered search page with the React web framework. See ${linkToReadme}`;
+  static description =
+    'Create a Coveo Headless-powered search page with the React web framework.';
 
   static examples = [
     '$ coveo ui:create:react myapp',
@@ -42,15 +44,13 @@ export default class React extends Command {
     {name: 'name', description: 'The target application name.', required: true},
   ];
 
-  @AuthenticationRequired()
+  @Preconditions(
+    IsAuthenticated(),
+    IsNodeVersionAbove(React.requiredNodeVersion),
+    IsNpxInstalled()
+  )
   async run() {
     const {args} = this.parse(React);
-    if (!(await this.checkIfUserHasNodeGreaterThan10())) {
-      return;
-    }
-    if (!(await this.checkIfUserHasNpx())) {
-      return;
-    }
 
     await this.createProject(args.name);
     await this.setupEnvironmentVariables(args.name);
@@ -129,78 +129,5 @@ export default class React extends Command {
     await platformClient.initialize();
 
     return await platformClient.user.get();
-  }
-
-  private async checkIfUserHasNodeGreaterThan10() {
-    const output = await spawnProcessOutput('node', ['--version']);
-    if (this.isMissingExecutable(output)) {
-      this.warn(`
-      ${this.id} requires Node.js to run.
-      `);
-      this.warnHowToInstallNode();
-      return false;
-    }
-
-    if (output.stderr) {
-      this.warn(`
-      ${this.id} requires a valid Node.js installation to run.
-      An unknown error happened while trying to determine your node version with node --version
-      ${output.stderr}
-      `);
-      this.warnHowToInstallNode();
-      return false;
-    }
-
-    const requiredNodeVersionForCreateReactApp = '10.16.0';
-    if (
-      isVersionLessThan(output.stdout, requiredNodeVersionForCreateReactApp)
-    ) {
-      this.warn(`
-      ${this.id} uses create-react-app, which needs a Node.js version greater than ${requiredNodeVersionForCreateReactApp}
-      Version detected: ${output.stdout}
-      `);
-      this.warnHowToInstallNode();
-      return false;
-    }
-
-    return true;
-  }
-
-  private async checkIfUserHasNpx() {
-    const output = await spawnProcessOutput('npx', ['--version']);
-
-    if (this.isMissingExecutable(output)) {
-      this.warn(`
-      ${this.id} requires npx to run.
-      Newer version Node.js comes bundled with npx.
-      `);
-      this.warnHowToInstallNode();
-      return false;
-    }
-
-    if (output.stderr) {
-      this.warn(`
-      ${this.id} requires a valid npx installation to run.
-      An unknown error happened while trying to determine your npx version with npx --version.
-      ${output.stderr}
-      `);
-      this.warnHowToInstallNode();
-      return false;
-    }
-
-    return true;
-  }
-
-  private isMissingExecutable(output: SpawnProcessOutput) {
-    return (
-      output.exitCode !== null &&
-      Math.abs(output.exitCode) === constants.errno.ENOENT
-    );
-  }
-
-  private warnHowToInstallNode() {
-    this.warn(`
-    Please visit ${linkToReadme} for more detailed installation information.
-    `);
   }
 }
