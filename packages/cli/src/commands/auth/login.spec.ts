@@ -66,12 +66,12 @@ describe('auth:login', () => {
   test
     .command(['auth:login', '-e', 'foo'])
     .catch(/Expected --environment=foo/)
-    .it('reject invalid environment');
+    .it('reject invalid environment', async () => {});
 
   test
     .command(['auth:login', '-r', 'foo'])
     .catch(/Expected --region=foo/)
-    .it('reject invalid region');
+    .it('reject invalid region', async () => {});
 
   ['dev', 'qa', 'prod', 'hipaa'].forEach((environment) => {
     test
