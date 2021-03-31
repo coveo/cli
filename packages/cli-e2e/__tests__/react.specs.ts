@@ -34,6 +34,11 @@ describe('ui', () => {
       });
     });
 
+    afterEach(async () => {
+      page.removeAllListeners('request');
+      interceptedRequests = [];
+    });
+
     afterAll(async () => {
       await browser.close();
       await teardownUIProject(cliProcesses);
@@ -55,12 +60,15 @@ describe('ui', () => {
       });
     });
 
-    it('should trigger search queries', async () => {
+    it('should send a search query when the page is loaded', async () => {
+      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+    });
+
+    it('should send a search query on searchbox submit', async () => {
       const searchboxSelector = 'div.App .MuiAutocomplete-root input';
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
 
-      // Request from interface load
-      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
       interceptedRequests = [];
 
       await page.waitForSelector(searchboxSelector);
