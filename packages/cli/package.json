@@ -72,7 +72,7 @@
         "description": "manage authentification against the Coveo platform"
       },
       "config": {
-        "description": "manage coveo CLI configuration"
+        "description": "manage Coveo CLI configuration"
       },
       "org": {
         "description": "manage Coveo organizations"
@@ -81,7 +81,7 @@
         "description": "manage user interface deployments"
       },
       "ui:create": {
-        "description": "create a user interface powered by different front end frameworks with Coveo Headless"
+        "description": "create a user interface powered by different front end frameworks and Coveo Headless"
       }
     },
     "hooks": {
