@@ -69,7 +69,19 @@
     ],
     "topics": {
       "auth": {
-        "description": "Manage authentification against the Coveo platform"
+        "description": "manage authentification against the Coveo platform"
+      },
+      "config": {
+        "description": "manage Coveo CLI configuration"
+      },
+      "org": {
+        "description": "manage Coveo organizations"
+      },
+      "ui": {
+        "description": "manage user interface deployments"
+      },
+      "ui:create": {
+        "description": "create a user interface powered by different front end frameworks and Coveo Headless"
       }
     },
     "hooks": {

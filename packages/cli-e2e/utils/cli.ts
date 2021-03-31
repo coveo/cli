@@ -1,7 +1,9 @@
+import {ensureDirSync} from 'fs-extra';
 import stripAnsi from 'strip-ansi';
 import {ChildProcessWithoutNullStreams, spawn} from 'child_process';
 import {resolve} from 'path';
 import {EOL} from 'os';
+import {join} from 'path';
 
 export function killCliProcess(cliProcess: ChildProcessWithoutNullStreams) {
   const waitForKill = new Promise<void>((resolve) => {
@@ -48,14 +50,26 @@ export function answerPrompt(
   });
 }
 
+export interface ISetupUIProjectOptionsArgs {
+  flags?: string[];
+  timeout?: number;
+}
+
 export async function setupUIProject(
   commandArgs: string,
   projectName: string,
-  cliProcesses: ChildProcessWithoutNullStreams[]
+  cliProcesses: ChildProcessWithoutNullStreams[],
+  options: ISetupUIProjectOptionsArgs = {}
 ) {
+  const uiProjectFolderName = 'ui-projects';
+  ensureDirSync(uiProjectFolderName);
+  const defaultOptions: ISetupUIProjectOptionsArgs = {timeout: 15e3};
+  options = Object.assign(defaultOptions, options);
+
   const createProjectPromise = new Promise<void>((resolve) => {
     const versionToTest = process.env.UI_TEMPLATE_VERSION;
-    let command = [commandArgs, projectName];
+    let command = [commandArgs, projectName, ...(options.flags || [])];
+
     if (versionToTest) {
       command = command.concat(['-v', versionToTest]);
       process.stdout.write(
@@ -64,11 +78,15 @@ export async function setupUIProject(
     } else {
       process.stdout.write('Testing with published version of the template');
     }
-    const buildProcess = spawn(CLI_EXEC_PATH, command);
+
+    const buildProcess = spawn(CLI_EXEC_PATH, command, {
+      cwd: uiProjectFolderName,
+    });
 
     buildProcess.stdout.on('close', async () => {
       resolve();
     });
+
     buildProcess.stdout.on('data', async (data) => {
       if (stripAnsi(data.toString()).indexOf('Pick an action:') !== -1) {
         await new Promise<void>((resolve) => {

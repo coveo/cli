@@ -1,5 +1,5 @@
 import {Injectable, APP_INITIALIZER} from '@angular/core';
-import {environment} from 'src/environments/environment';
+import {environment} from '../environments/environment';
 import {EngineService} from './engine.service';
 
 @Injectable({
