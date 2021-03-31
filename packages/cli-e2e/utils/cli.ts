@@ -56,28 +56,37 @@ export interface ISetupUIProjectOptionsArgs {
 }
 
 export async function setupUIProject(
-  uiCommand: string,
+  commandArgs: string,
   projectName: string,
   cliProcesses: ChildProcessWithoutNullStreams[],
   options: ISetupUIProjectOptionsArgs = {}
 ) {
   const uiProjectFolderName = '../ui-projects';
   ensureDirSync(uiProjectFolderName);
-  const defaultOptions: ISetupUIProjectOptionsArgs = {flags: [], timeout: 15e3};
+  const defaultOptions: ISetupUIProjectOptionsArgs = {timeout: 15e3};
   options = Object.assign(defaultOptions, options);
 
   const createProjectPromise = new Promise<void>((resolve) => {
-    const buildProcess = spawn(
-      CLI_EXEC_PATH,
-      [uiCommand, projectName, ...(options.flags || [])],
-      {
-        cwd: uiProjectFolderName,
-      }
-    );
+    const versionToTest = process.env.UI_TEMPLATE_VERSION;
+    let command = [commandArgs, projectName, ...(options.flags || [])];
+
+    if (versionToTest) {
+      command = command.concat(['-v', versionToTest]);
+      process.stdout.write(
+        `Testing with version ${versionToTest} of the template`
+      );
+    } else {
+      process.stdout.write('Testing with published version of the template');
+    }
+
+    const buildProcess = spawn(CLI_EXEC_PATH, command, {
+      cwd: uiProjectFolderName,
+    });
 
     buildProcess.stdout.on('close', async () => {
       resolve();
     });
+
     buildProcess.stdout.on('data', async (data) => {
       if (isGenericYesNoPrompt(data.toString())) {
         await answerPrompt(`y${EOL}`, buildProcess);

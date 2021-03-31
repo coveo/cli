@@ -1,7 +1,6 @@
 import {Command, flags} from '@oclif/command';
 import {Config} from '../../lib/config/config';
 import {OAuth} from '../../lib/oauth/oauth';
-import {Storage} from '../../lib/oauth/storage';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {
   PlatformEnvironment,
@@ -14,6 +13,7 @@ import {
 } from '../../hooks/analytics/analytics';
 
 export default class Login extends Command {
+  private configuration!: Config;
   static description = 'Log into the Coveo platform using the OAuth2 flow.';
 
   static examples = ['$ coveo auth:login'];
@@ -47,10 +47,12 @@ export default class Login extends Command {
   };
 
   async run() {
+    this.configuration = new Config(this.config.configDir, this.error);
     await this.loginAndPersistToken();
     await this.persistRegionAndEnvironment();
+    await this.verifyOrganization();
     await this.persistOrganization();
-
+    await this.feedbackOnSuccessfulLogin();
     this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
@@ -63,14 +65,27 @@ export default class Login extends Command {
     throw err;
   }
 
+  private async feedbackOnSuccessfulLogin() {
+    const cfg = await this.configuration.get();
+    this.log(`
+    Successfully logged in !
+    Close your browser to continue
+
+    You are currently logged in:
+    Organization: ${cfg.organization}
+    Region: ${cfg.region}
+    Environment: ${cfg.environment}
+    Run auth:login --help to see available options to log into a different organization, region or environment.
+    `);
+  }
+
   private async loginAndPersistToken() {
     const flags = this.flags;
     const {accessToken} = await new OAuth({
       environment: flags.environment as PlatformEnvironment,
       region: flags.region as PlatformRegion,
     }).getToken();
-
-    await new Storage().save(accessToken);
+    await this.configuration.set('accessToken', accessToken);
   }
 
   private async persistRegionAndEnvironment() {
@@ -92,28 +107,47 @@ export default class Login extends Command {
     const firstOrgAvailable = await this.pickFirstAvailableOrganization();
     if (firstOrgAvailable) {
       await cfg.set('organization', firstOrgAvailable as string);
-      this.log(
-        `No organization specified.\nYou are currently logged in ${firstOrgAvailable}.\nIf you wish to specify an organization, use the --organization parameter.`
-      );
       return;
     }
 
-    this.log('You have no access to any Coveo organization.');
+    this.error('You have no access to any Coveo organization!');
   }
 
   private async pickFirstAvailableOrganization() {
-    const orgs = await (
-      await new AuthenticatedClient().getClient()
-    ).organization.list();
-    return ((orgs as unknown) as OrganizationModel[])[0]?.id;
+    const orgs = await this.getAllOrgsUserHasAccessTo();
+    return orgs[0]?.id;
   }
 
   private get flags() {
     const {flags} = this.parse(Login);
     return flags;
   }
+  private async getAllOrgsUserHasAccessTo() {
+    const orgs = await (
+      await new AuthenticatedClient().getClient()
+    ).organization.list();
+    return (orgs as unknown) as OrganizationModel[];
+  }
 
-  private get configuration() {
-    return new Config(this.config.configDir, this.error);
+  private async verifyOrganization() {
+    const flags = this.flags;
+    const orgs = await this.getAllOrgsUserHasAccessTo();
+
+    if (flags.organization) {
+      const found = orgs.find((o) => o.id === flags.organization);
+      if (!found) {
+        this.error(
+          `You either do not have access to organization ${flags.organization}, or it does not exists.`
+        );
+      }
+    }
+
+    if (orgs.length === 0) {
+      this.error(`
+      You do not have access to any Coveo organization in this region and environment.
+      Please make sure to you have access to at least one Coveo Organization, and that you are targeting the correct region and environment.
+      Run auth:login --help to see available options to log into a different organization, region or environment.
+      `);
+    }
   }
 }

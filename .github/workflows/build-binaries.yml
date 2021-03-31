@@ -4,9 +4,15 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'The version where to upload the binaries'
+        required: true
 
 jobs:
   package:
+    env:
+      GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
     name: Package for ${{ matrix.for }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -33,6 +39,8 @@ jobs:
           node-version: '14'
       - name: Setup
         run: npm run setup
+      - name: Get tag
+        run: node ./scripts/get-tag.js
       - name: Create install kits
         working-directory: ./packages/cli
         run: ./node_modules/@oclif/dev-cli/bin/run pack${{ matrix.pack-command }}
@@ -41,11 +49,11 @@ jobs:
         run: |
           ./node_modules/@oclif/dev-cli/bin/run pack -t="${{ matrix.package-targets }}"
           mv ./dist/version ./dist/${{ matrix.os }}-version
-          mv ./dist/coveo-${{GITHUB_REF/refs\/tags\//}}/coveo-${{GITHUB_REF/refs\/tags\//}}.tar.gz ./dist/coveo-${{GITHUB_REF/refs\/tags\//}}/${{ matrix.os }}-coveo-${{GITHUB_REF/refs\/tags\//}}.tar.gz
+          mv ./dist/coveo-${{ env.tag }}/coveo-${{ env.tag }}.tar.gz ./dist/coveo-${{ env.tag }}/${{ matrix.os }}-coveo-${{ env.tag }}.tar.gz
       - name: Upload binaries
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./packages/cli/dist/**/*
           file_glob: true
-          tag: $GITHUB_REF
+          tag: ${{ env.tag }}
