@@ -18,7 +18,7 @@ export default class Vue extends Command {
   static templateName = '@coveo/vue-cli-plugin-typescript';
 
   static description =
-    'Create a Coveo Headless-powered search page with the Vue.js web framework. See https://docs.coveo.com/en/headless and https://vuejs.org/';
+    'Create a Coveo Headless-powered search page with the Vue.js web framework. See https://docs.coveo.com/headless and https://vuejs.org/';
 
   static flags = {
     help: flags.help({char: 'h'}),
