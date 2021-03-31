@@ -91,9 +91,10 @@ export default class Angular extends Command {
   }
 
   async catch(err?: Error) {
+    const {flags} = this.parse(Angular);
     await this.config.runHook(
       'analytics',
-      buildAnalyticsFailureHook(this, {}, err)
+      buildAnalyticsFailureHook(this, flags, err)
     );
     throw err;
   }
