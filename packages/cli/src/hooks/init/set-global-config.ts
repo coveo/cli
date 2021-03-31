@@ -1,13 +1,4 @@
-/* eslint-disable @typescript-eslint/no-namespace */
-import {Hook, IConfig} from '@oclif/config';
-
-declare global {
-  namespace NodeJS {
-    interface Global {
-      config: IConfig;
-    }
-  }
-}
+import {Hook} from '@oclif/config';
 
 const hook: Hook<'init'> = async function (opts) {
   global.config = opts.config;
