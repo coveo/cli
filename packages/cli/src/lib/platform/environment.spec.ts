@@ -2,6 +2,8 @@ import {Environment, Region} from '@coveord/platform-client';
 import {
   castEnvironmentToPlatformClient,
   castRegionToPlatformClient,
+  PlatformEnvironment,
+  PlatformRegion,
   platformUrl,
 } from './environment';
 
@@ -40,28 +42,30 @@ describe('platformUrl helper', () => {
 
   it('should #castEnvironmentToPlatformClient correctly', () => {
     [
-      {env: 'dev' as const, platformClient: Environment.dev},
-      {env: 'qa' as const, platformClient: Environment.staging},
-      {env: 'prod' as const, platformClient: Environment.prod},
-      {env: 'hipaa' as const, platformClient: Environment.hipaa},
+      {env: 'dev', platformClient: Environment.dev},
+      {env: 'qa', platformClient: Environment.staging},
+      {env: 'prod', platformClient: Environment.prod},
+      {env: 'hipaa', platformClient: Environment.hipaa},
+      {env: 'something_random', platformClient: Environment.prod},
     ].forEach((testCase) => {
-      expect(castEnvironmentToPlatformClient(testCase.env)).toBe(
-        testCase.platformClient
-      );
+      expect(
+        castEnvironmentToPlatformClient(testCase.env as PlatformEnvironment)
+      ).toBe(testCase.platformClient);
     });
   });
 
   it('should #castRegionToPlatformClient correctly', () => {
     [
-      {region: 'us-east-1' as const, platformClient: Region.US},
-      {region: 'us-west-2' as const, platformClient: Region.US},
-      {region: 'eu-west-1' as const, platformClient: Region.EU},
-      {region: 'eu-west-3' as const, platformClient: Region.EU},
-      {region: 'ap-southeast-2' as const, platformClient: Region.AU},
+      {region: 'us-east-1', platformClient: Region.US},
+      {region: 'us-west-2', platformClient: Region.US},
+      {region: 'eu-west-1', platformClient: Region.EU},
+      {region: 'eu-west-3', platformClient: Region.EU},
+      {region: 'ap-southeast-2', platformClient: Region.AU},
+      {region: 'something_random', platformClient: Region.US},
     ].forEach((testCase) => {
-      expect(castRegionToPlatformClient(testCase.region)).toBe(
-        testCase.platformClient
-      );
+      expect(
+        castRegionToPlatformClient(testCase.region as PlatformRegion)
+      ).toBe(testCase.platformClient);
     });
   });
 });
