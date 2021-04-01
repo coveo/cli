@@ -25,7 +25,7 @@ export default class React extends Command {
   static requiredNodeVersion = '10.16.0';
 
   static description =
-    'Create a Coveo Headless-powered search page with the React web framework.';
+    'Create a Coveo Headless-powered search page with the React web framework. See https://docs.coveo.com/headless and https://reactjs.org/.';
 
   static examples = [
     '$ coveo ui:create:react myapp',

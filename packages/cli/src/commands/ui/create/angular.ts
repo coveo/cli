@@ -17,7 +17,7 @@ export default class Angular extends Command {
   static templateName = '@coveo/angular';
 
   static description =
-    'Create a Coveo Headless-powered search page with the Angular web framework. See https://docs.coveo.com/en/headless and https://angular.io/.';
+    'Create a Coveo Headless-powered search page with the Angular web framework. See https://docs.coveo.com/headless and https://angular.io/.';
 
   static flags = {
     version: flags.string({
