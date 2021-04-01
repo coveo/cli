@@ -13,4 +13,6 @@ reports/*.xml
 veracode
 artifacts
 
+ui-projects
+
 !.vscode/extensions.json
