@@ -43,7 +43,7 @@ uplinks:
     url: https://registry.npmjs.org/
 
 packages:
-  "@coveo/(angular|vue-cli-plugin|cra-template)":
+  "@coveo/@(angular|vue-cli-plugin-typescript|cra-template)":
     # scoped packages
     access: $all
     publish: $all

@@ -1,12 +1,20 @@
 import retry from 'async-retry';
 import {mkdirSync, writeFileSync} from 'fs';
 import {join} from 'path';
-import type {ChildProcessWithoutNullStreams} from 'child_process';
+import {ChildProcessWithoutNullStreams, spawn} from 'child_process';
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
 
-import {setupUIProject, teardownUIProject} from '../utils/cli';
+import {
+  answerPrompt,
+  getProjectPath,
+  isGenericYesNoPrompt,
+  setupUIProject,
+  teardownUIProject,
+} from '../utils/cli';
 import {captureScreenshots, getNewBrowser} from '../utils/browser';
 import {isSearchRequest} from '../utils/platform';
+import stripAnsi from 'strip-ansi';
+import {EOL} from 'os';
 
 describe('ui', () => {
   describe('create:vue', () => {
@@ -30,13 +38,52 @@ describe('ui', () => {
 
     beforeAll(async () => {
       browser = await getNewBrowser();
-      mkdirSync(projectName, {recursive: true});
+      const projectPath = getProjectPath(projectName);
+      mkdirSync(projectPath, {recursive: true});
       writeFileSync(
-        join(projectName, '.yarnrc'),
+        join(projectPath, '.yarnrc'),
         'registry "http://verdaccio:4873"'
       );
-      await setupUIProject('ui:create:vue', projectName, cliProcesses);
-    }, 240e3);
+      const buildProcess = setupUIProject('ui:create:vue', projectName);
+      cliProcesses.push(buildProcess);
+
+      buildProcess.stdout.on('data', async (data) => {
+        if (
+          /Pick an action: \(Use arrow keys\)/.test(stripAnsi(data.toString()))
+        ) {
+          await answerPrompt('\u001b[B', buildProcess);
+          return;
+        }
+        if (/❯ Merge/.test(stripAnsi(data.toString()))) {
+          await answerPrompt(EOL, buildProcess);
+          return;
+        }
+        if (isGenericYesNoPrompt(data.toString())) {
+          await answerPrompt(`y${EOL}`, buildProcess);
+          return;
+        }
+      });
+
+      await new Promise<void>((resolve) => {
+        buildProcess.stdout.on('close', async () => {
+          resolve();
+        });
+      });
+
+      const startServerProcess = spawn('npm', ['run', 'start'], {
+        cwd: projectPath,
+        detached: true,
+      });
+
+      cliProcesses.push(startServerProcess);
+      await new Promise<void>((resolve) => {
+        startServerProcess.stdout.on('data', async (data) => {
+          if (stripAnsi(data.toString()).indexOf('App running at:') !== -1) {
+            resolve();
+          }
+        });
+      });
+    }, 420e3);
 
     beforeEach(async () => {
       page = await openNewPage();

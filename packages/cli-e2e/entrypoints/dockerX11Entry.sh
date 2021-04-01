@@ -7,8 +7,10 @@ cd /home/notGroot/cli-copy
 
 npm run setup
 
-export UI_TEMPLATE_VERSION=0.0.0-test
+export UI_TEMPLATE_VERSION=0.0.0
 npm set registry http://verdaccio:4873
+yarn config set registry http://verdaccio:4873
+
 npm run npm:bump:template -- -- $UI_TEMPLATE_VERSION
 
 npm run npm:publish:template

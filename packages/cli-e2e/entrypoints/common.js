@@ -3,7 +3,7 @@ const {execSync, spawnSync} = require('child_process');
 const {existsSync, mkdirSync, writeFileSync} = require('fs');
 
 const DOCKER_IMAGE_NAME = 'coveo-cli-e2e-image';
-const composeProjectName = 'coveo-cli-e2e'
+const composeProjectName = 'coveo-cli-e2e';
 const DOCKER_CONTAINER_NAME = 'coveo-cli-e2e-container';
 const repoHostPath = resolve(__dirname, ...new Array(3).fill('..'));
 const repoDockerPath = '/home/notGroot/cli';
@@ -57,7 +57,8 @@ const ensureDockerImageIsPresent = () => {
     console.log('Building docker image');
     execSync(`docker build -t ${DOCKER_IMAGE_NAME} ${dockerDirPath}`, {
       stdio: 'ignore',
-    });  }
+    });
+  }
 };
 
 const createEnvFile = () => {
@@ -90,9 +91,9 @@ const startDockerCompose = () => {
 
 const startTestRunning = () => {
   return execSync(
-    `${
-      process.env.CI ? 'sudo ' : ''
-    }docker exec -it ${DOCKER_CONTAINER_NAME} /bin/bash ${dockerEntryPoint()} `,
+    `${process.env.CI ? 'sudo ' : ''}docker exec -${
+      process.argv[2] === '--bash' ? 'it' : 'i'
+    } ${DOCKER_CONTAINER_NAME} /bin/bash ${dockerEntryPoint()} `,
     {
       stdio: ['inherit', 'inherit', 'inherit'],
     }
@@ -100,9 +101,12 @@ const startTestRunning = () => {
 };
 
 const stopDockerContainers = () =>
-  execSync(`docker-compose -f ${composeFilePath} -p ${composeProjectName} down`, {
-    stdio: 'ignore',
-  });
+  execSync(
+    `docker-compose -f ${composeFilePath} -p ${composeProjectName} down`,
+    {
+      stdio: 'ignore',
+    }
+  );
 
 module.exports = {
   DOCKER_CONTAINER_NAME,
