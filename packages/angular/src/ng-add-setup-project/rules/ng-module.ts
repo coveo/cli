@@ -1,5 +1,4 @@
 import {
-  insertImport,
   addDeclarationToModule,
   addSymbolToNgModuleMetadata,
   addImportToModule,
@@ -36,7 +35,7 @@ export function updateNgModule(
     const changes = [
       ...injectInitService(source, appModulePath),
       ...getAllCoveoComponentsToInject(tree, source, appModulePath),
-      ...injectMaterialImports(source, appModulePath),
+      ...injectAdditionalImports(source, appModulePath),
     ];
 
     changes.map((change) => {
@@ -122,7 +121,7 @@ function getAllCoveoComponentsToInject(
   return changes;
 }
 
-export function injectMaterialImports(
+export function injectAdditionalImports(
   source: SourceFile,
   appModulePath: string
 ) {
@@ -135,6 +134,7 @@ export function injectMaterialImports(
     MatPaginatorModule: '@angular/material/paginator',
     MatSelectModule: '@angular/material/select',
     MatButtonModule: '@angular/material/button',
+    AppRoutingModule: './app-routing.module',
   };
 
   const changes: InsertChange[] = [];
