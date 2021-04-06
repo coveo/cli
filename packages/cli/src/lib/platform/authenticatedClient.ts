@@ -69,8 +69,7 @@ export class AuthenticatedClient {
 
   async getUserHasAccessToOrg(org: string) {
     const orgs = await this.getAllOrgsUserHasAccessTo();
-    const found = orgs.find((o) => o.id === org);
-    return found !== undefined;
+    return orgs.some((o) => o.id === org);
   }
 }
 
