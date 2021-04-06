@@ -4,8 +4,11 @@ import {
   buildAnalyticsSuccessHook,
 } from '../../hooks/analytics/analytics';
 import {Config} from '../../lib/config/config';
-import AuthenticationRequired from '../../lib/decorators/authenticationRequired';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {
+  IsAuthenticated,
+  Preconditions,
+} from '../../lib/decorators/preconditions';
 import {
   PlatformEnvironment,
   PlatformRegion,
@@ -46,7 +49,7 @@ export default class Set extends Command {
     }),
   };
 
-  @AuthenticationRequired()
+  @Preconditions(IsAuthenticated())
   async run() {
     const {flags} = this.parse(Set);
     const cfg = new Config(this.config.configDir, this.error);

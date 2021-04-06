@@ -1,5 +1,4 @@
 import {Command} from '@oclif/command';
-import AuthenticationRequired from '../../lib/decorators/authenticationRequired';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {OrganizationModel} from '@coveord/platform-client';
 import {cli} from 'cli-ux';
@@ -7,6 +6,10 @@ import {
   buildAnalyticsFailureHook,
   buildAnalyticsSuccessHook,
 } from '../../hooks/analytics/analytics';
+import {
+  Preconditions,
+  IsAuthenticated,
+} from '../../lib/decorators/preconditions/';
 
 export default class List extends Command {
   static description = 'List Coveo organizations.';
@@ -15,7 +18,7 @@ export default class List extends Command {
     ...cli.table.flags(),
   };
 
-  @AuthenticationRequired()
+  @Preconditions(IsAuthenticated())
   async run() {
     const {flags} = this.parse(List);
     const orgs = await new AuthenticatedClient().getAllOrgsUserHasAccessTo();
