@@ -17,6 +17,11 @@ import {getPackageVersion} from '../../../lib/utils/misc';
 
 export default class Vue extends Command {
   static templateName = '@coveo/vue-cli-plugin-typescript';
+  /**
+   * Refer to the Vue-CLI's changelog to be forthcoming with which version of Node.JS to support.
+   * (i.e. if a Node version is about to get dropped in an upcoming version of the CLI, better drop it now)
+   * @see https://github.com/vuejs/vue-cli/blob/dev/CHANGELOG.md
+   */ 
   static requiredNodeVersion = '12.21.0';
   static description =
     'Create a Coveo Headless-powered search page with the Vue.js web framework. See https://docs.coveo.com/en/headless and https://vuejs.org/';
