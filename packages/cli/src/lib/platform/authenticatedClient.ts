@@ -48,6 +48,16 @@ export class AuthenticatedClient {
       accessToken: accessToken!,
     });
   }
+
+  async getAllOrgsUserHasAccessTo() {
+    const platformClient = await this.getClient();
+    return platformClient.organization.list();
+  }
+
+  async getUserHasAccessToOrg(org: string) {
+    const orgs = await this.getAllOrgsUserHasAccessTo();
+    return orgs.some((o) => o.id === org);
+  }
 }
 
 export enum AuthenticationStatus {

@@ -61,7 +61,7 @@ export async function setupUIProject(
   cliProcesses: ChildProcessWithoutNullStreams[],
   options: ISetupUIProjectOptionsArgs = {}
 ) {
-  const uiProjectFolderName = 'ui-projects';
+  const uiProjectFolderName = '../ui-projects';
   ensureDirSync(uiProjectFolderName);
   const defaultOptions: ISetupUIProjectOptionsArgs = {timeout: 15e3};
   options = Object.assign(defaultOptions, options);
