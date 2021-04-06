@@ -1,16 +1,16 @@
 import retry from 'async-retry';
 
-import type {ChildProcessWithoutNullStreams} from 'child_process';
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
 
-import {setupUIProject, teardownUIProject} from '../utils/cli';
 import {getNewBrowser} from '../utils/browser';
+import {setupUIProject} from '../utils/cli';
 import {isSearchRequest} from '../utils/platform';
+import {ProcessManager} from '../utils/processManager';
 
 describe('ui', () => {
   describe.skip('create:react', () => {
     let browser: Browser;
-    const cliProcesses: ChildProcessWithoutNullStreams[] = [];
+    let processManager: ProcessManager;
     // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
     const clientPort = '3000';
     const projectName = 'react-project';
@@ -21,9 +21,14 @@ describe('ui', () => {
 
     beforeAll(async () => {
       browser = await getNewBrowser();
-      // await setupUIProject('ui:create:react', projectName, cliProcesses, {
-      //   timeout: 30e3,
-      // });
+      const buildProcess = setupUIProject(
+        processManager,
+        'ui:create:react',
+        projectName
+      );
+      buildProcess.stdout.on('data', async (data) => {
+        console.log(data.toString());
+      });
     }, 3e6);
 
     beforeEach(async () => {
@@ -41,7 +46,7 @@ describe('ui', () => {
 
     afterAll(async () => {
       await browser.close();
-      await teardownUIProject(cliProcesses);
+      await processManager.killAllProcesses();
     }, 5e3);
 
     it('should contain a search page section', async () => {

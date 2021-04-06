@@ -1,9 +1,9 @@
 import {ensureDirSync} from 'fs-extra';
 import stripAnsi from 'strip-ansi';
-import {ChildProcessWithoutNullStreams, spawn} from 'child_process';
+import {ChildProcessWithoutNullStreams} from 'child_process';
 import {resolve} from 'path';
-import {EOL} from 'os';
 import {join} from 'path';
+import {ProcessManager} from './processManager';
 
 export function killCliProcess(cliProcess: ChildProcessWithoutNullStreams) {
   const waitForKill = new Promise<void>((resolve) => {
@@ -14,12 +14,14 @@ export function killCliProcess(cliProcess: ChildProcessWithoutNullStreams) {
 }
 
 export function killCliProcessFamily(
-  cliProcessLeader: ChildProcessWithoutNullStreams
-) {
+  processFamilyPid: ChildProcessWithoutNullStreams
+): Promise<void> {
   const waitForKill = new Promise<void>((resolve) => {
-    cliProcessLeader.on('close', () => resolve());
+    processFamilyPid.on('exit', () => {
+      resolve();
+    });
   });
-  process.kill(-cliProcessLeader.pid);
+  process.kill(-processFamilyPid.pid, 'SIGINT');
   return waitForKill;
 }
 
@@ -61,6 +63,7 @@ export function getProjectPath(projectName: string) {
 }
 
 export function setupUIProject(
+  processManager: ProcessManager,
   commandArgs: string,
   projectName: string,
   options: ISetupUIProjectOptionsArgs = {}
@@ -77,19 +80,17 @@ export function setupUIProject(
     process.stdout.write('Testing with published version of the template');
   }
 
-  const buildProcess = spawn(CLI_EXEC_PATH, command, {
+  const buildProcess = processManager.spawn(CLI_EXEC_PATH, command, {
     cwd: resolve(getProjectPath(projectName), '..'),
   });
 
   return buildProcess;
 }
 
-export async function teardownUIProject(
+export function teardownUIProject(
   cliProcesses: ChildProcessWithoutNullStreams[]
 ) {
-  return Promise.all(
-    cliProcesses.map((cliProcess) => killCliProcessFamily(cliProcess))
-  );
+  return Promise.all(cliProcesses.map((ps) => killCliProcessFamily(ps)));
 }
 
 export const CLI_EXEC_PATH = resolve(__dirname, '../../cli/bin/run');

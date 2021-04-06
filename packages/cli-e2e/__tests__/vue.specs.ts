@@ -15,11 +15,11 @@ import {captureScreenshots, getNewBrowser} from '../utils/browser';
 import {isSearchRequest} from '../utils/platform';
 import stripAnsi from 'strip-ansi';
 import {EOL} from 'os';
+import {ProcessManager} from '../utils/processManager';
 
 describe('ui', () => {
   describe('create:vue', () => {
     let browser: Browser;
-    const cliProcesses: ChildProcessWithoutNullStreams[] = [];
     // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
     const clientPort = '8080';
     const projectName = 'vue-project';
@@ -27,7 +27,7 @@ describe('ui', () => {
     const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
     let interceptedRequests: HTTPRequest[] = [];
     let page: Page;
-
+    let processManager: ProcessManager;
     const openNewPage = async () => {
       const newPage = await browser.newPage();
       if (page) {
@@ -37,6 +37,7 @@ describe('ui', () => {
     };
 
     beforeAll(async () => {
+      processManager = new ProcessManager();
       browser = await getNewBrowser();
       const projectPath = getProjectPath(projectName);
       mkdirSync(projectPath, {recursive: true});
@@ -44,8 +45,11 @@ describe('ui', () => {
         join(projectPath, '.yarnrc'),
         'registry "http://verdaccio:4873"'
       );
-      const buildProcess = setupUIProject('ui:create:vue', projectName);
-      cliProcesses.push(buildProcess);
+      const buildProcess = setupUIProject(
+        processManager,
+        'ui:create:vue',
+        projectName
+      );
 
       buildProcess.stdout.on('data', async (data) => {
         if (
@@ -65,17 +69,16 @@ describe('ui', () => {
       });
 
       await new Promise<void>((resolve) => {
-        buildProcess.stdout.on('close', async () => {
+        buildProcess.on('exit', async () => {
           resolve();
         });
       });
 
-      const startServerProcess = spawn('npm', ['run', 'start'], {
+      const startServerProcess = processManager.spawn('npm', ['run', 'start'], {
         cwd: projectPath,
         detached: true,
       });
 
-      cliProcesses.push(startServerProcess);
       await new Promise<void>((resolve) => {
         startServerProcess.stdout.on('data', async (data) => {
           if (stripAnsi(data.toString()).indexOf('App running at:') !== -1) {
@@ -99,7 +102,7 @@ describe('ui', () => {
 
     afterAll(async () => {
       await browser.close();
-      await teardownUIProject(cliProcesses);
+      await processManager.killAllProcesses();
     }, 5e3);
 
     it('should contain a search page section', async () => {

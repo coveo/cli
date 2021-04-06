@@ -1,6 +1,5 @@
 import retry from 'async-retry';
 
-import {ChildProcessWithoutNullStreams, spawn} from 'child_process';
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
 
 import {
@@ -8,17 +7,17 @@ import {
   getProjectPath,
   isGenericYesNoPrompt,
   setupUIProject,
-  teardownUIProject,
 } from '../utils/cli';
 import {getNewBrowser} from '../utils/browser';
 import {isSearchRequest} from '../utils/platform';
 import {EOL} from 'os';
 import stripAnsi from 'strip-ansi';
+import {ProcessManager} from '../utils/processManager';
 
 describe('ui', () => {
   describe('create:angular', () => {
     let browser: Browser;
-    const cliProcesses: ChildProcessWithoutNullStreams[] = [];
+    let processManager: ProcessManager;
     // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
     const clientPort = '4200';
     const projectName = 'angular-project';
@@ -37,40 +36,36 @@ describe('ui', () => {
     };
 
     beforeAll(async () => {
+      processManager = new ProcessManager();
       browser = await getNewBrowser();
-      const buildProcess = await setupUIProject(
+      const buildProcess = setupUIProject(
+        processManager,
         'ui:create:angular',
         projectName,
         {
           flags: ['--defaults'],
         }
       );
+
       buildProcess.stdout.on('data', async (data) => {
-        process.stdout.write(data.toString());
         if (isGenericYesNoPrompt(data.toString())) {
           await answerPrompt(`y${EOL}`, buildProcess);
         }
       });
-      buildProcess.stderr.on('data', async (data) => {
-        process.stdout.write(data.toString());
-      });
-      process.stdout.write('almost ready');
+
       await new Promise<void>((resolve) => {
-        buildProcess.stdout.on('close', async () => {
+        buildProcess.on('close', async () => {
           resolve();
         });
       });
-      process.stdout.write('ready!');
 
-      const startServerProcess = spawn('npm', ['run', 'start'], {
+      const startServerProcess = processManager.spawn('npm', ['run', 'start'], {
         cwd: getProjectPath(projectName),
         detached: true,
       });
-      cliProcesses.push(startServerProcess);
 
       await new Promise<void>((resolve) => {
         startServerProcess.stdout.on('data', async (data) => {
-          process.stdout.write(data.toString());
           if (/Compiled successfully/.test(stripAnsi(data.toString()))) {
             resolve();
           }
@@ -93,7 +88,7 @@ describe('ui', () => {
 
     afterAll(async () => {
       await browser.close();
-      await teardownUIProject(cliProcesses);
+      await processManager.killAllProcesses();
     }, 5e3);
 
     it('should contain a search page section', async () => {
