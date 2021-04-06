@@ -8,7 +8,6 @@ FormData.prototype.set = FormData.prototype.append;
 
 import PlatformClient from '@coveord/platform-client';
 import {Config} from '../config/config';
-import {OAuth} from '../oauth/oauth';
 import {
   castEnvironmentToPlatformClient,
   castRegionToPlatformClient,
@@ -50,16 +49,14 @@ export class AuthenticatedClient {
     });
   }
 
-  async getOauth() {
-    const {environment, region} = await this.cfg.get();
-    return new OAuth({environment, region});
+  async getAllOrgsUserHasAccessTo() {
+    const platformClient = await this.getClient();
+    return platformClient.organization.list();
   }
 
-  async get() {
-    const loggedIn = await this.isLoggedIn();
-    if (!loggedIn) {
-      console.error('Currently not logged in.');
-    }
+  async getUserHasAccessToOrg(org: string) {
+    const orgs = await this.getAllOrgsUserHasAccessTo();
+    return orgs.some((o) => o.id === org);
   }
 }
 
