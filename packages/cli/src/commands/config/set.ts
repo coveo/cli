@@ -5,6 +5,11 @@ import {
 } from '../../hooks/analytics/analytics';
 import {Config} from '../../lib/config/config';
 import {
+  IsAuthenticated,
+  Preconditions,
+} from '../../lib/decorators/preconditions';
+import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {
   PlatformEnvironment,
   PlatformRegion,
 } from '../../lib/platform/environment';
@@ -44,6 +49,7 @@ export default class Set extends Command {
     }),
   };
 
+  @Preconditions(IsAuthenticated())
   async run() {
     const {flags} = this.parse(Set);
     const cfg = new Config(this.config.configDir, this.error);
@@ -51,6 +57,7 @@ export default class Set extends Command {
       cfg.set('environment', flags.environment as PlatformEnvironment);
     }
     if (flags.organization) {
+      await this.verifyOrganization(flags.organization);
       cfg.set('organization', flags.organization);
     }
     if (flags.region) {
@@ -72,5 +79,16 @@ export default class Set extends Command {
       buildAnalyticsFailureHook(this, flags, err)
     );
     throw err;
+  }
+
+  private async verifyOrganization(org: string) {
+    const hasAccess = await new AuthenticatedClient().getUserHasAccessToOrg(
+      org
+    );
+    if (!hasAccess) {
+      this.error(
+        `You either do not have access to organization ${org}, or it does not exists.`
+      );
+    }
   }
 }
