@@ -114,7 +114,7 @@ export default class Login extends Command {
   }
 
   private async pickFirstAvailableOrganization() {
-    const orgs = await this.getAllOrgsUserHasAccessTo();
+    const orgs = await new AuthenticatedClient().getAllOrgsUserHasAccessTo();
     return orgs[0]?.id;
   }
 
@@ -122,25 +122,23 @@ export default class Login extends Command {
     const {flags} = this.parse(Login);
     return flags;
   }
-  private async getAllOrgsUserHasAccessTo() {
-    const orgs = await (
-      await new AuthenticatedClient().getClient()
-    ).organization.list();
-    return (orgs as unknown) as OrganizationModel[];
-  }
 
   private async verifyOrganization() {
     const flags = this.flags;
-    const orgs = await this.getAllOrgsUserHasAccessTo();
+    const authenticatedClient = new AuthenticatedClient();
 
     if (flags.organization) {
-      const found = orgs.find((o) => o.id === flags.organization);
-      if (!found) {
+      const hasAccess = await authenticatedClient.getUserHasAccessToOrg(
+        flags.organization
+      );
+      if (!hasAccess) {
         this.error(
           `You either do not have access to organization ${flags.organization}, or it does not exists.`
         );
       }
     }
+
+    const orgs = await authenticatedClient.getAllOrgsUserHasAccessTo();
 
     if (orgs.length === 0) {
       this.error(`
