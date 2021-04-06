@@ -4,11 +4,11 @@ import {
   buildAnalyticsSuccessHook,
 } from '../../hooks/analytics/analytics';
 import {Config} from '../../lib/config/config';
+import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {
   IsAuthenticated,
   Preconditions,
 } from '../../lib/decorators/preconditions';
-import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {
   PlatformEnvironment,
   PlatformRegion,
