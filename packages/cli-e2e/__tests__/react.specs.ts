@@ -19,6 +19,13 @@ describe('ui', () => {
     const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
     let interceptedRequests: HTTPRequest[] = [];
     let page: Page;
+    const openNewPage = async () => {
+      const newPage = await browser.newPage();
+      if (page) {
+        await page.close();
+      }
+      return newPage;
+    };
 
     beforeAll(async () => {
       browser = await getNewBrowser();
@@ -66,7 +73,7 @@ describe('ui', () => {
     }, 15 * 60e3);
 
     beforeEach(async () => {
-      page = await browser.newPage();
+      page = await openNewPage();
 
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);
