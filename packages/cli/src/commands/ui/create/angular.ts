@@ -49,7 +49,7 @@ export default class Angular extends Command {
   }
 
   private async createProject(name: string, defaults: boolean) {
-    const cliArgs = ['new', name, '--style', 'scss', '--routing'];
+    const cliArgs = ['new', name, '--style', 'scss'];
 
     if (defaults) {
       cliArgs.push('--defaults');
