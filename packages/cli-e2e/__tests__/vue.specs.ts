@@ -1,6 +1,4 @@
 import retry from 'async-retry';
-import {mkdirSync, writeFileSync} from 'fs';
-import {join} from 'path';
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
 
 import {
@@ -9,7 +7,7 @@ import {
   isGenericYesNoPrompt,
   setupUIProject,
 } from '../utils/cli';
-import {captureScreenshots, getNewBrowser} from '../utils/browser';
+import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {isSearchRequest} from '../utils/platform';
 import stripAnsi from 'strip-ansi';
 import {EOL} from 'os';
@@ -26,13 +24,6 @@ describe('ui', () => {
     let interceptedRequests: HTTPRequest[] = [];
     let page: Page;
     let processManager: ProcessManager;
-    const openNewPage = async () => {
-      const newPage = await browser.newPage();
-      if (page) {
-        await page.close();
-      }
-      return newPage;
-    };
 
     beforeAll(async () => {
       processManager = new ProcessManager();
@@ -88,7 +79,7 @@ describe('ui', () => {
     }, 420e3);
 
     beforeEach(async () => {
-      page = await openNewPage();
+      page = await openNewPage(browser, page);
 
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);

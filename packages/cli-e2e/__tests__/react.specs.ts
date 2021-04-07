@@ -3,7 +3,7 @@ import retry from 'async-retry';
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
 import stripAnsi from 'strip-ansi';
 
-import {captureScreenshots, getNewBrowser} from '../utils/browser';
+import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {getProjectPath, setupUIProject} from '../utils/cli';
 import {isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
@@ -19,13 +19,6 @@ describe('ui', () => {
     const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
     let interceptedRequests: HTTPRequest[] = [];
     let page: Page;
-    const openNewPage = async () => {
-      const newPage = await browser.newPage();
-      if (page) {
-        await page.close();
-      }
-      return newPage;
-    };
 
     beforeAll(async () => {
       browser = await getNewBrowser();
@@ -59,8 +52,7 @@ describe('ui', () => {
     }, 15 * 60e3);
 
     beforeEach(async () => {
-      page = await openNewPage();
-
+      page = await openNewPage(browser, page);
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);
       });

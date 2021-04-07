@@ -8,7 +8,7 @@ import {
   isGenericYesNoPrompt,
   setupUIProject,
 } from '../utils/cli';
-import {captureScreenshots, getNewBrowser} from '../utils/browser';
+import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {isSearchRequest} from '../utils/platform';
 import {EOL} from 'os';
 import stripAnsi from 'strip-ansi';
@@ -25,15 +25,6 @@ describe('ui', () => {
     const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
     let interceptedRequests: HTTPRequest[] = [];
     let page: Page;
-
-    // TODO: Refactor.
-    const openNewPage = async () => {
-      const newPage = await browser.newPage();
-      if (page) {
-        await page.close();
-      }
-      return newPage;
-    };
 
     beforeAll(async () => {
       processManager = new ProcessManager();
@@ -90,7 +81,7 @@ describe('ui', () => {
     }, 420e3);
 
     beforeEach(async () => {
-      page = await openNewPage();
+      page = await openNewPage(browser, page);
 
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);
