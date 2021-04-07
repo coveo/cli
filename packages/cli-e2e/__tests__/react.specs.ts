@@ -23,22 +23,24 @@ describe('ui', () => {
     beforeAll(async () => {
       browser = await getNewBrowser();
       processManager = new ProcessManager();
+      console.log('Start build');
       const buildProcess = setupUIProject(
         processManager,
         'ui:create:react',
         projectName
       );
-
+      console.log('Build ongoing');
       await new Promise<void>((resolve) => {
         buildProcess.on('exit', async () => {
           resolve();
         });
       });
-
+      console.log('Complete build');
+      console.log('Start server');
       const startServerProcess = processManager.spawn('npm', ['run', 'start'], {
         cwd: getProjectPath(projectName),
       });
-
+      console.log('Server ongoing');
       await new Promise<void>((resolve) => {
         startServerProcess.stdout.on('data', async (data) => {
           if (
@@ -50,6 +52,7 @@ describe('ui', () => {
           }
         });
       });
+      console.log('Server ready');
     }, 15 * 60e3);
 
     beforeEach(async () => {
