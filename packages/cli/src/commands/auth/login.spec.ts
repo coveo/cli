@@ -9,45 +9,36 @@ import {mocked} from 'ts-jest/utils';
 import {Config} from '../../lib/config/config';
 import {OAuth} from '../../lib/oauth/oauth';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
-import {PlatformClient} from '@coveord/platform-client';
 const mockedOAuth = mocked(OAuth, true);
 const mockedConfig = mocked(Config, true);
 const mockedAuthenticatedClient = mocked(AuthenticatedClient);
-const mockedPlatformClient = mocked(PlatformClient);
 
 describe('auth:login', () => {
   const mockConfigSet = jest.fn();
-  const mockConfigGet = jest.fn();
-  const mockListOrgs = jest.fn();
+
+  const mockConfigGet = jest.fn().mockReturnValue(
+    Promise.resolve({
+      region: 'us-east-1',
+      organization: 'foo',
+      environment: 'prod',
+    })
+  );
+
+  const mockListOrgs = jest
+    .fn()
+    .mockReturnValue(Promise.resolve([{id: 'foo'}]));
+
+  const mockGetHasAccessToOrg = jest
+    .fn()
+    .mockReturnValue(Promise.resolve(true));
 
   beforeEach(() => {
-    mockListOrgs.mockReturnValue(Promise.resolve([{id: 'foo'}]));
-
-    mockConfigGet.mockReturnValue(
-      Promise.resolve({
-        region: 'us-east-1',
-        organization: 'foo',
-        environment: 'prod',
-      })
-    );
-
-    mockedPlatformClient.mockImplementation(
-      () =>
-        ({
-          organization: {list: mockListOrgs} as unknown,
-        } as PlatformClient)
-    );
     mockedAuthenticatedClient.mockImplementation(
       () =>
-        ({
-          getClient: () =>
-            Promise.resolve(
-              mockedPlatformClient.getMockImplementation()!({
-                accessToken: 'theToken',
-                organizationId: 'foo',
-              })
-            ),
-        } as AuthenticatedClient)
+        (({
+          getAllOrgsUserHasAccessTo: mockListOrgs,
+          getUserHasAccessToOrg: mockGetHasAccessToOrg,
+        } as unknown) as AuthenticatedClient)
     );
     mockedOAuth.mockImplementationOnce(
       () =>
@@ -135,6 +126,9 @@ describe('auth:login', () => {
 
   test
     .stdout()
+    .do(() => {
+      mockGetHasAccessToOrg.mockReturnValueOnce(Promise.resolve(false));
+    })
     .command(['auth:login', '-o', 'this_is_not_a_valid_org'])
     .exit(2)
     .it('fails when organization flag is invalid');
