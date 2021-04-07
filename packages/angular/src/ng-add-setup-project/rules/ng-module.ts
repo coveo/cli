@@ -72,8 +72,11 @@ function getDefaultAppModuleContent() {
 }
 
 function isTypeScriptSourceFile(action: Action) {
-  const splitted = action.path.split('.');
-  return splitted.indexOf('ts') !== -1 && splitted.indexOf('spec') === -1;
+  return (
+    action.path.endsWith('.ts') &&
+    !action.path.endsWith('.d.ts') &&
+    !action.path.endsWith('.spec.ts')
+  );
 }
 
 function isCreateAction(action: Action) {
