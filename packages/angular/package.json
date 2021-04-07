@@ -4,7 +4,7 @@
   "description": "Coveo schematic for angular",
   "scripts": {
     "test": "npm run build && jasmine dist/**/*_spec.js",
-    "build": "tsc -p tsconfig.schematic.json",
+    "build": "tsc -p tsconfig.json",
     "prebuild": "node ./scripts/clean.js",
     "postbuild": "node ./scripts/setup.js",
     "prepublishOnly": "npm run build",
