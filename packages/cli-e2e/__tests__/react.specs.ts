@@ -28,10 +28,7 @@ describe('ui', () => {
         'ui:create:react',
         projectName
       );
-      buildProcess.stdout.on('data', async (data) => {
-        process.stdout.write(data.toString());
-        console.log(data.toString());
-      });
+
       await new Promise<void>((resolve) => {
         buildProcess.on('exit', async () => {
           resolve();
@@ -44,8 +41,6 @@ describe('ui', () => {
 
       await new Promise<void>((resolve) => {
         startServerProcess.stdout.on('data', async (data) => {
-          process.stdout.write(data.toString());
-          console.log(data.toString());
           if (
             /You can now view react-project in the browser/.test(
               stripAnsi(data.toString()).replace('/\n/g', '')
