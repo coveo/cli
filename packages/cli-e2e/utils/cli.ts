@@ -115,6 +115,8 @@ export async function teardownUIProject(
   return Promise.all(
     cliProcesses.map((cliProcess) => killCliProcessFamily(cliProcess))
   );
+
+  // TODO: delete newly created API key
 }
 
 export const CLI_EXEC_PATH = resolve(__dirname, '../../cli/bin/run');

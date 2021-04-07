@@ -15,6 +15,7 @@ import {
   IsNodeVersionAbove,
   IsNpxInstalled,
 } from '../../../lib/decorators/preconditions';
+import {ApiKeyManager} from '../../../lib/platform/apiKeyManager';
 
 export default class React extends Command {
   static templateName = '@coveo/cra-template';
@@ -50,7 +51,7 @@ export default class React extends Command {
     IsNpxInstalled()
   )
   async run() {
-    const {args} = this.parse(React);
+    const args = this.args;
 
     await this.createProject(args.name);
     await this.setupEnvironmentVariables(args.name);
@@ -58,7 +59,7 @@ export default class React extends Command {
   }
 
   async catch(err?: Error) {
-    const {args} = this.parse(React);
+    const args = this.args;
     await this.config.runHook(
       'analytics',
       buildAnalyticsFailureHook(this, args, err)
@@ -67,7 +68,7 @@ export default class React extends Command {
   }
 
   private createProject(name: string) {
-    const {flags} = this.parse(React);
+    const flags = this.flags;
     const templateVersion =
       flags.version || getPackageVersion(React.templateName);
     return this.runReactCliCommand([
@@ -80,6 +81,7 @@ export default class React extends Command {
   private async setupEnvironmentVariables(name: string) {
     const cfg = await this.configuration.get();
     const {providerUsername} = await this.getUserInfo();
+    const apiKey = await this.createApiKey();
 
     const output = await spawnProcessOutput(
       'npm',
@@ -90,7 +92,7 @@ export default class React extends Command {
         '--orgId',
         cfg.organization,
         '--apiKey',
-        cfg.accessToken!,
+        apiKey!,
         '--platformUrl',
         platformUrl({environment: cfg.environment}),
         '--user',
@@ -129,5 +131,22 @@ export default class React extends Command {
     await platformClient.initialize();
 
     return await platformClient.user.get();
+  }
+
+  private async createApiKey() {
+    const args = this.args;
+    const apiKeyManager = new ApiKeyManager();
+    const {value} = await apiKeyManager.createImpersonateApiKey(args.name);
+    return value;
+  }
+
+  private get flags() {
+    const {flags} = this.parse(React);
+    return flags;
+  }
+
+  private get args() {
+    const {args} = this.parse(React);
+    return args;
   }
 }
