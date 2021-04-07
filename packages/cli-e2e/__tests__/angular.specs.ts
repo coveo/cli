@@ -65,7 +65,11 @@ describe('ui', () => {
 
       await new Promise<void>((resolve) => {
         startServerProcess.stdout.on('data', async (data) => {
-          if (/Compiled successfully/.test(stripAnsi(data.toString()))) {
+          if (
+            /Compiled successfully/.test(
+              stripAnsi(data.toString()).replace('/\n/g', '')
+            )
+          ) {
             resolve();
           }
         });

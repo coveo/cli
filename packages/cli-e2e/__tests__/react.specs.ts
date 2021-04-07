@@ -43,7 +43,7 @@ describe('ui', () => {
         startServerProcess.stdout.on('data', async (data) => {
           if (
             /You can now view react-project in the browser/.test(
-              stripAnsi(data.toString())
+              stripAnsi(data.toString()).replace('/\n/g', '')
             )
           ) {
             resolve();
