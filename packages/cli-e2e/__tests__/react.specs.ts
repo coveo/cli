@@ -50,7 +50,7 @@ describe('ui', () => {
           }
         });
       });
-    }, 420e3);
+    }, 15 * 60e3);
 
     beforeEach(async () => {
       page = await browser.newPage();

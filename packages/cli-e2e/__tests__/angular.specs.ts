@@ -61,7 +61,6 @@ describe('ui', () => {
 
       const startServerProcess = processManager.spawn('npm', ['run', 'start'], {
         cwd: getProjectPath(projectName),
-        detached: true,
       });
 
       await new Promise<void>((resolve) => {

@@ -23,11 +23,10 @@ describe('auth', () => {
 
     it('should open the platform page', async () => {
       // TODO CDX-98: Remove `-e=dev`.
-      const cliProcess = processManager.spawn(
-        CLI_EXEC_PATH,
-        ['auth:login', '-e=dev'],
-        {detached: true}
-      );
+      const cliProcess = processManager.spawn(CLI_EXEC_PATH, [
+        'auth:login',
+        '-e=dev',
+      ]);
       cliProcess.stderr.on('data', async (data) => {
         if (isYesNoPrompt(data.toString())) {
           await answerPrompt('n', cliProcess);
