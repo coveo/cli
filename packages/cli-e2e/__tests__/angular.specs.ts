@@ -100,7 +100,7 @@ describe('ui', () => {
       });
 
       expect(await page.$('app-search-page')).not.toBeNull();
-    }, 300e3);
+    });
 
     it('should retrieve the search token on the page load', async () => {
       const tokenResponseListener = page.waitForResponse(tokenProxyEndpoint);
