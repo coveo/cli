@@ -24,4 +24,4 @@ node scripts/wait-for-published-packages.js
 cd packages/cli-e2e
 npm run-script jest
 
-rsync -r /home/notGroot/cli-copy/packages/cli-e2e/screenshots/* /home/notGroot/cli/packages/cli-e2e/screenshots
+echo "Docker!" | sudo -S rsync -r /home/notGroot/cli-copy/packages/cli-e2e/screenshots/* /home/notGroot/cli/packages/cli-e2e/screenshots
