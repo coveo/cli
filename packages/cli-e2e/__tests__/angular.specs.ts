@@ -54,7 +54,7 @@ describe('ui', () => {
       });
 
       await new Promise<void>((resolve) => {
-        buildProcess.on('close', async () => {
+        buildProcess.on('exit', async () => {
           resolve();
         });
       });
@@ -71,7 +71,7 @@ describe('ui', () => {
           }
         });
       });
-    }, 3e6);
+    }, 420e3);
 
     beforeEach(async () => {
       page = await openNewPage();

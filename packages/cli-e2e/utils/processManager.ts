@@ -15,7 +15,7 @@ export class ProcessManager {
     args?: ReadonlyArray<string>,
     options?: SpawnOptionsWithoutStdio
   ): ChildProcessWithoutNullStreams {
-    const process = nativeSpawn(command, args, options);
+    const process = nativeSpawn(command, args, {detached: true, ...options});
     process.on('exit', this.onExit(process));
     this.processes.add(process);
     return process;

@@ -1,7 +1,6 @@
 import retry from 'async-retry';
 import {mkdirSync, writeFileSync} from 'fs';
 import {join} from 'path';
-import {ChildProcessWithoutNullStreams, spawn} from 'child_process';
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
 
 import {
@@ -9,7 +8,6 @@ import {
   getProjectPath,
   isGenericYesNoPrompt,
   setupUIProject,
-  teardownUIProject,
 } from '../utils/cli';
 import {captureScreenshots, getNewBrowser} from '../utils/browser';
 import {isSearchRequest} from '../utils/platform';
@@ -53,7 +51,9 @@ describe('ui', () => {
 
       buildProcess.stdout.on('data', async (data) => {
         if (
-          /Pick an action: \(Use arrow keys\)/.test(stripAnsi(data.toString()))
+          /Pick an action: \(Use arrow keys\)/.test(
+            stripAnsi(data.toString()).replace(/\n/g, '')
+          )
         ) {
           await answerPrompt('\u001b[B', buildProcess);
           return;
@@ -76,7 +76,6 @@ describe('ui', () => {
 
       const startServerProcess = processManager.spawn('npm', ['run', 'start'], {
         cwd: projectPath,
-        detached: true,
       });
 
       await new Promise<void>((resolve) => {

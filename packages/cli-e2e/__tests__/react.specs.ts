@@ -1,14 +1,15 @@
 import retry from 'async-retry';
 
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
+import stripAnsi from 'strip-ansi';
 
 import {getNewBrowser} from '../utils/browser';
-import {setupUIProject} from '../utils/cli';
+import {getProjectPath, setupUIProject} from '../utils/cli';
 import {isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 
 describe('ui', () => {
-  describe.skip('create:react', () => {
+  describe('create:react', () => {
     let browser: Browser;
     let processManager: ProcessManager;
     // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
@@ -21,15 +22,35 @@ describe('ui', () => {
 
     beforeAll(async () => {
       browser = await getNewBrowser();
+      processManager = new ProcessManager();
       const buildProcess = setupUIProject(
         processManager,
         'ui:create:react',
         projectName
       );
-      buildProcess.stdout.on('data', async (data) => {
-        console.log(data.toString());
+
+      await new Promise<void>((resolve) => {
+        buildProcess.on('exit', async () => {
+          resolve();
+        });
       });
-    }, 3e6);
+
+      const startServerProcess = processManager.spawn('npm', ['run', 'start'], {
+        cwd: getProjectPath(projectName),
+      });
+
+      await new Promise<void>((resolve) => {
+        startServerProcess.stdout.on('data', async (data) => {
+          if (
+            /You can now view react-project in the browser/.test(
+              stripAnsi(data.toString())
+            )
+          ) {
+            resolve();
+          }
+        });
+      });
+    }, 420e3);
 
     beforeEach(async () => {
       page = await browser.newPage();

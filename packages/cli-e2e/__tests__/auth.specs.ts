@@ -1,34 +1,33 @@
-import {spawn} from 'child_process';
 import retry from 'async-retry';
 
 import type {Browser} from 'puppeteer';
-import type {ChildProcessWithoutNullStreams} from 'child_process';
 
-import {
-  answerPrompt,
-  CLI_EXEC_PATH,
-  isYesNoPrompt,
-  killCliProcess,
-} from '../utils/cli';
+import {answerPrompt, CLI_EXEC_PATH, isYesNoPrompt} from '../utils/cli';
 import {captureScreenshots, connectToChromeBrowser} from '../utils/browser';
+import {ProcessManager} from '../utils/processManager';
 
 describe('auth', () => {
   describe('login', () => {
     let browser: Browser;
-    let cliProcess: ChildProcessWithoutNullStreams;
+    let processManager: ProcessManager;
 
     beforeAll(async () => {
       browser = await connectToChromeBrowser();
+      processManager = new ProcessManager();
     });
 
     afterEach(async () => {
       await captureScreenshots(browser);
-      await killCliProcess(cliProcess);
+      await processManager.killAllProcesses();
     }, 5e3);
 
     it('should open the platform page', async () => {
       // TODO CDX-98: Remove `-e=dev`.
-      cliProcess = spawn(CLI_EXEC_PATH, ['auth:login', '-e=dev']);
+      const cliProcess = processManager.spawn(
+        CLI_EXEC_PATH,
+        ['auth:login', '-e=dev'],
+        {detached: true}
+      );
       cliProcess.stderr.on('data', async (data) => {
         if (isYesNoPrompt(data.toString())) {
           await answerPrompt('n', cliProcess);

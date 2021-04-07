@@ -1,29 +1,11 @@
-import {ensureDirSync} from 'fs-extra';
+import type {ChildProcessWithoutNullStreams} from 'child_process';
+import {resolve, join} from 'path';
+import {mkdirSync} from 'fs';
+import {homedir} from 'os';
+
 import stripAnsi from 'strip-ansi';
-import {ChildProcessWithoutNullStreams} from 'child_process';
-import {resolve} from 'path';
-import {join} from 'path';
+
 import {ProcessManager} from './processManager';
-
-export function killCliProcess(cliProcess: ChildProcessWithoutNullStreams) {
-  const waitForKill = new Promise<void>((resolve) => {
-    cliProcess.on('close', () => resolve());
-  });
-  cliProcess.kill('SIGINT');
-  return waitForKill;
-}
-
-export function killCliProcessFamily(
-  processFamilyPid: ChildProcessWithoutNullStreams
-): Promise<void> {
-  const waitForKill = new Promise<void>((resolve) => {
-    processFamilyPid.on('exit', () => {
-      resolve();
-    });
-  });
-  process.kill(-processFamilyPid.pid, 'SIGINT');
-  return waitForKill;
-}
 
 export function isYesNoPrompt(data: string) {
   return data.trimEnd().toLowerCase().endsWith('(y/n):');
@@ -58,8 +40,8 @@ export interface ISetupUIProjectOptionsArgs {
 
 export function getProjectPath(projectName: string) {
   const uiProjectFolderName = 'ui-projects';
-  ensureDirSync(uiProjectFolderName);
-  return join(uiProjectFolderName, projectName);
+  mkdirSync(join(homedir(), uiProjectFolderName), {recursive: true});
+  return join(homedir(), uiProjectFolderName, projectName);
 }
 
 export function setupUIProject(
@@ -85,12 +67,6 @@ export function setupUIProject(
   });
 
   return buildProcess;
-}
-
-export function teardownUIProject(
-  cliProcesses: ChildProcessWithoutNullStreams[]
-) {
-  return Promise.all(cliProcesses.map((ps) => killCliProcessFamily(ps)));
 }
 
 export const CLI_EXEC_PATH = resolve(__dirname, '../../cli/bin/run');
