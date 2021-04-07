@@ -22,4 +22,6 @@ google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usag
 node scripts/wait-for-published-packages.js
 
 cd packages/cli-e2e
-npm run-script jest:debug
+npm run-script jest
+
+echo "Docker!\n" | sudo -S rsync -r /home/notGroot/cli-copy/packages/cli-e2e/screenshots/* /home/notGroot/cli/packages/cli-e2e/screenshots
