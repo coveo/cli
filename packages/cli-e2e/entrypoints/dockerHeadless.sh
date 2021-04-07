@@ -1,12 +1,4 @@
 #!/bin/bash
-set -e
-capture_screenshot() {
-    echo "Docker!" | sudo -S rsync -r /home/notGroot/cli-copy/packages/cli-e2e/screenshots/* /home/notGroot/cli/packages/cli-e2e/screenshots
-    echo $1
-    exit $1
-}
-
-trap "capture_screenshot $?" EXIT
 
 export DISPLAY=:1
 Xvfb :1 -screen 0 1024x768x16 & sleep 1
@@ -34,4 +26,11 @@ node scripts/wait-for-published-packages.js
 
 cd packages/cli-e2e
 
-npm run-script jest && echo "success"
+if npm run-script jest
+then
+    echo "Docker!" | sudo -S rsync -r /home/notGroot/cli-copy/packages/cli-e2e/screenshots/* /home/notGroot/cli/packages/cli-e2e/screenshots
+    exit 0
+else
+    echo "Docker!" | sudo -S rsync -r /home/notGroot/cli-copy/packages/cli-e2e/screenshots/* /home/notGroot/cli/packages/cli-e2e/screenshots
+    exit 1
+fi
