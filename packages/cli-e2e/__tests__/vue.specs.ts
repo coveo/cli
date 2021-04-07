@@ -37,12 +37,7 @@ describe('ui', () => {
     beforeAll(async () => {
       processManager = new ProcessManager();
       browser = await getNewBrowser();
-      const projectPath = getProjectPath(projectName);
-      mkdirSync(projectPath, {recursive: true});
-      writeFileSync(
-        join(projectPath, '.yarnrc'),
-        'registry "http://verdaccio:4873"'
-      );
+
       const buildProcess = setupUIProject(
         processManager,
         'ui:create:vue',
@@ -50,18 +45,6 @@ describe('ui', () => {
       );
 
       buildProcess.stdout.on('data', async (data) => {
-        if (
-          /Pick an action: \(Use arrow keys\)/.test(
-            stripAnsi(data.toString()).replace(/\n/g, '')
-          )
-        ) {
-          await answerPrompt('\u001b[B', buildProcess);
-          return;
-        }
-        if (/❯ Merge/.test(stripAnsi(data.toString()))) {
-          await answerPrompt(EOL, buildProcess);
-          return;
-        }
         if (isGenericYesNoPrompt(data.toString())) {
           await answerPrompt(`y${EOL}`, buildProcess);
           return;
@@ -78,7 +61,7 @@ describe('ui', () => {
           buildProcess.stdout.on('data', (data) => {
             if (
               /Happy hacking !/.test(
-                stripAnsi(data.toString()).replace('/\n/g', '')
+                stripAnsi(data.toString()).replace(/\n/g, '')
               )
             ) {
               resolve();
@@ -88,12 +71,16 @@ describe('ui', () => {
       ]);
 
       const startServerProcess = processManager.spawn('npm', ['run', 'start'], {
-        cwd: projectPath,
+        cwd: getProjectPath(projectName),
       });
 
       await new Promise<void>((resolve) => {
         startServerProcess.stdout.on('data', async (data) => {
-          if (stripAnsi(data.toString()).indexOf('App running at:') !== -1) {
+          if (
+            /App running at:/.test(
+              stripAnsi(data.toString()).replace(/\n/g, '')
+            )
+          ) {
             resolve();
           }
         });

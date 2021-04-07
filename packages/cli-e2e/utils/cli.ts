@@ -55,11 +55,9 @@ export function setupUIProject(
 
   if (versionToTest) {
     command = command.concat(['-v', versionToTest]);
-    process.stdout.write(
-      `Testing with version ${versionToTest} of the template`
-    );
+    console.log(`Testing with version ${versionToTest} of the template`);
   } else {
-    process.stdout.write('Testing with published version of the template');
+    console.log('Testing with published version of the template');
   }
 
   const buildProcess = processManager.spawn(CLI_EXEC_PATH, command, {

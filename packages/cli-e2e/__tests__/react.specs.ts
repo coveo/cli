@@ -36,34 +36,20 @@ describe('ui', () => {
         projectName
       );
 
-      await Promise.race([
-        new Promise<void>((resolve) => {
-          buildProcess.on('exit', async () => {
-            resolve();
-          });
-        }),
-        new Promise<void>((resolve) => {
-          buildProcess.stdout.on('data', (data) => {
-            if (
-              /Happy hacking!/.test(
-                stripAnsi(data.toString()).replace('/\n/g', '')
-              )
-            ) {
-              resolve();
-            }
-          });
-        }),
-      ]);
+      await new Promise<void>((resolve) => {
+        buildProcess.on('exit', async () => {
+          resolve();
+        });
+      });
 
       const startServerProcess = processManager.spawn('npm', ['run', 'start'], {
         cwd: getProjectPath(projectName),
       });
-
       await new Promise<void>((resolve) => {
         startServerProcess.stdout.on('data', async (data) => {
           if (
             /You can now view react-project in the browser/.test(
-              stripAnsi(data.toString()).replace('/\n/g', '')
+              stripAnsi(data.toString()).replace(/\n/g, '')
             )
           ) {
             resolve();

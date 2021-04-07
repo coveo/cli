@@ -63,7 +63,7 @@ describe('ui', () => {
           buildProcess.stdout.on('data', (data) => {
             if (
               /Happy hacking !/.test(
-                stripAnsi(data.toString()).replace('/\n/g', '')
+                stripAnsi(data.toString()).replace(/\n/g, '')
               )
             ) {
               resolve();
@@ -80,7 +80,7 @@ describe('ui', () => {
         startServerProcess.stdout.on('data', async (data) => {
           if (
             /Compiled successfully/.test(
-              stripAnsi(data.toString()).replace('/\n/g', '')
+              stripAnsi(data.toString()).replace(/\n/g, '')
             )
           ) {
             resolve();
