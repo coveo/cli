@@ -1,7 +1,8 @@
 #!/bin/bash
-
+set -e
 capture_screenshot() {
     echo "Docker!" | sudo -S rsync -r /home/notGroot/cli-copy/packages/cli-e2e/screenshots/* /home/notGroot/cli/packages/cli-e2e/screenshots
+    echo $1
     exit $1
 }
 
