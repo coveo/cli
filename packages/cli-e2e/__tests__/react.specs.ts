@@ -3,7 +3,7 @@ import retry from 'async-retry';
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
 import stripAnsi from 'strip-ansi';
 
-import {getNewBrowser} from '../utils/browser';
+import {captureScreenshots, getNewBrowser} from '../utils/browser';
 import {getProjectPath, setupUIProject} from '../utils/cli';
 import {isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
@@ -81,6 +81,7 @@ describe('ui', () => {
     });
 
     afterEach(async () => {
+      await captureScreenshots(browser);
       page.removeAllListeners('request');
       interceptedRequests = [];
     });
