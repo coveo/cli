@@ -34,4 +34,4 @@ node scripts/wait-for-published-packages.js
 
 cd packages/cli-e2e
 
-npm run-script jest
+npm run-script jest && echo "success"
