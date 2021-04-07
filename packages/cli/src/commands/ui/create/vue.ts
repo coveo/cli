@@ -13,6 +13,7 @@ import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {platformUrl} from '../../../lib/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';
 import {getPackageVersion} from '../../../lib/utils/misc';
+import {ApiKeyManager} from '../../../lib/platform/apiKeyManager';
 
 export default class Vue extends Command {
   static templateName = '@coveo/vue-cli-plugin-typescript';
@@ -70,7 +71,7 @@ export default class Vue extends Command {
   }
 
   async catch(err?: Error) {
-    const {flags} = this.parse(Vue);
+    const flags = this.flags;
     await this.config.runHook(
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
@@ -82,8 +83,9 @@ export default class Vue extends Command {
     const cfg = await this.configuration.get();
     const {providerUsername} = await this.getUserInfo();
 
-    const {flags} = this.parse(Vue);
+    const flags = this.flags;
     const presetVersion = flags.version || getPackageVersion(Vue.templateName);
+    const apiKey = await this.createApiKey();
 
     const cliArgs = [
       'add',
@@ -91,7 +93,7 @@ export default class Vue extends Command {
       '--orgId',
       cfg.organization,
       '--apiKey',
-      cfg.accessToken!,
+      apiKey!,
       '--platformUrl',
       platformUrl({environment: cfg.environment}),
       '--user',
@@ -160,10 +162,27 @@ export default class Vue extends Command {
     return await platformClient.user.get();
   }
 
+  private async createApiKey() {
+    const args = this.args;
+    const apiKeyManager = new ApiKeyManager();
+    const {value} = await apiKeyManager.createImpersonateApiKey(args.name);
+    return value;
+  }
+
+  private get flags() {
+    const {flags} = this.parse(Vue);
+    return flags;
+  }
+
+  private get args() {
+    const {args} = this.parse(Vue);
+    return args;
+  }
+
   private displayFeedbackAfterSuccess(name: string) {
     this.log(`
     To get started:
-    
+
     cd ${name}
     npm run start
 

@@ -12,6 +12,7 @@ import {
   Preconditions,
   IsAuthenticated,
 } from '../../../lib/decorators/preconditions/';
+import {ApiKeyManager} from '../../../lib/platform/apiKeyManager';
 
 export default class Angular extends Command {
   static templateName = '@coveo/angular';
@@ -61,9 +62,10 @@ export default class Angular extends Command {
   private async addCoveoToProject(applicationName: string, defaults: boolean) {
     const cfg = await this.configuration.get();
     const {providerUsername} = await this.getUserInfo();
-    const {flags} = this.parse(Angular);
+    const flags = this.flags;
     const schematicVersion =
       flags.version || getPackageVersion(Angular.templateName);
+    const apiKey = await this.createApiKey();
 
     const cliArgs = [
       'add',
@@ -71,7 +73,7 @@ export default class Angular extends Command {
       '--org-id',
       cfg.organization,
       '--api-key',
-      cfg.accessToken!,
+      apiKey!,
       '--platform-url',
       platformUrl({environment: cfg.environment}),
       '--user',
@@ -91,7 +93,7 @@ export default class Angular extends Command {
   }
 
   async catch(err?: Error) {
-    const {flags} = this.parse(Angular);
+    const flags = this.flags;
     await this.config.runHook(
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
@@ -111,13 +113,30 @@ export default class Angular extends Command {
     return await platformClient.user.get();
   }
 
+  private async createApiKey() {
+    const args = this.args;
+    const apiKeyManager = new ApiKeyManager();
+    const {value} = await apiKeyManager.createImpersonateApiKey(args.name);
+    return value;
+  }
+
+  private get flags() {
+    const {flags} = this.parse(Angular);
+    return flags;
+  }
+
+  private get args() {
+    const {args} = this.parse(Angular);
+    return args;
+  }
+
   private displayFeedbackAfterSuccess(name: string) {
     this.log(`
     To get started:
-    
+
     cd ${name}
     npm run start
-    
+
     See package.json for other available commands.
     Happy hacking !
     `);
