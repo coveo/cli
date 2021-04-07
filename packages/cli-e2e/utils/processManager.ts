@@ -38,6 +38,12 @@ export class ProcessManager {
             currentProcess.on('exit', () => {
               exit();
             });
+            if (!Number.isInteger(currentProcess.pid)) {
+              console.error(
+                `Process pid is not a number. Received pid: ${currentProcess.pid}`
+              );
+              resolve();
+            }
             process.kill(-currentProcess.pid);
             resolve();
           })
