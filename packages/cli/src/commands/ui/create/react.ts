@@ -15,7 +15,6 @@ import {
   IsNodeVersionAbove,
   IsNpxInstalled,
 } from '../../../lib/decorators/preconditions';
-import {ApiKeyManager} from '../../../lib/platform/apiKeyManager';
 
 export default class React extends Command {
   static templateName = '@coveo/cra-template';
@@ -80,8 +79,7 @@ export default class React extends Command {
 
   private async setupEnvironmentVariables(name: string) {
     const cfg = await this.configuration.get();
-    const {providerUsername} = await this.getUserInfo();
-    const apiKey = await this.createApiKey();
+    const {userInfo, apiKey} = await this.platformUserCredentials();
 
     const output = await spawnProcessOutput(
       'npm',
@@ -92,11 +90,11 @@ export default class React extends Command {
         '--orgId',
         cfg.organization,
         '--apiKey',
-        apiKey!,
+        apiKey.value!,
         '--platformUrl',
         platformUrl({environment: cfg.environment}),
         '--user',
-        providerUsername,
+        userInfo.providerUsername,
       ],
       {
         cwd: name,
@@ -125,19 +123,16 @@ export default class React extends Command {
     return new Config(this.config.configDir, this.error);
   }
 
-  private async getUserInfo() {
+  private async platformUserCredentials() {
+    const args = this.args;
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();
     await platformClient.initialize();
 
-    return await platformClient.user.get();
-  }
+    const userInfo = await platformClient.user.get();
+    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
 
-  private async createApiKey() {
-    const args = this.args;
-    const apiKeyManager = new ApiKeyManager();
-    const {value} = await apiKeyManager.createImpersonateApiKey(args.name);
-    return value;
+    return {userInfo, apiKey};
   }
 
   private get flags() {

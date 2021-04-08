@@ -12,7 +12,6 @@ import {
   Preconditions,
   IsAuthenticated,
 } from '../../../lib/decorators/preconditions/';
-import {ApiKeyManager} from '../../../lib/platform/apiKeyManager';
 
 export default class Angular extends Command {
   static templateName = '@coveo/angular';
@@ -61,11 +60,10 @@ export default class Angular extends Command {
 
   private async addCoveoToProject(applicationName: string, defaults: boolean) {
     const cfg = await this.configuration.get();
-    const {providerUsername} = await this.getUserInfo();
+    const {userInfo, apiKey} = await this.platformUserCredentials();
     const flags = this.flags;
     const schematicVersion =
       flags.version || getPackageVersion(Angular.templateName);
-    const apiKey = await this.createApiKey();
 
     const cliArgs = [
       'add',
@@ -73,11 +71,11 @@ export default class Angular extends Command {
       '--org-id',
       cfg.organization,
       '--api-key',
-      apiKey!,
+      apiKey.value!,
       '--platform-url',
       platformUrl({environment: cfg.environment}),
       '--user',
-      providerUsername,
+      userInfo.providerUsername,
     ];
 
     if (defaults) {
@@ -113,11 +111,16 @@ export default class Angular extends Command {
     return await platformClient.user.get();
   }
 
-  private async createApiKey() {
+  private async platformUserCredentials() {
     const args = this.args;
-    const apiKeyManager = new ApiKeyManager();
-    const {value} = await apiKeyManager.createImpersonateApiKey(args.name);
-    return value;
+    const authenticatedClient = new AuthenticatedClient();
+    const platformClient = await authenticatedClient.getClient();
+    await platformClient.initialize();
+
+    const userInfo = await platformClient.user.get();
+    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
+
+    return {userInfo, apiKey};
   }
 
   private get flags() {

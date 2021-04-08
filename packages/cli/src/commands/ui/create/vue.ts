@@ -81,11 +81,10 @@ export default class Vue extends Command {
 
   private async invokePlugin(applicationName: string) {
     const cfg = await this.configuration.get();
-    const {providerUsername} = await this.getUserInfo();
+    const {userInfo, apiKey} = await this.platformUserCredentials();
 
     const flags = this.flags;
     const presetVersion = flags.version || getPackageVersion(Vue.templateName);
-    const apiKey = await this.createApiKey();
 
     const cliArgs = [
       'add',
@@ -93,11 +92,11 @@ export default class Vue extends Command {
       '--orgId',
       cfg.organization,
       '--apiKey',
-      apiKey!,
+      apiKey.value!,
       '--platformUrl',
       platformUrl({environment: cfg.environment}),
       '--user',
-      providerUsername,
+      userInfo.providerUsername,
     ];
 
     return this.runVueCliCommand(cliArgs, {
@@ -162,11 +161,16 @@ export default class Vue extends Command {
     return await platformClient.user.get();
   }
 
-  private async createApiKey() {
+  private async platformUserCredentials() {
     const args = this.args;
-    const apiKeyManager = new ApiKeyManager();
-    const {value} = await apiKeyManager.createImpersonateApiKey(args.name);
-    return value;
+    const authenticatedClient = new AuthenticatedClient();
+    const platformClient = await authenticatedClient.getClient();
+    await platformClient.initialize();
+
+    const userInfo = await platformClient.user.get();
+    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
+
+    return {userInfo, apiKey};
   }
 
   private get flags() {
