@@ -76,8 +76,7 @@ export function setupUIProject(
 
 export function getConfig() {
   const pathToConfig = resolve(
-    __dirname,
-    ...new Array(4).fill('..'),
+    homedir(),
     '.config',
     '@coveo',
     'cli',
