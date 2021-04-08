@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/coveo/cli/compare/v0.6.1...v0.7.0) (2021-03-29)
+
+
+### Bug Fixes
+
+* **angular:** fix search-token-server path ([#115](https://github.com/coveo/cli/issues/115)) ([c4b74e7](https://github.com/coveo/cli/commit/c4b74e75c075b8da082ce0f740ae358177dafebc))
+* **angular:** npm start command on Angular project returns warning ([#93](https://github.com/coveo/cli/issues/93)) ([6b0f104](https://github.com/coveo/cli/commit/6b0f104ac3f8ea7cb9338a77a4d4d8bea9712660))
+
+
+
+
+
+## [0.6.1](https://github.com/coveo/cli/compare/v0.6.0...v0.6.1) (2021-03-19)
+
+
+### Bug Fixes
+
+* **angular:** add missing file to angular project ([#95](https://github.com/coveo/cli/issues/95)) ([4a406c8](https://github.com/coveo/cli/commit/4a406c81a7dc48ba49185f579a634416abd9d5f2))
+
+
+
+
+
 # [0.6.0](https://github.com/coveo/cli/compare/v0.5.0...v0.6.0) (2021-03-17)
 
 

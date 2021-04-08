@@ -23,8 +23,34 @@
     }
   },
   "snyk": {
-    "org": "coveo-jsui",
-    "no_container_images": true
+    "org": "coveo-developer-experience",
+    "no_container_images": true,
+    "configurations": [
+      {
+        "project_name": "coveo/cli:package.json",
+        "file": "package.json"
+      },
+      {
+        "project_name": "coveo/cli:packages/cli/package.json",
+        "file": "packages/cli/package.json"
+      },
+      {
+        "project_name": "coveo/cli:packages/angular/package.json",
+        "file": "packages/angular/package.json"
+      },
+      {
+        "project_name": "coveo/cli:packages/cra-template/package.json",
+        "file": "packages/cra-template/package.json"
+      },
+      {
+        "project_name": "coveo/cli:packages/search-token-server/package.json",
+        "file": "packages/search-token-server/package.json"
+      },
+      {
+        "project_name": "coveo/cli:packages/vue-cli-plugin-typescript/package.json",
+        "file": "packages/vue-cli-plugin-typescript/package.json"
+      }
+    ]
   },
   "observatory": {
     "no_endpoint": true

@@ -1,45 +1,56 @@
-import {Command} from '@oclif/command';
+import {Command, flags} from '@oclif/command';
 import {
   buildAnalyticsFailureHook,
   buildAnalyticsSuccessHook,
 } from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {platformUrl} from '../../../lib/platform/environment';
-import {
-  spawnProcess,
-  SpawnProcessOutput,
-  spawnProcessOutput,
-} from '../../../lib/utils/process';
-import {Storage} from '../../../lib/oauth/storage';
-import AuthenticationRequired from '../../../lib/decorators/authenticationRequired';
+import {spawnProcess, spawnProcessOutput} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {lt as isVersionLessThan} from 'semver';
-import {constants} from 'os';
-
-const linkToReadme =
-  'https://github.com/coveo/cli/wiki#coveo-uicreatereact-requirements';
+import {getPackageVersion} from '../../../lib/utils/misc';
+import {join} from 'path';
+import {
+  Preconditions,
+  IsAuthenticated,
+  IsNodeVersionAbove,
+  IsNpxInstalled,
+} from '../../../lib/decorators/preconditions';
 
 export default class React extends Command {
-  static description = `Create a Coveo Headless-powered search page with the React web framework. See ${linkToReadme}`;
+  static templateName = '@coveo/cra-template';
+  /**
+   * Node.JS v10.16.0 is the first version that included NPX (via NPM).
+   * Future requirement should be based on https://create-react-app.dev/docs/getting-started/#creating-an-app.
+   */
+  static requiredNodeVersion = '10.16.0';
+
+  static description =
+    'Create a Coveo Headless-powered search page with the React web framework. See https://docs.coveo.com/headless and https://reactjs.org/.';
 
   static examples = [
     '$ coveo ui:create:react myapp',
     '$ coveo ui:create:react --help',
   ];
 
+  static flags = {
+    version: flags.string({
+      char: 'v',
+      description: `Version of ${React.templateName} to use.`,
+      default: getPackageVersion(React.templateName),
+    }),
+  };
+
   static args = [
     {name: 'name', description: 'The target application name.', required: true},
   ];
 
-  @AuthenticationRequired()
+  @Preconditions(
+    IsAuthenticated(),
+    IsNodeVersionAbove(React.requiredNodeVersion),
+    IsNpxInstalled()
+  )
   async run() {
     const {args} = this.parse(React);
-    if (!(await this.checkIfUserHasNodeGreaterThan10())) {
-      return;
-    }
-    if (!(await this.checkIfUserHasNpx())) {
-      return;
-    }
 
     await this.createProject(args.name);
     await this.setupEnvironmentVariables(args.name);
@@ -56,19 +67,21 @@ export default class React extends Command {
   }
 
   private createProject(name: string) {
+    const {flags} = this.parse(React);
+    const templateVersion =
+      flags.version || getPackageVersion(React.templateName);
     return this.runReactCliCommand([
       name,
       '--template',
-      this.getReactTemplate(),
+      `${React.templateName}@${templateVersion}`,
     ]);
   }
 
   private async setupEnvironmentVariables(name: string) {
     const cfg = await this.configuration.get();
-    const storage = await this.storage.get();
     const {providerUsername} = await this.getUserInfo();
 
-    return spawnProcess(
+    const output = await spawnProcessOutput(
       'npm',
       [
         'run',
@@ -77,7 +90,7 @@ export default class React extends Command {
         '--orgId',
         cfg.organization,
         '--apiKey',
-        storage.accessToken!,
+        cfg.accessToken!,
         '--platformUrl',
         platformUrl({environment: cfg.environment}),
         '--user',
@@ -87,10 +100,19 @@ export default class React extends Command {
         cwd: name,
       }
     );
-  }
 
-  private getReactTemplate(): string {
-    return '@coveo/cra-template';
+    if (output.stderr) {
+      this.warn(`
+      An unknown error happened while trying to create the .env file in the project. Please refer to ${join(
+        name,
+        'README.md'
+      )} for more detail.
+      ${output.stderr}
+      `);
+      return false;
+    }
+
+    return true;
   }
 
   private runReactCliCommand(args: string[], options = {}) {
@@ -101,88 +123,11 @@ export default class React extends Command {
     return new Config(this.config.configDir, this.error);
   }
 
-  private get storage() {
-    return new Storage();
-  }
-
   private async getUserInfo() {
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();
     await platformClient.initialize();
 
     return await platformClient.user.get();
-  }
-
-  private async checkIfUserHasNodeGreaterThan10() {
-    const output = await spawnProcessOutput('node', ['--version']);
-    if (this.isMissingExecutable(output)) {
-      this.warn(`
-      ${this.id} requires Node.js to run.
-      `);
-      this.warnHowToInstallNode();
-      return false;
-    }
-
-    if (output.stderr) {
-      this.warn(`
-      ${this.id} requires a valid Node.js installation to run.
-      An unknown error happened while trying to determine your node version with node --version
-      ${output.stderr}
-      `);
-      this.warnHowToInstallNode();
-      return false;
-    }
-
-    const requiredNodeVersionForCreateReactApp = '10.16.0';
-    if (
-      isVersionLessThan(output.stdout, requiredNodeVersionForCreateReactApp)
-    ) {
-      this.warn(`
-      ${this.id} uses create-react-app, which needs a Node.js version greater than ${requiredNodeVersionForCreateReactApp}
-      Version detected: ${output.stdout}
-      `);
-      this.warnHowToInstallNode();
-      return false;
-    }
-
-    return true;
-  }
-
-  private async checkIfUserHasNpx() {
-    const output = await spawnProcessOutput('npx', ['--version']);
-
-    if (this.isMissingExecutable(output)) {
-      this.warn(`
-      ${this.id} requires npx to run.
-      Newer version Node.js comes bundled with npx.
-      `);
-      this.warnHowToInstallNode();
-      return false;
-    }
-
-    if (output.stderr) {
-      this.warn(`
-      ${this.id} requires a valid npx installation to run.
-      An unknown error happened while trying to determine your npx version with npx --version.
-      ${output.stderr}
-      `);
-      this.warnHowToInstallNode();
-      return false;
-    }
-
-    return true;
-  }
-
-  private isMissingExecutable(output: SpawnProcessOutput) {
-    return (
-      output.exitCode !== null &&
-      Math.abs(output.exitCode) === constants.errno.ENOENT
-    );
-  }
-
-  private warnHowToInstallNode() {
-    this.warn(`
-    Please visit ${linkToReadme} for more detailed installation information.
-    `);
   }
 }

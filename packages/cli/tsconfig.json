@@ -10,7 +10,8 @@
     "strict": true,
     "target": "es2017",
     "noEmitOnError": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["jest"]
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "typings/**/*.d.ts"]
 }
