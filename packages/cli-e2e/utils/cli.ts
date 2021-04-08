@@ -1,25 +1,11 @@
+import type {ChildProcessWithoutNullStreams} from 'child_process';
+import {resolve, join} from 'path';
+import {mkdirSync} from 'fs';
+import {homedir} from 'os';
+
 import stripAnsi from 'strip-ansi';
-import {ChildProcessWithoutNullStreams, spawn} from 'child_process';
-import {resolve} from 'path';
-import {EOL} from 'os';
 
-export function killCliProcess(cliProcess: ChildProcessWithoutNullStreams) {
-  const waitForKill = new Promise<void>((resolve) => {
-    cliProcess.on('close', () => resolve());
-  });
-  cliProcess.kill('SIGINT');
-  return waitForKill;
-}
-
-export function killCliProcessFamily(
-  cliProcessLeader: ChildProcessWithoutNullStreams
-) {
-  const waitForKill = new Promise<void>((resolve) => {
-    cliProcessLeader.on('close', () => resolve());
-  });
-  process.kill(-cliProcessLeader.pid);
-  return waitForKill;
-}
+import {ProcessManager} from './processManager';
 
 export function isYesNoPrompt(data: string) {
   return data.trimEnd().toLowerCase().endsWith('(y/n):');
@@ -32,7 +18,7 @@ export function isGenericYesNoPrompt(data: string) {
   } catch (error) {
     console.log('Unable to strip ansi from string', error);
   }
-  return stripedData.match(/\(y\/n\)[\s:]*$/i) !== null;
+  return /\(y\/n\)[\s:]*$/i.test(stripedData);
 }
 
 export function answerPrompt(
@@ -48,55 +34,37 @@ export function answerPrompt(
   });
 }
 
-export async function setupUIProject(
-  commandArgs: string,
-  projectName: string,
-  cliProcesses: ChildProcessWithoutNullStreams[]
-) {
-  const createProjectPromise = new Promise<void>((resolve) => {
-    const versionToTest = process.env.UI_TEMPLATE_VERSION;
-    let command = [commandArgs, projectName];
-    if (versionToTest) {
-      command = command.concat(['-v', versionToTest]);
-      process.stdout.write(
-        `Testing with version ${versionToTest} of the template`
-      );
-    } else {
-      process.stdout.write('Testing with published version of the template');
-    }
-    const buildProcess = spawn(CLI_EXEC_PATH, command);
-
-    buildProcess.stdout.on('close', async () => {
-      resolve();
-    });
-    buildProcess.stdout.on('data', async (data) => {
-      if (isGenericYesNoPrompt(data.toString())) {
-        await answerPrompt(`y${EOL}`, buildProcess);
-      }
-    });
-  });
-
-  await createProjectPromise;
-
-  return new Promise<void>((resolve) => {
-    const startServerProcess = spawn('npm', ['run', 'start'], {
-      cwd: projectName,
-      detached: true,
-    });
-
-    cliProcesses.push(startServerProcess);
-    setTimeout(() => {
-      resolve();
-    }, 15e3);
-  });
+export interface ISetupUIProjectOptionsArgs {
+  flags?: string[];
 }
 
-export async function teardownUIProject(
-  cliProcesses: ChildProcessWithoutNullStreams[]
+export function getProjectPath(projectName: string) {
+  const uiProjectFolderName = 'ui-projects';
+  mkdirSync(join(homedir(), uiProjectFolderName), {recursive: true});
+  return join(homedir(), uiProjectFolderName, projectName);
+}
+
+export function setupUIProject(
+  processManager: ProcessManager,
+  commandArgs: string,
+  projectName: string,
+  options: ISetupUIProjectOptionsArgs = {}
 ) {
-  return Promise.all(
-    cliProcesses.map((cliProcess) => killCliProcessFamily(cliProcess))
-  );
+  const versionToTest = process.env.UI_TEMPLATE_VERSION;
+  let command = [commandArgs, projectName, ...(options.flags || [])];
+
+  if (versionToTest) {
+    command = command.concat(['-v', versionToTest]);
+    console.log(`Testing with version ${versionToTest} of the template`);
+  } else {
+    console.log('Testing with published version of the template');
+  }
+
+  const buildProcess = processManager.spawn(CLI_EXEC_PATH, command, {
+    cwd: resolve(getProjectPath(projectName), '..'),
+  });
+
+  return buildProcess;
 }
 
 export const CLI_EXEC_PATH = resolve(__dirname, '../../cli/bin/run');

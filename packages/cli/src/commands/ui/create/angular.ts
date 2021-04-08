@@ -2,7 +2,10 @@ import {Command, flags} from '@oclif/command';
 import {platformUrl} from '../../../lib/platform/environment';
 import {Config} from '../../../lib/config/config';
 import {spawnProcess} from '../../../lib/utils/process';
-import {buildAnalyticsFailureHook} from '../../../hooks/analytics/analytics';
+import {
+  buildAnalyticsFailureHook,
+  buildAnalyticsSuccessHook,
+} from '../../../hooks/analytics/analytics';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {
@@ -14,7 +17,7 @@ export default class Angular extends Command {
   static templateName = '@coveo/angular';
 
   static description =
-    'Create a Coveo Headless-powered search page with the Angular web framework. See https://docs.coveo.com/en/headless and https://angular.io/.';
+    'Create a Coveo Headless-powered search page with the Angular web framework. See https://docs.coveo.com/headless and https://angular.io/.';
 
   static flags = {
     version: flags.string({
@@ -38,6 +41,11 @@ export default class Angular extends Command {
     const {args, flags} = this.parse(Angular);
     await this.createProject(args.name, flags.defaults);
     await this.addCoveoToProject(args.name, flags.defaults);
+    this.displayFeedbackAfterSuccess(args.name);
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsSuccessHook(this, flags)
+    );
   }
 
   private async createProject(name: string, defaults: boolean) {
@@ -83,9 +91,10 @@ export default class Angular extends Command {
   }
 
   async catch(err?: Error) {
+    const {flags} = this.parse(Angular);
     await this.config.runHook(
       'analytics',
-      buildAnalyticsFailureHook(this, {}, err)
+      buildAnalyticsFailureHook(this, flags, err)
     );
     throw err;
   }
@@ -100,5 +109,17 @@ export default class Angular extends Command {
     await platformClient.initialize();
 
     return await platformClient.user.get();
+  }
+
+  private displayFeedbackAfterSuccess(name: string) {
+    this.log(`
+    To get started:
+    
+    cd ${name}
+    npm run start
+    
+    See package.json for other available commands.
+    Happy hacking !
+    `);
   }
 }

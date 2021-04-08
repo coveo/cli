@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@angular/cli": "^11.1.4",
-    "@coveord/platform-client": "^9.29.0",
+    "@coveord/platform-client": "^18.2.1",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^3",
@@ -69,7 +69,19 @@
     ],
     "topics": {
       "auth": {
-        "description": "Manage authentification against the Coveo platform"
+        "description": "manage authentification against the Coveo platform"
+      },
+      "config": {
+        "description": "manage Coveo CLI configuration"
+      },
+      "org": {
+        "description": "manage Coveo organizations"
+      },
+      "ui": {
+        "description": "manage user interface deployments"
+      },
+      "ui:create": {
+        "description": "create a user interface powered by different front end frameworks and Coveo Headless"
       }
     },
     "hooks": {
