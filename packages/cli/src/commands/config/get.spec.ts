@@ -6,7 +6,7 @@ import {Config} from '../../lib/config/config';
 import {test} from '@oclif/test';
 const mockedConfig = mocked(Config);
 
-describe('config', () => {
+describe('config:get', () => {
   const mockGet = jest.fn();
   const mockSet = jest.fn();
 

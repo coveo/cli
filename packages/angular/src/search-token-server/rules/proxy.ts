@@ -50,7 +50,7 @@ export function startProxyServerFromRootApp(_options: CoveoSchema): Rule {
       const packageJson = JSON.parse(packageJsonBuffer.toString());
 
       packageJson.scripts['start'] =
-        'concurrently "npm run start-server" "ng serve"';
+        'concurrently --raw "npm run start-server" "ng serve"';
       packageJson.scripts['start-server'] = 'node ./scripts/start-server.js';
 
       tree.overwrite(
