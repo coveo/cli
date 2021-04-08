@@ -58,9 +58,6 @@ export function setupUIProject(
 ) {
   const versionToTest = process.env.UI_TEMPLATE_VERSION;
   const uniqueProjectName = `${process.env.GITHUB_ACTION}-${projectName}`;
-  process.stdout.write('\n********* TODO: TO DELETE ************\n');
-  process.stdout.write(uniqueProjectName);
-  process.stdout.write('\n********* TODO: TO DELETE ************\n');
   let command = [commandArgs, uniqueProjectName, ...(options.flags || [])];
 
   if (versionToTest) {
