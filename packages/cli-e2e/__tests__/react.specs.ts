@@ -14,7 +14,7 @@ describe('ui', () => {
     let processManager: ProcessManager;
     // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
     const clientPort = '3000';
-    const projectName = 'react-project';
+    const projectName = `${process.env.TEST_RUN_ID}-react-project`;
     const searchPageEndpoint = `http://localhost:${clientPort}`;
     const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
     let interceptedRequests: HTTPRequest[] = [];

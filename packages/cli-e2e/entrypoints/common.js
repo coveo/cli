@@ -1,6 +1,7 @@
 const {resolve, join} = require('path');
 const {execSync, spawnSync} = require('child_process');
 const {existsSync, mkdirSync, writeFileSync} = require('fs');
+const {randomBytes} = require('crypto');
 
 const DOCKER_IMAGE_NAME = 'coveo-cli-e2e-image';
 const composeProjectName = 'coveo-cli-e2e';
@@ -62,11 +63,7 @@ const ensureDockerImageIsPresent = () => {
 };
 
 const createEnvFile = () => {
-  const environmentVariables = [
-    'PLATFORM_USER_NAME',
-    'PLATFORM_USER_PASSWORD',
-    'GITHUB_ACTION',
-  ];
+  const environmentVariables = ['PLATFORM_USER_NAME', 'PLATFORM_USER_PASSWORD'];
 
   if (existsSync('.env')) {
     return;
@@ -74,9 +71,14 @@ const createEnvFile = () => {
 
   writeFileSync(
     '.env',
-    environmentVariables
-      .map((variable) => `${variable}=${process.env[variable]}`)
-      .join('\n')
+    [
+      ...environmentVariables.map(
+        (variable) => `${variable}=${process.env[variable]}`
+      ),
+      `TEST_RUN_ID=${
+        process.env.GITHUB_ACTION || randomBytes(16).toString('hex')
+      }`,
+    ].join('\n')
   );
 };
 
