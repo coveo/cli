@@ -13,7 +13,6 @@ import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {platformUrl} from '../../../lib/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';
 import {getPackageVersion} from '../../../lib/utils/misc';
-import {ApiKeyManager} from '../../../lib/platform/apiKeyManager';
 
 export default class Vue extends Command {
   static templateName = '@coveo/vue-cli-plugin-typescript';
