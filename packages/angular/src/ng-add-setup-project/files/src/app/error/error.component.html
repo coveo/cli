@@ -1,0 +1,19 @@
+<section class="warning-bg full-height center">
+  <div class="inner-container">
+    <p class="mat-display-1 mb-5">Invalid Environment Variables</p>
+    <p class="mat-headline">
+      You should have a valid <code>.env</code> file at the root of this
+      project. You can use <code>.env.example</code> as starting point and make
+      sure to replace all placeholder variables <code>&#60;...&#62;</code> by
+      the proper information for your organization.
+    </p>
+
+    <div *ngIf="this.errorMessage" class="mat-subheading-2">
+      Error Message: <b>{{ this.errorMessage }}</b>
+    </div>
+
+    <p class="mat-subheading-1">
+      Refer to the project <b>README</b> file for more information.
+    </p>
+  </div>
+</section>
