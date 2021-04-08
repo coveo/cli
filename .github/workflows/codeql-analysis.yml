@@ -12,7 +12,6 @@
 name: "CodeQL"
 
 on:
-  workflow_dispatch:
   push:
     branches: [ master ]
   pull_request:
@@ -20,6 +19,12 @@ on:
     branches: [ master ]
   schedule:
     - cron: '22 17 * * 3'
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Bogus param'
+        required: true
+        default: 'Mona the Octocat'
 
 jobs:
   analyze:
