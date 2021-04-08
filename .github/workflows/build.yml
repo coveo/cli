@@ -11,7 +11,6 @@ jobs:
     env:
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -24,27 +23,11 @@ jobs:
       - name: Build CLI
         working-directory: ./packages/cli
         run: tsc -b
-      - name: Set the template version
-        run: |
-          node scripts/store-next-test-version.js --variable=UI_TEMPLATE_VERSION --output=$GITHUB_ENV
-      - name: Bump template versions
-        run: |
-          echo "E2E tests should target template version ${{ env.UI_TEMPLATE_VERSION }}"
-          echo "//registry.npmjs.org/:_authToken=${{ env.NPM_TOKEN }}" > ~/.npmrc
-          npm run npm:bump:template -- -- ${{ env.UI_TEMPLATE_VERSION }}
-          npm run npm:publish:template
-          node scripts/wait-for-published-packages.js -v ${{ env.UI_TEMPLATE_VERSION }}
-      - uses: actions/upload-artifact@v2
-        if: failure()
-        with:
-          name: npm-logs
-          path: /home/runner/.npm/_logs/*debug.log
       - name: End-to-end Tests
         working-directory: ./packages/cli-e2e
-        run: |
-          echo "Running E2E tests with version ${{ env.UI_TEMPLATE_VERSION }}"
-          npm run test-e2e
+        run: npm run test-e2e
       - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
         with:
           name: test-screenshots
           path: ./packages/cli-e2e/screenshots

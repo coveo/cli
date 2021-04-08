@@ -2,31 +2,16 @@ require('isomorphic-fetch');
 require('abortcontroller-polyfill');
 require('isomorphic-form-data');
 
-import {ensureDirSync, readJsonSync} from 'fs-extra';
+import type {ChildProcessWithoutNullStreams} from 'child_process';
+import {resolve, join} from 'path';
+import {mkdirSync} from 'fs';
+import {homedir} from 'os';
+
 import stripAnsi from 'strip-ansi';
-import {ChildProcessWithoutNullStreams, spawn} from 'child_process';
-import {resolve} from 'path';
-import {EOL} from 'os';
-import {join} from 'path';
+
+import {ProcessManager} from './processManager';
+import {readJsonSync} from 'fs-extra';
 import PlatformClient, {Environment} from '@coveord/platform-client';
-
-export function killCliProcess(cliProcess: ChildProcessWithoutNullStreams) {
-  const waitForKill = new Promise<void>((resolve) => {
-    cliProcess.on('close', () => resolve());
-  });
-  cliProcess.kill('SIGINT');
-  return waitForKill;
-}
-
-export function killCliProcessFamily(
-  cliProcessLeader: ChildProcessWithoutNullStreams
-) {
-  const waitForKill = new Promise<void>((resolve) => {
-    cliProcessLeader.on('close', () => resolve());
-  });
-  process.kill(-cliProcessLeader.pid);
-  return waitForKill;
-}
 
 export function isYesNoPrompt(data: string) {
   return data.trimEnd().toLowerCase().endsWith('(y/n):');
@@ -39,7 +24,7 @@ export function isGenericYesNoPrompt(data: string) {
   } catch (error) {
     console.log('Unable to strip ansi from string', error);
   }
-  return stripedData.match(/\(y\/n\)[\s:]*$/i) !== null;
+  return /\(y\/n\)[\s:]*$/i.test(stripedData);
 }
 
 export function answerPrompt(
@@ -57,74 +42,39 @@ export function answerPrompt(
 
 export interface ISetupUIProjectOptionsArgs {
   flags?: string[];
-  timeout?: number;
 }
 
-export async function setupUIProject(
+export function getProjectPath(projectName: string) {
+  const uiProjectFolderName = 'ui-projects';
+  mkdirSync(join(homedir(), uiProjectFolderName), {recursive: true});
+  return join(homedir(), uiProjectFolderName, projectName);
+}
+
+export function setupUIProject(
+  processManager: ProcessManager,
   commandArgs: string,
   projectName: string,
-  cliProcesses: ChildProcessWithoutNullStreams[],
   options: ISetupUIProjectOptionsArgs = {}
 ) {
-  const uiProjectFolderName = '../ui-projects';
-  ensureDirSync(uiProjectFolderName);
-  const defaultOptions: ISetupUIProjectOptionsArgs = {timeout: 15e3};
-  options = Object.assign(defaultOptions, options);
+  const versionToTest = process.env.UI_TEMPLATE_VERSION;
+  const uniqueProjectName = `${process.env.GITHUB_ACTION}-${projectName}`;
+  process.stdout.write('\n********* TODO: TO DELETE ************\n');
+  process.stdout.write(uniqueProjectName);
+  process.stdout.write('\n********* TODO: TO DELETE ************\n');
+  let command = [commandArgs, uniqueProjectName, ...(options.flags || [])];
 
-  const createProjectPromise = new Promise<void>((resolve) => {
-    const versionToTest = process.env.UI_TEMPLATE_VERSION;
-    const uniqueProjectName = `${process.env.GITHUB_ACTION}-${projectName}`;
-    process.stdout.write('\n********* TODO: TO DELETE ************\n');
-    process.stdout.write(uniqueProjectName);
-    process.stdout.write('\n********* TODO: TO DELETE ************\n');
+  if (versionToTest) {
+    command = command.concat(['-v', versionToTest]);
+    console.log(`Testing with version ${versionToTest} of the template`);
+  } else {
+    console.log('Testing with published version of the template');
+  }
 
-    let command = [commandArgs, uniqueProjectName, ...(options.flags || [])];
-
-    if (versionToTest) {
-      command = command.concat(['-v', versionToTest]);
-      process.stdout.write(
-        `Testing with version ${versionToTest} of the template`
-      );
-    } else {
-      process.stdout.write('Testing with published version of the template');
-    }
-
-    const buildProcess = spawn(CLI_EXEC_PATH, command, {
-      cwd: uiProjectFolderName,
-    });
-
-    buildProcess.stdout.on('close', async () => {
-      resolve();
-    });
-
-    buildProcess.stdout.on('data', async (data) => {
-      if (isGenericYesNoPrompt(data.toString())) {
-        await answerPrompt(`y${EOL}`, buildProcess);
-      }
-    });
+  const buildProcess = processManager.spawn(CLI_EXEC_PATH, command, {
+    cwd: resolve(getProjectPath(projectName), '..'),
   });
 
-  await createProjectPromise;
-
-  return new Promise<void>((resolve) => {
-    const startServerProcess = spawn('npm', ['run', 'start'], {
-      cwd: join(uiProjectFolderName, projectName),
-      detached: true,
-    });
-
-    cliProcesses.push(startServerProcess);
-    setTimeout(() => {
-      resolve();
-    }, options.timeout);
-  });
-}
-
-export async function teardownUIProject(
-  cliProcesses: ChildProcessWithoutNullStreams[]
-) {
-  return Promise.all(
-    cliProcesses.map((cliProcess) => killCliProcessFamily(cliProcess))
-  );
+  return buildProcess;
 }
 
 export function getConfig() {
