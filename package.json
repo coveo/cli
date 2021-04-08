@@ -54,10 +54,7 @@
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,json,html,vue,scss,css,md,yml}": "prettier --write",
-    "**/*.ts": [
-      "npm run lint:fix",
-      "git add"
-    ]
+    "**/*.ts": "eslint --fix"
   },
   "engines": {
     "node": ">=8.0.0"
@@ -66,8 +63,11 @@
     "setup": "npm i && lerna bootstrap",
     "build": "lerna run build",
     "test": "lerna run test",
+    "lint": "lerna run lint",
     "lint:check": "eslint .",
     "lint:fix": "eslint --fix .",
+    "prettier:check": "prettier .",
+    "prettier:fix": "prettier --write .",
     "prepack": "rimraf -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "postpack": "rm -f oclif.manifest.json",
     "version": "lerna run version",
