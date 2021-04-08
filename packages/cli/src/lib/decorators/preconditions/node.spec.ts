@@ -1,6 +1,6 @@
 jest.mock('../../utils/process');
 
-import * as dedent from 'dedent';
+import {dedent} from 'ts-dedent';
 import {constants} from 'os';
 import {mocked} from 'ts-jest/utils';
 import {spawnProcessOutput} from '../../utils/process';
@@ -72,7 +72,7 @@ describe('IsNodeVersionInRange', () => {
       expect(fakeCommand.warn).toHaveBeenCalledTimes(2);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
         foo requires a valid Node.js installation to run.
-        An unknown error happened while trying to determine your node version with node --version
+        An unknown error happened while running node --version.
         some random error oh no
       `);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`

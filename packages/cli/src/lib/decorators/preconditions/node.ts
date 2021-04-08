@@ -1,5 +1,5 @@
-import {getBinVersionDecorator} from './binVersionDecoratorFactory';
+import {getBinVersionPrecondition} from './binPreconditionsFactory';
 
-export const IsNodeVersionInRange = getBinVersionDecorator('node', {
+export const IsNodeVersionInRange = getBinVersionPrecondition('node', {
   prettyName: 'Node.js',
 });

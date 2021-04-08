@@ -1,3 +1,3 @@
-import {getBinVersionDecorator} from './binVersionDecoratorFactory';
+import {getBinVersionPrecondition} from './binPreconditionsFactory';
 
-export const IsNpmVersionInRange = getBinVersionDecorator('npm');
+export const IsNpmVersionInRange = getBinVersionPrecondition('npm');
