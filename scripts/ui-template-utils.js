@@ -1,7 +1,4 @@
-/* eslint-disable no-undef */
-
-const {spawn} = require('child_process');
-const {valid} = require('semver');
+const {spawnSync} = require('child_process');
 
 /**
  * All the UI templates used by 3rd-party CLIs.
@@ -15,41 +12,16 @@ const getUiTemplates = () => [
   '@coveo/angular',
 ];
 
-function cleanTestVersion(dirtyVersion) {
-  const versionRegex = /([0]+)\.([0]+)\.([0-9]+)/;
-  const match = dirtyVersion.match(versionRegex);
-  return match && match[0];
-}
-
-function getLastValidVersion(allVersions = []) {
-  let lastVersion = allVersions.pop();
-
-  while (allVersions.length > 0 && Boolean(valid(lastVersion)) == false) {
-    lastVersion = cleanTestVersion(allVersions.pop());
-  }
-  return lastVersion;
-}
-
-function getPackageLastTestVersion(packageName) {
-  let lastVersion = '';
-  const spawnProcess = spawn('npm', [
+function getCiTestPackageVersion(packageName) {
+  const ciTestVersion = spawnSync('npm', [
     'show',
-    `${packageName}@0.0.*`,
+    `${packageName}@ci-test`,
     'version',
-    '--json',
   ]);
-
-  spawnProcess.stdout.on('data', (data) => {
-    const allVersions = data.toString().split('\n');
-    lastVersion = getLastValidVersion(allVersions);
-  });
-
-  return new Promise((resolve) => {
-    spawnProcess.stdout.on('close', () => resolve(lastVersion));
-  });
+  return ciTestVersion.stdout;
 }
 
 module.exports = {
-  getPackageLastTestVersion,
+  getPackageLastTestVersion: getCiTestPackageVersion,
   getUiTemplates,
 };

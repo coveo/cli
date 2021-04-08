@@ -52,7 +52,10 @@ async function possiblyAcceptCustomerAgreement(page: Page) {
 }
 
 export function runLoginCommand() {
-  const cliProcess = spawn(CLI_EXEC_PATH, ['auth:login', '-e=dev']);
+  const cliProcess = global.processManager!.spawn(CLI_EXEC_PATH, [
+    'auth:login',
+    '-e=dev',
+  ]);
   cliProcess.stderr.on('data', async (data) => {
     if (isYesNoPrompt(data.toString())) {
       await answerPrompt('n', cliProcess);
