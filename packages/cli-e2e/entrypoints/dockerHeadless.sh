@@ -13,8 +13,10 @@ npm run build
 
 export UI_TEMPLATE_VERSION=0.0.0
 npm set registry http://verdaccio:4873
-yarn config set registry http://verdaccio:4873
+yarn config set  registry http://verdaccio:4873
 yarn config set -- --mutex network
+yarn config set -- --install.silent true
+yarn config set -- --silent true
 
 npm run npm:bump:template -- -- $UI_TEMPLATE_VERSION
 

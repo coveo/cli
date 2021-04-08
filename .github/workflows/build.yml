@@ -27,6 +27,7 @@ jobs:
         working-directory: ./packages/cli-e2e
         run: npm run test-e2e
       - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
         with:
           name: test-screenshots
           path: ./packages/cli-e2e/screenshots
