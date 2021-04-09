@@ -1,5 +1,4 @@
 import {
-  insertImport,
   addDeclarationToModule,
   addSymbolToNgModuleMetadata,
   addImportToModule,
@@ -36,7 +35,7 @@ export function updateNgModule(
     const changes = [
       ...injectInitService(source, appModulePath),
       ...getAllCoveoComponentsToInject(tree, source, appModulePath),
-      ...injectMaterialImports(source, appModulePath),
+      ...injectAdditionalImports(source, appModulePath),
     ];
 
     changes.map((change) => {
@@ -72,8 +71,11 @@ function getDefaultAppModuleContent() {
 }
 
 function isTypeScriptSourceFile(action: Action) {
-  const splitted = action.path.split('.');
-  return splitted.indexOf('ts') !== -1 && splitted.indexOf('spec') === -1;
+  return (
+    action.path.endsWith('.ts') &&
+    !action.path.endsWith('.d.ts') &&
+    !action.path.endsWith('.spec.ts')
+  );
 }
 
 function isCreateAction(action: Action) {
@@ -122,7 +124,7 @@ function getAllCoveoComponentsToInject(
   return changes;
 }
 
-export function injectMaterialImports(
+export function injectAdditionalImports(
   source: SourceFile,
   appModulePath: string
 ) {
@@ -135,6 +137,7 @@ export function injectMaterialImports(
     MatPaginatorModule: '@angular/material/paginator',
     MatSelectModule: '@angular/material/select',
     MatButtonModule: '@angular/material/button',
+    AppRoutingModule: './app-routing.module',
   };
 
   const changes: InsertChange[] = [];

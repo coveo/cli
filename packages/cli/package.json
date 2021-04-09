@@ -1,16 +1,14 @@
 {
   "name": "@coveo/cli",
   "private": false,
-  "version": "0.6.0",
+  "version": "0.7.0",
   "author": "Coveo",
   "engines": {
     "node": ">=14.15.1"
   },
   "dependencies": {
     "@angular/cli": "^11.1.4",
-    "@coveo/angular": "^0.6.0",
-    "@coveo/vue-cli-plugin-typescript": "^0.6.0",
-    "@coveord/platform-client": "^9.29.0",
+    "@coveord/platform-client": "^18.2.1",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^3",
@@ -21,19 +19,23 @@
     "cli-ux": "^5.5.1",
     "coveo.analytics": "^2.18.4",
     "create-react-app": "^4.0.3",
+    "dedent": "^0.7.0",
     "exponential-backoff": "^3.1.0",
     "fs-extra": "^9.1.0",
     "isomorphic-fetch": "^3.0.0",
     "isomorphic-form-data": "^2.0.0",
-    "keytar": "^7.3.0",
     "semver": "^7.3.4",
     "tslib": "^1"
   },
   "devDependencies": {
-    "@coveo/cra-template": "^0.6.0",
+    "@coveo/angular": "^0.7.0",
+    "@coveo/cra-template": "^0.7.0",
+    "@coveo/vue-cli-plugin-typescript": "^0.7.0",
     "@oclif/dev-cli": "^1.26.0",
     "@oclif/test": "^1",
+    "@types/dedent": "^0.7.0",
     "@types/fs-extra": "^9.0.6",
+    "@types/jest": "^26.0.22",
     "@types/node": "^10",
     "chai": "^4.2.0",
     "jest": "^26.6.3",
@@ -41,7 +43,7 @@
     "rimraf": "^3.0.2",
     "ts-jest": "^26.5.1",
     "ts-node": "^8",
-    "typescript": "^3.3"
+    "typescript": "4.2.3"
   },
   "files": [
     "/bin",
@@ -67,7 +69,19 @@
     ],
     "topics": {
       "auth": {
-        "description": "Manage authentification against the Coveo platform"
+        "description": "manage authentification against the Coveo platform"
+      },
+      "config": {
+        "description": "manage Coveo CLI configuration"
+      },
+      "org": {
+        "description": "manage Coveo organizations"
+      },
+      "ui": {
+        "description": "manage user interface deployments"
+      },
+      "ui:create": {
+        "description": "create a user interface powered by different front end frameworks and Coveo Headless"
       }
     },
     "hooks": {

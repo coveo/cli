@@ -14,7 +14,9 @@ async function copyFiles(srcDir, destDir) {
   return Promise.all(
     schematics.map(async (sch) => {
       if (await pathExists(`${srcDir}/${sch}/files`)) {
-        return copy(join(srcDir, sch, 'files'), join(destDir, sch, 'files'));
+        return copy(join(srcDir, sch, 'files'), join(destDir, sch, 'files'), {
+          filter: (src) => !src.endsWith('.d.ts'),
+        });
       }
     })
   );

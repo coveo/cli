@@ -54,7 +54,7 @@ export function castRegionToPlatformClient(r: PlatformRegion): Region {
     case 'eu-west-3':
       return Region.EU;
     case 'ap-southeast-2':
-      return Region.EU;
+      return Region.AU;
     default:
       return Region.US;
   }

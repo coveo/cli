@@ -1,9 +1,9 @@
-import {Typography} from '@material-ui/core';
+import {Grid, Typography} from '@material-ui/core';
 import React from 'react';
 import './Hero.css';
 
 interface IHeroProps {
-  logo: string;
+  logos: string[];
   welcome: string;
 }
 
@@ -14,7 +14,12 @@ function Anchor(props: React.HTMLProps<HTMLAnchorElement>) {
 const Hero: React.FunctionComponent<IHeroProps> = (props) => {
   return (
     <header className="App-header">
-      <img src={props.logo} className="App-logo" alt="logo" />
+      <Grid className="logo-container">
+        {props.logos.map((logo) => (
+          <img src={logo} className="App-logo" alt="logo" />
+        ))}
+      </Grid>
+
       <Typography variant="h5">{props.welcome}</Typography>
       <Typography variant="body1">
         This sample search page was built with{' '}
@@ -60,20 +65,17 @@ const Hero: React.FunctionComponent<IHeroProps> = (props) => {
         <li>
           <Anchor
             href="https://docs.coveo.com/en/headless"
-            value="Coveo Connect"
+            value="Coveo Headless documentation"
           />
+        </li>
+        <li>
+          <Anchor href="https://reactjs.org" value="React documentation" />
         </li>
         <li>
           <Anchor
-            href="https://connect.coveo.com/"
-            value="Coveo Headless Library"
+            href="https://material-ui.com/"
+            value="Material-ui Documentation"
           />
-        </li>
-        <li>
-          <Anchor href="https://reactjs.org" value="Learn React" />
-        </li>
-        <li>
-          <Anchor href="https://buefy.org/documentation" value="Buefy" />
         </li>
       </ul>
     </header>

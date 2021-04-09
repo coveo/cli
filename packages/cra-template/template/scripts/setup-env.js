@@ -21,7 +21,7 @@ function main() {
   if (!exists) {
     createEnvFile(filePath);
   } else {
-    console.log(`file ${filePath} already exist`);
+    console.error(`file ${filePath} already exists`);
   }
 }
 

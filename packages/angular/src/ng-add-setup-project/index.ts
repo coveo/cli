@@ -4,7 +4,10 @@ import {Rule, Tree, chain} from '@angular-devkit/schematics';
 
 import {CoveoSchema} from '../schema';
 import {createFiles} from '../common-rules/templates';
-import {runPackageInstallTask} from '../common-rules/dependencies';
+import {
+  allowCommonJsDependencies,
+  runPackageInstallTask,
+} from '../common-rules/dependencies';
 import {updateNgModule} from './rules/ng-module';
 import {addMaterialAngular, addToPackageJson} from './rules/dependencies';
 
@@ -29,5 +32,6 @@ export function setupDependencies(options: CoveoSchema): Rule {
       addToPackageJson('@coveo/search-token-server'),
       addToPackageJson('concurrently'),
       runPackageInstallTask(),
+      allowCommonJsDependencies(options),
     ]);
 }
