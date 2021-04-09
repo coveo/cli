@@ -131,7 +131,6 @@ describe('ui', () => {
     });
 
     it('should send a search query on searchbox submit', async () => {
-      const searchboxSelector = 'app-search-page app-search-box input';
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchboxSelector);
 

@@ -108,25 +108,30 @@ describe('ui', () => {
     });
 
     it('should retrieve the search token on the page load', async () => {
+      const tokenResponseListener = page.waitForResponse(tokenProxyEndpoint);
       page.goto(searchPageEndpoint);
       await page.waitForSelector(searchboxSelector);
 
-      const tokenResponse = await page.waitForResponse(tokenProxyEndpoint);
-      expect(JSON.parse(await tokenResponse.text())).toMatchObject({
+      expect(
+        JSON.parse(await (await tokenResponseListener).text())
+      ).toMatchObject({
         token: expect.stringMatching(/^eyJhb.+/),
       });
     });
 
-    it('should trigger search queries', async () => {
-      const searchboxSelector = '#search-page .autocomplete input';
+    it('should send a search query when the page is loaded', async () => {
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchboxSelector);
 
-      // Request from interface load
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+    });
+
+    it('should send a search query on searchbox submit', async () => {
+      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchboxSelector);
+
       interceptedRequests = [];
 
-      await page.waitForSelector(searchboxSelector);
       await page.focus(searchboxSelector);
       await page.keyboard.type('my query');
       await page.keyboard.press('Enter');

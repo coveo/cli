@@ -80,11 +80,14 @@ describe('ui', () => {
     });
 
     it('should retrieve the search token on the page load', async () => {
+      const tokenResponseListener = page.waitForResponse(tokenProxyEndpoint);
+
       page.goto(searchPageEndpoint);
       await page.waitForSelector(searchboxSelector);
 
-      const tokenResponse = await page.waitForResponse(tokenProxyEndpoint);
-      expect(JSON.parse(await tokenResponse.text())).toMatchObject({
+      expect(
+        JSON.parse(await (await tokenResponseListener).text())
+      ).toMatchObject({
         token: expect.stringMatching(/^eyJhb.+/),
       });
     });
