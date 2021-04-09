@@ -24,6 +24,7 @@ describe('ui', () => {
     let interceptedRequests: HTTPRequest[] = [];
     let page: Page;
     let processManager: ProcessManager;
+    const searchboxSelector = '#search-page .autocomplete input';
 
     beforeAll(async () => {
       processManager = new ProcessManager();
@@ -101,12 +102,15 @@ describe('ui', () => {
       await page.goto(searchPageEndpoint, {
         waitUntil: 'networkidle2',
       });
+      await page.waitForSelector(searchboxSelector);
 
       expect(await page.$('#search-page')).not.toBeNull();
     });
 
     it('should retrieve the search token on the page load', async () => {
       page.goto(searchPageEndpoint);
+      await page.waitForSelector(searchboxSelector);
+
       const tokenResponse = await page.waitForResponse(tokenProxyEndpoint);
       expect(JSON.parse(await tokenResponse.text())).toMatchObject({
         token: expect.stringMatching(/^eyJhb.+/),
@@ -116,6 +120,7 @@ describe('ui', () => {
     it('should trigger search queries', async () => {
       const searchboxSelector = '#search-page .autocomplete input';
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchboxSelector);
 
       // Request from interface load
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();

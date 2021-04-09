@@ -26,6 +26,8 @@ describe('ui', () => {
     let interceptedRequests: HTTPRequest[] = [];
     let page: Page;
 
+    const searchboxSelector = 'app-search-page app-search-box input';
+
     beforeAll(async () => {
       processManager = new ProcessManager();
       browser = await getNewBrowser();
@@ -103,6 +105,7 @@ describe('ui', () => {
       await page.goto(searchPageEndpoint, {
         waitUntil: 'networkidle2',
       });
+      await page.waitForSelector(searchboxSelector);
 
       expect(await page.$('app-search-page')).not.toBeNull();
     });
@@ -111,6 +114,7 @@ describe('ui', () => {
       const tokenResponseListener = page.waitForResponse(tokenProxyEndpoint);
 
       page.goto(searchPageEndpoint);
+      await page.waitForSelector(searchboxSelector);
 
       expect(
         JSON.parse(await (await tokenResponseListener).text())
@@ -121,16 +125,18 @@ describe('ui', () => {
 
     it('should send a search query when the page is loaded', async () => {
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchboxSelector);
+
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
     });
 
     it('should send a search query on searchbox submit', async () => {
       const searchboxSelector = 'app-search-page app-search-box input';
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchboxSelector);
 
       interceptedRequests = [];
 
-      await page.waitForSelector(searchboxSelector);
       await page.focus(searchboxSelector);
       await page.keyboard.type('my query');
       await page.keyboard.press('Enter');
