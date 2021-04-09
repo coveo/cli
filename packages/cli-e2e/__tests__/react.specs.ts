@@ -14,7 +14,7 @@ describe('ui', () => {
     let processManager: ProcessManager;
     // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
     const clientPort = '3000';
-    const projectName = `${process.env.TEST_RUN_ID}-react-project`;
+    const projectName = `${process.env.GITHUB_ACTION}-react-project`;
     const searchPageEndpoint = `http://localhost:${clientPort}`;
     const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
     let interceptedRequests: HTTPRequest[] = [];
@@ -40,8 +40,9 @@ describe('ui', () => {
       });
       await new Promise<void>((resolve) => {
         startServerProcess.stdout.on('data', async (data) => {
+          console.log(data.toString());
           if (
-            /You can now view react-project in the browser/.test(
+            /You can now view .*-react-project in the browser/.test(
               stripAnsi(data.toString()).replace(/\n/g, '')
             )
           ) {

@@ -63,7 +63,11 @@ const ensureDockerImageIsPresent = () => {
 };
 
 const createEnvFile = () => {
-  const environmentVariables = ['PLATFORM_USER_NAME', 'PLATFORM_USER_PASSWORD'];
+  const environmentVariables = [
+    'PLATFORM_USER_NAME',
+    'PLATFORM_USER_PASSWORD',
+    'GITHUB_ACTION',
+  ];
 
   if (existsSync('.env')) {
     return;
@@ -75,9 +79,6 @@ const createEnvFile = () => {
       ...environmentVariables.map(
         (variable) => `${variable}=${process.env[variable]}`
       ),
-      `TEST_RUN_ID=${
-        process.env.GITHUB_ACTION || randomBytes(16).toString('hex')
-      }`,
     ].join('\n')
   );
 };
