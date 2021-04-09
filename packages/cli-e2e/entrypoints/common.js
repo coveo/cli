@@ -1,7 +1,6 @@
 const {resolve, join} = require('path');
 const {execSync, spawnSync} = require('child_process');
 const {existsSync, mkdirSync, writeFileSync} = require('fs');
-const {randomBytes} = require('crypto');
 
 const DOCKER_IMAGE_NAME = 'coveo-cli-e2e-image';
 const composeProjectName = 'coveo-cli-e2e';
@@ -75,11 +74,9 @@ const createEnvFile = () => {
 
   writeFileSync(
     '.env',
-    [
-      ...environmentVariables.map(
-        (variable) => `${variable}=${process.env[variable]}`
-      ),
-    ].join('\n')
+    environmentVariables
+      .map((variable) => `${variable}=${process.env[variable]}`)
+      .join('\n')
   );
 };
 
