@@ -41,7 +41,6 @@ describe('ui', () => {
       });
       await new Promise<void>((resolve) => {
         startServerProcess.stdout.on('data', async (data) => {
-          console.log(data.toString());
           if (
             /You can now view .*-react-project in the browser/.test(
               stripAnsi(data.toString()).replace(/\n/g, '')
