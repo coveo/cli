@@ -18,6 +18,8 @@ jobs:
           node-version: '14'
       - name: Setup
         run: npm run setup
+      - name: Check linting
+        run: npm run lint
       - name: Tests
         run: npm run test
       - name: Build CLI

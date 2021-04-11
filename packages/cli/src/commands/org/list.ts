@@ -1,6 +1,5 @@
 import {Command} from '@oclif/command';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
-import {OrganizationModel} from '@coveord/platform-client';
 import {cli} from 'cli-ux';
 import {
   buildAnalyticsFailureHook,
