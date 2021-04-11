@@ -12,7 +12,7 @@ import {join} from 'path';
 import {
   Preconditions,
   IsAuthenticated,
-  IsNodeVersionAbove,
+  IsNodeVersionInRange,
   IsNpxInstalled,
 } from '../../../lib/decorators/preconditions';
 
@@ -20,9 +20,10 @@ export default class React extends Command {
   static templateName = '@coveo/cra-template';
   /**
    * Node.JS v10.16.0 is the first version that included NPX (via NPM).
-   * Future requirement should be based on https://create-react-app.dev/docs/getting-started/#creating-an-app.
+   * Future requirement should be based on https://create-react-app.dev/docs/getting-started/#creating-an-app
+   * and https://www.npmjs.com/package/create-react-app package.json engines section.
    */
-  static requiredNodeVersion = '10.16.0';
+  static requiredNodeVersion = '>=10.16.0';
 
   static description =
     'Create a Coveo Headless-powered search page with the React web framework. See https://docs.coveo.com/headless and https://reactjs.org/.';
@@ -46,7 +47,7 @@ export default class React extends Command {
 
   @Preconditions(
     IsAuthenticated(),
-    IsNodeVersionAbove(React.requiredNodeVersion),
+    IsNodeVersionInRange(React.requiredNodeVersion),
     IsNpxInstalled()
   )
   async run() {
