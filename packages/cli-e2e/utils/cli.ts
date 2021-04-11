@@ -57,8 +57,7 @@ export function setupUIProject(
   options: ISetupUIProjectOptionsArgs = {}
 ) {
   const versionToTest = process.env.UI_TEMPLATE_VERSION;
-  const uniqueProjectName = `${process.env.GITHUB_ACTION}-${projectName}`;
-  let command = [commandArgs, uniqueProjectName, ...(options.flags || [])];
+  let command = [commandArgs, projectName, ...(options.flags || [])];
 
   if (versionToTest) {
     command = command.concat(['-v', versionToTest]);
@@ -76,8 +75,7 @@ export function setupUIProject(
 
 export function getConfig() {
   const pathToConfig = resolve(
-    __dirname,
-    ...new Array(4).fill('..'),
+    homedir(),
     '.config',
     '@coveo',
     'cli',
