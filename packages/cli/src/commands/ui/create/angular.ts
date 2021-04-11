@@ -103,14 +103,6 @@ export default class Angular extends Command {
     return new Config(this.config.configDir, this.error);
   }
 
-  private async getUserInfo() {
-    const authenticatedClient = new AuthenticatedClient();
-    const platformClient = await authenticatedClient.getClient();
-    await platformClient.initialize();
-
-    return await platformClient.user.get();
-  }
-
   private async platformUserCredentials() {
     const args = this.args;
     const authenticatedClient = new AuthenticatedClient();
