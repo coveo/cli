@@ -1,6 +1,6 @@
 jest.mock('../../utils/process');
 
-import * as dedent from 'dedent';
+import {dedent} from 'ts-dedent';
 import {constants} from 'os';
 import {mocked} from 'ts-jest/utils';
 import {spawnProcessOutput} from '../../utils/process';
@@ -27,14 +27,21 @@ describe('IsNpxInstalled', () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsNpxInstalled()(fakeCommand)).resolves.toBe(false);
-      expect(fakeCommand.warn).toHaveBeenCalledTimes(2);
-      expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
-      foo requires npx to run.
-      Newer version Node.js comes bundled with npx.
-    `);
-      expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
+      expect(fakeCommand.warn).toHaveBeenCalledTimes(3);
+      expect(fakeCommand.warn).toHaveBeenNthCalledWith(
+        1,
+        'foo requires npx to run.'
+      );
+      expect(fakeCommand.warn).toHaveBeenNthCalledWith(
+        2,
+        dedent`
        Please visit https://github.com/coveo/cli/wiki/Node.js,-NPM-and-NPX-requirements for more detailed installation information.
-      `);
+      `
+      );
+      expect(fakeCommand.warn).toHaveBeenNthCalledWith(
+        3,
+        'Newer version Node.js comes bundled with npx.'
+      );
     });
   });
 
@@ -51,15 +58,18 @@ describe('IsNpxInstalled', () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsNpxInstalled()(fakeCommand)).resolves.toBe(false);
-      expect(fakeCommand.warn).toHaveBeenCalledTimes(2);
+      expect(fakeCommand.warn).toHaveBeenCalledTimes(3);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
         foo requires a valid npx installation to run.
-        An unknown error happened while checking for npx with npx --version.
+        An unknown error happened while running npx --version.
         some random error oh no
       `);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
         Please visit https://github.com/coveo/cli/wiki/Node.js,-NPM-and-NPX-requirements for more detailed installation information.
       `);
+      expect(fakeCommand.warn).toHaveBeenCalledWith(
+        'Newer version Node.js comes bundled with npx.'
+      );
     });
   });
 
