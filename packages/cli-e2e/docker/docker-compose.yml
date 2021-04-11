@@ -1,34 +1,34 @@
-version: "3.9"
+version: '3.9'
 
 services:
   runner:
-    image: "coveo-cli-e2e-image"
-    container_name: "coveo-cli-e2e-container"
+    image: 'coveo-cli-e2e-image'
+    container_name: 'coveo-cli-e2e-container'
     cap_add:
-      - "IPC_LOCK"
-      - "SYS_ADMIN"
-    env_file: "../.env"
+      - 'IPC_LOCK'
+      - 'SYS_ADMIN'
+    env_file: '../.env'
     privileged: true
     ports:
-      - "9229:9229"
+      - '9229:9229'
     volumes:
       - ../../..:/home/notGroot/cli
     networks:
       - node-network
-    command: "/bin/bash"
+    command: '/bin/bash'
     tty: true
     stdin_open: true
   verdaccio:
     image: verdaccio/verdaccio
-    container_name: "verdaccio"
+    container_name: 'verdaccio'
     networks:
       - node-network
     environment:
       - VERDACCIO_PORT=4873
     ports:
-      - "4873:4873"
+      - '4873:4873'
     volumes:
-      - "./config:/verdaccio/conf"
+      - './config:/verdaccio/conf'
 networks:
   node-network:
     driver: bridge
