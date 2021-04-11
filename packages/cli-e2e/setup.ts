@@ -24,7 +24,7 @@ async function clearChromeBrowsingData(browser: Browser) {
 export default async function () {
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
   process.env.GITHUB_ACTION =
-    process.env.GITHUB_ACTION || randomBytes(16).toString();
+    process.env.GITHUB_ACTION || randomBytes(16).toString('hex');
   const browser = await connectToChromeBrowser();
   await clearChromeBrowsingData(browser);
   await clearAccessTokenFromConfig();
