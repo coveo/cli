@@ -32,6 +32,6 @@ export function setupDependencies(_options: CoveoSchema): Rule {
       addToPackageJson('@coveo/search-token-server'),
       addToPackageJson('concurrently'),
       runPackageInstallTask(),
-      allowCommonJsDependencies(options),
+      allowCommonJsDependencies(_options),
     ]);
 }
