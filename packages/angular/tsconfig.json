@@ -1,17 +1,16 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": "tsconfig",
+    "baseUrl": "./",
     "lib": ["es2018", "dom"],
     "moduleResolution": "node",
     "outDir": "./dist",
     "rootDir": "src/",
     "skipDefaultLibCheck": true,
+    "experimentalDecorators": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
     "target": "es6",
     "types": ["jasmine", "node"]
-  },
-  "include": ["src/**/*"],
-  "exclude": ["src/*/files/**/*"]
+  }
 }

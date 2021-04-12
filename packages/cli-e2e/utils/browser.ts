@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {resolve} from 'path';
 
 import puppeteer from 'puppeteer';
 import type {Browser, Page} from 'puppeteer';
@@ -7,6 +8,9 @@ const CHROME_JSON_DEBUG_URL = 'http://localhost:9222/json/version';
 interface JsonVersionFile {
   webSocketDebuggerUrl: string;
 }
+
+export const SCREENSHOTS_PATH =
+  '/home/notGroot/cli-copy/packages/cli-e2e/screenshots';
 
 /**
  * Closes all pages of the targeted browser instance.
@@ -48,6 +52,38 @@ export async function getNewBrowser(): Promise<Browser> {
     headless: false,
     args: getChromeDefaultOptions(),
   });
+}
+
+export async function openNewPage(browser: Browser, page?: Page | undefined) {
+  const newPage = await browser.newPage();
+  if (page) {
+    await page.close();
+  }
+  return newPage;
+}
+
+export async function captureScreenshots(
+  browser: Browser,
+  screenshotName?: string
+): Promise<void> {
+  for (const page of await browser.pages()) {
+    page.url;
+    try {
+      await page.screenshot({
+        fullPage: true,
+        type: 'png',
+        path: resolve(
+          SCREENSHOTS_PATH,
+          (screenshotName ??
+            expect.getState().currentTestName.trim().replace(/\W/g, '_')) +
+            '.png'
+        ),
+      });
+    } catch (error) {
+      console.warn('Failed to record screenshot.');
+      console.warn(error);
+    }
+  }
 }
 
 /**

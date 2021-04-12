@@ -1,6 +1,6 @@
 import {FunctionComponent, useContext, useEffect, useState} from 'react';
 import List from '@material-ui/core/List';
-import {ListItem, Box, Typography} from '@material-ui/core';
+import {ListItem, Box, Typography, ListItemProps} from '@material-ui/core';
 import {
   buildResultList,
   Result,
@@ -10,7 +10,7 @@ import {
 } from '@coveo/headless';
 import EngineContext from '../common/engineContext';
 
-type Template = (result: Result) => any;
+type Template = (result: Result) => React.ReactNode;
 
 interface FieldValueInterface {
   value: string;
@@ -20,10 +20,9 @@ interface FieldValueInterface {
 interface ResultListProps {
   controller: HeadlessResultList;
 }
-
-function ListItemLink(props: any) {
+function ListItemLink(props: ListItemProps<'a'>) {
   return (
-    <ListItem style={{padding: 0}} component="a" {...props}>
+    <ListItem {...props} button component="a">
       <Typography variant="body1" color="primary">
         {props.title}
       </Typography>

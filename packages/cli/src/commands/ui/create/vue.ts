@@ -5,18 +5,28 @@ import {
   buildAnalyticsSuccessHook,
 } from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
-import AuthenticationRequired from '../../../lib/decorators/authenticationRequired';
+import {
+  Preconditions,
+  IsAuthenticated,
+} from '../../../lib/decorators/preconditions';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {Storage} from '../../../lib/oauth/storage';
 import {platformUrl} from '../../../lib/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';
+import {getPackageVersion} from '../../../lib/utils/misc';
 
 export default class Vue extends Command {
+  static templateName = '@coveo/vue-cli-plugin-typescript';
+
   static description =
-    'Create a Coveo Headless-powered search page with the Vue.js web framework. See https://docs.coveo.com/en/headless and https://vuejs.org/';
+    'Create a Coveo Headless-powered search page with the Vue.js web framework. See https://docs.coveo.com/headless and https://vuejs.org/';
 
   static flags = {
     help: flags.help({char: 'h'}),
+    version: flags.string({
+      char: 'v',
+      description: `Version of ${Vue.templateName} to use.`,
+      default: getPackageVersion(Vue.templateName),
+    }),
     preset: flags.string({
       char: 'p',
       helpValue: 'path',
@@ -37,11 +47,11 @@ export default class Vue extends Command {
     {name: 'name', description: 'The target application name.', required: true},
   ];
 
-  @AuthenticationRequired()
+  @Preconditions(IsAuthenticated())
   async run() {
     const {args, flags} = this.parse(Vue);
 
-    let preset = this.getDefaultPreset();
+    let preset = await this.getDefaultPreset();
 
     if (flags.preset) {
       try {
@@ -52,6 +62,7 @@ export default class Vue extends Command {
     }
     await this.createProject(args.name, preset);
     await this.invokePlugin(args.name);
+    this.displayFeedbackAfterSuccess(args.name);
     await this.config.runHook(
       'analytics',
       buildAnalyticsSuccessHook(this, flags)
@@ -69,16 +80,18 @@ export default class Vue extends Command {
 
   private async invokePlugin(applicationName: string) {
     const cfg = await this.configuration.get();
-    const storage = await this.storage.get();
     const {providerUsername} = await this.getUserInfo();
+
+    const {flags} = this.parse(Vue);
+    const presetVersion = flags.version || getPackageVersion(Vue.templateName);
 
     const cliArgs = [
       'add',
-      '@coveo/typescript',
+      `${Vue.templateName}@${presetVersion}`,
       '--orgId',
       cfg.organization,
       '--apiKey',
-      storage.accessToken!,
+      cfg.accessToken!,
       '--platformUrl',
       platformUrl({environment: cfg.environment}),
       '--user',
@@ -90,7 +103,7 @@ export default class Vue extends Command {
     });
   }
 
-  private getDefaultPreset() {
+  private async getDefaultPreset() {
     return {
       useConfigFiles: true,
       plugins: {
@@ -104,6 +117,15 @@ export default class Vue extends Command {
           config: 'standard',
           lintOn: ['commit'],
         },
+        // TODO: CDX-189: include coveo template inside the preset instead of running
+        // an additional `vue add` command.
+        // [Vue.templateName]: {
+        //   version: version,
+        //   orgId: cfg.organization,
+        //   apiKey: storage.accessToken!,
+        //   platformUrl: platformUrl({environment: cfg.environment}),
+        //   user: providerUsername,
+        // },
       },
       cssPreprocessor: 'node-sass',
       vueVersion: '2',
@@ -130,15 +152,23 @@ export default class Vue extends Command {
     return new Config(this.config.configDir, this.error);
   }
 
-  private get storage() {
-    return new Storage();
-  }
-
   private async getUserInfo() {
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();
     await platformClient.initialize();
 
     return await platformClient.user.get();
+  }
+
+  private displayFeedbackAfterSuccess(name: string) {
+    this.log(`
+    To get started:
+    
+    cd ${name}
+    npm run start
+
+    See package.json for other available commands.
+    Happy hacking !
+    `);
   }
 }

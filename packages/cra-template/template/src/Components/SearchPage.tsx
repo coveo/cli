@@ -22,7 +22,7 @@ const SearchPage: React.FunctionComponent<ISearchPageProps> = (props) => {
     const {dispatch} = engine;
     const action = SearchActions.executeSearch(
       AnalyticsActions.logInterfaceLoad()
-    ) as any;
+    );
     dispatch(action);
   }, [engine]);
 

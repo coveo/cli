@@ -22,9 +22,6 @@ RUN apt-get install -y libncurses5-dev libncursesw5-dev xz-utils tk-dev
 # For headless without headless.
 RUN apt-get install xvfb -y
 
-# For Keytar see: https://github.com/atom/node-keytar#on-linux
-RUN apt-get install -y libsecret-1-dev
-
 # cp but better (need filtering abilities)
 RUN apt-get install -y rsync
 # sudo for running the test as not root while still being root.
@@ -50,12 +47,15 @@ RUN printf 'Default_keyring' > /home/notGroot/.local/share/keyrings/default
 
 # Give the file access to the test user.
 RUN chown -R notGroot:notGroot /home/notGroot \
+    && chmod -R 777 /home/notGroot/ \
     && chown -R notGroot:notGroot /app \
     && chmod -R 600 /home/notGroot/.local/share/keyrings/Default_keyring.keyring \
     && chmod -R 644 /home/notGroot/.local/share/keyrings/default
 
 # Ensure root pwd is set to something known
 RUN echo 'root:Docker!' | chpasswd
+RUN echo 'notGroot:Docker!' | chpasswd
+RUN usermod -aG sudo notGroot
 # Run everything after as non-privileged user.
 USER notGroot
 

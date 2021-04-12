@@ -1,8 +1,10 @@
 {
   "name": "@coveo/cra-template",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "scripts": {
-    "npm:publish": "npm publish --access public"
+    "npm:publish": "npm publish --access public",
+    "npm:publish:template": "npm publish --access public --tag ci-test",
+    "npm:bump:template": "npm --no-git-tag-version version"
   },
   "keywords": [
     "react",
@@ -23,5 +25,16 @@
   "files": [
     "template",
     "template.json"
-  ]
+  ],
+  "devDependencies": {
+    "@coveo/headless": "latest",
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/lab": "^4.0.0-alpha.57",
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.5",
+    "@types/jest": "^26.0.20",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.1",
+    "react-dom": "^17.0.1"
+  }
 }

@@ -18,6 +18,8 @@ jobs:
           node-version: '14'
       - name: Setup
         run: npm run setup
+      - name: Check linting
+        run: npm run lint
       - name: Tests
         run: npm run test
       - name: Build CLI
@@ -26,3 +28,8 @@ jobs:
       - name: End-to-end Tests
         working-directory: ./packages/cli-e2e
         run: npm run test-e2e
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: test-screenshots
+          path: ./packages/cli-e2e/screenshots

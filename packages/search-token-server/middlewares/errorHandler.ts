@@ -1,11 +1,16 @@
-import {NextFunction, Request, Response} from 'express';
+import type {NextFunction, Request, Response} from 'express';
+
+interface HTTPError extends Error {
+  statusCode: number;
+}
 
 export function errorHandler(
-  err: any,
-  req: Request,
+  err: HTTPError,
+  _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) {
   console.error(err);
-  res.status(err.statusCode || 500).send(err.message || 'Something broke!');
+  const message = err.message || 'Something broke!';
+  res.status(err.statusCode || 500).send(JSON.stringify({message}));
 }
