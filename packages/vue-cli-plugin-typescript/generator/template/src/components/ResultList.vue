@@ -45,14 +45,22 @@
   </section>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import {buildResultList, FieldActions} from '@coveo/headless';
-export default {
+import type {ResultListState, ResultList} from '@coveo/headless';
+
+export interface IResultList {
+  state: ResultListState;
+  resultList: ResultList;
+}
+
+export default Vue.extend({
   name: 'ResultList',
   data: function () {
     return {
       state: {},
-    };
+    } as IResultList;
   },
   created: function () {
     const fieldsToLoad = ['objecttype', 'filetype', 'author'];
@@ -63,5 +71,5 @@ export default {
       this.state = {...this.resultList.state};
     });
   },
-};
+});
 </script>

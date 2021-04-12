@@ -1,26 +1,33 @@
 <template>
   <section>
-    <p v-if="summary.hasResults" class="has-text-weight-bold">
-      Results {{ summary.firstResult }}-{{ summary.lastResult }} of
-      {{ summary.total }} in {{ summary.durationInSeconds }} seconds
+    <p v-if="state.hasResults" class="has-text-weight-bold">
+      Results {{ state.firstResult }}-{{ state.lastResult }} of
+      {{ state.total }} in {{ state.durationInSeconds }} seconds
     </p>
-    <p v-else>No results for {{ summary.query }}</p>
+    <p v-else>No results for {{ state.query }}</p>
   </section>
 </template>
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import {buildQuerySummary} from '@coveo/headless';
-export default {
+import type {QuerySummary, QuerySummaryState} from '@coveo/headless';
+
+export interface ISummary {
+  state: QuerySummaryState;
+  querySummary: QuerySummary;
+}
+export default Vue.extend({
   name: 'Summary',
   data: function () {
     return {
-      summary: {},
-    };
+      state: {},
+    } as ISummary;
   },
   created: function () {
     this.querySummary = buildQuerySummary(this.engine);
     this.querySummary.subscribe(() => {
-      this.summary = {...this.querySummary.state};
+      this.state = {...this.querySummary.state};
     });
   },
-};
+});
 </script>
