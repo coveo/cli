@@ -18,12 +18,13 @@ describe('ui', () => {
     let browser: Browser;
     // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
     const clientPort = '8080';
-    const projectName = 'vue-project';
+    const projectName = `${process.env.GITHUB_ACTION}-vue-project`;
     const searchPageEndpoint = `http://localhost:${clientPort}`;
     const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
     let interceptedRequests: HTTPRequest[] = [];
     let page: Page;
     let processManager: ProcessManager;
+    const searchboxSelector = '#search-page .autocomplete input';
 
     beforeAll(async () => {
       processManager = new ProcessManager();
@@ -101,27 +102,36 @@ describe('ui', () => {
       await page.goto(searchPageEndpoint, {
         waitUntil: 'networkidle2',
       });
+      await page.waitForSelector(searchboxSelector);
 
       expect(await page.$('#search-page')).not.toBeNull();
     });
 
     it('should retrieve the search token on the page load', async () => {
+      const tokenResponseListener = page.waitForResponse(tokenProxyEndpoint);
       page.goto(searchPageEndpoint);
-      const tokenResponse = await page.waitForResponse(tokenProxyEndpoint);
-      expect(JSON.parse(await tokenResponse.text())).toMatchObject({
+      await page.waitForSelector(searchboxSelector);
+
+      expect(
+        JSON.parse(await (await tokenResponseListener).text())
+      ).toMatchObject({
         token: expect.stringMatching(/^eyJhb.+/),
       });
     });
 
-    it('should trigger search queries', async () => {
-      const searchboxSelector = '#search-page .autocomplete input';
+    it('should send a search query when the page is loaded', async () => {
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchboxSelector);
 
-      // Request from interface load
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+    });
+
+    it('should send a search query on searchbox submit', async () => {
+      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchboxSelector);
+
       interceptedRequests = [];
 
-      await page.waitForSelector(searchboxSelector);
       await page.focus(searchboxSelector);
       await page.keyboard.type('my query');
       await page.keyboard.press('Enter');
