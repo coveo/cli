@@ -6,7 +6,6 @@ import {
   PlatformEnvironment,
   PlatformRegion,
 } from '../../lib/platform/environment';
-import {OrganizationModel} from '@coveord/platform-client';
 import {
   buildAnalyticsFailureHook,
   buildAnalyticsSuccessHook,
