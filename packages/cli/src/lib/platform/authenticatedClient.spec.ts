@@ -107,7 +107,7 @@ describe('AuthenticatedClient', () => {
     );
   });
 
-  it('should create an API key with impersonate privileges', async () => {
+  it('#createImpersonateApiKey should create an API key with impersonate privileges', async () => {
     await new AuthenticatedClient().createImpersonateApiKey('my-key');
 
     expect(mockCreate).toHaveBeenCalledWith(
