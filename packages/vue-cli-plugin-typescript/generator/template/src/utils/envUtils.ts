@@ -3,7 +3,7 @@
  *
  * @returns true if the .env file is valid. false otherwise.
  */
-export function isEnvValid() {
+export function isEnvValid(): boolean {
   const variables = [
     'VUE_APP_PLATFORM_URL',
     'VUE_APP_ORGANIZATION_ID',
