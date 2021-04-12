@@ -29,7 +29,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from 'vue';
 import Buefy from 'buefy';
 import 'buefy/dist/buefy.css';
@@ -41,7 +41,7 @@ import Pager from './Pager.vue';
 import {AnalyticsActions, SearchActions} from '@coveo/headless';
 Vue.use(Buefy);
 
-export default {
+export default Vue.extend({
   name: 'searchPage',
   components: {
     ResultList,
@@ -50,14 +50,14 @@ export default {
     Summary,
     Pager,
   },
-  mounted: function () {
+  mounted: function (): void {
     this.$nextTick(function () {
       this.engine.dispatch(
         SearchActions.executeSearch(AnalyticsActions.logInterfaceLoad())
       );
     });
   },
-};
+});
 </script>
 
 <style scoped lang="scss"></style>

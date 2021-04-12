@@ -10,13 +10,14 @@
   </section>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import Facet from './Facet.vue';
 
-export default {
+export default Vue.extend({
   name: 'Facets',
   components: {Facet},
-  data() {
+  data: function () {
     return {
       open: false,
     };
@@ -26,5 +27,5 @@ export default {
       this.open = true;
     },
   },
-};
+});
 </script>
