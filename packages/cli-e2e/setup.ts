@@ -1,4 +1,5 @@
 import {mkdirSync} from 'fs';
+import {randomBytes} from 'crypto';
 import type {Browser} from 'puppeteer';
 import {
   captureScreenshots,
@@ -22,6 +23,8 @@ async function clearChromeBrowsingData(browser: Browser) {
 
 export default async function () {
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
+  process.env.GITHUB_ACTION =
+    process.env.GITHUB_ACTION || randomBytes(16).toString('hex');
   const browser = await connectToChromeBrowser();
   await clearChromeBrowsingData(browser);
   await clearAccessTokenFromConfig();
