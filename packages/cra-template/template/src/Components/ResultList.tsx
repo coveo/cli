@@ -10,7 +10,7 @@ import {
 } from '@coveo/headless';
 import EngineContext from '../common/engineContext';
 
-type Template = (result: Result) => unknown;
+type Template = (result: Result) => React.ReactNode;
 
 interface FieldValueInterface {
   value: string;
@@ -20,10 +20,9 @@ interface FieldValueInterface {
 interface ResultListProps {
   controller: HeadlessResultList;
 }
-
-function ListItemLink(props: any) {
+function ListItemLink(props: ListItemProps<'a'>) {
   return (
-    <ListItem style={{padding: 0}} component="a" {...(props as unknown)}>
+    <ListItem {...props} button component="a">
       <Typography variant="body1" color="primary">
         {props.title}
       </Typography>

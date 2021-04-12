@@ -1,12 +1,14 @@
 import {Command} from '@oclif/command';
-import AuthenticationRequired from '../../lib/decorators/authenticationRequired';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
-import {OrganizationModel} from '@coveord/platform-client';
 import {cli} from 'cli-ux';
 import {
   buildAnalyticsFailureHook,
   buildAnalyticsSuccessHook,
 } from '../../hooks/analytics/analytics';
+import {
+  Preconditions,
+  IsAuthenticated,
+} from '../../lib/decorators/preconditions/';
 
 export default class List extends Command {
   static description = 'List Coveo organizations.';
@@ -15,31 +17,35 @@ export default class List extends Command {
     ...cli.table.flags(),
   };
 
-  @AuthenticationRequired()
+  @Preconditions(IsAuthenticated())
   async run() {
     const {flags} = this.parse(List);
-    const orgs = ((await (
-      await new AuthenticatedClient().getClient()
-    ).organization.list()) as unknown) as OrganizationModel[];
-    cli.table(
-      orgs,
-      {
-        id: {},
-        type: {},
-        displayName: {
-          extended: true,
+    const orgs = await new AuthenticatedClient().getAllOrgsUserHasAccessTo();
+    if (orgs.length === 0) {
+      this.log(
+        'You do not have access to any organization. Make sure you are logged in the correct environment and region, with coveo auth:login'
+      );
+    } else {
+      cli.table(
+        orgs,
+        {
+          id: {},
+          type: {},
+          displayName: {
+            extended: true,
+          },
+          createdDate: {
+            get: (row) => row.createdDate && new Date(row.createdDate),
+            extended: true,
+          },
+          owner: {
+            get: (r) => r.owner.email,
+            extended: true,
+          },
         },
-        createdDate: {
-          get: (row) => row.createdDate && new Date(row.createdDate),
-          extended: true,
-        },
-        owner: {
-          get: (r) => r.owner.email,
-          extended: true,
-        },
-      },
-      {...flags}
-    );
+        {...flags}
+      );
+    }
 
     await this.config.runHook(
       'analytics',

@@ -1,0 +1,47 @@
+# Verdaccio configuration
+#   - Look here for information about this file:
+#       https://verdaccio.org/docs/en/configuration.html
+#   - Look here for more config file examples:
+#       https://github.com/verdaccio/verdaccio/tree/master/conf
+
+# path to a directory with all packages
+storage: /verdaccio/storage/data
+# path to a directory with plugins to include
+plugins: /verdaccio/plugins
+
+web:
+  enable: false
+  title: Verdaccio
+
+auth:
+  htpasswd:
+    file: /verdaccio/storage/htpasswd
+
+# a list of other known registries we can talk to
+uplinks:
+  npmjs:
+    url: https://registry.npmjs.org/
+
+packages:
+  # All templates packages are published and fetched from Verdaccio
+  # No uplink is tolerated, so if it ain't published on Verdaccio, it'll fail.
+  "@coveo/@(angular|vue-cli-plugin-typescript|cra-template)":
+    access: $all
+    publish: $all
+    unpublish: $all
+
+  # For any other packages, we try verdaccio first (it does some caching)
+  # Otherwise, it tries npmjs.
+  "**":
+    access: $all
+    publish: $all
+    unpublish: $all
+    proxy: npmjs
+
+middlewares:
+  audit:
+    enabled: true
+
+# log settings
+logs:
+  - { type: stdout, format: pretty, level: http }
