@@ -19,12 +19,14 @@ export interface ISummary {
 export default Vue.extend({
   name: 'Summary',
   data: function () {
+    const querySummary = buildQuerySummary(this.$root.$data.$engine);
+
     return {
-      state: {},
-    } as ISummary;
+      querySummary,
+      state: {...querySummary.state},
+    };
   },
   created: function () {
-    this.querySummary = buildQuerySummary(this.engine);
     this.querySummary.subscribe(() => {
       this.state = {...this.querySummary.state};
     });

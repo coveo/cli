@@ -10,7 +10,7 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import {buildPager} from '@coveo/headless';
+import {buildPager, Engine} from '@coveo/headless';
 import type {Pager, PagerState as HeadlessPagerState} from '@coveo/headless';
 
 export interface PagerState extends HeadlessPagerState {
@@ -19,14 +19,20 @@ export interface PagerState extends HeadlessPagerState {
 export interface IPager {
   state: PagerState;
   pager: Pager;
+  totalCount: number;
 }
 
 export default Vue.extend({
   name: 'Pager',
-  data: function () {
+  data: function (): IPager {
+    const pager = buildPager(this.$root.$data.$engine);
+
     return {
-      state: {},
-    } as IPager;
+      pager: pager,
+      state: {...pager.state, total: 0},
+      totalCount: (this.$root.$data.$data.$engine as Engine).state.search
+        .response.totalCountFiltered,
+    };
   },
   methods: {
     onChange: function (n: number) {
@@ -34,12 +40,10 @@ export default Vue.extend({
     },
   },
   created: function () {
-    const engine = this.engine;
-    this.pager = buildPager(engine);
     this.pager.subscribe(() => {
       this.state = {
         ...this.pager.state,
-        total: engine.state.search.response.totalCountFiltered,
+        total: this.totalCount,
       };
     });
   },

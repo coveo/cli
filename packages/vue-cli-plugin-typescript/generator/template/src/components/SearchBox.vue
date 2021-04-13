@@ -24,9 +24,15 @@ export interface ISearchBox {
 export default Vue.extend({
   name: 'SearchBox',
   data: function () {
+    const options = {
+      numberOfSuggestions: 5,
+    };
+    const searchBox = buildSearchBox(this.$root.$data.$engine, {options});
+
     return {
-      state: {},
-    } as ISearchBox;
+      searchBox,
+      state: {...searchBox.state},
+    };
   },
   methods: {
     onTyping: function (v: string) {
@@ -47,10 +53,6 @@ export default Vue.extend({
     },
   },
   created: function () {
-    const options = {
-      numberOfSuggestions: 5,
-    };
-    this.searchBox = buildSearchBox(this.engine, {options});
     this.searchBox.subscribe(() => {
       this.state = {...this.searchBox.state};
     });

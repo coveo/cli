@@ -35,10 +35,15 @@ export default Vue.extend({
     title: String,
   },
   components: {FacetValue},
-  data: function () {
+  data: function (): IFacet {
+    const facet = buildFacet(this.$root.$data.$engine, {
+      options: {field: this.field, facetId: this.field},
+    });
+
     return {
-      state: {},
-    } as IFacet;
+      facet: facet,
+      state: {...facet.state},
+    };
   },
   methods: {
     onToggle: function (facetValue: HeadlessFacetValue) {
@@ -46,9 +51,6 @@ export default Vue.extend({
     },
   },
   created: function () {
-    this.facet = buildFacet(this.engine, {
-      options: {field: this.field, facetId: this.field},
-    });
     this.facet.subscribe(() => {
       this.state = {...this.facet.state};
     });

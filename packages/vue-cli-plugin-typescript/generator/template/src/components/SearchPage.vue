@@ -52,7 +52,7 @@ export default Vue.extend({
   },
   mounted: function (): void {
     this.$nextTick(function () {
-      this.engine.dispatch(
+      this.$root.$data.$engine.dispatch(
         SearchActions.executeSearch(AnalyticsActions.logInterfaceLoad())
       );
     });

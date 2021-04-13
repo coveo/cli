@@ -22,18 +22,17 @@ const routes: Array<RouteConfig> = [
       _from: Route,
       next: NavigationGuardNext<Vue>
     ) => {
-      if (!isEnvValid()) {
+      if (!isEnvValid(process.env)) {
         next('/error');
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const res = await fetch(process.env.VUE_APP_TOKEN_ENDPOINT!);
+        const res = await fetch(process.env.VUE_APP_TOKEN_ENDPOINT);
         const {token} = await res.json();
         // Adding Coveo Headless engine as a global mixin so it can be available to all components
         const engine = getEngine(token);
         Vue.mixin({
-          data: () => ({
-            engine: engine,
-          }),
+          beforeCreate: function () {
+            this.$root.$data.$engine = engine;
+          },
         });
         next();
       }
