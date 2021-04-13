@@ -26,6 +26,9 @@
   "bugs": {
     "url": "https://github.com/coveo/cli/issues"
   },
+  "engines": {
+    "node": ">=14.16.1"
+  },
   "devDependencies": {
     "@types/async-retry": "1.4.2",
     "@types/fs-extra": "^9.0.9",
