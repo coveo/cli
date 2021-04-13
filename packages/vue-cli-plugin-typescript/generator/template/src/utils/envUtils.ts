@@ -20,6 +20,6 @@ export function isEnvValid(env: NodeJS.ProcessEnv): env is ValidEnvironment {
     'VUE_APP_TOKEN_ENDPOINT',
   ];
   const reducer = (previousValue: boolean, currentValue: string) =>
-    previousValue && process.env[currentValue] !== undefined;
+    previousValue && env[currentValue] !== undefined;
   return variables.reduce(reducer, true);
 }
