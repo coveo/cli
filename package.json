@@ -57,7 +57,7 @@
     "**/*.ts": "eslint --fix"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=14.16.1"
   },
   "scripts": {
     "setup": "npm i && lerna bootstrap",

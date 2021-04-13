@@ -24,7 +24,7 @@ export default function (options: CoveoSchema): Rule {
   };
 }
 
-export function setupDependencies(options: CoveoSchema): Rule {
+export function setupDependencies(_options: CoveoSchema): Rule {
   return () =>
     chain([
       addToPackageJson('@angular/material'),
@@ -32,6 +32,6 @@ export function setupDependencies(options: CoveoSchema): Rule {
       addToPackageJson('@coveo/search-token-server'),
       addToPackageJson('concurrently'),
       runPackageInstallTask(),
-      allowCommonJsDependencies(options),
+      allowCommonJsDependencies(_options),
     ]);
 }
