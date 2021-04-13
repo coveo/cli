@@ -69,15 +69,12 @@ export function setupUIProject(
 
   return buildProcess;
 }
+export function getConfigFilePath() {
+  return resolve(homedir(), '.config', '@coveo', 'cli', 'config.json');
+}
 
 export function getConfig() {
-  const pathToConfig = resolve(
-    homedir(),
-    '.config',
-    '@coveo',
-    'cli',
-    'config.json'
-  );
+  const pathToConfig = getConfigFilePath();
 
   return readJsonSync(pathToConfig);
 }
