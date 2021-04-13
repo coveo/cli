@@ -72,8 +72,8 @@ export default class Angular extends Command {
 
   private async addCoveoToProject(applicationName: string, defaults: boolean) {
     const cfg = await this.configuration.get();
-    const {providerUsername} = await this.getUserInfo();
-    const {flags} = this.parse(Angular);
+    const {userInfo, apiKey} = await this.platformUserCredentials();
+    const flags = this.flags;
     const schematicVersion =
       flags.version || getPackageVersion(Angular.templateName);
 
@@ -83,11 +83,11 @@ export default class Angular extends Command {
       '--org-id',
       cfg.organization,
       '--api-key',
-      cfg.accessToken!,
+      apiKey.value!,
       '--platform-url',
       platformUrl({environment: cfg.environment}),
       '--user',
-      providerUsername,
+      userInfo.providerUsername,
     ];
 
     if (defaults) {
@@ -103,7 +103,7 @@ export default class Angular extends Command {
   }
 
   async catch(err?: Error) {
-    const {flags} = this.parse(Angular);
+    const flags = this.flags;
     await this.config.runHook(
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
@@ -115,21 +115,35 @@ export default class Angular extends Command {
     return new Config(this.config.configDir, this.error);
   }
 
-  private async getUserInfo() {
+  private async platformUserCredentials() {
+    const args = this.args;
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();
     await platformClient.initialize();
 
-    return await platformClient.user.get();
+    const userInfo = await platformClient.user.get();
+    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
+
+    return {userInfo, apiKey};
+  }
+
+  private get flags() {
+    const {flags} = this.parse(Angular);
+    return flags;
+  }
+
+  private get args() {
+    const {args} = this.parse(Angular);
+    return args;
   }
 
   private displayFeedbackAfterSuccess(name: string) {
     this.log(`
     To get started:
-    
+
     cd ${name}
     npm run start
-    
+
     See package.json for other available commands.
     Happy hacking !
     `);
