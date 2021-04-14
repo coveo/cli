@@ -28,7 +28,7 @@ jobs:
       - run: git config --global user.name GitHub Action
       - run: node_modules/.bin/lerna changed
       - name: Manually bump version
-        if: ${{ github.event.inputs.version !== ''}}
+        if: ${{ github.event.inputs.version != ''}}
         run: node_modules/.bin/lerna version ${{ github.event.inputs.version }}
       - name: Semantically bump version
         if: ${{ github.event.inputs.version == ''}}
