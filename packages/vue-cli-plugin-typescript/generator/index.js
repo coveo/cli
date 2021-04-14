@@ -1,4 +1,4 @@
-module.exports = (api, options, rootOptions) => {
+module.exports = (api, options, rootOptions, invoking) => {
   api.extendPackage({
     scripts: {
       postinstall: 'node ./scripts/setup-server.js',
@@ -10,6 +10,7 @@ module.exports = (api, options, rootOptions) => {
       '@coveo/search-token-server': '*',
       buefy: '^0.9.4',
       concurrently: '^5.3.0',
+      'vue-router': '^3.5.1',
     },
   });
 
@@ -17,4 +18,14 @@ module.exports = (api, options, rootOptions) => {
     ...rootOptions,
     ...options,
   });
+
+  // late invoke compat
+  if (invoking) {
+    if (!api.hasPlugin('typescript')) {
+      console.error(
+        'Cannot add @coveo/vue-cli-plugin-typescript in a non-typescript project. You should add the @vue/cli-plugin-typescript plugin first'
+      );
+      return;
+    }
+  }
 };

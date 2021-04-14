@@ -61,7 +61,6 @@ export default class Vue extends Command {
       }
     }
     await this.createProject(args.name, preset);
-    await this.invokePlugin(args.name);
     this.displayFeedbackAfterSuccess(args.name);
     await this.config.runHook(
       'analytics',
@@ -78,54 +77,31 @@ export default class Vue extends Command {
     throw err;
   }
 
-  private async invokePlugin(applicationName: string) {
+  private async getDefaultPreset() {
     const cfg = await this.configuration.get();
     const {providerUsername} = await this.getUserInfo();
 
     const {flags} = this.parse(Vue);
     const presetVersion = flags.version || getPackageVersion(Vue.templateName);
 
-    const cliArgs = [
-      'add',
-      `${Vue.templateName}@${presetVersion}`,
-      '--orgId',
-      cfg.organization,
-      '--apiKey',
-      cfg.accessToken!,
-      '--platformUrl',
-      platformUrl({environment: cfg.environment}),
-      '--user',
-      providerUsername,
-    ];
-
-    return this.runVueCliCommand(cliArgs, {
-      cwd: applicationName,
-    });
-  }
-
-  private async getDefaultPreset() {
     return {
       useConfigFiles: true,
       plugins: {
         '@vue/cli-plugin-typescript': {
           classComponent: true,
-        },
-        '@vue/cli-plugin-router': {
-          historyMode: true,
+          convertJsToTs: false,
         },
         '@vue/cli-plugin-eslint': {
           config: 'standard',
           lintOn: ['commit'],
         },
-        // TODO: CDX-189: include coveo template inside the preset instead of running
-        // an additional `vue add` command.
-        // [Vue.templateName]: {
-        //   version: version,
-        //   orgId: cfg.organization,
-        //   apiKey: storage.accessToken!,
-        //   platformUrl: platformUrl({environment: cfg.environment}),
-        //   user: providerUsername,
-        // },
+        [Vue.templateName]: {
+          version: presetVersion,
+          orgId: cfg.organization,
+          apiKey: cfg.accessToken!,
+          platformUrl: platformUrl({environment: cfg.environment}),
+          user: providerUsername,
+        },
       },
       cssPreprocessor: 'node-sass',
       vueVersion: '2',
@@ -163,7 +139,7 @@ export default class Vue extends Command {
   private displayFeedbackAfterSuccess(name: string) {
     this.log(`
     To get started:
-    
+
     cd ${name}
     npm run start
 
