@@ -1,7 +1,7 @@
 import {Engine} from '@coveo/headless';
-import React from 'react';
+import {createContext} from 'react';
 
-const EngineContext = React.createContext<Engine<any> | null>(null);
+const EngineContext = createContext<Engine | null>(null);
 
 export const EngineProvider = EngineContext.Provider;
 

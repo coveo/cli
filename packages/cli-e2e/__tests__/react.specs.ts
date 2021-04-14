@@ -14,11 +14,12 @@ describe('ui', () => {
     let processManager: ProcessManager;
     // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
     const clientPort = '3000';
-    const projectName = 'react-project';
+    const projectName = `${process.env.GITHUB_ACTION}-react-project`;
     const searchPageEndpoint = `http://localhost:${clientPort}`;
     const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
     let interceptedRequests: HTTPRequest[] = [];
     let page: Page;
+    const searchboxSelector = 'div.App .MuiAutocomplete-root input';
 
     beforeAll(async () => {
       browser = await getNewBrowser();
@@ -41,7 +42,7 @@ describe('ui', () => {
       await new Promise<void>((resolve) => {
         startServerProcess.stdout.on('data', async (data) => {
           if (
-            /You can now view react-project in the browser/.test(
+            /You can now view .*-react-project in the browser/.test(
               stripAnsi(data.toString()).replace(/\n/g, '')
             )
           ) {
@@ -73,30 +74,37 @@ describe('ui', () => {
       await page.goto(searchPageEndpoint, {
         waitUntil: 'networkidle2',
       });
+      await page.waitForSelector(searchboxSelector);
 
       expect(await page.$('div.App')).not.toBeNull();
     });
 
     it('should retrieve the search token on the page load', async () => {
+      const tokenResponseListener = page.waitForResponse(tokenProxyEndpoint);
+
       page.goto(searchPageEndpoint);
-      const tokenResponse = await page.waitForResponse(tokenProxyEndpoint);
-      expect(JSON.parse(await tokenResponse.text())).toMatchObject({
+      await page.waitForSelector(searchboxSelector);
+
+      expect(
+        JSON.parse(await (await tokenResponseListener).text())
+      ).toMatchObject({
         token: expect.stringMatching(/^eyJhb.+/),
       });
     });
 
     it('should send a search query when the page is loaded', async () => {
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchboxSelector);
+
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
     });
 
     it('should send a search query on searchbox submit', async () => {
-      const searchboxSelector = 'div.App .MuiAutocomplete-root input';
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchboxSelector);
 
       interceptedRequests = [];
 
-      await page.waitForSelector(searchboxSelector);
       await page.focus(searchboxSelector);
       await page.keyboard.type('my query');
       await page.keyboard.press('Enter');
