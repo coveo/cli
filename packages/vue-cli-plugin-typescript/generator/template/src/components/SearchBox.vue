@@ -11,42 +11,51 @@
   ></b-autocomplete>
 </template>
 
-<script>
-import {buildSearchBox} from '@coveo/headless';
+<script lang="ts">
+import Vue from 'vue';
+import {buildSearchBox, Suggestion} from '@coveo/headless';
+import type {SearchBoxState, SearchBox} from '@coveo/headless';
 
-export default {
+export interface ISearchBox {
+  state: SearchBoxState;
+  searchBox: SearchBox;
+}
+
+export default Vue.extend({
   name: 'SearchBox',
   data: function () {
+    const options = {
+      numberOfSuggestions: 5,
+    };
+    const searchBox = buildSearchBox(this.$root.$data.$engine, {options});
+
     return {
-      state: {},
+      searchBox,
+      state: {...searchBox.state},
     };
   },
   methods: {
-    onTyping: function (v) {
+    onTyping: function (v: string) {
       this.searchBox.updateText(v);
     },
-    onSelect: function (v) {
+    onSelect: function (v: string) {
       this.searchBox.selectSuggestion(v);
     },
-    onKeyDown: function (e) {
-      if (e.keyCode === 13) {
+    onKeyDown: function (e: KeyboardEvent) {
+      if (e.key === 'Enter') {
         this.searchBox.submit();
       }
     },
   },
   computed: {
-    suggestions: function () {
-      return this.state.suggestions.map((s) => s.rawValue);
+    suggestions: function (): string[] {
+      return this.state.suggestions.map((s: Suggestion) => s.rawValue);
     },
   },
   created: function () {
-    const options = {
-      numberOfSuggestions: 5,
-    };
-    this.searchBox = buildSearchBox(this.engine, {options});
-    this.unsubscribe = this.searchBox.subscribe(() => {
+    this.searchBox.subscribe(() => {
       this.state = {...this.searchBox.state};
     });
   },
-};
+});
 </script>

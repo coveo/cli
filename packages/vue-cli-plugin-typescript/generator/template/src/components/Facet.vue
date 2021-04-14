@@ -13,33 +13,49 @@
     </div>
   </div>
 </template>
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import {buildFacet} from '@coveo/headless';
-import FacetValue from './FacetValue';
+import type {
+  Facet,
+  FacetState,
+  FacetValue as HeadlessFacetValue,
+} from '@coveo/headless';
+import FacetValue from './FacetValue.vue';
 
-export default {
+export interface IFacet {
+  state: FacetState;
+  facet: Facet;
+}
+
+export default Vue.extend({
   name: 'Facet',
-  props: ['field', 'title'],
+  props: {
+    field: String,
+    title: String,
+  },
   components: {FacetValue},
-  data: function () {
+  data: function (): IFacet {
+    const facet = buildFacet(this.$root.$data.$engine, {
+      options: {field: this.field, facetId: this.field},
+    });
+
     return {
-      state: {},
+      facet: facet,
+      state: {...facet.state},
     };
   },
   methods: {
-    onToggle: function (facetValue) {
+    onToggle: function (facetValue: HeadlessFacetValue) {
       this.facet.toggleSelect(facetValue);
     },
   },
   created: function () {
-    this.facet = buildFacet(this.engine, {
-      options: {field: this.field, title: this.title},
-    });
     this.facet.subscribe(() => {
       this.state = {...this.facet.state};
     });
   },
-};
+});
 </script>
 <style scoped>
 .content ul {

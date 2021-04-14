@@ -7,8 +7,10 @@
     >
   </li>
 </template>
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
   name: 'FacetValue',
   props: ['facetValue'],
   methods: {
@@ -16,7 +18,7 @@ export default {
       this.$emit('toggle', this.facetValue);
     },
   },
-};
+});
 </script>
 <style scoped>
 li {

@@ -45,23 +45,34 @@
   </section>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import {buildResultList, FieldActions} from '@coveo/headless';
-export default {
+import type {ResultListState, ResultList} from '@coveo/headless';
+
+export interface IResultList {
+  state: ResultListState;
+  resultList: ResultList;
+}
+
+export default Vue.extend({
   name: 'ResultList',
-  data: function () {
+  data: function (): IResultList {
+    const fieldsToLoad = ['objecttype', 'filetype', 'author'];
+    this.$root.$data.$engine.dispatch(
+      FieldActions.registerFieldsToInclude(fieldsToLoad)
+    );
+    const resultList = buildResultList(this.$root.$data.$engine);
+
     return {
-      state: {},
+      resultList,
+      state: {...resultList.state},
     };
   },
   created: function () {
-    const fieldsToLoad = ['objecttype', 'filetype', 'author'];
-    this.engine.dispatch(FieldActions.registerFieldsToInclude(fieldsToLoad));
-
-    this.resultList = buildResultList(this.engine);
     this.resultList.subscribe(() => {
       this.state = {...this.resultList.state};
     });
   },
-};
+});
 </script>

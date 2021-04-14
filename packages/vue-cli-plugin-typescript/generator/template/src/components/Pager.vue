@@ -8,26 +8,44 @@
     @change="onChange"
   />
 </template>
-<script>
-import {buildPager} from '@coveo/headless';
-export default {
+<script lang="ts">
+import Vue from 'vue';
+import {buildPager, Engine} from '@coveo/headless';
+import type {Pager, PagerState as HeadlessPagerState} from '@coveo/headless';
+
+export interface PagerState extends HeadlessPagerState {
+  total: number;
+}
+export interface IPager {
+  state: PagerState;
+  pager: Pager;
+  totalCount: number;
+}
+
+export default Vue.extend({
   name: 'Pager',
-  data: function () {
-    return {state: {}};
+  data: function (): IPager {
+    const pager = buildPager(this.$root.$data.$engine);
+
+    return {
+      pager: pager,
+      state: {...pager.state, total: 0},
+      totalCount: (this.$root.$data.$data.$engine as Engine).state.search
+        .response.totalCountFiltered,
+    };
   },
   methods: {
-    onChange: function (n) {
+    onChange: function (n: number) {
       this.pager.selectPage(n);
     },
   },
   created: function () {
-    this.pager = buildPager(this.engine);
     this.pager.subscribe(() => {
       this.state = {
         ...this.pager.state,
-        total: this.engine.state.search.response.totalCountFiltered,
+        total: this.totalCount,
       };
     });
   },
-};
+});
 </script>
