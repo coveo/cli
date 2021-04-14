@@ -29,7 +29,7 @@ jobs:
       - run: node_modules/.bin/lerna changed
       - name: Manually bump version
         if: ${{ github.event.inputs.version != ''}}
-        run: node_modules/.bin/lerna version ${{ github.event.inputs.version }}
+        run: node_modules/.bin/lerna version ${{ github.event.inputs.version }} -y
       - name: Semantically bump version
         if: ${{ github.event.inputs.version == ''}}
         run: node_modules/.bin/lerna version ---conventional-commits -y
