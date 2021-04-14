@@ -1,14 +1,14 @@
 jest.mock('../../utils/process');
 
-import * as dedent from 'dedent';
+import {dedent} from 'ts-dedent';
 import {constants} from 'os';
 import {mocked} from 'ts-jest/utils';
 import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from './testsUtils/utils';
 
-import {IsNodeVersionAbove} from './node';
+import {IsNodeVersionInRange} from './node';
 
-describe('IsNodeVersionAbove', () => {
+describe('IsNodeVersionInRange', () => {
   const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
   beforeEach(() => {
     jest.resetAllMocks();
@@ -18,7 +18,9 @@ describe('IsNodeVersionAbove', () => {
     it('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNodeVersionAbove('foo')(fakeCommand)).resolves.toBe(false);
+      await expect(IsNodeVersionInRange('foo')(fakeCommand)).resolves.toBe(
+        false
+      );
       expect(fakeCommand.warn).toHaveBeenCalledTimes(1);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
         Required version invalid: "foo".
@@ -39,7 +41,7 @@ describe('IsNodeVersionAbove', () => {
     it('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNodeVersionAbove('0.0.1')(fakeCommand)).resolves.toBe(
+      await expect(IsNodeVersionInRange('>=0.0.1')(fakeCommand)).resolves.toBe(
         false
       );
       expect(fakeCommand.warn).toHaveBeenCalledTimes(2);
@@ -64,13 +66,13 @@ describe('IsNodeVersionAbove', () => {
     it('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNodeVersionAbove('0.0.1')(fakeCommand)).resolves.toBe(
+      await expect(IsNodeVersionInRange('>=0.0.1')(fakeCommand)).resolves.toBe(
         false
       );
       expect(fakeCommand.warn).toHaveBeenCalledTimes(2);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
         foo requires a valid Node.js installation to run.
-        An unknown error happened while trying to determine your node version with node --version
+        An unknown error happened while running node --version.
         some random error oh no
       `);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
@@ -91,12 +93,12 @@ describe('IsNodeVersionAbove', () => {
     it('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNodeVersionAbove('1.0.0')(fakeCommand)).resolves.toBe(
+      await expect(IsNodeVersionInRange('>=1.0.0')(fakeCommand)).resolves.toBe(
         false
       );
       expect(fakeCommand.warn).toHaveBeenCalledTimes(2);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
-        foo needs a Node.js version greater than 1.0.0
+        foo needs a Node.js version in this range: ">=1.0.0"
         Version detected: v0.9.0
       `);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
@@ -117,7 +119,7 @@ describe('IsNodeVersionAbove', () => {
     it('should return true and not warn', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNodeVersionAbove('1.0.0')(fakeCommand)).resolves.toBe(
+      await expect(IsNodeVersionInRange('>=1.0.0')(fakeCommand)).resolves.toBe(
         true
       );
       expect(fakeCommand.warn).toHaveBeenCalledTimes(0);
@@ -136,7 +138,7 @@ describe('IsNodeVersionAbove', () => {
     it('should return true and not warn', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNodeVersionAbove('1.0.0')(fakeCommand)).resolves.toBe(
+      await expect(IsNodeVersionInRange('>=1.0.0')(fakeCommand)).resolves.toBe(
         true
       );
       expect(fakeCommand.warn).toHaveBeenCalledTimes(0);

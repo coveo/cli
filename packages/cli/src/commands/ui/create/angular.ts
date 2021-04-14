@@ -11,10 +11,18 @@ import {getPackageVersion} from '../../../lib/utils/misc';
 import {
   Preconditions,
   IsAuthenticated,
+  IsNodeVersionInRange,
 } from '../../../lib/decorators/preconditions/';
+import {IsNpmVersionInRange} from '../../../lib/decorators/preconditions/npm';
 
 export default class Angular extends Command {
   static templateName = '@coveo/angular';
+  /**
+   * Requirements Based on https://angular.io/guide/setup-local
+   * and https://www.npmjs.com/package/@angular/cli package.json engines section.
+   */
+  static requiredNodeVersion = '>=12.13.0 <15.0.0';
+  static requiredNpmVersion = '^6.11.0 || ^7.5.6';
 
   static description =
     'Create a Coveo Headless-powered search page with the Angular web framework. See https://docs.coveo.com/headless and https://angular.io/.';
@@ -36,7 +44,11 @@ export default class Angular extends Command {
     {name: 'name', description: 'The target application name.', required: true},
   ];
 
-  @Preconditions(IsAuthenticated())
+  @Preconditions(
+    IsAuthenticated(),
+    IsNodeVersionInRange(Angular.requiredNodeVersion),
+    IsNpmVersionInRange(Angular.requiredNpmVersion)
+  )
   async run() {
     const {args, flags} = this.parse(Angular);
     await this.createProject(args.name, flags.defaults);
@@ -49,7 +61,7 @@ export default class Angular extends Command {
   }
 
   private async createProject(name: string, defaults: boolean) {
-    const cliArgs = ['new', name, '--style', 'scss'];
+    const cliArgs = ['new', name, '--style', 'scss', '--routing'];
 
     if (defaults) {
       cliArgs.push('--defaults');
@@ -60,8 +72,8 @@ export default class Angular extends Command {
 
   private async addCoveoToProject(applicationName: string, defaults: boolean) {
     const cfg = await this.configuration.get();
-    const {providerUsername} = await this.getUserInfo();
-    const {flags} = this.parse(Angular);
+    const {userInfo, apiKey} = await this.platformUserCredentials();
+    const flags = this.flags;
     const schematicVersion =
       flags.version || getPackageVersion(Angular.templateName);
 
@@ -71,11 +83,11 @@ export default class Angular extends Command {
       '--org-id',
       cfg.organization,
       '--api-key',
-      cfg.accessToken!,
+      apiKey.value!,
       '--platform-url',
       platformUrl({environment: cfg.environment}),
       '--user',
-      providerUsername,
+      userInfo.providerUsername,
     ];
 
     if (defaults) {
@@ -91,7 +103,7 @@ export default class Angular extends Command {
   }
 
   async catch(err?: Error) {
-    const {flags} = this.parse(Angular);
+    const flags = this.flags;
     await this.config.runHook(
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
@@ -103,21 +115,35 @@ export default class Angular extends Command {
     return new Config(this.config.configDir, this.error);
   }
 
-  private async getUserInfo() {
+  private async platformUserCredentials() {
+    const args = this.args;
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();
     await platformClient.initialize();
 
-    return await platformClient.user.get();
+    const userInfo = await platformClient.user.get();
+    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
+
+    return {userInfo, apiKey};
+  }
+
+  private get flags() {
+    const {flags} = this.parse(Angular);
+    return flags;
+  }
+
+  private get args() {
+    const {args} = this.parse(Angular);
+    return args;
   }
 
   private displayFeedbackAfterSuccess(name: string) {
     this.log(`
     To get started:
-    
+
     cd ${name}
     npm run start
-    
+
     See package.json for other available commands.
     Happy hacking !
     `);

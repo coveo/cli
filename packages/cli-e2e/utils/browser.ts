@@ -54,6 +54,14 @@ export async function getNewBrowser(): Promise<Browser> {
   });
 }
 
+export async function openNewPage(browser: Browser, page?: Page | undefined) {
+  const newPage = await browser.newPage();
+  if (page) {
+    await page.close();
+  }
+  return newPage;
+}
+
 export async function captureScreenshots(
   browser: Browser,
   screenshotName?: string

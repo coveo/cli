@@ -6,7 +6,7 @@ import {environment} from '../environments/environment';
   providedIn: 'root',
 })
 export class EngineService {
-  private engine: any;
+  private engine!: HeadlessEngine<typeof searchAppReducers>;
 
   constructor() {}
 

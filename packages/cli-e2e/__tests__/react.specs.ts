@@ -1,77 +1,110 @@
 import retry from 'async-retry';
 
-import type {ChildProcessWithoutNullStreams} from 'child_process';
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
+import stripAnsi from 'strip-ansi';
 
-import {setupUIProject, teardownUIProject} from '../utils/cli';
-import {getNewBrowser} from '../utils/browser';
+import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
+import {getProjectPath, setupUIProject} from '../utils/cli';
 import {isSearchRequest} from '../utils/platform';
+import {ProcessManager} from '../utils/processManager';
 
 describe('ui', () => {
   describe('create:react', () => {
     let browser: Browser;
-    const cliProcesses: ChildProcessWithoutNullStreams[] = [];
+    let processManager: ProcessManager;
     // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
     const clientPort = '3000';
-    const projectName = 'react-project';
+    const projectName = `${process.env.GITHUB_ACTION}-react-project`;
     const searchPageEndpoint = `http://localhost:${clientPort}`;
     const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
     let interceptedRequests: HTTPRequest[] = [];
     let page: Page;
+    const searchboxSelector = 'div.App .MuiAutocomplete-root input';
 
     beforeAll(async () => {
       browser = await getNewBrowser();
-      await setupUIProject('ui:create:react', projectName, cliProcesses, {
-        timeout: 30e3,
+      processManager = new ProcessManager();
+      const buildProcess = setupUIProject(
+        processManager,
+        'ui:create:react',
+        projectName
+      );
+
+      await new Promise<void>((resolve) => {
+        buildProcess.on('exit', async () => {
+          resolve();
+        });
       });
-    }, 3e6);
+
+      const startServerProcess = processManager.spawn('npm', ['run', 'start'], {
+        cwd: getProjectPath(projectName),
+      });
+      await new Promise<void>((resolve) => {
+        startServerProcess.stdout.on('data', async (data) => {
+          if (
+            /You can now view .*-react-project in the browser/.test(
+              stripAnsi(data.toString()).replace(/\n/g, '')
+            )
+          ) {
+            resolve();
+          }
+        });
+      });
+    }, 15 * 60e3);
 
     beforeEach(async () => {
-      page = await browser.newPage();
-
+      page = await openNewPage(browser, page);
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);
       });
     });
 
     afterEach(async () => {
+      await captureScreenshots(browser);
       page.removeAllListeners('request');
       interceptedRequests = [];
     });
 
     afterAll(async () => {
       await browser.close();
-      await teardownUIProject(cliProcesses);
+      await processManager.killAllProcesses();
     }, 5e3);
 
     it('should contain a search page section', async () => {
       await page.goto(searchPageEndpoint, {
         waitUntil: 'networkidle2',
       });
+      await page.waitForSelector(searchboxSelector);
 
       expect(await page.$('div.App')).not.toBeNull();
     });
 
     it('should retrieve the search token on the page load', async () => {
+      const tokenResponseListener = page.waitForResponse(tokenProxyEndpoint);
+
       page.goto(searchPageEndpoint);
-      const tokenResponse = await page.waitForResponse(tokenProxyEndpoint);
-      expect(JSON.parse(await tokenResponse.text())).toMatchObject({
+      await page.waitForSelector(searchboxSelector);
+
+      expect(
+        JSON.parse(await (await tokenResponseListener).text())
+      ).toMatchObject({
         token: expect.stringMatching(/^eyJhb.+/),
       });
     });
 
     it('should send a search query when the page is loaded', async () => {
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchboxSelector);
+
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
     });
 
     it('should send a search query on searchbox submit', async () => {
-      const searchboxSelector = 'div.App .MuiAutocomplete-root input';
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchboxSelector);
 
       interceptedRequests = [];
 
-      await page.waitForSelector(searchboxSelector);
       await page.focus(searchboxSelector);
       await page.keyboard.type('my query');
       await page.keyboard.press('Enter');

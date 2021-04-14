@@ -1,7 +1,11 @@
 import retry from 'async-retry';
 import type {Browser, Page, Target} from 'puppeteer';
-import {spawn} from 'child_process';
-import {answerPrompt, CLI_EXEC_PATH, isYesNoPrompt} from './cli';
+import {
+  answerPrompt,
+  CLI_EXEC_PATH,
+  getConfigFilePath,
+  isYesNoPrompt,
+} from './cli';
 import LoginSelectors from './loginSelectors';
 import {strictEqual} from 'assert';
 import {connectToChromeBrowser} from './browser';
@@ -52,7 +56,10 @@ async function possiblyAcceptCustomerAgreement(page: Page) {
 }
 
 export function runLoginCommand() {
-  const cliProcess = spawn(CLI_EXEC_PATH, ['auth:login', '-e=dev']);
+  const cliProcess = global.processManager!.spawn(CLI_EXEC_PATH, [
+    'auth:login',
+    '-e=dev',
+  ]);
   cliProcess.stderr.on('data', async (data) => {
     if (isYesNoPrompt(data.toString())) {
       await answerPrompt('n', cliProcess);
@@ -128,8 +135,4 @@ export async function clearAccessTokenFromConfig() {
   const cfg = await readJSON(getConfigFilePath());
   delete cfg.accessToken;
   await writeJSON(getConfigFilePath(), cfg);
-}
-
-function getConfigFilePath() {
-  return '/home/notGroot/.config/@coveo/cli/config.json';
 }

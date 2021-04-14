@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {MatSelectChange} from '@angular/material/select';
 import {
+  buildSort,
   buildDateSortCriterion,
   buildRelevanceSortCriterion,
-  buildSort,
-  Sort,
   SortOrder,
 } from '@coveo/headless';
+import type {Sort, SortCriterion} from '@coveo/headless';
 import {EngineService} from '../engine.service';
 
 @Component({
@@ -16,7 +16,7 @@ import {EngineService} from '../engine.service';
 })
 export class SortComponent implements OnInit {
   private headlessSort!: Sort;
-  sortCriterias!: {caption: string; criterion: any}[];
+  sortCriterias!: {caption: string; criterion: SortCriterion}[];
 
   constructor(private engineService: EngineService) {}
 

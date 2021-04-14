@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-namespace */
-import {ChildProcessWithoutNullStreams} from 'child_process';
 import {mkdirSync} from 'fs';
+import {randomBytes} from 'crypto';
 import type {Browser} from 'puppeteer';
 import {
   captureScreenshots,
@@ -8,14 +7,7 @@ import {
   SCREENSHOTS_PATH,
 } from './utils/browser';
 import {clearAccessTokenFromConfig, loginWithOffice} from './utils/login';
-
-declare global {
-  namespace NodeJS {
-    interface Global {
-      loginProcess: ChildProcessWithoutNullStreams | undefined;
-    }
-  }
-}
+import {ProcessManager} from './utils/processManager';
 
 async function clearChromeBrowsingData(browser: Browser) {
   const pages = await browser.pages();
@@ -31,11 +23,14 @@ async function clearChromeBrowsingData(browser: Browser) {
 
 export default async function () {
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
+  process.env.GITHUB_ACTION =
+    process.env.GITHUB_ACTION || randomBytes(16).toString('hex');
   const browser = await connectToChromeBrowser();
   await clearChromeBrowsingData(browser);
   await clearAccessTokenFromConfig();
   try {
-    global.loginProcess = await loginWithOffice();
+    global.processManager = new ProcessManager();
+    await loginWithOffice();
   } catch (e) {
     await captureScreenshots(browser, 'jestSetup');
     throw e;

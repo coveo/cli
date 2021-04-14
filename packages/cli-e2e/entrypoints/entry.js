@@ -1,14 +1,16 @@
 const {
   ensureDockerImageIsPresent,
-  startDockerContainer,
-  cleanDockerContainer,
+  startDockerCompose,
+  startTestRunning,
+  stopDockerContainers,
 } = require('./common');
 
 ensureDockerImageIsPresent();
 try {
-  startDockerContainer();
+  startDockerCompose();
+  startTestRunning();
 } finally {
   if (!process.env.CI) {
-    cleanDockerContainer();
+    stopDockerContainers();
   }
 }

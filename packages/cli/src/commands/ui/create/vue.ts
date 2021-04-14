@@ -69,7 +69,7 @@ export default class Vue extends Command {
   }
 
   async catch(err?: Error) {
-    const {flags} = this.parse(Vue);
+    const flags = this.flags;
     await this.config.runHook(
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
@@ -79,9 +79,9 @@ export default class Vue extends Command {
 
   private async getDefaultPreset() {
     const cfg = await this.configuration.get();
-    const {providerUsername} = await this.getUserInfo();
+    const {userInfo, apiKey} = await this.platformUserCredentials();
 
-    const {flags} = this.parse(Vue);
+    const flags = this.flags;
     const presetVersion = flags.version || getPackageVersion(Vue.templateName);
 
     return {
@@ -98,9 +98,9 @@ export default class Vue extends Command {
         [Vue.templateName]: {
           version: presetVersion,
           orgId: cfg.organization,
-          apiKey: cfg.accessToken!,
+          apiKey: apiKey,
           platformUrl: platformUrl({environment: cfg.environment}),
-          user: providerUsername,
+          user: userInfo.providerUsername,
         },
       },
       cssPreprocessor: 'node-sass',
@@ -128,12 +128,26 @@ export default class Vue extends Command {
     return new Config(this.config.configDir, this.error);
   }
 
-  private async getUserInfo() {
+  private async platformUserCredentials() {
+    const args = this.args;
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();
     await platformClient.initialize();
 
-    return await platformClient.user.get();
+    const userInfo = await platformClient.user.get();
+    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
+
+    return {userInfo, apiKey};
+  }
+
+  private get flags() {
+    const {flags} = this.parse(Vue);
+    return flags;
+  }
+
+  private get args() {
+    const {args} = this.parse(Vue);
+    return args;
   }
 
   private displayFeedbackAfterSuccess(name: string) {

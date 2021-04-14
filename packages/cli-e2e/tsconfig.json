@@ -9,5 +9,6 @@
     "forceConsistentCasingInFileNames": true,
     "types": ["jest"],
     "lib": ["dom", "es2017"]
-  }
+  },
+  "include": ["./**/*.ts"]
 }

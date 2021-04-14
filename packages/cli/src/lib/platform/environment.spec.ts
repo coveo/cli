@@ -1,4 +1,11 @@
-import {platformUrl} from './environment';
+import {Environment, Region} from '@coveord/platform-client';
+import {
+  castEnvironmentToPlatformClient,
+  castRegionToPlatformClient,
+  PlatformEnvironment,
+  PlatformRegion,
+  platformUrl,
+} from './environment';
 
 describe('platformUrl helper', () => {
   it('should return https://platform.cloud.coveo.com by default', () => {
@@ -31,5 +38,34 @@ describe('platformUrl helper', () => {
     expect(platformUrl({region: 'us-west-2'})).toBe(
       'https://platform-us-west-2.cloud.coveo.com'
     );
+  });
+
+  it('should #castEnvironmentToPlatformClient correctly', () => {
+    [
+      {env: 'dev', platformClient: Environment.dev},
+      {env: 'qa', platformClient: Environment.staging},
+      {env: 'prod', platformClient: Environment.prod},
+      {env: 'hipaa', platformClient: Environment.hipaa},
+      {env: 'something_random', platformClient: Environment.prod},
+    ].forEach((testCase) => {
+      expect(
+        castEnvironmentToPlatformClient(testCase.env as PlatformEnvironment)
+      ).toBe(testCase.platformClient);
+    });
+  });
+
+  it('should #castRegionToPlatformClient correctly', () => {
+    [
+      {region: 'us-east-1', platformClient: Region.US},
+      {region: 'us-west-2', platformClient: Region.US},
+      {region: 'eu-west-1', platformClient: Region.EU},
+      {region: 'eu-west-3', platformClient: Region.EU},
+      {region: 'ap-southeast-2', platformClient: Region.AU},
+      {region: 'something_random', platformClient: Region.US},
+    ].forEach((testCase) => {
+      expect(
+        castRegionToPlatformClient(testCase.region as PlatformRegion)
+      ).toBe(testCase.platformClient);
+    });
   });
 });

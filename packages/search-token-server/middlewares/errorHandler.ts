@@ -11,5 +11,6 @@ export function errorHandler(
   _next: NextFunction
 ) {
   console.error(err);
-  res.status(err.statusCode || 500).send(err.message || 'Something broke!');
+  const message = err.message || 'Something broke!';
+  res.status(err.statusCode || 500).send(JSON.stringify({message}));
 }

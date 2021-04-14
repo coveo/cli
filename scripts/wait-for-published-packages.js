@@ -1,6 +1,3 @@
-/* eslint-disable no-undef */
-const yargs = require('yargs/yargs');
-const {hideBin} = require('yargs/helpers');
 const {backOff} = require('exponential-backoff');
 const {
   getPackageLastTestVersion,
@@ -9,9 +6,7 @@ const {
 
 async function isLastTestVersionAvailable(packageName, lastVersion) {
   const response = await getPackageLastTestVersion(packageName);
-  return new Promise((resolve, reject) => {
-    return response === lastVersion ? resolve() : reject();
-  });
+  return response === lastVersion;
 }
 
 async function waitForPackage(packageName, version) {
@@ -28,14 +23,10 @@ async function waitForPackage(packageName, version) {
 }
 
 async function main() {
-  const argv = yargs(hideBin(process.argv)).argv;
   const templates = getUiTemplates();
-  if (Boolean(argv.v) === false) {
-    console.log('Missing -v flag');
-    return;
-  }
-
-  return await Promise.all(templates.map((t) => waitForPackage(t, argv.v)));
+  return await Promise.all(
+    templates.map((t) => waitForPackage(t, process.env.UI_TEMPLATE_VERSION))
+  );
 }
 
 main();

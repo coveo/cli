@@ -13,7 +13,7 @@ import {AnalyticsActions, SearchActions, Engine} from '@coveo/headless';
 import {EngineProvider} from '../common/engineContext';
 
 interface ISearchPageProps {
-  engine: Engine<any>;
+  engine: Engine;
 }
 
 const SearchPage: React.FunctionComponent<ISearchPageProps> = (props) => {
