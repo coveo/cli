@@ -1,10 +1,5 @@
 require('isomorphic-fetch');
 require('abortcontroller-polyfill');
-require('isomorphic-form-data');
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare const FormData: any;
-FormData.prototype.set = FormData.prototype.append;
 
 import PlatformClient from '@coveord/platform-client';
 import {Config} from '../config/config';
