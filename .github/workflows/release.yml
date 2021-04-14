@@ -1,6 +1,11 @@
 name: Create release
 on:
-  - workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '⚠ be sure of yourself ⚠'
+        required: false
+        default: ''
 
 jobs:
   run-script:
@@ -22,7 +27,12 @@ jobs:
       - run: git config --global user.email action@github.com
       - run: git config --global user.name GitHub Action
       - run: node_modules/.bin/lerna changed
-      - run: node_modules/.bin/lerna version ---conventional-commits -y
-      - run: npm run release:changelog
-      - run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-      - run: npm run npm:publish
+      - name: Manually bump version
+        if: ${{ github.event.inputs.version !== ''}}
+        run: node_modules/.bin/lerna version ${{ github.event.inputs.version }}
+      - name: Semantically bump version
+        if: ${{ github.event.inputs.version == ''}}
+        run: node_modules/.bin/lerna version ---conventional-commits -y
+      #- run: npm run release:changelog
+      #- run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+      #- run: npm run npm:publish
