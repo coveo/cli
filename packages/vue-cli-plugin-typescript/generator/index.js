@@ -2,7 +2,9 @@ module.exports = (api, options, rootOptions) => {
   api.extendPackage({
     scripts: {
       postinstall: 'node ./scripts/setup-server.js',
-      start: 'concurrently --raw "npm run start-server"  "npm run serve"',
+      serve:
+        'concurrently --raw "npm run start-server"  "vue-cli-service serve"',
+      start: 'npm run serve',
       'start-server': 'node ./scripts/start-server.js',
     },
     dependencies: {
