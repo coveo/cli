@@ -7,6 +7,7 @@ import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from './testsUtils/utils';
 
 import {IsNpxInstalled} from './npx';
+import {appendCmdIfWindows} from '../../utils/os';
 
 describe('IsNpxInstalled', () => {
   const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
@@ -61,7 +62,7 @@ describe('IsNpxInstalled', () => {
       expect(fakeCommand.warn).toHaveBeenCalledTimes(3);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
         foo requires a valid npx installation to run.
-        An unknown error happened while running npx --version.
+        An unknown error happened while running ${appendCmdIfWindows`npx`} --version.
         some random error oh no
       `);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`

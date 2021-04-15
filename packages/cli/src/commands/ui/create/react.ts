@@ -15,6 +15,7 @@ import {
   IsNodeVersionInRange,
   IsNpxInstalled,
 } from '../../../lib/decorators/preconditions';
+import {appendCmdIfWindows} from '../../../lib/utils/os';
 
 export default class React extends Command {
   static templateName = '@coveo/cra-template';
@@ -117,7 +118,11 @@ export default class React extends Command {
   }
 
   private runReactCliCommand(args: string[], options = {}) {
-    return spawnProcess('npx', ['create-react-app'].concat(args), options);
+    return spawnProcess(
+      appendCmdIfWindows`npx`,
+      ['create-react-app'].concat(args),
+      options
+    );
   }
 
   private get configuration() {
