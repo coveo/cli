@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.8.0](https://github.com/coveo/cli/compare/v0.7.0...v0.8.0) (2021-04-15)
+
+
+### Features
+
+* **vue:** fix linting in vue project and rework headless initialization ([#150](https://github.com/coveo/cli/issues/150)) ([336890c](https://github.com/coveo/cli/commit/336890ce22dfc383599d3e2fee61d7e1862b4d6e))
+* **vue:** support `npm run serve` command ([#153](https://github.com/coveo/cli/issues/153)) ([375d6ce](https://github.com/coveo/cli/commit/375d6ce68e7a4fec3def8ca92ab879b63e37a96b))
+
+
+
+
+
 # [0.7.0](https://github.com/coveo/cli/compare/v0.6.1...v0.7.0) (2021-03-29)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.8.0](https://github.com/coveo/cli/compare/v0.7.0...v0.8.0) (2021-04-15)
+
+
+### Bug Fixes
+
+* **server:** always return a JSON object ([#136](https://github.com/coveo/cli/issues/136)) ([8cef023](https://github.com/coveo/cli/commit/8cef023893bd9e3d1afd134332100dfbc3ffb942))
+
+
+
+
+
 # [0.7.0](https://github.com/coveo/cli/compare/v0.6.1...v0.7.0) (2021-03-29)
 
 **Note:** Version bump only for package @coveo/search-token-server

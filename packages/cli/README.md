@@ -20,7 +20,7 @@ $ npm install -g @coveo/cli
 $ coveo COMMAND
 running command...
 $ coveo (-v|--version|version)
-@coveo/cli/0.7.0 linux-x64 node-v14.16.0
+@coveo/cli/0.8.0 linux-x64 node-v14.16.1
 $ coveo --help [COMMAND]
 USAGE
   $ coveo COMMAND
@@ -65,7 +65,7 @@ EXAMPLE
   $ coveo auth:login
 ```
 
-_See code: [src/commands/auth/login.ts](https://github.com/coveo/cli/blob/v0.7.0/src/commands/auth/login.ts)_
+_See code: [src/commands/auth/login.ts](https://github.com/coveo/cli/blob/v0.8.0/src/commands/auth/login.ts)_
 
 ## `coveo config:get`
 
@@ -76,7 +76,7 @@ USAGE
   $ coveo config:get
 ```
 
-_See code: [src/commands/config/get.ts](https://github.com/coveo/cli/blob/v0.7.0/src/commands/config/get.ts)_
+_See code: [src/commands/config/get.ts](https://github.com/coveo/cli/blob/v0.8.0/src/commands/config/get.ts)_
 
 ## `coveo config:set`
 
@@ -102,7 +102,7 @@ OPTIONS
                                                                        operations. See https://docs.coveo.com/en/2976.
 ```
 
-_See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v0.7.0/src/commands/config/set.ts)_
+_See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v0.8.0/src/commands/config/set.ts)_
 
 ## `coveo help [COMMAND]`
 
@@ -119,7 +119,7 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.1/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.2/src/commands/help.ts)_
 
 ## `coveo org:list`
 
@@ -140,11 +140,11 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v0.7.0/src/commands/org/list.ts)_
+_See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v0.8.0/src/commands/org/list.ts)_
 
 ## `coveo ui:create:angular NAME`
 
-Create a Coveo Headless-powered search page with the Angular web framework. See https://docs.coveo.com/en/headless and https://angular.io/.
+Create a Coveo Headless-powered search page with the Angular web framework. See https://docs.coveo.com/headless and https://angular.io/.
 
 ```
 USAGE
@@ -155,14 +155,14 @@ ARGUMENTS
 
 OPTIONS
   -d, --defaults         Automatically select the default value for all prompts where such a default value exists.
-  -v, --version=version  [default: 0.7.0] Version of @coveo/angular to use.
+  -v, --version=version  [default: 0.8.0] Version of @coveo/angular to use.
 ```
 
-_See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/v0.7.0/src/commands/ui/create/angular.ts)_
+_See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/v0.8.0/src/commands/ui/create/angular.ts)_
 
 ## `coveo ui:create:react NAME`
 
-Create a Coveo Headless-powered search page with the React web framework. See https://github.com/coveo/cli/wiki#coveo-uicreatereact-requirements
+Create a Coveo Headless-powered search page with the React web framework. See https://docs.coveo.com/headless and https://reactjs.org/.
 
 ```
 USAGE
@@ -172,18 +172,18 @@ ARGUMENTS
   NAME  The target application name.
 
 OPTIONS
-  -v, --version=version  [default: 0.7.0] Version of @coveo/cra-template to use.
+  -v, --version=version  [default: 0.8.0] Version of @coveo/cra-template to use.
 
 EXAMPLES
   $ coveo ui:create:react myapp
   $ coveo ui:create:react --help
 ```
 
-_See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v0.7.0/src/commands/ui/create/react.ts)_
+_See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v0.8.0/src/commands/ui/create/react.ts)_
 
 ## `coveo ui:create:vue NAME`
 
-Create a Coveo Headless-powered search page with the Vue.js web framework. See https://docs.coveo.com/en/headless and https://vuejs.org/
+Create a Coveo Headless-powered search page with the Vue.js web framework. See https://docs.coveo.com/headless and https://vuejs.org/
 
 ```
 USAGE
@@ -200,14 +200,14 @@ OPTIONS
                          For more information about Vue CLI presets, please consult
                          https://cli.vuejs.org/guide/plugins-and-presets.html#presets
 
-  -v, --version=version  [default: 0.7.0] Version of @coveo/vue-cli-plugin-typescript to use.
+  -v, --version=version  [default: 0.8.0] Version of @coveo/vue-cli-plugin-typescript to use.
 
 EXAMPLES
   $ coveo ui:create:vue --preset path/to/my/preset.json
   $ coveo ui:create:vue --help
 ```
 
-_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v0.7.0/src/commands/ui/create/vue.ts)_
+_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v0.8.0/src/commands/ui/create/vue.ts)_
 
 ## `coveo update [CHANNEL]`
 

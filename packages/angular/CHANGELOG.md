@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.8.0](https://github.com/coveo/cli/compare/v0.7.0...v0.8.0) (2021-04-15)
+
+
+### Bug Fixes
+
+* **angular:** fix headless doc links ([#126](https://github.com/coveo/cli/issues/126)) ([c574fda](https://github.com/coveo/cli/commit/c574fda8ba5c598e41d3cda724e030b990bfa9f5))
+* **angular:** prevent d.ts files from being copied to project ([#135](https://github.com/coveo/cli/issues/135)) ([44cae70](https://github.com/coveo/cli/commit/44cae70e504895e82cfba64b58e049f05ef4f96c))
+
+
+### Features
+
+* **angular:** ignore node_modules from server folder ([#154](https://github.com/coveo/cli/issues/154)) ([54c88ad](https://github.com/coveo/cli/commit/54c88ad62374948a2d8797b8ac82d25e81bcc37a))
+* **angular:** redirect user to an error page if the `.env` file is invalid ([#140](https://github.com/coveo/cli/issues/140)) ([9ed203b](https://github.com/coveo/cli/commit/9ed203b3e949b2267ba24b3ef92059a9b84428b7))
+* **cli:** remove form-data polyfill ([#152](https://github.com/coveo/cli/issues/152)) ([5701223](https://github.com/coveo/cli/commit/57012239f40adeeba364fe6cf20994549f04b26e))
+* **config:** improve configuration validation on invalid org id ([#128](https://github.com/coveo/cli/issues/128)) ([676b7f3](https://github.com/coveo/cli/commit/676b7f32a7b66c066f5010fe4703a646a7fa4a5e))
+
+
+
+
+
 # [0.7.0](https://github.com/coveo/cli/compare/v0.6.1...v0.7.0) (2021-03-29)
 
 
