@@ -1,6 +1,6 @@
 {
   "name": "@coveo/angular",
-  "version": "0.8.0",
+  "version": "1.0.0",
   "description": "Coveo schematic for angular",
   "scripts": {
     "test": "npm run build && jasmine dist/**/*_spec.js",
@@ -28,7 +28,7 @@
     "@angular-devkit/schematics": "^11.1.2",
     "@angular/cdk": "^11.1.1",
     "@angular/cli": "^11.1.2",
-    "@coveo/search-token-server": "^0.8.0",
+    "@coveo/search-token-server": "^1.0.0",
     "@schematics/angular": "^11.1.2",
     "typescript": "~4.1.2"
   },
