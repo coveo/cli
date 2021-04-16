@@ -84,7 +84,7 @@ export default class React extends Command {
     const {userInfo, apiKey} = await this.platformUserCredentials();
 
     const output = await spawnProcessOutput(
-      'npm',
+      appendCmdIfWindows`npm`,
       [
         'run',
         'setup-env',
