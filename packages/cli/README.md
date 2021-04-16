@@ -6,6 +6,8 @@
 [![Downloads/week](https://img.shields.io/npm/dw/@coveo/cli.svg)](https://npmjs.org/package/@coveo/cli)
 [![License](https://img.shields.io/npm/l/@coveo/cli.svg)](https://github.com/coveo/cli/blob/master/package.json)
 
+The Coveo Command Line Interface (CLI) allows you to quickly create a [Coveo Headless](https://docs.coveo.com/headless)-powered search page for your Coveo organization, relying on [Angular](https://angular.io), [React](https://reactjs.org/) or [Vue.js](https://vuejs.org/).
+
 <!-- toc -->
 * [@coveo/cli](#coveocli)
 * [Usage](#usage)
@@ -14,32 +16,39 @@
 
 # Usage
 
-<!-- usage -->
+<!-- usage --> 
+Once installed via npm, the CLI commands are self-documented.
+
 ```sh-session
 $ npm install -g @coveo/cli
-$ coveo COMMAND
-running command...
+$ coveo <COMMAND>
+running <COMMAND>...
 $ coveo (-v|--version|version)
 @coveo/cli/1.0.0 linux-x64 node-v14.16.1
-$ coveo --help [COMMAND]
+$ coveo --help <COMMAND>
 USAGE
-  $ coveo COMMAND
+  $ coveo <COMMAND>
 ...
 ```
+
+In practice, you'll typically want to [`login`](#coveo-authlogin) to your Coveo Organization, [`configure`](#coveo-configset) the CLI to connect to this organization, and finally create a search page (see [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name), [`coveo ui:create:react NAME`](#coveo-uicreatereact-name) and [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)).
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-* [`coveo auth:login`](#coveo-authlogin)
-* [`coveo config:get`](#coveo-configget)
-* [`coveo config:set`](#coveo-configset)
-* [`coveo help [COMMAND]`](#coveo-help-command)
-* [`coveo org:list`](#coveo-orglist)
-* [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
-* [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
-* [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
-* [`coveo update [CHANNEL]`](#coveo-update-channel)
+- [@coveo/cli](#coveocli)
+- [Usage](#usage)
+- [Commands](#commands)
+  - [`coveo auth:login`](#coveo-authlogin)
+  - [`coveo config:get`](#coveo-configget)
+  - [`coveo config:set`](#coveo-configset)
+  - [`coveo help [COMMAND]`](#coveo-help-command)
+  - [`coveo org:list`](#coveo-orglist)
+  - [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
+  - [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
+  - [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
+  - [`coveo update [CHANNEL]`](#coveo-update-channel)
 
 ## `coveo auth:login`
 
