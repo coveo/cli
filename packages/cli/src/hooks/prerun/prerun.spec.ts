@@ -33,14 +33,33 @@ describe('hooks:prerun', () => {
 
   test
     .do(() => {
-      mockGet.mockReturnValueOnce(Promise.resolve({analyticsEnabled: false}));
+      mockGet.mockReturnValueOnce(
+        Promise.resolve({analyticsEnabled: undefined})
+      );
     })
+    .stub(cli, 'confirm', () => async () => true)
+    .stdout()
+    .hook('prerun', {Command: {id: 'update'}})
+    .it(
+      'does modify config when #analytics have not been configured and the command being run is update',
+      () => {
+        expect(mockSet).not.toHaveBeenCalled();
+      }
+    );
+
+  test
+    .do(() => {
+      mockGet.mockReturnValueOnce(
+        Promise.resolve({analyticsEnabled: undefined})
+      );
+    })
+    .stub(cli, 'confirm', () => async () => true)
     .stdout()
     .hook('prerun')
     .it(
-      'does not modify config or prompt the user if analytics are disabled in config',
+      'does modify config when #analytics have not been configured and the users answer #true',
       () => {
-        expect(mockSet).not.toHaveBeenCalled();
+        expect(mockSet).toHaveBeenCalledWith('analyticsEnabled', true);
       }
     );
 
