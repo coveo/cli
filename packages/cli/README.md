@@ -37,18 +37,18 @@ In practice, you'll typically want to [`login`](#coveo-authlogin) to your Coveo 
 # Commands
 
 <!-- commands -->
-- [@coveo/cli](#coveocli)
-- [Usage](#usage)
-- [Commands](#commands)
-  - [`coveo auth:login`](#coveo-authlogin)
-  - [`coveo config:get`](#coveo-configget)
-  - [`coveo config:set`](#coveo-configset)
-  - [`coveo help [COMMAND]`](#coveo-help-command)
-  - [`coveo org:list`](#coveo-orglist)
-  - [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
-  - [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
-  - [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
-  - [`coveo update [CHANNEL]`](#coveo-update-channel)
+* [@coveo/cli](#coveocli)
+* [Usage](#usage)
+* [Commands](#commands)
+* [`coveo auth:login`](#coveo-authlogin)
+* [`coveo config:get`](#coveo-configget)
+* [`coveo config:set`](#coveo-configset)
+* [`coveo help [COMMAND]`](#coveo-help-command)
+* [`coveo org:list`](#coveo-orglist)
+* [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
+* [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
+* [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
+* [`coveo update [CHANNEL]`](#coveo-update-channel)
 
 ## `coveo auth:login`
 
