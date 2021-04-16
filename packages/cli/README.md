@@ -6,13 +6,13 @@
 [![Downloads/week](https://img.shields.io/npm/dw/@coveo/cli.svg)](https://npmjs.org/package/@coveo/cli)
 [![License](https://img.shields.io/npm/l/@coveo/cli.svg)](https://github.com/coveo/cli/blob/master/package.json)
 
-The Coveo Command Line Interface (CLI) allows you to quickly create a [Coveo Headless](https://docs.coveo.com/headless)-powered search page for your Coveo organization, relying on [Angular](https://angular.io), [React](https://reactjs.org/) or [Vue.js](https://vuejs.org/).
-
 <!-- toc -->
 * [@coveo/cli](#coveocli)
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
+
+The Coveo Command Line Interface (CLI) allows you to quickly create a [Coveo Headless](https://docs.coveo.com/headless)-powered search page for your Coveo organization, relying on [Angular](https://angular.io), [React](https://reactjs.org/) or [Vue.js](https://vuejs.org/).
 
 # Usage
 
@@ -37,9 +37,6 @@ In practice, you'll typically want to [`login`](#coveo-authlogin) to your Coveo 
 # Commands
 
 <!-- commands -->
-* [@coveo/cli](#coveocli)
-* [Usage](#usage)
-* [Commands](#commands)
 * [`coveo auth:login`](#coveo-authlogin)
 * [`coveo config:get`](#coveo-configget)
 * [`coveo config:set`](#coveo-configset)
