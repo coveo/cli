@@ -8,6 +8,7 @@ import {Config} from '../../../lib/config/config';
 import {
   Preconditions,
   IsAuthenticated,
+  IsNodeVersionInRange,
 } from '../../../lib/decorators/preconditions';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {platformUrl} from '../../../lib/platform/environment';
@@ -17,6 +18,11 @@ import {getPackageVersion} from '../../../lib/utils/misc';
 export default class Vue extends Command {
   static templateName = '@coveo/vue-cli-plugin-typescript';
 
+  /**
+   * @see https://cli.vuejs.org/guide/installation.html for current requirements.
+   * @see https://github.com/vuejs/vue-cli/blob/dev/CHANGELOG.md for upcoming requirements.
+   */
+  static requiredNodeVersion = '>=12';
   static description =
     'Create a Coveo Headless-powered search page with the Vue.js web framework. See https://docs.coveo.com/headless and https://vuejs.org/';
 
@@ -47,7 +53,10 @@ export default class Vue extends Command {
     {name: 'name', description: 'The target application name.', required: true},
   ];
 
-  @Preconditions(IsAuthenticated())
+  @Preconditions(
+    IsAuthenticated(),
+    IsNodeVersionInRange(Vue.requiredNodeVersion)
+  )
   async run() {
     const {args, flags} = this.parse(Vue);
 
@@ -145,7 +154,7 @@ export default class Vue extends Command {
 
   private runVueCliCommand(args: string[], options = {}) {
     const executable = require.resolve('@vue/cli/bin/vue.js');
-    return spawnProcess(executable, args, options);
+    return spawnProcess('node', [executable, ...args], options);
   }
 
   private get configuration() {

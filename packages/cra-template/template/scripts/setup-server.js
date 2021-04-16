@@ -37,3 +37,5 @@ function main() {
 }
 
 main();
+
+module.exports = {setupSearchTokenServer: main};
