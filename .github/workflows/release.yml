@@ -39,7 +39,9 @@ jobs:
       - name: Wait for NPM cache to be updated
         run: node ./scripts/wait-for-packages.js
       - name: Update package-lock.json
-        run: npm run npm:genPkgLock
+        run: |
+          npm run npm:genPkgLock
+          git commit --amend --no-edit
       - name: Push commit & tag
         run: |
           git push
