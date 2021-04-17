@@ -37,7 +37,7 @@ jobs:
       - run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - run: npm run npm:publish
       - name: Wait for NPM cache to be updated
-        run: ./scripts/wait-for-packages.js
+        run: node ./scripts/wait-for-packages.js
       - name: Update package-lock.json
         run: npm run npm:genPkgLock
       - name: Push commit & tag
