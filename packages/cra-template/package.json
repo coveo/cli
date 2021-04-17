@@ -2,10 +2,10 @@
   "name": "@coveo/cra-template",
   "version": "1.0.1",
   "scripts": {
-    "npm:publish": "npm publish --access public",
-    "npm:publish:template": "npm publish --access public --tag ci-test",
+    "lint": "prettier --check . && eslint .",
     "npm:bump:template": "npm --no-git-tag-version version",
-    "lint": "prettier --check . && eslint ."
+    "npm:publish:template": "npm publish --access public --tag ci-test",
+    "npm:genPkgLock": "npm i --package-lock-only"
   },
   "keywords": [
     "react",
@@ -41,5 +41,8 @@
     "prettier": "^2.2.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
