@@ -10,8 +10,7 @@
     "postbuild": "node ./scripts/setup.js",
     "prepublishOnly": "npm run build",
     "npm:bump:template": "npm --no-git-tag-version version",
-    "npm:publish:template": "npm publish --access public --tag ci-test",
-    "npm:genPkgLock": "npm i --package-lock-only"
+    "npm:publish:template": "npm publish --access public --tag ci-test"
   },
   "keywords": [
     "schematics",
