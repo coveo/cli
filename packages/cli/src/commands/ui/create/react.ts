@@ -15,6 +15,7 @@ import {
   IsNodeVersionInRange,
   IsNpxInstalled,
 } from '../../../lib/decorators/preconditions';
+import {appendCmdIfWindows} from '../../../lib/utils/os';
 
 export default class React extends Command {
   static templateName = '@coveo/cra-template';
@@ -54,6 +55,7 @@ export default class React extends Command {
     const args = this.args;
 
     await this.createProject(args.name);
+    await this.setupServer(args.name);
     await this.setupEnvironmentVariables(args.name);
     await this.config.runHook('analytics', buildAnalyticsSuccessHook(this, {}));
   }
@@ -83,7 +85,7 @@ export default class React extends Command {
     const {userInfo, apiKey} = await this.platformUserCredentials();
 
     const output = await spawnProcessOutput(
-      'npm',
+      appendCmdIfWindows`npm`,
       [
         'run',
         'setup-env',
@@ -116,8 +118,35 @@ export default class React extends Command {
     return true;
   }
 
+  private async setupServer(name: string) {
+    const output = await spawnProcessOutput(
+      appendCmdIfWindows`npm`,
+      ['run', 'setup-server'],
+      {
+        cwd: name,
+      }
+    );
+
+    if (output.exitCode) {
+      this.warn(`
+      An unknown error happened while trying to copy the search token server. Please refer to ${join(
+        name,
+        'README.md'
+      )} for more detail.
+      ${output.stderr ?? ''}
+      `);
+      return false;
+    }
+
+    return true;
+  }
+
   private runReactCliCommand(args: string[], options = {}) {
-    return spawnProcess('npx', ['create-react-app'].concat(args), options);
+    return spawnProcess(
+      appendCmdIfWindows`npx`,
+      ['create-react-app'].concat(args),
+      options
+    );
   }
 
   private get configuration() {

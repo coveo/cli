@@ -1,9 +1,10 @@
 const {spawnSync} = require('child_process');
 const {copySync} = require('fs-extra');
 const {sep, resolve} = require('path');
+const {appendCmdIfWindows} = require('./utils');
 
 function installSearchTokenServerDependencies() {
-  const child = spawnSync('npm', ['install'], {
+  const child = spawnSync(appendCmdIfWindows`npm`, ['install'], {
     stdio: 'inherit',
     cwd: resolve('server'),
   });
@@ -36,3 +37,5 @@ function main() {
 }
 
 main();
+
+module.exports = {setupSearchTokenServer: main};

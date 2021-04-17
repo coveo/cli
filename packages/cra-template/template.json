@@ -21,9 +21,10 @@
     },
     "proxy": "http://localhost:4000",
     "scripts": {
-      "postinstall": "node ./scripts/setup-server.js",
+      "setup-server": "node ./scripts/setup-server.js",
       "setup-env": "node ./scripts/setup-env.js",
       "start-server": "node ./scripts/start-server.js",
+      "prestart": "node ./scripts/ensure-server.js",
       "start": "concurrently --raw \"npm run start-server\" \"react-scripts start\""
     }
   }

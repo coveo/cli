@@ -7,6 +7,7 @@ import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from './testsUtils/utils';
 
 import {IsNpmVersionInRange} from './npm';
+import {appendCmdIfWindows} from '../../utils/os';
 
 describe('IsNpmVersionInRange', () => {
   const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
@@ -70,7 +71,7 @@ describe('IsNpmVersionInRange', () => {
       expect(fakeCommand.warn).toHaveBeenCalledTimes(2);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
         foo requires a valid npm installation to run.
-        An unknown error happened while running npm --version.
+        An unknown error happened while running ${appendCmdIfWindows`npm`} --version.
         some random error oh no
       `);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
