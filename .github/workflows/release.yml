@@ -37,14 +37,15 @@ jobs:
       - run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - name: Publish on NPM
         run: npm run npm:publish
-      - name: Get version number
-        run: node ./scripts/get-version.js
       - name: Wait for NPM cache to be updated
         run: node ./scripts/wait-for-packages.js
       - name: Update package-lock.json
         run: |
           npm run npm:genPkgLock
           git commit --amend --no-edit
+      - name: Tag the version
+        run: |
+          node ./scripts/get-version.js
           git tag ${{ env.tag }}
       - name: Push commit & tag
         run: |
