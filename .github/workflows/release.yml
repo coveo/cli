@@ -30,18 +30,22 @@ jobs:
         if: ${{ github.event.inputs.version == ''}}
       - name: Manually bump version
         if: ${{ github.event.inputs.version != ''}}
-        run: node_modules/.bin/lerna publish ${{ github.event.inputs.version }} ---conventional-commits --force-publish -y --no-push
+        run: node_modules/.bin/lerna publish ${{ github.event.inputs.version }} ---conventional-commits --force-publish -y --no-push --no-tag
       - name: Semantically bump version
         if: ${{ github.event.inputs.version == ''}}
-        run: node_modules/.bin/lerna publish ---conventional-commits -y --no-push
+        run: node_modules/.bin/lerna publish ---conventional-commits -y --no-push --no-tag
       - run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-      - run: npm run npm:publish
+      - name: Publish on NPM
+        run: npm run npm:publish
+      - name: Get version number
+        run: node ./scripts/get-version.js
       - name: Wait for NPM cache to be updated
         run: node ./scripts/wait-for-packages.js
       - name: Update package-lock.json
         run: |
           npm run npm:genPkgLock
           git commit --amend --no-edit
+          git tag ${{ env.tag }}
       - name: Push commit & tag
         run: |
           git push
