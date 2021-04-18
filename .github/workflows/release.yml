@@ -24,8 +24,11 @@ jobs:
         with:
           node-version: '14'
       - run: npm run setup
-      - run: git config --global user.email action@github.com
-      - run: git config --global user.name GitHub Action
+      - name: Setup credentials
+      - run: |
+          git config --global user.email action@github.com
+          git config --global user.name GitHub Action
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - run: node_modules/.bin/lerna changed
         if: ${{ github.event.inputs.version == ''}}
       - name: Manually bump version
@@ -34,9 +37,6 @@ jobs:
       - name: Semantically bump version
         if: ${{ github.event.inputs.version == ''}}
         run: node_modules/.bin/lerna publish ---conventional-commits -y --no-push --no-tag
-      - run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-      - name: Publish on NPM
-        run: npm run npm:publish
       - name: Wait for NPM cache to be updated
         run: node ./scripts/wait-for-packages.js
       - name: Update package-lock.json
