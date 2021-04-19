@@ -4,9 +4,7 @@
 
 ## About
 
-Coveo CLI is a command line interface to interact with the Coveo platform.
-
-Currently, the CLI allows you to quickly create a [Coveo Headless](https://docs.coveo.com/headless)-powered search page for your Coveo organization, relying on [Angular](https://angular.io), [React](https://reactjs.org/) or [Vue.js](https://vuejs.org/).
+Coveo CLI is a command line interface to interact with the Coveo platform. It allows you to quickly create a [Coveo Headless](https://docs.coveo.com/headless)-powered search page for your Coveo organization, relying on [Angular](https://angular.io), [React](https://reactjs.org/) or [Vue.js](https://vuejs.org/).
 
 ## Usage
 
