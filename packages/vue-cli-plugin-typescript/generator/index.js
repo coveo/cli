@@ -1,4 +1,4 @@
-module.exports = (api, options, rootOptions, invoking) => {
+module.exports = (api, options, rootOptions) => {
   api.injectImports(api.entryFile, `import router from './router'`);
 
   api.injectRootOptions(api.entryFile, 'router');
