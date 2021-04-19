@@ -42,14 +42,13 @@ jobs:
       - name: Update package-lock.json
         run: |
           npm run npm:pkglock
-          git commit --amend --no-edit
+          git commit --amend --no-edit --all
       - name: Tag the version
         run: |
           node ./scripts/get-version.js
           git tag ${{ env.tag }}
       - name: Push commit & tag
         run: |
-          git add .
           git push
           git push --tags
       - name: Create GitHub release.
