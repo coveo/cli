@@ -14,7 +14,7 @@ Install via npm:
 $ npm install -g @coveo/cli
 ```
 
-In practice, you'll typically want to [`login`](#coveo-authlogin) to your Coveo Organization, [`configure`](#coveo-configset) the CLI to connect to this organization, and finally create a search page (see [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name), [`coveo ui:create:react NAME`](#coveo-uicreatereact-name) and [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)).
+In practice, you'll typically want to [`login`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-authlogin) to your Coveo Organization, [`configure`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-configset) the CLI to connect to this organization, and finally create a search page (see [`coveo ui:create:angular NAME`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-uicreateangular-name), [`coveo ui:create:react NAME`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-uicreatereact-name) and [`coveo ui:create:vue NAME`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-uicreatevue-name)).
 
 The project is still under heavy development, stay tuned!
 
