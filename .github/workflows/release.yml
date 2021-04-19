@@ -25,7 +25,7 @@ jobs:
           node-version: '14'
       - run: npm run setup
       - name: Setup credentials
-      - run: |
+        run: |
           git config --global user.email action@github.com
           git config --global user.name GitHub Action
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
