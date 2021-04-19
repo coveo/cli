@@ -41,7 +41,7 @@ jobs:
         run: node ./scripts/wait-for-packages.js
       - name: Update package-lock.json
         run: |
-          npm run npm:genPkgLock
+          npm run npm:pkglock
           git commit --amend --no-edit
       - name: Tag the version
         run: |
