@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli",
-  "private": false,
+  "private": true,
   "version": "1.0.1",
   "author": "Coveo",
   "engines": {
