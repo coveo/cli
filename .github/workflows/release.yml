@@ -49,6 +49,7 @@ jobs:
           git tag ${{ env.tag }}
       - name: Push commit & tag
         run: |
+          git add .
           git push
           git push --tags
       - name: Create GitHub release.
