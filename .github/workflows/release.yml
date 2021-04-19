@@ -40,15 +40,13 @@ jobs:
       - name: Wait for NPM cache to be updated
         run: node ./scripts/wait-for-packages.js
       - name: Update package-lock.json
+        run: npm run npm:pkglock
+      - name: Get the version
+        run: node ./scripts/get-version.js
+      - name: Commit changes, tag and push
         run: |
-          npm run npm:pkglock
-          git commit --amend --no-edit --all
-      - name: Tag the version
-        run: |
-          node ./scripts/get-version.js
+          git commit --all -m "[Version bump] chore(release): publish ${{ env.tag }}"
           git tag ${{ env.tag }}
-      - name: Push commit & tag
-        run: |
           git push
           git push --tags
       - name: Create GitHub release.
