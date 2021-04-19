@@ -45,8 +45,8 @@ jobs:
         run: node ./scripts/get-version.js
       - name: Commit changes, tag and push
         run: |
-          git commit --all -m "[Version bump] chore(release): publish ${{ env.tag }}"
-          git tag ${{ env.tag }}
+          git commit --all -m "[Version bump] chore(release): publish v${{ env.tag }}"
+          git tag "v${{ env.tag }}"
           git push
           git push --tags
       - name: Create GitHub release.
