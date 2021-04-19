@@ -6,13 +6,21 @@
 
 Coveo CLI is a command line interface to interact with the Coveo platform.
 
-The project is still under heavy development.
+Currently, the CLI allows you to quickly create a [Coveo Headless](https://docs.coveo.com/headless)-powered search page for your Coveo organization, relying on [Angular](https://angular.io), [React](https://reactjs.org/) or [Vue.js](https://vuejs.org/).
 
-See packages/cli/README.MD for more information.
+## Usage
 
-Stay tuned !
+Install via npm:
 
-## Local setup
+```sh-session
+$ npm install -g @coveo/cli
+```
+
+In practice, you'll typically want to [`login`](#coveo-authlogin) to your Coveo Organization, [`configure`](#coveo-configset) the CLI to connect to this organization, and finally create a search page (see [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name), [`coveo ui:create:react NAME`](#coveo-uicreatereact-name) and [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)).
+
+The project is still under heavy development, stay tuned!
+
+## Local Setup to Contribute
 
 To install all dependencies and link local packages, run:
 
