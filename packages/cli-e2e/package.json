@@ -1,5 +1,5 @@
 {
-  "name": "cli-e2e",
+  "name": "@coveo/cli-e2e",
   "version": "1.0.0",
   "description": "End-to-End test of Coveo's CLI",
   "author": "Coveo",
