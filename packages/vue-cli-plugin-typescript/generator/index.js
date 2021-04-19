@@ -24,14 +24,4 @@ module.exports = (api, options, rootOptions, invoking) => {
     ...rootOptions,
     ...options,
   });
-
-  // late invoke compat
-  if (invoking) {
-    if (!api.hasPlugin('typescript')) {
-      console.error(
-        'Cannot add @coveo/vue-cli-plugin-typescript in a non-typescript project. You should add the @vue/cli-plugin-typescript plugin first'
-      );
-      return;
-    }
-  }
 };
