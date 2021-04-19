@@ -33,16 +33,16 @@ jobs:
         if: ${{ github.event.inputs.version == ''}}
       - name: Manually bump version
         if: ${{ github.event.inputs.version != ''}}
-        run: node_modules/.bin/lerna publish ${{ github.event.inputs.version }} ---conventional-commits --force-publish -y --no-push --no-tag
+        run: node_modules/.bin/lerna publish ${{ github.event.inputs.version }} ---conventional-commits --force-publish -y --no-push --no-git-tag-version
       - name: Semantically bump version
         if: ${{ github.event.inputs.version == ''}}
-        run: node_modules/.bin/lerna publish ---conventional-commits -y --no-push --no-tag
+        run: node_modules/.bin/lerna publish ---conventional-commits -y --no-push --no-git-tag-version
       - name: Wait for NPM cache to be updated
         run: node ./scripts/wait-for-packages.js
       - name: Update package-lock.json
         run: |
           npm run npm:pkglock
-          git commit --amend --no-edit
+          git commit --amend --no-edit --all
       - name: Tag the version
         run: |
           node ./scripts/get-version.js
