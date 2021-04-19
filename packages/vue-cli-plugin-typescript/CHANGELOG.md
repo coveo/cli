@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.7](https://github.com/coveo/cli/compare/v1.0.1...v1.0.7) (2021-04-19)
+
+
+### Bug Fixes
+
+* **vue:** fix typo in pager component [#165](https://github.com/coveo/cli/issues/165) ([f67c3fb](https://github.com/coveo/cli/commit/f67c3fb8ec480403f059578e711394313b2fbb41))
+
+
+
+
+
 ## [1.0.1](https://github.com/coveo/cli/compare/v1.0.0...v1.0.1) (2021-04-17)
 
 

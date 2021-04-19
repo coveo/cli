@@ -1,7 +1,7 @@
 {
   "name": "@coveo/cli-e2e",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.7",
   "description": "End-to-End test of Coveo's CLI",
   "author": "Coveo",
   "homepage": "https://github.com/coveo/cli#readme",
