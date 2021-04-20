@@ -29,7 +29,9 @@
       {
         "project_name": "cli-root",
         "file": "package.json",
-        "scan_dev_dependencies": true
+        "additional_config": {
+          "scan_dev_dependencies": true
+        }
       },
       {
         "project_name": "cli",
