@@ -30,7 +30,7 @@
         "project_name": "cli",
         "additional_config": {
           "scan_dev_dependencies": true,
-          "all-projects": true
+          "--all-projects": true
         }
       }
     ]
