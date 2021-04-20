@@ -20,7 +20,7 @@ $ npm install -g @coveo/cli
 $ coveo COMMAND
 running command...
 $ coveo (-v|--version|version)
-@coveo/cli/1.0.13 linux-x64 node-v14.16.1
+@coveo/cli/1.0.14 linux-x64 node-v14.16.1
 $ coveo --help [COMMAND]
 USAGE
   $ coveo COMMAND
@@ -65,7 +65,7 @@ EXAMPLE
   $ coveo auth:login
 ```
 
-_See code: [src/commands/auth/login.ts](https://github.com/coveo/cli/blob/v1.0.13/src/commands/auth/login.ts)_
+_See code: [src/commands/auth/login.ts](https://github.com/coveo/cli/blob/v1.0.14/src/commands/auth/login.ts)_
 
 ## `coveo config:get`
 
@@ -76,7 +76,7 @@ USAGE
   $ coveo config:get
 ```
 
-_See code: [src/commands/config/get.ts](https://github.com/coveo/cli/blob/v1.0.13/src/commands/config/get.ts)_
+_See code: [src/commands/config/get.ts](https://github.com/coveo/cli/blob/v1.0.14/src/commands/config/get.ts)_
 
 ## `coveo config:set`
 
@@ -102,7 +102,7 @@ OPTIONS
                                                                        operations. See https://docs.coveo.com/en/2976.
 ```
 
-_See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v1.0.13/src/commands/config/set.ts)_
+_See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v1.0.14/src/commands/config/set.ts)_
 
 ## `coveo help [COMMAND]`
 
@@ -140,7 +140,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v1.0.13/src/commands/org/list.ts)_
+_See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v1.0.14/src/commands/org/list.ts)_
 
 ## `coveo ui:create:angular NAME`
 
@@ -158,7 +158,7 @@ OPTIONS
   -v, --version=version  [default: 1.0.7] Version of @coveo/angular to use.
 ```
 
-_See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/v1.0.13/src/commands/ui/create/angular.ts)_
+_See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/v1.0.14/src/commands/ui/create/angular.ts)_
 
 ## `coveo ui:create:react NAME`
 
@@ -179,7 +179,7 @@ EXAMPLES
   $ coveo ui:create:react --help
 ```
 
-_See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v1.0.13/src/commands/ui/create/react.ts)_
+_See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v1.0.14/src/commands/ui/create/react.ts)_
 
 ## `coveo ui:create:vue NAME`
 
@@ -207,7 +207,7 @@ EXAMPLES
   $ coveo ui:create:vue --help
 ```
 
-_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v1.0.13/src/commands/ui/create/vue.ts)_
+_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v1.0.14/src/commands/ui/create/vue.ts)_
 
 ## `coveo update [CHANNEL]`
 
