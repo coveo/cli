@@ -28,23 +28,10 @@
     "configurations": [
       {
         "project_name": "cli",
-        "directory": "packages/cli"
-      },
-      {
-        "project_name": "angular",
-        "directory": "packages/angular"
-      },
-      {
-        "project_name": "cra-template",
-        "directory": "packages/cra-template"
-      },
-      {
-        "project_name": "search-token-server",
-        "directory": "packages/search-token-server"
-      },
-      {
-        "project_name": "vue-cli-plugin",
-        "directory": "packages/vue-cli-plugin-typescript"
+        "additional_config": {
+          "scan_dev_dependencies": true,
+          "all-projects": true
+        }
       }
     ]
   },
