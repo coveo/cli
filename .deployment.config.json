@@ -27,13 +27,6 @@
     "no_container_images": true,
     "configurations": [
       {
-        "project_name": "cli-root",
-        "file": "package.json",
-        "additional_config": {
-          "scan_dev_dependencies": true
-        }
-      },
-      {
         "project_name": "cli",
         "directory": "packages/cli"
       },
