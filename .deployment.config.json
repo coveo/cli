@@ -28,17 +28,14 @@
     "configurations": [
       {
         "project_name": "cli-root",
-        "file": "package.json",
+        "file": "package-lock.json",
         "additional_config": {
           "scan_dev_dependencies": true
         }
       },
       {
         "project_name": "cli",
-        "directory": "packages/cli",
-        "additional_config": {
-          "scan_dev_dependencies": true
-        }
+        "directory": "packages/cli"
       },
       {
         "project_name": "angular",
