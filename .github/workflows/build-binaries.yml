@@ -50,10 +50,16 @@ jobs:
           ./node_modules/@oclif/dev-cli/bin/run pack -t="${{ matrix.package-targets }}"
           mv ./dist/version ./dist/${{ matrix.os }}-version
           mv ./dist/coveo-${{ env.tag }}/coveo-${{ env.tag }}.tar.gz ./dist/coveo-${{ env.tag }}/${{ matrix.os }}-coveo-${{ env.tag }}.tar.gz
+          node ../../scripts/copy-latest-binaries.js
       - name: Upload binaries
-        uses: svenstaro/upload-release-action@v2
+        # uses: svenstaro/upload-release-action@v2
+        # with:
+        #   repo_token: ${{ secrets.GITHUB_TOKEN }}
+        #   file: ./packages/cli/dist/**/*
+        #   file_glob: true
+        #   tag: ${{ env.tag }}
+        uses: actions/upload-artifact@v2
+        if: ${{ always() }}
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./packages/cli/dist/**/*
-          file_glob: true
-          tag: ${{ env.tag }}
+          name: release_test
+          path: ./packages/cli/dist
