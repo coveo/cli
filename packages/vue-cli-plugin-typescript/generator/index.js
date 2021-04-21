@@ -1,4 +1,8 @@
 module.exports = (api, options, rootOptions) => {
+  api.injectImports(api.entryFile, `import router from './router'`);
+
+  api.injectRootOptions(api.entryFile, 'router');
+
   api.extendPackage({
     scripts: {
       postinstall: 'node ./scripts/setup-server.js',
@@ -12,6 +16,7 @@ module.exports = (api, options, rootOptions) => {
       '@coveo/search-token-server': '*',
       buefy: '^0.9.4',
       concurrently: '^5.3.0',
+      'vue-router': '^3.5.1',
     },
   });
 
