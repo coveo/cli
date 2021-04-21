@@ -46,12 +46,10 @@ jobs:
         run: ./node_modules/@oclif/dev-cli/bin/run pack${{ matrix.pack-command }}
       - name: Create packages
         working-directory: ./packages/cli
-        run: ./node_modules/@oclif/dev-cli/bin/run pack -t="${{ matrix.package-targets }}"
-      - name: Prepare upload
         run: |
+          ./node_modules/@oclif/dev-cli/bin/run pack -t="${{ matrix.package-targets }}"
           mv ./dist/version ./dist/${{ matrix.os }}-version
           mv ./dist/coveo-${{ env.tag }}/coveo-${{ env.tag }}.tar.gz ./dist/coveo-${{ env.tag }}/${{ matrix.os }}-coveo-${{ env.tag }}.tar.gz
-          node ../../scripts/copy-latest-binaries.js
       - name: Upload binaries
         uses: svenstaro/upload-release-action@v2
         with:
