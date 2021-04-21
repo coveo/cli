@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const binariesMatcher = /^coveo(_|-)(?<_version>v?\d+\.\d+\.\d+(-\d)?)(?<longExt>.*\.(exe|deb|pkg))$/;
+const binariesMatcher = /^coveo(_|-)(?<_version>v?\d+\.\d+\.\d+(-\d+)?)(?<longExt>.*\.(exe|deb|pkg))$/;
 const distDir = 'dist';
 const getOsSlug = () => {
   switch (process.platform) {
