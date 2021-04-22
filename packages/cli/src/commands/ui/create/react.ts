@@ -57,11 +57,15 @@ export default class React extends Command {
     const args = this.args;
 
     const finalOutput = await this.createProject(args.name);
+
     cli.action.start('Creating search token server');
     await this.setupServer(args.name);
     await this.setupEnvironmentVariables(args.name);
     cli.action.stop();
-    process.stdout.write(`${EOL}${finalOutput}`);
+
+    console.log(EOL);
+    process.stdout.write(finalOutput);
+
     await this.config.runHook('analytics', buildAnalyticsSuccessHook(this, {}));
   }
 
