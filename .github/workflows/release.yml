@@ -19,6 +19,10 @@ jobs:
         with:
           node-version: '14'
       - run: npm run setup
+      - name: Setup credentials
+        run: |
+          git config --global user.email action@github.com
+          git config --global user.name GitHub Action
       - name: Get the version
         run: node ./scripts/get-version.js
       - name: Commit changes, tag and push
