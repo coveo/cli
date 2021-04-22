@@ -27,5 +27,5 @@ jobs:
         run: node ./scripts/get-version.js
       - name: Commit changes, tag and push
         run: |
-          echo "[Version bump] chore(release): publish v${{ env.tag }}\nlerna.json\n\nCHANGELOG.md\n**/CHANGELOG.md\n**/README.md" > git commit --all --file -
+          echo "[Version bump] chore(release): publish v${{ env.tag }}\nlerna.json\n\nCHANGELOG.md\n**/CHANGELOG.md\n**/README.md" > git commit --all --allow-empty --file -
           git push
