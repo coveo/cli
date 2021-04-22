@@ -65,6 +65,17 @@ export class AuthenticatedClient {
       ],
     });
   }
+
+  async platformUserCredentials(name: string) {
+    const authenticatedClient = new AuthenticatedClient();
+    const platformClient = await authenticatedClient.getClient();
+    await platformClient.initialize();
+
+    const userInfo = await platformClient.user.get();
+    const apiKey = await authenticatedClient.createImpersonateApiKey(name);
+
+    return {userInfo, apiKey};
+  }
 }
 
 export enum AuthenticationStatus {
