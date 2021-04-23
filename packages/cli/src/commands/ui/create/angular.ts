@@ -12,8 +12,8 @@ import {
   Preconditions,
   IsAuthenticated,
   IsNodeVersionInRange,
+  IsNpmVersionInRange,
 } from '../../../lib/decorators/preconditions/';
-import {IsNpmVersionInRange} from '../../../lib/decorators/preconditions/npm';
 
 export default class Angular extends Command {
   static templateName = '@coveo/angular';
