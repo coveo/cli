@@ -84,7 +84,7 @@ export function spawnProcessPTY(
     name: 'xterm-color',
     cols: process.stdout.columns,
     rows: process.stdout.rows,
-    cwd: options.cwd || process.cwd(),
+    cwd: options.cwd ?? process.cwd(),
   });
 
   return ptyProcess;
