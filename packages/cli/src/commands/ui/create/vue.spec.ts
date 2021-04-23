@@ -7,6 +7,8 @@ describe('ui:create:vue', () => {
 /*
 describe('ui:create:vue', () => {
   test
+    .stdout()
+    .stderr()
     .command(['ui:create:vue'])
     .catch((ctx) => {
       expect(ctx.message).to.contain('Missing 1 required arg:');
@@ -14,6 +16,8 @@ describe('ui:create:vue', () => {
 
     .it('requires application name argument');
   test
+    .stdout()
+    .stderr()
     .command(['ui:create:vue', 'myapp', '--preset', 'invalidPreset'])
     .catch('Unable to load preset')
     .it('requires a valid preset flag');

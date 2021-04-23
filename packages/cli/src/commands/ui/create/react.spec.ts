@@ -16,6 +16,8 @@ describe('ui:create:react', () => {
   const reactAppCoveoTemplate = 'cra-template-coveo';
 
   test
+    .stdout()
+    .stderr()
     .command(['ui:create:react'])
     .catch((ctx) => {
       expect(ctx.message).toContain('Missing 1 required arg:');
@@ -23,6 +25,8 @@ describe('ui:create:react', () => {
     .it('requires application name argument');
 
   test
+    .stdout()
+    .stderr()
     .stdout()
     .command(['ui:create:react', 'myapp'])
     .it('should start a spawn process with the appropriate arguments', () => {

@@ -64,17 +64,22 @@ describe('auth:login', () => {
   });
 
   test
+    .stdout()
+    .stderr()
     .command(['auth:login', '-e', 'foo'])
     .catch(/Expected --environment=foo/)
     .it('reject invalid environment', async () => {});
 
   test
+    .stdout()
+    .stderr()
     .command(['auth:login', '-r', 'foo'])
     .catch(/Expected --region=foo/)
     .it('reject invalid region', async () => {});
 
   ['dev', 'qa', 'prod', 'hipaa'].forEach((environment) => {
     test
+      .stderr()
       .stdout()
       .command(['auth:login', '-e', environment, '-o', 'foo'])
       .it(
@@ -97,6 +102,7 @@ describe('auth:login', () => {
     'us-west-2',
   ].forEach((region) => {
     test
+      .stderr()
       .stdout()
       .command(['auth:login', '-r', region, '-o', 'foo'])
       .it(`passes the -e=${region} flag to oauth and configuration`, () => {
@@ -106,6 +112,7 @@ describe('auth:login', () => {
   });
 
   test
+    .stderr()
     .stdout()
     .command(['auth:login', '-e', 'qa', '-o', 'foo'])
     .it('passed the -e=dev flag to oauth as an environment', () => {
@@ -114,6 +121,7 @@ describe('auth:login', () => {
 
   describe('retrieves token from oauth service', () => {
     test
+      .stderr()
       .stdout()
       .command(['auth:login', '-o', 'foo'])
       .it('save token from oauth service', () => {
@@ -125,15 +133,18 @@ describe('auth:login', () => {
   });
 
   test
-    .stdout()
     .do(() => {
       mockGetHasAccessToOrg.mockReturnValueOnce(Promise.resolve(false));
     })
+    .stderr()
+    .stdout()
     .command(['auth:login', '-o', 'this_is_not_a_valid_org'])
     .exit(2)
     .it('fails when organization flag is invalid');
 
   test
+    .stdout()
+    .stderr()
     .do(() => {
       mockListOrgs.mockReturnValueOnce(Promise.resolve([]));
     })
@@ -145,6 +156,7 @@ describe('auth:login', () => {
     );
 
   test
+    .stderr()
     .stdout()
     .command(['auth:login', '-o', 'foo'])
     .it('succeed when organization flag is valid', (ctx) => {
@@ -165,6 +177,7 @@ describe('auth:login', () => {
       );
     })
     .stdout()
+    .stderr()
     .command(['auth:login'])
     .it(
       'succeed when no organization flag is passed, and uses the first available org instead',

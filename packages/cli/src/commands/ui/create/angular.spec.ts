@@ -1,5 +1,5 @@
-jest.mock('../../../lib/decorators/preconditions');
 jest.mock('../../../lib/decorators/preconditions/npm');
+jest.mock('../../../lib/decorators/preconditions/node');
 jest.mock('../../../lib/utils/process');
 jest.mock('../../../lib/oauth/oauth');
 jest.mock('../../../lib/config/config');
@@ -9,16 +9,16 @@ jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
 jest.mock('@coveord/platform-client');
 
+import {join} from 'path';
 import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
 import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
 import {Config, Configuration} from '../../../lib/config/config';
-import {IsNpmVersionInRange} from '../../../lib/decorators/preconditions/npm';
 import {
+  IsNpmVersionInRange,
   IsNodeVersionInRange,
-  // IsNpmVersionInRange,
 } from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import Command from '@oclif/command';
@@ -31,14 +31,19 @@ describe('ui:create:angular', () => {
   const mockedAuthenticatedClient = mocked(AuthenticatedClient);
   const mockedIsNpmVersionInRange = mocked(IsNpmVersionInRange, true);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
-  const angularAppExecutable = '@angular/cli/lib/init.js';
-
-  const doMockPreconditions = function (condition: boolean) {
+  const angularAppExecutable = join('@angular', 'cli', 'lib', 'init.js');
+  const preconditionStatus = {
+    node: true,
+    npm: true,
+  };
+  const doMockPreconditions = function () {
     const mockNode = function (_target: Command) {
-      return Promise.resolve(condition);
+      return new Promise<boolean>((resolve) =>
+        resolve(preconditionStatus.node)
+      );
     };
     const mockNpm = function (_target: Command) {
-      return Promise.resolve(condition);
+      return new Promise<boolean>((resolve) => resolve(preconditionStatus.npm));
     };
     mockedIsNodeVersionInRange.mockReturnValueOnce(mockNode);
     mockedIsNpmVersionInRange.mockReturnValueOnce(mockNpm);
@@ -104,28 +109,15 @@ describe('ui:create:angular', () => {
     );
   };
 
-  // beforeEach(() => {
-  //   process.stdout.write('MAIN RESET\n');
-  //   jest.resetAllMocks();
-  // });
-
-  // afterEach(() => {
-  //   mockedIsNpmVersionInRange.mockClear();
-  //   mockedIsNodeVersionInRange.mockClear();
-  //   jest.resetAllMocks();
-  //   process.stdout.write('dsafghhfdsfghdsasdfghfdd');
-  // });
-
-  // afterAll(() => {
-  //   jest.clearAllMocks();
-  // });
-
   beforeEach(() => {
     doMockedGetPackageVersion();
     doMockSpawnProcess();
     doMockPlatformClient();
     doMockConfiguration();
     doMockAuthenticatedClient();
+    doMockPreconditions();
+    preconditionStatus.npm = true;
+    preconditionStatus.node = true;
   });
 
   afterEach(() => {
@@ -135,29 +127,21 @@ describe('ui:create:angular', () => {
 
   test
     .do(() => {
-      doMockPreconditions(false);
+      preconditionStatus.npm = false;
     })
+    .stdout()
+    .stderr()
     .command(['ui:create:angular', 'myapp'])
-    // .exit(0)
     .it(
       'should not execute the command if the preconditions are not respected',
       async () => {
-        process.stdout.write('*********************');
-        process.stdout.write(
-          `${await mockedIsNodeVersionInRange.mock.results[0].value}`
-        );
-        process.stdout.write('*********************');
-        expect(await mockedIsNodeVersionInRange.mock.results[0].value()).toBe(
-          false
-        );
         expect(mockedSpawnProcess).toHaveBeenCalledTimes(0);
       }
     );
 
   test
-    .do(() => {
-      doMockPreconditions(true);
-    })
+    .stdout()
+    .stderr()
     .command(['ui:create:angular'])
     .catch((ctx) => {
       expect(ctx.message).toContain('Missing 1 required arg:');
@@ -165,9 +149,8 @@ describe('ui:create:angular', () => {
     .it('requires application name argument', async () => {});
 
   test
-    .do(() => {
-      doMockPreconditions(true);
-    })
+    .stdout()
+    .stderr()
     .command(['ui:create:angular', 'myapp'])
     .it(
       'should start a spawn process with the appropriate arguments',

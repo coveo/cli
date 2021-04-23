@@ -30,6 +30,7 @@ describe('org:list', () => {
   );
 
   test
+    .stderr()
     .stdout()
     .command(['org:list'])
     .it('works when the user has access to no org', (ctx) => {
@@ -48,6 +49,7 @@ describe('org:list', () => {
       );
     })
     .stdout()
+    .stderr()
     .command(['org:list'])
     .it('works when the user has access to a list of org', (ctx) => {
       expect(ctx.stdout).toContain('first_org');
@@ -64,6 +66,7 @@ describe('org:list', () => {
       );
     })
     .stdout()
+    .stderr()
     .command(['org:list', '-x'])
     .it(
       'works when the user has access to a list of org with extended details',

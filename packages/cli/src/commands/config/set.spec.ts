@@ -29,6 +29,7 @@ describe('config:set', () => {
   );
 
   test
+    .stderr()
     .stdout()
     .command(['config:set'])
     .it(
@@ -40,6 +41,7 @@ describe('config:set', () => {
 
   ['dev', 'qa', 'prod', 'hipaa'].forEach((environment) => {
     test
+      .stderr()
       .stdout()
       .command(['config:set', '-e', environment])
       .it(`allows to modify environment ${environment}`, () => {
@@ -48,6 +50,7 @@ describe('config:set', () => {
   });
 
   test
+    .stderr()
     .stdout()
     .command(['config:set', '-e', 'foo'])
     .catch(/Expected --environment=foo/)
@@ -63,6 +66,7 @@ describe('config:set', () => {
     'us-west-2',
   ].forEach((region) => {
     test
+      .stderr()
       .stdout()
       .command(['config:set', '-r', region])
       .it(`allows to modify region ${region}`, () => {
@@ -71,6 +75,7 @@ describe('config:set', () => {
   });
 
   test
+    .stderr()
     .stdout()
     .command(['config:set', '-r', 'foo'])
     .catch(/Expected --region=foo/)
@@ -79,6 +84,7 @@ describe('config:set', () => {
     });
 
   test
+    .stderr()
     .stdout()
     .do(() => {
       mockGetHasAccessToOrg.mockReturnValueOnce(Promise.resolve(true));
@@ -92,10 +98,11 @@ describe('config:set', () => {
     );
 
   test
-    .stdout()
     .do(() => {
       mockGetHasAccessToOrg.mockReturnValueOnce(Promise.resolve(false));
     })
+    .stderr()
+    .stdout()
     .command(['config:set', '-o', 'the_org'])
     .catch(/do not have access to organization the_org/)
     .it(
@@ -106,6 +113,7 @@ describe('config:set', () => {
     );
 
   test
+    .stderr()
     .stdout()
     .command(['config:set', '-a', 'y'])
     .it('allows to modify the analytics configuration', () => {
