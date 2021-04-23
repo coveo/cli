@@ -63,7 +63,7 @@ export default class React extends Command {
     await this.setupEnvironmentVariables(args.name);
     cli.action.stop();
 
-    console.log(EOL);
+    this.log(EOL);
     process.stdout.write(finalOutput);
 
     await this.config.runHook('analytics', buildAnalyticsSuccessHook(this, {}));
