@@ -74,10 +74,8 @@ export default class Angular extends Command {
     const cfg = await this.configuration.get();
     const args = this.args;
     const authenticatedClient = new AuthenticatedClient();
-    const {
-      userInfo,
-      apiKey,
-    } = await authenticatedClient.platformUserCredentials(args.name);
+    const userInfo = await authenticatedClient.getUserInfo();
+    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
     const flags = this.flags;
     const schematicVersion =
       flags.version || getPackageVersion(Angular.templateName);

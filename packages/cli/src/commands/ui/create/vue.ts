@@ -91,10 +91,8 @@ export default class Vue extends Command {
     const args = this.args;
     const cfg = await this.configuration.get();
     const authenticatedClient = new AuthenticatedClient();
-    const {
-      userInfo,
-      apiKey,
-    } = await authenticatedClient.platformUserCredentials(args.name);
+    const userInfo = await authenticatedClient.getUserInfo();
+    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
 
     const flags = this.flags;
     const presetVersion = flags.version || getPackageVersion(Vue.templateName);

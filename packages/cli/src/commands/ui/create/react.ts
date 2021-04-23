@@ -84,10 +84,8 @@ export default class React extends Command {
     const args = this.args;
     const cfg = await this.configuration.get();
     const authenticatedClient = new AuthenticatedClient();
-    const {
-      userInfo,
-      apiKey,
-    } = await authenticatedClient.platformUserCredentials(args.name);
+    const userInfo = await authenticatedClient.getUserInfo();
+    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
     const output = await spawnProcessOutput(
       appendCmdIfWindows`npm`,
       [
