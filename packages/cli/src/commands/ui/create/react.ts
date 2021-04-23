@@ -154,7 +154,7 @@ export default class React extends Command {
     return new Promise<string>((resolve) => {
       const child = spawnProcessPTY(
         appendCmdIfWindows`npx`,
-        ['create-react-app'].concat([...commandArgs, '--color=always']),
+        ['create-react-app'].concat([...commandArgs]),
         options
       );
 
