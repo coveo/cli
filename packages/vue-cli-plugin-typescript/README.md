@@ -1,4 +1,4 @@
-# <%- rootOptions.projectName %>
+# @coveo/vue-cli-plugin-typescript
 
 The `@coveo/vue-cli-plugin-typescript` package contains the necessary components to set up a search page using [Coveo Headless](https://docs.coveo.com/headless) and [Buefy](https://buefy.org/) with the [Vue CLI](https://cli.vuejs.org/).
 
