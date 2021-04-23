@@ -29,6 +29,9 @@ describe('AuthenticatedClient', () => {
 
   const mockInitialize = jest.fn();
   const mockCreate = jest.fn();
+  const mockGetUser = jest
+    .fn()
+    .mockImplementation(() => ({providerUsername: 'bob@coveo.com'}));
 
   mockConfig.mockImplementation(
     () =>
@@ -42,6 +45,9 @@ describe('AuthenticatedClient', () => {
         initialize: mockInitialize,
         apiKey: {
           create: mockCreate as unknown,
+        },
+        user: {
+          get: mockGetUser,
         },
       } as unknown) as PlatformClient)
   );
@@ -120,5 +126,11 @@ describe('AuthenticatedClient', () => {
         ],
       })
     );
+  });
+
+  it('#getUserInfo should return the user info', async () => {
+    const userInfo = await new AuthenticatedClient().getUserInfo();
+    expect(mockGetUser).toHaveBeenCalled();
+    expect(userInfo).toStrictEqual({providerUsername: 'bob@coveo.com'});
   });
 });
