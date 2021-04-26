@@ -65,6 +65,14 @@ export class AuthenticatedClient {
       ],
     });
   }
+
+  async getUserInfo() {
+    const authenticatedClient = new AuthenticatedClient();
+    const platformClient = await authenticatedClient.getClient();
+    await platformClient.initialize();
+
+    return platformClient.user.get();
+  }
 }
 
 export enum AuthenticationStatus {
