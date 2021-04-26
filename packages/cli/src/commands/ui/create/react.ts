@@ -180,7 +180,7 @@ export default class React extends Command {
         }
       });
 
-      child.onExit((exitCode) => {
+      child.onExit(({exitCode}) => {
         if (exitCode) {
           reject();
         }
