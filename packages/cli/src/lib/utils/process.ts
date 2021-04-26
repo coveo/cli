@@ -1,5 +1,5 @@
 import {spawn, SpawnOptions} from 'child_process';
-import {spawn as ptySpawn} from 'node-pty';
+import {spawn as ptySpawn, IWindowsPtyForkOptions} from 'node-pty';
 
 /**
  *
@@ -78,13 +78,14 @@ export async function spawnProcessOutput(
 export function spawnProcessPTY(
   command: string,
   args: string[],
-  options: SpawnOptions = {}
+  options: IWindowsPtyForkOptions = {}
 ) {
   const ptyProcess = ptySpawn(command, args, {
     name: 'xterm-color',
     cols: process.stdout.columns,
     rows: process.stdout.rows,
     cwd: options.cwd ?? process.cwd(),
+    useConpty: false,
   });
 
   return ptyProcess;
