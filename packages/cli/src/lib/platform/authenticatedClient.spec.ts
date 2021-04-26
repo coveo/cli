@@ -130,7 +130,7 @@ describe('AuthenticatedClient', () => {
 
   it('#getUserInfo should return the user info', async () => {
     const userInfo = await new AuthenticatedClient().getUserInfo();
-    expect(mockGetUser).toHaveBeenCalled();
+    expect(mockInitialize).toHaveBeenCalled();
     expect(userInfo).toStrictEqual({providerUsername: 'bob@coveo.com'});
   });
 });
