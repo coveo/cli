@@ -71,7 +71,7 @@ export class AuthenticatedClient {
     const platformClient = await authenticatedClient.getClient();
     await platformClient.initialize();
 
-    return await platformClient.user.get();
+    return platformClient.user.get();
   }
 }
 
