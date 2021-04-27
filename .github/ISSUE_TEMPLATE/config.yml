@@ -1,0 +1,10 @@
+contact_links:
+  - name: Ideas and questions about the CLI
+    url: https://github.com/coveo/cli/discussions
+    about: Propose your ideas and ask your questions about the Coveo CLI.
+  - name: General Coveo Support
+    url: https://coveo.connect.com
+    about: Please ask and answer your questions about Coveo in general.
+  - name: Coveo Vulnerabilities management
+    url: https://docs.coveo.com/en/2024/security/vulnerability-management#responsible-disclosure
+    about: Please report security vulnerabilities here according to those instructions.
