@@ -2,7 +2,7 @@
 
 <!--
     Explains what are you changing in the code and provide links to relevant issues.
-    This doesn't need to be overtechnical, a good summary of the issues with good explanations of the decisions should be enough.
+    This doesn't need to be over-technical, a good summary of the issues with good explanations of the decisions should be enough.
  -->
 
 ## Breaking changes
@@ -12,7 +12,7 @@
 
     If your changes includes some breaking changes in the code, thoroughly explains:
         - What are the breaking changes programmatically speaking.
-        - What are the impact on the end-user (e.g. user cannot do X anymore).
+        - What is the impact on the end-user (e.g. user cannot do X anymore).
         - What motivates those changes.
 -->
 
