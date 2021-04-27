@@ -27,28 +27,43 @@
     "no_container_images": true,
     "configurations": [
       {
-        "project_name": "coveo/cli:package.json",
-        "file": "package.json"
+        "project_name": "cli-root",
+        "file": "package-lock.json",
+        "additional_config": {
+          "scan_dev_dependencies": true
+        }
       },
       {
-        "project_name": "coveo/cli:packages/cli/package.json",
-        "file": "packages/cli/package.json"
+        "project_name": "cli",
+        "directory": "packages/cli"
       },
       {
-        "project_name": "coveo/cli:packages/angular/package.json",
-        "file": "packages/angular/package.json"
+        "project_name": "angular",
+        "directory": "packages/angular",
+        "additional_config": {
+          "scan_dev_dependencies": true
+        }
       },
       {
-        "project_name": "coveo/cli:packages/cra-template/package.json",
-        "file": "packages/cra-template/package.json"
+        "project_name": "cra-template",
+        "directory": "packages/cra-template",
+        "additional_config": {
+          "scan_dev_dependencies": true
+        }
       },
       {
-        "project_name": "coveo/cli:packages/search-token-server/package.json",
-        "file": "packages/search-token-server/package.json"
+        "project_name": "search-token-server",
+        "directory": "packages/search-token-server",
+        "additional_config": {
+          "scan_dev_dependencies": true
+        }
       },
       {
-        "project_name": "coveo/cli:packages/vue-cli-plugin-typescript/package.json",
-        "file": "packages/vue-cli-plugin-typescript/package.json"
+        "project_name": "vue-cli-plugin",
+        "directory": "packages/vue-cli-plugin-typescript",
+        "additional_config": {
+          "scan_dev_dependencies": true
+        }
       }
     ]
   },

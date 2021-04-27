@@ -1,7 +1,7 @@
 {
   "name": "@coveo/cli",
-  "private": false,
-  "version": "1.0.0",
+  "private": true,
+  "version": "1.0.15",
   "author": "Coveo",
   "engines": {
     "node": ">=14.15.1"
@@ -27,9 +27,9 @@
     "tslib": "^1"
   },
   "devDependencies": {
-    "@coveo/angular": "^1.0.0",
-    "@coveo/cra-template": "^1.0.0",
-    "@coveo/vue-cli-plugin-typescript": "^1.0.0",
+    "@coveo/angular": "^1.0.7",
+    "@coveo/cra-template": "^1.0.7",
+    "@coveo/vue-cli-plugin-typescript": "^1.0.7",
     "@oclif/dev-cli": "^1.26.0",
     "@oclif/test": "^1",
     "@types/fs-extra": "^9.0.6",
@@ -48,6 +48,7 @@
   "files": [
     "/bin",
     "/lib",
+    "/patches",
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],

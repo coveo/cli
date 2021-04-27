@@ -8,6 +8,7 @@ import {Config} from '../../../lib/config/config';
 import {
   Preconditions,
   IsAuthenticated,
+  IsNodeVersionInRange,
 } from '../../../lib/decorators/preconditions';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {platformUrl} from '../../../lib/platform/environment';
@@ -17,6 +18,11 @@ import {getPackageVersion} from '../../../lib/utils/misc';
 export default class Vue extends Command {
   static templateName = '@coveo/vue-cli-plugin-typescript';
 
+  /**
+   * @see https://cli.vuejs.org/guide/installation.html for current requirements.
+   * @see https://github.com/vuejs/vue-cli/blob/dev/CHANGELOG.md for upcoming requirements.
+   */
+  static requiredNodeVersion = '>=12';
   static description =
     'Create a Coveo Headless-powered search page with the Vue.js web framework. See https://docs.coveo.com/headless and https://vuejs.org/';
 
@@ -47,7 +53,10 @@ export default class Vue extends Command {
     {name: 'name', description: 'The target application name.', required: true},
   ];
 
-  @Preconditions(IsAuthenticated())
+  @Preconditions(
+    IsAuthenticated(),
+    IsNodeVersionInRange(Vue.requiredNodeVersion)
+  )
   async run() {
     const {args, flags} = this.parse(Vue);
 
@@ -79,8 +88,11 @@ export default class Vue extends Command {
   }
 
   private async invokePlugin(applicationName: string) {
+    const args = this.args;
     const cfg = await this.configuration.get();
-    const {userInfo, apiKey} = await this.platformUserCredentials();
+    const authenticatedClient = new AuthenticatedClient();
+    const userInfo = await authenticatedClient.getUserInfo();
+    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
 
     const flags = this.flags;
     const presetVersion = flags.version || getPackageVersion(Vue.templateName);
@@ -145,23 +157,11 @@ export default class Vue extends Command {
 
   private runVueCliCommand(args: string[], options = {}) {
     const executable = require.resolve('@vue/cli/bin/vue.js');
-    return spawnProcess(executable, args, options);
+    return spawnProcess('node', [executable, ...args], options);
   }
 
   private get configuration() {
     return new Config(this.config.configDir, this.error);
-  }
-
-  private async platformUserCredentials() {
-    const args = this.args;
-    const authenticatedClient = new AuthenticatedClient();
-    const platformClient = await authenticatedClient.getClient();
-    await platformClient.initialize();
-
-    const userInfo = await platformClient.user.get();
-    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
-
-    return {userInfo, apiKey};
   }
 
   private get flags() {

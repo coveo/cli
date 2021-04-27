@@ -30,8 +30,8 @@ export default Vue.extend({
     return {
       pager: pager,
       state: {...pager.state, total: 0},
-      totalCount: (this.$root.$data.$data.$engine as Engine).state.search
-        .response.totalCountFiltered,
+      totalCount: (this.$root.$data.$engine as Engine).state.search.response
+        .totalCountFiltered,
     };
   },
   methods: {

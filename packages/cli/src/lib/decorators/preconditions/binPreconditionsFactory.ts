@@ -62,12 +62,12 @@ export function getBinVersionPrecondition(
 
 export function getBinInstalledPrecondition(
   binaryName: string,
-  options?: Omit<IBinPreconditionsOptions, 'prettyName'>
+  options?: IBinPreconditionsOptions
 ) {
   const appliedOptions: Required<IBinPreconditionsOptions> = {
     ...defaultOptions,
     ...options,
-    prettyName: binaryName,
+    prettyName: options?.prettyName ?? binaryName,
   };
   return function () {
     return async function (target: Command) {
@@ -92,7 +92,7 @@ function isBinInstalled(
     return false;
   }
 
-  if (output.stderr || output.exitCode !== 0) {
+  if (output.exitCode !== 0) {
     target.warn(dedent`
       ${target.id} requires a valid ${options.prettyName} installation to run.
       An unknown error happened while running ${binaryName} ${options.params.join(

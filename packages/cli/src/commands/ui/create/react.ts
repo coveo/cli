@@ -15,6 +15,7 @@ import {
   IsNodeVersionInRange,
   IsNpxInstalled,
 } from '../../../lib/decorators/preconditions';
+import {appendCmdIfWindows} from '../../../lib/utils/os';
 
 export default class React extends Command {
   static templateName = '@coveo/cra-template';
@@ -54,6 +55,7 @@ export default class React extends Command {
     const args = this.args;
 
     await this.createProject(args.name);
+    await this.setupServer(args.name);
     await this.setupEnvironmentVariables(args.name);
     await this.config.runHook('analytics', buildAnalyticsSuccessHook(this, {}));
   }
@@ -79,11 +81,13 @@ export default class React extends Command {
   }
 
   private async setupEnvironmentVariables(name: string) {
+    const args = this.args;
     const cfg = await this.configuration.get();
-    const {userInfo, apiKey} = await this.platformUserCredentials();
-
+    const authenticatedClient = new AuthenticatedClient();
+    const userInfo = await authenticatedClient.getUserInfo();
+    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
     const output = await spawnProcessOutput(
-      'npm',
+      appendCmdIfWindows`npm`,
       [
         'run',
         'setup-env',
@@ -116,24 +120,39 @@ export default class React extends Command {
     return true;
   }
 
+  private async setupServer(name: string) {
+    const output = await spawnProcessOutput(
+      appendCmdIfWindows`npm`,
+      ['run', 'setup-server'],
+      {
+        cwd: name,
+      }
+    );
+
+    if (output.exitCode) {
+      this.warn(`
+      An unknown error happened while trying to copy the search token server. Please refer to ${join(
+        name,
+        'README.md'
+      )} for more detail.
+      ${output.stderr ?? ''}
+      `);
+      return false;
+    }
+
+    return true;
+  }
+
   private runReactCliCommand(args: string[], options = {}) {
-    return spawnProcess('npx', ['create-react-app'].concat(args), options);
+    return spawnProcess(
+      appendCmdIfWindows`npx`,
+      ['create-react-app'].concat(args),
+      options
+    );
   }
 
   private get configuration() {
     return new Config(this.config.configDir, this.error);
-  }
-
-  private async platformUserCredentials() {
-    const args = this.args;
-    const authenticatedClient = new AuthenticatedClient();
-    const platformClient = await authenticatedClient.getClient();
-    await platformClient.initialize();
-
-    const userInfo = await platformClient.user.get();
-    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
-
-    return {userInfo, apiKey};
   }
 
   private get flags() {

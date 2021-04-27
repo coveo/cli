@@ -10,7 +10,7 @@ function getEnvVariables() {
 
 function startServer() {
   const serverPath = join(process.cwd(), 'server');
-  const child = spawnSync('npm', ['run', 'start'], {
+  const child = spawnSync(appendCmdIfWindows`npm`, ['run', 'start'], {
     stdio: 'inherit',
     env: getEnvVariables(),
     cwd: resolve(serverPath),
@@ -19,6 +19,9 @@ function startServer() {
     process.exit(child.status);
   }
 }
+
+const appendCmdIfWindows = (cmd) =>
+  `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
 
 function main() {
   startServer();

@@ -24,16 +24,30 @@ jobs:
         with:
           node-version: '14'
       - run: npm run setup
-      - run: git config --global user.email action@github.com
-      - run: git config --global user.name GitHub Action
+      - name: Setup credentials
+        run: |
+          git config --global user.email action@github.com
+          git config --global user.name GitHub Action
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
       - run: node_modules/.bin/lerna changed
         if: ${{ github.event.inputs.version == ''}}
       - name: Manually bump version
         if: ${{ github.event.inputs.version != ''}}
-        run: node_modules/.bin/lerna version ${{ github.event.inputs.version }} ---conventional-commits --force-publish -y
+        run: node_modules/.bin/lerna publish ${{ github.event.inputs.version }} ---conventional-commits --force-publish -y --no-push --no-git-tag-version
       - name: Semantically bump version
         if: ${{ github.event.inputs.version == ''}}
-        run: node_modules/.bin/lerna version ---conventional-commits -y
-      - run: npm run release:changelog
-      - run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-      - run: npm run npm:publish
+        run: node_modules/.bin/lerna publish ---conventional-commits -y --no-push --no-git-tag-version
+      - name: Wait for NPM cache to be updated
+        run: node ./scripts/wait-for-packages.js
+      - name: Update package-lock.json
+        run: npm run npm:pkglock
+      - name: Get the version
+        run: node ./scripts/get-version.js
+      - name: Commit changes, tag and push
+        run: |
+          echo -e "[Version bump] chore(release): publish v${{ env.tag }}\nlerna.json\nCHANGELOG.md\n**/CHANGELOG.md\n**/README.md" | git commit --all --file -
+          git tag "v${{ env.tag }}"
+          git push
+          git push --tags
+      - name: Create GitHub release.
+        run: npm run release:changelog
