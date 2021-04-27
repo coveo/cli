@@ -13,7 +13,7 @@
 
 - If possible, use the relevant issue report templates to create the issue.
 
-#### **Did you write a patch that fixes a bug?**
+#### Did you write a patch that fixes a bug?
 
 - Open a new GitHub pull request with the patch.
 
@@ -21,16 +21,16 @@
 
 - Test your changes locally. Refer to the [Local Setup to Contribute](https://github.com/coveo/cli#local-setup-to-contribute) for instructions on how to setup locally and test your changes.
 
-#### **Do you intend to add a new feature or change an existing one?**
+#### Do you intend to add a new feature or change an existing one?
 
 - Suggest your change in the [GitHub Discussion](https://github.com/coveo/cli/discussions/categories/ideas) and start writing code.
 
 - Do not open an issue on GitHub until you have collected positive feedback about the change. GitHub issues are primarily intended for bug reports and fixes.
 
-#### **Do you have questions about the source code?**
+#### Do you have questions about the source code, the CLI, or Coveo?
 
 - Ask any question about how to use the Coveo-CLI in the [GitHub Discussion](https://github.com/coveo/cli/discussions/categories/q-a)
-- Ask any question about how to use the Coveo in general at [Coveo Connect](https://connect.coveo.com)
+- Ask any question about how to use Coveo in general on [Coveo Connect](https://connect.coveo.com)
 
 Thanks for your contributions!
 
