@@ -78,7 +78,7 @@ export default class React extends Command {
     throw err;
   }
 
-  private createProject(name: string) {
+  private async createProject(name: string) {
     const flags = this.flags;
     const templateVersion =
       flags.version || getPackageVersion(React.templateName);
@@ -86,7 +86,13 @@ export default class React extends Command {
       name,
       '--template',
       `${React.templateName}@${templateVersion}`,
-    ]);
+    ]).catch((_e) =>
+      Promise.reject(
+        new Error(
+          'create-react-app is not able to create the project. See the logs above for more information.'
+        )
+      )
+    );
   }
 
   private async setupEnvironmentVariables(name: string) {
@@ -151,7 +157,7 @@ export default class React extends Command {
   }
 
   private async runReactCliCommand(commandArgs: string[], options = {}) {
-    return new Promise<string>((resolve) => {
+    return new Promise<string>((resolve, reject) => {
       const child = spawnProcessPTY(
         appendCmdIfWindows`npx`,
         ['create-react-app'].concat([...commandArgs]),
@@ -174,7 +180,10 @@ export default class React extends Command {
         }
       });
 
-      child.onExit(() => {
+      child.onExit(({exitCode}) => {
+        if (exitCode) {
+          reject();
+        }
         resolve(remainingString);
       });
     });
