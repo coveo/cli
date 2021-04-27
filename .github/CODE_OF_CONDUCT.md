@@ -14,6 +14,8 @@ diverse, inclusive, and healthy community.
 
 ## Our Standards
 
+The foundation of our standards are described in the [Coveo Connect Guidelines](https://connect.coveo.com/s/community-guidelines).
+
 Examples of behavior that contributes to a positive environment for our
 community include:
 
@@ -59,8 +61,7 @@ representative at an online or offline event.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement at
-foo@coveo.com.
+reported to the community leaders responsible for enforcement by contacting us through [Coveo Connect](https://connect.coveo.com/s/contactsupport).
 All complaints will be reviewed and investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the
