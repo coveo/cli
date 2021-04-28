@@ -27,7 +27,7 @@ A clear and concise description of what you expected to happen.
 ## Screenshots
 
 If applicable, add screenshots to help explain your problem.
-Ensure that you do not display sensitive information such as token
+Ensure that you do not display sensitive information such as tokens.
 
 ## Desktop (please complete the following information):
 
@@ -41,4 +41,4 @@ Ensure that you do not display sensitive information such as token
 
 ## Additional context
 
-Add any other context about the problem here.
+Add any other contextual information about the problem here.
