@@ -12,5 +12,5 @@ export function errorHandler(
 ) {
   console.error(err);
   const message = err.message || 'Something broke!';
-  res.status(err.statusCode || 500).send(JSON.stringify({message}));
+  res.status(err.statusCode || 500).json({message});
 }
