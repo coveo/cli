@@ -9,7 +9,7 @@ If you want to create a new Coveo Headless-powered search page with the Vue.js w
 To add a Coveo Headless-powered search page using Buefy to an existing TypeScript Vue.js project, execute the following steps:
 
 - Run `vue add @coveo/vue-cli-plugin-typescript`.
-- The root folder should contain `.env` file. Replace all placeholder variables (`<...>`) by the proper information for your organization. Consult the example configuration file named `.env.example` as needed. For more involved configurations, you can modify the request parameters used in the `server/middlewares/searchToken.ts` file.
+- The root folder should contain a `.env` file. Replace all placeholder variables (`<...>`) by the proper information for your organization. Consult the example configuration file named `.env.example` as needed. For more involved configurations, you can modify the request parameters used in the `server/middlewares/searchToken.ts` file.
 - Run `npm start`.
 
 ## Contributing
