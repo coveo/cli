@@ -7,5 +7,6 @@
     "noEmitOnError": false,
     "skipLibCheck": true,
     "types": ["jest"]
-  }
+  },
+  "include": ["./**/*.ts", "typings/**/*.d.ts"]
 }
