@@ -49,6 +49,7 @@ describe('server', () => {
       }
     );
   };
+
   const resetAppLocals = () => {
     mockedMiddleware.mockImplementationOnce(
       (req: Request, _res: Response, _next: NextFunction) => {
