@@ -72,7 +72,10 @@ export default class Angular extends Command {
 
   private async addCoveoToProject(applicationName: string, defaults: boolean) {
     const cfg = await this.configuration.get();
-    const {userInfo, apiKey} = await this.platformUserCredentials();
+    const args = this.args;
+    const authenticatedClient = new AuthenticatedClient();
+    const userInfo = await authenticatedClient.getUserInfo();
+    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
     const flags = this.flags;
     const schematicVersion =
       flags.version || getPackageVersion(Angular.templateName);
@@ -113,18 +116,6 @@ export default class Angular extends Command {
 
   private get configuration() {
     return new Config(this.config.configDir, this.error);
-  }
-
-  private async platformUserCredentials() {
-    const args = this.args;
-    const authenticatedClient = new AuthenticatedClient();
-    const platformClient = await authenticatedClient.getClient();
-    await platformClient.initialize();
-
-    const userInfo = await platformClient.user.get();
-    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
-
-    return {userInfo, apiKey};
   }
 
   private get flags() {
