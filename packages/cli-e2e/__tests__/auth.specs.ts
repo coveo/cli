@@ -6,7 +6,7 @@ import {answerPrompt, CLI_EXEC_PATH, isYesNoPrompt} from '../utils/cli';
 import {captureScreenshots, connectToChromeBrowser} from '../utils/browser';
 import {ProcessManager} from '../utils/processManager';
 
-describe('auth', () => {
+describe.skip('auth', () => {
   describe('login', () => {
     let browser: Browser;
     let processManager: ProcessManager;

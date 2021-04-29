@@ -8,7 +8,7 @@ import {getProjectPath, setupUIProject} from '../utils/cli';
 import {isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 
-describe('ui', () => {
+describe.skip('ui', () => {
   describe('create:react', () => {
     let browser: Browser;
     let processManager: ProcessManager;

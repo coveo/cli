@@ -14,7 +14,7 @@ import {EOL} from 'os';
 import stripAnsi from 'strip-ansi';
 import {ProcessManager} from '../utils/processManager';
 
-describe('ui', () => {
+describe.skip('ui', () => {
   describe('create:angular', () => {
     let browser: Browser;
     let processManager: ProcessManager;
