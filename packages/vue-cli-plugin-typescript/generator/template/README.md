@@ -1,4 +1,4 @@
-# @coveo/vue-cli-plugin-typescript
+# <%- rootOptions.projectName %>
 
 ### Setup environment
 
