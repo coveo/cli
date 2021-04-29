@@ -7,17 +7,14 @@ const {spawnSync} = require('child_process');
  * with a version matching this format: 0.0.x
  */
 const getUiTemplates = () => [
-  '@coveo/cra-template',
-  '@coveo/vue-cli-plugin-typescript',
-  '@coveo/angular',
+  '@coveo/cra-template@ci-test',
+  '@coveo/vue-cli-plugin-typescript@ci-test',
+  '@coveo/angular@ci-test',
+  '@coveo/angular@latest',
 ];
 
 function getCiTestPackageVersion(packageName) {
-  const ciTestVersion = spawnSync('npm', [
-    'show',
-    `${packageName}@ci-test`,
-    'version',
-  ]);
+  const ciTestVersion = spawnSync('npm', ['show', packageName, 'version']);
   return ciTestVersion.stdout;
 }
 
