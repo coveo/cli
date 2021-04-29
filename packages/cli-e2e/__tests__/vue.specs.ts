@@ -12,6 +12,8 @@ import {isSearchRequest} from '../utils/platform';
 import stripAnsi from 'strip-ansi';
 import {EOL} from 'os';
 import {ProcessManager} from '../utils/processManager';
+import {join} from 'path';
+import {renameSync, existsSync} from 'fs-extra';
 
 describe('ui:create:vue', () => {
   let processManager: ProcessManager;
@@ -74,11 +76,26 @@ describe('ui:create:vue', () => {
     });
   };
 
-  const setInvalidEnvironmentVariables = () => {
-    process.env.ORGANIZATION_ID = undefined;
-    process.env.API_KEY = undefined;
-    process.env.USER_EMAIL = undefined;
+  const safeRenameFile = (oldFile: string, newFile: string) => {
+    if (existsSync(oldFile)) {
+      renameSync(oldFile, newFile);
+    }
   };
+
+  const deactivateEnvironmentFile = () => {
+    const pathToEnv = getProjectPath(projectName);
+    safeRenameFile(join(pathToEnv, '.env'), join(pathToEnv, '.env.disabled'));
+  };
+
+  const restoreEnvironmentFile = () => {
+    const pathToEnv = getProjectPath(projectName);
+    safeRenameFile(join(pathToEnv, '.env.disabled'), join(pathToEnv, '.env'));
+  };
+
+  beforeAll(async () => {
+    processManager = new ProcessManager();
+    await buildApplication(processManager);
+  });
 
   beforeEach(async () => {
     jest.resetModules();
@@ -99,10 +116,7 @@ describe('ui:create:vue', () => {
     const searchboxSelector = '#search-page .autocomplete input';
 
     beforeAll(async () => {
-      processManager = new ProcessManager();
       browser = await getNewBrowser();
-
-      await buildApplication(processManager);
       await startApplication(processManager);
     }, 420e3);
 
@@ -166,28 +180,25 @@ describe('ui:create:vue', () => {
     });
   });
 
-  describe.skip('when the required environment variables are invalid', () => {
+  describe('when the required environment variables are invalid', () => {
     const errorPage = `http://localhost:${clientPort}/error`;
-    let page: Page;
-
-    beforeEach(async () => {
-      setInvalidEnvironmentVariables();
-    });
 
     beforeAll(async () => {
-      processManager = new ProcessManager();
       browser = await getNewBrowser();
-
+      await deactivateEnvironmentFile();
       await startApplication(processManager);
     }, 420e3);
+
+    beforeEach(async () => {});
 
     afterAll(async () => {
       await browser.close();
       await processManager.killAllProcesses();
+      await restoreEnvironmentFile();
     }, 5e3);
 
     it('should redirect the user to an error page', async () => {
-      await page.waitForNavigation();
+      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
       expect(page.url()).toEqual(errorPage);
     });
   });
