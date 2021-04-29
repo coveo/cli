@@ -13,13 +13,13 @@ import stripAnsi from 'strip-ansi';
 import {EOL} from 'os';
 import {ProcessManager} from '../utils/processManager';
 import {join} from 'path';
-import {renameSync, existsSync} from 'fs-extra';
+import {renameSync} from 'fs-extra';
 
 describe('ui:create:vue', () => {
-  let processManager: ProcessManager;
   let browser: Browser;
+  let processManager: ProcessManager;
   let page: Page;
-  const OLD_ENV = process.env;
+  const oldEnv = process.env;
   const projectName = `${process.env.GITHUB_ACTION}-vue-project`;
   // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
   const clientPort = '8080';
@@ -76,20 +76,14 @@ describe('ui:create:vue', () => {
     });
   };
 
-  const safeRenameFile = (oldFile: string, newFile: string) => {
-    if (existsSync(oldFile)) {
-      renameSync(oldFile, newFile);
-    }
-  };
-
   const deactivateEnvironmentFile = () => {
     const pathToEnv = getProjectPath(projectName);
-    safeRenameFile(join(pathToEnv, '.env'), join(pathToEnv, '.env.disabled'));
+    renameSync(join(pathToEnv, '.env'), join(pathToEnv, '.env.disabled'));
   };
 
   const restoreEnvironmentFile = () => {
     const pathToEnv = getProjectPath(projectName);
-    safeRenameFile(join(pathToEnv, '.env.disabled'), join(pathToEnv, '.env'));
+    renameSync(join(pathToEnv, '.env.disabled'), join(pathToEnv, '.env'));
   };
 
   beforeAll(async () => {
@@ -99,7 +93,7 @@ describe('ui:create:vue', () => {
 
   beforeEach(async () => {
     jest.resetModules();
-    process.env = {...OLD_ENV};
+    process.env = {...oldEnv};
     page = await openNewPage(browser, page);
   });
 
@@ -107,8 +101,9 @@ describe('ui:create:vue', () => {
     await captureScreenshots(browser);
   });
 
-  afterAll(() => {
-    process.env = OLD_ENV;
+  afterAll(async () => {
+    process.env = oldEnv;
+    await browser.close();
   });
 
   describe('when the project is configured correctly', () => {
@@ -132,7 +127,6 @@ describe('ui:create:vue', () => {
     });
 
     afterAll(async () => {
-      await browser.close();
       await processManager.killAllProcesses();
     }, 5e3);
 
@@ -147,6 +141,7 @@ describe('ui:create:vue', () => {
 
     it('should retrieve the search token on the page load', async () => {
       const tokenResponseListener = page.waitForResponse(tokenProxyEndpoint);
+
       page.goto(searchPageEndpoint);
       await page.waitForSelector(searchboxSelector);
 
@@ -190,7 +185,6 @@ describe('ui:create:vue', () => {
     }, 60e3);
 
     afterAll(async () => {
-      await browser.close();
       await processManager.killAllProcesses();
       await restoreEnvironmentFile();
     }, 5e3);
