@@ -5,6 +5,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@coveord/platform-client": "^11.0.0",
+    "@types/express": "^4.17.11",
     "abortcontroller-polyfill": "^1.7.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
@@ -14,10 +15,11 @@
   },
   "scripts": {
     "start": "ts-node server.ts",
-    "test": "jest"
+    "test": "jest",
+    "npm:bump:template": "npm --no-git-tag-version version",
+    "npm:publish:template": "npm publish --access public --tag latest"
   },
   "devDependencies": {
-    "@types/express": "^4.17.11",
     "@types/jest": "^26.0.23",
     "@types/supertest": "^2.0.11",
     "gts": "^3.1.0",
