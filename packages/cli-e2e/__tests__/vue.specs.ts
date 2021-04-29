@@ -95,7 +95,7 @@ describe('ui:create:vue', () => {
   beforeAll(async () => {
     processManager = new ProcessManager();
     await buildApplication(processManager);
-  });
+  }, 420e3);
 
   beforeEach(async () => {
     jest.resetModules();
@@ -103,12 +103,12 @@ describe('ui:create:vue', () => {
     page = await openNewPage(browser, page);
   });
 
-  afterAll(() => {
-    process.env = OLD_ENV;
-  });
-
   afterEach(async () => {
     await captureScreenshots(browser);
+  });
+
+  afterAll(() => {
+    process.env = OLD_ENV;
   });
 
   describe('when the project is configured correctly', () => {
@@ -118,7 +118,7 @@ describe('ui:create:vue', () => {
     beforeAll(async () => {
       browser = await getNewBrowser();
       await startApplication(processManager);
-    }, 420e3);
+    }, 60e3);
 
     beforeEach(async () => {
       page.on('request', (request: HTTPRequest) => {
@@ -180,16 +180,14 @@ describe('ui:create:vue', () => {
     });
   });
 
-  describe('when the required environment variables are invalid', () => {
+  describe('when the required environment variables are missing', () => {
     const errorPage = `http://localhost:${clientPort}/error`;
 
     beforeAll(async () => {
       browser = await getNewBrowser();
       await deactivateEnvironmentFile();
       await startApplication(processManager);
-    }, 420e3);
-
-    beforeEach(async () => {});
+    }, 60e3);
 
     afterAll(async () => {
       await browser.close();
