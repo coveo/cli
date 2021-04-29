@@ -30,11 +30,24 @@ describe('ui', () => {
         projectName
       );
 
-      await new Promise<void>((resolve) => {
-        buildProcess.on('exit', async () => {
-          resolve();
-        });
-      });
+      await Promise.race([
+        new Promise<void>((resolve) => {
+          buildProcess.on('exit', async () => {
+            resolve();
+          });
+        }),
+        new Promise<void>((resolve) => {
+          buildProcess.stdout.on('data', (data) => {
+            if (
+              /Happy hacking !/.test(
+                stripAnsi(data.toString()).replace(/\n/g, '')
+              )
+            ) {
+              resolve();
+            }
+          });
+        }),
+      ]);
 
       const startServerProcess = processManager.spawn('npm', ['run', 'start'], {
         cwd: getProjectPath(projectName),
