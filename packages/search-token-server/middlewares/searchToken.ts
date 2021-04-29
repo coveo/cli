@@ -75,7 +75,7 @@ export function ensureTokenGenerated(
        */
     })
     .then((data: TokenModel) => {
-      req.token = data.token;
+      req.body.token = data.token;
       next();
     })
     .catch((err) => {

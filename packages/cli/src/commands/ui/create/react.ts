@@ -1,3 +1,4 @@
+import {cli} from 'cli-ux';
 import {Command, flags} from '@oclif/command';
 import {
   buildAnalyticsFailureHook,
@@ -5,7 +6,7 @@ import {
 } from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {platformUrl} from '../../../lib/platform/environment';
-import {spawnProcess, spawnProcessOutput} from '../../../lib/utils/process';
+import {spawnProcessOutput, spawnProcessPTY} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {join} from 'path';
@@ -16,6 +17,7 @@ import {
   IsNpxInstalled,
 } from '../../../lib/decorators/preconditions';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
+import {EOL} from 'os';
 
 export default class React extends Command {
   static templateName = '@coveo/cra-template';
@@ -54,9 +56,16 @@ export default class React extends Command {
   async run() {
     const args = this.args;
 
-    await this.createProject(args.name);
+    const finalOutput = await this.createProject(args.name);
+
+    cli.action.start('Creating search token server');
     await this.setupServer(args.name);
     await this.setupEnvironmentVariables(args.name);
+    cli.action.stop();
+
+    this.log(EOL);
+    process.stdout.write(finalOutput);
+
     await this.config.runHook('analytics', buildAnalyticsSuccessHook(this, {}));
   }
 
@@ -69,7 +78,7 @@ export default class React extends Command {
     throw err;
   }
 
-  private createProject(name: string) {
+  private async createProject(name: string) {
     const flags = this.flags;
     const templateVersion =
       flags.version || getPackageVersion(React.templateName);
@@ -77,7 +86,13 @@ export default class React extends Command {
       name,
       '--template',
       `${React.templateName}@${templateVersion}`,
-    ]);
+    ]).catch((_e) =>
+      Promise.reject(
+        new Error(
+          'create-react-app is not able to create the project. See the logs above for more information.'
+        )
+      )
+    );
   }
 
   private async setupEnvironmentVariables(name: string) {
@@ -143,12 +158,37 @@ export default class React extends Command {
     return true;
   }
 
-  private runReactCliCommand(args: string[], options = {}) {
-    return spawnProcess(
-      appendCmdIfWindows`npx`,
-      ['create-react-app'].concat(args),
-      options
-    );
+  private async runReactCliCommand(commandArgs: string[], options = {}) {
+    return new Promise<string>((resolve, reject) => {
+      const child = spawnProcessPTY(
+        appendCmdIfWindows`npx`,
+        ['create-react-app'].concat([...commandArgs]),
+        options
+      );
+
+      const args = this.args;
+      let stopWritingInTerminal = false;
+      let remainingString = '';
+
+      child.onData((d) => {
+        if (
+          stopWritingInTerminal ||
+          d.indexOf(`Success! Created ${args.name}`) !== -1 // https://github.com/facebook/create-react-app/blob/v4.0.3/packages/react-scripts/scripts/init.js#L371
+        ) {
+          remainingString += d;
+          stopWritingInTerminal = true;
+        } else {
+          process.stdout.write(d);
+        }
+      });
+
+      child.onExit(({exitCode}) => {
+        if (exitCode) {
+          reject();
+        }
+        resolve(remainingString);
+      });
+    });
   }
 
   private get configuration() {
