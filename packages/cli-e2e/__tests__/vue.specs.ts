@@ -27,27 +27,23 @@ describe('ui:create:vue', () => {
   const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
 
   const buildApplication = async (processManager: ProcessManager) => {
-    const buildProcess = setupUIProject(
-      processManager,
-      'ui:create:vue',
-      projectName
-    );
+    const proc = setupUIProject(processManager, 'ui:create:vue', projectName);
 
-    buildProcess.stdout.on('data', async (data) => {
+    proc.stdout.on('data', async (data) => {
       if (isGenericYesNoPrompt(data.toString())) {
-        await answerPrompt(`y${EOL}`, buildProcess);
+        await answerPrompt(`y${EOL}`, proc);
         return;
       }
     });
 
     return Promise.race([
       new Promise<void>((resolve) => {
-        buildProcess.on('exit', async () => {
+        proc.on('exit', async () => {
           resolve();
         });
       }),
       new Promise<void>((resolve) => {
-        buildProcess.stdout.on('data', (data) => {
+        proc.stdout.on('data', (data) => {
           if (
             /Happy hacking !/.test(
               stripAnsi(data.toString()).replace(/\n/g, '')
@@ -61,12 +57,12 @@ describe('ui:create:vue', () => {
   };
 
   const startApplication = async (processManager: ProcessManager) => {
-    const startServerProcess = processManager.spawn('npm', ['run', 'start'], {
+    const proc = processManager.spawn('npm', ['run', 'start'], {
       cwd: getProjectPath(projectName),
     });
 
     return new Promise<void>((resolve) => {
-      startServerProcess.stdout.on('data', async (data) => {
+      proc.stdout.on('data', async (data) => {
         if (
           /App running at:/.test(stripAnsi(data.toString()).replace(/\n/g, ''))
         ) {
