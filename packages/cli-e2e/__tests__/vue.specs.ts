@@ -17,7 +17,7 @@ import {renameSync} from 'fs-extra';
 
 describe('ui:create:vue', () => {
   let browser: Browser;
-  let processManager: ProcessManager;
+  let buildProcessManager: ProcessManager;
   let page: Page;
   const oldEnv = process.env;
   const projectName = `${process.env.GITHUB_ACTION}-vue-project`;
@@ -87,8 +87,9 @@ describe('ui:create:vue', () => {
   };
 
   beforeAll(async () => {
-    processManager = new ProcessManager();
-    await buildApplication(processManager);
+    buildProcessManager = new ProcessManager();
+    browser = await getNewBrowser();
+    await buildApplication(buildProcessManager);
   }, 420e3);
 
   beforeEach(async () => {
@@ -103,16 +104,18 @@ describe('ui:create:vue', () => {
 
   afterAll(async () => {
     process.env = oldEnv;
+    await buildProcessManager.killAllProcesses();
     await browser.close();
   });
 
   describe('when the project is configured correctly', () => {
+    let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
     const searchboxSelector = '#search-page .autocomplete input';
 
     beforeAll(async () => {
-      browser = await getNewBrowser();
-      await startApplication(processManager);
+      serverProcessManager = new ProcessManager();
+      await startApplication(serverProcessManager);
     }, 60e3);
 
     beforeEach(async () => {
@@ -127,7 +130,7 @@ describe('ui:create:vue', () => {
     });
 
     afterAll(async () => {
-      await processManager.killAllProcesses();
+      await serverProcessManager.killAllProcesses();
     }, 5e3);
 
     it('should contain a search page section', async () => {
@@ -176,17 +179,18 @@ describe('ui:create:vue', () => {
   });
 
   describe('when the required environment variables are missing', () => {
+    let serverProcessManager: ProcessManager;
     const errorPage = `http://localhost:${clientPort}/error`;
 
     beforeAll(async () => {
-      browser = await getNewBrowser();
+      serverProcessManager = new ProcessManager();
       await deactivateEnvironmentFile();
-      await startApplication(processManager);
+      await startApplication(serverProcessManager);
     }, 60e3);
 
     afterAll(async () => {
-      await processManager.killAllProcesses();
       await restoreEnvironmentFile();
+      await serverProcessManager.killAllProcesses();
     }, 5e3);
 
     it('should redirect the user to an error page', async () => {
