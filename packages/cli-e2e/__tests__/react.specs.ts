@@ -62,8 +62,7 @@ describe('ui:create:react', () => {
   beforeAll(async () => {
     buildProcessManager = new ProcessManager();
     browser = await getNewBrowser();
-    // TODO: uncomment
-    // await buildApplication(buildProcessManager);
+    await buildApplication(buildProcessManager);
   }, 15 * 60e3);
 
   beforeEach(async () => {
