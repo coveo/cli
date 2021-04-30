@@ -15,7 +15,7 @@ describe('ui:create:react', () => {
   let buildProcessManager: ProcessManager;
   let page: Page;
   const oldEnv = process.env;
-  const projectName = `${process.env.GITHUB_ACTION}-vue-project`;
+  const projectName = `${process.env.GITHUB_ACTION}-react-project`;
   // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
   const clientPort = '3000';
   const searchPageEndpoint = `http://localhost:${clientPort}`;
@@ -62,7 +62,8 @@ describe('ui:create:react', () => {
   beforeAll(async () => {
     buildProcessManager = new ProcessManager();
     browser = await getNewBrowser();
-    await buildApplication(buildProcessManager);
+    // TODO: uncomment
+    // await buildApplication(buildProcessManager);
   }, 15 * 60e3);
 
   beforeEach(async () => {
@@ -153,7 +154,9 @@ describe('ui:create:react', () => {
 
   describe('when the required environment variables are missing', () => {
     let serverProcessManager: ProcessManager;
-    const errorPage = `http://localhost:${clientPort}/error`;
+    const errorMessageSelector = 'div.container';
+    const invalidEnvErrorMessage =
+      'Invalid Environment variablesYou should have a valid .env file at the root of this project. You can use .env.example as starting point and make sure to replace all placeholder variables<...> by the proper information for your organization.Refer to the project README file for more information.';
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
@@ -168,7 +171,11 @@ describe('ui:create:react', () => {
 
     it('should redirect the user to an error page', async () => {
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-      expect(page.url()).toEqual(errorPage);
+      const pageErrorMessage = await page.$eval(
+        errorMessageSelector,
+        (el) => el.textContent
+      );
+      expect(pageErrorMessage).toEqual(invalidEnvErrorMessage);
     });
   });
 });
