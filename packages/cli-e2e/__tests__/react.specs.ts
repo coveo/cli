@@ -24,11 +24,24 @@ describe('ui:create:react', () => {
   const buildApplication = async (processManager: ProcessManager) => {
     const proc = setupUIProject(processManager, 'ui:create:react', projectName);
 
-    return new Promise<void>((resolve) => {
-      proc.on('exit', async () => {
-        resolve();
-      });
-    });
+    return Promise.race([
+      new Promise<void>((resolve) => {
+        proc.on('exit', async () => {
+          resolve();
+        });
+      }),
+      new Promise<void>((resolve) => {
+        proc.stdout.on('data', (data) => {
+          if (
+            /Happy hacking !/.test(
+              stripAnsi(data.toString()).replace(/\n/g, '')
+            )
+          ) {
+            resolve();
+          }
+        });
+      }),
+    ]);
   };
 
   const startApplication = async (processManager: ProcessManager) => {
@@ -63,7 +76,7 @@ describe('ui:create:react', () => {
     buildProcessManager = new ProcessManager();
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
-  }, 15 * 60e3);
+  }, 10 * 60e3);
 
   beforeEach(async () => {
     jest.resetModules();
