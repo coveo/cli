@@ -13,6 +13,7 @@ import {isSearchRequest} from '../utils/platform';
 import {EOL} from 'os';
 import stripAnsi from 'strip-ansi';
 import {ProcessManager} from '../utils/processManager';
+import {Terminal} from '../utils/terminal';
 
 describe('ui', () => {
   describe('create:angular', () => {
@@ -65,20 +66,19 @@ describe('ui', () => {
         }),
       ]);
 
-      const startServerProcess = processManager.spawn('npm', ['run', 'start'], {
-        cwd: getProjectPath(projectName),
-      });
+      const terminalServer = new Terminal(processManager, [
+        'npm',
+        ['run', 'start'],
+        {
+          cwd: getProjectPath(projectName),
+        },
+      ]);
 
-      await new Promise<void>((resolve) => {
-        startServerProcess.stdout.on('data', async (data) => {
-          if (
-            /Compiled successfully/.test(
-              stripAnsi(data.toString()).replace(/\n/g, '')
-            )
-          ) {
-            resolve();
-          }
-        });
+      await new Promise((resolve) => {
+        terminalServer
+          .when(/Compiled successfully/)
+          .on('stdout')
+          .do(resolve);
       });
     }, 420e3);
 
