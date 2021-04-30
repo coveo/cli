@@ -1,4 +1,5 @@
 import {spawn, SpawnOptions} from 'child_process';
+import {spawn as ptySpawn, IWindowsPtyForkOptions} from 'node-pty';
 
 /**
  *
@@ -72,4 +73,20 @@ export async function spawnProcessOutput(
       resolve(output);
     });
   });
+}
+
+export function spawnProcessPTY(
+  command: string,
+  args: string[],
+  options: IWindowsPtyForkOptions = {}
+) {
+  const ptyProcess = ptySpawn(command, args, {
+    name: 'xterm-color',
+    cols: process.stdout.columns,
+    rows: process.stdout.rows,
+    cwd: options.cwd ?? process.cwd(),
+    useConpty: false,
+  });
+
+  return ptyProcess;
 }

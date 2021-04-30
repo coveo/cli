@@ -7,9 +7,14 @@ const app = express();
 
 app.use(express.json());
 
-app.get('/token', environmentCheck, ensureTokenGenerated, (req, res) => {
-  res.json({token: req.token});
-});
+app.get<{}, any, {token: string}>(
+  '/token',
+  environmentCheck,
+  ensureTokenGenerated,
+  (req, res) => {
+    res.json({token: req.body.token});
+  }
+);
 
 app.use(errorHandler);
 
