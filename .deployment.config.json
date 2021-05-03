@@ -71,8 +71,8 @@
     "no_endpoint": true
   },
   "veracode": {
-    "sandbox_name": "CDX",
-    "app_name": "CLI",
+    "sandbox_name": "CLI",
+    "app_name": "JSUI",
     "source": "./packages/cli/src",
     "scan_include_patterns": "[!spec].ts"
   },
