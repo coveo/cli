@@ -4,8 +4,8 @@ import type {
   HTTPRequest,
   Browser,
   Page,
-  ConsoleMessage,
   ConsoleMessageType,
+  CDPSession,
 } from 'puppeteer';
 import stripAnsi from 'strip-ansi';
 
@@ -15,6 +15,7 @@ import {isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {join} from 'path';
 import {renameSync} from 'fs-extra';
+import {Runtime} from 'node:inspector';
 
 describe('ui:create:react', () => {
   let browser: Browser;
@@ -103,6 +104,7 @@ describe('ui:create:react', () => {
   describe('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
+    let cdpClient: CDPSession;
     const searchboxSelector = 'div.App .MuiAutocomplete-root input';
 
     beforeAll(async () => {
@@ -111,6 +113,9 @@ describe('ui:create:react', () => {
     }, 60e3);
 
     beforeEach(async () => {
+      cdpClient = await page.target().createCDPSession();
+      await cdpClient.send('Runtime.enable');
+
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);
       });
@@ -118,6 +123,7 @@ describe('ui:create:react', () => {
 
     afterEach(async () => {
       page.removeAllListeners('request');
+      cdpClient.removeAllListeners('Runtime.consoleAPICalled');
       interceptedRequests = [];
     });
 
@@ -126,23 +132,33 @@ describe('ui:create:react', () => {
     }, 5e3);
 
     it('should not contain console errors nor warnings', async () => {
-      const interceptedMessages: ConsoleMessage[] = [];
+      const interceptedConsoleMessages: string[] = [];
       const deniedConsoleMessageTypes: ConsoleMessageType[] = [
         'error',
         'warning',
       ];
 
-      page.on('console', (msg) => interceptedMessages.push(msg));
+      cdpClient.on(
+        'Runtime.consoleAPICalled',
+        (message: Runtime.ConsoleAPICalledEventDataType) => {
+          if (
+            deniedConsoleMessageTypes.indexOf(
+              message.type as ConsoleMessageType
+            ) > -1
+          ) {
+            message.args.forEach((arg) => {
+              arg.description &&
+                interceptedConsoleMessages.push(arg.description);
+            });
+          }
+        }
+      );
 
       await page.goto(searchPageEndpoint, {
         waitUntil: 'networkidle0',
       });
 
-      expect(
-        interceptedMessages.some(
-          (msg) => deniedConsoleMessageTypes.indexOf(msg.type()) > -1
-        )
-      ).toBeFalsy();
+      expect(interceptedConsoleMessages).toEqual([]);
     });
 
     it('should contain a search page section', async () => {

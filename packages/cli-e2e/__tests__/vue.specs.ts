@@ -5,6 +5,7 @@ import type {
   Page,
   ConsoleMessage,
   ConsoleMessageType,
+  CDPSession,
 } from 'puppeteer';
 
 import {
@@ -113,6 +114,7 @@ describe('ui:create:vue', () => {
   describe('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
+    let cdpClient: CDPSession;
     const searchboxSelector = '#search-page .autocomplete input';
 
     beforeAll(async () => {
@@ -121,6 +123,9 @@ describe('ui:create:vue', () => {
     }, 60e3);
 
     beforeEach(async () => {
+      cdpClient = await page.target().createCDPSession();
+      await cdpClient.send('Runtime.enable');
+
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);
       });
@@ -128,6 +133,7 @@ describe('ui:create:vue', () => {
 
     afterEach(async () => {
       page.removeAllListeners('request');
+      cdpClient.removeAllListeners('Runtime.consoleAPICalled');
       interceptedRequests = [];
     });
 
