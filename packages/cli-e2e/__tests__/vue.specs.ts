@@ -1,5 +1,11 @@
 import retry from 'async-retry';
-import type {HTTPRequest, Browser, Page} from 'puppeteer';
+import type {
+  HTTPRequest,
+  Browser,
+  Page,
+  ConsoleMessage,
+  ConsoleMessageType,
+} from 'puppeteer';
 
 import {
   answerPrompt,
@@ -128,6 +134,26 @@ describe('ui:create:vue', () => {
     afterAll(async () => {
       await serverProcessManager.killAllProcesses();
     }, 5e3);
+
+    it('should not contain console errors nor warnings', async () => {
+      const interceptedMessages: ConsoleMessage[] = [];
+      const deniedConsoleMessageTypes: ConsoleMessageType[] = [
+        'error',
+        'warning',
+      ];
+
+      page.on('console', (msg) => interceptedMessages.push(msg));
+
+      await page.goto(searchPageEndpoint, {
+        waitUntil: 'networkidle0',
+      });
+
+      expect(
+        interceptedMessages.some(
+          (msg) => deniedConsoleMessageTypes.indexOf(msg.type()) > -1
+        )
+      ).toBeFalsy();
+    });
 
     it('should contain a search page section', async () => {
       await page.goto(searchPageEndpoint, {
