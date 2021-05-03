@@ -2,7 +2,7 @@
 
 ### Setup environment
 
-You should have an `.env` file at the root of this project. You can use `.env.example` as starting point and make sure to replace all placeholder variables `<...>` by the proper information for your organization.
+The root folder should contain a `.env` file. Replace all placeholder variables (`<...>`) by the proper information for your organization. Consult the example configuration file named `.env.example` as needed. For more involved configurations, you can modify the request parameters used in the `server/middlewares/searchToken.ts` file.
 
 ### Compiles and hot-reloads for development
 
