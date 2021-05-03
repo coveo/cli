@@ -13,9 +13,8 @@ import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {getProjectPath, setupUIProject} from '../utils/cli';
 import {isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
-import {join} from 'path';
-import {renameSync} from 'fs-extra';
 import {Runtime} from 'node:inspector';
+import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
 
 describe('ui:create:react', () => {
   let browser: Browser;
@@ -69,20 +68,11 @@ describe('ui:create:react', () => {
     });
   };
 
-  const deactivateEnvironmentFile = () => {
-    const pathToEnv = getProjectPath(projectName);
-    renameSync(join(pathToEnv, '.env'), join(pathToEnv, '.env.disabled'));
-  };
-
-  const restoreEnvironmentFile = () => {
-    const pathToEnv = getProjectPath(projectName);
-    renameSync(join(pathToEnv, '.env.disabled'), join(pathToEnv, '.env'));
-  };
-
   beforeAll(async () => {
     buildProcessManager = new ProcessManager();
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
+    await buildProcessManager.killAllProcesses();
   }, 10 * 60e3);
 
   beforeEach(async () => {
@@ -97,7 +87,6 @@ describe('ui:create:react', () => {
 
   afterAll(async () => {
     process.env = oldEnv;
-    await buildProcessManager.killAllProcesses();
     await browser.close();
   });
 
@@ -214,12 +203,12 @@ describe('ui:create:react', () => {
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
-      await deactivateEnvironmentFile();
+      await deactivateEnvironmentFile(projectName);
       await startApplication(serverProcessManager);
     }, 60e3);
 
     afterAll(async () => {
-      await restoreEnvironmentFile();
+      await restoreEnvironmentFile(projectName);
       await serverProcessManager.killAllProcesses();
     }, 5e3);
 

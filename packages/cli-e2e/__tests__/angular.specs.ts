@@ -14,13 +14,12 @@ import {
   isGenericYesNoPrompt,
   setupUIProject,
 } from '../utils/cli';
+import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {isSearchRequest} from '../utils/platform';
 import {EOL} from 'os';
 import stripAnsi from 'strip-ansi';
 import {ProcessManager} from '../utils/processManager';
-import {join} from 'path';
-import {renameSync} from 'fs-extra';
 import {Runtime} from 'node:inspector';
 
 describe('ui:create:angular', () => {
@@ -88,20 +87,11 @@ describe('ui:create:angular', () => {
     });
   };
 
-  const deactivateEnvironmentFile = () => {
-    const pathToEnv = getProjectPath(projectName);
-    renameSync(join(pathToEnv, '.env'), join(pathToEnv, '.env.disabled'));
-  };
-
-  const restoreEnvironmentFile = () => {
-    const pathToEnv = getProjectPath(projectName);
-    renameSync(join(pathToEnv, '.env.disabled'), join(pathToEnv, '.env'));
-  };
-
   beforeAll(async () => {
     buildProcessManager = new ProcessManager();
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
+    await buildProcessManager.killAllProcesses();
   }, 7 * 60e3);
 
   beforeEach(async () => {
@@ -116,7 +106,6 @@ describe('ui:create:angular', () => {
 
   afterAll(async () => {
     process.env = oldEnv;
-    await buildProcessManager.killAllProcesses();
     await browser.close();
   });
 
@@ -231,12 +220,12 @@ describe('ui:create:angular', () => {
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
-      await deactivateEnvironmentFile();
+      await deactivateEnvironmentFile(projectName);
       await startApplication(serverProcessManager);
     }, 60e3);
 
     afterAll(async () => {
-      await restoreEnvironmentFile();
+      await restoreEnvironmentFile(projectName);
       await serverProcessManager.killAllProcesses();
     }, 5e3);
 
