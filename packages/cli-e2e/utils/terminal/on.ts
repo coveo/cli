@@ -1,4 +1,5 @@
-import {ActionWith} from './action';
+import type {ActionWith} from './action';
+
 import {Do, DoCallback} from './do';
 
 export type OnTarget = 'stdout' | 'stderr' | 'process';

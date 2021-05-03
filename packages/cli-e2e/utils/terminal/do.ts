@@ -1,8 +1,9 @@
-import {ChildProcessWithoutNullStreams} from 'child_process';
-import EventEmitter from 'node:events';
-import {Readable} from 'stream';
+import type {ChildProcessWithoutNullStreams} from 'child_process';
+import type EventEmitter from 'events';
+import type {Readable} from 'stream';
+import type {ActionWith} from './action';
+
 import stripAnsi from 'strip-ansi';
-import {ActionWith} from './action';
 import {Condition, isConditionRegExp, isConditionString} from './condition';
 
 /**

@@ -1,6 +1,6 @@
 import type {Condition} from './condition';
+import type {Action, ActionWith} from './action';
 
-import {Action, ActionWith} from './action';
 import {On, OnTarget} from './on';
 
 /**
