@@ -12,8 +12,7 @@ import {isSearchRequest} from '../utils/platform';
 import stripAnsi from 'strip-ansi';
 import {EOL} from 'os';
 import {ProcessManager} from '../utils/processManager';
-import {join} from 'path';
-import {renameSync} from 'fs-extra';
+import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
 
 describe('ui:create:vue', () => {
   let browser: Browser;
@@ -70,16 +69,6 @@ describe('ui:create:vue', () => {
         }
       });
     });
-  };
-
-  const deactivateEnvironmentFile = () => {
-    const pathToEnv = getProjectPath(projectName);
-    renameSync(join(pathToEnv, '.env'), join(pathToEnv, '.env.disabled'));
-  };
-
-  const restoreEnvironmentFile = () => {
-    const pathToEnv = getProjectPath(projectName);
-    renameSync(join(pathToEnv, '.env.disabled'), join(pathToEnv, '.env'));
   };
 
   beforeAll(async () => {
@@ -180,12 +169,12 @@ describe('ui:create:vue', () => {
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
-      await deactivateEnvironmentFile();
+      await deactivateEnvironmentFile(projectName);
       await startApplication(serverProcessManager);
     }, 60e3);
 
     afterAll(async () => {
-      await restoreEnvironmentFile();
+      await restoreEnvironmentFile(projectName);
       await serverProcessManager.killAllProcesses();
     }, 5e3);
 
