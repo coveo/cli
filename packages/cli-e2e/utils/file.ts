@@ -1,4 +1,4 @@
-import {renameSync} from 'node:fs';
+import {renameSync} from 'fs';
 import {join} from 'path';
 import {getProjectPath} from './cli';
 
