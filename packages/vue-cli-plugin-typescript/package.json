@@ -14,7 +14,7 @@
     "npm:publish:template": "npm publish --access public --tag ci-test"
   },
   "devDependencies": {
-    "@coveo/headless": "^0.8.0",
+    "@coveo/headless": "alpha",
     "buefy": "^0.9.6",
     "vue": "^2.6.12",
     "vue-property-decorator": "^9.1.2",
