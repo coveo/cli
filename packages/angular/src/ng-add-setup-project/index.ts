@@ -10,6 +10,7 @@ import {
 } from '../common-rules/dependencies';
 import {updateNgModule} from './rules/ng-module';
 import {addMaterialAngular, addToPackageJson} from './rules/dependencies';
+import {updateTsConfig} from './rules/tsconfig';
 
 export default function (options: CoveoSchema): Rule {
   return async (tree: Tree) => {
@@ -20,6 +21,7 @@ export default function (options: CoveoSchema): Rule {
       addMaterialAngular(options),
       createFiles(options),
       updateNgModule(options, project),
+      updateTsConfig(options),
     ]);
   };
 }
