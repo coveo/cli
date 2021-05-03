@@ -72,9 +72,9 @@
   },
   "veracode": {
     "sandbox_name": "CDX",
+    "app_name": "CLI",
     "source": "./packages/cli/src",
-    "scan_include_patterns": "[!spec].ts",
-    "app_name": "CLI"
+    "scan_include_patterns": "[!spec].ts"
   },
   "deployment_config_version": 2,
   "package_rollout": {
