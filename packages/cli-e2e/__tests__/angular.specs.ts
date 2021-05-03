@@ -13,7 +13,7 @@ import {isSearchRequest} from '../utils/platform';
 import {EOL} from 'os';
 import stripAnsi from 'strip-ansi';
 import {ProcessManager} from '../utils/processManager';
-import {Terminal} from '../utils/terminal';
+import {Terminal} from '../utils/terminal/terminal';
 
 describe('ui', () => {
   describe('create:angular', () => {
@@ -21,7 +21,8 @@ describe('ui', () => {
     let processManager: ProcessManager;
     // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
     const clientPort = '4200';
-    const projectName = `${process.env.GITHUB_ACTION}-angular-project`;
+    // Project name in angular needs first and last character of a word (i.e. words being split by hyphen) to be a letter and not a number.
+    const projectName = `a${process.env.GITHUB_ACTION}a-angular-project`;
     const searchPageEndpoint = `http://localhost:${clientPort}`;
     const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
     let interceptedRequests: HTTPRequest[] = [];
@@ -66,20 +67,20 @@ describe('ui', () => {
         }),
       ]);
 
-      const terminalServer = new Terminal(processManager, [
+      const terminalServer = new Terminal(
         'npm',
         ['run', 'start'],
         {
           cwd: getProjectPath(projectName),
         },
-      ]);
+        processManager
+      );
 
-      await new Promise((resolve) => {
-        terminalServer
-          .when(/Compiled successfully/)
-          .on('stdout')
-          .do(resolve);
-      });
+      await terminalServer
+        .when(/Compiled successfully/)
+        .on('stdout')
+        .do()
+        .once();
     }, 420e3);
 
     beforeEach(async () => {
