@@ -31,15 +31,19 @@ USAGE
 # Commands
 
 <!-- commands -->
-* [`coveo auth:login`](#coveo-authlogin)
-* [`coveo config:get`](#coveo-configget)
-* [`coveo config:set`](#coveo-configset)
-* [`coveo help [COMMAND]`](#coveo-help-command)
-* [`coveo org:list`](#coveo-orglist)
-* [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
-* [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
-* [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
-* [`coveo update [CHANNEL]`](#coveo-update-channel)
+- [@coveo/cli](#coveocli)
+- [Usage](#usage)
+- [Commands](#commands)
+  - [`coveo auth:login`](#coveo-authlogin)
+  - [`coveo config:get`](#coveo-configget)
+  - [`coveo config:set`](#coveo-configset)
+  - [`coveo help [COMMAND]`](#coveo-help-command)
+  - [`coveo org:create`](#coveo-orgcreate)
+  - [`coveo org:list`](#coveo-orglist)
+  - [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
+  - [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
+  - [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
+  - [`coveo update [CHANNEL]`](#coveo-update-channel)
 
 ## `coveo auth:login`
 
@@ -120,6 +124,23 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.2/src/commands/help.ts)_
+
+## `coveo org:create`
+
+Create a Coveo trial organization.
+
+```
+USAGE
+  $ coveo org:create myOrgName
+
+ARGUMENTS
+  NAME  The organization name
+
+OPTIONS
+  -D, --setDefaultOrganization       Set the newly created organization as the default one
+```
+
+_See code: [src/commands/org/create.ts](https://github.com/coveo/cli/blob/v1.0.15/src/commands/org/create.ts)_
 
 ## `coveo org:list`
 

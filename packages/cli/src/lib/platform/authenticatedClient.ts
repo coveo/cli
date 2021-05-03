@@ -66,6 +66,13 @@ export class AuthenticatedClient {
     });
   }
 
+  async createOrganization(name: string) {
+    const platformClient = await this.getClient();
+    return await platformClient.organization.create({
+      name: name,
+    });
+  }
+
   async getUserInfo() {
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();

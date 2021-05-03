@@ -29,6 +29,16 @@
       "remoteRoot": "/home/notGroot/cli-copy",
       "sourceMaps": true,
       "autoAttachChildProcesses": false
+    },
+    {
+      "name": "Launch Program",
+      "program": "${workspaceFolder}/packages/cli/bin/run",
+      //"args": ["org:create", "-n", "testingOneTwo"],
+      //"args": ["auth:login", "-e", "dev"],
+      "args": ["ui:create:react", "test"],
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node"
     }
   ]
 }

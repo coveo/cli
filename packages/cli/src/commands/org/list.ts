@@ -7,7 +7,7 @@ import {
 } from '../../hooks/analytics/analytics';
 import {
   Preconditions,
-  IsAuthenticated,
+  HasAccessToken,
 } from '../../lib/decorators/preconditions/';
 
 export default class List extends Command {
@@ -17,7 +17,7 @@ export default class List extends Command {
     ...cli.table.flags(),
   };
 
-  @Preconditions(IsAuthenticated())
+  @Preconditions(HasAccessToken())
   async run() {
     const {flags} = this.parse(List);
     const orgs = await new AuthenticatedClient().getAllOrgsUserHasAccessTo();

@@ -108,8 +108,6 @@ export default class Login extends Command {
       await cfg.set('organization', firstOrgAvailable as string);
       return;
     }
-
-    this.error('You have no access to any Coveo organization!');
   }
 
   private async pickFirstAvailableOrganization() {
@@ -140,10 +138,13 @@ export default class Login extends Command {
     const orgs = await authenticatedClient.getAllOrgsUserHasAccessTo();
 
     if (orgs.length === 0) {
-      this.error(`
+      this.warn(`
       You do not have access to any Coveo organization in this region and environment.
-      Please make sure to you have access to at least one Coveo Organization, and that you are targeting the correct region and environment.
+      Please make sure that you are targeting the correct region and environment.
       Run auth:login --help to see available options to log into a different organization, region or environment.
+      
+      You can also create a new Coveo organization by running: 
+      org:create -n MyOrgName
       `);
     }
   }
