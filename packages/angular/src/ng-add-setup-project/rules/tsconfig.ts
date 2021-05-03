@@ -14,7 +14,7 @@ export function updateTsConfig(_options: CoveoSchema): Rule {
       const tsconfigcomment = fileArray[0];
       const tsConfig = JSON.parse(fileArray.slice(1).join(EOL));
 
-      tsConfig.compilerOptions.allowSyntheticDefaultImports = true;
+      tsConfig.compilerOptions.skipLibCheck = true;
 
       tree.overwrite(
         normalize('./tsconfig.json'),
