@@ -3,7 +3,7 @@ const {readFileSync, writeFileSync} = require('fs');
 const packages = ['angular', 'cra-template', 'vue-cli-plugin-typescript'];
 const headlessVersion = '0.x';
 
-async function main() {
+const main = () => {
   packages.forEach((p) => {
     let packageJSON = JSON.parse(
       readFileSync(`./packages/${p}/package.json`).toString()
@@ -15,7 +15,7 @@ async function main() {
       JSON.stringify(packageJSON, null, 4) + '\n'
     );
   });
-}
+};
 
 const replaceInDevDependencies = (packageJSON, versionToReplace) => {
   return replace(packageJSON, versionToReplace, 'devDependencies');
