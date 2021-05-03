@@ -23,6 +23,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '14'
+      - name: Inject Headless version
+        run: node ./scripts/inject-headless-version.js
       - run: npm run setup
       - name: Setup credentials
         run: |
