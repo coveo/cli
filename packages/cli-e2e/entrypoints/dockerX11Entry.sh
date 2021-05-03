@@ -16,7 +16,7 @@ npm run npm:bump:template -- -- $UI_TEMPLATE_VERSION
 
 npm run npm:publish:template
 
-google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720 >/dev/null 2>&1 & \
+google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720 --auto-open-devtools-for-tabs >/dev/null 2>&1 & \
 
 node scripts/wait-for-published-packages.js
 
