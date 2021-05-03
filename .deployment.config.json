@@ -74,7 +74,7 @@
     "sandbox_name": "CLI",
     "app_name": "JSUI",
     "source": "./packages/cli/src",
-    "scan_include_patterns": "[!spec].ts"
+    "scan_include_patterns": "*.ts"
   },
   "deployment_config_version": 2,
   "package_rollout": {
