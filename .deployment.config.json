@@ -70,9 +70,17 @@
   "observatory": {
     "no_endpoint": true
   },
-  "veracode": {"no_scan": true},
+  "veracode": {
+    "sandbox_name": "JS UI",
+    "source": "./packages/cli/src",
+    "scan_include_patterns": "[!spec].ts",
+    "app_name": "CLI"
+  },
   "deployment_config_version": 2,
   "package_rollout": {
     "only_consider_changesets_after": "591040c6568cce03b031c3059cd4d4de87de8d7c"
+  },
+  "certifiers": {
+    "dev": [{"system_certifier": "veracode"}]
   }
 }
