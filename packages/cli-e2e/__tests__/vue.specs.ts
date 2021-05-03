@@ -76,7 +76,7 @@ describe('ui:create:vue', () => {
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
     await buildProcessManager.killAllProcesses();
-  }, 420e3);
+  }, 10 * 60e3);
 
   beforeEach(async () => {
     jest.resetModules();
