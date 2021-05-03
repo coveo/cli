@@ -65,6 +65,7 @@ describe('ui:create:react', () => {
     buildProcessManager = new ProcessManager();
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
+    await buildProcessManager.killAllProcesses();
   }, 10 * 60e3);
 
   beforeEach(async () => {
@@ -79,7 +80,6 @@ describe('ui:create:react', () => {
 
   afterAll(async () => {
     process.env = oldEnv;
-    await buildProcessManager.killAllProcesses();
     await browser.close();
   });
 

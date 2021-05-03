@@ -75,6 +75,7 @@ describe('ui:create:vue', () => {
     buildProcessManager = new ProcessManager();
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
+    await buildProcessManager.killAllProcesses();
   }, 420e3);
 
   beforeEach(async () => {
@@ -89,7 +90,6 @@ describe('ui:create:vue', () => {
 
   afterAll(async () => {
     process.env = oldEnv;
-    await buildProcessManager.killAllProcesses();
     await browser.close();
   });
 

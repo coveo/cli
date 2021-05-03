@@ -84,6 +84,7 @@ describe('ui:create:angular', () => {
     buildProcessManager = new ProcessManager();
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
+    await buildProcessManager.killAllProcesses();
   }, 7 * 60e3);
 
   beforeEach(async () => {
@@ -98,7 +99,6 @@ describe('ui:create:angular', () => {
 
   afterAll(async () => {
     process.env = oldEnv;
-    await buildProcessManager.killAllProcesses();
     await browser.close();
   });
 
@@ -106,6 +106,7 @@ describe('ui:create:angular', () => {
     let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
     const searchboxSelector = 'app-search-page app-search-box input';
+
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       await startApplication(serverProcessManager);
