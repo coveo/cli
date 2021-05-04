@@ -1,6 +1,7 @@
 type NonPrimitiveCondition = RegExp | Promise<void>;
 export type Condition = string | NonPrimitiveCondition;
 
+
 export function isConditionRegExp(
   condition: Condition | undefined
 ): condition is RegExp {

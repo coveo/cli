@@ -4,12 +4,14 @@ import type {Readable} from 'stream';
 import type {ActionWith} from './action';
 
 import stripAnsi from 'strip-ansi';
+
 import {
   Condition,
   isConditionPromise,
   isConditionRegExp,
   isConditionString,
 } from './condition';
+
 
 /**
  * An object composed of the three element required to unhook an eventListener from an EventEmitter.
