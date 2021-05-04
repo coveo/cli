@@ -19,7 +19,7 @@ import stripAnsi from 'strip-ansi';
 import {EOL} from 'os';
 import {ProcessManager} from '../utils/processManager';
 import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
-import {Runtime} from 'node:inspector';
+import type {Runtime} from 'inspector';
 
 describe('ui:create:vue', () => {
   let browser: Browser;
