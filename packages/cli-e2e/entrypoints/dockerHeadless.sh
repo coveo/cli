@@ -30,9 +30,9 @@ cd packages/cli-e2e
 
 if npm run-script jest
 then
-    echo "Docker!" | sudo -S rsync -r /home/notGroot/cli-copy/packages/cli-e2e/screenshots/* /home/notGroot/cli/packages/cli-e2e/screenshots
+    echo "Docker!" | sudo -S rsync -r /home/notGroot/cli-copy/packages/cli-e2e/artifacts/* /home/notGroot/cli/packages/cli-e2e/artifacts
     exit 0
 else
-    echo "Docker!" | sudo -S rsync -r /home/notGroot/cli-copy/packages/cli-e2e/screenshots/* /home/notGroot/cli/packages/cli-e2e/screenshots
+    echo "Docker!" | sudo -S rsync -r /home/notGroot/cli-copy/packages/cli-e2e/artifacts/* /home/notGroot/cli/packages/cli-e2e/artifacts
     exit 1
 fi
