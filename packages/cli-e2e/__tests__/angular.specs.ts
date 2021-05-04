@@ -11,7 +11,6 @@ import {
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {isSearchRequest} from '../utils/platform';
 import {EOL} from 'os';
-import stripAnsi from 'strip-ansi';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 
@@ -33,7 +32,7 @@ describe('ui', () => {
     beforeAll(async () => {
       processManager = new ProcessManager();
       browser = await getNewBrowser();
-      const buildProcess = setupUIProject(
+      const buildTerminal = setupUIProject(
         processManager,
         'ui:create:angular',
         projectName,
@@ -42,32 +41,21 @@ describe('ui', () => {
         }
       );
 
-      buildProcess.stdout.on('data', async (data) => {
-        if (isGenericYesNoPrompt(data.toString())) {
-          await answerPrompt(`y${EOL}`, buildProcess);
-        }
-      });
+      buildTerminal
+        .when(isGenericYesNoPrompt)
+        .on('stdout')
+        .do(answerPrompt(`y${EOL}`));
 
       await Promise.race([
-        new Promise<void>((resolve) => {
-          buildProcess.on('exit', async () => {
-            resolve();
-          });
-        }),
-        new Promise<void>((resolve) => {
-          buildProcess.stdout.on('data', (data) => {
-            if (
-              /Happy hacking !/.test(
-                stripAnsi(data.toString()).replace(/\n/g, '')
-              )
-            ) {
-              resolve();
-            }
-          });
-        }),
+        buildTerminal.when('exit').on('process').do().once(),
+        buildTerminal
+          .when(/Happy hacking !/)
+          .on('stdout')
+          .do()
+          .once(),
       ]);
 
-      const terminalServer = new Terminal(
+      const serverTerminal = new Terminal(
         'npm',
         ['run', 'start'],
         {
@@ -76,7 +64,7 @@ describe('ui', () => {
         processManager
       );
 
-      await terminalServer
+      await serverTerminal
         .when(/Compiled successfully/)
         .on('stdout')
         .do()

@@ -1,12 +1,12 @@
 import retry from 'async-retry';
 
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
-import stripAnsi from 'strip-ansi';
 
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {getProjectPath, setupUIProject} from '../utils/cli';
 import {isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
+import {Terminal} from '../utils/terminal/terminal';
 
 describe('ui', () => {
   describe('create:react', () => {
@@ -24,45 +24,35 @@ describe('ui', () => {
     beforeAll(async () => {
       browser = await getNewBrowser();
       processManager = new ProcessManager();
-      const buildProcess = setupUIProject(
+      const buildTerminal = setupUIProject(
         processManager,
         'ui:create:react',
         projectName
       );
 
       await Promise.race([
-        new Promise<void>((resolve) => {
-          buildProcess.on('exit', async () => {
-            resolve();
-          });
-        }),
-        new Promise<void>((resolve) => {
-          buildProcess.stdout.on('data', (data) => {
-            if (
-              /Happy hacking !/.test(
-                stripAnsi(data.toString()).replace(/\n/g, '')
-              )
-            ) {
-              resolve();
-            }
-          });
-        }),
+        buildTerminal.when('exit').on('process').do().once(),
+        buildTerminal
+          .when(/Happy hacking !/)
+          .on('stdout')
+          .do()
+          .once(),
       ]);
 
-      const startServerProcess = processManager.spawn('npm', ['run', 'start'], {
-        cwd: getProjectPath(projectName),
-      });
-      await new Promise<void>((resolve) => {
-        startServerProcess.stdout.on('data', async (data) => {
-          if (
-            /You can now view .*-react-project in the browser/.test(
-              stripAnsi(data.toString()).replace(/\n/g, '')
-            )
-          ) {
-            resolve();
-          }
-        });
-      });
+      const serverTerminal = new Terminal(
+        'npm',
+        ['run', 'start'],
+        {
+          cwd: getProjectPath(projectName),
+        },
+        processManager
+      );
+
+      await serverTerminal
+        .when(/You can now view .*-react-project in the browser/)
+        .on('stdout')
+        .do()
+        .once();
     }, 15 * 60e3);
 
     beforeEach(async () => {

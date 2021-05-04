@@ -9,9 +9,9 @@ import {
 } from '../utils/cli';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {isSearchRequest} from '../utils/platform';
-import stripAnsi from 'strip-ansi';
 import {EOL} from 'os';
 import {ProcessManager} from '../utils/processManager';
+import {Terminal} from '../utils/terminal/terminal';
 
 describe('ui', () => {
   describe('create:vue', () => {
@@ -30,53 +30,40 @@ describe('ui', () => {
       processManager = new ProcessManager();
       browser = await getNewBrowser();
 
-      const buildProcess = setupUIProject(
+      const buildTerminal = setupUIProject(
         processManager,
         'ui:create:vue',
         projectName
       );
 
-      buildProcess.stdout.on('data', async (data) => {
-        if (isGenericYesNoPrompt(data.toString())) {
-          await answerPrompt(`y${EOL}`, buildProcess);
-          return;
-        }
-      });
+      buildTerminal
+        .when(isGenericYesNoPrompt)
+        .on('stdout')
+        .do(answerPrompt(`y${EOL}`));
 
       await Promise.race([
-        new Promise<void>((resolve) => {
-          buildProcess.on('exit', async () => {
-            resolve();
-          });
-        }),
-        new Promise<void>((resolve) => {
-          buildProcess.stdout.on('data', (data) => {
-            if (
-              /Happy hacking !/.test(
-                stripAnsi(data.toString()).replace(/\n/g, '')
-              )
-            ) {
-              resolve();
-            }
-          });
-        }),
+        buildTerminal.when('exit').on('process').do().once(),
+        buildTerminal
+          .when(/Happy hacking !/)
+          .on('stdout')
+          .do()
+          .once(),
       ]);
 
-      const startServerProcess = processManager.spawn('npm', ['run', 'start'], {
-        cwd: getProjectPath(projectName),
-      });
+      const serverTerminal = new Terminal(
+        'npm',
+        ['run', 'start'],
+        {
+          cwd: getProjectPath(projectName),
+        },
+        processManager
+      );
 
-      await new Promise<void>((resolve) => {
-        startServerProcess.stdout.on('data', async (data) => {
-          if (
-            /App running at:/.test(
-              stripAnsi(data.toString()).replace(/\n/g, '')
-            )
-          ) {
-            resolve();
-          }
-        });
-      });
+      await serverTerminal
+        .when(/App running at:/)
+        .on('stdout')
+        .do()
+        .once();
     }, 420e3);
 
     beforeEach(async () => {
