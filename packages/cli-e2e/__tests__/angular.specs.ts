@@ -20,7 +20,7 @@ import {isSearchRequest} from '../utils/platform';
 import {EOL} from 'os';
 import stripAnsi from 'strip-ansi';
 import {ProcessManager} from '../utils/processManager';
-import {Runtime} from 'node:inspector';
+import type {Runtime} from 'inspector';
 
 describe('ui:create:angular', () => {
   let browser: Browser;
