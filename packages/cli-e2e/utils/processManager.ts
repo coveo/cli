@@ -36,6 +36,7 @@ export class ProcessManager {
         promises.push(
           new Promise<void>((exit) => {
             currentProcess.on('exit', () => {
+              this.onExit(currentProcess)();
               exit();
             });
             if (!Number.isInteger(currentProcess.pid)) {
