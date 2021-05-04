@@ -4,7 +4,12 @@ import type {Readable} from 'stream';
 import type {ActionWith} from './action';
 
 import stripAnsi from 'strip-ansi';
-import {Condition, isConditionRegExp, isConditionString} from './condition';
+import {
+  Condition,
+  isConditionPromise,
+  isConditionRegExp,
+  isConditionString,
+} from './condition';
 
 /**
  * An object composed of the three element required to unhook an eventListener from an EventEmitter.
@@ -62,8 +67,8 @@ export class Do implements Promise<void> {
    * @returns {Promise} an awaitable promise that will resolve when the `untilCondition` is satisfied.
    */
   public until(untilCondition: Condition): Promise<void> {
-    let eventListener: EventListenerObject;
-    new Promise<void>((resolve) => {
+    let eventListener: EventListenerObject | undefined;
+    return new Promise<void>((resolve) => {
       eventListener = this.addTerminalListener(
         untilCondition,
         (_process: ChildProcessWithoutNullStreams, resolve: () => void) => {
@@ -73,9 +78,10 @@ export class Do implements Promise<void> {
         resolve
       );
     }).then(() => {
-      this.removeListener(eventListener);
+      if (eventListener) {
+        this.removeListener(eventListener);
+      }
     });
-    return this.promise;
   }
 
   /**
@@ -111,7 +117,9 @@ export class Do implements Promise<void> {
       );
 
       this.exitFunction = () => {
-        this.removeListener(eventListener);
+        if (eventListener) {
+          this.removeListener(eventListener);
+        }
         resolve();
       };
     };
@@ -151,6 +159,11 @@ export class Do implements Promise<void> {
 
     if (isConditionString(condition)) {
       onParams = [condition, () => callback(this.action.process, resolve)];
+    }
+
+    if (isConditionPromise(condition)) {
+      condition.then(() => callback(this.action.process, resolve));
+      return;
     }
 
     if (onParams) {

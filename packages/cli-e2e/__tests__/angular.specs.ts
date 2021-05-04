@@ -41,12 +41,7 @@ describe('ui', () => {
         }
       );
 
-      buildTerminal
-        .when(isGenericYesNoPrompt)
-        .on('stdout')
-        .do(answerPrompt(`y${EOL}`));
-
-      await Promise.race([
+      const buildTerminalExitPromise = Promise.race([
         buildTerminal.when('exit').on('process').do().once(),
         buildTerminal
           .when(/Happy hacking !/)
@@ -55,13 +50,20 @@ describe('ui', () => {
           .once(),
       ]);
 
+      await buildTerminal
+        .when(isGenericYesNoPrompt)
+        .on('stdout')
+        .do(answerPrompt(`y${EOL}`))
+        .until(buildTerminalExitPromise);
+
       const serverTerminal = new Terminal(
         'npm',
         ['run', 'start'],
         {
           cwd: getProjectPath(projectName),
         },
-        processManager
+        processManager,
+        'angular-server'
       );
 
       await serverTerminal

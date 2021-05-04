@@ -9,9 +9,6 @@ import type {AxiosResponse} from 'axios';
 import axios from 'axios';
 import {Terminal} from './terminal/terminal';
 
-export function isYesNoPrompt(data: string) {
-  return data.trimEnd().toLowerCase().endsWith('(y/n):');
-}
 export const isGenericYesNoPrompt = /\(y\/n\)[\s:]*$/i;
 
 export function answerPrompt(answer: string) {
@@ -57,7 +54,8 @@ export function setupUIProject(
     {
       cwd: resolve(getProjectPath(projectName), '..'),
     },
-    processManager
+    processManager,
+    `build-${projectName}`
   );
 
   return buildProcess;

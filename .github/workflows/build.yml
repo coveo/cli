@@ -31,5 +31,5 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
-          name: test-screenshots
-          path: ./packages/cli-e2e/screenshots
+          name: test-artifacts
+          path: ./packages/cli-e2e/artifacts

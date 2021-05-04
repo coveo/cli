@@ -4,13 +4,14 @@ import {
   answerPrompt,
   CLI_EXEC_PATH,
   getConfigFilePath,
-  isYesNoPrompt,
+  isGenericYesNoPrompt,
 } from './cli';
 import LoginSelectors from './loginSelectors';
 import {strictEqual} from 'assert';
 import {connectToChromeBrowser} from './browser';
 import {isElementClickable} from './browser';
 import {readJSON, writeJSON, existsSync} from 'fs-extra';
+import {Terminal} from './terminal/terminal';
 
 function isLoginPage(page: Page) {
   // TODO: CDX-98: URL should vary in fonction of the targeted environment.
@@ -56,22 +57,20 @@ async function possiblyAcceptCustomerAgreement(page: Page) {
 }
 
 export function runLoginCommand() {
-  const cliProcess = global.processManager!.spawn(CLI_EXEC_PATH, [
-    'auth:login',
-    '-e=dev',
-  ]);
-  cliProcess.stderr.on('data', async (data) => {
-    if (isYesNoPrompt(data.toString())) {
-      await answerPrompt('n', cliProcess);
-    }
-  });
-  cliProcess.stdout.on('data', async (data) => {
-    if (isYesNoPrompt(data.toString())) {
-      await answerPrompt('n', cliProcess);
-    }
-  });
+  const loginTerminal = new Terminal(
+    CLI_EXEC_PATH,
+    ['auth:login', '-e=dev'],
+    undefined,
+    global.processManager!,
+    'initial-login'
+  );
+  loginTerminal
+    .when(isGenericYesNoPrompt)
+    .on('stderr')
+    .do(answerPrompt('n'))
+    .once();
 
-  return cliProcess;
+  return loginTerminal;
 }
 
 async function startLoginFlow(browser: Browser) {

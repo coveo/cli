@@ -45,7 +45,8 @@ describe('ui', () => {
         {
           cwd: getProjectPath(projectName),
         },
-        processManager
+        processManager,
+        'react-server'
       );
 
       await serverTerminal

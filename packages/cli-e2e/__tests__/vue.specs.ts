@@ -36,12 +36,7 @@ describe('ui', () => {
         projectName
       );
 
-      buildTerminal
-        .when(isGenericYesNoPrompt)
-        .on('stdout')
-        .do(answerPrompt(`y${EOL}`));
-
-      await Promise.race([
+      const buildTerminalExitPromise = Promise.race([
         buildTerminal.when('exit').on('process').do().once(),
         buildTerminal
           .when(/Happy hacking !/)
@@ -50,13 +45,22 @@ describe('ui', () => {
           .once(),
       ]);
 
+      buildTerminal
+        .when(isGenericYesNoPrompt)
+        .on('stdout')
+        .do(answerPrompt(`y${EOL}`))
+        .until(buildTerminalExitPromise);
+
+      await buildTerminalExitPromise;
+
       const serverTerminal = new Terminal(
         'npm',
         ['run', 'start'],
         {
           cwd: getProjectPath(projectName),
         },
-        processManager
+        processManager,
+        'vue-server'
       );
 
       await serverTerminal
