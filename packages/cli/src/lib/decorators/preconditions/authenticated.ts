@@ -11,7 +11,7 @@ export function IsAuthenticated() {
 
     const {organization} = await cfg.get();
 
-    if (!organization || organization.length === 0) {
+    if (organization?.length) {
       target.warn(
         'Not currently logged to a specific organization. Run coveo auth:login or config:set.'
       );
