@@ -41,7 +41,7 @@ describe('ui:create:vue', () => {
         .once(),
     ]);
 
-    buildTerminal
+    await buildTerminal
       .when(isGenericYesNoPrompt)
       .on('stdout')
       .do(answerPrompt(`y${EOL}`))
@@ -163,6 +163,48 @@ describe('ui:create:vue', () => {
         expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
       });
     });
+  });
+
+  describe('when starting the server', () => {
+    let serverProcessManager: ProcessManager;
+
+    beforeEach(() => {
+      serverProcessManager = new ProcessManager();
+    });
+
+    afterEach(async () => {
+      await serverProcessManager.killAllProcesses();
+    }, 5e3);
+
+    it(
+      'should not have any ESLint warning or error',
+      async () => {
+        const serverTerminal = new Terminal(
+          'npm',
+          ['run', 'start'],
+          {
+            cwd: getProjectPath(projectName),
+          },
+          serverProcessManager,
+          'vue-server'
+        );
+        const eslintErrorSpy = jest.fn();
+        const serverExitCondition = serverTerminal
+          .when(/App running at:/)
+          .on('stdout')
+          .do()
+          .once();
+
+        await serverTerminal
+          .when(/✖ \d+ problems \(\d+ errors, \d+ warnings\)/)
+          .on('stdout')
+          .do(eslintErrorSpy)
+          .until(serverExitCondition);
+
+        expect(eslintErrorSpy).not.toBeCalled();
+      },
+      5 * 60e3
+    );
   });
 
   describe('when the required environment variables are missing', () => {
