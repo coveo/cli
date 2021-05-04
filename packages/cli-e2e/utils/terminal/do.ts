@@ -4,6 +4,7 @@ import type {Readable} from 'stream';
 import type {ActionWith} from './action';
 
 import stripAnsi from 'strip-ansi';
+
 import {
   Condition,
   isConditionPromise,
