@@ -17,7 +17,7 @@ import {Terminal} from '../utils/terminal/terminal';
 
 describe('ui:create:angular', () => {
   let browser: Browser;
-  let buildProcessManager: ProcessManager;
+  const processManagers: ProcessManager[] = [];
   let page: Page;
   const oldEnv = process.env;
   const projectName = `${process.env.GITHUB_ACTION}-angular-project`;
@@ -71,7 +71,8 @@ describe('ui:create:angular', () => {
   };
 
   beforeAll(async () => {
-    buildProcessManager = new ProcessManager();
+    const buildProcessManager = new ProcessManager();
+    processManagers.push(buildProcessManager);
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
     await buildProcessManager.killAllProcesses();
@@ -90,6 +91,9 @@ describe('ui:create:angular', () => {
   afterAll(async () => {
     process.env = oldEnv;
     await browser.close();
+    await Promise.all(
+      processManagers.map((manager) => manager.killAllProcesses())
+    );
   });
 
   describe('when the project is configured correctly', () => {
@@ -99,6 +103,7 @@ describe('ui:create:angular', () => {
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
+      processManagers.push(serverProcessManager);
       await startApplication(serverProcessManager);
     }, 60e3);
 
@@ -168,6 +173,7 @@ describe('ui:create:angular', () => {
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
+      processManagers.push(serverProcessManager);
       await deactivateEnvironmentFile(projectName);
       await startApplication(serverProcessManager);
     }, 60e3);

@@ -11,7 +11,7 @@ import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
 
 describe('ui:create:react', () => {
   let browser: Browser;
-  let buildProcessManager: ProcessManager;
+  const processManagers: ProcessManager[] = [];
   let page: Page;
   const oldEnv = process.env;
   const projectName = `${process.env.GITHUB_ACTION}-react-project`;
@@ -56,7 +56,8 @@ describe('ui:create:react', () => {
   };
 
   beforeAll(async () => {
-    buildProcessManager = new ProcessManager();
+    const buildProcessManager = new ProcessManager();
+    processManagers.push(buildProcessManager);
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
     await buildProcessManager.killAllProcesses();
@@ -75,6 +76,9 @@ describe('ui:create:react', () => {
   afterAll(async () => {
     process.env = oldEnv;
     await browser.close();
+    await Promise.all(
+      processManagers.map((manager) => manager.killAllProcesses())
+    );
   });
 
   describe('when the project is configured correctly', () => {
@@ -84,6 +88,7 @@ describe('ui:create:react', () => {
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
+      processManagers.push(serverProcessManager);
       await startApplication(serverProcessManager);
     }, 2 * 60e3);
 
@@ -155,6 +160,7 @@ describe('ui:create:react', () => {
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
+      processManagers.push(serverProcessManager);
       await deactivateEnvironmentFile(projectName);
       await startApplication(serverProcessManager);
     }, 2 * 60e3);
