@@ -21,4 +21,5 @@ google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usag
 node scripts/wait-for-published-packages.js
 
 cd packages/cli-e2e
+export COVEO_CLI_E2E_DEBUG=true;
 npm run-script jest:debug
