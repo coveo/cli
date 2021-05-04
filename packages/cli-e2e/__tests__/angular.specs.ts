@@ -12,8 +12,8 @@ import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {isSearchRequest} from '../utils/platform';
 import {EOL} from 'os';
-import stripAnsi from 'strip-ansi';
 import {ProcessManager} from '../utils/processManager';
+import {Terminal} from '../utils/terminal/terminal';
 
 describe('ui:create:angular', () => {
   let browser: Browser;
@@ -27,7 +27,7 @@ describe('ui:create:angular', () => {
   const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
 
   const buildApplication = async (processManager: ProcessManager) => {
-    const proc = setupUIProject(
+    const buildTerminal = setupUIProject(
       processManager,
       'ui:create:angular',
       projectName,
@@ -36,48 +36,38 @@ describe('ui:create:angular', () => {
       }
     );
 
-    proc.stdout.on('data', async (data) => {
-      if (isGenericYesNoPrompt(data.toString())) {
-        await answerPrompt(`y${EOL}`, proc);
-      }
-    });
-
-    return Promise.race([
-      new Promise<void>((resolve) => {
-        proc.on('exit', async () => {
-          resolve();
-        });
-      }),
-      new Promise<void>((resolve) => {
-        proc.stdout.on('data', (data) => {
-          if (
-            /Happy hacking !/.test(
-              stripAnsi(data.toString()).replace(/\n/g, '')
-            )
-          ) {
-            resolve();
-          }
-        });
-      }),
+    const buildTerminalExitPromise = Promise.race([
+      buildTerminal.when('exit').on('process').do().once(),
+      buildTerminal
+        .when(/Happy hacking !/)
+        .on('stdout')
+        .do()
+        .once(),
     ]);
+
+    await buildTerminal
+      .when(isGenericYesNoPrompt)
+      .on('stdout')
+      .do(answerPrompt(`y${EOL}`))
+      .until(buildTerminalExitPromise);
   };
 
   const startApplication = async (processManager: ProcessManager) => {
-    const proc = processManager.spawn('npm', ['run', 'start'], {
-      cwd: getProjectPath(projectName),
-    });
+    const serverTerminal = new Terminal(
+      'npm',
+      ['run', 'start'],
+      {
+        cwd: getProjectPath(projectName),
+      },
+      processManager,
+      'angular-server'
+    );
 
-    return new Promise<void>((resolve) => {
-      proc.stdout.on('data', async (data) => {
-        if (
-          /Compiled successfully/.test(
-            stripAnsi(data.toString()).replace(/\n/g, '')
-          )
-        ) {
-          resolve();
-        }
-      });
-    });
+    await serverTerminal
+      .when(/Compiled successfully/)
+      .on('stdout')
+      .do()
+      .once();
   };
 
   beforeAll(async () => {
