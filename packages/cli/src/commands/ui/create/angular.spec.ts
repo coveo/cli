@@ -80,6 +80,12 @@ describe('ui:create:angular', () => {
             Promise.resolve({
               value: 'foo',
             }),
+          getUserInfo: () =>
+            Promise.resolve({
+              username: 'bob@coveo.com',
+              providerUsername: 'bob@coveo.com',
+              displayName: 'bob',
+            }),
           getClient: () =>
             Promise.resolve(
               mockedPlatformClient.getMockImplementation()!({
@@ -97,14 +103,6 @@ describe('ui:create:angular', () => {
       () =>
         ({
           initialize: () => Promise.resolve(),
-          user: {
-            get: () =>
-              Promise.resolve({
-                username: 'bob@coveo.com',
-                providerUsername: 'bob@coveo.com',
-                displayName: 'bob',
-              }),
-          },
         } as PlatformClient)
     );
   };
