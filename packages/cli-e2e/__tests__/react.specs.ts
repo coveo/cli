@@ -13,7 +13,7 @@ import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {getProjectPath, setupUIProject} from '../utils/cli';
 import {isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
-import {Runtime} from 'node:inspector';
+import type {Runtime} from 'inspector';
 import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
 
 describe('ui:create:react', () => {
