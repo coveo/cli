@@ -52,87 +52,140 @@ describe('ui', () => {
         .until(buildTerminalExitPromise);
 
       await buildTerminalExitPromise;
-
-      const serverTerminal = new Terminal(
-        'npm',
-        ['run', 'start'],
-        {
-          cwd: getProjectPath(projectName),
-        },
-        processManager,
-        'vue-server'
-      );
-
-      await serverTerminal
-        .when(/App running at:/)
-        .on('stdout')
-        .do()
-        .once();
     }, 420e3);
-
-    beforeEach(async () => {
-      page = await openNewPage(browser, page);
-
-      page.on('request', (request: HTTPRequest) => {
-        interceptedRequests.push(request);
-      });
-    });
-
-    afterEach(async () => {
-      await captureScreenshots(browser);
-      page.removeAllListeners('request');
-      interceptedRequests = [];
-    });
 
     afterAll(async () => {
       await browser.close();
       await processManager.killAllProcesses();
     }, 5e3);
 
-    it('should contain a search page section', async () => {
-      await page.goto(searchPageEndpoint, {
-        waitUntil: 'networkidle2',
+    describe('when the app is served', () => {
+      let serverProcessManager: ProcessManager;
+
+      beforeAll(async () => {
+        serverProcessManager = new ProcessManager();
+        const serverTerminal = new Terminal(
+          'npm',
+          ['run', 'start'],
+          {
+            cwd: getProjectPath(projectName),
+          },
+          serverProcessManager,
+          'vue-server'
+        );
+
+        await serverTerminal
+          .when(/App running at:/)
+          .on('stdout')
+          .do()
+          .once();
+      }, 5 * 60e3);
+
+      beforeEach(async () => {
+        page = await openNewPage(browser, page);
+
+        page.on('request', (request: HTTPRequest) => {
+          interceptedRequests.push(request);
+        });
       });
-      await page.waitForSelector(searchboxSelector);
 
-      expect(await page.$('#search-page')).not.toBeNull();
-    });
-
-    it('should retrieve the search token on the page load', async () => {
-      const tokenResponseListener = page.waitForResponse(tokenProxyEndpoint);
-      page.goto(searchPageEndpoint);
-      await page.waitForSelector(searchboxSelector);
-
-      expect(
-        JSON.parse(await (await tokenResponseListener).text())
-      ).toMatchObject({
-        token: expect.stringMatching(/^eyJhb.+/),
+      afterEach(async () => {
+        await captureScreenshots(browser);
+        page.removeAllListeners('request');
+        interceptedRequests = [];
       });
-    });
 
-    it('should send a search query when the page is loaded', async () => {
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-      await page.waitForSelector(searchboxSelector);
+      afterAll(async () => {
+        await serverProcessManager.killAllProcesses();
+      }, 5e3);
 
-      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-    });
+      it('should contain a search page section', async () => {
+        await page.goto(searchPageEndpoint, {
+          waitUntil: 'networkidle2',
+        });
+        await page.waitForSelector(searchboxSelector);
 
-    it('should send a search query on searchbox submit', async () => {
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-      await page.waitForSelector(searchboxSelector);
+        expect(await page.$('#search-page')).not.toBeNull();
+      });
 
-      interceptedRequests = [];
+      it('should retrieve the search token on the page load', async () => {
+        const tokenResponseListener = page.waitForResponse(tokenProxyEndpoint);
+        page.goto(searchPageEndpoint);
+        await page.waitForSelector(searchboxSelector);
 
-      await page.focus(searchboxSelector);
-      await page.keyboard.type('my query');
-      await page.keyboard.press('Enter');
+        expect(
+          JSON.parse(await (await tokenResponseListener).text())
+        ).toMatchObject({
+          token: expect.stringMatching(/^eyJhb.+/),
+        });
+      });
 
-      await retry(async () => {
+      it('should send a search query when the page is loaded', async () => {
+        await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+        await page.waitForSelector(searchboxSelector);
+
         expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
       });
-    });
-  });
 
-  it.todo('should create a Vue.js project with a custom preset');
-  it.todo('should redirect the user to an error page if invalid env file');
+      it('should send a search query on searchbox submit', async () => {
+        await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+        await page.waitForSelector(searchboxSelector);
+
+        interceptedRequests = [];
+
+        await page.focus(searchboxSelector);
+        await page.keyboard.type('my query');
+        await page.keyboard.press('Enter');
+
+        await retry(async () => {
+          expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+        });
+      });
+    });
+
+    describe('when starting the server', () => {
+      let serverProcessManager: ProcessManager;
+
+      beforeEach(() => {
+        serverProcessManager = new ProcessManager();
+      });
+
+      afterEach(async () => {
+        await serverProcessManager.killAllProcesses();
+      }, 5e3);
+
+      it(
+        'should not have any ESLint warning or error',
+        async () => {
+          const serverTerminal = new Terminal(
+            'npm',
+            ['run', 'start'],
+            {
+              cwd: getProjectPath(projectName),
+            },
+            serverProcessManager,
+            'vue-server'
+          );
+          const eslintErrorSpy = jest.fn();
+          const serverExitCondition = serverTerminal
+            .when(/App running at:/)
+            .on('stdout')
+            .do()
+            .once();
+
+          await serverTerminal
+            .when(/✖ \d+ problems \(\d+ errors, \d+ warnings\)/)
+            .on('stdout')
+            .do(eslintErrorSpy)
+            .until(serverExitCondition);
+
+          expect(eslintErrorSpy).not.toBeCalled();
+        },
+        5 * 60e3
+      );
+    });
+
+    it.todo('should create a Vue.js project with a custom preset');
+    it.todo('should redirect the user to an error page if invalid env file');
+  });
 });

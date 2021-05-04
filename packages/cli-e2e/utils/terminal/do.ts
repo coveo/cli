@@ -12,7 +12,6 @@ import {
   isConditionString,
 } from './condition';
 
-
 /**
  * An object composed of the three element required to unhook an eventListener from an EventEmitter.
  * (e.g. ChildProcess or Readable stream )

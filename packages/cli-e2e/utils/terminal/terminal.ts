@@ -13,7 +13,6 @@ import {join} from 'path';
 import {LOGS_PATH} from '../browser';
 import {createWriteStream, WriteStream} from 'fs';
 
-
 /**
  * An helper class to manipulate processes that interact with a TTY.
  * You can interact with the TTY using the 'When This Do That' logic.
