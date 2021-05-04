@@ -155,8 +155,6 @@ describe('ui:create:react', () => {
   describe('when the required environment variables are missing', () => {
     let serverProcessManager: ProcessManager;
     const errorMessageSelector = 'div.container';
-    const invalidEnvErrorMessage =
-      'Invalid Environment variablesYou should have a valid .env file at the root of this project. You can use .env.example as starting point and make sure to replace all placeholder variables<...> by the proper information for your organization.Refer to the project README file for more information.';
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
@@ -176,7 +174,9 @@ describe('ui:create:react', () => {
         errorMessageSelector,
         (el) => el.textContent
       );
-      expect(pageErrorMessage).toEqual(invalidEnvErrorMessage);
+      expect(pageErrorMessage).toContain(
+        'You should have a valid .env file at the root of this project'
+      );
     });
   });
 });
