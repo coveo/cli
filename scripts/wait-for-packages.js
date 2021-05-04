@@ -16,13 +16,13 @@ function getExpectedVersion() {
 }
 
 const expectedVersion = getExpectedVersion();
-
 publicPackages.map(async (packageName) => {
   await retry(
     async (_bail) => {
       // if anything throws, we retry
-      const res = await get(`https://registry.npmjs.org/${packageName}`);
-      const latestVersion = res['dist-tags']['latest'];
+      const res = await get(`https://registry.npmjs.org/${packageName}/latest`);
+      const latestVersion = res.data.version;
+      console.log(latestVersion);
       if (latestVersion !== expectedVersion) {
         throw `Not the good version yet. Got ${latestVersion}. Expected ${expectedVersion}`;
       }
@@ -30,6 +30,7 @@ publicPackages.map(async (packageName) => {
     {
       maxRetryTime: 10 * 60e3,
       minTimeout: 30e3,
+      onRetry: (err) => console.error(err),
     }
   );
 });

@@ -3,6 +3,81 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.15](https://github.com/coveo/cli/compare/v1.0.14...v1.0.15) (2021-04-21)
+
+
+### Bug Fixes
+
+* **cli:** include patches when packing ([#174](https://github.com/coveo/cli/issues/174)) ([54aee22](https://github.com/coveo/cli/commit/54aee225f3cfec041e896c3d95a3c07f7055cb3c))
+
+
+
+
+
+## [1.0.14](https://github.com/coveo/cli/compare/v1.0.13...v1.0.14) (2021-04-20)
+
+**Note:** Version bump only for package @coveo/cli
+
+
+
+
+
+## [1.0.13](https://github.com/coveo/cli/compare/v1.0.12...v1.0.13) (2021-04-20)
+
+**Note:** Version bump only for package @coveo/cli
+
+
+
+
+
+## [1.0.12](https://github.com/coveo/cli/compare/v1.0.11...v1.0.12) (2021-04-20)
+
+**Note:** Version bump only for package @coveo/cli
+
+
+
+
+
+## [1.0.11](https://github.com/coveo/cli/compare/v1.0.10...v1.0.11) (2021-04-20)
+
+**Note:** Version bump only for package @coveo/cli
+
+
+
+
+
+## [1.0.10](https://github.com/coveo/cli/compare/v1.0.9...v1.0.10) (2021-04-20)
+
+**Note:** Version bump only for package @coveo/cli
+
+
+
+
+
+## [1.0.9](https://github.com/coveo/cli/compare/v1.0.8...v1.0.9) (2021-04-20)
+
+**Note:** Version bump only for package @coveo/cli
+
+
+
+
+
+## [1.0.8](https://github.com/coveo/cli/compare/v1.0.7...v1.0.8) (2021-04-20)
+
+**Note:** Version bump only for package @coveo/cli
+
+
+
+
+
+## [1.0.7](https://github.com/coveo/cli/compare/v1.0.1...v1.0.7) (2021-04-19)
+
+**Note:** Version bump only for package @coveo/cli
+
+
+
+
+
 ## [1.0.1](https://github.com/coveo/cli/compare/v1.0.0...v1.0.1) (2021-04-17)
 
 

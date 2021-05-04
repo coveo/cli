@@ -23,9 +23,9 @@ uplinks:
     url: https://registry.npmjs.org/
 
 packages:
-  # All templates packages are published and fetched from Verdaccio
-  # No uplink is tolerated, so if it ain't published on Verdaccio, it'll fail.
-  "@coveo/@(angular|vue-cli-plugin-typescript|cra-template)":
+  # All templates packages and the search-token-server are published and fetched from Verdaccio
+  # No uplink is allowed, so if it ain't published on Verdaccio, it'll fail.
+  "@coveo/@(angular|vue-cli-plugin-typescript|cra-template|search-token-server)":
     access: $all
     publish: $all
     unpublish: $all

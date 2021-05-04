@@ -70,8 +70,6 @@
     "lint:fix": "eslint --fix .",
     "prettier:check": "prettier .",
     "prettier:fix": "prettier --write .",
-    "prepack": "rimraf -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "postpack": "rm -f oclif.manifest.json",
     "version": "lerna run version",
     "commit": "git-cz",
     "pr:report": "node ./scripts/pr-bot.js",

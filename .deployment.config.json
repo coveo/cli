@@ -28,7 +28,10 @@
     "configurations": [
       {
         "project_name": "cli-root",
-        "file": "package.json"
+        "file": "package-lock.json",
+        "additional_config": {
+          "scan_dev_dependencies": true
+        }
       },
       {
         "project_name": "cli",
@@ -36,26 +39,43 @@
       },
       {
         "project_name": "angular",
-        "directory": "packages/angular"
+        "directory": "packages/angular",
+        "additional_config": {
+          "scan_dev_dependencies": true
+        }
       },
       {
         "project_name": "cra-template",
-        "directory": "packages/cra-template"
+        "directory": "packages/cra-template",
+        "additional_config": {
+          "scan_dev_dependencies": true
+        }
       },
       {
         "project_name": "search-token-server",
-        "directory": "packages/search-token-server"
+        "directory": "packages/search-token-server",
+        "additional_config": {
+          "scan_dev_dependencies": true
+        }
       },
       {
         "project_name": "vue-cli-plugin",
-        "directory": "packages/vue-cli-plugin-typescript"
+        "directory": "packages/vue-cli-plugin-typescript",
+        "additional_config": {
+          "scan_dev_dependencies": true
+        }
       }
     ]
   },
   "observatory": {
     "no_endpoint": true
   },
-  "veracode": {"no_scan": true},
+  "veracode": {
+    "sandbox_name": "CLI",
+    "app_name": "JSUI",
+    "source": "./packages/cli/src",
+    "scan_include_patterns": "*"
+  },
   "deployment_config_version": 2,
   "package_rollout": {
     "only_consider_changesets_after": "591040c6568cce03b031c3059cd4d4de87de8d7c"
