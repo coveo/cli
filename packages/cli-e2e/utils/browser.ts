@@ -9,8 +9,10 @@ interface JsonVersionFile {
   webSocketDebuggerUrl: string;
 }
 
+export const LOGS_PATH =
+  '/home/notGroot/cli-copy/packages/cli-e2e/artifacts/logs';
 export const SCREENSHOTS_PATH =
-  '/home/notGroot/cli-copy/packages/cli-e2e/screenshots';
+  '/home/notGroot/cli-copy/packages/cli-e2e/artifacts/screenshots';
 
 /**
  * Closes all pages of the targeted browser instance.

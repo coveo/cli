@@ -15,15 +15,15 @@ import {
 } from '../utils/cli';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {isSearchRequest} from '../utils/platform';
-import stripAnsi from 'strip-ansi';
 import {EOL} from 'os';
 import {ProcessManager} from '../utils/processManager';
 import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
-import type {Runtime} from 'inspector';
+import type {Runtime} from 'node:inspector';
+import {Terminal} from '../utils/terminal/terminal';
 
 describe('ui:create:vue', () => {
   let browser: Browser;
-  let buildProcessManager: ProcessManager;
+  const processManagers: ProcessManager[] = [];
   let page: Page;
   const oldEnv = process.env;
   const projectName = `${process.env.GITHUB_ACTION}-vue-project`;
@@ -33,57 +33,55 @@ describe('ui:create:vue', () => {
   const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
 
   const buildApplication = async (processManager: ProcessManager) => {
-    const proc = setupUIProject(processManager, 'ui:create:vue', projectName);
+    const buildTerminal = setupUIProject(
+      processManager,
+      'ui:create:vue',
+      projectName
+    );
 
-    proc.stdout.on('data', async (data) => {
-      if (isGenericYesNoPrompt(data.toString())) {
-        await answerPrompt(`y${EOL}`, proc);
-        return;
-      }
-    });
-
-    return Promise.race([
-      new Promise<void>((resolve) => {
-        proc.on('exit', async () => {
-          resolve();
-        });
-      }),
-      new Promise<void>((resolve) => {
-        proc.stdout.on('data', (data) => {
-          if (
-            /Happy hacking !/.test(
-              stripAnsi(data.toString()).replace(/\n/g, '')
-            )
-          ) {
-            resolve();
-          }
-        });
-      }),
+    const buildTerminalExitPromise = Promise.race([
+      buildTerminal.when('exit').on('process').do().once(),
+      buildTerminal
+        .when(/Happy hacking !/)
+        .on('stdout')
+        .do()
+        .once(),
     ]);
+
+    await buildTerminal
+      .when(isGenericYesNoPrompt)
+      .on('stdout')
+      .do(answerPrompt(`y${EOL}`))
+      .until(buildTerminalExitPromise);
+
+    await buildTerminalExitPromise;
   };
 
   const startApplication = async (processManager: ProcessManager) => {
-    const proc = processManager.spawn('npm', ['run', 'start'], {
-      cwd: getProjectPath(projectName),
-    });
+    const serverTerminal = new Terminal(
+      'npm',
+      ['run', 'start'],
+      {
+        cwd: getProjectPath(projectName),
+      },
+      processManager,
+      'vue-server'
+    );
 
-    return new Promise<void>((resolve) => {
-      proc.stdout.on('data', async (data) => {
-        if (
-          /App running at:/.test(stripAnsi(data.toString()).replace(/\n/g, ''))
-        ) {
-          resolve();
-        }
-      });
-    });
+    await serverTerminal
+      .when(/App running at:/)
+      .on('stdout')
+      .do()
+      .once();
   };
 
   beforeAll(async () => {
-    buildProcessManager = new ProcessManager();
+    const buildProcessManager = new ProcessManager();
+    processManagers.push(buildProcessManager);
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
     await buildProcessManager.killAllProcesses();
-  }, 420e3);
+  }, 15 * 60e3);
 
   beforeEach(async () => {
     jest.resetModules();
@@ -98,6 +96,9 @@ describe('ui:create:vue', () => {
   afterAll(async () => {
     process.env = oldEnv;
     await browser.close();
+    await Promise.all(
+      processManagers.map((manager) => manager.killAllProcesses())
+    );
   });
 
   describe('when the project is configured correctly', () => {
@@ -108,8 +109,9 @@ describe('ui:create:vue', () => {
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
+      processManagers.push(serverProcessManager);
       await startApplication(serverProcessManager);
-    }, 60e3);
+    }, 2 * 60e3);
 
     beforeEach(async () => {
       cdpClient = await page.target().createCDPSession();
@@ -205,15 +207,58 @@ describe('ui:create:vue', () => {
     });
   });
 
+  describe('when starting the server', () => {
+    let serverProcessManager: ProcessManager;
+
+    beforeEach(() => {
+      serverProcessManager = new ProcessManager();
+    });
+
+    afterEach(async () => {
+      await serverProcessManager.killAllProcesses();
+    }, 5e3);
+
+    it(
+      'should not have any ESLint warning or error',
+      async () => {
+        const serverTerminal = new Terminal(
+          'npm',
+          ['run', 'start'],
+          {
+            cwd: getProjectPath(projectName),
+          },
+          serverProcessManager,
+          'vue-server'
+        );
+        const eslintErrorSpy = jest.fn();
+        const serverExitCondition = serverTerminal
+          .when(/App running at:/)
+          .on('stdout')
+          .do()
+          .once();
+
+        await serverTerminal
+          .when(/✖ \d+ problems \(\d+ errors, \d+ warnings\)/)
+          .on('stdout')
+          .do(eslintErrorSpy)
+          .until(serverExitCondition);
+
+        expect(eslintErrorSpy).not.toBeCalled();
+      },
+      5 * 60e3
+    );
+  });
+
   describe('when the required environment variables are missing', () => {
     let serverProcessManager: ProcessManager;
     const errorPage = `http://localhost:${clientPort}/error`;
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
+      processManagers.push(serverProcessManager);
       await deactivateEnvironmentFile(projectName);
       await startApplication(serverProcessManager);
-    }, 60e3);
+    }, 2 * 60e3);
 
     afterAll(async () => {
       await restoreEnvironmentFile(projectName);

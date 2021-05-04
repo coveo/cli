@@ -7,18 +7,18 @@ import type {
   ConsoleMessageType,
   CDPSession,
 } from 'puppeteer';
-import stripAnsi from 'strip-ansi';
 
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {getProjectPath, setupUIProject} from '../utils/cli';
 import {isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
-import type {Runtime} from 'inspector';
+import type {Runtime} from 'node:inspector';
+import {Terminal} from '../utils/terminal/terminal';
 import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
 
 describe('ui:create:react', () => {
   let browser: Browser;
-  let buildProcessManager: ProcessManager;
+  const processManagers: ProcessManager[] = [];
   let page: Page;
   const oldEnv = process.env;
   const projectName = `${process.env.GITHUB_ACTION}-react-project`;
@@ -28,52 +28,47 @@ describe('ui:create:react', () => {
   const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
 
   const buildApplication = async (processManager: ProcessManager) => {
-    const proc = setupUIProject(processManager, 'ui:create:react', projectName);
+    const buildTerminal = setupUIProject(
+      processManager,
+      'ui:create:react',
+      projectName
+    );
 
-    return Promise.race([
-      new Promise<void>((resolve) => {
-        proc.on('exit', async () => {
-          resolve();
-        });
-      }),
-      new Promise<void>((resolve) => {
-        proc.stdout.on('data', (data) => {
-          if (
-            /Happy hacking !/.test(
-              stripAnsi(data.toString()).replace(/\n/g, '')
-            )
-          ) {
-            resolve();
-          }
-        });
-      }),
+    await Promise.race([
+      buildTerminal.when('exit').on('process').do().once(),
+      buildTerminal
+        .when(/Happy hacking !/)
+        .on('stdout')
+        .do()
+        .once(),
     ]);
   };
 
   const startApplication = async (processManager: ProcessManager) => {
-    const proc = processManager.spawn('npm', ['run', 'start'], {
-      cwd: getProjectPath(projectName),
-    });
+    const serverTerminal = new Terminal(
+      'npm',
+      ['run', 'start'],
+      {
+        cwd: getProjectPath(projectName),
+      },
+      processManager,
+      'react-server'
+    );
 
-    return new Promise<void>((resolve) => {
-      proc.stdout.on('data', async (data) => {
-        if (
-          /You can now view .*-react-project in the browser/.test(
-            stripAnsi(data.toString()).replace(/\n/g, '')
-          )
-        ) {
-          resolve();
-        }
-      });
-    });
+    await serverTerminal
+      .when(/You can now view .*-react-project in the browser/)
+      .on('stdout')
+      .do()
+      .once();
   };
 
   beforeAll(async () => {
-    buildProcessManager = new ProcessManager();
+    const buildProcessManager = new ProcessManager();
+    processManagers.push(buildProcessManager);
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
     await buildProcessManager.killAllProcesses();
-  }, 10 * 60e3);
+  }, 15 * 60e3);
 
   beforeEach(async () => {
     jest.resetModules();
@@ -88,6 +83,9 @@ describe('ui:create:react', () => {
   afterAll(async () => {
     process.env = oldEnv;
     await browser.close();
+    await Promise.all(
+      processManagers.map((manager) => manager.killAllProcesses())
+    );
   });
 
   describe('when the project is configured correctly', () => {
@@ -98,8 +96,9 @@ describe('ui:create:react', () => {
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
+      processManagers.push(serverProcessManager);
       await startApplication(serverProcessManager);
-    }, 60e3);
+    }, 2 * 60e3);
 
     beforeEach(async () => {
       cdpClient = await page.target().createCDPSession();
@@ -203,9 +202,10 @@ describe('ui:create:react', () => {
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
+      processManagers.push(serverProcessManager);
       await deactivateEnvironmentFile(projectName);
       await startApplication(serverProcessManager);
-    }, 60e3);
+    }, 2 * 60e3);
 
     afterAll(async () => {
       await restoreEnvironmentFile(projectName);
