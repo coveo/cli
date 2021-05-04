@@ -154,31 +154,35 @@ describe('ui', () => {
         await serverProcessManager.killAllProcesses();
       }, 5e3);
 
-      it('should not have any ESLint warning or error', async () => {
-        const serverTerminal = new Terminal(
-          'npm',
-          ['run', 'start'],
-          {
-            cwd: getProjectPath(projectName),
-          },
-          serverProcessManager,
-          'vue-server'
-        );
-        const eslintErrorSpy = jest.fn();
-        const serverExitCondition = serverTerminal
-          .when(/App running at:/)
-          .on('stdout')
-          .do()
-          .once();
+      it(
+        'should not have any ESLint warning or error',
+        async () => {
+          const serverTerminal = new Terminal(
+            'npm',
+            ['run', 'start'],
+            {
+              cwd: getProjectPath(projectName),
+            },
+            serverProcessManager,
+            'vue-server'
+          );
+          const eslintErrorSpy = jest.fn();
+          const serverExitCondition = serverTerminal
+            .when(/App running at:/)
+            .on('stdout')
+            .do()
+            .once();
 
-        await serverTerminal
-          .when(/✖ \d+ problems \(\d+ errors, \d+ warnings\)/)
-          .on('stdout')
-          .do(eslintErrorSpy)
-          .until(serverExitCondition);
+          await serverTerminal
+            .when(/✖ \d+ problems \(\d+ errors, \d+ warnings\)/)
+            .on('stdout')
+            .do(eslintErrorSpy)
+            .until(serverExitCondition);
 
-        expect(eslintErrorSpy).not.toBeCalled();
-      });
+          expect(eslintErrorSpy).not.toBeCalled();
+        },
+        5 * 60e3
+      );
     });
 
     it.todo('should create a Vue.js project with a custom preset');
