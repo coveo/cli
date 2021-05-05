@@ -1,7 +1,8 @@
 import {Rule, SchematicContext, Tree} from '@angular-devkit/schematics';
 import {normalize} from '@angular-devkit/core';
 import {CoveoSchema} from '../../schema';
-import {EOL} from 'os';
+
+const commentRegExp = /\/\*.*\*\//;
 
 export function updateTsConfig(_options: CoveoSchema): Rule {
   return (tree: Tree, _context: SchematicContext) => {
@@ -10,15 +11,17 @@ export function updateTsConfig(_options: CoveoSchema): Rule {
       return;
     }
     try {
-      const fileArray = tsconfigBuffer.toString().split(EOL);
-      const tsconfigcomment = fileArray[0];
-      const tsConfig = JSON.parse(fileArray.slice(1).join(EOL));
+      const originalTsConfig = tsconfigBuffer.toString();
+      const tsConfigComment =
+        originalTsConfig.match(commentRegExp)?.[0]?.trim() ?? '';
+      const tsConfig = JSON.parse(
+        originalTsConfig.replace(commentRegExp, '').trim()
+      );
 
       tsConfig.compilerOptions.skipLibCheck = true;
-
       tree.overwrite(
         normalize('./tsconfig.json'),
-        `${tsconfigcomment}
+        `${tsConfigComment}
 ${JSON.stringify(tsConfig, null, 4)}`
       );
     } catch (error) {
