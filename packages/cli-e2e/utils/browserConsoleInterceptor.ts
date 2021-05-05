@@ -1,8 +1,8 @@
 import {CDPSession, Page} from 'puppeteer';
 import {FileLogger} from './terminal/terminal';
-import {Protocol} from 'devtools-protocol';
+import type Protocol from 'devtools-protocol';
 
-type ConsoleAPICalledEventType = Protocol.Runtime.ConsoleAPICalledEventType;
+type ConsoleAPICalledEventType = Protocol.Runtime.ConsoleAPICalledEvent['type'];
 type ConsoleAPICalledEvent = Protocol.Runtime.ConsoleAPICalledEvent;
 
 export class BrowserConsoleInterceptor {
@@ -29,10 +29,7 @@ export class BrowserConsoleInterceptor {
   }
 
   public async startSession(
-    typesToIntercept: ConsoleAPICalledEventType[] = [
-      Protocol.Runtime.ConsoleAPICalledEventType.Error,
-      Protocol.Runtime.ConsoleAPICalledEventType.Warning,
-    ]
+    typesToIntercept: ConsoleAPICalledEventType[] = ['error', 'warning']
   ) {
     const client = await this.getClient();
     client.on('Runtime.consoleAPICalled', (message: ConsoleAPICalledEvent) =>
