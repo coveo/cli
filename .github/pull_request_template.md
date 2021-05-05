@@ -18,11 +18,11 @@
 
 ## Testing
 
-- [] Unit Tests:
+- [ ] Unit Tests:
     <!-- Did you write unit tests for your feature? If not, explains why?  -->
-- [] Functionnal Tests:
+- [ ] Functionnal Tests:
     <!-- Did you write functionnal tests for your feature? If not, explains why?  -->
-- [] Manual Tests:
+- [ ] Manual Tests:
     <!-- How did you test your changeset?  -->
 
 <!-- For Coveo Employees only. Fill and uncomment this section.
