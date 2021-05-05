@@ -12,11 +12,14 @@ jobs:
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
     steps:
+      - name: Setup runner
+        # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
+        run: echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: '14'
-      - name: Setup
+      - name: Setup repo
         run: npm run setup
       - name: Check linting
         run: npm run lint
