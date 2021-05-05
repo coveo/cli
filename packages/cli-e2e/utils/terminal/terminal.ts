@@ -55,7 +55,7 @@ export class Terminal {
   }
 }
 
-class FileLogger {
+export class FileLogger {
   public stdout: WriteStream;
   public stderr: WriteStream;
   constructor(name: string) {

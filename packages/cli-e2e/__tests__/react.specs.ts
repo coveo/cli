@@ -1,20 +1,14 @@
 import retry from 'async-retry';
 
-import type {
-  HTTPRequest,
-  Browser,
-  Page,
-  ConsoleMessageType,
-  CDPSession,
-} from 'puppeteer';
+import type {HTTPRequest, Browser, Page} from 'puppeteer';
 
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {getProjectPath, setupUIProject} from '../utils/cli';
 import {isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
-import type {Runtime} from 'node:inspector';
 import {Terminal} from '../utils/terminal/terminal';
 import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
+import {ConsoleInterceptor} from '../utils/consoleInterceptor';
 
 describe('ui:create:react', () => {
   let browser: Browser;
@@ -91,7 +85,7 @@ describe('ui:create:react', () => {
   describe('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
-    let cdpClient: CDPSession;
+    let consoleInterceptor: ConsoleInterceptor;
     const searchboxSelector = 'div.App .MuiAutocomplete-root input';
 
     beforeAll(async () => {
@@ -101,8 +95,8 @@ describe('ui:create:react', () => {
     }, 2 * 60e3);
 
     beforeEach(async () => {
-      cdpClient = await page.target().createCDPSession();
-      await cdpClient.send('Runtime.enable');
+      consoleInterceptor = new ConsoleInterceptor(page, projectName);
+      await consoleInterceptor.startSession();
 
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);
@@ -111,8 +105,8 @@ describe('ui:create:react', () => {
 
     afterEach(async () => {
       page.removeAllListeners('request');
-      cdpClient.removeAllListeners('Runtime.consoleAPICalled');
       interceptedRequests = [];
+      await consoleInterceptor.endSession();
     });
 
     afterAll(async () => {
@@ -120,33 +114,11 @@ describe('ui:create:react', () => {
     }, 5e3);
 
     it('should not contain console errors nor warnings', async () => {
-      const interceptedConsoleMessages: string[] = [];
-      const deniedConsoleMessageTypes: ConsoleMessageType[] = [
-        'error',
-        'warning',
-      ];
-
-      cdpClient.on(
-        'Runtime.consoleAPICalled',
-        (message: Runtime.ConsoleAPICalledEventDataType) => {
-          if (
-            deniedConsoleMessageTypes.indexOf(
-              message.type as ConsoleMessageType
-            ) > -1
-          ) {
-            message.args.forEach((arg) => {
-              arg.description &&
-                interceptedConsoleMessages.push(arg.description);
-            });
-          }
-        }
-      );
-
       await page.goto(searchPageEndpoint, {
         waitUntil: 'networkidle0',
       });
 
-      expect(interceptedConsoleMessages).toEqual([]);
+      expect(consoleInterceptor.interceptedMessages).toEqual([]);
     });
 
     it('should contain a search page section', async () => {
