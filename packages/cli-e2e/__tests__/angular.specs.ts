@@ -14,7 +14,7 @@ import {isSearchRequest} from '../utils/platform';
 import {EOL} from 'os';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
-import {ConsoleInterceptor} from '../utils/consoleInterceptor';
+import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 
 describe('ui:create:angular', () => {
   let browser: Browser;
@@ -100,7 +100,7 @@ describe('ui:create:angular', () => {
   describe('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
-    let consoleInterceptor: ConsoleInterceptor;
+    let consoleInterceptor: BrowserConsoleInterceptor;
     const searchboxSelector = 'app-search-page app-search-box input';
 
     beforeAll(async () => {
@@ -110,7 +110,7 @@ describe('ui:create:angular', () => {
     }, 60e3);
 
     beforeEach(async () => {
-      consoleInterceptor = new ConsoleInterceptor(page, projectName);
+      consoleInterceptor = new BrowserConsoleInterceptor(page, projectName);
       await consoleInterceptor.startSession();
 
       page.on('request', (request: HTTPRequest) => {

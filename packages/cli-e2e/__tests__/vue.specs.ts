@@ -13,7 +13,7 @@ import {EOL} from 'os';
 import {ProcessManager} from '../utils/processManager';
 import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
 import {Terminal} from '../utils/terminal/terminal';
-import {ConsoleInterceptor} from '../utils/consoleInterceptor';
+import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 
 describe('ui:create:vue', () => {
   let browser: Browser;
@@ -98,7 +98,7 @@ describe('ui:create:vue', () => {
   describe('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
-    let consoleInterceptor: ConsoleInterceptor;
+    let consoleInterceptor: BrowserConsoleInterceptor;
     const searchboxSelector = '#search-page .autocomplete input';
 
     beforeAll(async () => {
@@ -108,7 +108,7 @@ describe('ui:create:vue', () => {
     }, 2 * 60e3);
 
     beforeEach(async () => {
-      consoleInterceptor = new ConsoleInterceptor(page, projectName);
+      consoleInterceptor = new BrowserConsoleInterceptor(page, projectName);
       await consoleInterceptor.startSession();
 
       page.on('request', (request: HTTPRequest) => {

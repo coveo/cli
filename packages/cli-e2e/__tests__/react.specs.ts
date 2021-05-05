@@ -8,7 +8,7 @@ import {isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
-import {ConsoleInterceptor} from '../utils/consoleInterceptor';
+import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 
 describe('ui:create:react', () => {
   let browser: Browser;
@@ -85,7 +85,7 @@ describe('ui:create:react', () => {
   describe('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
-    let consoleInterceptor: ConsoleInterceptor;
+    let consoleInterceptor: BrowserConsoleInterceptor;
     const searchboxSelector = 'div.App .MuiAutocomplete-root input';
 
     beforeAll(async () => {
@@ -95,7 +95,7 @@ describe('ui:create:react', () => {
     }, 2 * 60e3);
 
     beforeEach(async () => {
-      consoleInterceptor = new ConsoleInterceptor(page, projectName);
+      consoleInterceptor = new BrowserConsoleInterceptor(page, projectName);
       await consoleInterceptor.startSession();
 
       page.on('request', (request: HTTPRequest) => {
