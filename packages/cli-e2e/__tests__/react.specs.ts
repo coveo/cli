@@ -7,71 +7,104 @@ import {getProjectPath, setupUIProject} from '../utils/cli';
 import {isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
+import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
 
-describe('ui', () => {
-  describe('create:react', () => {
-    let browser: Browser;
-    let processManager: ProcessManager;
-    // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
-    const clientPort = '3000';
-    const projectName = `${process.env.GITHUB_ACTION}-react-project`;
-    const searchPageEndpoint = `http://localhost:${clientPort}`;
-    const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
+describe('ui:create:react', () => {
+  let browser: Browser;
+  const processManagers: ProcessManager[] = [];
+  let page: Page;
+  const oldEnv = process.env;
+  const projectName = `${process.env.GITHUB_ACTION}-react-project`;
+  // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
+  const clientPort = '3000';
+  const searchPageEndpoint = `http://localhost:${clientPort}`;
+  const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
+
+  const buildApplication = async (processManager: ProcessManager) => {
+    const buildTerminal = setupUIProject(
+      processManager,
+      'ui:create:react',
+      projectName
+    );
+
+    await Promise.race([
+      buildTerminal.when('exit').on('process').do().once(),
+      buildTerminal
+        .when(/Happy hacking !/)
+        .on('stdout')
+        .do()
+        .once(),
+    ]);
+  };
+
+  const startApplication = async (processManager: ProcessManager) => {
+    const serverTerminal = new Terminal(
+      'npm',
+      ['run', 'start'],
+      {
+        cwd: getProjectPath(projectName),
+      },
+      processManager,
+      'react-server'
+    );
+
+    await serverTerminal
+      .when(/You can now view .*-react-project in the browser/)
+      .on('stdout')
+      .do()
+      .once();
+  };
+
+  beforeAll(async () => {
+    const buildProcessManager = new ProcessManager();
+    processManagers.push(buildProcessManager);
+    browser = await getNewBrowser();
+    await buildApplication(buildProcessManager);
+    await buildProcessManager.killAllProcesses();
+  }, 15 * 60e3);
+
+  beforeEach(async () => {
+    jest.resetModules();
+    process.env = {...oldEnv};
+    page = await openNewPage(browser, page);
+  });
+
+  afterEach(async () => {
+    await captureScreenshots(browser);
+  });
+
+  afterAll(async () => {
+    process.env = oldEnv;
+    await browser.close();
+    await Promise.all(
+      processManagers.map((manager) => manager.killAllProcesses())
+    );
+  });
+
+  describe('when the project is configured correctly', () => {
+    let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
-    let page: Page;
     const searchboxSelector = 'div.App .MuiAutocomplete-root input';
 
     beforeAll(async () => {
-      browser = await getNewBrowser();
-      processManager = new ProcessManager();
-      const buildTerminal = setupUIProject(
-        processManager,
-        'ui:create:react',
-        projectName
-      );
-
-      await Promise.race([
-        buildTerminal.when('exit').on('process').do().once(),
-        buildTerminal
-          .when(/Happy hacking !/)
-          .on('stdout')
-          .do()
-          .once(),
-      ]);
-
-      const serverTerminal = new Terminal(
-        'npm',
-        ['run', 'start'],
-        {
-          cwd: getProjectPath(projectName),
-        },
-        processManager,
-        'react-server'
-      );
-
-      await serverTerminal
-        .when(/You can now view .*-react-project in the browser/)
-        .on('stdout')
-        .do()
-        .once();
-    }, 15 * 60e3);
+      serverProcessManager = new ProcessManager();
+      processManagers.push(serverProcessManager);
+      await startApplication(serverProcessManager);
+    }, 2 * 60e3);
 
     beforeEach(async () => {
-      page = await openNewPage(browser, page);
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);
       });
     });
 
     afterEach(async () => {
-      await captureScreenshots(browser);
       page.removeAllListeners('request');
       interceptedRequests = [];
     });
 
     afterAll(async () => {
-      await browser.close();
-      await processManager.killAllProcesses();
+      await serverProcessManager.killAllProcesses();
     }, 5e3);
 
     it('should contain a search page section', async () => {
@@ -119,5 +152,31 @@ describe('ui', () => {
     });
   });
 
-  it.todo('should redirect the user to an error page if invalid env file');
+  describe('when the required environment variables are missing', () => {
+    let serverProcessManager: ProcessManager;
+    const errorMessageSelector = 'div.container';
+
+    beforeAll(async () => {
+      serverProcessManager = new ProcessManager();
+      processManagers.push(serverProcessManager);
+      await deactivateEnvironmentFile(projectName);
+      await startApplication(serverProcessManager);
+    }, 2 * 60e3);
+
+    afterAll(async () => {
+      await restoreEnvironmentFile(projectName);
+      await serverProcessManager.killAllProcesses();
+    }, 5e3);
+
+    it('should redirect the user to an error page', async () => {
+      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      const pageErrorMessage = await page.$eval(
+        errorMessageSelector,
+        (el) => el.textContent
+      );
+      expect(pageErrorMessage).toContain(
+        'You should have a valid .env file at the root of this project'
+      );
+    });
+  });
 });
