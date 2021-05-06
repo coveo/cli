@@ -42,11 +42,11 @@ export class Terminal {
   }
 
   private logIntoFile(fileLogger: FileLogger) {
-    const addTimestampToFile = (stream: WriteStream) => () =>
+    const appendTimestamp = (stream: WriteStream) => () =>
       stream.write(fileLogger.getTimestamp());
 
-    this.childProcess.stdout.on('data', addTimestampToFile(fileLogger.stdout));
-    this.childProcess.stderr.on('data', addTimestampToFile(fileLogger.stderr));
+    this.childProcess.stdout.on('data', appendTimestamp(fileLogger.stdout));
+    this.childProcess.stderr.on('data', appendTimestamp(fileLogger.stderr));
 
     this.childProcess.stdout.pipe(fileLogger.stdout, {end: true});
     this.childProcess.stderr.pipe(fileLogger.stderr, {end: true});
