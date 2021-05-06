@@ -15,7 +15,8 @@ export class FileLogger {
 
   private formatTime(hours: number, minutes: number, seconds: number): string {
     const formatter = (n: number) => `0${n}`.slice(-2);
-    return [hours, minutes, seconds].map(formatter).join(':');
+    const time = [hours, minutes, seconds].map(formatter).join(':');
+    return `[${time}] `;
   }
 
   public getTimestamp() {
