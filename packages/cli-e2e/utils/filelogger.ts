@@ -12,4 +12,17 @@ export class FileLogger {
     this.stdout = createWriteStream(join(dir, 'stdout'));
     this.stderr = createWriteStream(join(dir, 'stderr'));
   }
+
+  private formatTime(hours: number, minutes: number, seconds: number): string {
+    const formatter = (n: number) => `0${n}`.slice(-2);
+    return [hours, minutes, seconds].map(formatter).join(':');
+  }
+
+  public getTimestamp() {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+    return this.formatTime(hours, minutes, seconds);
+  }
 }
