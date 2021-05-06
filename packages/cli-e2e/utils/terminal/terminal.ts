@@ -8,7 +8,7 @@ import type {When} from './when';
 import {ProcessManager} from '../processManager';
 import {Orchestrator} from './orchestrator';
 import {FileLogger} from '../filelogger';
-import {WriteStream} from 'node:fs';
+import {WriteStream} from 'fs';
 
 /**
  * An helper class to manipulate processes that interact with a TTY.
