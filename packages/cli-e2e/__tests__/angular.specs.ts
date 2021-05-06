@@ -14,6 +14,7 @@ import {isSearchRequest} from '../utils/platform';
 import {EOL} from 'os';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
+import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 
 describe('ui:create:angular', () => {
   let browser: Browser;
@@ -76,7 +77,7 @@ describe('ui:create:angular', () => {
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
     await buildProcessManager.killAllProcesses();
-  }, 7 * 60e3);
+  }, 15 * 60e3);
 
   beforeEach(async () => {
     jest.resetModules();
@@ -99,15 +100,19 @@ describe('ui:create:angular', () => {
   describe('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
+    let consoleInterceptor: BrowserConsoleInterceptor;
     const searchboxSelector = 'app-search-page app-search-box input';
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
       await startApplication(serverProcessManager);
-    }, 60e3);
+    }, 5 * 60e3);
 
     beforeEach(async () => {
+      consoleInterceptor = new BrowserConsoleInterceptor(page, projectName);
+      await consoleInterceptor.startSession();
+
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);
       });
@@ -116,11 +121,20 @@ describe('ui:create:angular', () => {
     afterEach(async () => {
       page.removeAllListeners('request');
       interceptedRequests = [];
+      await consoleInterceptor.endSession();
     });
 
     afterAll(async () => {
       await serverProcessManager.killAllProcesses();
     }, 5e3);
+
+    it('should not contain console errors nor warnings', async () => {
+      await page.goto(searchPageEndpoint, {
+        waitUntil: 'networkidle0',
+      });
+
+      expect(consoleInterceptor.interceptedMessages).toEqual([]);
+    });
 
     it('should contain a search page section', async () => {
       await page.goto(searchPageEndpoint, {
@@ -176,7 +190,7 @@ describe('ui:create:angular', () => {
       processManagers.push(serverProcessManager);
       await deactivateEnvironmentFile(projectName);
       await startApplication(serverProcessManager);
-    }, 60e3);
+    }, 5 * 60e3);
 
     afterAll(async () => {
       await restoreEnvironmentFile(projectName);

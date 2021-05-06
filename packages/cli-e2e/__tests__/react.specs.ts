@@ -8,6 +8,7 @@ import {isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
+import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 
 describe('ui:create:react', () => {
   let browser: Browser;
@@ -84,6 +85,7 @@ describe('ui:create:react', () => {
   describe('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
+    let consoleInterceptor: BrowserConsoleInterceptor;
     const searchboxSelector = 'div.App .MuiAutocomplete-root input';
 
     beforeAll(async () => {
@@ -93,6 +95,9 @@ describe('ui:create:react', () => {
     }, 2 * 60e3);
 
     beforeEach(async () => {
+      consoleInterceptor = new BrowserConsoleInterceptor(page, projectName);
+      await consoleInterceptor.startSession();
+
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);
       });
@@ -101,11 +106,20 @@ describe('ui:create:react', () => {
     afterEach(async () => {
       page.removeAllListeners('request');
       interceptedRequests = [];
+      await consoleInterceptor.endSession();
     });
 
     afterAll(async () => {
       await serverProcessManager.killAllProcesses();
     }, 5e3);
+
+    it('should not contain console errors nor warnings', async () => {
+      await page.goto(searchPageEndpoint, {
+        waitUntil: 'networkidle0',
+      });
+
+      expect(consoleInterceptor.interceptedMessages).toEqual([]);
+    });
 
     it('should contain a search page section', async () => {
       await page.goto(searchPageEndpoint, {
