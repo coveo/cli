@@ -1,6 +1,6 @@
 import {CDPSession, Page} from 'puppeteer';
-import {FileLogger} from './terminal/terminal';
 import type Protocol from 'devtools-protocol';
+import {FileLogger} from './filelogger';
 
 type ConsoleAPICalledEventType = Protocol.Runtime.ConsoleAPICalledEvent['type'];
 type ConsoleAPICalledEvent = Protocol.Runtime.ConsoleAPICalledEvent;

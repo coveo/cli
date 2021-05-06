@@ -7,11 +7,7 @@ import type {When} from './when';
 
 import {ProcessManager} from '../processManager';
 import {Orchestrator} from './orchestrator';
-
-import {mkdirSync} from 'fs-extra';
-import {join} from 'path';
-import {LOGS_PATH} from '../browser';
-import {createWriteStream, WriteStream} from 'fs';
+import {FileLogger} from '../filelogger';
 
 /**
  * An helper class to manipulate processes that interact with a TTY.
@@ -52,16 +48,5 @@ export class Terminal {
    */
   public when(conditionOrCallback: Condition): When {
     return this.orchestrator.getNewHandle().when(conditionOrCallback);
-  }
-}
-
-export class FileLogger {
-  public stdout: WriteStream;
-  public stderr: WriteStream;
-  constructor(name: string) {
-    const dir = join(LOGS_PATH, name);
-    mkdirSync(dir, {recursive: true});
-    this.stdout = createWriteStream(join(dir, 'stdout'));
-    this.stderr = createWriteStream(join(dir, 'stderr'));
   }
 }
