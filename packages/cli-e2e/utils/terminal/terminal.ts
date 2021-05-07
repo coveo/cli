@@ -8,6 +8,7 @@ import type {When} from './when';
 import {ProcessManager} from '../processManager';
 import {Orchestrator} from './orchestrator';
 import {FileLogger} from '../filelogger';
+import {TimeStamper} from '../timeStamper';
 
 /**
  * An helper class to manipulate processes that interact with a TTY.
@@ -35,9 +36,18 @@ export class Terminal {
     const fileLogger = new FileLogger(
       debugName ?? `${command}-${args?.join('-')}`.replace(/[^\w\d]/g, '-')
     );
-    this.childProcess.stdout.pipe(fileLogger.stdout, {end: true});
-    this.childProcess.stderr.pipe(fileLogger.stdout, {end: true});
+    this.logIntoFile(fileLogger);
     this.orchestrator = new Orchestrator(this.childProcess);
+  }
+
+  private logIntoFile(fileLogger: FileLogger) {
+    const timestamper = new TimeStamper();
+    this.childProcess.stdout
+      .pipe(timestamper)
+      .pipe(fileLogger.stdout, {end: true});
+    this.childProcess.stderr
+      .pipe(timestamper)
+      .pipe(fileLogger.stderr, {end: true});
   }
 
   /**
