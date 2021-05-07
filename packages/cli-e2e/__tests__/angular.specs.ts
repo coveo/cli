@@ -77,7 +77,7 @@ describe('ui:create:angular', () => {
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
     await buildProcessManager.killAllProcesses();
-  }, 15 * 60e3);
+  }, 20 * 60e3);
 
   beforeEach(async () => {
     jest.resetModules();
@@ -107,7 +107,7 @@ describe('ui:create:angular', () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
       await startApplication(serverProcessManager);
-    }, 5 * 60e3);
+    }, 15 * 60e3);
 
     beforeEach(async () => {
       consoleInterceptor = new BrowserConsoleInterceptor(page, projectName);
@@ -130,7 +130,7 @@ describe('ui:create:angular', () => {
 
     it('should not contain console errors nor warnings', async () => {
       await page.goto(searchPageEndpoint, {
-        waitUntil: 'networkidle0',
+        waitUntil: 'networkidle2',
       });
 
       expect(consoleInterceptor.interceptedMessages).toEqual([]);
@@ -190,7 +190,7 @@ describe('ui:create:angular', () => {
       processManagers.push(serverProcessManager);
       await deactivateEnvironmentFile(projectName);
       await startApplication(serverProcessManager);
-    }, 5 * 60e3);
+    }, 15 * 60e3);
 
     afterAll(async () => {
       await restoreEnvironmentFile(projectName);
