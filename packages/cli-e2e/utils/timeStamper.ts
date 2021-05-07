@@ -3,9 +3,9 @@ import {Transform} from 'stream';
 export class TimeStamper extends Transform {
   constructor() {
     super({
-      transform(chunk, encoding, callback) {
-        this.push(`[${TimeStamper.getTimestamp()}] `, encoding);
-        this.push(chunk, encoding);
+      transform(chunk, _encoding, callback) {
+        this.push(`[${TimeStamper.getTimestamp()}] `);
+        this.push(chunk);
         callback();
       },
     });
