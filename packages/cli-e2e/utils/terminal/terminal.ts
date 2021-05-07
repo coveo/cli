@@ -41,13 +41,8 @@ export class Terminal {
   }
 
   private logIntoFile(fileLogger: FileLogger) {
-    const timestamper = new TimeStamper();
-    this.childProcess.stdout
-      .pipe(timestamper)
-      .pipe(fileLogger.stdout, {end: true});
-    this.childProcess.stderr
-      .pipe(timestamper)
-      .pipe(fileLogger.stderr, {end: true});
+    this.childProcess.stdout.pipe(new TimeStamper()).pipe(fileLogger.stdout);
+    this.childProcess.stderr.pipe(new TimeStamper()).pipe(fileLogger.stderr);
   }
 
   /**
