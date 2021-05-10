@@ -12,9 +12,9 @@
   "devDependencies": {
     "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
-    "@commitlint/config-conventional": "^11.0.0",
-    "@commitlint/config-lerna-scopes": "^11.0.0",
-    "@commitlint/lint": "^11.0.0",
+    "@commitlint/config-conventional": "^12.1.1",
+    "@commitlint/config-lerna-scopes": "^12.1.1",
+    "@commitlint/lint": "^12.1.1",
     "@oclif/dev-cli": "^1.26.0",
     "@types/node": "^10",
     "@typescript-eslint/eslint-plugin": "^4.14.0",
