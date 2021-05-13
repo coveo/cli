@@ -7,7 +7,7 @@ const app = express();
 
 app.use(express.json());
 
-app.get<Record<string, never>, any, {token: string}>(
+app.get<Record<string, string>, any, {token: string}>(
   '/token',
   environmentCheck,
   ensureTokenGenerated,
