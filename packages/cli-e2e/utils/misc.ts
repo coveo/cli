@@ -5,15 +5,24 @@ export const commitProject = async (
   processManager: ProcessManager,
   projectName: string
 ) => {
-  const gitTerminal = new Terminal(
+  const gitAdd = new Terminal(
     'git',
-    ['add', '.', '&&', 'git', 'commit', '-m', '"e2e first commit"'],
+    ['add', '.'],
+    {cwd: projectName},
+    processManager,
+    `add-${projectName}`
+  );
+
+  const gitCommit = new Terminal(
+    'git',
+    ['commit', '-m', '"e2e first commit"'],
     {cwd: projectName},
     processManager,
     `commit-${projectName}`
   );
 
-  await gitTerminal.when('exit').on('process').do().once();
+  await gitAdd.when('exit').on('process').do().once();
+  await gitCommit.when('exit').on('process').do().once();
 };
 
 export const undoCommit = async (
@@ -22,7 +31,7 @@ export const undoCommit = async (
 ) => {
   const gitTerminal = new Terminal(
     'git',
-    ['git', 'reset', 'HEAD~'],
+    ['reset', 'HEAD~'],
     {cwd: projectName},
     processManager,
     `undo-${projectName}`

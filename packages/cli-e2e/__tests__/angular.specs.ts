@@ -100,15 +100,13 @@ describe('ui:create:angular', () => {
 
   describe('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
-    let gitProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
     let consoleInterceptor: BrowserConsoleInterceptor;
     const searchboxSelector = 'app-search-page app-search-box input';
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
-      gitProcessManager = new ProcessManager();
-      processManagers.concat([serverProcessManager, gitProcessManager]);
+      processManagers.push(serverProcessManager);
       await startApplication(serverProcessManager);
     }, 15 * 60e3);
 
@@ -128,9 +126,8 @@ describe('ui:create:angular', () => {
     });
 
     afterAll(async () => {
-      await undoCommit(gitProcessManager, getProjectPath(projectName));
+      await undoCommit(serverProcessManager, projectName);
       await serverProcessManager.killAllProcesses();
-      await gitProcessManager.killAllProcesses();
     }, 5e3);
 
     it('should not contain console errors nor warnings', async () => {
@@ -187,7 +184,7 @@ describe('ui:create:angular', () => {
 
     it('should be commited without lint-stage errors', async () => {
       await expect(
-        commitProject(gitProcessManager, getProjectPath(projectName))
+        commitProject(serverProcessManager, projectName)
       ).resolves.not.toThrow();
     });
   });
