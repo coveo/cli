@@ -31,7 +31,9 @@ const commitMessage = fs.readFileSync(commitMessageFilename, {
 });
 
 function commitHasIssue(commitMessage) {
-  const urlIssueRegex = new RegExp(urlBase + issueRegex.source);
+  const urlIssueRegex = new RegExp(
+    urlBase.replace(/\./g, '\\.') + issueRegex.source
+  );
   return commitMessage.search(urlIssueRegex) !== -1;
 }
 
