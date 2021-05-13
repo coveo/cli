@@ -9,6 +9,7 @@ import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
+import {commitProject, undoCommit} from '../utils/misc';
 
 describe('ui:create:react', () => {
   let browser: Browser;
@@ -84,13 +85,15 @@ describe('ui:create:react', () => {
 
   describe('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
+    let gitProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
     let consoleInterceptor: BrowserConsoleInterceptor;
     const searchboxSelector = 'div.App .MuiAutocomplete-root input';
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
-      processManagers.push(serverProcessManager);
+      gitProcessManager = new ProcessManager();
+      processManagers.concat([serverProcessManager, gitProcessManager]);
       await startApplication(serverProcessManager);
     }, 2 * 60e3);
 
@@ -110,7 +113,9 @@ describe('ui:create:react', () => {
     });
 
     afterAll(async () => {
+      await undoCommit(gitProcessManager, getProjectPath(projectName));
       await serverProcessManager.killAllProcesses();
+      await gitProcessManager.killAllProcesses();
     }, 5e3);
 
     it('should not contain console errors nor warnings', async () => {
@@ -163,6 +168,12 @@ describe('ui:create:react', () => {
       await retry(async () => {
         expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
       });
+    });
+
+    it('should be commited without lint-stage errors', async () => {
+      await expect(
+        commitProject(gitProcessManager, getProjectPath(projectName))
+      ).resolves.not.toThrow();
     });
   });
 

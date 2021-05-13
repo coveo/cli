@@ -14,6 +14,7 @@ import {ProcessManager} from '../utils/processManager';
 import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
+import {commitProject, undoCommit} from '../utils/misc';
 
 describe('ui:create:vue', () => {
   let browser: Browser;
@@ -97,13 +98,15 @@ describe('ui:create:vue', () => {
 
   describe('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
+    let gitProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
     let consoleInterceptor: BrowserConsoleInterceptor;
     const searchboxSelector = '#search-page .autocomplete input';
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
-      processManagers.push(serverProcessManager);
+      gitProcessManager = new ProcessManager();
+      processManagers.concat([serverProcessManager, gitProcessManager]);
       await startApplication(serverProcessManager);
     }, 2 * 60e3);
 
@@ -123,7 +126,9 @@ describe('ui:create:vue', () => {
     });
 
     afterAll(async () => {
+      await undoCommit(gitProcessManager, getProjectPath(projectName));
       await serverProcessManager.killAllProcesses();
+      await gitProcessManager.killAllProcesses();
     }, 5e3);
 
     it('should not contain console errors nor warnings', async () => {
@@ -176,6 +181,12 @@ describe('ui:create:vue', () => {
       await retry(async () => {
         expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
       });
+    });
+
+    it('should be commited without lint-stage errors', async () => {
+      await expect(
+        commitProject(gitProcessManager, getProjectPath(projectName))
+      ).resolves.not.toThrow();
     });
   });
 
