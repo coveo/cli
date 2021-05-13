@@ -111,7 +111,11 @@ describe('ui:create:react', () => {
     });
 
     afterAll(async () => {
-      await undoCommit(serverProcessManager, projectName);
+      await undoCommit(
+        serverProcessManager,
+        getProjectPath(projectName),
+        projectName
+      );
       await serverProcessManager.killAllProcesses();
     }, 5e3);
 
@@ -169,7 +173,11 @@ describe('ui:create:react', () => {
 
     it('should be commited without lint-stage errors', async () => {
       await expect(
-        commitProject(serverProcessManager, projectName)
+        commitProject(
+          serverProcessManager,
+          getProjectPath(projectName),
+          projectName
+        )
       ).resolves.not.toThrow();
     });
   });
