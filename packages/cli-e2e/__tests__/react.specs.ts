@@ -120,7 +120,7 @@ describe('ui:create:react', () => {
 
     it('should not contain console errors nor warnings', async () => {
       await page.goto(searchPageEndpoint, {
-        waitUntil: 'networkidle0',
+        waitUntil: 'networkidle2',
       });
 
       expect(consoleInterceptor.interceptedMessages).toEqual([]);
