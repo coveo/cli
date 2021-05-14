@@ -15,6 +15,9 @@ module.exports = (api, options, rootOptions) => {
       dotenv: '^9.0.2',
       'fs-extra': '^10.0.0',
     },
+    'lint-staged': {
+      'server/*.{js,ts}': ['eslint'],
+    },
   });
 
   api.render('./template', {

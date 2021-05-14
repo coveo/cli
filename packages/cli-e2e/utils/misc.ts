@@ -1,12 +1,14 @@
 import {ProcessManager} from './processManager';
+import {DoCallback} from './terminal/do';
 import {Terminal} from './terminal/terminal';
 
 export const commitProject = async (
   processManager: ProcessManager,
   pathToRepo: string,
-  projectName: string
+  projectName: string,
+  errorCallback: DoCallback
 ) => {
-  const gitAdd = new Terminal(
+  const gitAddTerminal = new Terminal(
     'git',
     ['add', '.'],
     {cwd: pathToRepo},
@@ -14,7 +16,9 @@ export const commitProject = async (
     `add-${projectName}`
   );
 
-  const gitCommit = new Terminal(
+  await gitAddTerminal.when('exit').on('process').do().once();
+
+  const gitCommitTerminal = new Terminal(
     'git',
     ['commit', '-m', '"e2e first commit"'],
     {cwd: pathToRepo},
@@ -22,8 +26,17 @@ export const commitProject = async (
     `commit-${projectName}`
   );
 
-  await gitAdd.when('exit').on('process').do().once();
-  await gitCommit.when('exit').on('process').do().once();
+  const gitCommitExitCondition = gitCommitTerminal
+    .when('exit')
+    .on('process')
+    .do()
+    .once();
+
+  await gitCommitTerminal
+    .when(/✖ \d+ problems \(\d+ errors, \d+ warnings\)/)
+    .on('stderr')
+    .do(errorCallback)
+    .until(gitCommitExitCondition);
 };
 
 export const undoCommit = async (

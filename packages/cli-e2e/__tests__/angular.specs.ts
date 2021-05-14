@@ -187,14 +187,17 @@ describe('ui:create:angular', () => {
     });
 
     it('should be commited without lint-stage errors', async () => {
-      await expect(
-        commitProject(
-          serverProcessManager,
-          getProjectPath(projectName),
-          projectName
-        )
-      ).resolves.not.toThrow();
-    });
+      const eslintErrorSpy = jest.fn();
+
+      commitProject(
+        serverProcessManager,
+        getProjectPath(projectName),
+        projectName,
+        eslintErrorSpy
+      );
+
+      expect(eslintErrorSpy).not.toBeCalled();
+    }, 10e3);
   });
 
   describe('when the required environment variables are missing', () => {
