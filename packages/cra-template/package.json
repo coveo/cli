@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cra-template",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "scripts": {
     "lint": "prettier --check . && eslint .",
     "npm:bump:template": "npm --no-git-tag-version version",
@@ -43,5 +43,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "d30809dce938941df6019bf29e6544aa58951cfe"
 }
