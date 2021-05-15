@@ -1,4 +1,5 @@
 import * as express from 'express';
+import * as cors from 'cors';
 import {ensureTokenGenerated} from './middlewares/searchToken';
 import {errorHandler} from './middlewares/errorHandler';
 import {environmentCheck} from './middlewares/environmentCheck';
@@ -6,6 +7,7 @@ import {environmentCheck} from './middlewares/environmentCheck';
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 app.get<{}, any, {token: string}>(
   '/token',
