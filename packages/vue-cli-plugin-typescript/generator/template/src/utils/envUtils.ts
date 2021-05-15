@@ -1,9 +1,12 @@
+import {config} from 'dotenv';
+config();
+
 interface ValidEnvironment extends NodeJS.ProcessEnv {
   VUE_APP_PLATFORM_URL: string;
   VUE_APP_ORGANIZATION_ID: string;
   VUE_APP_API_KEY: string;
   VUE_APP_USER_EMAIL: string;
-  VUE_APP_TOKEN_ENDPOINT: string;
+  VUE_APP_SERVER_PORT: string;
 }
 
 /**
@@ -17,9 +20,22 @@ export function isEnvValid(env: NodeJS.ProcessEnv): env is ValidEnvironment {
     'VUE_APP_ORGANIZATION_ID',
     'VUE_APP_API_KEY',
     'VUE_APP_USER_EMAIL',
-    'VUE_APP_TOKEN_ENDPOINT',
+    'VUE_APP_SERVER_PORT',
   ];
   const reducer = (previousValue: boolean, currentValue: string) =>
     previousValue && env[currentValue] !== undefined;
   return variables.reduce(reducer, true);
+}
+
+function getEndpointToLocalServer() {
+  if (!process.env.VUE_APP_SERVER_PORT) {
+    throw new Error('Undefined "VUE_APP_SERVER_PORT" environment variable');
+  }
+  const port = process.env.VUE_APP_SERVER_PORT;
+  const pathname = '/token';
+  return `http://localhost:${port}${[pathname]}`;
+}
+
+export function getTokenEndpoint() {
+  return process.env.VUE_APP_TOKEN_ENDPOINT || getEndpointToLocalServer();
 }
