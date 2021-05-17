@@ -29,7 +29,7 @@ export default function (options: CoveoSchema): Rule {
 export function setupDependencies(_options: CoveoSchema): Rule {
   return () =>
     chain([
-      addToPackageJson('@angular/material'),
+      addToPackageJson('@angular/material', '^11.2.11'),
       addToPackageJson('@coveo/headless'),
       addToPackageJson('@coveo/search-token-server'),
       addToPackageJson('concurrently'),
