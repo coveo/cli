@@ -1,5 +1,5 @@
 const {resolve, join} = require('path');
-const {spawnSync, execFileSync} = require('child_process');
+const {spawnSync, execFileSync, exec} = require('child_process');
 const {existsSync, mkdirSync, writeFileSync} = require('fs');
 
 const DOCKER_IMAGE_NAME = 'coveo-cli-e2e-image';
@@ -83,37 +83,40 @@ const createEnvFile = () => {
 const startDockerCompose = () => {
   createEnvFile();
   mkdirSync(screenshotsHostPath, {recursive: true});
-  return execFileSync(
-    `${process.env.CI ? 'sudo ' : ''}docker-compose`,
-    [
-      '-f',
-      composeFilePath,
-      '-p',
-      composeProjectName,
-      'up',
-      '--force-recreate',
-      '-d',
-    ],
-    {
-      stdio: ['inherit', 'inherit', 'inherit'],
-    }
-  );
+  const execArray = [
+    'docker-compose',
+    '-f',
+    composeFilePath,
+    '-p',
+    composeProjectName,
+    'up',
+    '--force-recreate',
+    '-d',
+  ];
+  if (process.env.CI) {
+    execArray.unshift('sudo');
+  }
+
+  return execFileSync(execArray.shift(), execArray, {
+    stdio: ['inherit', 'inherit', 'inherit'],
+  });
 };
 
 const startTestRunning = () => {
-  return execFileSync(
-    `${process.env.CI ? 'sudo ' : ''}docker`,
-    [
-      'exec',
-      `-${process.argv[2] === '--bash' ? 'it' : 'i'}`,
-      DOCKER_CONTAINER_NAME,
-      '/bin/bash',
-      dockerEntryPoint(),
-    ],
-    {
-      stdio: ['inherit', 'inherit', 'inherit'],
-    }
-  );
+  const execArray = [
+    'docker',
+    'exec',
+    `-${process.argv[2] === '--bash' ? 'it' : 'i'}`,
+    DOCKER_CONTAINER_NAME,
+    '/bin/bash',
+    dockerEntryPoint(),
+  ];
+  if (process.env.CI) {
+    execArray.unshift('sudo');
+  }
+  return execFileSync(execArray.shift(), execArray, {
+    stdio: ['inherit', 'inherit', 'inherit'],
+  });
 };
 
 const stopDockerContainers = () =>
