@@ -11,12 +11,15 @@ import {
 } from '@schematics/angular/utility/dependencies';
 import {CoveoSchema} from '../../schema';
 
-export function addToPackageJson(packageName: string): Rule {
+export function addToPackageJson(
+  packageName: string,
+  version = 'latest'
+): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     const packageToAdd: NodeDependency = {
       type: NodeDependencyType.Default,
       name: packageName,
-      version: 'latest',
+      version,
       overwrite: true,
     };
 
