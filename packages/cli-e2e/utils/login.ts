@@ -112,6 +112,10 @@ async function startLoginFlow(browser: Browser) {
 
   await retry(async () => strictEqual(await isLoggedin(), true));
 
+  if ((await browser.pages()).length < 2) {
+    await browser.newPage();
+  }
+
   await page.close();
 }
 
