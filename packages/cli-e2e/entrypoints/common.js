@@ -1,5 +1,5 @@
 const {resolve, join} = require('path');
-const {spawnSync, execFileSync, exec} = require('child_process');
+const {spawnSync, execFileSync} = require('child_process');
 const {existsSync, mkdirSync, writeFileSync} = require('fs');
 
 const DOCKER_IMAGE_NAME = 'coveo-cli-e2e-image';
