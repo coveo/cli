@@ -5,7 +5,7 @@ export class TimeStamper extends Transform {
     super({
       transform(chunk, _encoding, callback) {
         this.push(
-          chunk.toString().replace(/\n/gm, `[${TimeStamper.getTimestamp()}]\n`)
+          chunk.toString().replace(/^/gm, `[${TimeStamper.getTimestamp()}]`)
         );
         callback();
       },
