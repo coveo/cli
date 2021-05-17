@@ -22,4 +22,8 @@ node scripts/wait-for-published-packages.js
 
 cd packages/cli-e2e
 export COVEO_CLI_E2E_DEBUG=true;
+
+# Wait for Chrome to be up'n'running.
+while ! timeout 1 bash -c "echo > /dev/tcp/localhost/9222"; do sleep 10; done
+
 npm run-script jest:debug
