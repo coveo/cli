@@ -102,7 +102,7 @@ const startDockerCompose = () => {
 
 const startTestRunning = () => {
   return execFileSync(
-    `${process.env.CI ? 'sudo ' : ''} docker`,
+    `${process.env.CI ? 'sudo ' : ''}docker`,
     [
       'exec',
       `-${process.argv[2] === '--bash' ? 'it' : 'i'}`,
