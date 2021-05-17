@@ -84,9 +84,8 @@ const startDockerCompose = () => {
   createEnvFile();
   mkdirSync(screenshotsHostPath, {recursive: true});
   return execFileSync(
-    `${process.env.CI ? 'sudo ' : ''}docker`,
+    `${process.env.CI ? 'sudo ' : ''}docker-compose`,
     [
-      'compose',
       '-f',
       composeFilePath,
       '-p',
@@ -119,8 +118,8 @@ const startTestRunning = () => {
 
 const stopDockerContainers = () =>
   execFileSync(
-    'docker',
-    ['compose', '-f', composeFilePath, '-p', composeProjectName, 'down'],
+    'docker-compose',
+    ['-f', composeFilePath, '-p', composeProjectName, 'down'],
     {
       stdio: 'ignore',
     }
