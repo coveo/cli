@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "author": "Coveo",
   "engines": {
     "node": ">=14.15.1"
@@ -22,15 +22,15 @@
     "fs-extra": "^9.1.0",
     "isomorphic-fetch": "^3.0.0",
     "node-pty": "^0.10.0",
+    "patch-package": "^6.2.2",
     "semver": "^7.3.4",
     "ts-dedent": "^2.1.1",
-    "tslib": "^1",
-    "patch-package": "^6.2.2"
+    "tslib": "^1"
   },
   "devDependencies": {
-    "@coveo/angular": "^1.1.1",
-    "@coveo/cra-template": "^1.1.1",
-    "@coveo/vue-cli-plugin-typescript": "^1.1.1",
+    "@coveo/angular": "^1.2.0",
+    "@coveo/cra-template": "^1.2.0",
+    "@coveo/vue-cli-plugin-typescript": "^1.2.0",
     "@oclif/dev-cli": "^1.26.0",
     "@oclif/test": "^1",
     "@types/fs-extra": "^9.0.6",
@@ -109,5 +109,8 @@
     "version": "oclif-dev readme && git add README.md",
     "postinstall": "patch-package"
   },
-  "types": "lib/index.d.ts"
+  "types": "lib/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  }
 }
