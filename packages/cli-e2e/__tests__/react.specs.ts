@@ -9,7 +9,7 @@ import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
-import {commitProject, undoCommit} from '../utils/misc';
+import {commitProject, undoCommit} from '../utils/git';
 
 describe('ui:create:react', () => {
   let browser: Browser;
