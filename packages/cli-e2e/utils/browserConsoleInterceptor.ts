@@ -58,6 +58,8 @@ export class BrowserConsoleInterceptor {
   public async endSession() {
     const client = await this.getClient();
     client.removeAllListeners('Runtime.consoleAPICalled');
+    await client.detach();
+    this._client = null;
     this.interceptedMessages = [];
   }
 }
