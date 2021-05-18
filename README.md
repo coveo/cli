@@ -23,6 +23,20 @@ Linux:
 
 These executables install the latest available version. Afterwards, anytime you run `coveo update`, your CLI installation will update to the latest version.
 
+You can also run via [npx](https://www.npmjs.com/package/npx):
+
+```sh
+npx @coveo/cli
+```
+
+Or, install globally via [npm](https://www.npmjs.com/package/@coveo/cli):
+
+```sh
+npm install -g @coveo/cli
+```
+
+Afterwards, anytime you run `coveo update`, your CLI installation will update to the latest version.
+
 In practice, you'll typically want to [`login`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-authlogin) to your Coveo Organization, [`configure`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-configset) the CLI to connect to this organization, and finally create a search page (see [`coveo ui:create:angular NAME`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-uicreateangular-name), [`coveo ui:create:react NAME`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-uicreatereact-name) and [`coveo ui:create:vue NAME`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-uicreatevue-name)).
 
 The project is still under heavy development and more features are coming, stay tuned!
