@@ -15,6 +15,7 @@ import {EOL} from 'os';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
+import {commitProject, undoCommit} from '../utils/git';
 
 describe('ui:create:angular', () => {
   let browser: Browser;
@@ -125,6 +126,11 @@ describe('ui:create:angular', () => {
     });
 
     afterAll(async () => {
+      await undoCommit(
+        serverProcessManager,
+        getProjectPath(projectName),
+        projectName
+      );
       await serverProcessManager.killAllProcesses();
     }, 5e3);
 
@@ -179,6 +185,19 @@ describe('ui:create:angular', () => {
         expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
       });
     });
+
+    it('should be commited without lint-stage errors', async () => {
+      const eslintErrorSpy = jest.fn();
+
+      commitProject(
+        serverProcessManager,
+        getProjectPath(projectName),
+        projectName,
+        eslintErrorSpy
+      );
+
+      expect(eslintErrorSpy).not.toBeCalled();
+    }, 10e3);
   });
 
   describe('when the required environment variables are missing', () => {
