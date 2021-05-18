@@ -14,6 +14,7 @@ import {ProcessManager} from '../utils/processManager';
 import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
+import {commitProject, undoCommit} from '../utils/git';
 
 describe('ui:create:vue', () => {
   let browser: Browser;
@@ -123,12 +124,17 @@ describe('ui:create:vue', () => {
     });
 
     afterAll(async () => {
+      await undoCommit(
+        serverProcessManager,
+        getProjectPath(projectName),
+        projectName
+      );
       await serverProcessManager.killAllProcesses();
     }, 5e3);
 
     it('should not contain console errors nor warnings', async () => {
       await page.goto(searchPageEndpoint, {
-        waitUntil: 'networkidle0',
+        waitUntil: 'networkidle2',
       });
 
       expect(consoleInterceptor.interceptedMessages).toEqual([]);
@@ -177,6 +183,19 @@ describe('ui:create:vue', () => {
         expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
       });
     });
+
+    it('should be commited without lint-stage errors', async () => {
+      const eslintErrorSpy = jest.fn();
+
+      commitProject(
+        serverProcessManager,
+        getProjectPath(projectName),
+        projectName,
+        eslintErrorSpy
+      );
+
+      expect(eslintErrorSpy).not.toBeCalled();
+    }, 10e3);
   });
 
   describe('when starting the server', () => {
