@@ -10,15 +10,14 @@ import {clearAccessTokenFromConfig, loginWithOffice} from './utils/login';
 import {ProcessManager} from './utils/processManager';
 
 async function clearChromeBrowsingData(browser: Browser) {
-  const pages = await browser.pages();
+  const client = await browser.target().createCDPSession();
 
-  const pageClearDataPromise = [];
-  for (const page of pages) {
-    const client = await page.target().createCDPSession();
-    pageClearDataPromise.push(client.send('Network.clearBrowserCookies'));
-    pageClearDataPromise.push(client.send('Network.clearBrowserCache'));
-  }
-  return Promise.all(pageClearDataPromise);
+  const browserClearDataPromises = [
+    client.send('Network.clearBrowserCookies'),
+    client.send('Network.clearBrowserCache'),
+  ];
+
+  return Promise.all(browserClearDataPromises);
 }
 
 export default async function () {

@@ -20,10 +20,7 @@ export const SCREENSHOTS_PATH =
  */
 export async function closeAllPages(browser: Browser) {
   const pages = await browser.pages();
-  const pageClosePromises: Promise<void>[] = [];
-  for (const page of pages) {
-    pageClosePromises.push(page.close());
-  }
+  const pageClosePromises: Promise<void>[] = pages.map((page) => page.close());
   return pageClosePromises;
 }
 
@@ -50,13 +47,19 @@ export async function connectToChromeBrowser(): Promise<Browser> {
 }
 
 export async function getNewBrowser(): Promise<Browser> {
-  return await puppeteer.launch({
+  return puppeteer.launch({
     headless: false,
     args: getChromeDefaultOptions(),
   });
 }
 
-export async function openNewPage(browser: Browser, page?: Page | undefined) {
+/**
+ * Open a new page in the browser (and close `page` if given)
+ * @param browser the browser where to open the page
+ * @param page the page to close once the new one is open
+ * @returns {Page} the newly opened page
+ */
+export async function openNewPage(browser: Browser, page?: Page) {
   const newPage = await browser.newPage();
   if (page) {
     await page.close();
@@ -68,24 +71,27 @@ export async function captureScreenshots(
   browser: Browser,
   screenshotName?: string
 ): Promise<void> {
-  for (const page of await browser.pages()) {
-    page.url;
-    try {
-      await page.screenshot({
-        fullPage: true,
-        type: 'png',
-        path: resolve(
-          SCREENSHOTS_PATH,
-          (screenshotName ??
-            expect.getState().currentTestName.trim().replace(/\W/g, '_')) +
-            '.png'
-        ),
-      });
-    } catch (error) {
-      console.warn('Failed to record screenshot.');
-      console.warn(error);
-    }
-  }
+  await Promise.all(
+    (
+      await browser.pages()
+    ).map(async (page) => {
+      try {
+        await page.screenshot({
+          fullPage: true,
+          type: 'png',
+          path: resolve(
+            SCREENSHOTS_PATH,
+            (screenshotName ??
+              expect.getState().currentTestName.trim().replace(/\W/g, '_')) +
+              '.png'
+          ),
+        });
+      } catch (error) {
+        console.warn('Failed to record screenshot.');
+        console.warn(error);
+      }
+    })
+  );
 }
 
 /**
