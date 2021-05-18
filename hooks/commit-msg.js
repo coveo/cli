@@ -6,7 +6,9 @@
 const childProcess = require('child_process');
 const fs = require('fs');
 const os = require('os');
+
 const urlBase = 'https://coveord.atlassian.net/browse/';
+const urlBaseRegex = /https:\/\/coveord\.atlassian\.net\/browse/;
 const projectAcronym = 'CDX';
 
 let issueNumber;
@@ -31,7 +33,7 @@ const commitMessage = fs.readFileSync(commitMessageFilename, {
 });
 
 function commitHasIssue(commitMessage) {
-  const urlIssueRegex = new RegExp(urlBase + issueRegex.source);
+  const urlIssueRegex = new RegExp(urlBaseRegex.source + issueRegex.source);
   return commitMessage.search(urlIssueRegex) !== -1;
 }
 
