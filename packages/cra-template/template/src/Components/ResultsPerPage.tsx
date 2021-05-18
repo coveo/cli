@@ -20,9 +20,10 @@ const ResultsPerPageRenderer: FunctionComponent<ResultsPerPageProps> = (
   const {controller, options} = props;
   const [state, setState] = useState(controller.state);
 
-  useEffect(() => controller.subscribe(() => setState(controller.state)), [
-    controller,
-  ]);
+  useEffect(
+    () => controller.subscribe(() => setState(controller.state)),
+    [controller]
+  );
 
   return (
     <FormControl component="fieldset">
