@@ -16,16 +16,16 @@ describe('config:set', () => {
 
   mockedConfig.mockImplementation(
     () =>
-      (({
+      ({
         set: mockSet,
-      } as unknown) as Config)
+      } as unknown as Config)
   );
 
   mockedClient.mockImplementation(
     () =>
-      (({
+      ({
         getUserHasAccessToOrg: mockGetHasAccessToOrg,
-      } as unknown) as AuthenticatedClient)
+      } as unknown as AuthenticatedClient)
   );
 
   test

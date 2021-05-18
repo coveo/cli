@@ -245,7 +245,7 @@ export async function isElementClickable(page: Page, selector: string) {
           isElementInViewport(elem) &&
           elem.disabled !== true &&
           isOverlappingElementMatch(
-            (getOverlappingElements(elem) as any) as HTMLElement[],
+            getOverlappingElements(elem) as any as HTMLElement[],
             elem
           )
         );
