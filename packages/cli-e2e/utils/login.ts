@@ -1,5 +1,5 @@
 import retry from 'async-retry';
-import {Browser, BrowserContextEmittedEvents, Page, Target} from 'puppeteer';
+import type {Browser, Page, Target} from 'puppeteer';
 import {
   answerPrompt,
   CLI_EXEC_PATH,
@@ -28,15 +28,12 @@ export async function isLoggedin() {
 
 function waitForLoginPage(browser: Browser) {
   return new Promise<Page>((resolve) => {
-    browser.on(
-      BrowserContextEmittedEvents.TargetChanged,
-      async (target: Target) => {
-        const page = await target.page();
-        if (page && isLoginPage(page)) {
-          resolve(page);
-        }
+    browser.on('targetchanged', async (target: Target) => {
+      const page = await target.page();
+      if (page && isLoginPage(page)) {
+        resolve(page);
       }
-    );
+    });
   });
 }
 
