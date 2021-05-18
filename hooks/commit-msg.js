@@ -8,7 +8,7 @@ const fs = require('fs');
 const os = require('os');
 
 const urlBase = 'https://coveord.atlassian.net/browse/';
-const urlBaseRegex = /https:\/\/coveord\.atlassia\.net\/browse/;
+const urlBaseRegex = /https:\/\/coveord\.atlassian\.net\/browse/;
 const projectAcronym = 'CDX';
 
 let issueNumber;
