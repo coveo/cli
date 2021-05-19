@@ -28,7 +28,8 @@ const updateTokenServerEnvironment = (serverPort) => {
 
 const addTokenServerPortToWebApp = async (serverPort) => {
   const webAppEnvironment = resolve('src', 'environments', 'environment.ts');
-  const portNumberMatcher = /defaultTokenEndpoint: 'http:\/\/localhost:\d+\/token'/;
+  const portNumberMatcher =
+    /defaultTokenEndpoint: 'http:\/\/localhost:\d+\/token'/;
   const appEnvironmentFile = readFileSync(webAppEnvironment, 'utf-8');
   const subst = `defaultTokenEndpoint: 'http://localhost:${serverPort}/token'`;
   const updatedEnvironment = appEnvironmentFile.replace(
