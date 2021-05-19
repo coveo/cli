@@ -97,7 +97,7 @@ const startDockerCompose = () => {
   //   execArray.unshift('sudo');
   // }
   const execArray = [
-    'npx',
+    'npx.cmd',
     'verdaccio',
     '--config',
     resolve(__dirname, '..', 'docker', 'config', 'config.yaml'),
