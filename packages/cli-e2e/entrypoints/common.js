@@ -82,24 +82,28 @@ const createEnvFile = () => {
 
 const startDockerCompose = () => {
   createEnvFile();
-  mkdirSync(screenshotsHostPath, {recursive: true});
-  const execArray = [
-    'docker-compose',
-    '-f',
-    composeFilePath,
-    '-p',
-    composeProjectName,
-    'up',
-    '--force-recreate',
-    '-d',
-  ];
+  // mkdirSync(screenshotsHostPath, {recursive: true});
+  // const execArray = [
+  //   'docker-compose',
+  //   '-f',
+  //   composeFilePath,
+  //   '-p',
+  //   composeProjectName,
+  //   'up',
+  //   '--force-recreate',
+  //   '-d',
+  // ];
   // if (process.env.CI) {
   //   execArray.unshift('sudo');
   // }
-
+  const execArray = [
+    'npx',
+    'verdaccio',
+    '--config',
+    '"../docker/config/config.yaml"',
+  ];
   return execFileSync(execArray.shift(), execArray, {
     stdio: ['inherit', 'inherit', 'inherit'],
-    cwd: resolve('..', '..', '..'),
   });
 };
 
