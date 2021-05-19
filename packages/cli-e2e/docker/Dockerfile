@@ -12,7 +12,6 @@ RUN apt-get install git
 # Keyring deps
 RUN apt-get install -y dbus-x11
 RUN apt-get install -y gnome-keyring
-
 # Chrome deps
 RUN apt-get install -yq libgconf-2-4
 RUN apt-get install -y make build-essential libssl-dev zlib1g-dev

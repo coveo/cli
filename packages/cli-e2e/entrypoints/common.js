@@ -104,10 +104,10 @@ const startDockerCompose = () => {
 
 const startTestRunning = () => {
   const execArray = [
-    'docker',
-    'exec',
-    `-${process.argv[2] === '--bash' ? 'it' : 'i'}`,
-    DOCKER_CONTAINER_NAME,
+    // 'docker',
+    // 'exec',
+    // `-${process.argv[2] === '--bash' ? 'it' : 'i'}`,
+    // DOCKER_CONTAINER_NAME,
     '/bin/bash',
     dockerEntryPoint(),
   ];
