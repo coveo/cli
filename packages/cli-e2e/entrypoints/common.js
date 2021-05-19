@@ -96,6 +96,7 @@ const startDockerCompose = () => {
 
   return execFileSync(execArray.shift(), execArray, {
     stdio: ['inherit', 'inherit', 'inherit'],
+    cwd: resolve('..', '..', '..'),
   });
 };
 
