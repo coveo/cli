@@ -57,6 +57,7 @@ jobs:
           node scripts/wait-for-published-packages.js
             
           cd packages/cli-e2e
+          npm run boop
           npm run jest
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}

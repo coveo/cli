@@ -22,6 +22,7 @@
     "test:debug": "node ./entrypoints/entry.js --debug",
     "test:bash": "node ./entrypoints/entry.js --bash",
     "jest": "jest --verbose --runInBand --useStderr --colors",
+    "boop": "ts-node boop.ts",
     "jest:debug": "node --inspect=0.0.0.0:9229 node_modules/.bin/jest --runInBand"
   },
   "bugs": {
@@ -33,7 +34,8 @@
   "devDependencies": {
     "@types/async-retry": "1.4.2",
     "@types/fs-extra": "^9.0.9",
-    "@types/jest": "26.0.20"
+    "@types/jest": "26.0.20",
+    "ts-node": "^9.1.1"
   },
   "dependencies": {
     "@babel/core": "7.12.17",
