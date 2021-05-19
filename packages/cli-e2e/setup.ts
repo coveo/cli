@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import {mkdirSync} from 'fs';
 import {randomBytes} from 'crypto';
 import type {Browser} from 'puppeteer';
@@ -8,6 +9,14 @@ import {
 } from './utils/browser';
 import {clearAccessTokenFromConfig, loginWithOffice} from './utils/login';
 import {ProcessManager} from './utils/processManager';
+
+declare global {
+  namespace NodeJS {
+    interface Global {
+      processManager: ProcessManager | undefined;
+    }
+  }
+}
 
 async function clearChromeBrowsingData(browser: Browser) {
   const pages = await browser.pages();
