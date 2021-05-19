@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import {mkdirSync} from 'fs';
 import {randomBytes} from 'crypto';
-import type {Browser} from 'puppeteer';
+import {Browser, launch} from 'puppeteer';
 import {
   captureScreenshots,
   connectToChromeBrowser,
@@ -38,7 +38,15 @@ export default async function () {
   process.env.GITHUB_ACTION =
     process.env.GITHUB_ACTION || randomBytes(16).toString('hex');
   console.log('attempt chrome connection');
-  const browser = await connectToChromeBrowser();
+  const browser = await launch({
+    headless: false,
+    executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe',
+    args: [
+      '--no-first-run',
+      '--disable-dev-shm-usage',
+      '--window-size=1080,720',
+    ],
+  });
   console.log('chrome connection successful');
   console.log('cleaning chrome data');
   await clearChromeBrowsingData(browser);
