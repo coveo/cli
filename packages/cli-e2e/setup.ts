@@ -57,7 +57,7 @@ export default async function () {
   try {
     global.processManager = new ProcessManager();
     console.log('start connecting.');
-    await loginWithOffice();
+    await loginWithOffice(browser);
     console.log('connected');
   } catch (e) {
     await captureScreenshots(browser, 'jestSetup');

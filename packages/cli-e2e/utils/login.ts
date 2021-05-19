@@ -119,11 +119,11 @@ async function startLoginFlow(browser: Browser) {
   await page.close();
 }
 
-export async function loginWithOffice() {
+export async function loginWithOffice(browser?: Browser) {
   if (await isLoggedin()) {
     return;
   }
-  const browser: Browser = await connectToChromeBrowser();
+  browser = browser ?? (await connectToChromeBrowser());
 
   const loginProcess = runLoginCommand();
 
