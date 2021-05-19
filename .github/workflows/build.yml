@@ -12,6 +12,10 @@ jobs:
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
     steps:
+      - name: Set git to use LF
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
       # - name: Setup runner
       #   # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
       #   run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
