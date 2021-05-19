@@ -100,5 +100,7 @@ export async function deleteAllCliApiKeys() {
     )
   );
 }
-
-export const CLI_EXEC_PATH = resolve(__dirname, '../../cli/bin/run');
+export const CLI_EXEC_PATH = resolve(
+  __dirname,
+  `../../cli/bin/run${process.platform === 'win32' ? '.cmd' : ''}`
+);
