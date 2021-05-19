@@ -31,33 +31,31 @@ async function clearChromeBrowsingData(browser: Browser) {
 }
 
 export default async function () {
-  process.stdout.write('entry');
-  process.stdout.write(
-    `start creating screenshot folder at:${SCREENSHOTS_PATH}`
-  );
+  console.log('entry');
+  console.log(`start creating screenshot folder at:${SCREENSHOTS_PATH}`);
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
-  process.stdout.write('screenshot folder created');
+  console.log('screenshot folder created');
   process.env.GITHUB_ACTION =
     process.env.GITHUB_ACTION || randomBytes(16).toString('hex');
-  process.stdout.write('attempt chrome connection');
+  console.log('attempt chrome connection');
   const browser = await connectToChromeBrowser();
-  process.stdout.write('chrome connection successful');
-  process.stdout.write('cleaning chrome data');
+  console.log('chrome connection successful');
+  console.log('cleaning chrome data');
   await clearChromeBrowsingData(browser);
-  process.stdout.write('chrome data cleaned');
-  process.stdout.write('clear user data');
+  console.log('chrome data cleaned');
+  console.log('clear user data');
   await clearAccessTokenFromConfig();
-  process.stdout.write('user data cleared');
+  console.log('user data cleared');
   try {
     global.processManager = new ProcessManager();
-    process.stdout.write('start connecting.');
+    console.log('start connecting.');
     await loginWithOffice();
-    process.stdout.write('connected');
+    console.log('connected');
   } catch (e) {
     await captureScreenshots(browser, 'jestSetup');
     throw e;
   }
-  process.stdout.write('cleaning chrome data');
+  console.log('cleaning chrome data');
   await clearChromeBrowsingData(browser);
-  process.stdout.write('chrome data cleaned');
+  console.log('chrome data cleaned');
 }
