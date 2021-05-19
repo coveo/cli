@@ -13,4 +13,5 @@ export default {
    * More info -> https://jestjs.io/docs/configuration#testmatch-arraystring
    */
   testMatch: ['**/__tests__/**/*.[jt]s?(x)'],
+  bail: true,
 };
