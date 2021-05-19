@@ -15,11 +15,8 @@ const dockerEntryPoint = () => {
   if (isBash()) {
     return '';
   }
-  return join(
-    repoDockerPath,
-    'packages',
-    'cli-e2e',
-    'entrypoints',
+  return resolve(
+    __dirname,
     process.argv[2] === '--debug' ? 'dockerX11Entry.sh' : 'dockerHeadless.sh'
   ).replace(/\\/g, '/');
 };
