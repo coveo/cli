@@ -8,9 +8,9 @@ const {
 // ensureDockerImageIsPresent();
 try {
   startDockerCompose();
-  startTestRunning();
+  // startTestRunning();
 } finally {
   if (!process.env.CI) {
-    stopDockerContainers();
+    // stopDockerContainers();
   }
 }
