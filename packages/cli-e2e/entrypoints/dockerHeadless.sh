@@ -1,8 +1,8 @@
 #!/bin/bash
 cd ../..
 pwd
-sudo apt-get update
-sudo apt-get install libssl-dev zlib1g-dev llvm libncurses5-dev libncursesw5-dev tk-dev
+# sudo apt-get update
+# sudo apt-get install libssl-dev zlib1g-dev llvm libncurses5-dev libncursesw5-dev tk-dev
 
 # export DISPLAY=:1
 # Xvfb :1 -screen 0 1024x768x16 & sleep 1
@@ -34,7 +34,7 @@ node scripts/wait-for-published-packages.js
 cd packages/cli-e2e
 
 # Wait for Chrome to be up'n'running.
-while ! timeout 1 bash -c "echo > /dev/tcp/localhost/9222"; do sleep 10; done
+# while ! timeout 1 bash -c "echo > /dev/tcp/localhost/9222"; do sleep 10; done
 
 # if npm run-script jest
 # then

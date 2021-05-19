@@ -109,7 +109,7 @@ const startTestRunning = () => {
     // 'exec',
     // `-${process.argv[2] === '--bash' ? 'it' : 'i'}`,
     // DOCKER_CONTAINER_NAME,
-    '/bin/bash',
+    'bash',
     dockerEntryPoint(),
   ];
   if (process.env.CI) {

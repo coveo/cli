@@ -7,7 +7,7 @@ on:
 
 jobs:
   run-script:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     env:
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
@@ -31,9 +31,7 @@ jobs:
       - name: End-to-end Tests
         working-directory: ./packages/cli-e2e
         run: |
-          export DISPLAY=:1
-          Xvfb :1 -screen 0 1024x768x16 & sleep 1
-          google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720 & \
+          Start-Process "C:/Program Files/Google/Chrome/Application/chrome.exe" -ArgumentList "--no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720"
           npm run test-e2e
           npm run jest
       - uses: actions/upload-artifact@v2
