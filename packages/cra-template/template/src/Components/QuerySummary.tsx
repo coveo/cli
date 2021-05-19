@@ -14,9 +14,10 @@ const QuerySummaryRenderer: FunctionComponent<QuerySummaryProps> = (props) => {
   const {controller} = props;
   const [state, setState] = useState(controller.state);
 
-  useEffect(() => controller.subscribe(() => setState(controller.state)), [
-    controller,
-  ]);
+  useEffect(
+    () => controller.subscribe(() => setState(controller.state)),
+    [controller]
+  );
 
   const renderNoResults = () => {
     return <Box mt={5}>No results</Box>;

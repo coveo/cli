@@ -52,9 +52,8 @@ const ResultListRenderer: FunctionComponent<ResultListProps> = (props) => {
   const engine = useContext(EngineContext)!;
   const [state, setState] = useState(controller.state);
 
-  const headlessResultTemplateManager: ResultTemplatesManager<Template> = buildResultTemplatesManager(
-    engine
-  );
+  const headlessResultTemplateManager: ResultTemplatesManager<Template> =
+    buildResultTemplatesManager(engine);
 
   headlessResultTemplateManager.registerTemplates({
     conditions: [],
@@ -88,9 +87,10 @@ const ResultListRenderer: FunctionComponent<ResultListProps> = (props) => {
     ),
   });
 
-  useEffect(() => controller.subscribe(() => setState(controller.state)), [
-    controller,
-  ]);
+  useEffect(
+    () => controller.subscribe(() => setState(controller.state)),
+    [controller]
+  );
 
   return (
     <List>
