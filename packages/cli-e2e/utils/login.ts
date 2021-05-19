@@ -13,6 +13,8 @@ import {isElementClickable} from './browser';
 import {readJSON, writeJSON, existsSync} from 'fs-extra';
 import {Terminal} from './terminal/terminal';
 
+import {spawnSync} from 'child_process';
+
 function isLoginPage(page: Page) {
   // TODO: CDX-98: URL should vary in fonction of the targeted environment.
   return page.url() === 'https://platformdev.cloud.coveo.com/login';
@@ -124,9 +126,14 @@ export async function loginWithOffice(browser?: Browser) {
     return;
   }
   browser = browser ?? (await connectToChromeBrowser());
-
+  console.log('start browser instrumentation');
   const loginProcess = runLoginCommand();
-
+  await new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, 5e3);
+  });
+  console.log(spawnSync('ps').stdout.toString());
   await startLoginFlow(browser);
   return loginProcess;
 }
