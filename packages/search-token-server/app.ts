@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.get<{}, any, {token: string}>(
+app.get<Record<string, string>, any, {token: string}>(
   '/token',
   environmentCheck,
   ensureTokenGenerated,

@@ -1,5 +1,5 @@
 const {resolve, join} = require('path');
-const {execSync, spawnSync} = require('child_process');
+const {spawnSync, execFileSync} = require('child_process');
 const {existsSync, mkdirSync, writeFileSync} = require('fs');
 
 const DOCKER_IMAGE_NAME = 'coveo-cli-e2e-image';
@@ -55,7 +55,7 @@ const isImagePresent = () => {
 const ensureDockerImageIsPresent = () => {
   if (!isImagePresent()) {
     console.log('Building docker image');
-    execSync(`docker build -t ${DOCKER_IMAGE_NAME} ${dockerDirPath}`, {
+    execFileSync('docker', ['build', '-t', DOCKER_IMAGE_NAME, dockerDirPath], {
       stdio: 'ignore',
     });
   }
@@ -83,30 +83,46 @@ const createEnvFile = () => {
 const startDockerCompose = () => {
   createEnvFile();
   mkdirSync(screenshotsHostPath, {recursive: true});
-  return execSync(
-    `${
-      process.env.CI ? 'sudo ' : ''
-    }docker-compose -f ${composeFilePath} -p ${composeProjectName} up --force-recreate -d`,
-    {
-      stdio: ['inherit', 'inherit', 'inherit'],
-    }
-  );
+  const execArray = [
+    'docker-compose',
+    '-f',
+    composeFilePath,
+    '-p',
+    composeProjectName,
+    'up',
+    '--force-recreate',
+    '-d',
+  ];
+  if (process.env.CI) {
+    execArray.unshift('sudo');
+  }
+
+  return execFileSync(execArray.shift(), execArray, {
+    stdio: ['inherit', 'inherit', 'inherit'],
+  });
 };
 
 const startTestRunning = () => {
-  return execSync(
-    `${process.env.CI ? 'sudo ' : ''}docker exec -${
-      process.argv[2] === '--bash' ? 'it' : 'i'
-    } ${DOCKER_CONTAINER_NAME} /bin/bash ${dockerEntryPoint()} `,
-    {
-      stdio: ['inherit', 'inherit', 'inherit'],
-    }
-  );
+  const execArray = [
+    'docker',
+    'exec',
+    `-${process.argv[2] === '--bash' ? 'it' : 'i'}`,
+    DOCKER_CONTAINER_NAME,
+    '/bin/bash',
+    dockerEntryPoint(),
+  ];
+  if (process.env.CI) {
+    execArray.unshift('sudo');
+  }
+  return execFileSync(execArray.shift(), execArray, {
+    stdio: ['inherit', 'inherit', 'inherit'],
+  });
 };
 
 const stopDockerContainers = () =>
-  execSync(
-    `docker-compose -f ${composeFilePath} -p ${composeProjectName} down`,
+  execFileSync(
+    'docker-compose',
+    ['-f', composeFilePath, '-p', composeProjectName, 'down'],
     {
       stdio: 'ignore',
     }

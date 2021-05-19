@@ -12,8 +12,12 @@ module.exports = (api, options, rootOptions) => {
       '@coveo/search-token-server': '*',
       buefy: '^0.9.4',
       concurrently: '^5.3.0',
-      dotenv: '^8.2.0',
+      dotenv: '^9.0.2',
       'get-port': '^5.1.1',
+      'fs-extra': '^10.0.0',
+    },
+    'lint-staged': {
+      'server/*.{js,ts}': ['eslint'],
     },
   });
 
