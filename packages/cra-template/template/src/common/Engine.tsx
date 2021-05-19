@@ -6,7 +6,7 @@ const getEndpointToLocalServer = () => {
   }
   const port = process.env.REACT_APP_SERVER_PORT;
   const pathname = '/token';
-  return `http://localhost:${port}${[pathname]}`;
+  return `http://localhost:${port}${pathname}`;
 };
 
 const getTokenEndpoint = () => {

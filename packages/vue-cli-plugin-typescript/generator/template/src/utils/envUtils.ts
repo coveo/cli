@@ -33,7 +33,7 @@ function getEndpointToLocalServer() {
   }
   const port = process.env.VUE_APP_SERVER_PORT;
   const pathname = '/token';
-  return `http://localhost:${port}${[pathname]}`;
+  return `http://localhost:${port}${pathname}`;
 }
 
 export function getTokenEndpoint() {
