@@ -11,7 +11,7 @@ describe('hooks:prerun', () => {
   const mockSet = jest.fn();
 
   mockConfig.mockImplementation(
-    () => (({get: mockGet, set: mockSet} as unknown) as Config)
+    () => ({get: mockGet, set: mockSet} as unknown as Config)
   );
 
   beforeEach(() => {

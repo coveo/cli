@@ -22,9 +22,10 @@ const SortRenderer: FunctionComponent<SortProps> = (props) => {
   const {controller, criteria} = props;
   const [state, setState] = React.useState(controller.state);
 
-  useEffect(() => controller.subscribe(() => setState(controller.state)), [
-    controller,
-  ]);
+  useEffect(
+    () => controller.subscribe(() => setState(controller.state)),
+    [controller]
+  );
 
   const getCurrentCriterion = () =>
     criteria.find(
