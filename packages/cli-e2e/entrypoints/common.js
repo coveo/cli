@@ -90,9 +90,9 @@ const startDockerCompose = () => {
     '--force-recreate',
     '-d',
   ];
-  if (process.env.CI) {
-    execArray.unshift('sudo');
-  }
+  // if (process.env.CI) {
+  //   execArray.unshift('sudo');
+  // }
 
   return execFileSync(execArray.shift(), execArray, {
     stdio: ['inherit', 'inherit', 'inherit'],
