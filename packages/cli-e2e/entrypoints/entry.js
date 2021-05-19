@@ -5,7 +5,7 @@ const {
   stopDockerContainers,
 } = require('./common');
 
-ensureDockerImageIsPresent();
+// ensureDockerImageIsPresent();
 try {
   startDockerCompose();
   startTestRunning();
