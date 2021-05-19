@@ -23,7 +23,7 @@ Linux:
 
 These executables install the latest available version. Afterwards, anytime you run `coveo update`, your CLI installation will update to the latest version.
 
-You can also run via [npx](https://www.npmjs.com/package/npx):
+If you have [installed node-gyp](https://github.com/nodejs/node-gyp#installation), you can also run via [npx](https://www.npmjs.com/package/npx):
 
 ```sh
 npx @coveo/cli
