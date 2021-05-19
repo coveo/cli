@@ -7,11 +7,11 @@ const environment = config();
 const preferedWebAppPort = 8080;
 const portRangeFallback = [5000, 5999];
 
-const updateEnvFile = () => {
+const updateEnvFile = (applicationPort, serverPort) => {
   const env = {
     ...environment.parsed,
-    PORT: process.env.PORT,
-    VUE_APP_SERVER_PORT: process.env.VUE_APP_SERVER_PORT,
+    PORT: applicationPort,
+    VUE_APP_SERVER_PORT: serverPort,
   };
 
   truncateSync('.env');
@@ -21,13 +21,13 @@ const updateEnvFile = () => {
 };
 
 const allocatePorts = async () => {
-  process.env.PORT = await getNextAvailablePorts(
+  const applicationPort = await getNextAvailablePorts(
     process.env.PORT || preferedWebAppPort
   );
-  process.env.VUE_APP_SERVER_PORT = await getNextAvailablePorts(
+  const serverPort = await getNextAvailablePorts(
     process.env.VUE_APP_SERVER_PORT
   );
-  updateEnvFile();
+  updateEnvFile(applicationPort, serverPort);
 };
 
 const getNextAvailablePorts = async (preferedPort) => {
