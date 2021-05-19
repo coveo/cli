@@ -31,7 +31,11 @@ const allocatePorts = async () => {
 };
 
 const getNextAvailablePorts = async (preferedPort) => {
-  preferedPort = isNaN(parseInt(preferedPort)) ? null : parseInt(preferedPort);
+  if (typeof preferedPort !== 'number') {
+    preferedPort = isNaN(parseInt(preferedPort))
+      ? null
+      : parseInt(preferedPort);
+  }
 
   if (await isPortAvailable(preferedPort)) {
     return preferedPort;
