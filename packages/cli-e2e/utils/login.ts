@@ -28,7 +28,13 @@ export async function isLoggedin() {
   return Boolean(cfg.accessToken);
 }
 
-function waitForLoginPage(browser: Browser) {
+async function waitForLoginPage(browser: Browser) {
+  console.log('search for page');
+  const page = (await browser.pages()).find(isLoginPage);
+  if (page) {
+    return page;
+  }
+  console.log('waiting for target changed');
   return new Promise<Page>((resolve) => {
     browser.on('targetchanged', async (target: Target) => {
       const page = await target.page();
