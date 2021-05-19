@@ -68,6 +68,10 @@ const createEnvFile = () => {
     return;
   }
 
+  environmentVariables.forEach((env) =>
+    console.log(`${env} ${process.env[env] ? '' : 'un'}defined`)
+  );
+
   writeFileSync(
     '.env',
     environmentVariables
