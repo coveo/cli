@@ -100,7 +100,7 @@ const startDockerCompose = () => {
     'npx',
     'verdaccio',
     '--config',
-    '"../docker/config/config.yaml"',
+    resolve(__dirname, '..', 'docker', 'config', 'config.yaml'),
   ];
   return execFileSync(execArray.shift(), execArray, {
     stdio: ['inherit', 'inherit', 'inherit'],
