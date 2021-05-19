@@ -11,6 +11,8 @@ jobs:
     env:
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
+      # https://github.com/oclif/plugin-update/blob/master/src/hooks/init.ts#L22 tldr: pls oclif dont try to autoupdate when im running locally or doing test. Ought to be prefixed tho.
+      COVEO_DISABLE_AUTOUPDATE: true
     steps:
       - name: Set git to use LF
         run: |
