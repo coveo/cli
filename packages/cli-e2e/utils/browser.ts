@@ -48,8 +48,17 @@ function getChromeDefaultOptions() {
  * Return the browser instance.
  */
 export async function connectToChromeBrowser(): Promise<Browser> {
-  const wsURL = await getWsUrl();
-  return puppeteer.connect({browserWSEndpoint: wsURL});
+  return await puppeteer.launch({
+    headless: false,
+    executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe',
+    args: [
+      '--no-first-run',
+      '--disable-dev-shm-usage',
+      '--window-size=1080,720',
+    ],
+  });
+  // const wsURL = await getWsUrl();
+  // return puppeteer.connect({browserWSEndpoint: wsURL});
 }
 
 export async function getNewBrowser(): Promise<Browser> {
