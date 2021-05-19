@@ -17,7 +17,7 @@ export class EngineService {
         organizationId: environment.organizationId,
         accessToken: accessToken,
         renewAccessToken: async () => {
-          const res = await fetch(environment.tokenEndpoint);
+          const res = await fetch(this.getTokenEndpoint());
           const {token} = await res.json();
           return token;
         },
@@ -25,6 +25,10 @@ export class EngineService {
       reducers: searchAppReducers,
     });
   }
+
+  getTokenEndpoint = () => {
+    return environment.customtokenEndpoint || environment.defaultTokenEndpoint;
+  };
 
   get() {
     return this.engine;

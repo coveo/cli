@@ -3,7 +3,7 @@
   "schematics": {
     "search-token-server": {
       "factory": "./search-token-server/index",
-      "description": "Sets up a proxy server to generate Coveo search tokens.",
+      "description": "Sets up an express server to generate Coveo search tokens.",
       "schema": "./schema.json",
       "private": true
     },
