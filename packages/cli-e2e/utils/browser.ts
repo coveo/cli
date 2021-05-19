@@ -9,10 +9,13 @@ interface JsonVersionFile {
   webSocketDebuggerUrl: string;
 }
 
-export const LOGS_PATH =
-  '/home/runner/work/cli/cli/packages/cli-e2e/artifacts/logs';
-export const SCREENSHOTS_PATH =
-  '/home/runner/work/cli/cli/packages/cli-e2e/artifacts/screenshots';
+export const LOGS_PATH = resolve(__dirname, '..', 'artifacts', 'logs');
+export const SCREENSHOTS_PATH = resolve(
+  __dirname,
+  '..',
+  'artifacts',
+  'screenshots'
+);
 
 /**
  * Closes all pages of the targeted browser instance.
