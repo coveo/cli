@@ -30,7 +30,9 @@ jobs:
         run: tsc -b
       - name: End-to-end Tests
         working-directory: ./packages/cli-e2e
-        run: npm run test-e2e
+        run: |
+          google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720 & \
+          npm run test-e2e
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:

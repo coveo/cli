@@ -27,7 +27,7 @@ npm run npm:bump:template -- -- $UI_TEMPLATE_VERSION
 npm run npm:publish:template
 
 # google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720 >packages/cli-e2e/artifacts/logs/chrome/stdout 2>packages/cli-e2e/artifacts/logs/chrome/stderr & \
-google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720 & \
+# google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720 & \
 
 node scripts/wait-for-published-packages.js
   
