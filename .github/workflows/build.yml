@@ -33,6 +33,7 @@ jobs:
         run: |
           google-chrome --no-first-run --headless --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720 & \
           npm run test-e2e
+          npm run jest
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:

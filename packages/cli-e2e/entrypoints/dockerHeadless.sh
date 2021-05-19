@@ -36,11 +36,11 @@ cd packages/cli-e2e
 # Wait for Chrome to be up'n'running.
 while ! timeout 1 bash -c "echo > /dev/tcp/localhost/9222"; do sleep 10; done
 
-if npm run-script jest
-then
-    # sudo rsync -r /home/notGroot/cli-copy/packages/cli-e2e/artifacts/* /home/notGroot/cli/packages/cli-e2e/artifacts
-    exit 0
-else
-    # sudo rsync -r /home/notGroot/cli-copy/packages/cli-e2e/artifacts/* /home/notGroot/cli/packages/cli-e2e/artifacts
-    exit 1
-fi
+# if npm run-script jest
+# then
+#     # sudo rsync -r /home/notGroot/cli-copy/packages/cli-e2e/artifacts/* /home/notGroot/cli/packages/cli-e2e/artifacts
+#     exit 0
+# else
+#     # sudo rsync -r /home/notGroot/cli-copy/packages/cli-e2e/artifacts/* /home/notGroot/cli/packages/cli-e2e/artifacts
+#     exit 1
+# fi
