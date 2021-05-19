@@ -1,4 +1,5 @@
 #!/bin/bash
+cd ../..
 pwd
 sudo apt-get update
 sudo apt-get install libssl-dev zlib1g-dev llvm libncurses5-dev libncursesw5-dev tk-dev
@@ -28,7 +29,7 @@ npm run npm:publish:template
 google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720 >/dev/null 2>&1 & \
 
 node scripts/wait-for-published-packages.js
-
+  
 cd packages/cli-e2e
 
 # Wait for Chrome to be up'n'running.
