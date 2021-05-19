@@ -21,12 +21,12 @@ const updateEnvFile = () => {
 };
 
 const allocatePorts = async () => {
-  process.env.PORT = await getNextAvailablePorts({
-    port: process.env.PORT || preferedWebAppPort,
-  });
-  process.env.REACT_APP_SERVER_PORT = await getNextAvailablePorts({
-    port: process.env.REACT_APP_SERVER_PORT,
-  });
+  process.env.PORT = await getNextAvailablePorts(
+    process.env.PORT || preferedWebAppPort
+  );
+  process.env.REACT_APP_SERVER_PORT = await getNextAvailablePorts(
+    process.env.REACT_APP_SERVER_PORT
+  );
   updateEnvFile();
 };
 
