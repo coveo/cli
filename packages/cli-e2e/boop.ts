@@ -3,8 +3,8 @@ import {Terminal} from './utils/terminal/terminal';
 
 (async () => {
   await new Terminal(
-    resolve(__dirname, '..', 'cli', 'bin', 'run.cmd'),
-    ['help'],
+    'node',
+    [resolve(__dirname, '..', 'cli', 'bin', 'run'), 'help'],
     undefined,
     undefined,
     'foobar'

@@ -47,10 +47,15 @@ export function setupUIProject(
   } else {
     console.log('Testing with published version of the template');
   }
+  const args = [CLI_EXEC_PATH, ...command];
+
+  if (process.platform === 'win32') {
+    args.unshift('node');
+  }
 
   const buildProcess = new Terminal(
-    CLI_EXEC_PATH,
-    command,
+    args.shift()!,
+    args,
     {
       cwd: resolve(getProjectPath(projectName), '..'),
     },
@@ -110,7 +115,4 @@ export async function deleteAllCliApiKeys() {
     )
   );
 }
-export const CLI_EXEC_PATH = resolve(
-  __dirname,
-  `../../cli/bin/run${process.platform === 'win32' ? '.cmd' : ''}`
-);
+export const CLI_EXEC_PATH = resolve(__dirname, '../../cli/bin/run');

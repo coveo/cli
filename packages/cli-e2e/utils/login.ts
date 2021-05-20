@@ -66,9 +66,13 @@ async function possiblyAcceptCustomerAgreement(page: Page) {
 }
 
 export function runLoginCommand() {
+  const args: string[] = [CLI_EXEC_PATH, 'auth:login', '-e=dev'];
+  if (process.platform === 'win32') {
+    args.unshift('node');
+  }
   const loginTerminal = new Terminal(
-    CLI_EXEC_PATH,
-    ['auth:login', '-e=dev'],
+    args.shift()!,
+    args,
     undefined,
     global.processManager!,
     'initial-login'
