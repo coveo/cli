@@ -61,6 +61,16 @@ export function setupUIProject(
   return buildProcess;
 }
 export function getConfigFilePath() {
+  if (process.platform === 'win32') {
+    return resolve(
+      homedir(),
+      'AppData',
+      'Local',
+      '@coveo',
+      'cli',
+      'config.json'
+    );
+  }
   return resolve(homedir(), '.config', '@coveo', 'cli', 'config.json');
 }
 
