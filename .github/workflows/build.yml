@@ -54,7 +54,7 @@ jobs:
           npm run npm:publish:template
 
           node scripts/wait-for-published-packages.js
-          pacakges/cli/bin/run.cmd
+          packages/cli/bin/run.cmd
           cd packages/cli-e2e
           npm run boop
           npm run jest
