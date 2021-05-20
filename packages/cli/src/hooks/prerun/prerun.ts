@@ -12,6 +12,7 @@ Read more at https://github.com/coveo/cli/tree/master/packages/cli/PRIVACY.md\n
 Do you wish to enable analytics and telemetry tracking ? (y/n)`;
 
 const hook: Hook<'prerun'> = async function (options) {
+  return;
   const cfg = new Config(global.config.configDir);
   const configuration = await cfg.get();
   if (
