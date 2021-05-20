@@ -38,6 +38,10 @@ jobs:
         working-directory: ./packages/cli-e2e
         run: |
           Start-Process "npx" -ArgumentList "verdaccio --config ./docker/config/config.yaml"
+          ./utils/SetuserFTA.exe  http ChromeHTML
+          ./utils/SetuserFTA.exe  https ChromeHTML
+          ./utils/SetuserFTA.exe  .htm ChromeHTML
+          ./utils/SetuserFTA.exe  .html ChromeHTML
           cd ../..
           npm run setup
           npm run build
