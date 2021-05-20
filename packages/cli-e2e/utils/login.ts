@@ -8,7 +8,7 @@ import {
 } from './cli';
 import LoginSelectors from './loginSelectors';
 import {strictEqual} from 'assert';
-import {connectToChromeBrowser} from './browser';
+import {captureScreenshots, connectToChromeBrowser} from './browser';
 import {isElementClickable} from './browser';
 import {readJSON, writeJSON, existsSync} from 'fs-extra';
 import {Terminal} from './terminal/terminal';
@@ -92,6 +92,8 @@ async function startLoginFlow(browser: Browser) {
   await waitForLoginPage(browser);
 
   const pages = await browser.pages();
+  pages.forEach((page) => console.log(page.url()));
+  await captureScreenshots(browser, 'debug2');
   const page = pages.find((page) => isLoginPage(page));
   if (!page) {
     throw new Error('Unable to find login page');
@@ -133,12 +135,15 @@ export async function loginWithOffice(browser?: Browser) {
   }
   browser = browser ?? (await connectToChromeBrowser());
   console.log('start browser instrumentation');
+  await captureScreenshots(browser, 'debug0');
   const loginProcess = runLoginCommand();
+  await captureScreenshots(browser, 'debug1');
   await new Promise<void>((resolve) => {
     setTimeout(() => {
       resolve();
     }, 5e3);
   });
+  await captureScreenshots(browser, 'debug2');
   console.log(execFileSync('powershell', ['ps']).toString());
   await startLoginFlow(browser);
   return loginProcess;
