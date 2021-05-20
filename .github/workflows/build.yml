@@ -61,9 +61,6 @@ jobs:
           node scripts/wait-for-published-packages.js
           npx opener http://www.nyan.cat/
 
-          New-Item -Path "artifacts/logs" -Force
-          Start-Process "./packages/cli/bin/run.cmd" -ArgumentList"auth:login -e=dev" -RedirectStandardOutput "./artifacts/logs/powershelledStdout.txt" -RedirectStandardError "./artifacts/logs/powershelledStderr.txt"
-
           cd packages/cli-e2e
           npm run boop
           npm run jest
@@ -72,3 +69,5 @@ jobs:
         with:
           name: test-artifacts
           path: ./packages/cli-e2e/artifacts
+# New-Item -Path "artifacts/logs" -Force
+# Start-Process "./packages/cli/bin/run.cmd" -ArgumentList"auth:login -e=dev" -RedirectStandardOutput "./artifacts/logs/powershelledStdout.txt" -RedirectStandardError "./artifacts/logs/powershelledStderr.txt"
