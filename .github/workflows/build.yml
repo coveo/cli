@@ -60,7 +60,7 @@ jobs:
 
           node scripts/wait-for-published-packages.js
           npx opener http://www.nyan.cat/
-          Start-Process "./packages/cli/bin/run.cmd"  -ArgumentList "auth:login -e=dev"
+          ./packages/cli/bin/run.cmd auth:login -e=dev
           cd packages/cli-e2e
           npm run boop
           npm run jest

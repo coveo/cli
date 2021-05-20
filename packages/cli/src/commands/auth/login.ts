@@ -46,6 +46,7 @@ export default class Login extends Command {
   };
 
   async run() {
+    this.log('Logginin');
     this.configuration = new Config(this.config.configDir, this.error);
     await this.loginAndPersistToken();
     await this.persistRegionAndEnvironment();
