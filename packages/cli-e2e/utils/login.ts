@@ -13,7 +13,7 @@ import {isElementClickable} from './browser';
 import {readJSON, writeJSON, existsSync} from 'fs-extra';
 import {Terminal} from './terminal/terminal';
 
-import {spawnSync} from 'child_process';
+import {execFileSync} from 'child_process';
 
 function isLoginPage(page: Page) {
   // TODO: CDX-98: URL should vary in fonction of the targeted environment.
@@ -139,7 +139,7 @@ export async function loginWithOffice(browser?: Browser) {
       resolve();
     }, 5e3);
   });
-  console.log(spawnSync('ps').stdout.toString());
+  console.log(execFileSync('powershell', ['ps']).toString());
   await startLoginFlow(browser);
   return loginProcess;
 }

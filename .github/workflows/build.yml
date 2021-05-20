@@ -38,6 +38,7 @@ jobs:
         working-directory: ./packages/cli-e2e
         run: |
           Start-Process "npx" -ArgumentList "verdaccio --config ./docker/config/config.yaml"
+          Start-Process "C:/Program Files/Google/Chrome/Application/chrome.exe" -ArgumentList "--no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720"
           ./utils/SetuserFTA.exe  http ChromeHTML
           ./utils/SetuserFTA.exe  https ChromeHTML
           ./utils/SetuserFTA.exe  .htm ChromeHTML
@@ -60,6 +61,7 @@ jobs:
           node scripts/wait-for-published-packages.js
           Start-Sleep -s 15
           ps
+          Start-Sleep -s 15
           npx open https://google.com
           Start-Sleep -s 15
           ps
