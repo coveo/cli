@@ -1,6 +1,6 @@
 import {Hook} from '@oclif/config';
-import {cli} from 'cli-ux';
-import {Config} from '../../lib/config/config';
+// import {cli} from 'cli-ux';
+// import {Config} from '../../lib/config/config';
 
 const message = `\n\nWelcome to Coveo CLI!\n
 Coveo collects usage data and metrics (telemetry) to help improve Coveo CLI.\n
@@ -11,20 +11,20 @@ You can decide to opt in or opt out at any moment by using the config:set comman
 Read more at https://github.com/coveo/cli/tree/master/packages/cli/PRIVACY.md\n
 Do you wish to enable analytics and telemetry tracking ? (y/n)`;
 
-const hook: Hook<'prerun'> = async function (options) {
+const hook: Hook<'prerun'> = async function (_options) {
   return;
-  const cfg = new Config(global.config.configDir);
-  const configuration = await cfg.get();
-  if (
-    configuration.analyticsEnabled === true ||
-    configuration.analyticsEnabled === false ||
-    options?.Command?.id === 'update'
-  ) {
-    return;
-  }
+  // const cfg = new Config(global.config.configDir);
+  // const configuration = await cfg.get();
+  // if (
+  //   configuration.analyticsEnabled === true ||
+  //   configuration.analyticsEnabled === false ||
+  //   options?.Command?.id === 'update'
+  // ) {
+  //   return;
+  // }
 
-  const enable = await cli.confirm(message);
-  cfg.set('analyticsEnabled', enable);
+  // const enable = await cli.confirm(message);
+  // cfg.set('analyticsEnabled', enable);
 };
 
 export default hook;
