@@ -21,6 +21,7 @@ function isLoginPage(page: Page) {
 }
 
 export async function isLoggedin() {
+  console.log(getConfigFilePath());
   if (!existsSync(getConfigFilePath())) {
     return false;
   }
@@ -98,28 +99,41 @@ async function startLoginFlow(browser: Browser) {
   if (!page) {
     throw new Error('Unable to find login page');
   }
-
+  console.log('debug3');
+  await captureScreenshots(browser, 'debug3');
   await page.waitForSelector(LoginSelectors.loginWithOfficeButton);
   await page.click(LoginSelectors.loginWithOfficeButton);
-
+  console.log('debug4');
+  await captureScreenshots(browser, 'debug4');
   await page.waitForNavigation();
-
+  console.log('debug5');
+  await captureScreenshots(browser, 'debug5');
   await page.waitForSelector(LoginSelectors.emailInput);
   await page.type(LoginSelectors.emailInput, username);
   await page.waitForSelector(LoginSelectors.SubmitInput);
+  console.log('debug6');
+  await captureScreenshots(browser, 'debug6');
   await page.click(LoginSelectors.SubmitInput);
-
+  console.log('debug7');
+  await captureScreenshots(browser, 'debug7');
   await isElementClickable(page, LoginSelectors.passwordInput);
+  console.log('debug8');
+  await captureScreenshots(browser, 'debug8');
 
   await page.waitForSelector(LoginSelectors.passwordInput);
   await page.type(LoginSelectors.passwordInput, password);
   await page.waitForSelector(LoginSelectors.SubmitInput);
+  console.log('debug9');
+  await captureScreenshots(browser, 'debug9');
   await page.click(LoginSelectors.SubmitInput);
-
+  console.log('debug10');
+  await captureScreenshots(browser, 'debug10');
   await staySignedIn(page);
-
+  console.log('debug11');
+  await captureScreenshots(browser, 'debug11');
   await possiblyAcceptCustomerAgreement(page);
-
+  console.log('debug12');
+  await captureScreenshots(browser, 'debug12');
   await retry(async () => strictEqual(await isLoggedin(), true));
 
   if ((await browser.pages()).length < 2) {
@@ -145,7 +159,6 @@ export async function loginWithOffice(browser?: Browser) {
       resolve();
     }, 5e3);
   });
-  await captureScreenshots(browser, 'debug2');
   await startLoginFlow(browser);
   return loginProcess;
 }
