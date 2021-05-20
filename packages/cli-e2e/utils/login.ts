@@ -136,7 +136,9 @@ export async function loginWithOffice(browser?: Browser) {
   browser = browser ?? (await connectToChromeBrowser());
   console.log('start browser instrumentation');
   await captureScreenshots(browser, 'debug0');
+  console.log(execFileSync('powershell', ['ps']).toString());
   const loginProcess = runLoginCommand();
+  console.log(execFileSync('powershell', ['ps']).toString());
   await captureScreenshots(browser, 'debug1');
   await new Promise<void>((resolve) => {
     setTimeout(() => {
@@ -144,7 +146,6 @@ export async function loginWithOffice(browser?: Browser) {
     }, 5e3);
   });
   await captureScreenshots(browser, 'debug2');
-  console.log(execFileSync('powershell', ['ps']).toString());
   await startLoginFlow(browser);
   return loginProcess;
 }

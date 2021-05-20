@@ -59,12 +59,7 @@ jobs:
           npm run npm:publish:template
 
           node scripts/wait-for-published-packages.js
-          Start-Sleep -s 15
-          ps
-          Start-Sleep -s 15
-          npx open https://google.com
-          Start-Sleep -s 15
-          ps
+
           cd packages/cli-e2e
           npm run boop
           npm run jest

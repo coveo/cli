@@ -32,8 +32,8 @@ export class Terminal {
     debugName?: string
   ) {
     this.childProcess = processManager.spawn(command, args, options);
-    this.childProcess.stdout.on('data', (data) => console.log(data));
-    this.childProcess.stderr.on('data', (data) => console.log(data));
+    this.childProcess.stdout.on('data', (data) => process.stdout.write(data));
+    this.childProcess.stderr.on('data', (data) => process.stdout.write(data));
     const fileLogger = new FileLogger(
       debugName ?? `${command}-${args?.join('-')}`.replace(/[^\w\d]/g, '-')
     );
