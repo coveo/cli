@@ -59,7 +59,7 @@ jobs:
           npm run npm:publish:template
 
           node scripts/wait-for-published-packages.js
-
+          npx opener http://www.nyan.cat/
           cd packages/cli-e2e
           npm run boop
           npm run jest
