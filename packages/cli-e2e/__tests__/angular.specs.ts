@@ -17,7 +17,7 @@ import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {commitProject, undoCommit} from '../utils/git';
 
-describe('ui:create:angular', () => {
+describe.skip('ui:create:angular', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
   let page: Page;

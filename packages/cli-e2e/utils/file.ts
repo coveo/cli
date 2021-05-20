@@ -8,8 +8,8 @@ import {
 import {join} from 'path';
 import {getProjectPath} from './cli';
 
-export const deactivatedEnvFileName = '.env.disabled';
-export const activeEnvFilename = '.env';
+const deactivatedEnvFileName = '.env.disabled';
+const activeEnvFilename = '.env';
 
 function swapEnv(projectName: string, frm: string, to: string) {
   const pathToEnv = getProjectPath(projectName);
