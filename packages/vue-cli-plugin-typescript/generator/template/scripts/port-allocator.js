@@ -1,11 +1,19 @@
 const getPort = require('get-port');
-const {appendFileSync, truncateSync} = require('fs');
+const {appendFileSync, truncateSync, existsSync} = require('fs');
 const {config} = require('dotenv');
 const {EOL} = require('os');
 const environment = config();
 
 const preferedWebAppPort = 8080;
 const portRangeFallback = [5000, 5999];
+
+const ensureEnvironmentFile = () => {
+  if (!existsSync('.env')) {
+    throw new Error(
+      '.env file not found in the project root. Refer to the README to for more information for more information.'
+    );
+  }
+};
 
 const updateEnvFile = (applicationPort, serverPort) => {
   const env = {
@@ -48,4 +56,9 @@ const isPortAvailable = async (port) => {
   return availablePort === port;
 };
 
-allocatePorts();
+const main = () => {
+  ensureEnvironmentFile();
+  allocatePorts();
+};
+
+main();

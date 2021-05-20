@@ -25,7 +25,8 @@
       "setup-env": "node ./scripts/setup-env.js",
       "start-server": "node ./scripts/start-server.js",
       "prestart": "node ./scripts/ensure-server.js",
-      "start": "node ./scripts/port-allocator.js && concurrently --raw \"npm run start-server\" \"react-scripts start\""
+      "allocate-port": "node ./scripts/port-allocator.js",
+      "start": "npm run allocate-port && concurrently --raw \"npm run start-server\" \"react-scripts start\""
     }
   }
 }
