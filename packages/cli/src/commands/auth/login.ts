@@ -48,12 +48,19 @@ export default class Login extends Command {
   async run() {
     this.log('Logginin');
     this.configuration = new Config(this.config.configDir, this.error);
+    this.log('Logginin2');
     await this.loginAndPersistToken();
+    this.log('Logginin3');
     await this.persistRegionAndEnvironment();
+    this.log('Logginin4');
     await this.verifyOrganization();
+    this.log('Logginin5');
     await this.persistOrganization();
+    this.log('Logginin6');
     await this.feedbackOnSuccessfulLogin();
+    this.log('Logginin7');
     this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
+    this.log('Logginin8');
   }
 
   async catch(err?: Error) {
