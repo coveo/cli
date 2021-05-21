@@ -21,6 +21,7 @@
     "exponential-backoff": "^3.1.0",
     "fs-extra": "^9.1.0",
     "isomorphic-fetch": "^3.0.0",
+    "json2csv": "^5.0.6",
     "node-pty": "^0.10.0",
     "patch-package": "^6.2.2",
     "semver": "^7.3.4",
@@ -35,6 +36,7 @@
     "@oclif/test": "^1",
     "@types/fs-extra": "^9.0.6",
     "@types/jest": "^26.0.22",
+    "@types/json2csv": "^5.0.2",
     "@types/node": "^10",
     "chai": "^4.2.0",
     "eslint": "^7.23.0",
@@ -83,6 +85,9 @@
       },
       "ui:create": {
         "description": "create a user interface powered by different front end frameworks and Coveo Headless"
+      },
+      "search": {
+        "description": "perform queries against a coveo index"
       }
     },
     "hooks": {

@@ -20,7 +20,7 @@ $ npm install -g @coveo/cli
 $ coveo COMMAND
 running command...
 $ coveo (-v|--version|version)
-@coveo/cli/1.2.1 win32-x64 node-v14.17.0
+@coveo/cli/1.2.1 darwin-x64 node-v14.15.1
 $ coveo --help [COMMAND]
 USAGE
   $ coveo COMMAND
@@ -36,6 +36,7 @@ USAGE
 * [`coveo config:set`](#coveo-configset)
 * [`coveo help [COMMAND]`](#coveo-help-command)
 * [`coveo org:list`](#coveo-orglist)
+* [`coveo search:dump`](#coveo-searchdump)
 * [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
 * [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
 * [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
@@ -141,6 +142,26 @@ OPTIONS
 ```
 
 _See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v1.2.1/src/commands/org/list.ts)_
+
+## `coveo search:dump`
+
+Dump the whole content of a particular source in a CSV format.
+
+```
+USAGE
+  $ coveo search:dump
+
+OPTIONS
+  -d, --destination=destination            [default: .] The folder destination where the CSV file should be created
+  -d, --name=name                          [default: indexdump] The name of the CSV file that should be created
+
+  -f, --additionalFilter=additionalFilter  Additional search filter that should be applied while doing the extraction.
+                                           See https://docs.coveo.com/en/1552 for more information
+
+  -s, --source=mySourceName                (required) The identifier of the source for which to extract all documents.
+```
+
+_See code: [src/commands/search/dump.ts](https://github.com/coveo/cli/blob/v1.2.1/src/commands/search/dump.ts)_
 
 ## `coveo ui:create:angular NAME`
 
