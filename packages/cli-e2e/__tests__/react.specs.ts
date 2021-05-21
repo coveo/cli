@@ -36,7 +36,7 @@ describe('ui:create:react', () => {
 
   const tokenServerEndpoint = () => `http://localhost:${serverPort}/token`;
 
-  const forceApplicationPorts = (ClientPort: number, serverPort: number) => {
+  const forceApplicationPorts = (clientPort: number, serverPort: number) => {
     const pathToEnv = resolve(getProjectPath(projectName), '.env');
     const environment = config({
       path: pathToEnv,
@@ -44,7 +44,7 @@ describe('ui:create:react', () => {
 
     const updatedEnvironment = {
       ...environment,
-      PORT: ClientPort,
+      PORT: clientPort,
       REACT_APP_SERVER_PORT: serverPort,
     };
     truncateSync(pathToEnv);
@@ -252,11 +252,11 @@ describe('ui:create:react', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      await deactivateEnvironmentFile(projectName);
+      deactivateEnvironmentFile(projectName);
     });
 
     afterAll(async () => {
-      await restoreEnvironmentFile(projectName);
+      restoreEnvironmentFile(projectName);
       await serverProcessManager.killAllProcesses();
     }, 5e3);
 
