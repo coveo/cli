@@ -3,7 +3,7 @@ import {Rule, SchematicContext, Tree} from '@angular-devkit/schematics';
 import {CoveoSchema} from '../../schema';
 
 /**
- * Create a npm script in the project root to start both the Angular app and the proxy server
+ * Create a npm script in the project root to start both the Angular app and the search token server
  */
 export function configureStartCommand(_options: CoveoSchema): Rule {
   return (tree: Tree, _context: SchematicContext) => {
@@ -25,7 +25,10 @@ export function configureStartCommand(_options: CoveoSchema): Rule {
         JSON.stringify(packageJson, null, 4)
       );
     } catch (error) {
-      console.error('Unable to add proxy to project workspace', error);
+      console.error(
+        'Something wrong happened while reading the package.json',
+        error
+      );
     }
   };
 }
