@@ -65,7 +65,7 @@ export default class Dump extends Command {
       default: '.',
     }),
     name: flags.string({
-      char: 'd',
+      char: 'n',
       description: 'The name of the CSV file that should be created',
       default: 'indexdump',
     }),
