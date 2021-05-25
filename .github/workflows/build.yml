@@ -55,9 +55,9 @@ jobs:
           Set-Variable -Name "UI_TEMPLATE_VERSION" -Value "0.0.0"
           npm set registry http://localhost:4873
           yarn config set  registry http://localhost:4873
-          yarn config set -- --mutex network
-          yarn config set -- --install.silent true
-          yarn config set -- --silent true
+          echo "--mutex network" >> ~/.yarnrc
+          echo "--install.silent true" >> ~/.yarnrc
+          echo "--silent true" >> ~/.yarnrc
 
           npm run npm:bump:template -- -- $UI_TEMPLATE_VERSION
 
