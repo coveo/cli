@@ -36,7 +36,7 @@ USAGE
 * [`coveo config:set`](#coveo-configset)
 * [`coveo help [COMMAND]`](#coveo-help-command)
 * [`coveo org:list`](#coveo-orglist)
-* [`coveo search:dump`](#coveo-searchdump)
+* [`coveo org:search:dump`](#coveo-orgsearchdump)
 * [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
 * [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
 * [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
@@ -143,25 +143,36 @@ OPTIONS
 
 _See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v1.2.1/src/commands/org/list.ts)_
 
-## `coveo search:dump`
+## `coveo org:search:dump`
 
 Dump the whole content of a particular source in a CSV format.
 
 ```
 USAGE
-  $ coveo search:dump
+  $ coveo org:search:dump
 
 OPTIONS
+  -c, --chunkSize=chunkSize                [default: 10000] The maximum number of results extract into each CSV file.
+                                           Default is 10000
+
   -d, --destination=destination            [default: .] The folder destination where the CSV file should be created
+
   -d, --name=name                          [default: indexdump] The name of the CSV file that should be created
 
   -f, --additionalFilter=additionalFilter  Additional search filter that should be applied while doing the extraction.
                                            See https://docs.coveo.com/en/1552 for more information
 
-  -s, --source=mySourceName                (required) The identifier of the source for which to extract all documents.
+  -p, --pipeline=pipeline                  The name of the query pipeline for which to extract all documents. If not
+                                           specified, the default query pipeline will be used.
+
+  -s, --source=mySourceName                (required) The name (not the identifier) of the source(s) for which to
+                                           extract all documents.
+
+  -x, --fieldsToExclude=fieldsToExclude    The fields to exclude from the datadump. If not specified, all fields will be
+                                           returned
 ```
 
-_See code: [src/commands/search/dump.ts](https://github.com/coveo/cli/blob/v1.2.1/src/commands/search/dump.ts)_
+_See code: [src/commands/org/search/dump.ts](https://github.com/coveo/cli/blob/v1.2.1/src/commands/org/search/dump.ts)_
 
 ## `coveo ui:create:angular NAME`
 

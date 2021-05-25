@@ -86,7 +86,7 @@
       "ui:create": {
         "description": "create a user interface powered by different front end frameworks and Coveo Headless"
       },
-      "search": {
+      "org:search": {
         "description": "perform queries against a coveo index"
       }
     },

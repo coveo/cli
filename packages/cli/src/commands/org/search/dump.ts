@@ -1,10 +1,10 @@
 import {Command, flags} from '@oclif/command';
-import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {
   Preconditions,
   IsAuthenticated,
-} from '../../lib/decorators/preconditions/';
-import {Config} from '../../lib/config/config';
+} from '../../../lib/decorators/preconditions';
+import {Config} from '../../../lib/config/config';
 import PlatformClient from '@coveord/platform-client';
 import {writeFile} from 'fs-extra';
 import {Parser} from 'json2csv';
@@ -12,7 +12,7 @@ import {cli} from 'cli-ux';
 import {
   buildAnalyticsFailureHook,
   buildAnalyticsSuccessHook,
-} from '../../hooks/analytics/analytics';
+} from '../../../hooks/analytics/analytics';
 
 interface SearchResult {
   raw: {rowid: string};

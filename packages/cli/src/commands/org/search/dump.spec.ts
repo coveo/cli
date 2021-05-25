@@ -3,7 +3,7 @@ jest.mock('../../lib/platform/authenticatedClient');
 
 import {test} from '@oclif/test';
 import {mocked} from 'ts-jest/utils';
-import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 const mockedAuthenticatedClient = mocked(AuthenticatedClient);
 const mockSearch = jest.fn();
 
