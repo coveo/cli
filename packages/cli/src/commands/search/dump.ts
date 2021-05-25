@@ -35,8 +35,10 @@ interface SearchResponse {
 interface FetchParameters {
   client: PlatformClient;
   organizationId: string;
-  source: string;
+  sources: string[];
   additionalFilter: string;
+  fieldsToExclude: string[] | undefined;
+  pipeline: string | undefined;
 }
 
 export default class Dump extends Command {
@@ -47,9 +49,21 @@ export default class Dump extends Command {
     source: flags.string({
       char: 's',
       description:
-        'The identifier of the source for which to extract all documents.',
+        'The name (not the identifier) of the source(s) for which to extract all documents.',
       helpValue: 'mySourceName',
       required: true,
+      multiple: true,
+    }),
+    pipeline: flags.string({
+      char: 'p',
+      description:
+        'The name of the query pipeline for which to extract all documents. If not specified, the default query pipeline will be used.',
+    }),
+    fieldsToExclude: flags.string({
+      char: 'x',
+      description:
+        'The fields to exclude from the datadump. If not specified, all fields will be returned',
+      multiple: true,
     }),
     destination: flags.string({
       char: 'd',
@@ -68,6 +82,12 @@ export default class Dump extends Command {
         'Additional search filter that should be applied while doing the extraction. See https://docs.coveo.com/en/1552 for more information',
       default: '',
     }),
+    chunkSize: flags.integer({
+      char: 'c',
+      description:
+        'The maximum number of results extract into each CSV file. Default is 10000',
+      default: 10000,
+    }),
   };
 
   @Preconditions(IsAuthenticated())
@@ -81,18 +101,34 @@ export default class Dump extends Command {
     const allResults = await this.fetchResults({
       client,
       organizationId,
-      source: flags.source,
+      sources: flags.source,
+      pipeline: flags.pipeline,
       additionalFilter: flags.additionalFilter,
+      fieldsToExclude: flags.fieldsToExclude,
     });
 
     if (allResults.length === 0) {
       this.log(
-        'Found no results. Are you sure the source name and filter are valid ?'
+        'Found no results. Are you sure the sources name, filters, pipeline are valid ?'
       );
     } else {
-      const data = allResults.map((r) => r.raw);
-      const parser = new Parser({fields: Object.keys(allResults[0].raw)});
-      writeFile(`${flags.destination}/${flags.name}.csv`, parser.parse(data));
+      let currentChunk = 0;
+      while (allResults.length) {
+        const chunk = allResults.splice(0, flags.chunkSize);
+        const data = chunk.map((r) => r.raw);
+        const parser = new Parser({fields: Object.keys(chunk[0].raw)});
+        await writeFile(
+          `${flags.destination}/${flags.name}${
+            currentChunk > 0 ? `_${currentChunk + 1}` : ''
+          }.csv`,
+          parser.parse(data)
+        );
+        currentChunk++;
+      }
+      //allResults.splice();
+      //const data = allResults.map((r) => r.raw);
+      //const parser = new Parser({fields: Object.keys(allResults[0].raw)});
+      //writeFile(`${flags.destination}/${flags.name}.csv`, parser.parse(data));
     }
 
     this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
@@ -108,7 +144,11 @@ export default class Dump extends Command {
   }
 
   private getFilter(params: FetchParameters, rowId = '') {
-    return `( @source=="${params.source}" ) ${params.additionalFilter} ${
+    const sourcesFilter = `(${params.sources
+      .map((source) => `( @source=="${source}" )`)
+      .join(' OR ')})`;
+
+    return `${sourcesFilter} ${params.additionalFilter} ${
       rowId !== '' ? `( @rowid>${rowId} )` : ''
     }`;
   }
@@ -123,7 +163,9 @@ export default class Dump extends Command {
 
     if (isFirstQuery) {
       this.log(
-        `Fetching all results from organization ${params.organizationId} from source ${params.source}...`
+        `Fetching all results from organization ${
+          params.organizationId
+        } from source(s) ${params.sources.join(',')}...`
       );
       if (params.additionalFilter) {
         this.log(`Applying additional filter ${params.additionalFilter}`);
@@ -137,6 +179,8 @@ export default class Dump extends Command {
       organizationId: params.organizationId,
       numberOfResults: 1000,
       sortCriteria: '@rowid ascending',
+      ...(params.fieldsToExclude && {fieldsToExclude: params.fieldsToExclude}),
+      ...(params.pipeline && {pipeline: params.pipeline}),
       ...(indexToken !== '' && {indexToken: indexToken}),
     })) as SearchResponse;
     if (isFirstQuery) {

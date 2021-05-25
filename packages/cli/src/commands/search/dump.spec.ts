@@ -54,6 +54,50 @@ describe('search:dump', () => {
       mockReturnNumberOfResults(0);
     })
     .stdout()
+    .command(['search:dump', '-s', 'the_source_1', '-s', 'the_source_2'])
+    .it('should pass multiple sources as a search filter', () =>
+      expect(mockSearch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          aq: expect.stringContaining(
+            '( @source=="the_source_1" ) OR ( @source=="the_source_2" )'
+          ),
+        })
+      )
+    );
+
+  test
+    .do(() => {
+      mockReturnNumberOfResults(0);
+    })
+    .stdout()
+    .command(['search:dump', '-s', 'the_source_1', '-p', 'mypipeline'])
+    .it('should pass pipeline as a search parameter', () =>
+      expect(mockSearch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          pipeline: 'mypipeline',
+        })
+      )
+    );
+
+  test
+    .do(() => {
+      mockReturnNumberOfResults(0);
+    })
+    .stdout()
+    .command(['search:dump', '-s', 'the_source_1', '-x', 'foo', '-x', 'bar'])
+    .it('should pass fieldsToExclude as a search parameter', () =>
+      expect(mockSearch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fieldsToExclude: ['foo', 'bar'],
+        })
+      )
+    );
+
+  test
+    .do(() => {
+      mockReturnNumberOfResults(0);
+    })
+    .stdout()
     .command(['search:dump', '-s', 'the_source', '-f', 'my-filter'])
     .it('should pass additional filter as a search filter', () =>
       expect(mockSearch).toHaveBeenCalledWith(
