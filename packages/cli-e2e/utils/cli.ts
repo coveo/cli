@@ -12,6 +12,7 @@ import {Terminal} from './terminal/terminal';
 export const isGenericYesNoPrompt = /\(y\/n\)[\s:]*$/i;
 
 export function answerPrompt(answer: string) {
+  console.log('answering prompt');
   return (proc: ChildProcessWithoutNullStreams) =>
     new Promise<void>((resolve) => {
       if (!proc.stdin.write(answer)) {

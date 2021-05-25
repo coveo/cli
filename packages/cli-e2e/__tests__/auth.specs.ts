@@ -28,6 +28,8 @@ describe('auth', () => {
       if (process.platform === 'win32') {
         args.unshift('node');
       }
+      console.log(args.join(' '));
+      await captureScreenshots(browser);
       const cliTerminal = new Terminal(
         args.shift()!,
         args,
@@ -35,15 +37,17 @@ describe('auth', () => {
         processManager,
         'auth-login'
       );
-
+      await captureScreenshots(browser);
       cliTerminal
         .when(isGenericYesNoPrompt)
         .on('stderr')
         .do(answerPrompt('n'))
         .once();
-
+      let count = 0;
       await retry(async () => {
         const pages = await browser.pages();
+        await captureScreenshots(browser, `test${count++}`);
+        pages.forEach((page) => console.log(page.url()));
         expect(
           pages.some(
             // TODO CDX-98: URL should vary in fonction of the targeted environment.
