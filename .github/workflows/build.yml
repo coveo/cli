@@ -11,6 +11,7 @@ jobs:
     env:
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
+      UI_TEMPLATE_VERSION: '0.0.0'
       # https://github.com/oclif/plugin-update/blob/master/src/hooks/init.ts#L22 tldr: pls oclif dont try to autoupdate when im running locally or doing test. Ought to be prefixed tho.
       COVEO_DISABLE_AUTOUPDATE: true
     steps:
@@ -52,7 +53,6 @@ jobs:
           npm run setup
           npm run build
 
-          Set-Variable -Name "UI_TEMPLATE_VERSION" -Value "0.0.0"
           npm set registry http://localhost:4873
           yarn config set  registry http://localhost:4873
           echo "--mutex network" | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
