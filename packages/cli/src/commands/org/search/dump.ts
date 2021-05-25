@@ -13,19 +13,12 @@ import {
   buildAnalyticsFailureHook,
   buildAnalyticsSuccessHook,
 } from '../../../hooks/analytics/analytics';
+// eslint-disable-next-line node/no-extraneous-import
+import {SingleBar} from 'cli-progress';
 
 interface SearchResult {
   raw: {rowid: string};
 }
-
-interface ProgressBar {
-  update: (up: number) => void;
-  stop: () => void;
-  start: (total: number, current: number) => void;
-  setTotal: (tot: number) => void;
-  increment: (inc: number) => void;
-}
-
 interface SearchResponse {
   indexToken: string;
   results: SearchResult[];
@@ -156,7 +149,7 @@ export default class Dump extends Command {
 
   private async fetchResults(
     params: FetchParameters,
-    progress: ProgressBar = this.progressBar,
+    progress = this.progressBar,
     indexToken = '',
     rowId = ''
   ): Promise<SearchResult[]> {
@@ -209,6 +202,6 @@ export default class Dump extends Command {
   private get progressBar() {
     return cli.progress({
       format: 'Progress | {bar} | ETA: {eta}s | {value}/{total} results',
-    }) as ProgressBar;
+    }) as SingleBar;
   }
 }
