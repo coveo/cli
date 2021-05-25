@@ -27,7 +27,7 @@ export class EngineService {
   }
 
   getTokenEndpoint = () => {
-    return environment.customtokenEndpoint || environment.defaultTokenEndpoint;
+    return environment.customTokenEndpoint || environment.defaultTokenEndpoint;
   };
 
   get() {

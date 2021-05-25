@@ -49,9 +49,9 @@ describe('ui:create:angular', () => {
       'environments',
       'environment.ts'
     );
-    const portNumberMatcher = /customtokenEndpoint:\s?.*$/m;
+    const portNumberMatcher = /customTokenEndpoint:\s?.*$/m;
     const appEnvironmentFile = readFileSync(webAppEnvironment, 'utf-8');
-    const subst = `customtokenEndpoint: '${endpoint}',`;
+    const subst = `customTokenEndpoint: '${endpoint}',`;
     const updatedEnvironment = appEnvironmentFile.replace(
       portNumberMatcher,
       subst

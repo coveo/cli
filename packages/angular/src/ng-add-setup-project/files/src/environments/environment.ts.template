@@ -9,7 +9,7 @@ export const environment = {
    * Example: tokenEndpoint: 'https://acme.com/token',
    * If kept to null, `defaultTokenEndpoint` will be used fetch the search token from the local server within this project
    */
-  customtokenEndpoint: null,
+  customTokenEndpoint: null,
   /**
    * The default endpoint to the server returning Coveo search tokens.
    */
