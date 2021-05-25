@@ -11,7 +11,7 @@ import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {commitProject, undoCommit} from '../utils/git';
 
-describe('ui:create:react', () => {
+describe.skip('ui:create:react', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
   let page: Page;

@@ -16,7 +16,7 @@ import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {commitProject, undoCommit} from '../utils/git';
 
-describe('ui:create:vue', () => {
+describe.skip('ui:create:vue', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
   let page: Page;
