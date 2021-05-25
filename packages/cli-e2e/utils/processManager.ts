@@ -43,7 +43,7 @@ export class ProcessManager {
               console.error(
                 `Process pid is not a number. Received pid: ${currentProcess.pid}`
               );
-              resolve();
+              return resolve();
             }
             process.kill(
               (process.platform === 'win32' ? +1 : -1) * currentProcess.pid

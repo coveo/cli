@@ -39,10 +39,15 @@ jobs:
         run: |
           Start-Process "npx" -ArgumentList "verdaccio --config ./docker/config/config.yaml"
           Start-Process "C:/Program Files/Google/Chrome/Application/chrome.exe" -ArgumentList "--no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720"
+
           ./utils/SetuserFTA.exe  http ChromeHTML
           ./utils/SetuserFTA.exe  https ChromeHTML
           ./utils/SetuserFTA.exe  .htm ChromeHTML
           ./utils/SetuserFTA.exe  .html ChromeHTML
+
+          git config --global user.name "notgroot"
+          git config --global user.email "notgroot@coveo.com"
+
           cd ../..
           npm run setup
           npm run build
