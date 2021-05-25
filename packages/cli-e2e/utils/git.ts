@@ -45,7 +45,7 @@ export const undoCommit = async (
   projectName: string
 ) => {
   const gitTerminal = new Terminal(
-    'git',
+    'git' + process.platform === 'win32' ? '.exe' : '',
     ['reset', 'HEAD~'],
     {cwd: pathToRepo},
     processManager,

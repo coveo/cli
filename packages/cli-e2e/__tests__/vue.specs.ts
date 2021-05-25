@@ -98,12 +98,14 @@ describe('ui:create:vue', () => {
 
   describe('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
+    let gitProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
     let consoleInterceptor: BrowserConsoleInterceptor;
     const searchboxSelector = '#search-page .autocomplete input';
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
+      gitProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
       await startApplication(serverProcessManager);
     }, 2 * 60e3);
@@ -125,11 +127,12 @@ describe('ui:create:vue', () => {
 
     afterAll(async () => {
       await undoCommit(
-        serverProcessManager,
+        gitProcessManager,
         getProjectPath(projectName),
         projectName
       );
       await serverProcessManager.killAllProcesses();
+      await gitProcessManager.killAllProcesses();
     }, 5e3);
 
     it('should not contain console errors nor warnings', async () => {
