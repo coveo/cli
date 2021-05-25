@@ -8,9 +8,6 @@ import {CoveoSchema} from '../../schema';
 export function configureStartCommand(_options: CoveoSchema): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     const packageJsonBuffer = tree.read(normalize('./package.json'));
-    if (packageJsonBuffer === null) {
-      return;
-    }
 
     try {
       const packageJson = JSON.parse(packageJsonBuffer.toString());
