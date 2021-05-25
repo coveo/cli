@@ -59,7 +59,7 @@ jobs:
           echo "--install.silent true" | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
           echo "--silent true" | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
 
-          npm run npm:bump:template -- -- $UI_TEMPLATE_VERSION
+          npm run npm:bump:template -- -- "0.0.0"
 
           npm run npm:publish:template
 
