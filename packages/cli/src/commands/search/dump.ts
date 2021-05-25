@@ -112,23 +112,7 @@ export default class Dump extends Command {
         'Found no results. Are you sure the sources name, filters, pipeline are valid ?'
       );
     } else {
-      let currentChunk = 0;
-      while (allResults.length) {
-        const chunk = allResults.splice(0, flags.chunkSize);
-        const data = chunk.map((r) => r.raw);
-        const parser = new Parser({fields: Object.keys(chunk[0].raw)});
-        await writeFile(
-          `${flags.destination}/${flags.name}${
-            currentChunk > 0 ? `_${currentChunk + 1}` : ''
-          }.csv`,
-          parser.parse(data)
-        );
-        currentChunk++;
-      }
-      //allResults.splice();
-      //const data = allResults.map((r) => r.raw);
-      //const parser = new Parser({fields: Object.keys(allResults[0].raw)});
-      //writeFile(`${flags.destination}/${flags.name}.csv`, parser.parse(data));
+      await this.writeChunks(allResults);
     }
 
     this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
@@ -141,6 +125,23 @@ export default class Dump extends Command {
       buildAnalyticsFailureHook(this, flags, err)
     );
     throw err;
+  }
+
+  private async writeChunks(allResults: SearchResult[]) {
+    const {flags} = this.parse(Dump);
+    let currentChunk = 0;
+    while (allResults.length) {
+      const chunk = allResults.splice(0, flags.chunkSize);
+      const data = chunk.map((r) => r.raw);
+      const parser = new Parser({fields: Object.keys(chunk[0].raw)});
+      await writeFile(
+        `${flags.destination}/${flags.name}${
+          currentChunk > 0 ? `_${currentChunk + 1}` : ''
+        }.csv`,
+        parser.parse(data)
+      );
+      currentChunk++;
+    }
   }
 
   private getFilter(params: FetchParameters, rowId = '') {
