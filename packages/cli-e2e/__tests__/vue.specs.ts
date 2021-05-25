@@ -54,7 +54,7 @@ describe('ui:create:vue', () => {
 
   const startApplication = async (processManager: ProcessManager) => {
     const serverTerminal = new Terminal(
-      'npm' + process.platform === 'win32' ? '.cmd' : '',
+      `npm${process.platform === 'win32' ? '.cmd' : ''}`,
       ['run', 'start'],
       {
         cwd: getProjectPath(projectName),
@@ -216,7 +216,7 @@ describe('ui:create:vue', () => {
       'should not have any ESLint warning or error',
       async () => {
         const serverTerminal = new Terminal(
-          'npm' + process.platform === 'win32' ? '.cmd' : '',
+          `npm${process.platform === 'win32' ? '.cmd' : ''}`,
           ['run', 'start'],
           {
             cwd: getProjectPath(projectName),

@@ -41,7 +41,7 @@ describe('ui:create:react', () => {
 
   const startApplication = async (processManager: ProcessManager) => {
     const serverTerminal = new Terminal(
-      'npm' + process.platform === 'win32' ? '.cmd' : '',
+      `npm${process.platform === 'win32' ? '.cmd' : ''}`,
       ['run', 'start'],
       {
         cwd: getProjectPath(projectName),
