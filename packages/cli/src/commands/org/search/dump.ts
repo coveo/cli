@@ -193,10 +193,9 @@ export default class Dump extends Command {
         lastRowID
       );
       return response.results.concat(nextPage);
-    } else {
-      progress.stop();
-      return response.results;
     }
+    progress.stop();
+    return response.results;
   }
 
   private get progressBar() {
