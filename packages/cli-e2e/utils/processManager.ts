@@ -3,6 +3,7 @@ import {
   SpawnOptionsWithoutStdio,
   spawn as nativeSpawn,
 } from 'child_process';
+import {recurseProcessKillWindows} from './windowsProcessKiller';
 
 export class ProcessManager {
   private processes: Set<ChildProcessWithoutNullStreams>;
@@ -48,9 +49,11 @@ export class ProcessManager {
               );
               return resolve();
             }
-            process.kill(
-              (process.platform === 'win32' ? +1 : -1) * currentProcess.pid
-            );
+            if (process.platform === 'win32') {
+              recurseProcessKillWindows(currentProcess.pid);
+            } else {
+              process.kill(-currentProcess.pid);
+            }
             resolve();
           })
         );
