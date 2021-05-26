@@ -4,6 +4,7 @@ import {
   spawn as nativeSpawn,
 } from 'child_process';
 
+import terminate from 'terminate';
 export class ProcessManager {
   private processes: Set<ChildProcessWithoutNullStreams>;
   constructor() {
@@ -45,9 +46,7 @@ export class ProcessManager {
               );
               return resolve();
             }
-            process.kill(
-              (process.platform === 'win32' ? +1 : -1) * currentProcess.pid
-            );
+            terminate(currentProcess.pid);
             resolve();
           })
         );
