@@ -56,9 +56,7 @@ describe('ui:create:vue', () => {
 
   const npmJsPath = join(
     dirname(
-      spawnSync('where.exe npm', {encoding: 'utf-8'})
-        .output.toString()
-        .split(EOL)[0]
+      spawnSync('where.exe npm', {encoding: 'utf-8'}).stdout.split(EOL)[0]
     ),
     'node_modules',
     'npm',
