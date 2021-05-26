@@ -11,17 +11,34 @@ Coveo CLI is a command line interface to interact with the Coveo platform. It al
 Installation links:
 
 Mac:
+
 - http://static.cloud.coveo.com/cli/coveo-latest.pkg
 
 Windows:
+
 - http://static.cloud.coveo.com/cli/coveo-latest-x64.exe
 - http://static.cloud.coveo.com/cli/coveo-latest-x32.exe
 
 Linux:
+
 - http://static.cloud.coveo.com/cli/coveo-latest_amd64.deb
 - http://static.cloud.coveo.com/cli/coveo-latest_armel.deb
 
 These executables install the latest available version. Afterwards, anytime you run `coveo update`, your CLI installation will update to the latest version.
+
+If you have [installed node-gyp](https://github.com/nodejs/node-gyp#installation), you can alternatively install globally via [npm](https://www.npmjs.com/package/@coveo/cli):
+
+```sh
+npm install -g @coveo/cli
+```
+
+Afterwards, anytime you run `coveo update`, your CLI installation will also update to the latest version.
+
+With node-gyp, you can also run via [npx](https://www.npmjs.com/package/npx):
+
+```sh
+npx @coveo/cli
+```
 
 In practice, you'll typically want to [`login`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-authlogin) to your Coveo Organization, [`configure`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-configset) the CLI to connect to this organization, and finally create a search page (see [`coveo ui:create:angular NAME`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-uicreateangular-name), [`coveo ui:create:react NAME`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-uicreatereact-name) and [`coveo ui:create:vue NAME`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-uicreatevue-name)).
 

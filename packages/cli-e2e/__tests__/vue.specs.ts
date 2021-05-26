@@ -11,12 +11,22 @@ import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {isSearchRequest} from '../utils/platform';
 import {EOL} from 'os';
 import {ProcessManager} from '../utils/processManager';
-import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
+import {
+  deactivateEnvironmentFile,
+  restoreEnvironmentFile,
+  getPathToEnvFile,
+  overwriteEnvFile,
+  flushEnvFile,
+} from '../utils/file';
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {commitProject, undoCommit} from '../utils/git';
 import {spawnSync} from 'child_process';
-import {dirname, join} from 'path';
+import {dirname, join, resolve} from 'path';
+import {config} from 'dotenv';
+import {DummyServer} from '../utils/server';
+import {appendFileSync, truncateSync} from 'fs';
+import getPort from 'get-port';
 
 describe('ui:create:vue', () => {
   let browser: Browser;
@@ -24,10 +34,51 @@ describe('ui:create:vue', () => {
   let page: Page;
   const oldEnv = process.env;
   const projectName = `${process.env.GITHUB_ACTION}-vue-project`;
-  // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
-  const clientPort = '8080';
-  const searchPageEndpoint = `http://localhost:${clientPort}`;
-  const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
+  let clientPort: number;
+  let serverPort: number;
+
+  const searchPageEndpoint = () => `http://localhost:${clientPort}`;
+
+  const tokenServerEndpoint = () => `http://localhost:${serverPort}/token`;
+
+  const forceApplicationPorts = (clientPort: number, serverPort: number) => {
+    const pathToEnv = resolve(getProjectPath(projectName), '.env');
+    const environment = config({
+      path: pathToEnv,
+    }).parsed;
+
+    const updatedEnvironment = {
+      ...environment,
+      PORT: clientPort,
+      VUE_APP_SERVER_PORT: serverPort,
+    };
+    truncateSync(pathToEnv);
+    for (const [key, value] of Object.entries(updatedEnvironment)) {
+      appendFileSync(pathToEnv, `${key}=${value}${EOL}`);
+    }
+  };
+
+  const waitForAppRunning = (appTerminal: Terminal) =>
+    appTerminal
+      .when(/App running at:/)
+      .on('stdout')
+      .do()
+      .once();
+
+  const getAllocatedPorts = () => {
+    const envVariables = config({
+      path: getPathToEnvFile(projectName),
+    }).parsed;
+
+    if (!envVariables) {
+      throw new Error('Unable to load project environment variables');
+    }
+
+    clientPort = parseInt(envVariables.PORT);
+    serverPort = parseInt(envVariables.VUE_APP_SERVER_PORT);
+
+    return [clientPort, serverPort];
+  };
 
   const buildApplication = async (processManager: ProcessManager) => {
     const buildTerminal = setupUIProject(
@@ -64,12 +115,16 @@ describe('ui:create:vue', () => {
     'npm-cli.js'
   );
 
-  const startApplication = async (processManager: ProcessManager) => {
+  const startApplication = async (
+    processManager: ProcessManager,
+    debugName = 'vue-server'
+  ) => {
     const args = ['npm', 'run', 'start'];
     if (process.platform === 'win32') {
       args[0] = npmJsPath;
       args.unshift('node');
     }
+
     const serverTerminal = new Terminal(
       args.shift()!,
       args,
@@ -77,14 +132,18 @@ describe('ui:create:vue', () => {
         cwd: getProjectPath(projectName),
       },
       processManager,
-      'vue-server'
+      debugName
     );
+    return serverTerminal;
+    // await Promise.race([
+    //   serverTerminal
+    //     .when(/App running at:/)
+    //     .on('stdout')
+    //     .do()
+    //     .once(),
+    // ]);
 
-    await serverTerminal
-      .when(/App running at:/)
-      .on('stdout')
-      .do()
-      .once();
+    // [clientPort, serverPort] = getAllocatedPorts();
   };
 
   beforeAll(async () => {
@@ -124,7 +183,12 @@ describe('ui:create:vue', () => {
       serverProcessManager = new ProcessManager();
       gitProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      await startApplication(serverProcessManager);
+      const appTerminal = await startApplication(
+        serverProcessManager,
+        'vue-server-valid'
+      );
+      await waitForAppRunning(appTerminal);
+      [clientPort, serverPort] = getAllocatedPorts();
     }, 2 * 60e3);
 
     beforeEach(async () => {
@@ -153,7 +217,7 @@ describe('ui:create:vue', () => {
     }, 5e3);
 
     it('should not contain console errors nor warnings', async () => {
-      await page.goto(searchPageEndpoint, {
+      await page.goto(searchPageEndpoint(), {
         waitUntil: 'networkidle2',
       });
 
@@ -161,7 +225,7 @@ describe('ui:create:vue', () => {
     });
 
     it('should contain a search page section', async () => {
-      await page.goto(searchPageEndpoint, {
+      await page.goto(searchPageEndpoint(), {
         waitUntil: 'networkidle2',
       });
       await page.waitForSelector(searchboxSelector);
@@ -170,9 +234,9 @@ describe('ui:create:vue', () => {
     });
 
     it('should retrieve the search token on the page load', async () => {
-      const tokenResponseListener = page.waitForResponse(tokenProxyEndpoint);
+      const tokenResponseListener = page.waitForResponse(tokenServerEndpoint());
 
-      page.goto(searchPageEndpoint);
+      page.goto(searchPageEndpoint());
       await page.waitForSelector(searchboxSelector);
 
       expect(
@@ -183,14 +247,14 @@ describe('ui:create:vue', () => {
     });
 
     it('should send a search query when the page is loaded', async () => {
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchboxSelector);
 
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
     });
 
     it('should send a search query on searchbox submit', async () => {
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchboxSelector);
 
       interceptedRequests = [];
@@ -260,25 +324,154 @@ describe('ui:create:vue', () => {
     );
   });
 
-  describe('when the required environment variables are missing', () => {
+  describe('when the .env file is missing', () => {
     let serverProcessManager: ProcessManager;
-    const errorPage = `http://localhost:${clientPort}/error`;
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      await deactivateEnvironmentFile(projectName);
-      await startApplication(serverProcessManager);
+      deactivateEnvironmentFile(projectName);
+    });
+
+    afterAll(async () => {
+      restoreEnvironmentFile(projectName);
+      await serverProcessManager.killAllProcesses();
+    }, 5e3);
+
+    it(
+      'should not start the application',
+      async () => {
+        const missingEnvErrorSpy = jest.fn();
+
+        const appTerminal = await startApplication(
+          serverProcessManager,
+          'vue-server-missing-env'
+        );
+
+        await appTerminal
+          .when(/\.env file not found in the project root/)
+          .on('stderr')
+          .do(missingEnvErrorSpy)
+          .once();
+
+        expect(missingEnvErrorSpy).toHaveBeenCalled();
+      },
+      2 * 60e3
+    );
+  });
+
+  describe('when required environment variables are not defined', () => {
+    let serverProcessManager: ProcessManager;
+    let envFileContent = '';
+
+    beforeAll(async () => {
+      serverProcessManager = new ProcessManager();
+      processManagers.push(serverProcessManager);
+      envFileContent = flushEnvFile(projectName);
+      await startApplication(serverProcessManager, 'vue-server-invalid');
     }, 2 * 60e3);
 
     afterAll(async () => {
-      await restoreEnvironmentFile(projectName);
+      overwriteEnvFile(projectName, envFileContent);
       await serverProcessManager.killAllProcesses();
     }, 5e3);
 
     it('should redirect the user to an error page', async () => {
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-      expect(page.url()).toEqual(errorPage);
+      await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
+      expect(page.url()).toEqual(`${searchPageEndpoint()}/error`);
+    });
+  });
+
+  describe('when the ports are manually specified', () => {
+    let serverProcessManager: ProcessManager;
+    let hardCodedClientPort: number;
+    let hardCodedServerPort: number;
+
+    beforeAll(async () => {
+      hardCodedClientPort = await getPort();
+      hardCodedServerPort = await getPort();
+      serverProcessManager = new ProcessManager();
+      processManagers.push(serverProcessManager);
+      forceApplicationPorts(hardCodedClientPort, hardCodedServerPort);
+
+      const appTerminal = await startApplication(
+        serverProcessManager,
+        'vue-server-port-test'
+      );
+      await waitForAppRunning(appTerminal);
+      [clientPort, serverPort] = getAllocatedPorts();
+    }, 2 * 60e3);
+
+    afterAll(async () => {
+      await serverProcessManager.killAllProcesses();
+    }, 5e3);
+
+    it('should run the application on the specified port', async () => {
+      expect(clientPort).toEqual(hardCodedClientPort);
+    });
+
+    it('should run the token server on the specified port', async () => {
+      expect(serverPort).toEqual(hardCodedServerPort);
+    });
+  });
+
+  describe('when the ports are busy', () => {
+    const dummyServers: DummyServer[] = [];
+    let serverProcessManager: ProcessManager;
+    let usedClientPort: number;
+    let usedServerPort: number;
+
+    beforeAll(async () => {
+      usedClientPort = await getPort();
+      usedServerPort = await getPort();
+      serverProcessManager = new ProcessManager();
+      processManagers.push(serverProcessManager);
+      forceApplicationPorts(usedClientPort, usedServerPort);
+
+      dummyServers.push(
+        new DummyServer(usedClientPort),
+        new DummyServer(usedServerPort)
+      );
+
+      const appTerminal = await startApplication(
+        serverProcessManager,
+        'vue-server-port-test'
+      );
+      await waitForAppRunning(appTerminal);
+      [clientPort, serverPort] = getAllocatedPorts();
+    }, 2 * 60e3);
+
+    afterAll(async () => {
+      await Promise.all(dummyServers.map((server) => server.close()));
+      await serverProcessManager.killAllProcesses();
+    }, 5e3);
+
+    it('should allocate a new port for the application', async () => {
+      expect(clientPort).not.toEqual(usedClientPort);
+    });
+
+    it('should not use an undefined port for application', async () => {
+      expect(clientPort).not.toBeUndefined();
+    });
+
+    it('should allocate a new port for the token server', async () => {
+      expect(serverPort).not.toEqual(usedServerPort);
+    });
+
+    it('should not use an undefined port for token server', async () => {
+      expect(serverPort).not.toBeUndefined();
+    });
+
+    it('should run the application on a new port', async () => {
+      await expect(
+        page.goto(searchPageEndpoint(), {waitUntil: 'load'})
+      ).resolves.not.toThrow();
+    });
+
+    it('should run the server on a new port', async () => {
+      await expect(
+        page.goto(tokenServerEndpoint(), {waitUntil: 'load'})
+      ).resolves.not.toThrow();
     });
   });
 

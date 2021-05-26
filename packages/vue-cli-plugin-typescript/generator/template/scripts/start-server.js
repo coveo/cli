@@ -5,12 +5,9 @@ const {appendCmdIfWindows} = require('./utils');
 config();
 
 function getEnvVariables() {
-  // TODO: CDX-99: assign port dynamically
-  // The Vue CLi has a --proxy flag.
-  const searchTokenServerPort = 4000;
   var envVars = Object.assign(
     {
-      SERVER_PORT: searchTokenServerPort,
+      SERVER_PORT: process.env.VUE_APP_SERVER_PORT,
       API_KEY: process.env.VUE_APP_API_KEY,
       ORGANIZATION_ID: process.env.VUE_APP_ORGANIZATION_ID,
       PLATFORM_URL: process.env.VUE_APP_PLATFORM_URL,

@@ -1,6 +1,5 @@
 import {Router} from '@angular/router';
 import {Injectable, APP_INITIALIZER} from '@angular/core';
-import {environment} from '../environments/environment';
 import {EngineService} from './engine.service';
 
 @Injectable({
@@ -10,7 +9,7 @@ export class InitService {
   constructor(private engineService: EngineService, private route: Router) {}
 
   async init() {
-    const res = await fetch(environment.tokenEndpoint);
+    const res = await fetch(this.engineService.getTokenEndpoint());
     const data = await res.json();
     const token = data.token;
 

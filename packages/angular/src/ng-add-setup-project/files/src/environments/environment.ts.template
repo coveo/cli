@@ -4,8 +4,25 @@
 
 export const environment = {
   production: false,
-  tokenEndpoint: '/token',
+  /**
+   * The endpoint to the server returning Coveo search tokens.
+   * Example: tokenEndpoint: 'https://acme.com/token',
+   * If kept to undefined, `defaultTokenEndpoint` will be used fetch the search token from the local server within this project
+   */
+  customTokenEndpoint: undefined,
+  /**
+   * The default endpoint to the server returning Coveo search tokens.
+   */
+  defaultTokenEndpoint: 'http://localhost:0000/token',
+  /**
+   * The Plaform URL to use.
+   * See https://docs.coveo.com/en/2976/coveo-solutions/deployment-regions-and-strategies
+   */
   platformUrl: '<%=platformUrl%>',
+  /**
+   * The unique identifier of the organization in which to generate a search token.
+   * See https://docs.coveo.com/en/148/manage-an-organization/retrieve-the-organization-id
+   */
   organizationId: '<%=orgId%>',
 };
 
