@@ -53,9 +53,13 @@ describe('ui:create:vue', () => {
   };
 
   const startApplication = async (processManager: ProcessManager) => {
+    const args = ['npm', 'run', 'start'];
+    if (process.platform === 'win32') {
+      args.unshift('node');
+    }
     const serverTerminal = new Terminal(
-      `npm${process.platform === 'win32' ? '.cmd' : ''}`,
-      ['run', 'start'],
+      args.shift()!,
+      args,
       {
         cwd: getProjectPath(projectName),
       },
