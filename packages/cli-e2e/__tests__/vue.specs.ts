@@ -53,27 +53,15 @@ describe('ui:create:vue', () => {
   };
 
   const startApplication = async (processManager: ProcessManager) => {
-    let serverTerminal: Terminal;
-    if (process.platform === 'win32') {
-      serverTerminal = new Terminal('powershell.exe');
-      await serverTerminal
-        .when(/Windows PowerShell/)
-        .on('stdout')
-        .do((process) => {
-          process.stdin.write(`npm run start${EOL}`);
-        })
-        .once();
-    } else {
-      serverTerminal = new Terminal(
-        'npm',
-        ['run', 'start'],
-        {
-          cwd: getProjectPath(projectName),
-        },
-        processManager,
-        'vue-server'
-      );
-    }
+    const serverTerminal = new Terminal(
+      `npm${process.platform === 'win32' ? '.cmd' : ''}`,
+      ['run', 'start'],
+      {
+        cwd: getProjectPath(projectName),
+      },
+      processManager,
+      'vue-server'
+    );
 
     await serverTerminal
       .when(/App running at:/)
