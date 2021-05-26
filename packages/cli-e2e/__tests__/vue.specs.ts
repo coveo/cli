@@ -15,6 +15,8 @@ import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {commitProject, undoCommit} from '../utils/git';
+import {spawnSync} from 'child_process';
+import {dirname, join} from 'path';
 
 describe('ui:create:vue', () => {
   let browser: Browser;
@@ -52,9 +54,22 @@ describe('ui:create:vue', () => {
     await buildTerminalExitPromise;
   };
 
+  const npmJsPath = join(
+    dirname(
+      spawnSync('where.exe npm', {encoding: 'utf-8'})
+        .output.toString()
+        .split(EOL)[0]
+    ),
+    'node_modules',
+    'npm',
+    'bin',
+    'npm-cli.js'
+  );
+
   const startApplication = async (processManager: ProcessManager) => {
     const args = ['npm', 'run', 'start'];
     if (process.platform === 'win32') {
+      args[0] = npmJsPath;
       args.unshift('node');
     }
     const serverTerminal = new Terminal(
