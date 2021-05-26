@@ -7,9 +7,21 @@ import {getProjectPath, setupUIProject} from '../utils/cli';
 import {isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
-import {deactivateEnvironmentFile, restoreEnvironmentFile} from '../utils/file';
+import {
+  deactivateEnvironmentFile,
+  flushEnvFile,
+  getPathToEnvFile,
+  overwriteEnvFile,
+  restoreEnvironmentFile,
+} from '../utils/file';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {commitProject, undoCommit} from '../utils/git';
+import {appendFileSync, truncateSync} from 'fs';
+import {EOL} from 'os';
+import {resolve} from 'path';
+import {config} from 'dotenv';
+import {DummyServer} from '../utils/server';
+import getPort from 'get-port';
 
 describe('ui:create:react', () => {
   let browser: Browser;
@@ -17,10 +29,44 @@ describe('ui:create:react', () => {
   let page: Page;
   const oldEnv = process.env;
   const projectName = `${process.env.GITHUB_ACTION}-react-project`;
-  // TODO: CDX-90: Assign a dynamic port for the search token server on all ui projects
-  const clientPort = '3000';
-  const searchPageEndpoint = `http://localhost:${clientPort}`;
-  const tokenProxyEndpoint = `http://localhost:${clientPort}/token`;
+  let clientPort: number;
+  let serverPort: number;
+
+  const searchPageEndpoint = () => `http://localhost:${clientPort}`;
+
+  const tokenServerEndpoint = () => `http://localhost:${serverPort}/token`;
+
+  const forceApplicationPorts = (clientPort: number, serverPort: number) => {
+    const pathToEnv = resolve(getProjectPath(projectName), '.env');
+    const environment = config({
+      path: pathToEnv,
+    }).parsed;
+
+    const updatedEnvironment = {
+      ...environment,
+      PORT: clientPort,
+      REACT_APP_SERVER_PORT: serverPort,
+    };
+    truncateSync(pathToEnv);
+    for (const [key, value] of Object.entries(updatedEnvironment)) {
+      appendFileSync(pathToEnv, `${key}=${value}${EOL}`);
+    }
+  };
+
+  const getAllocatedPorts = () => {
+    const envVariables = config({
+      path: getPathToEnvFile(projectName),
+    }).parsed;
+
+    if (!envVariables) {
+      throw new Error('Unable to load project environment variables');
+    }
+
+    clientPort = parseInt(envVariables.PORT);
+    serverPort = parseInt(envVariables.REACT_APP_SERVER_PORT);
+
+    return [clientPort, serverPort];
+  };
 
   const buildApplication = async (processManager: ProcessManager) => {
     const buildTerminal = setupUIProject(
@@ -39,7 +85,11 @@ describe('ui:create:react', () => {
     ]);
   };
 
-  const startApplication = async (processManager: ProcessManager) => {
+  const startApplication = async (
+    processManager: ProcessManager,
+    debugName = 'react-server',
+    errorCallback: (error: string) => void = () => {}
+  ) => {
     const serverTerminal = new Terminal(
       'npm',
       ['run', 'start'],
@@ -47,14 +97,25 @@ describe('ui:create:react', () => {
         cwd: getProjectPath(projectName),
       },
       processManager,
-      'react-server'
+      debugName
     );
 
-    await serverTerminal
-      .when(/You can now view .*-react-project in the browser/)
-      .on('stdout')
-      .do()
-      .once();
+    await Promise.race([
+      serverTerminal
+        .when(/\.env file not found in the project root/)
+        .on('stderr')
+        .do(() => {
+          errorCallback('missing .env file');
+        })
+        .once(),
+      serverTerminal
+        .when(/You can now view .*-react-project in the browser/)
+        .on('stdout')
+        .do()
+        .once(),
+    ]);
+
+    [clientPort, serverPort] = getAllocatedPorts();
   };
 
   beforeAll(async () => {
@@ -120,7 +181,7 @@ describe('ui:create:react', () => {
     }, 5e3);
 
     it('should not contain console errors nor warnings', async () => {
-      await page.goto(searchPageEndpoint, {
+      await page.goto(searchPageEndpoint(), {
         waitUntil: 'networkidle2',
       });
 
@@ -128,7 +189,7 @@ describe('ui:create:react', () => {
     });
 
     it('should contain a search page section', async () => {
-      await page.goto(searchPageEndpoint, {
+      await page.goto(searchPageEndpoint(), {
         waitUntil: 'networkidle2',
       });
       await page.waitForSelector(searchboxSelector);
@@ -137,9 +198,9 @@ describe('ui:create:react', () => {
     });
 
     it('should retrieve the search token on the page load', async () => {
-      const tokenResponseListener = page.waitForResponse(tokenProxyEndpoint);
+      const tokenResponseListener = page.waitForResponse(tokenServerEndpoint());
 
-      page.goto(searchPageEndpoint);
+      page.goto(searchPageEndpoint());
       await page.waitForSelector(searchboxSelector);
 
       expect(
@@ -150,14 +211,14 @@ describe('ui:create:react', () => {
     });
 
     it('should send a search query when the page is loaded', async () => {
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchboxSelector);
 
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
     });
 
     it('should send a search query on searchbox submit', async () => {
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchboxSelector);
 
       interceptedRequests = [];
@@ -185,24 +246,56 @@ describe('ui:create:react', () => {
     }, 10e3);
   });
 
-  describe('when the required environment variables are missing', () => {
+  describe('when the .env file is missing', () => {
     let serverProcessManager: ProcessManager;
+
+    beforeAll(async () => {
+      serverProcessManager = new ProcessManager();
+      processManagers.push(serverProcessManager);
+      deactivateEnvironmentFile(projectName);
+    });
+
+    afterAll(async () => {
+      restoreEnvironmentFile(projectName);
+      await serverProcessManager.killAllProcesses();
+    }, 5e3);
+
+    it(
+      'should not start the application',
+      async () => {
+        const missingEnvErrorSpy = jest.fn();
+
+        await startApplication(
+          serverProcessManager,
+          'react-server-missing-env',
+          missingEnvErrorSpy
+        );
+
+        expect(missingEnvErrorSpy).toHaveBeenCalledWith('missing .env file');
+      },
+      2 * 60e3
+    );
+  });
+
+  describe('when required environment variables are not defined', () => {
+    let serverProcessManager: ProcessManager;
+    let envFileContent = '';
     const errorMessageSelector = 'div.container';
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      await deactivateEnvironmentFile(projectName);
-      await startApplication(serverProcessManager);
+      envFileContent = flushEnvFile(projectName);
+      await startApplication(serverProcessManager, 'react-server-invalid');
     }, 2 * 60e3);
 
     afterAll(async () => {
-      await restoreEnvironmentFile(projectName);
+      overwriteEnvFile(projectName, envFileContent);
       await serverProcessManager.killAllProcesses();
     }, 5e3);
 
     it('should redirect the user to an error page', async () => {
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
       const pageErrorMessage = await page.$eval(
         errorMessageSelector,
         (el) => el.textContent
@@ -210,6 +303,89 @@ describe('ui:create:react', () => {
       expect(pageErrorMessage).toContain(
         'You should have a valid .env file at the root of this project'
       );
+    });
+  });
+
+  describe('when the ports are manually specified', () => {
+    let serverProcessManager: ProcessManager;
+    let hardCodedClientPort: number;
+    let hardCodedServerPort: number;
+
+    beforeAll(async () => {
+      hardCodedClientPort = await getPort();
+      hardCodedServerPort = await getPort();
+      serverProcessManager = new ProcessManager();
+      processManagers.push(serverProcessManager);
+      forceApplicationPorts(hardCodedClientPort, hardCodedServerPort);
+
+      await startApplication(serverProcessManager, 'react-server-port-test');
+    }, 2 * 60e3);
+
+    afterAll(async () => {
+      await serverProcessManager.killAllProcesses();
+    }, 5e3);
+
+    it('should run the application on the specified port', async () => {
+      expect(clientPort).toEqual(hardCodedClientPort);
+    });
+
+    it('should run the token server on the specified port', async () => {
+      expect(serverPort).toEqual(hardCodedServerPort);
+    });
+  });
+
+  describe('when the ports are busy', () => {
+    const dummyServers: DummyServer[] = [];
+    let serverProcessManager: ProcessManager;
+    let usedClientPort: number;
+    let usedServerPort: number;
+
+    beforeAll(async () => {
+      usedClientPort = await getPort();
+      usedServerPort = await getPort();
+      serverProcessManager = new ProcessManager();
+      processManagers.push(serverProcessManager);
+      forceApplicationPorts(usedClientPort, usedServerPort);
+
+      dummyServers.push(
+        new DummyServer(usedClientPort),
+        new DummyServer(usedServerPort)
+      );
+
+      await startApplication(serverProcessManager, 'react-server-port-test');
+    }, 2 * 60e3);
+
+    afterAll(async () => {
+      await Promise.all(dummyServers.map((server) => server.close()));
+      await serverProcessManager.killAllProcesses();
+    }, 5e3);
+
+    it('should allocate a new port for the application', async () => {
+      expect(clientPort).not.toEqual(usedClientPort);
+    });
+
+    it('should not use an undefined port for application', async () => {
+      expect(clientPort).not.toBeUndefined();
+    });
+
+    it('should allocate a new port for the token server', async () => {
+      expect(serverPort).not.toEqual(usedServerPort);
+    });
+
+    it('should not use an undefined port for token server', async () => {
+      expect(serverPort).not.toBeUndefined();
+    });
+
+    it('should run the application on a new port', async () => {
+      await expect(
+        page.goto(searchPageEndpoint(), {waitUntil: 'load'})
+      ).resolves.not.toThrow();
+    });
+
+    it('should run the server on a new port', async () => {
+      await expect(
+        page.goto(tokenServerEndpoint(), {waitUntil: 'load'})
+      ).resolves.not.toThrow();
     });
   });
 });

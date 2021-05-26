@@ -18,7 +18,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
-This command will also start a proxy server on port 4000 and will generate [Coveo search tokens](https://docs.coveo.com/en/1346/).
+This command will also start an express server and will generate [Coveo search tokens](https://docs.coveo.com/en/1346/).
 _See [@coveo/search-token-server](https://www.npmjs.com/package/@coveo/search-token-server)_
 
 ### `npm test`

@@ -1,5 +1,5 @@
 import {HeadlessEngine, searchAppReducers} from '@coveo/headless';
-import {isEnvValid} from './utils/envUtils';
+import {getTokenEndpoint, isEnvValid} from './utils/envUtils';
 
 export function getEngine(
   token: string
@@ -14,14 +14,13 @@ export function getEngine(
     Refer to the project README file for more information.
     `);
   } else {
-    const tokenEndpoint = process.env.VUE_APP_TOKEN_ENDPOINT;
     return new HeadlessEngine({
       configuration: {
         platformUrl: process.env.VUE_APP_PLATFORM_URL,
         organizationId: process.env.VUE_APP_ORGANIZATION_ID,
         accessToken: token,
         renewAccessToken: async () => {
-          const res = await fetch(tokenEndpoint);
+          const res = await fetch(getTokenEndpoint());
           const {token} = await res.json();
           return token;
         },

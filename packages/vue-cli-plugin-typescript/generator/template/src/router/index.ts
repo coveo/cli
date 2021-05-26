@@ -3,7 +3,7 @@ import VueRouter, {RouteConfig, Route, NavigationGuardNext} from 'vue-router';
 import Home from '../views/Home.vue';
 import Error from '../views/Error.vue';
 import {getEngine} from '@/EngineService';
-import {isEnvValid} from '@/utils/envUtils';
+import {getTokenEndpoint, isEnvValid} from '@/utils/envUtils';
 
 Vue.use(VueRouter);
 
@@ -25,7 +25,7 @@ const routes: Array<RouteConfig> = [
       if (!isEnvValid(process.env)) {
         next('/error');
       } else {
-        const res = await fetch(process.env.VUE_APP_TOKEN_ENDPOINT);
+        const res = await fetch(getTokenEndpoint());
         const {token} = await res.json();
         // Adding Coveo Headless engine as a global mixin so it can be available to all components
         const engine = getEngine(token);

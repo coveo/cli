@@ -64,11 +64,6 @@ describe('search-token-server', () => {
       .toPromise();
   });
 
-  it('should add a proxy config file', async () => {
-    const tree = await runSearchTokenServerSchematic();
-    expect(tree.files).toContain('/src/proxy.conf.json');
-  });
-
   it('should add a server directory', async () => {
     const tree = await runSearchTokenServerSchematic();
     expect(tree.files).toContain('/server/server.ts');
