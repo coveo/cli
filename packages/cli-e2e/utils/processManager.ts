@@ -1,8 +1,9 @@
 import {
   ChildProcessWithoutNullStreams,
   SpawnOptionsWithoutStdio,
-  spawn as nativeSpawn,
 } from 'child_process';
+
+import spawn from 'spawn-command';
 
 export class ProcessManager {
   private processes: Set<ChildProcessWithoutNullStreams>;
@@ -15,7 +16,10 @@ export class ProcessManager {
     args?: ReadonlyArray<string>,
     options?: SpawnOptionsWithoutStdio
   ): ChildProcessWithoutNullStreams {
-    const process = nativeSpawn(command, args, {detached: true, ...options});
+    const process = spawn(`${command} ${args?.join(' ')}`, {
+      detached: true,
+      ...options,
+    });
     process.on('exit', this.onExit(process));
     this.processes.add(process);
     return process;
