@@ -32,14 +32,16 @@ export class ProcessManager {
   public async killAllProcesses() {
     const promises: Promise<void>[] = [];
     const processIterator = this.processes.values();
-    let current = processIterator.next();
-    while (!current.done) {
+    for (
+      let current = processIterator.next();
+      !current.done;
+      current = processIterator.next()
+    ) {
       const currentProcess = current.value;
-      currentProcess.removeAllListeners('exit');
       await new Promise<void>((resolve) => {
         promises.push(
           new Promise<void>((exit) => {
-            currentProcess.on('exit', () => {
+            currentProcess.removeAllListeners('exit').on('exit', () => {
               this.onExit(currentProcess)();
               exit();
             });
@@ -58,9 +60,7 @@ export class ProcessManager {
           })
         );
       });
-      current = processIterator.next();
     }
-
-    return Promise.all(promises);
+    await Promise.all(promises);
   }
 }

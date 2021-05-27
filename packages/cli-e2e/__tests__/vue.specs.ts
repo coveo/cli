@@ -22,7 +22,7 @@ import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {commitProject, undoCommit} from '../utils/git';
 import {spawnSync} from 'child_process';
-import {dirname, join, resolve} from 'path';
+import {dirname, join} from 'path';
 import {parse} from 'dotenv';
 import {DummyServer} from '../utils/server';
 import {appendFileSync, readFileSync, truncateSync} from 'fs';
@@ -178,6 +178,7 @@ describe('ui:create:vue', () => {
       );
       await waitForAppRunning(appTerminal);
       [clientPort, serverPort] = getAllocatedPorts();
+      console.log('when the project is configured correctly || beforeAll');
     }, 2 * 60e3);
 
     beforeEach(async () => {
@@ -203,7 +204,8 @@ describe('ui:create:vue', () => {
       );
       await serverProcessManager.killAllProcesses();
       await gitProcessManager.killAllProcesses();
-    }, 5e3);
+      console.log('when the project is configured correctly || afterAll');
+    }, 5 * 60e3);
 
     it('should not contain console errors nor warnings', async () => {
       await page.goto(searchPageEndpoint(), {
@@ -261,7 +263,7 @@ describe('ui:create:vue', () => {
       const eslintErrorSpy = jest.fn();
 
       commitProject(
-        serverProcessManager,
+        gitProcessManager,
         getProjectPath(projectName),
         projectName,
         eslintErrorSpy
@@ -313,8 +315,8 @@ describe('ui:create:vue', () => {
     });
 
     afterAll(async () => {
-      restoreEnvironmentFile(projectName);
       await serverProcessManager.killAllProcesses();
+      restoreEnvironmentFile(projectName);
     }, 5e3);
 
     it(
