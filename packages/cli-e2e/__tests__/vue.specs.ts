@@ -197,14 +197,17 @@ describe('ui:create:vue', () => {
     });
 
     afterAll(async () => {
+      console.log('when the project is configured correctly || afterAll-0');
       await undoCommit(
         gitProcessManager,
         getProjectPath(projectName),
         projectName
       );
+      console.log('when the project is configured correctly || afterAll-1');
       await serverProcessManager.killAllProcesses();
+      console.log('when the project is configured correctly || afterAll-2');
       await gitProcessManager.killAllProcesses();
-      console.log('when the project is configured correctly || afterAll');
+      console.log('when the project is configured correctly || afterAll-3');
     }, 5 * 60e3);
 
     it('should not contain console errors nor warnings', async () => {
