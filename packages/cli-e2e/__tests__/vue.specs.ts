@@ -42,19 +42,17 @@ describe('ui:create:vue', () => {
   const tokenServerEndpoint = () => `http://localhost:${serverPort}/token`;
 
   const forceApplicationPorts = (clientPort: number, serverPort: number) => {
-    const pathToEnv = resolve(getProjectPath(projectName), '.env');
-    const environment = config({
-      path: pathToEnv,
-    }).parsed;
+    const envPath = getPathToEnvFile(projectName);
+    const environment = parse(readFileSync(envPath, {encoding: 'utf-8'}));
 
     const updatedEnvironment = {
       ...environment,
       PORT: clientPort,
       VUE_APP_SERVER_PORT: serverPort,
     };
-    truncateSync(pathToEnv);
+    truncateSync(envPath);
     for (const [key, value] of Object.entries(updatedEnvironment)) {
-      appendFileSync(pathToEnv, `${key}=${value}${EOL}`);
+      appendFileSync(envPath, `${key}=${value}${EOL}`);
     }
   };
 
