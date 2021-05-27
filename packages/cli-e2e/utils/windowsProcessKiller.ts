@@ -1,4 +1,5 @@
 import {spawnSync} from 'child_process';
+import {constants as OsConstants} from 'os';
 
 class Process {
   public childProcesses: Process[];
@@ -19,7 +20,13 @@ export function recurseProcessKillWindows(pid: number) {
 
 const recursiveKilling = (inputProcess: Process) => {
   inputProcess.childProcesses.forEach((child) => recursiveKilling(child));
-  process.kill(inputProcess.pid);
+  try {
+    process.kill(inputProcess.pid);
+  } catch (error) {
+    if (error.errno !== OsConstants.errno.ESRCH) {
+      throw error;
+    }
+  }
 };
 
 function getProcessGraph(): Map<number, Process> {
