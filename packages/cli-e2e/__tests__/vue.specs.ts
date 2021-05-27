@@ -136,11 +136,17 @@ describe('ui:create:vue', () => {
   };
 
   beforeAll(async () => {
+    console.log('when the project is configured correctly || beforeAll-0');
     const buildProcessManager = new ProcessManager();
+    console.log('when the project is configured correctly || beforeAll-1');
     processManagers.push(buildProcessManager);
+    console.log('when the project is configured correctly || beforeAll-2');
     browser = await getNewBrowser();
+    console.log('when the project is configured correctly || beforeAll-3');
     await buildApplication(buildProcessManager);
+    console.log('when the project is configured correctly || beforeAll-4');
     await buildProcessManager.killAllProcesses();
+    console.log('when the project is configured correctly || beforeAll-5');
   }, 15 * 60e3);
 
   beforeEach(async () => {
