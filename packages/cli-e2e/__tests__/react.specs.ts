@@ -18,8 +18,8 @@ import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {commitProject, undoCommit} from '../utils/git';
 import {appendFileSync, readFileSync, truncateSync} from 'fs';
 import {EOL} from 'os';
-import {dirname, join, resolve} from 'path';
-import {config, parse} from 'dotenv';
+import {dirname, join} from 'path';
+import {parse} from 'dotenv';
 import {DummyServer} from '../utils/server';
 import getPort from 'get-port';
 import {spawnSync} from 'child_process';
@@ -287,8 +287,6 @@ describe('ui:create:react', () => {
           .once();
 
         expect(missingEnvErrorSpy).toHaveBeenCalled();
-
-        expect(missingEnvErrorSpy).toHaveBeenCalledWith('missing .env file');
       },
       2 * 60e3
     );
