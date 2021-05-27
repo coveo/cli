@@ -135,15 +135,6 @@ describe('ui:create:vue', () => {
       debugName
     );
     return serverTerminal;
-    // await Promise.race([
-    //   serverTerminal
-    //     .when(/App running at:/)
-    //     .on('stdout')
-    //     .do()
-    //     .once(),
-    // ]);
-
-    // [clientPort, serverPort] = getAllocatedPorts();
   };
 
   beforeAll(async () => {
@@ -296,27 +287,17 @@ describe('ui:create:vue', () => {
     it(
       'should not have any ESLint warning or error',
       async () => {
-        const serverTerminal = new Terminal(
-          `npm${process.platform === 'win32' ? '.cmd' : ''}`,
-          ['run', 'start'],
-          {
-            cwd: getProjectPath(projectName),
-          },
+        const serverTerminal = await startApplication(
           serverProcessManager,
-          'vue-server'
+          'vue-server-eslint'
         );
         const eslintErrorSpy = jest.fn();
-        const serverExitCondition = serverTerminal
-          .when(/App running at:/)
-          .on('stdout')
-          .do()
-          .once();
 
         await serverTerminal
           .when(/✖ \d+ problems \(\d+ errors, \d+ warnings\)/)
           .on('stdout')
           .do(eslintErrorSpy)
-          .until(serverExitCondition);
+          .until(waitForAppRunning(serverTerminal));
 
         expect(eslintErrorSpy).not.toBeCalled();
       },
