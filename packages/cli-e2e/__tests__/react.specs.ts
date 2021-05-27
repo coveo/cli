@@ -16,14 +16,15 @@ import {
 } from '../utils/file';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {commitProject, undoCommit} from '../utils/git';
-import {appendFileSync, truncateSync} from 'fs';
+import {appendFileSync, readFileSync, truncateSync} from 'fs';
 import {EOL} from 'os';
-import {resolve} from 'path';
-import {config} from 'dotenv';
+import {dirname, join, resolve} from 'path';
+import {config, parse} from 'dotenv';
 import {DummyServer} from '../utils/server';
 import getPort from 'get-port';
+import {spawnSync} from 'child_process';
 
-describe.skip('ui:create:react', () => {
+describe('ui:create:react', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
   let page: Page;
@@ -36,27 +37,32 @@ describe.skip('ui:create:react', () => {
 
   const tokenServerEndpoint = () => `http://localhost:${serverPort}/token`;
 
+  const waitForAppRunning = (appTerminal: Terminal) =>
+    appTerminal
+      .when(/App running at:/)
+      .on('stdout')
+      .do()
+      .once();
+
   const forceApplicationPorts = (clientPort: number, serverPort: number) => {
-    const pathToEnv = resolve(getProjectPath(projectName), '.env');
-    const environment = config({
-      path: pathToEnv,
-    }).parsed;
+    const envPath = getPathToEnvFile(projectName);
+    const environment = parse(readFileSync(envPath, {encoding: 'utf-8'}));
 
     const updatedEnvironment = {
       ...environment,
       PORT: clientPort,
       REACT_APP_SERVER_PORT: serverPort,
     };
-    truncateSync(pathToEnv);
+    truncateSync(envPath);
     for (const [key, value] of Object.entries(updatedEnvironment)) {
-      appendFileSync(pathToEnv, `${key}=${value}${EOL}`);
+      appendFileSync(envPath, `${key}=${value}${EOL}`);
     }
   };
 
   const getAllocatedPorts = () => {
-    const envVariables = config({
-      path: getPathToEnvFile(projectName),
-    }).parsed;
+    const envVariables = parse(
+      readFileSync(getPathToEnvFile(projectName), {encoding: 'utf-8'})
+    );
 
     if (!envVariables) {
       throw new Error('Unable to load project environment variables');
@@ -85,37 +91,36 @@ describe.skip('ui:create:react', () => {
     ]);
   };
 
+  const npmJsPath = join(
+    dirname(
+      spawnSync('where.exe', ['npm'], {encoding: 'utf-8'}).stdout.split(EOL)[0]
+    ),
+    'node_modules',
+    'npm',
+    'bin',
+    'npm-cli.js'
+  );
+
   const startApplication = async (
     processManager: ProcessManager,
-    debugName = 'react-server',
-    errorCallback: (error: string) => void = () => {}
+    debugName = 'react-server'
   ) => {
+    const args = ['npm', 'run', 'start'];
+    if (process.platform === 'win32') {
+      args[0] = npmJsPath;
+      args.unshift('node');
+    }
+
     const serverTerminal = new Terminal(
-      `npm${process.platform === 'win32' ? '.cmd' : ''}`,
-      ['run', 'start'],
+      args.shift()!,
+      args,
       {
         cwd: getProjectPath(projectName),
       },
       processManager,
       debugName
     );
-
-    await Promise.race([
-      serverTerminal
-        .when(/\.env file not found in the project root/)
-        .on('stderr')
-        .do(() => {
-          errorCallback('missing .env file');
-        })
-        .once(),
-      serverTerminal
-        .when(/You can now view .*-react-project in the browser/)
-        .on('stdout')
-        .do()
-        .once(),
-    ]);
-
-    [clientPort, serverPort] = getAllocatedPorts();
+    return serverTerminal;
   };
 
   beforeAll(async () => {
@@ -144,7 +149,7 @@ describe.skip('ui:create:react', () => {
     );
   });
 
-  describe.skip('when the project is configured correctly', () => {
+  describe('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
     let consoleInterceptor: BrowserConsoleInterceptor;
@@ -153,7 +158,12 @@ describe.skip('ui:create:react', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      await startApplication(serverProcessManager);
+      const appTerminal = await startApplication(
+        serverProcessManager,
+        'react-server-valid'
+      );
+      await waitForAppRunning(appTerminal);
+      [clientPort, serverPort] = getAllocatedPorts();
     }, 2 * 60e3);
 
     beforeEach(async () => {
@@ -246,7 +256,7 @@ describe.skip('ui:create:react', () => {
     }, 10e3);
   });
 
-  describe.skip('when the .env file is missing', () => {
+  describe('when the .env file is missing', () => {
     let serverProcessManager: ProcessManager;
 
     beforeAll(async () => {
@@ -265,11 +275,18 @@ describe.skip('ui:create:react', () => {
       async () => {
         const missingEnvErrorSpy = jest.fn();
 
-        await startApplication(
+        const appTerminal = await startApplication(
           serverProcessManager,
-          'react-server-missing-env',
-          missingEnvErrorSpy
+          'react-server-missing-env'
         );
+
+        await appTerminal
+          .when(/\.env file not found in the project root/)
+          .on('stderr')
+          .do(missingEnvErrorSpy)
+          .once();
+
+        expect(missingEnvErrorSpy).toHaveBeenCalled();
 
         expect(missingEnvErrorSpy).toHaveBeenCalledWith('missing .env file');
       },
@@ -277,7 +294,7 @@ describe.skip('ui:create:react', () => {
     );
   });
 
-  describe.skip('when required environment variables are not defined', () => {
+  describe('when required environment variables are not defined', () => {
     let serverProcessManager: ProcessManager;
     let envFileContent = '';
     const errorMessageSelector = 'div.container';
@@ -286,7 +303,12 @@ describe.skip('ui:create:react', () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
       envFileContent = flushEnvFile(projectName);
-      await startApplication(serverProcessManager, 'react-server-invalid');
+      const appTerminal = await startApplication(
+        serverProcessManager,
+        'react-server-invalid'
+      );
+      await waitForAppRunning(appTerminal);
+      [clientPort, serverPort] = getAllocatedPorts();
     }, 2 * 60e3);
 
     afterAll(async () => {
@@ -306,7 +328,7 @@ describe.skip('ui:create:react', () => {
     });
   });
 
-  describe.skip('when the ports are manually specified', () => {
+  describe('when the ports are manually specified', () => {
     let serverProcessManager: ProcessManager;
     let hardCodedClientPort: number;
     let hardCodedServerPort: number;
@@ -318,7 +340,12 @@ describe.skip('ui:create:react', () => {
       processManagers.push(serverProcessManager);
       forceApplicationPorts(hardCodedClientPort, hardCodedServerPort);
 
-      await startApplication(serverProcessManager, 'react-server-port-test');
+      const appTerminal = await startApplication(
+        serverProcessManager,
+        'react-server-port-test'
+      );
+      await waitForAppRunning(appTerminal);
+      [clientPort, serverPort] = getAllocatedPorts();
     }, 2 * 60e3);
 
     afterAll(async () => {
@@ -334,7 +361,7 @@ describe.skip('ui:create:react', () => {
     });
   });
 
-  describe.skip('when the ports are busy', () => {
+  describe('when the ports are busy', () => {
     const dummyServers: DummyServer[] = [];
     let serverProcessManager: ProcessManager;
     let usedClientPort: number;
@@ -352,7 +379,12 @@ describe.skip('ui:create:react', () => {
         new DummyServer(usedServerPort)
       );
 
-      await startApplication(serverProcessManager, 'react-server-port-test');
+      const appTerminal = await startApplication(
+        serverProcessManager,
+        'react-server-port-test'
+      );
+      await waitForAppRunning(appTerminal);
+      [clientPort, serverPort] = getAllocatedPorts();
     }, 2 * 60e3);
 
     afterAll(async () => {

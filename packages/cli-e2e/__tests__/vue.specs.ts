@@ -163,14 +163,12 @@ describe('ui:create:vue', () => {
 
   describe('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
-    let gitProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
     let consoleInterceptor: BrowserConsoleInterceptor;
     const searchboxSelector = '#search-page .autocomplete input';
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
-      gitProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
       const appTerminal = await startApplication(
         serverProcessManager,
@@ -199,15 +197,13 @@ describe('ui:create:vue', () => {
     afterAll(async () => {
       console.log('when the project is configured correctly || afterAll-0');
       await undoCommit(
-        gitProcessManager,
+        serverProcessManager,
         getProjectPath(projectName),
         projectName
       );
       console.log('when the project is configured correctly || afterAll-1');
       await serverProcessManager.killAllProcesses();
       console.log('when the project is configured correctly || afterAll-2');
-      await gitProcessManager.killAllProcesses();
-      console.log('when the project is configured correctly || afterAll-3');
     }, 5 * 60e3);
 
     it('should not contain console errors nor warnings', async () => {
@@ -266,7 +262,7 @@ describe('ui:create:vue', () => {
       const eslintErrorSpy = jest.fn();
 
       commitProject(
-        gitProcessManager,
+        serverProcessManager,
         getProjectPath(projectName),
         projectName,
         eslintErrorSpy
