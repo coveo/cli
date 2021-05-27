@@ -20,14 +20,12 @@ export function recurseProcessKillWindows(pid: number) {
 
 const recursiveKilling = (inputProcess: Process) => {
   inputProcess.childProcesses.forEach((child) => recursiveKilling(child));
+  const killCommand = `Stop-Process -Force -Id ${inputProcess.pid} -PassThru | Wait-Process`;
   try {
-    console.log(
-      spawnSync(
-        'powershell.exe',
-        ['-Command', `Stop-Process -Force -Id ${inputProcess.pid}`],
-        {encoding: 'utf-8'}
-      ).stdout
-    );
+    console.log(killCommand);
+    spawnSync('powershell.exe', ['-Command', killCommand], {
+      encoding: 'utf-8',
+    });
   } catch (error) {
     if (error.errno !== OsConstants.errno.ESRCH) {
       throw error;
