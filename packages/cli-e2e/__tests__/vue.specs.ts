@@ -23,9 +23,9 @@ import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {commitProject, undoCommit} from '../utils/git';
 import {spawnSync} from 'child_process';
 import {dirname, join, resolve} from 'path';
-import {config} from 'dotenv';
+import {parse} from 'dotenv';
 import {DummyServer} from '../utils/server';
-import {appendFileSync, truncateSync} from 'fs';
+import {appendFileSync, readFileSync, truncateSync} from 'fs';
 import getPort from 'get-port';
 
 describe('ui:create:vue', () => {
@@ -66,9 +66,9 @@ describe('ui:create:vue', () => {
       .once();
 
   const getAllocatedPorts = () => {
-    const envVariables = config({
-      path: getPathToEnvFile(projectName),
-    }).parsed;
+    const envVariables = parse(
+      readFileSync(getPathToEnvFile(projectName), {encoding: 'utf-8'})
+    );
 
     if (!envVariables) {
       throw new Error('Unable to load project environment variables');

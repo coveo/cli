@@ -22,10 +22,11 @@ const recursiveKilling = (inputProcess: Process) => {
   inputProcess.childProcesses.forEach((child) => recursiveKilling(child));
   try {
     console.log(
-      spawnSync('powershell.exe', [
-        '-Command',
-        `Stop-Process -Force -Id ${inputProcess.pid}`,
-      ]).stdout
+      spawnSync(
+        'powershell.exe',
+        ['-Command', `Stop-Process -Force -Id ${inputProcess.pid}`],
+        {encoding: 'utf-8'}
+      ).stdout
     );
   } catch (error) {
     if (error.errno !== OsConstants.errno.ESRCH) {
