@@ -350,6 +350,7 @@ describe('ui:create:vue', () => {
       processManagers.push(serverProcessManager);
       envFileContent = flushEnvFile(projectName);
       await startApplication(serverProcessManager, 'vue-server-invalid');
+      [clientPort, serverPort] = getAllocatedPorts();
     }, 2 * 60e3);
 
     afterAll(async () => {
