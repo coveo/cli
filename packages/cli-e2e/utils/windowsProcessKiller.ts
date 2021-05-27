@@ -21,7 +21,10 @@ export function recurseProcessKillWindows(pid: number) {
 const recursiveKilling = (inputProcess: Process) => {
   inputProcess.childProcesses.forEach((child) => recursiveKilling(child));
   try {
-    process.kill(inputProcess.pid);
+    spawnSync('powershell.exe', [
+      '-Command',
+      `Stop-Process -Force -Id ${inputProcess.pid}`,
+    ]);
   } catch (error) {
     if (error.errno !== OsConstants.errno.ESRCH) {
       throw error;
