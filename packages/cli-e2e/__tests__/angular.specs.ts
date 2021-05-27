@@ -29,7 +29,7 @@ import {DummyServer} from '../utils/server';
 import getPort from 'get-port';
 import {join} from 'path';
 
-describe('ui:create:angular', () => {
+describe.skip('ui:create:angular', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
   let page: Page;
@@ -194,7 +194,7 @@ describe('ui:create:angular', () => {
     );
   });
 
-  describe('when the project is configured correctly', () => {
+  describe.skip('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
     let consoleInterceptor: BrowserConsoleInterceptor;
@@ -296,7 +296,7 @@ describe('ui:create:angular', () => {
     }, 10e3);
   });
 
-  describe('when the .env file is missing', () => {
+  describe.skip('when the .env file is missing', () => {
     let serverProcessManager: ProcessManager;
 
     beforeAll(async () => {
@@ -327,7 +327,7 @@ describe('ui:create:angular', () => {
     );
   });
 
-  describe('when the required environment variables are missing', () => {
+  describe.skip('when the required environment variables are missing', () => {
     let serverProcessManager: ProcessManager;
     let envFileContent = '';
 
@@ -349,7 +349,7 @@ describe('ui:create:angular', () => {
     });
   });
 
-  describe('when the a custom token Endpoint is specified', () => {
+  describe.skip('when the a custom token Endpoint is specified', () => {
     const customTokenEndpoint = 'http://dummyendpoint.com/some-kind-of-path';
     let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
@@ -391,7 +391,7 @@ describe('ui:create:angular', () => {
     }, 10e3);
   });
 
-  describe('when the ports are busy', () => {
+  describe.skip('when the ports are busy', () => {
     const dummyServers: DummyServer[] = [];
     let serverProcessManager: ProcessManager;
     let usedClientPort: number;

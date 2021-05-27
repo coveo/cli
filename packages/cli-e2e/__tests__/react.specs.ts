@@ -23,7 +23,7 @@ import {config} from 'dotenv';
 import {DummyServer} from '../utils/server';
 import getPort from 'get-port';
 
-describe('ui:create:react', () => {
+describe.skip('ui:create:react', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
   let page: Page;
@@ -144,7 +144,7 @@ describe('ui:create:react', () => {
     );
   });
 
-  describe('when the project is configured correctly', () => {
+  describe.skip('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
     let consoleInterceptor: BrowserConsoleInterceptor;
@@ -246,7 +246,7 @@ describe('ui:create:react', () => {
     }, 10e3);
   });
 
-  describe('when the .env file is missing', () => {
+  describe.skip('when the .env file is missing', () => {
     let serverProcessManager: ProcessManager;
 
     beforeAll(async () => {
@@ -277,7 +277,7 @@ describe('ui:create:react', () => {
     );
   });
 
-  describe('when required environment variables are not defined', () => {
+  describe.skip('when required environment variables are not defined', () => {
     let serverProcessManager: ProcessManager;
     let envFileContent = '';
     const errorMessageSelector = 'div.container';
@@ -306,7 +306,7 @@ describe('ui:create:react', () => {
     });
   });
 
-  describe('when the ports are manually specified', () => {
+  describe.skip('when the ports are manually specified', () => {
     let serverProcessManager: ProcessManager;
     let hardCodedClientPort: number;
     let hardCodedServerPort: number;
@@ -334,7 +334,7 @@ describe('ui:create:react', () => {
     });
   });
 
-  describe('when the ports are busy', () => {
+  describe.skip('when the ports are busy', () => {
     const dummyServers: DummyServer[] = [];
     let serverProcessManager: ProcessManager;
     let usedClientPort: number;
