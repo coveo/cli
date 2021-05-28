@@ -28,7 +28,7 @@ import {DummyServer} from '../utils/server';
 import {appendFileSync, readFileSync, truncateSync} from 'fs';
 import getPort from 'get-port';
 
-describe('ui:create:vue', () => {
+describe.skip('ui:create:vue', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
   let page: Page;
@@ -167,7 +167,7 @@ describe('ui:create:vue', () => {
     );
   });
 
-  describe('when the project is configured correctly', () => {
+  describe.skip('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
     let consoleInterceptor: BrowserConsoleInterceptor;
@@ -278,7 +278,7 @@ describe('ui:create:vue', () => {
     }, 10e3);
   });
 
-  describe('when starting the server', () => {
+  describe.skip('when starting the server', () => {
     let serverProcessManager: ProcessManager;
 
     beforeEach(() => {
@@ -310,7 +310,7 @@ describe('ui:create:vue', () => {
     );
   });
 
-  describe('when the .env file is missing', () => {
+  describe.skip('when the .env file is missing', () => {
     let serverProcessManager: ProcessManager;
 
     beforeAll(async () => {
@@ -346,7 +346,7 @@ describe('ui:create:vue', () => {
     );
   });
 
-  describe('when required environment variables are not defined', () => {
+  describe.skip('when required environment variables are not defined', () => {
     let serverProcessManager: ProcessManager;
     let envFileContent = '';
 
@@ -373,7 +373,7 @@ describe('ui:create:vue', () => {
     });
   });
 
-  describe('when the ports are manually specified', () => {
+  describe.skip('when the ports are manually specified', () => {
     let serverProcessManager: ProcessManager;
     let hardCodedClientPort: number;
     let hardCodedServerPort: number;
@@ -406,7 +406,7 @@ describe('ui:create:vue', () => {
     });
   });
 
-  describe('when the ports are busy', () => {
+  describe.skip('when the ports are busy', () => {
     const dummyServers: DummyServer[] = [];
     let serverProcessManager: ProcessManager;
     let usedClientPort: number;
