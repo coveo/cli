@@ -39,7 +39,7 @@ describe('ui:create:react', () => {
 
   const waitForAppRunning = (appTerminal: Terminal) =>
     appTerminal
-      .when(/App running at:/)
+      .when(/You can now view .*-react-project in the browser/)
       .on('stdout')
       .do()
       .once();
