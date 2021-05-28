@@ -261,7 +261,9 @@ describe('ui:create:angular', () => {
 
       page.goto(searchPageEndpoint());
       await page.waitForSelector(searchboxSelector);
-
+      interceptedRequests.forEach((request) => {
+        console.log(request.url());
+      });
       expect(
         JSON.parse(await (await tokenResponseListener).text())
       ).toMatchObject({
