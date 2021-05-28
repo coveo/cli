@@ -52,12 +52,16 @@ export class ProcessManager {
               return resolve();
             }
             if (process.platform === 'win32') {
-              recurseProcessKillWindows(currentProcess.pid);
+              try {
+                recurseProcessKillWindows(currentProcess.pid);
+              } catch (error) {
+                console.error(JSON.stringify({error}));
+              }
             } else {
               process.kill(-currentProcess.pid);
             }
             resolve();
-          })
+          }).catch((error) => console.error(JSON.stringify({error})))
         );
       });
     }
