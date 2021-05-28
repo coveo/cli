@@ -245,7 +245,7 @@ describe('ui:create:angular', () => {
       });
 
       expect(consoleInterceptor.interceptedMessages).toEqual([]);
-    });
+    }, 60e3);
 
     it('should contain a search page section', async () => {
       await page.goto(searchPageEndpoint(), {
@@ -254,7 +254,7 @@ describe('ui:create:angular', () => {
       await page.waitForSelector(searchboxSelector);
 
       expect(await page.$('app-search-page')).not.toBeNull();
-    });
+    }, 60e3);
 
     it('should retrieve the search token on the page load', async () => {
       const tokenResponseListener = page.waitForResponse(tokenServerEndpoint());
@@ -267,14 +267,14 @@ describe('ui:create:angular', () => {
       ).toMatchObject({
         token: expect.stringMatching(/^eyJhb.+/),
       });
-    });
+    }, 60e3);
 
     it('should send a search query when the page is loaded', async () => {
       await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchboxSelector);
 
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-    });
+    }, 60e3);
 
     it('should send a search query on searchbox submit', async () => {
       await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
@@ -289,7 +289,7 @@ describe('ui:create:angular', () => {
       await retry(async () => {
         expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
       });
-    });
+    }, 60e3);
 
     it('should be commited without lint-stage errors', async () => {
       const eslintErrorSpy = jest.fn();
@@ -302,7 +302,7 @@ describe('ui:create:angular', () => {
       );
 
       expect(eslintErrorSpy).not.toBeCalled();
-    }, 10e3);
+    }, 60e3);
   });
 
   describe('when the .env file is missing', () => {
