@@ -269,7 +269,7 @@ describe('ui:create:vue', () => {
     it('should be commited without lint-stage errors', async () => {
       const eslintErrorSpy = jest.fn();
 
-      commitProject(
+      await commitProject(
         serverProcessManager,
         getProjectPath(projectName),
         projectName,

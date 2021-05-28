@@ -237,7 +237,7 @@ describe('ui:create:angular', () => {
         projectName
       );
       await serverProcessManager.killAllProcesses();
-    }, 5e3);
+    }, 5 * 60e3);
 
     it('should not contain console errors nor warnings', async () => {
       await page.goto(searchPageEndpoint(), {
@@ -294,7 +294,7 @@ describe('ui:create:angular', () => {
     it('should be commited without lint-stage errors', async () => {
       const eslintErrorSpy = jest.fn();
 
-      commitProject(
+      await commitProject(
         serverProcessManager,
         getProjectPath(projectName),
         projectName,
