@@ -145,7 +145,9 @@ describe('ui:create:vue', () => {
     console.log('when the project is configured correctly || beforeAll-3');
     await buildApplication(buildProcessManager);
     console.log('when the project is configured correctly || beforeAll-4');
-    await buildProcessManager.killAllProcesses();
+    await buildProcessManager
+      .killAllProcesses()
+      .catch((e) => console.error(JSON.stringify({e})));
     console.log('when the project is configured correctly || beforeAll-5');
   }, 15 * 60e3);
 
