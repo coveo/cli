@@ -8,7 +8,7 @@ import {
   Preconditions,
 } from '../../../lib/decorators/preconditions';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {Project} from '../../../lib/utils/project';
+import {Project} from '../../../lib/project/project';
 
 export interface CustomFile extends ReadStream {
   type?: string;
