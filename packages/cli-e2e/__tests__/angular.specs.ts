@@ -206,7 +206,6 @@ describe('ui:create:angular', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      await startApplication(serverProcessManager);
       const appTerminal = await startApplication(
         serverProcessManager,
         'angular-server-valid'
