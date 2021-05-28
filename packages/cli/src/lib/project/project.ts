@@ -1,15 +1,11 @@
 import {createWriteStream, existsSync, unlinkSync} from 'fs';
 import {join} from 'path';
-import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {cli} from 'cli-ux';
 import * as archiver from 'archiver';
 
 export class Project {
-  private client: AuthenticatedClient;
-
   constructor(private pathToProject: string) {
     this.ensureProjectCompliance();
-    this.client = new AuthenticatedClient();
   }
 
   private get pathToTemporaryZip() {
@@ -24,14 +20,13 @@ export class Project {
     unlinkSync(this.pathToTemporaryZip);
   }
 
-  async getSnapshotClient() {
-    return await (
-      await this.client.getClient()
-    ).resourceSnapshot;
-  }
-
   ensureProjectCompliance() {
-    // TODO: CDX-354: add checks to ensure the project is indeed a valid project
+    /*
+     * TODO: CDX-354: add checks to ensure the project is indeed a valid project
+     * e.g. * Check if path to resources is a folder
+     *      * Check if the root has a valid config file
+     */
+
     if (!existsSync(this.pathToResources)) {
       throw new Error('Invalid Project. TODO: better error message');
     }
