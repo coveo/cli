@@ -257,8 +257,11 @@ describe('ui:create:angular', () => {
     }, 60e3);
 
     it('should retrieve the search token on the page load', async () => {
+      interceptedRequests.forEach((request) => {
+        console.log(request.url());
+      });
       const tokenResponseListener = page.waitForResponse(tokenServerEndpoint());
-
+      console.log('waiting for: ' + tokenServerEndpoint());
       page.goto(searchPageEndpoint());
       await page.waitForSelector(searchboxSelector);
       interceptedRequests.forEach((request) => {
