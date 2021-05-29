@@ -2,6 +2,7 @@ import {
   CreateFromFileOptions,
   ResourceSnapshotsModel,
 } from '@coveord/platform-client';
+import ResourceSnapshots from '@coveord/platform-client/dist/definitions/resources/ResourceSnapshots/ResourceSnapshots';
 import {createReadStream, ReadStream} from 'fs';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 
@@ -12,12 +13,8 @@ export interface CustomFile extends ReadStream {
 }
 
 export class Snapshot {
-  private client: AuthenticatedClient;
-  private lastSnapshot: ResourceSnapshotsModel | null = null;
-
-  constructor() {
-    this.client = new AuthenticatedClient();
-  }
+  private _snapshotClient: ResourceSnapshots | undefined;
+  private lastSnapshot: ResourceSnapshotsModel | undefined;
 
   async createSnapshotFromZip(pathToZip: string, developerNotes: string) {
     const snapshotClient = await this.getSnapshotClient();
@@ -64,6 +61,10 @@ export class Snapshot {
   }
 
   private async getSnapshotClient() {
-    return (await this.client.getClient()).resourceSnapshot;
+    this._snapshotClient =
+      this._snapshotClient ||
+      (await new AuthenticatedClient().getClient()).resourceSnapshot;
+
+    return this._snapshotClient;
   }
 }
