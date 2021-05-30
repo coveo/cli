@@ -1,48 +1,23 @@
-import {
-  CreateFromFileOptions,
-  ResourceSnapshotsModel,
-} from '@coveord/platform-client';
+import {ResourceSnapshotsModel} from '@coveord/platform-client';
 import ResourceSnapshots from '@coveord/platform-client/dist/definitions/resources/ResourceSnapshots/ResourceSnapshots';
-import {createReadStream, ReadStream} from 'fs';
-import {AuthenticatedClient} from '../platform/authenticatedClient';
-
-// TODO: CDX-357: platform-client should support zip file as stream.
-// In the meantime, we pass a custom object that contains all the require parameters expected by the createFromFile method.
-export interface CustomFile extends ReadStream {
-  type?: string;
-}
 
 export class Snapshot {
-  private _snapshotClient: ResourceSnapshots | undefined;
-  private lastSnapshot: ResourceSnapshotsModel | undefined;
+  constructor(
+    private model: ResourceSnapshotsModel,
+    private snapshotClient: ResourceSnapshots
+  ) {}
 
-  async createSnapshotFromZip(pathToZip: string, developerNotes: string) {
-    const snapshotClient = await this.getSnapshotClient();
-    const file: CustomFile = createReadStream(pathToZip);
-
-    file.type = 'application/zip';
-
-    const computedOptions: CreateFromFileOptions = {
-      developerNotes,
-    };
-
-    this.lastSnapshot = await snapshotClient.createFromFile(
-      file,
-      computedOptions
-    );
-  }
-
-  async pushSnapshotToTarget(targetOrganisationId: string) {
+  async push(targetOrganizationId: string, developerNotes: string) {
     // TODO: CDX-356: Right now the snapshot will remain in the connected org. It should be sent to the destination org specified by the --target flag.
     // const snapshotClient = await this.getSnapshotClient();
     // snapshotClient.push(this.lastSnapshot?.targetId, {targetOrganisationId});
   }
 
-  validateSnapshot(targetOrganisationId: string) {
+  validate(targetOrganisationId: string) {
     // TODO: CDX-358: Validate snapshot
   }
 
-  previewSnapshot() {
+  preview() {
     // TODO: get detailed report
     this.displayLightPreview();
     this.displayExpandedPreview();
@@ -56,15 +31,7 @@ export class Snapshot {
     // TODO: CDX-347 Display Expanded preview
   }
 
-  async deleteSnapshot() {
+  async delete() {
     // TODO: CDX-359: Delete snapshot once previewed
-  }
-
-  private async getSnapshotClient() {
-    this._snapshotClient =
-      this._snapshotClient ||
-      (await new AuthenticatedClient().getClient()).resourceSnapshot;
-
-    return this._snapshotClient;
   }
 }

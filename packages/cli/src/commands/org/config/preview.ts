@@ -7,8 +7,8 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
-import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {Project} from '../../../lib/project/project';
+import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 
 export interface CustomFile extends ReadStream {
   type?: string;
@@ -39,21 +39,25 @@ export default class Preview extends Command {
   @Preconditions(IsAuthenticated())
   async run() {
     const {flags} = this.parse(Preview);
-    const snapshot = new Snapshot();
     const project = new Project(flags.projectPath);
-
     const pathToZip = await project.compressResources();
 
+    const factory = new SnapshotFactory();
+    const snapshot = await factory.createFromZip(
+      pathToZip,
+      'cli-preview-snapshot'
+    );
+
     cli.action.start('Creating snapshot');
-    await snapshot.createSnapshotFromZip(pathToZip, 'cli-preview-snapshot');
 
     const targetOrg = await this.getTargetOrg();
-    await snapshot.pushSnapshotToTarget(targetOrg);
+    await snapshot.push(targetOrg, 'cli-preview-snapshot');
 
     cli.action.start('Validating snapshot');
-    await snapshot.validateSnapshot(targetOrg);
-    await snapshot.previewSnapshot();
-    await snapshot.deleteSnapshot();
+
+    await snapshot.validate(targetOrg);
+    await snapshot.preview();
+    await snapshot.delete();
 
     project.deleteTemporaryZipFile();
 

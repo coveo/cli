@@ -6,7 +6,7 @@ import {join} from 'path';
 import {Readable} from 'stream';
 import {mocked} from 'ts-jest/utils';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
-import {Snapshot} from './snapshot';
+import {SnapshotFactory} from './snapshotFactory';
 
 const mockedCreateReadStream = mocked(createReadStream);
 const mockedAuthenticatedClient = mocked(AuthenticatedClient);
@@ -42,13 +42,12 @@ describe('Snapshot', () => {
   });
 
   describe('when the the resources are compressed', () => {
-    let snapshot: Snapshot;
+    const factory: SnapshotFactory = new SnapshotFactory();
     const pathToZip = join('dummy', 'path');
     const developerNotes = 'Some random notes';
 
-    beforeEach(() => {
-      snapshot = new Snapshot();
-      snapshot.createSnapshotFromZip(pathToZip, developerNotes);
+    beforeEach(async () => {
+      await factory.createFromZip(pathToZip, developerNotes);
     });
 
     it('#createSnapshotFromZip should retrieve an authenticated client', () => {
