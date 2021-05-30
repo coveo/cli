@@ -2,7 +2,7 @@ require('isomorphic-fetch');
 require('abortcontroller-polyfill');
 
 import PlatformClient from '@coveord/platform-client';
-import {Config} from '../config/config';
+import {Config, Configuration} from '../config/config';
 import {
   castEnvironmentToPlatformClient,
   castRegionToPlatformClient,
@@ -29,18 +29,18 @@ export class AuthenticatedClient {
     }
   }
 
-  async getClient() {
-    const {
-      environment,
-      region,
-      organization,
-      accessToken,
-    } = await this.cfg.get();
+  async getClient(customConfig?: Partial<Configuration>) {
+    const {environment, region, organization, accessToken} =
+      await this.cfg.get();
     return new PlatformClient({
-      environment: castEnvironmentToPlatformClient(environment),
-      region: castRegionToPlatformClient(region),
-      organizationId: organization,
-      accessToken: accessToken!,
+      environment: castEnvironmentToPlatformClient(
+        customConfig?.environment || environment
+      ),
+      region: castRegionToPlatformClient(customConfig?.region || region),
+      organizationId: customConfig?.organization || organization,
+      accessToken: customConfig?.accessToken
+        ? customConfig?.accessToken
+        : accessToken!,
     });
   }
 
