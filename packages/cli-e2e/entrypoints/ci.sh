@@ -7,11 +7,11 @@ sudo apt-get install libssl-dev zlib1g-dev llvm libncurses5-dev libncursesw5-dev
 
 export DISPLAY=:1
 Xvfb :1 -screen 0 1024x768x16 & sleep 1
-google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720 >/dev/null 2>&1 &  \
+google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720 >/dev/null 2>&1 &
 
 xdg-settings set default-web-browser google-chrome.desktop
 
-npx verdaccio --config ./packages/cli-e2e/docker/config/config.yaml
+npx verdaccio --config ./packages/cli-e2e/docker/config/config.yaml >/dev/null 2>&1 &
 
 export UI_TEMPLATE_VERSION=0.0.0
 npm set registry http://localhost:4873
