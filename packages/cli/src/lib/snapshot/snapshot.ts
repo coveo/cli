@@ -1,11 +1,9 @@
-import {ResourceSnapshotsModel} from '@coveord/platform-client';
-// TODO: CDX-366: Waiting for Pull Request https://github.com/coveo/platform-client/pull/324. Once merge, import the class directly from @coveord/platform-client
-import ResourceSnapshots from '@coveord/platform-client/dist/definitions/resources/ResourceSnapshots/ResourceSnapshots';
+import {ResourceSnapshotsModel, PlatformClient} from '@coveord/platform-client';
 
 export class Snapshot {
   constructor(
     private model: ResourceSnapshotsModel,
-    private snapshotClient: ResourceSnapshots
+    private client: PlatformClient
   ) {}
 
   async push(targetOrganizationId: string, developerNotes: string) {
