@@ -8,9 +8,9 @@ import {EngineService} from '../engine.service';
   styleUrls: ['./search-page.component.scss'],
 })
 export class SearchPageComponent implements AfterViewInit {
-  constructor(private engineService: EngineService) {}
+  public constructor(private engineService: EngineService) {}
 
-  executeSearch() {
+  public executeSearch() {
     const {dispatch} = this.engineService.get();
     const action = SearchActions.executeSearch(
       AnalyticsActions.logInterfaceLoad()
@@ -18,7 +18,7 @@ export class SearchPageComponent implements AfterViewInit {
     dispatch(action);
   }
 
-  ngAfterViewInit(): void {
+  public ngAfterViewInit(): void {
     this.executeSearch();
   }
 }

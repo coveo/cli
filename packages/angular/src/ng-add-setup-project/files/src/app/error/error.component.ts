@@ -6,11 +6,11 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./error.component.scss'],
 })
 export class ErrorComponent implements OnInit {
-  constructor() {}
+  public constructor() {}
 
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 
-  get errorMessage() {
+  public get errorMessage() {
     return history.state.errorMessage || '';
   }
 }
