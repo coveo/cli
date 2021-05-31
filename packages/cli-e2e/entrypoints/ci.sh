@@ -11,7 +11,7 @@ google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usag
 
 xdg-settings set default-web-browser google-chrome.desktop
 # npm i -g verdaccio
-npx verdaccio --config packages/cli-e2e/docker/config/config.yaml
+npx verdaccio
 while ! timeout 1 bash -c "echo > /dev/tcp/localhost/4873"; do sleep 10; done
 
 export UI_TEMPLATE_VERSION=0.0.0
