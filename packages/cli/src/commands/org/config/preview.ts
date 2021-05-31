@@ -1,6 +1,9 @@
+import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
 import {Command, flags} from '@oclif/command';
 import {cli} from 'cli-ux';
 import {ReadStream} from 'fs';
+import {dedent} from 'ts-dedent';
+import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {cwd} from 'process';
 import {Config} from '../../../lib/config/config';
 import {
@@ -8,6 +11,7 @@ import {
   Preconditions,
 } from '../../../lib/decorators/preconditions';
 import {Project} from '../../../lib/project/project';
+import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 
 export interface CustomFile extends ReadStream {
@@ -51,12 +55,34 @@ export default class Preview extends Command {
     cli.action.start('Validating snapshot');
 
     await snapshot.validate();
+
+    if (!snapshot.isValid()) {
+      this.handleInvalidSnapshot(snapshot);
+    }
+
     await snapshot.preview();
     await snapshot.delete();
 
     project.deleteTemporaryZipFile();
 
     cli.action.stop();
+  }
+
+  private saveDetailedReport(report: ResourceSnapshotsReportModel) {
+    const {flags} = this.parse(Preview);
+    const pathToReport = `${flags.projectPath}/.snapshot-reports/${report.id}.json`;
+    ensureFileSync(pathToReport);
+    writeJsonSync(pathToReport, report, {spaces: 2});
+    return pathToReport;
+  }
+
+  private handleInvalidSnapshot(snapshot: Snapshot) {
+    const pathToReport = this.saveDetailedReport(snapshot.lastestReport);
+    // TODO: handle invalid snashot cases
+    this.error(
+      dedent`Invalid snapshot.
+      Please consult detailed report ${pathToReport}`
+    );
   }
 
   async getTargetOrg() {
