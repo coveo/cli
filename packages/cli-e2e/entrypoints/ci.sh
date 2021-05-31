@@ -11,6 +11,8 @@ google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usag
 
 xdg-settings set default-web-browser google-chrome.desktop
 
+npx verdaccio --config .packages/cli-e2e/docker/config/config.yaml
+
 export UI_TEMPLATE_VERSION=0.0.0
 npm set registry http://localhost:4873
 yarn config set  registry http://localhost:4873
@@ -21,8 +23,8 @@ yarn config set -- --silent true
 npm run npm:bump:template -- -- $UI_TEMPLATE_VERSION
 
 npm run npm:publish:template
-
 cd packages/cli-e2e
+
 node entrypoints/utils/wait-for-published-packages.js
 
 while ! timeout 1 bash -c "echo > /dev/tcp/localhost/9222"; do sleep 10; done
