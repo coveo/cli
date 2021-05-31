@@ -22,6 +22,8 @@ yarn config set -- --silent true
 
 npm run npm:bump:template -- -- $UI_TEMPLATE_VERSION
 
+while ! timeout 1 bash -c "echo > /dev/tcp/localhost/4873"; do sleep 10; done
+
 npm run npm:publish:template
 cd packages/cli-e2e
 
