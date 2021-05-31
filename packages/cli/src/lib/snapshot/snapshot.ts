@@ -69,18 +69,14 @@ export class Snapshot {
 
   private async isIdle() {
     await this.refreshSnapshotData();
-    const lastReport = this.model.reports?.slice(-1)[0];
-    if (!lastReport) {
-      cli.error('Unavailable ');
-    }
-    return new Promise<ResourceSnapshotsReportModel>((resolve) => {
+    return new Promise<void>((resolve) => {
       if (
         [
           ResourceSnapshotsReportStatus.Aborted,
           ResourceSnapshotsReportStatus.Completed,
         ].includes(this.lastestReport.status)
       ) {
-        resolve(lastReport);
+        resolve();
       }
     });
   }
