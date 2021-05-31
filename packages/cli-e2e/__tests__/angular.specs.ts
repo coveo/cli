@@ -356,7 +356,12 @@ describe('ui:create:angular', () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
       envFileContent = flushEnvFile(join(projectName, 'server'));
-      await startApplication(serverProcessManager, 'angular-server-invalid');
+      const appTerminal = await startApplication(
+        serverProcessManager,
+        'angular-server-invalid'
+      );
+      await waitForAppRunning(appTerminal);
+      [clientPort, serverPort] = getAllocatedPorts();
     }, 2 * 60e3);
 
     afterAll(async () => {
