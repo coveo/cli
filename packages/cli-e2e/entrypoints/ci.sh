@@ -1,6 +1,6 @@
   
 #!/bin/bash
-set -e
+# set -e
 
 sudo apt-get update
 sudo apt-get install libssl-dev zlib1g-dev llvm libncurses5-dev libncursesw5-dev tk-dev
