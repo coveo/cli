@@ -11,6 +11,8 @@ import {SnapshotFactory} from './snapshotFactory';
 const mockedCreateReadStream = mocked(createReadStream);
 const mockedAuthenticatedClient = mocked(AuthenticatedClient);
 const mockedCreateSnapshotFromFile = jest.fn();
+const mockedPushSnapshot = jest.fn();
+const mockedGetClient = jest.fn();
 
 const doMockReadStream = () => {
   mockedCreateReadStream.mockImplementation(() => {
@@ -24,13 +26,19 @@ const doMockReadStream = () => {
 };
 
 const doMockAuthenticatedClient = () => {
+  mockedGetClient.mockImplementation(() =>
+    Promise.resolve({
+      resourceSnapshot: {
+        createFromFile: mockedCreateSnapshotFromFile,
+        push: mockedPushSnapshot,
+      },
+    })
+  );
+
   mockedAuthenticatedClient.mockImplementation(
     () =>
       ({
-        getClient: () =>
-          Promise.resolve({
-            resourceSnapshot: {createFromFile: mockedCreateSnapshotFromFile},
-          }),
+        getClient: mockedGetClient,
       } as unknown as AuthenticatedClient)
   );
 };
@@ -44,10 +52,15 @@ describe('Snapshot', () => {
   describe('when the the resources are compressed', () => {
     const factory: SnapshotFactory = new SnapshotFactory();
     const pathToZip = join('dummy', 'path');
-    const developerNotes = 'Some random notes';
 
     beforeEach(async () => {
-      await factory.createFromZip(pathToZip, developerNotes);
+      await factory.createFromZip(pathToZip, 'my-target-org');
+    });
+
+    it('should create a client connected to the right organization', () => {
+      expect(mockedGetClient).toHaveBeenCalledWith({
+        organization: 'my-target-org',
+      });
     });
 
     it('#createSnapshotFromZip should retrieve an authenticated client', () => {
@@ -59,7 +72,7 @@ describe('Snapshot', () => {
         expect.objectContaining({
           type: 'application/zip',
         }),
-        {developerNotes: 'Some random notes'}
+        {developerNotes: 'cli-created-from-zip'}
       );
     });
 
@@ -68,8 +81,6 @@ describe('Snapshot', () => {
         join('dummy', 'path')
       );
     });
-
-    it.todo('should push the created snapshot to the destination org');
   });
 
   describe('when the snapshot validation does not pass', () => {

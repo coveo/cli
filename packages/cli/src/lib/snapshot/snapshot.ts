@@ -4,20 +4,14 @@ import ResourceSnapshots from '@coveord/platform-client/dist/definitions/resourc
 export class Snapshot {
   constructor(
     private model: ResourceSnapshotsModel,
-    private snapshotClient: ResourceSnapshots
+    private client: ResourceSnapshots
   ) {}
 
-  async push(targetOrganizationId: string, developerNotes: string) {
-    // TODO: CDX-356: Right now the snapshot will remain in the connected org. It should be sent to the destination org specified by the --target flag.
-    // const snapshotClient = await this.getSnapshotClient();
-    // snapshotClient.push(this.lastSnapshot?.targetId, {targetOrganisationId});
-  }
-
-  validate(targetOrganisationId: string) {
+  async validate() {
     // TODO: CDX-358: Validate snapshot
   }
 
-  preview() {
+  async preview() {
     // TODO: get detailed report
     this.displayLightPreview();
     this.displayExpandedPreview();
