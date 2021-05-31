@@ -20,8 +20,8 @@ yarn config set -- --silent true
 
 npm run npm:bump:template -- -- $UI_TEMPLATE_VERSION
 
-npx verdaccio --config packages/cli-e2e/docker/config/config.yaml
-# while ! timeout 1 bash -c "echo > /dev/tcp/localhost/4873"; do sleep 10; done
+sudo npx verdaccio --config packages/cli-e2e/docker/config/config.yaml &
+while ! timeout 1 bash -c "echo > /dev/tcp/localhost/4873"; do sleep 10; done
 
 npm run npm:publish:template
 cd packages/cli-e2e
