@@ -77,10 +77,11 @@ export default class Preview extends Command {
   }
 
   private handleInvalidSnapshot(snapshot: Snapshot) {
-    const pathToReport = this.saveDetailedReport(snapshot.lastestReport);
-    // TODO: handle invalid snashot cases
+    const report = snapshot.lastestReport;
+    const pathToReport = this.saveDetailedReport(report);
+    // TODO: CDX-362: handle invalid snashot cases
     this.error(
-      dedent`Invalid snapshot.
+      dedent`Invalid snapshot - ${report.resultCode}.
       Please consult detailed report ${pathToReport}`
     );
   }
