@@ -89,7 +89,9 @@ describe('ui:create:angular', () => {
   };
 
   const getAllocatedPorts = () => {
-    const envVariables = parse(getPathToEnvFile(join(projectName, 'server')));
+    const envVariables = parse(
+      readFileSync(getPathToEnvFile(join(projectName, 'server')))
+    );
 
     if (!envVariables) {
       throw new Error('Unable to load project environment variables');
