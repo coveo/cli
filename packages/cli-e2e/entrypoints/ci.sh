@@ -11,7 +11,7 @@ google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usag
 
 xdg-settings set default-web-browser google-chrome.desktop
 
-npx verdaccio --config .packages/cli-e2e/docker/config/config.yaml
+npx verdaccio --config ./packages/cli-e2e/docker/config/config.yaml
 
 export UI_TEMPLATE_VERSION=0.0.0
 npm set registry http://localhost:4873
