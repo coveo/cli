@@ -2,7 +2,7 @@ const {backOff} = require('exponential-backoff');
 const {
   getPackageLastTestVersion,
   getUiTemplates,
-} = require('./ui-template-utils');
+} = require('../../../../scripts/ui-template-utils');
 
 async function isLastTestVersionAvailable(packageName, lastVersion) {
   const response = await getPackageLastTestVersion(packageName);
