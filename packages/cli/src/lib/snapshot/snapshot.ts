@@ -14,7 +14,7 @@ export class Snapshot {
     private client: ResourceSnapshots
   ) {}
 
-  async validate() {
+  public async validate() {
     await this.client.dryRun(this.snapshotId, {
       deleteMissingResources: false, // TODO: CDX-361: Add flag to support missing resources deletion
     });
@@ -22,7 +22,7 @@ export class Snapshot {
     await this.waitUntilIdle();
   }
 
-  isValid() {
+  public isValid() {
     const {resultCode, status} = this.lastestReport;
     return (
       status === ResourceSnapshotsReportStatus.Completed &&
@@ -30,7 +30,7 @@ export class Snapshot {
     );
   }
 
-  async preview() {
+  public async preview() {
     // TODO: get detailed report
     this.displayLightPreview();
     this.displayExpandedPreview();
@@ -48,7 +48,7 @@ export class Snapshot {
     // TODO: CDX-359: Delete snapshot once previewed
   }
 
-  get lastestReport(): ResourceSnapshotsReportModel {
+  public get lastestReport(): ResourceSnapshotsReportModel {
     if (this.model.reports === undefined) {
       throw new Error(
         `No detailed report found for the snapshot ${this.snapshotId}`
