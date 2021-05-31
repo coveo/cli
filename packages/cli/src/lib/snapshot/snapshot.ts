@@ -1,4 +1,5 @@
 import {ResourceSnapshotsModel} from '@coveord/platform-client';
+// TODO: CDX-366: Waiting for Pull Request https://github.com/coveo/platform-client/pull/324
 import ResourceSnapshots from '@coveord/platform-client/dist/definitions/resources/ResourceSnapshots/ResourceSnapshots';
 
 export class Snapshot {
