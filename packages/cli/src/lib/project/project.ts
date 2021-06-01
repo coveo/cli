@@ -8,14 +8,6 @@ export class Project {
     this.ensureProjectCompliance();
   }
 
-  private get pathToTemporaryZip() {
-    return join(this.pathToProject, 'snapshot.zip');
-  }
-
-  private get pathToResources() {
-    return join(this.pathToProject, 'resources');
-  }
-
   public deleteTemporaryZipFile() {
     unlinkSync(this.pathToTemporaryZip);
   }
@@ -50,5 +42,13 @@ export class Project {
     } catch (error) {
       cli.error(error);
     }
+  }
+
+  private get pathToTemporaryZip() {
+    return join(this.pathToProject, 'snapshot.zip');
+  }
+
+  private get pathToResources() {
+    return join(this.pathToProject, 'resources');
   }
 }
