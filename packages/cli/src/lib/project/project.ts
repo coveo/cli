@@ -16,11 +16,11 @@ export class Project {
     return join(this.pathToProject, 'resources');
   }
 
-  deleteTemporaryZipFile() {
+  public deleteTemporaryZipFile() {
     unlinkSync(this.pathToTemporaryZip);
   }
 
-  ensureProjectCompliance() {
+  public ensureProjectCompliance() {
     /*
      * TODO: CDX-354: add checks to ensure the project is indeed a valid project
      * e.g. * Check if path to resources is a folder
@@ -32,7 +32,7 @@ export class Project {
     }
   }
 
-  async compressResources() {
+  public async compressResources() {
     try {
       await new Promise<void>((resolve, reject) => {
         const pathToTemporaryZip = this.pathToTemporaryZip;
