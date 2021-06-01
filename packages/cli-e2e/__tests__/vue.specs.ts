@@ -27,6 +27,7 @@ import {parse} from 'dotenv';
 import {DummyServer} from '../utils/server';
 import {appendFileSync, readFileSync, truncateSync} from 'fs';
 import getPort from 'get-port';
+import {npmJsPath} from '../utils/windows';
 
 describe('ui:create:vue', () => {
   let browser: Browser;
@@ -103,23 +104,13 @@ describe('ui:create:vue', () => {
     await buildTerminalExitPromise;
   };
 
-  const npmJsPath = join(
-    dirname(
-      spawnSync('where.exe', ['npm'], {encoding: 'utf-8'}).stdout.split(EOL)[0]
-    ),
-    'node_modules',
-    'npm',
-    'bin',
-    'npm-cli.js'
-  );
-
   const startApplication = async (
     processManager: ProcessManager,
     debugName = 'vue-server'
   ) => {
     const args = ['npm', 'run', 'start'];
     if (process.platform === 'win32') {
-      args[0] = npmJsPath;
+      args[0] = npmJsPath();
       args.unshift('node');
     }
 
