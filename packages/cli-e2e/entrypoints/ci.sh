@@ -10,11 +10,6 @@ Xvfb :1 -screen 0 1024x768x16 & sleep 1
 google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720 >/dev/null 2>&1 &
 
 xdg-settings set default-web-browser google-chrome.desktop
-npm i -g verdaccio
-pwd
-ls
-bash -c "verdaccio --config packages/cli-e2e/docker/config/config.yaml"
-while ! timeout 1 bash -c "echo > /dev/tcp/localhost/4873"; do sleep 10; done
 
 export UI_TEMPLATE_VERSION=0.0.0
 npm set registry http://localhost:4873
@@ -25,6 +20,7 @@ yarn config set -- --silent true
 
 npm run npm:bump:template -- -- $UI_TEMPLATE_VERSION
 
+while ! timeout 1 bash -c "echo > /dev/tcp/localhost/4873"; do sleep 10; done
 npm run npm:publish:template
 cd packages/cli-e2e
 
