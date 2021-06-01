@@ -56,6 +56,7 @@ export default class Preview extends Command {
     const {isValid, report} = await snapshot.validate();
 
     if (!isValid) {
+      // TODO: CDX-370: Setup a synchronization plan if the resources are in error
       this.handleInvalidSnapshot(report);
     }
 
