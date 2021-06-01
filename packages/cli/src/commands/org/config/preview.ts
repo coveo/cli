@@ -11,7 +11,6 @@ import {
   Preconditions,
 } from '../../../lib/decorators/preconditions';
 import {Project} from '../../../lib/project/project';
-import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 
 export interface CustomFile extends ReadStream {
