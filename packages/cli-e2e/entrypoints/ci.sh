@@ -1,6 +1,6 @@
   
 #!/bin/bash
-# set -e
+set -e
 
 sudo apt-get update
 sudo apt-get install libssl-dev zlib1g-dev llvm libncurses5-dev libncursesw5-dev tk-dev
@@ -11,14 +11,11 @@ google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usag
 
 xdg-settings set default-web-browser google-chrome.desktop
 
-VERDACCIO_CONFIG_DIR="$GITHUB_WORKSPACE/packages/cli-e2e/docker/config"
-echo $VERDACCIO_CONFIG_DIR
 docker run --rm --name verdaccio \
   -p 4873:4873 \
-  -v "$VERDACCIO_CONFIG_DIR:/verdaccio/conf" \
+  -v "$GITHUB_WORKSPACE/packages/cli-e2e/docker/config:/verdaccio/conf" \
   verdaccio/verdaccio 
-# npm i -g verdaccio
-# verdaccio --config packages/cli-e2e/docker/config
+
 while ! timeout 1 bash -c "echo > /dev/tcp/localhost/4873"; do sleep 10; done
 
 export UI_TEMPLATE_VERSION=0.0.0
