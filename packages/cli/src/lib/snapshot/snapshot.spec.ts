@@ -1,22 +1,26 @@
 jest.mock('../platform/authenticatedClient');
 jest.mock('fs');
 
-import {createReadStream} from 'fs';
+import {createReadStream, ReadStream} from 'fs';
 import {join} from 'path';
+import {Readable} from 'stream';
 import {mocked} from 'ts-jest/utils';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {SnapshotFactory} from './snapshotFactory';
 
 const mockedCreateReadStream = mocked(createReadStream);
-const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
+const mockedAuthenticatedClient = mocked(AuthenticatedClient);
 const mockedCreateSnapshotFromFile = jest.fn();
 
 const doMockReadStream = () => {
-  mockedCreateReadStream.mockImplementation(() =>
-    jest
-      .requireActual<{createReadStream: typeof createReadStream}>('fs')
-      .createReadStream(Buffer.from('this is a tést'))
-  );
+  mockedCreateReadStream.mockImplementation(() => {
+    const buffer = Buffer.from('this is a tést');
+    const readable = new Readable();
+    readable._read = () => {};
+    readable.push(buffer);
+    readable.push(null);
+    return readable as unknown as ReadStream;
+  });
 };
 
 const doMockAuthenticatedClient = () => {
