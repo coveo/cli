@@ -48,6 +48,7 @@ jobs:
         if: ${{matrix.os == 'windows-latest'}}
         run: packages/cli-e2e/entrypoints/ci.ps1
       - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
         with:
           name: ${{matrix.os}}-test-artifacts
           path: ./packages/cli-e2e/artifacts
