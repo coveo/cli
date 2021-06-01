@@ -1,11 +1,26 @@
 const {backOff} = require('exponential-backoff');
-const {
-  getPackageLastTestVersion,
-  getUiTemplates,
-} = require('../../../../scripts/ui-template-utils');
+const {spawnSync} = require('child_process');
+
+/**
+ * All the UI templates used by 3rd-party CLIs.
+ *
+ * The following packages will be published before every E2E test
+ * with a version matching this format: 0.0.x
+ */
+const packagesToWait = [
+  '@coveo/cra-template',
+  '@coveo/vue-cli-plugin-typescript',
+  '@coveo/angular',
+  '@coveo/search-token-server',
+];
+
+function getPackageLatestVersion(packageName) {
+  const ciTestVersion = spawnSync('npm', ['show', packageName, 'version']);
+  return ciTestVersion.stdout;
+}
 
 async function isLastTestVersionAvailable(packageName, lastVersion) {
-  const response = await getPackageLastTestVersion(packageName);
+  const response = getPackageLatestVersion(packageName);
   return response === lastVersion;
 }
 
@@ -23,9 +38,10 @@ async function waitForPackage(packageName, version) {
 }
 
 async function main() {
-  const templates = getUiTemplates();
   return await Promise.all(
-    templates.map((t) => waitForPackage(t, process.env.UI_TEMPLATE_VERSION))
+    packagesToWait.map((pkg) =>
+      waitForPackage(pkg, process.env.UI_TEMPLATE_VERSION)
+    )
   );
 }
 
