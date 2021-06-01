@@ -53,10 +53,10 @@ export default class Preview extends Command {
 
     cli.action.start('Validating snapshot');
 
-    await snapshot.validate();
+    const {isValid, report} = await snapshot.validate();
 
-    if (!snapshot.isValid()) {
-      this.handleInvalidSnapshot(snapshot);
+    if (!isValid) {
+      this.handleInvalidSnapshot(report);
     }
 
     await snapshot.preview();
@@ -75,8 +75,7 @@ export default class Preview extends Command {
     return pathToReport;
   }
 
-  private handleInvalidSnapshot(snapshot: Snapshot) {
-    const report = snapshot.lastestReport;
+  private handleInvalidSnapshot(report: ResourceSnapshotsReportModel) {
     const pathToReport = this.saveDetailedReport(report);
     // TODO: CDX-362: handle invalid snashot cases
     this.error(

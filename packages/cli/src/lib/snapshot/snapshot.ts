@@ -8,26 +8,25 @@ import {
 import {cli} from 'cli-ux';
 import {backOff} from 'exponential-backoff';
 
+export interface ISnapshotValidation {
+  isValid: boolean;
+  report: ResourceSnapshotsReportModel;
+}
+
 export class Snapshot {
   constructor(
     private model: ResourceSnapshotsModel,
     private client: PlatformClient
   ) {}
 
-  public async validate() {
+  public async validate(): Promise<ISnapshotValidation> {
     await this.snapshotClient.dryRun(this.snapshotId, {
       deleteMissingResources: false, // TODO: CDX-361: Add flag to support missing resources deletion
     });
 
     await this.waitUntilIdle();
-  }
 
-  public isValid() {
-    const {resultCode, status} = this.lastestReport;
-    return (
-      status === ResourceSnapshotsReportStatus.Completed &&
-      resultCode === ResourceSnapshotsReportResultCode.Success
-    );
+    return {isValid: this.isValid(), report: this.lastestReport};
   }
 
   public async preview() {
@@ -38,15 +37,6 @@ export class Snapshot {
 
   public async delete() {
     // TODO: CDX-359: Delete snapshot once previewed
-  }
-
-  public get lastestReport(): ResourceSnapshotsReportModel {
-    if (this.model.reports === undefined) {
-      throw new Error(
-        `No detailed report found for the snapshot ${this.snapshotId}`
-      );
-    }
-    return this.model.reports.slice(-1)[0];
   }
 
   private get snapshotId() {
@@ -63,6 +53,23 @@ export class Snapshot {
 
   private displayExpandedPreview() {
     // TODO: CDX-347 Display Expanded preview
+  }
+
+  private get lastestReport(): ResourceSnapshotsReportModel {
+    if (this.model.reports === undefined) {
+      throw new Error(
+        `No detailed report found for the snapshot ${this.snapshotId}`
+      );
+    }
+    return this.model.reports.slice(-1)[0];
+  }
+
+  private isValid() {
+    const {resultCode, status} = this.lastestReport;
+    return (
+      status === ResourceSnapshotsReportStatus.Completed &&
+      resultCode === ResourceSnapshotsReportResultCode.Success
+    );
   }
 
   private async refreshSnapshotData() {
