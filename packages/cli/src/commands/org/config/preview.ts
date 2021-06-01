@@ -45,8 +45,7 @@ export default class Preview extends Command {
 
     cli.action.start('Creating snapshot');
 
-    const factory = new SnapshotFactory();
-    const snapshot = await factory.createFromZip(pathToZip, targetOrg);
+    const snapshot = await SnapshotFactory.createFromZip(pathToZip, targetOrg);
 
     cli.action.start('Validating snapshot');
 

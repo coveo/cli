@@ -50,11 +50,10 @@ describe('Snapshot', () => {
   });
 
   describe('when the the resources are compressed', () => {
-    const factory: SnapshotFactory = new SnapshotFactory();
     const pathToZip = join('dummy', 'path');
 
     beforeEach(async () => {
-      await factory.createFromZip(pathToZip, 'my-target-org');
+      await SnapshotFactory.createFromZip(pathToZip, 'my-target-org');
     });
 
     it('should create a client connected to the right organization', () => {
