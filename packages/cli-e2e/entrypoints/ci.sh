@@ -15,8 +15,8 @@ VERDACCIO_CONFIG_DIR="$GITHUB_WORKSPACE/packages/cli-e2e/docker/config"
 echo $VERDACCIO_CONFIG_DIR
 docker run --rm --name verdaccio \
   -p 4873:4873 \
-  verdaccio/verdaccio \
-  -v "$VERDACCIO_CONFIG_DIR:/verdaccio/conf"
+  -v "$VERDACCIO_CONFIG_DIR:/verdaccio/conf" \
+  verdaccio/verdaccio 
 # npm i -g verdaccio
 # verdaccio --config packages/cli-e2e/docker/config
 while ! timeout 1 bash -c "echo > /dev/tcp/localhost/4873"; do sleep 10; done
