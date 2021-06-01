@@ -30,7 +30,6 @@ const recursiveKilling = (inputProcess: Process) => {
   // Kill the Process without checking if we own it and wait for it to die.
   const killCommand = `Stop-Process -Force -Id ${inputProcess.pid} -PassThru | Wait-Process`;
   try {
-    console.log(killCommand);
     spawnSync('powershell.exe', ['-Command', killCommand], {
       encoding: 'utf-8',
     });
