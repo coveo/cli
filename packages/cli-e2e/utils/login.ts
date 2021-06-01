@@ -57,9 +57,13 @@ async function possiblyAcceptCustomerAgreement(page: Page) {
 }
 
 export function runLoginCommand() {
+  const args: string[] = [CLI_EXEC_PATH, 'auth:login', '-e=dev'];
+  if (process.platform === 'win32') {
+    args.unshift('node');
+  }
   const loginTerminal = new Terminal(
-    CLI_EXEC_PATH,
-    ['auth:login', '-e=dev'],
+    args.shift()!,
+    args,
     undefined,
     global.processManager!,
     'initial-login'
@@ -119,11 +123,10 @@ async function startLoginFlow(browser: Browser) {
   await page.close();
 }
 
-export async function loginWithOffice() {
+export async function loginWithOffice(browser: Browser) {
   if (await isLoggedin()) {
     return;
   }
-  const browser: Browser = await connectToChromeBrowser();
 
   const loginProcess = runLoginCommand();
 

@@ -24,9 +24,15 @@ describe('auth', () => {
 
     it('should open the platform page', async () => {
       // TODO CDX-98: Remove `-e=dev`.
+      const args: string[] = [CLI_EXEC_PATH, 'auth:login', '-e=dev'];
+      if (process.platform === 'win32') {
+        args.unshift('node');
+      }
+      console.log(args.join(' '));
+      await captureScreenshots(browser);
       const cliTerminal = new Terminal(
-        CLI_EXEC_PATH,
-        ['auth:login', '-e=dev'],
+        args.shift()!,
+        args,
         undefined,
         processManager,
         'auth-login'

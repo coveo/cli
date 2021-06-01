@@ -3,6 +3,7 @@ import {
   SpawnOptionsWithoutStdio,
   spawn as nativeSpawn,
 } from 'child_process';
+import {recurseProcessKillWindows} from './windowsProcessKiller';
 
 export class ProcessManager {
   private processes: Set<ChildProcessWithoutNullStreams>;
@@ -15,7 +16,10 @@ export class ProcessManager {
     args?: ReadonlyArray<string>,
     options?: SpawnOptionsWithoutStdio
   ): ChildProcessWithoutNullStreams {
-    const process = nativeSpawn(command, args, {detached: true, ...options});
+    const process = nativeSpawn(command, args, {
+      detached: true,
+      ...options,
+    });
     process.on('exit', this.onExit(process));
     this.processes.add(process);
     return process;
@@ -28,14 +32,16 @@ export class ProcessManager {
   public async killAllProcesses() {
     const promises: Promise<void>[] = [];
     const processIterator = this.processes.values();
-    let current = processIterator.next();
-    while (!current.done) {
+    for (
+      let current = processIterator.next();
+      !current.done;
+      current = processIterator.next()
+    ) {
       const currentProcess = current.value;
-      currentProcess.removeAllListeners('exit');
       await new Promise<void>((resolve) => {
         promises.push(
           new Promise<void>((exit) => {
-            currentProcess.on('exit', () => {
+            currentProcess.removeAllListeners('exit').on('exit', () => {
               this.onExit(currentProcess)();
               exit();
             });
@@ -43,9 +49,17 @@ export class ProcessManager {
               console.error(
                 `Process pid is not a number. Received pid: ${currentProcess.pid}`
               );
-              resolve();
+              return resolve();
             }
-            process.kill(-currentProcess.pid);
+            if (process.platform === 'win32') {
+              try {
+                recurseProcessKillWindows(currentProcess.pid);
+              } catch (error) {
+                console.error(JSON.stringify({error}));
+              }
+            } else {
+              process.kill(-currentProcess.pid);
+            }
             resolve();
           })
         );
@@ -53,6 +67,6 @@ export class ProcessManager {
       current = processIterator.next();
     }
 
-    return Promise.all(promises);
+    await Promise.all(promises);
   }
 }
