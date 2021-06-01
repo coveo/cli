@@ -1,7 +1,8 @@
 Start-Process "npx" -ArgumentList "verdaccio --config ./docker/config/config.yaml"
 Start-Process "C:/Program Files/Google/Chrome/Application/chrome.exe" -ArgumentList "--no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720"
 # ToRemove
-Resolve-Path .
+Get-Location
+Resolve-Path . | Write-Output
 <#
  # Set the default user browser on Chrome.
  # See http://kolbi.cz/blog/?p=346
