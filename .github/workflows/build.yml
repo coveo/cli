@@ -18,7 +18,7 @@ jobs:
       PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
     steps:
       - name: Setup runner
-        if: ${{matrix.os === 'ubuntu-latest'}}
+        if: ${{matrix.os == 'ubuntu-latest'}}
         # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
       - uses: actions/checkout@v2
@@ -35,10 +35,10 @@ jobs:
         working-directory: ./packages/cli
         run: tsc -b
       - name: End-to-end Tests
-        if: ${{matrix.os === 'ubuntu-latest'}}
+        if: ${{matrix.os == 'ubuntu-latest'}}
         run: bash packages/cli-e2e/entrypoints/ci.sh
       - name: End-to-end Tests
-        if: ${{matrix.os === 'windows-latest'}}
+        if: ${{matrix.os == 'windows-latest'}}
         run: packages/cli-e2e/entrypoints/ci.ps1
       - uses: actions/upload-artifact@v2
         with:
