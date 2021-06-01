@@ -13,6 +13,16 @@ Start-Process "C:/Program Files/Google/Chrome/Application/chrome.exe" -ArgumentL
 # Start-Process -FilePath '.\packages\cli-e2e\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList '.htm ChromeHTML' -PassThru | Wait-Process
 # Start-Process -FilePath '.\packages\cli-e2e\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList '.html ChromeHTML' -PassThru | Wait-Process
 
+do {
+    $ChromeTest = Test-NetConnection -ComputerName localhost -Port 9773 -InformationLevel Quiet
+    Write-Output "Verdaccio Test $ChromeTest"
+} while (!$ChromeTest)
+
+do {
+    $VerdaccioTest = Test-NetConnection -ComputerName localhost -Port 4873 -InformationLevel Quiet
+    Write-Output "Verdaccio Test $VerdaccioTest"
+} while (!$VerdaccioTest)
+
 git config --global user.name "notgroot"
 git config --global user.email "notgroot@coveo.com"
 
