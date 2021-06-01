@@ -5,10 +5,10 @@ Start-Process "C:/Program Files/Google/Chrome/Application/chrome.exe" -ArgumentL
  # Set the default user browser on Chrome.
  # See http://kolbi.cz/blog/?p=346
  #>
-./utils/SetUserFTA/SetUserFTA.exe  http ChromeHTML
-./utils/SetUserFTA/SetUserFTA.exe  https ChromeHTML
-./utils/SetUserFTA/SetUserFTA.exe  .htm ChromeHTML
-./utils/SetUserFTA/SetUserFTA.exe  .html ChromeHTML
+.\utils\SetUserFTA\SetUserFTA.exe  http ChromeHTML
+.\utils\SetUserFTA\SetUserFTA.exe  https ChromeHTML
+.\utils\SetUserFTA\SetUserFTA.exe  .htm ChromeHTML
+.\utils\SetUserFTA\SetUserFTA.exe  .html ChromeHTML
 
 git config --global user.name "notgroot"
 git config --global user.email "notgroot@coveo.com"
