@@ -1,4 +1,5 @@
 import {spawnSync} from 'child_process';
+import {EOL} from 'os';
 import {dirname, join} from 'path';
 
 export const npmJsPath = () =>
