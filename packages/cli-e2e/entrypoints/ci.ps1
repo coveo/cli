@@ -6,24 +6,24 @@ Resolve-Path .
  # Set the default user browser on Chrome.
  # See http://kolbi.cz/blog/?p=346
  #>
-Start-Process -FilePath '.\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList ' http ChromeHTML' -PassThru | Wait-Process
-Start-Process -FilePath '.\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList ' https ChromeHTML' -PassThru | Wait-Process
-Start-Process -FilePath '.\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList '.htm ChromeHTML' -PassThru | Wait-Process
-Start-Process -FilePath '.\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList '.html ChromeHTML' -PassThru | Wait-Process
+# Start-Process -FilePath '.\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList ' http ChromeHTML' -PassThru | Wait-Process
+# Start-Process -FilePath '.\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList ' https ChromeHTML' -PassThru | Wait-Process
+# Start-Process -FilePath '.\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList '.htm ChromeHTML' -PassThru | Wait-Process
+# Start-Process -FilePath '.\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList '.html ChromeHTML' -PassThru | Wait-Process
 
-git config --global user.name "notgroot"
-git config --global user.email "notgroot@coveo.com"
+# git config --global user.name "notgroot"
+# git config --global user.email "notgroot@coveo.com"
 
-npm set registry http://localhost:4873
-yarn config set registry http://localhost:4873
-Write-Output "--mutex network" | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
-Write-Output "--install.silent true" | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
-Write-Output "--silent true" | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
+# npm set registry http://localhost:4873
+# yarn config set registry http://localhost:4873
+# Write-Output "--mutex network" | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
+# Write-Output "--install.silent true" | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
+# Write-Output "--silent true" | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
 
-npm run npm:bump:template -- -- "0.0.0"
-npm run npm:publish:template
+# npm run npm:bump:template -- -- "0.0.0"
+# npm run npm:publish:template
 
-Set-Location packages/cli-e2e
+# Set-Location packages/cli-e2e
 
-node entrypoints/utils/wait-for-published-packages.js
-npm run jest
+# node entrypoints/utils/wait-for-published-packages.js
+# npm run jest
