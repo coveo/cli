@@ -3,19 +3,19 @@ import {
   ResourceSnapshotsReportModel,
   ResourceSnapshotsReportResultCode,
   ResourceSnapshotsReportStatus,
+  PlatformClient,
 } from '@coveord/platform-client';
-import ResourceSnapshots from '@coveord/platform-client/dist/definitions/resources/ResourceSnapshots/ResourceSnapshots';
 import {cli} from 'cli-ux';
 import {backOff} from 'exponential-backoff';
 
 export class Snapshot {
   constructor(
     private model: ResourceSnapshotsModel,
-    private client: ResourceSnapshots
+    private client: PlatformClient
   ) {}
 
   public async validate() {
-    await this.client.dryRun(this.snapshotId, {
+    await this.snapshotClient.dryRun(this.snapshotId, {
       deleteMissingResources: false, // TODO: CDX-361: Add flag to support missing resources deletion
     });
 
@@ -62,7 +62,7 @@ export class Snapshot {
   }
 
   private async refreshSnapshotData() {
-    this.model = await this.client.get(this.model.id, {
+    this.model = await this.snapshotClient.get(this.model.id, {
       includeReports: false,
     });
   }
@@ -91,5 +91,9 @@ export class Snapshot {
     } catch (err) {
       cli.error(err);
     }
+  }
+
+  private get snapshotClient() {
+    return this.client.resourceSnapshot;
   }
 }

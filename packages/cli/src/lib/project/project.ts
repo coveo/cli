@@ -8,19 +8,11 @@ export class Project {
     this.ensureProjectCompliance();
   }
 
-  private get pathToTemporaryZip() {
-    return join(this.pathToProject, 'snapshot.zip');
-  }
-
-  private get pathToResources() {
-    return join(this.pathToProject, 'resources');
-  }
-
-  deleteTemporaryZipFile() {
+  public deleteTemporaryZipFile() {
     unlinkSync(this.pathToTemporaryZip);
   }
 
-  ensureProjectCompliance() {
+  public ensureProjectCompliance() {
     /*
      * TODO: CDX-354: add checks to ensure the project is indeed a valid project
      * e.g. * Check if path to resources is a folder
@@ -32,9 +24,9 @@ export class Project {
     }
   }
 
-  async compressResources() {
-    const archivePromise = () =>
-      new Promise<void>((resolve, reject) => {
+  public async compressResources() {
+    try {
+      await new Promise<void>((resolve, reject) => {
         const pathToTemporaryZip = this.pathToTemporaryZip;
         const outputStream = createWriteStream(pathToTemporaryZip);
         const archive = archiver('zip');
@@ -46,12 +38,17 @@ export class Project {
         archive.directory(this.pathToResources, false);
         archive.finalize();
       });
-
-    try {
-      await archivePromise();
       return this.pathToTemporaryZip;
     } catch (error) {
       cli.error(error);
     }
+  }
+
+  private get pathToTemporaryZip() {
+    return join(this.pathToProject, 'snapshot.zip');
+  }
+
+  private get pathToResources() {
+    return join(this.pathToProject, 'resources');
   }
 }

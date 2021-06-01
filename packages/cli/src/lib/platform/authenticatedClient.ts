@@ -29,18 +29,15 @@ export class AuthenticatedClient {
     }
   }
 
-  async getClient(customConfig?: Partial<Configuration>) {
-    const {environment, region, organization, accessToken} =
-      await this.cfg.get();
+  async getClient(overrideConfig?: Partial<Configuration>) {
+    const configFromDisk = await this.cfg.get();
+    const resolvedConfig = {...configFromDisk, ...overrideConfig};
+
     return new PlatformClient({
-      environment: castEnvironmentToPlatformClient(
-        customConfig?.environment || environment
-      ),
-      region: castRegionToPlatformClient(customConfig?.region || region),
-      organizationId: customConfig?.organization || organization,
-      accessToken: customConfig?.accessToken
-        ? customConfig?.accessToken
-        : accessToken!,
+      environment: castEnvironmentToPlatformClient(resolvedConfig.environment),
+      region: castRegionToPlatformClient(resolvedConfig.region),
+      organizationId: resolvedConfig.organization,
+      accessToken: resolvedConfig.accessToken!,
     });
   }
 
