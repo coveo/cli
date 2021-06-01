@@ -74,7 +74,7 @@ export class Snapshot {
 
   private async refreshSnapshotData() {
     this.model = await this.snapshotClient.get(this.model.id, {
-      includeReports: false,
+      includeReports: true,
     });
   }
 
