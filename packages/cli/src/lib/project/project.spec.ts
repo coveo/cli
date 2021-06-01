@@ -8,6 +8,7 @@ import {Project} from './project';
 import {join} from 'path';
 import * as archiver from 'archiver';
 import {Writable} from 'stream';
+
 const mockedExistSync = mocked(existsSync);
 const mockedUnlinkSync = mocked(unlinkSync);
 const mockedCreateWriteStream = mocked(createWriteStream);
@@ -44,8 +45,11 @@ const doMockCreateWriteStream = () => {
 };
 
 describe('Project', () => {
-  doMockCreateWriteStream();
   const projectCreator = () => new Project('dummy/path');
+
+  beforeAll(() => {
+    doMockCreateWriteStream();
+  });
 
   beforeEach(() => {
     doMockInValidProject();
