@@ -14,8 +14,7 @@ export class SnapshotFactory {
     pathToZip: string,
     developerNotes: string
   ): Promise<Snapshot> {
-    const snapshotClient = (await new AuthenticatedClient().getClient())
-      .resourceSnapshot;
+    const client = await new AuthenticatedClient().getClient();
     const file: CustomFile = createReadStream(pathToZip);
 
     file.type = 'application/zip';
@@ -24,8 +23,11 @@ export class SnapshotFactory {
       developerNotes,
     };
 
-    const model = await snapshotClient.createFromFile(file, computedOptions);
-    return new Snapshot(model, snapshotClient);
+    const model = await client.resourceSnapshot.createFromFile(
+      file,
+      computedOptions
+    );
+    return new Snapshot(model, client);
   }
 
   static async createFromOrg() {

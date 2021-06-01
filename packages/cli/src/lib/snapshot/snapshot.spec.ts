@@ -42,12 +42,11 @@ describe('Snapshot', () => {
   });
 
   describe('when the the resources are compressed', () => {
-    const factory: SnapshotFactory = new SnapshotFactory();
     const pathToZip = join('dummy', 'path');
     const developerNotes = 'Some random notes';
 
     beforeEach(async () => {
-      await factory.createFromZip(pathToZip, developerNotes);
+      await SnapshotFactory.createFromZip(pathToZip, developerNotes);
     });
 
     it('#createSnapshotFromZip should retrieve an authenticated client', () => {

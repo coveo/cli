@@ -42,8 +42,7 @@ export default class Preview extends Command {
     const project = new Project(flags.projectPath);
     const pathToZip = await project.compressResources();
 
-    const factory = new SnapshotFactory();
-    const snapshot = await factory.createFromZip(
+    const snapshot = await SnapshotFactory.createFromZip(
       pathToZip,
       'cli-preview-snapshot'
     );
