@@ -20,10 +20,11 @@ yarn config set -- --silent true
 
 npm run npm:bump:template -- -- $UI_TEMPLATE_VERSION
 echo $GITHUB_WORKSPACE
-docker run -it --rm --name verdaccio \
-  -p 4873:4873 \
-  verdaccio/verdaccio \
-  -v $GITHUB_packages/packages/cli-e2e/docker/config:/verdaccio/conf
+# docker run --rm --name verdaccio \
+#   -p 4873:4873 \
+#   verdaccio/verdaccio \
+  # -v $GITHUB_WORKSPACE/packages/cli-e2e/docker/config:/verdaccio/conf
+npx verdaccio --config packages/cli-e2e/docker/config
 while ! timeout 1 bash -c "echo > /dev/tcp/localhost/4873"; do sleep 10; done
 npm run npm:publish:template
 cd packages/cli-e2e
