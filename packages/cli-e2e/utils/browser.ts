@@ -9,10 +9,12 @@ interface JsonVersionFile {
   webSocketDebuggerUrl: string;
 }
 
-export const LOGS_PATH =
-  '/home/notGroot/cli-copy/packages/cli-e2e/artifacts/logs';
-export const SCREENSHOTS_PATH =
-  '/home/notGroot/cli-copy/packages/cli-e2e/artifacts/screenshots';
+export const LOGS_PATH = resolve(__dirname, '..', 'artifacts/logs');
+export const SCREENSHOTS_PATH = resolve(
+  __dirname,
+  '..',
+  'artifacts/screenshots'
+);
 
 /**
  * Closes all pages of the targeted browser instance.
@@ -245,7 +247,7 @@ export async function isElementClickable(page: Page, selector: string) {
           isElementInViewport(elem) &&
           elem.disabled !== true &&
           isOverlappingElementMatch(
-            (getOverlappingElements(elem) as any) as HTMLElement[],
+            getOverlappingElements(elem) as any as HTMLElement[],
             elem
           )
         );
