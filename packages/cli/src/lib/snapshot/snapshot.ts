@@ -36,15 +36,7 @@ export class Snapshot {
     this.displayExpandedPreview();
   }
 
-  private displayLightPreview() {
-    // TODO: CDX-346 Display light preview
-  }
-
-  private displayExpandedPreview() {
-    // TODO: CDX-347 Display Expanded preview
-  }
-
-  async delete() {
+  public async delete() {
     // TODO: CDX-359: Delete snapshot once previewed
   }
 
@@ -59,6 +51,18 @@ export class Snapshot {
 
   private get snapshotId() {
     return this.model.id;
+  }
+
+  private get snapshotClient() {
+    return this.client.resourceSnapshot;
+  }
+
+  private displayLightPreview() {
+    // TODO: CDX-346 Display light preview
+  }
+
+  private displayExpandedPreview() {
+    // TODO: CDX-347 Display Expanded preview
   }
 
   private async refreshSnapshotData() {
@@ -91,9 +95,5 @@ export class Snapshot {
     } catch (err) {
       cli.error(err);
     }
-  }
-
-  private get snapshotClient() {
-    return this.client.resourceSnapshot;
   }
 }
