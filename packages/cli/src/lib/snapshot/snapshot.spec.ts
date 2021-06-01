@@ -24,14 +24,10 @@ const doMockReadStream = () => {
 };
 
 const doMockAuthenticatedClient = () => {
-  mockedAuthenticatedClient.mockImplementation(
-    () =>
-      ({
-        getClient: () =>
-          Promise.resolve({
-            resourceSnapshot: {createFromFile: mockedCreateSnapshotFromFile},
-          }),
-      } as unknown as AuthenticatedClient)
+  mockedAuthenticatedClient.prototype.getClient.mockImplementation(() =>
+    Promise.resolve({
+      resourceSnapshot: {createFromFile: mockedCreateSnapshotFromFile},
+    })
   );
 };
 
