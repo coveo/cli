@@ -11,11 +11,12 @@ google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usag
 
 xdg-settings set default-web-browser google-chrome.desktop
 
-echo $GITHUB_WORKSPACE
+VERDACCIO_CONFIG_DIR = "$GITHUB_WORKSPACE/packages/cli-e2e/docker/config"
+echo $VERDACCIO_CONFIG_DIR
 docker run --rm --name verdaccio \
   -p 4873:4873 \
   verdaccio/verdaccio \
-  -v $GITHUB_WORKSPACE/packages/cli-e2e/docker/config:/verdaccio/conf
+  -v "$VERDACCIO_CONFIG_DIR:/verdaccio/conf"
 # npm i -g verdaccio
 # verdaccio --config packages/cli-e2e/docker/config
 while ! timeout 1 bash -c "echo > /dev/tcp/localhost/4873"; do sleep 10; done
