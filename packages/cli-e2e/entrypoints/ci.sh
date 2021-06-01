@@ -11,6 +11,8 @@ google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usag
 
 xdg-settings set default-web-browser google-chrome.desktop
 npm i -g verdaccio
+pwd
+ls
 bash -c "verdaccio --config packages/cli-e2e/docker/config/config.yaml"
 while ! timeout 1 bash -c "echo > /dev/tcp/localhost/4873"; do sleep 10; done
 
