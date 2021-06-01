@@ -14,8 +14,8 @@ Start-Process "C:/Program Files/Google/Chrome/Application/chrome.exe" -ArgumentL
 # Start-Process -FilePath '.\packages\cli-e2e\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList '.html ChromeHTML' -PassThru | Wait-Process
 
 do {
-    $ChromeTest = Test-NetConnection -ComputerName localhost -Port 9773 -InformationLevel Quiet
-    Write-Output "Verdaccio Test $ChromeTest"
+    $ChromeTest = Test-NetConnection -ComputerName localhost -Port 9222 -InformationLevel Quiet
+    Write-Output "Chrome Test $ChromeTest"
 } while (!$ChromeTest)
 
 do {
