@@ -10,7 +10,7 @@ export interface CustomFile extends ReadStream {
 }
 
 export class SnapshotFactory {
-  async createFromZip(
+  static async createFromZip(
     pathToZip: string,
     developerNotes: string
   ): Promise<Snapshot> {
@@ -28,7 +28,7 @@ export class SnapshotFactory {
     return new Snapshot(model, snapshotClient);
   }
 
-  async createFromOrg() {
+  static async createFromOrg() {
     // TODO:
   }
 }
