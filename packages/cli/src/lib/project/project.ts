@@ -33,8 +33,8 @@ export class Project {
   }
 
   async compressResources() {
-    const archivePromise = () =>
-      new Promise<void>((resolve, reject) => {
+    try {
+      await new Promise<void>((resolve, reject) => {
         const pathToTemporaryZip = this.pathToTemporaryZip;
         const outputStream = createWriteStream(pathToTemporaryZip);
         const archive = archiver('zip');
@@ -46,9 +46,6 @@ export class Project {
         archive.directory(this.pathToResources, false);
         archive.finalize();
       });
-
-    try {
-      await archivePromise();
       return this.pathToTemporaryZip;
     } catch (error) {
       cli.error(error);
