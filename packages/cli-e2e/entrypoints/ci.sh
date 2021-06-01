@@ -11,7 +11,7 @@ google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usag
 
 xdg-settings set default-web-browser google-chrome.desktop
 
-docker run --rm --name verdaccio \
+docker run \
   -p 4873:4873 \
   -v "$GITHUB_WORKSPACE/packages/cli-e2e/docker/config:/verdaccio/conf" \
   verdaccio/verdaccio 
