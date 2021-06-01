@@ -16,7 +16,8 @@ echo $GITHUB_WORKSPACE
 #   -p 4873:4873 \
 #   verdaccio/verdaccio \
   # -v $GITHUB_WORKSPACE/packages/cli-e2e/docker/config:/verdaccio/conf
-npx verdaccio --config packages/cli-e2e/docker/config
+npm i -g verdaccio
+verdaccio --config packages/cli-e2e/docker/config
 while ! timeout 1 bash -c "echo > /dev/tcp/localhost/4873"; do sleep 10; done
 
 export UI_TEMPLATE_VERSION=0.0.0
