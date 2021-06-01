@@ -5,10 +5,10 @@ Start-Process "C:/Program Files/Google/Chrome/Application/chrome.exe" -ArgumentL
  # Set the default user browser on Chrome.
  # See http://kolbi.cz/blog/?p=346
  #>
-Start-Process -FilePath '.packages\cli-e2e\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList ' http ChromeHTML' -PassThru | Wait-Process
-Start-Process -FilePath '.packages\cli-e2e\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList ' https ChromeHTML' -PassThru | Wait-Process
-Start-Process -FilePath '.packages\cli-e2e\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList '.htm ChromeHTML' -PassThru | Wait-Process
-Start-Process -FilePath '.packages\cli-e2e\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList '.html ChromeHTML' -PassThru | Wait-Process
+Start-Process -FilePath '.\packages\cli-e2e\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList ' http ChromeHTML' -PassThru | Wait-Process
+Start-Process -FilePath '.\packages\cli-e2e\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList ' https ChromeHTML' -PassThru | Wait-Process
+Start-Process -FilePath '.\packages\cli-e2e\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList '.htm ChromeHTML' -PassThru | Wait-Process
+Start-Process -FilePath '.\packages\cli-e2e\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList '.html ChromeHTML' -PassThru | Wait-Process
 
 git config --global user.name "notgroot"
 git config --global user.email "notgroot@coveo.com"
