@@ -1,6 +1,4 @@
 $VerdaccioConfigPath = Resolve-Path './packages/cli-e2e/docker/config/config.yaml' 
-$VerdaccioConfigPath
-Write-Output $VerdaccioConfigPath
 Start-Process "npx" -ArgumentList "verdaccio --config $VerdaccioConfigPath"
 Start-Process "C:/Program Files/Google/Chrome/Application/chrome.exe" -ArgumentList "--no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720"
 
@@ -8,10 +6,11 @@ Start-Process "C:/Program Files/Google/Chrome/Application/chrome.exe" -ArgumentL
  # Set the default user browser on Chrome.
  # See http://kolbi.cz/blog/?p=346
  #>
-# Start-Process -FilePath '.\packages\cli-e2e\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList ' http ChromeHTML' -PassThru | Wait-Process
-# Start-Process -FilePath '.\packages\cli-e2e\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList ' https ChromeHTML' -PassThru | Wait-Process
-# Start-Process -FilePath '.\packages\cli-e2e\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList '.htm ChromeHTML' -PassThru | Wait-Process
-# Start-Process -FilePath '.\packages\cli-e2e\entrypoints\utils\SetUserFTA\SetUserFTA.exe' -ArgumentList '.html ChromeHTML' -PassThru | Wait-Process
+$SetUserFTAPath = Resolve-Path '.\packages\cli-e2e\entrypoints\utils\SetUserFTA\SetUserFTA.exe'
+Start-Process -FilePath $SetUserFTAPath -ArgumentList ' http ChromeHTML' -PassThru | Wait-Process
+Start-Process -FilePath $SetUserFTAPath -ArgumentList ' https ChromeHTML' -PassThru | Wait-Process
+Start-Process -FilePath $SetUserFTAPath -ArgumentList '.htm ChromeHTML' -PassThru | Wait-Process
+Start-Process -FilePath $SetUserFTAPath -ArgumentList '.html ChromeHTML' -PassThru | Wait-Process
 
 do {
     $ChromeTest = Test-NetConnection -ComputerName localhost -Port 9222 -InformationLevel Quiet
@@ -35,7 +34,7 @@ Write-Output "--silent true" | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Appe
 npm run npm:bump:template -- -- "0.0.0"
 npm run npm:publish:template
 
-# Set-Location packages/cli-e2e
+Set-Location packages/cli-e2e
 
-# node entrypoints/utils/wait-for-published-packages.js
-# npm run jest
+node entrypoints/utils/wait-for-published-packages.js
+npm run jest
