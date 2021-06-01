@@ -1,9 +1,8 @@
 jest.mock('../platform/authenticatedClient');
 jest.mock('fs');
 
-import {createReadStream, ReadStream} from 'fs';
+import {createReadStream} from 'fs';
 import {join} from 'path';
-import {Readable} from 'stream';
 import {mocked} from 'ts-jest/utils';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {SnapshotFactory} from './snapshotFactory';
@@ -21,10 +20,14 @@ const doMockReadStream = () => {
 };
 
 const doMockAuthenticatedClient = () => {
-  mockedAuthenticatedClient.prototype.getClient.mockImplementation(() =>
-    Promise.resolve({
-      resourceSnapshot: {createFromFile: mockedCreateSnapshotFromFile},
-    })
+  mockedAuthenticatedClient.mockImplementation(
+    () =>
+      ({
+        getClient: () =>
+          Promise.resolve({
+            resourceSnapshot: {createFromFile: mockedCreateSnapshotFromFile},
+          }),
+      } as unknown as AuthenticatedClient)
   );
 };
 
