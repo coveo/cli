@@ -16,17 +16,17 @@ import {spawnProcess} from '../../../lib/utils/process';
 import {getPackageVersion} from '../../../lib/utils/misc';
 
 export default class Vue extends Command {
-  static templateName = '@coveo/vue-cli-plugin-typescript';
+  public static templateName = '@coveo/vue-cli-plugin-typescript';
 
   /**
    * @see https://cli.vuejs.org/guide/installation.html for current requirements.
    * @see https://github.com/vuejs/vue-cli/blob/dev/CHANGELOG.md for upcoming requirements.
    */
-  static requiredNodeVersion = '>=12';
-  static description =
+  public static requiredNodeVersion = '>=12';
+  public static description =
     'Create a Coveo Headless-powered search page with the Vue.js web framework. See https://docs.coveo.com/headless and https://vuejs.org/';
 
-  static flags = {
+  public static flags = {
     help: flags.help({char: 'h'}),
     version: flags.string({
       char: 'v',
@@ -44,12 +44,12 @@ export default class Vue extends Command {
     }),
   };
 
-  static examples = [
+  public static examples = [
     '$ coveo ui:create:vue --preset path/to/my/preset.json',
     '$ coveo ui:create:vue --help',
   ];
 
-  static args = [
+  public static args = [
     {name: 'name', description: 'The target application name.', required: true},
   ];
 
@@ -57,7 +57,7 @@ export default class Vue extends Command {
     IsAuthenticated(),
     IsNodeVersionInRange(Vue.requiredNodeVersion)
   )
-  async run() {
+  public async run() {
     const {args, flags} = this.parse(Vue);
 
     let preset = await this.getDefaultPreset();
@@ -78,7 +78,7 @@ export default class Vue extends Command {
     );
   }
 
-  async catch(err?: Error) {
+  public async catch(err?: Error) {
     const flags = this.flags;
     await this.config.runHook(
       'analytics',
