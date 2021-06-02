@@ -28,7 +28,6 @@ describe('auth', () => {
       if (process.platform === 'win32') {
         args.unshift('node');
       }
-      console.log(args.join(' '));
       await captureScreenshots(browser);
       const cliTerminal = new Terminal(
         args.shift()!,

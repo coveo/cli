@@ -22,7 +22,7 @@ export function recurseProcessKillWindows(pid: number) {
   if (!root) {
     console.log(`process with ${pid} pid not found on PowerShell.`);
     console.log(
-      isProcessRunning(pid) ? 'Process confirmed dead' : 'Process MIA'
+      isProcessRunning(pid) ? 'Process MIA' : 'Process confirmed dead'
     );
     return;
   }
