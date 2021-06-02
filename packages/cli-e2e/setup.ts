@@ -30,7 +30,7 @@ export default async function () {
   await clearAccessTokenFromConfig();
   try {
     global.processManager = new ProcessManager();
-    await loginWithOffice();
+    await loginWithOffice(browser);
   } catch (e) {
     await captureScreenshots(browser, 'jestSetup');
     throw e;

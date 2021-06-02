@@ -48,9 +48,15 @@ export function setupUIProject(
     console.log('Testing with published version of the template');
   }
 
+  const args = [CLI_EXEC_PATH, ...command];
+
+  if (process.platform === 'win32') {
+    args.unshift('node');
+  }
+
   const buildProcess = new Terminal(
-    CLI_EXEC_PATH,
-    command,
+    args.shift()!,
+    args,
     {
       cwd: resolve(getProjectPath(projectName), '..'),
     },
@@ -61,7 +67,8 @@ export function setupUIProject(
   return buildProcess;
 }
 export function getConfigFilePath() {
-  return resolve(homedir(), '.config', '@coveo', 'cli', 'config.json');
+  const configsDir = process.platform === 'win32' ? 'AppData/Local' : '.config';
+  return resolve(homedir(), configsDir, '@coveo', 'cli', 'config.json');
 }
 
 export function getConfig() {

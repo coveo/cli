@@ -8,7 +8,6 @@ import {
 } from './cli';
 import LoginSelectors from './loginSelectors';
 import {strictEqual} from 'assert';
-import {connectToChromeBrowser} from './browser';
 import {isElementClickable} from './browser';
 import {readJSON, writeJSON, existsSync} from 'fs-extra';
 import {Terminal} from './terminal/terminal';
@@ -26,7 +25,11 @@ export async function isLoggedin() {
   return Boolean(cfg.accessToken);
 }
 
-function waitForLoginPage(browser: Browser) {
+async function getLoginPage(browser: Browser) {
+  const page = (await browser.pages()).find(isLoginPage);
+  if (page) {
+    return page;
+  }
   return new Promise<Page>((resolve) => {
     browser.on('targetchanged', async (target: Target) => {
       const page = await target.page();
@@ -41,25 +44,32 @@ async function staySignedIn(page: Page) {
   await page.waitForSelector(LoginSelectors.SubmitInput, {
     visible: true,
   });
-  await page.waitForSelector(LoginSelectors.SubmitInput);
   await page.click(LoginSelectors.SubmitInput);
 }
 
 async function possiblyAcceptCustomerAgreement(page: Page) {
   // TODO: CDX-98: URL should vary in fonction of the targeted environment.
   if (page.url().startsWith('https://platformdev.cloud.coveo.com/eula')) {
-    await page.waitForSelector(LoginSelectors.coveoCheckboxButton);
+    await page.waitForSelector(LoginSelectors.coveoCheckboxButton, {
+      visible: true,
+    });
     await page.click(LoginSelectors.coveoCheckboxButton);
     await page.waitForTimeout(200); // wait for the button to be enabled
-    await page.waitForSelector(LoginSelectors.submitButton);
+    await page.waitForSelector(LoginSelectors.submitButton, {
+      visible: true,
+    });
     await page.click(LoginSelectors.submitButton);
   }
 }
 
 export function runLoginCommand() {
+  const args: string[] = [CLI_EXEC_PATH, 'auth:login', '-e=dev'];
+  if (process.platform === 'win32') {
+    args.unshift('node');
+  }
   const loginTerminal = new Terminal(
-    CLI_EXEC_PATH,
-    ['auth:login', '-e=dev'],
+    args.shift()!,
+    args,
     undefined,
     global.processManager!,
     'initial-login'
@@ -81,29 +91,33 @@ async function startLoginFlow(browser: Browser) {
     throw new Error('Missing login credentials');
   }
 
-  await waitForLoginPage(browser);
+  const page = await getLoginPage(browser);
 
-  const pages = await browser.pages();
-  const page = pages.find((page) => isLoginPage(page));
-  if (!page) {
-    throw new Error('Unable to find login page');
-  }
-
-  await page.waitForSelector(LoginSelectors.loginWithOfficeButton);
+  await page.waitForSelector(LoginSelectors.loginWithOfficeButton, {
+    visible: true,
+  });
   await page.click(LoginSelectors.loginWithOfficeButton);
 
   await page.waitForNavigation();
 
-  await page.waitForSelector(LoginSelectors.emailInput);
+  await page.waitForSelector(LoginSelectors.emailInput, {
+    visible: true,
+  });
   await page.type(LoginSelectors.emailInput, username);
-  await page.waitForSelector(LoginSelectors.SubmitInput);
+  await page.waitForSelector(LoginSelectors.SubmitInput, {
+    visible: true,
+  });
   await page.click(LoginSelectors.SubmitInput);
 
   await isElementClickable(page, LoginSelectors.passwordInput);
 
-  await page.waitForSelector(LoginSelectors.passwordInput);
+  await page.waitForSelector(LoginSelectors.passwordInput, {
+    visible: true,
+  });
   await page.type(LoginSelectors.passwordInput, password);
-  await page.waitForSelector(LoginSelectors.SubmitInput);
+  await page.waitForSelector(LoginSelectors.SubmitInput, {
+    visible: true,
+  });
   await page.click(LoginSelectors.SubmitInput);
 
   await staySignedIn(page);
@@ -119,11 +133,10 @@ async function startLoginFlow(browser: Browser) {
   await page.close();
 }
 
-export async function loginWithOffice() {
+export async function loginWithOffice(browser: Browser) {
   if (await isLoggedin()) {
     return;
   }
-  const browser: Browser = await connectToChromeBrowser();
 
   const loginProcess = runLoginCommand();
 

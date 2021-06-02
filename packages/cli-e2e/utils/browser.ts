@@ -70,6 +70,7 @@ export async function captureScreenshots(
   browser: Browser,
   screenshotName?: string
 ): Promise<void> {
+  let pageCount = 0;
   for (const page of await browser.pages()) {
     page.url;
     try {
@@ -80,7 +81,7 @@ export async function captureScreenshots(
           SCREENSHOTS_PATH,
           (screenshotName ??
             expect.getState().currentTestName.trim().replace(/\W/g, '_')) +
-            '.png'
+            `-${pageCount++}.png`
         ),
       });
     } catch (error) {
