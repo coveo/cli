@@ -55,7 +55,7 @@ export class Snapshot {
     // TODO: CDX-347 Display Expanded preview
   }
 
-  private get lastestReport(): ResourceSnapshotsReportModel {
+  private get latestReport(): ResourceSnapshotsReportModel {
     if (this.model.reports === undefined) {
       throw new Error(
         `No detailed report found for the snapshot ${this.snapshotId}`
