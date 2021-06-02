@@ -8,7 +8,6 @@ import {
 } from './cli';
 import LoginSelectors from './loginSelectors';
 import {strictEqual} from 'assert';
-import {connectToChromeBrowser} from './browser';
 import {isElementClickable} from './browser';
 import {readJSON, writeJSON, existsSync} from 'fs-extra';
 import {Terminal} from './terminal/terminal';
@@ -26,7 +25,11 @@ export async function isLoggedin() {
   return Boolean(cfg.accessToken);
 }
 
-function waitForLoginPage(browser: Browser) {
+async function getLoginPage(browser: Browser) {
+  const page = (await browser.pages()).find(isLoginPage);
+  if (page) {
+    return page;
+  }
   return new Promise<Page>((resolve) => {
     browser.on('targetchanged', async (target: Target) => {
       const page = await target.page();
@@ -85,7 +88,7 @@ async function startLoginFlow(browser: Browser) {
     throw new Error('Missing login credentials');
   }
 
-  await waitForLoginPage(browser);
+  await getLoginPage(browser);
 
   const pages = await browser.pages();
   const page = pages.find((page) => isLoginPage(page));
