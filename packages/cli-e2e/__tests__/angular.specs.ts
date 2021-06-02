@@ -28,7 +28,7 @@ import {readFileSync, writeFileSync, truncateSync, appendFileSync} from 'fs';
 import {DummyServer} from '../utils/server';
 import getPort from 'get-port';
 import {spawnSync} from 'child_process';
-import {npmJsPath} from '../utils/windows';
+import {npm} from '../utils/windows';
 
 describe('ui:create:angular', () => {
   let browser: Browser;
@@ -138,12 +138,7 @@ describe('ui:create:angular', () => {
     processManager: ProcessManager,
     debugName = 'angular-server'
   ) => {
-    const args = ['npm', 'run', 'start'];
-    if (process.platform === 'win32') {
-      args[0] = npmJsPath();
-      args.unshift('node');
-    }
-
+    const args = [...npm(), 'run', 'start'];
     const serverTerminal = new Terminal(
       args.shift()!,
       args,

@@ -27,7 +27,7 @@ import {parse} from 'dotenv';
 import {DummyServer} from '../utils/server';
 import {appendFileSync, readFileSync, truncateSync} from 'fs';
 import getPort from 'get-port';
-import {npmJsPath} from '../utils/windows';
+import {npm} from '../utils/windows';
 
 describe('ui:create:vue', () => {
   let browser: Browser;
@@ -108,11 +108,7 @@ describe('ui:create:vue', () => {
     processManager: ProcessManager,
     debugName = 'vue-server'
   ) => {
-    const args = ['npm', 'run', 'start'];
-    if (process.platform === 'win32') {
-      args[0] = npmJsPath();
-      args.unshift('node');
-    }
+    const args = [...npm(), 'run', 'start'];
 
     const serverTerminal = new Terminal(
       args.shift()!,

@@ -23,7 +23,7 @@ import {parse} from 'dotenv';
 import {DummyServer} from '../utils/server';
 import getPort from 'get-port';
 import {spawnSync} from 'child_process';
-import {npmJsPath} from '../utils/windows';
+import {npm} from '../utils/windows';
 
 describe('ui:create:react', () => {
   let browser: Browser;
@@ -96,11 +96,7 @@ describe('ui:create:react', () => {
     processManager: ProcessManager,
     debugName = 'react-server'
   ) => {
-    const args = ['npm', 'run', 'start'];
-    if (process.platform === 'win32') {
-      args[0] = npmJsPath();
-      args.unshift('node');
-    }
+    const args = [...npm(), 'run', 'start'];
 
     const serverTerminal = new Terminal(
       args.shift()!,
