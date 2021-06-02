@@ -6,9 +6,12 @@ import {EngineService} from './engine.service';
   providedIn: 'root',
 })
 export class InitService {
-  constructor(private engineService: EngineService, private route: Router) {}
+  public constructor(
+    private engineService: EngineService,
+    private route: Router
+  ) {}
 
-  async init() {
+  public async init() {
     const res = await fetch(this.engineService.getTokenEndpoint());
     const data = await res.json();
     const token = data.token;

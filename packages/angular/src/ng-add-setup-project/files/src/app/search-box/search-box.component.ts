@@ -9,28 +9,28 @@ import {EngineService} from '../engine.service';
   styleUrls: ['./search-box.component.scss'],
 })
 export class SearchBoxComponent implements OnInit {
-  headlessSearchBox!: SearchBox;
-  myControl = new FormControl();
-  suggestions: {
+  public headlessSearchBox!: SearchBox;
+  public myControl = new FormControl();
+  public suggestions: {
     highlightedValue: string;
     rawValue: string;
   }[] = [];
 
-  constructor(private engineService: EngineService) {}
+  public constructor(private engineService: EngineService) {}
 
-  updateState() {
+  public updateState() {
     this.suggestions = this.headlessSearchBox.state.suggestions;
   }
 
-  onSelect(value: string) {
+  public onSelect(value: string) {
     this.headlessSearchBox.selectSuggestion(value);
   }
 
-  onInput() {
+  public onInput() {
     this.headlessSearchBox.updateText(this.myControl.value);
   }
 
-  search() {
+  public search() {
     if (!this.headlessSearchBox.state.isLoading) {
       this.headlessSearchBox.submit();
       this.headlessSearchBox.hideSuggestions();
@@ -47,7 +47,7 @@ export class SearchBoxComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.initializeController();
     this.headlessSearchBox.subscribe(() => this.updateState());
   }
