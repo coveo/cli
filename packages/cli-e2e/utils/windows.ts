@@ -17,6 +17,6 @@ export const npm = () => {
     );
     return ['node', npmJsPath];
   } else {
-    return 'npm';
+    return ['npm'];
   }
 };
