@@ -1,6 +1,7 @@
 import {spawnSync} from 'child_process';
 import {constants as OsConstants} from 'os';
 import isProcessRunning from 'is-running';
+import type {ChildProcess} from 'child_process';
 /**
  * Simple representation of a process and its child processes.
  */
@@ -15,17 +16,24 @@ class Process {
  * Kill a process and all its children
  * @param pid the PID of the process to kill with all its descendants
  */
-export function recurseProcessKillWindows(pid: number) {
+export function recurseProcessKillWindows(processToKill: ChildProcess) {
+  const pid = processToKill.pid;
   const processGraph = getProcessGraph();
   const root = processGraph.get(pid);
 
   if (!root) {
     console.log(`process with ${pid} pid not found on PowerShell.`);
-    console.log(
-      isProcessRunning(pid) ? 'Process MIA' : 'Process confirmed dead'
-    );
+    if (isProcessRunning(pid)) {
+      console.log('Process MIA');
+    } else {
+      console.log('Process death confirmed');
+      // Process confirmed dead by Sys. Release it from Node.js lifecycle
+      processToKill.emit('exit', 0);
+      processToKill.unref();
+    }
     return;
   }
+
   recursiveKilling(root);
 }
 

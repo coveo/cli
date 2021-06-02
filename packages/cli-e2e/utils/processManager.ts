@@ -53,7 +53,7 @@ export class ProcessManager {
             }
             if (process.platform === 'win32') {
               try {
-                recurseProcessKillWindows(currentProcess.pid);
+                recurseProcessKillWindows(currentProcess);
               } catch (error) {
                 console.error(JSON.stringify({error}));
               }
