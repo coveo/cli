@@ -29,8 +29,7 @@ jobs:
         working-directory: ./packages/cli
         run: tsc -b
       - name: End-to-end Tests
-        working-directory: ./packages/cli-e2e
-        run: npm run test-e2e
+        run: bash packages/cli-e2e/entrypoints/ci.sh
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
