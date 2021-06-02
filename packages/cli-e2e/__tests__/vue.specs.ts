@@ -167,7 +167,6 @@ describe('ui:create:vue', () => {
       );
       await waitForAppRunning(appTerminal);
       [clientPort, serverPort] = getAllocatedPorts();
-      console.log('when the project is configured correctly || beforeAll');
     }, 2 * 60e3);
 
     beforeEach(async () => {

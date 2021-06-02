@@ -33,7 +33,9 @@
   "devDependencies": {
     "@types/async-retry": "1.4.2",
     "@types/fs-extra": "^9.0.9",
-    "@types/jest": "26.0.20"
+    "@types/is-running": "^2.1.0",
+    "@types/jest": "26.0.20",
+    "is-running": "^2.1.0"
   },
   "dependencies": {
     "@babel/core": "7.12.17",
