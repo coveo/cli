@@ -26,7 +26,7 @@ export class Snapshot {
 
     await this.waitUntilIdle();
 
-    return {isValid: this.isValid(), report: this.lastestReport};
+    return {isValid: this.isValid(), report: this.latestReport};
   }
 
   public async preview() {
@@ -65,7 +65,7 @@ export class Snapshot {
   }
 
   private isValid() {
-    const {resultCode, status} = this.lastestReport;
+    const {resultCode, status} = this.latestReport;
     return (
       status === ResourceSnapshotsReportStatus.Completed &&
       resultCode === ResourceSnapshotsReportResultCode.Success
@@ -80,14 +80,16 @@ export class Snapshot {
 
   private async isIdle() {
     await this.refreshSnapshotData();
-    return new Promise<void>((resolve) => {
+    return new Promise<void>((resolve, reject) => {
       if (
         [
           ResourceSnapshotsReportStatus.Aborted,
           ResourceSnapshotsReportStatus.Completed,
-        ].includes(this.lastestReport.status)
+        ].includes(this.latestReport.status)
       ) {
         resolve();
+      } else {
+        reject();
       }
     });
   }
