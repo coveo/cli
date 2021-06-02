@@ -1,6 +1,7 @@
 jest.mock('../platform/authenticatedClient');
 jest.mock('fs');
 
+import PlatformClient from '@coveord/platform-client';
 import {createReadStream, ReadStream} from 'fs';
 import {join} from 'path';
 import {Readable} from 'stream';
@@ -9,7 +10,7 @@ import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {SnapshotFactory} from './snapshotFactory';
 
 const mockedCreateReadStream = mocked(createReadStream);
-const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
 const mockedCreateSnapshotFromFile = jest.fn();
 
 const doMockReadStream = () => {
@@ -23,17 +24,12 @@ const doMockReadStream = () => {
   });
 };
 
-const doMockAuthenticatedClient = () => {
-  mockedAuthenticatedClient.mockImplementation(
-    () =>
-      ({
-        getClient: () =>
-          Promise.resolve({
-            resourceSnapshot: {createFromFile: mockedCreateSnapshotFromFile},
-          }),
-      } as unknown as AuthenticatedClient)
+const doMockAuthenticatedClient = () =>
+  mockedAuthenticatedClient.prototype.getClient.mockImplementation(() =>
+    Promise.resolve<PlatformClient>({
+      resourceSnapshot: {createFromFile: mockedCreateSnapshotFromFile},
+    } as unknown as PlatformClient)
   );
-};
 
 describe('Snapshot', () => {
   beforeAll(() => {
