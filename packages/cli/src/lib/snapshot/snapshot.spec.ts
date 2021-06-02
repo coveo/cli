@@ -60,7 +60,7 @@ const getDummySnapshotModel = (
   snapshotId: string,
   reports: ResourceSnapshotsReportModel[] = []
 ): ResourceSnapshotsModel => {
-  return {
+  {
     id: snapshotId,
     createdBy: 'user@coveo.com',
     createdDate: 1622555047116,
@@ -70,7 +70,6 @@ const getDummySnapshotModel = (
     synchronizationReports: [],
     contentSummary: {EXTENSION: 1, FIELD: 11},
   };
-};
 
 const doMockAuthenticatedClient = () => {
   mockedGetClient.mockImplementation(() =>
