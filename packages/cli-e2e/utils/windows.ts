@@ -3,7 +3,7 @@ import {EOL} from 'os';
 import {dirname, join} from 'path';
 
 export const npm = () => {
-  if (process.platform !== 'win32') {
+  if (process.platform === 'win32') {
     const npmJsPath = join(
       dirname(
         spawnSync('where.exe', ['npm'], {encoding: 'utf-8'}).stdout.split(
