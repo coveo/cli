@@ -11,7 +11,8 @@
     "target": "es2017",
     "noEmitOnError": false,
     "skipLibCheck": true,
-    "types": ["jest"]
+    "types": ["jest"],
+    "esModuleInterop": true
   },
   "include": ["src/**/*", "typings/**/*.d.ts"]
 }

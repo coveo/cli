@@ -1,7 +1,7 @@
 import {createWriteStream, existsSync, unlinkSync} from 'fs';
 import {join} from 'path';
 import {cli} from 'cli-ux';
-import * as archiver from 'archiver';
+import archiver from 'archiver';
 
 export class Project {
   public constructor(private pathToProject: string) {
