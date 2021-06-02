@@ -59,17 +59,16 @@ const getDummySnapshotModel = (
   orgId: string,
   snapshotId: string,
   reports: ResourceSnapshotsReportModel[] = []
-): ResourceSnapshotsModel => {
-  {
-    id: snapshotId,
-    createdBy: 'user@coveo.com',
-    createdDate: 1622555047116,
-    targetId: orgId,
-    developerNote: 'hello',
-    reports: reports,
-    synchronizationReports: [],
-    contentSummary: {EXTENSION: 1, FIELD: 11},
-  };
+): ResourceSnapshotsModel => ({
+  id: snapshotId,
+  createdBy: 'user@coveo.com',
+  createdDate: 1622555047116,
+  targetId: orgId,
+  developerNote: 'hello',
+  reports: reports,
+  synchronizationReports: [],
+  contentSummary: {EXTENSION: 1, FIELD: 11},
+});
 
 const doMockAuthenticatedClient = () => {
   mockedGetClient.mockImplementation(() =>
@@ -103,9 +102,9 @@ describe('Snapshot', () => {
     const targetOrgId = 'target-org';
     const snapshotId = 'target-org-snapshot-id';
 
-    const doMockGetSnapshotInError = async () => {
+    const doMockGetSnapshotInError = () => {
       const errorReport = getErrorReport(snapshotId);
-      const futureSnapshotState = await getDummySnapshotModel(
+      const futureSnapshotState = getDummySnapshotModel(
         targetOrgId,
         snapshotId,
         [errorReport]
