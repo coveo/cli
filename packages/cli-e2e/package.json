@@ -21,8 +21,8 @@
     "test:headless": "node ./entrypoints/entry.js",
     "test:debug": "node ./entrypoints/entry.js --debug",
     "test:bash": "node ./entrypoints/entry.js --bash",
-    "jest": "jest --verbose --runInBand",
-    "jest:debug": "node --inspect=0.0.0.0:9229 node_modules/.bin/jest --runInBand"
+    "jest": "jest --verbose --runInBand --detectOpenHandles",
+    "jest:debug": "node --inspect=0.0.0.0:9229 node_modules/.bin/jest --runInBand --forceExit"
   },
   "bugs": {
     "url": "https://github.com/coveo/cli/issues"
