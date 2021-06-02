@@ -16,18 +16,18 @@ import {
 import {IsNpmVersionInRange} from '../../../lib/decorators/preconditions/npm';
 
 export default class Angular extends Command {
-  static templateName = '@coveo/angular';
+  public static templateName = '@coveo/angular';
   /**
    * Requirements Based on https://angular.io/guide/setup-local
    * and https://www.npmjs.com/package/@angular/cli package.json engines section.
    */
-  static requiredNodeVersion = '>=12.13.0 <15.0.0';
-  static requiredNpmVersion = '^6.11.0 || ^7.5.6';
+  public static requiredNodeVersion = '>=12.13.0 <15.0.0';
+  public static requiredNpmVersion = '^6.11.0 || ^7.5.6';
 
-  static description =
+  public static description =
     'Create a Coveo Headless-powered search page with the Angular web framework. See https://docs.coveo.com/headless and https://angular.io/.';
 
-  static flags = {
+  public static flags = {
     version: flags.string({
       char: 'v',
       description: `Version of ${Angular.templateName} to use.`,
@@ -40,7 +40,7 @@ export default class Angular extends Command {
     }),
   };
 
-  static args = [
+  public static args = [
     {name: 'name', description: 'The target application name.', required: true},
   ];
 
@@ -49,7 +49,7 @@ export default class Angular extends Command {
     IsNodeVersionInRange(Angular.requiredNodeVersion),
     IsNpmVersionInRange(Angular.requiredNpmVersion)
   )
-  async run() {
+  public async run() {
     const {args, flags} = this.parse(Angular);
     await this.createProject(args.name, flags.defaults);
     await this.addCoveoToProject(args.name, flags.defaults);
@@ -105,7 +105,7 @@ export default class Angular extends Command {
     return spawnProcess('node', [executable, ...args], options);
   }
 
-  async catch(err?: Error) {
+  public async catch(err?: Error) {
     const flags = this.flags;
     await this.config.runHook(
       'analytics',

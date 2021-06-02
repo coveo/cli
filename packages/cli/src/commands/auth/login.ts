@@ -13,11 +13,12 @@ import {
 
 export default class Login extends Command {
   private configuration!: Config;
-  static description = 'Log into the Coveo platform using the OAuth2 flow.';
+  public static description =
+    'Log into the Coveo platform using the OAuth2 flow.';
 
-  static examples = ['$ coveo auth:login'];
+  public static examples = ['$ coveo auth:login'];
 
-  static flags = {
+  public static flags = {
     region: flags.string({
       char: 'r',
       options: [
@@ -45,7 +46,7 @@ export default class Login extends Command {
     }),
   };
 
-  async run() {
+  public async run() {
     this.configuration = new Config(this.config.configDir, this.error);
     await this.loginAndPersistToken();
     await this.persistRegionAndEnvironment();
@@ -55,7 +56,7 @@ export default class Login extends Command {
     this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
-  async catch(err?: Error) {
+  public async catch(err?: Error) {
     const flags = this.flags;
     await this.config.runHook(
       'analytics',

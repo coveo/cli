@@ -35,10 +35,10 @@ interface FetchParameters {
 }
 
 export default class Dump extends Command {
-  static description =
+  public static description =
     'Dump the whole content of a particular source in a CSV format.';
 
-  static flags = {
+  public static flags = {
     source: flags.string({
       char: 's',
       description:
@@ -84,7 +84,7 @@ export default class Dump extends Command {
   };
 
   @Preconditions(IsAuthenticated())
-  async run() {
+  public async run() {
     const {flags} = this.parse(Dump);
     const client = await new AuthenticatedClient().getClient();
     const organizationId = (
@@ -111,7 +111,7 @@ export default class Dump extends Command {
     this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
-  async catch(err?: Error) {
+  public async catch(err?: Error) {
     const {flags} = this.parse(Dump);
     await this.config.runHook(
       'analytics',

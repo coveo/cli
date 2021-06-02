@@ -15,9 +15,9 @@ import {
 } from '../../lib/platform/environment';
 
 export default class Set extends Command {
-  static description = 'Modify the current configuration.';
+  public static description = 'Modify the current configuration.';
 
-  static flags = {
+  public static flags = {
     region: flags.string({
       char: 'r',
       options: [
@@ -50,7 +50,7 @@ export default class Set extends Command {
   };
 
   @Preconditions(IsAuthenticated())
-  async run() {
+  public async run() {
     const {flags} = this.parse(Set);
     const cfg = new Config(this.config.configDir, this.error);
     if (flags.environment) {
@@ -72,7 +72,7 @@ export default class Set extends Command {
     );
   }
 
-  async catch(err?: Error) {
+  public async catch(err?: Error) {
     const {flags} = this.parse(Set);
     await this.config.runHook(
       'analytics',
