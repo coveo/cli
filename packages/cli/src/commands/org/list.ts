@@ -11,14 +11,14 @@ import {
 } from '../../lib/decorators/preconditions/';
 
 export default class List extends Command {
-  static description = 'List Coveo organizations.';
+  public static description = 'List Coveo organizations.';
 
-  static flags = {
+  public static flags = {
     ...cli.table.flags(),
   };
 
   @Preconditions(IsAuthenticated())
-  async run() {
+  public async run() {
     const {flags} = this.parse(List);
     const orgs = await new AuthenticatedClient().getAllOrgsUserHasAccessTo();
     if (orgs.length === 0) {
@@ -53,7 +53,7 @@ export default class List extends Command {
     );
   }
 
-  async catch(err?: Error) {
+  public async catch(err?: Error) {
     const {flags} = this.parse(List);
     await this.config.runHook(
       'analytics',

@@ -19,17 +19,17 @@ export class PagerComponent implements OnInit {
   private headlessPager!: Pager;
   private headlessResultPerPage!: ResultsPerPage;
 
-  constructor(private engineService: EngineService) {}
+  public constructor(private engineService: EngineService) {}
 
-  get pager(): PagerState {
+  public get pager(): PagerState {
     return this.headlessPager.state;
   }
 
-  get resultPerPage(): ResultsPerPageState {
+  public get resultPerPage(): ResultsPerPageState {
     return this.headlessResultPerPage.state;
   }
 
-  onPageEvent(event: PageEvent) {
+  public onPageEvent(event: PageEvent) {
     if (!this.headlessResultPerPage.isSetTo(event.pageSize)) {
       // If page size change
       this.headlessResultPerPage.set(event.pageSize);
@@ -39,15 +39,15 @@ export class PagerComponent implements OnInit {
     }
   }
 
-  get pageSize() {
+  public get pageSize() {
     return this.resultPerPage.numberOfResults;
   }
 
-  get pageCount() {
+  public get pageCount() {
     return this.pager.maxPage;
   }
 
-  get pageIndex() {
+  public get pageIndex() {
     return this.pager.currentPage - 1;
   }
 
@@ -61,7 +61,7 @@ export class PagerComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.initializeControllers();
   }
 }

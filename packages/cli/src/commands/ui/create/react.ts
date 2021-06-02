@@ -20,23 +20,23 @@ import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {EOL} from 'os';
 
 export default class React extends Command {
-  static templateName = '@coveo/cra-template';
+  public static templateName = '@coveo/cra-template';
   /**
    * Node.JS v10.16.0 is the first version that included NPX (via NPM).
    * Future requirement should be based on https://create-react-app.dev/docs/getting-started/#creating-an-app
    * and https://www.npmjs.com/package/create-react-app package.json engines section.
    */
-  static requiredNodeVersion = '>=10.16.0';
+  public static requiredNodeVersion = '>=10.16.0';
 
-  static description =
+  public static description =
     'Create a Coveo Headless-powered search page with the React web framework. See https://docs.coveo.com/headless and https://reactjs.org/.';
 
-  static examples = [
+  public static examples = [
     '$ coveo ui:create:react myapp',
     '$ coveo ui:create:react --help',
   ];
 
-  static flags = {
+  public static flags = {
     version: flags.string({
       char: 'v',
       description: `Version of ${React.templateName} to use.`,
@@ -44,7 +44,7 @@ export default class React extends Command {
     }),
   };
 
-  static args = [
+  public static args = [
     {name: 'name', description: 'The target application name.', required: true},
   ];
 
@@ -53,7 +53,7 @@ export default class React extends Command {
     IsNodeVersionInRange(React.requiredNodeVersion),
     IsNpxInstalled()
   )
-  async run() {
+  public async run() {
     const args = this.args;
 
     const finalOutput = await this.createProject(args.name);
@@ -69,7 +69,7 @@ export default class React extends Command {
     await this.config.runHook('analytics', buildAnalyticsSuccessHook(this, {}));
   }
 
-  async catch(err?: Error) {
+  public async catch(err?: Error) {
     const args = this.args;
     await this.config.runHook(
       'analytics',
