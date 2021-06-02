@@ -4,7 +4,7 @@ import {cli} from 'cli-ux';
 import * as archiver from 'archiver';
 
 export class Project {
-  constructor(private pathToProject: string) {
+  public constructor(private pathToProject: string) {
     this.ensureProjectCompliance();
   }
 
