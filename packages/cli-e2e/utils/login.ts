@@ -44,17 +44,20 @@ async function staySignedIn(page: Page) {
   await page.waitForSelector(LoginSelectors.SubmitInput, {
     visible: true,
   });
-  await page.waitForSelector(LoginSelectors.SubmitInput);
   await page.click(LoginSelectors.SubmitInput);
 }
 
 async function possiblyAcceptCustomerAgreement(page: Page) {
   // TODO: CDX-98: URL should vary in fonction of the targeted environment.
   if (page.url().startsWith('https://platformdev.cloud.coveo.com/eula')) {
-    await page.waitForSelector(LoginSelectors.coveoCheckboxButton);
+    await page.waitForSelector(LoginSelectors.coveoCheckboxButton, {
+      visible: true,
+    });
     await page.click(LoginSelectors.coveoCheckboxButton);
     await page.waitForTimeout(200); // wait for the button to be enabled
-    await page.waitForSelector(LoginSelectors.submitButton);
+    await page.waitForSelector(LoginSelectors.submitButton, {
+      visible: true,
+    });
     await page.click(LoginSelectors.submitButton);
   }
 }
@@ -88,29 +91,33 @@ async function startLoginFlow(browser: Browser) {
     throw new Error('Missing login credentials');
   }
 
-  await getLoginPage(browser);
+  const page = await getLoginPage(browser);
 
-  const pages = await browser.pages();
-  const page = pages.find((page) => isLoginPage(page));
-  if (!page) {
-    throw new Error('Unable to find login page');
-  }
-
-  await page.waitForSelector(LoginSelectors.loginWithOfficeButton);
+  await page.waitForSelector(LoginSelectors.loginWithOfficeButton, {
+    visible: true,
+  });
   await page.click(LoginSelectors.loginWithOfficeButton);
 
   await page.waitForNavigation();
 
-  await page.waitForSelector(LoginSelectors.emailInput);
+  await page.waitForSelector(LoginSelectors.emailInput, {
+    visible: true,
+  });
   await page.type(LoginSelectors.emailInput, username);
-  await page.waitForSelector(LoginSelectors.SubmitInput);
+  await page.waitForSelector(LoginSelectors.SubmitInput, {
+    visible: true,
+  });
   await page.click(LoginSelectors.SubmitInput);
 
   await isElementClickable(page, LoginSelectors.passwordInput);
 
-  await page.waitForSelector(LoginSelectors.passwordInput);
+  await page.waitForSelector(LoginSelectors.passwordInput, {
+    visible: true,
+  });
   await page.type(LoginSelectors.passwordInput, password);
-  await page.waitForSelector(LoginSelectors.SubmitInput);
+  await page.waitForSelector(LoginSelectors.SubmitInput, {
+    visible: true,
+  });
   await page.click(LoginSelectors.SubmitInput);
 
   await staySignedIn(page);
