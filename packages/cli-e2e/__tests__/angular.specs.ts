@@ -22,12 +22,13 @@ import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {commitProject, undoCommit} from '../utils/git';
-import {resolve} from 'path';
-import {config} from 'dotenv';
+import {dirname, resolve, join} from 'path';
+import {parse} from 'dotenv';
 import {readFileSync, writeFileSync, truncateSync, appendFileSync} from 'fs';
 import {DummyServer} from '../utils/server';
 import getPort from 'get-port';
-import {join} from 'path';
+import {spawnSync} from 'child_process';
+import {npm} from '../utils/windows';
 
 describe('ui:create:angular', () => {
   let browser: Browser;
@@ -64,9 +65,7 @@ describe('ui:create:angular', () => {
 
   const forceTokenServerPort = (port: number) => {
     const pathToEnv = resolve(getProjectPath(projectName), 'server', '.env');
-    const environment = config({
-      path: pathToEnv,
-    }).parsed;
+    const environment = parse(pathToEnv);
 
     const updatedEnvironment = {
       ...environment,
@@ -90,9 +89,9 @@ describe('ui:create:angular', () => {
   };
 
   const getAllocatedPorts = () => {
-    const envVariables = config({
-      path: getPathToEnvFile(join(projectName, 'server')),
-    }).parsed;
+    const envVariables = parse(
+      readFileSync(getPathToEnvFile(join(projectName, 'server')))
+    );
 
     if (!envVariables) {
       throw new Error('Unable to load project environment variables');
@@ -137,36 +136,27 @@ describe('ui:create:angular', () => {
 
   const startApplication = async (
     processManager: ProcessManager,
-    debugName = 'angular-server',
-    errorCallback: (error: string) => void = () => {}
+    debugName = 'angular-server'
   ) => {
+    const args = [...npm(), 'run', 'start'];
     const serverTerminal = new Terminal(
-      'npm',
-      ['run', 'start'],
+      args.shift()!,
+      args,
       {
         cwd: getProjectPath(projectName),
       },
       processManager,
       debugName
     );
-
-    await Promise.race([
-      serverTerminal
-        .when(/\.env file not found in the project root/)
-        .on('stderr')
-        .do(() => {
-          errorCallback('missing .env file');
-        })
-        .once(),
-      serverTerminal
-        .when(/Compiled successfully/)
-        .on('stdout')
-        .do()
-        .once(),
-    ]);
-
-    [clientPort, serverPort] = getAllocatedPorts();
+    return serverTerminal;
   };
+
+  const waitForAppRunning = (appTerminal: Terminal) =>
+    appTerminal
+      .when(/Compiled successfully/)
+      .on('stdout')
+      .do()
+      .once();
 
   beforeAll(async () => {
     const buildProcessManager = new ProcessManager();
@@ -203,7 +193,12 @@ describe('ui:create:angular', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      await startApplication(serverProcessManager);
+      const appTerminal = await startApplication(
+        serverProcessManager,
+        'angular-server-valid'
+      );
+      await waitForAppRunning(appTerminal);
+      [clientPort, serverPort] = getAllocatedPorts();
     }, 15 * 60e3);
 
     beforeEach(async () => {
@@ -228,15 +223,19 @@ describe('ui:create:angular', () => {
         projectName
       );
       await serverProcessManager.killAllProcesses();
-    }, 5e3);
+    }, 5 * 60e3);
 
-    it('should not contain console errors nor warnings', async () => {
-      await page.goto(searchPageEndpoint(), {
-        waitUntil: 'networkidle2',
-      });
+    it(
+      'should not contain console errors nor warnings',
+      async () => {
+        await page.goto(searchPageEndpoint(), {
+          waitUntil: 'networkidle2',
+        });
 
-      expect(consoleInterceptor.interceptedMessages).toEqual([]);
-    });
+        expect(consoleInterceptor.interceptedMessages).toEqual([]);
+      },
+      5 * 60e3
+    );
 
     it('should contain a search page section', async () => {
       await page.goto(searchPageEndpoint(), {
@@ -245,7 +244,7 @@ describe('ui:create:angular', () => {
       await page.waitForSelector(searchboxSelector);
 
       expect(await page.$('app-search-page')).not.toBeNull();
-    });
+    }, 60e3);
 
     it('should retrieve the search token on the page load', async () => {
       const tokenResponseListener = page.waitForResponse(tokenServerEndpoint());
@@ -258,7 +257,7 @@ describe('ui:create:angular', () => {
       ).toMatchObject({
         token: expect.stringMatching(/^eyJhb.+/),
       });
-    });
+    }, 60e3);
 
     it('should send a search query when the page is loaded', async () => {
       await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
@@ -280,12 +279,12 @@ describe('ui:create:angular', () => {
       await retry(async () => {
         expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
       });
-    });
+    }, 60e3);
 
     it('should be commited without lint-stage errors', async () => {
       const eslintErrorSpy = jest.fn();
 
-      commitProject(
+      await commitProject(
         serverProcessManager,
         getProjectPath(projectName),
         projectName,
@@ -293,7 +292,7 @@ describe('ui:create:angular', () => {
       );
 
       expect(eslintErrorSpy).not.toBeCalled();
-    }, 10e3);
+    }, 60e3);
   });
 
   describe('when the .env file is missing', () => {
@@ -315,13 +314,18 @@ describe('ui:create:angular', () => {
       async () => {
         const missingEnvErrorSpy = jest.fn();
 
-        await startApplication(
+        const appTerminal = await startApplication(
           serverProcessManager,
-          'angular-server-missing-env',
-          missingEnvErrorSpy
+          'angular-server-missing-env'
         );
 
-        expect(missingEnvErrorSpy).toHaveBeenCalledWith('missing .env file');
+        await appTerminal
+          .when(/\.env file not found in the project root/)
+          .on('stderr')
+          .do(missingEnvErrorSpy)
+          .once();
+
+        expect(missingEnvErrorSpy).toHaveBeenCalled();
       },
       2 * 60e3
     );
@@ -335,7 +339,12 @@ describe('ui:create:angular', () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
       envFileContent = flushEnvFile(join(projectName, 'server'));
-      await startApplication(serverProcessManager, 'angular-server-invalid');
+      const appTerminal = await startApplication(
+        serverProcessManager,
+        'angular-server-invalid'
+      );
+      await waitForAppRunning(appTerminal);
+      [clientPort, serverPort] = getAllocatedPorts();
     }, 2 * 60e3);
 
     afterAll(async () => {
@@ -359,7 +368,12 @@ describe('ui:create:angular', () => {
       processManagers.push(serverProcessManager);
       setCustomTokenEndpoint(customTokenEndpoint);
 
-      await startApplication(serverProcessManager, 'angular-server-port-test');
+      const appTerminal = await startApplication(
+        serverProcessManager,
+        'angular-server-port-test'
+      );
+      await waitForAppRunning(appTerminal);
+      [clientPort, serverPort] = getAllocatedPorts();
     }, 2 * 60e3);
 
     afterAll(async () => {
@@ -410,7 +424,12 @@ describe('ui:create:angular', () => {
         new DummyServer(usedServerPort)
       );
 
-      await startApplication(serverProcessManager, 'angular-server-port-test');
+      const appTerminal = await startApplication(
+        serverProcessManager,
+        'angular-server-port-test'
+      );
+      await waitForAppRunning(appTerminal);
+      [clientPort, serverPort] = getAllocatedPorts();
     }, 2 * 60e3);
 
     afterAll(async () => {
