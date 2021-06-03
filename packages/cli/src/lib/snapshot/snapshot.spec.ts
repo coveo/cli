@@ -15,6 +15,7 @@ import {ISnapshotValidation, Snapshot} from './snapshot';
 const mockedAuthenticatedClient = mocked(AuthenticatedClient);
 const mockedCreateSnapshotFromFile = jest.fn();
 const mockedPushSnapshot = jest.fn();
+const mockedDeleteSnapshot = jest.fn();
 const mockedGetSnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
@@ -76,6 +77,7 @@ const doMockAuthenticatedClient = () => {
       resourceSnapshot: {
         createFromFile: mockedCreateSnapshotFromFile,
         push: mockedPushSnapshot,
+        delete: mockedDeleteSnapshot,
         dryRun: mockedDryRunSnapshot,
         get: mockedGetSnapshot,
       },
@@ -154,10 +156,9 @@ describe('Snapshot', () => {
     it.todo('should set a synchronization plan');
   });
 
-  describe('when the validation passes', () => {
+  describe('when the snapshot is created', () => {
     let snapshot: Snapshot;
     let initialSnapshotState: ResourceSnapshotsModel;
-    let status: ISnapshotValidation;
     const targetOrgId = 'target-org';
     const snapshotId = 'target-org-snapshot-id';
 
@@ -183,11 +184,19 @@ describe('Snapshot', () => {
         initialSnapshotState,
         await new AuthenticatedClient().getClient()
       );
-      status = await snapshot.validate();
     });
 
     it('#validate should return true', async () => {
+      const status = await snapshot.validate();
       expect(status.isValid).toBe(true);
+    });
+
+    it('should be deleted', async () => {
+      await snapshot.delete();
+      expect(mockedDeleteSnapshot).toHaveBeenCalledTimes(1);
+      expect(mockedDeleteSnapshot).toHaveBeenCalledWith(
+        'target-org-snapshot-id'
+      );
     });
   });
 });
