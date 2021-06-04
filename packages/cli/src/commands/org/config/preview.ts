@@ -18,9 +18,9 @@ export interface CustomFile extends ReadStream {
 }
 
 export default class Preview extends Command {
-  static description = 'Preview resource updates';
+  public static description = 'Preview resource updates';
 
-  static flags = {
+  public static flags = {
     target: flags.string({
       char: 't',
       description:
@@ -37,10 +37,10 @@ export default class Preview extends Command {
     }),
   };
 
-  static hidden = true;
+  public static hidden = true;
 
   @Preconditions(IsAuthenticated())
-  async run() {
+  public async run() {
     const {flags} = this.parse(Preview);
     const project = new Project(flags.projectPath);
     const pathToZip = await project.compressResources();
@@ -84,7 +84,7 @@ export default class Preview extends Command {
     );
   }
 
-  async getTargetOrg() {
+  public async getTargetOrg() {
     const {flags} = this.parse(Preview);
     if (flags.target) {
       return flags.target;

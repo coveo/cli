@@ -16,15 +16,15 @@ import {EngineService} from '../engine.service';
 })
 export class SortComponent implements OnInit {
   private headlessSort!: Sort;
-  sortCriterias!: {caption: string; criterion: SortCriterion}[];
+  public sortCriterias!: {caption: string; criterion: SortCriterion}[];
 
-  constructor(private engineService: EngineService) {}
+  public constructor(private engineService: EngineService) {}
 
-  selectionChange(change: MatSelectChange) {
+  public selectionChange(change: MatSelectChange) {
     this.headlessSort.sortBy(change.value);
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.sortCriterias = [
       {
         caption: 'Relevance',

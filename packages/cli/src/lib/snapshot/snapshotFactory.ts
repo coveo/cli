@@ -10,7 +10,7 @@ export interface CustomFile extends ReadStream {
 }
 
 export class SnapshotFactory {
-  static async createFromZip(
+  public static async createFromZip(
     pathToZip: string,
     targetOrg: string
   ): Promise<Snapshot> {
@@ -30,7 +30,7 @@ export class SnapshotFactory {
     return new Snapshot(model, client);
   }
 
-  static async createFromOrg() {
+  public static async createFromOrg() {
     // TODO: need 2 instances of AuthenticatedClient: one for the source org, and the other one for the destination org
   }
 

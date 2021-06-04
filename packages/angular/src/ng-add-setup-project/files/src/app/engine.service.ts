@@ -8,9 +8,9 @@ import {environment} from '../environments/environment';
 export class EngineService {
   private engine!: HeadlessEngine<typeof searchAppReducers>;
 
-  constructor() {}
+  public constructor() {}
 
-  init(accessToken: string) {
+  public init(accessToken: string) {
     this.engine = new HeadlessEngine({
       configuration: {
         platformUrl: environment.platformUrl,
@@ -26,11 +26,11 @@ export class EngineService {
     });
   }
 
-  getTokenEndpoint = () => {
+  public getTokenEndpoint = () => {
     return environment.customTokenEndpoint || environment.defaultTokenEndpoint;
   };
 
-  get() {
+  public get() {
     return this.engine;
   }
 }

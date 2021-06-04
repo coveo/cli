@@ -10,41 +10,41 @@ import {EngineService} from '../engine.service';
 })
 export class FacetComponent implements OnInit {
   @Input()
-  field!: string;
+  public field!: string;
   @Input()
-  title!: string;
+  public title!: string;
 
   private headlessFacet!: Facet;
 
-  constructor(private engineService: EngineService) {}
+  public constructor(private engineService: EngineService) {}
 
-  selectionChange(change: MatSelectionListChange) {
+  public selectionChange(change: MatSelectionListChange) {
     change.options.forEach((option) => {
       this.headlessFacet.toggleSelect(option.value);
     });
   }
 
-  showMore() {
+  public showMore() {
     this.headlessFacet.showMoreValues();
   }
 
-  showLess() {
+  public showLess() {
     this.headlessFacet.showLessValues();
   }
 
-  canShowLess() {
+  public canShowLess() {
     return this.headlessFacet.state.canShowLessValues;
   }
 
-  canShowMore() {
+  public canShowMore() {
     return this.headlessFacet.state.canShowMoreValues;
   }
 
-  isFacetValueSelected(value: FacetValue): boolean {
+  public isFacetValueSelected(value: FacetValue): boolean {
     return this.headlessFacet.isValueSelected(value);
   }
 
-  get facetValues(): FacetValue[] {
+  public get facetValues(): FacetValue[] {
     return this.headlessFacet.state.values;
   }
 
@@ -57,7 +57,7 @@ export class FacetComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.initializeController();
   }
 }

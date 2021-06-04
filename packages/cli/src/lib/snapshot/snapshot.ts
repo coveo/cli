@@ -14,7 +14,7 @@ export interface ISnapshotValidation {
 }
 
 export class Snapshot {
-  constructor(
+  public constructor(
     private model: ResourceSnapshotsModel,
     private client: PlatformClient
   ) {}
