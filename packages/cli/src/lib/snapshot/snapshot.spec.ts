@@ -12,7 +12,7 @@ import {mocked} from 'ts-jest/utils';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {ISnapshotValidation, Snapshot} from './snapshot';
 
-const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
 const mockedCreateSnapshotFromFile = jest.fn();
 const mockedPushSnapshot = jest.fn();
 const mockedGetSnapshot = jest.fn();
@@ -82,11 +82,8 @@ const doMockAuthenticatedClient = () => {
     })
   );
 
-  mockedAuthenticatedClient.mockImplementation(
-    () =>
-      ({
-        getClient: mockedGetClient,
-      } as unknown as AuthenticatedClient)
+  mockedAuthenticatedClient.prototype.getClient.mockImplementation(
+    mockedGetClient
   );
 };
 
