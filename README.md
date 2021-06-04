@@ -11,15 +11,18 @@ Coveo CLI is a command line interface to interact with the Coveo platform. It al
 Installation links:
 
 Mac:
-- http://static.cloud.coveo.com/cli/coveo-latest.pkg
+
+- https://static.cloud.coveo.com/cli/coveo-latest.pkg
 
 Windows:
-- http://static.cloud.coveo.com/cli/coveo-latest-x64.exe
-- http://static.cloud.coveo.com/cli/coveo-latest-x32.exe
+
+- https://static.cloud.coveo.com/cli/coveo-latest-x64.exe
+- https://static.cloud.coveo.com/cli/coveo-latest-x32.exe
 
 Linux:
-- http://static.cloud.coveo.com/cli/coveo-latest_amd64.deb
-- http://static.cloud.coveo.com/cli/coveo-latest_armel.deb
+
+- https://static.cloud.coveo.com/cli/coveo-latest_amd64.deb
+- https://static.cloud.coveo.com/cli/coveo-latest_armel.deb
 
 These executables install the latest available version. Afterwards, anytime you run `coveo update`, your CLI installation will update to the latest version.
 

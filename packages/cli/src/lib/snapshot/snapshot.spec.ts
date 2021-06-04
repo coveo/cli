@@ -12,7 +12,7 @@ import {mocked} from 'ts-jest/utils';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {ISnapshotValidation, Snapshot} from './snapshot';
 
-const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
 const mockedCreateSnapshotFromFile = jest.fn();
 const mockedPushSnapshot = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
@@ -25,36 +25,32 @@ const getReport = (
   type: ResourceSnapshotsReportType,
   status: ResourceSnapshotsReportStatus,
   resultCode: ResourceSnapshotsReportResultCode
-): ResourceSnapshotsReportModel => {
-  return {
-    id: snapshotId,
-    updatedDate: 1622555847000,
-    type: type,
-    status: status,
-    resultCode: resultCode,
-    resourcesProcessed: 12,
-    resourceOperations: {},
-    resourceOperationResults: {},
-  };
-};
+): ResourceSnapshotsReportModel => ({
+  id: snapshotId,
+  updatedDate: 1622555847000,
+  type: type,
+  status: status,
+  resultCode: resultCode,
+  resourcesProcessed: 12,
+  resourceOperations: {},
+  resourceOperationResults: {},
+});
 
-const getSuccessReport = (snapshotId: string): ResourceSnapshotsReportModel => {
-  return getReport(
+const getSuccessReport = (snapshotId: string): ResourceSnapshotsReportModel =>
+  getReport(
     snapshotId,
     ResourceSnapshotsReportType.DryRun,
     ResourceSnapshotsReportStatus.Completed,
     ResourceSnapshotsReportResultCode.Success
   );
-};
 
-const getErrorReport = (snapshotId: string): ResourceSnapshotsReportModel => {
-  return getReport(
+const getErrorReport = (snapshotId: string): ResourceSnapshotsReportModel =>
+  getReport(
     snapshotId,
     ResourceSnapshotsReportType.DryRun,
     ResourceSnapshotsReportStatus.Completed,
     ResourceSnapshotsReportResultCode.ResourcesInError
   );
-};
 
 const getDummySnapshotModel = (
   orgId: string,
@@ -84,11 +80,8 @@ const doMockAuthenticatedClient = () => {
     })
   );
 
-  mockedAuthenticatedClient.mockImplementation(
-    () =>
-      ({
-        getClient: mockedGetClient,
-      } as unknown as AuthenticatedClient)
+  mockedAuthenticatedClient.prototype.getClient.mockImplementation(
+    mockedGetClient
   );
 };
 

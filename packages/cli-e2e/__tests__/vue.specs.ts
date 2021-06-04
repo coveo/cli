@@ -21,11 +21,11 @@ import {
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {commitProject, undoCommit} from '../utils/git';
-import {config} from 'dotenv';
-import {resolve} from 'path';
+import {parse} from 'dotenv';
 import {DummyServer} from '../utils/server';
-import {appendFileSync, truncateSync} from 'fs';
+import {appendFileSync, readFileSync, truncateSync} from 'fs';
 import getPort from 'get-port';
+import {npm} from '../utils/windows';
 
 describe('ui:create:vue', () => {
   let browser: Browser;
@@ -41,26 +41,31 @@ describe('ui:create:vue', () => {
   const tokenServerEndpoint = () => `http://localhost:${serverPort}/token`;
 
   const forceApplicationPorts = (clientPort: number, serverPort: number) => {
-    const pathToEnv = resolve(getProjectPath(projectName), '.env');
-    const environment = config({
-      path: pathToEnv,
-    }).parsed;
+    const envPath = getPathToEnvFile(projectName);
+    const environment = parse(readFileSync(envPath, {encoding: 'utf-8'}));
 
     const updatedEnvironment = {
       ...environment,
       PORT: clientPort,
       VUE_APP_SERVER_PORT: serverPort,
     };
-    truncateSync(pathToEnv);
+    truncateSync(envPath);
     for (const [key, value] of Object.entries(updatedEnvironment)) {
-      appendFileSync(pathToEnv, `${key}=${value}${EOL}`);
+      appendFileSync(envPath, `${key}=${value}${EOL}`);
     }
   };
 
+  const waitForAppRunning = (appTerminal: Terminal) =>
+    appTerminal
+      .when(/App running at:/)
+      .on('stdout')
+      .do()
+      .once();
+
   const getAllocatedPorts = () => {
-    const envVariables = config({
-      path: getPathToEnvFile(projectName),
-    }).parsed;
+    const envVariables = parse(
+      readFileSync(getPathToEnvFile(projectName), {encoding: 'utf-8'})
+    );
 
     if (!envVariables) {
       throw new Error('Unable to load project environment variables');
@@ -99,35 +104,20 @@ describe('ui:create:vue', () => {
 
   const startApplication = async (
     processManager: ProcessManager,
-    debugName = 'vue-server',
-    errorCallback: (error: string) => void = () => {}
+    debugName = 'vue-server'
   ) => {
+    const args = [...npm(), 'run', 'start'];
+
     const serverTerminal = new Terminal(
-      'npm',
-      ['run', 'start'],
+      args.shift()!,
+      args,
       {
         cwd: getProjectPath(projectName),
       },
       processManager,
       debugName
     );
-
-    await Promise.race([
-      serverTerminal
-        .when(/\.env file not found in the project root/)
-        .on('stderr')
-        .do(() => {
-          errorCallback('missing .env file');
-        })
-        .once(),
-      serverTerminal
-        .when(/App running at:/)
-        .on('stdout')
-        .do()
-        .once(),
-    ]);
-
-    [clientPort, serverPort] = getAllocatedPorts();
+    return serverTerminal;
   };
 
   beforeAll(async () => {
@@ -165,7 +155,12 @@ describe('ui:create:vue', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      await startApplication(serverProcessManager, 'vue-server-valid');
+      const appTerminal = await startApplication(
+        serverProcessManager,
+        'vue-server-valid'
+      );
+      await waitForAppRunning(appTerminal);
+      [clientPort, serverPort] = getAllocatedPorts();
     }, 2 * 60e3);
 
     beforeEach(async () => {
@@ -190,7 +185,7 @@ describe('ui:create:vue', () => {
         projectName
       );
       await serverProcessManager.killAllProcesses();
-    }, 5e3);
+    }, 5 * 60e3);
 
     it('should not contain console errors nor warnings', async () => {
       await page.goto(searchPageEndpoint(), {
@@ -247,7 +242,7 @@ describe('ui:create:vue', () => {
     it('should be commited without lint-stage errors', async () => {
       const eslintErrorSpy = jest.fn();
 
-      commitProject(
+      await commitProject(
         serverProcessManager,
         getProjectPath(projectName),
         projectName,
@@ -272,27 +267,17 @@ describe('ui:create:vue', () => {
     it(
       'should not have any ESLint warning or error',
       async () => {
-        const serverTerminal = new Terminal(
-          'npm',
-          ['run', 'start'],
-          {
-            cwd: getProjectPath(projectName),
-          },
+        const serverTerminal = await startApplication(
           serverProcessManager,
-          'vue-server'
+          'vue-server-eslint'
         );
         const eslintErrorSpy = jest.fn();
-        const serverExitCondition = serverTerminal
-          .when(/App running at:/)
-          .on('stdout')
-          .do()
-          .once();
 
         await serverTerminal
           .when(/✖ \d+ problems \(\d+ errors, \d+ warnings\)/)
           .on('stdout')
           .do(eslintErrorSpy)
-          .until(serverExitCondition);
+          .until(waitForAppRunning(serverTerminal));
 
         expect(eslintErrorSpy).not.toBeCalled();
       },
@@ -310,8 +295,8 @@ describe('ui:create:vue', () => {
     });
 
     afterAll(async () => {
-      restoreEnvironmentFile(projectName);
       await serverProcessManager.killAllProcesses();
+      restoreEnvironmentFile(projectName);
     }, 5e3);
 
     it(
@@ -319,13 +304,18 @@ describe('ui:create:vue', () => {
       async () => {
         const missingEnvErrorSpy = jest.fn();
 
-        await startApplication(
+        const appTerminal = await startApplication(
           serverProcessManager,
-          'vue-server-missing-env',
-          missingEnvErrorSpy
+          'vue-server-missing-env'
         );
 
-        expect(missingEnvErrorSpy).toHaveBeenCalledWith('missing .env file');
+        await appTerminal
+          .when(/\.env file not found in the project root/)
+          .on('stderr')
+          .do(missingEnvErrorSpy)
+          .once();
+
+        expect(missingEnvErrorSpy).toHaveBeenCalled();
       },
       2 * 60e3
     );
@@ -339,7 +329,12 @@ describe('ui:create:vue', () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
       envFileContent = flushEnvFile(projectName);
-      await startApplication(serverProcessManager, 'vue-server-invalid');
+      const appTerminal = await startApplication(
+        serverProcessManager,
+        'vue-server-invalid'
+      );
+      await waitForAppRunning(appTerminal);
+      [clientPort, serverPort] = getAllocatedPorts();
     }, 2 * 60e3);
 
     afterAll(async () => {
@@ -365,7 +360,12 @@ describe('ui:create:vue', () => {
       processManagers.push(serverProcessManager);
       forceApplicationPorts(hardCodedClientPort, hardCodedServerPort);
 
-      await startApplication(serverProcessManager, 'vue-server-port-test');
+      const appTerminal = await startApplication(
+        serverProcessManager,
+        'vue-server-port-test'
+      );
+      await waitForAppRunning(appTerminal);
+      [clientPort, serverPort] = getAllocatedPorts();
     }, 2 * 60e3);
 
     afterAll(async () => {
@@ -399,7 +399,12 @@ describe('ui:create:vue', () => {
         new DummyServer(usedServerPort)
       );
 
-      await startApplication(serverProcessManager, 'vue-server-port-test');
+      const appTerminal = await startApplication(
+        serverProcessManager,
+        'vue-server-port-test'
+      );
+      await waitForAppRunning(appTerminal);
+      [clientPort, serverPort] = getAllocatedPorts();
     }, 2 * 60e3);
 
     afterAll(async () => {
