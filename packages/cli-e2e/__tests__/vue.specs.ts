@@ -21,8 +21,6 @@ import {
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {commitProject, undoCommit} from '../utils/git';
-import {spawnSync} from 'child_process';
-import {dirname, join} from 'path';
 import {parse} from 'dotenv';
 import {DummyServer} from '../utils/server';
 import {appendFileSync, readFileSync, truncateSync} from 'fs';

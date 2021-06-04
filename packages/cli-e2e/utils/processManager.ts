@@ -7,7 +7,7 @@ import {recurseProcessKillWindows} from './windowsProcessKiller';
 
 export class ProcessManager {
   private processes: Set<ChildProcessWithoutNullStreams>;
-  constructor() {
+  public constructor() {
     this.processes = new Set<ChildProcessWithoutNullStreams>();
   }
 

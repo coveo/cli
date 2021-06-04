@@ -6,13 +6,13 @@ export class Snapshot {
     private client: PlatformClient
   ) {}
 
-  public async push(targetOrganizationId: string, developerNotes: string) {
+  public async push() {
     // TODO: CDX-356: Right now the snapshot will remain in the connected org. It should be sent to the destination org specified by the --target flag.
     // const snapshotClient = await this.getSnapshotClient();
     // snapshotClient.push(this.lastSnapshot?.targetId, {targetOrganisationId});
   }
 
-  public validate(targetOrganisationId: string) {
+  public validate() {
     // TODO: CDX-358: Validate snapshot
   }
 

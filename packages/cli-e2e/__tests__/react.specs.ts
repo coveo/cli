@@ -18,11 +18,9 @@ import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {commitProject, undoCommit} from '../utils/git';
 import {appendFileSync, readFileSync, truncateSync} from 'fs';
 import {EOL} from 'os';
-import {dirname, join} from 'path';
 import {parse} from 'dotenv';
 import {DummyServer} from '../utils/server';
 import getPort from 'get-port';
-import {spawnSync} from 'child_process';
 import {npm} from '../utils/windows';
 
 describe('ui:create:react', () => {

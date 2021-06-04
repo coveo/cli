@@ -7,7 +7,7 @@ import type {ChildProcess} from 'child_process';
  */
 class Process {
   public childProcesses: Process[];
-  constructor(public pid: number) {
+  public constructor(public pid: number) {
     this.childProcesses = [];
   }
 }

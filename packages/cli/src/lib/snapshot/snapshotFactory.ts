@@ -12,15 +12,15 @@ export interface CustomFile extends ReadStream {
 export class SnapshotFactory {
   public static async createFromZip(
     pathToZip: string,
-    developerNotes: string
+    targetOrg: string
   ): Promise<Snapshot> {
-    const client = await new AuthenticatedClient().getClient();
+    const client = await this.getClient(targetOrg);
     const file: CustomFile = createReadStream(pathToZip);
 
     file.type = 'application/zip';
 
     const computedOptions: CreateFromFileOptions = {
-      developerNotes,
+      developerNotes: 'cli-created-from-zip',
     };
 
     const model = await client.resourceSnapshot.createFromFile(
@@ -31,6 +31,10 @@ export class SnapshotFactory {
   }
 
   public static async createFromOrg() {
-    // TODO:
+    // TODO: need 2 instances of AuthenticatedClient: one for the source org, and the other one for the destination org
+  }
+
+  private static async getClient(targetOrg: string) {
+    return await new AuthenticatedClient().getClient({organization: targetOrg});
   }
 }

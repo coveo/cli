@@ -41,20 +41,15 @@ export default class Preview extends Command {
     const {flags} = this.parse(Preview);
     const project = new Project(flags.projectPath);
     const pathToZip = await project.compressResources();
-
-    const snapshot = await SnapshotFactory.createFromZip(
-      pathToZip,
-      'cli-preview-snapshot'
-    );
+    const targetOrg = await this.getTargetOrg();
 
     cli.action.start('Creating snapshot');
 
-    const targetOrg = await this.getTargetOrg();
-    await snapshot.push(targetOrg, 'cli-preview-snapshot');
+    const snapshot = await SnapshotFactory.createFromZip(pathToZip, targetOrg);
 
     cli.action.start('Validating snapshot');
 
-    await snapshot.validate(targetOrg);
+    await snapshot.validate();
     await snapshot.preview();
     await snapshot.delete();
 

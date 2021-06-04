@@ -22,12 +22,11 @@ import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {commitProject, undoCommit} from '../utils/git';
-import {dirname, resolve, join} from 'path';
+import {resolve, join} from 'path';
 import {parse} from 'dotenv';
 import {readFileSync, writeFileSync, truncateSync, appendFileSync} from 'fs';
 import {DummyServer} from '../utils/server';
 import getPort from 'get-port';
-import {spawnSync} from 'child_process';
 import {npm} from '../utils/windows';
 
 describe('ui:create:angular', () => {

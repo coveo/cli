@@ -1,7 +1,6 @@
 jest.mock('../platform/authenticatedClient');
 jest.mock('fs');
 
-import PlatformClient from '@coveord/platform-client';
 import {createReadStream, ReadStream} from 'fs';
 import {join} from 'path';
 import {Readable} from 'stream';
@@ -10,6 +9,7 @@ import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {SnapshotFactory} from './snapshotFactory';
 
 const mockedCreateReadStream = mocked(createReadStream);
+const mockedGetClient = jest.fn();
 const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
 const mockedCreateSnapshotFromFile = jest.fn();
 
@@ -24,12 +24,22 @@ const doMockReadStream = () => {
   });
 };
 
-const doMockAuthenticatedClient = () =>
-  mockedAuthenticatedClient.prototype.getClient.mockImplementation(() =>
-    Promise.resolve<PlatformClient>({
-      resourceSnapshot: {createFromFile: mockedCreateSnapshotFromFile},
-    } as unknown as PlatformClient)
+const doMockAuthenticatedClient = () => {
+  mockedGetClient.mockImplementation(() =>
+    Promise.resolve({
+      resourceSnapshot: {
+        createFromFile: mockedCreateSnapshotFromFile,
+      },
+    })
   );
+
+  mockedAuthenticatedClient.mockImplementation(
+    () =>
+      ({
+        getClient: mockedGetClient,
+      } as unknown as AuthenticatedClient)
+  );
+};
 
 describe('Snapshot', () => {
   beforeAll(() => {
@@ -39,10 +49,15 @@ describe('Snapshot', () => {
 
   describe('when the the resources are compressed', () => {
     const pathToZip = join('dummy', 'path');
-    const developerNotes = 'Some random notes';
 
     beforeEach(async () => {
-      await SnapshotFactory.createFromZip(pathToZip, developerNotes);
+      await SnapshotFactory.createFromZip(pathToZip, 'my-target-org');
+    });
+
+    it('should create a client connected to the right organization', () => {
+      expect(mockedGetClient).toHaveBeenCalledWith({
+        organization: 'my-target-org',
+      });
     });
 
     it('#createSnapshotFromZip should retrieve an authenticated client', () => {
@@ -54,7 +69,7 @@ describe('Snapshot', () => {
         expect.objectContaining({
           type: 'application/zip',
         }),
-        {developerNotes: 'Some random notes'}
+        {developerNotes: 'cli-created-from-zip'}
       );
     });
 
@@ -63,8 +78,6 @@ describe('Snapshot', () => {
         join('dummy', 'path')
       );
     });
-
-    it.todo('should push the created snapshot to the destination org');
   });
 
   describe('when the snapshot validation does not pass', () => {
