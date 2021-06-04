@@ -1,92 +1,186 @@
 jest.mock('../platform/authenticatedClient');
 jest.mock('fs');
 
-import {createReadStream, ReadStream} from 'fs';
-import {join} from 'path';
-import {Readable} from 'stream';
+import {
+  ResourceSnapshotsModel,
+  ResourceSnapshotsReportModel,
+  ResourceSnapshotsReportResultCode,
+  ResourceSnapshotsReportStatus,
+  ResourceSnapshotsReportType,
+} from '@coveord/platform-client';
 import {mocked} from 'ts-jest/utils';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
-import {SnapshotFactory} from './snapshotFactory';
+import {ISnapshotValidation, Snapshot} from './snapshot';
 
-const mockedCreateReadStream = mocked(createReadStream);
-const mockedGetClient = jest.fn();
 const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
 const mockedCreateSnapshotFromFile = jest.fn();
+const mockedPushSnapshot = jest.fn();
+const mockedGetSnapshot = jest.fn();
+const mockedDryRunSnapshot = jest.fn();
+const mockedGetClient = jest.fn();
 
-const doMockReadStream = () => {
-  mockedCreateReadStream.mockImplementation(() => {
-    const buffer = Buffer.from('this is a tést');
-    const readable = new Readable();
-    readable._read = () => {};
-    readable.push(buffer);
-    readable.push(null);
-    return readable as unknown as ReadStream;
-  });
-};
+const getReport = (
+  snapshotId: string,
+  type: ResourceSnapshotsReportType,
+  status: ResourceSnapshotsReportStatus,
+  resultCode: ResourceSnapshotsReportResultCode
+): ResourceSnapshotsReportModel => ({
+  id: snapshotId,
+  updatedDate: 1622555847000,
+  type: type,
+  status: status,
+  resultCode: resultCode,
+  resourcesProcessed: 12,
+  resourceOperations: {},
+  resourceOperationResults: {},
+});
+
+const getSuccessReport = (snapshotId: string): ResourceSnapshotsReportModel =>
+  getReport(
+    snapshotId,
+    ResourceSnapshotsReportType.DryRun,
+    ResourceSnapshotsReportStatus.Completed,
+    ResourceSnapshotsReportResultCode.Success
+  );
+
+const getErrorReport = (snapshotId: string): ResourceSnapshotsReportModel =>
+  getReport(
+    snapshotId,
+    ResourceSnapshotsReportType.DryRun,
+    ResourceSnapshotsReportStatus.Completed,
+    ResourceSnapshotsReportResultCode.ResourcesInError
+  );
+
+const getDummySnapshotModel = (
+  orgId: string,
+  snapshotId: string,
+  reports: ResourceSnapshotsReportModel[] = []
+): ResourceSnapshotsModel => ({
+  id: snapshotId,
+  createdBy: 'user@coveo.com',
+  createdDate: 1622555047116,
+  targetId: orgId,
+  developerNote: 'hello',
+  reports: reports,
+  synchronizationReports: [],
+  contentSummary: {EXTENSION: 1, FIELD: 11},
+});
 
 const doMockAuthenticatedClient = () => {
   mockedGetClient.mockImplementation(() =>
     Promise.resolve({
       resourceSnapshot: {
         createFromFile: mockedCreateSnapshotFromFile,
+        push: mockedPushSnapshot,
+        dryRun: mockedDryRunSnapshot,
+        get: mockedGetSnapshot,
       },
     })
   );
 
-  mockedAuthenticatedClient.mockImplementation(
-    () =>
-      ({
-        getClient: mockedGetClient,
-      } as unknown as AuthenticatedClient)
+  mockedAuthenticatedClient.prototype.getClient.mockImplementation(
+    mockedGetClient
   );
 };
 
 describe('Snapshot', () => {
   beforeAll(() => {
     doMockAuthenticatedClient();
-    doMockReadStream();
   });
 
-  describe('when the the resources are compressed', () => {
-    const pathToZip = join('dummy', 'path');
+  describe('when the resources are in error', () => {
+    let snapshot: Snapshot;
+    let initialSnapshotState: ResourceSnapshotsModel;
+    let status: ISnapshotValidation;
+    const targetOrgId = 'target-org';
+    const snapshotId = 'target-org-snapshot-id';
+
+    const doMockGetSnapshotInError = () => {
+      const errorReport = getErrorReport(snapshotId);
+      const futureSnapshotState = getDummySnapshotModel(
+        targetOrgId,
+        snapshotId,
+        [errorReport]
+      );
+
+      mockedGetSnapshot.mockResolvedValueOnce(futureSnapshotState);
+    };
 
     beforeEach(async () => {
-      await SnapshotFactory.createFromZip(pathToZip, 'my-target-org');
+      doMockGetSnapshotInError();
+
+      initialSnapshotState = await getDummySnapshotModel(
+        targetOrgId,
+        snapshotId
+      );
+      snapshot = new Snapshot(
+        initialSnapshotState,
+        await new AuthenticatedClient().getClient()
+      );
+      status = await snapshot.validate();
     });
 
-    it('should create a client connected to the right organization', () => {
-      expect(mockedGetClient).toHaveBeenCalledWith({
-        organization: 'my-target-org',
-      });
+    it('#validate should execute a snapshot dryrun', async () => {
+      expect(mockedDryRunSnapshot).toHaveBeenCalledWith(
+        'target-org-snapshot-id',
+        {
+          deleteMissingResources: false,
+        }
+      );
     });
 
-    it('#createSnapshotFromZip should retrieve an authenticated client', () => {
-      expect(mockedCreateSnapshotFromFile).toHaveBeenCalledTimes(1);
+    it('#validate should return false if the report contains an error', async () => {
+      expect(status.isValid).toBe(false);
     });
 
-    it('#createSnapshotFromZip should create a snapshot from Zip with appropriate parameters', () => {
-      expect(mockedCreateSnapshotFromFile).toHaveBeenCalledWith(
+    it('#validate should return the error in the detailed report', async () => {
+      expect(status.report).toEqual(
         expect.objectContaining({
-          type: 'application/zip',
-        }),
-        {developerNotes: 'cli-created-from-zip'}
+          id: 'target-org-snapshot-id',
+          resultCode: 'RESOURCES_IN_ERROR',
+          status: 'COMPLETED',
+          type: 'DRY_RUN',
+        })
       );
     });
 
-    it('#createSnapshotFromZip should create a readstream with the appropriate path to zip', () => {
-      expect(mockedCreateReadStream).toHaveBeenCalledWith(
-        join('dummy', 'path')
-      );
-    });
-  });
-
-  describe('when the snapshot validation does not pass', () => {
-    it.todo('should warn the user');
     it.todo('should set a synchronization plan');
   });
 
-  describe('when the snapshot validation succeed', () => {
-    it.todo('#validateSnapshot should return a detailed report');
-    it.todo('#previewSnapshot should return a change preview');
+  describe('when the validation passes', () => {
+    let snapshot: Snapshot;
+    let initialSnapshotState: ResourceSnapshotsModel;
+    let status: ISnapshotValidation;
+    const targetOrgId = 'target-org';
+    const snapshotId = 'target-org-snapshot-id';
+
+    const doMockGetSnapshotWithoutError = async () => {
+      const successReport = getSuccessReport(snapshotId);
+      const futureSnapshotState = await getDummySnapshotModel(
+        targetOrgId,
+        snapshotId,
+        [successReport]
+      );
+
+      mockedGetSnapshot.mockResolvedValueOnce(futureSnapshotState);
+    };
+
+    beforeEach(async () => {
+      doMockGetSnapshotWithoutError();
+
+      initialSnapshotState = await getDummySnapshotModel(
+        targetOrgId,
+        snapshotId
+      );
+      snapshot = new Snapshot(
+        initialSnapshotState,
+        await new AuthenticatedClient().getClient()
+      );
+      status = await snapshot.validate();
+    });
+
+    it('#validate should return true', async () => {
+      expect(status.isValid).toBe(true);
+    });
   });
 });

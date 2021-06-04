@@ -1,6 +1,9 @@
+import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
 import {Command, flags} from '@oclif/command';
 import {cli} from 'cli-ux';
 import {ReadStream} from 'fs';
+import {dedent} from 'ts-dedent';
+import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {cwd} from 'process';
 import {Config} from '../../../lib/config/config';
 import {
@@ -49,13 +52,36 @@ export default class Preview extends Command {
 
     cli.action.start('Validating snapshot');
 
-    await snapshot.validate();
+    const {isValid, report} = await snapshot.validate();
+
+    if (!isValid) {
+      // TODO: CDX-370: Setup a synchronization plan if the resources are in error
+      this.handleInvalidSnapshot(report);
+    }
+
     await snapshot.preview();
     await snapshot.delete();
 
     project.deleteTemporaryZipFile();
 
     cli.action.stop();
+  }
+
+  private saveDetailedReport(report: ResourceSnapshotsReportModel) {
+    const {flags} = this.parse(Preview);
+    const pathToReport = `${flags.projectPath}/.snapshot-reports/${report.id}.json`;
+    ensureFileSync(pathToReport);
+    writeJsonSync(pathToReport, report, {spaces: 2});
+    return pathToReport;
+  }
+
+  private handleInvalidSnapshot(report: ResourceSnapshotsReportModel) {
+    const pathToReport = this.saveDetailedReport(report);
+    // TODO: CDX-362: handle invalid snashot cases
+    this.error(
+      dedent`Invalid snapshot - ${report.resultCode}.
+      Please consult detailed report ${pathToReport}`
+    );
   }
 
   public async getTargetOrg() {

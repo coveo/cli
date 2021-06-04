@@ -1,4 +1,17 @@
-import {ResourceSnapshotsModel, PlatformClient} from '@coveord/platform-client';
+import {
+  ResourceSnapshotsModel,
+  ResourceSnapshotsReportModel,
+  ResourceSnapshotsReportResultCode,
+  ResourceSnapshotsReportStatus,
+  PlatformClient,
+} from '@coveord/platform-client';
+import {cli} from 'cli-ux';
+import {backOff} from 'exponential-backoff';
+
+export interface ISnapshotValidation {
+  isValid: boolean;
+  report: ResourceSnapshotsReportModel;
+}
 
 export class Snapshot {
   public constructor(
@@ -6,20 +19,32 @@ export class Snapshot {
     private client: PlatformClient
   ) {}
 
-  public async push() {
-    // TODO: CDX-356: Right now the snapshot will remain in the connected org. It should be sent to the destination org specified by the --target flag.
-    // const snapshotClient = await this.getSnapshotClient();
-    // snapshotClient.push(this.lastSnapshot?.targetId, {targetOrganisationId});
+  public async validate(): Promise<ISnapshotValidation> {
+    await this.snapshotClient.dryRun(this.snapshotId, {
+      deleteMissingResources: false, // TODO: CDX-361: Add flag to support missing resources deletion
+    });
+
+    await this.waitUntilIdle();
+
+    return {isValid: this.isValid(), report: this.latestReport};
   }
 
-  public validate() {
-    // TODO: CDX-358: Validate snapshot
-  }
-
-  public preview() {
+  public async preview() {
     // TODO: get detailed report
     this.displayLightPreview();
     this.displayExpandedPreview();
+  }
+
+  public async delete() {
+    // TODO: CDX-359: Delete snapshot once previewed
+  }
+
+  private get snapshotId() {
+    return this.model.id;
+  }
+
+  private get snapshotClient() {
+    return this.client.resourceSnapshot;
   }
 
   private displayLightPreview() {
@@ -30,7 +55,54 @@ export class Snapshot {
     // TODO: CDX-347 Display Expanded preview
   }
 
-  public async delete() {
-    // TODO: CDX-359: Delete snapshot once previewed
+  private get latestReport(): ResourceSnapshotsReportModel {
+    if (this.model.reports === undefined) {
+      throw new Error(
+        `No detailed report found for the snapshot ${this.snapshotId}`
+      );
+    }
+    return this.model.reports.slice(-1)[0];
+  }
+
+  private isValid() {
+    const {resultCode, status} = this.latestReport;
+    return (
+      status === ResourceSnapshotsReportStatus.Completed &&
+      resultCode === ResourceSnapshotsReportResultCode.Success
+    );
+  }
+
+  private async refreshSnapshotData() {
+    this.model = await this.snapshotClient.get(this.model.id, {
+      includeReports: true,
+    });
+  }
+
+  private async isIdle() {
+    await this.refreshSnapshotData();
+    return new Promise<void>((resolve, reject) => {
+      if (
+        [
+          ResourceSnapshotsReportStatus.Aborted,
+          ResourceSnapshotsReportStatus.Completed,
+        ].includes(this.latestReport.status)
+      ) {
+        resolve();
+      } else {
+        reject();
+      }
+    });
+  }
+
+  private async waitUntilIdle() {
+    try {
+      await backOff(() => this.isIdle(), {
+        delayFirstAttempt: true,
+        startingDelay: 1e3 / 2,
+        maxDelay: 2e3,
+      });
+    } catch (err) {
+      cli.error(err);
+    }
   }
 }
