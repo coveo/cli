@@ -9,7 +9,6 @@ import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {SnapshotFactory} from './snapshotFactory';
 
 const mockedCreateReadStream = mocked(createReadStream);
-const mockedPushSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
 const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
 const mockedCreateSnapshotFromFile = jest.fn();
@@ -30,7 +29,6 @@ const doMockAuthenticatedClient = () => {
     Promise.resolve({
       resourceSnapshot: {
         createFromFile: mockedCreateSnapshotFromFile,
-        push: mockedPushSnapshot,
       },
     })
   );
