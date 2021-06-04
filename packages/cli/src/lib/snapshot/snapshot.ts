@@ -46,7 +46,7 @@ export class Snapshot {
   }
 
   public async delete() {
-    // TODO: CDX-359: Delete snapshot once previewed
+    await this.client.resourceSnapshot.delete(this.model.id);
   }
 
   public get latestReport(): ResourceSnapshotsReportModel {
