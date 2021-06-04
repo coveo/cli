@@ -1,4 +1,7 @@
-import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
+import {
+  ResourceSnapshotsReportModel,
+  ResourceSnapshotsReportResultCode,
+} from '@coveord/platform-client';
 import {Command, flags} from '@oclif/command';
 import {cli} from 'cli-ux';
 import {ReadStream} from 'fs';
@@ -12,6 +15,8 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {Project} from '../../../lib/project/project';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
+import {platformUrl} from '../../../lib/platform/environment';
+import {Snapshot} from '../../../lib/snapshot/snapshot';
 
 export interface CustomFile extends ReadStream {
   type?: string;
@@ -52,11 +57,10 @@ export default class Preview extends Command {
 
     cli.action.start('Validating snapshot');
 
-    const {isValid, report} = await snapshot.validate();
+    const {isValid} = await snapshot.validate();
 
     if (!isValid) {
-      // TODO: CDX-370: Setup a synchronization plan if the resources are in error
-      this.handleInvalidSnapshot(report);
+      this.handleInvalidSnapshot(snapshot);
     }
 
     await snapshot.preview();
@@ -65,23 +69,6 @@ export default class Preview extends Command {
     project.deleteTemporaryZipFile();
 
     cli.action.stop();
-  }
-
-  private saveDetailedReport(report: ResourceSnapshotsReportModel) {
-    const {flags} = this.parse(Preview);
-    const pathToReport = `${flags.projectPath}/.snapshot-reports/${report.id}.json`;
-    ensureFileSync(pathToReport);
-    writeJsonSync(pathToReport, report, {spaces: 2});
-    return pathToReport;
-  }
-
-  private handleInvalidSnapshot(report: ResourceSnapshotsReportModel) {
-    const pathToReport = this.saveDetailedReport(report);
-    // TODO: CDX-362: handle invalid snashot cases
-    this.error(
-      dedent`Invalid snapshot - ${report.resultCode}.
-      Please consult detailed report ${pathToReport}`
-    );
   }
 
   public async getTargetOrg() {
@@ -93,7 +80,63 @@ export default class Preview extends Command {
     return cfg.organization;
   }
 
+  private saveDetailedReport(report: ResourceSnapshotsReportModel) {
+    const {flags} = this.parse(Preview);
+    const pathToReport = `${flags.projectPath}/.snapshot-reports/${report.id}.json`;
+    ensureFileSync(pathToReport);
+    writeJsonSync(pathToReport, report, {spaces: 2});
+    return pathToReport;
+  }
+
+  private isSnapshotNotInSync(report: ResourceSnapshotsReportModel) {
+    // TODO: backend should provide a specific result code for snapshots that are out of sync with the target org.
+    // Waiting for the JIRA number...
+    return (
+      report.resultCode === ResourceSnapshotsReportResultCode.ResourcesInError
+    );
+  }
+
+  private async handleInvalidSnapshot(snapshot: Snapshot) {
+    // TODO: CDX-362: handle invalid snashot cases
+    const report = snapshot.latestReport;
+    const pathToReport = this.saveDetailedReport(report);
+
+    if (this.isSnapshotNotInSync(report)) {
+      cli.action.start('Synchronization');
+      await snapshot.createSynchronizationPlan();
+
+      const synchronizationPlanUrl = this.getSynchronizationPage(report.id);
+      this.warn(
+        dedent`Some conflicts were detected while comparing changes with the organization.
+        Please resolve the conflicts before previewing changes
+        ${synchronizationPlanUrl}`
+      );
+      return;
+    }
+
+    const snapshotUrl = this.getSnapshotPage(report.id);
+
+    this.error(
+      dedent`Invalid snapshot - ${report.resultCode}.
+      Detailed report saved at ${pathToReport}.
+
+      You can also use this link to view the snapshot in the Coveo Admin Console
+      ${snapshotUrl}`
+    );
+  }
+
   private get configuration() {
     return new Config(this.config.configDir, this.error);
+  }
+
+  private async getSnapshotPage(snapshotId: string) {
+    const {environment} = await this.configuration.get();
+    const url = platformUrl({environment});
+    const targetOrg = await this.getTargetOrg();
+    return `${url}/admin/#${targetOrg}/organization/resource-snapshots/${snapshotId}`;
+  }
+
+  private async getSynchronizationPage(snapshotId: string) {
+    return `${this.getSnapshotPage(snapshotId)}/synchronization`;
   }
 }

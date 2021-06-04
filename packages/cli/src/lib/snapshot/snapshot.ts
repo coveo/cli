@@ -7,6 +7,7 @@ import {
 } from '@coveord/platform-client';
 import {cli} from 'cli-ux';
 import {backOff} from 'exponential-backoff';
+import {SynchronizationPlan} from './synchronizationPlan';
 
 export interface ISnapshotValidation {
   isValid: boolean;
@@ -24,9 +25,18 @@ export class Snapshot {
       deleteMissingResources: false, // TODO: CDX-361: Add flag to support missing resources deletion
     });
 
-    await this.waitUntilIdle();
+    await this.waitUntilDone();
 
     return {isValid: this.isValid(), report: this.latestReport};
+  }
+
+  public async createSynchronizationPlan() {
+    const model = await this.client.resourceSnapshot.createSynchronizationPlan(
+      this.model.id
+    );
+
+    const plan = new SynchronizationPlan(model, this.client);
+    await plan.waitUntilDone();
   }
 
   public async preview() {
@@ -37,6 +47,15 @@ export class Snapshot {
 
   public async delete() {
     // TODO: CDX-359: Delete snapshot once previewed
+  }
+
+  public get latestReport(): ResourceSnapshotsReportModel {
+    if (this.model.reports === undefined || this.model.reports.length === 0) {
+      throw new Error(
+        `No detailed report found for the snapshot ${this.snapshotId}`
+      );
+    }
+    return this.model.reports.slice(-1)[0];
   }
 
   private get snapshotId() {
@@ -55,15 +74,6 @@ export class Snapshot {
     // TODO: CDX-347 Display Expanded preview
   }
 
-  private get latestReport(): ResourceSnapshotsReportModel {
-    if (this.model.reports === undefined) {
-      throw new Error(
-        `No detailed report found for the snapshot ${this.snapshotId}`
-      );
-    }
-    return this.model.reports.slice(-1)[0];
-  }
-
   private isValid() {
     const {resultCode, status} = this.latestReport;
     return (
@@ -78,29 +88,29 @@ export class Snapshot {
     });
   }
 
-  private async isIdle() {
-    await this.refreshSnapshotData();
-    return new Promise<void>((resolve, reject) => {
-      if (
-        [
-          ResourceSnapshotsReportStatus.Aborted,
-          ResourceSnapshotsReportStatus.Completed,
-        ].includes(this.latestReport.status)
-      ) {
-        resolve();
-      } else {
-        reject();
-      }
-    });
-  }
+  private async waitUntilDone() {
+    const waitPromise = backOff(
+      async () => {
+        await this.refreshSnapshotData();
 
-  private async waitUntilIdle() {
-    try {
-      await backOff(() => this.isIdle(), {
+        const isNotDone = [
+          ResourceSnapshotsReportStatus.Pending,
+          ResourceSnapshotsReportStatus.InProgress,
+        ].includes(this.latestReport.status);
+
+        if (isNotDone) {
+          throw new Error('Snapshot is still being processed');
+        }
+      },
+      {
         delayFirstAttempt: true,
         startingDelay: 1e3 / 2,
         maxDelay: 2e3,
-      });
+      }
+    );
+
+    try {
+      await waitPromise;
     } catch (err) {
       cli.error(err);
     }
