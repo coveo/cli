@@ -1,5 +1,10 @@
+import {ResourceSnapshotsModel, PlatformClient} from '@coveord/platform-client';
+
 export class Snapshot {
-  public constructor() {}
+  public constructor(
+    private model: ResourceSnapshotsModel,
+    private client: PlatformClient
+  ) {}
 
   public async push() {
     // TODO: CDX-356: Right now the snapshot will remain in the connected org. It should be sent to the destination org specified by the --target flag.
