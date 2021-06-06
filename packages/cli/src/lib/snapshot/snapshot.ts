@@ -7,6 +7,7 @@ import {
 } from '@coveord/platform-client';
 import {cli} from 'cli-ux';
 import {backOff} from 'exponential-backoff';
+import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {SynchronizationPlan} from './synchronizationPlan';
 
 export interface ISnapshotValidation {
@@ -20,14 +21,14 @@ export class Snapshot {
     private client: PlatformClient
   ) {}
 
-  public async validate(): Promise<ISnapshotValidation> {
+  public async validate(): Promise<boolean> {
     await this.snapshotClient.dryRun(this.snapshotId, {
       deleteMissingResources: false, // TODO: CDX-361: Add flag to support missing resources deletion
     });
 
     await this.waitUntilDone();
 
-    return {isValid: this.isValid(), report: this.latestReport};
+    return this.isValid();
   }
 
   public async createSynchronizationPlan() {
@@ -47,6 +48,22 @@ export class Snapshot {
 
   public async delete() {
     await this.client.resourceSnapshot.delete(this.model.id);
+  }
+
+  public requiresSynchronization() {
+    // TODO: backend should provide a specific result code for snapshots that are out of sync with the target org.
+    // Waiting for the JIRA number...
+    return (
+      this.latestReport.resultCode ===
+      ResourceSnapshotsReportResultCode.ResourcesInError
+    );
+  }
+
+  public saveDetailedReport(projectPath: string) {
+    const pathToReport = `${projectPath}/.snapshot-reports/${this.latestReport.id}.json`;
+    ensureFileSync(pathToReport);
+    writeJsonSync(pathToReport, this.latestReport, {spaces: 2});
+    return pathToReport;
   }
 
   public get latestReport(): ResourceSnapshotsReportModel {
