@@ -20,14 +20,14 @@ export class Snapshot {
     private readonly client: PlatformClient
   ) {}
 
-  public async validate(): Promise<boolean> {
+  public async validate(): Promise<ISnapshotValidation> {
     await this.snapshotClient.dryRun(this.id, {
       deleteMissingResources: false, // TODO: CDX-361: Add flag to support missing resources deletion
     });
 
     await this.waitUntilDone();
 
-    return this.isValid();
+    return {isValid: this.isValid(), report: this.latestReport};
   }
 
   public async preview() {
