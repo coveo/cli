@@ -89,7 +89,7 @@ export default class Preview extends Command {
       );
       this.warn(
         dedent`Some conflicts were detected while comparing changes with the organization.
-        Please synchronize your organization before previewing changes
+        Click on the URL bellow to synchronize your organization before running the command again.
         ${synchronizationPlanUrl}`
       );
       return;
