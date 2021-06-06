@@ -8,7 +8,6 @@ import {
 import {cli} from 'cli-ux';
 import {backOff} from 'exponential-backoff';
 import {ensureFileSync, writeJsonSync} from 'fs-extra';
-import {SynchronizationPlan} from './synchronizationPlan';
 
 export interface ISnapshotValidation {
   isValid: boolean;
@@ -18,26 +17,17 @@ export interface ISnapshotValidation {
 export class Snapshot {
   public constructor(
     private model: ResourceSnapshotsModel,
-    private client: PlatformClient
+    private readonly client: PlatformClient
   ) {}
 
   public async validate(): Promise<boolean> {
-    await this.snapshotClient.dryRun(this.snapshotId, {
+    await this.snapshotClient.dryRun(this.id, {
       deleteMissingResources: false, // TODO: CDX-361: Add flag to support missing resources deletion
     });
 
     await this.waitUntilDone();
 
     return this.isValid();
-  }
-
-  public async createSynchronizationPlan() {
-    const model = await this.client.resourceSnapshot.createSynchronizationPlan(
-      this.model.id
-    );
-
-    const plan = new SynchronizationPlan(model, this.client);
-    await plan.waitUntilDone();
   }
 
   public async preview() {
@@ -68,15 +58,17 @@ export class Snapshot {
 
   public get latestReport(): ResourceSnapshotsReportModel {
     if (this.model.reports === undefined || this.model.reports.length === 0) {
-      throw new Error(
-        `No detailed report found for the snapshot ${this.snapshotId}`
-      );
+      throw new Error(`No detailed report found for the snapshot ${this.id}`);
     }
     return this.model.reports.slice(-1)[0];
   }
 
-  private get snapshotId() {
+  public get id() {
     return this.model.id;
+  }
+
+  public get targetId() {
+    return this.model.targetId;
   }
 
   private get snapshotClient() {

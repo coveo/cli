@@ -56,10 +56,10 @@ export default class Preview extends Command {
 
     if (!isValid) {
       this.handleInvalidSnapshot(snapshot);
+    } else {
+      await snapshot.preview();
+      await snapshot.delete();
     }
-
-    await snapshot.preview();
-    await snapshot.delete();
 
     project.deleteTemporaryZipFile();
 
@@ -83,18 +83,19 @@ export default class Preview extends Command {
 
     if (snapshot.requiresSynchronization()) {
       cli.action.start('Synchronization');
-      await snapshot.createSynchronizationPlan();
 
-      const synchronizationPlanUrl = this.getSynchronizationPage(report.id);
+      const synchronizationPlanUrl = await this.getSynchronizationPage(
+        snapshot
+      );
       this.warn(
         dedent`Some conflicts were detected while comparing changes with the organization.
-        Please resolve the conflicts before previewing changes
+        Please synchronize your organization before previewing changes
         ${synchronizationPlanUrl}`
       );
       return;
     }
 
-    const snapshotUrl = this.getSnapshotPage(report.id);
+    const snapshotUrl = this.getSnapshotPage(snapshot);
 
     this.error(
       dedent`Invalid snapshot - ${report.resultCode}.
@@ -109,14 +110,14 @@ export default class Preview extends Command {
     return new Config(this.config.configDir, this.error);
   }
 
-  private async getSnapshotPage(snapshotId: string) {
+  private async getSnapshotPage(snapshot: Snapshot) {
     const {environment} = await this.configuration.get();
     const url = platformUrl({environment});
-    const targetOrg = await this.getTargetOrg();
-    return `${url}/admin/#${targetOrg}/organization/resource-snapshots/${snapshotId}`;
+    const targetOrg = snapshot.targetId;
+    return `${url}/admin/#${targetOrg}/organization/resource-snapshots/${snapshot.id}`;
   }
 
-  private async getSynchronizationPage(snapshotId: string) {
-    return `${this.getSnapshotPage(snapshotId)}/synchronization`;
+  private async getSynchronizationPage(snapshot: Snapshot) {
+    return `${await this.getSnapshotPage(snapshot)}/synchronization`;
   }
 }
