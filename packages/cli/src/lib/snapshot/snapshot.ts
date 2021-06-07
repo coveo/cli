@@ -8,6 +8,7 @@ import {
 import {cli} from 'cli-ux';
 import {backOff} from 'exponential-backoff';
 import {ensureFileSync, writeJsonSync} from 'fs-extra';
+import {join} from 'path';
 
 export interface ISnapshotValidation {
   isValid: boolean;
@@ -50,7 +51,11 @@ export class Snapshot {
   }
 
   public saveDetailedReport(projectPath: string) {
-    const pathToReport = `${projectPath}/snapshot-reports/${this.latestReport.id}.json`;
+    const pathToReport = join(
+      projectPath,
+      'reports',
+      `${this.latestReport.id}.json`
+    );
     ensureFileSync(pathToReport);
     writeJsonSync(pathToReport, this.latestReport, {spaces: 2});
     return pathToReport;
