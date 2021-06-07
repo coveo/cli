@@ -17,7 +17,7 @@ export interface ISnapshotValidation {
 export class Snapshot {
   public constructor(
     private model: ResourceSnapshotsModel,
-    private readonly client: PlatformClient
+    private client: PlatformClient
   ) {}
 
   public async validate(): Promise<ISnapshotValidation> {
