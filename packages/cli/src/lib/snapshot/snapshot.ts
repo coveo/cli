@@ -53,7 +53,7 @@ export class Snapshot {
   public saveDetailedReport(projectPath: string) {
     const pathToReport = join(
       projectPath,
-      'reports',
+      'snapshot-reports',
       `${this.latestReport.id}.json`
     );
     ensureFileSync(pathToReport);
