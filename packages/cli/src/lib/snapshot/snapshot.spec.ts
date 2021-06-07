@@ -184,7 +184,7 @@ describe('Snapshot', () => {
           'path',
           'to',
           'report',
-          '.snapshot-reports',
+          'snapshot-reports',
           'target-org-snapshot-id.json'
         )
       );
@@ -198,7 +198,7 @@ describe('Snapshot', () => {
           'path',
           'to',
           'report',
-          '.snapshot-reports',
+          'snapshot-reports',
           'target-org-snapshot-id.json'
         ),
         expect.objectContaining({

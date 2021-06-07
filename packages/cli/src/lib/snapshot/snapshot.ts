@@ -50,7 +50,7 @@ export class Snapshot {
   }
 
   public saveDetailedReport(projectPath: string) {
-    const pathToReport = `${projectPath}/.snapshot-reports/${this.latestReport.id}.json`;
+    const pathToReport = `${projectPath}/snapshot-reports/${this.latestReport.id}.json`;
     ensureFileSync(pathToReport);
     writeJsonSync(pathToReport, this.latestReport, {spaces: 2});
     return pathToReport;
