@@ -88,8 +88,8 @@ export default class Preview extends Command {
         snapshot
       );
       this.warn(
-        dedent`Some conflicts were detected while comparing changes with the organization.
-        Click on the URL bellow to synchronize your organization before running the command again.
+        dedent`Some conflicts were detected while comparing changes between the snapshot and the target organization.
+        Click on the URL below to synchronize your organization before running the command again.
         ${synchronizationPlanUrl}`
       );
       return;
