@@ -62,7 +62,7 @@ export class Snapshot {
   }
 
   public get latestReport(): ResourceSnapshotsReportModel {
-    if (this.model.reports === undefined || this.model.reports.length === 0) {
+    if (!Array.isArray(this.model.reports) || this.model.reports.length === 0) {
       throw new Error(`No detailed report found for the snapshot ${this.id}`);
     }
     return this.model.reports.slice(-1)[0];
