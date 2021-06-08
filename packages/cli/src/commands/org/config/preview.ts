@@ -89,7 +89,7 @@ export default class Preview extends Command {
       );
       this.warn(
         dedent`Some conflicts were detected while comparing changes between the snapshot and the target organization.
-        Click on the URL below to synchronize your organization before running the command again.
+        Click on the URL below to synchronize your snapshot with your organization before running the command again.
         ${synchronizationPlanUrl}`
       );
       return;
