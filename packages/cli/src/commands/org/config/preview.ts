@@ -76,7 +76,7 @@ export default class Preview extends Command {
   }
 
   private async handleInvalidSnapshot(snapshot: Snapshot) {
-    // TODO: CDX-362: handle invalid snashot cases
+    // TODO: CDX-362: handle invalid snapshot cases
     const {flags} = this.parse(Preview);
     const pathToReport = snapshot.saveDetailedReport(flags.projectPath);
     const report = snapshot.latestReport;
