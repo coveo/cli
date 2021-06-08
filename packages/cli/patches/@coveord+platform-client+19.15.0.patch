@@ -1,0 +1,46 @@
+diff --git a/node_modules/@coveord/platform-client/dist/definitions/resources/ResourceSnapshots/ResourceSnapshotsInterfaces.d.ts b/node_modules/@coveord/platform-client/dist/definitions/resources/ResourceSnapshots/ResourceSnapshotsInterfaces.d.ts
+index dc0af9c..ade2fba 100644
+--- a/node_modules/@coveord/platform-client/dist/definitions/resources/ResourceSnapshots/ResourceSnapshotsInterfaces.d.ts
++++ b/node_modules/@coveord/platform-client/dist/definitions/resources/ResourceSnapshots/ResourceSnapshotsInterfaces.d.ts
+@@ -76,10 +76,39 @@ export declare enum ResourceSnapshotContentType {
+     PRIMARY = "PRIMARY",
+     CURRENT_STATE = "CURRENT_STATE"
+ }
++export interface ResourceSnapshotsReportOperationModel {
++    /**
++     * The number of resources created by the operation.
++     */
++    resourcesCreated: number
++    /**
++     * The number of resources deleted by the operation.
++     */
++    resourcesDeleted: number
++    /**
++     * The number of resources for which an error occurred during the operation.
++     */
++    resourcesInError: number
++    /**
++     * The number of pre-existing resources recreated by the operation. This happens when a resource cannot be updated. For example, it is not possible to rename a query pipeline, so in such a case the pipeline would be deleted and created again with the desired name. This operation counts as one recreation.
++     */
++    resourcesRecreated: number
++    /**
++     * The number of resources unchanged by the operation.
++     */
++    resourcesUnchanged: number
++    /**
++     * The number of resources updated by the operation.
++     */
++    resourcesUpdated: number
++}
++export interface ResourceSnapshotsReportOperationResults {
++    [props: string]: string[];
++}
+ export interface ResourceSnapshotsReportModel {
+     id: string;
+-    resourceOperationResults?: Record<string, unknown>;
+-    resourceOperations?: Record<string, unknown>;
++    resourceOperationResults: Record<string, ResourceSnapshotsReportOperationResults>;
++    resourceOperations: Record<string, ResourceSnapshotsReportOperationModel>;
+     resourcesProcessed?: number;
+     resultCode: ResourceSnapshotsReportResultCode;
+     status: ResourceSnapshotsReportStatus;
