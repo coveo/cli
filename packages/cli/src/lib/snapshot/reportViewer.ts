@@ -29,7 +29,7 @@ export class ReportViewer {
 
   private printTable() {
     if (this.changedResources.length === 0) {
-      cli.log(this.style.header(`${EOL}No changes to apply`));
+      cli.log(this.style.header(`${EOL}No changes detected`));
       return;
     }
 
@@ -154,13 +154,13 @@ export class ReportViewer {
         continue;
       }
 
-      cli.log(`${EOL}${bold(this.prettyPrintResourceName(resourceType))}`);
+      cli.log(`${EOL} ${this.prettyPrintResourceName(resourceType)}`);
 
       for (const resourceInError in operationResult) {
         const errorList = operationResult[resourceInError];
         for (let i = 0; i < errorList.length; i++) {
           if (remainingErrorsToPrint > 0) {
-            cli.log(red(`• ${errorList[i]}`));
+            cli.log(red(`  • ${errorList[i]}`));
           } else {
             break;
           }

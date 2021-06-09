@@ -60,7 +60,6 @@ export default class Preview extends Command {
     }
 
     cli.action.stop(isValid ? green('✔') : red.bold('!'));
-    // cli.action.stop(isValid?'✔ ☑ ✅ ');
 
     await snapshot.preview();
 
