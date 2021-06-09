@@ -6,7 +6,7 @@ import {mocked} from 'ts-jest/utils';
 import {existsSync, createWriteStream, WriteStream, unlinkSync} from 'fs';
 import {Project} from './project';
 import {join} from 'path';
-import * as archiver from 'archiver';
+import archiver, {Archiver} from 'archiver';
 import {Writable} from 'stream';
 
 const mockedExistSync = mocked(existsSync);
@@ -24,7 +24,7 @@ mockedArchiver.mockImplementation(
       pipe: mockedPipe,
       directory: mockedPassDirectory,
       finalize: mockedFinalize,
-    } as unknown as archiver.Archiver)
+    } as unknown as Archiver)
 );
 
 const doMockValidProject = () => {

@@ -9,7 +9,7 @@ import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {SnapshotFactory} from './snapshotFactory';
 
 const mockedCreateReadStream = mocked(createReadStream);
-const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
 const mockedCreateSnapshotFromFile = jest.fn();
 const mockedPushSnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
@@ -37,11 +37,8 @@ const doMockAuthenticatedClient = () => {
     })
   );
 
-  mockedAuthenticatedClient.mockImplementation(
-    () =>
-      ({
-        getClient: mockedGetClient,
-      } as unknown as AuthenticatedClient)
+  mockedAuthenticatedClient.prototype.getClient.mockImplementation(
+    mockedGetClient
   );
 };
 
