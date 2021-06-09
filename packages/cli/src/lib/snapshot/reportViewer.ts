@@ -28,6 +28,11 @@ export class ReportViewer {
   }
 
   private printTable() {
+    if (this.changedResources.length === 0) {
+      cli.log(this.style.header('No changes to apply'));
+      return;
+    }
+
     cli.table(this.changedResources, {
       resourceName: {
         header: this.style.header(`Previewing resource changes:${EOL}`),
