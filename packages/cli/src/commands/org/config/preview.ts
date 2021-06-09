@@ -53,7 +53,6 @@ export default class Preview extends Command {
     cli.action.start('Validating snapshot');
 
     const {isValid} = await snapshot.validate();
-    console.log('object');
 
     if (!isValid) {
       this.handleInvalidSnapshot(snapshot);
