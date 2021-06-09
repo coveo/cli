@@ -1,5 +1,6 @@
 jest.mock('../platform/authenticatedClient');
 jest.mock('fs');
+jest.mock('fs-extra');
 
 import {
   ResourceSnapshotsModel,
@@ -8,11 +9,15 @@ import {
   ResourceSnapshotsReportStatus,
   ResourceSnapshotsReportType,
 } from '@coveord/platform-client';
+import {writeJsonSync, ensureFileSync} from 'fs-extra';
+import {join} from 'path';
 import {mocked} from 'ts-jest/utils';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {ISnapshotValidation, Snapshot} from './snapshot';
 
 const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
+const mockedEnsureFileSync = mocked(ensureFileSync);
+const mockedWriteJsonSync = mocked(writeJsonSync);
 const mockedCreateSnapshotFromFile = jest.fn();
 const mockedPushSnapshot = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
@@ -86,14 +91,18 @@ const doMockAuthenticatedClient = () => {
 };
 
 describe('Snapshot', () => {
-  beforeAll(() => {
+  beforeEach(() => {
+    jest.resetAllMocks();
     doMockAuthenticatedClient();
+  });
+
+  afterAll(() => {
+    jest.clearAllMocks();
   });
 
   describe('when the resources are in error', () => {
     let snapshot: Snapshot;
     let initialSnapshotState: ResourceSnapshotsModel;
-    let status: ISnapshotValidation;
     const targetOrgId = 'target-org';
     const snapshotId = 'target-org-snapshot-id';
 
@@ -119,10 +128,10 @@ describe('Snapshot', () => {
         initialSnapshotState,
         await new AuthenticatedClient().getClient()
       );
-      status = await snapshot.validate();
     });
 
     it('#validate should execute a snapshot dryrun', async () => {
+      await snapshot.validate();
       expect(mockedDryRunSnapshot).toHaveBeenCalledWith(
         'target-org-snapshot-id',
         {
@@ -132,10 +141,12 @@ describe('Snapshot', () => {
     });
 
     it('#validate should return false if the report contains an error', async () => {
+      const status = await snapshot.validate();
       expect(status.isValid).toBe(false);
     });
 
     it('#validate should return the error in the detailed report', async () => {
+      const status = await snapshot.validate();
       expect(status.report).toEqual(
         expect.objectContaining({
           id: 'target-org-snapshot-id',
@@ -146,10 +157,62 @@ describe('Snapshot', () => {
       );
     });
 
-    it.todo('should set a synchronization plan');
+    it.todo('should requires synchronization plan');
+
+    it('#latestReport should return an error if detailed report does not exist', () => {
+      expect(() => snapshot.latestReport).toThrow(/No detailed report found/);
+    });
+
+    it('#latestReport should return detailed report with error', async () => {
+      await snapshot.validate();
+      const report = snapshot.latestReport;
+      expect(report).toEqual(
+        expect.objectContaining({
+          id: 'target-org-snapshot-id',
+          resultCode: 'RESOURCES_IN_ERROR',
+          status: 'COMPLETED',
+          type: 'DRY_RUN',
+        })
+      );
+    });
+
+    it('#latestReport should ensure the file exists', async () => {
+      await snapshot.validate();
+      snapshot.saveDetailedReport(join('path', 'to', 'report'));
+      expect(mockedEnsureFileSync).toHaveBeenCalledWith(
+        join(
+          'path',
+          'to',
+          'report',
+          'snapshot-reports',
+          'target-org-snapshot-id.json'
+        )
+      );
+    });
+
+    it('#latestReport should save detailed report', async () => {
+      await snapshot.validate();
+      snapshot.saveDetailedReport(join('path', 'to', 'report'));
+      expect(writeJsonSync).toHaveBeenCalledWith(
+        join(
+          'path',
+          'to',
+          'report',
+          'snapshot-reports',
+          'target-org-snapshot-id.json'
+        ),
+        expect.objectContaining({
+          id: 'target-org-snapshot-id',
+          resultCode: 'RESOURCES_IN_ERROR',
+          status: 'COMPLETED',
+          type: 'DRY_RUN',
+        }),
+        {spaces: 2}
+      );
+    });
   });
 
-  describe('when the snapshot is created', () => {
+  describe('when the snapshot is successfully created', () => {
     let snapshot: Snapshot;
     let initialSnapshotState: ResourceSnapshotsModel;
     const targetOrgId = 'target-org';
@@ -176,6 +239,27 @@ describe('Snapshot', () => {
       snapshot = new Snapshot(
         initialSnapshotState,
         await new AuthenticatedClient().getClient()
+      );
+    });
+
+    it('#id should return snapshot id', () => {
+      expect(snapshot.id).toEqual('target-org-snapshot-id');
+    });
+
+    it('#targetId should return snapshot targetId', () => {
+      expect(snapshot.targetId).toEqual('target-org');
+    });
+
+    it('#latestReport should return snapshot latestReport', async () => {
+      await snapshot.validate();
+      const report = snapshot.latestReport;
+      expect(report).toEqual(
+        expect.objectContaining({
+          id: 'target-org-snapshot-id',
+          resultCode: 'SUCCESS',
+          status: 'COMPLETED',
+          type: 'DRY_RUN',
+        })
       );
     });
 

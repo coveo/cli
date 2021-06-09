@@ -1,9 +1,7 @@
-import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
 import {Command, flags} from '@oclif/command';
 import {cli} from 'cli-ux';
 import {ReadStream} from 'fs';
 import {dedent} from 'ts-dedent';
-import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {cwd} from 'process';
 import {Config} from '../../../lib/config/config';
 import {
@@ -12,6 +10,8 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {Project} from '../../../lib/project/project';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
+import {platformUrl} from '../../../lib/platform/environment';
+import {Snapshot} from '../../../lib/snapshot/snapshot';
 
 export interface CustomFile extends ReadStream {
   type?: string;
@@ -52,36 +52,18 @@ export default class Preview extends Command {
 
     cli.action.start('Validating snapshot');
 
-    const {isValid, report} = await snapshot.validate();
+    const {isValid} = await snapshot.validate();
 
     if (!isValid) {
-      // TODO: CDX-370: Setup a synchronization plan if the resources are in error
-      this.handleInvalidSnapshot(report);
+      this.handleInvalidSnapshot(snapshot);
+    } else {
+      await snapshot.preview();
+      await snapshot.delete();
     }
-
-    await snapshot.preview();
-    await snapshot.delete();
 
     project.deleteTemporaryZipFile();
 
     cli.action.stop();
-  }
-
-  private saveDetailedReport(report: ResourceSnapshotsReportModel) {
-    const {flags} = this.parse(Preview);
-    const pathToReport = `${flags.projectPath}/.snapshot-reports/${report.id}.json`;
-    ensureFileSync(pathToReport);
-    writeJsonSync(pathToReport, report, {spaces: 2});
-    return pathToReport;
-  }
-
-  private handleInvalidSnapshot(report: ResourceSnapshotsReportModel) {
-    const pathToReport = this.saveDetailedReport(report);
-    // TODO: CDX-362: handle invalid snashot cases
-    this.error(
-      dedent`Invalid snapshot - ${report.resultCode}.
-      Please consult detailed report ${pathToReport}`
-    );
   }
 
   public async getTargetOrg() {
@@ -93,7 +75,49 @@ export default class Preview extends Command {
     return cfg.organization;
   }
 
+  private async handleInvalidSnapshot(snapshot: Snapshot) {
+    // TODO: CDX-362: handle invalid snapshot cases
+    const {flags} = this.parse(Preview);
+    const pathToReport = snapshot.saveDetailedReport(flags.projectPath);
+    const report = snapshot.latestReport;
+
+    if (snapshot.requiresSynchronization()) {
+      cli.action.start('Synchronization');
+
+      const synchronizationPlanUrl = await this.getSynchronizationPage(
+        snapshot
+      );
+      this.warn(
+        dedent`Some conflicts were detected while comparing changes between the snapshot and the target organization.
+        Click on the URL below to synchronize your snapshot with your organization before running the command again.
+        ${synchronizationPlanUrl}`
+      );
+      return;
+    }
+
+    const snapshotUrl = this.getSnapshotPage(snapshot);
+
+    this.error(
+      dedent`Invalid snapshot - ${report.resultCode}.
+      Detailed report saved at ${pathToReport}.
+
+      You can also use this link to view the snapshot in the Coveo Admin Console
+      ${snapshotUrl}`
+    );
+  }
+
   private get configuration() {
     return new Config(this.config.configDir, this.error);
+  }
+
+  private async getSnapshotPage(snapshot: Snapshot) {
+    const {environment} = await this.configuration.get();
+    const url = platformUrl({environment});
+    const targetOrg = snapshot.targetId;
+    return `${url}/admin/#${targetOrg}/organization/resource-snapshots/${snapshot.id}`;
+  }
+
+  private async getSynchronizationPage(snapshot: Snapshot) {
+    return `${await this.getSnapshotPage(snapshot)}/synchronization`;
   }
 }
