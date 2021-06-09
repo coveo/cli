@@ -148,7 +148,7 @@ describe('ReportViewer', () => {
             '  • RESOURCE_ALREADY_EXISTS: Field fdww already exists.',
             '  • RESOURCE_ALREADY_EXISTS: Field csad already exists.',
             '  (2 more errors)',
-          ].join(EOL)
+          ].join('.*\\n.*')
         );
       });
   });
