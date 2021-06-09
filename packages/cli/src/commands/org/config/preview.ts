@@ -12,6 +12,7 @@ import {Project} from '../../../lib/project/project';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {platformUrl} from '../../../lib/platform/environment';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
+import {red, green} from 'chalk';
 
 export interface CustomFile extends ReadStream {
   type?: string;
@@ -58,6 +59,9 @@ export default class Preview extends Command {
       this.handleInvalidSnapshot(snapshot);
     }
 
+    cli.action.stop(isValid ? green('✔') : red.bold('!'));
+    // cli.action.stop(isValid?'✔ ☑ ✅ ');
+
     await snapshot.preview();
 
     if (isValid) {
@@ -65,8 +69,6 @@ export default class Preview extends Command {
     }
 
     project.deleteTemporaryZipFile();
-
-    cli.action.stop();
   }
 
   public async getTargetOrg() {
@@ -85,8 +87,6 @@ export default class Preview extends Command {
     const report = snapshot.latestReport;
 
     if (snapshot.requiresSynchronization()) {
-      cli.action.start('Synchronization');
-
       const synchronizationPlanUrl = await this.getSynchronizationPage(
         snapshot
       );

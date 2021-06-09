@@ -29,13 +29,13 @@ export class ReportViewer {
 
   private printTable() {
     if (this.changedResources.length === 0) {
-      cli.log(this.style.header('No changes to apply'));
+      cli.log(this.style.header(`${EOL}No changes to apply`));
       return;
     }
 
     cli.table(this.changedResources, {
       resourceName: {
-        header: this.style.header(`Previewing resource changes:${EOL}`),
+        header: this.style.header(`${EOL}Previewing resource changes:`),
         get: (row) => this.printTableSection(row),
       },
     });
@@ -137,7 +137,7 @@ export class ReportViewer {
     cli.log(this.style.header('Error Report:'));
     cli.log(
       this.style.error(
-        ` ${totalErrorCount} resource${
+        `   ${totalErrorCount} resource${
           totalErrorCount > 1 ? 's' : ''
         } in error `
       )
