@@ -7,6 +7,7 @@ import {
 } from '@coveord/platform-client';
 import {cli} from 'cli-ux';
 import {backOff} from 'exponential-backoff';
+import {ReportViewer} from './reportViewer';
 
 export interface ISnapshotValidation {
   isValid: boolean;
@@ -30,7 +31,6 @@ export class Snapshot {
   }
 
   public async preview() {
-    // TODO: get detailed report
     this.displayLightPreview();
     this.displayExpandedPreview();
   }
@@ -48,7 +48,8 @@ export class Snapshot {
   }
 
   private displayLightPreview() {
-    // TODO: CDX-346 Display light preview
+    const report = new ReportViewer(this.latestReport);
+    report.view();
   }
 
   private displayExpandedPreview() {
@@ -61,7 +62,10 @@ export class Snapshot {
         `No detailed report found for the snapshot ${this.snapshotId}`
       );
     }
-    return this.model.reports.slice(-1)[0];
+    const sortedReports = this.model.reports.sort(
+      (a, b) => b.updatedDate - a.updatedDate
+    );
+    return sortedReports[0];
   }
 
   private isValid() {
