@@ -85,7 +85,7 @@ export class Snapshot {
 
   private displayLightPreview() {
     const report = new ReportViewer(this.latestReport);
-    report.view();
+    report.display();
   }
 
   private displayExpandedPreview() {

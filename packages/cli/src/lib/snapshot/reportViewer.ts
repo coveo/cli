@@ -19,7 +19,7 @@ export class ReportViewer {
 
   public constructor(private readonly report: ResourceSnapshotsReportModel) {}
 
-  public view(): void {
+  public display(): void {
     this.printTable();
 
     if (!this.isSuccessReport()) {
@@ -50,29 +50,29 @@ export class ReportViewer {
     let output = `   ${resourceType}${EOL}`;
 
     if (row.operations.resourcesCreated > 0) {
-      output += `${this.style.green('+')}  ${this.style.green(
+      output += `${this.style.green('+')}   ${this.style.green(
         `${row.operations.resourcesCreated} to create`
       )}${EOL}`;
     }
     if (row.operations.resourcesRecreated > 0) {
-      output += `${this.style.yellow('+-')} ${this.style.yellow(
+      output += `${this.style.yellow('+-')}  ${this.style.yellow(
         `${row.operations.resourcesCreated} to replace`
       )}${EOL}`;
     }
     if (row.operations.resourcesUpdated > 0) {
-      output += `${this.style.yellow('~')}  ${this.style.yellow(
+      output += `${this.style.yellow('~')}   ${this.style.yellow(
         `${row.operations.resourcesUpdated} to update`
       )}${EOL}`;
     }
     // TODO: CDX-361: Only show delete items if delete flag is set to true
     if (row.operations.resourcesDeleted > 0) {
-      output += `${this.style.red('-')}  ${this.style.red(
+      output += `${this.style.red('-')}   ${this.style.red(
         `${row.operations.resourcesDeleted} to delete`
       )}${EOL}`;
     }
     if (row.operations.resourcesInError > 0) {
       output += `${this.style.error(
-        `!  ${row.operations.resourcesInError} in error `
+        `!   ${row.operations.resourcesInError} in error `
       )}${EOL}`;
     }
 
@@ -132,6 +132,7 @@ export class ReportViewer {
   }
 
   private handleReportErrors() {
+    const maximumNumberOfErrorsToPrint = 5;
     const totalErrorCount = this.getOperationTypeTotalCount('resourcesInError');
 
     cli.log(this.style.header('Error Report:'));
@@ -144,7 +145,7 @@ export class ReportViewer {
     );
 
     for (const resourceType in this.report.resourceOperationResults) {
-      let remainingErrorsToPrint = 5;
+      let remainingErrorsToPrint = maximumNumberOfErrorsToPrint;
       const operationResult =
         this.report.resourceOperationResults[resourceType];
       const hasNoError = (op: ResourceSnapshotsReportOperationResults) =>
@@ -168,10 +169,12 @@ export class ReportViewer {
         }
         if (remainingErrorsToPrint === 0) {
           const unprintedErrors =
-            Object.keys(operationResult).length - remainingErrorsToPrint;
+            Object.keys(operationResult).length - maximumNumberOfErrorsToPrint;
           cli.log(
             italic(
-              `(${unprintedErrors} more error${unprintedErrors > 1 ? 's' : ''})`
+              `  (${unprintedErrors} more error${
+                unprintedErrors > 1 ? 's' : ''
+              })`
             )
           );
           break;
