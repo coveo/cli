@@ -167,9 +167,6 @@ describe('ReportViewer', () => {
       })
       .it('should print resource changes', (ctx) => {
         const trimedStdout = ctx.stdout.replace(/\n\n/g, '');
-        // .split(EOL)
-        // .map((s) => s.trim())
-        // .join('\n');
 
         expect(trimedStdout).toMatch(
           new RegExp(
