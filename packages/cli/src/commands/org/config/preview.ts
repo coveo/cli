@@ -53,13 +53,17 @@ export default class Preview extends Command {
     cli.action.start('Validating snapshot');
 
     const {isValid} = await snapshot.validate();
+    console.log('object');
 
     if (!isValid) {
       this.handleInvalidSnapshot(snapshot);
     }
 
     await snapshot.preview();
-    await snapshot.delete();
+
+    if (isValid) {
+      await snapshot.delete();
+    }
 
     project.deleteTemporaryZipFile();
 
