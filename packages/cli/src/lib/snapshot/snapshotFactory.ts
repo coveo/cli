@@ -32,7 +32,9 @@ export class SnapshotFactory {
     );
     const snapshot = new Snapshot(model, client);
 
-    await snapshot.waitUntilDone(ResourceSnapshotsReportType.CreateSnapshot);
+    await snapshot.waitUntilOperationIsDone(
+      ResourceSnapshotsReportType.CreateSnapshot
+    );
 
     return snapshot;
   }

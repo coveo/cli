@@ -19,7 +19,7 @@ const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
 
 const doMockSnapshot = () => {
-  mockedSnapshot.prototype.waitUntilDone.mockImplementation(() =>
+  mockedSnapshot.prototype.waitUntilOperationIsDone.mockImplementation(() =>
     Promise.resolve()
   );
 };
