@@ -56,7 +56,7 @@ export default class Preview extends Command {
     const {isValid} = await snapshot.validate();
 
     if (!isValid) {
-      this.handleInvalidSnapshot(snapshot);
+      await this.handleInvalidSnapshot(snapshot);
     }
 
     cli.action.stop(isValid ? green('✔') : red.bold('!'));
@@ -99,7 +99,7 @@ export default class Preview extends Command {
       return;
     }
 
-    const snapshotUrl = this.getSnapshotPage(snapshot);
+    const snapshotUrl = await this.getSnapshotPage(snapshot);
 
     this.error(
       dedent`Invalid snapshot - ${report.resultCode}.
