@@ -6,7 +6,6 @@ import {
 } from '@coveord/platform-client';
 import {cli} from 'cli-ux';
 import {bgHex, green, yellow, red, bold, italic} from 'chalk';
-import {EOL} from 'os';
 
 export class ReportViewer {
   private style = {
@@ -29,13 +28,13 @@ export class ReportViewer {
 
   private printTable() {
     if (this.changedResources.length === 0) {
-      cli.log(this.style.header(`${EOL}No changes detected`));
+      cli.log(this.style.header('\nNo changes detected'));
       return;
     }
 
     cli.table(this.changedResources, {
       resourceName: {
-        header: this.style.header(`${EOL}Previewing resource changes:`),
+        header: this.style.header('\nPreviewing resource changes:'),
         get: (row) => this.printTableSection(row),
       },
     });
@@ -47,33 +46,33 @@ export class ReportViewer {
     operations: ResourceSnapshotsReportOperationModel;
   }) {
     const resourceType = this.prettyPrintResourceName(row.resourceName);
-    let output = `   ${resourceType}${EOL}`;
+    let output = `   ${resourceType}\n`;
 
     if (row.operations.resourcesCreated > 0) {
       output += `${this.style.green('+')}   ${this.style.green(
         `${row.operations.resourcesCreated} to create`
-      )}${EOL}`;
+      )}\n`;
     }
     if (row.operations.resourcesRecreated > 0) {
       output += `${this.style.yellow('+-')}  ${this.style.yellow(
         `${row.operations.resourcesCreated} to replace`
-      )}${EOL}`;
+      )}\n`;
     }
     if (row.operations.resourcesUpdated > 0) {
       output += `${this.style.yellow('~')}   ${this.style.yellow(
         `${row.operations.resourcesUpdated} to update`
-      )}${EOL}`;
+      )}\n`;
     }
     // TODO: CDX-361: Only show delete items if delete flag is set to true
     if (row.operations.resourcesDeleted > 0) {
       output += `${this.style.red('-')}   ${this.style.red(
         `${row.operations.resourcesDeleted} to delete`
-      )}${EOL}`;
+      )}\n`;
     }
     if (row.operations.resourcesInError > 0) {
       output += `${this.style.error(
         `!   ${row.operations.resourcesInError} in error `
-      )}${EOL}`;
+      )}\n`;
     }
 
     return output;
@@ -155,7 +154,7 @@ export class ReportViewer {
         continue;
       }
 
-      cli.log(`${EOL} ${this.prettyPrintResourceName(resourceType)}`);
+      cli.log(`\n ${this.prettyPrintResourceName(resourceType)}`);
 
       for (const resourceInError in operationResult) {
         const errorList = operationResult[resourceInError];
