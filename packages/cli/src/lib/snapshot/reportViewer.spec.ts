@@ -7,7 +7,7 @@ import {
   ResourceSnapshotsReportType,
 } from '@coveord/platform-client';
 import {ReportViewer} from './reportViewer';
-import {EOL} from 'os';
+import dedent from 'ts-dedent';
 
 const getReportWithoutChanges = (
   snapshotId: string
@@ -140,15 +140,14 @@ describe('ReportViewer', () => {
       })
       .it('should not print more than 5 errors per resources', (ctx) => {
         expect(ctx.stdout).toContain(
-          [
-            ' Fields',
-            '  • RESOURCE_ALREADY_EXISTS: Field foo already exists.',
-            '  • RESOURCE_ALREADY_EXISTS: Field bar already exists.',
-            '  • RESOURCE_ALREADY_EXISTS: Field dsads already exists.',
-            '  • RESOURCE_ALREADY_EXISTS: Field fdww already exists.',
-            '  • RESOURCE_ALREADY_EXISTS: Field csad already exists.',
-            '  (2 more errors)',
-          ].join(EOL)
+          dedent`
+          Fields
+            • RESOURCE_ALREADY_EXISTS: Field foo already exists.
+            • RESOURCE_ALREADY_EXISTS: Field bar already exists.
+            • RESOURCE_ALREADY_EXISTS: Field dsads already exists.
+            • RESOURCE_ALREADY_EXISTS: Field fdww already exists.
+            • RESOURCE_ALREADY_EXISTS: Field csad already exists.
+            (2 more errors)`
         );
       });
   });
@@ -160,25 +159,25 @@ describe('ReportViewer', () => {
     });
 
     test
-      .skip() // TODO: remove
       .stdout()
       .do(() => {
         viewer.display();
       })
       .it('should print resource changes', (ctx) => {
-        const trimedStdout = ctx.stdout.replace(/\n\n/g, '');
+        // Remove padding added by cli-ux so we can test the text and not the padding on the line
+        const trimedStdout = ctx.stdout
+          .split('\n')
+          .map((s) => s.trimEnd())
+          .join('\n');
 
-        expect(trimedStdout).toMatch(
-          new RegExp(
-            [
-              'Extensions',
-              '\\+\\s+1 to create',
-              '-\\s+2 to delete',
-              'Fields',
-              '~\\s+1 to update',
-            ].join('.*\\n.*')
-          )
-        );
+        expect(trimedStdout).toContain(dedent`
+        Previewing resource changes:
+           Extensions
+        +   1 to create
+        -   2 to delete
+
+           Fields
+        ~   1 to update`);
       });
   });
 
