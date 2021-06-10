@@ -4,6 +4,7 @@ import {
   ResourceSnapshotsReportResultCode,
   ResourceSnapshotsReportStatus,
   PlatformClient,
+  ResourceSnapshotsReportType,
 } from '@coveord/platform-client';
 import {cli} from 'cli-ux';
 import {backOff} from 'exponential-backoff';
@@ -27,7 +28,7 @@ export class Snapshot {
       deleteMissingResources: false, // TODO: CDX-361: Add flag to support missing resources deletion
     });
 
-    await this.waitUntilDone();
+    await this.waitUntilDone(ResourceSnapshotsReportType.DryRun);
 
     return {isValid: this.isValid(), report: this.latestReport};
   }
@@ -106,7 +107,7 @@ export class Snapshot {
     });
   }
 
-  private async waitUntilDone() {
+  public async waitUntilDone(type: ResourceSnapshotsReportType) {
     const waitPromise = backOff(
       async () => {
         await this.refreshSnapshotData();
@@ -116,7 +117,9 @@ export class Snapshot {
           ResourceSnapshotsReportStatus.InProgress,
         ].includes(this.latestReport.status);
 
-        if (isNotDone) {
+        const isRightOperationType = this.latestReport.type === type;
+
+        if (isNotDone || !isRightOperationType) {
           throw new Error('Snapshot is still being processed');
         }
       },
