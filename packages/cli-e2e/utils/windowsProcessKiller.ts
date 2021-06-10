@@ -2,6 +2,14 @@ import {spawnSync} from 'child_process';
 import {constants as OsConstants} from 'os';
 import isProcessRunning from 'is-running';
 import type {ChildProcess} from 'child_process';
+import {resolve} from 'path';
+
+const phantomKillerPath = resolve(
+  __dirname,
+  'PhantomKiller',
+  'phantom-killer.ps1'
+);
+
 /**
  * Simple representation of a process and its child processes.
  */
@@ -32,9 +40,10 @@ export function recurseProcessKillWindows(processToKill: ChildProcess) {
       processToKill.unref();
     }
     return;
+  } else {
+    recursiveKilling(root);
   }
-
-  recursiveKilling(root);
+  killZombieProcesses();
 }
 
 const recursiveKilling = (inputProcess: Process) => {
@@ -117,3 +126,16 @@ function getProcessGraph(): Map<number, Process> {
     edgesWaitingForParentToBeDiscovered.add(newProcess);
   }
 }
+
+const killZombieProcesses = () => {
+  const badProcessesName = ['node', 'conhost'];
+  badProcessesName.forEach((processName) => {
+    const zombieKillerStdout = spawnSync('powershell.exe', [
+      '-File',
+      phantomKillerPath,
+      '-ProcessName',
+      processName,
+    ]).stdout;
+    console.log(zombieKillerStdout);
+  });
+};
