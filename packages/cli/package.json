@@ -35,6 +35,7 @@
     "@coveo/cra-template": "^1.2.1",
     "@coveo/vue-cli-plugin-typescript": "^1.2.1",
     "@oclif/dev-cli": "^1.26.0",
+    "@oclif/errors": "^1.3.4",
     "@oclif/test": "^1",
     "@types/archiver": "^5.1.0",
     "@types/cli-progress": "^3.9.1",

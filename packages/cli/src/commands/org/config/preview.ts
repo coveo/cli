@@ -89,13 +89,13 @@ export default class Preview extends Command {
       const synchronizationPlanUrl = await this.getSynchronizationPage(
         snapshot
       );
-      cli.log();
       this.warn(
-        dedent`Some conflicts were detected while comparing changes between the snapshot and the target organization.
+        dedent`
+        Some conflicts were detected while comparing changes between the snapshot and the target organization.
         Click on the URL below to synchronize your snapshot with your organization before running the command again.
-        ${synchronizationPlanUrl}`
+        ${synchronizationPlanUrl}
+        `
       );
-      cli.log();
       return;
     }
 
