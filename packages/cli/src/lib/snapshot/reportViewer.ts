@@ -5,18 +5,42 @@ import {
   ResourceSnapshotsReportResultCode,
 } from '@coveord/platform-client';
 import {cli} from 'cli-ux';
-import {bgHex, green, yellow, red, bold, italic} from 'chalk';
+import {bgHex, green, yellow, red, bold, italic, gray} from 'chalk';
+
+export type ReportViewerOperationsToDisplay = {
+  [operation in keyof ResourceSnapshotsReportOperationModel]: boolean;
+};
 
 export class ReportViewer {
+  public static defaultOperationsToDisplay: ReportViewerOperationsToDisplay = {
+    resourcesCreated: true,
+    resourcesDeleted: true,
+    resourcesInError: true,
+    resourcesRecreated: true,
+    resourcesUnchanged: true,
+    resourcesUpdated: true,
+  };
+
+  private operationsToDisplay: ReportViewerOperationsToDisplay;
+
   private style = {
     green: (txt: string) => green(txt),
     yellow: (txt: string) => yellow(txt),
     red: (txt: string) => red(txt),
+    gray: (txt: string) => gray(txt),
     header: (txt: string) => bold.hex('#1CEBCF')(txt),
     error: (txt: string) => bgHex('#F64D64').hex('#272C3A')(txt),
   };
 
-  public constructor(private readonly report: ResourceSnapshotsReportModel) {}
+  public constructor(
+    private readonly report: ResourceSnapshotsReportModel,
+    operationsToDisplay?: Partial<ReportViewerOperationsToDisplay>
+  ) {
+    this.operationsToDisplay = {
+      ...ReportViewer.defaultOperationsToDisplay,
+      ...operationsToDisplay,
+    };
+  }
 
   public display(): void {
     this.printTable();
@@ -48,28 +72,50 @@ export class ReportViewer {
     const resourceType = this.prettyPrintResourceName(row.resourceName);
     let output = `   ${resourceType}\n`;
 
-    if (row.operations.resourcesCreated > 0) {
+    if (
+      this.operationsToDisplay.resourcesCreated &&
+      row.operations.resourcesCreated > 0
+    ) {
       output += `${this.style.green('+')}   ${this.style.green(
         `${row.operations.resourcesCreated} to create`
       )}\n`;
     }
-    if (row.operations.resourcesRecreated > 0) {
+    if (
+      this.operationsToDisplay.resourcesRecreated &&
+      row.operations.resourcesRecreated > 0
+    ) {
       output += `${this.style.yellow('+-')}  ${this.style.yellow(
         `${row.operations.resourcesCreated} to replace`
       )}\n`;
     }
-    if (row.operations.resourcesUpdated > 0) {
+    if (
+      this.operationsToDisplay.resourcesUpdated &&
+      row.operations.resourcesUpdated > 0
+    ) {
       output += `${this.style.yellow('~')}   ${this.style.yellow(
         `${row.operations.resourcesUpdated} to update`
       )}\n`;
     }
-    // TODO: CDX-361: Only show delete items if delete flag is set to true
-    if (row.operations.resourcesDeleted > 0) {
+    if (
+      this.operationsToDisplay.resourcesDeleted &&
+      row.operations.resourcesDeleted > 0
+    ) {
       output += `${this.style.red('-')}   ${this.style.red(
         `${row.operations.resourcesDeleted} to delete`
       )}\n`;
     }
-    if (row.operations.resourcesInError > 0) {
+    if (
+      this.operationsToDisplay.resourcesUnchanged &&
+      row.operations.resourcesUnchanged > 0
+    ) {
+      output += `    ${this.style.gray(
+        `${row.operations.resourcesUnchanged} unchanged`
+      )}\n`;
+    }
+    if (
+      this.operationsToDisplay.resourcesInError &&
+      row.operations.resourcesInError > 0
+    ) {
       output += `${this.style.error(
         `!   ${row.operations.resourcesInError} in error `
       )}\n`;
@@ -84,14 +130,17 @@ export class ReportViewer {
       _,
       operations,
     ]: resourceEntries) => {
+      const operationKeys = Object.keys(this.operationsToDisplay) as Array<
+        keyof ResourceSnapshotsReportOperationModel
+      >;
+
       return (
-        operations.resourcesCreated +
-          operations.resourcesUpdated +
-          operations.resourcesRecreated +
-          // TODO: CDX-361: Only count delete items if delete flag is set to true
-          operations.resourcesDeleted +
-          operations.resourcesInError >
-        0
+        operationKeys.reduce(
+          (previous, current) =>
+            previous +
+            (this.operationsToDisplay[current] ? operations[current] : 0),
+          0
+        ) > 0
       );
     };
 
