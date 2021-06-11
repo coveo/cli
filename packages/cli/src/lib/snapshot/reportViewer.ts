@@ -6,10 +6,10 @@ import {
 } from '@coveord/platform-client';
 import {cli} from 'cli-ux';
 import {bgHex, green, yellow, red, bold, italic} from 'chalk';
-import {EOL} from 'os';
 
 export class ReportViewer {
-  private style = {
+  public static maximumNumberOfErrorsToPrint = 5;
+  public static styles = {
     green: (txt: string) => green(txt),
     yellow: (txt: string) => yellow(txt),
     red: (txt: string) => red(txt),
@@ -29,13 +29,13 @@ export class ReportViewer {
 
   private printTable() {
     if (this.changedResources.length === 0) {
-      cli.log(this.style.header(`${EOL}No changes detected`));
+      cli.log(ReportViewer.styles.header('\nNo changes detected'));
       return;
     }
 
     cli.table(this.changedResources, {
       resourceName: {
-        header: this.style.header(`${EOL}Previewing resource changes:`),
+        header: ReportViewer.styles.header('\nPreviewing resource changes:'),
         get: (row) => this.printTableSection(row),
       },
     });
@@ -47,33 +47,39 @@ export class ReportViewer {
     operations: ResourceSnapshotsReportOperationModel;
   }) {
     const resourceType = this.prettyPrintResourceName(row.resourceName);
-    let output = `   ${resourceType}${EOL}`;
+    let output = `   ${resourceType}\n`;
 
     if (row.operations.resourcesCreated > 0) {
-      output += `${this.style.green('+')}   ${this.style.green(
+      output += `${ReportViewer.styles.green(
+        '+'
+      )}   ${ReportViewer.styles.green(
         `${row.operations.resourcesCreated} to create`
-      )}${EOL}`;
+      )}\n`;
     }
     if (row.operations.resourcesRecreated > 0) {
-      output += `${this.style.yellow('+-')}  ${this.style.yellow(
+      output += `${ReportViewer.styles.yellow(
+        '+-'
+      )}  ${ReportViewer.styles.yellow(
         `${row.operations.resourcesCreated} to replace`
-      )}${EOL}`;
+      )}\n`;
     }
     if (row.operations.resourcesUpdated > 0) {
-      output += `${this.style.yellow('~')}   ${this.style.yellow(
+      output += `${ReportViewer.styles.yellow(
+        '~'
+      )}   ${ReportViewer.styles.yellow(
         `${row.operations.resourcesUpdated} to update`
-      )}${EOL}`;
+      )}\n`;
     }
     // TODO: CDX-361: Only show delete items if delete flag is set to true
     if (row.operations.resourcesDeleted > 0) {
-      output += `${this.style.red('-')}   ${this.style.red(
+      output += `${ReportViewer.styles.red('-')}   ${ReportViewer.styles.red(
         `${row.operations.resourcesDeleted} to delete`
-      )}${EOL}`;
+      )}\n`;
     }
     if (row.operations.resourcesInError > 0) {
-      output += `${this.style.error(
+      output += `${ReportViewer.styles.error(
         `!   ${row.operations.resourcesInError} in error `
-      )}${EOL}`;
+      )}\n`;
     }
 
     return output;
@@ -132,12 +138,11 @@ export class ReportViewer {
   }
 
   private handleReportErrors() {
-    const maximumNumberOfErrorsToPrint = 5;
     const totalErrorCount = this.getOperationTypeTotalCount('resourcesInError');
 
-    cli.log(this.style.header('Error Report:'));
+    cli.log(ReportViewer.styles.header('Error Report:'));
     cli.log(
-      this.style.error(
+      ReportViewer.styles.error(
         `   ${totalErrorCount} resource${
           totalErrorCount > 1 ? 's' : ''
         } in error `
@@ -145,7 +150,7 @@ export class ReportViewer {
     );
 
     for (const resourceType in this.report.resourceOperationResults) {
-      let remainingErrorsToPrint = maximumNumberOfErrorsToPrint;
+      let remainingErrorsToPrint = ReportViewer.maximumNumberOfErrorsToPrint;
       const operationResult =
         this.report.resourceOperationResults[resourceType];
       const hasNoError = (op: ResourceSnapshotsReportOperationResults) =>
@@ -155,7 +160,7 @@ export class ReportViewer {
         continue;
       }
 
-      cli.log(`${EOL} ${this.prettyPrintResourceName(resourceType)}`);
+      cli.log(`\n ${this.prettyPrintResourceName(resourceType)}`);
 
       for (const resourceInError in operationResult) {
         const errorList = operationResult[resourceInError];
@@ -169,7 +174,8 @@ export class ReportViewer {
         }
         if (remainingErrorsToPrint === 0) {
           const unprintedErrors =
-            Object.keys(operationResult).length - maximumNumberOfErrorsToPrint;
+            Object.keys(operationResult).length -
+            ReportViewer.maximumNumberOfErrorsToPrint;
           cli.log(
             italic(
               `  (${unprintedErrors} more error${
