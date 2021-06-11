@@ -5,7 +5,7 @@ import {
   ResourceSnapshotsReportResultCode,
 } from '@coveord/platform-client';
 import {cli} from 'cli-ux';
-import {bgHex, green, yellow, red, bold, italic} from 'chalk';
+import {bgHex, green, yellow, red, bold, italic, gray} from 'chalk';
 
 export type ReportViewerOperationsToDisplay = {
   [operation in keyof ResourceSnapshotsReportOperationModel]: boolean;
@@ -27,6 +27,7 @@ export class ReportViewer {
     green: (txt: string) => green(txt),
     yellow: (txt: string) => yellow(txt),
     red: (txt: string) => red(txt),
+    gray: (txt: string) => gray(txt),
     header: (txt: string) => bold.hex('#1CEBCF')(txt),
     error: (txt: string) => bgHex('#F64D64').hex('#272C3A')(txt),
   };
@@ -114,6 +115,16 @@ export class ReportViewer {
         '-'.padEnd(indentation + 1)
       )}${ReportViewer.styles.red(
         `${row.operations.resourcesDeleted} to delete`
+      )}\n`;
+    }
+    if (
+      this.operationsToDisplay.resourcesUnchanged &&
+      row.operations.resourcesUnchanged > 0
+    ) {
+      output += `${ReportViewer.styles.gray(
+        `${''.padStart(indentation + 1)}${
+          row.operations.resourcesUnchanged
+        } unchanged`
       )}\n`;
     }
     if (
