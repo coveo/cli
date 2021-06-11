@@ -1,7 +1,6 @@
 import {
   ResourceSnapshotsReportModel,
   ResourceSnapshotsReportOperationModel,
-  ResourceSnapshotsReportOperationResults,
   ResourceSnapshotsReportResultCode,
 } from '@coveord/platform-client';
 import {cli} from 'cli-ux';
@@ -150,43 +149,40 @@ export class ReportViewer {
     );
 
     for (const resourceType in this.report.resourceOperationResults) {
-      let remainingErrorsToPrint = ReportViewer.maximumNumberOfErrorsToPrint;
-      const operationResult =
-        this.report.resourceOperationResults[resourceType];
-      const hasNoError = (op: ResourceSnapshotsReportOperationResults) =>
-        Object.keys(op).length === 0;
-
-      if (hasNoError(operationResult)) {
-        continue;
-      }
-
-      cli.log(`\n ${this.prettyPrintResourceName(resourceType)}`);
-
-      for (const resourceInError in operationResult) {
-        const errorList = operationResult[resourceInError];
-        for (let i = 0; i < errorList.length; i++) {
-          if (remainingErrorsToPrint > 0) {
-            cli.log(red(`  • ${errorList[i]}`));
-          } else {
-            break;
-          }
-          remainingErrorsToPrint--;
-        }
-        if (remainingErrorsToPrint === 0) {
-          const unprintedErrors =
-            Object.keys(operationResult).length -
-            ReportViewer.maximumNumberOfErrorsToPrint;
-          cli.log(
-            italic(
-              `  (${unprintedErrors} more error${
-                unprintedErrors > 1 ? 's' : ''
-              })`
-            )
-          );
-          break;
-        }
-      }
+      this.logResourceErrors(resourceType);
     }
     // TODO: CDX-362: handle other invalid snashot cases
+  }
+
+  private logResourceErrors(resourceType: string) {
+    let remainingErrorsToPrint = ReportViewer.maximumNumberOfErrorsToPrint;
+    const operationResult = this.report.resourceOperationResults[resourceType];
+    const operationResultErrors = Object.values(operationResult);
+
+    if (operationResultErrors.length === 0) {
+      return;
+    }
+
+    cli.log(`\n ${this.prettyPrintResourceName(resourceType)}`);
+
+    const errors = operationResultErrors.reduce(
+      (acc, curr) => acc.concat(curr),
+      []
+    );
+
+    for (let j = 0; j < errors.length && remainingErrorsToPrint > 0; j++) {
+      cli.log(red(`  • ${errors[j]}`));
+      remainingErrorsToPrint--;
+    }
+
+    const unprintedErrors =
+      errors.length - ReportViewer.maximumNumberOfErrorsToPrint;
+    if (unprintedErrors > 0) {
+      cli.log(
+        italic(
+          `  (${unprintedErrors} more error${unprintedErrors > 1 ? 's' : ''})`
+        )
+      );
+    }
   }
 }
