@@ -59,7 +59,7 @@ const mockConfig = () => {
   );
 };
 
-const mockSnapshotFactory = async (validResponse: any) => {
+const mockSnapshotFactory = async (validResponse: unknown) => {
   mockedSnapshotFactory.createFromZip.mockReturnValue(
     Promise.resolve({
       validate: () => Promise.resolve(validResponse),
