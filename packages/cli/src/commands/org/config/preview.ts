@@ -13,6 +13,7 @@ import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {platformUrl} from '../../../lib/platform/environment';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {red, green} from 'chalk';
+import {normalize} from 'path';
 
 export interface CustomFile extends ReadStream {
   type?: string;
@@ -49,7 +50,7 @@ export default class Preview extends Command {
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = this.parse(Preview);
-    const project = new Project(flags.projectPath);
+    const project = new Project(normalize(flags.projectPath));
     const pathToZip = await project.compressResources();
     const targetOrg = await this.getTargetOrg();
 
