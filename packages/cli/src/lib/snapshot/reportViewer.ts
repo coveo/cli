@@ -72,10 +72,10 @@ export class ReportViewer {
       resourceName: string;
       operations: ResourceSnapshotsReportOperationModel;
     },
-    pad = 3
+    indentation = 3
   ) {
     const resourceType = this.prettyPrintResourceName(row.resourceName);
-    let output = `${''.padStart(pad)}${resourceType}\n`;
+    let output = `${''.padStart(indentation)}${resourceType}\n`;
 
     if (
       this.operationsToDisplay.resourcesCreated &&
@@ -83,7 +83,7 @@ export class ReportViewer {
     ) {
       output += `${ReportViewer.styles
         .green('+')
-        .padEnd(pad + 1)}${ReportViewer.styles.green(
+        .padEnd(indentation + 1)}${ReportViewer.styles.green(
         `${row.operations.resourcesCreated} to create`
       )}\n`;
     }
@@ -93,7 +93,7 @@ export class ReportViewer {
     ) {
       output += `${ReportViewer.styles
         .yellow('+-')
-        .padEnd(pad + 1)}${ReportViewer.styles.yellow(
+        .padEnd(indentation + 1)}${ReportViewer.styles.yellow(
         `${row.operations.resourcesCreated} to replace`
       )}\n`;
     }
@@ -103,7 +103,7 @@ export class ReportViewer {
     ) {
       output += `${ReportViewer.styles
         .yellow('~')
-        .padEnd(pad + 1)}${ReportViewer.styles.yellow(
+        .padEnd(indentation + 1)}${ReportViewer.styles.yellow(
         `${row.operations.resourcesUpdated} to update`
       )}\n`;
     }
@@ -112,7 +112,7 @@ export class ReportViewer {
       row.operations.resourcesDeleted > 0
     ) {
       output += `${ReportViewer.styles.red(
-        '-'.padEnd(pad + 1)
+        '-'.padEnd(indentation + 1)
       )}${ReportViewer.styles.red(
         `${row.operations.resourcesDeleted} to delete`
       )}\n`;
@@ -122,7 +122,9 @@ export class ReportViewer {
       row.operations.resourcesUnchanged > 0
     ) {
       output += `${ReportViewer.styles.gray(
-        `${''.padStart(pad + 1)}${row.operations.resourcesUnchanged} unchanged`
+        `${''.padStart(indentation + 1)}${
+          row.operations.resourcesUnchanged
+        } unchanged`
       )}\n`;
     }
     if (
@@ -130,7 +132,7 @@ export class ReportViewer {
       row.operations.resourcesInError > 0
     ) {
       output += `${ReportViewer.styles.error(
-        `!${''.padEnd(pad)}${row.operations.resourcesInError} in error `
+        `!${''.padEnd(indentation)}${row.operations.resourcesInError} in error `
       )}\n`;
     }
 
