@@ -21,7 +21,7 @@
     "test:headless": "node ./entrypoints/entry.js",
     "test:debug": "node ./entrypoints/entry.js --debug",
     "test:bash": "node ./entrypoints/entry.js --bash",
-    "jest": "jest --verbose --runInBand --detectOpenHandles",
+    "jest": "jest --verbose --runInBand --detectOpenHandles --forceExit",
     "jest:debug": "node --inspect=0.0.0.0:9229 node_modules/.bin/jest --runInBand"
   },
   "bugs": {
