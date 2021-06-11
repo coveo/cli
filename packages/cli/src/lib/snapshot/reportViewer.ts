@@ -21,9 +21,9 @@ export class ReportViewer {
     resourcesUpdated: true,
   };
 
-  private operationsToDisplay: ReportViewerOperationsToDisplay;
+  public static maximumNumberOfErrorsToPrint = 5;
 
-  private style = {
+  public static styles = {
     green: (txt: string) => green(txt),
     yellow: (txt: string) => yellow(txt),
     red: (txt: string) => red(txt),
@@ -31,6 +31,8 @@ export class ReportViewer {
     header: (txt: string) => bold.hex('#1CEBCF')(txt),
     error: (txt: string) => bgHex('#F64D64').hex('#272C3A')(txt),
   };
+
+  private operationsToDisplay: ReportViewerOperationsToDisplay;
 
   public constructor(
     private readonly report: ResourceSnapshotsReportModel,
@@ -52,31 +54,36 @@ export class ReportViewer {
 
   private printTable() {
     if (this.changedResources.length === 0) {
-      cli.log(this.style.header('\nNo changes detected'));
+      cli.log(ReportViewer.styles.header('\nNo changes detected'));
       return;
     }
 
     cli.table(this.changedResources, {
       resourceName: {
-        header: this.style.header('\nPreviewing resource changes:'),
+        header: ReportViewer.styles.header('\nPreviewing resource changes:'),
         get: (row) => this.printTableSection(row),
       },
     });
   }
 
   // TODO: Change logic once SRC-4448 is complete
-  private printTableSection(row: {
-    resourceName: string;
-    operations: ResourceSnapshotsReportOperationModel;
-  }) {
+  private printTableSection(
+    row: {
+      resourceName: string;
+      operations: ResourceSnapshotsReportOperationModel;
+    },
+    pad = 3
+  ) {
     const resourceType = this.prettyPrintResourceName(row.resourceName);
-    let output = `   ${resourceType}\n`;
+    let output = `${''.padStart(pad)}${resourceType}\n`;
 
     if (
       this.operationsToDisplay.resourcesCreated &&
       row.operations.resourcesCreated > 0
     ) {
-      output += `${this.style.green('+')}   ${this.style.green(
+      output += `${ReportViewer.styles
+        .green('+')
+        .padEnd(pad + 1)}${ReportViewer.styles.green(
         `${row.operations.resourcesCreated} to create`
       )}\n`;
     }
@@ -84,7 +91,9 @@ export class ReportViewer {
       this.operationsToDisplay.resourcesRecreated &&
       row.operations.resourcesRecreated > 0
     ) {
-      output += `${this.style.yellow('+-')}  ${this.style.yellow(
+      output += `${ReportViewer.styles
+        .yellow('+-')
+        .padEnd(pad + 1)}${ReportViewer.styles.yellow(
         `${row.operations.resourcesCreated} to replace`
       )}\n`;
     }
@@ -92,7 +101,9 @@ export class ReportViewer {
       this.operationsToDisplay.resourcesUpdated &&
       row.operations.resourcesUpdated > 0
     ) {
-      output += `${this.style.yellow('~')}   ${this.style.yellow(
+      output += `${ReportViewer.styles
+        .yellow('~')
+        .padEnd(pad + 1)}${ReportViewer.styles.yellow(
         `${row.operations.resourcesUpdated} to update`
       )}\n`;
     }
@@ -100,7 +111,9 @@ export class ReportViewer {
       this.operationsToDisplay.resourcesDeleted &&
       row.operations.resourcesDeleted > 0
     ) {
-      output += `${this.style.red('-')}   ${this.style.red(
+      output += `${ReportViewer.styles.red(
+        '-'.padEnd(pad + 1)
+      )}${ReportViewer.styles.red(
         `${row.operations.resourcesDeleted} to delete`
       )}\n`;
     }
@@ -108,16 +121,16 @@ export class ReportViewer {
       this.operationsToDisplay.resourcesUnchanged &&
       row.operations.resourcesUnchanged > 0
     ) {
-      output += `    ${this.style.gray(
-        `${row.operations.resourcesUnchanged} unchanged`
+      output += `${ReportViewer.styles.gray(
+        `${''.padStart(pad + 1)}${row.operations.resourcesUnchanged} unchanged`
       )}\n`;
     }
     if (
       this.operationsToDisplay.resourcesInError &&
       row.operations.resourcesInError > 0
     ) {
-      output += `${this.style.error(
-        `!   ${row.operations.resourcesInError} in error `
+      output += `${ReportViewer.styles.error(
+        `!${''.padEnd(pad)}${row.operations.resourcesInError} in error `
       )}\n`;
     }
 
@@ -180,12 +193,11 @@ export class ReportViewer {
   }
 
   private handleReportErrors() {
-    const maximumNumberOfErrorsToPrint = 5;
     const totalErrorCount = this.getOperationTypeTotalCount('resourcesInError');
 
-    cli.log(this.style.header('Error Report:'));
+    cli.log(ReportViewer.styles.header('Error Report:'));
     cli.log(
-      this.style.error(
+      ReportViewer.styles.error(
         `   ${totalErrorCount} resource${
           totalErrorCount > 1 ? 's' : ''
         } in error `
@@ -193,7 +205,7 @@ export class ReportViewer {
     );
 
     for (const resourceType in this.report.resourceOperationResults) {
-      let remainingErrorsToPrint = maximumNumberOfErrorsToPrint;
+      let remainingErrorsToPrint = ReportViewer.maximumNumberOfErrorsToPrint;
       const operationResult =
         this.report.resourceOperationResults[resourceType];
       const hasNoError = (op: ResourceSnapshotsReportOperationResults) =>
@@ -217,7 +229,8 @@ export class ReportViewer {
         }
         if (remainingErrorsToPrint === 0) {
           const unprintedErrors =
-            Object.keys(operationResult).length - maximumNumberOfErrorsToPrint;
+            Object.keys(operationResult).length -
+            ReportViewer.maximumNumberOfErrorsToPrint;
           cli.log(
             italic(
               `  (${unprintedErrors} more error${
