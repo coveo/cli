@@ -43,7 +43,6 @@ export function recurseProcessKillWindows(processToKill: ChildProcess) {
   } else {
     recursiveKilling(root);
   }
-  killZombieProcesses();
 }
 
 const recursiveKilling = (inputProcess: Process) => {
@@ -127,7 +126,7 @@ function getProcessGraph(): Map<number, Process> {
   }
 }
 
-const killZombieProcesses = () => {
+export const killZombieProcesses = () => {
   const badProcessesName = ['node', 'conhost'];
   badProcessesName.forEach((processName) => {
     const zombieKillerStdout = spawnSync('powershell.exe', [
