@@ -81,9 +81,9 @@ export class ReportViewer {
       this.operationsToDisplay.resourcesCreated &&
       row.operations.resourcesCreated > 0
     ) {
-      output += `${ReportViewer.styles
-        .green('+')
-        .padEnd(indentation + 1)}${ReportViewer.styles.green(
+      output += `${ReportViewer.styles.green(
+        '+'.padEnd(indentation + 1)
+      )}${ReportViewer.styles.green(
         `${row.operations.resourcesCreated} to create`
       )}\n`;
     }
@@ -91,9 +91,9 @@ export class ReportViewer {
       this.operationsToDisplay.resourcesRecreated &&
       row.operations.resourcesRecreated > 0
     ) {
-      output += `${ReportViewer.styles
-        .yellow('+-')
-        .padEnd(indentation + 1)}${ReportViewer.styles.yellow(
+      output += `${ReportViewer.styles.yellow(
+        '+-'.padEnd(indentation + 1)
+      )}${ReportViewer.styles.yellow(
         `${row.operations.resourcesCreated} to replace`
       )}\n`;
     }
@@ -101,9 +101,9 @@ export class ReportViewer {
       this.operationsToDisplay.resourcesUpdated &&
       row.operations.resourcesUpdated > 0
     ) {
-      output += `${ReportViewer.styles
-        .yellow('~')
-        .padEnd(indentation + 1)}${ReportViewer.styles.yellow(
+      output += `${ReportViewer.styles.yellow(
+        '~'.padEnd(indentation + 1)
+      )}${ReportViewer.styles.yellow(
         `${row.operations.resourcesUpdated} to update`
       )}\n`;
     }
