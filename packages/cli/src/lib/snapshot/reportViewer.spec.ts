@@ -44,6 +44,7 @@ const getSuccessReport = (
 ): ResourceSnapshotsReportModel => ({
   id: snapshotId,
   updatedDate: 1622555847000,
+  resourcesProcessed: 99,
   type: ResourceSnapshotsReportType.DryRun,
   status: ResourceSnapshotsReportStatus.Completed,
   resultCode: ResourceSnapshotsReportResultCode.Success,
@@ -82,6 +83,7 @@ const getErrorReport = (snapshotId: string): ResourceSnapshotsReportModel => ({
   type: ResourceSnapshotsReportType.DryRun,
   status: ResourceSnapshotsReportStatus.Completed,
   resultCode: ResourceSnapshotsReportResultCode.ResourcesInError,
+  resourcesProcessed: 99,
   resourceOperations: {
     EXTENSION: {
       resourcesCreated: 1,
