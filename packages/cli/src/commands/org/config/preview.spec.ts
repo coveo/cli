@@ -10,7 +10,7 @@ jest.mock('@oclif/errors');
 import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
 import {Project} from '../../../lib/project/project';
-import {join} from 'path';
+import {join, normalize} from 'path';
 import {cwd} from 'process';
 import {Config} from '../../../lib/config/config';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
@@ -35,7 +35,7 @@ const mockProject = () => {
     () =>
       ({
         compressResources: () =>
-          Promise.resolve(join('path', 'to', 'resources.zip')),
+          Promise.resolve(normalize(join('path', 'to', 'resources.zip'))),
         deleteTemporaryZipFile: mockedDeleteTemporaryZipFile,
       } as unknown as Project)
   );
@@ -105,7 +105,7 @@ describe('org:config:preview', () => {
       .command(['org:config:preview', '-p', 'path/to/project'])
       .it('should use specifeid path for project', () => {
         expect(mockedProject).toHaveBeenCalledWith(
-          join('path', 'to', 'project')
+          normalize(join('path', 'to', 'project'))
         );
       });
 
@@ -113,7 +113,7 @@ describe('org:config:preview', () => {
       .command(['org:config:preview'])
       .it('should work with default connected org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
-          join('path', 'to', 'resources.zip'),
+          normalize(join('path', 'to', 'resources.zip')),
           'foo'
         );
       });
@@ -122,7 +122,7 @@ describe('org:config:preview', () => {
       .command(['org:config:preview', '-t', 'myorg'])
       .it('should work with specified target org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
-          join('path', 'to', 'resources.zip'),
+          normalize(join('path', 'to', 'resources.zip')),
           'myorg'
         );
       });
@@ -153,7 +153,9 @@ describe('org:config:preview', () => {
 
     beforeEach(() => {
       mockedRequiresSynchronization.mockReturnValueOnce(false);
-      mockedSaveDetailedReport.mockReturnValueOnce(join('saved', 'snapshot'));
+      mockedSaveDetailedReport.mockReturnValueOnce(
+        normalize(join('saved', 'snapshot'))
+      );
     });
 
     afterAll(() => {
