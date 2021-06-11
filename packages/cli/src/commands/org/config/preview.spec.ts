@@ -27,6 +27,7 @@ const mockedDeleteTemporaryZipFile = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
 const mockedSaveDetailedReport = jest.fn();
 const mockedRequiresSynchronization = jest.fn();
+const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
 const mockedLastReport = jest.fn();
 
@@ -59,10 +60,10 @@ const mockConfig = () => {
   );
 };
 
-const mockSnapshotFactory = async (validResponse: unknown) => {
+const mockSnapshotFactory = async () => {
   mockedSnapshotFactory.createFromZip.mockReturnValue(
     Promise.resolve({
-      validate: () => Promise.resolve(validResponse),
+      validate: mockedValidateSnapshot,
       preview: mockedPreviewSnapshot,
       delete: mockedDeleteSnapshot,
       saveDetailedReport: mockedSaveDetailedReport,
@@ -75,11 +76,13 @@ const mockSnapshotFactory = async (validResponse: unknown) => {
 };
 
 const mockSnapshotFactoryReturningValidSnapshot = async () => {
-  await mockSnapshotFactory({isValid: true, report: {}});
+  mockedValidateSnapshot.mockResolvedValue({isValid: true, report: {}});
+  await mockSnapshotFactory();
 };
 
 const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
-  await mockSnapshotFactory({isValid: false, report: {}});
+  mockedValidateSnapshot.mockResolvedValue({isValid: false, report: {}});
+  await mockSnapshotFactory();
 };
 
 describe('org:config:preview', () => {
@@ -125,6 +128,18 @@ describe('org:config:preview', () => {
           join('path', 'to', 'resources.zip'),
           'myorg'
         );
+      });
+
+    test
+      .command(['org:config:preview'])
+      .it('#validate should not take into account missing resources', () => {
+        expect(mockedValidateSnapshot).toHaveBeenCalledWith(false);
+      });
+
+    test
+      .command(['org:config:preview', '-d'])
+      .it('#validate should take into account missing resoucres', () => {
+        expect(mockedValidateSnapshot).toHaveBeenCalledWith(true);
       });
 
     test
