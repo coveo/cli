@@ -13,5 +13,7 @@ export default async function () {
     await global.processManager.killAllProcesses();
   }
   console.log('Teardown: Killing zombie processes');
-  killZombieProcesses();
+  if (process.platform === 'win32') {
+    killZombieProcesses();
+  }
 }
