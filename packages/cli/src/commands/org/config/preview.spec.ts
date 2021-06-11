@@ -113,7 +113,7 @@ describe('org:config:preview', () => {
       .command(['org:config:preview'])
       .it('should work with default connected org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
-          'path/to/resources.zip',
+          join('path', 'to', 'resources.zip'),
           'foo'
         );
       });
@@ -122,7 +122,7 @@ describe('org:config:preview', () => {
       .command(['org:config:preview', '-t', 'myorg'])
       .it('should work with specified target org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
-          'path/to/resources.zip',
+          join('path', 'to', 'resources.zip'),
           'myorg'
         );
       });
