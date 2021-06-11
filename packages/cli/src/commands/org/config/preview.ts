@@ -36,6 +36,12 @@ export default class Preview extends Command {
       default: cwd(),
       required: false,
     }),
+    showResourcesToDelete: flags.boolean({
+      char: 'd',
+      description: 'Whether or not to show resources to delete',
+      default: false,
+      required: false,
+    }),
   };
 
   public static hidden = true;
@@ -53,7 +59,7 @@ export default class Preview extends Command {
 
     cli.action.start('Validating snapshot');
 
-    const {isValid} = await snapshot.validate();
+    const {isValid} = await snapshot.validate(flags.showResourcesToDelete);
 
     if (!isValid) {
       await this.handleInvalidSnapshot(snapshot);
