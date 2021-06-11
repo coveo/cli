@@ -135,7 +135,7 @@ const killZombieProcesses = () => {
       phantomKillerPath,
       '-ProcessName',
       processName,
-    ]).stdout;
+    ]).stdout.toString();
     console.log(zombieKillerStdout);
   });
 };
