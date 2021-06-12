@@ -39,6 +39,20 @@ export class Snapshot {
     this.displayExpandedPreview();
   }
 
+  public hasChangedResources(): boolean {
+    throw new Error(
+      'TODO: CDX-390: Do not propose to apply a snapshot if it contains no changes'
+    );
+  }
+
+  public async apply(deleteMissingResources = false) {
+    await this.snapshotClient.apply(this.id, {deleteMissingResources});
+
+    await this.waitUntilDone();
+
+    return {isValid: this.isValid(), report: this.latestReport};
+  }
+
   public async delete() {
     await this.client.resourceSnapshot.delete(this.model.id);
   }
@@ -78,6 +92,9 @@ export class Snapshot {
   }
 
   public get targetId() {
+    if (this.model.targetId === undefined) {
+      throw new Error(`No target id associated to the snapshot ${this.id}`);
+    }
     return this.model.targetId;
   }
 
