@@ -40,9 +40,10 @@ export class Snapshot {
   }
 
   public hasChangedResources(): boolean {
-    throw new Error(
-      'TODO: CDX-390: Do not propose to apply a snapshot if it contains no changes'
-    );
+    return true;
+    // throw new Error(
+    //   'TODO: CDX-390: Do not propose to apply a snapshot if it contains no changes'
+    // );
   }
 
   public async apply(deleteMissingResources = false) {
