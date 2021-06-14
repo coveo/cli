@@ -144,7 +144,7 @@ describe('ui:create:vue', () => {
     await Promise.all(
       processManagers.map((manager) => manager.killAllProcesses())
     );
-  });
+  }, 10e3);
 
   describe('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
@@ -262,7 +262,7 @@ describe('ui:create:vue', () => {
 
     afterEach(async () => {
       await serverProcessManager.killAllProcesses();
-    }, 5e3);
+    }, 10e3);
 
     it(
       'should not have any ESLint warning or error',
@@ -297,7 +297,7 @@ describe('ui:create:vue', () => {
     afterAll(async () => {
       await serverProcessManager.killAllProcesses();
       restoreEnvironmentFile(projectName);
-    }, 5e3);
+    }, 10e3);
 
     it(
       'should not start the application',
@@ -340,7 +340,7 @@ describe('ui:create:vue', () => {
     afterAll(async () => {
       overwriteEnvFile(projectName, envFileContent);
       await serverProcessManager.killAllProcesses();
-    }, 5e3);
+    }, 10e3);
 
     it('should redirect the user to an error page', async () => {
       await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
@@ -370,7 +370,7 @@ describe('ui:create:vue', () => {
 
     afterAll(async () => {
       await serverProcessManager.killAllProcesses();
-    }, 5e3);
+    }, 10e3);
 
     it('should run the application on the specified port', async () => {
       expect(clientPort).toEqual(hardCodedClientPort);
@@ -410,7 +410,7 @@ describe('ui:create:vue', () => {
     afterAll(async () => {
       await Promise.all(dummyServers.map((server) => server.close()));
       await serverProcessManager.killAllProcesses();
-    }, 5e3);
+    }, 10e3);
 
     it('should allocate a new port for the application', async () => {
       expect(clientPort).not.toEqual(usedClientPort);
