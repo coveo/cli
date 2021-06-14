@@ -94,7 +94,7 @@ export default class Push extends Command {
     const canBeApplied = await cli.confirm(
       `\nWould you like to apply these changes to the org ${bold(
         targetOrg
-      )}? (yes/no)`
+      )}? (y/n)`
     );
 
     if (canBeApplied) {
