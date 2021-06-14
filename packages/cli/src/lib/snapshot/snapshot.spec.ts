@@ -21,6 +21,7 @@ const mockedCreateSnapshotFromFile = jest.fn();
 const mockedPushSnapshot = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
 const mockedGetSnapshot = jest.fn();
+const mockedApplySnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
 
@@ -80,6 +81,7 @@ const doMockAuthenticatedClient = () => {
         delete: mockedDeleteSnapshot,
         dryRun: mockedDryRunSnapshot,
         get: mockedGetSnapshot,
+        apply: mockedApplySnapshot,
       },
     })
   );
@@ -144,6 +146,11 @@ describe('Snapshot', () => {
       expect(status.isValid).toBe(false);
     });
 
+    it('#apply should return false if the report contains an error', async () => {
+      const status = await snapshot.apply();
+      expect(status.isValid).toBe(false);
+    });
+
     it('#validate should return the error in the detailed report', async () => {
       const status = await snapshot.validate();
       expect(status.report).toEqual(
@@ -155,8 +162,6 @@ describe('Snapshot', () => {
         })
       );
     });
-
-    it.todo('should requires synchronization plan');
 
     it('#latestReport should return an error if detailed report does not exist', () => {
       expect(() => snapshot.latestReport).toThrow(/No detailed report found/);
@@ -269,6 +274,24 @@ describe('Snapshot', () => {
     it('#validate should return true', async () => {
       const status = await snapshot.validate();
       expect(status.isValid).toBe(true);
+    });
+
+    it('#apply should apply a snapshot to the target org', async () => {
+      await snapshot.apply();
+      expect(mockedApplySnapshot).toHaveBeenCalledTimes(1);
+      expect(mockedApplySnapshot).toHaveBeenCalledWith(
+        'target-org-snapshot-id',
+        {deleteMissingResources: false}
+      );
+    });
+
+    it('#apply should apply a snapshot with deleteMissingResources flag', async () => {
+      await snapshot.apply(true);
+      expect(mockedApplySnapshot).toHaveBeenCalledTimes(1);
+      expect(mockedApplySnapshot).toHaveBeenCalledWith(
+        'target-org-snapshot-id',
+        {deleteMissingResources: true}
+      );
     });
 
     it('should be deleted', async () => {
