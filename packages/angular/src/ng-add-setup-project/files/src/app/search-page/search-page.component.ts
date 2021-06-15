@@ -1,5 +1,4 @@
 import {Component, AfterViewInit} from '@angular/core';
-import {AnalyticsActions, SearchActions} from '@coveo/headless';
 import {EngineService} from '../engine.service';
 
 @Component({
@@ -11,11 +10,7 @@ export class SearchPageComponent implements AfterViewInit {
   public constructor(private engineService: EngineService) {}
 
   public executeSearch() {
-    const {dispatch} = this.engineService.get();
-    const action = SearchActions.executeSearch(
-      AnalyticsActions.logInterfaceLoad()
-    );
-    dispatch(action);
+    this.engineService.get().executeFirstSearch();
   }
 
   public ngAfterViewInit(): void {
