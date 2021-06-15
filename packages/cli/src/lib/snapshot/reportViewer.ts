@@ -6,19 +6,31 @@ import {
 import {cli} from 'cli-ux';
 import {bgHex, green, yellow, red, bold, italic} from 'chalk';
 
-export type ReportViewerOperationsToDisplay = {
-  [operation in keyof ResourceSnapshotsReportOperationModel]: boolean;
-};
+export type ReportViewerOperationNames =
+  keyof ResourceSnapshotsReportOperationModel;
+
+class ReportViewerOperationLogFactory {
+  public constructor(
+    private operator: string,
+    private style: (text: string) => string,
+    private templateString: (count: number) => string
+  ) {}
+
+  public getString(count: number, indentation: number) {
+    return `${this.style(this.operator.padEnd(indentation + 1))}${this.style(
+      this.templateString(count)
+    )}\n`;
+  }
+}
 
 export class ReportViewer {
-  public static defaultOperationsToDisplay: ReportViewerOperationsToDisplay = {
-    resourcesCreated: true,
-    resourcesDeleted: true,
-    resourcesInError: true,
-    resourcesRecreated: true,
-    resourcesUnchanged: true,
-    resourcesUpdated: true,
-  };
+  public static defaultOperationsToDisplay: ReportViewerOperationNames[] = [
+    'resourcesCreated',
+    'resourcesDeleted',
+    'resourcesInError',
+    'resourcesRecreated',
+    'resourcesUpdated',
+  ];
 
   public static maximumNumberOfErrorsToPrint = 5;
 
@@ -30,17 +42,47 @@ export class ReportViewer {
     error: (txt: string) => bgHex('#F64D64').hex('#272C3A')(txt),
   };
 
-  private operationsToDisplay: ReportViewerOperationsToDisplay;
+  public static operationToLogFactoryDictionnary: {
+    [key in ReportViewerOperationNames]: ReportViewerOperationLogFactory;
+  } = {
+    resourcesCreated: new ReportViewerOperationLogFactory(
+      '+',
+      ReportViewer.styles.green,
+      (count) => `${count} to create`
+    ),
+    resourcesRecreated: new ReportViewerOperationLogFactory(
+      '+-',
+      ReportViewer.styles.yellow,
+      (count) => `${count} to replace`
+    ),
+    resourcesUpdated: new ReportViewerOperationLogFactory(
+      '~',
+      ReportViewer.styles.yellow,
+      (count) => `${count} to update`
+    ),
+    resourcesDeleted: new ReportViewerOperationLogFactory(
+      '-',
+      ReportViewer.styles.red,
+      (count) => `${count} to delete`
+    ),
+    resourcesInError: new ReportViewerOperationLogFactory(
+      '!',
+      ReportViewer.styles.error,
+      (count) => `${count} in error`
+    ),
+    resourcesUnchanged: new ReportViewerOperationLogFactory(
+      '⁇',
+      ReportViewer.styles.error,
+      (count) => `${count} unchanged`
+    ),
+  };
 
   public constructor(
     private readonly report: ResourceSnapshotsReportModel,
-    operationsToDisplay?: Partial<ReportViewerOperationsToDisplay>
-  ) {
-    this.operationsToDisplay = {
+    private operationsToDisplay: ReportViewerOperationNames[] = [
       ...ReportViewer.defaultOperationsToDisplay,
-      ...operationsToDisplay,
-    };
-  }
+    ]
+  ) {}
 
   public display(): void {
     this.printTable();
@@ -75,54 +117,12 @@ export class ReportViewer {
     const resourceType = this.prettyPrintResourceName(row.resourceName);
     let output = `${''.padStart(indentation)}${resourceType}\n`;
 
-    if (
-      this.operationsToDisplay.resourcesCreated &&
-      row.operations.resourcesCreated > 0
-    ) {
-      output += `${ReportViewer.styles.green(
-        '+'.padEnd(indentation + 1)
-      )}${ReportViewer.styles.green(
-        `${row.operations.resourcesCreated} to create`
-      )}\n`;
-    }
-    if (
-      this.operationsToDisplay.resourcesRecreated &&
-      row.operations.resourcesRecreated > 0
-    ) {
-      output += `${ReportViewer.styles.yellow(
-        '+-'.padEnd(indentation + 1)
-      )}${ReportViewer.styles.yellow(
-        `${row.operations.resourcesCreated} to replace`
-      )}\n`;
-    }
-    if (
-      this.operationsToDisplay.resourcesUpdated &&
-      row.operations.resourcesUpdated > 0
-    ) {
-      output += `${ReportViewer.styles.yellow(
-        '~'.padEnd(indentation + 1)
-      )}${ReportViewer.styles.yellow(
-        `${row.operations.resourcesUpdated} to update`
-      )}\n`;
-    }
-    if (
-      this.operationsToDisplay.resourcesDeleted &&
-      row.operations.resourcesDeleted > 0
-    ) {
-      output += `${ReportViewer.styles.red(
-        '-'.padEnd(indentation + 1)
-      )}${ReportViewer.styles.red(
-        `${row.operations.resourcesDeleted} to delete`
-      )}\n`;
-    }
-    if (
-      this.operationsToDisplay.resourcesInError &&
-      row.operations.resourcesInError > 0
-    ) {
-      output += `${ReportViewer.styles.error(
-        `!${''.padEnd(indentation)}${row.operations.resourcesInError} in error `
-      )}\n`;
-    }
+    this.operationsToDisplay.forEach(
+      (operation) =>
+        (output += ReportViewer.operationToLogFactoryDictionnary[
+          operation
+        ].getString(row.operations[operation], indentation))
+    );
 
     return output;
   }
@@ -133,15 +133,9 @@ export class ReportViewer {
       _,
       operations,
     ]: resourceEntries) => {
-      const operationKeys = Object.keys(this.operationsToDisplay) as Array<
-        keyof ResourceSnapshotsReportOperationModel
-      >;
-
       return (
-        operationKeys.reduce(
-          (previous, current) =>
-            previous +
-            (this.operationsToDisplay[current] ? operations[current] : 0),
+        this.operationsToDisplay.reduce(
+          (previous, current) => previous + operations[current],
           0
         ) > 0
       );
