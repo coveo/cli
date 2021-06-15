@@ -17,6 +17,9 @@ class ReportViewerOperationLogFactory {
   ) {}
 
   public getString(count: number, indentation: number) {
+    if (count <= 0) {
+      return '';
+    }
     return `${this.style(this.operator.padEnd(indentation + 1))}${this.style(
       this.templateString(count)
     )}\n`;
