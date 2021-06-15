@@ -10,14 +10,13 @@ import {
   ResourceSnapshotsReportType,
 } from '@coveord/platform-client';
 import {writeJsonSync, ensureFileSync} from 'fs-extra';
-import {join} from 'path';
+import {join, normalize} from 'path';
 import {mocked} from 'ts-jest/utils';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
-import {ISnapshotValidation, Snapshot} from './snapshot';
+import {Snapshot} from './snapshot';
 
 const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
 const mockedEnsureFileSync = mocked(ensureFileSync);
-const mockedWriteJsonSync = mocked(writeJsonSync);
 const mockedCreateSnapshotFromFile = jest.fn();
 const mockedPushSnapshot = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
@@ -178,28 +177,32 @@ describe('Snapshot', () => {
 
     it('#latestReport should ensure the file exists', async () => {
       await snapshot.validate();
-      snapshot.saveDetailedReport(join('path', 'to', 'report'));
+      snapshot.saveDetailedReport(normalize(join('path', 'to', 'report')));
       expect(mockedEnsureFileSync).toHaveBeenCalledWith(
-        join(
-          'path',
-          'to',
-          'report',
-          'snapshot-reports',
-          'target-org-snapshot-id.json'
+        normalize(
+          join(
+            'path',
+            'to',
+            'report',
+            'snapshot-reports',
+            'target-org-snapshot-id.json'
+          )
         )
       );
     });
 
     it('#latestReport should save detailed report', async () => {
       await snapshot.validate();
-      snapshot.saveDetailedReport(join('path', 'to', 'report'));
+      snapshot.saveDetailedReport(normalize(join('path', 'to', 'report')));
       expect(writeJsonSync).toHaveBeenCalledWith(
-        join(
-          'path',
-          'to',
-          'report',
-          'snapshot-reports',
-          'target-org-snapshot-id.json'
+        normalize(
+          join(
+            'path',
+            'to',
+            'report',
+            'snapshot-reports',
+            'target-org-snapshot-id.json'
+          )
         ),
         expect.objectContaining({
           id: 'target-org-snapshot-id',

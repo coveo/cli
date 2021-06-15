@@ -4,11 +4,14 @@ import {
   ResourceSnapshotsReportResultCode,
   ResourceSnapshotsReportStatus,
   PlatformClient,
+  ResourceSnapshotsReportType,
 } from '@coveord/platform-client';
 import {cli} from 'cli-ux';
 import {backOff} from 'exponential-backoff';
+import {ReportViewer} from './reportViewer';
 import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
+import dedent from 'ts-dedent';
 
 export interface ISnapshotValidation {
   isValid: boolean;
@@ -16,6 +19,11 @@ export interface ISnapshotValidation {
 }
 
 export class Snapshot {
+  private static ongoingReportStatuses = [
+    ResourceSnapshotsReportStatus.Pending,
+    ResourceSnapshotsReportStatus.InProgress,
+  ];
+
   public constructor(
     private model: ResourceSnapshotsModel,
     private client: PlatformClient
@@ -26,13 +34,12 @@ export class Snapshot {
       deleteMissingResources: false, // TODO: CDX-361: Add flag to support missing resources deletion
     });
 
-    await this.waitUntilDone();
+    await this.waitUntilOperationIsDone(ResourceSnapshotsReportType.DryRun);
 
     return {isValid: this.isValid(), report: this.latestReport};
   }
 
   public async preview() {
-    // TODO: get detailed report
     this.displayLightPreview();
     this.displayExpandedPreview();
   }
@@ -65,7 +72,10 @@ export class Snapshot {
     if (!Array.isArray(this.model.reports) || this.model.reports.length === 0) {
       throw new Error(`No detailed report found for the snapshot ${this.id}`);
     }
-    return this.model.reports.slice(-1)[0];
+    const sortedReports = this.model.reports.sort(
+      (a, b) => b.updatedDate - a.updatedDate
+    );
+    return sortedReports[0];
   }
 
   public get id() {
@@ -81,7 +91,8 @@ export class Snapshot {
   }
 
   private displayLightPreview() {
-    // TODO: CDX-346 Display light preview
+    const report = new ReportViewer(this.latestReport);
+    report.display();
   }
 
   private displayExpandedPreview() {
@@ -102,15 +113,23 @@ export class Snapshot {
     });
   }
 
-  private async waitUntilDone() {
+  public async waitUntilOperationIsDone(
+    operationType: ResourceSnapshotsReportType
+  ) {
     const waitPromise = backOff(
       async () => {
         await this.refreshSnapshotData();
 
-        const isNotDone = [
-          ResourceSnapshotsReportStatus.Pending,
-          ResourceSnapshotsReportStatus.InProgress,
-        ].includes(this.latestReport.status);
+        if (this.latestReport.type !== operationType) {
+          throw new Error(dedent`
+          Not processing expected operation
+          Expected ${operationType}
+          Received ${this.latestReport.type}`);
+        }
+
+        const isNotDone = Snapshot.ongoingReportStatuses.includes(
+          this.latestReport.status
+        );
 
         if (isNotDone) {
           throw new Error('Snapshot is still being processed');

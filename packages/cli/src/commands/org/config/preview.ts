@@ -12,6 +12,8 @@ import {Project} from '../../../lib/project/project';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {platformUrl} from '../../../lib/platform/environment';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
+import {red, green} from 'chalk';
+import {normalize} from 'path';
 
 export interface CustomFile extends ReadStream {
   type?: string;
@@ -42,7 +44,7 @@ export default class Preview extends Command {
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = this.parse(Preview);
-    const project = new Project(flags.projectPath);
+    const project = new Project(normalize(flags.projectPath));
     const pathToZip = await project.compressResources();
     const targetOrg = await this.getTargetOrg();
 
@@ -55,15 +57,18 @@ export default class Preview extends Command {
     const {isValid} = await snapshot.validate();
 
     if (!isValid) {
-      this.handleInvalidSnapshot(snapshot);
-    } else {
-      await snapshot.preview();
+      await this.handleInvalidSnapshot(snapshot);
+    }
+
+    cli.action.stop(isValid ? green('✔') : red.bold('!'));
+
+    await snapshot.preview();
+
+    if (isValid) {
       await snapshot.delete();
     }
 
     project.deleteTemporaryZipFile();
-
-    cli.action.stop();
   }
 
   public async getTargetOrg() {
@@ -82,20 +87,20 @@ export default class Preview extends Command {
     const report = snapshot.latestReport;
 
     if (snapshot.requiresSynchronization()) {
-      cli.action.start('Synchronization');
-
       const synchronizationPlanUrl = await this.getSynchronizationPage(
         snapshot
       );
       this.warn(
-        dedent`Some conflicts were detected while comparing changes between the snapshot and the target organization.
+        dedent`
+        Some conflicts were detected while comparing changes between the snapshot and the target organization.
         Click on the URL below to synchronize your snapshot with your organization before running the command again.
-        ${synchronizationPlanUrl}`
+        ${synchronizationPlanUrl}
+        `
       );
       return;
     }
 
-    const snapshotUrl = this.getSnapshotPage(snapshot);
+    const snapshotUrl = await this.getSnapshotPage(snapshot);
 
     this.error(
       dedent`Invalid snapshot - ${report.resultCode}.
