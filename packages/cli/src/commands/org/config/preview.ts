@@ -2,13 +2,13 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
-import OrgConfigBase from './orgConfigBase';
+import SnapshotBase from './orgConfigBase';
 
-export default class Preview extends OrgConfigBase {
+export default class Preview extends SnapshotBase {
   public static description = 'Preview resource updates';
 
   public static flags = {
-    ...OrgConfigBase.flags,
+    ...SnapshotBase.flags,
   };
 
   public static hidden = true;

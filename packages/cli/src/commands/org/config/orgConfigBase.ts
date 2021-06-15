@@ -6,7 +6,10 @@ import {cwd} from 'process';
 import {Config} from '../../../lib/config/config';
 import {Project} from '../../../lib/project/project';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
-import {platformUrl} from '../../../lib/platform/environment';
+import {
+  platformSnapshotSynchronizationUrl,
+  platformSnapshotUrl,
+} from '../../../lib/platform/environment';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {red, green} from 'chalk';
 import {normalize} from 'path';
@@ -15,7 +18,7 @@ export interface CustomFile extends ReadStream {
   type?: string;
 }
 
-export default abstract class OrgConfigBase extends Command {
+export default abstract class SnapshotBase extends Command {
   public static description = 'Create and validate a snapshot';
 
   public static flags = {
@@ -116,7 +119,7 @@ export default abstract class OrgConfigBase extends Command {
   }
 
   private get flags() {
-    const {flags} = this.parse(this.ctor as typeof OrgConfigBase);
+    const {flags} = this.parse(this.ctor as typeof SnapshotBase);
     return flags;
   }
 
@@ -125,13 +128,21 @@ export default abstract class OrgConfigBase extends Command {
   }
 
   private async getSnapshotPage(snapshot: Snapshot) {
-    const {environment} = await this.configuration.get();
-    const url = platformUrl({environment});
-    const targetOrg = snapshot.targetId;
-    return `${url}/admin/#${targetOrg}/organization/resource-snapshots/${snapshot.id}`;
+    const options = await this.getSnapshotUrlOptions(snapshot);
+    return platformSnapshotUrl(options);
   }
 
   private async getSynchronizationPage(snapshot: Snapshot) {
-    return `${await this.getSnapshotPage(snapshot)}/synchronization`;
+    const options = await this.getSnapshotUrlOptions(snapshot);
+    return platformSnapshotSynchronizationUrl(options);
+  }
+
+  private async getSnapshotUrlOptions(snapshot: Snapshot) {
+    const {environment} = await this.configuration.get();
+    return {
+      environment,
+      targetOrgId: snapshot.targetId,
+      snapshotId: snapshot.id,
+    };
   }
 }

@@ -6,18 +6,18 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {red, green, bold} from 'chalk';
-import OrgConfigBase from './orgConfigBase';
+import SnapshotBase from './orgConfigBase';
 
 export interface CustomFile extends ReadStream {
   type?: string;
 }
 
-export default class Push extends OrgConfigBase {
+export default class Push extends SnapshotBase {
   public static description =
     'Preview, validate and deploy your changes to the destination org';
 
   public static flags = {
-    ...OrgConfigBase.flags,
+    ...SnapshotBase.flags,
   };
 
   public static hidden = true;
