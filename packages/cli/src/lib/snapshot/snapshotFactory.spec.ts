@@ -1,19 +1,28 @@
 jest.mock('../platform/authenticatedClient');
 jest.mock('fs');
+jest.mock('./snapshot');
 
 import {createReadStream, ReadStream} from 'fs';
 import {join} from 'path';
 import {Readable} from 'stream';
 import {mocked} from 'ts-jest/utils';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
+import {Snapshot} from './snapshot';
 import {SnapshotFactory} from './snapshotFactory';
 
 const mockedCreateReadStream = mocked(createReadStream);
 const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
+const mockedSnapshot = mocked(Snapshot, true);
 const mockedCreateSnapshotFromFile = jest.fn();
 const mockedPushSnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
+
+const doMockSnapshot = () => {
+  mockedSnapshot.prototype.waitUntilOperationIsDone.mockImplementation(() =>
+    Promise.resolve()
+  );
+};
 
 const doMockReadStream = () => {
   mockedCreateReadStream.mockImplementation(() => {
@@ -46,6 +55,7 @@ describe('SnapshotFactory', () => {
   beforeAll(() => {
     doMockAuthenticatedClient();
     doMockReadStream();
+    doMockSnapshot();
   });
 
   describe('when the the resources are compressed', () => {
