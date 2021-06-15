@@ -1,7 +1,7 @@
 {
   "name": "@coveo/cli-e2e",
   "private": true,
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "End-to-End test of Coveo's CLI",
   "author": "Coveo",
   "homepage": "https://github.com/coveo/cli#readme",
@@ -21,7 +21,7 @@
     "test:headless": "node ./entrypoints/entry.js",
     "test:debug": "node ./entrypoints/entry.js --debug",
     "test:bash": "node ./entrypoints/entry.js --bash",
-    "jest": "jest --verbose --runInBand --detectOpenHandles",
+    "jest": "jest --verbose --runInBand --detectOpenHandles --forceExit",
     "jest:debug": "node --inspect=0.0.0.0:9229 node_modules/.bin/jest --runInBand"
   },
   "bugs": {
