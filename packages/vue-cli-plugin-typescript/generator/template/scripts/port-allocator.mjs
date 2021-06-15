@@ -1,7 +1,7 @@
-const getPort = require('get-port');
-const {appendFileSync, truncateSync, existsSync} = require('fs');
-const {config} = require('dotenv');
-const {EOL} = require('os');
+import getPort, {makeRange} from 'get-port';
+import {appendFileSync, truncateSync, existsSync} from 'fs';
+import {config} from 'dotenv';
+import {EOL} from 'os';
 const environment = config();
 
 const preferedWebAppPort = 8080;
@@ -48,7 +48,7 @@ const getNextAvailablePorts = async (preferedPort) => {
   if (await isPortAvailable(preferedPort)) {
     return preferedPort;
   }
-  return await getPort({port: getPort.makeRange(...portRangeFallback)});
+  return await getPort({port: makeRange(...portRangeFallback)});
 };
 
 const isPortAvailable = async (port) => {
@@ -56,9 +56,9 @@ const isPortAvailable = async (port) => {
   return availablePort === port;
 };
 
-const main = () => {
+const main = async () => {
   ensureEnvironmentFile();
-  allocatePorts();
+  await allocatePorts();
 };
 
 main();
