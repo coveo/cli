@@ -8,9 +8,9 @@ import {environment} from '../environments/environment';
 export class EngineService {
   private engine!: SearchEngine;
 
-  constructor() {}
+  public constructor() {}
 
-  init(accessToken: string) {
+  public init(accessToken: string) {
     this.engine = buildSearchEngine({
       configuration: {
         platformUrl: environment.platformUrl,
