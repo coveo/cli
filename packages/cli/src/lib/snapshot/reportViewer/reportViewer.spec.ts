@@ -168,18 +168,18 @@ describe('ReportViewer', () => {
       .it('should print resource changes', (ctx) => {
         // Remove padding added by cli-ux so we can test the text and not the padding on the line
         const trimedStdout = ctx.stdout
-          .split('\n')
+          .split(/$/m)
           .map((s) => s.trimEnd())
-          .join('\n');
+          .join('');
 
         expect(trimedStdout).toContain(dedent`
         Previewing resource changes:
            Extensions
         +   1 to create
         -   2 to delete
-
            Fields
-        ~   1 to update`);
+        ~   1 to update
+        `);
       });
   });
 
