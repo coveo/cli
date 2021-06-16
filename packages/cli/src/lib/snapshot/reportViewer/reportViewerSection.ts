@@ -2,7 +2,7 @@ import {ReportViewerStyles} from './reportViewerStyles';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
-} from './reportViewerInterfaces';
+} from './reportViewerDataModels';
 import {ResourceSnapshotsReportOperationModel} from '@coveord/platform-client';
 
 class ReportViewerOperationLogFactory {
@@ -72,15 +72,15 @@ export class ReportViewerSection {
 
   public display(indentation: number) {
     return this.operationsToDisplay.reduce((previous, current) => {
-      if (this.shouldPrintOperation(current)) {
-        const operationToLog =
-          ReportViewerSection.operationToLogFactoryDictionnary[
-            current
-          ].getString(this.resource.operations[current], indentation);
-        return previous + operationToLog;
-      } else {
+      if (!this.shouldPrintOperation(current)) {
         return previous;
       }
+      const operationToLog =
+        ReportViewerSection.operationToLogFactoryDictionnary[current].getString(
+          this.resource.operations[current],
+          indentation
+        );
+      return previous + operationToLog;
     }, '');
   }
 }

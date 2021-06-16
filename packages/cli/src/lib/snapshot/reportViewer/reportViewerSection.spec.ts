@@ -3,7 +3,7 @@ import dedent from 'ts-dedent';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
-} from './reportViewerInterfaces';
+} from './reportViewerDataModels';
 import {ReportViewerSection} from './reportViewerSection';
 
 describe('ReportViewerSection', () => {

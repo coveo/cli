@@ -10,7 +10,7 @@ import {ReportViewerStyles} from './reportViewerStyles';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
-} from './reportViewerInterfaces';
+} from './reportViewerDataModels';
 
 export class ReportViewer {
   public static defaultOperationsToDisplay: ReportViewerOperationName[] = [
