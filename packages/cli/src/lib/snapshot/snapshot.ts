@@ -4,12 +4,14 @@ import {
   ResourceSnapshotsReportResultCode,
   ResourceSnapshotsReportStatus,
   PlatformClient,
+  ResourceSnapshotsReportType,
 } from '@coveord/platform-client';
 import {cli} from 'cli-ux';
 import {backOff} from 'exponential-backoff';
-import {ReportViewer} from './reportViewer';
+import {ReportViewer} from './reportViewer/reportViewer';
 import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
+import dedent from 'ts-dedent';
 
 export interface ISnapshotValidation {
   isValid: boolean;
@@ -17,6 +19,11 @@ export interface ISnapshotValidation {
 }
 
 export class Snapshot {
+  private static ongoingReportStatuses = [
+    ResourceSnapshotsReportStatus.Pending,
+    ResourceSnapshotsReportStatus.InProgress,
+  ];
+
   public constructor(
     private model: ResourceSnapshotsModel,
     private client: PlatformClient
@@ -29,7 +36,7 @@ export class Snapshot {
       deleteMissingResources,
     });
 
-    await this.waitUntilDone();
+    await this.waitUntilOperationIsDone(ResourceSnapshotsReportType.DryRun);
 
     return {isValid: this.isValid(), report: this.latestReport};
   }
@@ -108,15 +115,23 @@ export class Snapshot {
     });
   }
 
-  private async waitUntilDone() {
+  public async waitUntilOperationIsDone(
+    operationType: ResourceSnapshotsReportType
+  ) {
     const waitPromise = backOff(
       async () => {
         await this.refreshSnapshotData();
 
-        const isNotDone = [
-          ResourceSnapshotsReportStatus.Pending,
-          ResourceSnapshotsReportStatus.InProgress,
-        ].includes(this.latestReport.status);
+        if (this.latestReport.type !== operationType) {
+          throw new Error(dedent`
+          Not processing expected operation
+          Expected ${operationType}
+          Received ${this.latestReport.type}`);
+        }
+
+        const isNotDone = Snapshot.ongoingReportStatuses.includes(
+          this.latestReport.status
+        );
 
         if (isNotDone) {
           throw new Error('Snapshot is still being processed');
