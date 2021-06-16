@@ -5,12 +5,12 @@ import {
 } from '@coveord/platform-client';
 import {cli} from 'cli-ux';
 import {red, italic} from 'chalk';
-import {ReportViewerSection} from './reportViewerResourceSection';
+import {ReportViewerSection} from './reportViewerSection';
 import {ReportViewerStyles} from './reportViewerStyles';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
-} from './reportViewerInterfaces';
+} from './reportViewerDataModels';
 
 export class ReportViewer {
   public static defaultOperationsToDisplay: ReportViewerOperationName[] = [

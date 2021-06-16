@@ -15,7 +15,8 @@ export function configureStartCommand(_options: CoveoSchema): Rule {
     try {
       const packageJson = JSON.parse(packageJsonBuffer.toString());
 
-      packageJson.scripts['allocate-port'] = 'node ./scripts/port-allocator.js';
+      packageJson.scripts['allocate-port'] =
+        'node ./scripts/port-allocator.mjs';
       packageJson.scripts['start'] =
         'npm run allocate-port && concurrently --raw "npm run start-server" "ng serve"';
       packageJson.scripts['start-server'] = 'node ./scripts/start-server.js';
