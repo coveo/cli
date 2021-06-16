@@ -1,14 +1,14 @@
-const {resolve} = require('path');
-const {
+import {resolve} from 'path';
+import {
   readFileSync,
   writeFileSync,
   truncateSync,
   existsSync,
   appendFileSync,
-} = require('fs');
-const {EOL} = require('os');
-const getPort = require('get-port');
-const {config} = require('dotenv');
+} from 'fs';
+import {EOL} from 'os';
+import getPort, {makeRange} from 'get-port';
+import {config} from 'dotenv';
 const pathToServerEnv = resolve('server', '.env');
 const environment = config({path: pathToServerEnv}).parsed;
 
@@ -69,7 +69,7 @@ const getNextAvailablePorts = async (preferedPort, getPortOptions) => {
     return preferedPort;
   }
   return await getPort({
-    port: getPort.makeRange(...portRangeFallback),
+    port: makeRange(...portRangeFallback),
     ...getPortOptions,
   });
 };
