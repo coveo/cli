@@ -2,7 +2,7 @@ module.exports = (api, options, rootOptions) => {
   api.extendPackage({
     scripts: {
       postinstall: 'node ./scripts/setup-server.js',
-      'allocate-port': 'node ./scripts/port-allocator.js',
+      'allocate-port': 'node ./scripts/port-allocator.mjs',
       serve:
         'npm run allocate-port && concurrently --raw "npm run start-server" "vue-cli-service serve"',
       start: 'npm run serve',
