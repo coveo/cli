@@ -6,6 +6,9 @@ import {
 import {cli} from 'cli-ux';
 import {bgHex, green, yellow, red, bold, italic} from 'chalk';
 
+// TODO SRC-4448: keys should be `ResourceType` from `@coveord/platform-client`.
+type ResourceEntry = [string, ResourceSnapshotsReportOperationModel];
+
 export class ReportViewer {
   public static maximumNumberOfErrorsToPrint = 5;
   public static styles = {
@@ -85,11 +88,7 @@ export class ReportViewer {
   }
 
   private get changedResources() {
-    type resourceEntries = [string, ResourceSnapshotsReportOperationModel];
-    const resourceHasAtLeastOneOperation = ([
-      _,
-      operations,
-    ]: resourceEntries) => {
+    const resourceHasAtLeastOneOperation = ([_, operations]: ResourceEntry) => {
       return (
         operations.resourcesCreated +
           operations.resourcesUpdated +
@@ -104,7 +103,7 @@ export class ReportViewer {
     const convertArrayToObject = ([
       resourceName,
       operations,
-    ]: resourceEntries) => ({
+    ]: ResourceEntry) => ({
       resourceName,
       operations,
     });

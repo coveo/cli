@@ -12,6 +12,7 @@ import {ReportViewer} from './reportViewer';
 import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
 import dedent from 'ts-dedent';
+import {ExpandedPreviewer} from './expandedPreviewer';
 
 export interface ISnapshotValidation {
   isValid: boolean;
@@ -39,13 +40,17 @@ export class Snapshot {
     return {isValid: this.isValid(), report: this.latestReport};
   }
 
-  public async preview() {
+  public async preview(snapshotZipPath: string) {
     this.displayLightPreview();
-    this.displayExpandedPreview();
+    await this.displayExpandedPreview(snapshotZipPath);
   }
 
   public async delete() {
     await this.client.resourceSnapshot.delete(this.model.id);
+  }
+
+  public async downloadZip(downloadPath: string) {
+    throw new Error('Method not implemented.');
   }
 
   public requiresSynchronization() {
@@ -95,8 +100,13 @@ export class Snapshot {
     report.display();
   }
 
-  private displayExpandedPreview() {
-    // TODO: CDX-347 Display Expanded preview
+  private async displayExpandedPreview(snapshotZipPath: string) {
+    const previewer = new ExpandedPreviewer(
+      this.latestReport,
+      this.targetId!,
+      snapshotZipPath
+    );
+    await previewer.preview();
   }
 
   private isValid() {
