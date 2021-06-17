@@ -9,6 +9,12 @@ import {join, resolve} from 'path';
 import {spawnProcess} from '../utils/process';
 import {SnapshotFactory} from './snapshotFactory';
 
+type ResourcesJSON = Object & {resourceName: string};
+
+type SnapshotFileJSON = Object & {
+  resources: Partial<{[key in ResourceType]: ResourcesJSON[]}>;
+};
+
 export class ExpandedPreviewer {
   private static readonly temporaryDirectory: string = '.coveo/tmp';
   private static readonly previewDirectory: string = '.coveo/preview';
@@ -120,13 +126,13 @@ export class ExpandedPreviewer {
     return diffedResources;
   }
 
-  private getResourceDictionnaryFromObject(snapshotFile: any) {
+  private getResourceDictionnaryFromObject(snapshotFile: SnapshotFileJSON) {
     const dictionnary = new Map<string, Object>();
-    const resourcesSection = snapshotFile['resources'];
+    const resourcesSection = snapshotFile.resources;
     for (const resourceType in resourcesSection) {
-      const resources = resourcesSection[resourceType];
-      resources.forEach((resource: any) => {
-        dictionnary.set(resource['resourceName'], resource);
+      const resources = resourcesSection[resourceType as ResourceType];
+      resources?.forEach((resource) => {
+        dictionnary.set(resource.resourceName, resource);
       });
     }
     return dictionnary;
