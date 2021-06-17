@@ -7,4 +7,4 @@ updates:
     schedule:
       interval: 'daily'
     commit-message:
-      prefix: 'fix(CDX-227):'
+      prefix: 'fix(J:CDX-227):'
