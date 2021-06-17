@@ -4,19 +4,35 @@ import {
   ResourceSnapshotsReportResultCode,
 } from '@coveord/platform-client';
 import {cli} from 'cli-ux';
-import {bgHex, green, yellow, red, bold, italic} from 'chalk';
+import {red, italic} from 'chalk';
+import {ReportViewerSection} from './reportViewerSection';
+import {ReportViewerStyles} from './reportViewerStyles';
+import {
+  ReportViewerOperationName,
+  ReportViewerResourceReportModel,
+} from './reportViewerDataModels';
 
 export class ReportViewer {
-  public static maximumNumberOfErrorsToPrint = 5;
-  public static styles = {
-    green: (txt: string) => green(txt),
-    yellow: (txt: string) => yellow(txt),
-    red: (txt: string) => red(txt),
-    header: (txt: string) => bold.hex('#1CEBCF')(txt),
-    error: (txt: string) => bgHex('#F64D64').hex('#272C3A')(txt),
-  };
+  public static defaultOperationsToDisplay: ReportViewerOperationName[] = [
+    'resourcesCreated',
+    'resourcesDeleted',
+    'resourcesInError',
+    'resourcesRecreated',
+    'resourcesUnchanged',
+    'resourcesUpdated',
+  ];
 
-  public constructor(private readonly report: ResourceSnapshotsReportModel) {}
+  public static maximumNumberOfErrorsToPrint = 5;
+
+  private operationsToDisplay: ReportViewerOperationName[];
+
+  public constructor(
+    private readonly report: ResourceSnapshotsReportModel,
+    operationsToDisplay: ReportViewerOperationName[] = []
+  ) {
+    this.operationsToDisplay =
+      ReportViewer.defaultOperationsToDisplay.concat(operationsToDisplay);
+  }
 
   public display(): void {
     this.printTable();
@@ -28,84 +44,44 @@ export class ReportViewer {
 
   private printTable() {
     if (this.changedResources.length === 0) {
-      cli.log(ReportViewer.styles.header('\nNo changes detected'));
+      cli.log(ReportViewerStyles.header('\nNo changes detected'));
       return;
     }
 
     cli.table(this.changedResources, {
       resourceName: {
-        header: ReportViewer.styles.header('\nPreviewing resource changes:'),
-        get: (row) => this.printTableSection(row),
+        header: ReportViewerStyles.header('\nPreviewing resource changes:'),
+        get: (resource) => this.createSection(resource),
       },
     });
   }
 
-  // TODO: Change logic once SRC-4448 is complete
-  private printTableSection(row: {
-    resourceName: string;
-    operations: ResourceSnapshotsReportOperationModel;
-  }) {
-    const resourceType = this.prettyPrintResourceName(row.resourceName);
-    let output = `   ${resourceType}\n`;
+  private createSection(resource: ReportViewerResourceReportModel) {
+    const resourceType = this.prettyPrintResourceName(resource.name);
+    const indentation = 3;
+    const section = new ReportViewerSection(resource, this.operationsToDisplay);
+    let output = `${''.padStart(indentation)}${resourceType}\n`;
 
-    if (row.operations.resourcesCreated > 0) {
-      output += `${ReportViewer.styles.green(
-        '+'
-      )}   ${ReportViewer.styles.green(
-        `${row.operations.resourcesCreated} to create`
-      )}\n`;
-    }
-    if (row.operations.resourcesRecreated > 0) {
-      output += `${ReportViewer.styles.yellow(
-        '+-'
-      )}  ${ReportViewer.styles.yellow(
-        `${row.operations.resourcesCreated} to replace`
-      )}\n`;
-    }
-    if (row.operations.resourcesUpdated > 0) {
-      output += `${ReportViewer.styles.yellow(
-        '~'
-      )}   ${ReportViewer.styles.yellow(
-        `${row.operations.resourcesUpdated} to update`
-      )}\n`;
-    }
-    // TODO: CDX-361: Only show delete items if delete flag is set to true
-    if (row.operations.resourcesDeleted > 0) {
-      output += `${ReportViewer.styles.red('-')}   ${ReportViewer.styles.red(
-        `${row.operations.resourcesDeleted} to delete`
-      )}\n`;
-    }
-    if (row.operations.resourcesInError > 0) {
-      output += `${ReportViewer.styles.error(
-        `!   ${row.operations.resourcesInError} in error `
-      )}\n`;
-    }
-
+    output += section.display(indentation + 1);
     return output;
   }
 
-  private get changedResources() {
+  private get changedResources(): ReportViewerResourceReportModel[] {
     type resourceEntries = [string, ResourceSnapshotsReportOperationModel];
     const resourceHasAtLeastOneOperation = ([
       _,
       operations,
     ]: resourceEntries) => {
       return (
-        operations.resourcesCreated +
-          operations.resourcesUpdated +
-          operations.resourcesRecreated +
-          // TODO: CDX-361: Only count delete items if delete flag is set to true
-          operations.resourcesDeleted +
-          operations.resourcesInError >
-        0
+        this.operationsToDisplay.reduce(
+          (previous, current) => previous + operations[current],
+          0
+        ) > 0
       );
     };
 
-    const convertArrayToObject = ([
-      resourceName,
-      operations,
-    ]: resourceEntries) => ({
-      resourceName,
+    const convertArrayToObject = ([name, operations]: resourceEntries) => ({
+      name,
       operations,
     });
 
@@ -139,9 +115,9 @@ export class ReportViewer {
   private handleReportErrors() {
     const totalErrorCount = this.getOperationTypeTotalCount('resourcesInError');
 
-    cli.log(ReportViewer.styles.header('Error Report:'));
+    cli.log(ReportViewerStyles.header('Error Report:'));
     cli.log(
-      ReportViewer.styles.error(
+      ReportViewerStyles.error(
         `   ${totalErrorCount} resource${
           totalErrorCount > 1 ? 's' : ''
         } in error `
