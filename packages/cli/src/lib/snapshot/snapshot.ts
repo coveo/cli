@@ -40,9 +40,9 @@ export class Snapshot {
     return {isValid: this.isValid(), report: this.latestReport};
   }
 
-  public async preview(snapshotZipPath: string) {
+  public async preview(resourceDirectoryPath: string) {
     this.displayLightPreview();
-    await this.displayExpandedPreview(snapshotZipPath);
+    await this.displayExpandedPreview(resourceDirectoryPath);
   }
 
   public async delete() {
@@ -100,11 +100,11 @@ export class Snapshot {
     report.display();
   }
 
-  private async displayExpandedPreview(snapshotZipPath: string) {
+  private async displayExpandedPreview(resourceDirectoryPath: string) {
     const previewer = new ExpandedPreviewer(
       this.latestReport,
       this.targetId!,
-      snapshotZipPath
+      resourceDirectoryPath
     );
     await previewer.preview();
   }

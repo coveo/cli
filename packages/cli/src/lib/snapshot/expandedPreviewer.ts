@@ -3,7 +3,8 @@ import {
   ResourceType,
 } from '@coveord/platform-client';
 import decompress from 'decompress';
-import {mkdirSync} from 'fs';
+import {mkdirSync, readdirSync} from 'fs';
+import {readJSONSync, writeJSONSync} from 'fs-extra';
 import {join, resolve} from 'path';
 import {spawnProcess} from '../utils/process';
 import {SnapshotFactory} from './snapshotFactory';
@@ -17,7 +18,8 @@ export class ExpandedPreviewer {
   public constructor(
     private readonly report: ResourceSnapshotsReportModel,
     private readonly orgId: string,
-    private readonly snapshotToPreviewZipPath: string
+    private readonly previewedSnapshotDirPath: string,
+    private readonly shouldDelete: boolean
   ) {
     this.resourcesToPreview = Object.keys(
       report.resourceOperationResults
@@ -61,8 +63,79 @@ export class ExpandedPreviewer {
     });
   }
 
+  private recursiveDirectoryDiff(
+    currentDir: string,
+    previewDir: string
+  ): string[] {
+    const files = readdirSync(currentDir, {withFileTypes: true});
+    const filePaths: string[] = [];
+    files.forEach((file) => {
+      if (file.isDirectory()) {
+        filePaths.push(
+          ...this.recursiveDirectoryDiff(
+            join(currentDir, file.name),
+            previewDir
+          )
+        );
+      }
+      if (file.isFile()) {
+        const currentFile = readJSONSync(join(currentDir, file.name));
+        const previewFile = readJSONSync(join(previewDir, file.name));
+
+        const currentResources =
+          this.getResourceDictionnaryFromObject(currentFile);
+        const previewResources =
+          this.getResourceDictionnaryFromObject(previewFile);
+
+        const diffedResources = this.getDiffedDictionnary(
+          currentResources,
+          previewResources
+        );
+
+        writeJSONSync(join(previewDir, file.name), diffedResources);
+      }
+    });
+    return filePaths;
+  }
+
+  private getDiffedDictionnary(
+    currentResources: Map<string, Object>,
+    previewResources: Map<string, Object>
+  ) {
+    if (this.shouldDelete) {
+      return previewResources;
+    }
+    const diffedResources = new Map<string, Object>(currentResources);
+    const iterator = previewResources.keys();
+    for (
+      let resource = iterator.next();
+      !resource.done;
+      resource = iterator.next()
+    ) {
+      const previewResource = previewResources.get(resource.value);
+      if (previewResource) {
+        diffedResources.set(resource.value, previewResource);
+      }
+    }
+    return diffedResources;
+  }
+
+  private getResourceDictionnaryFromObject(snapshotFile: any) {
+    const dictionnary = new Map<string, Object>();
+    const resourcesSection = snapshotFile['resources'];
+    for (const resourceType in resourcesSection) {
+      const resources = resourcesSection[resourceType];
+      resources.forEach((resource: any) => {
+        dictionnary.set(resource['resourceName'], resource);
+      });
+    }
+    return dictionnary;
+  }
+
   private async applySnapshotToPreview(dirPath: string) {
-    await decompress(this.snapshotToPreviewZipPath, dirPath);
+    this.recursiveDirectoryDiff(dirPath, this.previewedSnapshotDirPath);
+
+    await decompress(this.previewedSnapshotDirPath, dirPath);
     await spawnProcess('git', ['add', '.'], {cwd: dirPath});
     await spawnProcess(
       'git',

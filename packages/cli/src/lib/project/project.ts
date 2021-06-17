@@ -9,7 +9,7 @@ export class Project {
   }
 
   public deleteTemporaryZipFile() {
-    unlinkSync(this.pathToTemporaryZip);
+    unlinkSync(this.temporaryZipPath);
   }
 
   public ensureProjectCompliance() {
@@ -19,7 +19,7 @@ export class Project {
      *      * Check if the root has a valid config file
      */
 
-    if (!existsSync(this.pathToResources)) {
+    if (!existsSync(this.resourcesPath)) {
       throw new Error('Invalid Project. TODO: better error message');
     }
   }
@@ -27,28 +27,27 @@ export class Project {
   public async compressResources() {
     try {
       await new Promise<void>((resolve, reject) => {
-        const pathToTemporaryZip = this.pathToTemporaryZip;
-        const outputStream = createWriteStream(pathToTemporaryZip);
+        const outputStream = createWriteStream(this.temporaryZipPath);
         const archive = archiver('zip');
 
         outputStream.on('close', () => resolve());
         archive.on('error', (err) => reject(err));
 
         archive.pipe(outputStream);
-        archive.directory(this.pathToResources, false);
+        archive.directory(this.resourcesPath, false);
         archive.finalize();
       });
-      return this.pathToTemporaryZip;
+      return this.temporaryZipPath;
     } catch (error) {
       cli.error(error);
     }
   }
 
-  private get pathToTemporaryZip() {
+  private get temporaryZipPath() {
     return join(this.pathToProject, 'snapshot.zip');
   }
 
-  private get pathToResources() {
+  public get resourcesPath() {
     return join(this.pathToProject, 'resources');
   }
 }

@@ -62,7 +62,7 @@ export default class Preview extends Command {
 
     cli.action.stop(isValid ? green('✔') : red.bold('!'));
 
-    await snapshot.preview();
+    await snapshot.preview(project.resourcesPath);
 
     if (isValid) {
       await snapshot.delete();
