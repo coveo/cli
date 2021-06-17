@@ -54,7 +54,8 @@ export default class Push extends SnapshotBase {
 
   private async applySnapshot(snapshot: Snapshot) {
     cli.action.start('Applying snapshot');
-    const {isValid} = await snapshot.apply();
+    const {flags} = this.parse(Push);
+    const {isValid} = await snapshot.apply(flags.deleteMissingResources);
 
     if (!isValid) {
       await this.handleReportWithErrors(snapshot);
