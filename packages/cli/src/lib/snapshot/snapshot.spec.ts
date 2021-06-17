@@ -41,21 +41,47 @@ const getReport = (
   resourceOperationResults: {},
 });
 
-const getSuccessReport = (snapshotId: string): ResourceSnapshotsReportModel =>
+const getSuccessReport = (
+  snapshotId: string,
+  type: ResourceSnapshotsReportType
+): ResourceSnapshotsReportModel =>
   getReport(
     snapshotId,
-    ResourceSnapshotsReportType.DryRun,
+    type,
     ResourceSnapshotsReportStatus.Completed,
     ResourceSnapshotsReportResultCode.Success
   );
 
-const getErrorReport = (snapshotId: string): ResourceSnapshotsReportModel =>
+const getErrorReport = (
+  snapshotId: string,
+  type: ResourceSnapshotsReportType
+): ResourceSnapshotsReportModel =>
   getReport(
     snapshotId,
-    ResourceSnapshotsReportType.DryRun,
+    type,
     ResourceSnapshotsReportStatus.Completed,
     ResourceSnapshotsReportResultCode.ResourcesInError
   );
+
+const getSuccessDryRunReport = (
+  snapshotId: string
+): ResourceSnapshotsReportModel =>
+  getSuccessReport(snapshotId, ResourceSnapshotsReportType.DryRun);
+
+const getErrorDryRunReport = (
+  snapshotId: string
+): ResourceSnapshotsReportModel =>
+  getErrorReport(snapshotId, ResourceSnapshotsReportType.DryRun);
+
+const getSuccessApplyReport = (
+  snapshotId: string
+): ResourceSnapshotsReportModel =>
+  getSuccessReport(snapshotId, ResourceSnapshotsReportType.Apply);
+
+const getErrorApplyReport = (
+  snapshotId: string
+): ResourceSnapshotsReportModel =>
+  getErrorReport(snapshotId, ResourceSnapshotsReportType.Apply);
 
 const getDummySnapshotModel = (
   orgId: string,
@@ -92,6 +118,8 @@ const doMockAuthenticatedClient = () => {
 };
 
 describe('Snapshot', () => {
+  const targetOrgId = 'target-org';
+  const snapshotId = 'target-org-snapshot-id';
   beforeEach(() => {
     jest.resetAllMocks();
     doMockAuthenticatedClient();
@@ -101,21 +129,27 @@ describe('Snapshot', () => {
     jest.clearAllMocks();
   });
 
-  describe('when the resources are in error', () => {
+  describe('when validating resources in error', () => {
     let snapshot: Snapshot;
     let initialSnapshotState: ResourceSnapshotsModel;
-    const targetOrgId = 'target-org';
-    const snapshotId = 'target-org-snapshot-id';
 
     const doMockGetSnapshotInError = () => {
-      const errorReport = getErrorReport(snapshotId);
-      const futureSnapshotState = getDummySnapshotModel(
+      const validateErrorReport = getErrorDryRunReport(snapshotId);
+      const validateSnapshotState = getDummySnapshotModel(
         targetOrgId,
         snapshotId,
-        [errorReport]
+        [validateErrorReport]
+      );
+      const applyErrorReport = getErrorApplyReport(snapshotId);
+      const applySnapshotState = getDummySnapshotModel(
+        targetOrgId,
+        snapshotId,
+        [applyErrorReport]
       );
 
-      mockedGetSnapshot.mockResolvedValueOnce(futureSnapshotState);
+      mockedGetSnapshot
+        .mockResolvedValueOnce(validateSnapshotState)
+        .mockResolvedValueOnce(applySnapshotState);
     };
 
     beforeEach(async () => {
@@ -141,12 +175,12 @@ describe('Snapshot', () => {
       );
     });
 
-    it('#validate should return false if the report contains an error', async () => {
+    it('#validate should return false', async () => {
       const status = await snapshot.validate();
       expect(status.isValid).toBe(false);
     });
 
-    it('#apply should return false if the report contains an error', async () => {
+    it('#apply should return false', async () => {
       const status = await snapshot.apply();
       expect(status.isValid).toBe(false);
     });
@@ -223,18 +257,24 @@ describe('Snapshot', () => {
   describe('when the snapshot is successfully created', () => {
     let snapshot: Snapshot;
     let initialSnapshotState: ResourceSnapshotsModel;
-    const targetOrgId = 'target-org';
-    const snapshotId = 'target-org-snapshot-id';
 
     const doMockGetSnapshotWithoutError = async () => {
-      const successReport = getSuccessReport(snapshotId);
-      const futureSnapshotState = await getDummySnapshotModel(
+      const successValidateReport = getSuccessDryRunReport(snapshotId);
+      const futureValidateSnapshotState = await getDummySnapshotModel(
         targetOrgId,
         snapshotId,
-        [successReport]
+        [successValidateReport]
+      );
+      const successApplyReport = getSuccessApplyReport(snapshotId);
+      const futureApplySnapshotState = await getDummySnapshotModel(
+        targetOrgId,
+        snapshotId,
+        [successApplyReport]
       );
 
-      mockedGetSnapshot.mockResolvedValueOnce(futureSnapshotState);
+      mockedGetSnapshot
+        .mockResolvedValueOnce(futureValidateSnapshotState)
+        .mockResolvedValueOnce(futureApplySnapshotState);
     };
 
     beforeEach(async () => {
@@ -256,6 +296,21 @@ describe('Snapshot', () => {
 
     it('#targetId should return snapshot targetId', () => {
       expect(snapshot.targetId).toEqual('target-org');
+    });
+
+    it('report should contain the info of the last DryRun operation', async () => {
+      const status = await snapshot.validate();
+      expect(status.report.type).toBe(ResourceSnapshotsReportType.DryRun);
+    });
+
+    it('report should contain the info of the last Apply operation', async () => {
+      const status = await snapshot.apply();
+      expect(status.report.type).toBe(ResourceSnapshotsReportType.Apply);
+    });
+
+    it('should refresh the snapshot until the right operation is processed', async () => {
+      await snapshot.apply();
+      expect(mockedGetSnapshot).toHaveBeenCalledTimes(2);
     });
 
     it('#latestReport should return snapshot latestReport', async () => {
@@ -283,6 +338,11 @@ describe('Snapshot', () => {
         'target-org-snapshot-id',
         {deleteMissingResources: false}
       );
+    });
+
+    it('#apply should return true', async () => {
+      const status = await snapshot.apply();
+      expect(status.isValid).toBe(true);
     });
 
     it('#apply should apply a snapshot with deleteMissingResources flag', async () => {
