@@ -105,14 +105,6 @@ describe('org:config:preview', () => {
     });
 
     test
-      .command(['org:config:preview', '-p', 'path/to/project'])
-      .it('should use specifeid path for project', () => {
-        expect(mockedProject).toHaveBeenCalledWith(
-          normalize(join('path', 'to', 'project'))
-        );
-      });
-
-    test
       .command(['org:config:preview'])
       .it('should work with default connected org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
