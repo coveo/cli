@@ -48,7 +48,7 @@ export default class Push extends SnapshotBase {
     );
 
     if (canBeApplied) {
-      this.applySnapshot(snapshot);
+      await this.applySnapshot(snapshot);
     }
   }
 
