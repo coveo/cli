@@ -26,6 +26,8 @@ export default class Push extends SnapshotBase {
   public async run() {
     const {isValid, snapshot, project} = await this.dryRun();
 
+    await snapshot.preview();
+
     if (isValid) {
       await this.handleValidReport(snapshot);
       await snapshot.delete();
