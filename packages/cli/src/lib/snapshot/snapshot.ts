@@ -54,7 +54,7 @@ export class Snapshot {
   public async apply(deleteMissingResources = false) {
     await this.snapshotClient.apply(this.id, {deleteMissingResources});
 
-    await this.waitUntilDone();
+    await this.waitUntilOperationIsDone(ResourceSnapshotsReportType.Apply);
 
     return {isValid: this.isValid(), report: this.latestReport};
   }
@@ -98,7 +98,8 @@ export class Snapshot {
   }
 
   public get targetId() {
-    if (this.model.targetId === undefined) {
+    // TODO: remove after https://github.com/coveo/platform-client/pull/339 is merged
+    if (!this.model.targetId) {
       throw new Error(`No target id associated to the snapshot ${this.id}`);
     }
     return this.model.targetId;
