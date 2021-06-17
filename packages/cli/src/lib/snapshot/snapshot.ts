@@ -8,7 +8,7 @@ import {
 } from '@coveord/platform-client';
 import {cli} from 'cli-ux';
 import {backOff} from 'exponential-backoff';
-import {ReportViewer} from './reportViewer';
+import {ReportViewer} from './reportViewer/reportViewer';
 import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
 import dedent from 'ts-dedent';
@@ -29,9 +29,11 @@ export class Snapshot {
     private client: PlatformClient
   ) {}
 
-  public async validate(): Promise<ISnapshotValidation> {
+  public async validate(
+    deleteMissingResources = false
+  ): Promise<ISnapshotValidation> {
     await this.snapshotClient.dryRun(this.id, {
-      deleteMissingResources: false, // TODO: CDX-361: Add flag to support missing resources deletion
+      deleteMissingResources,
     });
 
     await this.waitUntilOperationIsDone(ResourceSnapshotsReportType.DryRun);
