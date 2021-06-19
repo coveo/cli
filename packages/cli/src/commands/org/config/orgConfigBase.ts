@@ -7,9 +7,10 @@ import {Config} from '../../../lib/config/config';
 import {Project} from '../../../lib/project/project';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {
-  platformSnapshotSynchronizationUrl,
-  platformSnapshotUrl,
-} from '../../../lib/platform/environment';
+  snapshotSynchronizationUrl,
+  snapshotUrl,
+  SnapshotUrlOptionsArgs,
+} from '../../../lib/platform/url';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {red, green} from 'chalk';
 import {normalize} from 'path';
@@ -129,15 +130,17 @@ export default abstract class SnapshotBase extends Command {
 
   private async getSnapshotPage(snapshot: Snapshot) {
     const options = await this.getSnapshotUrlOptions(snapshot);
-    return platformSnapshotUrl(options);
+    return snapshotUrl(options);
   }
 
   private async getSynchronizationPage(snapshot: Snapshot) {
     const options = await this.getSnapshotUrlOptions(snapshot);
-    return platformSnapshotSynchronizationUrl(options);
+    return snapshotSynchronizationUrl(options);
   }
 
-  private async getSnapshotUrlOptions(snapshot: Snapshot) {
+  private async getSnapshotUrlOptions(
+    snapshot: Snapshot
+  ): Promise<SnapshotUrlOptionsArgs> {
     const {environment} = await this.configuration.get();
     return {
       environment,

@@ -28,20 +28,6 @@ export function platformUrl<E extends PlatformEnvironment = 'prod'>(options?: {
   return `https://platform${urlEnv}${urlRegion}.cloud.coveo.com`;
 }
 
-export function platformSnapshotUrl<
-  E extends PlatformEnvironment = 'prod'
->(options: {environment: E; targetOrgId: string; snapshotId: string}) {
-  const url = platformUrl({environment: options.environment});
-  return `${url}/admin/#${options.targetOrgId}/organization/resource-snapshots/${options.snapshotId}`;
-}
-
-export function platformSnapshotSynchronizationUrl<
-  E extends PlatformEnvironment = 'prod'
->(options: {environment: E; targetOrgId: string; snapshotId: string}) {
-  const url = platformSnapshotUrl(options);
-  return `${url}/synchronization`;
-}
-
 export function castEnvironmentToPlatformClient(
   e: PlatformEnvironment
 ): Environment {
