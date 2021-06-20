@@ -25,7 +25,6 @@ describe('config:get', () => {
       mockGet.mockReturnValueOnce({foo: 'bar', buzz: 'bazz'});
     })
     .stdout()
-    .stderr()
     .command(['config:get'])
     .it('prints the config', (ctx) => {
       expect(JSON.parse(ctx.stdout)).toMatchObject({foo: 'bar', buzz: 'bazz'});
@@ -36,7 +35,6 @@ describe('config:get', () => {
       mockGet.mockReturnValueOnce({accessToken: 'oh no', foo: 'bar'});
     })
     .stdout()
-    .stderr()
     .command(['config:get'])
     .it('prints the config by omitting access token', (ctx) => {
       expect(JSON.parse(ctx.stdout)).not.toHaveProperty('accessToken');
