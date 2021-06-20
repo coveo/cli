@@ -179,7 +179,7 @@ describe('org:config:push', () => {
       });
 
     test
-      .command(['org:config:push', '--skip-preview'])
+      .command(['org:config:push', '--skipPreview'])
       .it('should apply snapshot without confrimation', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledTimes(1);
       });
