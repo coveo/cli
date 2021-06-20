@@ -1,4 +1,5 @@
 import {cli} from 'cli-ux';
+import {flags} from '@oclif/command';
 import {ReadStream} from 'fs';
 import {
   IsAuthenticated,
@@ -18,15 +19,25 @@ export default class Push extends SnapshotBase {
 
   public static flags = {
     ...SnapshotBase.flags,
+    skipPreview: flags.boolean({
+      char: 'f',
+      description:
+        'Do not preview changes before applying them to the organization',
+      default: false,
+      required: false,
+    }),
   };
 
   public static hidden = true;
 
   @Preconditions(IsAuthenticated())
   public async run() {
+    const {flags} = this.parse(Push);
     const {isValid, snapshot, project} = await this.dryRun();
 
-    await snapshot.preview();
+    if (!flags.skipPreview) {
+      await snapshot.preview();
+    }
 
     if (isValid) {
       await this.handleValidReport(snapshot);
@@ -40,16 +51,22 @@ export default class Push extends SnapshotBase {
     if (!snapshot.hasChangedResources()) {
       return;
     }
+    const {flags} = this.parse(Push);
+    const canBeApplied = flags.skipPreview || (await this.askForConfirmation());
+
+    if (canBeApplied) {
+      await this.applySnapshot(snapshot);
+    }
+  }
+
+  private async askForConfirmation() {
     const targetOrg = await this.getTargetOrg();
     const canBeApplied = await cli.confirm(
       `\nWould you like to apply these changes to the org ${bold(
         targetOrg
       )}? (y/n)`
     );
-
-    if (canBeApplied) {
-      await this.applySnapshot(snapshot);
-    }
+    return canBeApplied;
   }
 
   private async applySnapshot(snapshot: Snapshot) {

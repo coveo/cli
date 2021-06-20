@@ -179,10 +179,9 @@ describe('org:config:push', () => {
       });
 
     test
-      .skip()
       .command(['org:config:push', '--skip-preview'])
-      .it('should not prompt the user', () => {
-        // TODO: CDX-403: test --skip-preview flag
+      .it('should apply snapshot without confrimation', () => {
+        expect(mockedApplySnapshot).toHaveBeenCalledTimes(1);
       });
   });
 
