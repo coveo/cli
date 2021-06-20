@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 import {resolve} from 'path';
 
@@ -9,8 +10,12 @@ interface JsonVersionFile {
   webSocketDebuggerUrl: string;
 }
 
-export const SCREENSHOTS_PATH =
-  '/home/notGroot/cli-copy/packages/cli-e2e/screenshots';
+export const LOGS_PATH = resolve(__dirname, '..', 'artifacts/logs');
+export const SCREENSHOTS_PATH = resolve(
+  __dirname,
+  '..',
+  'artifacts/screenshots'
+);
 
 /**
  * Closes all pages of the targeted browser instance.
@@ -66,6 +71,7 @@ export async function captureScreenshots(
   browser: Browser,
   screenshotName?: string
 ): Promise<void> {
+  let pageCount = 0;
   for (const page of await browser.pages()) {
     page.url;
     try {
@@ -76,7 +82,7 @@ export async function captureScreenshots(
           SCREENSHOTS_PATH,
           (screenshotName ??
             expect.getState().currentTestName.trim().replace(/\W/g, '_')) +
-            '.png'
+            `-${pageCount++}.png`
         ),
       });
     } catch (error) {
@@ -243,7 +249,7 @@ export async function isElementClickable(page: Page, selector: string) {
           isElementInViewport(elem) &&
           elem.disabled !== true &&
           isOverlappingElementMatch(
-            (getOverlappingElements(elem) as any) as HTMLElement[],
+            getOverlappingElements(elem) as any as HTMLElement[],
             elem
           )
         );

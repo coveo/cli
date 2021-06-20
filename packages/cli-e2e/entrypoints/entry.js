@@ -3,14 +3,12 @@ const {
   startDockerCompose,
   startTestRunning,
   stopDockerContainers,
-} = require('./common');
+} = require('./utils/common');
 
 ensureDockerImageIsPresent();
 try {
   startDockerCompose();
   startTestRunning();
 } finally {
-  if (!process.env.CI) {
-    stopDockerContainers();
-  }
+  stopDockerContainers();
 }

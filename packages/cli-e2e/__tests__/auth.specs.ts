@@ -2,9 +2,10 @@ import retry from 'async-retry';
 
 import type {Browser} from 'puppeteer';
 
-import {answerPrompt, CLI_EXEC_PATH, isYesNoPrompt} from '../utils/cli';
+import {answerPrompt, CLI_EXEC_PATH, isGenericYesNoPrompt} from '../utils/cli';
 import {captureScreenshots, connectToChromeBrowser} from '../utils/browser';
 import {ProcessManager} from '../utils/processManager';
+import {Terminal} from '../utils/terminal/terminal';
 
 describe('auth', () => {
   describe('login', () => {
@@ -23,20 +24,24 @@ describe('auth', () => {
 
     it('should open the platform page', async () => {
       // TODO CDX-98: Remove `-e=dev`.
-      const cliProcess = processManager.spawn(CLI_EXEC_PATH, [
-        'auth:login',
-        '-e=dev',
-      ]);
-      cliProcess.stderr.on('data', async (data) => {
-        if (isYesNoPrompt(data.toString())) {
-          await answerPrompt('n', cliProcess);
-        }
-      });
-      cliProcess.stdout.on('data', async (data) => {
-        if (isYesNoPrompt(data.toString())) {
-          await answerPrompt('n', cliProcess);
-        }
-      });
+      const args: string[] = [CLI_EXEC_PATH, 'auth:login', '-e=dev'];
+      if (process.platform === 'win32') {
+        args.unshift('node');
+      }
+      await captureScreenshots(browser);
+      const cliTerminal = new Terminal(
+        args.shift()!,
+        args,
+        undefined,
+        processManager,
+        'auth-login'
+      );
+
+      cliTerminal
+        .when(isGenericYesNoPrompt)
+        .on('stderr')
+        .do(answerPrompt('n'))
+        .once();
 
       await retry(async () => {
         const pages = await browser.pages();

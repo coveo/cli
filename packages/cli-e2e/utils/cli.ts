@@ -3,38 +3,23 @@ import {resolve, join} from 'path';
 import {mkdirSync} from 'fs';
 import {homedir} from 'os';
 
-import stripAnsi from 'strip-ansi';
-
 import {ProcessManager} from './processManager';
 import {readJsonSync} from 'fs-extra';
 import type {AxiosResponse} from 'axios';
 import axios from 'axios';
+import {Terminal} from './terminal/terminal';
 
-export function isYesNoPrompt(data: string) {
-  return data.trimEnd().toLowerCase().endsWith('(y/n):');
-}
+export const isGenericYesNoPrompt = /\(y\/n\)[\s:]*$/i;
 
-export function isGenericYesNoPrompt(data: string) {
-  let stripedData = data;
-  try {
-    stripedData = stripAnsi(data.toString());
-  } catch (error) {
-    console.log('Unable to strip ansi from string', error);
-  }
-  return /\(y\/n\)[\s:]*$/i.test(stripedData);
-}
-
-export function answerPrompt(
-  answer: string,
-  proc: ChildProcessWithoutNullStreams
-) {
-  return new Promise<void>((resolve) => {
-    if (!proc.stdin.write(answer)) {
-      proc.stdin.once('drain', () => resolve());
-    } else {
-      process.nextTick(() => resolve);
-    }
-  });
+export function answerPrompt(answer: string) {
+  return (proc: ChildProcessWithoutNullStreams) =>
+    new Promise<void>((resolve) => {
+      if (!proc.stdin.write(answer)) {
+        proc.stdin.once('drain', () => resolve());
+      } else {
+        process.nextTick(() => resolve);
+      }
+    });
 }
 
 export interface ISetupUIProjectOptionsArgs {
@@ -63,14 +48,27 @@ export function setupUIProject(
     console.log('Testing with published version of the template');
   }
 
-  const buildProcess = processManager.spawn(CLI_EXEC_PATH, command, {
-    cwd: resolve(getProjectPath(projectName), '..'),
-  });
+  const args = [CLI_EXEC_PATH, ...command];
+
+  if (process.platform === 'win32') {
+    args.unshift('node');
+  }
+
+  const buildProcess = new Terminal(
+    args.shift()!,
+    args,
+    {
+      cwd: resolve(getProjectPath(projectName), '..'),
+    },
+    processManager,
+    `build-${projectName}`
+  );
 
   return buildProcess;
 }
 export function getConfigFilePath() {
-  return resolve(homedir(), '.config', '@coveo', 'cli', 'config.json');
+  const configsDir = process.platform === 'win32' ? 'AppData/Local' : '.config';
+  return resolve(homedir(), configsDir, '@coveo', 'cli', 'config.json');
 }
 
 export function getConfig() {

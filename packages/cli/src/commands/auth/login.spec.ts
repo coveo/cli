@@ -35,10 +35,10 @@ describe('auth:login', () => {
   beforeEach(() => {
     mockedAuthenticatedClient.mockImplementation(
       () =>
-        (({
+        ({
           getAllOrgsUserHasAccessTo: mockListOrgs,
           getUserHasAccessToOrg: mockGetHasAccessToOrg,
-        } as unknown) as AuthenticatedClient)
+        } as unknown as AuthenticatedClient)
     );
     mockedOAuth.mockImplementationOnce(
       () =>
@@ -52,10 +52,10 @@ describe('auth:login', () => {
 
     mockedConfig.mockImplementation(
       () =>
-        (({
+        ({
           get: mockConfigGet,
           set: mockConfigSet,
-        } as unknown) as Config)
+        } as unknown as Config)
     );
   });
 

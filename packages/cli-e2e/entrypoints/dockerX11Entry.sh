@@ -18,7 +18,11 @@ npm run npm:publish:template
 
 google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720 >/dev/null 2>&1 & \
 
-node scripts/wait-for-published-packages.js
-
 cd packages/cli-e2e
+node entrypoints/utils/wait-for-published-packages.js
+export COVEO_CLI_E2E_DEBUG=true;
+
+# Wait for Chrome to be up'n'running.
+while ! timeout 1 bash -c "echo > /dev/tcp/localhost/9222"; do sleep 10; done
+
 npm run-script jest:debug

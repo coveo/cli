@@ -3,6 +3,57 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/coveo/cli/compare/v1.2.1...v1.3.0) (2021-06-14)
+
+
+### Bug Fixes
+
+* **vue:** .eslintrc blocks user from commiting  ([#224](https://github.com/coveo/cli/issues/224)) ([c8d9de0](https://github.com/coveo/cli/commit/c8d9de087631b6a40f6613caada01aa892a091bf))
+
+
+### Features
+
+* assign a dynamic port to both front and back ends on all ui project ([#230](https://github.com/coveo/cli/issues/230)) ([46d9dfd](https://github.com/coveo/cli/commit/46d9dfd47af749f6d1fc120668383982bfa2e249))
+
+
+
+
+
+## [1.2.1](https://github.com/coveo/cli/compare/v1.2.0...v1.2.1) (2021-05-17)
+
+
+### Bug Fixes
+
+* **cli:** set dependency and cd fix ([#223](https://github.com/coveo/cli/issues/223)) ([3a89594](https://github.com/coveo/cli/commit/3a8959431d4bb0ea9a83f283afc6e65764aab6ed))
+
+
+
+
+
+# [1.2.0](https://github.com/coveo/cli/compare/v1.1.1...v1.2.0) (2021-05-14)
+
+**Note:** Version bump only for package @coveo/vue-cli-plugin-typescript
+
+
+
+
+
+## [1.1.1](https://github.com/coveo/cli/compare/v1.1.0...v1.1.1) (2021-05-05)
+
+**Note:** Version bump only for package @coveo/vue-cli-plugin-typescript
+
+
+
+
+
+# [1.1.0](https://github.com/coveo/cli/compare/v1.0.15...v1.1.0) (2021-05-04)
+
+**Note:** Version bump only for package @coveo/vue-cli-plugin-typescript
+
+
+
+
+
 ## [1.0.15](https://github.com/coveo/cli/compare/v1.0.14...v1.0.15) (2021-04-21)
 
 **Note:** Version bump only for package @coveo/vue-cli-plugin-typescript

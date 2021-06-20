@@ -5,10 +5,9 @@ const {appendCmdIfWindows} = require('./utils');
 config();
 
 function getEnvVariables() {
-  const searchTokenServerPort = 4000;
   var envVars = Object.assign(
     {
-      SERVER_PORT: searchTokenServerPort,
+      SERVER_PORT: process.env.REACT_APP_SERVER_PORT,
       API_KEY: process.env.REACT_APP_API_KEY,
       ORGANIZATION_ID: process.env.REACT_APP_ORGANIZATION_ID,
       PLATFORM_URL: process.env.REACT_APP_PLATFORM_URL,

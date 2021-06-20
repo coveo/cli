@@ -24,9 +24,9 @@ describe('org:list', () => {
 
   mockedClient.mockImplementation(
     () =>
-      (({
+      ({
         getAllOrgsUserHasAccessTo: mockGetOrgs,
-      } as unknown) as AuthenticatedClient)
+      } as unknown as AuthenticatedClient)
   );
 
   test

@@ -1,6 +1,7 @@
 export declare const environment: {
   production: boolean;
-  tokenEndpoint: string;
+  customTokenEndpoint: string;
+  defaultTokenEndpoint: string;
   platformUrl: string;
   organizationId: string;
 };

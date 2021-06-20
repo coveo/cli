@@ -23,7 +23,7 @@ const GuardedRoute = () => {
       'REACT_APP_ORGANIZATION_ID',
       'REACT_APP_API_KEY',
       'REACT_APP_USER_EMAIL',
-      'REACT_APP_TOKEN_ENDPOINT',
+      'REACT_APP_SERVER_PORT',
     ];
     const reducer = (previousValue: boolean, currentValue: string) =>
       previousValue && Boolean(process.env[currentValue]);

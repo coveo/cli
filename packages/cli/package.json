@@ -1,14 +1,13 @@
 {
   "name": "@coveo/cli",
-  "private": true,
-  "version": "1.0.15",
+  "version": "1.3.0",
   "author": "Coveo",
   "engines": {
     "node": ">=14.15.1"
   },
   "dependencies": {
     "@angular/cli": "^11.1.4",
-    "@coveord/platform-client": "^18.2.1",
+    "@coveord/platform-client": "^20.2.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^3",
@@ -16,34 +15,42 @@
     "@openid/appauth": "^1.3.0",
     "@vue/cli": "^4.5.11",
     "abortcontroller-polyfill": "^1.7.1",
+    "archiver": "^5.3.0",
+    "chalk": "^4.1.1",
     "cli-ux": "^5.5.1",
     "coveo.analytics": "^2.18.4",
     "create-react-app": "^4.0.3",
     "exponential-backoff": "^3.1.0",
     "fs-extra": "^9.1.0",
     "isomorphic-fetch": "^3.0.0",
+    "json2csv": "^5.0.6",
     "node-pty": "^0.10.0",
+    "patch-package": "^6.2.2",
     "semver": "^7.3.4",
     "ts-dedent": "^2.1.1",
     "tslib": "^1"
   },
   "devDependencies": {
-    "@coveo/angular": "^1.0.7",
-    "@coveo/cra-template": "^1.0.7",
-    "@coveo/vue-cli-plugin-typescript": "^1.0.7",
+    "@coveo/angular": "^1.3.0",
+    "@coveo/cra-template": "^1.3.0",
+    "@coveo/vue-cli-plugin-typescript": "^1.3.0",
     "@oclif/dev-cli": "^1.26.0",
+    "@oclif/errors": "^1.3.4",
     "@oclif/test": "^1",
+    "@types/archiver": "^5.1.0",
+    "@types/cli-progress": "^3.9.1",
     "@types/fs-extra": "^9.0.6",
     "@types/jest": "^26.0.22",
+    "@types/json2csv": "^5.0.2",
     "@types/node": "^10",
     "chai": "^4.2.0",
     "eslint": "^7.23.0",
     "jest": "^26.6.3",
-    "patch-package": "^6.2.2",
-    "prettier": "^2.2.1",
+    "prettier": "^2.3.0",
     "rimraf": "^3.0.2",
-    "ts-jest": "^26.5.5",
-    "ts-node": "^9",
+    "strip-ansi": "^6.0.0",
+    "ts-jest": "^26.5.1",
+    "ts-node": "^8",
     "typescript": "4.2.3"
   },
   "files": [
@@ -84,6 +91,9 @@
       },
       "ui:create": {
         "description": "create a user interface powered by different front end frameworks and Coveo Headless"
+      },
+      "org:search": {
+        "description": "perform queries against a coveo index"
       }
     },
     "hooks": {
@@ -110,5 +120,8 @@
     "version": "oclif-dev readme && git add README.md",
     "postinstall": "patch-package"
   },
-  "types": "lib/index.d.ts"
+  "types": "lib/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  }
 }

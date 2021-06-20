@@ -13,10 +13,10 @@ describe('config:get', () => {
   beforeEach(() => {
     mockedConfig.mockImplementation(
       () =>
-        (({
+        ({
           get: mockGet,
           set: mockSet,
-        } as unknown) as Config)
+        } as unknown as Config)
     );
   });
 
