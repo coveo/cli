@@ -22,7 +22,6 @@ describe('hooks:prerun', () => {
     .do(() => {
       mockGet.mockReturnValueOnce(Promise.resolve({analyticsEnabled: true}));
     })
-    .stderr()
     .stdout()
     .hook('prerun')
     .it(
@@ -39,7 +38,6 @@ describe('hooks:prerun', () => {
       );
     })
     .stub(cli, 'confirm', () => async () => true)
-    .stderr()
     .stdout()
     .hook('prerun', {Command: {id: 'update'}})
     .it(
@@ -56,7 +54,6 @@ describe('hooks:prerun', () => {
       );
     })
     .stub(cli, 'confirm', () => async () => true)
-    .stderr()
     .stdout()
     .hook('prerun')
     .it(
@@ -73,7 +70,6 @@ describe('hooks:prerun', () => {
       );
     })
     .stub(cli, 'confirm', () => async () => true)
-    .stderr()
     .stdout()
     .hook('prerun')
     .it(
@@ -91,7 +87,6 @@ describe('hooks:prerun', () => {
     })
     .stub(cli, 'confirm', () => async () => false)
     .stdout()
-    .stderr()
     .hook('prerun')
     .it(
       'does modify config when #analytics have not been configured and the users answer #false',

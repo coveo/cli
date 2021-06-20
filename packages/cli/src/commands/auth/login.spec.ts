@@ -97,7 +97,6 @@ describe('auth:login', () => {
     'us-west-2',
   ].forEach((region) => {
     test
-      .stderr()
       .stdout()
       .command(['auth:login', '-r', region, '-o', 'foo'])
       .it(`passes the -e=${region} flag to oauth and configuration`, () => {

@@ -92,10 +92,10 @@ describe('config:set', () => {
     );
 
   test
+    .stdout()
     .do(() => {
       mockGetHasAccessToOrg.mockReturnValueOnce(Promise.resolve(false));
     })
-    .stdout()
     .command(['config:set', '-o', 'the_org'])
     .catch(/do not have access to organization the_org/)
     .it(
