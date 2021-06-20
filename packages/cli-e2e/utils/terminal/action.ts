@@ -14,6 +14,7 @@ export class Action {
   public target?: OnTarget;
 
   public constructor(public process: ChildProcessWithoutNullStreams) {}
+
   public hasKeys<T extends keyof ActionProps>(
     ...keys: T[]
   ): this is ActionWith<T> {
