@@ -10,16 +10,16 @@ import {
 
 export class AuthenticatedClient {
   public cfg: Config;
-  constructor() {
+  public constructor() {
     this.cfg = new Config(global.config.configDir);
   }
 
-  async isLoggedIn() {
+  public async isLoggedIn() {
     const {accessToken} = await this.cfg.get();
     return accessToken !== undefined;
   }
 
-  async isExpired() {
+  public async isExpired() {
     try {
       const c = await this.getClient();
       await c.initialize();
@@ -29,7 +29,7 @@ export class AuthenticatedClient {
     }
   }
 
-  async getClient(overrideConfig?: Partial<Configuration>) {
+  public async getClient(overrideConfig?: Partial<Configuration>) {
     const configFromDisk = await this.cfg.get();
     const resolvedConfig = {...configFromDisk, ...overrideConfig};
 
@@ -41,17 +41,17 @@ export class AuthenticatedClient {
     });
   }
 
-  async getAllOrgsUserHasAccessTo() {
+  public async getAllOrgsUserHasAccessTo() {
     const platformClient = await this.getClient();
     return platformClient.organization.list();
   }
 
-  async getUserHasAccessToOrg(org: string) {
+  public async getUserHasAccessToOrg(org: string) {
     const orgs = await this.getAllOrgsUserHasAccessTo();
     return orgs.some((o) => o.id === org);
   }
 
-  async createImpersonateApiKey(name: string) {
+  public async createImpersonateApiKey(name: string) {
     const platformClient = await this.getClient();
     return await platformClient.apiKey.create({
       displayName: `cli-${name}`,
@@ -63,7 +63,7 @@ export class AuthenticatedClient {
     });
   }
 
-  async getUserInfo() {
+  public async getUserInfo() {
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();
     await platformClient.initialize();

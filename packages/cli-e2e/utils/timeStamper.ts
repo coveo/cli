@@ -1,7 +1,7 @@
 import {Transform} from 'stream';
 
 export class TimeStamper extends Transform {
-  constructor() {
+  public constructor() {
     super({
       transform(chunk, _encoding, callback) {
         this.push(
