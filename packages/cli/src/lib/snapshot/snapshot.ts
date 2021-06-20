@@ -157,7 +157,8 @@ export class Snapshot {
       {
         delayFirstAttempt: true,
         startingDelay: 1e3 / 2,
-        maxDelay: 2e3,
+        maxDelay: 10e3,
+        numOfAttempts: 20,
       }
     );
 
