@@ -8,7 +8,7 @@ import {On, OnTarget} from './on';
  */
 export class When {
   private action: ActionWith<'condition'>;
-  constructor(action: Action, condition: Condition) {
+  public constructor(action: Action, condition: Condition) {
     action.condition = condition;
     if (action.hasKeys<'condition'>('condition')) {
       this.action = action;
