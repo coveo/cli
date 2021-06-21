@@ -33,6 +33,7 @@ jobs:
         with:
           node-version: ${{matrix.node}}
       - name: TOREMOVE
+        if: ${{matrix.os == 'windows-latest'}}
         run: |
           ls "C:\Program Files (x86)\Windows Kits\10\bin\"
           where.exe signtool.exe
