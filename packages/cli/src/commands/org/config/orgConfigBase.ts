@@ -30,13 +30,6 @@ export default abstract class SnapshotBase extends Command {
       helpValue: 'destinationorganizationg7dg3gd',
       required: false,
     }),
-    projectPath: flags.string({
-      char: 'p',
-      description: 'The path to your Coveo project.',
-      helpValue: '/Users/Me/my-project',
-      default: cwd(),
-      required: false,
-    }),
     deleteMissingResources: flags.boolean({
       char: 'd',
       description: 'Whether or not to show resources to delete',
@@ -48,7 +41,7 @@ export default abstract class SnapshotBase extends Command {
   public static hidden = true;
 
   protected async dryRun() {
-    const project = new Project(normalize(this.flags.projectPath));
+    const project = new Project(normalize(this.projectPath));
 
     cli.action.start('Creating snapshot');
     const snapshot = await this.createSnapshotFromProject(project);
@@ -89,9 +82,13 @@ export default abstract class SnapshotBase extends Command {
     return cfg.organization;
   }
 
+  protected get projectPath() {
+    return cwd();
+  }
+
   protected async handleReportWithErrors(snapshot: Snapshot) {
     // TODO: CDX-362: handle invalid snapshot cases
-    const pathToReport = snapshot.saveDetailedReport(this.flags.projectPath);
+    const pathToReport = snapshot.saveDetailedReport(this.projectPath);
     const report = snapshot.latestReport;
 
     if (snapshot.requiresSynchronization()) {
