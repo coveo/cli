@@ -127,8 +127,6 @@ describe('ui:create:angular', () => {
     .do(() => {
       preconditionStatus.npm = false;
     })
-    .stdout()
-    .stderr()
     .command(['ui:create:angular', 'myapp'])
     .it(
       'should not execute the command if the preconditions are not respected',
@@ -138,8 +136,6 @@ describe('ui:create:angular', () => {
     );
 
   test
-    .stdout()
-    .stderr()
     .command(['ui:create:angular'])
     .catch((ctx) => {
       expect(ctx.message).toContain('Missing 1 required arg:');
@@ -147,8 +143,6 @@ describe('ui:create:angular', () => {
     .it('requires application name argument', async () => {});
 
   test
-    .stdout()
-    .stderr()
     .command(['ui:create:angular', 'myapp'])
     .it(
       'should start a spawn process with the appropriate arguments',

@@ -125,8 +125,6 @@ describe('ui:create:vue', () => {
     .do(() => {
       preconditionStatus.node = false;
     })
-    .stdout()
-    .stderr()
     .command(['ui:create:vue', 'myapp'])
     .it(
       'should not execute the command if the preconditions are not respected',
@@ -136,8 +134,6 @@ describe('ui:create:vue', () => {
     );
 
   test
-    .stdout()
-    .stderr()
     .command(['ui:create:vue'])
     .catch((ctx) => {
       expect(ctx.message).toContain('Missing 1 required arg:');
@@ -145,8 +141,6 @@ describe('ui:create:vue', () => {
     .it('requires application name argument', async () => {});
 
   test
-    .stdout()
-    .stderr()
     .command(['ui:create:vue', 'myapp'])
     .it('should start 2 spawn processes with default preset arguments', () => {
       expect(mockedSpawnProcess).toHaveBeenCalledTimes(2);
