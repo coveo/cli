@@ -1,4 +1,7 @@
-import {CreateFromFileOptions} from '@coveord/platform-client';
+import {
+  CreateFromFileOptions,
+  ResourceSnapshotsReportType,
+} from '@coveord/platform-client';
 import {createReadStream, ReadStream} from 'fs';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {Snapshot} from './snapshot';
@@ -27,7 +30,13 @@ export class SnapshotFactory {
       file,
       computedOptions
     );
-    return new Snapshot(model, client);
+    const snapshot = new Snapshot(model, client);
+
+    await snapshot.waitUntilOperationIsDone(
+      ResourceSnapshotsReportType.CreateSnapshot
+    );
+
+    return snapshot;
   }
 
   public static async createFromOrg() {
