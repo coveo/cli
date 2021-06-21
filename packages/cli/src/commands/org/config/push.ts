@@ -20,7 +20,7 @@ export default class Push extends SnapshotBase {
   public static flags = {
     ...SnapshotBase.flags,
     skipPreview: flags.boolean({
-      char: 'f',
+      char: 's',
       description:
         'Do not preview changes before applying them to the organization',
       default: false,
