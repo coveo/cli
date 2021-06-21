@@ -19,7 +19,7 @@ import {IsNodeVersionInRange} from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import Command from '@oclif/command';
 
-describe('aaa', () => {
+describe('ui:create:vue', () => {
   const mockedConfig = mocked(Config);
   const mockedSpawnProcess = mocked(spawnProcess, true);
   const mockedPlatformClient = mocked(PlatformClient);
