@@ -1,6 +1,6 @@
 import {PlatformEnvironment, platformUrl} from './environment';
 
-export interface SnapshotUrlOptionsArgs<> {
+export interface SnapshotUrlOptionsArgs {
   environment: Partial<PlatformEnvironment>;
   targetOrgId: string;
   snapshotId: string;
