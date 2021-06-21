@@ -45,8 +45,8 @@ describe('ui:create:angular', () => {
     const mockNpm = function (_target: Command) {
       return new Promise<boolean>((resolve) => resolve(preconditionStatus.npm));
     };
-    mockedIsNodeVersionInRange.mockReturnValueOnce(mockNode);
-    mockedIsNpmVersionInRange.mockReturnValueOnce(mockNpm);
+    mockedIsNodeVersionInRange.mockReturnValue(mockNode);
+    mockedIsNpmVersionInRange.mockReturnValue(mockNpm);
   };
 
   const doMockSpawnProcess = () => {
