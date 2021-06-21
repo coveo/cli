@@ -46,6 +46,19 @@ export class Snapshot {
     this.displayExpandedPreview();
   }
 
+  public hasChangedResources(): boolean {
+    // TODO: CDX-390: Do not propose to apply a snapshot if it contains no changes
+    return true;
+  }
+
+  public async apply(deleteMissingResources = false) {
+    await this.snapshotClient.apply(this.id, {deleteMissingResources});
+
+    await this.waitUntilOperationIsDone(ResourceSnapshotsReportType.Apply);
+
+    return {isValid: this.isValid(), report: this.latestReport};
+  }
+
   public async delete() {
     await this.client.resourceSnapshot.delete(this.model.id);
   }
@@ -85,6 +98,10 @@ export class Snapshot {
   }
 
   public get targetId() {
+    // TODO: remove after https://github.com/coveo/platform-client/pull/339 is merged
+    if (!this.model.targetId) {
+      throw new Error(`No target id associated to the snapshot ${this.id}`);
+    }
     return this.model.targetId;
   }
 
