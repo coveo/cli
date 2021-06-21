@@ -32,11 +32,6 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ${{matrix.node}}
-      - name: TOREMOVE
-        if: ${{matrix.os == 'windows-latest'}}
-        run: |
-          ls "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64"
-          where.exe signtool.exe
       - name: Setup repo
         run: npm run setup
       - name: Check linting
