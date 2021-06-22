@@ -11,6 +11,7 @@ on:
 
 jobs:
   package:
+    environment: 'Release'
     env:
       GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
     name: Package for ${{ matrix.for }}

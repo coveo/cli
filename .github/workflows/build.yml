@@ -8,7 +8,6 @@ on:
 jobs:
   run-script:
     runs-on: ${{matrix.os}}
-    environment: 'Release'
     strategy:
       fail-fast: true
       matrix:
