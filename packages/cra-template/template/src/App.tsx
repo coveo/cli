@@ -6,7 +6,7 @@ import coveologo from './coveologo.svg';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import {Grid, Typography, Box} from '@material-ui/core';
 import {initializeHeadlessEngine} from './common/Engine';
-import {Engine} from '@coveo/headless';
+import {SearchEngine} from '@coveo/headless';
 
 export default function App() {
   return (
@@ -36,7 +36,7 @@ const GuardedRoute = () => {
 };
 
 const Home = () => {
-  const [engine, setEngine] = React.useState<Engine | null>(null);
+  const [engine, setEngine] = React.useState<SearchEngine | null>(null);
 
   useEffect(() => {
     initializeHeadlessEngine().then((engine) => {
