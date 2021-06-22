@@ -8,7 +8,7 @@ import {
 } from '@coveord/platform-client';
 import {cli} from 'cli-ux';
 import {backOff} from 'exponential-backoff';
-import {ReportViewer} from './reportViewer';
+import {ReportViewer} from './reportViewer/reportViewer';
 import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
 import dedent from 'ts-dedent';
@@ -29,9 +29,11 @@ export class Snapshot {
     private client: PlatformClient
   ) {}
 
-  public async validate(): Promise<ISnapshotValidation> {
+  public async validate(
+    deleteMissingResources = false
+  ): Promise<ISnapshotValidation> {
     await this.snapshotClient.dryRun(this.id, {
-      deleteMissingResources: false, // TODO: CDX-361: Add flag to support missing resources deletion
+      deleteMissingResources,
     });
 
     await this.waitUntilOperationIsDone(ResourceSnapshotsReportType.DryRun);
@@ -42,6 +44,19 @@ export class Snapshot {
   public async preview() {
     this.displayLightPreview();
     this.displayExpandedPreview();
+  }
+
+  public hasChangedResources(): boolean {
+    // TODO: CDX-390: Do not propose to apply a snapshot if it contains no changes
+    return true;
+  }
+
+  public async apply(deleteMissingResources = false) {
+    await this.snapshotClient.apply(this.id, {deleteMissingResources});
+
+    await this.waitUntilOperationIsDone(ResourceSnapshotsReportType.Apply);
+
+    return {isValid: this.isValid(), report: this.latestReport};
   }
 
   public async delete() {
@@ -83,6 +98,10 @@ export class Snapshot {
   }
 
   public get targetId() {
+    // TODO: remove after https://github.com/coveo/platform-client/pull/339 is merged
+    if (!this.model.targetId) {
+      throw new Error(`No target id associated to the snapshot ${this.id}`);
+    }
     return this.model.targetId;
   }
 

@@ -33,7 +33,6 @@ export class SearchBoxComponent implements OnInit {
   public search() {
     if (!this.headlessSearchBox.state.isLoading) {
       this.headlessSearchBox.submit();
-      this.headlessSearchBox.hideSuggestions();
     }
   }
 
