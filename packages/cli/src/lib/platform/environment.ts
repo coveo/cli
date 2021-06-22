@@ -12,34 +12,27 @@ export type PlatformRegion = Extract<
   {env: PlatformEnvironment}
 >['region'];
 
-export function platformUrl<E extends PlatformEnvironment = 'prod'>(options?: {
-  environment?: E;
-  region?: PlatformRegion;
-}) {
+export const DEFAULT_ENVIRONMENT = 'prod' as const;
+export const DEFAULT_REGION = 'us-east-1' as const;
+
+type PlatformUrlOptions = {
+  environment: PlatformEnvironment;
+  region: PlatformRegion;
+};
+
+const defaultOptions: PlatformUrlOptions = {
+  environment: DEFAULT_ENVIRONMENT,
+  region: DEFAULT_REGION,
+};
+
+export function platformUrl(options?: Partial<PlatformUrlOptions>) {
+  options = {...defaultOptions, ...options};
   const urlEnv =
-    !options || !options.environment || options.environment === 'prod'
-      ? ''
-      : options.environment;
+    options.environment === DEFAULT_ENVIRONMENT ? '' : options.environment;
   const urlRegion =
-    !options || !options.region || options.region === 'us-east-1'
-      ? ''
-      : `-${options.region}`;
+    options.region === DEFAULT_REGION ? '' : `-${options.region}`;
 
   return `https://platform${urlEnv}${urlRegion}.cloud.coveo.com`;
-}
-
-export function platformSnapshotUrl<
-  E extends PlatformEnvironment = 'prod'
->(options: {environment: E; targetOrgId: string; snapshotId: string}) {
-  const url = platformUrl({environment: options.environment});
-  return `${url}/admin/#${options.targetOrgId}/organization/resource-snapshots/${options.snapshotId}`;
-}
-
-export function platformSnapshotSynchronizationUrl<
-  E extends PlatformEnvironment = 'prod'
->(options: {environment: E; targetOrgId: string; snapshotId: string}) {
-  const url = platformSnapshotUrl(options);
-  return `${url}/synchronization`;
 }
 
 export function castEnvironmentToPlatformClient(
