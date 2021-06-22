@@ -33,6 +33,10 @@ describe('ui:create:react', () => {
   const mockedAuthenticatedClient = mocked(AuthenticatedClient);
   const mockedIsNpxInstalled = mocked(IsNpxInstalled, true);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
+  const processExitCode = {
+    spawn: 0,
+    spawnOutput: 0,
+  };
   const preconditionStatus = {
     node: true,
     npx: true,
@@ -51,11 +55,10 @@ describe('ui:create:react', () => {
   };
 
   const doMockSpawnProcess = () => {
-    // TODO: create a variable to store status code
     mockedSpawnProcessOutput.mockResolvedValue({
       stdout: '',
       stderr: '',
-      exitCode: 0,
+      exitCode: processExitCode.spawn,
     });
 
     mockedSpawnProcess.mockImplementation(
@@ -63,7 +66,7 @@ describe('ui:create:react', () => {
         ({
           onData: () => {},
           onExit: (callback: (e: {exitCode: number}) => void) =>
-            callback({exitCode: 0}),
+            callback({exitCode: processExitCode.spawnOutput}),
         } as unknown as IPty)
     );
   };
@@ -131,6 +134,8 @@ describe('ui:create:react', () => {
     doMockPreconditions();
     preconditionStatus.npx = true;
     preconditionStatus.node = true;
+    processExitCode.spawn = 0;
+    processExitCode.spawnOutput = 0;
   });
 
   afterEach(() => {
@@ -219,16 +224,11 @@ describe('ui:create:react', () => {
       );
     });
 
-  // test
-  //   .do(() => {
-  //     mockedSpawnProcessOutput.mockResolvedValue({
-  //       stdout: 'dsdsads',
-  //       stderr: 'Some error',
-  //       exitCode: 99,
-  //     });
-  //   })
-  //   .command(['ui:create:react', 'myapp'])
-  //   .it('should start an output process setup environment variables', () => {
-  //     expect(mockedWarn).toHaveBeenCalledWith(expect.stringContaining('Some'));
-  //   });
+  test
+    .do(() => {
+      processExitCode.spawnOutput = 99;
+    })
+    .command(['ui:create:react', 'myapp'])
+    .catch(/not able to create the project/)
+    .it('should start an output process setup environment variables');
 });
