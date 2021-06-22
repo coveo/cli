@@ -119,8 +119,6 @@ describe('ui:create:vue', () => {
     mockedIsNodeVersionInRange.mockClear();
   });
 
-  // TODO: test with --version flag
-
   test
     .do(() => {
       preconditionStatus.node = false;
