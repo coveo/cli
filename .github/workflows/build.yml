@@ -34,7 +34,7 @@ jobs:
         run: |
           New-Item -ItemType directory -Path C:\coveo
           Invoke-WebRequest https://github.com/coveo/cli/releases/download/v1.3.0/coveo-v1.3.0-x64.exe -OutFile c:\coveo\coveo.exe
-          echo ${{ secrets.COVEO_PFX }} > ./tmp/cert.txt
+          echo "${{ secrets.COVEO_PFX }}" > ./tmp/cert.txt
           certutil -decode ./tmp/cert.txt ./tmp/cert.pfx
           "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe sign /f './tmp/cert.pfx' /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /td SHA256 /tr http://timestamp.digicert.com c:\coveo\coveo.exe"
       - uses: actions/upload-artifact@v2
