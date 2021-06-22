@@ -1,9 +1,7 @@
-import {HeadlessEngine, searchAppReducers} from '@coveo/headless';
+import {buildSearchEngine, SearchEngine} from '@coveo/headless';
 import {getTokenEndpoint, isEnvValid} from './utils/envUtils';
 
-export function getEngine(
-  token: string
-): HeadlessEngine<typeof searchAppReducers> {
+export function getEngine(token: string): SearchEngine {
   if (!isEnvValid(process.env)) {
     throw new Error(`
     You should have a valid <code>.env</code> file at the root of this \
@@ -14,7 +12,7 @@ export function getEngine(
     Refer to the project README file for more information.
     `);
   } else {
-    return new HeadlessEngine({
+    return buildSearchEngine({
       configuration: {
         platformUrl: process.env.VUE_APP_PLATFORM_URL,
         organizationId: process.env.VUE_APP_ORGANIZATION_ID,
@@ -25,7 +23,6 @@ export function getEngine(
           return token;
         },
       },
-      reducers: searchAppReducers,
     });
   }
 }

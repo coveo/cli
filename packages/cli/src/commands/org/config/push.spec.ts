@@ -11,25 +11,26 @@ import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
 import {Project} from '../../../lib/project/project';
 import {join, normalize} from 'path';
-import {cwd} from 'process';
+import {cli} from 'cli-ux';
 import {Config} from '../../../lib/config/config';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {warn, error} from '@oclif/errors';
+import {error} from '@oclif/errors';
 
 const mockedSnapshotFactory = mocked(SnapshotFactory, true);
 const mockedConfig = mocked(Config);
 const mockedProject = mocked(Project);
-const mockedWarn = mocked(warn);
 const mockedError = mocked(error);
 const mockedConfigGet = jest.fn();
 const mockedDeleteTemporaryZipFile = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
 const mockedSaveDetailedReport = jest.fn();
 const mockedRequiresSynchronization = jest.fn();
+const mockedApplySnapshot = jest.fn();
 const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
 const mockedLastReport = jest.fn();
+const mockedHasChangedResources = jest.fn();
 
 const mockProject = () => {
   mockedProject.mockImplementation(
@@ -63,12 +64,14 @@ const mockConfig = () => {
 const mockSnapshotFactory = async () => {
   mockedSnapshotFactory.createFromZip.mockReturnValue(
     Promise.resolve({
+      apply: mockedApplySnapshot,
       validate: mockedValidateSnapshot,
       preview: mockedPreviewSnapshot,
       delete: mockedDeleteSnapshot,
       saveDetailedReport: mockedSaveDetailedReport,
       requiresSynchronization: mockedRequiresSynchronization,
       latestReport: mockedLastReport,
+      hasChangedResources: mockedHasChangedResources,
       id: 'banana-snapshot',
       targetId: 'potato-org',
     } as unknown as Snapshot)
@@ -76,22 +79,28 @@ const mockSnapshotFactory = async () => {
 };
 
 const mockSnapshotFactoryReturningValidSnapshot = async () => {
+  // TODO: CDX-390: Test when there are no changes
+  mockedHasChangedResources.mockReturnValue(true);
   mockedValidateSnapshot.mockResolvedValue({isValid: true, report: {}});
+  mockedApplySnapshot.mockResolvedValue({isValid: true, report: {}});
   await mockSnapshotFactory();
 };
 
 const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
+  // TODO: CDX-390: Test when there are no changes
+  mockedHasChangedResources.mockReturnValue(true);
   mockedValidateSnapshot.mockResolvedValue({isValid: false, report: {}});
+  mockedApplySnapshot.mockResolvedValue({isValid: false, report: {}});
   await mockSnapshotFactory();
 };
 
-describe('org:config:preview', () => {
+describe('org:config:push', () => {
   beforeAll(() => {
     mockConfig();
     mockProject();
   });
 
-  describe('when the report contains no resources in error', () => {
+  describe('when the dryRun returns a report without errors', () => {
     beforeAll(async () => {
       await mockSnapshotFactoryReturningValidSnapshot();
     });
@@ -100,12 +109,30 @@ describe('org:config:preview', () => {
       mockedSnapshotFactory.mockReset();
     });
 
-    test.command(['org:config:preview']).it('should use cwd as project', () => {
-      expect(mockedProject).toHaveBeenCalledWith(cwd());
-    });
+    test
+      .stub(cli, 'confirm', () => async () => true)
+      .command(['org:config:push'])
+      .it('should preview the snapshot', () => {
+        expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
+      });
 
     test
-      .command(['org:config:preview'])
+      .stub(cli, 'confirm', () => async () => true)
+      .command(['org:config:push'])
+      .it('should apply the snapshot after confirmation', () => {
+        expect(mockedApplySnapshot).toHaveBeenCalledTimes(1);
+      });
+
+    test
+      .stub(cli, 'confirm', () => async () => false)
+      .command(['org:config:push'])
+      .it('should not apply the snapshot if not confirmed', () => {
+        expect(mockedApplySnapshot).toHaveBeenCalledTimes(0);
+      });
+
+    test
+      .stub(cli, 'confirm', () => async () => true)
+      .command(['org:config:push'])
       .it('should work with default connected org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
@@ -114,7 +141,8 @@ describe('org:config:preview', () => {
       });
 
     test
-      .command(['org:config:preview', '-t', 'myorg'])
+      .stub(cli, 'confirm', () => async () => true)
+      .command(['org:config:push', '-t', 'myorg'])
       .it('should work with specified target org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
@@ -123,46 +151,44 @@ describe('org:config:preview', () => {
       });
 
     test
-      .command(['org:config:preview'])
-      .it('#validate should not take into account missing resources', () => {
-        expect(mockedValidateSnapshot).toHaveBeenCalledWith(false);
+      .stub(cli, 'confirm', () => async () => true)
+      .command(['org:config:push'])
+      .it('#should not apply missing resources', () => {
+        expect(mockedApplySnapshot).toHaveBeenCalledWith(false);
       });
 
     test
-      .command(['org:config:preview', '-d'])
-      .it('#validate should take into account missing resoucres', () => {
-        expect(mockedValidateSnapshot).toHaveBeenCalledWith(true);
+      .stub(cli, 'confirm', () => async () => true)
+      .command(['org:config:push', '-d'])
+      .it('should apply missing resoucres', () => {
+        expect(mockedApplySnapshot).toHaveBeenCalledWith(true);
       });
 
     test
-      .command(['org:config:preview'])
-      .it('should preview the snapshot', () => {
-        expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
-      });
-
-    test
-      .command(['org:config:preview'])
+      .stub(cli, 'confirm', () => async () => true)
+      .command(['org:config:push'])
       .it('should delete the compressed folder', () => {
         expect(mockedDeleteTemporaryZipFile).toHaveBeenCalledTimes(1);
       });
 
     test
-      .command(['org:config:preview'])
+      .stub(cli, 'confirm', () => async () => true)
+      .command(['org:config:push'])
       .it('should delete the snapshot', () => {
         expect(mockedDeleteSnapshot).toHaveBeenCalledTimes(1);
       });
+
+    test
+      .skip()
+      .command(['org:config:push', '--skip-preview'])
+      .it('should not prompt the user', () => {
+        // TODO: CDX-403: test --skip-preview flag
+      });
   });
 
-  describe('when the report contains resources in error', () => {
+  describe('when the dryRun returns a report with errors', () => {
     beforeAll(async () => {
       await mockSnapshotFactoryReturningInvalidSnapshot();
-    });
-
-    beforeEach(() => {
-      mockedRequiresSynchronization.mockReturnValueOnce(false);
-      mockedSaveDetailedReport.mockReturnValueOnce(
-        normalize(join('saved', 'snapshot'))
-      );
     });
 
     afterAll(() => {
@@ -170,57 +196,25 @@ describe('org:config:preview', () => {
     });
 
     test
-      .command(['org:config:preview'])
-      .it('should throw an error for invalid snapshots', () => {
+      .stderr()
+      .command(['org:config:push'])
+      .it('should show the failed validation', (ctx) => {
+        expect(ctx.stderr).toContain('Validating snapshot... !');
+      });
+
+    test
+      .command(['org:config:push'])
+      .it('should only preview the snapshot', () => {
+        expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
+        expect(mockedApplySnapshot).toHaveBeenCalledTimes(0);
+      });
+
+    test
+      .command(['org:config:push'])
+      .it('should return an invalid snapshot error message', () => {
         expect(mockedError).toHaveBeenCalledWith(
           expect.stringContaining('Invalid snapshot'),
           {}
-        );
-      });
-
-    test
-      .command(['org:config:preview'])
-      .it('should print an URL to the snapshot page', () => {
-        expect(mockedError).toHaveBeenCalledWith(
-          expect.stringContaining(
-            'https://platform.cloud.coveo.com/admin/#potato-org/organization/resource-snapshots/banana-snapshot'
-          ),
-          {}
-        );
-      });
-  });
-
-  describe('when the snapshot is not in sync with the target org', () => {
-    beforeAll(async () => {
-      await mockSnapshotFactoryReturningInvalidSnapshot();
-    });
-
-    beforeEach(() => {
-      mockedRequiresSynchronization.mockReturnValueOnce(true);
-      mockedSaveDetailedReport.mockReturnValueOnce(join('saved', 'snapshot'));
-    });
-
-    afterAll(() => {
-      mockedSnapshotFactory.mockReset();
-    });
-
-    test
-      .command(['org:config:preview'])
-      .it('should have detected some conflicts', () => {
-        expect(mockedWarn).toHaveBeenCalledWith(
-          expect.stringContaining(
-            'Some conflicts were detected while comparing changes between the snapshot and the target organization'
-          )
-        );
-      });
-
-    test
-      .command(['org:config:preview'])
-      .it('should print an url to the synchronization page', () => {
-        expect(mockedWarn).toHaveBeenCalledWith(
-          expect.stringContaining(
-            'https://platform.cloud.coveo.com/admin/#potato-org/organization/resource-snapshots/banana-snapshot/synchronization'
-          )
         );
       });
   });
