@@ -29,15 +29,6 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
-      - name: Testing for Win
-        if: ${{matrix.os == 'windows-latest'}}
-        run: |
-          New-Item -ItemType directory -Path C:\coveo
-          New-Item -ItemType directory -Path C:\tmp
-          Invoke-WebRequest https://github.com/coveo/cli/releases/download/v1.3.0/coveo-v1.3.0-x64.exe -OutFile c:\coveo\coveo.exe
-          echo "${{ secrets.COVEO_PFX }}" > C:\tmp\cert.txt
-          certutil -decode C:\tmp\cert.txt C:\tmp\cert.pfx
-          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f C:\tmp\cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /td SHA256 /tr http://timestamp.digicert.com c:\coveo\coveo.exe" -PassThru | Wait-Process
       - uses: actions/upload-artifact@v2
         if: ${{matrix.os == 'windows-latest'}}
         with:
