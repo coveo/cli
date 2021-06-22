@@ -7,9 +7,10 @@ import {Config} from '../../../lib/config/config';
 import {Project} from '../../../lib/project/project';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {
-  platformSnapshotSynchronizationUrl,
-  platformSnapshotUrl,
-} from '../../../lib/platform/environment';
+  snapshotSynchronizationUrl,
+  snapshotUrl,
+  SnapshotUrlOptionsArgs,
+} from '../../../lib/platform/url';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {red, green} from 'chalk';
 import {normalize} from 'path';
@@ -29,13 +30,6 @@ export default abstract class SnapshotBase extends Command {
       helpValue: 'destinationorganizationg7dg3gd',
       required: false,
     }),
-    projectPath: flags.string({
-      char: 'p',
-      description: 'The path to your Coveo project.',
-      helpValue: '/Users/Me/my-project',
-      default: cwd(),
-      required: false,
-    }),
     deleteMissingResources: flags.boolean({
       char: 'd',
       description: 'Whether or not to show resources to delete',
@@ -47,7 +41,7 @@ export default abstract class SnapshotBase extends Command {
   public static hidden = true;
 
   protected async dryRun() {
-    const project = new Project(normalize(this.flags.projectPath));
+    const project = new Project(normalize(this.projectPath));
 
     cli.action.start('Creating snapshot');
     const snapshot = await this.createSnapshotFromProject(project);
@@ -88,9 +82,13 @@ export default abstract class SnapshotBase extends Command {
     return cfg.organization;
   }
 
+  protected get projectPath() {
+    return cwd();
+  }
+
   protected async handleReportWithErrors(snapshot: Snapshot) {
     // TODO: CDX-362: handle invalid snapshot cases
-    const pathToReport = snapshot.saveDetailedReport(this.flags.projectPath);
+    const pathToReport = snapshot.saveDetailedReport(this.projectPath);
     const report = snapshot.latestReport;
 
     if (snapshot.requiresSynchronization()) {
@@ -129,15 +127,17 @@ export default abstract class SnapshotBase extends Command {
 
   private async getSnapshotPage(snapshot: Snapshot) {
     const options = await this.getSnapshotUrlOptions(snapshot);
-    return platformSnapshotUrl(options);
+    return snapshotUrl(options);
   }
 
   private async getSynchronizationPage(snapshot: Snapshot) {
     const options = await this.getSnapshotUrlOptions(snapshot);
-    return platformSnapshotSynchronizationUrl(options);
+    return snapshotSynchronizationUrl(options);
   }
 
-  private async getSnapshotUrlOptions(snapshot: Snapshot) {
+  private async getSnapshotUrlOptions(
+    snapshot: Snapshot
+  ): Promise<SnapshotUrlOptionsArgs> {
     const {environment} = await this.configuration.get();
     return {
       environment,
