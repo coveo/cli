@@ -8,6 +8,7 @@ on:
 jobs:
   run-script:
     runs-on: ${{matrix.os}}
+    environment: 'Release'
     strategy:
       fail-fast: true
       matrix:
@@ -28,6 +29,19 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
+      - name: Testing for Win
+        if: ${{matrix.os == 'windows-latest'}}
+        run: |
+          New-Item -ItemType directory -Path C:\coveo
+          Invoke-WebRequest https://github.com/coveo/cli/releases/download/v1.3.0/coveo-v1.3.0-x64.exe -OutFile c:\coveo\coveo.exe
+          echo ${{ secrets.COVEO_PFX }} > ./tmp/cert.txt
+          certutil -decode ./tmp/cert.txt ./tmp/cert.pfx
+          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe sign /f './tmp/cert.pfx' /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /td SHA256 /tr http://timestamp.digicert.com c:\coveo\coveo.exe"
+      - uses: actions/upload-artifact@v2
+        if: ${{matrix.os == 'windows-latest'}}
+        with:
+          name: test-cert-win
+          path: c:\coveo\
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
