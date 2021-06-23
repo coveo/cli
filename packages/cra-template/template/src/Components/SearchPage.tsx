@@ -9,21 +9,17 @@ import Pager from './Pager';
 import Sort from './Sort';
 import FacetList from './FacetList';
 import ResultsPerPage from './ResultsPerPage';
-import {AnalyticsActions, SearchActions, Engine} from '@coveo/headless';
+import {SearchEngine} from '@coveo/headless';
 import {EngineProvider} from '../common/engineContext';
 
 interface ISearchPageProps {
-  engine: Engine;
+  engine: SearchEngine;
 }
 
 const SearchPage: React.FunctionComponent<ISearchPageProps> = (props) => {
   const {engine} = props;
   useEffect(() => {
-    const {dispatch} = engine;
-    const action = SearchActions.executeSearch(
-      AnalyticsActions.logInterfaceLoad()
-    );
-    dispatch(action);
+    engine.executeFirstSearch();
   }, [engine]);
 
   return (
