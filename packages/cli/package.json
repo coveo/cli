@@ -28,7 +28,7 @@
     "patch-package": "^6.2.2",
     "semver": "^7.3.4",
     "ts-dedent": "^2.1.1",
-    "tslib": "^1"
+    "tslib": "^2"
   },
   "devDependencies": {
     "@coveo/angular": "^1.5.0",
