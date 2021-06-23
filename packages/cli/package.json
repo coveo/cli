@@ -70,6 +70,7 @@
     "coveo": "./bin/run"
   },
   "oclif": {
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/cli/<%- commandPath %>",
     "commands": "./lib/commands",
     "bin": "coveo",
     "plugins": [
