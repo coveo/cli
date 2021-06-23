@@ -85,7 +85,8 @@ export class ReportViewer {
       )
     );
 
-    for (const resourceType in this.reporter.resourceOperationResults) {
+    const operationResults = this.reporter.report.resourceOperationResults;
+    for (const resourceType in operationResults) {
       this.logResourceErrors(resourceType);
     }
     // TODO: CDX-362: handle other invalid snashot cases
@@ -93,8 +94,9 @@ export class ReportViewer {
 
   private logResourceErrors(resourceType: string) {
     let remainingErrorsToPrint = ReportViewer.maximumNumberOfErrorsToPrint;
-    const operationResult =
-      this.reporter.resourceOperationResults[resourceType];
+
+    const operationResults = this.reporter.report.resourceOperationResults;
+    const operationResult = operationResults[resourceType];
     const operationResultErrors = Object.values(operationResult);
 
     if (operationResultErrors.length === 0) {

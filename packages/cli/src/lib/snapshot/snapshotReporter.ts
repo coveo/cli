@@ -12,8 +12,8 @@ import {
 export class SnapshotReporter {
   public constructor(private readonly report: ResourceSnapshotsReportModel) {}
 
-  public get resourceOperationResults() {
-    return this.report.resourceOperationResults;
+  public get model() {
+    return this.report;
   }
 
   public hasChangedResources() {
