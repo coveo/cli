@@ -97,14 +97,6 @@ describe('ui:create:vue', () => {
     );
   };
 
-  const getCustomPreset = () => {
-    const preset = {
-      foo: 'bar',
-      customArray: ['hello', 'world'],
-    };
-    return JSON.stringify(preset);
-  };
-
   beforeEach(() => {
     doMockedGetPackageVersion();
     doMockSpawnProcess();
