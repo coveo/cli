@@ -12,6 +12,7 @@ import {ReportViewer} from './reportViewer/reportViewer';
 import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
 import dedent from 'ts-dedent';
+import {SnapshotReporter} from './snapshotReporter';
 
 export interface ISnapshotValidation {
   isValid: boolean;
@@ -31,14 +32,14 @@ export class Snapshot {
 
   public async validate(
     deleteMissingResources = false
-  ): Promise<ISnapshotValidation> {
+  ): Promise<SnapshotReporter> {
     await this.snapshotClient.dryRun(this.id, {
       deleteMissingResources,
     });
 
     await this.waitUntilOperationIsDone(ResourceSnapshotsReportType.DryRun);
 
-    return {isValid: this.isValid(), report: this.latestReport};
+    return new SnapshotReporter(this.latestReport);
   }
 
   public async preview() {
@@ -46,17 +47,12 @@ export class Snapshot {
     this.displayExpandedPreview();
   }
 
-  public hasChangedResources(): boolean {
-    // TODO: CDX-390: Do not propose to apply a snapshot if it contains no changes
-    return true;
-  }
-
   public async apply(deleteMissingResources = false) {
     await this.snapshotClient.apply(this.id, {deleteMissingResources});
 
     await this.waitUntilOperationIsDone(ResourceSnapshotsReportType.Apply);
 
-    return {isValid: this.isValid(), report: this.latestReport};
+    return new SnapshotReporter(this.latestReport);
   }
 
   public async delete() {
@@ -110,20 +106,13 @@ export class Snapshot {
   }
 
   private displayLightPreview() {
-    const report = new ReportViewer(this.latestReport);
-    report.display();
+    const reporter = new SnapshotReporter(this.latestReport);
+    const viewer = new ReportViewer(reporter);
+    viewer.display();
   }
 
   private displayExpandedPreview() {
     // TODO: CDX-347 Display Expanded preview
-  }
-
-  private isValid() {
-    const {resultCode, status} = this.latestReport;
-    return (
-      status === ResourceSnapshotsReportStatus.Completed &&
-      resultCode === ResourceSnapshotsReportResultCode.Success
-    );
   }
 
   private async refreshSnapshotData() {
