@@ -1,17 +1,17 @@
 import {Injectable} from '@angular/core';
-import {HeadlessEngine, searchAppReducers} from '@coveo/headless';
+import {buildSearchEngine, SearchEngine} from '@coveo/headless';
 import {environment} from '../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EngineService {
-  private engine!: HeadlessEngine<typeof searchAppReducers>;
+  private engine!: SearchEngine;
 
   public constructor() {}
 
   public init(accessToken: string) {
-    this.engine = new HeadlessEngine({
+    this.engine = buildSearchEngine({
       configuration: {
         platformUrl: environment.platformUrl,
         organizationId: environment.organizationId,
@@ -22,7 +22,6 @@ export class EngineService {
           return token;
         },
       },
-      reducers: searchAppReducers,
     });
   }
 

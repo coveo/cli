@@ -38,7 +38,6 @@ import SearchBox from './SearchBox.vue';
 import Facets from './Facets.vue';
 import Summary from './Summary.vue';
 import Pager from './Pager.vue';
-import {AnalyticsActions, SearchActions} from '@coveo/headless';
 Vue.use(Buefy);
 
 export default Vue.extend({
@@ -52,9 +51,7 @@ export default Vue.extend({
   },
   mounted: function (): void {
     this.$nextTick(function () {
-      this.$root.$data.$engine.dispatch(
-        SearchActions.executeSearch(AnalyticsActions.logInterfaceLoad())
-      );
+      this.$root.$data.$engine.executeFirstSearch();
     });
   },
 });

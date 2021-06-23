@@ -1,7 +1,7 @@
-import {Engine} from '@coveo/headless';
+import {SearchEngine} from '@coveo/headless';
 import {createContext} from 'react';
 
-const EngineContext = createContext<Engine | null>(null);
+const EngineContext = createContext<SearchEngine | null>(null);
 
 export const EngineProvider = EngineContext.Provider;
 

@@ -1,4 +1,4 @@
-import {HeadlessEngine, searchAppReducers} from '@coveo/headless';
+import {buildSearchEngine} from '@coveo/headless';
 
 const getEndpointToLocalServer = () => {
   if (!process.env.REACT_APP_SERVER_PORT) {
@@ -20,13 +20,12 @@ export async function getSearchToken() {
 }
 
 export async function initializeHeadlessEngine() {
-  return new HeadlessEngine({
+  return buildSearchEngine({
     configuration: {
       platformUrl: process.env.REACT_APP_PLATFORM_URL,
       organizationId: process.env.REACT_APP_ORGANIZATION_ID!,
       accessToken: await getSearchToken(),
       renewAccessToken: getSearchToken,
     },
-    reducers: searchAppReducers,
   });
 }
