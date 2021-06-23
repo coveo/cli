@@ -10,11 +10,7 @@ import {
 } from './reportViewer/reportViewerDataModels';
 
 export class SnapshotReporter {
-  public constructor(private readonly report: ResourceSnapshotsReportModel) {}
-
-  public get model() {
-    return this.report;
-  }
+  public constructor(public readonly report: ResourceSnapshotsReportModel) {}
 
   public hasChangedResources() {
     const totalUnchanges =

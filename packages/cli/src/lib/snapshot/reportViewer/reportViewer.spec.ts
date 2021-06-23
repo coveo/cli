@@ -8,6 +8,7 @@ import {
 } from '@coveord/platform-client';
 import {ReportViewer} from './reportViewer';
 import dedent from 'ts-dedent';
+import {SnapshotReporter} from '../snapshotReporter';
 
 const getReportWithoutChanges = (
   snapshotId: string
@@ -119,7 +120,8 @@ describe('ReportViewer', () => {
   describe('when the report contains errors', () => {
     let viewer: ReportViewer;
     beforeAll(() => {
-      viewer = new ReportViewer(getErrorReport('some-id'));
+      const reporter = new SnapshotReporter(getErrorReport('some-id'));
+      viewer = new ReportViewer(reporter);
     });
 
     test
@@ -157,7 +159,8 @@ describe('ReportViewer', () => {
   describe('when the report does not contain errors', () => {
     let viewer: ReportViewer;
     beforeAll(() => {
-      viewer = new ReportViewer(getSuccessReport('some-id'));
+      const reporter = new SnapshotReporter(getSuccessReport('some-id'));
+      viewer = new ReportViewer(reporter);
     });
 
     test
@@ -186,7 +189,8 @@ describe('ReportViewer', () => {
   describe('when the report contains no changes', () => {
     let viewer: ReportViewer;
     beforeAll(() => {
-      viewer = new ReportViewer(getReportWithoutChanges('some-id'));
+      const reporter = new SnapshotReporter(getReportWithoutChanges('some-id'));
+      viewer = new ReportViewer(reporter);
     });
 
     test
