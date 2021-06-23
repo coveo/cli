@@ -10,7 +10,7 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import {buildPager, Engine} from '@coveo/headless';
+import {buildPager, SearchEngine} from '@coveo/headless';
 import type {Pager, PagerState as HeadlessPagerState} from '@coveo/headless';
 
 export interface PagerState extends HeadlessPagerState {
@@ -30,8 +30,8 @@ export default Vue.extend({
     return {
       pager: pager,
       state: {...pager.state, total: 0},
-      totalCount: (this.$root.$data.$engine as Engine).state.search.response
-        .totalCountFiltered,
+      totalCount: (this.$root.$data.$engine as SearchEngine).state.search
+        .response.totalCountFiltered,
     };
   },
   methods: {
