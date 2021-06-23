@@ -8,7 +8,6 @@ import {
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {red, green, bold} from 'chalk';
 import SnapshotBase from './orgConfigBase';
-import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 
 export interface CustomFile extends ReadStream {
   type?: string;
@@ -48,6 +47,7 @@ export default class Push extends SnapshotBase {
   }
 
   private async handleValidReport(snapshot: Snapshot) {
+    // TODO: CDX-390 return different message if no resources changes
     const {flags} = this.parse(Push);
     const canBeApplied = flags.skipPreview || (await this.askForConfirmation());
 
