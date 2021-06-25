@@ -58,11 +58,10 @@ export interface IResultList {
 export default Vue.extend({
   name: 'ResultList',
   data: function (): IResultList {
-    const fieldsToLoad = ['objecttype', 'filetype', 'author'];
-    this.$root.$data.$engine.dispatch(
-      FieldActions.registerFieldsToInclude(fieldsToLoad)
-    );
-    const resultList = buildResultList(this.$root.$data.$engine);
+    const fieldsToInclude = ['objecttype', 'filetype', 'author'];
+    const resultList = buildResultList(this.$root.$data.$engine, {
+      options: {fieldsToInclude},
+    });
 
     return {
       resultList,
