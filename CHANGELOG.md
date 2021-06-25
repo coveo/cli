@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.6.0](https://github.com/coveo/cli/compare/v1.5.0...v1.6.0) (2021-06-25)
+
+
+### Bug Fixes
+
+* **J:CDX-227:** bump @actions/github from 4.0.0 to 5.0.0 ([#294](https://github.com/coveo/cli/issues/294)) ([9ffbafb](https://github.com/coveo/cli/commit/9ffbafb5a83214dd58a7c7b26700c4fb342748e3))
+* **J:CDX-227:** bump eslint from 7.26.0 to 7.29.0 ([#279](https://github.com/coveo/cli/issues/279)) ([227651c](https://github.com/coveo/cli/commit/227651ce2056acef9e82dc88cc4b3a38a55e010f))
+* **J:CDX-227:** bump eslint-config-prettier from 7.2.0 to 8.3.0 ([#293](https://github.com/coveo/cli/issues/293)) ([c425f7a](https://github.com/coveo/cli/commit/c425f7a86aa3ddf579cd4164fa41eacadb2ec2ac))
+* **J:CDX-227:** bump tslib from 1.14.1 to 2.3.0 ([#283](https://github.com/coveo/cli/issues/283)) ([aff708a](https://github.com/coveo/cli/commit/aff708ab541aebcf012add7909fcd8be21e589f5))
+* **vue:** fix fieldToInclude options ([1213b38](https://github.com/coveo/cli/commit/1213b389067da6a38729e5d88680c2be27685e6e))
+
+
+### Features
+
+* add flag `--skip-preview` on the push command ([#275](https://github.com/coveo/cli/issues/275)) ([a2b4741](https://github.com/coveo/cli/commit/a2b47410316edb805e9d60a300f8de542fb08259))
+
+
+
+
+
 # [1.5.0](https://github.com/coveo/cli/compare/v1.3.0...v1.5.0) (2021-06-22)
 
 
