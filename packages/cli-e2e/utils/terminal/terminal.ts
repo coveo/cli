@@ -24,7 +24,7 @@ import {TimeStamper} from '../timeStamper';
 export class Terminal {
   private childProcess: ChildProcessWithoutNullStreams;
   public orchestrator: Orchestrator;
-  constructor(
+  public constructor(
     command: string,
     args?: ReadonlyArray<string>,
     options?: SpawnOptionsWithoutStdio,
