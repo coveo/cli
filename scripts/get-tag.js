@@ -1,4 +1,6 @@
+/** @type {import("@actions/core")} */
 const core = require('@actions/core');
+/** @type {import("@actions/github")} */
 const github = require('@actions/github');
 const {getLatestTag} = require('./github-client');
 
