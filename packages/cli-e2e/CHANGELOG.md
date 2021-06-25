@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.8.0](https://github.com/coveo/cli/compare/v1.7.0...v1.8.0) (2021-06-25)
+
+**Note:** Version bump only for package @coveo/cli-e2e
+
+
+
+
+
+# [1.7.0](https://github.com/coveo/cli/compare/v1.6.0...v1.7.0) (2021-06-25)
+
+**Note:** Version bump only for package @coveo/cli-e2e
+
+
+
+
+
+# [1.6.0](https://github.com/coveo/cli/compare/v1.5.0...v1.6.0) (2021-06-25)
+
+**Note:** Version bump only for package @coveo/cli-e2e
+
+
+
+
+
 # [1.5.0](https://github.com/coveo/cli/compare/v1.3.0...v1.5.0) (2021-06-22)
 
 **Note:** Version bump only for package @coveo/cli-e2e
