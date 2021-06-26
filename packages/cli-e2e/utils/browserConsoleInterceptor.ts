@@ -10,7 +10,7 @@ export class BrowserConsoleInterceptor {
   private fileLogger: FileLogger;
   public interceptedMessages: string[] = [];
 
-  constructor(private page: Page, private interceptorName: string) {
+  public constructor(private page: Page, private interceptorName: string) {
     this.fileLogger = new FileLogger(
       `console${
         this.interceptorName ? '-' + this.interceptorName : ''

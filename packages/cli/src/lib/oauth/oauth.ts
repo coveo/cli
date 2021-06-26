@@ -26,7 +26,7 @@ export interface OAuthOptions {
 
 export class OAuth {
   private opts: OAuthOptions;
-  constructor(opts?: Partial<OAuthOptions>) {
+  public constructor(opts?: Partial<OAuthOptions>) {
     const baseOptions: OAuthOptions = {
       port: 32111,
       environment: 'prod',
