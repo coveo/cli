@@ -32,7 +32,10 @@ If you have [installed node-gyp](https://github.com/nodejs/node-gyp#installation
 npm install -g @coveo/cli
 ```
 
-Afterwards, anytime you run `coveo update`, your CLI installation will also update to the latest version.
+Afterwards, anytime you can update the CLI either:
+
+- By running `coveo update`, if you used one of the install link listed above
+- By running `npm update -g @coveo/cli`, if you installed the CLI with NPM.
 
 With node-gyp, you can also run via [npx](https://www.npmjs.com/package/npx):
 
