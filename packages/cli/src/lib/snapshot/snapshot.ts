@@ -14,11 +14,6 @@ import {join} from 'path';
 import dedent from 'ts-dedent';
 import {SnapshotReporter} from './snapshotReporter';
 
-export interface ISnapshotValidation {
-  isValid: boolean;
-  report: ResourceSnapshotsReportModel;
-}
-
 export class Snapshot {
   private static ongoingReportStatuses = [
     ResourceSnapshotsReportStatus.Pending,
