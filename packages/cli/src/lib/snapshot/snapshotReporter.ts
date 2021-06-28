@@ -15,7 +15,7 @@ export class SnapshotReporter {
   public hasChangedResources() {
     const totalUnchanges =
       this.getOperationTypeTotalCount('resourcesUnchanged');
-    return totalUnchanges === this.report.resourcesProcessed;
+    return totalUnchanges !== this.report.resourcesProcessed;
   }
 
   public getOperationTypeTotalCount(
