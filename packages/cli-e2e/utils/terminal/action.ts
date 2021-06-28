@@ -13,7 +13,8 @@ export class Action {
   public condition?: Condition;
   public target?: OnTarget;
 
-  constructor(public process: ChildProcessWithoutNullStreams) {}
+  public constructor(public process: ChildProcessWithoutNullStreams) {}
+
   public hasKeys<T extends keyof ActionProps>(
     ...keys: T[]
   ): this is ActionWith<T> {
