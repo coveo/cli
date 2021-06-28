@@ -13,6 +13,7 @@ import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
 import dedent from 'ts-dedent';
 import {SnapshotReporter} from './snapshotReporter';
+import {blueBright} from 'chalk';
 
 export class Snapshot {
   private static ongoingReportStatuses = [
@@ -135,7 +136,7 @@ export class Snapshot {
         );
 
         if (isNotDone) {
-          throw new Error('Snapshot is still being processed');
+          throw new Error(this.operationGettingTooMuchTimeMessage());
         }
       },
       {
@@ -150,5 +151,14 @@ export class Snapshot {
     } catch (err) {
       cli.error(err);
     }
+  }
+
+  private operationGettingTooMuchTimeMessage(): string {
+    return dedent`Snapshot ${
+      this.latestReport.type
+    } operation is taking a long time to complete.
+    Run the following command to monitor the operation
+
+    ${blueBright`coveo org:config:monitor ${this.id}`}`;
   }
 }
