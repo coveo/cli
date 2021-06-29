@@ -65,7 +65,7 @@ describe('ui:create:angular', () => {
 
   const forceTokenServerPort = (port: number) => {
     const pathToEnv = resolve(getProjectPath(projectName), 'server', '.env');
-    const environment = parse(pathToEnv);
+    const environment = parse(readFileSync(pathToEnv, {encoding: 'utf-8'}));
 
     const updatedEnvironment = {
       ...environment,
