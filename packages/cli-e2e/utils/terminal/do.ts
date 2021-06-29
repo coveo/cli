@@ -29,14 +29,14 @@ export type DoCallback =
 export class Do implements Promise<void> {
   public promise: Promise<void>;
   private exitFunction: (() => void) | undefined;
-  constructor(
+  public constructor(
     private action: ActionWith<'condition' | 'target'>,
     doCallback: DoCallback
   ) {
     this.promise = new Promise<void>(this.do(doCallback));
   }
 
-  then<TResult1 = void, TResult2 = never>(
+  public then<TResult1 = void, TResult2 = never>(
     onfulfilled?: ((value: void) => TResult1 | PromiseLike<TResult1>) | null,
     onrejected?:
       | ((reason: string | Error) => TResult2 | PromiseLike<TResult2>)
@@ -44,7 +44,8 @@ export class Do implements Promise<void> {
   ): Promise<TResult1 | TResult2> {
     return this.promise.then(onfulfilled, onrejected);
   }
-  catch<TResult = never>(
+
+  public catch<TResult = never>(
     onrejected?:
       | ((reason: string | Error) => TResult | PromiseLike<TResult>)
       | null
@@ -52,11 +53,11 @@ export class Do implements Promise<void> {
     return this.promise.catch(onrejected);
   }
 
-  get [Symbol.toStringTag]() {
+  public get [Symbol.toStringTag]() {
     return 'Do';
   }
 
-  finally(onfinally?: (() => void) | null): Promise<void> {
+  public finally(onfinally?: (() => void) | null): Promise<void> {
     return this.promise.finally(onfinally);
   }
 

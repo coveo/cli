@@ -6,5 +6,5 @@ export const getFakeCommand = (): Command => {
     warn: jest.fn(),
   };
 
-  return (fakeCommand as unknown) as Command;
+  return fakeCommand as unknown as Command;
 };
