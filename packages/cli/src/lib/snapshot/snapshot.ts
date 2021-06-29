@@ -13,7 +13,7 @@ import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
 import dedent from 'ts-dedent';
 import {SnapshotReporter} from './snapshotReporter';
-import {SnapshotErrors} from './snapshotErrors';
+import {SnapshotOperationTimeoutError} from './snapshotErrors';
 import {blueBright} from 'chalk';
 
 export class Snapshot {
@@ -137,7 +137,7 @@ export class Snapshot {
         );
 
         if (isNotDone) {
-          throw new Error(SnapshotErrors.operationTimedOut);
+          throw new SnapshotOperationTimeoutError();
         }
       },
       {
@@ -150,7 +150,7 @@ export class Snapshot {
     try {
       await waitPromise;
     } catch (err) {
-      if (err.message === SnapshotErrors.operationTimedOut) {
+      if (err instanceof SnapshotOperationTimeoutError) {
         this.handleOperationTimedOut();
       }
       cli.error(err);
