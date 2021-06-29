@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.8.0](https://github.com/coveo/cli/compare/v1.7.0...v1.8.0) (2021-06-25)
+
+**Note:** Version bump only for package @coveo/vue-cli-plugin-typescript
+
+
+
+
+
+# [1.7.0](https://github.com/coveo/cli/compare/v1.6.0...v1.7.0) (2021-06-25)
+
+**Note:** Version bump only for package @coveo/vue-cli-plugin-typescript
+
+
+
+
+
+# [1.6.0](https://github.com/coveo/cli/compare/v1.5.0...v1.6.0) (2021-06-25)
+
+
+### Bug Fixes
+
+* **vue:** fix fieldToInclude options ([1213b38](https://github.com/coveo/cli/commit/1213b389067da6a38729e5d88680c2be27685e6e))
+
+
+
+
+
 # [1.5.0](https://github.com/coveo/cli/compare/v1.3.0...v1.5.0) (2021-06-22)
 
 

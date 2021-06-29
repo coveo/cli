@@ -6,7 +6,7 @@ import {mkdirSync} from 'fs-extra';
 export class FileLogger {
   public stdout: WriteStream;
   public stderr: WriteStream;
-  constructor(name: string) {
+  public constructor(name: string) {
     const dir = join(LOGS_PATH, name);
     mkdirSync(dir, {recursive: true});
     this.stdout = createWriteStream(join(dir, 'stdout'));

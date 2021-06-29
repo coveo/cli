@@ -35,13 +35,13 @@ describe('AuthenticatedClient', () => {
 
   mockConfig.mockImplementation(
     () =>
-      (({
+      ({
         get: mockGet,
-      } as unknown) as Config)
+      } as unknown as Config)
   );
   mockPlatformClient.mockImplementation(
     () =>
-      (({
+      ({
         initialize: mockInitialize,
         apiKey: {
           create: mockCreate as unknown,
@@ -49,7 +49,7 @@ describe('AuthenticatedClient', () => {
         user: {
           get: mockGetUser,
         },
-      } as unknown) as PlatformClient)
+      } as unknown as PlatformClient)
   );
 
   beforeEach(() => {

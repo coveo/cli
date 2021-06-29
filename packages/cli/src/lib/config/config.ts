@@ -20,7 +20,10 @@ export const DefaultConfig: Configuration = {
 };
 
 export class Config {
-  constructor(private configDir: string, private error = console.error) {}
+  public constructor(
+    private configDir: string,
+    private error = console.error
+  ) {}
 
   public async get(): Promise<Configuration> {
     await this.ensureExists();
