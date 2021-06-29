@@ -13,6 +13,7 @@ import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
 import dedent from 'ts-dedent';
 import {SnapshotReporter} from './snapshotReporter';
+import {SnapshotErrors} from './snapshotErrors';
 import {blueBright} from 'chalk';
 
 export class Snapshot {
@@ -136,7 +137,7 @@ export class Snapshot {
         );
 
         if (isNotDone) {
-          throw new Error(this.operationGettingTooMuchTimeMessage());
+          throw new Error(SnapshotErrors.operationTimedOut);
         }
       },
       {
@@ -149,8 +150,16 @@ export class Snapshot {
     try {
       await waitPromise;
     } catch (err) {
+      if (err.message === SnapshotErrors.operationTimedOut) {
+        this.handleOperationTimedOut();
+      }
       cli.error(err);
     }
+  }
+
+  private handleOperationTimedOut() {
+    cli.warn(this.operationGettingTooMuchTimeMessage());
+    cli.exit(0);
   }
 
   private operationGettingTooMuchTimeMessage(): string {
@@ -158,7 +167,6 @@ export class Snapshot {
       this.latestReport.type
     } operation is taking a long time to complete.
     Run the following command to monitor the operation
-
     ${blueBright`coveo org:config:monitor ${this.id}`}`;
   }
 }
