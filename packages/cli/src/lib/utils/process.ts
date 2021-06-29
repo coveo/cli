@@ -56,11 +56,11 @@ export async function spawnProcessOutput(
 
     const child = spawn(command, args, options);
 
-    child.stdout.on('data', (d) => {
+    child.stdout?.on('data', (d) => {
       output.stdout += d;
     });
 
-    child.stderr.on('data', (d) => {
+    child.stderr?.on('data', (d) => {
       output.stderr += d;
     });
 
