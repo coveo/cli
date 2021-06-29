@@ -9,8 +9,27 @@ import {
   ReportViewerResourceReportModel,
 } from './reportViewer/reportViewerDataModels';
 
+type ResourceEntries = [string, ResourceSnapshotsReportOperationModel];
+
 export class SnapshotReporter {
   public constructor(public readonly report: ResourceSnapshotsReportModel) {}
+
+  public static convertResourceEntriesToResourceSnapshotsReportOperationModel([
+    name,
+    operations,
+  ]: ResourceEntries) {
+    return {name, operations};
+  }
+
+  public static resourceHasAtLeastOneOperationFilter(
+    operationsToDisplay: ReportViewerOperationName[]
+  ) {
+    return ([_, operations]: ResourceEntries) =>
+      operationsToDisplay.reduce(
+        (previous, current) => previous + operations[current],
+        0
+      ) > 0;
+  }
 
   public hasChangedResources() {
     const totalUnchanges =
@@ -41,26 +60,14 @@ export class SnapshotReporter {
   public getChangedResources(
     operationsToDisplay: ReportViewerOperationName[]
   ): ReportViewerResourceReportModel[] {
-    type resourceEntries = [string, ResourceSnapshotsReportOperationModel];
-    const resourceHasAtLeastOneOperation = ([
-      _,
-      operations,
-    ]: resourceEntries) => {
-      return (
-        operationsToDisplay.reduce(
-          (previous, current) => previous + operations[current],
-          0
-        ) > 0
-      );
-    };
-
-    const convertArrayToObject = ([name, operations]: resourceEntries) => ({
-      name,
-      operations,
-    });
-
     return Object.entries(this.report.resourceOperations)
-      .filter(resourceHasAtLeastOneOperation)
-      .map(convertArrayToObject);
+      .filter(
+        SnapshotReporter.resourceHasAtLeastOneOperationFilter(
+          operationsToDisplay
+        )
+      )
+      .map(
+        SnapshotReporter.convertResourceEntriesToResourceSnapshotsReportOperationModel
+      );
   }
 }
