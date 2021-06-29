@@ -26,6 +26,7 @@ import {DummyServer} from '../utils/server';
 import {appendFileSync, readFileSync, truncateSync} from 'fs';
 import getPort from 'get-port';
 import {npm} from '../utils/windows';
+import axios from 'axios';
 
 describe('ui:create:vue', () => {
   let browser: Browser;
@@ -435,9 +436,8 @@ describe('ui:create:vue', () => {
     });
 
     it('should run the server on a new port', async () => {
-      await expect(
-        page.goto(tokenServerEndpoint(), {waitUntil: 'load'})
-      ).resolves.not.toThrow();
+      const tokenRequest = await axios.get(tokenServerEndpoint());
+      expect(tokenRequest.data.token).toBeDefined;
     });
   });
 
