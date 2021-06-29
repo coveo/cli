@@ -1,3 +1,6 @@
-export class SnapshotErrors {
-  public static readonly operationTimedOut = 'OPERATION_TIMED_OUT';
+export class SnapshotOperationTimeoutError extends Error {
+  public static readonly message = 'OPERATION_TIMED_OUT';
+  public constructor() {
+    super(SnapshotOperationTimeoutError.message);
+  }
 }
