@@ -8,7 +8,7 @@ import Command from '@oclif/command';
  * @extends {Command}
  */
 export default abstract class extends Command {
-  async init() {
+  public async init() {
     // do some generic initialization
     // const {flags} = this.parse(this.constructor);
     // this.flags = flags;
@@ -16,7 +16,7 @@ export default abstract class extends Command {
     // Send command instruction to Coveo
     await this.sendCommandToCoveo(this.id);
   }
-  async catch(err?: Error) {
+  public async catch(err?: Error) {
     // add any custom logic to handle errors from the command
     // or simply return the parent class error handling
     return super.catch(err);

@@ -14,7 +14,7 @@ import {When} from './when';
  */
 export class Orchestrator {
   public actions: Action[];
-  constructor(public process: ChildProcessWithoutNullStreams) {
+  public constructor(public process: ChildProcessWithoutNullStreams) {
     this.actions = new Array<Action>();
   }
   public getNewHandle() {
@@ -23,7 +23,7 @@ export class Orchestrator {
 }
 
 class Entrypoint {
-  constructor(private orchestrator: Orchestrator) {}
+  public constructor(private orchestrator: Orchestrator) {}
 
   public when(conditionOrCallback: Condition): When {
     const action = new Action(this.orchestrator.process);
