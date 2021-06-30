@@ -35,12 +35,6 @@
     "typescript": "^3.9.9",
     "yargs": "^16.2.0"
   },
-  "husky": {
-    "hooks": {
-      "commit-msg": "node ./hooks/commit-msg.js",
-      "pre-commit": "lint-staged"
-    }
-  },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
@@ -77,6 +71,9 @@
     "npm:publish:template": "lerna run --no-bail npm:publish:template",
     "npm:bump:template": "lerna run --no-bail npm:bump:template",
     "npm:pkglock": "lerna exec npm i",
-    "npm:cleanPackage": "lerna exec node ../../scripts/clean-package-json.js"
+    "npm:cleanPackage": "lerna exec node ../../scripts/clean-package-json.js",
+    "prepare": "husky install",
+    "commit-msg": "node ./hooks/commit-msg.js",
+    "pre-commit": "lint-staged"
   }
 }
