@@ -1,126 +1,22 @@
 import {test} from '@oclif/test';
 
-import {
-  ResourceSnapshotsReportModel,
-  ResourceSnapshotsReportResultCode,
-  ResourceSnapshotsReportStatus,
-  ResourceSnapshotsReportType,
-} from '@coveord/platform-client';
+import {ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {ReportViewer} from './reportViewer';
 import dedent from 'ts-dedent';
 import {SnapshotReporter} from '../snapshotReporter';
-
-const getReportWithoutChanges = (
-  snapshotId: string
-): ResourceSnapshotsReportModel => ({
-  id: snapshotId,
-  updatedDate: 1622555847000,
-  type: ResourceSnapshotsReportType.DryRun,
-  status: ResourceSnapshotsReportStatus.Completed,
-  resourcesProcessed: 12,
-  resultCode: ResourceSnapshotsReportResultCode.Success,
-  resourceOperations: {
-    EXTENSION: {
-      resourcesCreated: 0,
-      resourcesUpdated: 0,
-      resourcesRecreated: 0,
-      resourcesDeleted: 0,
-      resourcesInError: 0,
-      resourcesUnchanged: 0,
-    },
-    FIELD: {
-      resourcesCreated: 0,
-      resourcesUpdated: 0,
-      resourcesRecreated: 0,
-      resourcesDeleted: 0,
-      resourcesInError: 0,
-      resourcesUnchanged: 0,
-    },
-  },
-  resourceOperationResults: {},
-});
-
-const getSuccessReport = (
-  snapshotId: string
-): ResourceSnapshotsReportModel => ({
-  id: snapshotId,
-  updatedDate: 1622555847000,
-  resourcesProcessed: 99,
-  type: ResourceSnapshotsReportType.DryRun,
-  status: ResourceSnapshotsReportStatus.Completed,
-  resultCode: ResourceSnapshotsReportResultCode.Success,
-  resourceOperations: {
-    EXTENSION: {
-      resourcesCreated: 1,
-      resourcesUpdated: 0,
-      resourcesRecreated: 0,
-      resourcesDeleted: 2,
-      resourcesInError: 0,
-      resourcesUnchanged: 0,
-    },
-    FIELD: {
-      resourcesCreated: 0,
-      resourcesUpdated: 1,
-      resourcesRecreated: 0,
-      resourcesDeleted: 0,
-      resourcesInError: 0,
-      resourcesUnchanged: 0,
-    },
-    FILTER: {
-      resourcesCreated: 0,
-      resourcesUpdated: 0,
-      resourcesRecreated: 0,
-      resourcesDeleted: 0,
-      resourcesInError: 0,
-      resourcesUnchanged: 0,
-    },
-  },
-  resourceOperationResults: {},
-});
-
-const getErrorReport = (snapshotId: string): ResourceSnapshotsReportModel => ({
-  id: snapshotId,
-  updatedDate: 1622555847000,
-  type: ResourceSnapshotsReportType.DryRun,
-  status: ResourceSnapshotsReportStatus.Completed,
-  resultCode: ResourceSnapshotsReportResultCode.ResourcesInError,
-  resourcesProcessed: 99,
-  resourceOperations: {
-    EXTENSION: {
-      resourcesCreated: 1,
-      resourcesUpdated: 0,
-      resourcesRecreated: 0,
-      resourcesDeleted: 2,
-      resourcesInError: 0,
-      resourcesUnchanged: 0,
-    },
-    FIELD: {
-      resourcesCreated: 0,
-      resourcesUpdated: 1,
-      resourcesRecreated: 0,
-      resourcesDeleted: 0,
-      resourcesInError: 7,
-      resourcesUnchanged: 0,
-    },
-  },
-  resourceOperationResults: {
-    FIELD: {
-      foo_4VNj5ds5: ['RESOURCE_ALREADY_EXISTS: Field foo already exists.'],
-      bar_4VNj5ds5: ['RESOURCE_ALREADY_EXISTS: Field bar already exists.'],
-      dsads_4VNj5ds5: ['RESOURCE_ALREADY_EXISTS: Field dsads already exists.'],
-      fdww_4VNj5ds5: ['RESOURCE_ALREADY_EXISTS: Field fdww already exists.'],
-      csad_4VNj5ds5: ['RESOURCE_ALREADY_EXISTS: Field csad already exists.'],
-      hjkd_4VNj5ds5: ['RESOURCE_ALREADY_EXISTS: Field hjkd already exists.'],
-      fdasf_4VNj5ds5: ['RESOURCE_ALREADY_EXISTS: Field fdasf already exists.'],
-    },
-  },
-});
+import {
+  getErrorReport,
+  getReportWithNoProcessedResources,
+  getSuccessReport,
+} from '../../../__stub__/resourceSnapshotsReportModel';
 
 describe('ReportViewer', () => {
   describe('when the report contains errors', () => {
     let viewer: ReportViewer;
     beforeAll(() => {
-      const reporter = new SnapshotReporter(getErrorReport('some-id'));
+      const reporter = new SnapshotReporter(
+        getErrorReport('some-id', ResourceSnapshotsReportType.DryRun)
+      );
       viewer = new ReportViewer(reporter);
     });
 
@@ -159,7 +55,9 @@ describe('ReportViewer', () => {
   describe('when the report does not contain errors', () => {
     let viewer: ReportViewer;
     beforeAll(() => {
-      const reporter = new SnapshotReporter(getSuccessReport('some-id'));
+      const reporter = new SnapshotReporter(
+        getSuccessReport('some-id', ResourceSnapshotsReportType.DryRun)
+      );
       viewer = new ReportViewer(reporter);
     });
 
@@ -180,6 +78,7 @@ describe('ReportViewer', () => {
            Extensions
         +   1 to create
         -   2 to delete
+        ~   1 to update
            Fields
         ~   1 to update
         `);
@@ -189,7 +88,12 @@ describe('ReportViewer', () => {
   describe('when the report contains no changes', () => {
     let viewer: ReportViewer;
     beforeAll(() => {
-      const reporter = new SnapshotReporter(getReportWithoutChanges('some-id'));
+      const reporter = new SnapshotReporter(
+        getReportWithNoProcessedResources(
+          'some-id',
+          ResourceSnapshotsReportType.DryRun
+        )
+      );
       viewer = new ReportViewer(reporter);
     });
 
