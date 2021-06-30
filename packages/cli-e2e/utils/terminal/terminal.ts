@@ -1,6 +1,7 @@
-import type {
+import {
   SpawnOptionsWithoutStdio,
   ChildProcessWithoutNullStreams,
+  spawnSync,
 } from 'child_process';
 import type {Condition} from './condition';
 import type {When} from './when';
@@ -35,6 +36,12 @@ export class Terminal {
 
     const fileLogger = new FileLogger(
       debugName ?? `${command}-${args?.join('-')}`.replace(/[^\w\d]/g, '-')
+    );
+    fileLogger.stdout.write(`Command: ${command}`);
+    fileLogger.stdout.write(`Args: ${JSON.stringify(args)}`);
+    fileLogger.stdout.write(`Options: ${JSON.stringify(options)}`);
+    fileLogger.stdout.write(
+      `CWD_LS: ${spawnSync('ls', {cwd: options?.cwd}).stdout.toString()}`
     );
     this.logIntoFile(fileLogger);
     this.orchestrator = new Orchestrator(this.childProcess);
