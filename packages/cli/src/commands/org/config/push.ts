@@ -53,11 +53,6 @@ export default class Push extends SnapshotBase {
     snapshot: Snapshot
   ) {
     if (!reporter.hasChangedResources()) {
-      cli.log(dedent`${green('No resources to change')}.
-
-      The target organization (${
-        snapshot.targetId
-      }) already matches the configuration.`);
       return;
     }
 
