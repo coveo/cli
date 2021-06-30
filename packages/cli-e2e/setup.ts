@@ -27,7 +27,8 @@ export default async function () {
     process.env.GITHUB_ACTION || randomBytes(16).toString('hex')
   )
     .replace(/^_*/g, '') // Remove all `-` prefix
-    .replace(/_/g, '-'); // Replace all others '_' by a '-'
+    .replace(/_/g, '-') // Replace all others '_' by a '-'
+    .replace(/-*(?=\d)/g, '-'); // Remove all '-' followed by a digit.
   const browser = await connectToChromeBrowser();
   await clearChromeBrowsingData(browser);
   await clearAccessTokenFromConfig();
