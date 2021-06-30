@@ -23,6 +23,7 @@ import {DummyServer} from '../utils/server';
 import getPort from 'get-port';
 import {npm} from '../utils/windows';
 import axios from 'axios';
+import {jwtTokenPattern} from '../utils/matcher';
 
 describe('ui:create:react', () => {
   let browser: Browser;
@@ -202,7 +203,7 @@ describe('ui:create:react', () => {
       expect(
         JSON.parse(await (await tokenResponseListener).text())
       ).toMatchObject({
-        token: expect.stringMatching(/^eyJhb.+/),
+        token: expect.stringMatching(jwtTokenPattern),
       });
     });
 
@@ -400,7 +401,7 @@ describe('ui:create:react', () => {
 
     it('should run the server on a new port', async () => {
       const tokenRequest = await axios.get(tokenServerEndpoint());
-      expect(tokenRequest.data.token).toBeDefined;
+      expect(tokenRequest.data.token).toMatch(jwtTokenPattern);
     });
   });
 });

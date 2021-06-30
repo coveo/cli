@@ -29,6 +29,7 @@ import {DummyServer} from '../utils/server';
 import getPort from 'get-port';
 import {npm} from '../utils/windows';
 import axios from 'axios';
+import { jwtTokenPattern } from '../utils/matcher';
 
 describe('ui:create:angular', () => {
   let browser: Browser;
@@ -255,7 +256,7 @@ describe('ui:create:angular', () => {
       expect(
         JSON.parse(await (await tokenResponseListener).text())
       ).toMatchObject({
-        token: expect.stringMatching(/^eyJhb.+/),
+        token: expect.stringMatching(jwtTokenPattern),
       });
     }, 60e3);
 
@@ -461,7 +462,7 @@ describe('ui:create:angular', () => {
 
     it('should run the server on a new port', async () => {
       const tokenRequest = await axios.get(tokenServerEndpoint());
-      expect(tokenRequest.data.token).toBeDefined;
+      expect(tokenRequest.data.token).toMatch(jwtTokenPattern);
     });
   });
 });
