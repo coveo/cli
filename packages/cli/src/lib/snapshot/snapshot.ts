@@ -7,14 +7,21 @@ import {
   ResourceSnapshotsReportType,
 } from '@coveord/platform-client';
 import {cli} from 'cli-ux';
-import {backOff} from 'exponential-backoff';
+import {backOff, IBackOffOptions} from 'exponential-backoff';
 import {ReportViewer} from './reportViewer/reportViewer';
 import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
 import dedent from 'ts-dedent';
 import {SnapshotReporter} from './snapshotReporter';
-import {SnapshotOperationTimeoutError} from './snapshotErrors';
 import {blueBright} from 'chalk';
+
+export interface waitUntilDoneOptions {
+  /**
+   * The operation to wait for. If not specified, the method will wait for any operation to complete
+   */
+  operationToWaitFor?: ResourceSnapshotsReportType;
+  waitOptions?: Partial<IBackOffOptions>;
+}
 
 export class Snapshot {
   private static ongoingReportStatuses = [
@@ -34,7 +41,9 @@ export class Snapshot {
       deleteMissingResources,
     });
 
-    await this.waitUntilOperationIsDone(ResourceSnapshotsReportType.DryRun);
+    await this.waitUntilDone({
+      operationToWaitFor: ResourceSnapshotsReportType.DryRun,
+    });
 
     return new SnapshotReporter(this.latestReport);
   }
@@ -47,7 +56,9 @@ export class Snapshot {
   public async apply(deleteMissingResources = false) {
     await this.snapshotClient.apply(this.id, {deleteMissingResources});
 
-    await this.waitUntilOperationIsDone(ResourceSnapshotsReportType.Apply);
+    await this.waitUntilDone({
+      operationToWaitFor: ResourceSnapshotsReportType.Apply,
+    });
 
     return new SnapshotReporter(this.latestReport);
   }
@@ -118,17 +129,24 @@ export class Snapshot {
     });
   }
 
-  public async waitUntilOperationIsDone(
-    operationType: ResourceSnapshotsReportType
+  public async waitUntilDone(
+    options: waitUntilDoneOptions = {},
+    iteratee = (_report: ResourceSnapshotsReportModel) => {}
   ) {
+    const defaultOptions: Partial<IBackOffOptions> = {
+      delayFirstAttempt: true,
+      startingDelay: 1e3 / 2,
+      maxDelay: 2e3,
+    };
     const waitPromise = backOff(
       async () => {
         await this.refreshSnapshotData();
 
-        if (this.latestReport.type !== operationType) {
+        const type = options.operationToWaitFor;
+        if (type && this.latestReport.type !== type) {
           throw new Error(dedent`
           Not processing expected operation
-          Expected ${operationType}
+          Expected ${type}
           Received ${this.latestReport.type}`);
         }
 
@@ -137,29 +155,19 @@ export class Snapshot {
         );
 
         if (isNotDone) {
-          throw new SnapshotOperationTimeoutError();
+          throw new Error(this.operationGettingTooMuchTimeMessage());
         }
+
+        iteratee(this.latestReport);
       },
-      {
-        delayFirstAttempt: true,
-        startingDelay: 1e3 / 2,
-        maxDelay: 2e3,
-      }
+      {...defaultOptions, ...options.waitOptions}
     );
 
     try {
       await waitPromise;
     } catch (err) {
-      if (err instanceof SnapshotOperationTimeoutError) {
-        this.handleOperationTimedOut();
-      }
       cli.error(err);
     }
-  }
-
-  private handleOperationTimedOut() {
-    cli.warn(this.operationGettingTooMuchTimeMessage());
-    cli.exit(0);
   }
 
   private operationGettingTooMuchTimeMessage(): string {
@@ -167,6 +175,7 @@ export class Snapshot {
       this.latestReport.type
     } operation is taking a long time to complete.
     Run the following command to monitor the operation
-    ${blueBright`coveo org:config:monitor ${this.id}`}`;
+
+    ${blueBright`coveo org:config:monitor ${this.id} -t ${this.model.targetId}`}`;
   }
 }
