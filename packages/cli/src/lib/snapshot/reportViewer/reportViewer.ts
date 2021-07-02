@@ -24,7 +24,7 @@ export class ReportViewer {
   private operationsToDisplay: ReportViewerOperationName[];
 
   public constructor(
-    private reporter: SnapshotReporter,
+    private readonly reporter: SnapshotReporter,
     operationsToDisplay: ReportViewerOperationName[] = []
   ) {
     this.operationsToDisplay =
