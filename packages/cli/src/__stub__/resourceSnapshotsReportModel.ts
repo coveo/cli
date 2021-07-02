@@ -67,6 +67,20 @@ export const getReportWithoutChanges = (
   resourceOperationResults: {},
 });
 
+export const getPendingReport = (
+  snapshotId: string,
+  type: ResourceSnapshotsReportType
+): ResourceSnapshotsReportModel => ({
+  id: snapshotId,
+  type: type,
+  updatedDate: 1622555847000,
+  resourcesProcessed: 0,
+  status: ResourceSnapshotsReportStatus.InProgress,
+  resultCode: ResourceSnapshotsReportResultCode.Success,
+  resourceOperations: {},
+  resourceOperationResults: {},
+});
+
 export const getSuccessReport = (
   snapshotId: string,
   type: ResourceSnapshotsReportType
