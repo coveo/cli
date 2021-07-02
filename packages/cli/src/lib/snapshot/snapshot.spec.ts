@@ -5,13 +5,15 @@ jest.mock('fs-extra');
 import {
   ResourceSnapshotsModel,
   ResourceSnapshotsReportModel,
-  ResourceSnapshotsReportResultCode,
-  ResourceSnapshotsReportStatus,
   ResourceSnapshotsReportType,
 } from '@coveord/platform-client';
 import {writeJsonSync, ensureFileSync} from 'fs-extra';
 import {join, normalize} from 'path';
 import {mocked} from 'ts-jest/utils';
+import {
+  getErrorReport,
+  getSuccessReport,
+} from '../../__stub__/resourceSnapshotsReportModel';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {Snapshot} from './snapshot';
 
@@ -24,44 +26,6 @@ const mockedGetSnapshot = jest.fn();
 const mockedApplySnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
-
-const getReport = (
-  snapshotId: string,
-  type: ResourceSnapshotsReportType,
-  status: ResourceSnapshotsReportStatus,
-  resultCode: ResourceSnapshotsReportResultCode
-): ResourceSnapshotsReportModel => ({
-  id: snapshotId,
-  updatedDate: 1622555847000,
-  type: type,
-  status: status,
-  resultCode: resultCode,
-  resourcesProcessed: 12,
-  resourceOperations: {},
-  resourceOperationResults: {},
-});
-
-const getSuccessReport = (
-  snapshotId: string,
-  type: ResourceSnapshotsReportType
-): ResourceSnapshotsReportModel =>
-  getReport(
-    snapshotId,
-    type,
-    ResourceSnapshotsReportStatus.Completed,
-    ResourceSnapshotsReportResultCode.Success
-  );
-
-const getErrorReport = (
-  snapshotId: string,
-  type: ResourceSnapshotsReportType
-): ResourceSnapshotsReportModel =>
-  getReport(
-    snapshotId,
-    type,
-    ResourceSnapshotsReportStatus.Completed,
-    ResourceSnapshotsReportResultCode.ResourcesInError
-  );
 
 const getSuccessDryRunReport = (
   snapshotId: string
