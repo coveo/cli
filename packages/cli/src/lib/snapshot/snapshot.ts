@@ -18,7 +18,7 @@ import {blueBright} from 'chalk';
 
 export interface waitUntilDoneOptions {
   /**
-   * The operation to wait for. If not specified, the method will wait for any operation to complete
+   * The operation to wait for. If not specified, the method will wait for any operation to complete.
    */
   operationToWaitFor?: ResourceSnapshotsReportType;
   waitOptions?: Partial<IBackOffOptions>;
