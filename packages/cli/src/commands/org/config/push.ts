@@ -9,6 +9,7 @@ import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {red, green, bold} from 'chalk';
 import SnapshotBase from './orgConfigBase';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+import dedent from 'ts-dedent';
 
 export interface CustomFile extends ReadStream {
   type?: string;
@@ -52,7 +53,6 @@ export default class Push extends SnapshotBase {
     snapshot: Snapshot
   ) {
     if (!reporter.hasChangedResources()) {
-      cli.log('No resources to change');
       return;
     }
 
