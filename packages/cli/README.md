@@ -12,7 +12,7 @@
 * [Commands](#commands)
 <!-- tocstop -->
 
-# Usage
+## Usage
 
 <!-- usage -->
 ```sh-session
@@ -28,7 +28,7 @@ USAGE
 ```
 <!-- usagestop -->
 
-# Commands
+## Commands
 
 <!-- commands -->
 * [`coveo auth:login`](#coveo-authlogin)
@@ -42,7 +42,7 @@ USAGE
 * [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
 * [`coveo update [CHANNEL]`](#coveo-update-channel)
 
-## `coveo auth:login`
+### `coveo auth:login`
 
 Log into the Coveo platform using the OAuth2 flow.
 
@@ -68,7 +68,7 @@ EXAMPLE
 
 _See code: [src/commands/auth/login.ts](https://github.com/coveo/cli/blob/v1.8.0/packages/cli/src/commands/auth/login.ts)_
 
-## `coveo config:get`
+### `coveo config:get`
 
 Display the current configuration.
 
@@ -79,7 +79,7 @@ USAGE
 
 _See code: [src/commands/config/get.ts](https://github.com/coveo/cli/blob/v1.8.0/packages/cli/src/commands/config/get.ts)_
 
-## `coveo config:set`
+### `coveo config:set`
 
 Modify the current configuration.
 
@@ -105,7 +105,7 @@ OPTIONS
 
 _See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v1.8.0/packages/cli/src/commands/config/set.ts)_
 
-## `coveo help [COMMAND]`
+### `coveo help [COMMAND]`
 
 display help for coveo
 
@@ -122,7 +122,7 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.2/src/commands/help.ts)_
 
-## `coveo org:list`
+### `coveo org:list`
 
 List Coveo organizations.
 
@@ -143,7 +143,7 @@ OPTIONS
 
 _See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v1.8.0/packages/cli/src/commands/org/list.ts)_
 
-## `coveo org:search:dump`
+### `coveo org:search:dump`
 
 Dump the whole content of a particular source in a CSV format.
 
@@ -174,7 +174,7 @@ OPTIONS
 
 _See code: [src/commands/org/search/dump.ts](https://github.com/coveo/cli/blob/v1.8.0/packages/cli/src/commands/org/search/dump.ts)_
 
-## `coveo ui:create:angular NAME`
+### `coveo ui:create:angular NAME`
 
 Create a Coveo Headless-powered search page with the Angular web framework. See https://docs.coveo.com/headless and https://angular.io/.
 
@@ -192,7 +192,7 @@ OPTIONS
 
 _See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/v1.8.0/packages/cli/src/commands/ui/create/angular.ts)_
 
-## `coveo ui:create:react NAME`
+### `coveo ui:create:react NAME`
 
 Create a Coveo Headless-powered search page with the React web framework. See https://docs.coveo.com/headless and https://reactjs.org/.
 
@@ -213,7 +213,7 @@ EXAMPLES
 
 _See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v1.8.0/packages/cli/src/commands/ui/create/react.ts)_
 
-## `coveo ui:create:vue NAME`
+### `coveo ui:create:vue NAME`
 
 Create a Coveo Headless-powered search page with the Vue.js web framework. See https://docs.coveo.com/headless and https://vuejs.org/
 
@@ -241,7 +241,7 @@ EXAMPLES
 
 _See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v1.8.0/packages/cli/src/commands/ui/create/vue.ts)_
 
-## `coveo update [CHANNEL]`
+### `coveo update [CHANNEL]`
 
 update the coveo CLI
 
