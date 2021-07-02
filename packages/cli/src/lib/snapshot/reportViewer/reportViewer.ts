@@ -1,5 +1,5 @@
 import {cli} from 'cli-ux';
-import {red, italic} from 'chalk';
+import {red, italic, green} from 'chalk';
 import {ReportViewerSection} from './reportViewerSection';
 import {ReportViewerStyles} from './reportViewerStyles';
 import {SnapshotReporter} from '../snapshotReporter';
@@ -7,6 +7,7 @@ import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
 } from './reportViewerDataModels';
+import dedent from 'ts-dedent';
 
 export class ReportViewer {
   public static defaultOperationsToDisplay: ReportViewerOperationName[] = [
@@ -23,7 +24,7 @@ export class ReportViewer {
   private operationsToDisplay: ReportViewerOperationName[];
 
   public constructor(
-    private reporter: SnapshotReporter,
+    private readonly reporter: SnapshotReporter,
     operationsToDisplay: ReportViewerOperationName[] = []
   ) {
     this.operationsToDisplay =
@@ -35,6 +36,13 @@ export class ReportViewer {
 
     if (!this.reporter.isSuccessReport()) {
       this.handleReportErrors();
+    }
+
+    if (!this.reporter.hasChangedResources()) {
+      cli.log(dedent`${green('No resources to change')}.
+
+      The target organization already matches the configuration.`);
+      return;
     }
   }
 
