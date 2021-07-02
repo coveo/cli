@@ -9,7 +9,6 @@ import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {red, green, bold} from 'chalk';
 import SnapshotBase from './orgConfigBase';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
-import dedent from 'ts-dedent';
 
 export interface CustomFile extends ReadStream {
   type?: string;
