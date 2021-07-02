@@ -176,18 +176,18 @@ describe('Snapshot', () => {
     });
 
     it('#validate should return false', async () => {
-      const status = await snapshot.validate();
-      expect(status.isValid).toBe(false);
+      const reporter = await snapshot.validate();
+      expect(reporter.isSuccessReport()).toBe(false);
     });
 
     it('#apply should return false', async () => {
-      const status = await snapshot.apply();
-      expect(status.isValid).toBe(false);
+      const reporter = await snapshot.apply();
+      expect(reporter.isSuccessReport()).toBe(false);
     });
 
     it('#validate should return the error in the detailed report', async () => {
-      const status = await snapshot.validate();
-      expect(status.report).toEqual(
+      const reporter = await snapshot.validate();
+      expect(reporter.report).toEqual(
         expect.objectContaining({
           id: 'target-org-snapshot-id',
           resultCode: 'RESOURCES_IN_ERROR',
@@ -299,13 +299,13 @@ describe('Snapshot', () => {
     });
 
     it('report should contain the info of the last DryRun operation', async () => {
-      const status = await snapshot.validate();
-      expect(status.report.type).toBe(ResourceSnapshotsReportType.DryRun);
+      const reporter = await snapshot.validate();
+      expect(reporter.report.type).toBe(ResourceSnapshotsReportType.DryRun);
     });
 
     it('report should contain the info of the last Apply operation', async () => {
-      const status = await snapshot.apply();
-      expect(status.report.type).toBe(ResourceSnapshotsReportType.Apply);
+      const reporter = await snapshot.apply();
+      expect(reporter.report.type).toBe(ResourceSnapshotsReportType.Apply);
     });
 
     it('should refresh the snapshot until the right operation is processed', async () => {
@@ -327,8 +327,8 @@ describe('Snapshot', () => {
     });
 
     it('#validate should return true', async () => {
-      const status = await snapshot.validate();
-      expect(status.isValid).toBe(true);
+      const reporter = await snapshot.validate();
+      expect(reporter.isSuccessReport()).toBe(true);
     });
 
     it('#apply should apply a snapshot to the target org', async () => {
@@ -341,8 +341,8 @@ describe('Snapshot', () => {
     });
 
     it('#apply should return true', async () => {
-      const status = await snapshot.apply();
-      expect(status.isValid).toBe(true);
+      const reporter = await snapshot.apply();
+      expect(reporter.isSuccessReport()).toBe(true);
     });
 
     it('#apply should apply a snapshot with deleteMissingResources flag', async () => {

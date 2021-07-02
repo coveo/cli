@@ -16,6 +16,13 @@ import {Config} from '../../../lib/config/config';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {warn, error} from '@oclif/errors';
+import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+import {
+  ResourceSnapshotsReportModel,
+  ResourceSnapshotsReportResultCode,
+  ResourceSnapshotsReportStatus,
+  ResourceSnapshotsReportType,
+} from '@coveord/platform-client';
 
 const mockedSnapshotFactory = mocked(SnapshotFactory, true);
 const mockedConfig = mocked(Config);
@@ -30,6 +37,44 @@ const mockedRequiresSynchronization = jest.fn();
 const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
 const mockedLastReport = jest.fn();
+
+const getReport = (
+  snapshotId: string,
+  type: ResourceSnapshotsReportType,
+  status: ResourceSnapshotsReportStatus,
+  resultCode: ResourceSnapshotsReportResultCode
+): ResourceSnapshotsReportModel => ({
+  id: snapshotId,
+  updatedDate: 1622555847000,
+  type: type,
+  status: status,
+  resultCode: resultCode,
+  resourcesProcessed: 12,
+  resourceOperations: {},
+  resourceOperationResults: {},
+});
+
+const getSuccessReport = (
+  snapshotId: string,
+  type: ResourceSnapshotsReportType
+): ResourceSnapshotsReportModel =>
+  getReport(
+    snapshotId,
+    type,
+    ResourceSnapshotsReportStatus.Completed,
+    ResourceSnapshotsReportResultCode.Success
+  );
+
+const getErrorReport = (
+  snapshotId: string,
+  type: ResourceSnapshotsReportType
+): ResourceSnapshotsReportModel =>
+  getReport(
+    snapshotId,
+    type,
+    ResourceSnapshotsReportStatus.Completed,
+    ResourceSnapshotsReportResultCode.ResourcesInError
+  );
 
 const mockProject = () => {
   mockedProject.mockImplementation(
@@ -76,12 +121,22 @@ const mockSnapshotFactory = async () => {
 };
 
 const mockSnapshotFactoryReturningValidSnapshot = async () => {
-  mockedValidateSnapshot.mockResolvedValue({isValid: true, report: {}});
+  const successReport = getSuccessReport(
+    'success-report',
+    ResourceSnapshotsReportType.Apply
+  );
+  const reporter = new SnapshotReporter(successReport);
+  mockedValidateSnapshot.mockResolvedValue(reporter);
   await mockSnapshotFactory();
 };
 
 const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
-  mockedValidateSnapshot.mockResolvedValue({isValid: false, report: {}});
+  const errorReport = getErrorReport(
+    'error-report',
+    ResourceSnapshotsReportType.Apply
+  );
+  const reporter = new SnapshotReporter(errorReport);
+  mockedValidateSnapshot.mockResolvedValue(reporter);
   await mockSnapshotFactory();
 };
 

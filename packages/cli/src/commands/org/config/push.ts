@@ -33,13 +33,12 @@ export default class Push extends SnapshotBase {
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = this.parse(Push);
-    const {isValid, snapshot, project} = await this.dryRun();
+    const {reporter, snapshot, project} = await this.dryRun();
 
     if (!flags.skipPreview) {
       await snapshot.preview();
     }
-
-    if (isValid) {
+    if (reporter.isSuccessReport()) {
       await this.handleValidReport(snapshot);
       await snapshot.delete();
     }
@@ -48,9 +47,7 @@ export default class Push extends SnapshotBase {
   }
 
   private async handleValidReport(snapshot: Snapshot) {
-    if (!snapshot.hasChangedResources()) {
-      return;
-    }
+    // TODO: CDX-390 return different message if no resources changes
     const {flags} = this.parse(Push);
     const canBeApplied = flags.skipPreview || (await this.askForConfirmation());
 
@@ -72,12 +69,13 @@ export default class Push extends SnapshotBase {
   private async applySnapshot(snapshot: Snapshot) {
     cli.action.start('Applying snapshot');
     const {flags} = this.parse(Push);
-    const {isValid} = await snapshot.apply(flags.deleteMissingResources);
+    const reporter = await snapshot.apply(flags.deleteMissingResources);
+    const success = reporter.isSuccessReport();
 
-    if (!isValid) {
+    if (!success) {
       await this.handleReportWithErrors(snapshot);
     }
 
-    cli.action.stop(isValid ? green('✔') : red.bold('!'));
+    cli.action.stop(success ? green('✔') : red.bold('!'));
   }
 }
