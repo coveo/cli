@@ -1,83 +1,17 @@
+import {ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {
-  ResourceSnapshotsReportModel,
-  ResourceSnapshotsReportResultCode,
-  ResourceSnapshotsReportStatus,
-  ResourceSnapshotsReportType,
-} from '@coveord/platform-client';
+  getReportWithoutChanges,
+  getSuccessReport,
+} from '../../__stub__/resourceSnapshotsReportModel';
 import {ReportViewerResourceReportModel} from './reportViewer/reportViewerDataModels';
 import {SnapshotReporter} from './snapshotReporter';
 
-const getReportWithoutChanges = (
-  snapshotId: string
-): ResourceSnapshotsReportModel => ({
-  id: snapshotId,
-  updatedDate: 1622555847000,
-  type: ResourceSnapshotsReportType.DryRun,
-  status: ResourceSnapshotsReportStatus.Completed,
-  resourcesProcessed: 12,
-  resultCode: ResourceSnapshotsReportResultCode.Success,
-  resourceOperations: {
-    EXTENSION: {
-      resourcesCreated: 0,
-      resourcesUpdated: 0,
-      resourcesRecreated: 0,
-      resourcesDeleted: 0,
-      resourcesInError: 0,
-      resourcesUnchanged: 8,
-    },
-    FIELD: {
-      resourcesCreated: 0,
-      resourcesUpdated: 0,
-      resourcesRecreated: 0,
-      resourcesDeleted: 0,
-      resourcesInError: 0,
-      resourcesUnchanged: 4,
-    },
-  },
-  resourceOperationResults: {},
-});
-
-const getSuccessReport = (
-  snapshotId: string
-): ResourceSnapshotsReportModel => ({
-  id: snapshotId,
-  updatedDate: 1622555847000,
-  resourcesProcessed: 5,
-  type: ResourceSnapshotsReportType.DryRun,
-  status: ResourceSnapshotsReportStatus.Completed,
-  resultCode: ResourceSnapshotsReportResultCode.Success,
-  resourceOperations: {
-    EXTENSION: {
-      resourcesCreated: 1,
-      resourcesUpdated: 1,
-      resourcesRecreated: 0,
-      resourcesDeleted: 2,
-      resourcesInError: 0,
-      resourcesUnchanged: 0,
-    },
-    FIELD: {
-      resourcesCreated: 0,
-      resourcesUpdated: 1,
-      resourcesRecreated: 0,
-      resourcesDeleted: 0,
-      resourcesInError: 0,
-      resourcesUnchanged: 0,
-    },
-    FILTER: {
-      resourcesCreated: 0,
-      resourcesUpdated: 0,
-      resourcesRecreated: 0,
-      resourcesDeleted: 0,
-      resourcesInError: 0,
-      resourcesUnchanged: 0,
-    },
-  },
-  resourceOperationResults: {},
-});
-
 describe('SnapshotReporter', () => {
   describe('when the report only contains unchanged resources', () => {
-    const noChangeReport = getReportWithoutChanges('snapshot-no-change');
+    const noChangeReport = getReportWithoutChanges(
+      'snapshot-no-change',
+      ResourceSnapshotsReportType.DryRun
+    );
     const noChangeReporter = new SnapshotReporter(noChangeReport);
 
     it('#hasChangedResources should return false', () => {
@@ -101,7 +35,10 @@ describe('SnapshotReporter', () => {
   });
 
   describe('when the report contains changes', () => {
-    const successReport = getSuccessReport('snapshot-with-change');
+    const successReport = getSuccessReport(
+      'snapshot-with-change',
+      ResourceSnapshotsReportType.DryRun
+    );
     const successReporter = new SnapshotReporter(successReport);
 
     it('#getOperationTypeTotalCount should return 2 resources to update', () => {

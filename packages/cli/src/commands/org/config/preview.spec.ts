@@ -17,12 +17,11 @@ import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {warn, error} from '@oclif/errors';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+import {ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {
-  ResourceSnapshotsReportModel,
-  ResourceSnapshotsReportResultCode,
-  ResourceSnapshotsReportStatus,
-  ResourceSnapshotsReportType,
-} from '@coveord/platform-client';
+  getErrorReport,
+  getSuccessReport,
+} from '../../../__stub__/resourceSnapshotsReportModel';
 
 const mockedSnapshotFactory = mocked(SnapshotFactory, true);
 const mockedConfig = mocked(Config);
@@ -37,44 +36,6 @@ const mockedRequiresSynchronization = jest.fn();
 const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
 const mockedLastReport = jest.fn();
-
-const getReport = (
-  snapshotId: string,
-  type: ResourceSnapshotsReportType,
-  status: ResourceSnapshotsReportStatus,
-  resultCode: ResourceSnapshotsReportResultCode
-): ResourceSnapshotsReportModel => ({
-  id: snapshotId,
-  updatedDate: 1622555847000,
-  type: type,
-  status: status,
-  resultCode: resultCode,
-  resourcesProcessed: 12,
-  resourceOperations: {},
-  resourceOperationResults: {},
-});
-
-const getSuccessReport = (
-  snapshotId: string,
-  type: ResourceSnapshotsReportType
-): ResourceSnapshotsReportModel =>
-  getReport(
-    snapshotId,
-    type,
-    ResourceSnapshotsReportStatus.Completed,
-    ResourceSnapshotsReportResultCode.Success
-  );
-
-const getErrorReport = (
-  snapshotId: string,
-  type: ResourceSnapshotsReportType
-): ResourceSnapshotsReportModel =>
-  getReport(
-    snapshotId,
-    type,
-    ResourceSnapshotsReportStatus.Completed,
-    ResourceSnapshotsReportResultCode.ResourcesInError
-  );
 
 const mockProject = () => {
   mockedProject.mockImplementation(
