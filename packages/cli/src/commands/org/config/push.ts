@@ -8,6 +8,7 @@ import {
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {red, green, bold} from 'chalk';
 import SnapshotBase from './orgConfigBase';
+import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 
 export interface CustomFile extends ReadStream {
   type?: string;
@@ -39,15 +40,22 @@ export default class Push extends SnapshotBase {
       await snapshot.preview();
     }
     if (reporter.isSuccessReport()) {
-      await this.handleValidReport(snapshot);
+      await this.handleValidReport(reporter, snapshot);
       await snapshot.delete();
     }
 
     project.deleteTemporaryZipFile();
   }
 
-  private async handleValidReport(snapshot: Snapshot) {
-    // TODO: CDX-390 return different message if no resources changes
+  private async handleValidReport(
+    reporter: SnapshotReporter,
+    snapshot: Snapshot
+  ) {
+    if (!reporter.hasChangedResources()) {
+      cli.log('No resources to change');
+      return;
+    }
+
     const {flags} = this.parse(Push);
     const canBeApplied = flags.skipPreview || (await this.askForConfirmation());
 
