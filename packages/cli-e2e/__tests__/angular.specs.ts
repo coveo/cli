@@ -29,7 +29,7 @@ import {DummyServer} from '../utils/server';
 import getPort from 'get-port';
 import {npm} from '../utils/windows';
 import axios from 'axios';
-import { jwtTokenPattern } from '../utils/matcher';
+import {jwtTokenPattern} from '../utils/matcher';
 
 describe('ui:create:angular', () => {
   let browser: Browser;
