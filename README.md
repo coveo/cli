@@ -8,25 +8,22 @@ Coveo CLI is a command line interface to interact with the Coveo platform. It al
 
 ## Installation
 
-Running one of the executables below will install the latest available version of the CLI.
+### Option 1: Install via an Executable
+
+Download and run the executable for your operating system to install the latest available version of the CLI.
 
 Afterward, you can run `coveo update` at any time to update your CLI installation to the latest version.
 
-### Mac
+- Linux
+  - https://static.cloud.coveo.com/cli/coveo-latest_amd64.deb
+  - https://static.cloud.coveo.com/cli/coveo-latest_armel.deb
+- Mac
+  - https://static.cloud.coveo.com/cli/coveo-latest.pkg
+- Windows
+  - https://static.cloud.coveo.com/cli/coveo-latest-x64.exe
+  - https://static.cloud.coveo.com/cli/coveo-latest-x32.exe
 
-- https://static.cloud.coveo.com/cli/coveo-latest.pkg
-
-### Windows
-
-- https://static.cloud.coveo.com/cli/coveo-latest-x64.exe
-- https://static.cloud.coveo.com/cli/coveo-latest-x32.exe
-
-### Linux
-
-- https://static.cloud.coveo.com/cli/coveo-latest_amd64.deb
-- https://static.cloud.coveo.com/cli/coveo-latest_armel.deb
-
-### NPM/NPX
+### Option 2: Install via NPM
 
 If you have [installed node-gyp](https://github.com/nodejs/node-gyp#installation), you can alternatively install globally via [npm](https://www.npmjs.com/package/@coveo/cli):
 
@@ -36,7 +33,7 @@ npm install -g @coveo/cli
 
 Afterward, you can run `npm update -g @coveo/cli` at any time to update your npm-based CLI installation to the latest version.
 
-With node-gyp, you can also run via [npx](https://www.npmjs.com/package/npx):
+With node-gyp, you can also run the CLI via [npx](https://www.npmjs.com/package/npx):
 
 ```sh
 npx @coveo/cli
