@@ -28,7 +28,7 @@ describe('ui:create:react', () => {
   const processManagers: ProcessManager[] = [];
   let page: Page;
   const oldEnv = process.env;
-  const projectName = `${process.env.GITHUB_ACTION}-react-project`;
+  const projectName = `${process.env.TEST_RUN_ID}-react-project`;
   let clientPort: number;
   let serverPort: number;
 

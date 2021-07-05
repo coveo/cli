@@ -32,7 +32,7 @@ describe('ui:create:vue', () => {
   const processManagers: ProcessManager[] = [];
   let page: Page;
   const oldEnv = process.env;
-  const projectName = `${process.env.GITHUB_ACTION}-vue-project`;
+  const projectName = `${process.env.TEST_RUN_ID}-vue-project`;
   let clientPort: number;
   let serverPort: number;
 
