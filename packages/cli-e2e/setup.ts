@@ -23,8 +23,15 @@ async function clearChromeBrowsingData(browser: Browser) {
 
 export default async function () {
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
-  process.env.GITHUB_ACTION =
-    process.env.GITHUB_ACTION || randomBytes(16).toString('hex');
+  const leadingUnderscorePrefix = /^_*/g;
+  const allUnderscores = /_/g;
+  const allDashesFollowedByADigit = /-*(?=\d)/g;
+  process.env.GITHUB_ACTION = (
+    process.env.GITHUB_ACTION || randomBytes(16).toString('hex')
+  )
+    .replace(leadingUnderscorePrefix, '')
+    .replace(allUnderscores, '-')
+    .replace(allDashesFollowedByADigit, '');
   const browser = await connectToChromeBrowser();
   await clearChromeBrowsingData(browser);
   await clearAccessTokenFromConfig();
