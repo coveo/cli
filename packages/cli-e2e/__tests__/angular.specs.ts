@@ -28,6 +28,8 @@ import {readFileSync, writeFileSync, truncateSync, appendFileSync} from 'fs';
 import {DummyServer} from '../utils/server';
 import getPort from 'get-port';
 import {npm} from '../utils/windows';
+import axios from 'axios';
+import {jwtTokenPattern} from '../utils/matcher';
 
 describe('ui:create:angular', () => {
   let browser: Browser;
@@ -64,7 +66,7 @@ describe('ui:create:angular', () => {
 
   const forceTokenServerPort = (port: number) => {
     const pathToEnv = resolve(getProjectPath(projectName), 'server', '.env');
-    const environment = parse(pathToEnv);
+    const environment = parse(readFileSync(pathToEnv, {encoding: 'utf-8'}));
 
     const updatedEnvironment = {
       ...environment,
@@ -254,7 +256,7 @@ describe('ui:create:angular', () => {
       expect(
         JSON.parse(await (await tokenResponseListener).text())
       ).toMatchObject({
-        token: expect.stringMatching(/^eyJhb.+/),
+        token: expect.stringMatching(jwtTokenPattern),
       });
     }, 60e3);
 
@@ -459,9 +461,8 @@ describe('ui:create:angular', () => {
     });
 
     it('should run the server on a new port', async () => {
-      await expect(
-        page.goto(tokenServerEndpoint(), {waitUntil: 'load'})
-      ).resolves.not.toThrow();
+      const tokenRequest = await axios.get(tokenServerEndpoint());
+      expect(tokenRequest.data.token).toMatch(jwtTokenPattern);
     });
   });
 });
