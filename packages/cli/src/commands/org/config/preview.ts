@@ -15,11 +15,11 @@ export default class Preview extends SnapshotBase {
 
   @Preconditions(IsAuthenticated())
   public async run() {
-    const {isValid, snapshot, project} = await this.dryRun();
+    const {reporter, snapshot, project} = await this.dryRun();
 
     await snapshot.preview();
 
-    if (isValid) {
+    if (reporter.isSuccessReport()) {
       await snapshot.delete();
     }
 
