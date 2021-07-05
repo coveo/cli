@@ -16,6 +16,12 @@ import {Config} from '../../../lib/config/config';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {warn, error} from '@oclif/errors';
+import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+import {ResourceSnapshotsReportType} from '@coveord/platform-client';
+import {
+  getErrorReport,
+  getSuccessReport,
+} from '../../../__stub__/resourceSnapshotsReportModel';
 
 const mockedSnapshotFactory = mocked(SnapshotFactory, true);
 const mockedConfig = mocked(Config);
@@ -76,12 +82,22 @@ const mockSnapshotFactory = async () => {
 };
 
 const mockSnapshotFactoryReturningValidSnapshot = async () => {
-  mockedValidateSnapshot.mockResolvedValue({isValid: true, report: {}});
+  const successReport = getSuccessReport(
+    'success-report',
+    ResourceSnapshotsReportType.Apply
+  );
+  const reporter = new SnapshotReporter(successReport);
+  mockedValidateSnapshot.mockResolvedValue(reporter);
   await mockSnapshotFactory();
 };
 
 const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
-  mockedValidateSnapshot.mockResolvedValue({isValid: false, report: {}});
+  const errorReport = getErrorReport(
+    'error-report',
+    ResourceSnapshotsReportType.Apply
+  );
+  const reporter = new SnapshotReporter(errorReport);
+  mockedValidateSnapshot.mockResolvedValue(reporter);
   await mockSnapshotFactory();
 };
 

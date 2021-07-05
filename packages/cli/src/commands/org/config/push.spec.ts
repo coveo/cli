@@ -16,6 +16,12 @@ import {Config} from '../../../lib/config/config';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {error} from '@oclif/errors';
+import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+import {ResourceSnapshotsReportType} from '@coveord/platform-client';
+import {
+  getErrorReport,
+  getSuccessReport,
+} from '../../../__stub__/resourceSnapshotsReportModel';
 
 const mockedSnapshotFactory = mocked(SnapshotFactory, true);
 const mockedConfig = mocked(Config);
@@ -30,7 +36,6 @@ const mockedApplySnapshot = jest.fn();
 const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
 const mockedLastReport = jest.fn();
-const mockedHasChangedResources = jest.fn();
 
 const mockProject = () => {
   mockedProject.mockImplementation(
@@ -52,7 +57,6 @@ const mockConfig = () => {
     })
   );
 
-  // TODO: use prototype
   mockedConfig.mockImplementation(
     () =>
       ({
@@ -71,7 +75,6 @@ const mockSnapshotFactory = async () => {
       saveDetailedReport: mockedSaveDetailedReport,
       requiresSynchronization: mockedRequiresSynchronization,
       latestReport: mockedLastReport,
-      hasChangedResources: mockedHasChangedResources,
       id: 'banana-snapshot',
       targetId: 'potato-org',
     } as unknown as Snapshot)
@@ -79,18 +82,37 @@ const mockSnapshotFactory = async () => {
 };
 
 const mockSnapshotFactoryReturningValidSnapshot = async () => {
-  // TODO: CDX-390: Test when there are no changes
-  mockedHasChangedResources.mockReturnValue(true);
-  mockedValidateSnapshot.mockResolvedValue({isValid: true, report: {}});
-  mockedApplySnapshot.mockResolvedValue({isValid: true, report: {}});
+  const successReportValidate = getSuccessReport(
+    'success-report',
+    ResourceSnapshotsReportType.DryRun
+  );
+  const successReportApply = getSuccessReport(
+    'success-report',
+    ResourceSnapshotsReportType.Apply
+  );
+
+  mockedValidateSnapshot.mockResolvedValue(
+    new SnapshotReporter(successReportValidate)
+  );
+  mockedApplySnapshot.mockResolvedValue(
+    new SnapshotReporter(successReportApply)
+  );
   await mockSnapshotFactory();
 };
 
 const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
-  // TODO: CDX-390: Test when there are no changes
-  mockedHasChangedResources.mockReturnValue(true);
-  mockedValidateSnapshot.mockResolvedValue({isValid: false, report: {}});
-  mockedApplySnapshot.mockResolvedValue({isValid: false, report: {}});
+  const errorReportValidate = getErrorReport(
+    'error-report',
+    ResourceSnapshotsReportType.DryRun
+  );
+  const errorReportApply = getErrorReport(
+    'error-report',
+    ResourceSnapshotsReportType.Apply
+  );
+  mockedValidateSnapshot.mockResolvedValue(
+    new SnapshotReporter(errorReportValidate)
+  );
+  mockedApplySnapshot.mockResolvedValue(new SnapshotReporter(errorReportApply));
   await mockSnapshotFactory();
 };
 

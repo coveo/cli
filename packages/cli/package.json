@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@angular/cli": "^11.1.4",
-    "@coveord/platform-client": "^20.2.0",
+    "@coveord/platform-client": "^21.4.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^3",
