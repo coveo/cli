@@ -14,6 +14,7 @@ import {
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {red, green} from 'chalk';
 import {normalize} from 'path';
+import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 
 export interface CustomFile extends ReadStream {
   type?: string;
@@ -47,10 +48,10 @@ export default abstract class SnapshotBase extends Command {
     const snapshot = await this.createSnapshotFromProject(project);
 
     cli.action.start('Validating snapshot');
-    const isValid = await this.validateSnapshot(snapshot);
+    const reporter = await this.validateSnapshot(snapshot);
 
-    cli.action.stop(isValid ? green('✔') : red.bold('!'));
-    return {isValid, snapshot, project};
+    cli.action.stop(reporter.isSuccessReport() ? green('✔') : red.bold('!'));
+    return {reporter, snapshot, project};
   }
 
   protected async createSnapshotFromProject(
@@ -62,16 +63,16 @@ export default abstract class SnapshotBase extends Command {
     return await SnapshotFactory.createFromZip(pathToZip, targetOrg);
   }
 
-  protected async validateSnapshot(snapshot: Snapshot): Promise<boolean> {
-    const {isValid} = await snapshot.validate(
-      this.flags.deleteMissingResources
-    );
+  protected async validateSnapshot(
+    snapshot: Snapshot
+  ): Promise<SnapshotReporter> {
+    const reporter = await snapshot.validate(this.flags.deleteMissingResources);
 
-    if (!isValid) {
+    if (!reporter.isSuccessReport()) {
       await this.handleReportWithErrors(snapshot);
     }
 
-    return isValid;
+    return reporter;
   }
 
   protected async getTargetOrg() {
