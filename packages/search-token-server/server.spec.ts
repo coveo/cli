@@ -61,11 +61,11 @@ describe('server', () => {
   const doMockPlatformClient = () => {
     mockedPlatformClient.mockImplementation(
       () =>
-        (({
+        ({
           search: {
             createToken: mockedCreateToken,
           },
-        } as unknown) as PlatformClient)
+        } as unknown as PlatformClient)
     );
   };
 
