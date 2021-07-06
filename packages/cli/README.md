@@ -35,7 +35,6 @@ USAGE
 * [`coveo config:get`](#coveo-configget)
 * [`coveo config:set`](#coveo-configset)
 * [`coveo help [COMMAND]`](#coveo-help-command)
-* [`coveo org:config:monitor [FILE]`](#coveo-orgconfigmonitor-file)
 * [`coveo org:list`](#coveo-orglist)
 * [`coveo org:search:dump`](#coveo-orgsearchdump)
 * [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
@@ -122,22 +121,6 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.2/src/commands/help.ts)_
-
-## `coveo org:config:monitor [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ coveo org:config:monitor [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-```
-
-_See code: [src/commands/org/config/monitor.ts](https://github.com/coveo/cli/blob/v1.8.0/packages/cli/src/commands/org/config/monitor.ts)_
 
 ## `coveo org:list`
 
