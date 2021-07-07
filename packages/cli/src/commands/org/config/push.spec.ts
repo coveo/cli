@@ -234,8 +234,7 @@ describe('org:config:push', () => {
       .command(['org:config:push'])
       .it('should return an invalid snapshot error message', () => {
         expect(mockedError).toHaveBeenCalledWith(
-          expect.stringContaining('Invalid snapshot'),
-          {}
+          expect.stringContaining('Invalid snapshot')
         );
       });
   });

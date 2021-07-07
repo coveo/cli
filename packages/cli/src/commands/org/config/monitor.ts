@@ -1,6 +1,8 @@
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
-import {flags} from '@oclif/command';
+import {flags, Command} from '@oclif/command';
 import {cli} from 'cli-ux';
+import {cwd} from 'process';
+import {Config} from '../../../lib/config/config';
 import {
   IsAuthenticated,
   Preconditions,
@@ -8,9 +10,8 @@ import {
 import {ReportViewerStyles} from '../../../lib/snapshot/reportViewer/reportViewerStyles';
 import {Snapshot, waitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
-import SnapshotBase from './orgConfigBase';
 
-export default class Monitor extends SnapshotBase {
+export default class Monitor extends Command {
   public static description = 'Monitor a Snapshot operation';
 
   public static flags = {
@@ -99,5 +100,18 @@ export default class Monitor extends SnapshotBase {
         maxDelay: 10e3,
       },
     };
+  }
+
+  private async getTargetOrg() {
+    const {flags} = this.parse(Monitor);
+    if (flags.target) {
+      return flags.target;
+    }
+    const cfg = await this.configuration.get();
+    return cfg.organization;
+  }
+
+  private get configuration() {
+    return new Config(this.config.configDir, this.error);
   }
 }

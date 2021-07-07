@@ -1,25 +1,39 @@
 import {cli} from 'cli-ux';
-import {flags} from '@oclif/command';
-import {ReadStream} from 'fs';
+import {flags, Command} from '@oclif/command';
 import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {red, green, bold} from 'chalk';
-import SnapshotBase from './orgConfigBase';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+import {
+  displayInvalidSnapshotError,
+  displaySnapshotSynchronizationWarning,
+  dryRun,
+} from '../../../lib/snapshot/snapshotCommon';
+import {Config} from '../../../lib/config/config';
+import {DryRunOptions} from '@coveord/platform-client';
+import {cwd} from 'process';
 
-export interface CustomFile extends ReadStream {
-  type?: string;
-}
-
-export default class Push extends SnapshotBase {
+export default class Push extends Command {
   public static description =
     'Preview, validate and deploy your changes to the destination org';
 
   public static flags = {
-    ...SnapshotBase.flags,
+    target: flags.string({
+      char: 't',
+      description:
+        'The unique identifier of the organization where to send the changes. If not specified, the organization you are connected to will be used.',
+      helpValue: 'destinationorganizationg7dg3gd',
+      required: false,
+    }),
+    deleteMissingResources: flags.boolean({
+      char: 'd',
+      description: 'Whether or not to delete missing resources',
+      default: false,
+      required: false,
+    }),
     skipPreview: flags.boolean({
       char: 's',
       description:
@@ -34,14 +48,25 @@ export default class Push extends SnapshotBase {
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = this.parse(Push);
-    const {reporter, snapshot, project} = await this.dryRun();
+    const target = await this.getTargetOrg();
+    const options: DryRunOptions = {
+      deleteMissingResources: flags.deleteMissingResources,
+    };
+    const {reporter, snapshot, project} = await dryRun(
+      target,
+      this.projectPath,
+      options
+    );
 
     if (!flags.skipPreview) {
       await snapshot.preview();
     }
+
     if (reporter.isSuccessReport()) {
       await this.handleValidReport(reporter, snapshot);
       await snapshot.delete();
+    } else {
+      await this.handleReportWithErrors(snapshot);
     }
 
     project.deleteTemporaryZipFile();
@@ -84,5 +109,34 @@ export default class Push extends SnapshotBase {
     }
 
     cli.action.stop(success ? green('✔') : red.bold('!'));
+  }
+
+  private async handleReportWithErrors(snapshot: Snapshot) {
+    // TODO: CDX-362: handle invalid snapshot cases
+    const cfg = await this.configuration.get();
+
+    if (snapshot.requiresSynchronization()) {
+      displaySnapshotSynchronizationWarning(snapshot, cfg);
+      return;
+    }
+
+    displayInvalidSnapshotError(snapshot, cfg, this.projectPath);
+  }
+
+  private async getTargetOrg() {
+    const {flags} = this.parse(Push);
+    if (flags.target) {
+      return flags.target;
+    }
+    const cfg = await this.configuration.get();
+    return cfg.organization;
+  }
+
+  private get configuration() {
+    return new Config(this.config.configDir, this.error);
+  }
+
+  private get projectPath() {
+    return cwd();
   }
 }
