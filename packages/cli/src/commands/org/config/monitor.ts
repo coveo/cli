@@ -1,7 +1,6 @@
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
 import {cli} from 'cli-ux';
-import {cwd} from 'process';
 import {Config} from '../../../lib/config/config';
 import {
   IsAuthenticated,
