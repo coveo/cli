@@ -1,6 +1,7 @@
 import {
   CreateFromFileOptions,
   ResourceSnapshotsReportType,
+  ResourceType,
 } from '@coveord/platform-client';
 import {createReadStream, ReadStream} from 'fs';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
@@ -50,8 +51,31 @@ export class SnapshotFactory {
     return new Snapshot(model, client);
   }
 
-  public static async createFromOrg() {
-    // TODO: need 2 instances of AuthenticatedClient: one for the source org, and the other one for the destination org
+  public static async createFromOrg(
+    resourceTypesToExport: ResourceType[],
+    targetOrg: string
+  ) {
+    const client = await this.getClient(targetOrg);
+    const resourcesToExport = resourceTypesToExport.reduce(
+      (resourceToExport, currentType) => {
+        resourceToExport[currentType] = ['*'];
+        return resourceToExport;
+      },
+      {} as Partial<Record<ResourceType, string[]>>
+    );
+
+    const model = await client.resourceSnapshot.createFromOrganization(
+      {resourcesToExport},
+      {includeChildrenResources: true, developerNotes: 'Created by Coveo-CLI'}
+    );
+
+    const snapshot = new Snapshot(model, client);
+
+    await snapshot.waitUntilDone({
+      operationToWaitFor: ResourceSnapshotsReportType.CreateSnapshot,
+    });
+
+    return snapshot;
   }
 
   private static async getClient(targetOrg: string) {
