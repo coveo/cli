@@ -1,5 +1,23 @@
 {
+  "enabled": true,
   "extends": [
-    "config:base"
-  ]
+    "config:base",
+    "schedule:earlyMondays"
+  ],
+  "packageRules": [
+    {
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "all non-major dependencies",
+      "groupSlug": "all-minor-patch"
+    }
+  ],
+  "lockFileMaintenance": {
+    "enabled": false
+  }
 }
