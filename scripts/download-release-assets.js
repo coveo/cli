@@ -8,7 +8,8 @@ async function main() {
   // be able to do it's job properly.
   const topLevelDirectory = './artifacts';
   const subDirectoryForTarball = `${topLevelDirectory}/coveo-${tag}`;
-  const binariesMatcher = /^coveo(_|-)(?<_version>v?\d+\.\d+\.\d+(-\d+)?)(?<longExt>.*\.(exe|deb|pkg))$/;
+  const binariesMatcher =
+    /^coveo(_|-)(?<_version>v?\d+\.\d+\.\d+(-\d+)?)(?<longExt>.*\.(exe|deb|pkg))$/;
 
   if (!fs.existsSync(topLevelDirectory)) {
     fs.mkdirSync(topLevelDirectory);
