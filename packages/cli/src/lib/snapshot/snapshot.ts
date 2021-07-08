@@ -12,11 +12,9 @@ import {ReportViewer} from './reportViewer/reportViewer';
 import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
 import dedent from 'ts-dedent';
-
-export interface ISnapshotValidation {
-  isValid: boolean;
-  report: ResourceSnapshotsReportModel;
-}
+import {SnapshotReporter} from './snapshotReporter';
+import {SnapshotOperationTimeoutError} from './snapshotErrors';
+import {blueBright} from 'chalk';
 
 export class Snapshot {
   private static ongoingReportStatuses = [
@@ -31,14 +29,14 @@ export class Snapshot {
 
   public async validate(
     deleteMissingResources = false
-  ): Promise<ISnapshotValidation> {
+  ): Promise<SnapshotReporter> {
     await this.snapshotClient.dryRun(this.id, {
       deleteMissingResources,
     });
 
     await this.waitUntilOperationIsDone(ResourceSnapshotsReportType.DryRun);
 
-    return {isValid: this.isValid(), report: this.latestReport};
+    return new SnapshotReporter(this.latestReport);
   }
 
   public async preview() {
@@ -46,17 +44,12 @@ export class Snapshot {
     this.displayExpandedPreview();
   }
 
-  public hasChangedResources(): boolean {
-    // TODO: CDX-390: Do not propose to apply a snapshot if it contains no changes
-    return true;
-  }
-
   public async apply(deleteMissingResources = false) {
     await this.snapshotClient.apply(this.id, {deleteMissingResources});
 
     await this.waitUntilOperationIsDone(ResourceSnapshotsReportType.Apply);
 
-    return {isValid: this.isValid(), report: this.latestReport};
+    return new SnapshotReporter(this.latestReport);
   }
 
   public async delete() {
@@ -110,20 +103,13 @@ export class Snapshot {
   }
 
   private displayLightPreview() {
-    const report = new ReportViewer(this.latestReport);
-    report.display();
+    const reporter = new SnapshotReporter(this.latestReport);
+    const viewer = new ReportViewer(reporter);
+    viewer.display();
   }
 
   private displayExpandedPreview() {
     // TODO: CDX-347 Display Expanded preview
-  }
-
-  private isValid() {
-    const {resultCode, status} = this.latestReport;
-    return (
-      status === ResourceSnapshotsReportStatus.Completed &&
-      resultCode === ResourceSnapshotsReportResultCode.Success
-    );
   }
 
   private async refreshSnapshotData() {
@@ -151,7 +137,7 @@ export class Snapshot {
         );
 
         if (isNotDone) {
-          throw new Error('Snapshot is still being processed');
+          throw new SnapshotOperationTimeoutError();
         }
       },
       {
@@ -164,7 +150,23 @@ export class Snapshot {
     try {
       await waitPromise;
     } catch (err) {
+      if (err instanceof SnapshotOperationTimeoutError) {
+        this.handleOperationTimedOut();
+      }
       cli.error(err);
     }
+  }
+
+  private handleOperationTimedOut() {
+    cli.warn(this.operationGettingTooMuchTimeMessage());
+    cli.exit(0);
+  }
+
+  private operationGettingTooMuchTimeMessage(): string {
+    return dedent`Snapshot ${
+      this.latestReport.type
+    } operation is taking a long time to complete.
+    Run the following command to monitor the operation
+    ${blueBright`coveo org:config:monitor ${this.id}`}`;
   }
 }
