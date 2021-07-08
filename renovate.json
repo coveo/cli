@@ -11,8 +11,8 @@
       "matchPackagePatterns": [
         "*"
       ],
-      "groupName": "all non-major dependencies",
-      "groupSlug": "all-minor-patch"
+      "groupName": "all dependencies",
+      "groupSlug": "all"
     }
   ],
   "lockFileMaintenance": {
