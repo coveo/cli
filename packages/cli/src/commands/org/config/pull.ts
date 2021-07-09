@@ -1,10 +1,12 @@
 import {ResourceType} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
+import {cwd} from 'process';
 import {Config} from '../../../lib/config/config';
 import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
+import {Project} from '../../../lib/project/project';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 
@@ -32,8 +34,10 @@ export default class Pull extends Command {
     await snapshot.delete();
   }
 
-  private async refreshProject(_snapshot: Snapshot) {
-    // TODO: CDX-446: refresh project
+  private async refreshProject(snapshot: Snapshot) {
+    const project = new Project(this.projectPath);
+    const snapshotBlob = await snapshot.download();
+    await project.refresh(snapshotBlob);
   }
 
   private async getSnapshot() {
@@ -59,5 +63,9 @@ export default class Pull extends Command {
   private get resourceTypesToExport() {
     // TODO: CDX-447: pass resource types to export
     return [ResourceType.field, ResourceType.extension];
+  }
+
+  private get projectPath() {
+    return cwd();
   }
 }
