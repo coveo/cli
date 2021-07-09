@@ -3,15 +3,14 @@ jest.mock('fs');
 jest.mock('./snapshot');
 
 import {ResourceType} from '@coveord/platform-client';
-import {createReadStream, ReadStream} from 'fs';
+import {readFileSync} from 'fs';
 import {join} from 'path';
-import {Readable} from 'stream';
 import {mocked} from 'ts-jest/utils';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {Snapshot} from './snapshot';
 import {SnapshotFactory} from './snapshotFactory';
 
-const mockedCreateReadStream = mocked(createReadStream);
+const mockedReadFileSync = mocked(readFileSync);
 const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
 const mockedSnapshot = mocked(Snapshot, true);
 const mockedCreateSnapshotFromFile = jest.fn();
@@ -27,15 +26,8 @@ const doMockSnapshot = () => {
   );
 };
 
-const doMockReadStream = () => {
-  mockedCreateReadStream.mockImplementation(() => {
-    const buffer = Buffer.from('this is a tést');
-    const readable = new Readable();
-    readable._read = () => {};
-    readable.push(buffer);
-    readable.push(null);
-    return readable as unknown as ReadStream;
-  });
+const doMockReadFile = () => {
+  mockedReadFileSync.mockReturnValue(Buffer.from('hello there'));
 };
 
 const doMockAuthenticatedClient = () => {
@@ -59,7 +51,7 @@ const doMockAuthenticatedClient = () => {
 describe('SnapshotFactory', () => {
   beforeAll(() => {
     doMockAuthenticatedClient();
-    doMockReadStream();
+    doMockReadFile();
     doMockSnapshot();
   });
 
@@ -82,17 +74,16 @@ describe('SnapshotFactory', () => {
 
     it('#createSnapshotFromZip should create a snapshot from Zip with appropriate parameters', () => {
       expect(mockedCreateSnapshotFromFile).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: 'application/zip',
-        }),
-        {developerNotes: 'cli-created-from-zip'}
+        Buffer.from('hello there'),
+        'ZIP',
+        {
+          developerNotes: 'cli-created-from-zip',
+        }
       );
     });
 
     it('#createSnapshotFromZip should create a readstream with the appropriate path to zip', () => {
-      expect(mockedCreateReadStream).toHaveBeenCalledWith(
-        join('dummy', 'path')
-      );
+      expect(mockedReadFileSync).toHaveBeenCalledWith(join('dummy', 'path'));
     });
   });
 
