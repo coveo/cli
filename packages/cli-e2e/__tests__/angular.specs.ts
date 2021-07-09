@@ -36,7 +36,7 @@ describe('ui:create:angular', () => {
   const processManagers: ProcessManager[] = [];
   let page: Page;
   const oldEnv = process.env;
-  const projectName = `${process.env.GITHUB_ACTION}-angular-project`;
+  const projectName = `${process.env.TEST_RUN_ID}-angular-project`;
   let clientPort: number;
   let serverPort: number;
 
