@@ -56,13 +56,10 @@ export class SnapshotFactory {
     targetOrg: string
   ) {
     const client = await this.getClient(targetOrg);
-    const resourcesToExport = resourceTypesToExport.reduce(
-      (resourceToExport, currentType) => {
-        resourceToExport[currentType] = ['*'];
-        return resourceToExport;
-      },
-      {} as Partial<Record<ResourceType, string[]>>
-    );
+    const resourcesToExport: Partial<Record<ResourceType, string[]>> = {};
+    resourceTypesToExport.forEach((currentType) => {
+      resourcesToExport[currentType] = ['*'];
+    });
 
     const model = await client.resourceSnapshot.createFromOrganization(
       {resourcesToExport},
