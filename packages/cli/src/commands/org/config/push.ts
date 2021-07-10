@@ -11,6 +11,7 @@ import {
   displayInvalidSnapshotError,
   displaySnapshotSynchronizationWarning,
   dryRun,
+  getTargetOrg,
 } from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '../../../lib/config/config';
 import {DryRunOptions} from '@coveord/platform-client';
@@ -48,7 +49,7 @@ export default class Push extends Command {
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = this.parse(Push);
-    const target = await this.getTargetOrg();
+    const target = await getTargetOrg(this.configuration, flags.target);
     const options: DryRunOptions = {
       deleteMissingResources: flags.deleteMissingResources,
     };
@@ -89,10 +90,11 @@ export default class Push extends Command {
   }
 
   private async askForConfirmation() {
-    const targetOrg = await this.getTargetOrg();
+    const {flags} = this.parse(Push);
+    const target = await getTargetOrg(this.configuration, flags.target);
     const canBeApplied = await cli.confirm(
       `\nWould you like to apply these changes to the org ${bold(
-        targetOrg
+        target
       )}? (y/n)`
     );
     return canBeApplied;
@@ -121,15 +123,6 @@ export default class Push extends Command {
     }
 
     displayInvalidSnapshotError(snapshot, cfg, this.projectPath);
-  }
-
-  private async getTargetOrg() {
-    const {flags} = this.parse(Push);
-    if (flags.target) {
-      return flags.target;
-    }
-    const cfg = await this.configuration.get();
-    return cfg.organization;
   }
 
   private get configuration() {

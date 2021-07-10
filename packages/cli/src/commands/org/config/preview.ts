@@ -11,6 +11,7 @@ import {
   displayInvalidSnapshotError,
   displaySnapshotSynchronizationWarning,
   dryRun,
+  getTargetOrg,
 } from '../../../lib/snapshot/snapshotCommon';
 
 export default class Preview extends Command {
@@ -37,7 +38,7 @@ export default class Preview extends Command {
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = this.parse(Preview);
-    const target = await this.getTargetOrg();
+    const target = await getTargetOrg(this.configuration, flags.target);
     const options: DryRunOptions = {
       deleteMissingResources: flags.showMissingResources,
     };
@@ -68,15 +69,6 @@ export default class Preview extends Command {
     }
 
     displayInvalidSnapshotError(snapshot, cfg, this.projectPath);
-  }
-
-  private async getTargetOrg() {
-    const {flags} = this.parse(Preview);
-    if (flags.target) {
-      return flags.target;
-    }
-    const cfg = await this.configuration.get();
-    return cfg.organization;
   }
 
   private get configuration() {

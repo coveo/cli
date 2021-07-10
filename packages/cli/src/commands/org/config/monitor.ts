@@ -8,6 +8,7 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {ReportViewerStyles} from '../../../lib/snapshot/reportViewer/reportViewerStyles';
 import {Snapshot, waitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
+import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 
 export default class Monitor extends Command {
@@ -84,9 +85,9 @@ export default class Monitor extends Command {
   }
 
   private async getSnapshot(): Promise<Snapshot> {
-    const {args} = this.parse(Monitor);
+    const {args, flags} = this.parse(Monitor);
     const snapshotId = args.snapshotId;
-    const target = await this.getTargetOrg();
+    const target = await getTargetOrg(this.configuration, flags.target);
 
     return SnapshotFactory.createFromExistingSnapshot(snapshotId, target);
   }
@@ -99,15 +100,6 @@ export default class Monitor extends Command {
         maxDelay: 10e3,
       },
     };
-  }
-
-  private async getTargetOrg() {
-    const {flags} = this.parse(Monitor);
-    if (flags.target) {
-      return flags.target;
-    }
-    const cfg = await this.configuration.get();
-    return cfg.organization;
   }
 
   private get configuration() {
