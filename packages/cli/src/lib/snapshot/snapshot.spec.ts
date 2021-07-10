@@ -10,6 +10,7 @@ import {
 import {writeJsonSync, ensureFileSync} from 'fs-extra';
 import {join, normalize} from 'path';
 import {mocked} from 'ts-jest/utils';
+import {getDummySnapshotModel} from '../../__stub__/resourceSnapshotsModel';
 import {
   getErrorReport,
   getSuccessReport,
@@ -46,21 +47,6 @@ const getErrorApplyReport = (
   snapshotId: string
 ): ResourceSnapshotsReportModel =>
   getErrorReport(snapshotId, ResourceSnapshotsReportType.Apply);
-
-const getDummySnapshotModel = (
-  orgId: string,
-  snapshotId: string,
-  reports: ResourceSnapshotsReportModel[] = []
-): ResourceSnapshotsModel => ({
-  id: snapshotId,
-  createdBy: 'user@coveo.com',
-  createdDate: 1622555047116,
-  targetId: orgId,
-  developerNote: 'hello',
-  reports: reports,
-  synchronizationReports: [],
-  contentSummary: {EXTENSION: 1, FIELD: 11},
-});
 
 const doMockAuthenticatedClient = () => {
   mockedGetClient.mockImplementation(() =>

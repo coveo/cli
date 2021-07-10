@@ -15,6 +15,7 @@ import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {red, green} from 'chalk';
 import {normalize} from 'path';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+import {IFlag, IOptionFlag} from '@oclif/command/lib/flags';
 
 export interface CustomFile extends ReadStream {
   type?: string;
@@ -23,7 +24,10 @@ export interface CustomFile extends ReadStream {
 export default abstract class SnapshotBase extends Command {
   public static description = 'Create and validate a snapshot';
 
-  public static flags = {
+  public static flags: {
+    target: IOptionFlag<string | undefined>;
+    deleteMissingResources?: IFlag<boolean>;
+  } = {
     target: flags.string({
       char: 't',
       description:

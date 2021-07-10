@@ -17,9 +17,10 @@ const mockedCreateSnapshotFromFile = jest.fn();
 const mockedPushSnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
+const mockedGetSnapshot = jest.fn();
 
 const doMockSnapshot = () => {
-  mockedSnapshot.prototype.waitUntilOperationIsDone.mockImplementation(() =>
+  mockedSnapshot.prototype.waitUntilDone.mockImplementation(() =>
     Promise.resolve()
   );
 };
@@ -39,6 +40,7 @@ const doMockAuthenticatedClient = () => {
   mockedGetClient.mockImplementation(() =>
     Promise.resolve({
       resourceSnapshot: {
+        get: mockedGetSnapshot,
         createFromFile: mockedCreateSnapshotFromFile,
         push: mockedPushSnapshot,
         dryRun: mockedDryRunSnapshot,
@@ -88,6 +90,27 @@ describe('SnapshotFactory', () => {
       expect(mockedCreateReadStream).toHaveBeenCalledWith(
         join('dummy', 'path')
       );
+    });
+  });
+
+  describe('when creating snapshot from id', () => {
+    const targetId = 'target-id';
+    const snapshotId = 'snapshot-id';
+
+    beforeEach(async () => {
+      await SnapshotFactory.createFromExistingSnapshot(snapshotId, targetId);
+    });
+
+    it('should create a client connected to the right organization', () => {
+      expect(mockedGetClient).toHaveBeenCalledWith({
+        organization: 'target-id',
+      });
+    });
+
+    it('should get the content of an existing snapshot', () => {
+      expect(mockedGetSnapshot).toHaveBeenCalledWith('snapshot-id', {
+        includeReports: true,
+      });
     });
   });
 });
