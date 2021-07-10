@@ -51,6 +51,14 @@ jobs:
           ./node_modules/@oclif/dev-cli/bin/run pack -t="${{ matrix.package-targets }}"
           mv ./dist/version ./dist/${{ matrix.os }}-version
           mv ./dist/coveo-${{ env.tag }}/coveo-${{ env.tag }}.tar.gz ./dist/coveo-${{ env.tag }}/${{ matrix.os }}-coveo-${{ env.tag }}.tar.gz
+      - name: Sign Executable
+        if: ${{matrix.os == 'windows-latest'}}
+        run: |
+          New-Item -Force -ItemType directory -Path tmp 
+          echo "${{ secrets.COVEO_PFX }}" > ./tmp/cert.txt
+          certutil -decode ./tmp/cert.txt ./tmp/cert.pfx
+          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /td SHA256 /tr http://timestamp.digicert.com ./dist/win/coveo-${{env.tag}}-x64.exe" -PassThru | Wait-Process
+          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /td SHA256 /tr http://timestamp.digicert.com ./dist/win/coveo-${{env.tag}}-x86.exe" -PassThru | Wait-Process
       - name: Upload binaries
         uses: svenstaro/upload-release-action@v2
         with:

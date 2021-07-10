@@ -26,13 +26,15 @@ import {DummyServer} from '../utils/server';
 import {appendFileSync, readFileSync, truncateSync} from 'fs';
 import getPort from 'get-port';
 import {npm} from '../utils/windows';
+import axios from 'axios';
+import {jwtTokenPattern} from '../utils/matcher';
 
 describe('ui:create:vue', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
   let page: Page;
   const oldEnv = process.env;
-  const projectName = `${process.env.GITHUB_ACTION}-vue-project`;
+  const projectName = `${process.env.TEST_RUN_ID}-vue-project`;
   let clientPort: number;
   let serverPort: number;
 
@@ -213,7 +215,7 @@ describe('ui:create:vue', () => {
       expect(
         JSON.parse(await (await tokenResponseListener).text())
       ).toMatchObject({
-        token: expect.stringMatching(/^eyJhb.+/),
+        token: expect.stringMatching(jwtTokenPattern),
       });
     });
 
@@ -435,9 +437,8 @@ describe('ui:create:vue', () => {
     });
 
     it('should run the server on a new port', async () => {
-      await expect(
-        page.goto(tokenServerEndpoint(), {waitUntil: 'load'})
-      ).resolves.not.toThrow();
+      const tokenRequest = await axios.get(tokenServerEndpoint());
+      expect(tokenRequest.data.token).toMatch(jwtTokenPattern);
     });
   });
 
