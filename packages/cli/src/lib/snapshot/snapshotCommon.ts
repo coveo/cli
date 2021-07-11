@@ -6,7 +6,7 @@ import {red, green} from 'chalk';
 import {normalize} from 'path';
 import {SnapshotUrlBuilder} from './snapshotUrlBuilder';
 import dedent from 'ts-dedent';
-import {Configuration} from '../config/config';
+import {Config, Configuration} from '../config/config';
 
 export interface dryRunOptions {
   deleteMissingResources?: boolean;
@@ -66,6 +66,14 @@ export function displaySnapshotSynchronizationWarning(
       ${synchronizationPlanUrl}
       `
   );
+}
+
+export async function getTargetOrg(config: Config, target?: string) {
+  if (target) {
+    return target;
+  }
+  const cfg = await config.get();
+  return cfg.organization;
 }
 
 async function createSnapshotFromProject(

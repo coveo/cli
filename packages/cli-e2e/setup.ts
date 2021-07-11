@@ -23,15 +23,8 @@ async function clearChromeBrowsingData(browser: Browser) {
 
 export default async function () {
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
-  const leadingUnderscorePrefix = /^_*/g;
-  const allUnderscores = /_/g;
-  const allDashesFollowedByADigit = /-*(?=\d)/g;
-  process.env.GITHUB_ACTION = (
-    process.env.GITHUB_ACTION || randomBytes(16).toString('hex')
-  )
-    .replace(leadingUnderscorePrefix, '')
-    .replace(allUnderscores, '-')
-    .replace(allDashesFollowedByADigit, '');
+  // runId must start and finish with letters to satisfies Angular.
+  process.env.TEST_RUN_ID = `id${randomBytes(16).toString('hex')}g`;
   const browser = await connectToChromeBrowser();
   await clearChromeBrowsingData(browser);
   await clearAccessTokenFromConfig();
