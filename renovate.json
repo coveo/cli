@@ -1,16 +1,10 @@
 {
   "enabled": true,
-  "extends": [
-    "config:base"
-  ],
-  "schedule": [
-    "before 2am"
-  ],
+  "extends": ["config:base"],
+  "schedule": ["before 2am"],
   "packageRules": [
     {
-      "matchPackagePatterns": [
-        "*"
-      ],
+      "matchPackagePatterns": ["*"],
       "groupName": "all dependencies",
       "groupSlug": "all"
     }

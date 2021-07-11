@@ -189,8 +189,7 @@ describe('org:config:preview', () => {
       .command(['org:config:preview'])
       .it('should throw an error for invalid snapshots', () => {
         expect(mockedError).toHaveBeenCalledWith(
-          expect.stringContaining('Invalid snapshot'),
-          {}
+          expect.stringContaining('Invalid snapshot')
         );
       });
 
@@ -200,8 +199,7 @@ describe('org:config:preview', () => {
         expect(mockedError).toHaveBeenCalledWith(
           expect.stringContaining(
             'https://platform.cloud.coveo.com/admin/#potato-org/organization/resource-snapshots/banana-snapshot'
-          ),
-          {}
+          )
         );
       });
   });
