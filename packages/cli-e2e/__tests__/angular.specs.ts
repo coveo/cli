@@ -80,11 +80,16 @@ describe('ui:create:angular', () => {
   };
 
   const forceAppPort = (port: number) => {
-    const angularJsonPath = getProjectPath(join(projectName, 'angular.json'));
+    const angularJsonPath = resolve('angular.json');
+
     const angularJSON = JSON.parse(readFileSync(angularJsonPath, 'utf-8'));
-    const serveOptions =
-      angularJSON.projects[projectName].architect.serve.options;
-    serveOptions.port = port;
+    const projectName = angularJSON.defaultProject;
+
+    const serve = angularJSON.projects[projectName].architect.serve;
+    if (!serve.options) {
+      serve.options = {};
+    }
+    serve.options.port = port;
 
     writeFileSync(angularJsonPath, JSON.stringify(angularJSON, undefined, 2));
   };

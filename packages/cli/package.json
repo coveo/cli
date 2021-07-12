@@ -6,7 +6,7 @@
     "node": ">=14.15.1"
   },
   "dependencies": {
-    "@angular/cli": "^11.1.4",
+    "@angular/cli": "^12.1.1",
     "@coveord/platform-client": "^21.4.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
