@@ -50,9 +50,15 @@ export class Snapshot {
     return new SnapshotReporter(this.latestReport);
   }
 
-  public async preview(resourceDirectoryPath: string) {
+  public async preview(
+    resourceDirectoryPath: string,
+    deleteMissingResources = false
+  ) {
     this.displayLightPreview();
-    await this.displayExpandedPreview(resourceDirectoryPath);
+    await this.displayExpandedPreview(
+      resourceDirectoryPath,
+      deleteMissingResources
+    );
   }
 
   public async apply(deleteMissingResources = false) {
@@ -125,11 +131,15 @@ export class Snapshot {
     viewer.display();
   }
 
-  private async displayExpandedPreview(resourceDirectoryPath: string) {
+  private async displayExpandedPreview(
+    resourceDirectoryPath: string,
+    shouldDelete: boolean
+  ) {
     const previewer = new ExpandedPreviewer(
       this.latestReport,
       this.targetId!,
-      resourceDirectoryPath
+      resourceDirectoryPath,
+      shouldDelete
     );
     await previewer.preview();
   }

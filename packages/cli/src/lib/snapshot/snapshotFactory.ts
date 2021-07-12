@@ -1,15 +1,11 @@
-import PlatformClient, {
+import {
   CreateFromFileOptions,
-  ResourceSnapshotsModel,
-  ResourceSnapshotsReportResultCode,
-  ResourceSnapshotsReportStatus,
   ResourceSnapshotsReportType,
   ResourceType,
 } from '@coveord/platform-client';
 import {createReadStream, ReadStream} from 'fs';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {Snapshot} from './snapshot';
-import retry from 'async-retry';
 
 // TODO: CDX-357: platform-client should support zip file as stream.
 // In the meantime, we pass a custom object that contains all the require parameters expected by the createFromFile method.
@@ -64,7 +60,9 @@ export class SnapshotFactory {
 
     const snapshot = new Snapshot(model, client);
 
-    await snapshot.waitUntilDone(ResourceSnapshotsReportType.CreateSnapshot);
+    await snapshot.waitUntilDone({
+      operationToWaitFor: ResourceSnapshotsReportType.CreateSnapshot,
+    });
 
     return snapshot;
   }

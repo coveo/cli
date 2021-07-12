@@ -31,7 +31,7 @@ export default class Push extends Command {
     }),
     deleteMissingResources: flags.boolean({
       char: 'd',
-      description: 'Whether or not to delete missing resources',
+      description: 'Delete missing resources when enabled',
       default: false,
       required: false,
     }),
@@ -60,7 +60,10 @@ export default class Push extends Command {
     );
 
     if (!flags.skipPreview) {
-      await snapshot.preview();
+      await snapshot.preview(
+        project.resourcesPath,
+        options.deleteMissingResources
+      );
     }
 
     if (reporter.isSuccessReport()) {
