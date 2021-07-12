@@ -9,6 +9,7 @@
       "groupSlug": "all"
     }
   ],
+  "rangeStrategy": "auto",
   "lockFileMaintenance": {
     "enabled": false
   },
