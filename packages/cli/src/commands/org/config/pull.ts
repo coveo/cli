@@ -1,5 +1,6 @@
 import {ResourceType} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
+import {IOptionFlag} from '@oclif/command/lib/flags';
 import {cwd} from 'process';
 import {Config} from '../../../lib/config/config';
 import {
@@ -16,12 +17,19 @@ export default class Pull extends Command {
   public static flags = {
     target: flags.string({
       char: 't',
-      description:
-        'The unique identifier of the organization from which to pull the resources. If not specified, the organization you are connected to will be used.',
       helpValue: 'destinationorganizationg7dg3gd',
       required: false,
+      description:
+        'The unique identifier of the organization from which to pull the resources. If not specified, the organization you are connected to will be used.',
     }),
-    // TODO: CDX-447: add flag to select resource types to export
+    resourceTypes: flags.string({
+      char: 'r',
+      helpValue: 'type1 type2',
+      options: Object.keys(ResourceType),
+      default: Object.keys(ResourceType),
+      multiple: true,
+      description: 'The resources types to pull from the organization.',
+    }) as IOptionFlag<(keyof typeof ResourceType)[]>,
   };
 
   public static hidden = true;
@@ -29,7 +37,6 @@ export default class Pull extends Command {
   @Preconditions(IsAuthenticated())
   public async run() {
     const snapshot = await this.getSnapshot();
-
     await this.refreshProject(snapshot);
     await snapshot.delete();
   }
@@ -42,9 +49,7 @@ export default class Pull extends Command {
 
   private async getSnapshot() {
     const target = await this.getTargetOrg();
-
-    const resourceTypesToExport = this.resourceTypesToExport;
-    return SnapshotFactory.createFromOrg(resourceTypesToExport, target);
+    return SnapshotFactory.createFromOrg(this.resourceTypesToExport, target);
   }
 
   private async getTargetOrg() {
@@ -61,8 +66,8 @@ export default class Pull extends Command {
   }
 
   private get resourceTypesToExport() {
-    // TODO: CDX-447: pass resource types to export
-    return [ResourceType.field, ResourceType.extension];
+    const {flags} = this.parse(Pull);
+    return flags.resourceTypes.map((type) => ResourceType[type]);
   }
 
   private get projectPath() {
