@@ -4,13 +4,13 @@ import {Server} from 'http';
 export class DummyServer {
   private server: Server;
 
-  constructor(port: number) {
+  public constructor(port: number) {
     this.server = createServer((req: IncomingMessage, res: ServerResponse) => {
       res.end(`port ${port} taken`);
     }).listen(port);
   }
 
-  async close() {
+  public async close() {
     return new Promise<void>((resolve, reject) => {
       this.server.close((err) => {
         if (err) {

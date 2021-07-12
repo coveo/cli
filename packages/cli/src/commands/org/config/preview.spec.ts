@@ -16,6 +16,12 @@ import {Config} from '../../../lib/config/config';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {warn, error} from '@oclif/errors';
+import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+import {ResourceSnapshotsReportType} from '@coveord/platform-client';
+import {
+  getErrorReport,
+  getSuccessReport,
+} from '../../../__stub__/resourceSnapshotsReportModel';
 
 const mockedSnapshotFactory = mocked(SnapshotFactory, true);
 const mockedConfig = mocked(Config);
@@ -27,6 +33,7 @@ const mockedDeleteTemporaryZipFile = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
 const mockedSaveDetailedReport = jest.fn();
 const mockedRequiresSynchronization = jest.fn();
+const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
 const mockedLastReport = jest.fn();
 
@@ -59,10 +66,10 @@ const mockConfig = () => {
   );
 };
 
-const mockSnapshotFactory = async (validResponse: unknown) => {
+const mockSnapshotFactory = async () => {
   mockedSnapshotFactory.createFromZip.mockReturnValue(
     Promise.resolve({
-      validate: () => Promise.resolve(validResponse),
+      validate: mockedValidateSnapshot,
       preview: mockedPreviewSnapshot,
       delete: mockedDeleteSnapshot,
       saveDetailedReport: mockedSaveDetailedReport,
@@ -75,11 +82,23 @@ const mockSnapshotFactory = async (validResponse: unknown) => {
 };
 
 const mockSnapshotFactoryReturningValidSnapshot = async () => {
-  await mockSnapshotFactory({isValid: true, report: {}});
+  const successReport = getSuccessReport(
+    'success-report',
+    ResourceSnapshotsReportType.Apply
+  );
+  const reporter = new SnapshotReporter(successReport);
+  mockedValidateSnapshot.mockResolvedValue(reporter);
+  await mockSnapshotFactory();
 };
 
 const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
-  await mockSnapshotFactory({isValid: false, report: {}});
+  const errorReport = getErrorReport(
+    'error-report',
+    ResourceSnapshotsReportType.Apply
+  );
+  const reporter = new SnapshotReporter(errorReport);
+  mockedValidateSnapshot.mockResolvedValue(reporter);
+  await mockSnapshotFactory();
 };
 
 describe('org:config:preview', () => {
@@ -102,14 +121,6 @@ describe('org:config:preview', () => {
     });
 
     test
-      .command(['org:config:preview', '-p', 'path/to/project'])
-      .it('should use specifeid path for project', () => {
-        expect(mockedProject).toHaveBeenCalledWith(
-          normalize(join('path', 'to', 'project'))
-        );
-      });
-
-    test
       .command(['org:config:preview'])
       .it('should work with default connected org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
@@ -125,6 +136,18 @@ describe('org:config:preview', () => {
           normalize(join('path', 'to', 'resources.zip')),
           'myorg'
         );
+      });
+
+    test
+      .command(['org:config:preview'])
+      .it('#validate should not take into account missing resources', () => {
+        expect(mockedValidateSnapshot).toHaveBeenCalledWith(false);
+      });
+
+    test
+      .command(['org:config:preview', '-d'])
+      .it('#validate should take into account missing resoucres', () => {
+        expect(mockedValidateSnapshot).toHaveBeenCalledWith(true);
       });
 
     test
@@ -166,8 +189,7 @@ describe('org:config:preview', () => {
       .command(['org:config:preview'])
       .it('should throw an error for invalid snapshots', () => {
         expect(mockedError).toHaveBeenCalledWith(
-          expect.stringContaining('Invalid snapshot'),
-          {}
+          expect.stringContaining('Invalid snapshot')
         );
       });
 
@@ -177,8 +199,7 @@ describe('org:config:preview', () => {
         expect(mockedError).toHaveBeenCalledWith(
           expect.stringContaining(
             'https://platform.cloud.coveo.com/admin/#potato-org/organization/resource-snapshots/banana-snapshot'
-          ),
-          {}
+          )
         );
       });
   });

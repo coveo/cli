@@ -3,6 +3,49 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.8.0](https://github.com/coveo/cli/compare/v1.7.0...v1.8.0) (2021-06-25)
+
+**Note:** Version bump only for package @coveo/cra-template
+
+
+
+
+
+# [1.7.0](https://github.com/coveo/cli/compare/v1.6.0...v1.7.0) (2021-06-25)
+
+**Note:** Version bump only for package @coveo/cra-template
+
+
+
+
+
+# [1.6.0](https://github.com/coveo/cli/compare/v1.5.0...v1.6.0) (2021-06-25)
+
+
+### Bug Fixes
+
+* **J:CDX-227:** bump eslint from 7.26.0 to 7.29.0 ([#279](https://github.com/coveo/cli/issues/279)) ([227651c](https://github.com/coveo/cli/commit/227651ce2056acef9e82dc88cc4b3a38a55e010f))
+
+
+
+
+
+# [1.5.0](https://github.com/coveo/cli/compare/v1.3.0...v1.5.0) (2021-06-22)
+
+
+### Bug Fixes
+
+* **ui:** use await/async ([#264](https://github.com/coveo/cli/issues/264)) ([4c90fd1](https://github.com/coveo/cli/commit/4c90fd1f8958f5d3160393d3233633103fb88523))
+
+
+### Features
+
+* **ui:** support for Headless v1 ([#262](https://github.com/coveo/cli/issues/262)) ([4ef75f9](https://github.com/coveo/cli/commit/4ef75f9ef8327277231308bf6475e4a3d94ab1ac))
+
+
+
+
+
 # [1.3.0](https://github.com/coveo/cli/compare/v1.2.1...v1.3.0) (2021-06-14)
 
 

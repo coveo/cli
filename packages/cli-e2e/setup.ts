@@ -23,8 +23,8 @@ async function clearChromeBrowsingData(browser: Browser) {
 
 export default async function () {
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
-  process.env.GITHUB_ACTION =
-    process.env.GITHUB_ACTION || randomBytes(16).toString('hex');
+  // runId must start and finish with letters to satisfies Angular.
+  process.env.TEST_RUN_ID = `id${randomBytes(16).toString('hex')}g`;
   const browser = await connectToChromeBrowser();
   await clearChromeBrowsingData(browser);
   await clearAccessTokenFromConfig();

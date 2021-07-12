@@ -1,3 +1,4 @@
+/** @type {import("@actions/github")} */
 const github = require('@actions/github');
 const {execSync} = require('child_process');
 const octokit = github.getOctokit(process.env.GITHUB_CREDENTIALS);
@@ -19,37 +20,43 @@ const getPullRequestNumber = () => {
 
 const getHeadBranchName = async () => {
   const pull_number = getPullRequestNumber();
-  return (await octokit.pulls.get({owner, repo, pull_number})).data.head.ref;
+  return (await octokit.rest.pulls.get({owner, repo, pull_number})).data.head
+    .ref;
 };
 
 const getBaseBranchName = async () => {
   const pull_number = getPullRequestNumber();
-  return (await octokit.pulls.get({owner, repo, pull_number})).data.base.ref;
+  return (await octokit.rest.pulls.get({owner, repo, pull_number})).data.base
+    .ref;
 };
 
 const getPullRequestComments = () => {
   const issue_number = getPullRequestNumber();
-  return octokit.issues.listComments({repo, owner, issue_number});
+  return octokit.rest.issues.listComments({repo, owner, issue_number});
 };
 
 const createPullRequestComment = (body) => {
   const issue_number = getPullRequestNumber();
-  return octokit.issues.createComment({repo, owner, issue_number, body});
+  return octokit.rest.issues.createComment({repo, owner, issue_number, body});
 };
 
 const updatePullRequestComment = (comment_id, body) => {
-  return octokit.issues.updateComment({repo, owner, body, comment_id});
+  return octokit.rest.issues.updateComment({repo, owner, body, comment_id});
 };
 
 const getLatestTag = async () => {
-  const tags = await octokit.repos.listTags({owner, repo});
+  const tags = await octokit.rest.repos.listTags({owner, repo});
   return tags.data[0].name;
 };
 
 const createOrUpdateReleaseDescription = async (tag, body) => {
   try {
-    const release = await octokit.repos.getReleaseByTag({repo, owner, tag});
-    await octokit.repos.updateRelease({
+    const release = await octokit.rest.repos.getReleaseByTag({
+      repo,
+      owner,
+      tag,
+    });
+    await octokit.rest.repos.updateRelease({
       repo,
       owner,
       release_id: release.data.id,
@@ -57,7 +64,12 @@ const createOrUpdateReleaseDescription = async (tag, body) => {
     });
   } catch (e) {
     if (e.status === 404) {
-      await octokit.repos.createRelease({owner, repo, body, tag_name: tag});
+      await octokit.rest.repos.createRelease({
+        owner,
+        repo,
+        body,
+        tag_name: tag,
+      });
     } else {
       console.error(e);
     }
@@ -65,8 +77,8 @@ const createOrUpdateReleaseDescription = async (tag, body) => {
 };
 
 const downloadReleaseAssets = async (tag, determineAssetLocation) => {
-  const release = await octokit.repos.getReleaseByTag({repo, owner, tag});
-  const assets = await octokit.repos.listReleaseAssets({
+  const release = await octokit.rest.repos.getReleaseByTag({repo, owner, tag});
+  const assets = await octokit.rest.repos.listReleaseAssets({
     owner,
     repo,
     release_id: release.data.id,

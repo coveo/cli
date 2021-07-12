@@ -7,16 +7,22 @@ import {
   ResourceSnapshotsReportType,
 } from '@coveord/platform-client';
 import {cli} from 'cli-ux';
-import {backOff} from 'exponential-backoff';
-import {ReportViewer} from './reportViewer';
+import {backOff, IBackOffOptions} from 'exponential-backoff';
+import {ReportViewer} from './reportViewer/reportViewer';
 import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
 import dedent from 'ts-dedent';
+import {SnapshotReporter} from './snapshotReporter';
+import {SnapshotOperationTimeoutError} from './snapshotErrors';
+import {blueBright} from 'chalk';
 import {ExpandedPreviewer} from './expandedPreviewer';
 
-export interface ISnapshotValidation {
-  isValid: boolean;
-  report: ResourceSnapshotsReportModel;
+export interface waitUntilDoneOptions {
+  /**
+   * The operation to wait for. If not specified, the method will wait for any operation to complete.
+   */
+  operationToWaitFor?: ResourceSnapshotsReportType;
+  waitOptions?: Partial<IBackOffOptions>;
 }
 
 export class Snapshot {
@@ -30,19 +36,33 @@ export class Snapshot {
     private client: PlatformClient
   ) {}
 
-  public async validate(): Promise<ISnapshotValidation> {
+  public async validate(
+    deleteMissingResources = false
+  ): Promise<SnapshotReporter> {
     await this.snapshotClient.dryRun(this.id, {
-      deleteMissingResources: false, // TODO: CDX-361: Add flag to support missing resources deletion
+      deleteMissingResources,
     });
 
-    await this.waitUntilOperationIsDone(ResourceSnapshotsReportType.DryRun);
+    await this.waitUntilDone({
+      operationToWaitFor: ResourceSnapshotsReportType.DryRun,
+    });
 
-    return {isValid: this.isValid(), report: this.latestReport};
+    return new SnapshotReporter(this.latestReport);
   }
 
   public async preview(resourceDirectoryPath: string) {
     this.displayLightPreview();
     await this.displayExpandedPreview(resourceDirectoryPath);
+  }
+
+  public async apply(deleteMissingResources = false) {
+    await this.snapshotClient.apply(this.id, {deleteMissingResources});
+
+    await this.waitUntilDone({
+      operationToWaitFor: ResourceSnapshotsReportType.Apply,
+    });
+
+    return new SnapshotReporter(this.latestReport);
   }
 
   public async delete() {
@@ -88,6 +108,10 @@ export class Snapshot {
   }
 
   public get targetId() {
+    // TODO: remove after https://github.com/coveo/platform-client/pull/339 is merged
+    if (!this.model.targetId) {
+      throw new Error(`No target id associated to the snapshot ${this.id}`);
+    }
     return this.model.targetId;
   }
 
@@ -96,8 +120,9 @@ export class Snapshot {
   }
 
   private displayLightPreview() {
-    const report = new ReportViewer(this.latestReport);
-    report.display();
+    const reporter = new SnapshotReporter(this.latestReport);
+    const viewer = new ReportViewer(reporter);
+    viewer.display();
   }
 
   private async displayExpandedPreview(resourceDirectoryPath: string) {
@@ -109,31 +134,30 @@ export class Snapshot {
     await previewer.preview();
   }
 
-  private isValid() {
-    const {resultCode, status} = this.latestReport;
-    return (
-      status === ResourceSnapshotsReportStatus.Completed &&
-      resultCode === ResourceSnapshotsReportResultCode.Success
-    );
-  }
-
   private async refreshSnapshotData() {
     this.model = await this.snapshotClient.get(this.model.id, {
       includeReports: true,
     });
   }
 
-  public async waitUntilOperationIsDone(
-    operationType: ResourceSnapshotsReportType
+  public async waitUntilDone(
+    options: waitUntilDoneOptions = {},
+    iteratee = (_report: ResourceSnapshotsReportModel) => {}
   ) {
+    const defaultOptions: Partial<IBackOffOptions> = {
+      delayFirstAttempt: true,
+      startingDelay: 1e3 / 2,
+      maxDelay: 2e3,
+    };
     const waitPromise = backOff(
       async () => {
         await this.refreshSnapshotData();
 
-        if (this.latestReport.type !== operationType) {
+        const type = options.operationToWaitFor;
+        if (type && this.latestReport.type !== type) {
           throw new Error(dedent`
           Not processing expected operation
-          Expected ${operationType}
+          Expected ${type}
           Received ${this.latestReport.type}`);
         }
 
@@ -142,20 +166,35 @@ export class Snapshot {
         );
 
         if (isNotDone) {
-          throw new Error('Snapshot is still being processed');
+          throw new SnapshotOperationTimeoutError();
         }
+
+        iteratee(this.latestReport);
       },
-      {
-        delayFirstAttempt: true,
-        startingDelay: 1e3 / 2,
-        maxDelay: 2e3,
-      }
+      {...defaultOptions, ...options.waitOptions}
     );
 
     try {
       await waitPromise;
     } catch (err) {
+      if (err instanceof SnapshotOperationTimeoutError) {
+        this.handleOperationTimedOut();
+      }
       cli.error(err);
     }
+  }
+
+  private handleOperationTimedOut() {
+    cli.warn(this.operationGettingTooMuchTimeMessage());
+    cli.exit(0);
+  }
+
+  private operationGettingTooMuchTimeMessage(): string {
+    return dedent`Snapshot ${
+      this.latestReport.type
+    } operation is taking a long time to complete.
+    Run the following command to monitor the operation
+
+    ${blueBright`coveo org:config:monitor ${this.id} -t ${this.model.targetId}`}`;
   }
 }

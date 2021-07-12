@@ -37,9 +37,9 @@ export class SnapshotFactory {
     );
     const snapshot = new Snapshot(model, client);
 
-    await snapshot.waitUntilOperationIsDone(
-      ResourceSnapshotsReportType.CreateSnapshot
-    );
+    await snapshot.waitUntilDone({
+      operationToWaitFor: ResourceSnapshotsReportType.CreateSnapshot,
+    });
 
     return snapshot;
   }
@@ -64,11 +64,20 @@ export class SnapshotFactory {
 
     const snapshot = new Snapshot(model, client);
 
-    await snapshot.waitUntilOperationIsDone(
-      ResourceSnapshotsReportType.CreateSnapshot
-    );
+    await snapshot.waitUntilDone(ResourceSnapshotsReportType.CreateSnapshot);
 
     return snapshot;
+  }
+
+  public static async createFromExistingSnapshot(
+    snapshotId: string,
+    targetOrg: string
+  ) {
+    const client = await this.getClient(targetOrg);
+    const model = await client.resourceSnapshot.get(snapshotId, {
+      includeReports: true,
+    });
+    return new Snapshot(model, client);
   }
 
   private static async getClient(targetOrg: string) {

@@ -10,7 +10,7 @@ export type OnTarget = 'stdout' | 'stderr' | 'process';
  */
 export class On {
   private action: ActionWith<'condition' | 'target'>;
-  constructor(action: ActionWith<'condition'>, target: OnTarget) {
+  public constructor(action: ActionWith<'condition'>, target: OnTarget) {
     action.target = target;
     if (action.hasKeys<'condition' | 'target'>('condition', 'target')) {
       this.action = action;

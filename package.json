@@ -11,35 +11,29 @@
   "dependencies": {},
   "devDependencies": {
     "@actions/core": "^1.2.7",
-    "@actions/github": "^4.0.0",
+    "@actions/github": "^5.0.0",
     "@commitlint/config-conventional": "^12.1.4",
     "@commitlint/config-lerna-scopes": "^12.1.4",
     "@commitlint/lint": "^12.1.4",
     "@oclif/dev-cli": "^1.26.0",
-    "@types/node": "^10.17.60",
+    "@types/node": "^14",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "@typescript-eslint/parser": "^4.23.0",
     "async-retry": "^1.3.1",
     "axios": "^0.21.1",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^7.26.0",
-    "eslint-config-prettier": "^7.2.0",
+    "eslint-config-prettier": "^8.3.0",
     "exponential-backoff": "^3.1.0",
     "gts": "^3.1.0",
-    "husky": "^4.3.8",
+    "husky": "^7.0.0",
     "lerna": "^4.0.0",
     "lint-staged": "^10.5.4",
     "prettier": "^2.3.0",
     "rimraf": "^3.0.2",
-    "ts-node": "^8",
+    "ts-node": "^10",
     "typescript": "^3.9.9",
     "yargs": "^16.2.0"
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "node ./hooks/commit-msg.js",
-      "pre-commit": "lint-staged"
-    }
   },
   "commitlint": {
     "extends": [
@@ -77,6 +71,9 @@
     "npm:publish:template": "lerna run --no-bail npm:publish:template",
     "npm:bump:template": "lerna run --no-bail npm:bump:template",
     "npm:pkglock": "lerna exec npm i",
-    "npm:cleanPackage": "lerna exec node ../../scripts/clean-package-json.js"
+    "npm:cleanPackage": "lerna exec node ../../scripts/clean-package-json.js",
+    "prepare": "husky install",
+    "commit-msg": "node ./hooks/commit-msg.js",
+    "pre-commit": "lint-staged"
   }
 }
