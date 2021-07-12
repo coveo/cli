@@ -1,7 +1,7 @@
 {
   "enabled": true,
+  "extends": [":semanticPrefixFixDepsChoreOthers"],
   "schedule": ["before 2am"],
-  "extends": [":semanticPrefixFixDepsChoreOthers"]
   "packageRules": [
     {
       "matchPackagePatterns": ["*"],
