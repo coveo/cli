@@ -7,6 +7,10 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import dedent from 'ts-dedent';
+import {
+  buildAnalyticsFailureHook,
+  buildAnalyticsSuccessHook,
+} from '../../../hooks/analytics/analytics';
 
 export default class SourcePushList extends Command {
   public static description =
@@ -53,6 +57,17 @@ export default class SourcePushList extends Command {
       },
       {...flags}
     );
+
+    this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
+  }
+
+  public async catch(err?: Error) {
+    const {flags} = this.parse(SourcePushList);
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsFailureHook(this, flags, err)
+    );
+    throw err;
   }
 
   private flattenSourceModels(sourceModels: SourceModel[]) {

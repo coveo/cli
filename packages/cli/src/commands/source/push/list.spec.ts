@@ -61,7 +61,7 @@ describe('source:push:list', () => {
     })
     .stdout()
     .command(['source:push:list'])
-    .it('works when the user has access to a list of org', (ctx) => {
+    .it('works when the user has access to a list of push source', (ctx) => {
       // headers of table
       expect(ctx.stdout).toContain('Name');
       expect(ctx.stdout).toContain('Id');
