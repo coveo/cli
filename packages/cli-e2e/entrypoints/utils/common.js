@@ -62,11 +62,7 @@ const ensureDockerImageIsPresent = () => {
 };
 
 const createEnvFile = () => {
-  const environmentVariables = [
-    'PLATFORM_USER_NAME',
-    'PLATFORM_USER_PASSWORD',
-    'GITHUB_ACTION',
-  ];
+  const environmentVariables = ['PLATFORM_USER_NAME', 'PLATFORM_USER_PASSWORD'];
 
   if (existsSync('.env')) {
     return;

@@ -43,8 +43,7 @@ export default class Pull extends Command {
   private async getSnapshot() {
     const target = await this.getTargetOrg();
 
-    const resourceTypesToExport = this.resourceTypesToExport;
-    return SnapshotFactory.createFromOrg(resourceTypesToExport, target);
+    return SnapshotFactory.createFromOrg(this.resourceTypesToExport, target);
   }
 
   private async getTargetOrg() {

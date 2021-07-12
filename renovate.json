@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "extends": ["config:base"],
+  "schedule": ["before 2am"],
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["*"],
+      "groupName": "all dependencies",
+      "groupSlug": "all"
+    }
+  ],
+  "lockFileMaintenance": {
+    "enabled": false
+  },
+  "commitMessageSuffix": "J:CDX-227"
+}
