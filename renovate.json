@@ -1,6 +1,5 @@
 {
   "enabled": true,
-  "extends": ["config:base"],
   "schedule": ["before 2am"],
   "packageRules": [
     {
