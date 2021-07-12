@@ -42,8 +42,11 @@ describe('SnapshotUrlBuilder', () => {
     snapshot = await createSnapshot();
   });
 
-  it('#createSnapshotPage should return the snapshot URL', () => {
+  beforeEach(() => {
     snapshotUrlBuilder = new SnapshotUrlBuilder(getUSProdConfig());
+  });
+
+  it('#createSnapshotPage should return the snapshot URL', () => {
     expect(snapshotUrlBuilder.getSnapshotPage(snapshot)).toEqual(
       'https://platform.cloud.coveo.com/admin/#foo/organization/resource-snapshots/my-snapshot'
     );

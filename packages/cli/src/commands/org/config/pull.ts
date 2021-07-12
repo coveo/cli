@@ -9,6 +9,7 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {Project} from '../../../lib/project/project';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
+import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 
 export default class Pull extends Command {
@@ -48,17 +49,9 @@ export default class Pull extends Command {
   }
 
   private async getSnapshot() {
-    const target = await this.getTargetOrg();
-    return SnapshotFactory.createFromOrg(this.resourceTypesToExport, target);
-  }
-
-  private async getTargetOrg() {
     const {flags} = this.parse(Pull);
-    if (flags.target) {
-      return flags.target;
-    }
-    const cfg = await this.configuration.get();
-    return cfg.organization;
+    const target = await getTargetOrg(this.configuration, flags.target);
+    return SnapshotFactory.createFromOrg(this.resourceTypesToExport, target);
   }
 
   private get configuration() {
