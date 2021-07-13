@@ -80,9 +80,9 @@ const isPortAvailable = async (port, options) => {
 };
 
 function updateAppPort(port) {
-  const angularJsonPath = resolve("angular.json");
+  const angularJsonPath = resolve('angular.json');
 
-  const angularJSON = JSON.parse(readFileSync(angularJsonPath, "utf-8"));
+  const angularJSON = JSON.parse(readFileSync(angularJsonPath, 'utf-8'));
   const projectName = angularJSON.defaultProject;
 
   const serve = angularJSON.projects[projectName].architect.serve;
