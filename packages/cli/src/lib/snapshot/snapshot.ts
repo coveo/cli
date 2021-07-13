@@ -14,7 +14,7 @@ import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
 import dedent from 'ts-dedent';
 import {SnapshotReporter} from './snapshotReporter';
-import {SnapshotOperationTimeoutError} from './snapshotErrors';
+import {SnapshotOperationTimeoutError} from '../errors/snapshotErrors';
 import {blueBright} from 'chalk';
 
 export interface waitUntilDoneOptions {
