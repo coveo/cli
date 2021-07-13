@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "extends": ["config:base"],
+  "extends": [":semanticPrefixFixDepsChoreOthers"],
   "schedule": ["before 2am"],
   "packageRules": [
     {
@@ -9,6 +9,7 @@
       "groupSlug": "all"
     }
   ],
+  "rangeStrategy": "auto",
   "lockFileMaintenance": {
     "enabled": false
   },
