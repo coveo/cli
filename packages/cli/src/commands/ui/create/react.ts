@@ -45,7 +45,11 @@ export default class React extends Command {
   };
 
   public static args = [
-    {name: 'name', description: 'The name of the application to create.', required: true},
+    {
+      name: 'name',
+      description: 'The name of the application to create.',
+      required: true,
+    },
   ];
 
   @Preconditions(
