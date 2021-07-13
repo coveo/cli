@@ -1,6 +1,10 @@
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
 import {cli} from 'cli-ux';
+import {
+  buildAnalyticsFailureHook,
+  buildAnalyticsSuccessHook,
+} from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {
   IsAuthenticated,
@@ -41,6 +45,16 @@ export default class Monitor extends Command {
     this.printHeader(snapshot.id);
 
     await this.monitorSnapshot(snapshot);
+    this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
+  }
+
+  public async catch(err?: Error) {
+    const {flags} = this.parse(Monitor);
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsFailureHook(this, flags, err)
+    );
+    throw err;
   }
 
   private async monitorSnapshot(snapshot: Snapshot) {
