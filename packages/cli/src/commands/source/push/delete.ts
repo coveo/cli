@@ -11,7 +11,6 @@ import {
   buildAnalyticsSuccessHook,
 } from '../../../hooks/analytics/analytics';
 import {green, red} from 'chalk';
-import type {AxiosResponse} from 'axios';
 
 interface ErrorFromAPI {
   response: {
@@ -21,6 +20,11 @@ interface ErrorFromAPI {
       message: string;
     };
   };
+}
+
+interface AxiosResponse {
+  status: number;
+  statusText: string;
 }
 
 export default class SourcePushDelete extends Command {
@@ -75,7 +79,12 @@ export default class SourcePushDelete extends Command {
     }
 
     if (flags.delete) {
-      if (this.isNumberOfDeletionTooLarge()) {
+      if (this.isNumberOfDeletionTooLarge) {
+        this.warn(
+          dedent(
+            'To delete large batch of documents, use source:push:batch command instead.'
+          )
+        );
         return;
       }
 
@@ -84,17 +93,8 @@ export default class SourcePushDelete extends Command {
     await this.config.runHook('analytics', buildAnalyticsSuccessHook(this, {}));
   }
 
-  private isNumberOfDeletionTooLarge() {
-    if (this.flags.delete.length > 20) {
-      this.warn(
-        dedent(
-          'To delete large batch of documents, use source:push:batch command instead.'
-        )
-      );
-      return true;
-    }
-
-    return false;
+  private get isNumberOfDeletionTooLarge() {
+    return this.flags.delete.length > 20;
   }
 
   private async doDeletionOlderThan(source: Source) {
