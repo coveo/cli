@@ -39,15 +39,26 @@ export default class Pull extends Command {
       multiple: true,
       description: 'The resources types to pull from the organization.',
     }) as IOptionFlag<(keyof typeof ResourceType)[]>,
+    snapshotId: flags.string({
+      char: 's',
+      exclusive: ['resourceTypes'],
+      description:
+        'The unique identifier of the target snapshot to pull. If not specified, a new snapshot wil be created',
+    }),
   };
 
   public static hidden = true;
 
   @Preconditions(IsAuthenticated())
   public async run() {
+    cli.action.start('Creating Snapshot');
     const snapshot = await this.getSnapshot();
+
+    cli.action.start('Updating project with Snapshot');
     await this.refreshProject(snapshot);
+
     await snapshot.delete();
+    cli.action.stop('Project updated');
   }
 
   public async catch(err?: Error) {
@@ -82,6 +93,12 @@ export default class Pull extends Command {
   private async getSnapshot() {
     const {flags} = this.parse(Pull);
     const target = await getTargetOrg(this.configuration, flags.target);
+    if (flags.snapshotId) {
+      return SnapshotFactory.createFromExistingSnapshot(
+        flags.snapshotId,
+        target
+      );
+    }
     return SnapshotFactory.createFromOrg(this.resourceTypesToExport, target);
   }
 
