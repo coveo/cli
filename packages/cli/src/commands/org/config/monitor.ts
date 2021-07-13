@@ -12,7 +12,10 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {ReportViewerStyles} from '../../../lib/snapshot/reportViewer/reportViewerStyles';
 import {Snapshot, waitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
-import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
+import {
+  getTargetOrg,
+  handleSnapshotError,
+} from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 
 export default class Monitor extends Command {
@@ -54,7 +57,7 @@ export default class Monitor extends Command {
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
     );
-    throw err;
+    handleSnapshotError(err);
   }
 
   private async monitorSnapshot(snapshot: Snapshot) {

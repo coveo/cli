@@ -1,13 +1,17 @@
 import {ResourceType} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
 import {IOptionFlag} from '@oclif/command/lib/flags';
+import {blueBright} from 'chalk';
+import {cli} from 'cli-ux';
 import {cwd} from 'process';
+import dedent from 'ts-dedent';
 import {buildAnalyticsFailureHook} from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
+import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {Project} from '../../../lib/project/project';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {
@@ -53,6 +57,20 @@ export default class Pull extends Command {
       buildAnalyticsFailureHook(this, flags, err)
     );
     handleSnapshotError(err);
+    this.displayAdditionalErrorMessage(err);
+  }
+
+  private displayAdditionalErrorMessage(err?: Error) {
+    if (err instanceof SnapshotOperationTimeoutError) {
+      const snapshot = err.snapshot;
+      cli.info(
+        dedent`
+
+          Once the snapshot is created, you can pull it with the following command
+
+              ${blueBright`coveo org:config:pull ${snapshot.id}`}`
+      );
+    }
   }
 
   private async refreshProject(snapshot: Snapshot) {

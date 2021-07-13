@@ -79,7 +79,7 @@ export async function getTargetOrg(config: Config, target?: string) {
 
 export function handleSnapshotError(err?: Error) {
   if (err instanceof SnapshotOperationTimeoutError) {
-    cli.warn(operationGettingTooMuchTimeMessage(err.snapshot));
+    cli.info(operationGettingTooMuchTimeMessage(err.snapshot));
   } else {
     throw err;
   }
@@ -91,7 +91,7 @@ function operationGettingTooMuchTimeMessage(snapshot: Snapshot): string {
   } operation is taking a long time to complete.
   Run the following command to monitor the operation
 
-  ${blueBright`coveo org:config:monitor ${snapshot.id} -t ${snapshot.targetId}`}`;
+      ${blueBright`coveo org:config:monitor ${snapshot.id} -t ${snapshot.targetId}`}`;
 }
 
 async function createSnapshotFromProject(
