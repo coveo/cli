@@ -15,7 +15,7 @@ export type PlatformRegion = Extract<
 export const DEFAULT_ENVIRONMENT = 'prod' as const;
 export const DEFAULT_REGION = 'us-east-1' as const;
 
-type PlatformUrlOptions = {
+export type PlatformUrlOptions = {
   environment: PlatformEnvironment;
   region: PlatformRegion;
 };
