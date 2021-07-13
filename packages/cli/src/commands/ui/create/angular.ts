@@ -25,23 +25,23 @@ export default class Angular extends Command {
   public static requiredNpmVersion = '^6.11.0 || ^7.5.6';
 
   public static description =
-    'Create a Coveo Headless-powered search page with the Angular web framework. See https://docs.coveo.com/headless and https://angular.io/.';
+    'Create a Coveo Headless-powered search page with the Angular web framework. See <https://docs.coveo.com/headless> and <https://angular.io/>.';
 
   public static flags = {
     version: flags.string({
       char: 'v',
-      description: `Version of ${Angular.templateName} to use.`,
+      description: `THe version of ${Angular.templateName} to use.`,
       default: getPackageVersion(Angular.templateName),
     }),
     defaults: flags.boolean({
       char: 'd',
       description:
-        'Automatically select the default value for all prompts where such a default value exists.',
+        'Whether to automatically select the default value for all prompts that have a default value.',
     }),
   };
 
   public static args = [
-    {name: 'name', description: 'The target application name.', required: true},
+    {name: 'name', description: 'The name of the application to create.', required: true},
   ];
 
   @Preconditions(
@@ -136,7 +136,7 @@ export default class Angular extends Command {
     npm run start
 
     See package.json for other available commands.
-    Happy hacking !
+    Happy hacking!
     `);
   }
 }

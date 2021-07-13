@@ -29,7 +29,7 @@ export default class React extends Command {
   public static requiredNodeVersion = '>=10.16.0';
 
   public static description =
-    'Create a Coveo Headless-powered search page with the React web framework. See https://docs.coveo.com/headless and https://reactjs.org/.';
+    'Create a Coveo Headless-powered search page with the React web framework. See <https://docs.coveo.com/headless> and <https://reactjs.org/>.';
 
   public static examples = [
     '$ coveo ui:create:react myapp',
@@ -45,7 +45,7 @@ export default class React extends Command {
   };
 
   public static args = [
-    {name: 'name', description: 'The target application name.', required: true},
+    {name: 'name', description: 'The name of the application to create.', required: true},
   ];
 
   @Preconditions(
@@ -89,7 +89,7 @@ export default class React extends Command {
     ]).catch((_e) =>
       Promise.reject(
         new Error(
-          'create-react-app is not able to create the project. See the logs above for more information.'
+          'create-react-app was unable to create the project. See the logs above for more information.'
         )
       )
     );
@@ -123,10 +123,10 @@ export default class React extends Command {
 
     if (output.stderr) {
       this.warn(`
-      An unknown error happened while trying to create the .env file in the project. Please refer to ${join(
+      An unknown error occurred while trying to create the .env file in the project. Please refer to ${join(
         name,
         'README.md'
-      )} for more detail.
+      )} for more information.
       ${output.stderr}
       `);
       return false;
@@ -146,10 +146,10 @@ export default class React extends Command {
 
     if (output.exitCode) {
       this.warn(`
-      An unknown error happened while trying to copy the search token server. Please refer to ${join(
+      An unknown error occurred while trying to copy the search token server. Please refer to ${join(
         name,
         'README.md'
-      )} for more detail.
+      )} for more information.
       ${output.stderr ?? ''}
       `);
       return false;

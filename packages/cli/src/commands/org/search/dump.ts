@@ -36,13 +36,13 @@ interface FetchParameters {
 
 export default class Dump extends Command {
   public static description =
-    'Dump the whole content of a particular source in a CSV format.';
+    'Dump the content of one or more sources into a CSV file.';
 
   public static flags = {
     source: flags.string({
       char: 's',
       description:
-        'The name (not the identifier) of the source(s) for which to extract all documents.',
+        'The names (not the identifiers) of the sources from which to get content.',
       helpValue: 'mySourceName',
       required: true,
       multiple: true,
@@ -50,35 +50,35 @@ export default class Dump extends Command {
     pipeline: flags.string({
       char: 'p',
       description:
-        'The name of the query pipeline for which to extract all documents. If not specified, the default query pipeline will be used.',
+        'The name of the query pipeline through which to get content. If not specified, the default query pipeline is used.',
     }),
     fieldsToExclude: flags.string({
       char: 'x',
       description:
-        'The fields to exclude from the datadump. If not specified, all fields will be returned',
+        'The fields to exclude from the data dump. If not specified, all fields are included.',
       multiple: true,
     }),
     destination: flags.string({
       char: 'd',
       description:
-        'The folder destination where the CSV file should be created',
+        'The folder in which to create the CSV file.',
       default: '.',
     }),
     name: flags.string({
       char: 'n',
-      description: 'The name of the CSV file that should be created',
+      description: 'The name of the CSV file to create.',
       default: 'indexdump',
     }),
     additionalFilter: flags.string({
       char: 'f',
       description:
-        'Additional search filter that should be applied while doing the extraction. See https://docs.coveo.com/en/1552 for more information',
+        'The additional search filter to apply while getting the content. See <https://docs.coveo.com/en/1552>.',
       default: '',
     }),
     chunkSize: flags.integer({
       char: 'c',
       description:
-        'The maximum number of results extract into each CSV file. Default is 10000',
+        'The maximum number of results to dump into the CSV file.',
       default: 10000,
     }),
   };
@@ -102,7 +102,7 @@ export default class Dump extends Command {
 
     if (allResults.length === 0) {
       this.log(
-        'Found no results. Are you sure the sources name, filters, pipeline are valid ?'
+        'No results found. Ensure that the specified sources, query pipeline, and additional filter are valid.'
       );
     } else {
       await this.writeChunks(allResults);

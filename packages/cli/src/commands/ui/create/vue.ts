@@ -24,22 +24,22 @@ export default class Vue extends Command {
    */
   public static requiredNodeVersion = '>=12';
   public static description =
-    'Create a Coveo Headless-powered search page with the Vue.js web framework. See https://docs.coveo.com/headless and https://vuejs.org/';
+    'Create a Coveo Headless-powered search page with the Vue.js web framework. See <https://docs.coveo.com/headless> and <https://vuejs.org/>.';
 
   public static flags = {
     help: flags.help({char: 'h'}),
     version: flags.string({
       char: 'v',
-      description: `Version of ${Vue.templateName} to use.`,
+      description: `The version of ${Vue.templateName} to use.`,
       default: getPackageVersion(Vue.templateName),
     }),
     preset: flags.string({
       char: 'p',
       helpValue: 'path',
       description: [
-        'Path to a JSON file with pre-defined options and plugins for creating a new project.',
+        'The path to a JSON file with pre-defined options and plugins for creating a new project.',
         'If not specified, the default TypeScript preset is used.',
-        'For more information about Vue CLI presets, please consult https://cli.vuejs.org/guide/plugins-and-presets.html#presets',
+        'For more information about Vue CLI presets, see https://cli.vuejs.org/guide/plugins-and-presets.html#presets.',
       ].join('\n'),
     }),
   };
@@ -50,7 +50,7 @@ export default class Vue extends Command {
   ];
 
   public static args = [
-    {name: 'name', description: 'The target application name.', required: true},
+    {name: 'name', description: 'The name of the application to create.', required: true},
   ];
 
   @Preconditions(
@@ -182,7 +182,7 @@ export default class Vue extends Command {
     npm run start
 
     See package.json for other available commands.
-    Happy hacking !
+    Happy hacking!
     `);
   }
 }
