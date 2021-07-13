@@ -51,9 +51,8 @@ export default class Pull extends Command {
     return new Config(this.config.configDir, this.error);
   }
 
-  private get resourceTypesToExport() {
-    // TODO: CDX-447: pass resource types to export
-    return [ResourceType.field, ResourceType.extension];
+  private get resourceTypesToExport(): ResourceType[] {
+    throw new Error('not implemented yet');
   }
 
   private get projectPath() {
