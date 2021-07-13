@@ -14,7 +14,7 @@ import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
 import dedent from 'ts-dedent';
 import {SnapshotReporter} from './snapshotReporter';
-import {SnapshotOperationTimeoutError} from './snapshotErrors';
+import {SnapshotOperationTimeoutError} from '../errors/snapshotErrors';
 import {blueBright} from 'chalk';
 
 export interface waitUntilDoneOptions {
@@ -69,7 +69,7 @@ export class Snapshot {
     await this.client.resourceSnapshot.delete(this.model.id);
   }
 
-  public async download() {
+  public download() {
     return this.client.resourceSnapshot.export(this.id, {
       contentFormat: SnapshotExportContentFormat.SplitPerType,
     });
