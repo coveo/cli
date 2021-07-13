@@ -69,7 +69,7 @@ export class Snapshot {
     await this.client.resourceSnapshot.delete(this.model.id);
   }
 
-  public async download() {
+  public download() {
     return this.client.resourceSnapshot.export(this.id, {
       contentFormat: SnapshotExportContentFormat.SplitPerType,
     });
