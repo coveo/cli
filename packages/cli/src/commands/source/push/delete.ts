@@ -11,8 +11,7 @@ import {
   buildAnalyticsSuccessHook,
 } from '../../../hooks/analytics/analytics';
 import {green, red} from 'chalk';
-// eslint-disable-next-line node/no-extraneous-import
-import {AxiosResponse} from 'axios';
+import type {AxiosResponse} from 'axios';
 
 interface ErrorFromAPI {
   response: {
