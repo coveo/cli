@@ -37,7 +37,7 @@ export default class SourcePushDelete extends Command {
       exclusive: ['delete'],
       description:
         'Delete old items, using either an ISO 8601 date or a Unix timestamp',
-      helpValue: '2000-01-01T00:00:00-06:00 [ OR ] 946702800',
+      helpValue: '2000-01-01T00:00:00-06:00 OR 946702800',
     }),
     delete: flags.string({
       char: 'x',
