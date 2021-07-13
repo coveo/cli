@@ -37,6 +37,7 @@ USAGE
 * [`coveo help [COMMAND]`](#coveo-help-command)
 * [`coveo org:list`](#coveo-orglist)
 * [`coveo org:search:dump`](#coveo-orgsearchdump)
+* [`coveo source:push:new NAME`](#coveo-sourcepushnew-name)
 * [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
 * [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
 * [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
@@ -173,6 +174,25 @@ OPTIONS
 ```
 
 _See code: [src/commands/org/search/dump.ts](https://github.com/coveo/cli/blob/v1.8.0/packages/cli/src/commands/org/search/dump.ts)_
+
+## `coveo source:push:new NAME`
+
+Create a new push source in a Coveo organization
+
+```
+USAGE
+  $ coveo source:push:new NAME
+
+ARGUMENTS
+  NAME  The name of the source to create.
+
+OPTIONS
+  -v, --sourceVisibility=(PRIVATE|SECURED|SHARED)  [default: SECURED] Controls the content security option that should
+                                                   be applied to the items in a source. See
+                                                   https://docs.coveo.com/en/1779/index-content/content-security
+```
+
+_See code: [src/commands/source/push/new.ts](https://github.com/coveo/cli/blob/v1.8.0/packages/cli/src/commands/source/push/new.ts)_
 
 ## `coveo ui:create:angular NAME`
 
