@@ -36,7 +36,7 @@ interface FetchParameters {
 
 export default class Dump extends Command {
   public static description =
-    'Dump the content of one or more sources into a CSV file.';
+    'Dump the content of one or more sources in CSV format.';
 
   public static flags = {
     source: flags.string({
@@ -61,12 +61,12 @@ export default class Dump extends Command {
     destination: flags.string({
       char: 'd',
       description:
-        'The folder in which to create the CSV file.',
+        'The folder in which to create the CSV files. The data dump will fail if the folder doesn\'t exist.',
       default: '.',
     }),
     name: flags.string({
       char: 'n',
-      description: 'The name of the CSV file to create.',
+      description: 'The base name to use when creating a new CSV file. If more than one file is created, the CLI will append `_2`, `_3`, etc. to each new file name after the first one.',
       default: 'indexdump',
     }),
     additionalFilter: flags.string({
@@ -78,7 +78,7 @@ export default class Dump extends Command {
     chunkSize: flags.integer({
       char: 'c',
       description:
-        'The maximum number of results to dump into the CSV file.',
+        'The maximum number of results to dump into each CSV file.',
       default: 10000,
     }),
   };
