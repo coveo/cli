@@ -2,6 +2,7 @@ jest.mock('../platform/authenticatedClient');
 jest.mock('fs');
 jest.mock('./snapshot');
 
+import {ResourceType} from '@coveord/platform-client';
 import {createReadStream, ReadStream} from 'fs';
 import {join} from 'path';
 import {Readable} from 'stream';
@@ -14,6 +15,7 @@ const mockedCreateReadStream = mocked(createReadStream);
 const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
 const mockedSnapshot = mocked(Snapshot, true);
 const mockedCreateSnapshotFromFile = jest.fn();
+const mockedCreateFromOrganization = jest.fn();
 const mockedPushSnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
@@ -42,6 +44,7 @@ const doMockAuthenticatedClient = () => {
       resourceSnapshot: {
         get: mockedGetSnapshot,
         createFromFile: mockedCreateSnapshotFromFile,
+        createFromOrganization: mockedCreateFromOrganization,
         push: mockedPushSnapshot,
         dryRun: mockedDryRunSnapshot,
       },
@@ -60,7 +63,7 @@ describe('SnapshotFactory', () => {
     doMockSnapshot();
   });
 
-  describe('when the the resources are compressed', () => {
+  describe('when the snapshot is created from a ZIP', () => {
     const pathToZip = join('dummy', 'path');
 
     beforeEach(async () => {
@@ -93,7 +96,7 @@ describe('SnapshotFactory', () => {
     });
   });
 
-  describe('when creating snapshot from id', () => {
+  describe('when the snapshot is created from an exisiting one', () => {
     const targetId = 'target-id';
     const snapshotId = 'snapshot-id';
 
@@ -111,6 +114,31 @@ describe('SnapshotFactory', () => {
       expect(mockedGetSnapshot).toHaveBeenCalledWith('snapshot-id', {
         includeReports: true,
       });
+    });
+  });
+
+  describe('when the snapshot is created from the organization', () => {
+    const targetId = 'target-id';
+
+    beforeEach(async () => {
+      const resourcesToExport: ResourceType[] = [
+        ResourceType.field,
+        ResourceType.extension,
+      ];
+      await SnapshotFactory.createFromOrg(resourcesToExport, targetId);
+    });
+
+    it('should create a client connected to the right organization', () => {
+      expect(mockedGetClient).toHaveBeenCalledWith({
+        organization: 'target-id',
+      });
+    });
+
+    it('should create a snapshot with the specified resources', () => {
+      expect(mockedCreateFromOrganization).toHaveBeenCalledWith(
+        {resourcesToExport: {EXTENSION: ['*'], FIELD: ['*']}},
+        expect.objectContaining({})
+      );
     });
   });
 });
