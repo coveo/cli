@@ -2,6 +2,7 @@ import {ResourceType} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
 import {IOptionFlag} from '@oclif/command/lib/flags';
 import {cwd} from 'process';
+import {buildAnalyticsFailureHook} from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {
   IsAuthenticated,
@@ -9,7 +10,10 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {Project} from '../../../lib/project/project';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
+import {
+  getTargetOrg,
+  handleSnapshotError,
+} from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 
 export default class Pull extends Command {
@@ -40,6 +44,15 @@ export default class Pull extends Command {
     const snapshot = await this.getSnapshot();
     await this.refreshProject(snapshot);
     await snapshot.delete();
+  }
+
+  public async catch(err?: Error) {
+    const {flags} = this.parse(Pull);
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsFailureHook(this, flags, err)
+    );
+    handleSnapshotError(err);
   }
 
   private async refreshProject(snapshot: Snapshot) {

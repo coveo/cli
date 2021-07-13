@@ -10,7 +10,7 @@ import {join} from 'path';
 import archiver, {Archiver} from 'archiver';
 import {Writable} from 'stream';
 import {error} from '@oclif/errors';
-import {InvalidProjectError} from '../errors/projectError';
+import {InvalidProjectError} from '../errors';
 
 const mockedExistSync = mocked(existsSync);
 const mockedUnlinkSync = mocked(unlinkSync);
