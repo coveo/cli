@@ -16,6 +16,9 @@ docker run \
   -v "$GITHUB_WORKSPACE/packages/cli-e2e/docker/config:/verdaccio/conf" \
   verdaccio/verdaccio 
 
+git config --global user.name "notgroot"
+git config --global user.email "notgroot@coveo.com"
+
 while ! timeout 1 bash -c "echo > /dev/tcp/localhost/4873"; do sleep 10; done
 
 export UI_TEMPLATE_VERSION=0.0.0
