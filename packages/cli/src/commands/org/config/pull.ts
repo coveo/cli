@@ -77,7 +77,7 @@ export default class Pull extends Command {
       cli.info(
         dedent`
 
-          Once the snapshot is created, you can pull it with the following command
+          Once the snapshot is created, you can pull it with the following command:
 
               ${blueBright`coveo org:config:pull ${snapshot.id}`}`
       );
