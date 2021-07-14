@@ -29,27 +29,27 @@ interface AxiosResponse {
 
 export default class SourcePushDelete extends Command {
   public static description =
-    'Delete one or multiple documents in a given push source. See https://docs.coveo.com/en/171 and https://docs.coveo.com/en/131';
+    'Delete one or multiple items in a given Push source. See <https://docs.coveo.com/en/171> and <https://docs.coveo.com/en/131>';
 
   public static flags = {
     deleteOlderThan: flags.string({
       char: 'd',
       exclusive: ['delete'],
       description:
-        'Delete old items, using either an ISO 8601 date or a Unix timestamp',
+        'If this flag is set, all items that have been added or updated in the source before the specified ISO 8601 date or Unix timestamp will be deleted. The documents will be deleted using the default queueDelay, meaning they will stay in the index for about 15 minutes after being marked for deletion.',
       helpValue: '2000-01-01T00:00:00-06:00 OR 946702800',
     }),
     delete: flags.string({
       char: 'x',
       multiple: true,
       description:
-        'Document URI or identfier to delete. Can be repeated. If you want to delete a large batch of documents, use source:push:batch command instead.',
+        'The URIs of the items to delete. Can be repeated. If you want to delete more than one specific items, use the `source:push:batch` command instead.',
     }),
     deleteChildren: flags.boolean({
       char: 'c',
       default: true,
       description:
-        'Specify if children document should also be deleted. Default to `true`.',
+        'Whether to delete all items that share the same base URI as the specified item to delete.',
     }),
   };
 
@@ -58,7 +58,7 @@ export default class SourcePushDelete extends Command {
       name: 'sourceId',
       required: true,
       description:
-        'The identifier of the source on which to perform the delete operation. See source:push:list to obtain the identifier.',
+        'The identifier of the Push source on which to perform the delete operation. To retrieve the list of available Push source identifiers, use the `source:push:list` command.',
     },
   ];
 
@@ -67,7 +67,7 @@ export default class SourcePushDelete extends Command {
     const {flags} = this.parse(SourcePushDelete);
     if (!flags.deleteOlderThan && !flags.delete) {
       this.error(
-        'You must provide either --delete= or --deleteOlderThan=. See source:push:delete --help for more information.'
+        'You must minimally set the `delete` or the `deleteOlderThan` flag. Use `source:push:delete --help` to get more information.'
       );
     }
     const cfg = await new AuthenticatedClient().cfg.get();
@@ -82,7 +82,7 @@ export default class SourcePushDelete extends Command {
       if (this.isNumberOfDeletionTooLarge) {
         this.warn(
           dedent(
-            'To delete large batch of documents, use source:push:batch command instead.'
+            'To delete large number of items, use the `source:push:batch` command instead.'
           )
         );
         return;
@@ -147,7 +147,9 @@ export default class SourcePushDelete extends Command {
   private successMessageOnDeletion(toDelete: string, res: AxiosResponse) {
     this.log(
       dedent(`
-    Successfully deleted document: ${green(toDelete)}
+    The delete request for document: ${green(
+      toDelete
+    )} was accepted by the Push API
     Status code: ${green(res.status, res.statusText)}
     `)
     );
