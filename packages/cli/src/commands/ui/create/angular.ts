@@ -30,7 +30,7 @@ export default class Angular extends Command {
   public static flags = {
     version: flags.string({
       char: 'v',
-      description: `THe version of ${Angular.templateName} to use.`,
+      description: `The version of ${Angular.templateName} to use.`,
       default: getPackageVersion(Angular.templateName),
     }),
     defaults: flags.boolean({
