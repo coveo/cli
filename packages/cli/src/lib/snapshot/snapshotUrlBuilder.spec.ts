@@ -26,6 +26,14 @@ const getUSProdConfig = (): Configuration => ({
   analyticsEnabled: undefined,
 });
 
+const getEUDevConfig = (): Configuration => ({
+  region: 'eu-west-1',
+  environment: 'dev',
+  organization: 'does not matter',
+  accessToken: 'xxx',
+  analyticsEnabled: undefined,
+});
+
 describe('SnapshotUrlBuilder', () => {
   let snapshotUrlBuilder: SnapshotUrlBuilder;
   let snapshot: Snapshot;
@@ -45,8 +53,16 @@ describe('SnapshotUrlBuilder', () => {
   });
 
   it('#getSynchronizationPage should return the URL to the synchronization page', () => {
+    snapshotUrlBuilder = new SnapshotUrlBuilder(getUSProdConfig());
     expect(snapshotUrlBuilder.getSynchronizationPage(snapshot)).toEqual(
       'https://platform.cloud.coveo.com/admin/#foo/organization/resource-snapshots/my-snapshot/synchronization'
+    );
+  });
+
+  it('#getSynchronizationPage should return the URL to the synchronization page for Dev', () => {
+    snapshotUrlBuilder = new SnapshotUrlBuilder(getEUDevConfig());
+    expect(snapshotUrlBuilder.getSynchronizationPage(snapshot)).toEqual(
+      'https://platformdev-eu-west-1.cloud.coveo.com/admin/#foo/organization/resource-snapshots/my-snapshot/synchronization'
     );
   });
 });

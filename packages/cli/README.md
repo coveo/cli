@@ -37,6 +37,8 @@ USAGE
 * [`coveo help [COMMAND]`](#coveo-help-command)
 * [`coveo org:list`](#coveo-orglist)
 * [`coveo org:search:dump`](#coveo-orgsearchdump)
+* [`coveo source:push:list`](#coveo-sourcepushlist)
+* [`coveo source:push:new NAME`](#coveo-sourcepushnew-name)
 * [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
 * [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
 * [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
@@ -173,6 +175,45 @@ OPTIONS
 ```
 
 _See code: [src/commands/org/search/dump.ts](https://github.com/coveo/cli/blob/v1.8.0/packages/cli/src/commands/org/search/dump.ts)_
+
+## `coveo source:push:list`
+
+List all available push sources in your Coveo organization
+
+```
+USAGE
+  $ coveo source:push:list
+
+OPTIONS
+  -x, --extended          show extra columns
+  --columns=columns       only show provided columns (comma-separated)
+  --csv                   output is csv format [alias: --output=csv]
+  --filter=filter         filter property by partial string matching, ex: name=foo
+  --no-header             hide table header from output
+  --no-truncate           do not truncate output to fit screen
+  --output=csv|json|yaml  output in a more machine friendly format
+  --sort=sort             property to sort by (prepend '-' for descending)
+```
+
+_See code: [src/commands/source/push/list.ts](https://github.com/coveo/cli/blob/v1.8.0/packages/cli/src/commands/source/push/list.ts)_
+## `coveo source:push:new NAME`
+
+Create a new push source in a Coveo organization
+
+```
+USAGE
+  $ coveo source:push:new NAME
+
+ARGUMENTS
+  NAME  The name of the source to create.
+
+OPTIONS
+  -v, --sourceVisibility=(PRIVATE|SECURED|SHARED)  [default: SECURED] Controls the content security option that should
+                                                   be applied to the items in a source. See
+                                                   https://docs.coveo.com/en/1779/index-content/content-security
+```
+
+_See code: [src/commands/source/push/new.ts](https://github.com/coveo/cli/blob/v1.8.0/packages/cli/src/commands/source/push/new.ts)_
 
 ## `coveo ui:create:angular NAME`
 
