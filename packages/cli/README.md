@@ -37,6 +37,7 @@ USAGE
 * [`coveo help [COMMAND]`](#coveo-help-command)
 * [`coveo org:list`](#coveo-orglist)
 * [`coveo org:search:dump`](#coveo-orgsearchdump)
+* [`coveo source:push:add SOURCEID`](#coveo-sourcepushadd-sourceid)
 * [`coveo source:push:delete SOURCEID`](#coveo-sourcepushdelete-sourceid)
 * [`coveo source:push:list`](#coveo-sourcepushlist)
 * [`coveo source:push:new NAME`](#coveo-sourcepushnew-name)
@@ -177,6 +178,25 @@ OPTIONS
 
 _See code: [src/commands/org/search/dump.ts](https://github.com/coveo/cli/blob/v1.8.0/packages/cli/src/commands/org/search/dump.ts)_
 
+## `coveo source:push:add SOURCEID`
+
+Push a JSON document into a Coveo push source.
+
+```
+USAGE
+  $ coveo source:push:add SOURCEID
+
+ARGUMENTS
+  SOURCEID  The identifier of the source on which to perform the add operation. See source:push:list to obtain the
+            identifier.
+
+OPTIONS
+  -d, --folder=./my_folder_with_multiple_json_files  One or multiple folder containing json files. Can be repeated
+  -f, --file=myfile.json                             One or multiple file to push. Can be repeated.
+```
+
+_See code: [src/commands/source/push/add.ts](https://github.com/coveo/cli/blob/v1.8.0/packages/cli/src/commands/source/push/add.ts)_
+
 ## `coveo source:push:delete SOURCEID`
 
 Delete one or multiple documents in a given push source. See https://docs.coveo.com/en/171 and https://docs.coveo.com/en/131
@@ -190,15 +210,15 @@ ARGUMENTS
             identifier.
 
 OPTIONS
-  -c, --deleteChildren                                              Specify if children document should also be deleted.
-                                                                    Default to `true`.
+  -c, --deleteChildren                                          Specify if children document should also be deleted.
+                                                                Default to `true`.
 
   -d, --deleteOlderThan=2000-01-01T00:00:00-06:00 OR 946702800  Delete old items, using either an ISO 8601 date or a
-                                                                    Unix timestamp
+                                                                Unix timestamp
 
-  -x, --delete=delete                                               Document URI or identfier to delete. Can be
-                                                                    repeated. If you want to delete a large batch of
-                                                                    documents, use source:push:batch command instead.
+  -x, --delete=delete                                           Document URI or identfier to delete. Can be repeated. If
+                                                                you want to delete a large batch of documents, use
+                                                                source:push:batch command instead.
 ```
 
 _See code: [src/commands/source/push/delete.ts](https://github.com/coveo/cli/blob/v1.8.0/packages/cli/src/commands/source/push/delete.ts)_
@@ -223,6 +243,7 @@ OPTIONS
 ```
 
 _See code: [src/commands/source/push/list.ts](https://github.com/coveo/cli/blob/v1.8.0/packages/cli/src/commands/source/push/list.ts)_
+
 ## `coveo source:push:new NAME`
 
 Create a new push source in a Coveo organization
