@@ -43,7 +43,7 @@ export default class Pull extends Command {
       char: 's',
       exclusive: ['resourceTypes'],
       description:
-        'The unique identifier of the target snapshot to pull. If not specified, a new snapshot wil be created',
+        'The unique identifier of the snapshot to pull. If not specified, a new snapshot will be created.',
     }),
   };
 
@@ -77,7 +77,7 @@ export default class Pull extends Command {
       cli.info(
         dedent`
 
-          Once the snapshot is created, you can pull it with the following command
+          Once the snapshot is created, you can pull it with the following command:
 
             ${blueBright`coveo org:config:pull ${snapshot.id}`}
 

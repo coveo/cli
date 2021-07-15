@@ -89,7 +89,7 @@ function operationGettingTooMuchTimeMessage(snapshot: Snapshot): string {
   return dedent`Snapshot ${
     snapshot.latestReport.type
   } operation is taking a long time to complete.
-  Run the following command to monitor the operation
+  Run the following command to monitor the operation:
 
     ${blueBright`coveo org:config:monitor ${snapshot.id} -t ${snapshot.targetId}`}`;
 }
