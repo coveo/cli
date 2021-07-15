@@ -91,6 +91,7 @@ export default class Angular extends Command {
       platformUrl({environment: cfg.environment}),
       '--user',
       userInfo.providerUsername,
+      '--skip-confirmation',
     ];
 
     if (defaults) {
