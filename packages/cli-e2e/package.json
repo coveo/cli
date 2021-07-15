@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@types/async-retry": "1.4.3",
-    "@types/fs-extra": "9.0.9",
+    "@types/fs-extra": "9.0.12",
     "@types/is-running": "2.1.0",
     "@types/jest": "26.0.24",
     "eslint": "7.30.0",
