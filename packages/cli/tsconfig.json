@@ -14,5 +14,5 @@
     "types": ["jest"],
     "esModuleInterop": true
   },
-  "include": ["src/**/*", "typings/**/*.d.ts"]
+  "include": ["src/**/*", "src/typings/**/*.d.ts"]
 }
