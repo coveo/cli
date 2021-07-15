@@ -1,0 +1,876 @@
+{
+  "metadata": {
+    "schemaVersion": "v1"
+  },
+  "resources": {
+    "SOURCE": [
+      {
+        "resourceName": "perdu_77QcYx",
+        "parents": {},
+        "model": {
+          "owner": "ylakhdar@coveo.com-google",
+          "crawlerInstanceType": "Connector.Web2",
+          "additionalInfos": {
+            "CustomParameterKeys": []
+          },
+          "streamEnabled": false,
+          "logicalIndex": "default",
+          "configuration": {
+            "sourceSecurityOption": "Specified",
+            "startingAddresses": ["http://perdu.com"],
+            "addressPatterns": [
+              {
+                "expression": "*",
+                "patternType": "Wildcard",
+                "allowed": true
+              }
+            ],
+            "permissions": [
+              {
+                "permissionSets": [
+                  {
+                    "allowedPermissions": [
+                      {
+                        "identityType": "Group",
+                        "securityProvider": "Email Security Provider",
+                        "identity": "*@*"
+                      }
+                    ],
+                    "name": "Shared"
+                  }
+                ],
+                "name": "Source Specified Permissions"
+              }
+            ],
+            "parameters": {
+              "RespectNoIndexTag": {
+                "sensitive": false,
+                "value": "true"
+              },
+              "PauseOnError": {
+                "sensitive": false,
+                "value": "true"
+              },
+              "IndexExternalPagesLinks": {
+                "sensitive": false,
+                "value": "false"
+              },
+              "IndexExternalPages": {
+                "sensitive": false,
+                "value": "false"
+              },
+              "MaxRequestsRetryCount": {
+                "sensitive": false,
+                "value": "3"
+              },
+              "JavaScriptLoadingDelayInMilliseconds": {
+                "sensitive": false,
+                "value": "300"
+              },
+              "MinCrawlDelayPerDomainInMilliseconds": {
+                "sensitive": false,
+                "value": "1000"
+              },
+              "MaxCrawlDepth": {
+                "sensitive": false,
+                "value": "100"
+              },
+              "RequestsRetryDelayInMilliseconds": {
+                "sensitive": false,
+                "value": "1000"
+              },
+              "RespectAnchorRelNoFollow": {
+                "sensitive": false,
+                "value": "true"
+              },
+              "QueryStringParametersToIgnore": {
+                "sensitive": false,
+                "value": "[]"
+              },
+              "RespectRobotsDotTxt": {
+                "sensitive": false,
+                "value": "true"
+              },
+              "RespectUrlCasing": {
+                "sensitive": false,
+                "value": "true"
+              },
+              "RequestsTimeoutInSeconds": {
+                "sensitive": false,
+                "value": "60"
+              },
+              "RespectMetaNoFollow": {
+                "sensitive": false,
+                "value": "true"
+              },
+              "WebDriverType": {
+                "sensitive": false,
+                "value": "Chrome"
+              },
+              "UserAgentString": {
+                "sensitive": false,
+                "value": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) (compatible; Coveobot/2.0;+http://www.coveo.com/bot.html)"
+              },
+              "MaxPagesToCrawl": {
+                "sensitive": false,
+                "value": "2500000"
+              },
+              "IgnoreUrlFragment": {
+                "sensitive": false,
+                "value": "true"
+              },
+              "MaxCrawlDelayInSeconds": {
+                "sensitive": false,
+                "value": "5"
+              },
+              "SkipOnStartingAddressError": {
+                "sensitive": false,
+                "value": "true"
+              },
+              "FollowCanonicalLink": {
+                "sensitive": false,
+                "value": "false"
+              },
+              "FollowAutoRedirects": {
+                "sensitive": false,
+                "value": "true"
+              },
+              "MaxPageSizeInBytes": {
+                "sensitive": false,
+                "value": "536870912"
+              },
+              "MaxPagesToCrawlPerDomain": {
+                "sensitive": false,
+                "value": "0"
+              },
+              "SendCookies": {
+                "sensitive": false,
+                "value": "true"
+              },
+              "RobotsDotTextUserAgentString": {
+                "sensitive": false,
+                "value": "CoveoBot"
+              },
+              "ExpandBeforeFiltering": {
+                "sensitive": false,
+                "value": "false"
+              },
+              "IndexJsonLdMetadata": {
+                "sensitive": false,
+                "value": "false"
+              },
+              "UseHiddenBasicAuthentication": {
+                "sensitive": false,
+                "value": "false"
+              },
+              "MaxAutoRedirects": {
+                "sensitive": false,
+                "value": "7"
+              }
+            },
+            "securityProviders": {
+              "Email Security Provider": {
+                "name": "Email Security Provider",
+                "typeName": "Email"
+              }
+            },
+            "userIdentities": {},
+            "caseSensitivePatterns": true,
+            "documentConfig": {
+              "documentProcessorConfig": {
+                "extensionSettings": {
+                  "noExtension": {
+                    "action": "Retrieve",
+                    "actionOnError": "Ignore",
+                    "converter": "Detect",
+                    "useContentType": true,
+                    "indexContainer": true,
+                    "generateThumbnail": true,
+                    "useExternalHTMLGenerator": false,
+                    "convertDirectlyToHtml": false
+                  },
+                  "other": {
+                    "action": "Retrieve",
+                    "actionOnError": "Ignore",
+                    "converter": "Detect",
+                    "useContentType": true,
+                    "indexContainer": true,
+                    "generateThumbnail": true,
+                    "useExternalHTMLGenerator": false,
+                    "convertDirectlyToHtml": false
+                  },
+                  "byExtensions": [
+                    {
+                      "extensions": [
+                        ".html",
+                        ".htm",
+                        ".shtml",
+                        ".shtm",
+                        ".asp",
+                        ".aspx",
+                        ".cgi",
+                        ".php"
+                      ],
+                      "extensionSetting": {
+                        "action": "Retrieve",
+                        "actionOnError": "Reference",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [
+                        ".js",
+                        ".jsl",
+                        ".jsp",
+                        ".oleFile",
+                        ".vdp",
+                        ".vdproj",
+                        ".vjsprojdata",
+                        ".vjp",
+                        ".fphtml",
+                        ".ppthtml",
+                        ".pothtml",
+                        ".dochtml",
+                        ".dothtml",
+                        ".xlshtml",
+                        ".lib"
+                      ],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [
+                        ".bat",
+                        ".vbs",
+                        ".ascx",
+                        ".ini",
+                        ".sln",
+                        ".nfo",
+                        ".inf",
+                        ".wtx",
+                        ".scp",
+                        ".exc",
+                        ".dic",
+                        ".config",
+                        ".sdl",
+                        ".wsdl",
+                        ".cmd",
+                        ".wsf",
+                        ".csv",
+                        ".xsd",
+                        ".hta",
+                        ".col"
+                      ],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [
+                        ".doc",
+                        ".dot",
+                        ".docx",
+                        ".docm",
+                        ".dotx",
+                        ".one",
+                        ".dotm"
+                      ],
+                      "extensionSetting": {
+                        "action": "Retrieve",
+                        "actionOnError": "Reference",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [
+                        ".xls",
+                        ".xlm",
+                        ".xlsx",
+                        ".xlsm",
+                        ".xltx",
+                        ".xltm",
+                        ".xlam"
+                      ],
+                      "extensionSetting": {
+                        "action": "Retrieve",
+                        "actionOnError": "Reference",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [
+                        ".ppt",
+                        ".pot",
+                        ".pps",
+                        ".pptx",
+                        ".pptm",
+                        ".potx",
+                        ".potm",
+                        ".ppsx",
+                        ".ppsm",
+                        ".ppam"
+                      ],
+                      "extensionSetting": {
+                        "action": "Retrieve",
+                        "actionOnError": "Reference",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [".mpp"],
+                      "extensionSetting": {
+                        "action": "Reference",
+                        "actionOnError": "Reference",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [".mdb"],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [".pub"],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [
+                        ".jpg",
+                        ".jpeg",
+                        ".jpe",
+                        ".bmp",
+                        ".gif",
+                        ".pcx",
+                        ".tif",
+                        ".tiff",
+                        ".jfif",
+                        ".wpg",
+                        ".tub",
+                        ".tga",
+                        ".sgi",
+                        ".rle",
+                        ".rgba",
+                        ".rgb",
+                        ".raw",
+                        ".ras",
+                        ".psp",
+                        ".psd",
+                        ".ppm",
+                        ".pic",
+                        ".pgm",
+                        ".pgl",
+                        ".pfr",
+                        ".pct",
+                        ".pbm",
+                        ".mac",
+                        ".lbm",
+                        ".kdc",
+                        ".img",
+                        ".iff",
+                        ".hpg",
+                        ".hgl",
+                        ".gem",
+                        ".fpx",
+                        ".dxf",
+                        ".drw",
+                        ".dcx",
+                        ".cut",
+                        ".cmx",
+                        ".cdr",
+                        ".bw",
+                        ".dib",
+                        ".pdc",
+                        ".png",
+                        ".ai",
+                        ".wmf"
+                      ],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "Image",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [".pdf"],
+                      "extensionSetting": {
+                        "action": "Retrieve",
+                        "actionOnError": "Reference",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [".txt", ".log"],
+                      "extensionSetting": {
+                        "action": "Retrieve",
+                        "actionOnError": "Reference",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [".rtf"],
+                      "extensionSetting": {
+                        "action": "Retrieve",
+                        "actionOnError": "Reference",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [".vsd"],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [".wp", ".wpf", ".wpd"],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [".xml"],
+                      "extensionSetting": {
+                        "action": "Reference",
+                        "actionOnError": "Reference",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [".7z"],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [".zip", ".jar"],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [
+                        ".aif",
+                        ".aiff",
+                        ".aifc",
+                        ".snd",
+                        ".au",
+                        ".cda",
+                        ".rmi",
+                        ".mid",
+                        ".midi",
+                        ".mp1",
+                        ".mp3",
+                        ".mpga",
+                        ".wav",
+                        ".wma",
+                        ".asf"
+                      ],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [
+                        ".wm",
+                        ".wmv",
+                        ".mpv2",
+                        ".mpg",
+                        ".mpeg",
+                        ".mpa",
+                        ".mp2",
+                        ".mp2v",
+                        ".m1v",
+                        ".qt",
+                        ".rm",
+                        ".rnx",
+                        ".rec",
+                        ".avi",
+                        ".mov",
+                        ".mp4"
+                      ],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [".wri"],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [".swf", ".spl"],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [".chm", ".hlp"],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [".ncs"],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [
+                        ".email",
+                        ".eml",
+                        ".ews",
+                        ".mime",
+                        ".mht",
+                        ".mhtml"
+                      ],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": true,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [".exe", ".dll"],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [".xsl", ".xslt"],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [".msg", ".oft"],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    }
+                  ],
+                  "byContentTypes": [
+                    {
+                      "extensions": ["binarydata"],
+                      "extensionSetting": {
+                        "action": "Retrieve",
+                        "actionOnError": "Reference",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": [
+                        "application/coveo-exchange-urn:content-classes:message",
+                        "application/coveo-exchange-urn:content-classes:note",
+                        "application/coveo-exchange-urn:content-classes:activity",
+                        "application/coveo-exchange-urn:content-classes:appointment",
+                        "application/coveo-exchange-urn:content-classes:calendarmessage",
+                        "application/coveo-exchange-urn:content-classes:document",
+                        "application/coveo-exchange-urn:content-classes:dsn",
+                        "application/coveo-exchange-urn:content-classes:freebusy",
+                        "application/coveo-exchange-urn:content-classes:group",
+                        "application/coveo-exchange-urn:content-classes:mdn",
+                        "application/coveo-exchange-urn:content-classes:object",
+                        "application/coveo-exchange-urn:content-classes:person",
+                        "application/coveo-exchange-urn:content-classes:recallmessage",
+                        "application/coveo-exchange-urn:content-classes:recallreport",
+                        "application/coveo-exchange-urn:content-classes:task",
+                        "application/coveo-exchange-rssfeed",
+                        "application/coveo-exchange-urn:content-classes:contentclassdef",
+                        "application/coveo-exchange-urn:content-classes:organization",
+                        "application/coveo-exchange-urn:content-classes:propertydef",
+                        "application/coveo-exchange-urn:content-classes:reportmessage",
+                        "application/coveo-exchange-activedirperson",
+                        "application/coveo-exchange-officecom"
+                      ],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": false,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": ["text/html"],
+                      "extensionSetting": {
+                        "action": "Retrieve",
+                        "actionOnError": "Reference",
+                        "converter": "Detect",
+                        "useContentType": true,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": ["text/xml"],
+                      "extensionSetting": {
+                        "action": "Retrieve",
+                        "actionOnError": "Reference",
+                        "converter": "Detect",
+                        "useContentType": true,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    },
+                    {
+                      "extensions": ["message/rfc822"],
+                      "extensionSetting": {
+                        "action": "Ignore",
+                        "actionOnError": "Ignore",
+                        "converter": "Detect",
+                        "useContentType": true,
+                        "indexContainer": true,
+                        "fileTypeValue": "",
+                        "generateThumbnail": true,
+                        "useExternalHTMLGenerator": false,
+                        "convertDirectlyToHtml": false
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "postConversionExtensions": [],
+          "securityProviders": [
+            {
+              "id": "Email Security Provider",
+              "displayName": "Email Security Provider",
+              "type": "EMAIL",
+              "nodeRequired": true,
+              "onPremisesEnabled": false
+            }
+          ],
+          "sourceType": "WEB2",
+          "name": "perdu",
+          "pushEnabled": false,
+          "onPremisesEnabled": false,
+          "preConversionExtensions": []
+        }
+      }
+    ]
+  }
+}
