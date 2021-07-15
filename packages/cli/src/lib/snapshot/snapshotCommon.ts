@@ -91,7 +91,7 @@ function operationGettingTooMuchTimeMessage(snapshot: Snapshot): string {
   } operation is taking a long time to complete.
   Run the following command to monitor the operation
 
-      ${blueBright`coveo org:config:monitor ${snapshot.id} -t ${snapshot.targetId}`}`;
+    ${blueBright`coveo org:config:monitor ${snapshot.id} -t ${snapshot.targetId}`}`;
 }
 
 async function createSnapshotFromProject(

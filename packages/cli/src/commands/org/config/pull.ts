@@ -79,7 +79,9 @@ export default class Pull extends Command {
 
           Once the snapshot is created, you can pull it with the following command
 
-              ${blueBright`coveo org:config:pull ${snapshot.id}`}`
+            ${blueBright`coveo org:config:pull ${snapshot.id}`}
+
+            `
       );
     }
   }
