@@ -1,8 +1,7 @@
 import {StringValue} from '@coveo/bueno';
 import {DocumentBuilder, MetadataValue} from '@coveo/push-api-client';
-import {PathLike, readFileSync} from 'fs';
+import {existsSync, lstatSync, PathLike, readFileSync} from 'fs';
 import {CaseInsensitiveDocument} from './caseInsensitiveDocument';
-import {isFile} from './io';
 import {KnownKeys} from './knownKey';
 import {InvalidDocument, NotAFileError} from './pusValidatorErrors';
 import {RequiredKeyValidator} from './requiredKeyValidator';
@@ -125,4 +124,11 @@ const processMetadata = (
   Object.entries(caseInsensitiveDoc.documentRecord).forEach(([k, v]) => {
     documentBuilder.withMetadataValue(k, v);
   });
+};
+
+const isFile = (p: PathLike) => {
+  if (!existsSync(p)) {
+    return false;
+  }
+  return lstatSync(p).isFile();
 };
