@@ -4,25 +4,9 @@ import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 
 describe('org:config:pull', () => {
-  const {organization, accessToken} = getConfig();
+  const {accessToken} = getConfig();
   let processManager: ProcessManager;
   let testOrg: string;
-
-  const switchOrg = (orgId: string, procManager: ProcessManager) => {
-    const args: string[] = [CLI_EXEC_PATH, 'config:set', `-o=${orgId}`];
-    if (process.platform === 'win32') {
-      args.unshift('node');
-    }
-    const switchTerminal = new Terminal(
-      args.shift()!,
-      args,
-      undefined,
-      procManager,
-      'config-set'
-    );
-
-    return switchTerminal.when('exit').on('process').do().once();
-  };
 
   const populateOrg = (targetOrg: string, procManager: ProcessManager) => {
     const args: string[] = [
@@ -47,12 +31,10 @@ describe('org:config:pull', () => {
   beforeAll(async () => {
     processManager = new ProcessManager();
     testOrg = await createOrg('cli-test-org', accessToken);
-    await switchOrg(testOrg, processManager);
   });
 
   afterAll(async () => {
     // await deleteOrg(testOrg, accessToken); TODO: uncomment
-    await switchOrg(organization, processManager);
     await processManager.killAllProcesses();
   });
 
