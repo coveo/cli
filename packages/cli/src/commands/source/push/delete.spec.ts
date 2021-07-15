@@ -68,7 +68,7 @@ describe('source:push:delete', () => {
   test
     .stdout()
     .command(['source:push:delete', 'mysource'])
-    .catch(/You must provide either --delete= or --deleteOlderThan=/)
+    .catch(/ou must minimally set the `delete` or the `deleteOlderThan` flag/)
     .it('throws when no flags are specified');
 
   test
@@ -98,7 +98,7 @@ describe('source:push:delete', () => {
       'returns an information message on successful deletion with older than',
       (ctx) => {
         expect(ctx.stdout).toContain(
-          'Successfully deleted document: older than 12345'
+          'The delete request for document: older than 12345 was accepted by the Push AP'
         );
         expect(ctx.stdout).toContain('Status code: 999 this document is gone');
       }
@@ -143,7 +143,7 @@ describe('source:push:delete', () => {
       'returns an information message on successful deletion with document uri',
       (ctx) => {
         expect(ctx.stdout).toContain(
-          'Successfully deleted document: https://foo.com'
+          'The delete request for document: https://foo.com was accepted by the Push API'
         );
         expect(ctx.stdout).toContain('Status code: 999 this document is gone');
       }
@@ -163,10 +163,10 @@ describe('source:push:delete', () => {
       'returns an information message on successful deletion with multiple document uri',
       (ctx) => {
         expect(ctx.stdout).toContain(
-          'Successfully deleted document: https://foo.com'
+          'The delete request for document: https://foo.com was accepted by the Push API'
         );
         expect(ctx.stdout).toContain(
-          'Successfully deleted document: https://foo.com/2'
+          'The delete request for document: https://foo.com/2 was accepted by the Push API'
         );
       }
     );
@@ -253,7 +253,7 @@ describe('source:push:delete', () => {
           'Error while trying to delete document: https://foo.com'
         );
         expect(ctx.stdout).toContain(
-          'Successfully deleted document: https://foo.com/2'
+          'The delete request for document: https://foo.com/2 was accepted by the Push API'
         );
       }
     );
