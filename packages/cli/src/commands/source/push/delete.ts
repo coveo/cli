@@ -90,7 +90,10 @@ export default class SourcePushDelete extends Command {
 
       await this.doDeletionDocumentURI(source);
     }
-    await this.config.runHook('analytics', buildAnalyticsSuccessHook(this, {}));
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsSuccessHook(this, flags)
+    );
   }
 
   private get isNumberOfDeletionTooLarge() {

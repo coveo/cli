@@ -1,9 +1,13 @@
 import {Source} from '@coveo/push-api-client';
 import {Command, flags} from '@oclif/command';
-import {green} from 'chalk';
-import {fstatSync, PathLike, readdirSync} from 'fs';
-import {readFile, readdir} from 'fs-extra';
+import {blueBright, green} from 'chalk';
+import {readdirSync} from 'fs';
+import path from 'path';
 import dedent from 'ts-dedent';
+import {
+  buildAnalyticsFailureHook,
+  buildAnalyticsSuccessHook,
+} from '../../../hooks/analytics/analytics';
 import {
   IsAuthenticated,
   Preconditions,
@@ -61,48 +65,90 @@ export default class SourcePushAdd extends Command {
       await this.doPushFile(source);
     }
     if (flags.folder) {
-      flags.folder.forEach((f) => {
-        //const files = readdirSync(f).forEach((f) => {});
-      });
+      await this.doPushFolder(source);
     }
-  }
 
-  private doPushFolder(source: Source) {
-    const {flags, args} = this.parse(SourcePushAdd);
-    return Promise.all(
-      flags.folder.map((f) => {
-        return readdirSync(f).map((f) =>
-          this.pushSingleFile(source, f, args.sourceId)
-        );
-      })
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsSuccessHook(this, flags)
     );
   }
 
-  private doPushFile(source: Source) {
+  private async doPushFolder(source: Source) {
     const {flags, args} = this.parse(SourcePushAdd);
-    return Promise.all(
-      flags.file.map((f) => this.pushSingleFile(source, f, args.sourceId))
-    );
+
+    const fileNames = flags.folder.flatMap((folder) => {
+      const files = readdirSync(folder);
+      return files.map((f) => `${path.join(folder, f)}`);
+    });
+
+    const docBuilders = flags.folder.flatMap((folder) => {
+      return readdirSync(folder).flatMap((file) => {
+        const fullPath = path.join(folder, file);
+        const docBuilders =
+          parseAndGetDocumentBuilderFromJSONDocument(fullPath);
+        this.successMessageOnParseFile(fullPath, docBuilders.length);
+        return docBuilders;
+      });
+    });
+
+    const res = await source.batchUpdateDocuments(args.sourceId, {
+      addOrUpdate: docBuilders,
+      delete: [],
+    });
+    this.successMessageOnAdd(fileNames, docBuilders.length, res);
   }
 
-  private pushSingleFile(source: Source, file: PathLike, sourceId: string) {
-    try {
+  private async doPushFile(source: Source) {
+    const {flags, args} = this.parse(SourcePushAdd);
+
+    const docBuilders = flags.file.flatMap((file) => {
       const docBuilders = parseAndGetDocumentBuilderFromJSONDocument(file);
-      return docBuilders.map(async (docBuilder) => {
-        const res = await source.addOrUpdateDocument(sourceId, docBuilder);
-        this.successMessageOnAdd(`${docBuilder.build().uri}: ${file}`, res);
-      });
-    } catch (e) {
-      this.error(e);
-    }
+      this.successMessageOnParseFile(file, docBuilders.length);
+      return docBuilders;
+    });
+
+    const res = await source.batchUpdateDocuments(args.sourceId, {
+      addOrUpdate: docBuilders,
+      delete: [],
+    });
+    this.successMessageOnAdd(flags.file, docBuilders.length, res);
   }
 
-  private successMessageOnAdd(toAdd: string, res: AxiosResponse) {
+  private successMessageOnAdd(
+    files: string[],
+    numAdded: number,
+    res: AxiosResponse
+  ) {
+    let fileNames = files.slice(0, 5).join(', ');
+    if (files.length > 5) {
+      fileNames += ` and ${files.length - 5} more ...`;
+    }
+
     this.log(
       dedent(`
-    Successfully added document: ${green(toAdd)}
+    Success: ${green(numAdded)} documents accepted by the Push API from ${green(
+        fileNames
+      )}
     Status code: ${green(res.status, res.statusText)}
     `)
     );
+  }
+
+  private successMessageOnParseFile(file: string, numParsed: number) {
+    this.log(
+      dedent(
+        `Parsed ${blueBright(file)} into ${blueBright(numParsed)} documents.`
+      )
+    );
+  }
+
+  public async catch(err?: Error) {
+    const {flags} = this.parse(SourcePushAdd);
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsFailureHook(this, flags, err)
+    );
+    throw err;
   }
 }
