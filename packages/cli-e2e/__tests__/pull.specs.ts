@@ -38,7 +38,7 @@ describe('org:config:pull', () => {
       args,
       undefined,
       procManager,
-      'org:config:push'
+      'org-config-push'
     );
 
     return pushTerminal.when('exit').on('process').do().once();
