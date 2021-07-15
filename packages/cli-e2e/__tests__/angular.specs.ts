@@ -125,7 +125,7 @@ describe('ui:create:angular', () => {
     const buildTerminalExitPromise = Promise.race([
       buildTerminal.when('exit').on('process').do().once(),
       buildTerminal
-        .when(/Happy hacking !/)
+        .when(/Happy hacking!/)
         .on('stdout')
         .do()
         .once(),

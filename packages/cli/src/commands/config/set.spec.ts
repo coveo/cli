@@ -97,7 +97,7 @@ describe('config:set', () => {
       mockGetHasAccessToOrg.mockReturnValueOnce(Promise.resolve(false));
     })
     .command(['config:set', '-o', 'the_org'])
-    .catch(/do not have access to organization the_org/)
+    .catch(/don't have access to organization the_org/)
     .it(
       'fails when trying to set to an invalid organzation the user does not have access to',
       () => {
