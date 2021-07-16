@@ -5,24 +5,24 @@ xdg-settings set default-web-browser google-chrome.desktop
 rsync -r --exclude="node_modules" /home/notGroot/cli/* /home/notGroot/cli-copy/
 cd /home/notGroot/cli-copy
 
-npm run setup
-npm run build
+# npm run setup
+# npm run build
 
-export UI_TEMPLATE_VERSION=0.0.0
-npm set registry http://verdaccio:4873
-yarn config set registry http://verdaccio:4873
+# export UI_TEMPLATE_VERSION=0.0.0
+# npm set registry http://verdaccio:4873
+# yarn config set registry http://verdaccio:4873
 
-npm run npm:bump:template -- -- $UI_TEMPLATE_VERSION
+# npm run npm:bump:template -- -- $UI_TEMPLATE_VERSION
 
-npm run npm:publish:template
+# npm run npm:publish:template
 
 google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720 >/dev/null 2>&1 & \
 
 cd packages/cli-e2e
-node entrypoints/utils/wait-for-published-packages.js
+# node entrypoints/utils/wait-for-published-packages.js
 export COVEO_CLI_E2E_DEBUG=true;
 
 # Wait for Chrome to be up'n'running.
 while ! timeout 1 bash -c "echo > /dev/tcp/localhost/9222"; do sleep 10; done
 
-npm run-script jest:debug
+# npm run-script jest:debug

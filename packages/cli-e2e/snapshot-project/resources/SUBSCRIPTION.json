@@ -16,12 +16,12 @@
           },
           "description": "Default subscription that notifies when a license limit is reached or exceeded",
           "type": "EMAIL",
-          "userId": "ylakhdar@coveo.com-google",
+          "userId": "rweasley@coveo.com-google",
           "enabled": true,
           "frequency": "LIVE",
           "name": "License Limit Reached",
           "parameters": {
-            "emailRecipients": ["ylakhdar@coveo.com"]
+            "emailRecipients": ["rweasley@coveo.com"]
           }
         }
       }

@@ -1,14 +1,14 @@
 const {
   ensureDockerImageIsPresent,
   startDockerCompose,
-  startTestRunning,
-  stopDockerContainers,
+  // startTestRunning,
+  // stopDockerContainers,
 } = require('./utils/common');
 
-ensureDockerImageIsPresent();
+// ensureDockerImageIsPresent();
 try {
   startDockerCompose();
-  startTestRunning();
+  // startTestRunning();
 } finally {
-  stopDockerContainers();
+  // stopDockerContainers();
 }
