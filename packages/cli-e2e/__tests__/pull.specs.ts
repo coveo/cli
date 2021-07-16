@@ -24,7 +24,7 @@ describe('org:config:pull', () => {
     const pushTerminal = new Terminal(
       args.shift()!,
       args,
-      {cwd: getSnapshotProjectPath()},
+      undefined,
       procManager,
       'org-config-push'
     );

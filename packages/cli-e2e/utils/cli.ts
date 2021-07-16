@@ -62,10 +62,9 @@ export function setupUIProject(
   const buildProcess = new Terminal(
     args.shift()!,
     args,
-    // {
-    //   cwd: resolve(getProjectPath(projectName), '..'),
-    // },
-    undefined,
+    {
+      cwd: resolve(getProjectPath(projectName), '..'),
+    },
     processManager,
     `build-${projectName}`
   );
