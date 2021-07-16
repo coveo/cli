@@ -3,7 +3,7 @@ import {createOrg, deleteOrg} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 
-describe('org:config:pull', () => {
+describe.skip('org:config:pull', () => {
   const {accessToken} = getConfig();
   let processManager: ProcessManager;
   let testOrg: string;
