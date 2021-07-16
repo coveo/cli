@@ -28,24 +28,24 @@ export default class Set extends Command {
         'us-west-2',
       ],
       description:
-        'The platform region inside which to perform operations. See https://docs.coveo.com/en/2976.',
+        'The Coveo Platform region inside which to perform operations. See <https://docs.coveo.com/en/2976>.',
     }),
     environment: flags.string({
       char: 'e',
       options: ['dev', 'qa', 'prod', 'hipaa'],
       description:
-        'The platform environment inside which to perform operations.',
+        'The Coveo Platform environment inside which to perform operations.',
     }),
     organization: flags.string({
       char: 'o',
       description:
-        'The identifier of the organization inside which to perform operations. See https://docs.coveo.com/en/1562/#organization-id-and-other-information.',
+        'The identifier of the organization inside which to perform operations. See <https://docs.coveo.com/en/1562/#organization-id-and-other-information>.',
       helpValue: 'myOrgID',
     }),
     analytics: flags.string({
       char: 'a',
       options: ['y', 'n'],
-      description: 'Wether to enable analytics and telemetry tracking.',
+      description: 'Whether to enable analytics and telemetry tracking.',
     }),
   };
 
@@ -87,7 +87,7 @@ export default class Set extends Command {
     );
     if (!hasAccess) {
       this.error(
-        `You either do not have access to organization ${org}, or it does not exists.`
+        `You either don't have access to organization ${org}, or it doesn't exist.`
       );
     }
   }
