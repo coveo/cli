@@ -1,11 +1,14 @@
 import {ResourceType} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
+import {cwd} from 'process';
 import {Config} from '../../../lib/config/config';
 import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
+import {Project} from '../../../lib/project/project';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
+import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 
 export default class Pull extends Command {
@@ -32,23 +35,16 @@ export default class Pull extends Command {
     await snapshot.delete();
   }
 
-  private async refreshProject(_snapshot: Snapshot) {
-    // TODO: CDX-446: refresh project
+  private async refreshProject(snapshot: Snapshot) {
+    const project = new Project(this.projectPath);
+    const snapshotBlob = await snapshot.download();
+    await project.refresh(snapshotBlob);
   }
 
   private async getSnapshot() {
-    const target = await this.getTargetOrg();
-
-    return SnapshotFactory.createFromOrg(this.resourceTypesToExport, target);
-  }
-
-  private async getTargetOrg() {
     const {flags} = this.parse(Pull);
-    if (flags.target) {
-      return flags.target;
-    }
-    const cfg = await this.configuration.get();
-    return cfg.organization;
+    const target = await getTargetOrg(this.configuration, flags.target);
+    return SnapshotFactory.createFromOrg(this.resourceTypesToExport, target);
   }
 
   private get configuration() {
@@ -56,7 +52,10 @@ export default class Pull extends Command {
   }
 
   private get resourceTypesToExport(): ResourceType[] {
-    // TODO: CDX-447: pass resource types to export
     throw new Error('not implemented yet');
+  }
+
+  private get projectPath() {
+    return cwd();
   }
 }
