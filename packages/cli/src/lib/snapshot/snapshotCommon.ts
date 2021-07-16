@@ -81,5 +81,5 @@ async function createSnapshotFromProject(
   targetOrg: string
 ): Promise<Snapshot> {
   const pathToZip = await project.compressResources();
-  return await SnapshotFactory.createFromZip(pathToZip, targetOrg);
+  return SnapshotFactory.createFromZip(pathToZip, targetOrg);
 }

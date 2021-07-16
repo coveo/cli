@@ -5,6 +5,7 @@ import {
   ResourceSnapshotsReportStatus,
   PlatformClient,
   ResourceSnapshotsReportType,
+  SnapshotExportContentFormat,
 } from '@coveord/platform-client';
 import {cli} from 'cli-ux';
 import {backOff, IBackOffOptions} from 'exponential-backoff';
@@ -13,7 +14,7 @@ import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
 import dedent from 'ts-dedent';
 import {SnapshotReporter} from './snapshotReporter';
-import {SnapshotOperationTimeoutError} from './snapshotErrors';
+import {SnapshotOperationTimeoutError} from '../errors/snapshotErrors';
 import {blueBright} from 'chalk';
 
 export interface waitUntilDoneOptions {
@@ -66,6 +67,12 @@ export class Snapshot {
 
   public async delete() {
     await this.client.resourceSnapshot.delete(this.model.id);
+  }
+
+  public download() {
+    return this.client.resourceSnapshot.export(this.id, {
+      contentFormat: SnapshotExportContentFormat.SplitPerType,
+    });
   }
 
   public requiresSynchronization() {
