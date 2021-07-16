@@ -3,7 +3,7 @@ import {DocumentBuilder, MetadataValue} from '@coveo/push-api-client';
 import {existsSync, lstatSync, PathLike, readFileSync} from 'fs';
 import {CaseInsensitiveDocument} from './caseInsensitiveDocument';
 import {KnownKeys} from './knownKey';
-import {InvalidDocument, NotAFileError} from './pusValidatorErrors';
+import {InvalidDocument, NotAFileError} from './validatorErrors';
 import {RequiredKeyValidator} from './requiredKeyValidator';
 
 export const parseAndGetDocumentBuilderFromJSONDocument = (
