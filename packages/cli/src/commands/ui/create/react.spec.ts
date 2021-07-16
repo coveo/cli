@@ -229,6 +229,6 @@ describe('ui:create:react', () => {
       processExitCode.spawnOutput = 99;
     })
     .command(['ui:create:react', 'myapp'])
-    .catch(/not able to create the project/)
+    .catch(/unable to create the project/)
     .it('should start an output process setup environment variables');
 });
