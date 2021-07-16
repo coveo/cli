@@ -32,6 +32,11 @@ export function getProjectPath(projectName: string) {
   return join(homedir(), uiProjectFolderName, projectName);
 }
 
+export function getSnapshotProjectPath() {
+  const snapshotFolderName = 'snapshot-project';
+  return join(homedir(), snapshotFolderName);
+}
+
 export function setupUIProject(
   processManager: ProcessManager,
   commandArgs: string,

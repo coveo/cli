@@ -1,4 +1,4 @@
-import {CLI_EXEC_PATH, getConfig} from '../utils/cli';
+import {CLI_EXEC_PATH, getConfig, getSnapshotProjectPath} from '../utils/cli';
 import {createOrg, deleteOrg} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
@@ -8,10 +8,14 @@ describe('org:config:pull', () => {
   let processManager: ProcessManager;
   let testOrg: string;
 
-  const populateOrg = (targetOrg: string, procManager: ProcessManager) => {
+  const populateOrg = async (
+    targetOrg: string,
+    procManager: ProcessManager
+  ) => {
     const args: string[] = [
       CLI_EXEC_PATH,
       'org:config:push',
+      '--skipPreview',
       `-t=${targetOrg}`,
     ];
     if (process.platform === 'win32') {
@@ -20,17 +24,17 @@ describe('org:config:pull', () => {
     const pushTerminal = new Terminal(
       args.shift()!,
       args,
-      undefined,
+      {cwd: getSnapshotProjectPath()},
       procManager,
       'org-config-push'
     );
 
-    return pushTerminal.when('exit').on('process').do().once();
+    await pushTerminal.when('exit').on('process').do().once();
   };
 
   beforeAll(async () => {
     processManager = new ProcessManager();
-    testOrg = await createOrg('cli-test-org', accessToken);
+    testOrg = await createOrg('cli-e2e-test', accessToken);
   });
 
   afterAll(async () => {
