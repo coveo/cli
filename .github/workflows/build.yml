@@ -16,6 +16,7 @@ jobs:
     env:
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
+      ORG_ID: ${{ secrets.ORG_ID }}
       COVEO_DISABLE_AUTOUPDATE: true
       UI_TEMPLATE_VERSION: '0.0.0'
     steps:
