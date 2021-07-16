@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.9.0](https://github.com/coveo/cli/compare/v1.8.0...v1.9.0) (2021-07-16)
+
+
+### Bug Fixes
+
+* **J:CDX-227:** bump @babel/preset-typescript from 7.12.17 to 7.14.5 ([#271](https://github.com/coveo/cli/issues/271)) ([8970aca](https://github.com/coveo/cli/commit/8970acab1ca9726d00f47cdf2dda4924cdcec165))
+* **J:CDX-227:** bump eslint from 7.29.0 to 7.30.0 ([#323](https://github.com/coveo/cli/issues/323)) ([23689ae](https://github.com/coveo/cli/commit/23689aebbe3d9905236b578cc9e9c5886a45e5fb))
+* **J:CDX-227:** bump fs-extra from 9.1.0 to 10.0.0 ([#295](https://github.com/coveo/cli/issues/295)) ([581f233](https://github.com/coveo/cli/commit/581f2339278dbb2009cd85b7854bbb86a05bdd90))
+
+
+### Features
+
+* **angular-12:** update all deps, tweak port-allocator ([#340](https://github.com/coveo/cli/issues/340)) ([42540da](https://github.com/coveo/cli/commit/42540da92c22ae522eb36b65311ac14749311b38))
+
+
+
+
+
 # [1.8.0](https://github.com/coveo/cli/compare/v1.7.0...v1.8.0) (2021-06-25)
 
 **Note:** Version bump only for package @coveo/cli-e2e
