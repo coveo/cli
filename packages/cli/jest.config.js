@@ -4,6 +4,5 @@ module.exports = {
   verbose: true,
   collectCoverage: true,
   clearMocks: true,
-  silent: true,
   testTimeout: 60e3,
 };
