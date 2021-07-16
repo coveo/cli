@@ -14,7 +14,7 @@ import {
 export default class Login extends Command {
   private configuration!: Config;
   public static description =
-    'Log into the Coveo platform using the OAuth2 flow.';
+    'Log in to the Coveo Platform using the OAuth2 flow.';
 
   public static examples = ['$ coveo auth:login'];
 
@@ -30,18 +30,18 @@ export default class Login extends Command {
       ],
       default: 'us-east-1',
       description:
-        'The platform region to log into. See https://docs.coveo.com/en/2976.',
+        'The Coveo Platform region to log in to. See <https://docs.coveo.com/en/2976>.',
     }),
     environment: flags.string({
       char: 'e',
       options: ['dev', 'qa', 'prod', 'hipaa'],
       default: 'prod',
-      description: 'The Coveo platform environment to log into.',
+      description: 'The Coveo Platform environment to log in to.',
     }),
     organization: flags.string({
       char: 'o',
       description:
-        'The identifier of the organization to log into. If not specified, the CLI logs you in the first organization available. See also commands config:get, config:set, and org:list.',
+        'The identifier of the organization to log in to. If not specified, the CLI logs you in to the first available organization. See also commands `config:get`, `config:set`, and `org:list`.',
       helpValue: 'myOrgID',
     }),
   };
@@ -68,14 +68,14 @@ export default class Login extends Command {
   private async feedbackOnSuccessfulLogin() {
     const cfg = await this.configuration.get();
     this.log(`
-    Successfully logged in !
-    Close your browser to continue
+    Successfully logged in!
+    Close your browser to continue.
 
     You are currently logged in:
     Organization: ${cfg.organization}
     Region: ${cfg.region}
     Environment: ${cfg.environment}
-    Run auth:login --help to see available options to log into a different organization, region or environment.
+    Run auth:login --help to see the available options to log in to a different organization, region, or environment.
     `);
   }
 
@@ -110,7 +110,7 @@ export default class Login extends Command {
       return;
     }
 
-    this.error('You have no access to any Coveo organization!');
+    this.error('You have no access to any Coveo organization.');
   }
 
   private async pickFirstAvailableOrganization() {
@@ -133,7 +133,7 @@ export default class Login extends Command {
       );
       if (!hasAccess) {
         this.error(
-          `You either do not have access to organization ${flags.organization}, or it does not exists.`
+          `You either don't have access to organization ${flags.organization}, or it doesn't exist.`
         );
       }
     }
@@ -142,9 +142,9 @@ export default class Login extends Command {
 
     if (orgs.length === 0) {
       this.error(`
-      You do not have access to any Coveo organization in this region and environment.
-      Please make sure to you have access to at least one Coveo Organization, and that you are targeting the correct region and environment.
-      Run auth:login --help to see available options to log into a different organization, region or environment.
+      You don't have access to any Coveo organization in this region and environment.
+      Ensure that you have access to at least one Coveo organization, and that you're targeting the correct region and environment.
+      Run auth:login --help to see the available options to log in to a different organization, region or environment.
       `);
     }
   }
