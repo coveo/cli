@@ -125,7 +125,7 @@ describe('ui:create:angular', () => {
     const buildTerminalExitPromise = Promise.race([
       buildTerminal.when('exit').on('process').do().once(),
       buildTerminal
-        .when(/Happy hacking !/)
+        .when(/Happy hacking!/)
         .on('stdout')
         .do()
         .once(),
@@ -311,7 +311,7 @@ describe('ui:create:angular', () => {
     afterAll(async () => {
       restoreEnvironmentFile(join(projectName, 'server'));
       await serverProcessManager.killAllProcesses();
-    }, 5e3);
+    }, 30e3);
 
     it(
       'should not start the application',
@@ -354,7 +354,7 @@ describe('ui:create:angular', () => {
     afterAll(async () => {
       overwriteEnvFile(join(projectName, 'server'), envFileContent);
       await serverProcessManager.killAllProcesses();
-    }, 5e3);
+    }, 30e3);
 
     it('should redirect the user to an error page', async () => {
       await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
@@ -383,7 +383,7 @@ describe('ui:create:angular', () => {
     afterAll(async () => {
       await serverProcessManager.killAllProcesses();
       resetCustomTokenEndpoint();
-    }, 5e3);
+    }, 30e3);
 
     beforeEach(async () => {
       page.on('request', (request: HTTPRequest) => {
@@ -439,7 +439,7 @@ describe('ui:create:angular', () => {
     afterAll(async () => {
       await Promise.all(dummyServers.map((server) => server.close()));
       await serverProcessManager.killAllProcesses();
-    }, 5e3);
+    }, 30e3);
 
     it('should allocate a new port for the application', async () => {
       expect(clientPort).not.toEqual(usedClientPort);

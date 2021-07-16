@@ -15,5 +15,5 @@
     "esModuleInterop": true,
     "lib": ["ES2019"]
   },
-  "include": ["src/**/*", "typings/**/*.d.ts"]
+  "include": ["src/**/*", "src/typings/**/*.d.ts"]
 }
