@@ -2,7 +2,7 @@ import {createWriteStream, existsSync, unlinkSync, writeFileSync} from 'fs';
 import {join} from 'path';
 import {cli} from 'cli-ux';
 import archiver from 'archiver';
-import {InvalidProjectError} from '../errors/projectError';
+import {InvalidProjectError} from '../errors';
 import extract from 'extract-zip';
 
 export class Project {

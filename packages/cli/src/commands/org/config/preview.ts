@@ -16,6 +16,7 @@ import {
   displaySnapshotSynchronizationWarning,
   dryRun,
   getTargetOrg,
+  handleSnapshotError,
 } from '../../../lib/snapshot/snapshotCommon';
 
 export default class Preview extends Command {
@@ -71,7 +72,7 @@ export default class Preview extends Command {
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
     );
-    throw err;
+    handleSnapshotError(err);
   }
 
   private async handleReportWithErrors(snapshot: Snapshot) {

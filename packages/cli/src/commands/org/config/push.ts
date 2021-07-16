@@ -12,6 +12,7 @@ import {
   displaySnapshotSynchronizationWarning,
   dryRun,
   getTargetOrg,
+  handleSnapshotError,
 } from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '../../../lib/config/config';
 import {DryRunOptions} from '@coveord/platform-client';
@@ -85,7 +86,7 @@ export default class Push extends Command {
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
     );
-    throw err;
+    handleSnapshotError(err);
   }
 
   private async handleValidReport(

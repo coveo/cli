@@ -2,11 +2,12 @@ import {cli} from 'cli-ux';
 import {Project} from '../project/project';
 import {SnapshotFactory} from './snapshotFactory';
 import {Snapshot} from './snapshot';
-import {red, green} from 'chalk';
+import {red, green, blueBright} from 'chalk';
 import {normalize} from 'path';
 import {SnapshotUrlBuilder} from './snapshotUrlBuilder';
 import dedent from 'ts-dedent';
 import {Config, Configuration} from '../config/config';
+import {SnapshotOperationTimeoutError} from '../errors';
 
 export interface dryRunOptions {
   deleteMissingResources?: boolean;
@@ -74,6 +75,23 @@ export async function getTargetOrg(config: Config, target?: string) {
   }
   const cfg = await config.get();
   return cfg.organization;
+}
+
+export function handleSnapshotError(err?: Error) {
+  if (err instanceof SnapshotOperationTimeoutError) {
+    cli.info(operationGettingTooMuchTimeMessage(err.snapshot));
+  } else {
+    throw err;
+  }
+}
+
+function operationGettingTooMuchTimeMessage(snapshot: Snapshot): string {
+  return dedent`Snapshot ${
+    snapshot.latestReport.type
+  } operation is taking a long time to complete.
+  Run the following command to monitor the operation:
+
+    ${blueBright`coveo org:config:monitor ${snapshot.id} -t ${snapshot.targetId}`}`;
 }
 
 async function createSnapshotFromProject(
