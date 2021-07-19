@@ -2,7 +2,7 @@ jest.mock('../platform/authenticatedClient');
 jest.mock('fs');
 jest.mock('./snapshot');
 
-import {ResourceType} from '@coveord/platform-client';
+import {ResourceSnapshotType} from '@coveord/platform-client';
 import {readFileSync} from 'fs';
 import {join} from 'path';
 import {mocked} from 'ts-jest/utils';
@@ -35,7 +35,7 @@ const doMockAuthenticatedClient = () => {
     Promise.resolve({
       resourceSnapshot: {
         get: mockedGetSnapshot,
-        createFromFile: mockedCreateSnapshotFromFile,
+        createFromBuffer: mockedCreateSnapshotFromFile,
         createFromOrganization: mockedCreateFromOrganization,
         push: mockedPushSnapshot,
         dryRun: mockedDryRunSnapshot,
@@ -112,9 +112,9 @@ describe('SnapshotFactory', () => {
     const targetId = 'target-id';
 
     beforeEach(async () => {
-      const resourcesToExport: ResourceType[] = [
-        ResourceType.field,
-        ResourceType.extension,
+      const resourcesToExport: ResourceSnapshotType[] = [
+        ResourceSnapshotType.field,
+        ResourceSnapshotType.extension,
       ];
       await SnapshotFactory.createFromOrg(resourcesToExport, targetId);
     });

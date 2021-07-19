@@ -3,7 +3,7 @@ import {createOrg, deleteOrg} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 
-describe.skip('org:config:pull', () => {
+describe('org:config:pull', () => {
   const {accessToken} = getConfig();
   let processManager: ProcessManager;
   let testOrg: string;
@@ -44,9 +44,13 @@ describe.skip('org:config:pull', () => {
     await processManager.killAllProcesses();
   });
 
-  it('should be able to push with CLI,', async () => {
-    await populateOrg(testOrg, processManager);
-    // TODO: clean that...
-    expect(1).toBe(1);
-  });
+  it(
+    'should be able to push with CLI,',
+    async () => {
+      await populateOrg(testOrg, processManager);
+      // TODO: clean that...
+      expect(1).toBe(1);
+    },
+    2 * 60e3
+  );
 });
