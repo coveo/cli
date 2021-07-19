@@ -62,9 +62,10 @@ export default class SourcePushAdd extends Command {
     const {flags} = this.parse(SourcePushAdd);
     if (!flags.file && !flags.folder) {
       this.error(
-        'You must provide either --file= or --folder=. See source:push:add --help for more information.'
+        'You must minimally set the `file` or the `folder` flag. Use `source:push:add --help` to get more information.'
       );
     }
+
     const cfg = await new AuthenticatedClient().cfg.get();
     const source = new Source(cfg.accessToken!, cfg.organization);
 
