@@ -11,21 +11,12 @@ import {
   buildAnalyticsSuccessHook,
 } from '../../../hooks/analytics/analytics';
 import {green, red} from 'chalk';
-
-interface ErrorFromAPI {
-  response: {
-    status: number;
-    data: {
-      errorCode: string;
-      message: string;
-    };
-  };
-}
-
-interface AxiosResponse {
-  status: number;
-  statusText: string;
-}
+import {
+  AxiosResponse,
+  ErrorFromAPI,
+  errorMessage,
+  successMessage,
+} from '../../../lib/push/userFeedback';
 
 export default class SourcePushDelete extends Command {
   public static description =
@@ -137,24 +128,20 @@ export default class SourcePushDelete extends Command {
   }
 
   private errorMessageOnDeletion(toDelete: string, e: ErrorFromAPI) {
-    this.warn(
-      dedent(`
-  Error while trying to delete document: ${red(toDelete)}.
-  Status code: ${red(e.response.status)}
-  Error code: ${red(e.response.data.errorCode)}
-  Message: ${red(e.response.data.message)}
-  `)
+    return errorMessage(
+      this,
+      `Error while trying to delete document: ${red(toDelete)}.`,
+      e
     );
   }
 
   private successMessageOnDeletion(toDelete: string, res: AxiosResponse) {
-    this.log(
-      dedent(`
-    The delete request for document: ${green(
-      toDelete
-    )} was accepted by the Push API
-    Status code: ${green(res.status, res.statusText)}
-    `)
+    return successMessage(
+      this,
+      `The delete request for document: ${green(
+        toDelete
+      )} was accepted by the push API.`,
+      res
     );
   }
 

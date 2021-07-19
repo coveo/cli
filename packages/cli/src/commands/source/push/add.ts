@@ -14,6 +14,11 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {parseAndGetDocumentBuilderFromJSONDocument} from '../../../lib/push/parseFile';
+import {
+  ErrorFromAPI,
+  errorMessage,
+  successMessage,
+} from '../../../lib/push/userFeedback';
 
 interface AxiosResponse {
   status: number;
@@ -128,13 +133,20 @@ export default class SourcePushAdd extends Command {
       fileNames += ` and ${files.length - 5} more ...`;
     }
 
-    this.log(
-      dedent(`
-    Success: ${green(numAdded)} documents accepted by the Push API from ${green(
-        fileNames
-      )}
-    Status code: ${green(res.status, res.statusText)}
-    `)
+    return successMessage(
+      this,
+      `Success: ${green(
+        numAdded
+      )} documents accepted by the Push API from ${green(fileNames)}.`,
+      res
+    );
+  }
+
+  private errorMessageOnAdd(e: ErrorFromAPI) {
+    return errorMessage(
+      this,
+      `Error while trying to add document: ${e.response.data}`,
+      e
     );
   }
 
