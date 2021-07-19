@@ -102,6 +102,7 @@ async function startLoginFlow(browser: Browser) {
   await Promise.all([
     page.click(LoginSelectors.loginWithOfficeButton),
     page.waitForNavigation(),
+    page.waitForSelector(LoginSelectors.emailView),
   ]);
 
   await page.waitForSelector(LoginSelectors.emailInput, {
@@ -111,7 +112,10 @@ async function startLoginFlow(browser: Browser) {
   await page.waitForSelector(LoginSelectors.SubmitInput, {
     visible: true,
   });
-  await page.click(LoginSelectors.SubmitInput);
+  await Promise.all([
+    page.click(LoginSelectors.SubmitInput),
+    page.waitForSelector(LoginSelectors.passwordView),
+  ]);
 
   await page.waitForSelector(LoginSelectors.passwordInput, {
     visible: true,
@@ -121,7 +125,7 @@ async function startLoginFlow(browser: Browser) {
     visible: true,
   });
   await Promise.all([
-    page.click(LoginSelectors.SubmitInput),
+    page.click(`${LoginSelectors.passwordView} ${LoginSelectors.SubmitInput}`),
     page.waitForNavigation(),
   ]);
 
