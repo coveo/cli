@@ -8,7 +8,6 @@ import {
 } from './cli';
 import LoginSelectors from './loginSelectors';
 import {strictEqual} from 'assert';
-import {isElementClickable} from './browser';
 import {readJSON, writeJSON, existsSync} from 'fs-extra';
 import {Terminal} from './terminal/terminal';
 
@@ -44,7 +43,10 @@ async function staySignedIn(page: Page) {
   await page.waitForSelector(LoginSelectors.SubmitInput, {
     visible: true,
   });
-  await page.click(LoginSelectors.SubmitInput);
+  await Promise.all([
+    page.click(LoginSelectors.SubmitInput),
+    page.waitForNavigation(),
+  ]);
 }
 
 async function possiblyAcceptCustomerAgreement(page: Page) {
