@@ -120,7 +120,10 @@ async function startLoginFlow(browser: Browser) {
   await page.waitForSelector(LoginSelectors.SubmitInput, {
     visible: true,
   });
-  await page.click(LoginSelectors.SubmitInput);
+  await Promise.all([
+    page.click(LoginSelectors.SubmitInput),
+    page.waitForNavigation(),
+  ]);
 
   await staySignedIn(page);
 
