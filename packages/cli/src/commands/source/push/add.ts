@@ -1,8 +1,9 @@
-import {Source} from '@coveo/push-api-client';
+import {DocumentBuilder, Source} from '@coveo/push-api-client';
 import {Command, flags} from '@oclif/command';
 import {blueBright, green} from 'chalk';
 import {readdirSync} from 'fs';
 import path from 'path';
+import internal from 'stream';
 import dedent from 'ts-dedent';
 import {
   buildAnalyticsFailureHook,
@@ -14,6 +15,7 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {parseAndGetDocumentBuilderFromJSONDocument} from '../../../lib/push/parseFile';
+import through2 from 'through2';
 
 interface AxiosResponse {
   status: number;
@@ -21,6 +23,7 @@ interface AxiosResponse {
 }
 
 export default class SourcePushAdd extends Command {
+  private static maxContentLength = 5 * 1024 * 1024;
   public static description = 'Push a JSON document into a Coveo push source.';
 
   public static flags = {
@@ -74,6 +77,8 @@ export default class SourcePushAdd extends Command {
     );
   }
 
+  private pushOnChunk(stream: internal.Transform) {}
+
   private async doPushFolder(source: Source) {
     const {flags, args} = this.parse(SourcePushAdd);
 
@@ -82,21 +87,113 @@ export default class SourcePushAdd extends Command {
       return files.map((f) => `${path.join(folder, f)}`);
     });
 
-    const docBuilders = flags.folder.flatMap((folder) => {
-      return readdirSync(folder).flatMap((file) => {
-        const fullPath = path.join(folder, file);
-        const docBuilders =
-          parseAndGetDocumentBuilderFromJSONDocument(fullPath);
-        this.successMessageOnParseFile(fullPath, docBuilders.length);
-        return docBuilders;
-      });
-    });
+    const accumulator = {
+      size: 0,
+      chunks: [],
+    };
 
-    const res = await source.batchUpdateDocuments(args.sourceId, {
-      addOrUpdate: docBuilders,
+    const {onReceive, onEnd} = this.splitByChunkAndUpload(
+      accumulator,
+      source,
+      args.sourceId,
+      fileNames
+    );
+
+    await Promise.all(
+      flags.folder.flatMap((folder) => {
+        return Promise.all(
+          readdirSync(folder).flatMap(async (file) => {
+            const fullPath = path.join(folder, file);
+            const docBuilders =
+              parseAndGetDocumentBuilderFromJSONDocument(fullPath);
+            this.successMessageOnParseFile(fullPath, docBuilders.length);
+            await onReceive(docBuilders);
+          })
+        );
+      })
+    );
+
+    await onEnd();
+  }
+
+  private splitByChunkAndUpload(
+    accumulator: {size: number; chunks: DocumentBuilder[]},
+    source: Source,
+    sourceId: string,
+    fileNames: string[]
+  ) {
+    const onReceive = (documentBuilders: DocumentBuilder[]) => {
+      return Promise.all(
+        documentBuilders.map(async (docBuilderStream) => {
+          const sizeOfDoc = Buffer.byteLength(
+            JSON.stringify(docBuilderStream.marshal())
+          );
+
+          if (accumulator.size + sizeOfDoc >= SourcePushAdd.maxContentLength) {
+            console.log('DOING UPLOAD');
+            await this.uploadBatch(
+              source,
+              sourceId,
+              accumulator.chunks,
+              fileNames
+            );
+            accumulator.chunks = [docBuilderStream];
+            accumulator.size = 0;
+          } else {
+            accumulator.size += sizeOfDoc;
+            accumulator.chunks.push(docBuilderStream);
+          }
+        })
+      );
+    };
+    const onEnd = async () => {
+      await this.uploadBatch(source, sourceId, accumulator.chunks, fileNames);
+    };
+    return {onReceive, onEnd};
+    /*    return through2
+      .obj((documentBuilderStream: DocumentBuilder[], _, callback) => {
+        Promise.all(
+          documentBuilderStream.map(async (docBuilderStream) => {
+            const sizeOfDoc = Buffer.byteLength(
+              JSON.stringify(docBuilderStream.marshal())
+            );
+
+            if (
+              accumulator.size + sizeOfDoc >=
+              SourcePushAdd.maxContentLength
+            ) {
+              console.log('DOING UPLOAD');
+              await this.uploadBatch(
+                source,
+                sourceId,
+                accumulator.chunks,
+                fileNames
+              );
+              accumulator.chunks = [docBuilderStream];
+              accumulator.size = 0;
+            } else {
+              accumulator.size += sizeOfDoc;
+              accumulator.chunks.push(docBuilderStream);
+            }
+          })
+        ).then(() => {
+          callback();
+        });
+      })
+      .on('close', () => {});*/
+  }
+
+  private async uploadBatch(
+    source: Source,
+    sourceId: string,
+    batch: DocumentBuilder[],
+    fileNames: string[]
+  ) {
+    const res = await source.batchUpdateDocuments(sourceId, {
+      addOrUpdate: batch,
       delete: [],
     });
-    this.successMessageOnAdd(fileNames, docBuilders.length, res);
+    this.successMessageOnAdd(fileNames, batch.length, res);
   }
 
   private async doPushFile(source: Source) {
@@ -108,11 +205,14 @@ export default class SourcePushAdd extends Command {
       return docBuilders;
     });
 
-    const res = await source.batchUpdateDocuments(args.sourceId, {
-      addOrUpdate: docBuilders,
-      delete: [],
+    const chunks = this.splitDocBuilderPer10MBChunk(docBuilders);
+    chunks.forEach(async (chunk) => {
+      const res = await source.batchUpdateDocuments(args.sourceId, {
+        addOrUpdate: chunk,
+        delete: [],
+      });
+      this.successMessageOnAdd(flags.file, chunk.length, res);
     });
-    this.successMessageOnAdd(flags.file, docBuilders.length, res);
   }
 
   private successMessageOnAdd(
@@ -150,5 +250,28 @@ export default class SourcePushAdd extends Command {
       buildAnalyticsFailureHook(this, flags, err)
     );
     throw err;
+  }
+
+  private splitDocBuilderPer10MBChunk(docBuilders: DocumentBuilder[]) {
+    const chunks: DocumentBuilder[][] = [];
+    let acc = 0;
+    let cur = 0;
+    docBuilders.forEach((docBuilder, i) => {
+      const currentSize = Buffer.byteLength(
+        JSON.stringify(docBuilder.marshal())
+      );
+      if (i === docBuilders.length - 1) {
+        chunks.push(docBuilders.slice(cur, docBuilders.length));
+      }
+      if (acc + currentSize > SourcePushAdd.maxContentLength) {
+        chunks.push(docBuilders.slice(cur, i));
+        cur = i;
+        acc = 0;
+      } else {
+        acc += currentSize;
+      }
+    });
+
+    return chunks;
   }
 }
