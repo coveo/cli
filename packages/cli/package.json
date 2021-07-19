@@ -30,7 +30,6 @@
     "node-pty": "^0.10.0",
     "patch-package": "^6.2.2",
     "semver": "^7.3.4",
-    "through2": "^4.0.2",
     "ts-dedent": "^2.1.1",
     "tslib": "^2"
   },
