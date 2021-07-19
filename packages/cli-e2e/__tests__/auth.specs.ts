@@ -9,6 +9,7 @@ import {Terminal} from '../utils/terminal/terminal';
 
 describe('auth', () => {
   describe('login', () => {
+    const testOrg = process.env.ORG_ID;
     let browser: Browser;
     let processManager: ProcessManager;
 
@@ -24,7 +25,12 @@ describe('auth', () => {
 
     it('should open the platform page', async () => {
       // TODO CDX-98: Remove `-e=dev`.
-      const args: string[] = [CLI_EXEC_PATH, 'auth:login', '-e=dev'];
+      const args: string[] = [
+        CLI_EXEC_PATH,
+        'auth:login',
+        '-e=dev',
+        `-o=${testOrg}`,
+      ];
       if (process.platform === 'win32') {
         args.unshift('node');
       }
