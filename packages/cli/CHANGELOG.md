@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.9.0](https://github.com/coveo/cli/compare/v1.8.0...v1.9.0) (2021-07-16)
+
+
+### Bug Fixes
+
+* **cli:** exclude dev patches ([#304](https://github.com/coveo/cli/issues/304)) ([0a2b164](https://github.com/coveo/cli/commit/0a2b1645d3158e914ca6b626f081a49b4fdfc3a2))
+* **cli:** invalid url in snapshot error message ([#327](https://github.com/coveo/cli/issues/327)) ([0b7c9f8](https://github.com/coveo/cli/commit/0b7c9f854e95a5db23f002884e6fa8534f06f246))
+* **J:CDX-227:** bump @coveord/platform-client from 20.2.0 to 21.4.0 ([#314](https://github.com/coveo/cli/issues/314)) ([a56a0fd](https://github.com/coveo/cli/commit/a56a0fdcb59290d2b58ce32028db53390cffb498))
+* **J:CDX-227:** bump @types/node from 10.17.60 to 14.17.4 (^14) ([#308](https://github.com/coveo/cli/issues/308)) ([9ccb7d7](https://github.com/coveo/cli/commit/9ccb7d716e01d84147b0090d27aad4ac2b2d0e9b))
+* **J:CDX-227:** bump @vue/cli from 4.5.12 to 4.5.13 ([#318](https://github.com/coveo/cli/issues/318)) ([d9ff1c6](https://github.com/coveo/cli/commit/d9ff1c6f1e6bd1b3c60bbe32bb038cc7dba35ce5))
+* **J:CDX-227:** bump eslint from 7.29.0 to 7.30.0 ([#323](https://github.com/coveo/cli/issues/323)) ([23689ae](https://github.com/coveo/cli/commit/23689aebbe3d9905236b578cc9e9c5886a45e5fb))
+* **J:CDX-227:** bump fs-extra from 9.1.0 to 10.0.0 ([#295](https://github.com/coveo/cli/issues/295)) ([581f233](https://github.com/coveo/cli/commit/581f2339278dbb2009cd85b7854bbb86a05bdd90))
+* **J:CDX-227:** bump prettier from 2.3.0 to 2.3.1 ([#269](https://github.com/coveo/cli/issues/269)) ([64c0600](https://github.com/coveo/cli/commit/64c0600b5776b85ff184ab66cf5e167516636002))
+* **J:CDX-227:** bump ts-node from 8.10.2 to 10.0.0 ([#268](https://github.com/coveo/cli/issues/268)) ([ca94620](https://github.com/coveo/cli/commit/ca94620c781d4e5cdd597036a6fe4aa5375b822f))
+
+
+### Features
+
+* **analytics:** add analytics hook on org:config commands ([#336](https://github.com/coveo/cli/issues/336)) ([d753b97](https://github.com/coveo/cli/commit/d753b9724160cd16222acfde475340d156ac98de))
+* **angular-12:** update all deps, tweak port-allocator ([#340](https://github.com/coveo/cli/issues/340)) ([42540da](https://github.com/coveo/cli/commit/42540da92c22ae522eb36b65311ac14749311b38))
+* **cli:** add warning and update instructions for NPM installations ([#306](https://github.com/coveo/cli/issues/306)) ([a71c2d2](https://github.com/coveo/cli/commit/a71c2d20eea516c18c3e4865130d142af4e24b9c))
+* **cli:** create class for the `pull` command ([#328](https://github.com/coveo/cli/issues/328)) ([8ec50e9](https://github.com/coveo/cli/commit/8ec50e98004455acd5c4312dffc6f626a9c1bb94))
+* **cli:** do not propose to apply a snapshot with no changes ([#303](https://github.com/coveo/cli/issues/303)) ([f2ec64e](https://github.com/coveo/cli/commit/f2ec64ed3d6d3d635e24d83bf1388c68ddb95f6c))
+* **cli:** monitor command ([#319](https://github.com/coveo/cli/issues/319)) ([a1b99e6](https://github.com/coveo/cli/commit/a1b99e6c63706aed53888d9100c7300abbcb17b7))
+* **cli:** provide relevant info if snapshot operation is taking too long ([#305](https://github.com/coveo/cli/issues/305)) ([5932a76](https://github.com/coveo/cli/commit/5932a765a58f9c35996442eb0891cb67c19f3c99))
+* **cli:** refresh project with snapshot content ([#331](https://github.com/coveo/cli/issues/331)) ([e7c2858](https://github.com/coveo/cli/commit/e7c2858e7de1ba81b12e9f8b4d5f39c6e3e2337c))
+* **push:** add delete document push source command ([#343](https://github.com/coveo/cli/issues/343)) ([17e9b8b](https://github.com/coveo/cli/commit/17e9b8b4d2346680ced39d9744be80c11025d7ba))
+* **push:** add push source create new command ([#339](https://github.com/coveo/cli/issues/339)) ([fcb41eb](https://github.com/coveo/cli/commit/fcb41eb4888ac3937fe8c5e7dc13fbfd0347e1d5))
+* **push:** add push source list command ([#335](https://github.com/coveo/cli/issues/335)) ([7364794](https://github.com/coveo/cli/commit/736479473518c46e32d9b27ed94216f9ba54b1bb))
+
+
+
+
+
 # [1.8.0](https://github.com/coveo/cli/compare/v1.7.0...v1.8.0) (2021-06-25)
 
 **Note:** Version bump only for package @coveo/cli

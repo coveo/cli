@@ -5,17 +5,15 @@ import {
   ResourceSnapshotsReportStatus,
   PlatformClient,
   ResourceSnapshotsReportType,
+  SnapshotExportContentFormat,
 } from '@coveord/platform-client';
-import {cli} from 'cli-ux';
 import {backOff, IBackOffOptions} from 'exponential-backoff';
 import {ReportViewer} from './reportViewer/reportViewer';
 import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
 import dedent from 'ts-dedent';
 import {SnapshotReporter} from './snapshotReporter';
-import {SnapshotOperationTimeoutError} from './snapshotErrors';
-import {blueBright} from 'chalk';
-
+import {SnapshotOperationTimeoutError} from '../errors';
 export interface waitUntilDoneOptions {
   /**
    * The operation to wait for. If not specified, the method will wait for any operation to complete.
@@ -66,6 +64,12 @@ export class Snapshot {
 
   public async delete() {
     await this.client.resourceSnapshot.delete(this.model.id);
+  }
+
+  public download() {
+    return this.client.resourceSnapshot.export(this.id, {
+      contentFormat: SnapshotExportContentFormat.SplitPerType,
+    });
   }
 
   public requiresSynchronization() {
@@ -139,7 +143,7 @@ export class Snapshot {
       startingDelay: 1e3 / 2,
       maxDelay: 2e3,
     };
-    const waitPromise = backOff(
+    return backOff(
       async () => {
         await this.refreshSnapshotData();
 
@@ -156,35 +160,12 @@ export class Snapshot {
         );
 
         if (isNotDone) {
-          throw new SnapshotOperationTimeoutError();
+          throw new SnapshotOperationTimeoutError(this);
         }
 
         iteratee(this.latestReport);
       },
       {...defaultOptions, ...options.waitOptions}
     );
-
-    try {
-      await waitPromise;
-    } catch (err) {
-      if (err instanceof SnapshotOperationTimeoutError) {
-        this.handleOperationTimedOut();
-      }
-      cli.error(err);
-    }
-  }
-
-  private handleOperationTimedOut() {
-    cli.warn(this.operationGettingTooMuchTimeMessage());
-    cli.exit(0);
-  }
-
-  private operationGettingTooMuchTimeMessage(): string {
-    return dedent`Snapshot ${
-      this.latestReport.type
-    } operation is taking a long time to complete.
-    Run the following command to monitor the operation
-
-    ${blueBright`coveo org:config:monitor ${this.id} -t ${this.model.targetId}`}`;
   }
 }
