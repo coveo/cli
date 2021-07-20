@@ -16,9 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
-      - name: Check config
+      - name: Install Renovate
         env:
           NPM_CONFIG_PREFIX: "~/.npm-global"
-        run: |
-          npm i -g renovate
-          renovate-config-validator
+        run: npm i -g renovate
+      - name: Check the config
+        run: renovate-config-validator
