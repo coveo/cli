@@ -160,18 +160,14 @@ export default class SourcePushAdd extends Command {
         );
 
         if (accumulator.size + sizeOfDoc >= SourcePushAdd.maxContentLength) {
-          try {
-            await this.uploadBatch(
-              source,
-              sourceId,
-              accumulator.chunks,
-              fileNames
-            );
-            accumulator.chunks = [docBuilder];
-            accumulator.size = 0;
-          } catch (e) {
-            this.errorMessageOnAdd(e);
-          }
+          await this.uploadBatch(
+            source,
+            sourceId,
+            accumulator.chunks,
+            fileNames
+          );
+          accumulator.chunks = [docBuilder];
+          accumulator.size = sizeOfDoc;
         } else {
           accumulator.size += sizeOfDoc;
           accumulator.chunks.push(docBuilder);
@@ -197,7 +193,7 @@ export default class SourcePushAdd extends Command {
       });
       this.successMessageOnAdd(fileNames, batch.length, res);
     } catch (e) {
-      this.error(e.response.data.message);
+      this.errorMessageOnAdd(e);
     }
   }
 
