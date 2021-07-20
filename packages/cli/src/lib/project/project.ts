@@ -17,7 +17,7 @@ export class Project {
   }
 
   public deleteTemporaryZipFile() {
-    unlinkSync(this.pathToTemporaryZip);
+    unlinkSync(this.temporaryZipPath);
   }
 
   private ensureProjectCompliance() {
@@ -36,8 +36,7 @@ export class Project {
     try {
       this.ensureProjectCompliance();
       await new Promise<void>((resolve, reject) => {
-        const pathToTemporaryZip = this.pathToTemporaryZip;
-        const outputStream = createWriteStream(pathToTemporaryZip);
+        const outputStream = createWriteStream(this.temporaryZipPath);
         const archive = archiver('zip');
 
         outputStream.on('close', () => resolve());
@@ -47,13 +46,13 @@ export class Project {
         archive.directory(this.resourcePath, false);
         archive.finalize();
       });
-      return this.pathToTemporaryZip;
+      return this.temporaryZipPath;
     } catch (error) {
       cli.error(error);
     }
   }
 
-  private get pathToTemporaryZip() {
+  private get temporaryZipPath() {
     return join(this.pathToProject, 'snapshot.zip');
   }
 

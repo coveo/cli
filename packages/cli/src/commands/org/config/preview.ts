@@ -32,7 +32,7 @@ export default class Preview extends Command {
     }),
     showMissingResources: flags.boolean({
       char: 'd',
-      description: 'Whether or not preview missing resources',
+      description: 'Preview resources deletion when enabled',
       default: false,
       required: false,
     }),
@@ -53,7 +53,10 @@ export default class Preview extends Command {
       options
     );
 
-    await snapshot.preview();
+    await snapshot.preview(
+      project.resourcesPath,
+      options.deleteMissingResources
+    );
 
     if (reporter.isSuccessReport()) {
       await snapshot.delete();

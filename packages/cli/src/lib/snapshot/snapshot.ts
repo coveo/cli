@@ -47,9 +47,15 @@ export class Snapshot {
     return new SnapshotReporter(this.latestReport);
   }
 
-  public async preview() {
+  public async preview(
+    resourceDirectoryPath: string,
+    deleteMissingResources = false
+  ) {
     this.displayLightPreview();
-    this.displayExpandedPreview();
+    await this.displayExpandedPreview(
+      resourceDirectoryPath,
+      deleteMissingResources
+    );
   }
 
   public async apply(deleteMissingResources = false) {
@@ -124,8 +130,17 @@ export class Snapshot {
     viewer.display();
   }
 
-  private displayExpandedPreview() {
-    // TODO: CDX-347 Display Expanded preview
+  private async displayExpandedPreview(
+    resourceDirectoryPath: string,
+    shouldDelete: boolean
+  ) {
+    const previewer = new ExpandedPreviewer(
+      this.latestReport,
+      this.targetId!,
+      resourceDirectoryPath,
+      shouldDelete
+    );
+    await previewer.preview();
   }
 
   private async refreshSnapshotData() {
