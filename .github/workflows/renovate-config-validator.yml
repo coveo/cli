@@ -17,6 +17,8 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
       - name: Check config
+        env:
+          NPM_CONFIG_PREFIX: "~/.npm-global"
         run: |
           npm i -g renovate
           renovate-config-validator
