@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@angular/cli": "^12.1.1",
+    "@coveo/bueno": "^0.1.0",
     "@coveo/push-api-client": "^1.0.0",
     "@coveord/platform-client": "^22.3.0",
     "@oclif/command": "^1",
