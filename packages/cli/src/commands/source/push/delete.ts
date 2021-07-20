@@ -104,20 +104,12 @@ export default class SourcePushDelete extends Command {
     const {flags, args} = this.parse(SourcePushDelete);
     const toDelete = `older than ${flags.deleteOlderThan}`;
     try {
-      const isNumber = flags.deleteOlderThan?.match(/^[0-9]+$/);
+      const isNumber = flags.deleteOlderThan?.match(/^\d+$/);
 
-      let res: AxiosResponse;
-      if (!isNumber) {
-        res = await source.deleteDocumentsOlderThan(
+      const res = await source.deleteDocumentsOlderThan(
           args.sourceId,
-          flags.deleteOlderThan!
+          isNumber ? parseInt(flags.deleteOlderThan!, 10) : flags.deleteOlderThan!
         );
-      } else {
-        res = await source.deleteDocumentsOlderThan(
-          args.sourceId,
-          parseInt(flags.deleteOlderThan!, 10)
-        );
-      }
       this.successMessageOnDeletion(toDelete, res);
     } catch (e) {
       this.errorMessageOnDeletion(toDelete, e);
