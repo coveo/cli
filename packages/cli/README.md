@@ -37,6 +37,7 @@ USAGE
 * [`coveo help [COMMAND]`](#coveo-help-command)
 * [`coveo org:list`](#coveo-orglist)
 * [`coveo org:search:dump`](#coveo-orgsearchdump)
+* [`coveo source:push:add SOURCEID`](#coveo-sourcepushadd-sourceid)
 * [`coveo source:push:delete SOURCEID`](#coveo-sourcepushdelete-sourceid)
 * [`coveo source:push:list`](#coveo-sourcepushlist)
 * [`coveo source:push:new NAME`](#coveo-sourcepushnew-name)
@@ -178,6 +179,25 @@ OPTIONS
 ```
 
 _See code: [src/commands/org/search/dump.ts](https://github.com/coveo/cli/blob/v1.9.0/packages/cli/src/commands/org/search/dump.ts)_
+
+## `coveo source:push:add SOURCEID`
+
+Push a JSON document into a Coveo push source.
+
+```
+USAGE
+  $ coveo source:push:add SOURCEID
+
+ARGUMENTS
+  SOURCEID  The identifier of the source on which to perform the add operation. See source:push:list to obtain the
+            identifier.
+
+OPTIONS
+  -d, --folder=./my_folder_with_multiple_json_files  One or multiple folder containing json files. Can be repeated
+  -f, --file=myfile.json                             One or multiple file to push. Can be repeated.
+```
+
+_See code: [src/commands/source/push/add.ts](https://github.com/coveo/cli/blob/v1.9.0/packages/cli/src/commands/source/push/add.ts)_
 
 ## `coveo source:push:delete SOURCEID`
 

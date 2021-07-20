@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@angular/cli": "^12.1.1",
+    "@coveo/bueno": "^0.1.0",
     "@coveo/push-api-client": "^1.0.0",
     "@coveord/platform-client": "^22.3.0",
     "@oclif/command": "^1",
@@ -46,7 +47,7 @@
     "@types/json2csv": "5.0.3",
     "@types/node": "14.17.5",
     "chai": "4.3.4",
-    "eslint": "7.30.0",
+    "eslint": "7.31.0",
     "jest": "27.0.6",
     "prettier": "2.3.2",
     "rimraf": "3.0.2",
