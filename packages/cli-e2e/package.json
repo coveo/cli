@@ -1,7 +1,7 @@
 {
   "name": "@coveo/cli-e2e",
   "private": true,
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "End-to-End test of Coveo's CLI",
   "author": "Coveo",
   "homepage": "https://github.com/coveo/cli#readme",
@@ -36,7 +36,7 @@
     "@types/fs-extra": "9.0.12",
     "@types/is-running": "2.1.0",
     "@types/jest": "26.0.24",
-    "eslint": "7.30.0",
+    "eslint": "7.31.0",
     "is-running": "2.1.0"
   },
   "dependencies": {
@@ -52,7 +52,7 @@
     "get-port": "5.1.1",
     "jest": "27.0.6",
     "puppeteer": "10.1.0",
-    "strip-ansi": "^6.0.0",
+    "strip-ansi": "6.0.0",
     "typescript": "4.3.5"
   }
 }
