@@ -9,30 +9,15 @@ import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {DocumentBuilder, Source} from '@coveo/push-api-client';
 import {cwd} from 'process';
+import {
+  doMockAxiosError,
+  doMockAxiosSuccess,
+} from '../../../lib/push/testUtils';
 const mockedClient = mocked(AuthenticatedClient);
 const mockedSource = mocked(Source);
 const mockedDocumentBuilder = mocked(DocumentBuilder);
 
 describe('source:push:add', () => {
-  const doMockAxiosError = (
-    status: number,
-    message: string,
-    errorCode: string
-  ) => ({
-    response: {
-      status,
-      data: {
-        errorCode,
-        message,
-      },
-    },
-  });
-
-  const doMockAxiosSuccess = (status: number, text: string) => ({
-    status,
-    statusText: text,
-  });
-
   const mockBatchUpdate = jest
     .fn()
     .mockReturnValue(Promise.resolve(doMockAxiosSuccess(202, '👌')));
