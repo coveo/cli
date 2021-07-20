@@ -1,5 +1,11 @@
-import {StringValue} from '@coveo/bueno';
-import {DocumentBuilder, MetadataValue} from '@coveo/push-api-client';
+import {ArrayValue, BooleanValue, RecordValue, StringValue} from '@coveo/bueno';
+import {
+  DocumentBuilder,
+  MetadataValue,
+  Document,
+  SecurityIdentity,
+  AnySecurityIdentityBuilder,
+} from '@coveo/push-api-client';
 import {existsSync, lstatSync, PathLike, readFileSync} from 'fs';
 import {CaseInsensitiveDocument} from './caseInsensitiveDocument';
 import {KnownKeys} from './knownKey';
@@ -26,17 +32,28 @@ export const parseAndGetDocumentBuilderFromJSONDocument = (
 };
 
 const processDocument = (
-  fileContent: Record<string, string>,
+  fileContent: Record<string, string | {}>,
   documentPath: PathLike
 ) => {
   const caseInsensitiveDoc = new CaseInsensitiveDocument(fileContent);
 
   const documentBuilder = validateRequiredKeysAndGetDocumentBuilder(
-    caseInsensitiveDoc,
+    caseInsensitiveDoc as CaseInsensitiveDocument<string>,
     documentPath
   );
-  processKnownKeys(caseInsensitiveDoc, documentBuilder);
-  processMetadata(caseInsensitiveDoc, documentBuilder);
+  processKnownKeys(
+    caseInsensitiveDoc as CaseInsensitiveDocument<string>,
+    documentBuilder
+  );
+  processSecurityIdentities(
+    caseInsensitiveDoc as CaseInsensitiveDocument<Document['permissions']>,
+    documentBuilder,
+    documentPath
+  );
+  processMetadata(
+    caseInsensitiveDoc as CaseInsensitiveDocument<MetadataValue>,
+    documentBuilder
+  );
   return documentBuilder;
 };
 
@@ -113,8 +130,80 @@ const processKnownKeys = (
       delete caseInsensitiveDoc.documentRecord['permanentid'];
     }
   );
+};
 
-  // TODO Support for known key: permissions
+const processSecurityIdentities = (
+  caseInsensitiveDoc: CaseInsensitiveDocument<Document['permissions']>,
+  documentBuilder: DocumentBuilder,
+  documentPath: PathLike
+) => {
+  new KnownKeys<Document['permissions']>(
+    'permissions',
+    caseInsensitiveDoc
+  ).whenExists((permissions) => {
+    const caseInsensitivePermissions = new CaseInsensitiveDocument(
+      permissions!
+    );
+    const requiredAllowAnonymous = new RequiredKeyValidator(
+      'allowanonymous',
+      caseInsensitivePermissions,
+      new BooleanValue({required: true})
+    );
+    if (!requiredAllowAnonymous.isValid) {
+      throw new InvalidDocument(
+        documentPath,
+        requiredAllowAnonymous.explanation
+      );
+    }
+
+    const requiredAllowedPermissions = new RequiredKeyValidator(
+      'allowedpermissions',
+      caseInsensitivePermissions,
+      getSecurityIdentitySchemaValidation()
+    );
+
+    if (!requiredAllowedPermissions.isValid) {
+      throw new InvalidDocument(
+        documentPath,
+        requiredAllowedPermissions.explanation
+      );
+    }
+
+    const requiredDeniedPermissions = new RequiredKeyValidator(
+      'deniedpermissions',
+      caseInsensitivePermissions,
+      getSecurityIdentitySchemaValidation()
+    );
+
+    if (!requiredDeniedPermissions.isValid) {
+      throw new InvalidDocument(
+        documentPath,
+        requiredDeniedPermissions.explanation
+      );
+    }
+
+    documentBuilder.withAllowAnonymousUsers(permissions!.allowAnonymous);
+    permissions?.allowedPermissions?.forEach((p) => {
+      documentBuilder.withAllowedPermissions(
+        new AnySecurityIdentityBuilder(
+          p.identityType,
+          p.identity,
+          p.securityProvider
+        )
+      );
+    });
+    permissions?.deniedPermissions?.forEach((p) => {
+      documentBuilder.withDeniedPermissions(
+        new AnySecurityIdentityBuilder(
+          p.identityType,
+          p.identity,
+          p.securityProvider
+        )
+      );
+    });
+
+    delete caseInsensitiveDoc.documentRecord['permissions'];
+  });
 };
 
 const processMetadata = (
@@ -132,3 +221,24 @@ const isFile = (p: PathLike) => {
   }
   return lstatSync(p).isFile();
 };
+
+const getSecurityIdentitySchemaValidation =
+  (): ArrayValue<SecurityIdentity> => {
+    return new ArrayValue({
+      required: true,
+      each: new RecordValue({
+        values: {
+          identity: new StringValue({required: true, emptyAllowed: false}),
+          identityType: new StringValue({
+            constrainTo: ['UNKNOWN', 'USER', 'GROUP', 'VIRTUAL_GROUP'],
+            required: true,
+            emptyAllowed: false,
+          }),
+          securityProvider: new StringValue({
+            emptyAllowed: false,
+            required: true,
+          }),
+        },
+      }),
+    });
+  };
