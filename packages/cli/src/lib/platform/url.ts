@@ -1,17 +1,19 @@
-import {PlatformEnvironment, platformUrl} from './environment';
+import {platformUrl, PlatformUrlOptions} from './environment';
 
-export interface SnapshotUrlOptionsArgs {
-  environment: Partial<PlatformEnvironment>;
-  targetOrgId: string;
-  snapshotId: string;
+export function snapshotUrl(
+  targetOrgId: string,
+  snapshotId: string,
+  options: Partial<PlatformUrlOptions>
+) {
+  const url = platformUrl(options);
+  return `${url}/admin/#${targetOrgId}/organization/resource-snapshots/${snapshotId}`;
 }
 
-export function snapshotUrl(options: SnapshotUrlOptionsArgs) {
-  const url = platformUrl({environment: options.environment});
-  return `${url}/admin/#${options.targetOrgId}/organization/resource-snapshots/${options.snapshotId}`;
-}
-
-export function snapshotSynchronizationUrl(options: SnapshotUrlOptionsArgs) {
-  const url = snapshotUrl(options);
+export function snapshotSynchronizationUrl(
+  targetOrgId: string,
+  snapshotId: string,
+  options: Partial<PlatformUrlOptions>
+) {
+  const url = snapshotUrl(targetOrgId, snapshotId, options);
   return `${url}/synchronization`;
 }

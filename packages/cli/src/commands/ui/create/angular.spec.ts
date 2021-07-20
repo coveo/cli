@@ -176,6 +176,7 @@ describe('ui:create:angular', () => {
             'https://platformdev.cloud.coveo.com',
             '--user',
             'bob@coveo.com',
+            '--skip-confirmation',
           ],
           expect.objectContaining({cwd: 'myapp'})
         );

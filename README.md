@@ -1,6 +1,7 @@
 # Coveo CLI
 
-[![Build](https://github.com/coveo/cli/actions/workflows/build.yml/badge.svg)](https://github.com/coveo/cli/actions/workflows/build.yml)
+<!-- removefromdocs -->[![Build](https://github.com/coveo/cli/actions/workflows/build.yml/badge.svg)](https://github.com/coveo/cli/actions/workflows/build.yml)
+<!-- endremovefromdocs -->
 
 ## About
 
@@ -15,13 +16,13 @@ Download and run the executable for your operating system to install the latest 
 Afterward, you can run `coveo update` at any time to update your CLI installation to the latest version.
 
 - Linux
-  - https://static.cloud.coveo.com/cli/coveo-latest_amd64.deb
-  - https://static.cloud.coveo.com/cli/coveo-latest_armel.deb
+  - <https://static.cloud.coveo.com/cli/coveo-latest_amd64.deb>
+  - <https://static.cloud.coveo.com/cli/coveo-latest_armel.deb>
 - Mac
-  - https://static.cloud.coveo.com/cli/coveo-latest.pkg
+  - <https://static.cloud.coveo.com/cli/coveo-latest.pkg>
 - Windows
-  - https://static.cloud.coveo.com/cli/coveo-latest-x64.exe
-  - https://static.cloud.coveo.com/cli/coveo-latest-x32.exe
+  - <https://static.cloud.coveo.com/cli/coveo-latest-x64.exe>
+  - <https://static.cloud.coveo.com/cli/coveo-latest-x32.exe>
 
 ### Option 2: Install via NPM
 
@@ -38,6 +39,8 @@ With node-gyp, you can also run the CLI via [npx](https://www.npmjs.com/package/
 ```sh
 npx @coveo/cli
 ```
+
+<!-- removefromdocs -->
 
 ## Usage
 
@@ -72,3 +75,5 @@ To run unit tests
 ```sh
 npm run test
 ```
+
+<!-- endremovefromdocs -->

@@ -12,10 +12,15 @@ import {
   displaySnapshotSynchronizationWarning,
   dryRun,
   getTargetOrg,
+  handleSnapshotError,
 } from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '../../../lib/config/config';
 import {DryRunOptions} from '@coveord/platform-client';
 import {cwd} from 'process';
+import {
+  buildAnalyticsFailureHook,
+  buildAnalyticsSuccessHook,
+} from '../../../hooks/analytics/analytics';
 
 export default class Push extends Command {
   public static description =
@@ -74,6 +79,17 @@ export default class Push extends Command {
     }
 
     project.deleteTemporaryZipFile();
+
+    this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
+  }
+
+  public async catch(err?: Error) {
+    const {flags} = this.parse(Push);
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsFailureHook(this, flags, err)
+    );
+    handleSnapshotError(err);
   }
 
   private async handleValidReport(

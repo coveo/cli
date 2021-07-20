@@ -16,6 +16,7 @@ jobs:
     env:
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
+      ORG_ID: ${{ secrets.ORG_ID }}
       COVEO_DISABLE_AUTOUPDATE: true
       UI_TEMPLATE_VERSION: '0.0.0'
     steps:
@@ -29,7 +30,7 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.eol lf
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: ${{matrix.node}}
       - name: Setup repo

@@ -5,7 +5,7 @@ const {existsSync, mkdirSync, writeFileSync} = require('fs');
 const DOCKER_IMAGE_NAME = 'coveo-cli-e2e-image';
 const composeProjectName = 'coveo-cli-e2e';
 const DOCKER_CONTAINER_NAME = 'coveo-cli-e2e-container';
-const repoHostPath = resolve(__dirname, ...new Array(3).fill('..'));
+const repoHostPath = resolve(__dirname, ...new Array(4).fill('..'));
 const repoDockerPath = '/home/notGroot/cli';
 const screenshotsHostPath = resolve(__dirname, '..', 'screenshots');
 const dockerDirPath = resolve(repoHostPath, 'packages', 'cli-e2e', 'docker');
@@ -62,7 +62,11 @@ const ensureDockerImageIsPresent = () => {
 };
 
 const createEnvFile = () => {
-  const environmentVariables = ['PLATFORM_USER_NAME', 'PLATFORM_USER_PASSWORD'];
+  const environmentVariables = [
+    'PLATFORM_USER_NAME',
+    'PLATFORM_USER_PASSWORD',
+    'ORG_ID',
+  ];
 
   if (existsSync('.env')) {
     return;

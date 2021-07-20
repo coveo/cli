@@ -13,7 +13,8 @@
     "noEmitOnError": false,
     "skipLibCheck": true,
     "types": ["jest"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "lib": ["WebWorker", "ES2019"]
   },
-  "include": ["src/**/*", "typings/**/*.d.ts"]
+  "include": ["src/**/*", "src/typings/**/*.d.ts"]
 }

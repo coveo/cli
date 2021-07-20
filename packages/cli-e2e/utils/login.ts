@@ -62,8 +62,8 @@ async function possiblyAcceptCustomerAgreement(page: Page) {
   }
 }
 
-export function runLoginCommand() {
-  const args: string[] = [CLI_EXEC_PATH, 'auth:login', '-e=dev'];
+export function runLoginCommand(orgId: string) {
+  const args: string[] = [CLI_EXEC_PATH, 'auth:login', '-e=dev', `-o=${orgId}`];
   if (process.platform === 'win32') {
     args.unshift('node');
   }
@@ -134,11 +134,15 @@ async function startLoginFlow(browser: Browser) {
 }
 
 export async function loginWithOffice(browser: Browser) {
+  const orgId = process.env.ORG_ID;
+  if (!orgId) {
+    throw new Error('Missing organization ID');
+  }
   if (await isLoggedin()) {
     return;
   }
 
-  const loginProcess = runLoginCommand();
+  const loginProcess = runLoginCommand(orgId);
 
   await startLoginFlow(browser);
   return loginProcess;

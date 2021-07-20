@@ -2,18 +2,19 @@ jest.mock('../platform/authenticatedClient');
 jest.mock('fs');
 jest.mock('./snapshot');
 
-import {createReadStream, ReadStream} from 'fs';
+import {ResourceType} from '@coveord/platform-client';
+import {readFileSync} from 'fs';
 import {join} from 'path';
-import {Readable} from 'stream';
 import {mocked} from 'ts-jest/utils';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {Snapshot} from './snapshot';
 import {SnapshotFactory} from './snapshotFactory';
 
-const mockedCreateReadStream = mocked(createReadStream);
+const mockedReadFileSync = mocked(readFileSync);
 const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
 const mockedSnapshot = mocked(Snapshot, true);
 const mockedCreateSnapshotFromFile = jest.fn();
+const mockedCreateFromOrganization = jest.fn();
 const mockedPushSnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
@@ -25,15 +26,8 @@ const doMockSnapshot = () => {
   );
 };
 
-const doMockReadStream = () => {
-  mockedCreateReadStream.mockImplementation(() => {
-    const buffer = Buffer.from('this is a tést');
-    const readable = new Readable();
-    readable._read = () => {};
-    readable.push(buffer);
-    readable.push(null);
-    return readable as unknown as ReadStream;
-  });
+const doMockReadFile = () => {
+  mockedReadFileSync.mockReturnValue(Buffer.from('hello there'));
 };
 
 const doMockAuthenticatedClient = () => {
@@ -42,6 +36,7 @@ const doMockAuthenticatedClient = () => {
       resourceSnapshot: {
         get: mockedGetSnapshot,
         createFromFile: mockedCreateSnapshotFromFile,
+        createFromOrganization: mockedCreateFromOrganization,
         push: mockedPushSnapshot,
         dryRun: mockedDryRunSnapshot,
       },
@@ -56,11 +51,11 @@ const doMockAuthenticatedClient = () => {
 describe('SnapshotFactory', () => {
   beforeAll(() => {
     doMockAuthenticatedClient();
-    doMockReadStream();
+    doMockReadFile();
     doMockSnapshot();
   });
 
-  describe('when the the resources are compressed', () => {
+  describe('when the snapshot is created from a ZIP', () => {
     const pathToZip = join('dummy', 'path');
 
     beforeEach(async () => {
@@ -79,21 +74,20 @@ describe('SnapshotFactory', () => {
 
     it('#createSnapshotFromZip should create a snapshot from Zip with appropriate parameters', () => {
       expect(mockedCreateSnapshotFromFile).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: 'application/zip',
-        }),
-        {developerNotes: 'cli-created-from-zip'}
+        Buffer.from('hello there'),
+        'ZIP',
+        {
+          developerNotes: 'cli-created-from-zip',
+        }
       );
     });
 
     it('#createSnapshotFromZip should create a readstream with the appropriate path to zip', () => {
-      expect(mockedCreateReadStream).toHaveBeenCalledWith(
-        join('dummy', 'path')
-      );
+      expect(mockedReadFileSync).toHaveBeenCalledWith(join('dummy', 'path'));
     });
   });
 
-  describe('when creating snapshot from id', () => {
+  describe('when the snapshot is created from an exisiting one', () => {
     const targetId = 'target-id';
     const snapshotId = 'snapshot-id';
 
@@ -111,6 +105,31 @@ describe('SnapshotFactory', () => {
       expect(mockedGetSnapshot).toHaveBeenCalledWith('snapshot-id', {
         includeReports: true,
       });
+    });
+  });
+
+  describe('when the snapshot is created from the organization', () => {
+    const targetId = 'target-id';
+
+    beforeEach(async () => {
+      const resourcesToExport: ResourceType[] = [
+        ResourceType.field,
+        ResourceType.extension,
+      ];
+      await SnapshotFactory.createFromOrg(resourcesToExport, targetId);
+    });
+
+    it('should create a client connected to the right organization', () => {
+      expect(mockedGetClient).toHaveBeenCalledWith({
+        organization: 'target-id',
+      });
+    });
+
+    it('should create a snapshot with the specified resources', () => {
+      expect(mockedCreateFromOrganization).toHaveBeenCalledWith(
+        {resourcesToExport: {EXTENSION: ['*'], FIELD: ['*']}},
+        expect.objectContaining({})
+      );
     });
   });
 });

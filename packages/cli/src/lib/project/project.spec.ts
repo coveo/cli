@@ -1,6 +1,7 @@
 jest.mock('@coveord/platform-client');
 jest.mock('fs');
 jest.mock('archiver');
+jest.mock('@oclif/errors');
 
 import {mocked} from 'ts-jest/utils';
 import {existsSync, createWriteStream, WriteStream, unlinkSync} from 'fs';
@@ -8,6 +9,8 @@ import {Project} from './project';
 import {join} from 'path';
 import archiver, {Archiver} from 'archiver';
 import {Writable} from 'stream';
+import {error} from '@oclif/errors';
+import {InvalidProjectError} from '../errors';
 
 const mockedExistSync = mocked(existsSync);
 const mockedUnlinkSync = mocked(unlinkSync);
@@ -16,6 +19,7 @@ const mockedArchiver = mocked(archiver);
 const mockedPipe = jest.fn();
 const mockedPassDirectory = jest.fn();
 const mockedFinalize = jest.fn();
+const mockedError = mocked(error);
 
 mockedArchiver.mockImplementation(
   () =>
@@ -56,14 +60,11 @@ describe('Project', () => {
   });
 
   describe('if the project is invalid', () => {
-    it('should throw an error', () => {
-      expect(projectCreator).toThrowError(/Invalid Project/);
-    });
-
     it('should ensure project exists', async () => {
-      expect(projectCreator).toThrow();
-      expect(mockedExistSync).toHaveBeenCalledWith(
-        join('dummy', 'path', 'resources')
+      const project = projectCreator();
+      project.compressResources();
+      expect(mockedError).toHaveBeenCalledWith(
+        new Error(InvalidProjectError.message)
       );
     });
   });
@@ -79,10 +80,6 @@ describe('Project', () => {
       pathToZip = join('dummy', 'path', 'snapshot.zip');
       project = projectCreator();
       await project.compressResources();
-    });
-
-    it('should no throw an error', () => {
-      expect(projectCreator).not.toThrowError();
     });
 
     it('#compressResources should create a write stream the appropriate path to the zip file', () => {
