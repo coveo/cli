@@ -8,29 +8,14 @@ import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {Source} from '@coveo/push-api-client';
+import {
+  doMockAxiosError,
+  doMockAxiosSuccess,
+} from '../../../lib/push/testUtils';
 const mockedClient = mocked(AuthenticatedClient);
 const mockedSource = mocked(Source);
 
 describe('source:push:delete', () => {
-  const doMockAxiosError = (
-    status: number,
-    message: string,
-    errorCode: string
-  ) => ({
-    response: {
-      status,
-      data: {
-        errorCode,
-        message,
-      },
-    },
-  });
-
-  const doMockAxiosSuccess = (status: number, text: string) => ({
-    status,
-    statusText: text,
-  });
-
   const mockDeleteOlderThan = jest
     .fn()
     .mockReturnValue(Promise.resolve(doMockAxiosSuccess(202, 'tiguidou')));
