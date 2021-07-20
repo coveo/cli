@@ -7,7 +7,7 @@
       {
         "resourceName": "override_query_q:test_DUzgZh",
         "parents": {
-          "queryPipelineId": "{{ QUERY_PIPELINE.default_p56INx }}"
+          "queryPipelineId": "{{ QUERY_PIPELINE.custom_p56INx }}"
         },
         "model": {
           "parent": {

@@ -7,7 +7,7 @@
       {
         "resourceName": "rank_adjacency:_5,_concept:_5,_docDate:_5,_summary:_5,_TFIDF:_5,_title:_5_CtlPT1",
         "parents": {
-          "queryPipelineId": "{{ QUERY_PIPELINE.default_p56INx }}"
+          "queryPipelineId": "{{ QUERY_PIPELINE.custom_p56INx }}"
         },
         "model": {
           "feature": "rankingweight",

@@ -5,12 +5,12 @@
   "resources": {
     "QUERY_PIPELINE": [
       {
-        "resourceName": "default_p56INx",
+        "resourceName": "custom_p56INx",
         "parents": {},
         "model": {
-          "name": "default",
+          "name": "custom",
           "splitTestEnabled": false,
-          "isDefault": true
+          "isDefault": false
         }
       }
     ]

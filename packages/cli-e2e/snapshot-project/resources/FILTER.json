@@ -7,7 +7,7 @@
       {
         "resourceName": "filter_aq_`@source`_EPWejP",
         "parents": {
-          "queryPipelineId": "{{ QUERY_PIPELINE.default_p56INx }}"
+          "queryPipelineId": "{{ QUERY_PIPELINE.custom_p56INx }}"
         },
         "model": {
           "feature": "filter",
