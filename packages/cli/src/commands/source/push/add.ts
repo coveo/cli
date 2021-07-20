@@ -138,6 +138,40 @@ export default class SourcePushAdd extends Command {
     cli.action.stop();
   }
 
+  private successMessageOnAdd(
+    files: string[],
+    numAdded: number,
+    res: AxiosResponse
+  ) {
+    // Display the first 5 files (from the list of all files) being processed for end user feedback
+    // Don't want to clutter the output too much if the list is very long.
+
+    let fileNames = files.slice(0, 5).join(', ');
+    if (files.length > 5) {
+      fileNames += ` and ${files.length - 5} more ...`;
+    }
+
+    return successMessage(
+      this,
+      `Success: ${green(
+        numAdded
+      )} documents accepted by the Push API from ${green(fileNames)}.`,
+      res
+    );
+  }
+
+  private errorMessageOnAdd(e: ErrorFromAPI) {
+    return errorMessage(this, 'Error while trying to add document.', e);
+  }
+
+  private successMessageOnParseFile(file: string, numParsed: number) {
+    this.log(
+      dedent(
+        `Parsed ${blueBright(file)} into ${blueBright(numParsed)} documents.`
+      )
+    );
+  }
+
   public async catch(err?: Error) {
     const {flags} = this.parse(SourcePushAdd);
     await this.config.runHook(
@@ -202,39 +236,5 @@ export default class SourcePushAdd extends Command {
       size: 0,
       chunks: [],
     };
-  }
-
-  private successMessageOnAdd(
-    files: string[],
-    numAdded: number,
-    res: AxiosResponse
-  ) {
-    // Display the first 5 files (from the list of all files) being processed for end user feedback
-    // Don't want to clutter the output too much if the list is very long.
-
-    let fileNames = files.slice(0, 5).join(', ');
-    if (files.length > 5) {
-      fileNames += ` and ${files.length - 5} more ...`;
-    }
-
-    return successMessage(
-      this,
-      `Success: ${green(
-        numAdded
-      )} documents accepted by the Push API from ${green(fileNames)}.`,
-      res
-    );
-  }
-
-  private errorMessageOnAdd(e: ErrorFromAPI) {
-    return errorMessage(this, 'Error while trying to add document.', e);
-  }
-
-  private successMessageOnParseFile(file: string, numParsed: number) {
-    this.log(
-      dedent(
-        `Parsed ${blueBright(file)} into ${blueBright(numParsed)} documents.`
-      )
-    );
   }
 }
