@@ -174,6 +174,11 @@ describe('source:push:add', () => {
       '-f',
       cwd() + '/src/__stub__/jsondocuments/batman.json',
     ])
-    .catch(/this is a bad request and you should feel bad/)
-    .it('returns an information message on add failure from the API');
+    .it('returns an information message on add failure from the API', (ctx) => {
+      expect(ctx.stdout).toContain(
+        'this is a bad request and you should feel bad'
+      );
+      expect(ctx.stdout).toContain('Status code: 412');
+      expect(ctx.stdout).toContain('Error code: BAD_REQUEST');
+    });
 });
