@@ -193,7 +193,7 @@ export default class SourcePushAdd extends Command {
             fileNames
           );
           accumulator.chunks = [docBuilder];
-          accumulator.size = 0;
+          accumulator.size = sizeOfDoc;
         } else {
           accumulator.size += sizeOfDoc;
           accumulator.chunks.push(docBuilder);
