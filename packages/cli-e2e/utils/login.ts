@@ -8,7 +8,6 @@ import {
 } from './cli';
 import LoginSelectors from './loginSelectors';
 import {strictEqual} from 'assert';
-import {isElementClickable} from './browser';
 import {readJSON, writeJSON, existsSync} from 'fs-extra';
 import {Terminal} from './terminal/terminal';
 
@@ -44,7 +43,10 @@ async function staySignedIn(page: Page) {
   await page.waitForSelector(LoginSelectors.SubmitInput, {
     visible: true,
   });
-  await page.click(LoginSelectors.SubmitInput);
+  await Promise.all([
+    page.click(LoginSelectors.SubmitInput),
+    page.waitForNavigation(),
+  ]);
 }
 
 async function possiblyAcceptCustomerAgreement(page: Page) {
@@ -96,9 +98,12 @@ async function startLoginFlow(browser: Browser) {
   await page.waitForSelector(LoginSelectors.loginWithOfficeButton, {
     visible: true,
   });
-  await page.click(LoginSelectors.loginWithOfficeButton);
 
-  await page.waitForNavigation();
+  await Promise.all([
+    page.click(LoginSelectors.loginWithOfficeButton),
+    page.waitForNavigation(),
+    page.waitForSelector(LoginSelectors.emailView),
+  ]);
 
   await page.waitForSelector(LoginSelectors.emailInput, {
     visible: true,
@@ -107,9 +112,10 @@ async function startLoginFlow(browser: Browser) {
   await page.waitForSelector(LoginSelectors.SubmitInput, {
     visible: true,
   });
-  await page.click(LoginSelectors.SubmitInput);
-
-  await isElementClickable(page, LoginSelectors.passwordInput);
+  await Promise.all([
+    page.click(LoginSelectors.SubmitInput),
+    page.waitForSelector(LoginSelectors.passwordView),
+  ]);
 
   await page.waitForSelector(LoginSelectors.passwordInput, {
     visible: true,
@@ -118,7 +124,10 @@ async function startLoginFlow(browser: Browser) {
   await page.waitForSelector(LoginSelectors.SubmitInput, {
     visible: true,
   });
-  await page.click(LoginSelectors.SubmitInput);
+  await Promise.all([
+    page.click(`${LoginSelectors.passwordView} ${LoginSelectors.SubmitInput}`),
+    page.waitForNavigation(),
+  ]);
 
   await staySignedIn(page);
 
