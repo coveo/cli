@@ -1,0 +1,196 @@
+diff --git a/node_modules/@coveord/platform-client/dist/definitions/resources/ResourceSnapshots/ResourceSnapshots.d.ts b/node_modules/@coveord/platform-client/dist/definitions/resources/ResourceSnapshots/ResourceSnapshots.d.ts
+index f5a552a..fcd30bc 100644
+--- a/node_modules/@coveord/platform-client/dist/definitions/resources/ResourceSnapshots/ResourceSnapshots.d.ts
++++ b/node_modules/@coveord/platform-client/dist/definitions/resources/ResourceSnapshots/ResourceSnapshots.d.ts
+@@ -21,7 +21,7 @@ export default class ResourceSnapshots extends Resource {
+      * @param {File} file The file containing the configuration.
+      * @param {CreateFromFileOptions} options
+      */
+-    createFromFile(file: File, options: CreateFromFileOptions): Promise<ResourceSnapshotsModel>;
++    createFromFile(file: File, options?: CreateFromFileOptions): Promise<ResourceSnapshotsModel>;
+     /**
+      * Creates a snapshot from a file buffer containing the configuration.
+      *
+@@ -29,7 +29,7 @@ export default class ResourceSnapshots extends Resource {
+      * @param {ResourceSnapshotSupportedFileTypes} fileType The type of the file containing the configuration.
+      * @param {CreateFromFileOptions} options
+      */
+-    createFromFile(file: Buffer, fileType: ResourceSnapshotSupportedFileTypes, options: CreateFromFileOptions): Promise<ResourceSnapshotsModel>;
++    createFromBuffer(file: Buffer, fileType: ResourceSnapshotSupportedFileTypes, options: CreateFromFileOptions): Promise<ResourceSnapshotsModel>;
+     createFromOrganization(exportConfigurationModel: ResourceSnapshotExportConfigurationModel, options: CreateFromOrganizationOptions): Promise<ResourceSnapshotsModel>;
+     generateUrl(snapshotId: string, options: GenerateUrlOptions): Promise<ResourceSnapshotUrlModel>;
+     dryRun(snapshotId: string, options: DryRunOptions): Promise<ResourceSnapshotsReportModel>;
+diff --git a/node_modules/@coveord/platform-client/dist/definitions/resources/ResourceSnapshots/ResourceSnapshotsInterfaces.d.ts b/node_modules/@coveord/platform-client/dist/definitions/resources/ResourceSnapshots/ResourceSnapshotsInterfaces.d.ts
+index 4a8491b..9ab81ca 100644
+--- a/node_modules/@coveord/platform-client/dist/definitions/resources/ResourceSnapshots/ResourceSnapshotsInterfaces.d.ts
++++ b/node_modules/@coveord/platform-client/dist/definitions/resources/ResourceSnapshots/ResourceSnapshotsInterfaces.d.ts
+@@ -36,14 +36,11 @@ export interface ResourceSnapshotsModel {
+      */
+     contentSummary?: Record<string, number>;
+ }
+-export declare enum ResourceType {
+-    apiKey = "API_KEY",
+-    catalog = "CATALOG",
++export declare enum ResourceSnapshotType {
+     extension = "EXTENSION",
+     featuredResult = "FEATURED_RESULT",
+     field = "FIELD",
+     filter = "FILTER",
+-    group = "GROUP",
+     mapping = "MAPPING",
+     mlModel = "ML_MODEL",
+     mlModelAssociation = "ML_MODEL_ASSOCIATION",
+@@ -52,12 +49,10 @@ export declare enum ResourceType {
+     queryPipelineCondition = "QUERY_PIPELINE_CONDITION",
+     rankingExpression = "RANKING_EXPRESSION",
+     rankingWeight = "RANKING_WEIGHT",
+-    searchInterface = "SEARCH_INTERFACE",
+     searchPage = "SEARCH_PAGE",
+     securityProvider = "SECURITY_PROVIDER",
+     source = "SOURCE",
+     stopWord = "STOP_WORD",
+-    statementGroup = "STATEMENT_GROUP",
+     subscription = "SUBSCRIPTION",
+     thesaurus = "THESAURUS",
+     trigger = "TRIGGER"
+@@ -208,7 +203,7 @@ export interface ResourceSnapshotsLinkModel {
+     resourceType: string;
+ }
+ export interface ResourceSnapshotExportConfigurationModel {
+-    resourcesToExport: Partial<Record<ResourceType, string[] | null>>;
++    resourcesToExport: Partial<Record<ResourceSnapshotType, string[] | null>>;
+ }
+ export interface ResourceSnapshotUrlModel {
+     url: string;
+diff --git a/node_modules/@coveord/platform-client/dist/resources/ResourceSnapshots/ResourceSnapshots.js b/node_modules/@coveord/platform-client/dist/resources/ResourceSnapshots/ResourceSnapshots.js
+index 4dd27ae..8da3656 100644
+--- a/node_modules/@coveord/platform-client/dist/resources/ResourceSnapshots/ResourceSnapshots.js
++++ b/node_modules/@coveord/platform-client/dist/resources/ResourceSnapshots/ResourceSnapshots.js
+@@ -45,20 +45,32 @@ var ResourceSnapshots = /** @class */ (function (_super) {
+             });
+         });
+     };
+-    ResourceSnapshots.prototype.createFromFile = function (file, typeOrOptions, options) {
+-        var fileContent;
+-        var computedOptions = { developerNotes: undefined, snapshotFileType: undefined };
+-        if (Buffer.isBuffer(file)) {
+-            fileContent = file.toString();
+-            computedOptions = { developerNotes: options.developerNotes, snapshotFileType: typeOrOptions };
+-        }
+-        else {
+-            fileContent = file;
+-            computedOptions.developerNotes = typeOrOptions.developerNotes;
+-            computedOptions.snapshotFileType = this.getSnapshotFileType(file);
+-        }
++    /**
++     * Creates a snapshot from a file containing the configuration.
++     *
++     * @param {File} file The file containing the configuration.
++     * @param {CreateFromFileOptions} options
++     */
++    ResourceSnapshots.prototype.createFromFile = function (file, options) {
++        var computedOptions = {
++            developerNotes: options.developerNotes,
++            snapshotFileType: this.getSnapshotFileType(file),
++        };
++        var form = FormData_1.getFormData();
++        form.append('file', file);
++        return this.api.postForm(this.buildPath(ResourceSnapshots.baseUrl + "/file", computedOptions), form);
++    };
++    /**
++     * Creates a snapshot from a file buffer containing the configuration.
++     *
++     * @param {Buffer} file The file containing the configuration.
++     * @param {ResourceSnapshotSupportedFileTypes} fileType The type of the file containing the configuration.
++     * @param {CreateFromFileOptions} options
++     */
++    ResourceSnapshots.prototype.createFromBuffer = function (file, fileType, options) {
++        var computedOptions = { developerNotes: options.developerNotes, snapshotFileType: fileType };
+         var form = FormData_1.getFormData();
+-        form.append('file', fileContent);
++        form.append('file', file, "snapshot." + fileType.toString().toLowerCase());
+         return this.api.postForm(this.buildPath(ResourceSnapshots.baseUrl + "/file", computedOptions), form);
+     };
+     ResourceSnapshots.prototype.createFromOrganization = function (exportConfigurationModel, options) {
+diff --git a/node_modules/@coveord/platform-client/dist/resources/ResourceSnapshots/ResourceSnapshots.js.map b/node_modules/@coveord/platform-client/dist/resources/ResourceSnapshots/ResourceSnapshots.js.map
+index 45581c7..e4e2d86 100644
+--- a/node_modules/@coveord/platform-client/dist/resources/ResourceSnapshots/ResourceSnapshots.js.map
++++ b/node_modules/@coveord/platform-client/dist/resources/ResourceSnapshots/ResourceSnapshots.js.map
+@@ -1 +1 @@
+-{"version":3,"file":"ResourceSnapshots.js","sourceRoot":"","sources":["../../../src/resources/ResourceSnapshots/ResourceSnapshots.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
++{"version":3,"file":"ResourceSnapshots.js","sourceRoot":"","sources":["../../../src/resources/ResourceSnapshots/ResourceSnapshots.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
+diff --git a/node_modules/@coveord/platform-client/dist/resources/ResourceSnapshots/ResourceSnapshotsInterfaces.js b/node_modules/@coveord/platform-client/dist/resources/ResourceSnapshots/ResourceSnapshotsInterfaces.js
+index 02a35d8..4990822 100644
+--- a/node_modules/@coveord/platform-client/dist/resources/ResourceSnapshots/ResourceSnapshotsInterfaces.js
++++ b/node_modules/@coveord/platform-client/dist/resources/ResourceSnapshots/ResourceSnapshotsInterfaces.js
+@@ -1,36 +1,31 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.ResourceSnapshotContentType = exports.ResourceSnapshotSupportedFileTypes = exports.ResourceSnapshotsReportType = exports.ResourceSnapshotsSynchronizationPlanStatus = exports.ResourceSnapshotsReportStatus = exports.ResourceSnapshotsReportResultCode = exports.SnapshotExportContentFormat = exports.SnapshotAccessType = exports.ResourceType = void 0;
++exports.ResourceSnapshotContentType = exports.ResourceSnapshotSupportedFileTypes = exports.ResourceSnapshotsReportType = exports.ResourceSnapshotsSynchronizationPlanStatus = exports.ResourceSnapshotsReportStatus = exports.ResourceSnapshotsReportResultCode = exports.SnapshotExportContentFormat = exports.SnapshotAccessType = exports.ResourceSnapshotType = void 0;
+ /*
+  * 'Resource' is defined as anything uniquely identified on the platform's domain that can be created, updated or deleted
+  */
+-var ResourceType;
+-(function (ResourceType) {
+-    ResourceType["apiKey"] = "API_KEY";
+-    ResourceType["catalog"] = "CATALOG";
+-    ResourceType["extension"] = "EXTENSION";
+-    ResourceType["featuredResult"] = "FEATURED_RESULT";
+-    ResourceType["field"] = "FIELD";
+-    ResourceType["filter"] = "FILTER";
+-    ResourceType["group"] = "GROUP";
+-    ResourceType["mapping"] = "MAPPING";
+-    ResourceType["mlModel"] = "ML_MODEL";
+-    ResourceType["mlModelAssociation"] = "ML_MODEL_ASSOCIATION";
+-    ResourceType["queryParameter"] = "QUERY_PARAMETER";
+-    ResourceType["queryPipeline"] = "QUERY_PIPELINE";
+-    ResourceType["queryPipelineCondition"] = "QUERY_PIPELINE_CONDITION";
+-    ResourceType["rankingExpression"] = "RANKING_EXPRESSION";
+-    ResourceType["rankingWeight"] = "RANKING_WEIGHT";
+-    ResourceType["searchInterface"] = "SEARCH_INTERFACE";
+-    ResourceType["searchPage"] = "SEARCH_PAGE";
+-    ResourceType["securityProvider"] = "SECURITY_PROVIDER";
+-    ResourceType["source"] = "SOURCE";
+-    ResourceType["stopWord"] = "STOP_WORD";
+-    ResourceType["statementGroup"] = "STATEMENT_GROUP";
+-    ResourceType["subscription"] = "SUBSCRIPTION";
+-    ResourceType["thesaurus"] = "THESAURUS";
+-    ResourceType["trigger"] = "TRIGGER";
+-})(ResourceType = exports.ResourceType || (exports.ResourceType = {}));
++var ResourceSnapshotType;
++(function (ResourceSnapshotType) {
++    ResourceSnapshotType["extension"] = "EXTENSION";
++    ResourceSnapshotType["featuredResult"] = "FEATURED_RESULT";
++    ResourceSnapshotType["field"] = "FIELD";
++    ResourceSnapshotType["filter"] = "FILTER";
++    ResourceSnapshotType["mapping"] = "MAPPING";
++    ResourceSnapshotType["mlModel"] = "ML_MODEL";
++    ResourceSnapshotType["mlModelAssociation"] = "ML_MODEL_ASSOCIATION";
++    ResourceSnapshotType["queryParameter"] = "QUERY_PARAMETER";
++    ResourceSnapshotType["queryPipeline"] = "QUERY_PIPELINE";
++    ResourceSnapshotType["queryPipelineCondition"] = "QUERY_PIPELINE_CONDITION";
++    ResourceSnapshotType["rankingExpression"] = "RANKING_EXPRESSION";
++    ResourceSnapshotType["rankingWeight"] = "RANKING_WEIGHT";
++    ResourceSnapshotType["searchPage"] = "SEARCH_PAGE";
++    ResourceSnapshotType["securityProvider"] = "SECURITY_PROVIDER";
++    ResourceSnapshotType["source"] = "SOURCE";
++    ResourceSnapshotType["stopWord"] = "STOP_WORD";
++    ResourceSnapshotType["subscription"] = "SUBSCRIPTION";
++    ResourceSnapshotType["thesaurus"] = "THESAURUS";
++    ResourceSnapshotType["trigger"] = "TRIGGER";
++})(ResourceSnapshotType = exports.ResourceSnapshotType || (exports.ResourceSnapshotType = {}));
+ var SnapshotAccessType;
+ (function (SnapshotAccessType) {
+     SnapshotAccessType["Read"] = "READ";
+diff --git a/node_modules/@coveord/platform-client/dist/resources/ResourceSnapshots/ResourceSnapshotsInterfaces.js.map b/node_modules/@coveord/platform-client/dist/resources/ResourceSnapshots/ResourceSnapshotsInterfaces.js.map
+index e3894fa..e85bc60 100644
+--- a/node_modules/@coveord/platform-client/dist/resources/ResourceSnapshots/ResourceSnapshotsInterfaces.js.map
++++ b/node_modules/@coveord/platform-client/dist/resources/ResourceSnapshots/ResourceSnapshotsInterfaces.js.map
+@@ -1 +1 @@
+-{"version":3,"file":"ResourceSnapshotsInterfaces.js","sourceRoot":"","sources":["../../../src/resources/ResourceSnapshots/ResourceSnapshotsInterfaces.ts"],"names":[],"mappings":";;;AAuCA;;GAEG;AACH,IAAY,YAyBX;AAzBD,WAAY,YAAY;IACpB,kCAAkB,CAAA;IAClB,mCAAmB,CAAA;IACnB,uCAAuB,CAAA;IACvB,kDAAkC,CAAA;IAClC,+BAAe,CAAA;IACf,iCAAiB,CAAA;IACjB,+BAAe,CAAA;IACf,mCAAmB,CAAA;IACnB,oCAAoB,CAAA;IACpB,2DAA2C,CAAA;IAC3C,kDAAkC,CAAA;IAClC,gDAAgC,CAAA;IAChC,mEAAmD,CAAA;IACnD,wDAAwC,CAAA;IACxC,gDAAgC,CAAA;IAChC,oDAAoC,CAAA;IACpC,0CAA0B,CAAA;IAC1B,sDAAsC,CAAA;IACtC,iCAAiB,CAAA;IACjB,sCAAsB,CAAA;IACtB,kDAAkC,CAAA;IAClC,6CAA6B,CAAA;IAC7B,uCAAuB,CAAA;IACvB,mCAAmB,CAAA;AACvB,CAAC,EAzBW,YAAY,GAAZ,oBAAY,KAAZ,oBAAY,QAyBvB;AAED,IAAY,kBAGX;AAHD,WAAY,kBAAkB;IAC1B,mCAAa,CAAA;IACb,qCAAe,CAAA;AACnB,CAAC,EAHW,kBAAkB,GAAlB,0BAAkB,KAAlB,0BAAkB,QAG7B;AAED,IAAY,2BAGX;AAHD,WAAY,2BAA2B;IACnC,4CAAa,CAAA;IACb,8DAA+B,CAAA;AACnC,CAAC,EAHW,2BAA2B,GAA3B,mCAA2B,KAA3B,mCAA2B,QAGtC;AAED,IAAY,iCAUX;AAVD,WAAY,iCAAiC;IACzC,mEAA8B,CAAA;IAC9B,4EAAuC,CAAA;IACvC,wDAAmB,CAAA;IACnB,yEAAoC,CAAA;IACpC,kGAA6D,CAAA;IAC7D,kFAA6C,CAAA;IAC7C,+FAA0D,CAAA;IAC1D,yFAAoD,CAAA;IACpD,+GAA0E,CAAA;AAC9E,CAAC,EAVW,iCAAiC,GAAjC,yCAAiC,KAAjC,yCAAiC,QAU5C;AAED,IAAY,6BAKX;AALD,WAAY,6BAA6B;IACrC,oDAAmB,CAAA;IACnB,2DAA0B,CAAA;IAC1B,wDAAuB,CAAA;IACvB,oDAAmB,CAAA;AACvB,CAAC,EALW,6BAA6B,GAA7B,qCAA6B,KAA7B,qCAA6B,QAKxC;AAED,IAAY,0CAIX;AAJD,WAAY,0CAA0C;IAClD,mEAAqB,CAAA;IACrB,iEAAmB,CAAA;IACnB,kEAAoB,CAAA;AACxB,CAAC,EAJW,0CAA0C,GAA1C,kDAA0C,KAA1C,kDAA0C,QAIrD;AAED,IAAY,2BAMX;AAND,WAAY,2BAA2B;IACnC,iEAAkC,CAAA;IAClC,iDAAkB,CAAA;IAClB,8CAAe,CAAA;IACf,wFAAyD,CAAA;IACzD,sFAAuD,CAAA;AAC3D,CAAC,EANW,2BAA2B,GAA3B,mCAA2B,KAA3B,mCAA2B,QAMtC;AAED,IAAY,kCAGX;AAHD,WAAY,kCAAkC;IAC1C,iDAAW,CAAA;IACX,mDAAa,CAAA;AACjB,CAAC,EAHW,kCAAkC,GAAlC,0CAAkC,KAAlC,0CAAkC,QAG7C;AAED,IAAY,2BAGX;AAHD,WAAY,2BAA2B;IACnC,kDAAmB,CAAA;IACnB,8DAA+B,CAAA;AACnC,CAAC,EAHW,2BAA2B,GAA3B,mCAA2B,KAA3B,mCAA2B,QAGtC"}
+\ No newline at end of file
++{"version":3,"file":"ResourceSnapshotsInterfaces.js","sourceRoot":"","sources":["../../../src/resources/ResourceSnapshots/ResourceSnapshotsInterfaces.ts"],"names":[],"mappings":";;;AAuCA;;GAEG;AACH,IAAY,oBAoBX;AApBD,WAAY,oBAAoB;IAC5B,+CAAuB,CAAA;IACvB,0DAAkC,CAAA;IAClC,uCAAe,CAAA;IACf,yCAAiB,CAAA;IACjB,2CAAmB,CAAA;IACnB,4CAAoB,CAAA;IACpB,mEAA2C,CAAA;IAC3C,0DAAkC,CAAA;IAClC,wDAAgC,CAAA;IAChC,2EAAmD,CAAA;IACnD,gEAAwC,CAAA;IACxC,wDAAgC,CAAA;IAChC,kDAA0B,CAAA;IAC1B,8DAAsC,CAAA;IACtC,yCAAiB,CAAA;IACjB,8CAAsB,CAAA;IACtB,qDAA6B,CAAA;IAC7B,+CAAuB,CAAA;IACvB,2CAAmB,CAAA;AACvB,CAAC,EApBW,oBAAoB,GAApB,4BAAoB,KAApB,4BAAoB,QAoB/B;AAED,IAAY,kBAGX;AAHD,WAAY,kBAAkB;IAC1B,mCAAa,CAAA;IACb,qCAAe,CAAA;AACnB,CAAC,EAHW,kBAAkB,GAAlB,0BAAkB,KAAlB,0BAAkB,QAG7B;AAED,IAAY,2BAGX;AAHD,WAAY,2BAA2B;IACnC,4CAAa,CAAA;IACb,8DAA+B,CAAA;AACnC,CAAC,EAHW,2BAA2B,GAA3B,mCAA2B,KAA3B,mCAA2B,QAGtC;AAED,IAAY,iCAUX;AAVD,WAAY,iCAAiC;IACzC,mEAA8B,CAAA;IAC9B,4EAAuC,CAAA;IACvC,wDAAmB,CAAA;IACnB,yEAAoC,CAAA;IACpC,kGAA6D,CAAA;IAC7D,kFAA6C,CAAA;IAC7C,+FAA0D,CAAA;IAC1D,yFAAoD,CAAA;IACpD,+GAA0E,CAAA;AAC9E,CAAC,EAVW,iCAAiC,GAAjC,yCAAiC,KAAjC,yCAAiC,QAU5C;AAED,IAAY,6BAKX;AALD,WAAY,6BAA6B;IACrC,oDAAmB,CAAA;IACnB,2DAA0B,CAAA;IAC1B,wDAAuB,CAAA;IACvB,oDAAmB,CAAA;AACvB,CAAC,EALW,6BAA6B,GAA7B,qCAA6B,KAA7B,qCAA6B,QAKxC;AAED,IAAY,0CAIX;AAJD,WAAY,0CAA0C;IAClD,mEAAqB,CAAA;IACrB,iEAAmB,CAAA;IACnB,kEAAoB,CAAA;AACxB,CAAC,EAJW,0CAA0C,GAA1C,kDAA0C,KAA1C,kDAA0C,QAIrD;AAED,IAAY,2BAMX;AAND,WAAY,2BAA2B;IACnC,iEAAkC,CAAA;IAClC,iDAAkB,CAAA;IAClB,8CAAe,CAAA;IACf,wFAAyD,CAAA;IACzD,sFAAuD,CAAA;AAC3D,CAAC,EANW,2BAA2B,GAA3B,mCAA2B,KAA3B,mCAA2B,QAMtC;AAED,IAAY,kCAGX;AAHD,WAAY,kCAAkC;IAC1C,iDAAW,CAAA;IACX,mDAAa,CAAA;AACjB,CAAC,EAHW,kCAAkC,GAAlC,0CAAkC,KAAlC,0CAAkC,QAG7C;AAED,IAAY,2BAGX;AAHD,WAAY,2BAA2B;IACnC,kDAAmB,CAAA;IACnB,8DAA+B,CAAA;AACnC,CAAC,EAHW,2BAA2B,GAA3B,mCAA2B,KAA3B,mCAA2B,QAGtC"}
+\ No newline at end of file

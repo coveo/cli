@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "schemaVersion": "v1"
+  },
+  "resources": {
+    "RANKING_WEIGHT": [
+      {
+        "resourceName": "rank_adjacency:_5,_concept:_5,_docDate:_5,_summary:_5,_TFIDF:_5,_title:_5_CtlPT1",
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.custom_p56INx }}"
+        },
+        "model": {
+          "feature": "rankingweight",
+          "detailed": {
+            "docDate": 5,
+            "TFIDF": 5,
+            "concept": 5,
+            "title": 5,
+            "summary": 5,
+            "adjacency": 5
+          },
+          "ready": false,
+          "description": "",
+          "definition": "rank adjacency: 5, concept: 5, docDate: 5, summary: 5, TFIDF: 5, title: 5",
+          "position": 3,
+          "childrenCount": 0
+        }
+      }
+    ]
+  }
+}

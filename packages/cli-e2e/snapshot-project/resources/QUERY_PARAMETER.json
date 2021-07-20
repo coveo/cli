@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "schemaVersion": "v1"
+  },
+  "resources": {
+    "QUERY_PARAMETER": [
+      {
+        "resourceName": "override_query_q:test_DUzgZh",
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.custom_p56INx }}"
+        },
+        "model": {
+          "parent": {
+            "id": "{{ QUERY_PIPELINE_CONDITION.when_browser_is_firefox_MsCBj2 }}",
+            "definition": "when $browser is \"firefox\"",
+            "detailed": {
+              "condition": {
+                "operator": "is",
+                "left": {
+                  "object": "browser"
+                },
+                "right": "firefox"
+              }
+            }
+          },
+          "condition": {
+            "id": "{{ QUERY_PIPELINE_CONDITION.when_browser_is_firefox_MsCBj2 }}",
+            "definition": "when $browser is \"firefox\"",
+            "detailed": {
+              "condition": {
+                "operator": "is",
+                "left": {
+                  "object": "browser"
+                },
+                "right": "firefox"
+              }
+            }
+          },
+          "feature": "queryParamOverride",
+          "detailed": {
+            "q": "test"
+          },
+          "ready": false,
+          "description": "",
+          "definition": "override query q:\"test\"",
+          "position": 1,
+          "childrenCount": 0
+        }
+      }
+    ]
+  }
+}

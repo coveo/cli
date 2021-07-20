@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "schemaVersion": "v1"
+  },
+  "resources": {
+    "QUERY_PIPELINE_CONDITION": [
+      {
+        "resourceName": "when_advancedQuery_is_dsadsa_XgXGZO",
+        "parents": {},
+        "model": {
+          "definition": "when $advancedQuery is \"dsadsa\""
+        }
+      },
+      {
+        "resourceName": "when_browser_is_firefox_MsCBj2",
+        "parents": {},
+        "model": {
+          "definition": "when $browser is \"firefox\""
+        }
+      }
+    ]
+  }
+}

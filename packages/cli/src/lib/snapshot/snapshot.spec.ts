@@ -52,7 +52,7 @@ const doMockAuthenticatedClient = () => {
   mockedGetClient.mockImplementation(() =>
     Promise.resolve({
       resourceSnapshot: {
-        createFromFile: mockedCreateSnapshotFromFile,
+        createFromBuffer: mockedCreateSnapshotFromFile,
         push: mockedPushSnapshot,
         delete: mockedDeleteSnapshot,
         dryRun: mockedDryRunSnapshot,

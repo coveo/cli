@@ -29,7 +29,7 @@ import {npm} from '../utils/windows';
 import axios from 'axios';
 import {jwtTokenPattern} from '../utils/matcher';
 
-describe('ui:create:vue', () => {
+describe.skip('ui:create:vue', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
   let page: Page;
