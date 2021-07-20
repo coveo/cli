@@ -65,10 +65,10 @@ export class ReportViewer {
   }
 
   private createSection(resource: ReportViewerResourceReportModel) {
-    const resourceType = this.prettyPrintResourceName(resource.name);
+    const ResourceSnapshotType = this.prettyPrintResourceName(resource.name);
     const indentation = 3;
     const section = new ReportViewerSection(resource, this.operationsToDisplay);
-    let output = `${''.padStart(indentation)}${resourceType}\n`;
+    let output = `${''.padStart(indentation)}${ResourceSnapshotType}\n`;
 
     output += section.display(indentation + 1);
     return output;
@@ -100,18 +100,18 @@ export class ReportViewer {
     // TODO: CDX-362: handle other invalid snashot cases
   }
 
-  private logResourceErrors(resourceType: string) {
+  private logResourceErrors(ResourceSnapshotType: string) {
     let remainingErrorsToPrint = ReportViewer.maximumNumberOfErrorsToPrint;
 
     const operationResults = this.reporter.report.resourceOperationResults;
-    const operationResult = operationResults[resourceType];
+    const operationResult = operationResults[ResourceSnapshotType];
     const operationResultErrors = Object.values(operationResult);
 
     if (operationResultErrors.length === 0) {
       return;
     }
 
-    cli.log(`\n ${this.prettyPrintResourceName(resourceType)}`);
+    cli.log(`\n ${this.prettyPrintResourceName(ResourceSnapshotType)}`);
 
     const errors = operationResultErrors.reduce(
       (acc, curr) => acc.concat(curr),

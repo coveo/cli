@@ -1,4 +1,4 @@
-import {ResourceType} from '@coveord/platform-client';
+import {ResourceSnapshotType} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
 import {IOptionFlag} from '@oclif/command/lib/flags';
 import {blueBright} from 'chalk';
@@ -34,11 +34,11 @@ export default class Pull extends Command {
     resourceTypes: flags.string({
       char: 'r',
       helpValue: 'type1 type2',
-      options: Object.keys(ResourceType),
-      default: Object.keys(ResourceType),
+      options: Object.keys(ResourceSnapshotType),
+      default: Object.keys(ResourceSnapshotType),
       multiple: true,
       description: 'The resources types to pull from the organization.',
-    }) as IOptionFlag<(keyof typeof ResourceType)[]>,
+    }) as IOptionFlag<(keyof typeof ResourceSnapshotType)[]>,
     snapshotId: flags.string({
       char: 's',
       exclusive: ['resourceTypes'],
@@ -101,16 +101,19 @@ export default class Pull extends Command {
         target
       );
     }
-    return SnapshotFactory.createFromOrg(this.resourceTypesToExport, target);
+    return SnapshotFactory.createFromOrg(
+      this.ResourceSnapshotTypesToExport,
+      target
+    );
   }
 
   private get configuration() {
     return new Config(this.config.configDir, this.error);
   }
 
-  private get resourceTypesToExport() {
+  private get ResourceSnapshotTypesToExport() {
     const {flags} = this.parse(Pull);
-    return flags.resourceTypes.map((type) => ResourceType[type]);
+    return flags.resourceTypes.map((type) => ResourceSnapshotType[type]);
   }
 
   private get projectPath() {

@@ -2,7 +2,7 @@ import {
   CreateFromFileOptions,
   ResourceSnapshotsReportType,
   ResourceSnapshotSupportedFileTypes,
-  ResourceType,
+  ResourceSnapshotType,
 } from '@coveord/platform-client';
 import {readFileSync} from 'fs';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
@@ -20,7 +20,7 @@ export class SnapshotFactory {
       developerNotes: 'cli-created-from-zip',
     };
 
-    const model = await client.resourceSnapshot.createFromFile(
+    const model = await client.resourceSnapshot.createFromBuffer(
       file,
       ResourceSnapshotSupportedFileTypes.ZIP,
       computedOptions
@@ -46,11 +46,12 @@ export class SnapshotFactory {
   }
 
   public static async createFromOrg(
-    resourceTypesToExport: ResourceType[],
+    resourceTypesToExport: ResourceSnapshotType[],
     targetOrg: string
   ) {
     const client = await this.getClient(targetOrg);
-    const resourcesToExport: Partial<Record<ResourceType, string[]>> = {};
+    const resourcesToExport: Partial<Record<ResourceSnapshotType, string[]>> =
+      {};
     resourceTypesToExport.forEach((currentType) => {
       resourcesToExport[currentType] = ['*'];
     });
