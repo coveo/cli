@@ -1,3 +1,4 @@
+import {join} from 'path';
 import {CLI_EXEC_PATH, getConfig, getSnapshotProjectPath} from '../utils/cli';
 import {createOrg, deleteOrg} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
@@ -7,6 +8,7 @@ describe('org:config:pull', () => {
   const {accessToken} = getConfig();
   let processManager: ProcessManager;
   let testOrg: string;
+  const orgId = `cli-e2e-${process.env.TEST_RUN_ID}`;
 
   const populateOrg = async (
     targetOrg: string,
@@ -25,7 +27,7 @@ describe('org:config:pull', () => {
       args.shift()!,
       args,
       {
-        cwd: getSnapshotProjectPath(),
+        cwd: join('snapshot-project'), // TODO: put in util
       },
       procManager,
       'org-config-push'
@@ -36,7 +38,7 @@ describe('org:config:pull', () => {
 
   beforeAll(async () => {
     processManager = new ProcessManager();
-    testOrg = await createOrg('cli-e2e-test', accessToken);
+    testOrg = await createOrg(orgId, accessToken);
   });
 
   afterAll(async () => {
