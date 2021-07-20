@@ -15,9 +15,7 @@
     {
       "matchPackageNames": ["strip-ansi"],
       "allowedVersions": "6.x"
-    },
-  ]
-}
+    }
   ],
   "rangeStrategy": "auto",
   "lockFileMaintenance": {
