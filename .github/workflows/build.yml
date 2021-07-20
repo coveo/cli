@@ -53,3 +53,6 @@ jobs:
         with:
           name: ${{matrix.os}}-test-artifacts
           path: ./packages/cli-e2e/artifacts
+      - name: Platform Cleaning
+        if: ${{ always() }}
+        run: node ./scripts/clean.js
