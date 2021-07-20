@@ -48,11 +48,11 @@ jobs:
       - name: End-to-end Tests
         if: ${{matrix.os == 'windows-latest'}}
         run: packages/cli-e2e/entrypoints/ci.ps1
+      - name: Platform Cleaning
+        if: always()
+        run: node ./scripts/clean.js
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
           name: ${{matrix.os}}-test-artifacts
           path: ./packages/cli-e2e/artifacts
-      - name: Platform Cleaning
-        if: ${{ always() }}
-        run: node ./scripts/clean.js
