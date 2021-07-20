@@ -142,7 +142,7 @@ export default class SourcePushDelete extends Command {
       this,
       `The delete request for document: ${green(
         toDelete
-      )} was accepted by the push API.`,
+      )} was accepted by the Push API.`,
       res
     );
   }
