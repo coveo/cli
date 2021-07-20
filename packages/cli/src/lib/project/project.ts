@@ -6,13 +6,13 @@ import {InvalidProjectError} from '../errors';
 import extract from 'extract-zip';
 
 export class Project {
-  public constructor(private pathToProject: string) {}
+  public constructor(private _pathToProject: string) {}
 
   public async refresh(projectContent: Blob) {
     const buffer = await projectContent.arrayBuffer();
     const view = new DataView(buffer);
-    writeFileSync(this.pathToTemporaryZip, view);
-    await extract(this.pathToTemporaryZip, {dir: this.resourcePath});
+    writeFileSync(this.temporaryZipPath, view);
+    await extract(this.temporaryZipPath, {dir: this.resourcePath});
     this.deleteTemporaryZipFile();
   }
 
@@ -52,11 +52,15 @@ export class Project {
     }
   }
 
-  private get temporaryZipPath() {
+  public get pathToProject() {
+    return this._pathToProject;
+  }
+
+  public get temporaryZipPath() {
     return join(this.pathToProject, 'snapshot.zip');
   }
 
-  private get resourcePath() {
+  public get resourcePath() {
     return join(this.pathToProject, 'resources');
   }
 }

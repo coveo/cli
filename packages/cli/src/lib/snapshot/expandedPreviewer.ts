@@ -1,25 +1,26 @@
+import extract from 'extract-zip';
 import {
   ResourceSnapshotsReportModel,
-  ResourceType,
+  ResourceSnapshotType,
 } from '@coveord/platform-client';
-import decompress from 'decompress';
 import {mkdirSync, readdirSync} from 'fs';
 import {readJSONSync, writeJSONSync} from 'fs-extra';
 import {join, resolve} from 'path';
+import {Project} from '../project/project';
 import {spawnProcess} from '../utils/process';
 import {SnapshotFactory} from './snapshotFactory';
 
 type ResourcesJSON = Object & {resourceName: string};
 
 type SnapshotFileJSON = Object & {
-  resources: Partial<{[key in ResourceType]: ResourcesJSON[]}>;
+  resources: Partial<{[key in ResourceSnapshotType]: ResourcesJSON[]}>;
 };
 
 export class ExpandedPreviewer {
   private static readonly temporaryDirectory: string = '.coveo/tmp';
   private static readonly previewDirectory: string = '.coveo/preview';
 
-  private resourcesToPreview: ResourceType[];
+  private resourcesToPreview: ResourceSnapshotType[];
 
   public constructor(
     private readonly report: ResourceSnapshotsReportModel,
@@ -29,7 +30,7 @@ export class ExpandedPreviewer {
   ) {
     this.resourcesToPreview = Object.keys(
       report.resourceOperationResults
-    ) as ResourceType[];
+    ) as ResourceSnapshotType[];
   }
 
   /**
@@ -40,25 +41,18 @@ export class ExpandedPreviewer {
     const dirPath = resolve(
       join(ExpandedPreviewer.previewDirectory, previewLocalSlug)
     );
-    await this.initPreviewDirectory(previewLocalSlug, dirPath);
-    await this.applySnapshotToPreview(dirPath);
-  }
-
-  private async initPreviewDirectory(
-    previewLocalSlug: string,
-    dirPath: string
-  ) {
-    const zipPath = join(
-      ExpandedPreviewer.temporaryDirectory,
-      previewLocalSlug
-    );
     mkdirSync(dirPath, {
       recursive: true,
     });
-    await this.getFreshSnapshot(zipPath);
-    await decompress(zipPath, dirPath);
+    const project = new Project(dirPath);
+    await this.initPreviewDirectory(project);
+    await this.applySnapshotToPreview(dirPath);
+  }
 
-    await this.initialPreviewCommit(dirPath);
+  private async initPreviewDirectory(project: Project) {
+    const beforeSnapshot = await this.getBeforeSnapshot();
+    await project.refresh(beforeSnapshot);
+    await this.initialPreviewCommit(project.pathToProject);
   }
 
   private async initialPreviewCommit(dirPath: string) {
@@ -130,7 +124,7 @@ export class ExpandedPreviewer {
     const dictionnary = new Map<string, Object>();
     const resourcesSection = snapshotFile.resources;
     for (const resourceType in resourcesSection) {
-      const resources = resourcesSection[resourceType as ResourceType];
+      const resources = resourcesSection[resourceType as ResourceSnapshotType];
       resources?.forEach((resource) => {
         dictionnary.set(resource.resourceName, resource);
       });
@@ -141,7 +135,7 @@ export class ExpandedPreviewer {
   private async applySnapshotToPreview(dirPath: string) {
     this.recursiveDirectoryDiff(dirPath, this.previewedSnapshotDirPath);
 
-    await decompress(this.previewedSnapshotDirPath, dirPath);
+    await extract(this.previewedSnapshotDirPath, {dir: dirPath});
     await spawnProcess('git', ['add', '.'], {cwd: dirPath});
     await spawnProcess(
       'git',
@@ -152,13 +146,12 @@ export class ExpandedPreviewer {
     );
   }
 
-  private async getFreshSnapshot(zipPath: string) {
+  private async getBeforeSnapshot() {
     const snapshot = await SnapshotFactory.createFromOrg(
       this.resourcesToPreview,
       this.orgId
     );
 
-    await snapshot.downloadZip(zipPath);
-    return;
+    return snapshot.download();
   }
 }

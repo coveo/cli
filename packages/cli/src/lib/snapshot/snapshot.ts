@@ -14,6 +14,7 @@ import {join} from 'path';
 import dedent from 'ts-dedent';
 import {SnapshotReporter} from './snapshotReporter';
 import {SnapshotOperationTimeoutError} from '../errors';
+import {ExpandedPreviewer} from './expandedPreviewer';
 export interface waitUntilDoneOptions {
   /**
    * The operation to wait for. If not specified, the method will wait for any operation to complete.

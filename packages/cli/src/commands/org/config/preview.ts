@@ -54,7 +54,7 @@ export default class Preview extends Command {
     );
 
     await snapshot.preview(
-      project.resourcesPath,
+      project.resourcePath,
       options.deleteMissingResources
     );
 
