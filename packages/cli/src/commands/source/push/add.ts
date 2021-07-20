@@ -138,6 +138,9 @@ export default class SourcePushAdd extends Command {
     numAdded: number,
     res: AxiosResponse
   ) {
+    // Display the first 5 files (from the list of all files) being processed for end user feedback
+    // Don't want to clutter the output too much if the list is very long.
+
     let fileNames = files.slice(0, 5).join(', ');
     if (files.length > 5) {
       fileNames += ` and ${files.length - 5} more ...`;
