@@ -139,76 +139,6 @@ export default class SourcePushAdd extends Command {
     cli.action.stop();
   }
 
-  public async catch(err?: Error) {
-    const {flags} = this.parse(SourcePushAdd);
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, flags, err)
-    );
-    throw err;
-  }
-
-  private splitByChunkAndUpload(
-    source: Source,
-    sourceId: string,
-    fileNames: string[],
-    accumulator = this.accumulator
-  ) {
-    const send = async (documentBuilders: DocumentBuilder[]) => {
-      for (const docBuilder of documentBuilders) {
-        const sizeOfDoc = Buffer.byteLength(
-          JSON.stringify(docBuilder.marshal())
-        );
-
-        if (accumulator.size + sizeOfDoc >= SourcePushAdd.maxContentLength) {
-          try {
-            await this.uploadBatch(
-              source,
-              sourceId,
-              accumulator.chunks,
-              fileNames
-            );
-            accumulator.chunks = [docBuilder];
-            accumulator.size = 0;
-          } catch (e) {
-            this.errorMessageOnAdd(e);
-          }
-        } else {
-          accumulator.size += sizeOfDoc;
-          accumulator.chunks.push(docBuilder);
-        }
-      }
-    };
-    const close = async () => {
-      await this.uploadBatch(source, sourceId, accumulator.chunks, fileNames);
-    };
-    return {send, close};
-  }
-
-  private async uploadBatch(
-    source: Source,
-    sourceId: string,
-    batch: DocumentBuilder[],
-    fileNames: string[]
-  ) {
-    try {
-      const res = await source.batchUpdateDocuments(sourceId, {
-        addOrUpdate: batch,
-        delete: [],
-      });
-      this.successMessageOnAdd(fileNames, batch.length, res);
-    } catch (e) {
-      this.error(e.response.data.message);
-    }
-  }
-
-  private get accumulator(): {size: number; chunks: DocumentBuilder[]} {
-    return {
-      size: 0,
-      chunks: [],
-    };
-  }
-
   private successMessageOnAdd(
     files: string[],
     numAdded: number,
@@ -241,5 +171,71 @@ export default class SourcePushAdd extends Command {
         `Parsed ${blueBright(file)} into ${blueBright(numParsed)} documents.`
       )
     );
+  }
+
+  public async catch(err?: Error) {
+    const {flags} = this.parse(SourcePushAdd);
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsFailureHook(this, flags, err)
+    );
+    throw err;
+  }
+
+  private splitByChunkAndUpload(
+    source: Source,
+    sourceId: string,
+    fileNames: string[],
+    accumulator = this.accumulator
+  ) {
+    const send = async (documentBuilders: DocumentBuilder[]) => {
+      for (const docBuilder of documentBuilders) {
+        const sizeOfDoc = Buffer.byteLength(
+          JSON.stringify(docBuilder.marshal())
+        );
+
+        if (accumulator.size + sizeOfDoc >= SourcePushAdd.maxContentLength) {
+          await this.uploadBatch(
+            source,
+            sourceId,
+            accumulator.chunks,
+            fileNames
+          );
+          accumulator.chunks = [docBuilder];
+          accumulator.size = sizeOfDoc;
+        } else {
+          accumulator.size += sizeOfDoc;
+          accumulator.chunks.push(docBuilder);
+        }
+      }
+    };
+    const close = async () => {
+      await this.uploadBatch(source, sourceId, accumulator.chunks, fileNames);
+    };
+    return {send, close};
+  }
+
+  private async uploadBatch(
+    source: Source,
+    sourceId: string,
+    batch: DocumentBuilder[],
+    fileNames: string[]
+  ) {
+    try {
+      const res = await source.batchUpdateDocuments(sourceId, {
+        addOrUpdate: batch,
+        delete: [],
+      });
+      this.successMessageOnAdd(fileNames, batch.length, res);
+    } catch (e) {
+      this.errorMessageOnAdd(e);
+    }
+  }
+
+  private get accumulator(): {size: number; chunks: DocumentBuilder[]} {
+    return {
+      size: 0,
+      chunks: [],
+    };
   }
 }

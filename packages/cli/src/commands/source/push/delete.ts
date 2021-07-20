@@ -95,9 +95,11 @@ export default class SourcePushDelete extends Command {
     const {flags, args} = this.parse(SourcePushDelete);
     const toDelete = `older than ${flags.deleteOlderThan}`;
     try {
+      const isNumber = flags.deleteOlderThan?.match(/^\d+$/);
+
       const res = await source.deleteDocumentsOlderThan(
         args.sourceId,
-        flags.deleteOlderThan!
+        isNumber ? parseInt(flags.deleteOlderThan!, 10) : flags.deleteOlderThan!
       );
       this.successMessageOnDeletion(toDelete, res);
     } catch (e) {
@@ -140,7 +142,7 @@ export default class SourcePushDelete extends Command {
       this,
       `The delete request for document: ${green(
         toDelete
-      )} was accepted by the push API.`,
+      )} was accepted by the Push API.`,
       res
     );
   }

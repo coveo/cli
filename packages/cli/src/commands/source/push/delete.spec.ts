@@ -86,6 +86,36 @@ describe('source:push:delete', () => {
       expect(mockedSource).toHaveBeenCalledWith('the_token', 'the_org');
     });
 
+  [
+    '2000/01/01',
+    '2000-01-01',
+    '2000-01-01T06:00:00+00:00',
+    'Monday, 2000-Jan-01 06:00:00 UTC',
+  ].forEach((testCase) => {
+    test
+      .stdout()
+      .command(['source:push:delete', 'mysource', '-d', testCase])
+      .it(
+        `pass correct values to push-api-client when deleting with date as string: ${testCase}`,
+        () => {
+          expect(mockDeleteOlderThan).toHaveBeenCalledWith(
+            'mysource',
+            testCase
+          );
+        }
+      );
+  });
+
+  test
+    .stdout()
+    .command(['source:push:delete', 'mysource', '-d', '123123123'])
+    .it(
+      'pass correct values to push-api-client when deleting with date as number',
+      () => {
+        expect(mockDeleteOlderThan).toHaveBeenCalledWith('mysource', 123123123);
+      }
+    );
+
   test
     .do(() => {
       mockDeleteOlderThan.mockReturnValueOnce(
