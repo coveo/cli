@@ -5,7 +5,8 @@ import {
   writeFileSync,
   truncateSync,
   appendFileSync,
-} from 'fs';
+  ensureFileSync,
+} from 'fs-extra';
 import {parse} from 'dotenv';
 import {join} from 'path';
 import {getProjectPath} from './cli';
@@ -55,6 +56,7 @@ export function saveToEnvFile(
   pathToEnv: string,
   additionalEnvironment: Record<string, unknown>
 ) {
+  ensureFileSync(pathToEnv);
   const environment = parse(readFileSync(pathToEnv, {encoding: 'utf-8'}));
 
   const updatedEnvironment = {
