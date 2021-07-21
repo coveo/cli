@@ -27,6 +27,7 @@ async function clearChromeBrowsingData(browser: Browser) {
 async function createTestOrgAndSaveOrgIdToEnv(orgName: string) {
   const {accessToken} = getConfig();
   const testOrgId = await createOrg(orgName, accessToken);
+  console.log(`Created org ${testOrgId}`);
   const pathToEnv = getPathToHomedirEnvFile();
   saveToEnvFile(pathToEnv, {
     TEST_ORG_ID: testOrgId,
