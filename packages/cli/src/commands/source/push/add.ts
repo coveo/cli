@@ -28,7 +28,8 @@ interface AxiosResponse {
 
 export default class SourcePushAdd extends Command {
   private static maxContentLength = 5 * 1024 * 1024;
-  public static description = 'Push a JSON document into a Coveo push source.';
+  public static description =
+    'Push a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-files-with-Coveo-CLI for more information.';
 
   public static flags = {
     file: flags.string({
