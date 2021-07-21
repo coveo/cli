@@ -1,14 +1,11 @@
 import {join} from 'path';
-import {CLI_EXEC_PATH, getConfig, getSnapshotProjectPath} from '../utils/cli';
-import {createOrg, deleteOrg} from '../utils/platform';
+import {CLI_EXEC_PATH} from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 
 describe('org:config', () => {
-  const {accessToken} = getConfig();
   let processManager: ProcessManager;
   let testOrg: string;
-  const orgId = `cli-e2e-${process.env.TEST_RUN_ID}`;
 
   const populateOrg = async (
     targetOrg: string,
@@ -63,11 +60,9 @@ describe('org:config', () => {
 
   beforeAll(async () => {
     processManager = new ProcessManager();
-    testOrg = await createOrg(orgId, accessToken);
   });
 
   afterAll(async () => {
-    // await deleteOrg(testOrg, accessToken); TODO: uncomment
     await processManager.killAllProcesses();
   });
 

@@ -4,9 +4,12 @@ import {
   readFileSync,
   writeFileSync,
   truncateSync,
+  appendFileSync,
 } from 'fs';
+import {parse} from 'dotenv';
 import {join} from 'path';
 import {getProjectPath} from './cli';
+import {EOL} from 'os';
 
 const deactivatedEnvFileName = '.env.disabled';
 const activeEnvFilename = '.env';
@@ -46,4 +49,21 @@ export function getPathToEnvFile(projectName: string) {
   return isEnvFileActive(projectName)
     ? join(projectPath, activeEnvFilename)
     : join(projectPath, deactivatedEnvFileName);
+}
+
+export function saveToEnvFile(
+  pathToEnv: string,
+  additionalEnvironment: Record<string, unknown>
+) {
+  const environment = parse(readFileSync(pathToEnv, {encoding: 'utf-8'}));
+
+  const updatedEnvironment = {
+    ...environment,
+    ...additionalEnvironment,
+  };
+
+  truncateSync(pathToEnv);
+  for (const [key, value] of Object.entries(updatedEnvironment)) {
+    appendFileSync(pathToEnv, `${key}=${value}${EOL}`);
+  }
 }

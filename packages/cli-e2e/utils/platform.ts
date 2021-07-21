@@ -19,16 +19,6 @@ export async function createOrg(
   return request.data.id;
 }
 
-export async function deleteOrg(orgId: string, accessToken: string) {
-  if (orgId === 'connectorsteamtestsmf76kcam') {
-    throw new Error('Au bûcher! Au bûcher!');
-  }
-  // await axios.delete(
-  //   `${hostname()}organizations/${orgId}`,
-  //   authHeader(accessToken)
-  // );
-}
-
 function hostname() {
   // TODO: CDX-98: URL should vary in function of the target environment.
   return 'https://platformdev.cloud.coveo.com/rest/';

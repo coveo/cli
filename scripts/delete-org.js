@@ -1,3 +1,7 @@
+const {config} = require('dotenv');
+const {homedir} = require('os');
+config({path: homedir()});
+
 // function authHeader(accessToken) {
 //   return {
 //     headers: {
@@ -6,11 +10,7 @@
 //   };
 // }
 
-// async function deleteApiKeys() {
-//   // TODO:
-// }
-
-function deleteTestOrg(orgId, _accessToken) {
+async function deleteTestOrg(orgId, _accessToken) {
   if (orgId === 'connectorsteamtestsmf76kcam') {
     throw new Error('Au bûcher! Au bûcher!');
   }
@@ -25,10 +25,9 @@ function deleteTestOrg(orgId, _accessToken) {
 }
 
 async function main() {
-  const orgId = `cli-e2e-${process.env.TEST_RUN_ID}`;
-  const accessToken = 'TODO:';
-  // await deleteApiKeys();
-  deleteTestOrg(orgId, accessToken);
+  const orgId = process.env.ORG_ID;
+  const accessToken = process.env.ACCESS_TOKEN;
+  await deleteTestOrg(orgId, accessToken);
 }
 
 main();
