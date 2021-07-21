@@ -11,6 +11,29 @@ describe('org:config', () => {
   const {accessToken} = getConfig();
   let processManager: ProcessManager;
 
+  const previewChange = (targetOrg: string, procManager: ProcessManager) => {
+    const args: string[] = [
+      CLI_EXEC_PATH,
+      'org:config:preview',
+      `-t=${targetOrg}`,
+    ];
+    if (process.platform === 'win32') {
+      args.unshift('node');
+    }
+    const previewTerminal = new Terminal(
+      args.shift()!,
+      args,
+      {
+        cwd: join('snapshot-project'), // TODO: put in util
+      },
+      procManager,
+      'org-config-preview'
+    );
+
+    // previewTerminal.when('exit').on('process').do().once();
+    return previewTerminal;
+  };
+
   const pushToOrg = async (targetOrg: string, procManager: ProcessManager) => {
     const args: string[] = [
       CLI_EXEC_PATH,
@@ -68,7 +91,19 @@ describe('org:config', () => {
   });
 
   describe('org:config:preview', () => {
-    it.todo('should preview before pushing');
+    it('should preview the snapshot', async () => {
+      const previewTerminal = previewChange(testOrgId, processManager);
+      const stringMatch = `Extensions
+      +   1 to create
+
+         Fields
+      +   66 to create
+
+         Filters
+      +   1 to create`;
+      const regex = new RegExp(stringMatch, 'm');
+      await previewTerminal.when(regex).on('stdout').do().once();
+    });
   });
 
   describe('org:config:push', () => {
