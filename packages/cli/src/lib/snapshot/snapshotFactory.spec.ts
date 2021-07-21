@@ -13,7 +13,7 @@ import {SnapshotFactory} from './snapshotFactory';
 const mockedReadFileSync = mocked(readFileSync);
 const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
 const mockedSnapshot = mocked(Snapshot, true);
-const mockedCreateSnapshotFromFile = jest.fn();
+const mockedCreateSnapshotFromBuffer = jest.fn();
 const mockedCreateFromOrganization = jest.fn();
 const mockedPushSnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
@@ -35,7 +35,7 @@ const doMockAuthenticatedClient = () => {
     Promise.resolve({
       resourceSnapshot: {
         get: mockedGetSnapshot,
-        createFromFile: mockedCreateSnapshotFromFile,
+        createFromBuffer: mockedCreateSnapshotFromBuffer,
         createFromOrganization: mockedCreateFromOrganization,
         push: mockedPushSnapshot,
         dryRun: mockedDryRunSnapshot,
@@ -69,11 +69,11 @@ describe('SnapshotFactory', () => {
     });
 
     it('#createSnapshotFromZip should retrieve an authenticated client', () => {
-      expect(mockedCreateSnapshotFromFile).toHaveBeenCalledTimes(1);
+      expect(mockedCreateSnapshotFromBuffer).toHaveBeenCalledTimes(1);
     });
 
     it('#createSnapshotFromZip should create a snapshot from Zip with appropriate parameters', () => {
-      expect(mockedCreateSnapshotFromFile).toHaveBeenCalledWith(
+      expect(mockedCreateSnapshotFromBuffer).toHaveBeenCalledWith(
         Buffer.from('hello there'),
         'ZIP',
         {
