@@ -1,11 +1,11 @@
-import {isNullOrUndefined} from '@coveo/bueno';
+import {isNullOrUndefined, PrimitivesValues} from '@coveo/bueno';
 import {CaseInsensitiveDocument} from './caseInsensitiveDocument';
 
-export class KnownKeys<T> {
+export class KnownKeys<T extends PrimitivesValues> {
   private keys: string[];
   public constructor(
     k: string | string[],
-    private doc: CaseInsensitiveDocument<T>
+    private doc: CaseInsensitiveDocument<PrimitivesValues>
   ) {
     if (Array.isArray(k)) {
       this.keys = k;
@@ -27,7 +27,7 @@ export class KnownKeys<T> {
 
   public whenExists(cb: (v: T) => void) {
     if (!isNullOrUndefined(this.value)) {
-      cb(this.value);
+      cb(this.value as T);
     }
   }
 }

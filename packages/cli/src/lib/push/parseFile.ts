@@ -1,5 +1,17 @@
-import {StringValue} from '@coveo/bueno';
-import {DocumentBuilder, MetadataValue} from '@coveo/push-api-client';
+import {
+  ArrayValue,
+  BooleanValue,
+  PrimitivesValues,
+  RecordValue,
+  StringValue,
+} from '@coveo/bueno';
+import {
+  DocumentBuilder,
+  Document,
+  SecurityIdentity,
+  AnySecurityIdentityBuilder,
+  MetadataValue,
+} from '@coveo/push-api-client';
 import {existsSync, lstatSync, PathLike, readFileSync} from 'fs';
 import {CaseInsensitiveDocument} from './caseInsensitiveDocument';
 import {KnownKeys} from './knownKey';
@@ -26,7 +38,7 @@ export const parseAndGetDocumentBuilderFromJSONDocument = (
 };
 
 const processDocument = (
-  fileContent: Record<string, string>,
+  fileContent: Record<string, PrimitivesValues>,
   documentPath: PathLike
 ) => {
   const caseInsensitiveDoc = new CaseInsensitiveDocument(fileContent);
@@ -36,12 +48,13 @@ const processDocument = (
     documentPath
   );
   processKnownKeys(caseInsensitiveDoc, documentBuilder);
+  processSecurityIdentities(caseInsensitiveDoc, documentBuilder, documentPath);
   processMetadata(caseInsensitiveDoc, documentBuilder);
   return documentBuilder;
 };
 
 const validateRequiredKeysAndGetDocumentBuilder = (
-  caseInsensitiveDoc: CaseInsensitiveDocument<string>,
+  caseInsensitiveDoc: CaseInsensitiveDocument<PrimitivesValues>,
   documentPath: PathLike
 ) => {
   const requiredDocumentId = new RequiredKeyValidator<string>(
@@ -74,7 +87,7 @@ const validateRequiredKeysAndGetDocumentBuilder = (
 };
 
 const processKnownKeys = (
-  caseInsensitiveDoc: CaseInsensitiveDocument<string>,
+  caseInsensitiveDoc: CaseInsensitiveDocument<PrimitivesValues>,
   documentBuilder: DocumentBuilder
 ) => {
   new KnownKeys<string>('author', caseInsensitiveDoc).whenExists((author) => {
@@ -113,16 +126,91 @@ const processKnownKeys = (
       delete caseInsensitiveDoc.documentRecord['permanentid'];
     }
   );
+};
 
-  // TODO Support for known key: permissions
+const processSecurityIdentities = (
+  caseInsensitiveDoc: CaseInsensitiveDocument<PrimitivesValues>,
+  documentBuilder: DocumentBuilder,
+  documentPath: PathLike
+) => {
+  new KnownKeys<Document['permissions']>(
+    'permissions',
+    caseInsensitiveDoc
+  ).whenExists((permissions) => {
+    const caseInsensitivePermissions = new CaseInsensitiveDocument(
+      permissions!
+    );
+    const requiredAllowAnonymous = new RequiredKeyValidator(
+      'allowanonymous',
+      caseInsensitivePermissions,
+      new BooleanValue({required: true})
+    );
+    if (!requiredAllowAnonymous.isValid) {
+      throw new InvalidDocument(
+        documentPath,
+        requiredAllowAnonymous.explanation
+      );
+    }
+
+    const requiredAllowedPermissions = new RequiredKeyValidator(
+      'allowedpermissions',
+      caseInsensitivePermissions,
+      getSecurityIdentitySchemaValidation()
+    );
+
+    if (!requiredAllowedPermissions.isValid) {
+      throw new InvalidDocument(
+        documentPath,
+        requiredAllowedPermissions.explanation
+      );
+    }
+
+    const requiredDeniedPermissions = new RequiredKeyValidator(
+      'deniedpermissions',
+      caseInsensitivePermissions,
+      getSecurityIdentitySchemaValidation()
+    );
+
+    if (!requiredDeniedPermissions.isValid) {
+      throw new InvalidDocument(
+        documentPath,
+        requiredDeniedPermissions.explanation
+      );
+    }
+
+    documentBuilder.withAllowAnonymousUsers(permissions!.allowAnonymous);
+    permissions?.allowedPermissions?.forEach((p) => {
+      documentBuilder.withAllowedPermissions(
+        new AnySecurityIdentityBuilder(
+          p.identityType,
+          p.identity,
+          p.securityProvider
+        )
+      );
+    });
+    permissions?.deniedPermissions?.forEach((p) => {
+      documentBuilder.withDeniedPermissions(
+        new AnySecurityIdentityBuilder(
+          p.identityType,
+          p.identity,
+          p.securityProvider
+        )
+      );
+    });
+
+    delete caseInsensitiveDoc.documentRecord['permissions'];
+  });
 };
 
 const processMetadata = (
-  caseInsensitiveDoc: CaseInsensitiveDocument<MetadataValue>,
+  caseInsensitiveDoc: CaseInsensitiveDocument<PrimitivesValues>,
   documentBuilder: DocumentBuilder
 ) => {
   Object.entries(caseInsensitiveDoc.documentRecord).forEach(([k, v]) => {
-    documentBuilder.withMetadataValue(k, v);
+    documentBuilder.withMetadataValue(
+      k,
+      v! as Extract<PrimitivesValues, MetadataValue>
+    );
   });
 };
 
@@ -132,3 +220,24 @@ const isFile = (p: PathLike) => {
   }
   return lstatSync(p).isFile();
 };
+
+const getSecurityIdentitySchemaValidation =
+  (): ArrayValue<SecurityIdentity> => {
+    return new ArrayValue({
+      required: true,
+      each: new RecordValue({
+        values: {
+          identity: new StringValue({required: true, emptyAllowed: false}),
+          identityType: new StringValue({
+            constrainTo: ['UNKNOWN', 'USER', 'GROUP', 'VIRTUAL_GROUP'],
+            required: true,
+            emptyAllowed: false,
+          }),
+          securityProvider: new StringValue({
+            emptyAllowed: false,
+            required: true,
+          }),
+        },
+      }),
+    });
+  };
