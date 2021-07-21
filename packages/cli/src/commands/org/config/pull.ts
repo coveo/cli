@@ -101,14 +101,17 @@ export default class Pull extends Command {
         target
       );
     }
-    return SnapshotFactory.createFromOrg(this.resourceTypesToExport, target);
+    return SnapshotFactory.createFromOrg(
+      this.ResourceSnapshotTypesToExport,
+      target
+    );
   }
 
   private get configuration() {
     return new Config(this.config.configDir, this.error);
   }
 
-  private get resourceTypesToExport() {
+  private get ResourceSnapshotTypesToExport() {
     const {flags} = this.parse(Pull);
     return flags.resourceTypes.map((type) => ResourceSnapshotType[type]);
   }
