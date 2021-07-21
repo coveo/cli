@@ -12,6 +12,7 @@ import {saveToEnvFile} from './utils/file';
 import {createOrg} from './utils/platform';
 import {getConfig} from './utils/cli';
 import {homedir} from 'os';
+import {join} from 'path';
 
 async function clearChromeBrowsingData(browser: Browser) {
   const pages = await browser.pages();
@@ -28,7 +29,7 @@ async function clearChromeBrowsingData(browser: Browser) {
 async function createTestOrgAndSaveOrgIdToEnv(orgName: string) {
   const {accessToken} = getConfig();
   const testOrgId = await createOrg(orgName, accessToken);
-  const pathToEnv = homedir();
+  const pathToEnv = join(homedir(), '.env');
   saveToEnvFile(pathToEnv, {
     ORG_ID: testOrgId,
     ACCESS_TOKEN: accessToken,
