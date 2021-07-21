@@ -1,9 +1,8 @@
-import extract from 'extract-zip';
 import {
   ResourceSnapshotsReportModel,
   ResourceSnapshotType,
 } from '@coveord/platform-client';
-import {mkdirSync, readdirSync} from 'fs';
+import {existsSync, mkdirSync, readdirSync} from 'fs';
 import {readJSONSync, writeJSONSync} from 'fs-extra';
 import {join, resolve} from 'path';
 import {Project} from '../project/project';
@@ -58,7 +57,7 @@ export class ExpandedPreviewer {
   private async initialPreviewCommit(dirPath: string) {
     await spawnProcess('git', ['init'], {cwd: dirPath});
     await spawnProcess('git', ['add', '.'], {cwd: dirPath});
-    await spawnProcess('git', ['commit', '-m', `"${this.orgId} currently"`], {
+    await spawnProcess('git', ['commit', `--message=${this.orgId} currently`], {
       cwd: dirPath,
     });
   }
@@ -67,7 +66,7 @@ export class ExpandedPreviewer {
     currentDir: string,
     previewDir: string
   ): string[] {
-    const files = readdirSync(currentDir, {withFileTypes: true});
+    const files = readdirSync(previewDir, {withFileTypes: true});
     const filePaths: string[] = [];
     files.forEach((file) => {
       if (file.isDirectory()) {
@@ -79,33 +78,59 @@ export class ExpandedPreviewer {
         );
       }
       if (file.isFile()) {
-        const currentFile = readJSONSync(join(currentDir, file.name));
         const previewFile = readJSONSync(join(previewDir, file.name));
+        const currentFilePath = join(currentDir, file.name);
 
-        const currentResources =
-          this.getResourceDictionnaryFromObject(currentFile);
-        const previewResources =
-          this.getResourceDictionnaryFromObject(previewFile);
+        if (!existsSync(currentFilePath)) {
+          writeJSONSync(join(currentDir, file.name), previewFile, {
+            spaces: 2,
+          });
+          return;
+        }
 
-        const diffedResources = this.getDiffedDictionnary(
-          currentResources,
-          previewResources
-        );
+        const currentFile = readJSONSync(currentFilePath);
 
-        writeJSONSync(join(previewDir, file.name), diffedResources);
+        const diffedJSON = this.buildDiffedJson(currentFile, previewFile);
+
+        writeJSONSync(join(currentDir, file.name), diffedJSON, {
+          spaces: 2,
+        });
       }
     });
     return filePaths;
   }
 
+  private buildDiffedJson(
+    currentFile: SnapshotFileJSON,
+    previewFile: SnapshotFileJSON
+  ) {
+    const currentResources = this.getResourceDictionnaryFromObject(currentFile);
+    const previewResources = this.getResourceDictionnaryFromObject(previewFile);
+    const diffedDictionnary = this.getDiffedDictionnary(
+      currentResources,
+      previewResources
+    );
+
+    const diffedResources: ResourcesJSON[] = [];
+    diffedDictionnary.forEach((resource) => diffedResources.push(resource));
+    diffedResources.sort((a, b) => (a.resourceName > b.resourceName ? +1 : -1));
+
+    const resourceType = Object.keys(currentFile.resources)[0];
+    const diffedJSON: SnapshotFileJSON = {
+      ...currentFile,
+      resources: {[resourceType]: diffedResources},
+    };
+    return diffedJSON;
+  }
+
   private getDiffedDictionnary(
-    currentResources: Map<string, Object>,
-    previewResources: Map<string, Object>
+    currentResources: Map<string, ResourcesJSON>,
+    previewResources: Map<string, ResourcesJSON>
   ) {
     if (this.shouldDelete) {
       return previewResources;
     }
-    const diffedResources = new Map<string, Object>(currentResources);
+    const diffedResources = new Map<string, ResourcesJSON>(currentResources);
     const iterator = previewResources.keys();
     for (
       let resource = iterator.next();
@@ -121,7 +146,7 @@ export class ExpandedPreviewer {
   }
 
   private getResourceDictionnaryFromObject(snapshotFile: SnapshotFileJSON) {
-    const dictionnary = new Map<string, Object>();
+    const dictionnary = new Map<string, ResourcesJSON>();
     const resourcesSection = snapshotFile.resources;
     for (const resourceType in resourcesSection) {
       const resources = resourcesSection[resourceType as ResourceSnapshotType];
@@ -133,13 +158,14 @@ export class ExpandedPreviewer {
   }
 
   private async applySnapshotToPreview(dirPath: string) {
-    this.recursiveDirectoryDiff(dirPath, this.previewedSnapshotDirPath);
-
-    await extract(this.previewedSnapshotDirPath, {dir: dirPath});
+    this.recursiveDirectoryDiff(
+      join(dirPath, 'resources'),
+      this.previewedSnapshotDirPath
+    );
     await spawnProcess('git', ['add', '.'], {cwd: dirPath});
     await spawnProcess(
       'git',
-      ['commit', '-m', `"${this.orgId} after snapshot application"`],
+      ['commit', `--message=${this.orgId} after snapshot application`],
       {
         cwd: dirPath,
       }
