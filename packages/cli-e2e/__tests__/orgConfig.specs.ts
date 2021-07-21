@@ -4,11 +4,14 @@ import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
 import {listExtensions, listFields} from '../utils/platform';
+import {existsSync} from 'fs-extra';
 config({path: getPathToHomedirEnvFile()});
 
 describe('org:config', () => {
   const testOrgId = process.env.TEST_ORG_ID!;
   const {accessToken} = getConfig();
+  const snapshotProjectPath = join('snapshot-project');
+  const defaultTimeout = 10 * 60e3;
   let processManager: ProcessManager;
 
   const previewChange = (targetOrg: string, procManager: ProcessManager) => {
@@ -24,7 +27,7 @@ describe('org:config', () => {
       args.shift()!,
       args,
       {
-        cwd: join('snapshot-project'), // TODO: put in util
+        cwd: snapshotProjectPath,
       },
       procManager,
       'org-config-preview'
@@ -48,7 +51,7 @@ describe('org:config', () => {
       args.shift()!,
       args,
       {
-        cwd: join('snapshot-project'), // TODO: put in util
+        cwd: snapshotProjectPath,
       },
       procManager,
       'org-config-push'
@@ -59,7 +62,8 @@ describe('org:config', () => {
 
   const pullFromOrg = async (
     targetOrg: string,
-    procManager: ProcessManager
+    procManager: ProcessManager,
+    destinationPath: string
   ) => {
     const args: string[] = [
       CLI_EXEC_PATH,
@@ -73,7 +77,7 @@ describe('org:config', () => {
       args.shift()!,
       args,
       {
-        cwd: join('new-snapshot-project'), // TODO: put in util!!!!!!!
+        cwd: destinationPath,
       },
       procManager,
       'org-config-pull'
@@ -91,9 +95,11 @@ describe('org:config', () => {
   });
 
   describe('org:config:preview', () => {
-    it('should preview the snapshot', async () => {
-      const previewTerminal = previewChange(testOrgId, processManager);
-      const stringMatch = `Extensions
+    it(
+      'should preview the snapshot',
+      async () => {
+        const previewTerminal = previewChange(testOrgId, processManager);
+        const stringMatch = `Extensions
       +   1 to create
 
          Fields
@@ -101,41 +107,43 @@ describe('org:config', () => {
 
          Filters
       +   1 to create`;
-      const regex = new RegExp(stringMatch, 'm');
-      await previewTerminal.when(regex).on('stdout').do().once();
-    });
+        const regex = new RegExp(stringMatch, 'm');
+        await previewTerminal.when(regex).on('stdout').do().once();
+      },
+      defaultTimeout
+    );
   });
 
   describe('org:config:push', () => {
     beforeAll(async () => {
       await pushToOrg(testOrgId, processManager);
+    }, defaultTimeout);
+
+    it('should have pushed fields', async () => {
+      const fields: unknown[] = await listFields(testOrgId, accessToken);
+      expect(fields.map.name).toContain(['firstfield', 'whereisbrian']);
     });
 
-    it(
-      'should have pushed fields',
-      async () => {
-        const fields: unknown[] = await listFields(testOrgId, accessToken);
-        expect(fields.map.name).toContain(['firstfield', 'whereisbrian']);
-      },
-      2 * 60e3
-    );
-
-    it(
-      'should have pushed extensions',
-      async () => {
-        const extensions: unknown[] = await listExtensions(
-          testOrgId,
-          accessToken
-        );
-        expect(extensions.map.name).toContain(['palpatine']);
-      },
-      2 * 60e3
-    );
+    it('should have pushed extensions', async () => {
+      const extensions: unknown[] = await listExtensions(
+        testOrgId,
+        accessToken
+      );
+      expect(extensions.map.name).toContain(['palpatine']);
+    });
   });
 
-  it.skip("should pull the org's content", async () => {
-    await pullFromOrg(testOrgId, processManager);
-    // TODO: check files under resources
-    // TODO: snapshot-project/resources & and new-snapshot-project/resources new folder should have the same files
+  describe('org:config:pull', () => {
+    const destinationPath = join('new-snapshot-project');
+
+    it(
+      "should pull the org's content",
+      async () => {
+        await pullFromOrg(testOrgId, processManager, destinationPath);
+        // TODO: better checks
+        expect(existsSync(destinationPath));
+      },
+      defaultTimeout
+    );
   });
 });
