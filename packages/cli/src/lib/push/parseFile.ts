@@ -10,6 +10,7 @@ import {
   Document,
   SecurityIdentity,
   AnySecurityIdentityBuilder,
+  MetadataValue,
 } from '@coveo/push-api-client';
 import {existsSync, lstatSync, PathLike, readFileSync} from 'fs';
 import {CaseInsensitiveDocument} from './caseInsensitiveDocument';
@@ -206,7 +207,10 @@ const processMetadata = (
   documentBuilder: DocumentBuilder
 ) => {
   Object.entries(caseInsensitiveDoc.documentRecord).forEach(([k, v]) => {
-    documentBuilder.withMetadataValue(k, v!);
+    documentBuilder.withMetadataValue(
+      k,
+      v! as Extract<PrimitivesValues, MetadataValue>
+    );
   });
 };
 
