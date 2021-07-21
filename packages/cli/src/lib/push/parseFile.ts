@@ -7,7 +7,6 @@ import {
 } from '@coveo/bueno';
 import {
   DocumentBuilder,
-  MetadataValue,
   Document,
   SecurityIdentity,
   AnySecurityIdentityBuilder,
