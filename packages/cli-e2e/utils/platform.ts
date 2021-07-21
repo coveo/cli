@@ -8,6 +8,10 @@ export function isSearchRequest(request: HTTPRequest) {
   return request.url().startsWith(`${platformHost}search/v2?organizationId`);
 }
 
+export async function listFields(accessToken: string) {
+  // TODO:
+}
+
 export async function createOrg(
   name: string,
   accessToken: string,
