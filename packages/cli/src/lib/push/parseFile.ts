@@ -1,4 +1,10 @@
-import {ArrayValue, BooleanValue, RecordValue, StringValue} from '@coveo/bueno';
+import {
+  ArrayValue,
+  BooleanValue,
+  PrimitivesValues,
+  RecordValue,
+  StringValue,
+} from '@coveo/bueno';
 import {
   DocumentBuilder,
   MetadataValue,
@@ -32,33 +38,23 @@ export const parseAndGetDocumentBuilderFromJSONDocument = (
 };
 
 const processDocument = (
-  fileContent: Record<string, string | {}>,
+  fileContent: Record<string, PrimitivesValues>,
   documentPath: PathLike
 ) => {
   const caseInsensitiveDoc = new CaseInsensitiveDocument(fileContent);
 
   const documentBuilder = validateRequiredKeysAndGetDocumentBuilder(
-    caseInsensitiveDoc as CaseInsensitiveDocument<string>,
+    caseInsensitiveDoc,
     documentPath
   );
-  processKnownKeys(
-    caseInsensitiveDoc as CaseInsensitiveDocument<string>,
-    documentBuilder
-  );
-  processSecurityIdentities(
-    caseInsensitiveDoc as CaseInsensitiveDocument<Document['permissions']>,
-    documentBuilder,
-    documentPath
-  );
-  processMetadata(
-    caseInsensitiveDoc as CaseInsensitiveDocument<MetadataValue>,
-    documentBuilder
-  );
+  processKnownKeys(caseInsensitiveDoc, documentBuilder);
+  processSecurityIdentities(caseInsensitiveDoc, documentBuilder, documentPath);
+  processMetadata(caseInsensitiveDoc, documentBuilder);
   return documentBuilder;
 };
 
 const validateRequiredKeysAndGetDocumentBuilder = (
-  caseInsensitiveDoc: CaseInsensitiveDocument<string>,
+  caseInsensitiveDoc: CaseInsensitiveDocument<PrimitivesValues>,
   documentPath: PathLike
 ) => {
   const requiredDocumentId = new RequiredKeyValidator<string>(
@@ -91,7 +87,7 @@ const validateRequiredKeysAndGetDocumentBuilder = (
 };
 
 const processKnownKeys = (
-  caseInsensitiveDoc: CaseInsensitiveDocument<string>,
+  caseInsensitiveDoc: CaseInsensitiveDocument<PrimitivesValues>,
   documentBuilder: DocumentBuilder
 ) => {
   new KnownKeys<string>('author', caseInsensitiveDoc).whenExists((author) => {
@@ -133,7 +129,7 @@ const processKnownKeys = (
 };
 
 const processSecurityIdentities = (
-  caseInsensitiveDoc: CaseInsensitiveDocument<Document['permissions']>,
+  caseInsensitiveDoc: CaseInsensitiveDocument<PrimitivesValues>,
   documentBuilder: DocumentBuilder,
   documentPath: PathLike
 ) => {
@@ -207,11 +203,11 @@ const processSecurityIdentities = (
 };
 
 const processMetadata = (
-  caseInsensitiveDoc: CaseInsensitiveDocument<MetadataValue>,
+  caseInsensitiveDoc: CaseInsensitiveDocument<PrimitivesValues>,
   documentBuilder: DocumentBuilder
 ) => {
   Object.entries(caseInsensitiveDoc.documentRecord).forEach(([k, v]) => {
-    documentBuilder.withMetadataValue(k, v);
+    documentBuilder.withMetadataValue(k, v!);
   });
 };
 
