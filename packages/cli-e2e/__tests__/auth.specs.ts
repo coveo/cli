@@ -7,7 +7,7 @@ import {captureScreenshots, connectToChromeBrowser} from '../utils/browser';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 
-describe.skip('auth', () => {
+describe('auth', () => {
   describe('login', () => {
     const testOrg = process.env.ORG_ID;
     let browser: Browser;
