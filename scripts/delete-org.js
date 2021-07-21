@@ -25,9 +25,9 @@ async function deleteTestOrg(orgId, _accessToken) {
 }
 
 async function main() {
-  const orgId = process.env.ORG_ID;
+  const testOrgId = process.env.TEST_ORG_ID;
   const accessToken = process.env.ACCESS_TOKEN;
-  await deleteTestOrg(orgId, accessToken);
+  await deleteTestOrg(testOrgId, accessToken);
 }
 
 main();

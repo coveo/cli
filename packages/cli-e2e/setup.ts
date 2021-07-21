@@ -31,7 +31,7 @@ async function createTestOrgAndSaveOrgIdToEnv(orgName: string) {
   const testOrgId = await createOrg(orgName, accessToken);
   const pathToEnv = join(homedir(), '.env');
   saveToEnvFile(pathToEnv, {
-    ORG_ID: testOrgId,
+    TEST_ORG_ID: testOrgId,
     ACCESS_TOKEN: accessToken,
   });
 }
