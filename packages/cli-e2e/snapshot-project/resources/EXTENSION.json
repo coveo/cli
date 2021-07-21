@@ -5,14 +5,14 @@
   "resources": {
     "EXTENSION": [
       {
-        "resourceName": "test_o1cvP1",
+        "resourceName": "palpatine_o1cvP1",
         "parents": {},
         "model": {
-          "name": "test",
+          "name": "palpatine",
           "description": "",
           "language": "PYTHON3",
           "requiredDataStreams": [],
-          "content": "adsa"
+          "content": "print('Unlimited power')"
         }
       }
     ]

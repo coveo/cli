@@ -1,12 +1,14 @@
 import {join} from 'path';
-import {CLI_EXEC_PATH, getPathToHomedirEnvFile} from '../utils/cli';
+import {CLI_EXEC_PATH, getConfig, getPathToHomedirEnvFile} from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
+import {listExtensions, listFields} from '../utils/platform';
 config({path: getPathToHomedirEnvFile()});
 
 describe('org:config', () => {
   const testOrgId = process.env.TEST_ORG_ID!;
+  const {accessToken} = getConfig();
   let processManager: ProcessManager;
 
   const pushToOrg = async (targetOrg: string, procManager: ProcessManager) => {
@@ -65,17 +67,36 @@ describe('org:config', () => {
     await processManager.killAllProcesses();
   });
 
-  it.todo('should preview before pushing');
+  describe('org:config:preview', () => {
+    it.todo('should preview before pushing');
+  });
 
-  it(
-    'should be able to push with CLI,',
-    async () => {
+  describe('org:config:push', () => {
+    beforeAll(async () => {
       await pushToOrg(testOrgId, processManager);
-      // TODO: should I make sure all the resources are there or just a subset of them
-      expect(1).toBe(1);
-    },
-    2 * 60e3
-  );
+    });
+
+    it(
+      'should have pushed fields',
+      async () => {
+        const fields: unknown[] = await listFields(testOrgId, accessToken);
+        expect(fields.map.name).toContain(['firstfield', 'whereisbrian']);
+      },
+      2 * 60e3
+    );
+
+    it(
+      'should have pushed extensions',
+      async () => {
+        const extensions: unknown[] = await listExtensions(
+          testOrgId,
+          accessToken
+        );
+        expect(extensions.map.name).toContain(['palpatine']);
+      },
+      2 * 60e3
+    );
+  });
 
   it.skip("should pull the org's content", async () => {
     await pullFromOrg(testOrgId, processManager);
