@@ -1,13 +1,13 @@
-import {SchemaValue} from '@coveo/bueno';
+import {PrimitivesValues, SchemaValue} from '@coveo/bueno';
 import {CaseInsensitiveDocument} from './caseInsensitiveDocument';
 
-export class RequiredKeyValidator<T> {
+export class RequiredKeyValidator<T extends PrimitivesValues> {
   private keys: string[];
-  private validations: {value: T; message: string | null}[] = [];
+  private validations: {value: T | unknown; message: string | null}[] = [];
 
   public constructor(
     k: string[] | string,
-    private doc: CaseInsensitiveDocument<T>,
+    private doc: CaseInsensitiveDocument<PrimitivesValues>,
     private schema: SchemaValue<T>
   ) {
     if (Array.isArray(k)) {
@@ -21,14 +21,15 @@ export class RequiredKeyValidator<T> {
   private doValidations() {
     this.validations = this.keys.map((k) => {
       const value = this.doc.documentRecord[k.toLowerCase()];
-      const validationMessage = this.schema.validate(value);
-      if (validationMessage) {
-        return {
-          value,
-          message: `Document contains an invalid value for ${k}: ${validationMessage}`,
-        };
+      if (this.isValueCorrectType(value)) {
+        return {value, message: null};
       }
-      return {value, message: null};
+      return {
+        value: value as unknown,
+        message: `Document contains an invalid value for ${k}: ${this.getValidationMessage(
+          value
+        )}`,
+      };
     });
   }
 
@@ -38,7 +39,7 @@ export class RequiredKeyValidator<T> {
 
   public get value() {
     if (this.isValid) {
-      return this.validEntries[0].value;
+      return this.validEntries[0].value as T;
     }
     return null;
   }
@@ -56,5 +57,17 @@ export class RequiredKeyValidator<T> {
 
   private get invalidEntries() {
     return this.validations.filter((validation) => validation.message !== null);
+  }
+
+  private getValidationMessage(value: PrimitivesValues) {
+    return this.schema.validate(value as T);
+  }
+
+  private isValueCorrectType(value: PrimitivesValues): value is T {
+    const validationMessage = this.getValidationMessage(value);
+    if (validationMessage) {
+      return false;
+    }
+    return true;
   }
 }

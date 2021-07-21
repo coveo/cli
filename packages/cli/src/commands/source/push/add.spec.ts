@@ -181,4 +181,59 @@ describe('source:push:add', () => {
       expect(ctx.stdout).toContain('Status code: 412');
       expect(ctx.stdout).toContain('Error code: BAD_REQUEST');
     });
+
+  test
+    .stdout()
+    .command([
+      'source:push:add',
+      'mysource',
+      '-f',
+      cwd() + '/src/__stub__/jsondocuments/noIdentity.json',
+    ])
+    .catch(
+      `${cwd()}/src/__stub__/jsondocuments/noIdentity.json is not a valid JSON document: Document contains an invalid value for allowedpermissions:  value does not contain identity`
+    )
+    .it('should output error message on missing identity');
+
+  test
+    .stdout()
+    .command([
+      'source:push:add',
+      'mysource',
+      '-f',
+      cwd() + '/src/__stub__/jsondocuments/identityNotAString.json',
+    ])
+    .catch(
+      `${cwd()}/src/__stub__/jsondocuments/identityNotAString.json is not a valid JSON document: Document contains an invalid value for allowedpermissions:   value is not a string.`
+    )
+    .it('should output error message on identity with an invalid string');
+
+  test
+    .stdout()
+    .command([
+      'source:push:add',
+      'mysource',
+      '-f',
+      cwd() +
+        '/src/__stub__/jsondocuments/identityAllowAnonymousNotABoolean.json',
+    ])
+    .catch(
+      `${cwd()}/src/__stub__/jsondocuments/identityAllowAnonymousNotABoolean.json is not a valid JSON document: Document contains an invalid value for allowanonymous: value is not a boolean.`
+    )
+    .it(
+      'should output error message on allow anonymous with an invalid boolean'
+    );
+
+  test
+    .stdout()
+    .command([
+      'source:push:add',
+      'mysource',
+      '-f',
+      cwd() + '/src/__stub__/jsondocuments/identityTypeInvalidValue.json',
+    ])
+    .catch(
+      `${cwd()}/src/__stub__/jsondocuments/identityTypeInvalidValue.json is not a valid JSON document: Document contains an invalid value for allowedpermissions:   value should be one of: UNKNOWN, USER, GROUP, VIRTUAL_GROUP.`
+    )
+    .it('should output error message on identityType with an invalid value');
 });

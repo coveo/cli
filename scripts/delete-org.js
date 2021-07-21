@@ -20,11 +20,15 @@ async function deleteTestOrg(orgId, accessToken) {
     throw new Error('Au bûcher! Au bûcher!');
   }
 
-  console.log(`Deleting org ${orgId}`);
-  await axios.delete(
-    `${platformHost}organizations/${orgId}`,
-    authHeader(accessToken)
-  );
+  if (orgId) {
+    console.log(`Deleting org ${orgId}`);
+    await axios.delete(
+      `${platformHost}organizations/${orgId}`,
+      authHeader(accessToken)
+    );
+  } else {
+    console.log('No org to delete');
+  }
 }
 
 async function main() {
