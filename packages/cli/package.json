@@ -104,7 +104,7 @@
         "description": "manage Coveo sources"
       },
       "source:push": {
-        "description": "manage Coveo PushAPI sources"
+        "description": "manage Coveo Push API sources"
       }
     },
     "hooks": {
