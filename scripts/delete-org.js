@@ -1,4 +1,4 @@
-const {axios} = require('axios');
+const axios = require('axios');
 const {homedir} = require('os');
 const {join} = require('path');
 const {config} = require('dotenv');
