@@ -1,11 +1,13 @@
 import {join} from 'path';
-import {CLI_EXEC_PATH} from '../utils/cli';
+import {CLI_EXEC_PATH, getPathToHomedirEnvFile} from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
+import {config} from 'dotenv';
+config({path: getPathToHomedirEnvFile()});
 
 describe('org:config', () => {
+  const testOrgId = process.env.TEST_ORG_ID!;
   let processManager: ProcessManager;
-  let testOrg: string;
 
   const populateOrg = async (
     targetOrg: string,
@@ -71,7 +73,7 @@ describe('org:config', () => {
   it(
     'should be able to push with CLI,',
     async () => {
-      await populateOrg(testOrg, processManager);
+      await populateOrg(testOrgId, processManager);
       // TODO: clean that...
       // Rest request (axios) with the orgId and access token and expect data in the org
       expect(1).toBe(1);
@@ -80,7 +82,7 @@ describe('org:config', () => {
   );
 
   it.skip("should pull the org's content", async () => {
-    await pullFromOrg(testOrg, processManager);
+    await pullFromOrg(testOrgId, processManager);
     // TODO: check files under resources
     // TODO: snapshot-project/resources & and new-snapshot-project/resources new folder should have the same files
   });

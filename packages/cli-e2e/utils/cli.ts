@@ -26,6 +26,10 @@ export interface ISetupUIProjectOptionsArgs {
   flags?: string[];
 }
 
+export function getPathToHomedirEnvFile() {
+  return join(homedir(), '.env');
+}
+
 export function getProjectPath(projectName: string) {
   const uiProjectFolderName = 'ui-projects';
   mkdirSync(join(homedir(), uiProjectFolderName), {recursive: true});

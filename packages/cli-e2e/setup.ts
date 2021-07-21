@@ -10,9 +10,7 @@ import {clearAccessTokenFromConfig, loginWithOffice} from './utils/login';
 import {ProcessManager} from './utils/processManager';
 import {saveToEnvFile} from './utils/file';
 import {createOrg} from './utils/platform';
-import {getConfig} from './utils/cli';
-import {homedir} from 'os';
-import {join} from 'path';
+import {getConfig, getPathToHomedirEnvFile} from './utils/cli';
 
 async function clearChromeBrowsingData(browser: Browser) {
   const pages = await browser.pages();
@@ -29,7 +27,7 @@ async function clearChromeBrowsingData(browser: Browser) {
 async function createTestOrgAndSaveOrgIdToEnv(orgName: string) {
   const {accessToken} = getConfig();
   const testOrgId = await createOrg(orgName, accessToken);
-  const pathToEnv = join(homedir(), '.env');
+  const pathToEnv = getPathToHomedirEnvFile();
   saveToEnvFile(pathToEnv, {
     TEST_ORG_ID: testOrgId,
     ACCESS_TOKEN: accessToken,

@@ -1,6 +1,7 @@
 const {config} = require('dotenv');
 const {homedir} = require('os');
-config({path: homedir()});
+const {join} = require('path');
+config({path: join(homedir(), '.env')});
 
 // function authHeader(accessToken) {
 //   return {
