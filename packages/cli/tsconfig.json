@@ -8,12 +8,12 @@
     "outDir": "lib",
     "rootDir": "src",
     "strict": true,
-    "target": "es2017",
+    "target": "es2019",
     "noEmitOnError": false,
     "skipLibCheck": true,
     "types": ["jest"],
     "esModuleInterop": true,
-    "lib": ["WebWorker"]
+    "lib": ["WebWorker", "ES2019"]
   },
   "include": ["src/**/*", "src/typings/**/*.d.ts"]
 }

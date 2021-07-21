@@ -1,0 +1,22 @@
+name: 'Renovate Config Validator'
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'renovate.json'
+  pull_request:
+    branches: [master]
+    paths:
+      - 'renovate.json'
+
+jobs:
+  renovate-config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - name: Check Renovate config
+        run: |
+          npm i renovate
+          node_modules/.bin/renovate-config-validator

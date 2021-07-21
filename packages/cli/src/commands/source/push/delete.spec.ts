@@ -8,29 +8,14 @@ import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {Source} from '@coveo/push-api-client';
+import {
+  doMockAxiosError,
+  doMockAxiosSuccess,
+} from '../../../lib/push/testUtils';
 const mockedClient = mocked(AuthenticatedClient);
 const mockedSource = mocked(Source);
 
 describe('source:push:delete', () => {
-  const doMockAxiosError = (
-    status: number,
-    message: string,
-    errorCode: string
-  ) => ({
-    response: {
-      status,
-      data: {
-        errorCode,
-        message,
-      },
-    },
-  });
-
-  const doMockAxiosSuccess = (status: number, text: string) => ({
-    status,
-    statusText: text,
-  });
-
   const mockDeleteOlderThan = jest
     .fn()
     .mockReturnValue(Promise.resolve(doMockAxiosSuccess(202, 'tiguidou')));
@@ -85,6 +70,36 @@ describe('source:push:delete', () => {
     .it('pass correct configuration information to push-api-client', () => {
       expect(mockedSource).toHaveBeenCalledWith('the_token', 'the_org');
     });
+
+  [
+    '2000/01/01',
+    '2000-01-01',
+    '2000-01-01T06:00:00+00:00',
+    'Monday, 2000-Jan-01 06:00:00 UTC',
+  ].forEach((testCase) => {
+    test
+      .stdout()
+      .command(['source:push:delete', 'mysource', '-d', testCase])
+      .it(
+        `pass correct values to push-api-client when deleting with date as string: ${testCase}`,
+        () => {
+          expect(mockDeleteOlderThan).toHaveBeenCalledWith(
+            'mysource',
+            testCase
+          );
+        }
+      );
+  });
+
+  test
+    .stdout()
+    .command(['source:push:delete', 'mysource', '-d', '123123123'])
+    .it(
+      'pass correct values to push-api-client when deleting with date as number',
+      () => {
+        expect(mockDeleteOlderThan).toHaveBeenCalledWith('mysource', 123123123);
+      }
+    );
 
   test
     .do(() => {
