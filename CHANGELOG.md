@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.10.0](https://github.com/coveo/cli/compare/v1.9.0...v1.10.0) (2021-07-21)
+
+
+### Bug Fixes
+
+* **push:** fix incorrect types for timestamp when using delete older than ([#363](https://github.com/coveo/cli/issues/363)) ([41030d4](https://github.com/coveo/cli/commit/41030d42edee62d4b91e1a4eabbbe0f05e2654a8))
+* **snapshot:** pull should use new enum ([#365](https://github.com/coveo/cli/issues/365)) ([4fbffef](https://github.com/coveo/cli/commit/4fbffef433c30c6e6723664a5937eaf7a53ac592))
+
+
+### Features
+
+* **cli:** add `--resourceTypes` flag ([#341](https://github.com/coveo/cli/issues/341)) ([37b2b9c](https://github.com/coveo/cli/commit/37b2b9c18791d1451db3fac3d6a695a1ca5003cf))
+* **push:** add support for push:add command  ([#349](https://github.com/coveo/cli/issues/349)) ([ae8a48e](https://github.com/coveo/cli/commit/ae8a48ea95ef7026d0468bfff121b02657ef4fb4))
+* **push:** add support for very large batch of documents ([#358](https://github.com/coveo/cli/issues/358)) ([03927d7](https://github.com/coveo/cli/commit/03927d7fc7c8165f09f87431630d51c7a5789e6e))
+* **push:** support security identities in JSON documents ([#366](https://github.com/coveo/cli/issues/366)) ([73ac2b5](https://github.com/coveo/cli/commit/73ac2b5d8d9870112975e06f2290fb50ca27c0d7))
+
+
+
+
+
 # [1.9.0](https://github.com/coveo/cli/compare/v1.8.0...v1.9.0) (2021-07-16)
 
 

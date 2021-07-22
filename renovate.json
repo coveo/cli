@@ -7,6 +7,14 @@
       "matchPackagePatterns": ["*"],
       "groupName": "all dependencies",
       "groupSlug": "all"
+    },
+    {
+      "matchPackageNames": ["@types/node"],
+      "allowedVersions": "14.x"
+    },
+    {
+      "matchPackageNames": ["strip-ansi"],
+      "allowedVersions": "6.x"
     }
   ],
   "rangeStrategy": "auto",

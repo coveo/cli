@@ -1,6 +1,7 @@
 # Coveo CLI
 
-<!-- removefromdocs -->[![Build](https://github.com/coveo/cli/actions/workflows/build.yml/badge.svg)](https://github.com/coveo/cli/actions/workflows/build.yml)
+<!-- removefromdocs -->
+[![Build](https://github.com/coveo/cli/actions/workflows/build.yml/badge.svg)](https://github.com/coveo/cli/actions/workflows/build.yml)
 <!-- endremovefromdocs -->
 
 ## About
