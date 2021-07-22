@@ -8,7 +8,9 @@
   },
   "license": "Apache-2.0",
   "bugs": "https://github.com/coveo/cli/issues",
-  "dependencies": {},
+  "dependencies": {
+    "aws-sdk": "^2.951.0"
+  },
   "devDependencies": {
     "@actions/core": "1.4.0",
     "@actions/github": "5.0.0",

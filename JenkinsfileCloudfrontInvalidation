@@ -1,0 +1,15 @@
+node('linux && docker') {
+  checkout scm
+
+  environment {
+        AWS_ACCESS_KEY_ID     = 'FOO'
+        AWS_SECRET_ACCESS_KEY = 'BAR'
+  }
+
+  withDockerContainer(image: 'node:14', args: '-u=root') {
+
+    stage('Cloudfront invalidation') {
+        echo "ID ${env.AWS_ACCESS_KEY_ID} KEY ${env.AWS_SECRET_ACCESS_KEY}"
+    }
+  }
+}
