@@ -49,3 +49,15 @@ function authHeader(accessToken: string) {
     headers: {Authorization: `Bearer ${accessToken}`},
   };
 }
+
+async function main() {
+  const fields = await listFields(
+    'climanualtestt26l2cxv',
+    'xxfeb40f1d-5d8a-4516-95a5-f518348a0f62'
+  );
+  console.log('*********************');
+  console.log(fields);
+  console.log('*********************');
+}
+
+main();

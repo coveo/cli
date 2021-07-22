@@ -4,7 +4,7 @@ import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
 import {listExtensions, listFields} from '../utils/platform';
-import {existsSync} from 'fs-extra';
+import {ensureDirSync, existsSync} from 'fs-extra';
 config({path: getPathToHomedirEnvFile()});
 
 describe('org:config', () => {
@@ -120,8 +120,14 @@ describe('org:config', () => {
     }, defaultTimeout);
 
     it('should have pushed fields', async () => {
-      const fields: unknown[] = await listFields(testOrgId, accessToken);
-      expect(fields.map.name).toContain(['firstfield', 'whereisbrian']);
+      const fields: unknown[] = (await listFields(testOrgId, accessToken))
+        .items;
+      expect(fields).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({name: 'firstfield'}),
+          expect.objectContaining({name: 'whereisbrian'}),
+        ])
+      );
     });
 
     it('should have pushed extensions', async () => {
@@ -129,12 +135,18 @@ describe('org:config', () => {
         testOrgId,
         accessToken
       );
-      expect(extensions.map.name).toContain(['palpatine']);
+      expect(extensions).toEqual(
+        expect.arrayContaining([expect.objectContaining({name: 'palpatine'})])
+      );
     });
   });
 
   describe('org:config:pull', () => {
     const destinationPath = join('new-snapshot-project');
+
+    beforeAll(() => {
+      ensureDirSync(destinationPath);
+    });
 
     it(
       "should pull the org's content",
