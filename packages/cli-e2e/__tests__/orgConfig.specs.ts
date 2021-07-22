@@ -97,7 +97,7 @@ describe('org:config', () => {
   describe('org:config:preview', () => {
     it(
       'should preview the snapshot',
-      async () => {
+      async (done) => {
         const previewTerminal = previewChange(testOrgId, processManager);
         const stringMatch = `Extensions
       +   1 to create
@@ -108,7 +108,7 @@ describe('org:config', () => {
          Filters
       +   1 to create`;
         const regex = new RegExp(stringMatch, 'm');
-        await previewTerminal.when(regex).on('stdout').do().once();
+        await previewTerminal.when(regex).on('stdout').do(done).once();
       },
       defaultTimeout
     );
