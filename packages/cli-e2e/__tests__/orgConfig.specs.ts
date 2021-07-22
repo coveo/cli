@@ -154,7 +154,7 @@ describe('org:config', () => {
         await pullFromOrg(testOrgId, processManager, destinationPath);
         expect(
           foldersContainSimilarFiles(snapshotProjectPath, destinationPath)
-        );
+        ).toBe(true);
       },
       defaultTimeout
     );
