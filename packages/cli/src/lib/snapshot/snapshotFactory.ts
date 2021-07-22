@@ -34,33 +34,6 @@ export class SnapshotFactory {
     return snapshot;
   }
 
-  public static async createFromOrg(
-    resourceTypesToExport: ResourceType[],
-    targetOrg: string
-  ) {
-    const client = await SnapshotFactory.getClient(targetOrg);
-    const resourcesToExport = resourceTypesToExport.reduce(
-      (resourceToExport, currentType) => {
-        resourceToExport[currentType] = ['*'];
-        return resourceToExport;
-      },
-      {} as Partial<Record<ResourceType, string[]>>
-    );
-
-    const model = await client.resourceSnapshot.createFromOrganization(
-      {resourcesToExport},
-      {includeChildrenResources: true, developerNotes: 'Created by Coveo-CLI'}
-    );
-
-    const snapshot = new Snapshot(model, client);
-
-    await snapshot.waitUntilDone({
-      operationToWaitFor: ResourceSnapshotsReportType.CreateSnapshot,
-    });
-
-    return snapshot;
-  }
-
   public static async createFromExistingSnapshot(
     snapshotId: string,
     targetOrg: string
