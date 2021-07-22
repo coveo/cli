@@ -5,6 +5,7 @@ import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
 import {listExtensions, listFields} from '../utils/platform';
 import {ensureDirSync, existsSync} from 'fs-extra';
+import {foldersContainSimilarFiles} from '../utils/file';
 config({path: getPathToHomedirEnvFile()});
 
 describe('org:config', () => {
@@ -33,7 +34,6 @@ describe('org:config', () => {
       'org-config-preview'
     );
 
-    // previewTerminal.when('exit').on('process').do().once();
     return previewTerminal;
   };
 
@@ -152,8 +152,9 @@ describe('org:config', () => {
       "should pull the org's content",
       async () => {
         await pullFromOrg(testOrgId, processManager, destinationPath);
-        // TODO: better checks
-        expect(existsSync(destinationPath));
+        expect(
+          foldersContainSimilarFiles(snapshotProjectPath, destinationPath)
+        );
       },
       defaultTimeout
     );

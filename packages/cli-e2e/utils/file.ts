@@ -6,6 +6,7 @@ import {
   truncateSync,
   appendFileSync,
   ensureFileSync,
+  readdirSync,
 } from 'fs-extra';
 import {parse} from 'dotenv';
 import {join} from 'path';
@@ -68,4 +69,29 @@ export function saveToEnvFile(
   for (const [key, value] of Object.entries(updatedEnvironment)) {
     appendFileSync(pathToEnv, `${key}=${value}${EOL}`);
   }
+}
+
+export function foldersContainSimilarFiles(folder1: string, folder2: string) {
+  const folder1Files = readdirSync(folder1);
+  const folder2Files = readdirSync(folder2);
+  const fileContent = (filePath: string) => readFileSync(filePath).toString();
+
+  if (folder1Files.length !== folder2Files.length) {
+    return false;
+  }
+
+  for (const file of folder1Files) {
+    const filePath1 = join(folder1, file);
+    const filePath2 = join(folder2, file);
+
+    if (!existsSync(filePath2)) {
+      return false;
+    }
+
+    if (fileContent(filePath1) !== fileContent(filePath2)) {
+      return false;
+    }
+  }
+
+  return true;
 }
