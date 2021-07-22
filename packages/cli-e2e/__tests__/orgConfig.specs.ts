@@ -97,7 +97,7 @@ describe('org:config', () => {
   describe('org:config:preview', () => {
     it(
       'should preview the snapshot',
-      async (done) => {
+      async () => {
         const previewTerminal = previewChange(testOrgId, processManager);
 
         const expectedOutput = [
@@ -111,7 +111,7 @@ describe('org:config', () => {
         const stringMatch = expectedOutput.join('\\s*');
         const regex = new RegExp(stringMatch, 'gm');
 
-        await previewTerminal.when(regex).on('stdout').do(done).once();
+        await previewTerminal.when(regex).on('stdout').do().once();
       },
       defaultTimeout
     );
