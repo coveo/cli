@@ -2,12 +2,14 @@ import {
   ResourceSnapshotsReportModel,
   ResourceSnapshotType,
 } from '@coveord/platform-client';
-import {existsSync, mkdirSync, readdirSync} from 'fs';
+import {existsSync, mkdirSync, readdirSync, rmSync} from 'fs';
 import {readJSONSync, writeJSONSync} from 'fs-extra';
 import {join, resolve} from 'path';
+import {cli} from 'cli-ux';
 import {Project} from '../project/project';
 import {spawnProcess} from '../utils/process';
 import {SnapshotFactory} from './snapshotFactory';
+import dedent from 'ts-dedent';
 
 type ResourcesJSON = Object & {resourceName: string};
 
@@ -16,13 +18,13 @@ type SnapshotFileJSON = Object & {
 };
 
 export class ExpandedPreviewer {
-  private static readonly temporaryDirectory: string = '.coveo/tmp';
   private static readonly previewDirectory: string = '.coveo/preview';
 
   private resourcesToPreview: ResourceSnapshotType[];
+  private static previewHistorySize = 5;
 
   public constructor(
-    private readonly report: ResourceSnapshotsReportModel,
+    report: ResourceSnapshotsReportModel,
     private readonly orgId: string,
     private readonly previewedSnapshotDirPath: string,
     private readonly shouldDelete: boolean
@@ -36,6 +38,7 @@ export class ExpandedPreviewer {
    * preview
    */
   public async preview() {
+    this.deleteOldestPreviews();
     const previewLocalSlug = `${this.orgId}-${Date.now()}`;
     const dirPath = resolve(
       join(ExpandedPreviewer.previewDirectory, previewLocalSlug)
@@ -46,6 +49,27 @@ export class ExpandedPreviewer {
     const project = new Project(dirPath);
     await this.initPreviewDirectory(project);
     await this.applySnapshotToPreview(dirPath);
+    cli.info(dedent`
+    
+    A Git repository representing the modification has been created here:
+    ${dirPath}
+    
+    `);
+  }
+
+  private deleteOldestPreviews() {
+    const allFiles = readdirSync(ExpandedPreviewer.previewDirectory, {
+      withFileTypes: true,
+    });
+    const dirs = allFiles
+      .filter((potentialDir) => potentialDir.isDirectory())
+      .sort();
+    while (dirs.length >= ExpandedPreviewer.previewHistorySize) {
+      rmSync(join(ExpandedPreviewer.previewDirectory, dirs.shift()!.name), {
+        recursive: true,
+        force: true,
+      });
+    }
   }
 
   private async initPreviewDirectory(project: Project) {
@@ -55,10 +79,11 @@ export class ExpandedPreviewer {
   }
 
   private async initialPreviewCommit(dirPath: string) {
-    await spawnProcess('git', ['init'], {cwd: dirPath});
-    await spawnProcess('git', ['add', '.'], {cwd: dirPath});
+    await spawnProcess('git', ['init'], {cwd: dirPath, stdio: 'ignore'});
+    await spawnProcess('git', ['add', '.'], {cwd: dirPath, stdio: 'ignore'});
     await spawnProcess('git', ['commit', `--message=${this.orgId} currently`], {
       cwd: dirPath,
+      stdio: 'ignore',
     });
   }
 
@@ -113,7 +138,7 @@ export class ExpandedPreviewer {
 
     const diffedResources: ResourcesJSON[] = [];
     diffedDictionnary.forEach((resource) => diffedResources.push(resource));
-    diffedResources.sort((a, b) => (a.resourceName > b.resourceName ? +1 : -1));
+    diffedResources.sort();
 
     const resourceType = Object.keys(currentFile.resources)[0];
     const diffedJSON: SnapshotFileJSON = {
@@ -162,12 +187,13 @@ export class ExpandedPreviewer {
       join(dirPath, 'resources'),
       this.previewedSnapshotDirPath
     );
-    await spawnProcess('git', ['add', '.'], {cwd: dirPath});
+    await spawnProcess('git', ['add', '.'], {cwd: dirPath, stdio: 'ignore'});
     await spawnProcess(
       'git',
       ['commit', `--message=${this.orgId} after snapshot application`],
       {
         cwd: dirPath,
+        stdio: 'ignore',
       }
     );
   }
