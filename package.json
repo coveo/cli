@@ -8,9 +8,6 @@
   },
   "license": "Apache-2.0",
   "bugs": "https://github.com/coveo/cli/issues",
-  "dependencies": {
-    "aws-sdk": "^2.951.0"
-  },
   "devDependencies": {
     "@actions/core": "1.4.0",
     "@actions/github": "5.0.0",
@@ -22,6 +19,7 @@
     "@typescript-eslint/eslint-plugin": "4.28.4",
     "@typescript-eslint/parser": "4.28.4",
     "async-retry": "1.3.1",
+    "aws-sdk": "^2.952.0",
     "axios": "0.21.1",
     "cz-conventional-changelog": "3.3.0",
     "eslint": "7.31.0",

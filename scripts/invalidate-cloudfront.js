@@ -1,5 +1,3 @@
-const exec = require('child_process').exec;
-const colors = require('colors');
 const AWS = require('aws-sdk');
 
 const cloudfront = new AWS.CloudFront();
@@ -18,20 +16,17 @@ const invalidationRequest = cloudfront.createInvalidation({
 
 invalidationRequest.send((error, success) => {
   if (error) {
-    console.log(
-      colors.red('ERROR WHILE INVALIDATING RESSOURCES ON CLOUDFRONT')
-    );
-    console.log(colors.red('*************'));
-    console.log(colors.red(error.message));
-    console.log(colors.red('*************'));
-    exec('travis_terminate 1');
+    console.log('ERROR WHILE INVALIDATING RESSOURCES ON CLOUDFRONT');
+    console.log('*************');
+    console.log(error.message);
+    console.log('*************');
     throw error;
   }
   if (success) {
-    console.log(colors.green('INVALIDATION ON CLOUDFRONT SUCCESSFUL'));
-    console.log(colors.green('*************'));
-    console.log(colors.green(`PATH INVALIDATED: ${pathToInvalidate}`));
-    console.log(colors.green(`INVALIDATION ID : ${success.Invalidation.Id}`));
-    console.log(colors.green('*************'));
+    console.log('INVALIDATION ON CLOUDFRONT SUCCESSFUL');
+    console.log('*************');
+    console.log(`PATH INVALIDATED: ${pathToInvalidate}`);
+    console.log(`INVALIDATION ID : ${success.Invalidation.Id}`);
+    console.log('*************');
   }
 });
