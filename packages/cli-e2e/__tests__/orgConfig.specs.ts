@@ -4,7 +4,7 @@ import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
 import {listExtensions, listFields} from '../utils/platform';
-import {ensureDirSync, existsSync} from 'fs-extra';
+import {ensureDirSync} from 'fs-extra';
 import {foldersContainSimilarFiles} from '../utils/file';
 config({path: getPathToHomedirEnvFile()});
 
@@ -99,15 +99,18 @@ describe('org:config', () => {
       'should preview the snapshot',
       async (done) => {
         const previewTerminal = previewChange(testOrgId, processManager);
-        const stringMatch = `Extensions
-      +   1 to create
 
-         Fields
-      +   66 to create
+        const expectedOutput = [
+          'Extensions',
+          '\\+   1 to create',
+          'Fields',
+          '\\+   2 to create',
+          'Filters',
+          '\\+   1 to create',
+        ];
+        const stringMatch = expectedOutput.join('\\s*');
+        const regex = new RegExp(stringMatch, 'gm');
 
-         Filters
-      +   1 to create`;
-        const regex = new RegExp(stringMatch, 'm');
         await previewTerminal.when(regex).on('stdout').do(done).once();
       },
       defaultTimeout
