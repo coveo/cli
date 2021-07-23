@@ -15,26 +15,31 @@ describe('org:config', () => {
   const defaultTimeout = 10 * 60e3;
   let processManager: ProcessManager;
 
+  const createNewTerminal = (
+    args: string[],
+    procManager: ProcessManager,
+    cwd: string,
+    debugName: string
+  ) => {
+    if (process.platform === 'win32') {
+      args.unshift('node');
+    }
+    return new Terminal(args.shift()!, args, {cwd}, procManager, debugName);
+  };
+
   const previewChange = (targetOrg: string, procManager: ProcessManager) => {
     const args: string[] = [
       CLI_EXEC_PATH,
       'org:config:preview',
       `-t=${targetOrg}`,
     ];
-    if (process.platform === 'win32') {
-      args.unshift('node');
-    }
-    const previewTerminal = new Terminal(
-      args.shift()!,
+
+    return createNewTerminal(
       args,
-      {
-        cwd: snapshotProjectPath,
-      },
       procManager,
+      snapshotProjectPath,
       'org-config-preview'
     );
-
-    return previewTerminal;
   };
 
   const pushToOrg = async (targetOrg: string, procManager: ProcessManager) => {
@@ -44,16 +49,10 @@ describe('org:config', () => {
       '--skipPreview',
       `-t=${targetOrg}`,
     ];
-    if (process.platform === 'win32') {
-      args.unshift('node');
-    }
-    const pushTerminal = new Terminal(
-      args.shift()!,
+    const pushTerminal = createNewTerminal(
       args,
-      {
-        cwd: snapshotProjectPath,
-      },
       procManager,
+      snapshotProjectPath,
       'org-config-push'
     );
 
@@ -70,20 +69,15 @@ describe('org:config', () => {
       'org:config:pull',
       `-t=${targetOrg}`,
     ];
-    if (process.platform === 'win32') {
-      args.unshift('node');
-    }
-    const pushTerminal = new Terminal(
-      args.shift()!,
+
+    const pullTerminal = createNewTerminal(
       args,
-      {
-        cwd: destinationPath,
-      },
       procManager,
+      destinationPath,
       'org-config-pull'
     );
 
-    await pushTerminal.when('exit').on('process').do().once();
+    await pullTerminal.when('exit').on('process').do().once();
   };
 
   beforeAll(async () => {
