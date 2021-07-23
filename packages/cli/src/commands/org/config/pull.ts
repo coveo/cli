@@ -74,7 +74,7 @@ export default class Pull extends Command {
   private displayAdditionalErrorMessage(err?: Error) {
     if (err instanceof SnapshotOperationTimeoutError) {
       const snapshot = err.snapshot;
-      cli.info(
+      cli.log(
         dedent`
 
           Once the snapshot is created, you can pull it with the following command:
