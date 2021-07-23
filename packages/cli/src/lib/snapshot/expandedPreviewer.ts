@@ -10,6 +10,7 @@ import {Project} from '../project/project';
 import {spawnProcess} from '../utils/process';
 import {SnapshotFactory} from './snapshotFactory';
 import dedent from 'ts-dedent';
+import {Dirent} from 'fs';
 
 type ResourcesJSON = Object & {resourceName: string};
 
@@ -39,6 +40,7 @@ export class ExpandedPreviewer {
    */
   public async preview() {
     this.deleteOldestPreviews();
+    if (Date.now() > 0) return;
     const previewLocalSlug = `${this.orgId}-${Date.now()}`;
     const dirPath = resolve(
       join(ExpandedPreviewer.previewDirectory, previewLocalSlug)
@@ -58,14 +60,24 @@ export class ExpandedPreviewer {
   }
 
   private deleteOldestPreviews() {
+    const getFilePath = (fileDirent: Dirent) =>
+      join(ExpandedPreviewer.previewDirectory, fileDirent.name);
+
+    const getEpochFromSnapshotDir = (dir: Dirent): number =>
+      parseInt(dir.name.match(/(?<=-)\d+$/)?.[0] ?? '0');
+
     const allFiles = readdirSync(ExpandedPreviewer.previewDirectory, {
       withFileTypes: true,
     });
     const dirs = allFiles
       .filter((potentialDir) => potentialDir.isDirectory())
-      .sort();
+      .sort(
+        (dirA, dirB) =>
+          getEpochFromSnapshotDir(dirA) - getEpochFromSnapshotDir(dirB)
+      );
+
     while (dirs.length >= ExpandedPreviewer.previewHistorySize) {
-      rmSync(join(ExpandedPreviewer.previewDirectory, dirs.shift()!.name), {
+      rmSync(getFilePath(dirs.shift()!), {
         recursive: true,
         force: true,
       });
