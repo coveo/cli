@@ -101,9 +101,8 @@ describe('org:config', () => {
           '\\+   2 to create',
           'Filters',
           '\\+   1 to create',
-        ];
-        const stringMatch = expectedOutput.join('\\s*');
-        const regex = new RegExp(stringMatch, 'gm');
+        ].join('\\s*');
+        const regex = new RegExp(expectedOutput, 'gm');
 
         await previewTerminal.when(regex).on('stdout').do().once();
       },
