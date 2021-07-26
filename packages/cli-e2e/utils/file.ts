@@ -4,9 +4,14 @@ import {
   readFileSync,
   writeFileSync,
   truncateSync,
-} from 'fs';
+  appendFileSync,
+  ensureFileSync,
+  readdirSync,
+} from 'fs-extra';
+import {parse} from 'dotenv';
 import {join} from 'path';
 import {getProjectPath} from './cli';
+import {EOL} from 'os';
 
 const deactivatedEnvFileName = '.env.disabled';
 const activeEnvFilename = '.env';
@@ -46,4 +51,38 @@ export function getPathToEnvFile(projectName: string) {
   return isEnvFileActive(projectName)
     ? join(projectPath, activeEnvFilename)
     : join(projectPath, deactivatedEnvFileName);
+}
+
+export function saveToEnvFile(
+  pathToEnv: string,
+  additionalEnvironment: Record<string, unknown>
+) {
+  ensureFileSync(pathToEnv);
+  const environment = parse(readFileSync(pathToEnv, {encoding: 'utf-8'}));
+
+  const updatedEnvironment = {
+    ...environment,
+    ...additionalEnvironment,
+  };
+
+  truncateSync(pathToEnv);
+  for (const [key, value] of Object.entries(updatedEnvironment)) {
+    appendFileSync(pathToEnv, `${key}=${value}${EOL}`);
+  }
+}
+
+export function foldersContainSimilarFiles(folder1: string, folder2: string) {
+  const folder1Files = readdirSync(folder1);
+  const folder2Files = readdirSync(folder2);
+  if (folder1Files.length !== folder2Files.length) {
+    return false;
+  }
+
+  for (const file of folder1Files) {
+    if (!existsSync(join(folder2, file))) {
+      return false;
+    }
+  }
+
+  return true;
 }

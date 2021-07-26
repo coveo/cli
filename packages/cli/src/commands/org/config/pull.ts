@@ -45,7 +45,7 @@ export default class Pull extends Command {
       char: 's',
       exclusive: ['resourceTypes'],
       description:
-        'The unique identifier of the snapshot to pull. If not specified, a new snapshot will be created.',
+        'The unique identifier of the snapshot to pull. If not specified, a new snapshot will be created. You can list available snapshot in your organization with org:config:list',
     }),
     git: flags.boolean({
       char: 'g',
@@ -71,18 +71,18 @@ export default class Pull extends Command {
 
   public async catch(err?: Error) {
     const {flags} = this.parse(Pull);
+    handleSnapshotError(err);
+    this.displayAdditionalErrorMessage(err);
     await this.config.runHook(
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
     );
-    handleSnapshotError(err);
-    this.displayAdditionalErrorMessage(err);
   }
 
   private displayAdditionalErrorMessage(err?: Error) {
     if (err instanceof SnapshotOperationTimeoutError) {
       const snapshot = err.snapshot;
-      cli.info(
+      cli.log(
         dedent`
 
           Once the snapshot is created, you can pull it with the following command:
