@@ -1,0 +1,59 @@
+{
+  "metadata": {
+    "schemaVersion": "v1"
+  },
+  "resources": {
+    "FIELD": [
+      {
+        "resourceName": "firstfield_4drH9a",
+        "parents": {},
+        "model": {
+          "dateFormat": "",
+          "includeInQuery": true,
+          "hierarchicalFacet": false,
+          "mergeWithLexicon": false,
+          "description": "The first field of the universe.",
+          "useCacheForComputedFacet": false,
+          "sort": false,
+          "type": "STRING",
+          "smartDateFacet": false,
+          "multiValueFacet": false,
+          "multiValueFacetTokenizers": ";",
+          "useCacheForNestedQuery": false,
+          "name": "firstfield",
+          "stemming": false,
+          "includeInResults": true,
+          "ranking": false,
+          "useCacheForSort": false,
+          "facet": false,
+          "useCacheForNumericQuery": false
+        }
+      },
+      {
+        "resourceName": "whereisbrian_2jDx8y",
+        "parents": {},
+        "model": {
+          "dateFormat": "",
+          "includeInQuery": true,
+          "hierarchicalFacet": false,
+          "mergeWithLexicon": false,
+          "description": "Brian is in the kitchen",
+          "useCacheForComputedFacet": false,
+          "sort": true,
+          "type": "LONG",
+          "smartDateFacet": false,
+          "multiValueFacet": false,
+          "multiValueFacetTokenizers": ";",
+          "useCacheForNestedQuery": false,
+          "name": "whereisbrian",
+          "stemming": false,
+          "includeInResults": true,
+          "ranking": false,
+          "useCacheForSort": false,
+          "facet": true,
+          "useCacheForNumericQuery": false
+        }
+      }
+    ]
+  }
+}

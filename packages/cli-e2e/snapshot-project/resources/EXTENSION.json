@@ -1,0 +1,20 @@
+{
+  "metadata": {
+    "schemaVersion": "v1"
+  },
+  "resources": {
+    "EXTENSION": [
+      {
+        "resourceName": "palpatine_o1cvP1",
+        "parents": {},
+        "model": {
+          "name": "palpatine",
+          "description": "",
+          "language": "PYTHON3",
+          "requiredDataStreams": [],
+          "content": "print('Unlimited power')"
+        }
+      }
+    ]
+  }
+}
