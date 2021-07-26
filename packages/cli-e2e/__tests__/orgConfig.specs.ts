@@ -5,7 +5,8 @@ import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
 import {ensureDirSync} from 'fs-extra';
 import {foldersContainSimilarFiles} from '../utils/file';
-import PlatformClient, {Environment} from '@coveord/platform-client';
+import PlatformClient from '@coveord/platform-client';
+import {getPlatformClient} from '../utils/platform';
 config({path: getPathToHomedirEnvFile()});
 
 describe('org:config', () => {
@@ -15,14 +16,6 @@ describe('org:config', () => {
   const defaultTimeout = 10 * 60e3;
   let processManager: ProcessManager;
   let platformClient: PlatformClient;
-
-  const getPlatformClient = (organizationId: string, accessToken: string) => {
-    return new PlatformClient({
-      environment: Environment.dev,
-      organizationId,
-      accessToken,
-    });
-  };
 
   const createNewTerminal = (
     args: string[],
