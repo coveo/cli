@@ -68,18 +68,20 @@ export default class Pull extends Command {
       buildAnalyticsFailureHook(this, flags, err)
     );
     handleSnapshotError(err);
-    this.displayAdditionalErrorMessage(err);
+    await this.displayAdditionalErrorMessage(err);
   }
 
-  private displayAdditionalErrorMessage(err?: Error) {
+  private async displayAdditionalErrorMessage(err?: Error) {
     if (err instanceof SnapshotOperationTimeoutError) {
+      const {flags} = this.parse(Pull);
       const snapshot = err.snapshot;
+      const target = await getTargetOrg(this.configuration, flags.target);
       cli.info(
         dedent`
 
           Once the snapshot is created, you can pull it with the following command:
 
-            ${blueBright`coveo org:config:pull ${snapshot.id}`}
+            ${blueBright`coveo org:config:pull -t ${target} -s ${snapshot.id}`}
 
             `
       );
