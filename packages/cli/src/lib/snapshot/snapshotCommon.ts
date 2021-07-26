@@ -86,7 +86,7 @@ export function handleSnapshotError(err?: Error) {
 }
 
 function operationGettingTooMuchTimeMessage(snapshot: Snapshot): string {
-  return dedent`Snapshot ${
+  return dedent`${
     snapshot.latestReport.type
   } operation is taking a long time to complete.
   Run the following command to monitor the operation:
