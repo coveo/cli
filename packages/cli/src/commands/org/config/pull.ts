@@ -50,7 +50,7 @@ export default class Pull extends Command {
     git: flags.boolean({
       char: 'g',
       description:
-        'Wether to create a git repository when creating a new project.',
+        'Whether to create a git repository when creating a new project.',
       default: true,
     }),
   };
