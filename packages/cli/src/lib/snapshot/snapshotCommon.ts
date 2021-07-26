@@ -80,14 +80,14 @@ export async function getTargetOrg(config: Config, target?: string) {
 export function handleSnapshotError(err?: Error) {
   if (err instanceof SnapshotOperationTimeoutError) {
     cli.action.stop('Incomplete');
-    cli.info(operationGettingTooMuchTimeMessage(err.snapshot));
+    cli.log(operationGettingTooMuchTimeMessage(err.snapshot));
   } else {
     throw err;
   }
 }
 
 function operationGettingTooMuchTimeMessage(snapshot: Snapshot): string {
-  return dedent`Snapshot ${
+  return dedent`${
     snapshot.latestReport.type
   } operation is taking a long time to complete.
   Run the following command to monitor the operation:

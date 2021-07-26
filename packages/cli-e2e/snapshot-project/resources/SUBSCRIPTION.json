@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "schemaVersion": "v1"
+  },
+  "resources": {
+    "SUBSCRIPTION": [
+      {
+        "resourceName": "License_Limit_Reached_i5Rq8s",
+        "parents": {},
+        "model": {
+          "pattern": {
+            "content": {},
+            "operations": ["LIMIT_REACHED"],
+            "resourceTypes": ["*"],
+            "resultTypes": ["SUCCESS"]
+          },
+          "description": "Default subscription that notifies when a license limit is reached or exceeded",
+          "type": "EMAIL",
+          "userId": "rweasley@coveo.com-google",
+          "enabled": true,
+          "frequency": "LIVE",
+          "name": "License Limit Reached",
+          "parameters": {
+            "emailRecipients": ["rweasley@coveo.com"]
+          }
+        }
+      }
+    ]
+  }
+}

@@ -43,7 +43,7 @@ export default class Pull extends Command {
       char: 's',
       exclusive: ['resourceTypes'],
       description:
-        'The unique identifier of the snapshot to pull. If not specified, a new snapshot will be created.',
+        'The unique identifier of the snapshot to pull. If not specified, a new snapshot will be created. You can list available snapshot in your organization with org:config:list',
     }),
   };
 
@@ -51,7 +51,6 @@ export default class Pull extends Command {
 
   @Preconditions(IsAuthenticated())
   public async run() {
-    cli.action.start('Creating Snapshot');
     const snapshot = await this.getSnapshot();
 
     cli.action.start('Updating project with Snapshot');
@@ -63,12 +62,12 @@ export default class Pull extends Command {
 
   public async catch(err?: Error) {
     const {flags} = this.parse(Pull);
+    handleSnapshotError(err);
+    this.displayAdditionalErrorMessage(err);
     await this.config.runHook(
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
     );
-    handleSnapshotError(err);
-    await this.displayAdditionalErrorMessage(err);
   }
 
   private async displayAdditionalErrorMessage(err?: Error) {
@@ -76,7 +75,7 @@ export default class Pull extends Command {
       const {flags} = this.parse(Pull);
       const snapshot = err.snapshot;
       const target = await getTargetOrg(this.configuration, flags.target);
-      cli.info(
+      cli.log(
         dedent`
 
           Once the snapshot is created, you can pull it with the following command:
@@ -98,11 +97,13 @@ export default class Pull extends Command {
     const {flags} = this.parse(Pull);
     const target = await getTargetOrg(this.configuration, flags.target);
     if (flags.snapshotId) {
+      cli.action.start('Retrieving Snapshot');
       return SnapshotFactory.createFromExistingSnapshot(
         flags.snapshotId,
         target
       );
     }
+    cli.action.start('Creating Snapshot');
     return SnapshotFactory.createFromOrg(
       this.ResourceSnapshotTypesToExport,
       target

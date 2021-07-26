@@ -35,6 +35,7 @@ USAGE
 * [`coveo config:get`](#coveo-configget)
 * [`coveo config:set`](#coveo-configset)
 * [`coveo help [COMMAND]`](#coveo-help-command)
+* [`coveo org:config:list [FILE]`](#coveo-orgconfiglist-file)
 * [`coveo org:list`](#coveo-orglist)
 * [`coveo org:search:dump`](#coveo-orgsearchdump)
 * [`coveo source:push:add SOURCEID`](#coveo-sourcepushadd-sourceid)
@@ -125,6 +126,37 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.2/src/commands/help.ts)_
+
+## `coveo org:config:list [FILE]`
+
+List available snapshots from an organization
+
+```
+USAGE
+  $ coveo org:config:list [FILE]
+
+OPTIONS
+  -t, --target=destinationorganizationg7dg3gd  The unique identifier of the organization containing the snapshots. If
+                                               not specified, the organization you are connected to will be used.
+
+  -x, --extended                               show extra columns
+
+  --columns=columns                            only show provided columns (comma-separated)
+
+  --csv                                        output is csv format [alias: --output=csv]
+
+  --filter=filter                              filter property by partial string matching, ex: name=foo
+
+  --no-header                                  hide table header from output
+
+  --no-truncate                                do not truncate output to fit screen
+
+  --output=csv|json|yaml                       output in a more machine friendly format
+
+  --sort=sort                                  property to sort by (prepend '-' for descending)
+```
+
+_See code: [src/commands/org/config/list.ts](https://github.com/coveo/cli/blob/v1.10.0/packages/cli/src/commands/org/config/list.ts)_
 
 ## `coveo org:list`
 
