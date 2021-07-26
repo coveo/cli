@@ -11,17 +11,30 @@
       "sequential": ["us-east-1"]
     }
   },
-  "phases": {
-    "terraform": {},
-    "s3": {
-      "bucket": "{terraform.infra.infra.bucket_binaries}",
-      "directory": "proda/StaticCDN/cli",
-      "source": "./artifacts",
-      "parameters": {
-        "acl": "public-read"
+  "ordered_phases": [
+    {"id": "terraform", "terraform": {}},
+    {
+      "id": "s3",
+      "s3": {
+        "bucket": "{terraform.infra.infra.bucket_binaries}",
+        "directory": "proda/StaticCDN/cli",
+        "source": "./artifacts",
+        "parameters": {
+          "acl": "public-read"
+        }
+      }
+    },
+    {
+      "id": "invalidate_cache",
+      "team_jenkins": {
+        "job_name": "cli-cloudfront-invalidation",
+        "disabled": true,
+        "prd": {
+          "disabled": false
+        }
       }
     }
-  },
+  ],
   "snyk": {
     "org": "coveo-developer-experience",
     "no_container_images": true,

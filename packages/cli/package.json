@@ -102,6 +102,12 @@
       },
       "org:search": {
         "description": "perform queries against a coveo index"
+      },
+      "source": {
+        "description": "manage Coveo sources"
+      },
+      "source:push": {
+        "description": "manage Coveo Push API sources"
       }
     },
     "hooks": {
