@@ -2,6 +2,7 @@ import {ResourceSnapshotType} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
 import {IOptionFlag} from '@oclif/command/lib/flags';
 import {blueBright} from 'chalk';
+import {exec} from 'child_process';
 import {cli} from 'cli-ux';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
@@ -11,6 +12,7 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
+import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {Project} from '../../../lib/project/project';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
@@ -45,11 +47,17 @@ export default class Pull extends Command {
       description:
         'The unique identifier of the snapshot to pull. If not specified, a new snapshot will be created.',
     }),
+    git: flags.boolean({
+      char: 'g',
+      description:
+        'Wether to create a git repository when creating a new project.',
+      default: true,
+    }),
   };
 
   public static hidden = true;
 
-  @Preconditions(IsAuthenticated())
+  @Preconditions(IsAuthenticated(), IsGitInstalled())
   public async run() {
     cli.action.start('Creating Snapshot');
     const snapshot = await this.getSnapshot();
@@ -79,7 +87,7 @@ export default class Pull extends Command {
 
           Once the snapshot is created, you can pull it with the following command:
 
-            ${blueBright`coveo org:config:pull ${snapshot.id}`}
+            ${blueBright`coveo org:config:pull -s ${snapshot.id}`}
 
             `
       );
@@ -87,7 +95,11 @@ export default class Pull extends Command {
   }
 
   private async refreshProject(snapshot: Snapshot) {
+    const {flags} = this.parse(Pull);
     const project = new Project(this.projectPath);
+    if (flags.git && !project.contains('.git')) {
+      exec(`git init ${this.projectPath}`);
+    }
     const snapshotBlob = await snapshot.download();
     await project.refresh(snapshotBlob);
   }
@@ -117,6 +129,6 @@ export default class Pull extends Command {
   }
 
   private get projectPath() {
-    return cwd();
+    return '/Users/olamothe/snapshottesting'; //cwd();
   }
 }

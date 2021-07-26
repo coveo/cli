@@ -4,9 +4,14 @@ import {cli} from 'cli-ux';
 import archiver from 'archiver';
 import {InvalidProjectError} from '../errors';
 import extract from 'extract-zip';
+import {createFileSync, pathExistsSync, writeJSONSync} from 'fs-extra';
 
 export class Project {
-  public constructor(private pathToProject: string) {}
+  public constructor(private pathToProject: string) {
+    if (!this.isCoveoProject) {
+      this.makeCoveoProject();
+    }
+  }
 
   public async refresh(projectContent: Blob) {
     const buffer = await projectContent.arrayBuffer();
@@ -21,14 +26,17 @@ export class Project {
   }
 
   private ensureProjectCompliance() {
-    /*
-     * TODO: CDX-354: add checks to ensure the project is indeed a valid project
-     * e.g. * Check if path to resources is a folder
-     *      * Check if the root has a valid config file
-     */
-
-    if (!existsSync(this.resourcePath)) {
-      throw new InvalidProjectError();
+    if (!this.isResourcesProject) {
+      throw new InvalidProjectError(
+        this.pathToProject,
+        'Does not contain any resources folder'
+      );
+    }
+    if (!this.isCoveoProject) {
+      throw new InvalidProjectError(
+        this.pathToProject,
+        'Does not contain any .coveo folder'
+      );
     }
   }
 
@@ -53,11 +61,62 @@ export class Project {
     }
   }
 
+  public contains(fileName: string) {
+    return existsSync(join(this.pathToProject, fileName));
+  }
+
   private get pathToTemporaryZip() {
     return join(this.pathToProject, 'snapshot.zip');
   }
 
   private get resourcePath() {
     return join(this.pathToProject, 'resources');
+  }
+
+  private get isCoveoProject() {
+    return this.contains(DotFolderConfig.hiddenFolderName);
+  }
+
+  private get isResourcesProject() {
+    return this.contains(this.resourcePath);
+  }
+
+  private makeCoveoProject() {
+    new DotFolderConfig(this.pathToProject);
+  }
+}
+
+export class DotFolderConfig {
+  public constructor(public owner: string) {
+    this.ensureConfigExists();
+  }
+
+  public static get hiddenFolderName() {
+    return '.coveo';
+  }
+
+  public static get configName() {
+    return 'config.json';
+  }
+
+  private get defaultConfig() {
+    return {
+      version: 1,
+      organization: '',
+    };
+  }
+
+  private ensureConfigExists() {
+    const path = join(
+      this.owner.toString(),
+      DotFolderConfig.hiddenFolderName,
+      DotFolderConfig.configName
+    );
+
+    const exists = pathExistsSync(path);
+    if (!exists) {
+      createFileSync(path);
+      writeJSONSync(path, this.defaultConfig);
+    }
   }
 }
