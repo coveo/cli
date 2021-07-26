@@ -129,6 +129,6 @@ export default class Pull extends Command {
   }
 
   private get projectPath() {
-    return '/Users/olamothe/snapshottesting'; //cwd();
+    return cwd();
   }
 }

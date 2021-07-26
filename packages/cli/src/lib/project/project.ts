@@ -4,7 +4,7 @@ import {cli} from 'cli-ux';
 import archiver from 'archiver';
 import {InvalidProjectError} from '../errors';
 import extract from 'extract-zip';
-import {createFileSync, pathExistsSync, writeJSONSync} from 'fs-extra';
+import {DotFolder, DotFolderConfig} from './dotFolder';
 
 export class Project {
   public constructor(private pathToProject: string) {
@@ -74,7 +74,7 @@ export class Project {
   }
 
   private get isCoveoProject() {
-    return this.contains(DotFolderConfig.hiddenFolderName);
+    return this.contains(DotFolder.hiddenFolderName);
   }
 
   private get isResourcesProject() {
@@ -82,41 +82,7 @@ export class Project {
   }
 
   private makeCoveoProject() {
-    new DotFolderConfig(this.pathToProject);
-  }
-}
-
-export class DotFolderConfig {
-  public constructor(public owner: string) {
-    this.ensureConfigExists();
-  }
-
-  public static get hiddenFolderName() {
-    return '.coveo';
-  }
-
-  public static get configName() {
-    return 'config.json';
-  }
-
-  private get defaultConfig() {
-    return {
-      version: 1,
-      organization: '',
-    };
-  }
-
-  private ensureConfigExists() {
-    const path = join(
-      this.owner.toString(),
-      DotFolderConfig.hiddenFolderName,
-      DotFolderConfig.configName
-    );
-
-    const exists = pathExistsSync(path);
-    if (!exists) {
-      createFileSync(path);
-      writeJSONSync(path, this.defaultConfig);
-    }
+    const dotFolder = new DotFolder(this.pathToProject);
+    new DotFolderConfig(dotFolder);
   }
 }
