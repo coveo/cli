@@ -27,7 +27,7 @@ export default class List extends Command {
     }),
   };
 
-  public static args = [{name: 'file'}];
+  public static hidden = true;
 
   @Preconditions(IsAuthenticated())
   public async run() {
@@ -39,10 +39,9 @@ export default class List extends Command {
     const snapshots = await platformClient.resourceSnapshot.list();
     if (snapshots.length === 0) {
       this.log(
-        dedent(`
-      There is no configuration snapshot available in organization ${org}
-      You can create one using org:config:pull
-      `)
+        dedent(
+          `There is no configuration snapshot available in organization ${org}`
+        )
       );
       return;
     }
