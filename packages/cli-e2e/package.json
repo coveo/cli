@@ -1,7 +1,7 @@
 {
   "name": "@coveo/cli-e2e",
   "private": true,
-  "version": "1.9.0",
+  "version": "1.10.0",
   "description": "End-to-End test of Coveo's CLI",
   "author": "Coveo",
   "homepage": "https://github.com/coveo/cli#readme",
@@ -40,8 +40,8 @@
     "is-running": "2.1.0"
   },
   "dependencies": {
-    "@babel/core": "7.14.6",
-    "@babel/preset-env": "7.14.7",
+    "@babel/core": "7.14.8",
+    "@babel/preset-env": "7.14.8",
     "@babel/preset-typescript": "7.14.5",
     "@coveord/platform-client": "^23.0.0",
     "abortcontroller-polyfill": "^1.7.3",

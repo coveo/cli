@@ -43,7 +43,7 @@ export default class Pull extends Command {
       char: 's',
       exclusive: ['resourceTypes'],
       description:
-        'The unique identifier of the snapshot to pull. If not specified, a new snapshot will be created.',
+        'The unique identifier of the snapshot to pull. If not specified, a new snapshot will be created. You can list available snapshot in your organization with org:config:list',
     }),
   };
 
@@ -101,14 +101,17 @@ export default class Pull extends Command {
         target
       );
     }
-    return SnapshotFactory.createFromOrg(this.resourceTypesToExport, target);
+    return SnapshotFactory.createFromOrg(
+      this.ResourceSnapshotTypesToExport,
+      target
+    );
   }
 
   private get configuration() {
     return new Config(this.config.configDir, this.error);
   }
 
-  private get resourceTypesToExport() {
+  private get ResourceSnapshotTypesToExport() {
     const {flags} = this.parse(Pull);
     return flags.resourceTypes.map((type) => ResourceSnapshotType[type]);
   }
