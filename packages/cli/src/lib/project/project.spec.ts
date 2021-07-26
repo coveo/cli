@@ -6,7 +6,7 @@ jest.mock('fs-extra');
 
 import {mocked} from 'ts-jest/utils';
 import {existsSync, createWriteStream, WriteStream, unlinkSync} from 'fs';
-import {writeJSONSync, pathExistsSync, createFileSync} from 'fs-extra';
+import {writeJSONSync, pathExistsSync, ensureDirSync} from 'fs-extra';
 import {Project} from './project';
 import {join} from 'path';
 import archiver, {Archiver} from 'archiver';
@@ -21,7 +21,7 @@ const mockedPipe = jest.fn();
 const mockedPassDirectory = jest.fn();
 const mockedFinalize = jest.fn();
 const mockedError = mocked(error);
-const mockedCreateFileSync = mocked(createFileSync);
+const mockedCreateFileSync = mocked(ensureDirSync);
 const mockedJSONSync = mocked(writeJSONSync);
 const mockedPathExistsSync = mocked(pathExistsSync);
 
@@ -94,7 +94,7 @@ describe('Project', () => {
     mockedPathExistsSync.mockReturnValueOnce(false);
     projectCreator();
     expect(mockedCreateFileSync).toHaveBeenCalledWith(
-      expect.stringContaining('.coveo/config.json')
+      expect.stringContaining('.coveo')
     );
     expect(mockedJSONSync).toHaveBeenCalledWith(
       expect.stringContaining('.coveo/config.json'),
