@@ -1,4 +1,10 @@
-import {readJSON, writeJSON, pathExists, createFile} from 'fs-extra';
+import {
+  readJSON,
+  writeJSON,
+  pathExists,
+  createFile,
+  writeJSONSync,
+} from 'fs-extra';
 import {join} from 'path';
 import {PlatformEnvironment, PlatformRegion} from '../platform/environment';
 
@@ -43,7 +49,7 @@ export class Config {
 
   public async replace(config: Configuration) {
     await this.ensureExists();
-    return await writeJSON(this.configPath, config);
+    return writeJSONSync(this.configPath, config);
   }
 
   public async set<K extends keyof Configuration, V extends Configuration[K]>(
