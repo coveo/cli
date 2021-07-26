@@ -51,7 +51,6 @@ export default class Pull extends Command {
 
   @Preconditions(IsAuthenticated())
   public async run() {
-    cli.action.start('Creating Snapshot');
     const snapshot = await this.getSnapshot();
 
     cli.action.start('Updating project with Snapshot');
@@ -96,11 +95,13 @@ export default class Pull extends Command {
     const {flags} = this.parse(Pull);
     const target = await getTargetOrg(this.configuration, flags.target);
     if (flags.snapshotId) {
+      cli.action.start('Retrieving Snapshot');
       return SnapshotFactory.createFromExistingSnapshot(
         flags.snapshotId,
         target
       );
     }
+    cli.action.start('Creating Snapshot');
     return SnapshotFactory.createFromOrg(
       this.ResourceSnapshotTypesToExport,
       target
