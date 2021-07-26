@@ -35,9 +35,6 @@ export class ExpandedPreviewer {
     ) as ResourceSnapshotType[];
   }
 
-  /**
-   * preview
-   */
   public async preview() {
     this.deleteOldestPreviews();
     if (Date.now() > 0) return;
