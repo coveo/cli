@@ -37,7 +37,6 @@ export class ExpandedPreviewer {
 
   public async preview() {
     this.deleteOldestPreviews();
-    if (Date.now() > 0) return;
     const previewLocalSlug = `${this.orgId}-${Date.now()}`;
     const dirPath = resolve(
       join(ExpandedPreviewer.previewDirectory, previewLocalSlug)
@@ -48,6 +47,8 @@ export class ExpandedPreviewer {
     const project = new Project(dirPath);
     await this.initPreviewDirectory(project);
     await this.applySnapshotToPreview(dirPath);
+    // TODO: Remove/move as tests progress.
+    if (Date.now() > 0) return;
     cli.info(dedent`
     
     A Git repository representing the modification has been created here:
