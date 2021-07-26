@@ -3,9 +3,9 @@ import {CLI_EXEC_PATH, getConfig, getPathToHomedirEnvFile} from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
-import {listExtensions, listFields} from '../utils/platform';
 import {ensureDirSync} from 'fs-extra';
 import {foldersContainSimilarFiles} from '../utils/file';
+import PlatformClient, {Environment} from '@coveord/platform-client';
 config({path: getPathToHomedirEnvFile()});
 
 describe('org:config', () => {
@@ -14,6 +14,15 @@ describe('org:config', () => {
   const snapshotProjectPath = join('snapshot-project');
   const defaultTimeout = 10 * 60e3;
   let processManager: ProcessManager;
+  let platformClient: PlatformClient;
+
+  const getPlatformClient = (organizationId: string, accessToken: string) => {
+    return new PlatformClient({
+      environment: Environment.dev,
+      organizationId,
+      accessToken,
+    });
+  };
 
   const createNewTerminal = (
     args: string[],
@@ -81,6 +90,7 @@ describe('org:config', () => {
   };
 
   beforeAll(async () => {
+    platformClient = getPlatformClient(testOrgId, accessToken);
     processManager = new ProcessManager();
   });
 
@@ -116,8 +126,7 @@ describe('org:config', () => {
     }, defaultTimeout);
 
     it('should have pushed fields', async () => {
-      const fields: unknown[] = (await listFields(testOrgId, accessToken))
-        .items;
+      const fields = (await platformClient.field.list()).items;
       expect(fields).toEqual(
         expect.arrayContaining([
           expect.objectContaining({name: 'firstfield'}),
@@ -127,10 +136,7 @@ describe('org:config', () => {
     });
 
     it('should have pushed extensions', async () => {
-      const extensions: unknown[] = await listExtensions(
-        testOrgId,
-        accessToken
-      );
+      const extensions = await platformClient.extension.list();
       expect(extensions).toEqual(
         expect.arrayContaining([expect.objectContaining({name: 'palpatine'})])
       );
