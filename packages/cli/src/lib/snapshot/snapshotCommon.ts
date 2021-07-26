@@ -79,6 +79,7 @@ export async function getTargetOrg(config: Config, target?: string) {
 
 export function handleSnapshotError(err?: Error) {
   if (err instanceof SnapshotOperationTimeoutError) {
+    cli.action.stop('Incomplete');
     cli.info(operationGettingTooMuchTimeMessage(err.snapshot));
   } else {
     throw err;
