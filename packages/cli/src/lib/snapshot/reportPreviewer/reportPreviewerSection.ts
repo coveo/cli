@@ -1,8 +1,8 @@
-import {ReportViewerStyles} from './reportViewerStyles';
+import {ReportViewerStyles} from './reportPreviewerStyles';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
-} from './reportViewerDataModels';
+} from './reportPreviewerDataModels';
 import {ResourceSnapshotsReportOperationModel} from '@coveord/platform-client';
 
 class ReportViewerOperationLogFactory {

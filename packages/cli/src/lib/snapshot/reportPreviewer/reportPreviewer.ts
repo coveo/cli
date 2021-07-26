@@ -1,12 +1,12 @@
 import {cli} from 'cli-ux';
 import {red, italic, green} from 'chalk';
-import {ReportViewerSection} from './reportViewerSection';
-import {ReportViewerStyles} from './reportViewerStyles';
+import {ReportViewerSection} from './reportPreviewerSection';
+import {ReportViewerStyles} from './reportPreviewerStyles';
 import {SnapshotReporter} from '../snapshotReporter';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
-} from './reportViewerDataModels';
+} from './reportPreviewerDataModels';
 import dedent from 'ts-dedent';
 
 export class ReportViewer {

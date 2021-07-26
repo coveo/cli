@@ -10,7 +10,7 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
-import {ReportViewerStyles} from '../../../lib/snapshot/reportViewer/reportViewerStyles';
+import {ReportViewerStyles} from '../../../lib/snapshot/reportPreviewer/reportPreviewerStyles';
 import {Snapshot, waitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {
   getTargetOrg,

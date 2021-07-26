@@ -8,7 +8,7 @@ import {
   SnapshotExportContentFormat,
 } from '@coveord/platform-client';
 import {backOff, IBackOffOptions} from 'exponential-backoff';
-import {ReportViewer} from './reportViewer/reportViewer';
+import {ReportViewer} from './reportPreviewer/reportPreviewer';
 import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
 import dedent from 'ts-dedent';
