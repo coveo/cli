@@ -1,7 +1,7 @@
 import {
   createFileSync,
+  ensureDirSync,
   existsSync,
-  pathExistsSync,
   writeJSONSync,
 } from 'fs-extra';
 import {join} from 'path';
@@ -20,10 +20,7 @@ export class DotFolder {
   }
 
   private ensureFolderExists() {
-    const exists = pathExistsSync(this.path);
-    if (!exists) {
-      createFileSync(this.path);
-    }
+    ensureDirSync(this.path);
   }
 }
 
@@ -46,7 +43,6 @@ export class DotFolderConfig {
   private ensureFileExists() {
     const path = join(this.ownerFolder.path, DotFolderConfig.configName);
     if (!existsSync(path)) {
-      createFileSync(path);
       writeJSONSync(path, this.defaultConfig);
     }
   }

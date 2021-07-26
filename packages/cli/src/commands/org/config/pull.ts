@@ -21,6 +21,7 @@ import {
   handleSnapshotError,
 } from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
+import {spawnProcess} from '../../../lib/utils/process';
 
 export default class Pull extends Command {
   public static description = 'Pull resources from an organization';
@@ -98,7 +99,9 @@ export default class Pull extends Command {
     const {flags} = this.parse(Pull);
     const project = new Project(this.projectPath);
     if (flags.git && !project.contains('.git')) {
-      exec(`git init ${this.projectPath}`);
+      await spawnProcess('git', ['init', `${this.projectPath}`], {
+        stdio: 'ignore',
+      });
     }
     const snapshotBlob = await snapshot.download();
     await project.refresh(snapshotBlob);
