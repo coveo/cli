@@ -1,5 +1,5 @@
 import {
-  pathExists,
+  pathExistsSync,
   createFileSync,
   writeJSONSync,
   readJSONSync,
@@ -30,8 +30,8 @@ export class Config {
     private error = console.error
   ) {}
 
-  public async get(): Promise<Configuration> {
-    await this.ensureExists();
+  public get(): Configuration {
+    this.ensureExists();
     try {
       const content = readJSONSync(this.configPath);
       if (content instanceof Error) {
@@ -40,7 +40,7 @@ export class Config {
       return content;
     } catch (e) {
       this.error(`Error while reading configuration at ${this.configPath}`);
-      await this.replace(DefaultConfig);
+      this.replace(DefaultConfig);
       this.error(
         `Configuration has been reset to default value: ${JSON.stringify(
           DefaultConfig
@@ -50,48 +50,48 @@ export class Config {
     }
   }
 
-  public async replace(config: Configuration) {
-    await this.ensureExists();
+  public replace(config: Configuration) {
+    this.ensureExists();
     return writeJSONSync(this.configPath, config);
   }
 
-  public async set<K extends keyof Configuration, V extends Configuration[K]>(
+  public set<K extends keyof Configuration, V extends Configuration[K]>(
     key: K,
     value: V
   ) {
-    await this.ensureExists();
-    const config = await this.get();
+    this.ensureExists();
+    const config = this.get();
     config[key] = value;
-    await this.replace(config);
+    this.replace(config);
   }
 
-  public async setAny(key: string, value: unknown) {
-    await this.ensureExists();
-    const config = await this.get();
+  public setAny(key: string, value: unknown) {
+    this.ensureExists();
+    const config = this.get();
     config[key] = value;
-    await this.replace(config);
+    this.replace(config);
   }
 
-  public async delete<K extends keyof Configuration>(key: K) {
-    await this.ensureExists();
-    const config = await this.get();
+  public delete<K extends keyof Configuration>(key: K) {
+    this.ensureExists();
+    const config = this.get();
     delete config[key];
-    await this.replace(config);
+    this.replace(config);
   }
 
-  public async deleteAny(key: string) {
-    await this.ensureExists();
-    const config = await this.get();
+  public deleteAny(key: string) {
+    this.ensureExists();
+    const config = this.get();
     delete config[key];
-    await this.replace(config);
+    this.replace(config);
   }
 
   private get configPath() {
     return join(this.configDir, 'config.json');
   }
 
-  private async ensureExists() {
-    const exists = await pathExists(this.configPath);
+  private ensureExists() {
+    const exists = pathExistsSync(this.configPath);
     if (!exists) {
       createFileSync(this.configPath);
       writeJSONSync(this.configPath, DefaultConfig);
