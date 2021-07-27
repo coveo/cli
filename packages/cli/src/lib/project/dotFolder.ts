@@ -1,9 +1,4 @@
-import {
-  createFileSync,
-  ensureDirSync,
-  existsSync,
-  writeJSONSync,
-} from 'fs-extra';
+import {ensureDirSync, existsSync, writeJSONSync} from 'fs-extra';
 import {join} from 'path';
 
 export class DotFolder {
