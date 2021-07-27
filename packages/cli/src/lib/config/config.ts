@@ -1,9 +1,8 @@
 import {
-  readJSON,
-  writeJSON,
   pathExists,
-  createFile,
+  createFileSync,
   writeJSONSync,
+  readJSONSync,
 } from 'fs-extra';
 import {join} from 'path';
 import {PlatformEnvironment, PlatformRegion} from '../platform/environment';
@@ -34,7 +33,11 @@ export class Config {
   public async get(): Promise<Configuration> {
     await this.ensureExists();
     try {
-      return await readJSON(this.configPath);
+      const content = readJSONSync(this.configPath);
+      if (content instanceof Error) {
+        throw content;
+      }
+      return content;
     } catch (e) {
       this.error(`Error while reading configuration at ${this.configPath}`);
       await this.replace(DefaultConfig);
@@ -90,8 +93,8 @@ export class Config {
   private async ensureExists() {
     const exists = await pathExists(this.configPath);
     if (!exists) {
-      await createFile(this.configPath);
-      await writeJSON(this.configPath, DefaultConfig);
+      createFileSync(this.configPath);
+      writeJSONSync(this.configPath, DefaultConfig);
     }
   }
 }

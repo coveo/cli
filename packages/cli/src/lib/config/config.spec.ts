@@ -1,16 +1,21 @@
-import {pathExists, createFile, writeJSON, readJSON} from 'fs-extra';
+import {
+  pathExists,
+  createFileSync,
+  writeJSONSync,
+  readJSONSync,
+} from 'fs-extra';
 import {join} from 'path';
 import {mocked} from 'ts-jest/utils';
 import {Config} from './config';
 jest.mock('fs-extra');
 const mockedPathExists = mocked(pathExists);
-const mockedCreateFile = mocked(createFile);
-const mockedWriteJSON = mocked(writeJSON);
-const mockedReadJSON = mocked(readJSON);
+const mockedCreateFile = mocked(createFileSync);
+const mockedWriteJSON = mocked(writeJSONSync);
+const mockedReadJSON = mocked(readJSONSync);
 
 describe('config', () => {
   beforeEach(() => {
-    mockedReadJSON.mockImplementation(() => Promise.resolve({}));
+    mockedReadJSON.mockImplementation(() => {});
   });
 
   it('should ensure config file exists', async () => {
@@ -46,13 +51,13 @@ describe('config', () => {
 
     it('should return the config if no error', async () => {
       const someConfig = {foo: 'bar'};
-      mockedReadJSON.mockImplementationOnce(() => Promise.resolve(someConfig));
+      mockedReadJSON.mockImplementationOnce(() => someConfig);
       const cfg = await new Config('foo/bar').get();
       expect(cfg).toBe(someConfig);
     });
 
     it('should create default config on error', async () => {
-      mockedReadJSON.mockImplementationOnce(() => Promise.reject('oh noes'));
+      mockedReadJSON.mockReturnValueOnce(new Error('oh noes'));
       await new Config('foo/bar').get();
       expect(mockedWriteJSON).toHaveBeenCalledWith(
         join('foo', 'bar', 'config.json'),
