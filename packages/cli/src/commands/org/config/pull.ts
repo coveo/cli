@@ -2,7 +2,6 @@ import {ResourceSnapshotType} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
 import {IOptionFlag} from '@oclif/command/lib/flags';
 import {blueBright} from 'chalk';
-import {exec} from 'child_process';
 import {cli} from 'cli-ux';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
@@ -60,7 +59,6 @@ export default class Pull extends Command {
 
   @Preconditions(IsAuthenticated(), IsGitInstalled())
   public async run() {
-    cli.action.start('Creating Snapshot');
     const snapshot = await this.getSnapshot();
 
     cli.action.start('Updating project with Snapshot');
@@ -73,22 +71,24 @@ export default class Pull extends Command {
   public async catch(err?: Error) {
     const {flags} = this.parse(Pull);
     handleSnapshotError(err);
-    this.displayAdditionalErrorMessage(err);
+    await this.displayAdditionalErrorMessage(err);
     await this.config.runHook(
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
     );
   }
 
-  private displayAdditionalErrorMessage(err?: Error) {
+  private async displayAdditionalErrorMessage(err?: Error) {
     if (err instanceof SnapshotOperationTimeoutError) {
+      const {flags} = this.parse(Pull);
       const snapshot = err.snapshot;
+      const target = await getTargetOrg(this.configuration, flags.target);
       cli.log(
         dedent`
 
           Once the snapshot is created, you can pull it with the following command:
 
-            ${blueBright`coveo org:config:pull -s ${snapshot.id}`}
+            ${blueBright`coveo org:config:pull -t ${target} -s ${snapshot.id}`}
 
             `
       );
@@ -111,11 +111,13 @@ export default class Pull extends Command {
     const {flags} = this.parse(Pull);
     const target = await getTargetOrg(this.configuration, flags.target);
     if (flags.snapshotId) {
+      cli.action.start('Retrieving Snapshot');
       return SnapshotFactory.createFromExistingSnapshot(
         flags.snapshotId,
         target
       );
     }
+    cli.action.start('Creating Snapshot');
     return SnapshotFactory.createFromOrg(
       this.ResourceSnapshotTypesToExport,
       target
