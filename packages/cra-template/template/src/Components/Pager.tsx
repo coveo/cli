@@ -14,7 +14,10 @@ const PagerRenderer: FunctionComponent<PagerProps> = (props) => {
   const [state, setState] = useState(controller.state);
 
   useEffect(
-    () => controller.subscribe(() => setState(controller.state)),
+    () =>
+      controller.subscribe(() =>
+        process.nextTick(() => setState(controller.state))
+      ),
     [controller]
   );
 
