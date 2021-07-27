@@ -7,7 +7,7 @@ import {join, resolve} from 'path';
 import {cli} from 'cli-ux';
 import {Project} from '../../project/project';
 import {spawnProcess} from '../../utils/process';
-import {SnapshotFactory} from './snapshotFactory';
+import {SnapshotFactory} from '../snapshotFactory';
 import dedent from 'ts-dedent';
 import {Dirent} from 'fs';
 import {recursiveDirectoryDiff} from './filesDiffProcessor';
@@ -32,9 +32,8 @@ export class ExpandedPreviewer {
   public async preview() {
     this.deleteOldestPreviews();
     const previewLocalSlug = `${this.orgId}-${Date.now()}`;
-    const dirPath = resolve(
-      join(ExpandedPreviewer.previewDirectory, previewLocalSlug)
-    );
+    const dirPath = join(ExpandedPreviewer.previewDirectory, previewLocalSlug);
+
     mkdirSync(dirPath, {
       recursive: true,
     });

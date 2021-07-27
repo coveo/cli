@@ -26,6 +26,7 @@ export function recursiveDirectoryDiff(
         )
       );
     }
+
     if (file.isFile()) {
       const previewFile = readJSONSync(join(previewDir, file.name));
       const currentFilePath = join(currentDir, file.name);

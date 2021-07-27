@@ -1,11 +1,15 @@
 jest.mock('fs');
 jest.mock('fs-extra');
-jest.mock('../project/project');
-jest.mock('./snapshotFactory');
-jest.mock('../utils/process');
-import {ResourceSnapshotsReportType} from '@coveord/platform-client';
-import {Dirent, mkdirSync, readdirSync, rmSync, existsSync} from 'fs';
-import {join, resolve} from 'path';
+jest.mock('../../project/project');
+jest.mock('../snapshotFactory');
+jest.mock('../../utils/process');
+jest.mock('./filesDiffProcessor');
+import {
+  ResourceSnapshotsReportModel,
+  ResourceSnapshotsReportType,
+} from '@coveord/platform-client';
+import {Dirent, mkdirSync, readdirSync, rmSync} from 'fs';
+import {join} from 'path';
 
 import {mocked} from 'ts-jest/utils';
 import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
@@ -14,17 +18,13 @@ import {Project} from '../../project/project';
 import {SnapshotFactory} from '../snapshotFactory';
 import {Snapshot} from '../snapshot';
 import {spawnProcess} from '../../utils/process';
-import {readJsonSync} from 'fs-extra';
+import {recursiveDirectoryDiff} from './filesDiffProcessor';
 
 describe('ExpandedPreviewer', () => {
-  const getDirectory = (name?: string) => getDirent('dir', name);
-  const getFile = (name?: string) => getDirent('file', name);
-
-  const getDirent = (fileOrDirectory: 'file' | 'dir', name?: string) => {
+  const getDirectory = (name?: string) => {
     const dirent = new Dirent();
-    const isFile = fileOrDirectory === 'file';
-    dirent.isDirectory = isFile ? () => false : () => true;
-    dirent.isFile = isFile ? () => true : () => false;
+    dirent.isDirectory = () => true;
+    dirent.isFile = () => false;
     if (name) {
       dirent.name = name;
     }
@@ -34,11 +34,10 @@ describe('ExpandedPreviewer', () => {
   const Blob = jest.fn();
   const fakeBlob: Blob = new Blob();
 
+  const mockedRecursiveDirectoryDiff = mocked(recursiveDirectoryDiff);
   const mockedReaddirSync = mocked(readdirSync);
-  const mockedExistSync = mocked(existsSync);
   const mockedRmSync = mocked(rmSync);
   const mockedMkdirSync = mocked(mkdirSync);
-  const mockedReadJsonSync = mocked(readJsonSync);
   const mockedSpawnProcess = mocked(spawnProcess);
   const mockedProject = mocked(Project);
   const mockedProjectRefresh = jest.fn();
@@ -54,35 +53,11 @@ describe('ExpandedPreviewer', () => {
     mockedReaddirSync.mockReturnValueOnce(dirs);
   };
 
-  const mockPreviewFiles = () => {
-    mockedReaddirSync.mockReturnValueOnce([getDirectory('recursionTest')]);
-    mockedReaddirSync.mockReturnValueOnce([getFile('myTestFile.json')]);
-    mockedReadJsonSync.mockReturnValueOnce({
-      someKey: 'someValue',
-      resources: {
-        FIELD: [
-          {resourceName: 'resourceA', someData: 'foo'},
-          {resourceName: 'resourceB', someData: 'foo'},
-        ],
-      },
-    });
-    mockedReadJsonSync.mockReturnValueOnce({
-      someKey: 'someValue',
-      resources: {
-        FIELD: [
-          {resourceName: 'resourceB', someData: 'bar'},
-          {resourceName: 'resourceC', someData: 'bar'},
-        ],
-      },
-    });
-    mockedExistSync.mockReturnValueOnce(true);
-  };
-
   const mockProject = () => {
     mockedProject.mockImplementation(
-      () =>
+      (path: string) =>
         ({
-          pathToProject: 'some/path',
+          pathToProject: path,
           refresh: mockedProjectRefresh,
         } as unknown as Project)
     );
@@ -98,7 +73,6 @@ describe('ExpandedPreviewer', () => {
 
   const defaultMocks = () => {
     mockExistingPreviews();
-    mockPreviewFiles();
     mockProject();
     mockSnapshotFactory();
     jest.spyOn(Date, 'now').mockImplementation(() => 42);
@@ -179,7 +153,7 @@ describe('ExpandedPreviewer', () => {
   });
 
   describe('when shouldDelete is false', () => {
-    it.skip('should not delete missing resources', async () => {
+    it('should call the fillDiffProcessor with the proper options', async () => {
       const expandedPreviewer = new ExpandedPreviewer(
         getSuccessReport('some-id', ResourceSnapshotsReportType.DryRun),
         'someorg',
@@ -187,92 +161,154 @@ describe('ExpandedPreviewer', () => {
         false
       );
       await expandedPreviewer.preview();
-    });
 
-    it.todo('should not delete missing resourceType/file');
+      expect(mockedRecursiveDirectoryDiff).toBeCalledWith(
+        expect.anything(),
+        expect.anything(),
+        false
+      );
+    });
   });
 
   describe('when shouldDelete is true', () => {
-    it.todo('should delete missing resources');
-    it.todo('should delete missing resourceType/file');
+    it('should call the fillDiffProcessor with the proper options', async () => {
+      const expandedPreviewer = new ExpandedPreviewer(
+        getSuccessReport('some-id', ResourceSnapshotsReportType.DryRun),
+        'someorg',
+        'my/awesome/path',
+        true
+      );
+      await expandedPreviewer.preview();
+
+      expect(mockedRecursiveDirectoryDiff).toBeCalledWith(
+        expect.anything(),
+        expect.anything(),
+        true
+      );
+    });
   });
 
-  it('should initialize the project', async () => {
-    const fakeReport = getSuccessReport(
-      'some-id',
-      ResourceSnapshotsReportType.DryRun
-    );
-    const expandedPreviewer = new ExpandedPreviewer(
-      fakeReport,
-      'someorg',
-      'my/awesome/path',
-      false
-    );
-    await expandedPreviewer.preview();
+  describe('when calling #preview', () => {
+    let fakeReport: ResourceSnapshotsReportModel;
+    let expandedPreviewer: ExpandedPreviewer;
+    let previewPath: string;
 
-    const previewPath = resolve(join('.coveo', 'preview', 'someorg-42'));
-    expect(mockedMkdirSync).toHaveBeenCalledWith(previewPath, {
-      recursive: true,
+    beforeEach(async () => {
+      previewPath = join('.coveo/preview', 'someorg-42');
+      fakeReport = getSuccessReport(
+        'some-id',
+        ResourceSnapshotsReportType.DryRun
+      );
+      expandedPreviewer = new ExpandedPreviewer(
+        fakeReport,
+        'someorg',
+        'my/awesome/path',
+        false
+      );
+      await expandedPreviewer.preview();
     });
 
-    expect(mockedProject).toHaveBeenCalledWith(previewPath);
-    expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
-      Object.keys(fakeReport.resourceOperationResults),
-      'someorg'
-    );
-    expect(mockedProjectRefresh).toHaveBeenCalledWith(fakeBlob);
+    it('should get a snapshot of the target org', async () => {
+      const previewPath = join('.coveo', 'preview', 'someorg-42');
+      expect(mockedMkdirSync).toHaveBeenCalledWith(previewPath, {
+        recursive: true,
+      });
 
-    expect(mockedSpawnProcess).toHaveBeenNthCalledWith(1, 'git', ['init'], {
-      cwd: 'some/path',
-      stdio: 'ignore',
+      expect(mockedProject).toHaveBeenCalledWith(previewPath);
+      expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
+        Object.keys(fakeReport.resourceOperationResults),
+        'someorg'
+      );
+      expect(mockedProjectRefresh).toHaveBeenCalledWith(fakeBlob);
     });
-    expect(mockedSpawnProcess).toHaveBeenNthCalledWith(2, 'git', ['add', '.'], {
-      cwd: 'some/path',
-      stdio: 'ignore',
-    });
-    expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
-      3,
-      'git',
-      ['commit', '--message=someorg currently'],
-      {
-        cwd: 'some/path',
+
+    it('should commit the snapshot of the target org', async () => {
+      expect(mockedSpawnProcess).toHaveBeenNthCalledWith(1, 'git', ['init'], {
+        cwd: previewPath,
         stdio: 'ignore',
-      }
-    );
-  });
-
-  it("should replace the value of the 'before' snapshot with the one of the applied snapshot", async () => {
-    const fakeReport = getSuccessReport(
-      'some-id',
-      ResourceSnapshotsReportType.DryRun
-    );
-    const expandedPreviewer = new ExpandedPreviewer(
-      fakeReport,
-      'someorg',
-      'my/awesome/path',
-      false
-    );
-    await expandedPreviewer.preview();
-
-    expect(mockedReaddirSync).toHaveBeenNthCalledWith(2, 'my/awesome/path', {
-      withFileTypes: true,
+      });
+      expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
+        2,
+        'git',
+        ['add', '.'],
+        {
+          cwd: previewPath,
+          stdio: 'ignore',
+        }
+      );
+      expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
+        3,
+        'git',
+        ['commit', '--message=someorg currently'],
+        {
+          cwd: previewPath,
+          stdio: 'ignore',
+        }
+      );
     });
 
-    expect(mockedReadJsonSync).toHaveBeenNthCalledWith(
-      1,
-      join('my/awesome/path', 'myTestFile.json')
-    );
-    expect(mockedReadJsonSync).toHaveBeenNthCalledWith(
-      2,
-      resolve(
-        join(
-          '.coveo/preview',
-          'someorg-42',
-          'resources',
-          'recursionTest',
-          'myTestFile.json'
-        )
-      )
-    );
+    it('should write the diff between the snapshot of the target org and the snapshot on file', async () => {
+      expect(mockedRecursiveDirectoryDiff).toBeCalledWith(
+        join('.coveo/preview', 'someorg-42', 'resources'),
+        'my/awesome/path',
+        expect.anything()
+      );
+    });
+
+    it('should commit the diff', () => {
+      expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
+        4,
+        'git',
+        ['add', '.'],
+        {
+          cwd: previewPath,
+          stdio: 'ignore',
+        }
+      );
+      expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
+        5,
+        'git',
+        ['commit', '--message=someorg after snapshot application'],
+        {
+          cwd: previewPath,
+          stdio: 'ignore',
+        }
+      );
+    });
   });
+
+  // it("should replace the value of the 'before' snapshot with the one of the applied snapshot", async () => {
+  //   const fakeReport = getSuccessReport(
+  //     'some-id',
+  //     ResourceSnapshotsReportType.DryRun
+  //   );
+  //   const expandedPreviewer = new ExpandedPreviewer(
+  //     fakeReport,
+  //     'someorg',
+  //     'my/awesome/path',
+  //     false
+  //   );
+  //   await expandedPreviewer.preview();
+
+  //   expect(mockedReaddirSync).toHaveBeenNthCalledWith(2, 'my/awesome/path', {
+  //     withFileTypes: true,
+  //   });
+
+  //   expect(mockedReadJsonSync).toHaveBeenNthCalledWith(
+  //     1,
+  //     join('my/awesome/path', 'myTestFile.json')
+  //   );
+  //   expect(mockedReadJsonSync).toHaveBeenNthCalledWith(
+  //     2,
+  //     resolve(
+  //       join(
+  //         '.coveo/preview',
+  //         'someorg-42',
+  //         'resources',
+  //         'recursionTest',
+  //         'myTestFile.json'
+  //       )
+  //     )
+  //   );
+  // });
 });
