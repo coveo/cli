@@ -8,12 +8,12 @@ import {Dirent, mkdirSync, readdirSync, rmSync, existsSync} from 'fs';
 import {join, resolve} from 'path';
 
 import {mocked} from 'ts-jest/utils';
-import {getSuccessReport} from '../../__stub__/resourceSnapshotsReportModel';
+import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
 import {ExpandedPreviewer} from './expandedPreviewer';
-import {Project} from '../project/project';
-import {SnapshotFactory} from './snapshotFactory';
-import {Snapshot} from './snapshot';
-import {spawnProcess} from '../utils/process';
+import {Project} from '../../project/project';
+import {SnapshotFactory} from '../snapshotFactory';
+import {Snapshot} from '../snapshot';
+import {spawnProcess} from '../../utils/process';
 import {readJsonSync} from 'fs-extra';
 
 describe('ExpandedPreviewer', () => {
