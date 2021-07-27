@@ -2,7 +2,7 @@ import {appendCmdIfWindows} from '../../utils/os';
 import {getBinInstalledPrecondition} from './binPreconditionsFactory';
 
 export const IsGitInstalled = getBinInstalledPrecondition(
-'git',
+  appendCmdIfWindows`git`,
   {
     prettyName: 'git',
     howToInstallBinText:
