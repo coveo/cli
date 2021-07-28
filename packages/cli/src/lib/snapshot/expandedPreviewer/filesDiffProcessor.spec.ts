@@ -14,7 +14,48 @@ const mockedRm = mocked(rmSync);
 const mockedReadJson = mocked(readJSONSync);
 const mockedWriteJSON = mocked(writeJSONSync);
 
+const resourceA = {
+  resources: {
+    EXTENSION: [
+      {
+        resourceName: 'resourceA',
+        someProp: 'someValue',
+      },
+    ],
+  },
+};
+const resourceAModified = {
+  resources: {
+    EXTENSION: [
+      {
+        resourceName: 'resourceA',
+        someProp: 'otherValue',
+      },
+    ],
+  },
+};
+const resourcesAB = {
+  resources: {
+    EXTENSION: [
+      {
+        resourceName: 'resourceA',
+        someProp: 'someValue',
+      },
+      {
+        resourceName: 'resourceB',
+      },
+    ],
+  },
+};
+
 describe('#recursiveDirectoryDiff', () => {
+  beforeEach(() => {
+    mockedReadDir.mockReturnValue([]);
+  });
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   describe('when deleteMissingFile is true', () => {
     it('should delete files present in the currentDir but not in the nextDir', () => {
       mockedReadDir.mockReturnValueOnce([getFile('someFile.json')]);
@@ -26,29 +67,103 @@ describe('#recursiveDirectoryDiff', () => {
         join('currentDir', 'someFile.json')
       );
     });
-    it.todo(
-      'should delete keys present in the currentDir but not in the nextDir'
-    );
+
+    it('should delete resources present in the currentDir but not in the nextDir', () => {
+      mockedReadDir.mockReturnValueOnce([getFile('someFile.json')]);
+      mockedReadDir.mockReturnValueOnce([getFile('someFile.json')]);
+      mockedReadJson.mockReturnValueOnce(resourceA);
+      mockedReadJson.mockReturnValueOnce(resourcesAB);
+
+      recursiveDirectoryDiff('currentDir', 'nextDir', true);
+
+      expect(mockedWriteJSON).toHaveBeenCalledWith(
+        join('currentDir', 'someFile.json'),
+        resourceA,
+        {spaces: 2}
+      );
+    });
   });
 
   describe('when deleteMissingFile is false', () => {
-    it.todo(
-      'should preserve files present in the currentDir but not in the nextDir'
-    );
-    it.todo(
-      'should preserve keys present in the currentDir but not in the nextDir'
+    it('should preserve files present in the currentDir but not in the nextDir', () => {
+      mockedReadDir.mockReturnValueOnce([getFile('someFile.json')]);
+      mockedReadDir.mockReturnValueOnce([]);
+
+      recursiveDirectoryDiff('currentDir', 'nextDir', false);
+
+      expect(mockedRm).not.toHaveBeenCalled();
+    });
+
+    it('should preserve keys present in the currentDir but not in the nextDir', () => {
+      mockedReadDir.mockReturnValueOnce([getFile('someFile.json')]);
+      mockedReadDir.mockReturnValueOnce([getFile('someFile.json')]);
+      mockedReadJson.mockReturnValueOnce(resourceA);
+      mockedReadJson.mockReturnValueOnce(resourcesAB);
+
+      recursiveDirectoryDiff('currentDir', 'nextDir', false);
+
+      expect(mockedWriteJSON).toHaveBeenCalledWith(
+        join('currentDir', 'someFile.json'),
+        resourcesAB,
+        {spaces: 2}
+      );
+    });
+  });
+
+  it('should check files in sub-directories', () => {
+    mockedReadDir.mockReturnValue([]);
+    mockedReadDir.mockReturnValueOnce([getDirectory('someDir')]);
+
+    recursiveDirectoryDiff('currentDir', 'nextDir', false);
+
+    expect(mockedReadDir).toHaveBeenNthCalledWith(
+      2,
+      join('currentDir', 'someDir'),
+      expect.anything()
     );
   });
 
-  it.todo('should check files in sub-directories');
+  it('should create files present in the nextDir but not in the currentDir', () => {
+    mockedReadDir.mockReturnValueOnce([]);
+    mockedReadDir.mockReturnValueOnce([getFile('someFile.json')]);
+    mockedReadJson.mockReturnValueOnce(resourceA);
 
-  it.todo(
-    'should create files present in the nextDir but not in the currentDir'
-  );
-  it.todo(
-    'should create keys present in the nextDir but not in the currentDir'
-  );
-  it.todo(
-    'should replace the value of keys present in the nextDir and in the currentDir'
-  );
+    recursiveDirectoryDiff('currentDir', 'nextDir', false);
+
+    expect(mockedWriteJSON).toHaveBeenCalledWith(
+      join('currentDir', 'someFile.json'),
+      resourceA,
+      {spaces: 2}
+    );
+  });
+
+  it('should create keys present in the nextDir but not in the currentDir', () => {
+    mockedReadDir.mockReturnValueOnce([]);
+    mockedReadDir.mockReturnValueOnce([getFile('someFile.json')]);
+    mockedReadJson.mockReturnValueOnce(resourcesAB);
+    mockedReadJson.mockReturnValueOnce(resourceA);
+
+    recursiveDirectoryDiff('currentDir', 'nextDir', false);
+
+    expect(mockedWriteJSON).toHaveBeenCalledWith(
+      join('currentDir', 'someFile.json'),
+      resourcesAB,
+      {spaces: 2}
+    );
+  });
+
+  it('should replace the value of keys present in the nextDir and in the currentDir', () => {
+    mockedReadDir.mockReturnValueOnce([]);
+    mockedReadDir.mockReturnValueOnce([getFile('someFile.json')]);
+    mockedReadJson.mockReturnValueOnce(resourceAModified);
+    mockedReadJson.mockReturnValueOnce(resourceA);
+
+    recursiveDirectoryDiff('currentDir', 'nextDir', false);
+
+    expect(mockedWriteJSON).toHaveBeenCalledWith(
+      join('currentDir', 'someFile.json'),
+      resourceAModified,
+      {spaces: 2}
+    );
+  });
 });
