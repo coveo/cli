@@ -62,7 +62,12 @@ const Home = () => {
 const Error = () => {
   return (
     <Box height="100vh" display="flex" align-items="center">
-      <Grid container direction="row" justify="center" alignItems="center">
+      <Grid
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+      >
         <Grid item md={9} sm={11}>
           <div className="container">
             <Typography variant="h4" color="error">
