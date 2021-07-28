@@ -47,7 +47,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import {buildResultList, FieldActions} from '@coveo/headless';
+import {buildResultList} from '@coveo/headless';
 import type {ResultListState, ResultList} from '@coveo/headless';
 
 export interface IResultList {
