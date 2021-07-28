@@ -11,28 +11,28 @@ type SnapshotFileJSON = Object & {
 
 export function recursiveDirectoryDiff(
   currentDir: string,
-  previewDir: string,
+  nextDir: string,
   deleteMissingFile: boolean
 ): string[] {
-  const files = readdirSync(previewDir, {withFileTypes: true});
+  const files = readdirSync(nextDir, {withFileTypes: true});
   const filePaths: string[] = [];
   files.forEach((file) => {
     if (file.isDirectory()) {
       filePaths.push(
         ...recursiveDirectoryDiff(
           join(currentDir, file.name),
-          previewDir,
+          nextDir,
           deleteMissingFile
         )
       );
     }
 
     if (file.isFile()) {
-      const previewFile = readJSONSync(join(previewDir, file.name));
+      const nextFile = readJSONSync(join(nextDir, file.name));
       const currentFilePath = join(currentDir, file.name);
 
       if (!existsSync(currentFilePath)) {
-        writeJSONSync(join(currentDir, file.name), previewFile, {
+        writeJSONSync(join(currentDir, file.name), nextFile, {
           spaces: 2,
         });
         return;
@@ -42,7 +42,7 @@ export function recursiveDirectoryDiff(
 
       const diffedJSON = buildDiffedJson(
         currentFile,
-        previewFile,
+        nextFile,
         deleteMissingFile
       );
 
@@ -56,14 +56,14 @@ export function recursiveDirectoryDiff(
 
 function buildDiffedJson(
   currentFile: SnapshotFileJSON,
-  previewFile: SnapshotFileJSON,
+  nextFile: SnapshotFileJSON,
   deleteMissingFile: boolean
 ) {
   const currentResources = getResourceDictionnaryFromObject(currentFile);
-  const previewResources = getResourceDictionnaryFromObject(previewFile);
+  const nextResources = getResourceDictionnaryFromObject(nextFile);
   const diffedDictionnary = getDiffedDictionnary(
     currentResources,
-    previewResources,
+    nextResources,
     deleteMissingFile
   );
 
@@ -81,22 +81,22 @@ function buildDiffedJson(
 
 function getDiffedDictionnary(
   currentResources: Map<string, ResourcesJSON>,
-  previewResources: Map<string, ResourcesJSON>,
+  nextResources: Map<string, ResourcesJSON>,
   shouldDelete: boolean
 ) {
   if (shouldDelete) {
-    return previewResources;
+    return nextResources;
   }
   const diffedResources = new Map<string, ResourcesJSON>(currentResources);
-  const iterator = previewResources.keys();
+  const iterator = nextResources.keys();
   for (
     let resource = iterator.next();
     !resource.done;
     resource = iterator.next()
   ) {
-    const previewResource = previewResources.get(resource.value);
-    if (previewResource) {
-      diffedResources.set(resource.value, previewResource);
+    const nextResource = nextResources.get(resource.value);
+    if (nextResource) {
+      diffedResources.set(resource.value, nextResource);
     }
   }
   return diffedResources;
