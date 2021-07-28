@@ -51,7 +51,6 @@ export default class Pull extends Command {
 
   @Preconditions(IsAuthenticated())
   public async run() {
-    cli.action.start('Creating Snapshot');
     const snapshot = await this.getSnapshot();
 
     cli.action.start('Updating project with Snapshot');
@@ -63,23 +62,25 @@ export default class Pull extends Command {
 
   public async catch(err?: Error) {
     const {flags} = this.parse(Pull);
+    handleSnapshotError(err);
+    await this.displayAdditionalErrorMessage(err);
     await this.config.runHook(
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
     );
-    handleSnapshotError(err);
-    this.displayAdditionalErrorMessage(err);
   }
 
-  private displayAdditionalErrorMessage(err?: Error) {
+  private async displayAdditionalErrorMessage(err?: Error) {
     if (err instanceof SnapshotOperationTimeoutError) {
+      const {flags} = this.parse(Pull);
       const snapshot = err.snapshot;
-      cli.info(
+      const target = await getTargetOrg(this.configuration, flags.target);
+      cli.log(
         dedent`
 
           Once the snapshot is created, you can pull it with the following command:
 
-            ${blueBright`coveo org:config:pull ${snapshot.id}`}
+            ${blueBright`coveo org:config:pull -t ${target} -s ${snapshot.id}`}
 
             `
       );
@@ -96,11 +97,13 @@ export default class Pull extends Command {
     const {flags} = this.parse(Pull);
     const target = await getTargetOrg(this.configuration, flags.target);
     if (flags.snapshotId) {
+      cli.action.start('Retrieving Snapshot');
       return SnapshotFactory.createFromExistingSnapshot(
         flags.snapshotId,
         target
       );
     }
+    cli.action.start('Creating Snapshot');
     return SnapshotFactory.createFromOrg(
       this.ResourceSnapshotTypesToExport,
       target
