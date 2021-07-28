@@ -71,7 +71,7 @@ describe('org:config', () => {
       CLI_EXEC_PATH,
       'org:config:pull',
       `-t=${targetOrg}`,
-      '-g=false',
+      '--no-git',
     ];
 
     const pullTerminal = createNewTerminal(
