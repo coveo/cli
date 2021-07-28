@@ -7,6 +7,7 @@ import extract from 'extract-zip';
 import {DotFolder, DotFolderConfig} from './dotFolder';
 
 export class Project {
+  private static readonly resourceFolderName = 'resources';
   public constructor(private pathToProject: string) {
     if (!this.isCoveoProject) {
       this.makeCoveoProject();
@@ -70,7 +71,7 @@ export class Project {
   }
 
   private get resourcePath() {
-    return join(this.pathToProject, 'resources');
+    return join(this.pathToProject, Project.resourceFolderName);
   }
 
   private get isCoveoProject() {
@@ -78,7 +79,7 @@ export class Project {
   }
 
   private get isResourcesProject() {
-    return this.contains(this.resourcePath);
+    return this.contains(Project.resourceFolderName);
   }
 
   private makeCoveoProject() {

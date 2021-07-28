@@ -68,7 +68,12 @@ describe('Project', () => {
     it('should ensure resources folder exists', async () => {
       doMockFileDoesNotExists('resources');
       const project = projectCreator();
-      project.compressResources();
+      await project.compressResources();
+
+      expect(mockedExistSync).toHaveBeenNthCalledWith(
+        2,
+        join('dummy/path', 'resources')
+      );
       expect(mockedError).toHaveBeenCalledWith(
         new Error(
           'dummy/path is not a valid project: Does not contain any resources folder'
@@ -80,7 +85,13 @@ describe('Project', () => {
       doMockFileDoesNotExists('_');
       const project = projectCreator();
       doMockFileDoesNotExists('.coveo');
-      project.compressResources();
+
+      await project.compressResources();
+
+      expect(mockedExistSync).toHaveBeenNthCalledWith(
+        3,
+        join('dummy/path', '.coveo')
+      );
       expect(mockedError).toHaveBeenCalledWith(
         new Error(
           'dummy/path is not a valid project: Does not contain any .coveo folder'
