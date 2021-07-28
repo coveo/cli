@@ -3,7 +3,7 @@ import {
   ResourceSnapshotType,
 } from '@coveord/platform-client';
 import {mkdirSync, readdirSync, rmSync} from 'fs';
-import {join, resolve} from 'path';
+import {join} from 'path';
 import {cli} from 'cli-ux';
 import {Project} from '../../project/project';
 import {spawnProcess} from '../../utils/process';

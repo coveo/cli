@@ -1,6 +1,11 @@
-import {ResourceSnapshotType} from '@coveord/platform-client';
-import {readdirSync, existsSync} from 'fs';
-import {readJSONSync, writeJSONSync} from 'fs-extra';
+import type {ResourceSnapshotType} from '@coveord/platform-client';
+import {readdirSync, rmSync} from 'fs';
+import {
+  readJsonSync,
+  readJSONSync,
+  writeJSONSync,
+  WriteOptions,
+} from 'fs-extra';
 import {join} from 'path';
 
 type ResourcesJSON = Object & {resourceName: string};
@@ -9,46 +14,48 @@ type SnapshotFileJSON = Object & {
   resources: Partial<{[key in ResourceSnapshotType]: ResourcesJSON[]}>;
 };
 
+const firstDirOfPath =
+  process.platform === 'win32' ? /^[^\\]*(?=\\)/m : /^[^/]*\//m;
+const defaultWriteOptions: WriteOptions = {spaces: 2};
+
 export function recursiveDirectoryDiff(
   currentDir: string,
   nextDir: string,
-  deleteMissingFile: boolean
-): string[] {
-  const files = readdirSync(nextDir, {withFileTypes: true});
-  const filePaths: string[] = [];
-  files.forEach((file) => {
-    if (file.isDirectory()) {
-      filePaths.push(
-        ...recursiveDirectoryDiff(
-          join(currentDir, file.name),
-          nextDir,
-          deleteMissingFile
-        )
+  deleteMissingResources: boolean
+) {
+  const currentFilePaths = getAllFilesPath(currentDir);
+  const nextFilePaths = getAllFilesPath(nextDir);
+
+  nextFilePaths.forEach((filePath) => {
+    const nextFileJson = readJsonSync(join(nextDir, filePath));
+    let dataToWrite = nextFileJson;
+    if (currentFilePaths.has(filePath)) {
+      currentFilePaths.delete(filePath);
+      const currentFileJSON = readJSONSync(join(currentDir, filePath));
+      dataToWrite = buildDiffedJson(
+        currentFileJSON,
+        nextFileJson,
+        deleteMissingResources
       );
     }
+    writeJSONSync(join(currentDir, filePath), dataToWrite, defaultWriteOptions);
+  });
 
-    if (file.isFile()) {
-      const nextFile = readJSONSync(join(nextDir, file.name));
-      const currentFilePath = join(currentDir, file.name);
+  if (deleteMissingResources) {
+    currentFilePaths.forEach((filePath) => rmSync(join(currentDir, filePath)));
+  }
+}
 
-      if (!existsSync(currentFilePath)) {
-        writeJSONSync(join(currentDir, file.name), nextFile, {
-          spaces: 2,
-        });
-        return;
-      }
-
-      const currentFile = readJSONSync(currentFilePath);
-
-      const diffedJSON = buildDiffedJson(
-        currentFile,
-        nextFile,
-        deleteMissingFile
-      );
-
-      writeJSONSync(join(currentDir, file.name), diffedJSON, {
-        spaces: 2,
-      });
+function getAllFilesPath(
+  currentDir: string,
+  filePaths: Set<string> = new Set<string>()
+) {
+  const files = readdirSync(currentDir, {withFileTypes: true});
+  files.forEach((file) => {
+    if (file.isDirectory()) {
+      getAllFilesPath(join(currentDir, file.name), filePaths);
+    } else {
+      filePaths.add(join(currentDir, file.name).replace(firstDirOfPath, ''));
     }
   });
   return filePaths;
@@ -57,14 +64,14 @@ export function recursiveDirectoryDiff(
 function buildDiffedJson(
   currentFile: SnapshotFileJSON,
   nextFile: SnapshotFileJSON,
-  deleteMissingFile: boolean
+  deleteMissingResources: boolean
 ) {
   const currentResources = getResourceDictionnaryFromObject(currentFile);
   const nextResources = getResourceDictionnaryFromObject(nextFile);
   const diffedDictionnary = getDiffedDictionnary(
     currentResources,
     nextResources,
-    deleteMissingFile
+    deleteMissingResources
   );
 
   const diffedResources: ResourcesJSON[] = [];

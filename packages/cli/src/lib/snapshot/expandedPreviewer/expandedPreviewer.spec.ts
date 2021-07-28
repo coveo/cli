@@ -19,18 +19,9 @@ import {SnapshotFactory} from '../snapshotFactory';
 import {Snapshot} from '../snapshot';
 import {spawnProcess} from '../../utils/process';
 import {recursiveDirectoryDiff} from './filesDiffProcessor';
+import {getDirectory} from '../../../__test__/fsUtils';
 
 describe('ExpandedPreviewer', () => {
-  const getDirectory = (name?: string) => {
-    const dirent = new Dirent();
-    dirent.isDirectory = () => true;
-    dirent.isFile = () => false;
-    if (name) {
-      dirent.name = name;
-    }
-    return dirent;
-  };
-
   const Blob = jest.fn();
   const fakeBlob: Blob = new Blob();
 
