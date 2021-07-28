@@ -7,6 +7,7 @@ import {ensureDirSync} from 'fs-extra';
 import {foldersContainSimilarFiles} from '../utils/file';
 import PlatformClient from '@coveord/platform-client';
 import {getPlatformClient} from '../utils/platform';
+import {readdirSync} from 'fs';
 config({path: getPathToHomedirEnvFile()});
 
 describe('org:config', () => {
@@ -148,9 +149,12 @@ describe('org:config', () => {
       "should pull the org's content",
       async () => {
         await pullFromOrg(testOrgId, processManager, destinationPath);
-        expect(
-          foldersContainSimilarFiles(snapshotProjectPath, destinationPath)
-        ).toBe(true);
+
+        const snapshotFiles = readdirSync(snapshotProjectPath);
+        const destinationFiles = readdirSync(destinationPath);
+
+        expect(snapshotFiles).toMatch(expect.arrayContaining(destinationFiles));
+        expect(destinationFiles).toMatch(expect.arrayContaining(snapshotFiles));
       },
       defaultTimeout
     );
