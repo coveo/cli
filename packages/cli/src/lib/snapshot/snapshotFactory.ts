@@ -42,7 +42,11 @@ export class SnapshotFactory {
     const model = await client.resourceSnapshot.get(snapshotId, {
       includeReports: true,
     });
-    return new Snapshot(model, client);
+
+    const snapshot = new Snapshot(model, client);
+    await snapshot.waitUntilDone();
+
+    return snapshot;
   }
 
   public static async createFromOrg(
