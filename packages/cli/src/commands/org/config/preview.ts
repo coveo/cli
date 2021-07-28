@@ -71,11 +71,11 @@ export default class Preview extends Command {
 
   public async catch(err?: Error) {
     const {flags} = this.parse(Preview);
+    handleSnapshotError(err);
     await this.config.runHook(
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
     );
-    handleSnapshotError(err);
   }
 
   private async handleReportWithErrors(snapshot: Snapshot) {

@@ -1,0 +1,26 @@
+{
+  "metadata": {
+    "schemaVersion": "v1"
+  },
+  "resources": {
+    "FILTER": [
+      {
+        "resourceName": "filter_aq_`@source`_EPWejP",
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.custom_p56INx }}"
+        },
+        "model": {
+          "feature": "filter",
+          "detailed": {
+            "expressions": ["@source"]
+          },
+          "ready": false,
+          "description": "",
+          "definition": "filter aq `@source`",
+          "position": 4,
+          "childrenCount": 0
+        }
+      }
+    ]
+  }
+}
