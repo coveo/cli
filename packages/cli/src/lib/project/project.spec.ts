@@ -97,7 +97,7 @@ describe('Project', () => {
       expect.stringContaining('.coveo')
     );
     expect(mockedJSONSync).toHaveBeenCalledWith(
-      expect.stringContaining('.coveo/config.json'),
+      expect.stringContaining(join('.coveo/config.json')),
       expect.objectContaining({version: 1})
     );
   });
