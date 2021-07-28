@@ -153,8 +153,7 @@ describe('org:config', () => {
         const snapshotFiles = readdirSync(snapshotProjectPath);
         const destinationFiles = readdirSync(destinationPath);
 
-        expect(snapshotFiles).toMatch(expect.arrayContaining(destinationFiles));
-        expect(destinationFiles).toMatch(expect.arrayContaining(snapshotFiles));
+        expect(snapshotFiles).toEqual(destinationFiles);
       },
       defaultTimeout
     );
