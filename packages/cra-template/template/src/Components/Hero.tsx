@@ -15,8 +15,13 @@ const Hero: React.FunctionComponent<IHeroProps> = (props) => {
   return (
     <header className="App-header">
       <Grid className="logo-container">
-        {props.logos.map((logo) => (
-          <img src={logo} className="App-logo" alt="logo" />
+        {props.logos.map((logo, idx) => (
+          <img
+            src={logo}
+            key={'image-' + idx}
+            className="App-logo"
+            alt="logo"
+          />
         ))}
       </Grid>
 
@@ -62,16 +67,16 @@ const Hero: React.FunctionComponent<IHeroProps> = (props) => {
         Essential Links
       </Typography>
       <ul>
-        <li>
+        <li key="item-link-headless">
           <Anchor
             href="https://docs.coveo.com/en/headless"
             value="Coveo Headless documentation"
           />
         </li>
-        <li>
+        <li key="item-link-react">
           <Anchor href="https://reactjs.org" value="React documentation" />
         </li>
-        <li>
+        <li key="item-link-material">
           <Anchor
             href="https://material-ui.com/"
             value="Material-ui Documentation"
