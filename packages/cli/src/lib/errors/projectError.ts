@@ -1,6 +1,5 @@
 export class InvalidProjectError extends Error {
-  public static readonly message = 'INVALID_PROJECT_ERROR';
-  public constructor() {
-    super(InvalidProjectError.message);
+  public constructor(path: string, reason: string) {
+    super(`${path} is not a valid project: ${reason}`);
   }
 }
