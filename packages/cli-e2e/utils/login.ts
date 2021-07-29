@@ -101,7 +101,7 @@ async function startLoginFlow(browser: Browser) {
 
   await Promise.all([
     page.click(LoginSelectors.loginWithOfficeButton),
-    page.waitForNavigation(),
+    page.waitForNavigation({waitUntil: 'networkidle2'}),
     page.waitForSelector(LoginSelectors.emailView),
   ]);
 
@@ -126,7 +126,7 @@ async function startLoginFlow(browser: Browser) {
   });
   await Promise.all([
     page.click(`${LoginSelectors.passwordView} ${LoginSelectors.SubmitInput}`),
-    page.waitForNavigation(),
+    page.waitForNavigation({waitUntil: 'networkidle2'}),
   ]);
 
   await staySignedIn(page);
