@@ -43,7 +43,7 @@ export default class Preview extends Command {
     snapshotId: flags.string({
       char: 's',
       description:
-        'The unique identifier of the snapshot to preview. If not specified, a new snapshot will be created from your local project. You can list available snapshot in your organization with org:config:list',
+        'The unique identifier of the snapshot to preview. If not specified, a new snapshot will be created from your local project. You can list available snapshots in your organization with org:config:list',
       required: false,
     }),
   };
