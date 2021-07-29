@@ -4,7 +4,6 @@ import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
 import {ensureDirSync} from 'fs-extra';
-import {foldersContainSimilarFiles} from '../utils/file';
 import PlatformClient from '@coveord/platform-client';
 import {getPlatformClient} from '../utils/platform';
 import {readdirSync} from 'fs';
