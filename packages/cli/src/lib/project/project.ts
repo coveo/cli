@@ -4,9 +4,15 @@ import {cli} from 'cli-ux';
 import archiver from 'archiver';
 import {InvalidProjectError} from '../errors';
 import extract from 'extract-zip';
+import {DotFolder, DotFolderConfig} from './dotFolder';
 
 export class Project {
-  public constructor(private _pathToProject: string) {}
+  private static readonly resourceFolderName = 'resources';
+  public constructor(private _pathToProject: string) {
+    if (!this.isCoveoProject) {
+      this.makeCoveoProject();
+    }
+  }
 
   public async refresh(projectContent: Blob) {
     const buffer = await projectContent.arrayBuffer();
@@ -21,14 +27,17 @@ export class Project {
   }
 
   private ensureProjectCompliance() {
-    /*
-     * TODO: CDX-354: add checks to ensure the project is indeed a valid project
-     * e.g. * Check if path to resources is a folder
-     *      * Check if the root has a valid config file
-     */
-
-    if (!existsSync(this.resourcePath)) {
-      throw new InvalidProjectError();
+    if (!this.isResourcesProject) {
+      throw new InvalidProjectError(
+        this._pathToProject,
+        'Does not contain any resources folder'
+      );
+    }
+    if (!this.isCoveoProject) {
+      throw new InvalidProjectError(
+        this._pathToProject,
+        'Does not contain any .coveo folder'
+      );
     }
   }
 
@@ -56,11 +65,27 @@ export class Project {
     return this._pathToProject;
   }
 
-  public get temporaryZipPath() {
-    return join(this.pathToProject, 'snapshot.zip');
+  private get temporaryZipPath() {
+    return join(this._pathToProject, 'snapshot.zip');
   }
 
   public get resourcePath() {
-    return join(this.pathToProject, 'resources');
+    return join(this._pathToProject, Project.resourceFolderName);
+  }
+  public contains(fileName: string) {
+    return existsSync(join(this.pathToProject, fileName));
+  }
+
+  private get isCoveoProject() {
+    return this.contains(DotFolder.hiddenFolderName);
+  }
+
+  private get isResourcesProject() {
+    return this.contains(Project.resourceFolderName);
+  }
+
+  private makeCoveoProject() {
+    const dotFolder = new DotFolder(this.pathToProject);
+    new DotFolderConfig(dotFolder);
   }
 }
