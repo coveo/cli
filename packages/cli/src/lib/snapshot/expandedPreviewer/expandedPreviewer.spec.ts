@@ -268,39 +268,4 @@ describe('ExpandedPreviewer', () => {
       );
     });
   });
-
-  // it("should replace the value of the 'before' snapshot with the one of the applied snapshot", async () => {
-  //   const fakeReport = getSuccessReport(
-  //     'some-id',
-  //     ResourceSnapshotsReportType.DryRun
-  //   );
-  //   const expandedPreviewer = new ExpandedPreviewer(
-  //     fakeReport,
-  //     'someorg',
-  //     'my/awesome/path',
-  //     false
-  //   );
-  //   await expandedPreviewer.preview();
-
-  //   expect(mockedReaddirSync).toHaveBeenNthCalledWith(2, 'my/awesome/path', {
-  //     withFileTypes: true,
-  //   });
-
-  //   expect(mockedReadJsonSync).toHaveBeenNthCalledWith(
-  //     1,
-  //     join('my/awesome/path', 'myTestFile.json')
-  //   );
-  //   expect(mockedReadJsonSync).toHaveBeenNthCalledWith(
-  //     2,
-  //     resolve(
-  //       join(
-  //         '.coveo/preview',
-  //         'someorg-42',
-  //         'resources',
-  //         'recursionTest',
-  //         'myTestFile.json'
-  //       )
-  //     )
-  //   );
-  // });
 });
