@@ -15,6 +15,7 @@ import dedent from 'ts-dedent';
 import {SnapshotReporter} from './snapshotReporter';
 import {SnapshotOperationTimeoutError} from '../errors';
 import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer';
+import {Project} from '../project/project';
 export interface waitUntilDoneOptions {
   /**
    * The operation to wait for. If not specified, the method will wait for any operation to complete.
@@ -49,14 +50,11 @@ export class Snapshot {
   }
 
   public async preview(
-    resourceDirectoryPath: string,
+    projectToPreview: Project,
     deleteMissingResources = false
   ) {
     this.displayLightPreview();
-    await this.displayExpandedPreview(
-      resourceDirectoryPath,
-      deleteMissingResources
-    );
+    await this.displayExpandedPreview(projectToPreview, deleteMissingResources);
   }
 
   public async apply(deleteMissingResources = false) {
@@ -132,13 +130,13 @@ export class Snapshot {
   }
 
   private async displayExpandedPreview(
-    resourceDirectoryPath: string,
+    projectToPreview: Project,
     shouldDelete: boolean
   ) {
     const previewer = new ExpandedPreviewer(
       this.latestReport,
       this.targetId!,
-      resourceDirectoryPath,
+      projectToPreview,
       shouldDelete
     );
     await previewer.preview();

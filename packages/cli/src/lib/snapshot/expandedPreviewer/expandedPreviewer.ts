@@ -11,9 +11,10 @@ import {SnapshotFactory} from '../snapshotFactory';
 import dedent from 'ts-dedent';
 import {Dirent} from 'fs';
 import {recursiveDirectoryDiff} from './filesDiffProcessor';
+import {DotFolder} from '../../project/dotFolder';
 
 export class ExpandedPreviewer {
-  private static readonly previewDirectory: string = '.coveo/preview';
+  private static readonly previewDirectoryName = 'preview';
 
   private resourcesToPreview: ResourceSnapshotType[];
   private static previewHistorySize = 5;
@@ -21,12 +22,19 @@ export class ExpandedPreviewer {
   public constructor(
     report: ResourceSnapshotsReportModel,
     private readonly orgId: string,
-    private readonly previewedSnapshotDirPath: string,
+    private readonly projectToPreview: Project,
     private readonly shouldDelete: boolean
   ) {
     this.resourcesToPreview = Object.keys(
       report.resourceOperationResults
     ) as ResourceSnapshotType[];
+  }
+
+  private static get previewDirectory() {
+    return join(
+      DotFolder.hiddenFolderName,
+      ExpandedPreviewer.previewDirectoryName
+    );
   }
 
   public async preview() {
@@ -93,7 +101,7 @@ export class ExpandedPreviewer {
   private async applySnapshotToPreview(dirPath: string) {
     recursiveDirectoryDiff(
       join(dirPath, 'resources'),
-      this.previewedSnapshotDirPath,
+      this.projectToPreview.resourcePath,
       this.shouldDelete
     );
     await spawnProcess('git', ['add', '.'], {cwd: dirPath, stdio: 'ignore'});

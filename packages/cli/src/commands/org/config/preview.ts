@@ -10,6 +10,7 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
+import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {
   displayInvalidSnapshotError,
@@ -40,7 +41,7 @@ export default class Preview extends Command {
 
   public static hidden = true;
 
-  @Preconditions(IsAuthenticated())
+  @Preconditions(IsAuthenticated(), IsGitInstalled())
   public async run() {
     const {flags} = this.parse(Preview);
     const target = await getTargetOrg(this.configuration, flags.target);
@@ -53,10 +54,7 @@ export default class Preview extends Command {
       options
     );
 
-    await snapshot.preview(
-      project.resourcePath,
-      options.deleteMissingResources
-    );
+    await snapshot.preview(project, options.deleteMissingResources);
 
     if (reporter.isSuccessReport()) {
       await snapshot.delete();

@@ -49,6 +49,7 @@ describe('ExpandedPreviewer', () => {
       (path: string) =>
         ({
           pathToProject: path,
+          resourcePath: join(path, 'resources'),
           refresh: mockedProjectRefresh,
         } as unknown as Project)
     );
@@ -99,12 +100,12 @@ describe('ExpandedPreviewer', () => {
       const expandedPreviewer = new ExpandedPreviewer(
         getSuccessReport('some-id', ResourceSnapshotsReportType.DryRun),
         'someorg',
-        'my/awesome/path',
+        new Project('my/awesome/path'),
         false
       );
       await expandedPreviewer.preview();
 
-      expect(mockedReaddirSync).toBeCalledWith('.coveo/preview', {
+      expect(mockedReaddirSync).toBeCalledWith(join('.coveo/preview'), {
         withFileTypes: true,
       });
       expect(mockedRmSync).toHaveBeenCalledTimes(4);
@@ -131,12 +132,12 @@ describe('ExpandedPreviewer', () => {
       const expandedPreviewer = new ExpandedPreviewer(
         getSuccessReport('some-id', ResourceSnapshotsReportType.DryRun),
         'someorg',
-        'my/awesome/path',
+        new Project('my/awesome/path'),
         false
       );
       await expandedPreviewer.preview();
 
-      expect(mockedReaddirSync).toBeCalledWith('.coveo/preview', {
+      expect(mockedReaddirSync).toBeCalledWith(join('.coveo/preview'), {
         withFileTypes: true,
       });
       expect(mockedRmSync).not.toHaveBeenCalled();
@@ -148,7 +149,7 @@ describe('ExpandedPreviewer', () => {
       const expandedPreviewer = new ExpandedPreviewer(
         getSuccessReport('some-id', ResourceSnapshotsReportType.DryRun),
         'someorg',
-        'my/awesome/path',
+        new Project('my/awesome/path'),
         false
       );
       await expandedPreviewer.preview();
@@ -166,7 +167,7 @@ describe('ExpandedPreviewer', () => {
       const expandedPreviewer = new ExpandedPreviewer(
         getSuccessReport('some-id', ResourceSnapshotsReportType.DryRun),
         'someorg',
-        'my/awesome/path',
+        new Project('my/awesome/path'),
         true
       );
       await expandedPreviewer.preview();
@@ -193,7 +194,7 @@ describe('ExpandedPreviewer', () => {
       expandedPreviewer = new ExpandedPreviewer(
         fakeReport,
         'someorg',
-        'my/awesome/path',
+        new Project('my/awesome/path'),
         false
       );
       await expandedPreviewer.preview();
@@ -241,7 +242,7 @@ describe('ExpandedPreviewer', () => {
     it('should write the diff between the snapshot of the target org and the snapshot on file', async () => {
       expect(mockedRecursiveDirectoryDiff).toBeCalledWith(
         join('.coveo/preview', 'someorg-42', 'resources'),
-        'my/awesome/path',
+        join('my/awesome/path', 'resources'),
         expect.anything()
       );
     });

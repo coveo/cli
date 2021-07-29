@@ -65,10 +65,7 @@ export default class Push extends Command {
     );
 
     if (!flags.skipPreview) {
-      await snapshot.preview(
-        project.resourcePath,
-        options.deleteMissingResources
-      );
+      await snapshot.preview(project, options.deleteMissingResources);
     }
 
     if (reporter.isSuccessReport()) {
