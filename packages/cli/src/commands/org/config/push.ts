@@ -49,12 +49,6 @@ export default class Push extends Command {
       default: false,
       required: false,
     }),
-    snapshotId: flags.string({
-      char: 's',
-      description:
-        'The unique identifier of the snapshot to push. If not specified, a new snapshot will be created from your local project. You can list available snapshots in your organization with org:config:list',
-      required: false,
-    }),
   };
 
   public static hidden = true;
@@ -65,7 +59,6 @@ export default class Push extends Command {
     const target = await getTargetOrg(this.configuration, flags.target);
     const options: DryRunOptions = {
       deleteMissingResources: flags.deleteMissingResources,
-      snapshotId: flags.snapshotId,
     };
     const {reporter, snapshot, project} = await dryRun(
       target,
