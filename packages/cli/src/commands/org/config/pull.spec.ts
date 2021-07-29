@@ -4,6 +4,8 @@ jest.mock('../../../hooks/prerun/prerun');
 jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/snapshot/snapshotFactory');
 jest.mock('../../../lib/project/project');
+jest.mock('../../../lib/utils/process');
+jest.mock('../../../lib/decorators/preconditions');
 
 import {Config} from '../../../lib/config/config';
 import {mocked} from 'ts-jest/utils';
