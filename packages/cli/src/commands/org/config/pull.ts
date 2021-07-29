@@ -52,6 +52,7 @@ export default class Pull extends Command {
       description:
         'Whether to create a git repository when creating a new project.',
       default: true,
+      allowNo: true,
     }),
   };
 
