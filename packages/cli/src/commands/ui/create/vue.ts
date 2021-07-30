@@ -143,7 +143,7 @@ export default class Vue extends Command {
         //   user: providerUsername,
         // },
       },
-      cssPreprocessor: 'node-sass',
+      cssPreprocessor: 'sass',
       vueVersion: '2',
     };
   }
