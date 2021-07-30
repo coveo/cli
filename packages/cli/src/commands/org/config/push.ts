@@ -8,14 +8,15 @@ import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {red, green, bold} from 'chalk';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {
+  waitFlag,
   displayInvalidSnapshotError,
   displaySnapshotSynchronizationWarning,
   dryRun,
+  DryRunOptions,
   getTargetOrg,
   handleSnapshotError,
 } from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '../../../lib/config/config';
-import {DryRunOptions} from '@coveord/platform-client';
 import {cwd} from 'process';
 import {
   buildAnalyticsFailureHook,
@@ -27,6 +28,7 @@ export default class Push extends Command {
     'Preview, validate and deploy your changes to the destination org';
 
   public static flags = {
+    ...waitFlag,
     target: flags.string({
       char: 't',
       description:
@@ -55,13 +57,10 @@ export default class Push extends Command {
   public async run() {
     const {flags} = this.parse(Push);
     const target = await getTargetOrg(this.configuration, flags.target);
-    const options: DryRunOptions = {
-      deleteMissingResources: flags.deleteMissingResources,
-    };
     const {reporter, snapshot, project} = await dryRun(
       target,
       this.projectPath,
-      options
+      this.dryRunOptions
     );
 
     if (!flags.skipPreview) {
@@ -139,6 +138,14 @@ export default class Push extends Command {
     }
 
     displayInvalidSnapshotError(snapshot, cfg, this.projectPath);
+  }
+
+  private get dryRunOptions(): DryRunOptions {
+    const {flags} = this.parse(Push);
+    return {
+      deleteMissingResources: flags.deleteMissingResources,
+      waitUntilDone: {wait: flags.wait === 0 ? Infinity : flags.wait},
+    };
   }
 
   private get configuration() {

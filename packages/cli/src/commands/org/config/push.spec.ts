@@ -158,7 +158,8 @@ describe('org:config:push', () => {
       .it('should work with default connected org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
-          'foo'
+          'foo',
+          expect.objectContaining({})
         );
       });
 
@@ -168,7 +169,30 @@ describe('org:config:push', () => {
       .it('should work with specified target org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
-          'myorg'
+          'myorg',
+          expect.objectContaining({})
+        );
+      });
+
+    test
+      .stub(cli, 'confirm', () => async () => true)
+      .command(['org:config:push'])
+      .it('should set a 60 seconds wait', () => {
+        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
+          normalize(join('path', 'to', 'resources.zip')),
+          'foo',
+          {wait: 60}
+        );
+      });
+
+    test
+      .stub(cli, 'confirm', () => async () => true)
+      .command(['org:config:push', '-m', '99'])
+      .it('should set a 99 seconds wait', () => {
+        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
+          normalize(join('path', 'to', 'resources.zip')),
+          'foo',
+          {wait: 99}
         );
       });
 

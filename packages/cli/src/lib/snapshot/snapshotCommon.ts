@@ -1,24 +1,36 @@
 import {cli} from 'cli-ux';
 import {Project} from '../project/project';
 import {SnapshotFactory} from './snapshotFactory';
-import {Snapshot} from './snapshot';
+import {Snapshot, WaitUntilDoneOptions} from './snapshot';
 import {red, green, blueBright} from 'chalk';
 import {normalize} from 'path';
 import {SnapshotUrlBuilder} from './snapshotUrlBuilder';
 import dedent from 'ts-dedent';
 import {Config, Configuration} from '../config/config';
 import {SnapshotOperationTimeoutError} from '../errors';
+import {flags} from '@oclif/command';
 
-export interface dryRunOptions {
+export interface DryRunOptions {
   deleteMissingResources?: boolean;
+  waitUntilDone?: WaitUntilDoneOptions;
 }
+
+export const waitFlag = {
+  wait: flags.integer({
+    char: 'm',
+    default: Snapshot.defaultWaitOptions.wait,
+    required: false,
+    description:
+      'The maximum number of seconds to wait before the commands exits with a timeout error. A value of zero means that the command will wait indefinitely.',
+  }),
+};
 
 export async function dryRun(
   targetOrg: string,
   projectPath: string,
-  options?: dryRunOptions
+  options?: DryRunOptions
 ) {
-  const defaultOptions: Required<dryRunOptions> = {
+  const defaultOptions: DryRunOptions = {
     deleteMissingResources: false,
   };
 
@@ -26,7 +38,11 @@ export async function dryRun(
   const project = new Project(normalize(projectPath));
 
   cli.action.start('Creating snapshot');
-  const snapshot = await createSnapshotFromProject(project, targetOrg);
+  const snapshot = await createSnapshotFromProject(
+    project,
+    targetOrg,
+    opt.waitUntilDone
+  );
 
   cli.action.start('Validating snapshot');
   const reporter = await snapshot.validate(opt.deleteMissingResources);
@@ -97,8 +113,9 @@ function operationGettingTooMuchTimeMessage(snapshot: Snapshot): string {
 
 async function createSnapshotFromProject(
   project: Project,
-  targetOrg: string
+  targetOrg: string,
+  options?: WaitUntilDoneOptions
 ): Promise<Snapshot> {
   const pathToZip = await project.compressResources();
-  return SnapshotFactory.createFromZip(pathToZip, targetOrg);
+  return SnapshotFactory.createFromZip(pathToZip, targetOrg, options);
 }

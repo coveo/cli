@@ -1,4 +1,3 @@
-import {DryRunOptions} from '@coveord/platform-client';
 import {Command, flags} from '@oclif/command';
 import {cwd} from 'process';
 import {
@@ -17,12 +16,15 @@ import {
   dryRun,
   getTargetOrg,
   handleSnapshotError,
+  waitFlag,
+  DryRunOptions,
 } from '../../../lib/snapshot/snapshotCommon';
 
 export default class Preview extends Command {
   public static description = 'Preview resource updates';
 
   public static flags = {
+    ...waitFlag,
     target: flags.string({
       char: 't',
       description:
@@ -44,13 +46,10 @@ export default class Preview extends Command {
   public async run() {
     const {flags} = this.parse(Preview);
     const target = await getTargetOrg(this.configuration, flags.target);
-    const options: DryRunOptions = {
-      deleteMissingResources: flags.showMissingResources,
-    };
     const {reporter, snapshot, project} = await dryRun(
       target,
       this.projectPath,
-      options
+      this.dryRunOptions
     );
 
     await snapshot.preview();
@@ -85,6 +84,14 @@ export default class Preview extends Command {
     }
 
     displayInvalidSnapshotError(snapshot, cfg, this.projectPath);
+  }
+
+  private get dryRunOptions(): DryRunOptions {
+    const {flags} = this.parse(Preview);
+    return {
+      deleteMissingResources: flags.showMissingResources,
+      waitUntilDone: {wait: flags.wait === 0 ? Infinity : flags.wait},
+    };
   }
 
   private get configuration() {

@@ -79,7 +79,8 @@ describe('org:config:pull', () => {
           'SEARCH_PAGE',
           'EXTENSION',
         ]),
-        'default-org'
+        'default-org',
+        expect.objectContaining({})
       );
     });
 
@@ -88,7 +89,28 @@ describe('org:config:pull', () => {
     .it('should select specified resource types', () => {
       expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
         ['FIELD', 'FEATURED_RESULT', 'SOURCE'],
-        'default-org'
+        'default-org',
+        expect.objectContaining({})
+      );
+    });
+
+  test
+    .command(['org:config:pull'])
+    .it('should set a 60 seconds timeout', () => {
+      expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
+        expect.arrayContaining([]),
+        'default-org',
+        {wait: 60}
+      );
+    });
+
+  test
+    .command(['org:config:pull', '-m', '78'])
+    .it('should set a 78 seconds timeout', () => {
+      expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
+        expect.arrayContaining([]),
+        'default-org',
+        {wait: 78}
       );
     });
 
