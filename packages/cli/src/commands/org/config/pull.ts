@@ -11,6 +11,7 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
+import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {Project} from '../../../lib/project/project';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
@@ -19,6 +20,7 @@ import {
   handleSnapshotError,
 } from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
+import {spawnProcess} from '../../../lib/utils/process';
 
 export default class Pull extends Command {
   public static description = 'Pull resources from an organization';
@@ -45,11 +47,18 @@ export default class Pull extends Command {
       description:
         'The unique identifier of the snapshot to pull. If not specified, a new snapshot will be created. You can list available snapshot in your organization with org:config:list',
     }),
+    git: flags.boolean({
+      char: 'g',
+      description:
+        'Whether to create a git repository when creating a new project.',
+      default: true,
+      allowNo: true,
+    }),
   };
 
   public static hidden = true;
 
-  @Preconditions(IsAuthenticated())
+  @Preconditions(IsAuthenticated(), IsGitInstalled())
   public async run() {
     const snapshot = await this.getSnapshot();
 
@@ -88,7 +97,13 @@ export default class Pull extends Command {
   }
 
   private async refreshProject(snapshot: Snapshot) {
+    const {flags} = this.parse(Pull);
     const project = new Project(this.projectPath);
+    if (flags.git && !project.contains('.git')) {
+      await spawnProcess('git', ['init', `${this.projectPath}`], {
+        stdio: 'ignore',
+      });
+    }
     const snapshotBlob = await snapshot.download();
     await project.refresh(snapshotBlob);
   }

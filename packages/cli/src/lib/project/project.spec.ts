@@ -2,15 +2,16 @@ jest.mock('@coveord/platform-client');
 jest.mock('fs');
 jest.mock('archiver');
 jest.mock('@oclif/errors');
+jest.mock('fs-extra');
 
 import {mocked} from 'ts-jest/utils';
 import {existsSync, createWriteStream, WriteStream, unlinkSync} from 'fs';
+import {writeJSONSync, pathExistsSync, ensureDirSync} from 'fs-extra';
 import {Project} from './project';
 import {join} from 'path';
 import archiver, {Archiver} from 'archiver';
 import {Writable} from 'stream';
 import {error} from '@oclif/errors';
-import {InvalidProjectError} from '../errors';
 
 const mockedExistSync = mocked(existsSync);
 const mockedUnlinkSync = mocked(unlinkSync);
@@ -20,6 +21,9 @@ const mockedPipe = jest.fn();
 const mockedPassDirectory = jest.fn();
 const mockedFinalize = jest.fn();
 const mockedError = mocked(error);
+const mockedCreateFileSync = mocked(ensureDirSync);
+const mockedJSONSync = mocked(writeJSONSync);
+const mockedPathExistsSync = mocked(pathExistsSync);
 
 mockedArchiver.mockImplementation(
   () =>
@@ -35,8 +39,13 @@ const doMockValidProject = () => {
   mockedExistSync.mockReturnValue(true);
 };
 
-const doMockInValidProject = () => {
-  mockedExistSync.mockReturnValue(false);
+const doMockFileDoesNotExists = (missing: string) => {
+  mockedExistSync.mockImplementationOnce((p) => {
+    if (p.toString().indexOf(missing) !== -1) {
+      return false;
+    }
+    return true;
+  });
 };
 
 const doMockCreateWriteStream = () => {
@@ -55,18 +64,53 @@ describe('Project', () => {
     doMockCreateWriteStream();
   });
 
-  beforeEach(() => {
-    doMockInValidProject();
-  });
-
   describe('if the project is invalid', () => {
-    it('should ensure project exists', async () => {
+    it('should ensure resources folder exists', async () => {
+      doMockFileDoesNotExists('resources');
       const project = projectCreator();
-      project.compressResources();
+      await project.compressResources();
+
+      expect(mockedExistSync).toHaveBeenNthCalledWith(
+        2,
+        join('dummy/path', 'resources')
+      );
       expect(mockedError).toHaveBeenCalledWith(
-        new Error(InvalidProjectError.message)
+        new Error(
+          'dummy/path is not a valid project: Does not contain any resources folder'
+        )
       );
     });
+
+    it('should ensure .coveo hidden folder exists', async () => {
+      doMockFileDoesNotExists('_');
+      const project = projectCreator();
+      doMockFileDoesNotExists('.coveo');
+
+      await project.compressResources();
+
+      expect(mockedExistSync).toHaveBeenNthCalledWith(
+        3,
+        join('dummy/path', '.coveo')
+      );
+      expect(mockedError).toHaveBeenCalledWith(
+        new Error(
+          'dummy/path is not a valid project: Does not contain any .coveo folder'
+        )
+      );
+    });
+  });
+
+  it('should create .coveo project if absent', () => {
+    doMockFileDoesNotExists('.coveo');
+    mockedPathExistsSync.mockReturnValueOnce(false);
+    projectCreator();
+    expect(mockedCreateFileSync).toHaveBeenCalledWith(
+      expect.stringContaining('.coveo')
+    );
+    expect(mockedJSONSync).toHaveBeenCalledWith(
+      expect.stringContaining(join('.coveo/config.json')),
+      expect.objectContaining({version: 1})
+    );
   });
 
   describe('if the project is valid', () => {

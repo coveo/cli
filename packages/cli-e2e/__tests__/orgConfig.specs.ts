@@ -4,9 +4,9 @@ import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
 import {ensureDirSync} from 'fs-extra';
-import {foldersContainSimilarFiles} from '../utils/file';
 import PlatformClient from '@coveord/platform-client';
 import {getPlatformClient} from '../utils/platform';
+import {readdirSync} from 'fs';
 config({path: getPathToHomedirEnvFile()});
 
 describe('org:config', () => {
@@ -70,6 +70,7 @@ describe('org:config', () => {
       CLI_EXEC_PATH,
       'org:config:pull',
       `-t=${targetOrg}`,
+      '--no-git',
     ];
 
     const pullTerminal = createNewTerminal(
@@ -147,9 +148,11 @@ describe('org:config', () => {
       "should pull the org's content",
       async () => {
         await pullFromOrg(testOrgId, processManager, destinationPath);
-        expect(
-          foldersContainSimilarFiles(snapshotProjectPath, destinationPath)
-        ).toBe(true);
+
+        const snapshotFiles = readdirSync(snapshotProjectPath);
+        const destinationFiles = readdirSync(destinationPath);
+
+        expect(snapshotFiles).toEqual(destinationFiles);
       },
       defaultTimeout
     );
