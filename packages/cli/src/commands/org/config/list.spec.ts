@@ -39,9 +39,9 @@ describe('org:config:list', () => {
   mockedConfig.mockImplementation(
     () =>
       ({
-        get: Promise.resolve({
+        get: {
           organization: 'foo',
-        }),
+        },
       } as unknown as Config)
   );
 
