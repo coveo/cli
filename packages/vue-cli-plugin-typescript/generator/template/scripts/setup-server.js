@@ -27,6 +27,7 @@ function copySearchTokenServerToRoot() {
     resolve('server'),
     {
       filter: (src, dest) => !isNodeModule(dest) && !isEnvFile(dest),
+      dereference: true,
     }
   );
 }
