@@ -7,22 +7,29 @@ import {
   ResourceSnapshotsReportType,
   SnapshotExportContentFormat,
 } from '@coveord/platform-client';
-import {backOff, IBackOffOptions} from 'exponential-backoff';
 import {ReportViewer} from './reportViewer/reportViewer';
 import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
-import dedent from 'ts-dedent';
 import {SnapshotReporter} from './snapshotReporter';
 import {SnapshotOperationTimeoutError} from '../errors';
-export interface waitUntilDoneOptions {
+
+export interface WaitUntilDoneOptions {
   /**
-   * The operation to wait for. If not specified, the method will wait for any operation to complete.
+   * The maximum number of seconds to wait before the commands exits with a timeout error.
    */
-  operationToWaitFor?: ResourceSnapshotsReportType;
-  waitOptions?: Partial<IBackOffOptions>;
+  wait?: number; // in seconds
+  /**
+   * The interval between 2 consecutive polls.
+   */
+  waitInterval?: number; // in seconds
 }
 
 export class Snapshot {
+  public static defaultWaitOptions: Required<WaitUntilDoneOptions> = {
+    waitInterval: 1,
+    wait: 60,
+  };
+
   private static ongoingReportStatuses = [
     ResourceSnapshotsReportStatus.Pending,
     ResourceSnapshotsReportStatus.InProgress,
@@ -40,9 +47,7 @@ export class Snapshot {
       deleteMissingResources,
     });
 
-    await this.waitUntilDone({
-      operationToWaitFor: ResourceSnapshotsReportType.DryRun,
-    });
+    await this.waitUntilDone(ResourceSnapshotsReportType.DryRun);
 
     return new SnapshotReporter(this.latestReport);
   }
@@ -55,9 +60,7 @@ export class Snapshot {
   public async apply(deleteMissingResources = false) {
     await this.snapshotClient.apply(this.id, {deleteMissingResources});
 
-    await this.waitUntilDone({
-      operationToWaitFor: ResourceSnapshotsReportType.Apply,
-    });
+    await this.waitUntilDone(ResourceSnapshotsReportType.Apply);
 
     return new SnapshotReporter(this.latestReport);
   }
@@ -135,37 +138,40 @@ export class Snapshot {
   }
 
   public async waitUntilDone(
-    options: waitUntilDoneOptions = {},
+    operationToWaitFor?: ResourceSnapshotsReportType | null,
+    options: WaitUntilDoneOptions = {},
     iteratee = (_report: ResourceSnapshotsReportModel) => {}
   ) {
-    const defaultOptions: Partial<IBackOffOptions> = {
-      delayFirstAttempt: true,
-      startingDelay: 1e3 / 2,
-      maxDelay: 2e3,
+    const opts = {
+      ...Snapshot.defaultWaitOptions,
+      ...options,
     };
-    return backOff(
-      async () => {
+
+    await new Promise<void>((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        const err = new SnapshotOperationTimeoutError(this);
+        interval && clearInterval(interval);
+        reject(err);
+      }, opts.wait * 1000);
+
+      const interval = setInterval(async () => {
         await this.refreshSnapshotData();
 
-        const type = options.operationToWaitFor;
-        if (type && this.latestReport.type !== type) {
-          throw new Error(dedent`
-          Not processing expected operation
-          Expected ${type}
-          Received ${this.latestReport.type}`);
-        }
+        const isExpectedOperation =
+          !operationToWaitFor || this.latestReport.type === operationToWaitFor;
 
-        const isNotDone = Snapshot.ongoingReportStatuses.includes(
+        const isOngoing = Snapshot.ongoingReportStatuses.includes(
           this.latestReport.status
         );
 
-        if (isNotDone) {
-          throw new SnapshotOperationTimeoutError(this);
-        }
-
         iteratee(this.latestReport);
-      },
-      {...defaultOptions, ...options.waitOptions}
-    );
+
+        if (!isOngoing && isExpectedOperation) {
+          clearTimeout(timeout);
+          clearInterval(interval);
+          resolve();
+        }
+      }, opts.waitInterval * 1000);
+    });
   }
 }
