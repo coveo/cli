@@ -5,7 +5,7 @@ import {
   Preconditions,
 } from '../../../lib/decorators/preconditions';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {red, green, bold, blueBright} from 'chalk';
+import {red, green, bold} from 'chalk';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {
   displayInvalidSnapshotError,
@@ -21,8 +21,6 @@ import {
   buildAnalyticsFailureHook,
   buildAnalyticsSuccessHook,
 } from '../../../hooks/analytics/analytics';
-import {SnapshotOperationTimeoutError} from '../../../lib/errors';
-import dedent from 'ts-dedent';
 
 export default class Push extends Command {
   public static description =
@@ -85,28 +83,10 @@ export default class Push extends Command {
   public async catch(err?: Error) {
     const {flags} = this.parse(Push);
     handleSnapshotError(err);
-    await this.displayAdditionalErrorMessage(err);
     await this.config.runHook(
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
     );
-  }
-
-  private async displayAdditionalErrorMessage(err?: Error) {
-    if (err instanceof SnapshotOperationTimeoutError) {
-      const {flags} = this.parse(Push);
-      const snapshot = err.snapshot;
-      const target = await getTargetOrg(this.configuration, flags.target);
-      cli.log(
-        dedent`
-
-          Once the snapshot is created, you can push it with the following command:
-
-            ${blueBright`coveo org:config:push -t ${target} -s ${snapshot.id}`}
-
-            `
-      );
-    }
   }
 
   private async handleValidReport(
