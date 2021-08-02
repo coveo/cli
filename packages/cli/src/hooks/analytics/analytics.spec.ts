@@ -63,7 +63,7 @@ describe('analytics hook', () => {
       () =>
         ({
           get: () =>
-            Promise.resolve({
+            ({
               environment: 'dev',
               organization: 'foo',
               region: 'us-east-1',
@@ -211,7 +211,7 @@ describe('analytics hook', () => {
       () =>
         ({
           get: () =>
-            Promise.resolve({
+            ({
               analyticsEnabled: false,
             } as Configuration),
         } as Config)
