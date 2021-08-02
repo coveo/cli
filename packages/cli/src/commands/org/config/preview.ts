@@ -90,7 +90,7 @@ export default class Preview extends Command {
     const {flags} = this.parse(Preview);
     return {
       deleteMissingResources: flags.showMissingResources,
-      waitUntilDone: {wait: flags.wait === 0 ? Infinity : flags.wait},
+      waitUntilDone: {wait: flags.wait},
     };
   }
 

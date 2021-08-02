@@ -113,7 +113,7 @@ export default class Monitor extends Command {
 
   private get waitOption(): WaitUntilDoneOptions {
     const {flags} = this.parse(Monitor);
-    return {wait: flags.wait === 0 ? Infinity : flags.wait};
+    return {wait: flags.wait};
   }
 
   private get configuration() {

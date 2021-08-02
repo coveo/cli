@@ -16,6 +16,7 @@ import {SnapshotOperationTimeoutError} from '../errors';
 export interface WaitUntilDoneOptions {
   /**
    * The maximum number of seconds to wait before the commands exits with a timeout error.
+   * A value of zero will prevent the command from timing out.
    */
   wait?: number; // in seconds
   /**
@@ -147,13 +148,16 @@ export class Snapshot {
       ...Snapshot.defaultWaitOptions,
       ...options,
     };
+    let timeout: NodeJS.Timeout;
 
     await new Promise<void>((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        const err = new SnapshotOperationTimeoutError(this);
-        clearInterval(interval);
-        reject(err);
-      }, toMilliseconds(opts.wait));
+      if (opts.wait > 0) {
+        timeout = setTimeout(() => {
+          const err = new SnapshotOperationTimeoutError(this);
+          clearInterval(interval);
+          reject(err);
+        }, toMilliseconds(opts.wait));
+      }
 
       const interval = setInterval(async () => {
         await this.refreshSnapshotData();

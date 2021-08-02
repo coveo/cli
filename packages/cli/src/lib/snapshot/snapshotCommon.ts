@@ -19,6 +19,7 @@ export const waitFlag = {
   wait: flags.integer({
     char: 'm',
     default: Snapshot.defaultWaitOptions.wait,
+    helpValue: 'seconds',
     required: false,
     description:
       'The maximum number of seconds to wait before the commands exits with a timeout error. A value of zero means that the command will wait indefinitely.',

@@ -144,7 +144,7 @@ export default class Push extends Command {
     const {flags} = this.parse(Push);
     return {
       deleteMissingResources: flags.deleteMissingResources,
-      waitUntilDone: {wait: flags.wait === 0 ? Infinity : flags.wait},
+      waitUntilDone: {wait: flags.wait},
     };
   }
 
