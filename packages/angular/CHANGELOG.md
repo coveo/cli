@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.11.0](https://github.com/coveo/cli/compare/v1.10.0...v1.11.0) (2021-08-02)
+
+
+### Bug Fixes
+
+* **deps:** pin dependencies j:cdx-227 ([#376](https://github.com/coveo/cli/issues/376)) ([ce25520](https://github.com/coveo/cli/commit/ce25520b9b05d0dc4d857d83eab9b29b4f7d6d60))
+* **deps:** update all dependencies j:cdx-227 ([#393](https://github.com/coveo/cli/issues/393)) ([ce7f98b](https://github.com/coveo/cli/commit/ce7f98b8e80c4f2759d0be140fb03aae9a9d2f7e))
+
+
+
+
+
 # [1.10.0](https://github.com/coveo/cli/compare/v1.9.0...v1.10.0) (2021-07-21)
 
 
