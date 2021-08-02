@@ -62,7 +62,7 @@ describe('ui:create:angular', () => {
       () =>
         ({
           get: () =>
-            Promise.resolve({
+            ({
               environment: 'dev',
               organization: 'my-org',
               region: 'us-east-1',
