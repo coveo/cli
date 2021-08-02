@@ -177,7 +177,6 @@ export class Snapshot {
       if (isOngoing || !isExpectedOperation) {
         throw new SnapshotOperationTimeoutError(this);
       }
-      return;
     }).bind(this);
   }
 }
