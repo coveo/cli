@@ -142,6 +142,7 @@ export class Snapshot {
     options: WaitUntilDoneOptions = {},
     iteratee = (_report: ResourceSnapshotsReportModel) => {}
   ) {
+    const toMilliseconds = (seconds: number) => seconds * 1e3;
     const opts = {
       ...Snapshot.defaultWaitOptions,
       ...options,
@@ -150,9 +151,9 @@ export class Snapshot {
     await new Promise<void>((resolve, reject) => {
       const timeout = setTimeout(() => {
         const err = new SnapshotOperationTimeoutError(this);
-        interval && clearInterval(interval);
+        clearInterval(interval);
         reject(err);
-      }, opts.wait * 1000);
+      }, toMilliseconds(opts.wait));
 
       const interval = setInterval(async () => {
         await this.refreshSnapshotData();
@@ -171,7 +172,7 @@ export class Snapshot {
           clearInterval(interval);
           resolve();
         }
-      }, opts.waitInterval * 1000);
+      }, toMilliseconds(opts.waitInterval));
     });
   }
 }
