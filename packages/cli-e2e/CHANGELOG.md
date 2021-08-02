@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.11.0](https://github.com/coveo/cli/compare/v1.10.0...v1.11.0) (2021-08-02)
+
+
+### Bug Fixes
+
+* **deps:** update all dependencies j:cdx-227 ([#393](https://github.com/coveo/cli/issues/393)) ([ce7f98b](https://github.com/coveo/cli/commit/ce7f98b8e80c4f2759d0be140fb03aae9a9d2f7e))
+* **e2e:** waitForNavigation on login ([#392](https://github.com/coveo/cli/issues/392)) ([3ccacf9](https://github.com/coveo/cli/commit/3ccacf9648b8b57439266154c585edc697831498))
+* remove `appendCmdIfWindows` ([#391](https://github.com/coveo/cli/issues/391)) ([61d8f13](https://github.com/coveo/cli/commit/61d8f132c44ad96bc428e0aff876d207e4aaff14))
+* **deps:** pin dependencies j:cdx-227 ([#376](https://github.com/coveo/cli/issues/376)) ([ce25520](https://github.com/coveo/cli/commit/ce25520b9b05d0dc4d857d83eab9b29b4f7d6d60))
+
+
+### Features
+
+* **config:** initialize git repo when doing initial pull ([#379](https://github.com/coveo/cli/issues/379)) ([b21b8ff](https://github.com/coveo/cli/commit/b21b8ff19dff5e5c140f63213cb59022903dea5e))
+
+
+
+
+
 # [1.10.0](https://github.com/coveo/cli/compare/v1.9.0...v1.10.0) (2021-07-21)
 
 **Note:** Version bump only for package @coveo/cli-e2e

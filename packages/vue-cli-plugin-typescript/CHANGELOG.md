@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.11.0](https://github.com/coveo/cli/compare/v1.10.0...v1.11.0) (2021-08-02)
+
+
+### Bug Fixes
+
+* **vue:** Remove `FieldActions` warning ([#382](https://github.com/coveo/cli/issues/382)) ([bae7a60](https://github.com/coveo/cli/commit/bae7a609d26cdf1c8d9839aab4705ad80eac7718))
+* **vue:** support project creation with Node 16 and pnpm ([#394](https://github.com/coveo/cli/issues/394)) ([aec9ba0](https://github.com/coveo/cli/commit/aec9ba0c6448dcee79343aa99aee5eed548e84c8))
+
+
+
+
+
 # [1.10.0](https://github.com/coveo/cli/compare/v1.9.0...v1.10.0) (2021-07-21)
 
 **Note:** Version bump only for package @coveo/vue-cli-plugin-typescript
