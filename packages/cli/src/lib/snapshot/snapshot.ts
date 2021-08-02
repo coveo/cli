@@ -139,30 +139,26 @@ export class Snapshot {
     });
   }
 
-  public async waitUntilDone(
+  public waitUntilDone(
     operationToWaitFor: ResourceSnapshotsReportType | null,
     options: WaitUntilDoneOptions = {},
     onRetryCb = (_report: ResourceSnapshotsReportModel) => {}
   ) {
-    try {
-      await retry(
-        this.waitUntilDoneRetryFunction(operationToWaitFor, onRetryCb),
-        {
-          retries: Infinity,
-          maxTimeout: options.waitInterval,
-          maxRetryTime: options.wait,
-        }
-      );
-    } catch (error) {
-      throw new SnapshotOperationTimeoutError(this);
-    }
+    return retry(
+      this.waitUntilDoneRetryFunction(operationToWaitFor, onRetryCb),
+      {
+        retries: Infinity,
+        maxTimeout: options.waitInterval,
+        maxRetryTime: options.wait,
+      }
+    );
   }
 
   private waitUntilDoneRetryFunction(
     operationToWaitFor: ResourceSnapshotsReportType | null,
     onRetryCb: (report: ResourceSnapshotsReportModel) => void
   ): () => Promise<void> {
-    return async () => {
+    return (async () => {
       await this.refreshSnapshotData();
 
       const isExpectedOperation =
@@ -175,9 +171,9 @@ export class Snapshot {
       onRetryCb(this.latestReport);
 
       if (isOngoing || !isExpectedOperation) {
-        throw 'Operation not completed';
+        throw new SnapshotOperationTimeoutError(this);
       }
       return;
-    };
+    }).bind(this);
   }
 }
