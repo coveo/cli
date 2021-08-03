@@ -11,11 +11,11 @@ import {
   displayInvalidSnapshotError,
   displaySnapshotSynchronizationWarning,
   dryRun,
+  DryRunOptions,
   getTargetOrg,
   handleSnapshotError,
 } from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '../../../lib/config/config';
-import {DryRunOptions} from '@coveord/platform-client';
 import {cwd} from 'process';
 import {
   buildAnalyticsFailureHook,

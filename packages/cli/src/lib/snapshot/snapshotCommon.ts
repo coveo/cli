@@ -9,24 +9,28 @@ import dedent from 'ts-dedent';
 import {Config, Configuration} from '../config/config';
 import {SnapshotOperationTimeoutError} from '../errors';
 
-export interface dryRunOptions {
+export interface DryRunOptions {
   deleteMissingResources?: boolean;
+  snapshotId?: string;
 }
 
 export async function dryRun(
   targetOrg: string,
   projectPath: string,
-  options?: dryRunOptions
+  options?: DryRunOptions
 ) {
-  const defaultOptions: Required<dryRunOptions> = {
+  const defaultOptions: DryRunOptions = {
     deleteMissingResources: false,
   };
 
   const opt = {...defaultOptions, ...options};
   const project = new Project(normalize(projectPath));
 
-  cli.action.start('Creating snapshot');
-  const snapshot = await createSnapshotFromProject(project, targetOrg);
+  const snapshot = await getSnapshotForDryRun(
+    project,
+    targetOrg,
+    opt.snapshotId
+  );
 
   cli.action.start('Validating snapshot');
   const reporter = await snapshot.validate(opt.deleteMissingResources);
@@ -101,4 +105,17 @@ async function createSnapshotFromProject(
 ): Promise<Snapshot> {
   const pathToZip = await project.compressResources();
   return SnapshotFactory.createFromZip(pathToZip, targetOrg);
+}
+
+async function getSnapshotForDryRun(
+  project: Project,
+  targetOrg: string,
+  snapshotId?: string
+) {
+  if (snapshotId) {
+    cli.action.start('Retrieving Snapshot');
+    return SnapshotFactory.createFromExistingSnapshot(snapshotId, targetOrg);
+  }
+  cli.action.start('Creating Snapshot');
+  return createSnapshotFromProject(project, targetOrg);
 }

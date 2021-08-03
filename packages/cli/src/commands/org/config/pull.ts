@@ -120,7 +120,7 @@ export default class Pull extends Command {
     }
     cli.action.start('Creating Snapshot');
     return SnapshotFactory.createFromOrg(
-      this.ResourceSnapshotTypesToExport,
+      this.resourceSnapshotTypesToExport,
       target
     );
   }
@@ -129,7 +129,7 @@ export default class Pull extends Command {
     return new Config(this.config.configDir, this.error);
   }
 
-  private get ResourceSnapshotTypesToExport() {
+  private get resourceSnapshotTypesToExport() {
     const {flags} = this.parse(Pull);
     return flags.resourceTypes.map((type) => ResourceSnapshotType[type]);
   }
