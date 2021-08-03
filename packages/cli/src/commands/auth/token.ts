@@ -15,7 +15,7 @@ export default class Token extends Command {
   public static description =
     'Log in to the Coveo Platform using the OAuth2 flow.';
 
-  public static examples = ['$ coveo auth:login'];
+  public static examples = ['$ coveo auth:token'];
 
   public static flags = {
     region: flags.string({
@@ -42,6 +42,7 @@ export default class Token extends Command {
       description:
         'The API-Key that shall be used to authenticate you to the organization. See <https://github.com/coveo/cli/wiki/Using-the-CLI-using-an-API-Key>.',
       required: true,
+      helpValue: 'xxx-api-key',
     }),
   };
 
