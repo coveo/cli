@@ -46,7 +46,10 @@ export async function dryRun(
   );
 
   cli.action.start('Validating snapshot');
-  const reporter = await snapshot.validate(opt.deleteMissingResources);
+  const reporter = await snapshot.validate(
+    opt.deleteMissingResources,
+    opt.waitUntilDone
+  );
 
   cli.action.stop(reporter.isSuccessReport() ? green('✔') : red.bold('!'));
   return {reporter, snapshot, project};

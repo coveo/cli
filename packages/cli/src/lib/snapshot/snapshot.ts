@@ -7,6 +7,7 @@ import {
   ResourceSnapshotsReportType,
   SnapshotExportContentFormat,
 } from '@coveord/platform-client';
+import retry from 'async-retry';
 import {ReportViewer} from './reportViewer/reportViewer';
 import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
@@ -42,13 +43,14 @@ export class Snapshot {
   ) {}
 
   public async validate(
-    deleteMissingResources = false
+    deleteMissingResources = false,
+    options: Partial<WaitUntilDoneOptions> = {}
   ): Promise<SnapshotReporter> {
     await this.snapshotClient.dryRun(this.id, {
       deleteMissingResources,
     });
 
-    await this.waitUntilDone(ResourceSnapshotsReportType.DryRun);
+    await this.waitUntilDone(ResourceSnapshotsReportType.DryRun, options);
 
     return new SnapshotReporter(this.latestReport);
   }
@@ -58,10 +60,13 @@ export class Snapshot {
     this.displayExpandedPreview();
   }
 
-  public async apply(deleteMissingResources = false) {
+  public async apply(
+    deleteMissingResources = false,
+    options: Partial<WaitUntilDoneOptions> = {}
+  ) {
     await this.snapshotClient.apply(this.id, {deleteMissingResources});
 
-    await this.waitUntilDone(ResourceSnapshotsReportType.Apply);
+    await this.waitUntilDone(ResourceSnapshotsReportType.Apply, options);
 
     return new SnapshotReporter(this.latestReport);
   }
@@ -138,45 +143,44 @@ export class Snapshot {
     });
   }
 
-  public async waitUntilDone(
-    operationToWaitFor?: ResourceSnapshotsReportType | null,
-    options: WaitUntilDoneOptions = {},
-    iteratee = (_report: ResourceSnapshotsReportModel) => {}
+  public waitUntilDone(
+    operationToWaitFor: ResourceSnapshotsReportType | null,
+    options: Partial<WaitUntilDoneOptions> = {},
+    onRetryCb = (_report: ResourceSnapshotsReportModel) => {}
   ) {
+    const opts = {...Snapshot.defaultWaitOptions, ...options};
     const toMilliseconds = (seconds: number) => seconds * 1e3;
-    const opts = {
-      ...Snapshot.defaultWaitOptions,
-      ...options,
-    };
-    let timeout: NodeJS.Timeout;
 
-    await new Promise<void>((resolve, reject) => {
-      if (opts.wait > 0) {
-        timeout = setTimeout(() => {
-          const err = new SnapshotOperationTimeoutError(this);
-          clearInterval(interval);
-          reject(err);
-        }, toMilliseconds(opts.wait));
+    return retry(
+      this.waitUntilDoneRetryFunction(operationToWaitFor, onRetryCb),
+      {
+        retries: Math.ceil(opts.wait / opts.waitInterval),
+        minTimeout: toMilliseconds(opts.waitInterval),
+        maxTimeout: toMilliseconds(opts.waitInterval),
+        maxRetryTime: toMilliseconds(opts.wait),
       }
+    );
+  }
 
-      const interval = setInterval(async () => {
-        await this.refreshSnapshotData();
+  private waitUntilDoneRetryFunction(
+    operationToWaitFor: ResourceSnapshotsReportType | null,
+    onRetryCb: (report: ResourceSnapshotsReportModel) => void
+  ): () => Promise<void> {
+    return (async () => {
+      await this.refreshSnapshotData();
 
-        const isExpectedOperation =
-          !operationToWaitFor || this.latestReport.type === operationToWaitFor;
+      const isExpectedOperation =
+        !operationToWaitFor || this.latestReport.type === operationToWaitFor;
 
-        const isOngoing = Snapshot.ongoingReportStatuses.includes(
-          this.latestReport.status
-        );
+      const isOngoing = Snapshot.ongoingReportStatuses.includes(
+        this.latestReport.status
+      );
 
-        iteratee(this.latestReport);
+      onRetryCb(this.latestReport);
 
-        if (!isOngoing && isExpectedOperation) {
-          clearTimeout(timeout);
-          clearInterval(interval);
-          resolve();
-        }
-      }, toMilliseconds(opts.waitInterval));
-    });
+      if (isOngoing || !isExpectedOperation) {
+        throw new SnapshotOperationTimeoutError(this);
+      }
+    }).bind(this);
   }
 }

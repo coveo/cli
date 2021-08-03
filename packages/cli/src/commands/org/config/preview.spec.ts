@@ -163,13 +163,13 @@ describe('org:config:preview', () => {
     test
       .command(['org:config:preview'])
       .it('#validate should not take into account missing resources', () => {
-        expect(mockedValidateSnapshot).toHaveBeenCalledWith(false);
+        expect(mockedValidateSnapshot).toHaveBeenCalledWith(false, {wait: 60});
       });
 
     test
       .command(['org:config:preview', '-d'])
       .it('#validate should take into account missing resoucres', () => {
-        expect(mockedValidateSnapshot).toHaveBeenCalledWith(true);
+        expect(mockedValidateSnapshot).toHaveBeenCalledWith(true, {wait: 60});
       });
 
     test

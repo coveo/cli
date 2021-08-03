@@ -200,14 +200,14 @@ describe('org:config:push', () => {
       .stub(cli, 'confirm', () => async () => true)
       .command(['org:config:push'])
       .it('#should not apply missing resources', () => {
-        expect(mockedApplySnapshot).toHaveBeenCalledWith(false);
+        expect(mockedApplySnapshot).toHaveBeenCalledWith(false, {wait: 60});
       });
 
     test
       .stub(cli, 'confirm', () => async () => true)
       .command(['org:config:push', '-d'])
       .it('should apply missing resoucres', () => {
-        expect(mockedApplySnapshot).toHaveBeenCalledWith(true);
+        expect(mockedApplySnapshot).toHaveBeenCalledWith(true, {wait: 60});
       });
 
     test
