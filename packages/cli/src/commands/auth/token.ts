@@ -47,9 +47,9 @@ export default class Token extends Command {
 
   public async run() {
     this.configuration = new Config(this.config.configDir, this.error);
-    this.loginAndPersistToken();
-    this.persistRegionAndEnvironment();
-    await this.persistOrganization();
+    this.saveToken();
+    this.saveRegionAndEnvironment();
+    await this.fetchAndSaveOrgId();
     await this.feedbackOnSuccessfulLogin();
     this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
@@ -77,19 +77,20 @@ export default class Token extends Command {
     `);
   }
 
-  private loginAndPersistToken() {
+  private saveToken() {
     const flags = this.flags;
     this.configuration.set('accessToken', flags.token);
+    this.configuration.set('anonymous', true);
   }
 
-  private persistRegionAndEnvironment() {
+  private saveRegionAndEnvironment() {
     const flags = this.flags;
     const cfg = this.configuration;
     cfg.set('environment', flags.environment as PlatformEnvironment);
     cfg.set('region', flags.region as PlatformRegion);
   }
 
-  private async persistOrganization() {
+  private async fetchAndSaveOrgId() {
     this.configuration.set(
       'organization',
       await this.pickFirstAvailableOrganization()

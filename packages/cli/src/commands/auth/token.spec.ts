@@ -86,7 +86,7 @@ describe('auth:token', () => {
       });
   });
 
-  describe('writes the token to the configuration', () => {
+  describe('writes the token and set anonymous to true in the configuration ', () => {
     test
       .stdout()
       .command(['auth:token', '-t', 'this-is-the-token'])
@@ -95,6 +95,7 @@ describe('auth:token', () => {
           'accessToken',
           'this-is-the-token'
         );
+        expect(mockConfigSet).toHaveBeenCalledWith('anonymous', true);
       });
   });
 
