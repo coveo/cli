@@ -20,6 +20,7 @@ import {Snapshot} from '../snapshot';
 import {spawnProcess} from '../../utils/process';
 import {recursiveDirectoryDiff} from './filesDiffProcessor';
 import {getDirectory} from '../../../__test__/fsUtils';
+import {resolve} from 'path';
 
 describe('ExpandedPreviewer', () => {
   const Blob = jest.fn();
@@ -49,7 +50,7 @@ describe('ExpandedPreviewer', () => {
       (path: string) =>
         ({
           pathToProject: path,
-          resourcePath: join(path, 'resources'),
+          resourcePath: resolve(join(path, 'resources')),
           refresh: mockedProjectRefresh,
         } as unknown as Project)
     );
@@ -206,7 +207,7 @@ describe('ExpandedPreviewer', () => {
         recursive: true,
       });
 
-      expect(mockedProject).toHaveBeenCalledWith(previewPath);
+      expect(mockedProject).toHaveBeenCalledWith(resolve(previewPath));
       expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
         Object.keys(fakeReport.resourceOperationResults),
         'someorg'
