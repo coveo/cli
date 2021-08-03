@@ -3,7 +3,7 @@ import {
   ResourceSnapshotType,
 } from '@coveord/platform-client';
 import {mkdirSync, readdirSync, rmSync} from 'fs';
-import {join} from 'path';
+import {join, resolve} from 'path';
 import {cli} from 'cli-ux';
 import {Project} from '../../project/project';
 import {spawnProcess} from '../../utils/process';
@@ -40,7 +40,11 @@ export class ExpandedPreviewer {
   public async preview() {
     this.deleteOldestPreviews();
     const previewLocalSlug = `${this.orgId}-${Date.now()}`;
-    const dirPath = join(ExpandedPreviewer.previewDirectory, previewLocalSlug);
+
+    const dirPath = resolve(
+      ExpandedPreviewer.previewDirectory,
+      previewLocalSlug
+    );
 
     mkdirSync(dirPath, {
       recursive: true,
@@ -51,10 +55,10 @@ export class ExpandedPreviewer {
     // TODO: Remove/move as tests progress.
     if (Date.now() > 0) return;
     cli.info(dedent`
-    
+
     A Git repository representing the modification has been created here:
     ${dirPath}
-    
+
     `);
   }
 

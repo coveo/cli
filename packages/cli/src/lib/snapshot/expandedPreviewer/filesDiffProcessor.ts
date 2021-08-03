@@ -6,7 +6,7 @@ import {
   writeJSONSync,
   WriteOptions,
 } from 'fs-extra';
-import {join} from 'path';
+import path, {isAbsolute, join} from 'path';
 
 type ResourcesJSON = Object & {resourceName: string};
 
@@ -23,6 +23,10 @@ export function recursiveDirectoryDiff(
   nextDir: string,
   deleteMissingResources: boolean
 ) {
+  if (!isAbsolute(currentDir) || !isAbsolute(nextDir)) {
+    throw new Error('TODO: Some kind of error');
+  }
+
   const currentFilePaths = getAllFilesPath(currentDir);
   const nextFilePaths = getAllFilesPath(nextDir);
 
@@ -55,7 +59,7 @@ function getAllFilesPath(
     if (file.isDirectory()) {
       getAllFilesPath(join(currentDir, file.name), filePaths);
     } else {
-      filePaths.add(join(currentDir, file.name).replace(firstDirOfPath, ''));
+      filePaths.add(file.name.replace(firstDirOfPath, ''));
     }
   });
   return filePaths;
