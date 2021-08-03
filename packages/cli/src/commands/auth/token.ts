@@ -40,7 +40,7 @@ export default class Token extends Command {
     token: flags.string({
       char: 't',
       description:
-        'The API-Key that shall be used to authenticate you to the organization. See <TODO-DOC> for more details on how to create the API-Key and the required permissions.',
+        'The API-Key that shall be used to authenticate you to the organization. See <https://github.com/coveo/cli/wiki/Using-the-CLI-using-an-API-Key>.',
       required: true,
     }),
   };
