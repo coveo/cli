@@ -148,16 +148,16 @@ export class Snapshot {
     options: Partial<WaitUntilDoneOptions> = {},
     onRetryCb = (_report: ResourceSnapshotsReportModel) => {}
   ) {
-    const opts = {...Snapshot.defaultWaitOptions, options};
+    const opts = {...Snapshot.defaultWaitOptions, ...options};
     const toMilliseconds = (seconds: number) => seconds * 1e3;
 
     return retry(
       this.waitUntilDoneRetryFunction(operationToWaitFor, onRetryCb),
       {
-        retries: Infinity,
+        retries: Math.ceil(opts.wait / opts.waitInterval),
         minTimeout: toMilliseconds(opts.waitInterval),
         maxTimeout: toMilliseconds(opts.waitInterval),
-        maxRetryTime: options.wait,
+        maxRetryTime: toMilliseconds(opts.wait),
       }
     );
   }
