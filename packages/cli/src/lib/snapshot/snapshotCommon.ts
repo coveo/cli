@@ -120,3 +120,16 @@ async function createSnapshotFromProject(
   const pathToZip = await project.compressResources();
   return SnapshotFactory.createFromZip(pathToZip, targetOrg, options);
 }
+
+async function getSnapshotForDryRun(
+  project: Project,
+  targetOrg: string,
+  snapshotId?: string
+) {
+  if (snapshotId) {
+    cli.action.start('Retrieving Snapshot');
+    return SnapshotFactory.createFromExistingSnapshot(snapshotId, targetOrg);
+  }
+  cli.action.start('Creating Snapshot');
+  return createSnapshotFromProject(project, targetOrg);
+}
