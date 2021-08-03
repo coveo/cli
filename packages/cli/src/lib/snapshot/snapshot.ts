@@ -43,13 +43,14 @@ export class Snapshot {
   ) {}
 
   public async validate(
-    deleteMissingResources = false
+    deleteMissingResources = false,
+    options: Partial<WaitUntilDoneOptions> = {}
   ): Promise<SnapshotReporter> {
     await this.snapshotClient.dryRun(this.id, {
       deleteMissingResources,
     });
 
-    await this.waitUntilDone(ResourceSnapshotsReportType.DryRun);
+    await this.waitUntilDone(ResourceSnapshotsReportType.DryRun, options);
 
     return new SnapshotReporter(this.latestReport);
   }
@@ -59,10 +60,13 @@ export class Snapshot {
     this.displayExpandedPreview();
   }
 
-  public async apply(deleteMissingResources = false) {
+  public async apply(
+    deleteMissingResources = false,
+    options: Partial<WaitUntilDoneOptions> = {}
+  ) {
     await this.snapshotClient.apply(this.id, {deleteMissingResources});
 
-    await this.waitUntilDone(ResourceSnapshotsReportType.Apply);
+    await this.waitUntilDone(ResourceSnapshotsReportType.Apply, options);
 
     return new SnapshotReporter(this.latestReport);
   }

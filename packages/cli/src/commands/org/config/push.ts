@@ -118,7 +118,10 @@ export default class Push extends Command {
   private async applySnapshot(snapshot: Snapshot) {
     cli.action.start('Applying snapshot');
     const {flags} = this.parse(Push);
-    const reporter = await snapshot.apply(flags.deleteMissingResources);
+    const reporter = await snapshot.apply(
+      flags.deleteMissingResources,
+      this.dryRunOptions.waitUntilDone
+    );
     const success = reporter.isSuccessReport();
 
     if (!success) {
