@@ -3,7 +3,7 @@ import {
   ResourceSnapshotType,
 } from '@coveord/platform-client';
 import {mkdirSync, readdirSync, rmSync} from 'fs';
-import {join, resolve} from 'path';
+import {join, relative, resolve} from 'path';
 import {cli} from 'cli-ux';
 import {Project} from '../../project/project';
 import {spawnProcess} from '../../utils/process';
@@ -12,6 +12,7 @@ import dedent from 'ts-dedent';
 import {Dirent} from 'fs';
 import {recursiveDirectoryDiff} from './filesDiffProcessor';
 import {DotFolder} from '../../project/dotFolder';
+import {cwd} from 'process';
 
 export class ExpandedPreviewer {
   private static readonly previewDirectoryName = 'preview';
@@ -49,8 +50,8 @@ export class ExpandedPreviewer {
     mkdirSync(dirPath, {
       recursive: true,
     });
-    const project = new Project(dirPath);
-    await this.initPreviewDirectory(project);
+    const project = new Project(resolve(dirPath));
+    await this.initPreviewDirectory(dirPath, project);
     await this.applySnapshotToPreview(dirPath);
     // TODO: Remove/move as tests progress.
     if (Date.now() > 0) return;
@@ -87,10 +88,10 @@ export class ExpandedPreviewer {
     }
   }
 
-  private async initPreviewDirectory(project: Project) {
+  private async initPreviewDirectory(dirPath: string, project: Project) {
     const beforeSnapshot = await this.getBeforeSnapshot();
     await project.refresh(beforeSnapshot);
-    await this.initialPreviewCommit(project.pathToProject);
+    await this.initialPreviewCommit(dirPath);
   }
 
   private async initialPreviewCommit(dirPath: string) {
@@ -105,7 +106,7 @@ export class ExpandedPreviewer {
   private async applySnapshotToPreview(dirPath: string) {
     recursiveDirectoryDiff(
       join(dirPath, 'resources'),
-      this.projectToPreview.resourcePath,
+      relative(cwd(), this.projectToPreview.resourcePath),
       this.shouldDelete
     );
     await spawnProcess('git', ['add', '.'], {cwd: dirPath, stdio: 'ignore'});
