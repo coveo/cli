@@ -103,7 +103,6 @@ export default class Preview extends Command {
   }
 
   private async handleReportWithErrors(snapshot: Snapshot) {
-    // TODO: CDX-362: handle invalid snapshot cases
     const cfg = await this.configuration.get();
 
     if (snapshot.requiresSynchronization()) {
