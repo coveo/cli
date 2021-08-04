@@ -1,6 +1,7 @@
 import Command from '@oclif/command';
 import {IConfig} from '@oclif/config';
 import {CoveoAnalyticsClient} from 'coveo.analytics';
+import type {CustomEventRequest} from 'coveo.analytics/dist/definitions/events';
 import {WebStorage} from 'coveo.analytics/dist/definitions/storage';
 import {Config} from '../../lib/config/config';
 import {
@@ -45,8 +46,7 @@ const hook = async function (opts: AnalyticsHook) {
   //  }
 
   const analyticsClient = configureAnalyticsClient(authenticatedClient);
-
-  await analyticsClient.sendCustomEvent({
+  const analyticsData: CustomEventRequest = {
     eventType,
     eventValue,
     customData: {
@@ -62,11 +62,14 @@ const hook = async function (opts: AnalyticsHook) {
     originLevel1: eventType,
     originLevel2: eventValue,
     userAgent: opts.config.userAgent,
-    userDisplayName: userInfo.displayName,
     anonymous: false,
-    username: userInfo.username,
     language: 'en',
-  });
+  };
+  if (userInfo) {
+    analyticsData.userDisplayName = userInfo.displayName;
+    analyticsData.username = userInfo.username;
+  }
+  await analyticsClient.sendCustomEvent(analyticsData);
 };
 
 const identifier = (opts: AnalyticsHook) => ({
@@ -86,9 +89,11 @@ const platformInfoIdentifier = async () => {
   const authenticatedClient = new AuthenticatedClient();
   const platformClient = await authenticatedClient.getClient();
   await platformClient.initialize();
-
-  const userInfo = await platformClient.user.get();
-  const config = await authenticatedClient.cfg.get();
+  const config = authenticatedClient.cfg.get();
+  let userInfo;
+  if (!config.anonymous) {
+    userInfo = await platformClient.user.get();
+  }
   return {
     userInfo,
     authenticatedClient,

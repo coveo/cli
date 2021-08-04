@@ -112,10 +112,6 @@ export class Snapshot {
   }
 
   public get targetId() {
-    // TODO: remove after https://github.com/coveo/platform-client/pull/339 is merged
-    if (!this.model.targetId) {
-      throw new Error(`No target id associated to the snapshot ${this.id}`);
-    }
     return this.model.targetId;
   }
 

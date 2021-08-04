@@ -97,7 +97,6 @@ export class ReportViewer {
     for (const resourceType in operationResults) {
       this.logResourceErrors(resourceType);
     }
-    // TODO: CDX-362: handle other invalid snashot cases
   }
 
   private logResourceErrors(ResourceSnapshotType: string) {
