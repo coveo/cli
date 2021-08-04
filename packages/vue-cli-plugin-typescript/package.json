@@ -14,7 +14,7 @@
     "npm:publish:template": "npm publish --access public"
   },
   "devDependencies": {
-    "@coveo/headless": "1.6.3",
+    "@coveo/headless": "1.12.0",
     "buefy": "0.9.8",
     "dotenv": "10.0.0",
     "vue": "2.6.14",
