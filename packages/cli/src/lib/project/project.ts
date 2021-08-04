@@ -1,13 +1,21 @@
-import {createWriteStream, existsSync, unlinkSync, writeFileSync} from 'fs';
-import {join} from 'path';
+import {
+  createWriteStream,
+  existsSync,
+  readdirSync,
+  unlinkSync,
+  writeFileSync,
+} from 'fs';
+import {extname, join} from 'path';
 import {cli} from 'cli-ux';
 import archiver from 'archiver';
 import {InvalidProjectError} from '../errors';
 import extract from 'extract-zip';
 import {DotFolder, DotFolderConfig} from './dotFolder';
+import {readJsonSync, writeJsonSync, WriteOptions} from 'fs-extra';
 
 export class Project {
   private static readonly resourceFolderName = 'resources';
+  public static readonly jsonFormat: WriteOptions = {spaces: '\t'};
   public constructor(private _pathToProject: string) {
     if (!this.isCoveoProject) {
       this.makeCoveoProject();
@@ -19,7 +27,23 @@ export class Project {
     const view = new DataView(buffer);
     writeFileSync(this.temporaryZipPath, view);
     await extract(this.temporaryZipPath, {dir: this.resourcePath});
+    this.formatResourceFiles();
     this.deleteTemporaryZipFile();
+  }
+
+  private formatResourceFiles(dirPath = this.resourcePath) {
+    const files = readdirSync(dirPath, {withFileTypes: true});
+    files.forEach((file) => {
+      const filePath = join(dirPath, file.name);
+      if (file.isDirectory()) {
+        this.formatResourceFiles(filePath);
+        return;
+      }
+      if (file.isFile() && extname(filePath) === '.json') {
+        const content = readJsonSync(filePath);
+        writeJsonSync(filePath, content, Project.jsonFormat);
+      }
+    });
   }
 
   public deleteTemporaryZipFile() {
