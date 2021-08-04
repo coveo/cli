@@ -14,6 +14,7 @@ export interface Configuration {
   [k: string]: unknown;
   analyticsEnabled: boolean | undefined;
   accessToken: string | undefined;
+  anonymous?: boolean | undefined;
 }
 
 export const DefaultConfig: Configuration = {
@@ -22,6 +23,7 @@ export const DefaultConfig: Configuration = {
   organization: '',
   analyticsEnabled: undefined,
   accessToken: undefined,
+  anonymous: undefined,
 };
 
 export class Config {
