@@ -45,9 +45,9 @@ export default class Monitor extends Command {
 
   @Preconditions(IsAuthenticated())
   public async run() {
-    const snapshot = await this.getSnapshot();
+    this.printHeader();
 
-    this.printHeader(snapshot.id);
+    const snapshot = await this.getSnapshot();
 
     await this.monitorSnapshot(snapshot);
     this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
@@ -76,11 +76,14 @@ export default class Monitor extends Command {
     cli.action.stop(this.getReportStatus(snapshot.latestReport));
   }
 
-  private printHeader(snapshotId: string) {
+  private printHeader() {
+    const {args} = this.parse(Monitor);
+    const snapshotId = args.snapshotId;
     const header = ReportViewerStyles.header(
-      `\nMonitoring snapshot ${snapshotId}:`
+      `Monitoring snapshot ${snapshotId}`
     );
-    cli.log(header);
+    cli.log('');
+    cli.action.start(header);
   }
 
   private prettyPrint(str: string): string {
