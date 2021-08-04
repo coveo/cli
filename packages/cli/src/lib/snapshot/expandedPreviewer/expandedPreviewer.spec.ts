@@ -8,7 +8,7 @@ import {
   ResourceSnapshotsReportModel,
   ResourceSnapshotsReportType,
 } from '@coveord/platform-client';
-import {Dirent, mkdirSync, readdirSync, rmSync} from 'fs';
+import {Dirent, existsSync, mkdirSync, readdirSync, rmSync} from 'fs';
 import {join} from 'path';
 
 import {mocked} from 'ts-jest/utils';
@@ -27,6 +27,7 @@ describe('ExpandedPreviewer', () => {
   const fakeBlob: Blob = new Blob();
 
   const mockedRecursiveDirectoryDiff = mocked(recursiveDirectoryDiff);
+  const mockedExistsSync = mocked(existsSync);
   const mockedReaddirSync = mocked(readdirSync);
   const mockedRmSync = mocked(rmSync);
   const mockedMkdirSync = mocked(mkdirSync);
@@ -43,6 +44,10 @@ describe('ExpandedPreviewer', () => {
       dirs.push(getDirectory(`someOrgId-${i}`));
     }
     mockedReaddirSync.mockReturnValueOnce(dirs);
+  };
+
+  const mockExistsSync = () => {
+    mockedExistsSync.mockReturnValue(true);
   };
 
   const mockProject = () => {
@@ -65,6 +70,7 @@ describe('ExpandedPreviewer', () => {
   };
 
   const defaultMocks = () => {
+    mockExistsSync();
     mockExistingPreviews();
     mockProject();
     mockSnapshotFactory();
@@ -117,6 +123,22 @@ describe('ExpandedPreviewer', () => {
           expect.anything()
         );
       }
+    });
+  });
+
+  describe('when no preview has been done yet', () => {
+    it('should not delete any preview directories', async () => {
+      mockedExistsSync.mockReturnValueOnce(false);
+      const expandedPreviewer = new ExpandedPreviewer(
+        getSuccessReport('some-id', ResourceSnapshotsReportType.DryRun),
+        'someorg',
+        new Project('my/awesome/path'),
+        false
+      );
+      await expandedPreviewer.preview();
+
+      expect(mockedExistsSync).toBeCalledWith(join('.coveo/preview'));
+      expect(mockedReaddirSync).not.toBeCalled();
     });
   });
 

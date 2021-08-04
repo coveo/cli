@@ -2,7 +2,7 @@ import {
   ResourceSnapshotsReportModel,
   ResourceSnapshotType,
 } from '@coveord/platform-client';
-import {mkdirSync, readdirSync, rmSync} from 'fs';
+import {existsSync, mkdirSync, readdirSync, rmSync} from 'fs';
 import {join, relative, resolve} from 'path';
 import {cli} from 'cli-ux';
 import {Project} from '../../project/project';
@@ -39,7 +39,9 @@ export class ExpandedPreviewer {
   }
 
   public async preview() {
-    this.deleteOldestPreviews();
+    if (existsSync(ExpandedPreviewer.previewDirectory)) {
+      this.deleteOldestPreviews();
+    }
     const previewLocalSlug = `${this.orgId}-${Date.now()}`;
     const dirPath = join(ExpandedPreviewer.previewDirectory, previewLocalSlug);
 
