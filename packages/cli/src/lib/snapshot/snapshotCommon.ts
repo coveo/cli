@@ -12,6 +12,7 @@ import {flags} from '@oclif/command';
 
 export interface DryRunOptions {
   deleteMissingResources?: boolean;
+  snapshotId?: string;
   waitUntilDone?: WaitUntilDoneOptions;
 }
 
@@ -38,12 +39,7 @@ export async function dryRun(
   const opt = {...defaultOptions, ...options};
   const project = new Project(normalize(projectPath));
 
-  cli.action.start('Creating snapshot');
-  const snapshot = await createSnapshotFromProject(
-    project,
-    targetOrg,
-    opt.waitUntilDone
-  );
+  const snapshot = await getSnapshotForDryRun(project, targetOrg, opt);
 
   cli.action.start('Validating snapshot');
   const reporter = await snapshot.validate(
@@ -127,12 +123,16 @@ async function createSnapshotFromProject(
 async function getSnapshotForDryRun(
   project: Project,
   targetOrg: string,
-  snapshotId?: string
+  options: DryRunOptions = {}
 ) {
-  if (snapshotId) {
+  if (options.snapshotId) {
     cli.action.start('Retrieving Snapshot');
-    return SnapshotFactory.createFromExistingSnapshot(snapshotId, targetOrg);
+    return SnapshotFactory.createFromExistingSnapshot(
+      options.snapshotId,
+      targetOrg,
+      options.waitUntilDone
+    );
   }
   cli.action.start('Creating Snapshot');
-  return createSnapshotFromProject(project, targetOrg);
+  return createSnapshotFromProject(project, targetOrg, options.waitUntilDone);
 }
