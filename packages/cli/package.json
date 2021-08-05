@@ -2,6 +2,7 @@
   "name": "@coveo/cli",
   "version": "1.12.0",
   "author": "Coveo",
+  "description": "Coveo CLI",
   "engines": {
     "node": ">=14.15.1"
   },
@@ -75,6 +76,7 @@
   },
   "oclif": {
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/cli/<%- commandPath %>",
+    "description": "Coveo CLI",
     "commands": "./lib/commands",
     "bin": "coveo",
     "plugins": [
