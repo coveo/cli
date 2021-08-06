@@ -17,7 +17,8 @@ import {
   NodeCrypto,
   NodeRequestor,
 } from '@openid/appauth/built/node_support';
-
+import {register} from 'protocol-registry';
+import IPC from 'node-ipc';
 export interface OAuthOptions {
   port: number;
   environment: PlatformEnvironment;
@@ -41,13 +42,30 @@ export class OAuth {
   }
 
   public async getToken() {
+    IPC.config.silent = true;
+    IPC.serve(IPC.config.socketRoot + IPC.config.appspace + 'coveo');
+    IPC.server.start();
+    await register({
+      command: `${process.argv[0]} ${process.argv[1]} auth:redirect $_URL_`,
+      protocol: 'baguette',
+      override: true,
+    });
     const config = new AuthorizationServiceConfiguration({
       ...this.clientConfig,
       ...this.authServiceConfig,
     });
-
-    const {code} = await this.getAuthorizationCode(config);
-    return await this.getAccessToken(config, code);
+    const code = new Promise<string>((resolve) => {
+      IPC.server.on('code', (data) => {
+        console.log(data.toString());
+        const url = new URL(data.toString());
+        IPC.server.stop();
+        resolve(url.searchParams.get('code') ?? '');
+      });
+    });
+    this.getAuthorizationCode(config);
+    await code;
+    console.log(await code);
+    return await this.getAccessToken(config, await code);
   }
 
   private async getAccessToken(
@@ -79,34 +97,25 @@ export class OAuth {
 
   private getAuthorizationCode(
     configuration: AuthorizationServiceConfiguration
-  ): Promise<{code: string; verifier: string}> {
-    return new Promise((res) => {
-      const notifier = new AuthorizationNotifier();
-      const authorizationHandler = new NodeBasedHandler(this.opts.port);
-      const request = new AuthorizationRequest(
-        {
-          ...this.clientConfig,
-          response_type: AuthorizationRequest.RESPONSE_TYPE_CODE,
-        },
-        new NodeCrypto(),
-        true
-      );
+  ): void {
+    const authorizationHandler = new NodeBasedHandler(this.opts.port);
+    const request = new AuthorizationRequest(
+      {
+        ...this.clientConfig,
+        response_type: AuthorizationRequest.RESPONSE_TYPE_CODE,
+      },
+      new NodeCrypto(),
+      true
+    );
 
-      authorizationHandler.setAuthorizationNotifier(notifier);
-      notifier.setAuthorizationListener((request, response) => {
-        if (response) {
-          const {code} = response;
-          res({code, verifier: request.internal!.verifier});
-        }
-      });
-      authorizationHandler.performAuthorizationRequest(configuration, request);
-    });
+    authorizationHandler.performAuthorizationRequest(configuration, request);
+    authorizationHandler.completeAuthorizationRequestIfPossible
   }
 
   private get clientConfig() {
     return {
-      client_id: 'cli',
-      redirect_uri: `http://127.0.0.1:${this.opts.port}`,
+      client_id: 'baguettecli',
+      redirect_uri: 'baguette://cli-auth',
       scope: 'full',
     };
   }
