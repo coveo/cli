@@ -34,7 +34,7 @@
   "devDependencies": {
     "@angular/core": "12.2.0",
     "@angular/forms": "12.2.0",
-    "@angular/material": "12.1.4",
+    "@angular/material": "12.2.0",
     "@angular/router": "12.2.0",
     "@coveo/headless": "latest",
     "@types/fs-extra": "9.0.12",
