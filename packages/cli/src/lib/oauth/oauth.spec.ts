@@ -41,18 +41,6 @@ describe('OAuth', () => {
     expect(accessToken).toEqual('this-is-the-new-access-token');
   });
 
-  describe('should use proper port for @openid', () => {
-    it('using default port', async () => {
-      await new OAuth().getToken();
-      expect(NodeBasedHandler).toHaveBeenCalledWith(32111);
-    });
-
-    it('using configured port', async () => {
-      await new OAuth({port: 444}).getToken();
-      expect(NodeBasedHandler).toHaveBeenCalledWith(444);
-    });
-  });
-
   describe('should use proper @openid AuthorizationServiceConfiguration', () => {
     const endpoints = (opts?: {
       environment?: PlatformEnvironment;
@@ -67,8 +55,8 @@ describe('OAuth', () => {
       await new OAuth(opts).getToken();
       expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
         expect.objectContaining({
-          client_id: 'cli',
-          redirect_uri: 'http://127.0.0.1:32111',
+          client_id: 'baguettecli',
+          redirect_uri: 'baguette://cli-auth',
           scope: 'full',
           ...endpoints(opts),
         })

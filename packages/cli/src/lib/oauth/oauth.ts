@@ -12,15 +12,10 @@ import {
   GRANT_TYPE_AUTHORIZATION_CODE,
   TokenRequest,
 } from '@openid/appauth';
-import {
-  NodeBasedHandler,
-  NodeCrypto,
-  NodeRequestor,
-} from '@openid/appauth/built/node_support';
-import {register} from 'protocol-registry';
-import IPC from 'node-ipc';
+import {NodeCrypto, NodeRequestor} from '@openid/appauth/built/node_support';
+import {IPCBasedHandler} from './ipcBaseAuthHandler';
+
 export interface OAuthOptions {
-  port: number;
   environment: PlatformEnvironment;
   region: PlatformRegion;
 }
@@ -29,43 +24,24 @@ export class OAuth {
   private opts: OAuthOptions;
   public constructor(opts?: Partial<OAuthOptions>) {
     const baseOptions: OAuthOptions = {
-      port: 32111,
       environment: 'prod',
       region: 'us-east-1',
     };
 
     this.opts = {
       environment: opts?.environment || baseOptions.environment,
-      port: opts?.port || baseOptions.port,
       region: opts?.region || baseOptions.region,
     };
   }
 
   public async getToken() {
-    IPC.config.silent = true;
-    IPC.serve(IPC.config.socketRoot + IPC.config.appspace + 'coveo');
-    IPC.server.start();
-    await register({
-      command: `${process.argv[0]} ${process.argv[1]} auth:redirect $_URL_`,
-      protocol: 'baguette',
-      override: true,
-    });
     const config = new AuthorizationServiceConfiguration({
       ...this.clientConfig,
       ...this.authServiceConfig,
     });
-    const code = new Promise<string>((resolve) => {
-      IPC.server.on('code', (data) => {
-        console.log(data.toString());
-        const url = new URL(data.toString());
-        IPC.server.stop();
-        resolve(url.searchParams.get('code') ?? '');
-      });
-    });
-    this.getAuthorizationCode(config);
-    await code;
-    console.log(await code);
-    return await this.getAccessToken(config, await code);
+
+    const {code} = await this.getAuthorizationCode(config);
+    return await this.getAccessToken(config, code);
   }
 
   private async getAccessToken(
@@ -97,19 +73,28 @@ export class OAuth {
 
   private getAuthorizationCode(
     configuration: AuthorizationServiceConfiguration
-  ): void {
-    const authorizationHandler = new NodeBasedHandler(this.opts.port);
-    const request = new AuthorizationRequest(
-      {
-        ...this.clientConfig,
-        response_type: AuthorizationRequest.RESPONSE_TYPE_CODE,
-      },
-      new NodeCrypto(),
-      true
-    );
+  ): Promise<{code: string; verifier: string}> {
+    return new Promise((res) => {
+      const notifier = new AuthorizationNotifier();
+      const authorizationHandler = new IPCBasedHandler();
+      const request = new AuthorizationRequest(
+        {
+          ...this.clientConfig,
+          response_type: AuthorizationRequest.RESPONSE_TYPE_CODE,
+        },
+        new NodeCrypto(),
+        true
+      );
 
-    authorizationHandler.performAuthorizationRequest(configuration, request);
-    authorizationHandler.completeAuthorizationRequestIfPossible
+      authorizationHandler.setAuthorizationNotifier(notifier);
+      notifier.setAuthorizationListener((request, response) => {
+        if (response) {
+          const {code} = response;
+          res({code, verifier: request.internal!.verifier});
+        }
+      });
+      authorizationHandler.performAuthorizationRequest(configuration, request);
+    });
   }
 
   private get clientConfig() {
