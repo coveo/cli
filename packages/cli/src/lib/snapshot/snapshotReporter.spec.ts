@@ -3,7 +3,7 @@ import {
   getReportWithoutChanges,
   getSuccessReport,
 } from '../../__stub__/resourceSnapshotsReportModel';
-import {ReportViewerResourceReportModel} from './reportViewer/reportViewerDataModels';
+import {ReportViewerResourceReportModel} from './reportPreviewer/reportPreviewerDataModels';
 import {SnapshotReporter} from './snapshotReporter';
 
 describe('SnapshotReporter', () => {

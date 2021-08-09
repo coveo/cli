@@ -8,12 +8,14 @@ import {
   SnapshotExportContentFormat,
 } from '@coveord/platform-client';
 import {backOff, IBackOffOptions} from 'exponential-backoff';
-import {ReportViewer} from './reportViewer/reportViewer';
+import {ReportViewer} from './reportPreviewer/reportPreviewer';
 import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
 import dedent from 'ts-dedent';
 import {SnapshotReporter} from './snapshotReporter';
 import {SnapshotOperationTimeoutError} from '../errors';
+import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer';
+import {Project} from '../project/project';
 export interface waitUntilDoneOptions {
   /**
    * The operation to wait for. If not specified, the method will wait for any operation to complete.
@@ -47,9 +49,12 @@ export class Snapshot {
     return new SnapshotReporter(this.latestReport);
   }
 
-  public async preview() {
+  public async preview(
+    projectToPreview: Project,
+    deleteMissingResources = false
+  ) {
     this.displayLightPreview();
-    this.displayExpandedPreview();
+    await this.displayExpandedPreview(projectToPreview, deleteMissingResources);
   }
 
   public async apply(deleteMissingResources = false) {
@@ -120,8 +125,17 @@ export class Snapshot {
     viewer.display();
   }
 
-  private displayExpandedPreview() {
-    // TODO: CDX-347 Display Expanded preview
+  private async displayExpandedPreview(
+    projectToPreview: Project,
+    shouldDelete: boolean
+  ) {
+    const previewer = new ExpandedPreviewer(
+      this.latestReport,
+      this.targetId!,
+      projectToPreview,
+      shouldDelete
+    );
+    await previewer.preview();
   }
 
   private async refreshSnapshotData() {
