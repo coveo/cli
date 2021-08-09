@@ -12,6 +12,7 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
+import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {
@@ -38,7 +39,7 @@ export default class Preview extends Command {
     }),
     showMissingResources: flags.boolean({
       char: 'd',
-      description: 'Whether or not preview missing resources',
+      description: 'Preview resources deletion when enabled',
       default: false,
       required: false,
     }),
@@ -52,17 +53,17 @@ export default class Preview extends Command {
 
   public static hidden = true;
 
-  @Preconditions(IsAuthenticated())
+  @Preconditions(IsAuthenticated(), IsGitInstalled())
   public async run() {
     const {flags} = this.parse(Preview);
     const target = await getTargetOrg(this.configuration, flags.target);
     const {reporter, snapshot, project} = await dryRun(
       target,
       this.projectPath,
-      this.dryRunOptions
+      this.options
     );
 
-    await snapshot.preview();
+    await snapshot.preview(project, this.options.deleteMissingResources);
 
     if (reporter.isSuccessReport()) {
       await snapshot.delete();
@@ -113,7 +114,7 @@ export default class Preview extends Command {
     displayInvalidSnapshotError(snapshot, cfg, this.projectPath);
   }
 
-  private get dryRunOptions(): DryRunOptions {
+  private get options(): DryRunOptions {
     const {flags} = this.parse(Preview);
     return {
       deleteMissingResources: flags.showMissingResources,

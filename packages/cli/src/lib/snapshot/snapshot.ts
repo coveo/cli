@@ -8,11 +8,13 @@ import {
   SnapshotExportContentFormat,
 } from '@coveord/platform-client';
 import retry from 'async-retry';
-import {ReportViewer} from './reportViewer/reportViewer';
+import {ReportViewer} from './reportPreviewer/reportPreviewer';
 import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
 import {SnapshotReporter} from './snapshotReporter';
 import {SnapshotOperationTimeoutError} from '../errors';
+import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer';
+import {Project} from '../project/project';
 
 export interface WaitUntilDoneOptions {
   /**
@@ -69,9 +71,12 @@ export class Snapshot {
     return new SnapshotReporter(this.latestReport);
   }
 
-  public async preview() {
+  public async preview(
+    projectToPreview: Project,
+    deleteMissingResources = false
+  ) {
     this.displayLightPreview();
-    this.displayExpandedPreview();
+    await this.displayExpandedPreview(projectToPreview, deleteMissingResources);
   }
 
   public async apply(
@@ -146,8 +151,17 @@ export class Snapshot {
     viewer.display();
   }
 
-  private displayExpandedPreview() {
-    // TODO: CDX-347 Display Expanded preview
+  private async displayExpandedPreview(
+    projectToPreview: Project,
+    shouldDelete: boolean
+  ) {
+    const previewer = new ExpandedPreviewer(
+      this.latestReport,
+      this.targetId!,
+      projectToPreview,
+      shouldDelete
+    );
+    await previewer.preview();
   }
 
   private async refreshSnapshotData() {
