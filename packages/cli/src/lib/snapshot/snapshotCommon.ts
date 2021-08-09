@@ -18,7 +18,7 @@ export interface DryRunOptions {
 
 export const waitFlag = {
   wait: flags.integer({
-    char: 'm',
+    char: 'w',
     default: Snapshot.defaultWaitOptions.wait,
     helpValue: 'seconds',
     required: false,

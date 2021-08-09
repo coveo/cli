@@ -151,7 +151,7 @@ describe('org:config:preview', () => {
       });
 
     test
-      .command(['org:config:preview', '-m', '312'])
+      .command(['org:config:preview', '-w', '312'])
       .it('should set a 312 seconds wait', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
