@@ -70,4 +70,27 @@ export class SnapshotReporter {
         SnapshotReporter.convertResourceEntriesToResourceSnapshotsReportOperationModel
       );
   }
+
+  public get type() {
+    const type = this.prettify(this.report.type);
+    return type;
+  }
+
+  public get status() {
+    const status = this.prettify(this.report.status);
+    return status;
+  }
+
+  public get resultCode() {
+    const status = this.prettify(this.report.resultCode);
+    return status;
+  }
+
+  private prettify(str: string): string {
+    const capitalized = (word: string) =>
+      word.charAt(0) + word.slice(1).toLowerCase();
+
+    const spaced = str.replace(/_/g, ' ');
+    return spaced.split(' ').map(capitalized).join(' ');
+  }
 }

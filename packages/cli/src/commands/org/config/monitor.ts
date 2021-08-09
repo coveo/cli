@@ -1,6 +1,7 @@
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
 import {cli} from 'cli-ux';
+import {cwd} from 'process';
 import {
   buildAnalyticsFailureHook,
   buildAnalyticsSuccessHook,
@@ -16,8 +17,10 @@ import {
   waitFlag,
   getTargetOrg,
   handleSnapshotError,
+  displayInvalidSnapshotError,
 } from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
+import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 
 export default class Monitor extends Command {
   public static description = 'Monitor a Snapshot operation';
@@ -63,17 +66,34 @@ export default class Monitor extends Command {
   }
 
   private async monitorSnapshot(snapshot: Snapshot) {
-    cli.action.start(
-      `Operation: ${this.getReportType(snapshot.latestReport)}`,
-      this.getReportStatus(snapshot.latestReport)
-    );
+    const reporter = new SnapshotReporter(snapshot.latestReport);
+    cli.action.start(`Operation ${reporter.type}`, reporter.status);
 
     // TODO: revisit with a progress bar once the response contains the remaining resources to process
     const iteratee = (report: ResourceSnapshotsReportModel) =>
-      this.refresh(report);
+      this.refresh(new SnapshotReporter(report));
     await snapshot.waitUntilDone(null, this.waitOption, iteratee);
 
-    cli.action.stop(this.getReportStatus(snapshot.latestReport));
+    await this.displayMonitorResult(snapshot, reporter);
+  }
+
+  private async displayMonitorResult(
+    snapshot: Snapshot,
+    reporter: SnapshotReporter
+  ) {
+    if (!reporter.isSuccessReport()) {
+      await this.displaySnapshotError(snapshot, reporter);
+    }
+  }
+
+  private async displaySnapshotError(
+    snapshot: Snapshot,
+    reporter: SnapshotReporter
+  ) {
+    cli.log(ReportViewerStyles.error(reporter.resultCode));
+    cli.log();
+    const cfg = await this.configuration.get();
+    displayInvalidSnapshotError(snapshot, cfg, this.projectPath);
   }
 
   private printHeader() {
@@ -86,24 +106,8 @@ export default class Monitor extends Command {
     cli.action.start(header);
   }
 
-  private prettyPrint(str: string): string {
-    const capitalized = str.charAt(0) + str.slice(1).toLowerCase();
-    return capitalized.replace(/_/g, ' ');
-  }
-
-  private getReportType(report: ResourceSnapshotsReportModel) {
-    const type = this.prettyPrint(report.type);
-    return type;
-  }
-
-  private getReportStatus(report: ResourceSnapshotsReportModel) {
-    const status = this.prettyPrint(report.status);
-    return status;
-  }
-
-  private refresh(report: ResourceSnapshotsReportModel) {
-    const status = this.getReportStatus(report);
-    cli.action.status = status;
+  private refresh(reporter: SnapshotReporter) {
+    cli.action.status = reporter.status;
   }
 
   private async getSnapshot(): Promise<Snapshot> {
@@ -121,5 +125,9 @@ export default class Monitor extends Command {
 
   private get configuration() {
     return new Config(this.config.configDir, this.error);
+  }
+
+  private get projectPath() {
+    return cwd();
   }
 }
