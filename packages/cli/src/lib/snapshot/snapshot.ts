@@ -24,12 +24,23 @@ export interface WaitUntilDoneOptions {
    * The interval between 2 consecutive polls.
    */
   waitInterval?: number; // in seconds
+  /**
+   * The operation to wait for. If not specified, the method will wait for any operation to complete.
+   */
+  operationToWaitFor?: ResourceSnapshotsReportType;
+  /**
+   * Callback to execute every time a request is being made to retrieve the snapshot data
+   */
+  onRetryCb?: (report: ResourceSnapshotsReportModel) => void;
 }
 
 export class Snapshot {
-  public static defaultWaitOptions: Required<WaitUntilDoneOptions> = {
+  public static defaultWaitOptions: Required<
+    Omit<WaitUntilDoneOptions, 'operationToWaitFor'>
+  > = {
     waitInterval: 1,
     wait: 60,
+    onRetryCb: (_report: ResourceSnapshotsReportModel) => {},
   };
 
   private static ongoingReportStatuses = [
@@ -50,7 +61,10 @@ export class Snapshot {
       deleteMissingResources,
     });
 
-    await this.waitUntilDone(ResourceSnapshotsReportType.DryRun, options);
+    await this.waitUntilDone({
+      operationToWaitFor: ResourceSnapshotsReportType.DryRun,
+      ...options,
+    });
 
     return new SnapshotReporter(this.latestReport);
   }
@@ -66,7 +80,10 @@ export class Snapshot {
   ) {
     await this.snapshotClient.apply(this.id, {deleteMissingResources});
 
-    await this.waitUntilDone(ResourceSnapshotsReportType.Apply, options);
+    await this.waitUntilDone({
+      operationToWaitFor: ResourceSnapshotsReportType.Apply,
+      ...options,
+    });
 
     return new SnapshotReporter(this.latestReport);
   }
@@ -139,16 +156,12 @@ export class Snapshot {
     });
   }
 
-  public waitUntilDone(
-    operationToWaitFor: ResourceSnapshotsReportType | null,
-    options: Partial<WaitUntilDoneOptions> = {},
-    onRetryCb = (_report: ResourceSnapshotsReportModel) => {}
-  ) {
+  public waitUntilDone(options: Partial<WaitUntilDoneOptions> = {}) {
     const opts = {...Snapshot.defaultWaitOptions, ...options};
     const toMilliseconds = (seconds: number) => seconds * 1e3;
 
     return retry(
-      this.waitUntilDoneRetryFunction(operationToWaitFor, onRetryCb),
+      this.waitUntilDoneRetryFunction(opts.onRetryCb, opts.operationToWaitFor),
       {
         retries: Math.ceil(opts.wait / opts.waitInterval),
         minTimeout: toMilliseconds(opts.waitInterval),
@@ -159,8 +172,8 @@ export class Snapshot {
   }
 
   private waitUntilDoneRetryFunction(
-    operationToWaitFor: ResourceSnapshotsReportType | null,
-    onRetryCb: (report: ResourceSnapshotsReportModel) => void
+    onRetryCb: (report: ResourceSnapshotsReportModel) => void,
+    operationToWaitFor?: ResourceSnapshotsReportType
   ): () => Promise<void> {
     return (async () => {
       await this.refreshSnapshotData();

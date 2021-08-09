@@ -68,10 +68,7 @@ export default class Monitor extends Command {
       this.getReportStatus(snapshot.latestReport)
     );
 
-    // TODO: revisit with a progress bar once the response contains the remaining resources to process
-    const iteratee = (report: ResourceSnapshotsReportModel) =>
-      this.refresh(report);
-    await snapshot.waitUntilDone(null, this.waitOption, iteratee);
+    await snapshot.waitUntilDone(this.waitOption);
 
     cli.action.stop(this.getReportStatus(snapshot.latestReport));
   }
@@ -116,7 +113,11 @@ export default class Monitor extends Command {
 
   private get waitOption(): WaitUntilDoneOptions {
     const {flags} = this.parse(Monitor);
-    return {wait: flags.wait};
+    return {
+      wait: flags.wait,
+      // TODO: revisit with a progress bar once the response contains the remaining resources to process
+      onRetryCb: (report: ResourceSnapshotsReportModel) => this.refresh(report),
+    };
   }
 
   private get configuration() {
