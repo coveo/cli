@@ -73,7 +73,7 @@ export default class Pull extends Command {
 
   public async catch(err?: Error) {
     const {flags} = this.parse(Pull);
-    handleSnapshotError(err);
+    handleSnapshotError(this.projectPath, err);
     await this.displayAdditionalErrorMessage(err);
     await this.config.runHook(
       'analytics',

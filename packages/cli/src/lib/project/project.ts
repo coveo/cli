@@ -23,7 +23,9 @@ export class Project {
   }
 
   public deleteTemporaryZipFile() {
-    unlinkSync(this.pathToTemporaryZip);
+    if (existsSync(this.pathToTemporaryZip)) {
+      unlinkSync(this.pathToTemporaryZip);
+    }
   }
 
   private ensureProjectCompliance() {
