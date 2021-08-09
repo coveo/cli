@@ -219,6 +219,19 @@ describe('org:config:push', () => {
 
     test
       .stub(cli, 'confirm', () => async () => true)
+      .do(() => {
+        mockedValidateSnapshot.mockImplementationOnce(() => {
+          throw new Error('You shall not pass');
+        });
+      })
+      .command(['org:config:push'])
+      .catch(() => {
+        expect(mockedDeleteTemporaryZipFile).toHaveBeenCalledTimes(1);
+      })
+      .it('should delete the compressed folder on error');
+
+    test
+      .stub(cli, 'confirm', () => async () => true)
       .command(['org:config:push'])
       .it('should delete the snapshot', () => {
         expect(mockedDeleteSnapshot).toHaveBeenCalledTimes(1);
