@@ -7,11 +7,13 @@ jest.mock('../../../hooks/analytics/analytics');
 jest.mock('../../../hooks/prerun/prerun');
 jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
+jest.mock('../../../lib/utils/npx');
 jest.mock('@coveord/platform-client');
 
 import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
-import {spawnProcessPTY, spawnProcessOutput} from '../../../lib/utils/process';
+import {spawnProcessOutput} from '../../../lib/utils/process';
+import {npxInPty} from '../../../lib/utils/npx';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
 import {Config, Configuration} from '../../../lib/config/config';
@@ -26,7 +28,7 @@ import {IPty} from 'node-pty';
 
 describe('ui:create:react', () => {
   const mockedConfig = mocked(Config);
-  const mockedSpawnProcess = mocked(spawnProcessPTY);
+  const mockedNpxInPty = mocked(npxInPty);
   const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
   const mockedPlatformClient = mocked(PlatformClient);
   const mockedGetPackageVersion = mocked(getPackageVersion);
@@ -61,14 +63,11 @@ describe('ui:create:react', () => {
       exitCode: processExitCode.spawn,
     });
 
-    mockedSpawnProcess.mockImplementation(
-      () =>
-        ({
-          onData: () => {},
-          onExit: (callback: (e: {exitCode: number}) => void) =>
-            callback({exitCode: processExitCode.spawnOutput}),
-        } as unknown as IPty)
-    );
+    mockedNpxInPty.mockResolvedValue({
+      onData: () => {},
+      onExit: (callback: (e: {exitCode: number}) => void) =>
+        callback({exitCode: processExitCode.spawnOutput}),
+    } as unknown as IPty);
   };
 
   const doMockedGetPackageVersion = () => {
@@ -151,7 +150,7 @@ describe('ui:create:react', () => {
     .it(
       'should not execute the command if the preconditions are not respected',
       async () => {
-        expect(mockedSpawnProcess).toHaveBeenCalledTimes(0);
+        expect(mockedNpxInPty).toHaveBeenCalledTimes(0);
       }
     );
 
@@ -165,7 +164,7 @@ describe('ui:create:react', () => {
   test
     .command(['ui:create:react', 'myapp'])
     .it('should spawn on regular process once', async () => {
-      expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
+      expect(mockedNpxInPty).toHaveBeenCalledTimes(1);
     });
 
   test
@@ -177,9 +176,8 @@ describe('ui:create:react', () => {
   test
     .command(['ui:create:react', 'myapp'])
     .it('should start a process to create the project', () => {
-      expect(mockedSpawnProcess).nthCalledWith(
+      expect(mockedNpxInPty).nthCalledWith(
         1,
-        appendCmdIfWindows`npx`,
         [
           'create-react-app',
           'myapp',

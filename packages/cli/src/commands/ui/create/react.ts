@@ -6,7 +6,7 @@ import {
 } from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {platformUrl} from '../../../lib/platform/environment';
-import {spawnProcessOutput, spawnProcessPTY} from '../../../lib/utils/process';
+import {spawnProcessOutput} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {join} from 'path';
@@ -18,6 +18,7 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {EOL} from 'os';
+import {npxInPty} from '../../../lib/utils/npx';
 
 export default class React extends Command {
   public static templateName = '@coveo/cra-template';
@@ -163,13 +164,12 @@ export default class React extends Command {
   }
 
   private async runReactCliCommand(commandArgs: string[], options = {}) {
-    return new Promise<string>((resolve, reject) => {
-      const child = spawnProcessPTY(
-        appendCmdIfWindows`npx`,
-        ['create-react-app'].concat([...commandArgs]),
-        options
-      );
+    const child = await npxInPty(
+      ['create-react-app'].concat([...commandArgs]),
+      options
+    );
 
+    return new Promise<string>((resolve, reject) => {
       const args = this.args;
       let stopWritingInTerminal = false;
       let remainingString = '';
