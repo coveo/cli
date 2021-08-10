@@ -70,7 +70,6 @@ export default class Push extends Command {
 
     if (reporter.isSuccessReport()) {
       await this.handleValidReport(reporter, snapshot);
-      await snapshot.delete();
     } else {
       await this.handleReportWithErrors(snapshot);
     }
@@ -122,7 +121,9 @@ export default class Push extends Command {
     const reporter = await snapshot.apply(flags.deleteMissingResources);
     const success = reporter.isSuccessReport();
 
-    if (!success) {
+    if (success) {
+      await snapshot.delete();
+    } else {
       await this.handleReportWithErrors(snapshot);
     }
 
