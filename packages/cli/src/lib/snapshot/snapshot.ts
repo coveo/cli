@@ -81,7 +81,7 @@ export class Snapshot {
 
   public async apply(
     deleteMissingResources = false,
-    options: Partial<WaitUntilDoneOptions> = {}
+    options: WaitUntilDoneOptions = {}
   ) {
     await this.snapshotClient.apply(this.id, {deleteMissingResources});
 
@@ -170,7 +170,7 @@ export class Snapshot {
     });
   }
 
-  public waitUntilDone(options: Partial<WaitUntilDoneOptions> = {}) {
+  public waitUntilDone(options: WaitUntilDoneOptions = {}) {
     const opts = {...Snapshot.defaultWaitOptions, ...options};
     const toMilliseconds = (seconds: number) => seconds * 1e3;
 
