@@ -57,7 +57,7 @@ export class Snapshot {
 
   public async validate(
     deleteMissingResources = false,
-    options: Partial<WaitUntilDoneOptions> = {}
+    options: WaitUntilDoneOptions = {}
   ): Promise<SnapshotReporter> {
     await this.snapshotClient.dryRun(this.id, {
       deleteMissingResources,
@@ -176,6 +176,7 @@ export class Snapshot {
 
     return retry(
       this.waitUntilDoneRetryFunction(opts.onRetryCb, opts.operationToWaitFor),
+      // Setting the retry mechanism to follow a time-based logic instead of specifying the  number of attempts.
       {
         retries: Math.ceil(opts.wait / opts.waitInterval),
         minTimeout: toMilliseconds(opts.waitInterval),
