@@ -11,11 +11,11 @@ import {
   displayInvalidSnapshotError,
   displaySnapshotSynchronizationWarning,
   dryRun,
+  DryRunOptions,
   getTargetOrg,
   handleSnapshotError,
 } from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '../../../lib/config/config';
-import {DryRunOptions} from '@coveord/platform-client';
 import {cwd} from 'process';
 import {
   buildAnalyticsFailureHook,
@@ -36,7 +36,7 @@ export default class Push extends Command {
     }),
     deleteMissingResources: flags.boolean({
       char: 'd',
-      description: 'Whether or not to delete missing resources',
+      description: 'Delete missing resources when enabled',
       default: false,
       required: false,
     }),
@@ -65,7 +65,7 @@ export default class Push extends Command {
     );
 
     if (!flags.skipPreview) {
-      await snapshot.preview();
+      await snapshot.preview(project, options.deleteMissingResources);
     }
 
     if (reporter.isSuccessReport()) {
@@ -130,7 +130,6 @@ export default class Push extends Command {
   }
 
   private async handleReportWithErrors(snapshot: Snapshot) {
-    // TODO: CDX-362: handle invalid snapshot cases
     const cfg = await this.configuration.get();
 
     if (snapshot.requiresSynchronization()) {

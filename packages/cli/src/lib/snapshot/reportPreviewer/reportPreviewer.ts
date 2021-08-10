@@ -1,12 +1,12 @@
 import {cli} from 'cli-ux';
 import {red, italic, green} from 'chalk';
-import {ReportViewerSection} from './reportViewerSection';
-import {ReportViewerStyles} from './reportViewerStyles';
+import {ReportViewerSection} from './reportPreviewerSection';
+import {ReportViewerStyles} from './reportPreviewerStyles';
 import {SnapshotReporter} from '../snapshotReporter';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
-} from './reportViewerDataModels';
+} from './reportPreviewerDataModels';
 import dedent from 'ts-dedent';
 
 export class ReportViewer {
@@ -97,7 +97,6 @@ export class ReportViewer {
     for (const resourceType in operationResults) {
       this.logResourceErrors(resourceType);
     }
-    // TODO: CDX-362: handle other invalid snashot cases
   }
 
   private logResourceErrors(ResourceSnapshotType: string) {

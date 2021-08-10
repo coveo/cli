@@ -11,6 +11,7 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
+import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {Project} from '../../../lib/project/project';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
@@ -19,6 +20,7 @@ import {
   handleSnapshotError,
 } from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
+import {spawnProcess} from '../../../lib/utils/process';
 
 export default class Pull extends Command {
   public static description = 'Pull resources from an organization';
@@ -45,13 +47,19 @@ export default class Pull extends Command {
       description:
         'The unique identifier of the snapshot to pull. If not specified, a new snapshot will be created. You can list available snapshot in your organization with org:config:list',
     }),
+    git: flags.boolean({
+      char: 'g',
+      description:
+        'Whether to create a git repository when creating a new project.',
+      default: true,
+      allowNo: true,
+    }),
   };
 
   public static hidden = true;
 
-  @Preconditions(IsAuthenticated())
+  @Preconditions(IsAuthenticated(), IsGitInstalled())
   public async run() {
-    cli.action.start('Creating Snapshot');
     const snapshot = await this.getSnapshot();
 
     cli.action.start('Updating project with Snapshot');
@@ -64,22 +72,24 @@ export default class Pull extends Command {
   public async catch(err?: Error) {
     const {flags} = this.parse(Pull);
     handleSnapshotError(err);
-    this.displayAdditionalErrorMessage(err);
+    await this.displayAdditionalErrorMessage(err);
     await this.config.runHook(
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
     );
   }
 
-  private displayAdditionalErrorMessage(err?: Error) {
+  private async displayAdditionalErrorMessage(err?: Error) {
     if (err instanceof SnapshotOperationTimeoutError) {
+      const {flags} = this.parse(Pull);
       const snapshot = err.snapshot;
+      const target = await getTargetOrg(this.configuration, flags.target);
       cli.log(
         dedent`
 
           Once the snapshot is created, you can pull it with the following command:
 
-            ${blueBright`coveo org:config:pull ${snapshot.id}`}
+            ${blueBright`coveo org:config:pull -t ${target} -s ${snapshot.id}`}
 
             `
       );
@@ -87,7 +97,13 @@ export default class Pull extends Command {
   }
 
   private async refreshProject(snapshot: Snapshot) {
+    const {flags} = this.parse(Pull);
     const project = new Project(this.projectPath);
+    if (flags.git && !project.contains('.git')) {
+      await spawnProcess('git', ['init', `${this.projectPath}`], {
+        stdio: 'ignore',
+      });
+    }
     const snapshotBlob = await snapshot.download();
     await project.refresh(snapshotBlob);
   }
@@ -96,13 +112,15 @@ export default class Pull extends Command {
     const {flags} = this.parse(Pull);
     const target = await getTargetOrg(this.configuration, flags.target);
     if (flags.snapshotId) {
+      cli.action.start('Retrieving Snapshot');
       return SnapshotFactory.createFromExistingSnapshot(
         flags.snapshotId,
         target
       );
     }
+    cli.action.start('Creating Snapshot');
     return SnapshotFactory.createFromOrg(
-      this.ResourceSnapshotTypesToExport,
+      this.resourceSnapshotTypesToExport,
       target
     );
   }
@@ -111,7 +129,7 @@ export default class Pull extends Command {
     return new Config(this.config.configDir, this.error);
   }
 
-  private get ResourceSnapshotTypesToExport() {
+  private get resourceSnapshotTypesToExport() {
     const {flags} = this.parse(Pull);
     return flags.resourceTypes.map((type) => ResourceSnapshotType[type]);
   }

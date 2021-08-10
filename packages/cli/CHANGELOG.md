@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.12.0](https://github.com/coveo/cli/compare/v1.11.0...v1.12.0) (2021-08-03)
+
+
+### Features
+
+* **cli:** add token authentication ([#401](https://github.com/coveo/cli/issues/401)) ([967877c](https://github.com/coveo/cli/commit/967877c3e16df687a6bbd48cbc4c10cd1920d942))
+* **snapshot:** add `--snapshotId` flag to `push` and `preview` commands ([#387](https://github.com/coveo/cli/issues/387)) ([57de692](https://github.com/coveo/cli/commit/57de6923685ade5d3a20285528e02bc0c981a78f))
+
+
+
+
+
+# [1.11.0](https://github.com/coveo/cli/compare/v1.10.0...v1.11.0) (2021-08-02)
+
+
+### Bug Fixes
+
+* **cli:** command timing out without showing info ([#377](https://github.com/coveo/cli/issues/377)) ([d898858](https://github.com/coveo/cli/commit/d89885835128f86220745cb44b2b3c587f99241c))
+* **config:** fix race condition in config file ([#381](https://github.com/coveo/cli/issues/381)) ([a65395d](https://github.com/coveo/cli/commit/a65395da82b1727b5a0f1fa806cf4ff0c6c0c31a)), closes [#386](https://github.com/coveo/cli/issues/386)
+* **vue:** support project creation with Node 16 and pnpm ([#394](https://github.com/coveo/cli/issues/394)) ([aec9ba0](https://github.com/coveo/cli/commit/aec9ba0c6448dcee79343aa99aee5eed548e84c8))
+* remove `appendCmdIfWindows` ([#391](https://github.com/coveo/cli/issues/391)) ([61d8f13](https://github.com/coveo/cli/commit/61d8f132c44ad96bc428e0aff876d207e4aaff14))
+* **cli:** wait for snapshot to be done ([#378](https://github.com/coveo/cli/issues/378)) ([9eb81a2](https://github.com/coveo/cli/commit/9eb81a2b5b271821b84cc9ae880db0afa44bc500))
+* **deps:** pin dependencies j:cdx-227 ([#376](https://github.com/coveo/cli/issues/376)) ([ce25520](https://github.com/coveo/cli/commit/ce25520b9b05d0dc4d857d83eab9b29b4f7d6d60))
+* **snapshot:** fix invalid timeout message ([#380](https://github.com/coveo/cli/issues/380)) ([20ad3d0](https://github.com/coveo/cli/commit/20ad3d03556df87887ccbbfab76cc4d78679aa40))
+
+
+### Features
+
+* **config:** add list snapshot command ([#374](https://github.com/coveo/cli/issues/374)) ([e8c9250](https://github.com/coveo/cli/commit/e8c925084ff54c2e67114a5f576455f27aec03a8))
+* **config:** initialize git repo when doing initial pull ([#379](https://github.com/coveo/cli/issues/379)) ([b21b8ff](https://github.com/coveo/cli/commit/b21b8ff19dff5e5c140f63213cb59022903dea5e))
+
+
+
+
+
 # [1.10.0](https://github.com/coveo/cli/compare/v1.9.0...v1.10.0) (2021-07-21)
 
 

@@ -42,19 +42,22 @@ describe('analytics hook', () => {
     );
   };
 
+  const mockedUserGet = jest.fn();
   const doMockPlatformClient = () => {
+    mockedUserGet.mockReturnValue(
+      Promise.resolve({
+        username: 'bob@coveo.com',
+        displayName: 'bob',
+      })
+    );
     mockedPlatformClient.mockImplementation(
       () =>
         ({
           initialize: () => Promise.resolve(),
           user: {
-            get: () =>
-              Promise.resolve({
-                username: 'bob@coveo.com',
-                displayName: 'bob',
-              }),
+            get: mockedUserGet,
           },
-        } as PlatformClient)
+        } as unknown as PlatformClient)
     );
   };
 
@@ -63,7 +66,7 @@ describe('analytics hook', () => {
       () =>
         ({
           get: () =>
-            Promise.resolve({
+            ({
               environment: 'dev',
               organization: 'foo',
               region: 'us-east-1',
@@ -211,7 +214,7 @@ describe('analytics hook', () => {
       () =>
         ({
           get: () =>
-            Promise.resolve({
+            ({
               analyticsEnabled: false,
             } as Configuration),
         } as Config)
@@ -234,5 +237,25 @@ describe('analytics hook', () => {
       Promise.resolve(AuthenticationStatus.EXPIRED)
     );
     await expect(hook(getAnalyticsHook({}))).resolves.not.toThrow();
+  });
+
+  it('should not fetch userinfo if anonymous is set to true in the config', async () => {
+    mockedConfig.mockImplementation(
+      () =>
+        ({
+          get: () =>
+            ({
+              environment: 'dev',
+              organization: 'foo',
+              region: 'us-east-1',
+              analyticsEnabled: true,
+              anonymous: true,
+            } as Configuration),
+        } as Config)
+    );
+
+    await hook(getAnalyticsHook({}));
+
+    expect(mockedUserGet).not.toBeCalled();
   });
 });

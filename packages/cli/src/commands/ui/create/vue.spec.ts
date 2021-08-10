@@ -52,7 +52,7 @@ describe('ui:create:vue', () => {
       () =>
         ({
           get: () =>
-            Promise.resolve({
+            ({
               environment: 'dev',
               organization: 'my-org',
               region: 'us-east-1',
