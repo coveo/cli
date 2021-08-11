@@ -95,7 +95,7 @@ export default class Monitor extends Command {
     cli.error(
       dedent`Invalid snapshot - ${snapshot.latestReport.resultCode}.
 
-        You can also use this link to view the snapshot in the Coveo Admin Console
+        You can also use this link to view the snapshot in the Coveo Admin Console:
         ${snapshotUrl}`
     );
   }
