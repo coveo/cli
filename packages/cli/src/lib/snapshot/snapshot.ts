@@ -27,7 +27,7 @@ export interface WaitUntilDoneOptions {
    */
   waitInterval?: number; // in seconds
   /**
-   * The interval between 2 consecutive polls.
+   * The operation to wait for. If not specified, the method will wait for any operation to complete.
    */
   operationToWaitFor?: ResourceSnapshotsReportType;
   /**
