@@ -187,7 +187,7 @@ describe('org:config:push', () => {
 
     test
       .stub(cli, 'confirm', () => async () => true)
-      .command(['org:config:push', '-m', '99'])
+      .command(['org:config:push', '-w', '99'])
       .it('should set a 99 seconds wait', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),

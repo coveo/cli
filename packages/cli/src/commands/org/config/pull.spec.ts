@@ -107,7 +107,7 @@ describe('org:config:pull', () => {
     });
 
   test
-    .command(['org:config:pull', '-m', '78'])
+    .command(['org:config:pull', '-w', '78'])
     .it('should set a 78 seconds timeout', () => {
       expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
         expect.arrayContaining([]),
