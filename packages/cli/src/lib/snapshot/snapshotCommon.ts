@@ -61,6 +61,11 @@ export async function getTargetOrg(config: Config, target?: string) {
   return cfg.organization;
 }
 
+export function cleanupProject(projectPath: string) {
+  const project = new Project(normalize(projectPath));
+  project.deleteTemporaryZipFile();
+}
+
 export async function handleReportWithErrors(
   snapshot: Snapshot,
   cfg: Configuration,

@@ -19,6 +19,7 @@ import {
   waitFlag,
   getTargetOrg,
   handleSnapshotError,
+  cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {spawnProcess} from '../../../lib/utils/process';
@@ -73,6 +74,7 @@ export default class Pull extends Command {
 
   public async catch(err?: Error) {
     const {flags} = this.parse(Pull);
+    cleanupProject(this.projectPath);
     handleSnapshotError(err);
     await this.displayAdditionalErrorMessage(err);
     await this.config.runHook(

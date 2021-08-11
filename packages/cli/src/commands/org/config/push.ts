@@ -13,6 +13,7 @@ import {
   getTargetOrg,
   handleReportWithErrors,
   handleSnapshotError,
+  cleanupProject,
   DryRunOptions,
 } from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '../../../lib/config/config';
@@ -75,6 +76,7 @@ export default class Push extends Command {
 
   public async catch(err?: Error) {
     const {flags} = this.parse(Push);
+    cleanupProject(this.projectPath);
     handleSnapshotError(err);
     await this.config.runHook(
       'analytics',

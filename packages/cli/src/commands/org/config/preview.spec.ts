@@ -185,6 +185,18 @@ describe('org:config:preview', () => {
       });
 
     test
+      .do(() => {
+        mockedValidateSnapshot.mockImplementationOnce(() => {
+          throw new Error('You shall not pass');
+        });
+      })
+      .command(['org:config:preview'])
+      .catch(() => {
+        expect(mockedDeleteTemporaryZipFile).toHaveBeenCalledTimes(1);
+      })
+      .it('should delete the compressed folder on error');
+
+    test
       .command(['org:config:preview'])
       .it('should delete the snapshot', () => {
         expect(mockedDeleteSnapshot).toHaveBeenCalledTimes(1);

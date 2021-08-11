@@ -1,6 +1,7 @@
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
 import {cli} from 'cli-ux';
+import dedent from 'ts-dedent';
 import {
   buildAnalyticsFailureHook,
   buildAnalyticsSuccessHook,
@@ -18,6 +19,8 @@ import {
   handleSnapshotError,
 } from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
+import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+import {SnapshotUrlBuilder} from '../../../lib/snapshot/snapshotUrlBuilder';
 
 export default class Monitor extends Command {
   public static description = 'Monitor a Snapshot operation';
@@ -63,14 +66,38 @@ export default class Monitor extends Command {
   }
 
   private async monitorSnapshot(snapshot: Snapshot) {
-    cli.action.start(
-      `Operation: ${this.getReportType(snapshot.latestReport)}`,
-      this.getReportStatus(snapshot.latestReport)
-    );
-
+    const reporter = new SnapshotReporter(snapshot.latestReport);
+    cli.action.start(`Operation ${reporter.type}`, reporter.status);
     await snapshot.waitUntilDone(this.waitOption);
+    await this.displayMonitorResult(snapshot, reporter);
+  }
 
-    cli.action.stop(this.getReportStatus(snapshot.latestReport));
+  private async displayMonitorResult(
+    snapshot: Snapshot,
+    reporter: SnapshotReporter
+  ) {
+    if (!reporter.isSuccessReport()) {
+      await this.displaySnapshotError(snapshot, reporter);
+    }
+  }
+
+  // TODO: CDX-533: use Custom error instead
+  private async displaySnapshotError(
+    snapshot: Snapshot,
+    reporter: SnapshotReporter
+  ) {
+    cli.log(ReportViewerStyles.error(reporter.resultCode));
+    cli.log();
+    const cfg = await this.configuration.get();
+    const urlBuilder = new SnapshotUrlBuilder(cfg);
+    const snapshotUrl = urlBuilder.getSnapshotPage(snapshot);
+
+    cli.error(
+      dedent`Invalid snapshot - ${snapshot.latestReport.resultCode}.
+
+        You can also use this link to view the snapshot in the Coveo Admin Console:
+        ${snapshotUrl}`
+    );
   }
 
   private printHeader() {
@@ -83,24 +110,9 @@ export default class Monitor extends Command {
     cli.action.start(header);
   }
 
-  private prettyPrint(str: string): string {
-    const capitalized = str.charAt(0) + str.slice(1).toLowerCase();
-    return capitalized.replace(/_/g, ' ');
-  }
-
-  private getReportType(report: ResourceSnapshotsReportModel) {
-    const type = this.prettyPrint(report.type);
-    return type;
-  }
-
-  private getReportStatus(report: ResourceSnapshotsReportModel) {
-    const status = this.prettyPrint(report.status);
-    return status;
-  }
-
   private refresh(report: ResourceSnapshotsReportModel) {
-    const status = this.getReportStatus(report);
-    cli.action.status = status;
+    const reporter = new SnapshotReporter(report);
+    cli.action.status = reporter.status;
   }
 
   private async getSnapshot(): Promise<Snapshot> {
