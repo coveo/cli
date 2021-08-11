@@ -125,7 +125,8 @@ describe('org:config:preview', () => {
       .it('should work with default connected org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
-          'foo'
+          'foo',
+          expect.objectContaining({})
         );
       });
 
@@ -134,20 +135,41 @@ describe('org:config:preview', () => {
       .it('should work with specified target org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
-          'myorg'
+          'myorg',
+          expect.objectContaining({})
+        );
+      });
+
+    test
+      .command(['org:config:preview'])
+      .it('should set a 60 seconds wait', () => {
+        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
+          normalize(join('path', 'to', 'resources.zip')),
+          'foo',
+          {wait: 60}
+        );
+      });
+
+    test
+      .command(['org:config:preview', '-m', '312'])
+      .it('should set a 312 seconds wait', () => {
+        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
+          normalize(join('path', 'to', 'resources.zip')),
+          'foo',
+          {wait: 312}
         );
       });
 
     test
       .command(['org:config:preview'])
       .it('#validate should not take into account missing resources', () => {
-        expect(mockedValidateSnapshot).toHaveBeenCalledWith(false);
+        expect(mockedValidateSnapshot).toHaveBeenCalledWith(false, {wait: 60});
       });
 
     test
       .command(['org:config:preview', '-d'])
       .it('#validate should take into account missing resoucres', () => {
-        expect(mockedValidateSnapshot).toHaveBeenCalledWith(true);
+        expect(mockedValidateSnapshot).toHaveBeenCalledWith(true, {wait: 60});
       });
 
     test

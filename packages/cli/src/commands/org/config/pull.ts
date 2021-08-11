@@ -14,8 +14,9 @@ import {
 import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {Project} from '../../../lib/project/project';
-import {Snapshot} from '../../../lib/snapshot/snapshot';
+import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {
+  waitFlag,
   getTargetOrg,
   handleSnapshotError,
 } from '../../../lib/snapshot/snapshotCommon';
@@ -26,6 +27,7 @@ export default class Pull extends Command {
   public static description = 'Pull resources from an organization';
 
   public static flags = {
+    ...waitFlag,
     target: flags.string({
       char: 't',
       helpValue: 'destinationorganizationg7dg3gd',
@@ -115,14 +117,21 @@ export default class Pull extends Command {
       cli.action.start('Retrieving Snapshot');
       return SnapshotFactory.createFromExistingSnapshot(
         flags.snapshotId,
-        target
+        target,
+        this.waitOption
       );
     }
     cli.action.start('Creating Snapshot');
     return SnapshotFactory.createFromOrg(
       this.resourceSnapshotTypesToExport,
-      target
+      target,
+      this.waitOption
     );
+  }
+
+  private get waitOption(): WaitUntilDoneOptions {
+    const {flags} = this.parse(Pull);
+    return {wait: flags.wait};
   }
 
   private get configuration() {

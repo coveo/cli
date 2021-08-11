@@ -8,11 +8,12 @@ import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {red, green, bold} from 'chalk';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {
+  waitFlag,
   dryRun,
-  DryRunOptions,
   getTargetOrg,
   handleReportWithErrors,
   handleSnapshotError,
+  DryRunOptions,
 } from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '../../../lib/config/config';
 import {cwd} from 'process';
@@ -27,6 +28,7 @@ export default class Push extends Command {
     'Preview, validate and deploy your changes to the destination org';
 
   public static flags = {
+    ...waitFlag,
     target: flags.string({
       char: 't',
       description:
@@ -55,17 +57,14 @@ export default class Push extends Command {
   public async run() {
     const {flags} = this.parse(Push);
     const target = await getTargetOrg(this.configuration, flags.target);
-    const options: DryRunOptions = {
-      deleteMissingResources: flags.deleteMissingResources,
-    };
     const {reporter, snapshot, project} = await dryRun(
       target,
       this.projectPath,
-      options
+      this.options
     );
 
     if (!flags.skipPreview) {
-      await snapshot.preview(project, options.deleteMissingResources);
+      await snapshot.preview(project, this.options.deleteMissingResources);
     }
 
     await this.processReportAndExecuteRemainingActions(snapshot, reporter);
@@ -130,7 +129,10 @@ export default class Push extends Command {
   private async applySnapshot(snapshot: Snapshot) {
     cli.action.start('Applying snapshot');
     const {flags} = this.parse(Push);
-    const reporter = await snapshot.apply(flags.deleteMissingResources);
+    const reporter = await snapshot.apply(
+      flags.deleteMissingResources,
+      this.options.waitUntilDone
+    );
     const success = reporter.isSuccessReport();
 
     if (!success) {
@@ -139,6 +141,14 @@ export default class Push extends Command {
     }
 
     cli.action.stop(success ? green('✔') : red.bold('!'));
+  }
+
+  private get options(): DryRunOptions {
+    const {flags} = this.parse(Push);
+    return {
+      deleteMissingResources: flags.deleteMissingResources,
+      waitUntilDone: {wait: flags.wait},
+    };
   }
 
   private get configuration() {
