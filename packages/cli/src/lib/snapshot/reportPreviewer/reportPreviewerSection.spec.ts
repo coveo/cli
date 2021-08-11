@@ -3,8 +3,8 @@ import dedent from 'ts-dedent';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
-} from './reportViewerDataModels';
-import {ReportViewerSection} from './reportViewerSection';
+} from './reportPreviewerDataModels';
+import {ReportViewerSection} from './reportPreviewerSection';
 
 describe('ReportViewerSection', () => {
   const resourceWithChanges: ReportViewerResourceReportModel = {

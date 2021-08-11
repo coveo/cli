@@ -11,7 +11,7 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
-import {ReportViewerStyles} from '../../../lib/snapshot/reportViewer/reportViewerStyles';
+import {ReportViewerStyles} from '../../../lib/snapshot/reportPreviewer/reportPreviewerStyles';
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {
   waitFlag,
@@ -68,12 +68,7 @@ export default class Monitor extends Command {
   private async monitorSnapshot(snapshot: Snapshot) {
     const reporter = new SnapshotReporter(snapshot.latestReport);
     cli.action.start(`Operation ${reporter.type}`, reporter.status);
-
-    // TODO: revisit with a progress bar once the response contains the remaining resources to process
-    const iteratee = (report: ResourceSnapshotsReportModel) =>
-      this.refresh(new SnapshotReporter(report));
-    await snapshot.waitUntilDone(null, this.waitOption, iteratee);
-
+    await snapshot.waitUntilDone(this.waitOption);
     await this.displayMonitorResult(snapshot, reporter);
   }
 
@@ -106,7 +101,8 @@ export default class Monitor extends Command {
     cli.action.start(header);
   }
 
-  private refresh(reporter: SnapshotReporter) {
+  private refresh(report: ResourceSnapshotsReportModel) {
+    const reporter = new SnapshotReporter(report);
     cli.action.status = reporter.status;
   }
 
@@ -120,7 +116,11 @@ export default class Monitor extends Command {
 
   private get waitOption(): WaitUntilDoneOptions {
     const {flags} = this.parse(Monitor);
-    return {wait: flags.wait};
+    return {
+      wait: flags.wait,
+      // TODO: revisit with a progress bar once the response contains the remaining resources to process
+      onRetryCb: (report: ResourceSnapshotsReportModel) => this.refresh(report),
+    };
   }
 
   private get configuration() {

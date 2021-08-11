@@ -28,10 +28,10 @@ export class SnapshotFactory {
     );
     const snapshot = new Snapshot(model, client);
 
-    await snapshot.waitUntilDone(
-      ResourceSnapshotsReportType.CreateSnapshot,
-      options
-    );
+    await snapshot.waitUntilDone({
+      operationToWaitFor: ResourceSnapshotsReportType.CreateSnapshot,
+      ...options,
+    });
 
     return snapshot;
   }
@@ -47,7 +47,7 @@ export class SnapshotFactory {
     });
 
     const snapshot = new Snapshot(model, client);
-    await snapshot.waitUntilDone(null, options);
+    await snapshot.waitUntilDone(options);
 
     return snapshot;
   }
@@ -71,10 +71,10 @@ export class SnapshotFactory {
 
     const snapshot = new Snapshot(model, client);
 
-    await snapshot.waitUntilDone(
-      ResourceSnapshotsReportType.CreateSnapshot,
-      options
-    );
+    await snapshot.waitUntilDone({
+      operationToWaitFor: ResourceSnapshotsReportType.CreateSnapshot,
+      ...options,
+    });
 
     return snapshot;
   }

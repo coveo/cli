@@ -1,14 +1,22 @@
-import {createWriteStream, existsSync, unlinkSync, writeFileSync} from 'fs';
-import {join} from 'path';
+import {
+  createWriteStream,
+  existsSync,
+  readdirSync,
+  unlinkSync,
+  writeFileSync,
+} from 'fs';
+import {extname, join} from 'path';
 import {cli} from 'cli-ux';
 import archiver from 'archiver';
 import {InvalidProjectError} from '../errors';
 import extract from 'extract-zip';
 import {DotFolder, DotFolderConfig} from './dotFolder';
+import {readJsonSync, writeJsonSync, WriteOptions} from 'fs-extra';
 
 export class Project {
   private static readonly resourceFolderName = 'resources';
-  public constructor(private pathToProject: string) {
+  public static readonly jsonFormat: WriteOptions = {spaces: '\t'};
+  public constructor(private _pathToProject: string) {
     if (!this.isCoveoProject) {
       this.makeCoveoProject();
     }
@@ -17,25 +25,41 @@ export class Project {
   public async refresh(projectContent: Blob) {
     const buffer = await projectContent.arrayBuffer();
     const view = new DataView(buffer);
-    writeFileSync(this.pathToTemporaryZip, view);
-    await extract(this.pathToTemporaryZip, {dir: this.resourcePath});
+    writeFileSync(this.temporaryZipPath, view);
+    await extract(this.temporaryZipPath, {dir: this.resourcePath});
+    this.formatResourceFiles();
     this.deleteTemporaryZipFile();
   }
 
+  private formatResourceFiles(dirPath = this.resourcePath) {
+    const files = readdirSync(dirPath, {withFileTypes: true});
+    files.forEach((file) => {
+      const filePath = join(dirPath, file.name);
+      if (file.isDirectory()) {
+        this.formatResourceFiles(filePath);
+        return;
+      }
+      if (file.isFile() && extname(filePath) === '.json') {
+        const content = readJsonSync(filePath);
+        writeJsonSync(filePath, content, Project.jsonFormat);
+      }
+    });
+  }
+
   public deleteTemporaryZipFile() {
-    unlinkSync(this.pathToTemporaryZip);
+    unlinkSync(this.temporaryZipPath);
   }
 
   private ensureProjectCompliance() {
     if (!this.isResourcesProject) {
       throw new InvalidProjectError(
-        this.pathToProject,
+        this._pathToProject,
         'Does not contain any resources folder'
       );
     }
     if (!this.isCoveoProject) {
       throw new InvalidProjectError(
-        this.pathToProject,
+        this._pathToProject,
         'Does not contain any .coveo folder'
       );
     }
@@ -45,8 +69,7 @@ export class Project {
     try {
       this.ensureProjectCompliance();
       await new Promise<void>((resolve, reject) => {
-        const pathToTemporaryZip = this.pathToTemporaryZip;
-        const outputStream = createWriteStream(pathToTemporaryZip);
+        const outputStream = createWriteStream(this.temporaryZipPath);
         const archive = archiver('zip');
 
         outputStream.on('close', () => resolve());
@@ -56,22 +79,25 @@ export class Project {
         archive.directory(this.resourcePath, false);
         archive.finalize();
       });
-      return this.pathToTemporaryZip;
+      return this.temporaryZipPath;
     } catch (error) {
       cli.error(error);
     }
   }
 
+  public get pathToProject() {
+    return this._pathToProject;
+  }
+
+  private get temporaryZipPath() {
+    return join(this._pathToProject, 'snapshot.zip');
+  }
+
+  public get resourcePath() {
+    return join(this._pathToProject, Project.resourceFolderName);
+  }
   public contains(fileName: string) {
     return existsSync(join(this.pathToProject, fileName));
-  }
-
-  private get pathToTemporaryZip() {
-    return join(this.pathToProject, 'snapshot.zip');
-  }
-
-  private get resourcePath() {
-    return join(this.pathToProject, Project.resourceFolderName);
   }
 
   private get isCoveoProject() {

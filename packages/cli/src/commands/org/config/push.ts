@@ -38,7 +38,7 @@ export default class Push extends Command {
     }),
     deleteMissingResources: flags.boolean({
       char: 'd',
-      description: 'Whether or not to delete missing resources',
+      description: 'Delete missing resources when enabled',
       default: false,
       required: false,
     }),
@@ -60,11 +60,11 @@ export default class Push extends Command {
     const {reporter, snapshot, project} = await dryRun(
       target,
       this.projectPath,
-      this.dryRunOptions
+      this.options
     );
 
     if (!flags.skipPreview) {
-      await snapshot.preview();
+      await snapshot.preview(project, this.options.deleteMissingResources);
     }
 
     if (reporter.isSuccessReport()) {
@@ -120,7 +120,7 @@ export default class Push extends Command {
     const {flags} = this.parse(Push);
     const reporter = await snapshot.apply(
       flags.deleteMissingResources,
-      this.dryRunOptions.waitUntilDone
+      this.options.waitUntilDone
     );
     const success = reporter.isSuccessReport();
 
@@ -142,7 +142,7 @@ export default class Push extends Command {
     displayInvalidSnapshotError(snapshot, cfg, this.projectPath);
   }
 
-  private get dryRunOptions(): DryRunOptions {
+  private get options(): DryRunOptions {
     const {flags} = this.parse(Push);
     return {
       deleteMissingResources: flags.deleteMissingResources,
