@@ -19,15 +19,17 @@ import {
   displayInvalidSnapshotError,
   displaySnapshotSynchronizationWarning,
   dryRun,
-  DryRunOptions,
   getTargetOrg,
   handleSnapshotError,
+  waitFlag,
+  DryRunOptions,
 } from '../../../lib/snapshot/snapshotCommon';
 
 export default class Preview extends Command {
   public static description = 'Preview resource updates';
 
   public static flags = {
+    ...waitFlag,
     target: flags.string({
       char: 't',
       description:
@@ -55,17 +57,13 @@ export default class Preview extends Command {
   public async run() {
     const {flags} = this.parse(Preview);
     const target = await getTargetOrg(this.configuration, flags.target);
-    const options: DryRunOptions = {
-      deleteMissingResources: flags.showMissingResources,
-      snapshotId: flags.snapshotId,
-    };
     const {reporter, snapshot, project} = await dryRun(
       target,
       this.projectPath,
-      options
+      this.options
     );
 
-    await snapshot.preview(project, options.deleteMissingResources);
+    await snapshot.preview(project, this.options.deleteMissingResources);
 
     if (reporter.isSuccessReport()) {
       await snapshot.delete();
@@ -114,6 +112,14 @@ export default class Preview extends Command {
     }
 
     displayInvalidSnapshotError(snapshot, cfg, this.projectPath);
+  }
+
+  private get options(): DryRunOptions {
+    const {flags} = this.parse(Preview);
+    return {
+      deleteMissingResources: flags.showMissingResources,
+      waitUntilDone: {wait: flags.wait},
+    };
   }
 
   private get configuration() {

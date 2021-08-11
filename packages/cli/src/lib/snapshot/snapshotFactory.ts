@@ -6,12 +6,13 @@ import {
 } from '@coveord/platform-client';
 import {readFileSync} from 'fs';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
-import {Snapshot} from './snapshot';
+import {Snapshot, WaitUntilDoneOptions} from './snapshot';
 
 export class SnapshotFactory {
   public static async createFromZip(
     pathToZip: string,
-    targetOrg: string
+    targetOrg: string,
+    options?: WaitUntilDoneOptions
   ): Promise<Snapshot> {
     const client = await this.getClient(targetOrg);
     const file = readFileSync(pathToZip);
@@ -29,6 +30,7 @@ export class SnapshotFactory {
 
     await snapshot.waitUntilDone({
       operationToWaitFor: ResourceSnapshotsReportType.CreateSnapshot,
+      ...options,
     });
 
     return snapshot;
@@ -36,7 +38,8 @@ export class SnapshotFactory {
 
   public static async createFromExistingSnapshot(
     snapshotId: string,
-    targetOrg: string
+    targetOrg: string,
+    options?: WaitUntilDoneOptions
   ) {
     const client = await this.getClient(targetOrg);
     const model = await client.resourceSnapshot.get(snapshotId, {
@@ -44,14 +47,15 @@ export class SnapshotFactory {
     });
 
     const snapshot = new Snapshot(model, client);
-    await snapshot.waitUntilDone();
+    await snapshot.waitUntilDone(options);
 
     return snapshot;
   }
 
   public static async createFromOrg(
     resourceTypesToExport: ResourceSnapshotType[],
-    targetOrg: string
+    targetOrg: string,
+    options?: WaitUntilDoneOptions
   ) {
     const client = await this.getClient(targetOrg);
     const resourcesToExport: Partial<Record<ResourceSnapshotType, string[]>> =
@@ -69,6 +73,7 @@ export class SnapshotFactory {
 
     await snapshot.waitUntilDone({
       operationToWaitFor: ResourceSnapshotsReportType.CreateSnapshot,
+      ...options,
     });
 
     return snapshot;

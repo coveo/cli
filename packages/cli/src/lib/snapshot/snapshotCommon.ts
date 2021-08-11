@@ -1,18 +1,31 @@
 import {cli} from 'cli-ux';
 import {Project} from '../project/project';
 import {SnapshotFactory} from './snapshotFactory';
-import {Snapshot} from './snapshot';
+import {Snapshot, WaitUntilDoneOptions} from './snapshot';
 import {red, green, blueBright} from 'chalk';
 import {normalize} from 'path';
 import {SnapshotUrlBuilder} from './snapshotUrlBuilder';
 import dedent from 'ts-dedent';
 import {Config, Configuration} from '../config/config';
 import {SnapshotOperationTimeoutError} from '../errors';
+import {flags} from '@oclif/command';
 
 export interface DryRunOptions {
   deleteMissingResources?: boolean;
   snapshotId?: string;
+  waitUntilDone?: WaitUntilDoneOptions;
 }
+
+export const waitFlag = {
+  wait: flags.integer({
+    char: 'm',
+    default: Snapshot.defaultWaitOptions.wait,
+    helpValue: 'seconds',
+    required: false,
+    description:
+      'The maximum number of seconds to wait before the commands exits with a timeout error. A value of zero means that the command will wait indefinitely.',
+  }),
+};
 
 export async function dryRun(
   targetOrg: string,
@@ -26,14 +39,13 @@ export async function dryRun(
   const opt = {...defaultOptions, ...options};
   const project = new Project(normalize(projectPath));
 
-  const snapshot = await getSnapshotForDryRun(
-    project,
-    targetOrg,
-    opt.snapshotId
-  );
+  const snapshot = await getSnapshotForDryRun(project, targetOrg, opt);
 
   cli.action.start('Validating snapshot');
-  const reporter = await snapshot.validate(opt.deleteMissingResources);
+  const reporter = await snapshot.validate(
+    opt.deleteMissingResources,
+    opt.waitUntilDone
+  );
 
   cli.action.stop(reporter.isSuccessReport() ? green('✔') : red.bold('!'));
   return {reporter, snapshot, project};
@@ -101,21 +113,26 @@ function operationGettingTooMuchTimeMessage(snapshot: Snapshot): string {
 
 async function createSnapshotFromProject(
   project: Project,
-  targetOrg: string
+  targetOrg: string,
+  options?: WaitUntilDoneOptions
 ): Promise<Snapshot> {
   const pathToZip = await project.compressResources();
-  return SnapshotFactory.createFromZip(pathToZip, targetOrg);
+  return SnapshotFactory.createFromZip(pathToZip, targetOrg, options);
 }
 
 async function getSnapshotForDryRun(
   project: Project,
   targetOrg: string,
-  snapshotId?: string
+  options: DryRunOptions = {}
 ) {
-  if (snapshotId) {
+  if (options.snapshotId) {
     cli.action.start('Retrieving Snapshot');
-    return SnapshotFactory.createFromExistingSnapshot(snapshotId, targetOrg);
+    return SnapshotFactory.createFromExistingSnapshot(
+      options.snapshotId,
+      targetOrg,
+      options.waitUntilDone
+    );
   }
   cli.action.start('Creating Snapshot');
-  return createSnapshotFromProject(project, targetOrg);
+  return createSnapshotFromProject(project, targetOrg, options.waitUntilDone);
 }

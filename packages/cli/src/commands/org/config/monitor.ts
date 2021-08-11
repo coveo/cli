@@ -11,8 +11,9 @@ import {
   Preconditions,
 } from '../../../lib/decorators/preconditions';
 import {ReportViewerStyles} from '../../../lib/snapshot/reportPreviewer/reportPreviewerStyles';
-import {Snapshot, waitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
+import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {
+  waitFlag,
   getTargetOrg,
   handleSnapshotError,
 } from '../../../lib/snapshot/snapshotCommon';
@@ -22,6 +23,7 @@ export default class Monitor extends Command {
   public static description = 'Monitor a Snapshot operation';
 
   public static flags = {
+    ...waitFlag,
     target: flags.string({
       char: 't',
       description:
@@ -43,9 +45,9 @@ export default class Monitor extends Command {
 
   @Preconditions(IsAuthenticated())
   public async run() {
-    const snapshot = await this.getSnapshot();
+    this.printHeader();
 
-    this.printHeader(snapshot.id);
+    const snapshot = await this.getSnapshot();
 
     await this.monitorSnapshot(snapshot);
     this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
@@ -66,19 +68,19 @@ export default class Monitor extends Command {
       this.getReportStatus(snapshot.latestReport)
     );
 
-    // TODO: revisit with a progress bar once the response contains the remaining resources to process
-    const iteratee = (report: ResourceSnapshotsReportModel) =>
-      this.refresh(report);
-    await snapshot.waitUntilDone(this.waitOptions, iteratee);
+    await snapshot.waitUntilDone(this.waitOption);
 
     cli.action.stop(this.getReportStatus(snapshot.latestReport));
   }
 
-  private printHeader(snapshotId: string) {
+  private printHeader() {
+    const {args} = this.parse(Monitor);
+    const snapshotId = args.snapshotId;
     const header = ReportViewerStyles.header(
-      `\nMonitoring snapshot ${snapshotId}:`
+      `Monitoring snapshot ${snapshotId}`
     );
-    cli.log(header);
+    cli.log('');
+    cli.action.start(header);
   }
 
   private prettyPrint(str: string): string {
@@ -109,13 +111,12 @@ export default class Monitor extends Command {
     return SnapshotFactory.createFromExistingSnapshot(snapshotId, target);
   }
 
-  private get waitOptions(): waitUntilDoneOptions {
+  private get waitOption(): WaitUntilDoneOptions {
+    const {flags} = this.parse(Monitor);
     return {
-      waitOptions: {
-        numOfAttempts: Infinity,
-        delayFirstAttempt: false,
-        maxDelay: 10e3,
-      },
+      wait: flags.wait,
+      // TODO: revisit with a progress bar once the response contains the remaining resources to process
+      onRetryCb: (report: ResourceSnapshotsReportModel) => this.refresh(report),
     };
   }
 
