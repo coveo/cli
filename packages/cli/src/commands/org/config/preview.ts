@@ -12,17 +12,20 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
+import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
+import {Project} from '../../../lib/project/project';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {
-  displayInvalidSnapshotError,
-  displaySnapshotSynchronizationWarning,
   dryRun,
   getTargetOrg,
+  handleReportWithErrors,
   handleSnapshotError,
   waitFlag,
   DryRunOptions,
+  cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
+import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 
 export default class Preview extends Command {
   public static description = 'Preview resource updates';
@@ -38,7 +41,7 @@ export default class Preview extends Command {
     }),
     showMissingResources: flags.boolean({
       char: 'd',
-      description: 'Whether or not preview missing resources',
+      description: 'Preview resources deletion when enabled',
       default: false,
       required: false,
     }),
@@ -52,37 +55,44 @@ export default class Preview extends Command {
 
   public static hidden = true;
 
-  @Preconditions(IsAuthenticated())
+  @Preconditions(IsAuthenticated(), IsGitInstalled())
   public async run() {
     const {flags} = this.parse(Preview);
     const target = await getTargetOrg(this.configuration, flags.target);
     const {reporter, snapshot, project} = await dryRun(
       target,
       this.projectPath,
-      this.dryRunOptions
+      this.options
     );
 
-    await snapshot.preview();
-
-    if (reporter.isSuccessReport()) {
-      await snapshot.delete();
-    } else {
-      await this.handleReportWithErrors(snapshot);
-    }
-
-    project.deleteTemporaryZipFile();
+    await snapshot.preview(project, this.options.deleteMissingResources);
+    await this.processReport(snapshot, reporter);
+    await this.cleanup(snapshot, project);
 
     this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
   public async catch(err?: Error) {
     const {flags} = this.parse(Preview);
-    handleSnapshotError(this.projectPath, err);
+    cleanupProject(this.projectPath);
+    handleSnapshotError(err);
     await this.displayAdditionalErrorMessage(err);
     await this.config.runHook(
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
     );
+  }
+
+  private async processReport(snapshot: Snapshot, reporter: SnapshotReporter) {
+    if (!reporter.isSuccessReport()) {
+      const cfg = await this.configuration.get();
+      await handleReportWithErrors(snapshot, cfg, this.projectPath);
+    }
+  }
+
+  private async cleanup(snapshot: Snapshot, project: Project) {
+    await snapshot.delete();
+    project.deleteTemporaryZipFile();
   }
 
   private async displayAdditionalErrorMessage(err?: Error) {
@@ -102,18 +112,7 @@ export default class Preview extends Command {
     }
   }
 
-  private async handleReportWithErrors(snapshot: Snapshot) {
-    const cfg = await this.configuration.get();
-
-    if (snapshot.requiresSynchronization()) {
-      displaySnapshotSynchronizationWarning(snapshot, cfg);
-      return;
-    }
-
-    displayInvalidSnapshotError(snapshot, cfg, this.projectPath);
-  }
-
-  private get dryRunOptions(): DryRunOptions {
+  private get options(): DryRunOptions {
     const {flags} = this.parse(Preview);
     return {
       deleteMissingResources: flags.showMissingResources,

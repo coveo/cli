@@ -1,7 +1,7 @@
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
 import {cli} from 'cli-ux';
-import {cwd} from 'process';
+import dedent from 'ts-dedent';
 import {
   buildAnalyticsFailureHook,
   buildAnalyticsSuccessHook,
@@ -11,16 +11,16 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
-import {ReportViewerStyles} from '../../../lib/snapshot/reportViewer/reportViewerStyles';
+import {ReportViewerStyles} from '../../../lib/snapshot/reportPreviewer/reportPreviewerStyles';
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {
   waitFlag,
   getTargetOrg,
   handleSnapshotError,
-  displayInvalidSnapshotError,
 } from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+import {SnapshotUrlBuilder} from '../../../lib/snapshot/snapshotUrlBuilder';
 
 export default class Monitor extends Command {
   public static description = 'Monitor a Snapshot operation';
@@ -68,12 +68,7 @@ export default class Monitor extends Command {
   private async monitorSnapshot(snapshot: Snapshot) {
     const reporter = new SnapshotReporter(snapshot.latestReport);
     cli.action.start(`Operation ${reporter.type}`, reporter.status);
-
-    // TODO: revisit with a progress bar once the response contains the remaining resources to process
-    const iteratee = (report: ResourceSnapshotsReportModel) =>
-      this.refresh(new SnapshotReporter(report));
-    await snapshot.waitUntilDone(null, this.waitOption, iteratee);
-
+    await snapshot.waitUntilDone(this.waitOption);
     await this.displayMonitorResult(snapshot, reporter);
   }
 
@@ -86,6 +81,7 @@ export default class Monitor extends Command {
     }
   }
 
+  // TODO: CDX-533: use Custom error instead
   private async displaySnapshotError(
     snapshot: Snapshot,
     reporter: SnapshotReporter
@@ -93,7 +89,15 @@ export default class Monitor extends Command {
     cli.log(ReportViewerStyles.error(reporter.resultCode));
     cli.log();
     const cfg = await this.configuration.get();
-    displayInvalidSnapshotError(snapshot, cfg, this.projectPath);
+    const urlBuilder = new SnapshotUrlBuilder(cfg);
+    const snapshotUrl = urlBuilder.getSnapshotPage(snapshot);
+
+    cli.error(
+      dedent`Invalid snapshot - ${snapshot.latestReport.resultCode}.
+
+        You can also use this link to view the snapshot in the Coveo Admin Console:
+        ${snapshotUrl}`
+    );
   }
 
   private printHeader() {
@@ -106,7 +110,8 @@ export default class Monitor extends Command {
     cli.action.start(header);
   }
 
-  private refresh(reporter: SnapshotReporter) {
+  private refresh(report: ResourceSnapshotsReportModel) {
+    const reporter = new SnapshotReporter(report);
     cli.action.status = reporter.status;
   }
 
@@ -120,14 +125,14 @@ export default class Monitor extends Command {
 
   private get waitOption(): WaitUntilDoneOptions {
     const {flags} = this.parse(Monitor);
-    return {wait: flags.wait};
+    return {
+      wait: flags.wait,
+      // TODO: revisit with a progress bar once the response contains the remaining resources to process
+      onRetryCb: (report: ResourceSnapshotsReportModel) => this.refresh(report),
+    };
   }
 
   private get configuration() {
     return new Config(this.config.configDir, this.error);
-  }
-
-  private get projectPath() {
-    return cwd();
   }
 }
