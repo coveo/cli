@@ -19,7 +19,6 @@ export interface PagerState extends HeadlessPagerState {
 export interface IPager {
   state: PagerState;
   pager: Pager;
-  totalCount: number;
 }
 
 export default Vue.extend({
@@ -30,8 +29,6 @@ export default Vue.extend({
     return {
       pager: pager,
       state: {...pager.state, total: 0},
-      totalCount: (this.$root.$data.$engine as SearchEngine).state.search
-        .response.totalCountFiltered,
     };
   },
   methods: {
@@ -43,7 +40,8 @@ export default Vue.extend({
     this.pager.subscribe(() => {
       this.state = {
         ...this.pager.state,
-        total: this.totalCount,
+        total: (this.$root.$data.$engine as SearchEngine).state.search.response
+          .totalCountFiltered,
       };
     });
   },
