@@ -9,13 +9,12 @@ import {red, green, bold} from 'chalk';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {
   waitFlag,
-  displayInvalidSnapshotError,
-  displaySnapshotSynchronizationWarning,
   dryRun,
-  DryRunOptions,
   getTargetOrg,
+  handleReportWithErrors,
   handleSnapshotError,
   cleanupProject,
+  DryRunOptions,
 } from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '../../../lib/config/config';
 import {cwd} from 'process';
@@ -23,6 +22,7 @@ import {
   buildAnalyticsFailureHook,
   buildAnalyticsSuccessHook,
 } from '../../../hooks/analytics/analytics';
+import {Project} from '../../../lib/project/project';
 
 export default class Push extends Command {
   public static description =
@@ -68,14 +68,8 @@ export default class Push extends Command {
       await snapshot.preview(project, this.options.deleteMissingResources);
     }
 
-    if (reporter.isSuccessReport()) {
-      await this.handleValidReport(reporter, snapshot);
-      await snapshot.delete();
-    } else {
-      await this.handleReportWithErrors(snapshot);
-    }
-
-    project.deleteTemporaryZipFile();
+    await this.processReportAndExecuteRemainingActions(snapshot, reporter);
+    await this.cleanup(snapshot, project);
 
     this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
@@ -88,6 +82,23 @@ export default class Push extends Command {
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
     );
+  }
+
+  private async processReportAndExecuteRemainingActions(
+    snapshot: Snapshot,
+    reporter: SnapshotReporter
+  ) {
+    if (reporter.isSuccessReport()) {
+      await this.handleValidReport(reporter, snapshot);
+    } else {
+      const cfg = await this.configuration.get();
+      await handleReportWithErrors(snapshot, cfg, this.projectPath);
+    }
+  }
+
+  private async cleanup(snapshot: Snapshot, project: Project) {
+    await snapshot.delete();
+    project.deleteTemporaryZipFile();
   }
 
   private async handleValidReport(
@@ -127,21 +138,11 @@ export default class Push extends Command {
     const success = reporter.isSuccessReport();
 
     if (!success) {
-      await this.handleReportWithErrors(snapshot);
+      const cfg = await this.configuration.get();
+      await handleReportWithErrors(snapshot, cfg, this.projectPath);
     }
 
     cli.action.stop(success ? green('✔') : red.bold('!'));
-  }
-
-  private async handleReportWithErrors(snapshot: Snapshot) {
-    const cfg = await this.configuration.get();
-
-    if (snapshot.requiresSynchronization()) {
-      displaySnapshotSynchronizationWarning(snapshot, cfg);
-      return;
-    }
-
-    displayInvalidSnapshotError(snapshot, cfg, this.projectPath);
   }
 
   private get options(): DryRunOptions {
