@@ -1,12 +1,8 @@
 import type {ResourceSnapshotType} from '@coveord/platform-client';
 import {readdirSync, rmSync} from 'fs';
-import {
-  readJsonSync,
-  readJSONSync,
-  writeJSONSync,
-  WriteOptions,
-} from 'fs-extra';
+import {readJsonSync, writeJsonSync, WriteOptions} from 'fs-extra';
 import {join} from 'path';
+import {Project} from '../../project/project';
 
 type ResourcesJSON = Object & {resourceName: string};
 
@@ -16,7 +12,7 @@ type SnapshotFileJSON = Object & {
 
 const firstDirOfPath =
   process.platform === 'win32' ? /^[^\\]*(?=\\)/m : /^[^/]*\//m;
-const defaultWriteOptions: WriteOptions = {spaces: 2};
+const defaultWriteOptions: WriteOptions = Project.jsonFormat;
 
 export function recursiveDirectoryDiff(
   currentDir: string,
@@ -31,14 +27,14 @@ export function recursiveDirectoryDiff(
     let dataToWrite = nextFileJson;
     if (currentFilePaths.has(filePath)) {
       currentFilePaths.delete(filePath);
-      const currentFileJSON = readJSONSync(join(currentDir, filePath));
+      const currentFileJSON = readJsonSync(join(currentDir, filePath));
       dataToWrite = buildDiffedJson(
         currentFileJSON,
         nextFileJson,
         deleteMissingResources
       );
     }
-    writeJSONSync(join(currentDir, filePath), dataToWrite, defaultWriteOptions);
+    writeJsonSync(join(currentDir, filePath), dataToWrite, defaultWriteOptions);
   });
 
   if (deleteMissingResources) {

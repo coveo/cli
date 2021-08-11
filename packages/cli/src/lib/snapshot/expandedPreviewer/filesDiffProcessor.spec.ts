@@ -79,7 +79,7 @@ describe('#recursiveDirectoryDiff', () => {
       expect(mockedWriteJSON).toHaveBeenCalledWith(
         join('currentDir', 'someFile.json'),
         resourceA,
-        {spaces: 2}
+        {spaces: '\t'}
       );
     });
   });
@@ -105,7 +105,7 @@ describe('#recursiveDirectoryDiff', () => {
       expect(mockedWriteJSON).toHaveBeenCalledWith(
         join('currentDir', 'someFile.json'),
         resourcesAB,
-        {spaces: 2}
+        {spaces: '\t'}
       );
     });
   });
@@ -133,7 +133,7 @@ describe('#recursiveDirectoryDiff', () => {
     expect(mockedWriteJSON).toHaveBeenCalledWith(
       join('currentDir', 'someFile.json'),
       resourceA,
-      {spaces: 2}
+      {spaces: '\t'}
     );
   });
 
@@ -148,7 +148,7 @@ describe('#recursiveDirectoryDiff', () => {
     expect(mockedWriteJSON).toHaveBeenCalledWith(
       join('currentDir', 'someFile.json'),
       resourcesAB,
-      {spaces: 2}
+      {spaces: '\t'}
     );
   });
 
@@ -163,7 +163,7 @@ describe('#recursiveDirectoryDiff', () => {
     expect(mockedWriteJSON).toHaveBeenCalledWith(
       join('currentDir', 'someFile.json'),
       resourceAModified,
-      {spaces: 2}
+      {spaces: '\t'}
     );
   });
 });
