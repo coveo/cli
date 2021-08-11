@@ -47,7 +47,9 @@ export class Project {
   }
 
   public deleteTemporaryZipFile() {
-    unlinkSync(this.temporaryZipPath);
+    if (existsSync(this.temporaryZipPath)) {
+      unlinkSync(this.temporaryZipPath);
+    }
   }
 
   private ensureProjectCompliance() {

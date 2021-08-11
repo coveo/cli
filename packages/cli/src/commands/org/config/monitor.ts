@@ -58,7 +58,7 @@ export default class Monitor extends Command {
 
   public async catch(err?: Error) {
     const {flags} = this.parse(Monitor);
-    handleSnapshotError(err);
+    handleSnapshotError(this.projectPath, err);
     await this.config.runHook(
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)

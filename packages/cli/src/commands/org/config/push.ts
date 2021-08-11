@@ -81,7 +81,7 @@ export default class Push extends Command {
 
   public async catch(err?: Error) {
     const {flags} = this.parse(Push);
-    handleSnapshotError(err);
+    handleSnapshotError(this.projectPath, err);
     await this.config.runHook(
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
