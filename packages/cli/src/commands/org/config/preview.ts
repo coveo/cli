@@ -23,6 +23,7 @@ import {
   handleSnapshotError,
   waitFlag,
   DryRunOptions,
+  cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
 
 export default class Preview extends Command {
@@ -78,7 +79,8 @@ export default class Preview extends Command {
 
   public async catch(err?: Error) {
     const {flags} = this.parse(Preview);
-    handleSnapshotError(this.projectPath, err);
+    cleanupProject(this.projectPath);
+    handleSnapshotError(err);
     await this.displayAdditionalErrorMessage(err);
     await this.config.runHook(
       'analytics',

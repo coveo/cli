@@ -93,10 +93,12 @@ export async function getTargetOrg(config: Config, target?: string) {
   return cfg.organization;
 }
 
-export function handleSnapshotError(projectPath: string, err?: Error) {
+export function cleanupProject(projectPath: string) {
   const project = new Project(normalize(projectPath));
   project.deleteTemporaryZipFile();
+}
 
+export function handleSnapshotError(err?: Error) {
   if (err instanceof SnapshotOperationTimeoutError) {
     cli.action.stop('Incomplete');
     cli.log(operationGettingTooMuchTimeMessage(err.snapshot));
