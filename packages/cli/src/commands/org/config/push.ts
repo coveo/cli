@@ -121,10 +121,10 @@ export default class Push extends Command {
     const reporter = await snapshot.apply(flags.deleteMissingResources);
     const success = reporter.isSuccessReport();
 
-    if (success) {
-      await snapshot.delete();
-    } else {
+    if (!success) {
       await this.handleReportWithErrors(snapshot);
+    } else {
+      await snapshot.delete();
     }
 
     cli.action.stop(success ? green('✔') : red.bold('!'));
