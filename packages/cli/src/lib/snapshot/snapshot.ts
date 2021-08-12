@@ -40,9 +40,7 @@ export interface WaitUntilOperationDone extends WaitUntilDoneOptions {
 }
 
 export class Snapshot {
-  public static defaultWaitOptions: Required<
-    Omit<WaitUntilDoneOptions, 'operationToWaitFor'>
-  > = {
+  public static defaultWaitOptions: Required<WaitUntilDoneOptions> = {
     waitInterval: 1,
     wait: 60,
     onRetryCb: (_report: ResourceSnapshotsReportModel) => {},
