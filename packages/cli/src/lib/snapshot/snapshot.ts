@@ -27,13 +27,16 @@ export interface WaitUntilDoneOptions {
    */
   waitInterval?: number; // in seconds
   /**
-   * The operation to wait for. If not specified, the method will wait for any operation to complete.
-   */
-  operationToWaitFor?: ResourceSnapshotsReportType;
-  /**
    * Callback to execute every time a request is being made to retrieve the snapshot data
    */
   onRetryCb?: (report: ResourceSnapshotsReportModel) => void;
+}
+
+export interface WaitUntilOperationDone extends WaitUntilDoneOptions {
+  /**
+   * The operation to wait for. If not specified, the method will wait for any operation to complete.
+   */
+  operationToWaitFor?: ResourceSnapshotsReportType;
 }
 
 export class Snapshot {
@@ -76,7 +79,13 @@ export class Snapshot {
     deleteMissingResources = false
   ) {
     this.displayLightPreview();
-    await this.displayExpandedPreview(projectToPreview, deleteMissingResources);
+    const reporter = new SnapshotReporter(this.latestReport);
+    if (reporter.isSuccessReport()) {
+      await this.generateExpandedPreview(
+        projectToPreview,
+        deleteMissingResources
+      );
+    }
   }
 
   public async apply(
@@ -151,7 +160,7 @@ export class Snapshot {
     viewer.display();
   }
 
-  private async displayExpandedPreview(
+  private async generateExpandedPreview(
     projectToPreview: Project,
     shouldDelete: boolean
   ) {
@@ -170,7 +179,7 @@ export class Snapshot {
     });
   }
 
-  public waitUntilDone(options: WaitUntilDoneOptions = {}) {
+  public waitUntilDone(options: WaitUntilOperationDone = {}) {
     const opts = {...Snapshot.defaultWaitOptions, ...options};
     const toMilliseconds = (seconds: number) => seconds * 1e3;
 
