@@ -1,7 +1,6 @@
 import {
   ResourceSnapshotsModel,
   ResourceSnapshotsReportModel,
-  ResourceSnapshotsReportStatus,
   ResourceSnapshotsReportType,
   SnapshotExportContentFormat,
 } from '@coveord/platform-client';
@@ -27,7 +26,7 @@ jest.mock('./expandedPreviewer/expandedPreviewer');
 
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {ensureFileSync, writeJSONSync} from 'fs-extra';
-import retry, {RetryFunction} from 'async-retry';
+import retry from 'async-retry';
 import {SnapshotReporter} from './snapshotReporter';
 import {ReportViewer} from './reportPreviewer/reportPreviewer';
 import {Project} from '../project/project';
@@ -37,7 +36,6 @@ import {SnapshotOperationTimeoutError} from '../errors';
 
 const mockedRetry = mocked(retry);
 const mockedExpandedPreviewer = mocked(ExpandedPreviewer, true);
-const mockedProject = mocked(Project, true);
 const mockedSnapshotReporter = mocked(SnapshotReporter, true);
 const mockedReportViewer = mocked(ReportViewer, true);
 const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
@@ -63,11 +61,6 @@ describe('Snapshot', () => {
     snapshotId: string
   ): ResourceSnapshotsReportModel =>
     getSuccessReport(snapshotId, ResourceSnapshotsReportType.DryRun);
-
-  const getErrorDryRunReport = (
-    snapshotId: string
-  ): ResourceSnapshotsReportModel =>
-    getErrorReport(snapshotId, ResourceSnapshotsReportType.DryRun);
 
   const getSuccessApplyReport = (
     snapshotId: string
@@ -97,25 +90,6 @@ describe('Snapshot', () => {
     mockedAuthenticatedClient.prototype.getClient.mockImplementation(
       mockedGetClient
     );
-  };
-
-  const doMockGetSnapshotWithoutError = async () => {
-    const successValidateReport = getSuccessDryRunReport(snapshotId);
-    const futureValidateSnapshotState = getDummySnapshotModel(
-      targetOrgId,
-      snapshotId,
-      [successValidateReport]
-    );
-    const successApplyReport = getSuccessApplyReport(snapshotId);
-    const futureApplySnapshotState = getDummySnapshotModel(
-      targetOrgId,
-      snapshotId,
-      [successApplyReport]
-    );
-
-    mockedGetSnapshot
-      .mockResolvedValueOnce(futureValidateSnapshotState)
-      .mockResolvedValueOnce(futureApplySnapshotState);
   };
 
   const doMockWaitUntilDone = () => {
