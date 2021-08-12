@@ -20,7 +20,7 @@ $ npm install -g @coveo/cli
 $ coveo COMMAND
 running command...
 $ coveo (-v|--version|version)
-@coveo/cli/1.12.0 linux-x64 node-v14.17.4
+@coveo/cli/1.13.0 linux-x64 node-v14.17.4
 $ coveo --help [COMMAND]
 USAGE
   $ coveo COMMAND
@@ -71,7 +71,7 @@ EXAMPLE
   $ coveo auth:login
 ```
 
-_See code: [src/commands/auth/login.ts](https://github.com/coveo/cli/blob/v1.12.0/packages/cli/src/commands/auth/login.ts)_
+_See code: [src/commands/auth/login.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/auth/login.ts)_
 
 ## `coveo auth:token`
 
@@ -97,7 +97,7 @@ EXAMPLE
   $ coveo auth:token
 ```
 
-_See code: [src/commands/auth/token.ts](https://github.com/coveo/cli/blob/v1.12.0/packages/cli/src/commands/auth/token.ts)_
+_See code: [src/commands/auth/token.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/auth/token.ts)_
 
 ## `coveo config:get`
 
@@ -108,7 +108,7 @@ USAGE
   $ coveo config:get
 ```
 
-_See code: [src/commands/config/get.ts](https://github.com/coveo/cli/blob/v1.12.0/packages/cli/src/commands/config/get.ts)_
+_See code: [src/commands/config/get.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/config/get.ts)_
 
 ## `coveo config:set`
 
@@ -134,7 +134,7 @@ OPTIONS
                                                                        operations. See <https://docs.coveo.com/en/2976>.
 ```
 
-_See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v1.12.0/packages/cli/src/commands/config/set.ts)_
+_See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/config/set.ts)_
 
 ## `coveo help [COMMAND]`
 
@@ -172,7 +172,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v1.12.0/packages/cli/src/commands/org/list.ts)_
+_See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/org/list.ts)_
 
 ## `coveo org:search:dump`
 
@@ -205,7 +205,7 @@ OPTIONS
                                            included.
 ```
 
-_See code: [src/commands/org/search/dump.ts](https://github.com/coveo/cli/blob/v1.12.0/packages/cli/src/commands/org/search/dump.ts)_
+_See code: [src/commands/org/search/dump.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/org/search/dump.ts)_
 
 ## `coveo source:push:add SOURCEID`
 
@@ -224,7 +224,7 @@ OPTIONS
   -f, --file=myfile.json                             One or multiple file to push. Can be repeated.
 ```
 
-_See code: [src/commands/source/push/add.ts](https://github.com/coveo/cli/blob/v1.12.0/packages/cli/src/commands/source/push/add.ts)_
+_See code: [src/commands/source/push/add.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/source/push/add.ts)_
 
 ## `coveo source:push:delete SOURCEID`
 
@@ -252,7 +252,7 @@ OPTIONS
       `source:push:batch` command instead.
 ```
 
-_See code: [src/commands/source/push/delete.ts](https://github.com/coveo/cli/blob/v1.12.0/packages/cli/src/commands/source/push/delete.ts)_
+_See code: [src/commands/source/push/delete.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/source/push/delete.ts)_
 
 ## `coveo source:push:list`
 
@@ -273,7 +273,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/source/push/list.ts](https://github.com/coveo/cli/blob/v1.12.0/packages/cli/src/commands/source/push/list.ts)_
+_See code: [src/commands/source/push/list.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/source/push/list.ts)_
 
 ## `coveo source:push:new NAME`
 
@@ -292,7 +292,7 @@ OPTIONS
                                                    https://docs.coveo.com/en/1779/index-content/content-security
 ```
 
-_See code: [src/commands/source/push/new.ts](https://github.com/coveo/cli/blob/v1.12.0/packages/cli/src/commands/source/push/new.ts)_
+_See code: [src/commands/source/push/new.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/source/push/new.ts)_
 
 ## `coveo ui:create:angular NAME`
 
@@ -307,10 +307,10 @@ ARGUMENTS
 
 OPTIONS
   -d, --defaults         Whether to automatically select the default value for all prompts that have a default value.
-  -v, --version=version  [default: 1.12.0] The version of @coveo/angular to use.
+  -v, --version=version  [default: 1.13.0] The version of @coveo/angular to use.
 ```
 
-_See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/v1.12.0/packages/cli/src/commands/ui/create/angular.ts)_
+_See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/ui/create/angular.ts)_
 
 ## `coveo ui:create:react NAME`
 
@@ -324,14 +324,14 @@ ARGUMENTS
   NAME  The name of the application to create.
 
 OPTIONS
-  -v, --version=version  [default: 1.12.0] Version of @coveo/cra-template to use.
+  -v, --version=version  [default: 1.13.0] Version of @coveo/cra-template to use.
 
 EXAMPLES
   $ coveo ui:create:react myapp
   $ coveo ui:create:react --help
 ```
 
-_See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v1.12.0/packages/cli/src/commands/ui/create/react.ts)_
+_See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/ui/create/react.ts)_
 
 ## `coveo ui:create:vue NAME`
 
@@ -352,14 +352,14 @@ OPTIONS
                          For more information about Vue CLI presets, see
                          https://cli.vuejs.org/guide/plugins-and-presets.html#presets.
 
-  -v, --version=version  [default: 1.12.0] The version of @coveo/vue-cli-plugin-typescript to use.
+  -v, --version=version  [default: 1.13.0] The version of @coveo/vue-cli-plugin-typescript to use.
 
 EXAMPLES
   $ coveo ui:create:vue --preset path/to/my/preset.json
   $ coveo ui:create:vue --help
 ```
 
-_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v1.12.0/packages/cli/src/commands/ui/create/vue.ts)_
+_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/ui/create/vue.ts)_
 
 ## `coveo update [CHANNEL]`
 

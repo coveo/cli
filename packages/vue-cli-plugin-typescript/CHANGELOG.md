@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.13.0](https://github.com/coveo/cli/compare/v1.12.0...v1.13.0) (2021-08-12)
+
+
+### Bug Fixes
+
+* **vue:** fix broken pager buttons ([#421](https://github.com/coveo/cli/issues/421)) ([0fa9686](https://github.com/coveo/cli/commit/0fa96865a035f9998ae2707558efe54617d94666))
+
+
+
+
+
 # [1.12.0](https://github.com/coveo/cli/compare/v1.11.0...v1.12.0) (2021-08-03)
 
 **Note:** Version bump only for package @coveo/vue-cli-plugin-typescript
