@@ -1,4 +1,5 @@
 jest.mock('../../../lib/decorators/preconditions/node');
+jest.mock('../../../lib/decorators/preconditions/apiKeyPrivilege');
 jest.mock('../../../lib/utils/process');
 jest.mock('../../../lib/oauth/oauth');
 jest.mock('../../../lib/config/config');
@@ -15,7 +16,10 @@ import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
 import {Config, Configuration} from '../../../lib/config/config';
-import {IsNodeVersionInRange} from '../../../lib/decorators/preconditions/';
+import {
+  IsNodeVersionInRange,
+  hasNecessaryCoveoPrivileges,
+} from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import Command from '@oclif/command';
 
@@ -27,8 +31,11 @@ describe('ui:create:vue', () => {
   const mockedAuthenticatedClient = mocked(AuthenticatedClient);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
   const vueAppExecutable = join('@vue', 'cli', 'bin', 'vue.js'); //TODO: change that
+  const mockedApiKeyPrivilege = mocked(hasNecessaryCoveoPrivileges, true);
+  const mockedCreateImpersonateApiKey = jest.fn();
   const preconditionStatus = {
     node: true,
+    apiKey: true,
   };
   const doMockPreconditions = function () {
     const mockNode = function (_target: Command) {
@@ -36,7 +43,13 @@ describe('ui:create:vue', () => {
         resolve(preconditionStatus.node)
       );
     };
+    const mockApiKeyPrivilege = function (_target: Command) {
+      return new Promise<boolean>((resolve) =>
+        resolve(preconditionStatus.apiKey)
+      );
+    };
     mockedIsNodeVersionInRange.mockReturnValue(mockNode);
+    mockedApiKeyPrivilege.mockReturnValue(mockApiKeyPrivilege);
   };
 
   const doMockSpawnProcess = () => {
@@ -63,13 +76,14 @@ describe('ui:create:vue', () => {
   };
 
   const doMockAuthenticatedClient = () => {
+    mockedCreateImpersonateApiKey.mockImplementation((_name: string) =>
+      Promise.resolve({value: 'foo'})
+    );
+
     mockedAuthenticatedClient.mockImplementation(
       () =>
         ({
-          createImpersonateApiKey: (_name: string) =>
-            Promise.resolve({
-              value: 'foo',
-            }),
+          createImpersonateApiKey: mockedCreateImpersonateApiKey,
           getUserInfo: () =>
             Promise.resolve({
               username: 'bob@coveo.com',
@@ -84,7 +98,7 @@ describe('ui:create:vue', () => {
               })
             ),
           cfg: mockedConfig.getMockImplementation()!('./'),
-        } as AuthenticatedClient)
+        } as unknown as AuthenticatedClient)
     );
   };
 
@@ -105,11 +119,25 @@ describe('ui:create:vue', () => {
     doMockAuthenticatedClient();
     doMockPreconditions();
     preconditionStatus.node = true;
+    preconditionStatus.apiKey = true;
   });
 
   afterEach(() => {
     mockedIsNodeVersionInRange.mockClear();
+    mockedApiKeyPrivilege.mockClear();
   });
+
+  test
+    .do(() => {
+      preconditionStatus.apiKey = false;
+    })
+    .command(['ui:create:vue', 'myapp'])
+    .it(
+      'should not execute the command if the API key preconditions are not respected',
+      async () => {
+        expect(mockedCreateImpersonateApiKey).toHaveBeenCalledTimes(0);
+      }
+    );
 
   test
     .do(() => {
