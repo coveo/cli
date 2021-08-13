@@ -15,7 +15,7 @@ import {
   IsAuthenticated,
   IsNodeVersionInRange,
   IsNpxInstalled,
-  hasImpersonatePrivilege,
+  hasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {EOL} from 'os';
@@ -58,7 +58,7 @@ export default class React extends Command {
     IsAuthenticated(),
     IsNodeVersionInRange(React.requiredNodeVersion),
     IsNpxInstalled(),
-    hasImpersonatePrivilege()
+    hasNecessaryCoveoPrivileges()
   )
   public async run() {
     const args = this.args;

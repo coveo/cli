@@ -9,6 +9,7 @@ import {
   Preconditions,
   IsAuthenticated,
   IsNodeVersionInRange,
+  hasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {platformUrl} from '../../../lib/platform/environment';
@@ -59,7 +60,8 @@ export default class Vue extends Command {
 
   @Preconditions(
     IsAuthenticated(),
-    IsNodeVersionInRange(Vue.requiredNodeVersion)
+    IsNodeVersionInRange(Vue.requiredNodeVersion),
+    hasNecessaryCoveoPrivileges()
   )
   public async run() {
     const {args, flags} = this.parse(Vue);
