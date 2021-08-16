@@ -6,7 +6,7 @@ import {IConfig} from '@oclif/config';
 import {mocked} from 'ts-jest/utils';
 import {Config} from '../../config/config';
 import {AuthenticatedClient} from '../../platform/authenticatedClient';
-import {hasNecessaryCoveoPrivileges} from './apiKeyPrivilege';
+import {HasNecessaryCoveoPrivileges} from './apiKeyPrivilege';
 import {getFakeCommand} from './testsUtils/utils';
 
 const mockConfig = mocked(Config);
@@ -53,7 +53,7 @@ describe('apiKeyPrivilege', () => {
           .mockReturnValueOnce({approved: impersonateCondition});
 
         const fakeCommand = getFakeCommand();
-        await expect(hasNecessaryCoveoPrivileges()(fakeCommand)).resolves.toBe(
+        await expect(HasNecessaryCoveoPrivileges()(fakeCommand)).resolves.toBe(
           false
         );
         expect(fakeCommand.warn).toHaveBeenCalledTimes(1);
@@ -69,7 +69,7 @@ describe('apiKeyPrivilege', () => {
 
     it('returns true and does not warn', async () => {
       const fakeCommand = getFakeCommand();
-      await expect(hasNecessaryCoveoPrivileges()(fakeCommand)).resolves.toBe(
+      await expect(HasNecessaryCoveoPrivileges()(fakeCommand)).resolves.toBe(
         true
       );
       expect(fakeCommand.warn).not.toHaveBeenCalled();

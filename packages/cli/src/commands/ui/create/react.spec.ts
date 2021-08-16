@@ -21,7 +21,7 @@ import {Config, Configuration} from '../../../lib/config/config';
 import {
   IsNpxInstalled,
   IsNodeVersionInRange,
-  hasNecessaryCoveoPrivileges,
+  HasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import Command from '@oclif/command';
@@ -37,7 +37,7 @@ describe('ui:create:react', () => {
   const mockedAuthenticatedClient = mocked(AuthenticatedClient);
   const mockedIsNpxInstalled = mocked(IsNpxInstalled, true);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
-  const mockedApiKeyPrivilege = mocked(hasNecessaryCoveoPrivileges, true);
+  const mockedApiKeyPrivilege = mocked(HasNecessaryCoveoPrivileges, true);
   const mockedCreateImpersonateApiKey = jest.fn();
   const processExitCode = {
     spawn: 0,

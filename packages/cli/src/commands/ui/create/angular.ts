@@ -13,7 +13,7 @@ import {
   IsAuthenticated,
   IsNodeVersionInRange,
   IsNpmVersionInRange,
-  hasNecessaryCoveoPrivileges,
+  HasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions/';
 
 export default class Angular extends Command {
@@ -53,7 +53,7 @@ export default class Angular extends Command {
     IsAuthenticated(),
     IsNodeVersionInRange(Angular.requiredNodeVersion),
     IsNpmVersionInRange(Angular.requiredNpmVersion),
-    hasNecessaryCoveoPrivileges()
+    HasNecessaryCoveoPrivileges()
   )
   public async run() {
     const {args, flags} = this.parse(Angular);

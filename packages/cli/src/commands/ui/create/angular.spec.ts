@@ -20,7 +20,7 @@ import {Config, Configuration} from '../../../lib/config/config';
 import {
   IsNpmVersionInRange,
   IsNodeVersionInRange,
-  hasNecessaryCoveoPrivileges,
+  HasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import Command from '@oclif/command';
@@ -34,7 +34,7 @@ describe('ui:create:angular', () => {
   const mockedIsNpmVersionInRange = mocked(IsNpmVersionInRange, true);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
   const angularAppExecutable = join('@angular', 'cli', 'lib', 'init.js');
-  const mockedApiKeyPrivilege = mocked(hasNecessaryCoveoPrivileges, true);
+  const mockedApiKeyPrivilege = mocked(HasNecessaryCoveoPrivileges, true);
   const mockedCreateImpersonateApiKey = jest.fn();
   const preconditionStatus = {
     node: true,

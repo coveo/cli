@@ -18,7 +18,7 @@ import PlatformClient from '@coveord/platform-client';
 import {Config, Configuration} from '../../../lib/config/config';
 import {
   IsNodeVersionInRange,
-  hasNecessaryCoveoPrivileges,
+  HasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import Command from '@oclif/command';
@@ -31,7 +31,7 @@ describe('ui:create:vue', () => {
   const mockedAuthenticatedClient = mocked(AuthenticatedClient);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
   const vueAppExecutable = join('@vue', 'cli', 'bin', 'vue.js'); //TODO: change that
-  const mockedApiKeyPrivilege = mocked(hasNecessaryCoveoPrivileges, true);
+  const mockedApiKeyPrivilege = mocked(HasNecessaryCoveoPrivileges, true);
   const mockedCreateImpersonateApiKey = jest.fn();
   const preconditionStatus = {
     node: true,

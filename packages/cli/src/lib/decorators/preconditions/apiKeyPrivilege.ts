@@ -22,7 +22,7 @@ export const createApiKeyPrivilege = {
   },
 };
 
-export function hasNecessaryCoveoPrivileges() {
+export function HasNecessaryCoveoPrivileges() {
   return async function (target: Command) {
     const authenticatedClient = new AuthenticatedClient();
 
