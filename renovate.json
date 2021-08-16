@@ -2,6 +2,9 @@
   "enabled": true,
   "extends": [":semanticPrefixFixDepsChoreOthers"],
   "schedule": ["before 2am"],
+  "vulnerabilityAlerts": {
+    "commitMessageSuffix": "[SECURITY] J:CDX-227"
+  },
   "packageRules": [
     {
       "matchPackagePatterns": ["*"],
