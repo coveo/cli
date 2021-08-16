@@ -33,7 +33,7 @@ export function HasNecessaryCoveoPrivileges() {
     if (!(await hasCreateApiKeyPrivilege(client, organization))) {
       target.warn(
         anonymous
-          ? 'Your API key is missing the privilege to create other API keys. Make sure to grant this privilege before running the command again.'
+          ? 'Your API key is missing the privilege to create other API keys. Make sure to grant this privilege before running the command again. See https://docs.coveo.com/en/1707/#api-keys-domain.'
           : 'You are not authorized to create an API Key. Please contact an administrator of your Coveo organization.'
       );
       return false;
