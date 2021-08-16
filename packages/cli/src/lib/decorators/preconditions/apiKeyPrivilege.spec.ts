@@ -38,8 +38,12 @@ describe('apiKeyPrivilege', () => {
   });
 
   describe.each([
-    [true, false, 'You cannot create an API Key with impersonate privilege'],
-    [false, true, 'You cannot create an API Key'],
+    [
+      true,
+      false,
+      'You are not authorized to create an API Key with the impersonate privilege',
+    ],
+    [false, true, 'You are not authorized to create an API Key'],
   ])(
     'when the API key condition is %s and the impersonate condition is %s.',
     (
@@ -57,7 +61,9 @@ describe('apiKeyPrivilege', () => {
           false
         );
         expect(fakeCommand.warn).toHaveBeenCalledTimes(1);
-        expect(fakeCommand.warn).toHaveBeenCalledWith(expectedWarning);
+        expect(fakeCommand.warn).toHaveBeenCalledWith(
+          expect.stringContaining(expectedWarning)
+        );
       });
     }
   );
