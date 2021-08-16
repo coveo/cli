@@ -30,10 +30,6 @@ export function HasNecessaryCoveoPrivileges() {
     const client = await authenticatedClient.getClient();
     const {organization, anonymous} = await getConfiguration(target);
 
-    console.log('*********************');
-    console.log(anonymous);
-    console.log('*********************');
-
     if (!(await hasCreateApiKeyPrivilege(client, organization))) {
       target.warn(
         anonymous
