@@ -42,7 +42,7 @@ export function HasNecessaryCoveoPrivileges() {
       target.warn(
         anonymous
           ? dedent`Your API key is missing the Impersonate privilege. Make sure to grant this privilege to your API key before running the command again.
-                   More info here https://docs.coveo.com/en/1707/#impersonate-domain-1`
+                   See https://docs.coveo.com/en/1707/#impersonate-domain-1.`
           : 'You are not authorized to create an API Key with the impersonate privilege. Please contact an administrator of your Coveo organization.'
       );
       return false;
