@@ -5,6 +5,7 @@ import {Snapshot} from '../snapshot/snapshot';
 import {SnapshotUrlBuilder} from '../snapshot/snapshotUrlBuilder';
 
 export class SnapshotOperationTimeoutError extends Error {
+  public name = 'Snapshot Operation Timeout Error';
   public constructor(public snapshot: Snapshot) {
     super();
     this.message = dedent`${
@@ -17,7 +18,12 @@ export class SnapshotOperationTimeoutError extends Error {
 }
 
 export class SnapshotSynchronizationError extends Error {
-  public constructor(public snapshot: Snapshot, public cfg: Configuration) {
+  public name = 'Snapshot Synchronization Error';
+  public constructor(
+    public snapshot: Snapshot,
+    public cfg: Configuration,
+    public projectPath?: string
+  ) {
     super();
     const urlBuilder = new SnapshotUrlBuilder(cfg);
     const synchronizationPlanUrl = urlBuilder.getSynchronizationPage(snapshot);
@@ -26,14 +32,21 @@ export class SnapshotSynchronizationError extends Error {
       Some conflicts were detected while comparing changes between the snapshot and the target organization.
       Click on the URL below to synchronize your snapshot with your organization before running another push command.
       ${synchronizationPlanUrl}`;
+
+    if (projectPath) {
+      const reportPath = snapshot.saveDetailedReport(projectPath);
+      this.message += dedent`\n\n
+        Detailed report saved at ${reportPath}`;
+    }
   }
 }
 
 export class SnapshotGenericError extends Error {
+  public name = 'Snapshot Error';
   public constructor(
     public snapshot: Snapshot,
     public cfg: Configuration,
-    public pathToReport: string
+    public projectPath?: string
   ) {
     super();
     const report = snapshot.latestReport;
@@ -41,9 +54,13 @@ export class SnapshotGenericError extends Error {
     const snapshotUrl = urlBuilder.getSnapshotPage(snapshot);
 
     this.message = dedent`Invalid snapshot - ${report.resultCode}.
-      Detailed report saved at ${pathToReport}.
-
       You can also use this link to view the snapshot in the Coveo Admin Console
       ${snapshotUrl}`;
+
+    if (projectPath) {
+      const reportPath = snapshot.saveDetailedReport(projectPath);
+      this.message += dedent`\n\n
+          Detailed report saved at ${reportPath}`;
+    }
   }
 }

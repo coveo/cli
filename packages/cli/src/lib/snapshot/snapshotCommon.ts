@@ -69,24 +69,28 @@ export function cleanupProject(projectPath: string) {
 export async function handleReportWithErrors(
   snapshot: Snapshot,
   cfg: Configuration,
-  projectPath: string
+  projectPath?: string
 ) {
   if (snapshot.requiresSynchronization()) {
-    throw new SnapshotSynchronizationError(snapshot, cfg);
+    throw new SnapshotSynchronizationError(snapshot, cfg, projectPath);
   }
 
-  const pathToReport = snapshot.saveDetailedReport(projectPath);
-  throw new SnapshotGenericError(snapshot, cfg, pathToReport);
+  throw new SnapshotGenericError(snapshot, cfg, projectPath);
 }
 
 export function handleSnapshotError(err?: Error) {
+  if (cli.action.running) {
+    cli.action.stop(err?.name);
+  }
+  const errorMessage = '\n' + err?.message;
+
+  cli.log();
   if (err instanceof SnapshotOperationTimeoutError) {
-    cli.action.stop('Incomplete');
-    cli.log(err.message);
+    cli.log(errorMessage);
   } else if (err instanceof SnapshotSynchronizationError) {
-    cli.warn(err.message);
+    cli.warn(errorMessage);
   } else if (err instanceof SnapshotGenericError) {
-    cli.error(err.message);
+    cli.error(errorMessage);
   } else {
     throw err;
   }
