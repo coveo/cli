@@ -5,8 +5,8 @@ import {Snapshot, WaitUntilDoneOptions} from './snapshot';
 import {red, green} from 'chalk';
 import {normalize} from 'path';
 import {Config, Configuration} from '../config/config';
-import {SnapshotOperationTimeoutError} from '../errors';
 import {
+  SnapshotError,
   SnapshotGenericError,
   SnapshotSynchronizationError,
 } from '../errors/snapshotErrors';
@@ -82,15 +82,9 @@ export function handleSnapshotError(err?: Error) {
   if (cli.action.running) {
     cli.action.stop(err?.name);
   }
-  const errorMessage = '\n' + err?.message;
 
-  cli.log();
-  if (err instanceof SnapshotOperationTimeoutError) {
-    cli.log(errorMessage);
-  } else if (err instanceof SnapshotSynchronizationError) {
-    cli.warn(errorMessage);
-  } else if (err instanceof SnapshotGenericError) {
-    cli.error(errorMessage);
+  if (err instanceof SnapshotError) {
+    err.print();
   } else {
     throw err;
   }

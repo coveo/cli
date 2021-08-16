@@ -1,13 +1,50 @@
 import {blueBright} from 'chalk';
+import {cli} from 'cli-ux';
 import dedent from 'ts-dedent';
 import {Configuration} from '../config/config';
 import {Snapshot} from '../snapshot/snapshot';
 import {SnapshotUrlBuilder} from '../snapshot/snapshotUrlBuilder';
 
-export class SnapshotOperationTimeoutError extends Error {
+// type severityLevels = 'info' | 'warn' | 'error';
+
+enum severityLevels {
+  'info' = 'info',
+  'warn' = 'warn',
+  'error' = 'error',
+}
+
+interface IDetailedReportable extends SnapshotError {
+  snapshot: Snapshot;
+  level: severityLevels;
+  projectPath?: string;
+}
+
+function trySavingDetailedReport(error: IDetailedReportable) {
+  if (error.projectPath) {
+    const reportPath = error.snapshot.saveDetailedReport(error.projectPath);
+    error.message += dedent`\n\n
+          Detailed report saved at ${reportPath}`;
+  }
+}
+
+export class SnapshotError extends Error {
+  public constructor(public level: severityLevels) {
+    super();
+  }
+
+  public print() {
+    cli.log();
+    cli[this.level]('\n' + this.message);
+  }
+}
+
+export class SnapshotOperationTimeoutError
+  extends SnapshotError
+  implements IDetailedReportable
+{
   public name = 'Snapshot Operation Timeout Error';
   public constructor(public snapshot: Snapshot) {
-    super();
+    super(severityLevels.info);
     this.message = dedent`${
       snapshot.latestReport.type
     } operation is taking a long time to complete.
@@ -17,14 +54,17 @@ export class SnapshotOperationTimeoutError extends Error {
   }
 }
 
-export class SnapshotSynchronizationError extends Error {
+export class SnapshotSynchronizationError
+  extends SnapshotError
+  implements IDetailedReportable
+{
   public name = 'Snapshot Synchronization Error';
   public constructor(
     public snapshot: Snapshot,
     public cfg: Configuration,
     public projectPath?: string
   ) {
-    super();
+    super(severityLevels.warn);
     const urlBuilder = new SnapshotUrlBuilder(cfg);
     const synchronizationPlanUrl = urlBuilder.getSynchronizationPage(snapshot);
 
@@ -33,22 +73,21 @@ export class SnapshotSynchronizationError extends Error {
       Click on the URL below to synchronize your snapshot with your organization before running another push command.
       ${synchronizationPlanUrl}`;
 
-    if (projectPath) {
-      const reportPath = snapshot.saveDetailedReport(projectPath);
-      this.message += dedent`\n\n
-        Detailed report saved at ${reportPath}`;
-    }
+    trySavingDetailedReport(this);
   }
 }
 
-export class SnapshotGenericError extends Error {
+export class SnapshotGenericError
+  extends SnapshotError
+  implements IDetailedReportable
+{
   public name = 'Snapshot Error';
   public constructor(
     public snapshot: Snapshot,
     public cfg: Configuration,
     public projectPath?: string
   ) {
-    super();
+    super(severityLevels.error);
     const report = snapshot.latestReport;
     const urlBuilder = new SnapshotUrlBuilder(cfg);
     const snapshotUrl = urlBuilder.getSnapshotPage(snapshot);
@@ -57,10 +96,6 @@ export class SnapshotGenericError extends Error {
       You can also use this link to view the snapshot in the Coveo Admin Console
       ${snapshotUrl}`;
 
-    if (projectPath) {
-      const reportPath = snapshot.saveDetailedReport(projectPath);
-      this.message += dedent`\n\n
-          Detailed report saved at ${reportPath}`;
-    }
+    trySavingDetailedReport(this);
   }
 }
