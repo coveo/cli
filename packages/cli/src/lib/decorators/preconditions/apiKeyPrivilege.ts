@@ -2,6 +2,7 @@ import PlatformClient, {
   PrivilegeEvaluatorModel,
 } from '@coveord/platform-client';
 import Command from '@oclif/command';
+import dedent from 'ts-dedent';
 import {Config} from '../../config/config';
 import {AuthenticatedClient} from '../../platform/authenticatedClient';
 
@@ -27,16 +28,27 @@ export function HasNecessaryCoveoPrivileges() {
     const authenticatedClient = new AuthenticatedClient();
 
     const client = await authenticatedClient.getClient();
-    const {organization} = await getConfiguration(target);
+    const {organization, anonymous} = await getConfiguration(target);
+
+    console.log('*********************');
+    console.log(anonymous);
+    console.log('*********************');
 
     if (!(await hasCreateApiKeyPrivilege(client, organization))) {
-      // TODO: better message
-      target.warn('You cannot create an API Key');
+      target.warn(
+        anonymous
+          ? 'Your API key is missing the privilege to create other API keys. Make sure to grant this privilege before running the command again.'
+          : 'You are not authorized to create an API Key. Please contact an administrator of your Coveo organization.'
+      );
       return false;
     }
     if (!(await hasImpersonatePrivilege(client, organization))) {
-      // TODO: better message
-      target.warn('You cannot create an API Key with impersonate privilege');
+      target.warn(
+        anonymous
+          ? dedent`Your API key is missing the Impersonate privilege. Make sure to grant this privilege to your API key before running the command again.
+                   More info here https://docs.coveo.com/en/1707/#impersonate-domain-1`
+          : 'You are not authorized to create an API Key with the impersonate privilege. Please contact an administrator of your Coveo organization.'
+      );
       return false;
     }
     return true;
