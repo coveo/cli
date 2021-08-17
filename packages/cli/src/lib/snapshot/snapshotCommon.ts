@@ -5,8 +5,8 @@ import {Snapshot, WaitUntilDoneOptions} from './snapshot';
 import {red, green} from 'chalk';
 import {normalize} from 'path';
 import {Config, Configuration} from '../config/config';
-import {SnapshotOperationTimeoutError} from '../errors';
 import {
+  SnapshotError,
   SnapshotGenericError,
   SnapshotSynchronizationError,
 } from '../errors/snapshotErrors';
@@ -69,24 +69,22 @@ export function cleanupProject(projectPath: string) {
 export async function handleReportWithErrors(
   snapshot: Snapshot,
   cfg: Configuration,
-  projectPath: string
+  projectPath?: string
 ) {
   if (snapshot.requiresSynchronization()) {
-    throw new SnapshotSynchronizationError(snapshot, cfg);
+    throw new SnapshotSynchronizationError(snapshot, cfg, projectPath);
   }
 
-  const pathToReport = snapshot.saveDetailedReport(projectPath);
-  throw new SnapshotGenericError(snapshot, cfg, pathToReport);
+  throw new SnapshotGenericError(snapshot, cfg, projectPath);
 }
 
 export function handleSnapshotError(err?: Error) {
-  if (err instanceof SnapshotOperationTimeoutError) {
-    cli.action.stop('Incomplete');
-    cli.log(err.message);
-  } else if (err instanceof SnapshotSynchronizationError) {
-    cli.warn(err.message);
-  } else if (err instanceof SnapshotGenericError) {
-    cli.error(err.message);
+  if (cli.action.running) {
+    cli.action.stop(err?.name);
+  }
+
+  if (err instanceof SnapshotError) {
+    err.print();
   } else {
     throw err;
   }
