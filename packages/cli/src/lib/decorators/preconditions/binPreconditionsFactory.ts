@@ -1,6 +1,5 @@
 import type Command from '@oclif/command';
 import {dedent} from 'ts-dedent';
-import {constants} from 'os';
 import {spawnProcessOutput, SpawnProcessOutput} from '../../utils/process';
 import {satisfies, validRange} from 'semver';
 
@@ -11,12 +10,23 @@ export interface IBinPreconditionsOptions {
   howToInstallBinText?: string;
 }
 
+export interface IBinPreconditionsOptionsWithAutoFix
+  extends IBinPreconditionsOptions {
+  installFunction: (target: Command) => Promise<boolean>;
+}
+
 const defaultOptions: Required<Omit<IBinPreconditionsOptions, 'prettyName'>> = {
   params: ['--version'],
   installLink:
     'https://github.com/coveo/cli/wiki/Node.js,-NPM-and-NPX-requirements',
   howToInstallBinText: '',
 };
+
+function hasAutoFix(
+  option: IBinPreconditionsOptionsWithAutoFix | IBinPreconditionsOptions
+): option is IBinPreconditionsOptionsWithAutoFix {
+  return Boolean(option.installLink);
+}
 
 export function getBinVersionPrecondition(
   binaryName: string,
@@ -62,7 +72,7 @@ export function getBinVersionPrecondition(
 
 export function getBinInstalledPrecondition(
   binaryName: string,
-  options?: IBinPreconditionsOptions
+  options?: IBinPreconditionsOptions | IBinPreconditionsOptionsWithAutoFix
 ) {
   const appliedOptions: Required<IBinPreconditionsOptions> = {
     ...defaultOptions,
@@ -70,7 +80,7 @@ export function getBinInstalledPrecondition(
     prettyName: options?.prettyName ?? binaryName,
   };
   return function () {
-    return async function (target: Command) {
+    return async function (target: Command): Promise<Boolean> {
       const output = await spawnProcessOutput(
         binaryName,
         appliedOptions.params
@@ -80,13 +90,16 @@ export function getBinInstalledPrecondition(
   };
 }
 
-function isBinInstalled(
+async function isBinInstalled(
   target: Command,
   binaryName: string,
   options: Required<IBinPreconditionsOptions>,
   output: SpawnProcessOutput
-) {
+): Promise<boolean> {
   if (isBinFileMissing(output)) {
+    if (hasAutoFix(options)) {
+      return await options.installFunction(target);
+    }
     target.warn(`${target.id} requires ${options.prettyName} to run.`);
     warnHowToInstallBin(target, options);
     return false;
@@ -120,8 +133,5 @@ function warnHowToInstallBin(
 }
 
 function isBinFileMissing(output: SpawnProcessOutput) {
-  return (
-    output.exitCode !== null &&
-    Math.abs(output.exitCode) === constants.errno.ENOENT
-  );
+  return /^spawn \S* ENOENT$/.test(output.stderr);
 }

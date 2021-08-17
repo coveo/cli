@@ -14,9 +14,12 @@ import {
   IsNodeVersionInRange,
   IsNpmVersionInRange,
 } from '../../../lib/decorators/preconditions/';
+import {IsNgInstalled} from '../../../lib/decorators/preconditions/angularCli';
+import {appendCmdIfWindows} from '../../../lib/utils/os';
 
 export default class Angular extends Command {
   public static templateName = '@coveo/angular';
+  public static cliPackage: '@angular/cli';
   /**
    * Requirements Based on https://angular.io/guide/setup-local
    * and https://www.npmjs.com/package/@angular/cli package.json engines section.
@@ -51,7 +54,8 @@ export default class Angular extends Command {
   @Preconditions(
     IsAuthenticated(),
     IsNodeVersionInRange(Angular.requiredNodeVersion),
-    IsNpmVersionInRange(Angular.requiredNpmVersion)
+    IsNpmVersionInRange(Angular.requiredNpmVersion),
+    IsNgInstalled()
   )
   public async run() {
     const {args, flags} = this.parse(Angular);
@@ -106,8 +110,7 @@ export default class Angular extends Command {
   }
 
   private runAngularCliCommand(args: string[], options = {}) {
-    const executable = require.resolve('@angular/cli/lib/init.js');
-    return spawnProcess('node', [executable, ...args], options);
+    return spawnProcess(appendCmdIfWindows`ng`, args, options);
   }
 
   public async catch(err?: Error) {
