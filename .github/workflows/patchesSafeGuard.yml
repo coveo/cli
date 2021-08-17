@@ -1,0 +1,11 @@
+name: Patches Safe-guard
+on:
+  pull_request:
+    branches: [ master ]
+    paths: 
+      - 'packages/cli/patches/**'
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  patches-safe-guard:
+    runs-on: ubuntu-latest
+    environment: patches_protection
