@@ -5,7 +5,7 @@ import {Configuration} from '../config/config';
 import {Snapshot} from '../snapshot/snapshot';
 import {SnapshotUrlBuilder} from '../snapshot/snapshotUrlBuilder';
 
-enum severityLevel {
+enum SeverityLevel {
   Info = 'info',
   Warn = 'warn',
   Error = 'error',
@@ -13,7 +13,7 @@ enum severityLevel {
 
 interface IDetailedReportable extends SnapshotError {
   snapshot: Snapshot;
-  level: severityLevel;
+  level: SeverityLevel;
   projectPath?: string;
 }
 
@@ -26,7 +26,7 @@ function trySavingDetailedReport(error: IDetailedReportable) {
 }
 
 export class SnapshotError extends Error {
-  public constructor(public level: severityLevel) {
+  public constructor(public level: SeverityLevel) {
     super();
   }
 
@@ -42,7 +42,7 @@ export class SnapshotOperationTimeoutError
 {
   public name = 'Snapshot Operation Timeout Error';
   public constructor(public snapshot: Snapshot) {
-    super(severityLevel.Info);
+    super(SeverityLevel.Info);
     this.message = dedent`${
       snapshot.latestReport.type
     } operation is taking a long time to complete.
@@ -62,7 +62,7 @@ export class SnapshotSynchronizationError
     public cfg: Configuration,
     public projectPath?: string
   ) {
-    super(severityLevel.Warn);
+    super(SeverityLevel.Warn);
     const urlBuilder = new SnapshotUrlBuilder(cfg);
     const synchronizationPlanUrl = urlBuilder.getSynchronizationPage(snapshot);
 
@@ -85,7 +85,7 @@ export class SnapshotGenericError
     public cfg: Configuration,
     public projectPath?: string
   ) {
-    super(severityLevel.Error);
+    super(SeverityLevel.Error);
     const report = snapshot.latestReport;
     const urlBuilder = new SnapshotUrlBuilder(cfg);
     const snapshotUrl = urlBuilder.getSnapshotPage(snapshot);
