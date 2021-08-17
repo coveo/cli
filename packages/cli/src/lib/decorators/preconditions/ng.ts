@@ -26,7 +26,7 @@ async function installAngularCli(target: Command): Promise<boolean> {
   if (output === 0) {
     return true;
   }
-  cli.warn(dedent`
+  target.warn(dedent`
     Angular installation failed, ${target.id} cannot proceed.
     Please try to install Angular-CLI first then try again.
     `);
@@ -37,8 +37,7 @@ export const IsNgInstalled = getBinInstalledPrecondition(
   appendCmdIfWindows`ng`,
   {
     prettyName: 'Angular-CLI',
-    installLink:
-      'https://angular.io/guide/setup-local#install-the-angular-cli>',
+    installLink: 'https://angular.io/guide/setup-local#install-the-angular-cli',
     installFunction: installAngularCli,
   }
 );

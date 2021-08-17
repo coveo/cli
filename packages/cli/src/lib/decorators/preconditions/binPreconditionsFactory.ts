@@ -5,7 +5,7 @@ import {satisfies, validRange} from 'semver';
 
 export interface IBinPreconditionsOptions {
   params?: Array<string>;
-  prettyName?: string;
+  prettyName: string;
   installLink?: string;
   howToInstallBinText?: string;
 }
@@ -30,12 +30,12 @@ function hasAutoFix(
 
 export function getBinVersionPrecondition(
   binaryName: string,
-  options?: IBinPreconditionsOptions
+  options: IBinPreconditionsOptions
 ) {
   const appliedOptions: Required<IBinPreconditionsOptions> = {
     ...defaultOptions,
     ...options,
-    prettyName: options?.prettyName || binaryName,
+    prettyName: options.prettyName,
   };
   return function (versionRange: string) {
     return async function (target: Command) {
@@ -72,12 +72,12 @@ export function getBinVersionPrecondition(
 
 export function getBinInstalledPrecondition(
   binaryName: string,
-  options?: IBinPreconditionsOptions | IBinPreconditionsOptionsWithAutoFix
+  options: IBinPreconditionsOptions | IBinPreconditionsOptionsWithAutoFix
 ) {
   const appliedOptions: Required<IBinPreconditionsOptions> = {
     ...defaultOptions,
     ...options,
-    prettyName: options?.prettyName ?? binaryName,
+    prettyName: options.prettyName,
   };
   return function () {
     return async function (target: Command): Promise<Boolean> {
