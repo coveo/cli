@@ -41,7 +41,7 @@ describe('apiKeyPrivilege', () => {
     [
       true,
       false,
-      'You are not authorized to create an API Key with the impersonate privilege',
+      'You are not authorized to create an API Key with the Impersonate privilege',
     ],
     [false, true, 'You are not authorized to create an API Key'],
   ])(
