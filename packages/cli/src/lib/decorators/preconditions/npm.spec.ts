@@ -34,7 +34,7 @@ describe('IsNpmVersionInRange', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
         exitCode: constants.errno.ENOENT,
-        stderr: '',
+        stderr: 'spawn npm ENOENT',
         stdout: '',
       });
     });

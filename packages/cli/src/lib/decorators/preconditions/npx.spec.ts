@@ -19,7 +19,7 @@ describe('IsNpxInstalled', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
         exitCode: constants.errno.ENOENT,
-        stderr: '',
+        stderr: 'spawn npx ENOENT',
         stdout: '',
       });
     });

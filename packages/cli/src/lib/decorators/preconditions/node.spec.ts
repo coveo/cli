@@ -33,7 +33,7 @@ describe('IsNodeVersionInRange', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
         exitCode: constants.errno.ENOENT,
-        stderr: '',
+        stderr: 'spawn node ENOENT',
         stdout: '',
       });
     });

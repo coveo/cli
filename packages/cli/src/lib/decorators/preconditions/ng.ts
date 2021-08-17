@@ -1,12 +1,12 @@
 import type Command from '@oclif/command';
 import {cli} from 'cli-ux';
 import dedent from 'ts-dedent';
-import Angular from '../../../commands/ui/create/angular';
 import {getPackageVersion} from '../../utils/misc';
 import {appendCmdIfWindows} from '../../utils/os';
 import {spawnProcess} from '../../utils/process';
 import {getBinInstalledPrecondition} from './binPreconditionsFactory';
 
+const angularCliPackage = '@angular/cli';
 async function installAngularCli(target: Command): Promise<boolean> {
   const shouldInstall = await cli.confirm(
     dedent`
@@ -16,7 +16,7 @@ async function installAngularCli(target: Command): Promise<boolean> {
   if (!shouldInstall) {
     return false;
   }
-  const version = getPackageVersion(Angular.cliPackage);
+  const version = getPackageVersion(angularCliPackage);
   target.log(`Running npm install --global @angular/cli@${version}.`);
   const output = await spawnProcess(appendCmdIfWindows`npm`, [
     'install',

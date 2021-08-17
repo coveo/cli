@@ -179,7 +179,7 @@ describe('ui:create:react', () => {
       expect(mockedNpxInPty).nthCalledWith(
         1,
         [
-          'create-react-app',
+          'create-react-app@1.0.0',
           'myapp',
           '--template',
           '@coveo/cra-template@1.0.0',

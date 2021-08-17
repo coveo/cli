@@ -23,6 +23,7 @@ import {npxInPty} from '../../../lib/utils/npx';
 export default class React extends Command {
   public static templateName = '@coveo/cra-template';
   public static cliPackage = 'create-react-app';
+
   /**
    * Node.JS v10.16.0 is the first version that included NPX (via NPM).
    * Future requirement should be based on https://create-react-app.dev/docs/getting-started/#creating-an-app

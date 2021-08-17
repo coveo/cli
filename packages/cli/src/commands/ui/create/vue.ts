@@ -18,7 +18,7 @@ import {appendCmdIfWindows} from '../../../lib/utils/os';
 
 export default class Vue extends Command {
   public static templateName = '@coveo/vue-cli-plugin-typescript';
-  public static cliPackage: '@vue/cli';
+  public static cliPackage = '@vue/cli';
 
   /**
    * @see https://cli.vuejs.org/guide/installation.html for current requirements.

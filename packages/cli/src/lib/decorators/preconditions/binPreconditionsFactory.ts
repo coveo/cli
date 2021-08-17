@@ -25,7 +25,7 @@ const defaultOptions: Required<Omit<IBinPreconditionsOptions, 'prettyName'>> = {
 function hasAutoFix(
   option: IBinPreconditionsOptionsWithAutoFix | IBinPreconditionsOptions
 ): option is IBinPreconditionsOptionsWithAutoFix {
-  return Boolean(option.installLink);
+  return Object.prototype.hasOwnProperty.call(option, 'installFunction');
 }
 
 export function getBinVersionPrecondition(
@@ -52,7 +52,7 @@ export function getBinVersionPrecondition(
         appliedOptions.params
       );
 
-      if (!isBinInstalled(target, binaryName, appliedOptions, output)) {
+      if (!(await isBinInstalled(target, binaryName, appliedOptions, output))) {
         return false;
       }
 

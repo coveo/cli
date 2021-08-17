@@ -14,12 +14,11 @@ import {
   IsNodeVersionInRange,
   IsNpmVersionInRange,
 } from '../../../lib/decorators/preconditions/';
-import {IsNgInstalled} from '../../../lib/decorators/preconditions/angularCli';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
+import {IsNgInstalled} from '../../../lib/decorators/preconditions/ng';
 
 export default class Angular extends Command {
   public static templateName = '@coveo/angular';
-  public static cliPackage: '@angular/cli';
   /**
    * Requirements Based on https://angular.io/guide/setup-local
    * and https://www.npmjs.com/package/@angular/cli package.json engines section.
