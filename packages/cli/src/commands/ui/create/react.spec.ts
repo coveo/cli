@@ -1,5 +1,6 @@
 jest.mock('../../../lib/decorators/preconditions/npx');
 jest.mock('../../../lib/decorators/preconditions/node');
+jest.mock('../../../lib/decorators/preconditions/apiKeyPrivilege');
 jest.mock('../../../lib/utils/process');
 jest.mock('../../../lib/oauth/oauth');
 jest.mock('../../../lib/config/config');
@@ -20,6 +21,7 @@ import {Config, Configuration} from '../../../lib/config/config';
 import {
   IsNpxInstalled,
   IsNodeVersionInRange,
+  HasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import Command from '@oclif/command';
@@ -35,6 +37,8 @@ describe('ui:create:react', () => {
   const mockedAuthenticatedClient = mocked(AuthenticatedClient);
   const mockedIsNpxInstalled = mocked(IsNpxInstalled, true);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
+  const mockedApiKeyPrivilege = mocked(HasNecessaryCoveoPrivileges, true);
+  const mockedCreateImpersonateApiKey = jest.fn();
   const processExitCode = {
     spawn: 0,
     spawnOutput: 0,
@@ -42,6 +46,7 @@ describe('ui:create:react', () => {
   const preconditionStatus = {
     node: true,
     npx: true,
+    apiKey: true,
   };
   const doMockPreconditions = function () {
     const mockNode = function (_target: Command) {
@@ -52,8 +57,14 @@ describe('ui:create:react', () => {
     const mockNpx = function (_target: Command) {
       return new Promise<boolean>((resolve) => resolve(preconditionStatus.npx));
     };
+    const mockApiKeyPrivilege = function (_target: Command) {
+      return new Promise<boolean>((resolve) =>
+        resolve(preconditionStatus.apiKey)
+      );
+    };
     mockedIsNodeVersionInRange.mockReturnValue(mockNode);
     mockedIsNpxInstalled.mockReturnValue(mockNpx);
+    mockedApiKeyPrivilege.mockReturnValue(mockApiKeyPrivilege);
   };
 
   const doMockSpawnProcess = () => {
@@ -90,13 +101,14 @@ describe('ui:create:react', () => {
   };
 
   const doMockAuthenticatedClient = () => {
+    mockedCreateImpersonateApiKey.mockImplementation((_name: string) =>
+      Promise.resolve({value: 'foo'})
+    );
+
     mockedAuthenticatedClient.mockImplementation(
       () =>
         ({
-          createImpersonateApiKey: (_name: string) =>
-            Promise.resolve({
-              value: 'foo',
-            }),
+          createImpersonateApiKey: mockedCreateImpersonateApiKey,
           getUserInfo: () =>
             Promise.resolve({
               username: 'bob@coveo.com',
@@ -111,7 +123,7 @@ describe('ui:create:react', () => {
               })
             ),
           cfg: mockedConfig.getMockImplementation()!('./'),
-        } as AuthenticatedClient)
+        } as unknown as AuthenticatedClient)
     );
   };
 
@@ -133,6 +145,7 @@ describe('ui:create:react', () => {
     doMockPreconditions();
     preconditionStatus.npx = true;
     preconditionStatus.node = true;
+    preconditionStatus.apiKey = true;
     processExitCode.spawn = 0;
     processExitCode.spawnOutput = 0;
   });
@@ -140,7 +153,20 @@ describe('ui:create:react', () => {
   afterEach(() => {
     mockedIsNodeVersionInRange.mockClear();
     mockedIsNpxInstalled.mockClear();
+    mockedApiKeyPrivilege.mockClear();
   });
+
+  test
+    .do(() => {
+      preconditionStatus.apiKey = false;
+    })
+    .command(['ui:create:react', 'myapp'])
+    .it(
+      'should not execute the command if the API key preconditions are not respected',
+      async () => {
+        expect(mockedCreateImpersonateApiKey).toHaveBeenCalledTimes(0);
+      }
+    );
 
   test
     .do(() => {
