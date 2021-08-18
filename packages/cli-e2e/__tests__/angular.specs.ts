@@ -133,7 +133,7 @@ describe('ui:create:angular', () => {
 
     await buildTerminal
       .when(isGenericYesNoPrompt)
-      .on('stdout')
+      .on('stderr')
       .do(answerPrompt(`y${EOL}`))
       .until(buildTerminalExitPromise);
   };
