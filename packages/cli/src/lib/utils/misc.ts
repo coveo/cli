@@ -9,7 +9,7 @@ export function getPackageVersion(packageName: string) {
   );
   const pkg = require(pathToPackageJson);
   const dep =
-    pkg.peerDependencies[packageName] ||
+    pkg.dependencies[packageName] ||
     pkg.devDependencies[packageName] ||
     pkg.peerDependencies[packageName];
   const defaultVersion = coerce(dep.toString())?.version;
