@@ -3,19 +3,19 @@ import {dedent} from 'ts-dedent';
 import {spawnProcessOutput, SpawnProcessOutput} from '../../utils/process';
 import {satisfies, validRange} from 'semver';
 
-export interface IBinPreconditionsOptions {
+export interface BinPreconditionsOptions {
   params?: Array<string>;
   prettyName: string;
   installLink?: string;
   howToInstallBinText?: string;
 }
 
-export interface IBinPreconditionsOptionsWithAutoFix
-  extends IBinPreconditionsOptions {
+export interface BinPreconditionsOptionsWithAutoFix
+  extends BinPreconditionsOptions {
   installFunction: (target: Command) => Promise<boolean>;
 }
 
-const defaultOptions: Required<Omit<IBinPreconditionsOptions, 'prettyName'>> = {
+const defaultOptions: Required<Omit<BinPreconditionsOptions, 'prettyName'>> = {
   params: ['--version'],
   installLink:
     'https://github.com/coveo/cli/wiki/Node.js,-NPM-and-NPX-requirements',
@@ -23,16 +23,16 @@ const defaultOptions: Required<Omit<IBinPreconditionsOptions, 'prettyName'>> = {
 };
 
 function hasAutoFix(
-  option: IBinPreconditionsOptionsWithAutoFix | IBinPreconditionsOptions
-): option is IBinPreconditionsOptionsWithAutoFix {
+  option: BinPreconditionsOptionsWithAutoFix | BinPreconditionsOptions
+): option is BinPreconditionsOptionsWithAutoFix {
   return Object.prototype.hasOwnProperty.call(option, 'installFunction');
 }
 
 export function getBinVersionPrecondition(
   binaryName: string,
-  options: IBinPreconditionsOptions
+  options: BinPreconditionsOptions
 ) {
-  const appliedOptions: Required<IBinPreconditionsOptions> = {
+  const appliedOptions: Required<BinPreconditionsOptions> = {
     ...defaultOptions,
     ...options,
     prettyName: options.prettyName,
@@ -72,9 +72,9 @@ export function getBinVersionPrecondition(
 
 export function getBinInstalledPrecondition(
   binaryName: string,
-  options: IBinPreconditionsOptions | IBinPreconditionsOptionsWithAutoFix
+  options: BinPreconditionsOptions | BinPreconditionsOptionsWithAutoFix
 ) {
-  const appliedOptions: Required<IBinPreconditionsOptions> = {
+  const appliedOptions: Required<BinPreconditionsOptions> = {
     ...defaultOptions,
     ...options,
     prettyName: options.prettyName,
@@ -93,7 +93,7 @@ export function getBinInstalledPrecondition(
 async function isBinInstalled(
   target: Command,
   binaryName: string,
-  options: Required<IBinPreconditionsOptions>,
+  options: Required<BinPreconditionsOptions>,
   output: SpawnProcessOutput
 ): Promise<boolean> {
   if (isBinFileMissing(output)) {
@@ -122,7 +122,7 @@ async function isBinInstalled(
 
 function warnHowToInstallBin(
   target: Command,
-  options: IBinPreconditionsOptions
+  options: BinPreconditionsOptions
 ) {
   target.warn(
     `Please visit ${options.installLink} for more detailed installation information.`
