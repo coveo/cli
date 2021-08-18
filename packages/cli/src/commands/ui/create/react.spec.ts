@@ -60,7 +60,7 @@ describe('ui:create:react', () => {
     mockedSpawnProcessOutput.mockResolvedValue({
       stdout: '',
       stderr: '',
-      exitCode: processExitCode.spawn,
+      exitCode: String(processExitCode.spawn),
     });
 
     mockedNpxInPty.mockResolvedValue({

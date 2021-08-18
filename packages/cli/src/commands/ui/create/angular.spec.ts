@@ -34,7 +34,6 @@ describe('ui:create:angular', () => {
   const mockedIsNpmVersionInRange = mocked(IsNpmVersionInRange, true);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
   const mockedIsNgInstalled = mocked(IsNgInstalled, true);
-  const angularAppExecutable = join('@angular', 'cli', 'lib', 'init.js');
   const preconditionStatus = {
     node: true,
     npm: true,

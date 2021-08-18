@@ -1,7 +1,6 @@
 jest.mock('../../utils/process');
 
 import {dedent} from 'ts-dedent';
-import {constants} from 'os';
 import {mocked} from 'ts-jest/utils';
 import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from './testsUtils/utils';
@@ -18,8 +17,8 @@ describe('IsNpxInstalled', () => {
   describe('when npx is not installed', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
-        exitCode: constants.errno.ENOENT,
-        stderr: 'spawn npx ENOENT',
+        exitCode: 'ENOENT',
+        stderr: '',
         stdout: '',
       });
     });
@@ -49,7 +48,7 @@ describe('IsNpxInstalled', () => {
   describe('when an unknown error happens while checking for npx', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
-        exitCode: 1,
+        exitCode: '1',
         stderr: 'some random error oh no',
         stdout: '',
       });
@@ -77,7 +76,7 @@ describe('IsNpxInstalled', () => {
   describe('when npx is installed', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
-        exitCode: 0,
+        exitCode: '0',
         stderr: '',
         stdout: '',
       });

@@ -33,8 +33,8 @@ describe('IsNpmVersionInRange', () => {
   describe('when npm is not installed', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
-        exitCode: constants.errno.ENOENT,
-        stderr: 'spawn npm ENOENT',
+        exitCode: 'ENOENT',
+        stderr: '',
         stdout: '',
       });
     });
@@ -56,7 +56,7 @@ describe('IsNpmVersionInRange', () => {
   describe('when an unknown error happens while getting the npm version', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
-        exitCode: 1,
+        exitCode: '1',
         stderr: 'some random error oh no',
         stdout: '',
       });
@@ -83,7 +83,7 @@ describe('IsNpmVersionInRange', () => {
   describe('when the installed version of npm is lower than the required one', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
-        exitCode: 0,
+        exitCode: '0',
         stderr: '',
         stdout: 'v0.9.0',
       });
@@ -109,7 +109,7 @@ describe('IsNpmVersionInRange', () => {
   describe('when the installed version of npm is above than the required one', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
-        exitCode: 0,
+        exitCode: '0',
         stderr: '',
         stdout: 'v1.1.0',
       });
@@ -128,7 +128,7 @@ describe('IsNpmVersionInRange', () => {
   describe('when the installed version of npm is the same as the required one', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
-        exitCode: 0,
+        exitCode: '0',
         stderr: '',
         stdout: 'v1.0.0',
       });

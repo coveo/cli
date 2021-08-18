@@ -10,23 +10,12 @@ export interface BinPreconditionsOptions {
   howToInstallBinText?: string;
 }
 
-export interface BinPreconditionsOptionsWithAutoFix
-  extends BinPreconditionsOptions {
-  installFunction: (target: Command) => Promise<boolean>;
-}
-
 const defaultOptions: Required<Omit<BinPreconditionsOptions, 'prettyName'>> = {
   params: ['--version'],
   installLink:
     'https://github.com/coveo/cli/wiki/Node.js,-NPM-and-NPX-requirements',
   howToInstallBinText: '',
 };
-
-function hasAutoFix(
-  option: BinPreconditionsOptionsWithAutoFix | BinPreconditionsOptions
-): option is BinPreconditionsOptionsWithAutoFix {
-  return Object.prototype.hasOwnProperty.call(option, 'installFunction');
-}
 
 export function getBinVersionPrecondition(
   binaryName: string,
@@ -72,7 +61,7 @@ export function getBinVersionPrecondition(
 
 export function getBinInstalledPrecondition(
   binaryName: string,
-  options: BinPreconditionsOptions | BinPreconditionsOptionsWithAutoFix
+  options: BinPreconditionsOptions
 ) {
   const appliedOptions: Required<BinPreconditionsOptions> = {
     ...defaultOptions,
@@ -96,16 +85,13 @@ async function isBinInstalled(
   options: Required<BinPreconditionsOptions>,
   output: SpawnProcessOutput
 ): Promise<boolean> {
-  if (isBinFileMissing(output)) {
-    if (hasAutoFix(options)) {
-      return await options.installFunction(target);
-    }
+  if (output.exitCode === 'ENOENT') {
     target.warn(`${target.id} requires ${options.prettyName} to run.`);
     warnHowToInstallBin(target, options);
     return false;
   }
 
-  if (output.exitCode !== 0) {
+  if (output.exitCode !== '0') {
     target.warn(dedent`
       ${target.id} requires a valid ${options.prettyName} installation to run.
       An unknown error happened while running ${binaryName} ${options.params.join(
@@ -130,8 +116,4 @@ function warnHowToInstallBin(
   if (options.howToInstallBinText) {
     target.warn(options.howToInstallBinText);
   }
-}
-
-function isBinFileMissing(output: SpawnProcessOutput) {
-  return /^spawn \S* ENOENT$/.test(output.stderr);
 }

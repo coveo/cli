@@ -11,9 +11,9 @@ describe('#npxInPty', () => {
   const mockedSpawnProcessPTY = mocked(spawnProcessPTY);
   const mockNpxVersion = (output: string) =>
     mockedSpawnProcessOutput.mockResolvedValue({
+      exitCode: '0',
       stdout: output,
       stderr: '',
-      exitCode: 0,
     });
   afterEach(() => {
     jest.resetAllMocks();

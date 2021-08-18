@@ -1,6 +1,10 @@
 import {spawn, SpawnOptions} from 'child_process';
 import {spawn as ptySpawn, IWindowsPtyForkOptions} from 'node-pty';
 
+function isErrnoException(error: Error): error is NodeJS.ErrnoException {
+  return Object.hasOwnProperty.call(error, 'errno');
+}
+
 /**
  *
  * @private
@@ -39,7 +43,7 @@ export function spawnProcess(
 export interface SpawnProcessOutput {
   stdout: string;
   stderr: string;
-  exitCode: number | null;
+  exitCode?: string;
 }
 
 export async function spawnProcessOutput(
@@ -51,7 +55,6 @@ export async function spawnProcessOutput(
     const output: SpawnProcessOutput = {
       stdout: '',
       stderr: '',
-      exitCode: null,
     };
 
     const child = spawn(command, args, options);
@@ -64,13 +67,20 @@ export async function spawnProcessOutput(
       output.stderr += d;
     });
 
+    const closeListener = (code: number | null) => {
+      output.exitCode = code ? String(code) : undefined;
+      resolve(output);
+    };
+
+    child.on('close', closeListener);
+
     child.on('error', (e) => {
       output.stderr += e.message;
-    });
-
-    child.on('close', (code) => {
-      output.exitCode = code;
-      resolve(output);
+      if (isErrnoException(e) && e.code) {
+        child.off('close', closeListener);
+        output.exitCode = e.code;
+        resolve(output);
+      }
     });
   });
 }
