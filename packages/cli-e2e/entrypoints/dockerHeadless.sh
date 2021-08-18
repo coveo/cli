@@ -5,12 +5,13 @@ Xvfb :1 -screen 0 1024x768x16 & sleep 1
 
 xdg-settings set default-web-browser google-chrome.desktop
 
+npm install -g @angular/cli
+
 rsync -r --exclude="node_modules" /home/notGroot/cli/* /home/notGroot/cli-copy/
 cd /home/notGroot/cli-copy
 
 npm run setup
 npm run build
-
 export UI_TEMPLATE_VERSION=0.0.0
 npm set registry http://verdaccio:4873
 yarn config set  registry http://verdaccio:4873
