@@ -1,7 +1,6 @@
 jest.mock('../../utils/process');
 
 import {dedent} from 'ts-dedent';
-import {constants} from 'os';
 import {mocked} from 'ts-jest/utils';
 import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from './testsUtils/utils';

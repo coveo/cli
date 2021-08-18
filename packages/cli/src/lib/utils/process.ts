@@ -68,7 +68,7 @@ export async function spawnProcessOutput(
     });
 
     const closeListener = (code: number | null) => {
-      output.exitCode = code ? String(code) : undefined;
+      output.exitCode = Number.isInteger(code) ? String(code) : undefined;
       resolve(output);
     };
 
