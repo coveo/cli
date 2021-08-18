@@ -1,3 +1,4 @@
+jest.mock('../../../lib/decorators/preconditions/npx');
 jest.mock('../../../lib/decorators/preconditions/node');
 jest.mock('../../../lib/utils/process');
 jest.mock('../../../lib/oauth/oauth');
@@ -14,7 +15,10 @@ import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
 import {Config, Configuration} from '../../../lib/config/config';
-import {IsNodeVersionInRange} from '../../../lib/decorators/preconditions/';
+import {
+  IsNodeVersionInRange,
+  IsNpxInstalled,
+} from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import Command from '@oclif/command';
 
@@ -24,10 +28,12 @@ describe('ui:create:vue', () => {
   const mockedPlatformClient = mocked(PlatformClient);
   const mockedGetPackageVersion = mocked(getPackageVersion);
   const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+  const mockedIsNpxInstalled = mocked(IsNpxInstalled, true);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
   const vueCliPackage = '@vue/cli';
   const preconditionStatus = {
     node: true,
+    npx: true,
   };
   const doMockPreconditions = function () {
     const mockNode = function (_target: Command) {
@@ -35,7 +41,11 @@ describe('ui:create:vue', () => {
         resolve(preconditionStatus.node)
       );
     };
+    const mockNpx = function (_target: Command) {
+      return new Promise<boolean>((resolve) => resolve(preconditionStatus.npx));
+    };
     mockedIsNodeVersionInRange.mockReturnValue(mockNode);
+    mockedIsNpxInstalled.mockReturnValue(mockNpx);
   };
 
   const doMockSpawnProcess = () => {
@@ -104,6 +114,7 @@ describe('ui:create:vue', () => {
     doMockAuthenticatedClient();
     doMockPreconditions();
     preconditionStatus.node = true;
+    preconditionStatus.npx = true;
   });
 
   afterEach(() => {
