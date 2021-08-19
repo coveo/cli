@@ -14,6 +14,10 @@ jobs:
     environment: 'Release'
     env:
       GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
+      MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+      MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+      MACOS_KEYCHAIN_PWD: ${{ secrets.MACOS_KEYCHAIN_PWD }}
+      MACOS_APP_SPECIFIC_PWD: ${{ secrets.MACOS_KEYCHAIN_PWD }}
     name: Package for ${{ matrix.for }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -42,6 +46,17 @@ jobs:
         run: npm run setup
       - name: Get tag
         run: node ./scripts/get-tag.js
+      - name: Save Certificat (macOS)
+        if: ${{matrix.os == 'macos-latest'}}
+        run: |
+          xcodebuild -version
+          echo $MACOS_CERTIFICATE | base64 --decode > certificate.p12
+          security create-keychain -p ${{ secrets.MACOS_KEYCHAIN_PWD }} build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p ${{ secrets.MACOS_KEYCHAIN_PWD }} build.keychain
+          security import certificate.p12 -k build.keychain -P ${{ secrets.MACOS_CERTIFICATE_PWD }} -T /usr/bin/codesign
+          TODO: not sure if the rest is needed since oclif already signs the installer... maybe should only save the certificat usgin the right env variable...
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k ${{ secrets.MACOS_KEYCHAIN_PWD }} build.keychain  TODO: not sure this is needed
       - name: Create install kits
         working-directory: ./packages/cli
         run: ./node_modules/@oclif/dev-cli/bin/run pack${{ matrix.pack-command }}
@@ -51,7 +66,7 @@ jobs:
           ./node_modules/@oclif/dev-cli/bin/run pack -t="${{ matrix.package-targets }}"
           mv ./dist/version ./dist/${{ matrix.os }}-version
           mv ./dist/coveo-${{ env.tag }}/coveo-${{ env.tag }}.tar.gz ./dist/coveo-${{ env.tag }}/${{ matrix.os }}-coveo-${{ env.tag }}.tar.gz
-      - name: Sign Executable
+      - name: Sign Executable (Windows)
         working-directory: ./packages/cli
         if: ${{matrix.os == 'windows-latest'}}
         run: |
@@ -60,6 +75,22 @@ jobs:
           certutil -decode ./tmp/cert.txt ./tmp/cert.pfx
           Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win/coveo-${{env.tag}}-x64.exe" -PassThru | Wait-Process
           Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win/coveo-${{env.tag}}-x86.exe" -PassThru | Wait-Process
+          - name: Setup runner
+      - name: Sign Executable (macOS)
+        working-directory: ./packages/cli/dist/macos
+        if: ${{matrix.os == 'macos-latest'}}
+        run: |
+          productsign --sign "Developer ID Installer: Coveo Solutions Inc." coveo-v${{ INPUT_VERSION }}.pkg coveo-v${{ INPUT_VERSION }}.pkg // TODO: check if I can use the same name for input and output
+          pkgutil --check-signature coveo-v${{ INPUT_VERSION }}.pkg > TODO: un genre de match pour etre sur que c'est signé (OPTIONAL!!)
+      - name: Notarize Executable (macOS)
+        working-directory: ./packages/cli/dist/macos
+        if: ${{matrix.os == 'macos-latest'}}
+        run: |
+          TODO: make sure there is only one provider associated to that account. Otherwise, need to specify it
+          xcrun altool --notarize-app --primary-bundle-id "com.coveo" --username "<TODO:YourAppleID@mail.com>" --password "${{ secrets.MACOS_APP_SPECIFIC_PWD }}" --file "coveo-v${{ INPUT_VERSION }}.pkg" TODO: and save the RequestUUID in a variable
+          echo "Check the notarization status"
+          xcrun altool --notarization-info <TODO: RequestUUID> --username "YourAppleID@mail.com" --password "cvbs-epfg-sizx-olwd"
+          TODO: wait until app is notirized... because it can be in progress (save log file in artifacts if no secret)
       - name: Upload binaries
         uses: svenstaro/upload-release-action@v2
         with:
