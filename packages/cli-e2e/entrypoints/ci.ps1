@@ -12,6 +12,7 @@ Start-Process -FilePath $SetUserFTAPath -ArgumentList ' https ChromeHTML' -PassT
 Start-Process -FilePath $SetUserFTAPath -ArgumentList '.htm ChromeHTML' -PassThru | Wait-Process
 Start-Process -FilePath $SetUserFTAPath -ArgumentList '.html ChromeHTML' -PassThru | Wait-Process
 
+
 do {
     $ChromeTest = Test-NetConnection -ComputerName localhost -Port 9222 -InformationLevel Quiet
     Write-Output "Chrome Test $ChromeTest"
@@ -24,6 +25,8 @@ do {
 
 git config --global user.name "notgroot"
 git config --global user.email "notgroot@coveo.com"
+
+npm install -g @angular/cli
 
 npm set registry http://localhost:4873
 yarn config set registry http://localhost:4873

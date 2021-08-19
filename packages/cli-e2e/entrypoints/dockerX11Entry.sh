@@ -2,6 +2,8 @@ export DISPLAY=host.docker.internal:0.0
 
 xdg-settings set default-web-browser google-chrome.desktop
 
+npm install -g @angular/cli
+
 rsync -r --exclude="node_modules" /home/notGroot/cli/* /home/notGroot/cli-copy/
 cd /home/notGroot/cli-copy
 

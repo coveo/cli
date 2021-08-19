@@ -1,3 +1,4 @@
+jest.mock('../../../lib/decorators/preconditions/npx');
 jest.mock('../../../lib/decorators/preconditions/node');
 jest.mock('../../../lib/utils/process');
 jest.mock('../../../lib/oauth/oauth');
@@ -8,14 +9,16 @@ jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
 jest.mock('@coveord/platform-client');
 
-import {join} from 'path';
 import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
 import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
 import {Config, Configuration} from '../../../lib/config/config';
-import {IsNodeVersionInRange} from '../../../lib/decorators/preconditions/';
+import {
+  IsNodeVersionInRange,
+  IsNpxInstalled,
+} from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import Command from '@oclif/command';
 
@@ -25,10 +28,12 @@ describe('ui:create:vue', () => {
   const mockedPlatformClient = mocked(PlatformClient);
   const mockedGetPackageVersion = mocked(getPackageVersion);
   const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+  const mockedIsNpxInstalled = mocked(IsNpxInstalled, true);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
-  const vueAppExecutable = join('@vue', 'cli', 'bin', 'vue.js'); //TODO: change that
+  const vueCliPackage = '@vue/cli';
   const preconditionStatus = {
     node: true,
+    npx: true,
   };
   const doMockPreconditions = function () {
     const mockNode = function (_target: Command) {
@@ -36,7 +41,11 @@ describe('ui:create:vue', () => {
         resolve(preconditionStatus.node)
       );
     };
+    const mockNpx = function (_target: Command) {
+      return new Promise<boolean>((resolve) => resolve(preconditionStatus.npx));
+    };
     mockedIsNodeVersionInRange.mockReturnValue(mockNode);
+    mockedIsNpxInstalled.mockReturnValue(mockNpx);
   };
 
   const doMockSpawnProcess = () => {
@@ -105,6 +114,7 @@ describe('ui:create:vue', () => {
     doMockAuthenticatedClient();
     doMockPreconditions();
     preconditionStatus.node = true;
+    preconditionStatus.npx = true;
   });
 
   afterEach(() => {
@@ -136,9 +146,9 @@ describe('ui:create:vue', () => {
       expect(mockedSpawnProcess).toHaveBeenCalledTimes(2);
       expect(mockedSpawnProcess).nthCalledWith(
         1,
-        'node',
+        expect.stringContaining('npx'),
         [
-          expect.stringContaining(vueAppExecutable),
+          `${vueCliPackage}@1.0.0`,
           'create',
           'myapp',
           '--inlinePreset',
@@ -150,9 +160,9 @@ describe('ui:create:vue', () => {
       );
       expect(mockedSpawnProcess).nthCalledWith(
         2,
-        'node',
+        expect.stringContaining('npx'),
         [
-          expect.stringContaining(vueAppExecutable),
+          `${vueCliPackage}@1.0.0`,
           'add',
           '@coveo/vue-cli-plugin-typescript@1.0.0',
           '--orgId',

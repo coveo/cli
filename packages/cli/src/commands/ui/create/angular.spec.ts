@@ -1,5 +1,6 @@
 jest.mock('../../../lib/decorators/preconditions/npm');
 jest.mock('../../../lib/decorators/preconditions/node');
+jest.mock('../../../lib/decorators/preconditions/ng');
 jest.mock('../../../lib/utils/process');
 jest.mock('../../../lib/oauth/oauth');
 jest.mock('../../../lib/config/config');
@@ -22,6 +23,7 @@ import {
 } from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import Command from '@oclif/command';
+import {IsNgInstalled} from '../../../lib/decorators/preconditions/ng';
 
 describe('ui:create:angular', () => {
   const mockedConfig = mocked(Config);
@@ -31,10 +33,11 @@ describe('ui:create:angular', () => {
   const mockedAuthenticatedClient = mocked(AuthenticatedClient);
   const mockedIsNpmVersionInRange = mocked(IsNpmVersionInRange, true);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
-  const angularAppExecutable = join('@angular', 'cli', 'lib', 'init.js');
+  const mockedIsNgInstalled = mocked(IsNgInstalled, true);
   const preconditionStatus = {
     node: true,
     npm: true,
+    ng: true,
   };
   const doMockPreconditions = function () {
     const mockNode = function (_target: Command) {
@@ -45,8 +48,12 @@ describe('ui:create:angular', () => {
     const mockNpm = function (_target: Command) {
       return new Promise<boolean>((resolve) => resolve(preconditionStatus.npm));
     };
+    const mockNg = function (_target: Command) {
+      return new Promise<boolean>((resolve) => resolve(preconditionStatus.ng));
+    };
     mockedIsNodeVersionInRange.mockReturnValue(mockNode);
     mockedIsNpmVersionInRange.mockReturnValue(mockNpm);
+    mockedIsNgInstalled.mockReturnValue(mockNg);
   };
 
   const doMockSpawnProcess = () => {
@@ -116,6 +123,7 @@ describe('ui:create:angular', () => {
     doMockPreconditions();
     preconditionStatus.npm = true;
     preconditionStatus.node = true;
+    preconditionStatus.ng = true;
   });
 
   afterEach(() => {
@@ -150,22 +158,14 @@ describe('ui:create:angular', () => {
         expect(mockedSpawnProcess).toHaveBeenCalledTimes(2);
         expect(mockedSpawnProcess).nthCalledWith(
           1,
-          'node',
-          [
-            expect.stringContaining(angularAppExecutable),
-            'new',
-            'myapp',
-            '--style',
-            'scss',
-            '--routing',
-          ],
+          expect.stringContaining('ng'),
+          ['new', 'myapp', '--style', 'scss', '--routing'],
           expect.objectContaining({})
         );
         expect(mockedSpawnProcess).nthCalledWith(
           2,
-          'node',
+          expect.stringContaining('ng'),
           [
-            expect.stringContaining(angularAppExecutable),
             'add',
             '@coveo/angular@1.0.0',
             '--org-id',
