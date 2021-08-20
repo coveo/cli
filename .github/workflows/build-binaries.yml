@@ -17,14 +17,17 @@ jobs:
       MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
       MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
       MACOS_KEYCHAIN_PWD: ${{ secrets.MACOS_KEYCHAIN_PWD }}
-      MACOS_APP_SPECIFIC_PWD: ${{ secrets.MACOS_KEYCHAIN_PWD }}
+      MACOS_APP_USERNAME: ${{ secrets.MACOS_APP_USERNAME }}
+      MACOS_APP_SPECIFIC_PWD: ${{ secrets.MACOS_APP_SPECIFIC_PWD }}
+      MACOS_WWDR_TEAM_ID: ${{ secrets.MACOS_WWDR_TEAM_ID }}
+      DEVELOPER_DIR: /Applications/Xcode_13.0.app/Contents/Developer
     name: Package for ${{ matrix.for }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - os: macos-latest
+          - os: macos-11
             pack-command: ':macos'
             for: 'macos install kit'
             package-targets: 'darwin-x64'
@@ -47,7 +50,7 @@ jobs:
       - name: Get tag
         run: node ./scripts/get-tag.js
       - name: Save Certificat (macOS)
-        if: ${{matrix.os == 'macos-latest'}}
+        if: ${{matrix.os == 'macos-11'}}
         run: |
           xcodebuild -version
           echo $MACOS_CERTIFICATE | base64 --decode > certificate.p12
@@ -78,19 +81,21 @@ jobs:
           - name: Setup runner
       - name: Sign Executable (macOS)
         working-directory: ./packages/cli/dist/macos
-        if: ${{matrix.os == 'macos-latest'}}
+        if: ${{matrix.os == 'macos-11'}}
         run: |
           productsign --sign "Developer ID Installer: Coveo Solutions Inc." coveo-v${{ INPUT_VERSION }}.pkg coveo-v${{ INPUT_VERSION }}.pkg // TODO: check if I can use the same name for input and output
           pkgutil --check-signature coveo-v${{ INPUT_VERSION }}.pkg > TODO: un genre de match pour etre sur que c'est signé (OPTIONAL!!)
       - name: Notarize Executable (macOS)
         working-directory: ./packages/cli/dist/macos
-        if: ${{matrix.os == 'macos-latest'}}
+        if: ${{matrix.os == 'macos-11'}}
         run: |
-          TODO: make sure there is only one provider associated to that account. Otherwise, need to specify it
-          xcrun altool --notarize-app --primary-bundle-id "com.coveo" --username "<TODO:YourAppleID@mail.com>" --password "${{ secrets.MACOS_APP_SPECIFIC_PWD }}" --file "coveo-v${{ INPUT_VERSION }}.pkg" TODO: and save the RequestUUID in a variable
+          # TODO: make sure there is only one provider associated to that account. Otherwise, need to specify it
+          # xcrun altool -p "Coveo Solutions Inc." --notarize-app --primary-bundle-id "com.coveo" --username "<TODO:YourAppleID@mail.com>" --password "${{ secrets.MACOS_APP_SPECIFIC_PWD }}" --file "coveo-v${{ INPUT_VERSION }}.pkg" TODO: and save the RequestUUID in a variable
+          # TODO: maybe ZIP the pkg first
+          xcrun notarytool submit "coveo-v${{ INPUT_VERSION }}.pkg" --apple-id "${{ secrets.MACOS_APP_USERNAME }}" --team-id "${{ secrets.MACOS_WWDR_TEAM_ID }}" --password "${{ secrets.MACOS_APP_SPECIFIC_PWD }}" --wait --webhook "https://example.com/notarization"
           echo "Check the notarization status"
-          xcrun altool --notarization-info <TODO: RequestUUID> --username "YourAppleID@mail.com" --password "cvbs-epfg-sizx-olwd"
-          TODO: wait until app is notirized... because it can be in progress (save log file in artifacts if no secret)
+          # xcrun altool --notarization-info <TODO: RequestUUID> --username "YourAppleID@mail.com" --password "cvbs-epfg-sizx-olwd"
+          # TODO: wait until app is notirized... because it can be in progress (save log file in artifacts if no secret)
       - name: Upload binaries
         uses: svenstaro/upload-release-action@v2
         with:
