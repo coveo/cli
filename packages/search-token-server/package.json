@@ -4,7 +4,7 @@
   "main": "server.ts",
   "license": "Apache-2.0",
   "dependencies": {
-    "@coveord/platform-client": "^24.1.0",
+    "@coveord/platform-client": "^25.0.0",
     "@types/express": "^4.17.11",
     "abortcontroller-polyfill": "^1.7.1",
     "cors": "^2.8.5",
