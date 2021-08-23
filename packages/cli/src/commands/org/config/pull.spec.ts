@@ -26,7 +26,7 @@ const mockedDeleteSnapshot = jest.fn();
 const doMockConfig = () => {
   mockedConfigGet.mockReturnValue(
     Promise.resolve({
-      region: 'us-east-1',
+      region: 'us',
       organization: 'default-org',
       environment: 'prod',
     })

@@ -14,6 +14,10 @@ import hook, {AnalyticsHook} from './analytics';
 import {IConfig} from '@oclif/config';
 import {PlatformClient} from '@coveord/platform-client';
 import {WebStorage} from 'coveo.analytics/dist/definitions/storage';
+import {
+  configurationMock,
+  defaultConfiguration,
+} from '../../__stub__/configuration';
 const mockedAnalytics = mocked(CoveoAnalyticsClient);
 const mockedConfig = mocked(Config);
 const mockedPlatformClient = mocked(PlatformClient);
@@ -62,18 +66,7 @@ describe('analytics hook', () => {
   };
 
   const doMockConfiguration = () => {
-    mockedConfig.mockImplementation(
-      () =>
-        ({
-          get: () =>
-            ({
-              environment: 'dev',
-              organization: 'foo',
-              region: 'us-east-1',
-              analyticsEnabled: true,
-            } as Configuration),
-        } as Config)
-    );
+    mockedConfig.mockImplementation(configurationMock());
   };
 
   const doMockAuthenticatedClient = () => {
@@ -153,7 +146,7 @@ describe('analytics hook', () => {
     await hook(getAnalyticsHook({}));
     expect(sendCustomEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        customData: expect.objectContaining({organization: 'foo'}),
+        customData: expect.objectContaining({organization: 'my-org'}),
       })
     );
   });
@@ -162,7 +155,7 @@ describe('analytics hook', () => {
     await hook(getAnalyticsHook({}));
     expect(sendCustomEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        customData: expect.objectContaining({region: 'us-east-1'}),
+        customData: expect.objectContaining({region: 'us'}),
       })
     );
   });
@@ -186,7 +179,7 @@ describe('analytics hook', () => {
   });
 
   it('should send command flags', async () => {
-    const flags = {'-e': 'dev', '-r': 'us-east-1'};
+    const flags = {'-e': 'dev', '-r': 'us'};
     await hook(getAnalyticsHook({flags}));
     expect(sendCustomEvent).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -241,17 +234,7 @@ describe('analytics hook', () => {
 
   it('should not fetch userinfo if anonymous is set to true in the config', async () => {
     mockedConfig.mockImplementation(
-      () =>
-        ({
-          get: () =>
-            ({
-              environment: 'dev',
-              organization: 'foo',
-              region: 'us-east-1',
-              analyticsEnabled: true,
-              anonymous: true,
-            } as Configuration),
-        } as Config)
+      configurationMock({...defaultConfiguration, anonymous: true})
     );
 
     await hook(getAnalyticsHook({}));

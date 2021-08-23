@@ -1,49 +1,53 @@
-import {PlatformUrlOptions} from './environment';
+import {Region} from '@coveord/platform-client';
+import {mocked} from 'ts-jest/utils';
+
+jest.mock('./environment');
+import {PlatformEnvironment, platformUrl} from './environment';
 import {snapshotSynchronizationUrl, snapshotUrl} from './url';
 
 describe('url', () => {
-  const targetOrgId = 'foo';
-  const snapshotId = 'bar';
+  const mockedPlatformUrl = mocked(platformUrl);
+  beforeEach(() => {
+    mockedPlatformUrl.mockReturnValue('https://foo.test');
+  });
 
-  describe('when the region is us-west-2', () => {
-    const options: PlatformUrlOptions = {
-      environment: 'prod',
-      region: 'us-west-2',
-    };
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
 
-    it('#snapshotUrl should return the url to the snapshot page', () => {
-      expect(snapshotUrl(targetOrgId, snapshotId, options)).toEqual(
-        'https://platform-us-west-2.cloud.coveo.com/admin/#foo/organization/resource-snapshots/bar'
-      );
-    });
-
-    it('#snapshotSynchronizationUrl should return the url to the snapshot synchronization page', () => {
+  describe('#snapshotUrl', () => {
+    it('should build the URL properly', () => {
       expect(
-        snapshotSynchronizationUrl(targetOrgId, snapshotId, options)
-      ).toEqual(
-        'https://platform-us-west-2.cloud.coveo.com/admin/#foo/organization/resource-snapshots/bar/synchronization'
+        snapshotUrl('some-org', 'some-snapshot', {
+          environment: PlatformEnvironment.QA,
+          region: Region.AU,
+        })
+      ).toBe(
+        'https://foo.test/admin/#some-org/organization/resource-snapshots/some-snapshot'
       );
+
+      expect(platformUrl).toBeCalledWith({
+        environment: PlatformEnvironment.QA,
+        region: Region.AU,
+      });
     });
   });
 
-  describe('when the environment is dev', () => {
-    const options: PlatformUrlOptions = {
-      environment: 'dev',
-      region: 'us-east-1',
-    };
-
-    it('#snapshotUrl should return the url to the snapshot page', () => {
-      expect(snapshotUrl(targetOrgId, snapshotId, options)).toEqual(
-        'https://platformdev.cloud.coveo.com/admin/#foo/organization/resource-snapshots/bar'
-      );
-    });
-
-    it('#snapshotSynchronizationUrl should return the url to the snapshot synchronization page', () => {
+  describe('#snapshotSyncrhonizationUrl', () => {
+    it('should build the URL properly', () => {
       expect(
-        snapshotSynchronizationUrl(targetOrgId, snapshotId, options)
-      ).toEqual(
-        'https://platformdev.cloud.coveo.com/admin/#foo/organization/resource-snapshots/bar/synchronization'
+        snapshotSynchronizationUrl('some-org', 'some-snapshot', {
+          environment: PlatformEnvironment.QA,
+          region: Region.AU,
+        })
+      ).toBe(
+        'https://foo.test/admin/#some-org/organization/resource-snapshots/some-snapshot/synchronization'
       );
+
+      expect(platformUrl).toBeCalledWith({
+        environment: PlatformEnvironment.QA,
+        region: Region.AU,
+      });
     });
   });
 });

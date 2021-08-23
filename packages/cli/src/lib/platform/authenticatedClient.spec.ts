@@ -12,7 +12,7 @@ import {mocked} from 'ts-jest/utils';
 import PlatformClient from '@coveord/platform-client';
 import {
   castEnvironmentToPlatformClient,
-  castRegionToPlatformClient,
+  PlatformEnvironment,
 } from './environment';
 const mockConfig = mocked(Config);
 const mockPlatformClient = mocked(PlatformClient);
@@ -21,7 +21,7 @@ describe('AuthenticatedClient', () => {
   const mockGet = jest.fn().mockReturnValue(
     Promise.resolve({
       environment: 'dev',
-      region: 'eu-west-1',
+      region: 'eu',
       organization: 'my_org',
       accessToken: 'my_token',
     })
@@ -86,8 +86,8 @@ describe('AuthenticatedClient', () => {
     await new AuthenticatedClient().getClient();
     expect(mockPlatformClient).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        environment: castEnvironmentToPlatformClient('dev'),
-        region: castRegionToPlatformClient('eu-west-1'),
+        environment: castEnvironmentToPlatformClient(PlatformEnvironment.Dev),
+        region: 'eu',
         organizationId: 'my_org',
         accessToken: 'my_token',
       })

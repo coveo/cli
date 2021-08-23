@@ -1,9 +1,7 @@
 import {Environment, Region} from '@coveord/platform-client';
 import {
   castEnvironmentToPlatformClient,
-  castRegionToPlatformClient,
   PlatformEnvironment,
-  PlatformRegion,
   platformUrl,
 } from './environment';
 
@@ -14,29 +12,29 @@ describe('platformUrl helper', () => {
 
   it(`when the environment is prod
     should not return it in the url e.g. https://platform.cloud.coveo.com`, () => {
-    expect(platformUrl({environment: 'prod'})).toBe(
+    expect(platformUrl({environment: PlatformEnvironment.Prod})).toBe(
       'https://platform.cloud.coveo.com'
     );
   });
 
   it(`when the environment is not prod
     should return it in the url e.g. https://platformdev.cloud.coveo.com`, () => {
-    expect(platformUrl({environment: 'dev'})).toBe(
+    expect(platformUrl({environment: PlatformEnvironment.Dev})).toBe(
       'https://platformdev.cloud.coveo.com'
     );
   });
 
-  it(`when the region is us-east-1
+  it(`when the region is U.S.
     should not return it in the url e.g. https://platform.cloud.coveo.com`, () => {
-    expect(platformUrl({region: 'us-east-1'})).toBe(
+    expect(platformUrl({region: Region.US})).toBe(
       'https://platform.cloud.coveo.com'
     );
   });
 
-  it(`when the region is not us-east-1
-    should return it in the url e.g. https://platform-us-west-2.cloud.coveo.com`, () => {
-    expect(platformUrl({region: 'us-west-2'})).toBe(
-      'https://platform-us-west-2.cloud.coveo.com'
+  it(`when the region is not U.S.
+    should return it in the url e.g. https://platform-eu.cloud.coveo.com`, () => {
+    expect(platformUrl({region: Region.EU})).toBe(
+      'https://platform-eu.cloud.coveo.com'
     );
   });
 
@@ -50,21 +48,6 @@ describe('platformUrl helper', () => {
     ].forEach((testCase) => {
       expect(
         castEnvironmentToPlatformClient(testCase.env as PlatformEnvironment)
-      ).toBe(testCase.platformClient);
-    });
-  });
-
-  it('should #castRegionToPlatformClient correctly', () => {
-    [
-      {region: 'us-east-1', platformClient: Region.US},
-      {region: 'us-west-2', platformClient: Region.US},
-      {region: 'eu-west-1', platformClient: Region.EU},
-      {region: 'eu-west-3', platformClient: Region.EU},
-      {region: 'ap-southeast-2', platformClient: Region.AU},
-      {region: 'something_random', platformClient: Region.US},
-    ].forEach((testCase) => {
-      expect(
-        castRegionToPlatformClient(testCase.region as PlatformRegion)
       ).toBe(testCase.platformClient);
     });
   });

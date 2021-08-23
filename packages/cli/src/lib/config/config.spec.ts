@@ -6,6 +6,8 @@ import {
 } from 'fs-extra';
 import {join} from 'path';
 import {mocked} from 'ts-jest/utils';
+import {defaultConfiguration} from '../../__stub__/configuration';
+import {PlatformEnvironment} from '../platform/environment';
 import {Config} from './config';
 jest.mock('fs-extra');
 const mockedPathExists = mocked(pathExistsSync);
@@ -66,13 +68,7 @@ describe('config', () => {
     });
 
     it('should write config on replace', async () => {
-      const theNewConfig = {
-        environment: 'prod' as const,
-        region: 'us-east-1' as const,
-        organization: 'foo',
-        analyticsEnabled: true,
-        accessToken: 'the-token',
-      };
+      const theNewConfig = {...defaultConfiguration};
       new Config('foo/bar').replace(theNewConfig);
       expect(mockedWriteJSON).toHaveBeenCalledWith(
         join('foo', 'bar', 'config.json'),
@@ -82,7 +78,7 @@ describe('config', () => {
 
     it('should write config on set', async () => {
       mockedReadJSON.mockImplementationOnce(() => ({hello: 'world'}));
-      new Config('foo/bar').set('environment', 'dev');
+      new Config('foo/bar').set('environment', PlatformEnvironment.Dev);
       expect(mockedWriteJSON).toHaveBeenCalledWith(
         join('foo', 'bar', 'config.json'),
         expect.objectContaining({
