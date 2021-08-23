@@ -39,9 +39,13 @@ describe('config', () => {
     );
   });
 
-  it('should not create config file when it does exists', async () => {
+  it('should not create config file when it does exists and its version is compatible', async () => {
+    const someConfig = {version: Config.CurrentSchemaVersion};
+    mockedReadJSON.mockImplementationOnce(() => someConfig);
     mockedPathExists.mockImplementationOnce(() => true);
+
     new Config('foo/bar').get();
+
     expect(mockedCreateFile).not.toHaveBeenCalled();
     expect(mockedWriteJSON).not.toHaveBeenCalled();
   });
@@ -52,10 +56,33 @@ describe('config', () => {
     });
 
     it('should return the config if no error', async () => {
-      const someConfig = {foo: 'bar'};
+      const someConfig = {foo: 'bar', version: Config.CurrentSchemaVersion};
       mockedReadJSON.mockImplementationOnce(() => someConfig);
+
       const cfg = new Config('foo/bar').get();
+
       expect(cfg).toBe(someConfig);
+    });
+
+    it('should create default config if the config version is incompatible', () => {
+      const someConfig = {foo: 'bar', version: '0.0.0'};
+      const errorSpy = jest.fn();
+      mockedReadJSON.mockImplementationOnce(() => someConfig);
+
+      new Config('foo/bar', errorSpy).get();
+
+      expect(mockedWriteJSON).toHaveBeenCalledWith(
+        join('foo', 'bar', 'config.json'),
+        expect.objectContaining({})
+      );
+
+      expect(errorSpy).toBeCalledWith(
+        `The configuration at ${join(
+          'foo',
+          'bar',
+          'config.json'
+        )} is not compatible with this version of the CLI`
+      );
     });
 
     it('should create default config on error', async () => {
@@ -77,7 +104,10 @@ describe('config', () => {
     });
 
     it('should write config on set', async () => {
-      mockedReadJSON.mockImplementationOnce(() => ({hello: 'world'}));
+      mockedReadJSON.mockImplementationOnce(() => ({
+        hello: 'world',
+        version: Config.CurrentSchemaVersion,
+      }));
       new Config('foo/bar').set('environment', PlatformEnvironment.Dev);
       expect(mockedWriteJSON).toHaveBeenCalledWith(
         join('foo', 'bar', 'config.json'),
