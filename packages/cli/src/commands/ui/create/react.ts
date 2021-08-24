@@ -6,7 +6,7 @@ import {
 } from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {platformUrl} from '../../../lib/platform/environment';
-import {spawnProcessOutput} from '../../../lib/utils/process';
+import {spawnProcess, spawnProcessOutput} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {join} from 'path';
@@ -68,6 +68,7 @@ export default class React extends Command {
     cli.action.start('Creating search token server');
     await this.setupServer(args.name);
     await this.setupEnvironmentVariables(args.name);
+    await this.tryGitCommit();
     cli.action.stop();
 
     this.log(EOL);
@@ -83,6 +84,17 @@ export default class React extends Command {
       buildAnalyticsFailureHook(this, args, err)
     );
     throw err;
+  }
+
+  private async isInGitRepository() {
+    try {
+      await spawnProcess('git', ['rev-parse', '--is-inside-work-tree'], {
+        stdio: 'ignore',
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   private async createProject(name: string) {
@@ -163,6 +175,25 @@ export default class React extends Command {
     }
 
     return true;
+  }
+
+  private async tryGitCommit() {
+    if (await this.isInGitRepository()) {
+      try {
+        await spawnProcess('git', ['add', '-A'], {
+          stdio: 'ignore',
+        });
+        await spawnProcess(
+          'git',
+          ['commit', '-m', 'Add token server to project'],
+          {
+            stdio: 'ignore',
+          }
+        );
+      } catch (error) {
+        this.warn('Git commit not created');
+      }
+    }
   }
 
   private async runReactCliCommand(commandArgs: string[], options = {}) {
