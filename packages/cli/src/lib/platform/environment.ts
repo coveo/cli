@@ -1,23 +1,18 @@
 import {Environment, Region} from '@coveord/platform-client';
 
-type PlatformCombination =
-  | {env: 'dev'; region: 'us-east-1' | 'eu-west-1' | 'eu-west-3'}
-  | {env: 'qa'; region: 'us-east-1' | 'eu-west-1' | 'ap-southeast-2'}
-  | {env: 'hipaa'; region: 'us-east-1'}
-  | {env: 'prod'; region: 'us-east-1' | 'us-west-2' | 'eu-west-1'};
+export enum PlatformEnvironment {
+  Dev = 'dev',
+  QA = 'qa',
+  Hipaa = 'hipaa',
+  Prod = 'prod',
+}
 
-export type PlatformEnvironment = PlatformCombination['env'];
-export type PlatformRegion = Extract<
-  PlatformCombination,
-  {env: PlatformEnvironment}
->['region'];
-
-export const DEFAULT_ENVIRONMENT = 'prod' as const;
-export const DEFAULT_REGION = 'us-east-1' as const;
+export const DEFAULT_ENVIRONMENT = PlatformEnvironment.Prod as const;
+export const DEFAULT_REGION = Region.US as const;
 
 export type PlatformUrlOptions = {
   environment: PlatformEnvironment;
-  region: PlatformRegion;
+  region: Region;
 };
 
 const defaultOptions: PlatformUrlOptions = {
@@ -49,20 +44,5 @@ export function castEnvironmentToPlatformClient(
       return Environment.hipaa;
     default:
       return Environment.prod;
-  }
-}
-
-export function castRegionToPlatformClient(r: PlatformRegion): Region {
-  switch (r) {
-    case 'us-east-1':
-    case 'us-west-2':
-      return Region.US;
-    case 'eu-west-1':
-    case 'eu-west-3':
-      return Region.EU;
-    case 'ap-southeast-2':
-      return Region.AU;
-    default:
-      return Region.US;
   }
 }

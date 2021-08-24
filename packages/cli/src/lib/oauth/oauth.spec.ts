@@ -1,13 +1,10 @@
+import {Region} from '@coveord/platform-client';
 import {
   AuthorizationServiceConfiguration,
   BaseTokenRequestHandler,
 } from '@openid/appauth';
 import {NodeBasedHandler} from '@openid/appauth/built/node_support';
-import {
-  PlatformEnvironment,
-  PlatformRegion,
-  platformUrl,
-} from '../platform/environment';
+import {PlatformEnvironment, platformUrl} from '../platform/environment';
 import {OAuth} from './oauth';
 
 jest.mock('@openid/appauth/built/node_support');
@@ -56,14 +53,15 @@ describe('OAuth', () => {
   describe('should use proper @openid AuthorizationServiceConfiguration', () => {
     const endpoints = (opts?: {
       environment?: PlatformEnvironment;
-      region?: PlatformRegion;
+      region?: Region;
     }) => ({
       authorization_endpoint: `${platformUrl(opts)}/oauth/authorize`,
       revocation_endpoint: `${platformUrl(opts)}/logout`,
       token_endpoint: `${platformUrl(opts)}/oauth/token`,
     });
+
     it('in prod', async () => {
-      const opts = {environment: 'prod' as const};
+      const opts = {environment: PlatformEnvironment.Prod};
       await new OAuth(opts).getToken();
       expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -74,8 +72,9 @@ describe('OAuth', () => {
         })
       );
     });
+
     it('in qa', async () => {
-      const opts = {environment: 'qa' as const};
+      const opts = {environment: PlatformEnvironment.QA};
       await new OAuth(opts).getToken();
       expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -83,8 +82,9 @@ describe('OAuth', () => {
         })
       );
     });
+
     it('in dev', async () => {
-      const opts = {environment: 'dev' as const};
+      const opts = {environment: PlatformEnvironment.Dev};
       await new OAuth(opts).getToken();
       expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -92,8 +92,9 @@ describe('OAuth', () => {
         })
       );
     });
+
     it('in hipaa', async () => {
-      const opts = {environment: 'hipaa' as const};
+      const opts = {environment: PlatformEnvironment.QA};
       await new OAuth(opts).getToken();
       expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -101,8 +102,9 @@ describe('OAuth', () => {
         })
       );
     });
-    it('in europe', async () => {
-      const opts = {region: 'eu-west-1' as const};
+
+    it('in Europe', async () => {
+      const opts = {region: Region.EU};
       await new OAuth(opts).getToken();
       expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -110,11 +112,15 @@ describe('OAuth', () => {
         })
       );
     });
-    it('it should be us-east-1 prod by default', async () => {
+
+    it('it should be U.S. prod by default', async () => {
       await new OAuth().getToken();
       expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
         expect.objectContaining({
-          ...endpoints({environment: 'prod', region: 'us-east-1'}),
+          ...endpoints({
+            environment: PlatformEnvironment.Prod,
+            region: Region.US,
+          }),
         })
       );
     });

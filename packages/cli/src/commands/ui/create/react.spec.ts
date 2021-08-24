@@ -16,7 +16,7 @@ import {spawnProcessOutput} from '../../../lib/utils/process';
 import {npxInPty} from '../../../lib/utils/npx';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
-import {Config, Configuration} from '../../../lib/config/config';
+import {Config} from '../../../lib/config/config';
 import {
   IsNpxInstalled,
   IsNodeVersionInRange,
@@ -25,6 +25,7 @@ import {getPackageVersion} from '../../../lib/utils/misc';
 import Command from '@oclif/command';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {IPty} from 'node-pty';
+import {configurationMock} from '../../../__stub__/configuration';
 
 describe('ui:create:react', () => {
   const mockedConfig = mocked(Config);
@@ -75,18 +76,7 @@ describe('ui:create:react', () => {
   };
 
   const doMockConfiguration = () => {
-    mockedConfig.mockImplementation(
-      () =>
-        ({
-          get: () =>
-            ({
-              environment: 'dev',
-              organization: 'my-org',
-              region: 'us-east-1',
-              analyticsEnabled: true,
-            } as Configuration),
-        } as Config)
-    );
+    mockedConfig.mockImplementation(configurationMock());
   };
 
   const doMockAuthenticatedClient = () => {

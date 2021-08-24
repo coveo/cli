@@ -1,3 +1,4 @@
+import {Region} from '@coveord/platform-client';
 import {
   pathExistsSync,
   createFileSync,
@@ -5,10 +6,14 @@ import {
   readJSONSync,
 } from 'fs-extra';
 import {join} from 'path';
-import {PlatformEnvironment, PlatformRegion} from '../platform/environment';
+import {
+  DEFAULT_ENVIRONMENT,
+  DEFAULT_REGION,
+  PlatformEnvironment,
+} from '../platform/environment';
 
 export interface Configuration {
-  region: PlatformRegion;
+  region: Region;
   environment: PlatformEnvironment;
   organization: string;
   [k: string]: unknown;
@@ -18,8 +23,8 @@ export interface Configuration {
 }
 
 export const DefaultConfig: Configuration = {
-  environment: 'prod',
-  region: 'us-east-1',
+  environment: DEFAULT_ENVIRONMENT,
+  region: DEFAULT_REGION,
   organization: '',
   analyticsEnabled: undefined,
   accessToken: undefined,

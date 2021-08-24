@@ -51,7 +51,7 @@ const mockProject = () => {
 const mockConfig = () => {
   mockedConfigGet.mockReturnValue(
     Promise.resolve({
-      region: 'us-east-1',
+      region: 'us',
       organization: 'foo',
       environment: 'prod',
     })

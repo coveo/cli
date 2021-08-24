@@ -7,6 +7,8 @@ import {mocked} from 'ts-jest/utils';
 import {Config} from '../../lib/config/config';
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {Region} from '@coveord/platform-client';
+import {PlatformEnvironment} from '../../lib/platform/environment';
 const mockedConfig = mocked(Config);
 const mockedClient = mocked(AuthenticatedClient);
 
@@ -38,7 +40,7 @@ describe('config:set', () => {
       }
     );
 
-  ['dev', 'qa', 'prod', 'hipaa'].forEach((environment) => {
+  Object.values(PlatformEnvironment).forEach((environment) => {
     test
       .stdout()
       .command(['config:set', '-e', environment])
@@ -55,13 +57,7 @@ describe('config:set', () => {
       expect(mockSet).not.toHaveBeenCalled();
     });
 
-  [
-    'us-east-1',
-    'eu-west-1',
-    'eu-west-3',
-    'ap-southeast-2',
-    'us-west-2',
-  ].forEach((region) => {
+  Object.keys(Region).forEach((region) => {
     test
       .stdout()
       .command(['config:set', '-r', region])
@@ -99,7 +95,7 @@ describe('config:set', () => {
     .command(['config:set', '-o', 'the_org'])
     .catch(/don't have access to organization the_org/)
     .it(
-      'fails when trying to set to an invalid organzation the user does not have access to',
+      'fails when trying to set to an invalid organization the user does not have access to',
       () => {
         expect(mockSet).not.toHaveBeenCalled();
       }

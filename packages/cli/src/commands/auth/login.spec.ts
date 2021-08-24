@@ -4,6 +4,7 @@ jest.mock('../../hooks/analytics/analytics');
 jest.mock('../../hooks/prerun/prerun');
 jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
+import {Region} from '@coveord/platform-client';
 import {test} from '@oclif/test';
 import {mocked} from 'ts-jest/utils';
 import {Config} from '../../lib/config/config';
@@ -18,7 +19,7 @@ describe('auth:login', () => {
 
   const mockConfigGet = jest.fn().mockReturnValue(
     Promise.resolve({
-      region: 'us-east-1',
+      region: 'us',
       organization: 'foo',
       environment: 'prod',
     })
@@ -89,13 +90,7 @@ describe('auth:login', () => {
       );
   });
 
-  [
-    'us-east-1',
-    'eu-west-1',
-    'eu-west-3',
-    'ap-southeast-2',
-    'us-west-2',
-  ].forEach((region) => {
+  Object.keys(Region).forEach((region) => {
     test
       .stdout()
       .command(['auth:login', '-r', region, '-o', 'foo'])
@@ -158,7 +153,7 @@ describe('auth:login', () => {
       );
       mockConfigGet.mockReturnValueOnce(
         Promise.resolve({
-          region: 'us-east-1',
+          region: 'us',
           organization: 'the_first_org_available',
           environment: 'prod',
         })
