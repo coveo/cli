@@ -6,13 +6,17 @@ import {
   readJSONSync,
 } from 'fs-extra';
 import {join} from 'path';
+import {satisfies} from 'semver';
+import dedent from 'ts-dedent';
 import {
   DEFAULT_ENVIRONMENT,
   DEFAULT_REGION,
   PlatformEnvironment,
 } from '../platform/environment';
+import {IncompatibleConfigurationError} from './configErrors';
 
 export interface Configuration {
+  version: string;
   region: Region;
   environment: PlatformEnvironment;
   organization: string;
@@ -22,16 +26,8 @@ export interface Configuration {
   anonymous?: boolean | undefined;
 }
 
-export const DefaultConfig: Configuration = {
-  environment: DEFAULT_ENVIRONMENT,
-  region: DEFAULT_REGION,
-  organization: '',
-  analyticsEnabled: undefined,
-  accessToken: undefined,
-  anonymous: undefined,
-};
-
 export class Config {
+  public static readonly CurrentSchemaVersion = '1.0.0';
   public constructor(
     private configDir: string,
     private error = console.error
@@ -44,9 +40,20 @@ export class Config {
       if (content instanceof Error) {
         throw content;
       }
+      if (!this.isSettingVersionInRange(content)) {
+        throw new IncompatibleConfigurationError(content.version);
+      }
       return content;
     } catch (e) {
-      this.error(`Error while reading configuration at ${this.configPath}`);
+      if (e instanceof IncompatibleConfigurationError) {
+        this.error(
+          dedent`
+            The configuration at ${this.configPath} is not compatible with this version of the CLI:
+            ${e.message}`
+        );
+      } else {
+        this.error(`Error while reading configuration at ${this.configPath}`);
+      }
       this.replace(DefaultConfig);
       this.error(
         `Configuration has been reset to default value: ${JSON.stringify(
@@ -55,6 +62,10 @@ export class Config {
       );
       return DefaultConfig;
     }
+  }
+
+  private isSettingVersionInRange(content: Configuration) {
+    return satisfies(content.version, `^${Config.CurrentSchemaVersion}`);
   }
 
   public replace(config: Configuration) {
@@ -105,3 +116,13 @@ export class Config {
     }
   }
 }
+
+export const DefaultConfig: Configuration = {
+  version: Config.CurrentSchemaVersion,
+  environment: DEFAULT_ENVIRONMENT,
+  region: DEFAULT_REGION,
+  organization: '',
+  analyticsEnabled: undefined,
+  accessToken: undefined,
+  anonymous: undefined,
+};
