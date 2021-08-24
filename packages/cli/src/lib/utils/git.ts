@@ -1,16 +1,15 @@
-import {spawnProcess} from './process';
+import {spawnProcess, spawnProcessOutput} from './process';
 import {cli} from 'cli-ux';
 
 async function isInGitRepository(cwd: string) {
-  try {
-    await spawnProcess('git', ['rev-parse', '--is-inside-work-tree'], {
-      stdio: 'ignore',
+  const isGitProcess = await spawnProcessOutput(
+    'git',
+    ['rev-parse', '--is-inside-work-tree'],
+    {
       cwd,
-    });
-    return true;
-  } catch (e) {
-    return false;
-  }
+    }
+  );
+  return isGitProcess.stdout.includes('true');
 }
 
 export async function tryGitCommit(
