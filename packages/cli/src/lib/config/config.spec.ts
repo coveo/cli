@@ -5,19 +5,32 @@ import {
   readJSONSync,
 } from 'fs-extra';
 import {join} from 'path';
+import dedent from 'ts-dedent';
 import {mocked} from 'ts-jest/utils';
 import {defaultConfiguration} from '../../__stub__/configuration';
 import {PlatformEnvironment} from '../platform/environment';
 import {Config} from './config';
+
+jest.mock('semver');
+import {satisfies} from 'semver';
+
+jest.mock('./configErrors');
+import {IncompatibleConfigurationError} from './configErrors';
 jest.mock('fs-extra');
+const mockedSemverSatisifies = mocked(satisfies);
 const mockedPathExists = mocked(pathExistsSync);
 const mockedCreateFile = mocked(createFileSync);
 const mockedWriteJSON = mocked(writeJSONSync);
+const mockedIncompatibleConfigurationError = mocked(
+  IncompatibleConfigurationError,
+  true
+);
 const mockedReadJSON = mocked(readJSONSync);
 
 describe('config', () => {
   beforeEach(() => {
     mockedReadJSON.mockImplementation(() => {});
+    mockedSemverSatisifies.mockReturnValue(true);
   });
 
   it('should ensure config file exists', async () => {
@@ -68,20 +81,28 @@ describe('config', () => {
       const someConfig = {foo: 'bar', version: '0.0.0'};
       const errorSpy = jest.fn();
       mockedReadJSON.mockImplementationOnce(() => someConfig);
-
+      mockedSemverSatisifies.mockReturnValueOnce(false);
+      mockedIncompatibleConfigurationError.mockImplementationOnce(() => {
+        const err = new IncompatibleConfigurationError('');
+        err.message = 'some message';
+        return err;
+      });
       new Config('foo/bar', errorSpy).get();
 
       expect(mockedWriteJSON).toHaveBeenCalledWith(
         join('foo', 'bar', 'config.json'),
         expect.objectContaining({})
       );
-
+      expect(mockedIncompatibleConfigurationError).toBeCalledWith('0.0.0');
       expect(errorSpy).toBeCalledWith(
-        `The configuration at ${join(
-          'foo',
-          'bar',
-          'config.json'
-        )} is not compatible with this version of the CLI`
+        dedent`
+          The configuration at ${join(
+            'foo',
+            'bar',
+            'config.json'
+          )} is not compatible with this version of the CLI:
+          some message
+          `
       );
     });
 

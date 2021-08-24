@@ -7,11 +7,13 @@ import {
 } from 'fs-extra';
 import {join} from 'path';
 import {satisfies} from 'semver';
+import dedent from 'ts-dedent';
 import {
   DEFAULT_ENVIRONMENT,
   DEFAULT_REGION,
   PlatformEnvironment,
 } from '../platform/environment';
+import {IncompatibleConfigurationError} from './configErrors';
 
 export interface Configuration {
   version: string;
@@ -23,8 +25,6 @@ export interface Configuration {
   accessToken: string | undefined;
   anonymous?: boolean | undefined;
 }
-
-class IncompatibleConfiguration extends Error {}
 
 export class Config {
   public static readonly CurrentSchemaVersion = '1.0.0';
@@ -41,13 +41,15 @@ export class Config {
         throw content;
       }
       if (!this.isSettingVersionInRange(content)) {
-        throw new IncompatibleConfiguration();
+        throw new IncompatibleConfigurationError(content.version);
       }
       return content;
     } catch (e) {
-      if (e instanceof IncompatibleConfiguration) {
+      if (e instanceof IncompatibleConfigurationError) {
         this.error(
-          `The configuration at ${this.configPath} is not compatible with this version of the CLI`
+          dedent`
+            The configuration at ${this.configPath} is not compatible with this version of the CLI:
+            ${e.message}`
         );
       } else {
         this.error(`Error while reading configuration at ${this.configPath}`);
@@ -62,10 +64,7 @@ export class Config {
     }
   }
 
-  private isSettingVersionInRange(content: Partial<Configuration>) {
-    if (!content.version) {
-      return false;
-    }
+  private isSettingVersionInRange(content: Configuration) {
     return satisfies(content.version, `^${Config.CurrentSchemaVersion}`);
   }
 
