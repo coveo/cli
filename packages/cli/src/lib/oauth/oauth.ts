@@ -1,6 +1,7 @@
 import {
+  DEFAULT_ENVIRONMENT,
+  DEFAULT_REGION,
   PlatformEnvironment,
-  PlatformRegion,
   platformUrl,
 } from '../platform/environment';
 import {
@@ -17,11 +18,12 @@ import {
   NodeCrypto,
   NodeRequestor,
 } from '@openid/appauth/built/node_support';
+import {Region} from '@coveord/platform-client';
 
 export interface OAuthOptions {
   port: number;
   environment: PlatformEnvironment;
-  region: PlatformRegion;
+  region: Region;
 }
 
 export class OAuth {
@@ -29,8 +31,8 @@ export class OAuth {
   public constructor(opts?: Partial<OAuthOptions>) {
     const baseOptions: OAuthOptions = {
       port: 32111,
-      environment: 'prod',
-      region: 'us-east-1',
+      environment: DEFAULT_ENVIRONMENT,
+      region: DEFAULT_REGION,
     };
 
     this.opts = {

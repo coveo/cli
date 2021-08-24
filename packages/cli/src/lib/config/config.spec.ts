@@ -5,17 +5,32 @@ import {
   readJSONSync,
 } from 'fs-extra';
 import {join} from 'path';
+import dedent from 'ts-dedent';
 import {mocked} from 'ts-jest/utils';
+import {defaultConfiguration} from '../../__stub__/configuration';
+import {PlatformEnvironment} from '../platform/environment';
 import {Config} from './config';
+
+jest.mock('semver');
+import {satisfies} from 'semver';
+
+jest.mock('./configErrors');
+import {IncompatibleConfigurationError} from './configErrors';
 jest.mock('fs-extra');
+const mockedSemverSatisifies = mocked(satisfies);
 const mockedPathExists = mocked(pathExistsSync);
 const mockedCreateFile = mocked(createFileSync);
 const mockedWriteJSON = mocked(writeJSONSync);
+const mockedIncompatibleConfigurationError = mocked(
+  IncompatibleConfigurationError,
+  true
+);
 const mockedReadJSON = mocked(readJSONSync);
 
 describe('config', () => {
   beforeEach(() => {
     mockedReadJSON.mockImplementation(() => {});
+    mockedSemverSatisifies.mockReturnValue(true);
   });
 
   it('should ensure config file exists', async () => {
@@ -37,9 +52,13 @@ describe('config', () => {
     );
   });
 
-  it('should not create config file when it does exists', async () => {
+  it('should not create config file when it does exists and its version is compatible', async () => {
+    const someConfig = {version: Config.CurrentSchemaVersion};
+    mockedReadJSON.mockImplementationOnce(() => someConfig);
     mockedPathExists.mockImplementationOnce(() => true);
+
     new Config('foo/bar').get();
+
     expect(mockedCreateFile).not.toHaveBeenCalled();
     expect(mockedWriteJSON).not.toHaveBeenCalled();
   });
@@ -50,10 +69,41 @@ describe('config', () => {
     });
 
     it('should return the config if no error', async () => {
-      const someConfig = {foo: 'bar'};
+      const someConfig = {foo: 'bar', version: Config.CurrentSchemaVersion};
       mockedReadJSON.mockImplementationOnce(() => someConfig);
+
       const cfg = new Config('foo/bar').get();
+
       expect(cfg).toBe(someConfig);
+    });
+
+    it('should create default config if the config version is incompatible', () => {
+      const someConfig = {foo: 'bar', version: '0.0.0'};
+      const errorSpy = jest.fn();
+      mockedReadJSON.mockImplementationOnce(() => someConfig);
+      mockedSemverSatisifies.mockReturnValueOnce(false);
+      mockedIncompatibleConfigurationError.mockImplementationOnce(() => {
+        const err = new IncompatibleConfigurationError('');
+        err.message = 'some message';
+        return err;
+      });
+      new Config('foo/bar', errorSpy).get();
+
+      expect(mockedWriteJSON).toHaveBeenCalledWith(
+        join('foo', 'bar', 'config.json'),
+        expect.objectContaining({})
+      );
+      expect(mockedIncompatibleConfigurationError).toBeCalledWith('0.0.0');
+      expect(errorSpy).toBeCalledWith(
+        dedent`
+          The configuration at ${join(
+            'foo',
+            'bar',
+            'config.json'
+          )} is not compatible with this version of the CLI:
+          some message
+          `
+      );
     });
 
     it('should create default config on error', async () => {
@@ -66,13 +116,7 @@ describe('config', () => {
     });
 
     it('should write config on replace', async () => {
-      const theNewConfig = {
-        environment: 'prod' as const,
-        region: 'us-east-1' as const,
-        organization: 'foo',
-        analyticsEnabled: true,
-        accessToken: 'the-token',
-      };
+      const theNewConfig = {...defaultConfiguration};
       new Config('foo/bar').replace(theNewConfig);
       expect(mockedWriteJSON).toHaveBeenCalledWith(
         join('foo', 'bar', 'config.json'),
@@ -81,8 +125,11 @@ describe('config', () => {
     });
 
     it('should write config on set', async () => {
-      mockedReadJSON.mockImplementationOnce(() => ({hello: 'world'}));
-      new Config('foo/bar').set('environment', 'dev');
+      mockedReadJSON.mockImplementationOnce(() => ({
+        hello: 'world',
+        version: Config.CurrentSchemaVersion,
+      }));
+      new Config('foo/bar').set('environment', PlatformEnvironment.Dev);
       expect(mockedWriteJSON).toHaveBeenCalledWith(
         join('foo', 'bar', 'config.json'),
         expect.objectContaining({
