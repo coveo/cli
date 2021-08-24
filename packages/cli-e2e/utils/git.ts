@@ -2,6 +2,47 @@ import {ProcessManager} from './processManager';
 import {DoCallback} from './terminal/do';
 import {Terminal} from './terminal/terminal';
 
+export const isDirectoryClean = async (
+  processManager: ProcessManager,
+  pathToRepo: string,
+  projectName: string,
+  errorCallback: DoCallback
+) => {
+  const gitStatusTerminal = new Terminal(
+    'git',
+    ['status', '--porcelain'],
+    {cwd: pathToRepo},
+    processManager,
+    `status-${projectName}`
+  );
+
+  const gitStatusExitCondition = gitStatusTerminal
+    .when('exit')
+    .on('process')
+    .do()
+    .once();
+
+  // await gitStatusTerminal
+  // .when(/.+/)
+  // .on('process')
+  // .do(errorCallback)
+  // .until(gitStatusExitCondition);
+
+  const notAGitRepository = gitStatusTerminal
+    .when(/.+/)
+    .on('stderr')
+    .do(errorCallback)
+    .until(gitStatusExitCondition);
+
+  const isDirtyWorkingTree = gitStatusTerminal
+    .when(/.+/)
+    .on('stdout')
+    .do(errorCallback)
+    .until(gitStatusExitCondition);
+
+  await Promise.race([notAGitRepository, isDirtyWorkingTree]);
+};
+
 export const commitProject = async (
   processManager: ProcessManager,
   pathToRepo: string,
