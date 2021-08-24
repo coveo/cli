@@ -3,7 +3,7 @@ jest.mock('../platform/authenticatedClient');
 import {Region, ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {getDummySnapshotModel} from '../../__stub__/resourceSnapshotsModel';
 import {getSuccessReport} from '../../__stub__/resourceSnapshotsReportModel';
-import {Configuration} from '../config/config';
+import {Config, Configuration} from '../config/config';
 import {Snapshot} from './snapshot';
 import {SnapshotUrlBuilder} from './snapshotUrlBuilder';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
@@ -20,6 +20,7 @@ const createSnapshot = async () => {
 };
 
 const getUSProdConfig = (): Configuration => ({
+  version: Config.CurrentSchemaVersion,
   region: Region.US,
   environment: PlatformEnvironment.Prod,
   organization: 'does not matter',
@@ -28,6 +29,7 @@ const getUSProdConfig = (): Configuration => ({
 });
 
 const getEUDevConfig = (): Configuration => ({
+  version: Config.CurrentSchemaVersion,
   region: Region.EU,
   environment: PlatformEnvironment.Dev,
   organization: 'does not matter',
