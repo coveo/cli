@@ -68,7 +68,7 @@ export default class React extends Command {
     cli.action.start('Creating search token server');
     await this.setupServer(args.name);
     await this.setupEnvironmentVariables(args.name);
-    await this.tryGitCommit();
+    await this.tryGitCommit(args.name);
     cli.action.stop();
 
     this.log(EOL);
@@ -86,10 +86,11 @@ export default class React extends Command {
     throw err;
   }
 
-  private async isInGitRepository() {
+  private async isInGitRepository(name: string) {
     try {
       await spawnProcess('git', ['rev-parse', '--is-inside-work-tree'], {
         stdio: 'ignore',
+        cwd: name,
       });
       return true;
     } catch (e) {
@@ -177,21 +178,24 @@ export default class React extends Command {
     return true;
   }
 
-  private async tryGitCommit() {
-    if (await this.isInGitRepository()) {
+  private async tryGitCommit(name: string) {
+    if (await this.isInGitRepository(name)) {
       try {
         await spawnProcess('git', ['add', '-A'], {
           stdio: 'ignore',
+          cwd: name,
         });
         await spawnProcess(
           'git',
           ['commit', '-m', 'Add token server to project'],
           {
             stdio: 'ignore',
+            cwd: name,
           }
         );
       } catch (error) {
         this.warn('Git commit not created');
+        this.warn(error);
       }
     }
   }
