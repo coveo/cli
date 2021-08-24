@@ -4,10 +4,12 @@ jest.mock('../../hooks/analytics/analytics');
 jest.mock('../../hooks/prerun/prerun');
 jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
+import {Region} from '@coveord/platform-client';
 import {test} from '@oclif/test';
 import {mocked} from 'ts-jest/utils';
 import {Config} from '../../lib/config/config';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {PlatformEnvironment} from '../../lib/platform/environment';
 const mockedConfig = mocked(Config, true);
 const mockedAuthenticatedClient = mocked(AuthenticatedClient);
 
@@ -16,7 +18,7 @@ describe('auth:token', () => {
 
   const mockConfigGet = jest.fn().mockReturnValue(
     Promise.resolve({
-      region: 'us-east-1',
+      region: 'us',
       organization: 'foo',
       environment: 'prod',
     })
@@ -62,7 +64,7 @@ describe('auth:token', () => {
     .catch(/Expected --region=foo/)
     .it('reject invalid region', async () => {});
 
-  ['dev', 'qa', 'prod', 'hipaa'].forEach((environment) => {
+  Object.values(PlatformEnvironment).forEach((environment) => {
     test
       .stdout()
       .command(['auth:token', '-e', environment, '-t', 'someToken'])
@@ -71,13 +73,7 @@ describe('auth:token', () => {
       });
   });
 
-  [
-    'us-east-1',
-    'eu-west-1',
-    'eu-west-3',
-    'ap-southeast-2',
-    'us-west-2',
-  ].forEach((region) => {
+  Object.keys(Region).forEach((region) => {
     test
       .stdout()
       .command(['auth:token', '-r', region, '-t', 'someToken'])

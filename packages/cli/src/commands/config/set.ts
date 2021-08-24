@@ -9,33 +9,16 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '../../lib/decorators/preconditions';
-import {
-  PlatformEnvironment,
-  PlatformRegion,
-} from '../../lib/platform/environment';
+import {PlatformEnvironment} from '../../lib/platform/environment';
+import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
+import {Region} from '@coveord/platform-client';
 
 export default class Set extends Command {
   public static description = 'Modify the current configuration.';
 
   public static flags = {
-    region: flags.string({
-      char: 'r',
-      options: [
-        'us-east-1',
-        'eu-west-1',
-        'eu-west-3',
-        'ap-southeast-2',
-        'us-west-2',
-      ],
-      description:
-        'The Coveo Platform region inside which to perform operations. See <https://docs.coveo.com/en/2976>.',
-    }),
-    environment: flags.string({
-      char: 'e',
-      options: ['dev', 'qa', 'prod', 'hipaa'],
-      description:
-        'The Coveo Platform environment inside which to perform operations.',
-    }),
+    ...withRegion(false),
+    ...withEnvironment(false),
     organization: flags.string({
       char: 'o',
       description:
@@ -61,7 +44,7 @@ export default class Set extends Command {
       cfg.set('organization', flags.organization);
     }
     if (flags.region) {
-      cfg.set('region', flags.region as PlatformRegion);
+      cfg.set('region', flags.region as Region);
     }
     if (flags.analytics) {
       cfg.set('analyticsEnabled', flags.analytics === 'y');

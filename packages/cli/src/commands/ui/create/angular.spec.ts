@@ -10,13 +10,12 @@ jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
 jest.mock('@coveord/platform-client');
 
-import {join} from 'path';
 import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
 import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
-import {Config, Configuration} from '../../../lib/config/config';
+import {Config} from '../../../lib/config/config';
 import {
   IsNpmVersionInRange,
   IsNodeVersionInRange,
@@ -24,6 +23,7 @@ import {
 import {getPackageVersion} from '../../../lib/utils/misc';
 import Command from '@oclif/command';
 import {IsNgInstalled} from '../../../lib/decorators/preconditions/ng';
+import {configurationMock} from '../../../__stub__/configuration';
 
 describe('ui:create:angular', () => {
   const mockedConfig = mocked(Config);
@@ -65,18 +65,7 @@ describe('ui:create:angular', () => {
   };
 
   const doMockConfiguration = () => {
-    mockedConfig.mockImplementation(
-      () =>
-        ({
-          get: () =>
-            ({
-              environment: 'dev',
-              organization: 'my-org',
-              region: 'us-east-1',
-              analyticsEnabled: true,
-            } as Configuration),
-        } as Config)
-    );
+    mockedConfig.mockImplementation(configurationMock());
   };
 
   const doMockAuthenticatedClient = () => {
