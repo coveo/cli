@@ -16,6 +16,7 @@ import {
 } from '../../../lib/decorators/preconditions/';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {IsNgInstalled} from '../../../lib/decorators/preconditions/ng';
+import {tryGitCommit} from '../../../lib/utils/git';
 
 export default class Angular extends Command {
   public static templateName = '@coveo/angular';
@@ -60,6 +61,7 @@ export default class Angular extends Command {
     const {args, flags} = this.parse(Angular);
     await this.createProject(args.name, flags.defaults);
     await this.addCoveoToProject(args.name, flags.defaults);
+    await tryGitCommit(args.name, 'setup project');
     this.displayFeedbackAfterSuccess(args.name);
     await this.config.runHook(
       'analytics',

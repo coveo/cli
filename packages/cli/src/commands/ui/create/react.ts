@@ -6,7 +6,7 @@ import {
 } from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {platformUrl} from '../../../lib/platform/environment';
-import {spawnProcess, spawnProcessOutput} from '../../../lib/utils/process';
+import {spawnProcessOutput} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {join} from 'path';
@@ -19,6 +19,7 @@ import {
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {EOL} from 'os';
 import {npxInPty} from '../../../lib/utils/npx';
+import {tryGitCommit} from '../../../lib/utils/git';
 
 export default class React extends Command {
   public static templateName = '@coveo/cra-template';
@@ -68,7 +69,7 @@ export default class React extends Command {
     cli.action.start('Creating search token server');
     await this.setupServer(args.name);
     await this.setupEnvironmentVariables(args.name);
-    await this.tryGitCommit(args.name);
+    await tryGitCommit(args.name, 'Add token server to project');
     cli.action.stop();
 
     this.log(EOL);
@@ -84,18 +85,6 @@ export default class React extends Command {
       buildAnalyticsFailureHook(this, args, err)
     );
     throw err;
-  }
-
-  private async isInGitRepository(name: string) {
-    try {
-      await spawnProcess('git', ['rev-parse', '--is-inside-work-tree'], {
-        stdio: 'ignore',
-        cwd: name,
-      });
-      return true;
-    } catch (e) {
-      return false;
-    }
   }
 
   private async createProject(name: string) {
@@ -176,28 +165,6 @@ export default class React extends Command {
     }
 
     return true;
-  }
-
-  private async tryGitCommit(name: string) {
-    if (await this.isInGitRepository(name)) {
-      try {
-        await spawnProcess('git', ['add', '-A'], {
-          stdio: 'ignore',
-          cwd: name,
-        });
-        await spawnProcess(
-          'git',
-          ['commit', '-m', 'Add token server to project'],
-          {
-            stdio: 'ignore',
-            cwd: name,
-          }
-        );
-      } catch (error) {
-        this.warn('Git commit not created');
-        this.warn(error);
-      }
-    }
   }
 
   private async runReactCliCommand(commandArgs: string[], options = {}) {

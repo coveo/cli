@@ -22,12 +22,6 @@ export const isDirectoryClean = async (
     .do()
     .once();
 
-  // await gitStatusTerminal
-  // .when(/.+/)
-  // .on('process')
-  // .do(errorCallback)
-  // .until(gitStatusExitCondition);
-
   const notAGitRepository = gitStatusTerminal
     .when(/.+/)
     .on('stderr')
