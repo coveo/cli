@@ -160,7 +160,7 @@ describe('ui:create:react', () => {
   test
     .command(['ui:create:react', 'myapp'])
     .it('should spawn 2 output processes', async () => {
-      expect(mockedSpawnProcessOutput).toHaveBeenCalledTimes(2);
+      expect(mockedSpawnProcessOutput).toHaveBeenCalledTimes(3);
     });
 
   test

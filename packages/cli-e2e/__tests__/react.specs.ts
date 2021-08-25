@@ -15,7 +15,7 @@ import {
   restoreEnvironmentFile,
 } from '../utils/file';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
-import {commitProject, undoCommit} from '../utils/git';
+import {isDirectoryClean} from '../utils/git';
 import {appendFileSync, readFileSync, truncateSync} from 'fs';
 import {EOL} from 'os';
 import {parse} from 'dotenv';
@@ -169,11 +169,6 @@ describe('ui:create:react', () => {
     });
 
     afterAll(async () => {
-      await undoCommit(
-        serverProcessManager,
-        getProjectPath(projectName),
-        projectName
-      );
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
@@ -229,17 +224,17 @@ describe('ui:create:react', () => {
       });
     });
 
-    it('should be commited without lint-stage errors', async () => {
-      const eslintErrorSpy = jest.fn();
+    it('should have a clean working directory', async () => {
+      const gitDirtyWorkingTreeSpy = jest.fn();
 
-      commitProject(
+      await isDirectoryClean(
         serverProcessManager,
         getProjectPath(projectName),
         projectName,
-        eslintErrorSpy
+        gitDirtyWorkingTreeSpy
       );
 
-      expect(eslintErrorSpy).not.toBeCalled();
+      expect(gitDirtyWorkingTreeSpy).not.toBeCalled();
     }, 10e3);
   });
 
