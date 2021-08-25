@@ -5,7 +5,8 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git@github.com:coveo/cli.git"
+    "url": "git@github.com:coveo/cli.git",
+    "directory": "packages/search-token-server"
   },
   "dependencies": {
     "@coveord/platform-client": "^25.0.0",
