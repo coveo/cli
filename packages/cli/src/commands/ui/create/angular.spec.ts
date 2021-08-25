@@ -1,6 +1,6 @@
 jest.mock('../../../lib/decorators/preconditions/npm');
 jest.mock('../../../lib/decorators/preconditions/node');
-jest.mock('../../../lib/decorators/preconditions/apiKeyPrivilege');
+jest.mock('../../../lib/decorators/preconditions/ng');
 jest.mock('../../../lib/utils/process');
 jest.mock('../../../lib/oauth/oauth');
 jest.mock('../../../lib/config/config');
@@ -10,13 +10,12 @@ jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
 jest.mock('@coveord/platform-client');
 
-import {join} from 'path';
 import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
 import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
-import {Config, Configuration} from '../../../lib/config/config';
+import {Config} from '../../../lib/config/config';
 import {
   IsNpmVersionInRange,
   IsNodeVersionInRange,
@@ -24,6 +23,8 @@ import {
 } from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import Command from '@oclif/command';
+import {IsNgInstalled} from '../../../lib/decorators/preconditions/ng';
+import {configurationMock} from '../../../__stub__/configuration';
 
 describe('ui:create:angular', () => {
   const mockedConfig = mocked(Config);
@@ -33,12 +34,13 @@ describe('ui:create:angular', () => {
   const mockedAuthenticatedClient = mocked(AuthenticatedClient);
   const mockedIsNpmVersionInRange = mocked(IsNpmVersionInRange, true);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
-  const angularAppExecutable = join('@angular', 'cli', 'lib', 'init.js');
+  const mockedIsNgInstalled = mocked(IsNgInstalled, true);
   const mockedApiKeyPrivilege = mocked(HasNecessaryCoveoPrivileges, true);
   const mockedCreateImpersonateApiKey = jest.fn();
   const preconditionStatus = {
     node: true,
     npm: true,
+    ng: true,
     apiKey: true,
   };
   const doMockPreconditions = function () {
@@ -50,6 +52,9 @@ describe('ui:create:angular', () => {
     const mockNpm = function (_target: Command) {
       return new Promise<boolean>((resolve) => resolve(preconditionStatus.npm));
     };
+    const mockNg = function (_target: Command) {
+      return new Promise<boolean>((resolve) => resolve(preconditionStatus.ng));
+    };
     const mockApiKeyPrivilege = function (_target: Command) {
       return new Promise<boolean>((resolve) =>
         resolve(preconditionStatus.apiKey)
@@ -57,6 +62,7 @@ describe('ui:create:angular', () => {
     };
     mockedIsNodeVersionInRange.mockReturnValue(mockNode);
     mockedIsNpmVersionInRange.mockReturnValue(mockNpm);
+    mockedIsNgInstalled.mockReturnValue(mockNg);
     mockedApiKeyPrivilege.mockReturnValue(mockApiKeyPrivilege);
   };
 
@@ -69,18 +75,7 @@ describe('ui:create:angular', () => {
   };
 
   const doMockConfiguration = () => {
-    mockedConfig.mockImplementation(
-      () =>
-        ({
-          get: () =>
-            ({
-              environment: 'dev',
-              organization: 'my-org',
-              region: 'us-east-1',
-              analyticsEnabled: true,
-            } as Configuration),
-        } as Config)
-    );
+    mockedConfig.mockImplementation(configurationMock());
   };
 
   const doMockAuthenticatedClient = () => {
@@ -128,6 +123,7 @@ describe('ui:create:angular', () => {
     doMockPreconditions();
     preconditionStatus.npm = true;
     preconditionStatus.node = true;
+    preconditionStatus.ng = true;
     preconditionStatus.apiKey = true;
   });
 
@@ -175,22 +171,14 @@ describe('ui:create:angular', () => {
         expect(mockedSpawnProcess).toHaveBeenCalledTimes(2);
         expect(mockedSpawnProcess).nthCalledWith(
           1,
-          'node',
-          [
-            expect.stringContaining(angularAppExecutable),
-            'new',
-            'myapp',
-            '--style',
-            'scss',
-            '--routing',
-          ],
+          expect.stringContaining('ng'),
+          ['new', 'myapp', '--style', 'scss', '--routing'],
           expect.objectContaining({})
         );
         expect(mockedSpawnProcess).nthCalledWith(
           2,
-          'node',
+          expect.stringContaining('ng'),
           [
-            expect.stringContaining(angularAppExecutable),
             'add',
             '@coveo/angular@1.0.0',
             '--org-id',

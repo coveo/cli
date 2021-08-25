@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.13.0](https://github.com/coveo/cli/compare/v1.12.0...v1.13.0) (2021-08-12)
+
+
+### Bug Fixes
+
+* **deps:** update all dependencies j:cdx-227 ([#411](https://github.com/coveo/cli/issues/411)) ([c2363ff](https://github.com/coveo/cli/commit/c2363ffbb7e68b819f84b5fcc528893e574bdbb8))
+* **deps:** update all dependencies j:cdx-227 ([#415](https://github.com/coveo/cli/issues/415)) ([b287d72](https://github.com/coveo/cli/commit/b287d721502fde507826080ec5414662338ce38c))
+
+
+### Features
+
+* **snapshot:** add a `--wait` flag on all `org:config:*` commands ([#397](https://github.com/coveo/cli/issues/397)) ([a74c1de](https://github.com/coveo/cli/commit/a74c1de0a2685e4748078b2490194061cc06b4ce)), closes [#398](https://github.com/coveo/cli/issues/398) [#404](https://github.com/coveo/cli/issues/404)
+
+
+
+
+
 # [1.12.0](https://github.com/coveo/cli/compare/v1.11.0...v1.12.0) (2021-08-03)
 
 **Note:** Version bump only for package @coveo/angular

@@ -1,3 +1,4 @@
+jest.mock('../../../lib/decorators/preconditions/npx');
 jest.mock('../../../lib/decorators/preconditions/node');
 jest.mock('../../../lib/decorators/preconditions/apiKeyPrivilege');
 jest.mock('../../../lib/utils/process');
@@ -9,19 +10,20 @@ jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
 jest.mock('@coveord/platform-client');
 
-import {join} from 'path';
 import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
 import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
-import {Config, Configuration} from '../../../lib/config/config';
+import {Config} from '../../../lib/config/config';
 import {
   IsNodeVersionInRange,
+  IsNpxInstalled,
   HasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import Command from '@oclif/command';
+import {configurationMock} from '../../../__stub__/configuration';
 
 describe('ui:create:vue', () => {
   const mockedConfig = mocked(Config);
@@ -29,12 +31,14 @@ describe('ui:create:vue', () => {
   const mockedPlatformClient = mocked(PlatformClient);
   const mockedGetPackageVersion = mocked(getPackageVersion);
   const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+  const mockedIsNpxInstalled = mocked(IsNpxInstalled, true);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
-  const vueAppExecutable = join('@vue', 'cli', 'bin', 'vue.js'); //TODO: change that
+  const vueCliPackage = '@vue/cli';
   const mockedApiKeyPrivilege = mocked(HasNecessaryCoveoPrivileges, true);
   const mockedCreateImpersonateApiKey = jest.fn();
   const preconditionStatus = {
     node: true,
+    npx: true,
     apiKey: true,
   };
   const doMockPreconditions = function () {
@@ -43,12 +47,16 @@ describe('ui:create:vue', () => {
         resolve(preconditionStatus.node)
       );
     };
+    const mockNpx = function (_target: Command) {
+      return new Promise<boolean>((resolve) => resolve(preconditionStatus.npx));
+    };
     const mockApiKeyPrivilege = function (_target: Command) {
       return new Promise<boolean>((resolve) =>
         resolve(preconditionStatus.apiKey)
       );
     };
     mockedIsNodeVersionInRange.mockReturnValue(mockNode);
+    mockedIsNpxInstalled.mockReturnValue(mockNpx);
     mockedApiKeyPrivilege.mockReturnValue(mockApiKeyPrivilege);
   };
 
@@ -61,18 +69,7 @@ describe('ui:create:vue', () => {
   };
 
   const doMockConfiguration = () => {
-    mockedConfig.mockImplementation(
-      () =>
-        ({
-          get: () =>
-            ({
-              environment: 'dev',
-              organization: 'my-org',
-              region: 'us-east-1',
-              analyticsEnabled: true,
-            } as Configuration),
-        } as Config)
-    );
+    mockedConfig.mockImplementation(configurationMock());
   };
 
   const doMockAuthenticatedClient = () => {
@@ -119,6 +116,7 @@ describe('ui:create:vue', () => {
     doMockAuthenticatedClient();
     doMockPreconditions();
     preconditionStatus.node = true;
+    preconditionStatus.npx = true;
     preconditionStatus.apiKey = true;
   });
 
@@ -164,9 +162,9 @@ describe('ui:create:vue', () => {
       expect(mockedSpawnProcess).toHaveBeenCalledTimes(2);
       expect(mockedSpawnProcess).nthCalledWith(
         1,
-        'node',
+        expect.stringContaining('npx'),
         [
-          expect.stringContaining(vueAppExecutable),
+          `${vueCliPackage}@1.0.0`,
           'create',
           'myapp',
           '--inlinePreset',
@@ -178,9 +176,9 @@ describe('ui:create:vue', () => {
       );
       expect(mockedSpawnProcess).nthCalledWith(
         2,
-        'node',
+        expect.stringContaining('npx'),
         [
-          expect.stringContaining(vueAppExecutable),
+          `${vueCliPackage}@1.0.0`,
           'add',
           '@coveo/vue-cli-plugin-typescript@1.0.0',
           '--orgId',

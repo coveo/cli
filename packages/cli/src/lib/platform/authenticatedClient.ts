@@ -3,10 +3,7 @@ require('abortcontroller-polyfill');
 
 import PlatformClient from '@coveord/platform-client';
 import {Config, Configuration} from '../config/config';
-import {
-  castEnvironmentToPlatformClient,
-  castRegionToPlatformClient,
-} from './environment';
+import {castEnvironmentToPlatformClient} from './environment';
 
 export class AuthenticatedClient {
   public cfg: Config;
@@ -35,7 +32,7 @@ export class AuthenticatedClient {
 
     return new PlatformClient({
       environment: castEnvironmentToPlatformClient(resolvedConfig.environment),
-      region: castRegionToPlatformClient(resolvedConfig.region),
+      region: resolvedConfig.region,
       organizationId: resolvedConfig.organization,
       accessToken: resolvedConfig.accessToken!,
     });

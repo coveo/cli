@@ -10,14 +10,17 @@ import {
   IsAuthenticated,
   IsNodeVersionInRange,
   HasNecessaryCoveoPrivileges,
+  IsNpxInstalled,
 } from '../../../lib/decorators/preconditions';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {platformUrl} from '../../../lib/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';
 import {getPackageVersion} from '../../../lib/utils/misc';
+import {appendCmdIfWindows} from '../../../lib/utils/os';
 
 export default class Vue extends Command {
   public static templateName = '@coveo/vue-cli-plugin-typescript';
+  public static cliPackage = '@vue/cli';
 
   /**
    * @see https://cli.vuejs.org/guide/installation.html for current requirements.
@@ -61,6 +64,7 @@ export default class Vue extends Command {
   @Preconditions(
     IsAuthenticated(),
     IsNodeVersionInRange(Vue.requiredNodeVersion),
+    IsNpxInstalled(),
     HasNecessaryCoveoPrivileges()
   )
   public async run() {
@@ -162,8 +166,11 @@ export default class Vue extends Command {
   }
 
   private runVueCliCommand(args: string[], options = {}) {
-    const executable = require.resolve('@vue/cli/bin/vue.js');
-    return spawnProcess('node', [executable, ...args], options);
+    return spawnProcess(
+      appendCmdIfWindows`npx`,
+      [`${Vue.cliPackage}@${getPackageVersion(Vue.cliPackage)}`, ...args],
+      options
+    );
   }
 
   private get configuration() {

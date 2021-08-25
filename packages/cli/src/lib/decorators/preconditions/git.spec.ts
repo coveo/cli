@@ -5,16 +5,15 @@ import {mocked} from 'ts-jest/utils';
 import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from './testsUtils/utils';
 
-import {IsNpxInstalled} from './npx';
-import {appendCmdIfWindows} from '../../utils/os';
+import {IsGitInstalled} from './git';
 
-describe('IsNpxInstalled', () => {
+describe('IsGitInstalled', () => {
   const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
   beforeEach(() => {
     jest.resetAllMocks();
   });
 
-  describe('when npx is not installed', () => {
+  describe('when git is not installed', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
         exitCode: 'ENOENT',
@@ -26,26 +25,22 @@ describe('IsNpxInstalled', () => {
     it('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNpxInstalled()(fakeCommand)).resolves.toBe(false);
-      expect(fakeCommand.warn).toHaveBeenCalledTimes(3);
+      await expect(IsGitInstalled()(fakeCommand)).resolves.toBe(false);
+      expect(fakeCommand.warn).toHaveBeenCalledTimes(2);
       expect(fakeCommand.warn).toHaveBeenNthCalledWith(
         1,
-        'foo requires npx to run.'
+        'foo requires Git to run.'
       );
       expect(fakeCommand.warn).toHaveBeenNthCalledWith(
         2,
         dedent`
-       Please visit https://github.com/coveo/cli/wiki/Node.js,-NPM-and-NPX-requirements for more detailed installation information.
+       Please visit https://git-scm.com/book/en/v2/Getting-Started-Installing-Git for more detailed installation information.
       `
-      );
-      expect(fakeCommand.warn).toHaveBeenNthCalledWith(
-        3,
-        'Newer version Node.js comes bundled with npx.'
       );
     });
   });
 
-  describe('when an unknown error happens while checking for npx', () => {
+  describe('when an unknown error happens while checking for git', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
         exitCode: '1',
@@ -57,23 +52,20 @@ describe('IsNpxInstalled', () => {
     it('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNpxInstalled()(fakeCommand)).resolves.toBe(false);
-      expect(fakeCommand.warn).toHaveBeenCalledTimes(3);
+      await expect(IsGitInstalled()(fakeCommand)).resolves.toBe(false);
+      expect(fakeCommand.warn).toHaveBeenCalledTimes(2);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
-        foo requires a valid npx installation to run.
-        An unknown error happened while running ${appendCmdIfWindows`npx`} --version.
+        foo requires a valid Git installation to run.
+        An unknown error happened while running git --version.
         some random error oh no
       `);
       expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
-        Please visit https://github.com/coveo/cli/wiki/Node.js,-NPM-and-NPX-requirements for more detailed installation information.
+        Please visit https://git-scm.com/book/en/v2/Getting-Started-Installing-Git for more detailed installation information.
       `);
-      expect(fakeCommand.warn).toHaveBeenCalledWith(
-        'Newer version Node.js comes bundled with npx.'
-      );
     });
   });
 
-  describe('when npx is installed', () => {
+  describe('when git is installed', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
         exitCode: '0',
@@ -85,7 +77,7 @@ describe('IsNpxInstalled', () => {
     it('should return true and not warn', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNpxInstalled()(fakeCommand)).resolves.toBe(true);
+      await expect(IsGitInstalled()(fakeCommand)).resolves.toBe(true);
       expect(fakeCommand.warn).toHaveBeenCalledTimes(0);
     });
   });

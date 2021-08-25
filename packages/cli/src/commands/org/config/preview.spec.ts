@@ -1,3 +1,4 @@
+jest.mock('../../../lib/decorators/preconditions/git');
 jest.mock('../../../lib/config/config');
 jest.mock('../../../hooks/analytics/analytics');
 jest.mock('../../../hooks/prerun/prerun');
@@ -22,6 +23,8 @@ import {
   getErrorReport,
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
+import {Command} from '@oclif/command';
+import {IsGitInstalled} from '../../../lib/decorators/preconditions';
 
 const mockedSnapshotFactory = mocked(SnapshotFactory, true);
 const mockedConfig = mocked(Config);
@@ -36,7 +39,7 @@ const mockedRequiresSynchronization = jest.fn();
 const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
 const mockedLastReport = jest.fn();
-
+const mockedIsGitInstalled = mocked(IsGitInstalled, true);
 const mockProject = () => {
   mockedProject.mockImplementation(
     () =>
@@ -51,7 +54,7 @@ const mockProject = () => {
 const mockConfig = () => {
   mockedConfigGet.mockReturnValue(
     Promise.resolve({
-      region: 'us-east-1',
+      region: 'us',
       organization: 'foo',
       environment: 'prod',
     })
@@ -102,11 +105,26 @@ const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
 };
 
 describe('org:config:preview', () => {
+  const preconditionStatus = {
+    git: true,
+  };
+  const doMockPreconditions = function () {
+    const mockGit = function (_target: Command) {
+      return new Promise<boolean>((resolve) => resolve(preconditionStatus.git));
+    };
+    mockedIsGitInstalled.mockReturnValue(mockGit);
+  };
+
   beforeAll(() => {
     mockConfig();
     mockProject();
   });
-
+  beforeEach(() => {
+    doMockPreconditions();
+  });
+  afterEach(() => {
+    mockedIsGitInstalled.mockClear();
+  });
   describe('when the report contains no resources in error', () => {
     beforeAll(async () => {
       await mockSnapshotFactoryReturningValidSnapshot();

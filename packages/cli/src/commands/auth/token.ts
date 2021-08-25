@@ -1,14 +1,13 @@
 import {Command, flags} from '@oclif/command';
 import {Config} from '../../lib/config/config';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
-import {
-  PlatformEnvironment,
-  PlatformRegion,
-} from '../../lib/platform/environment';
+import {PlatformEnvironment} from '../../lib/platform/environment';
 import {
   buildAnalyticsFailureHook,
   buildAnalyticsSuccessHook,
 } from '../../hooks/analytics/analytics';
+import {Region} from '@coveord/platform-client';
+import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
 
 export default class Token extends Command {
   private configuration!: Config;
@@ -18,25 +17,8 @@ export default class Token extends Command {
   public static examples = ['$ coveo auth:token'];
 
   public static flags = {
-    region: flags.string({
-      char: 'r',
-      options: [
-        'us-east-1',
-        'eu-west-1',
-        'eu-west-3',
-        'ap-southeast-2',
-        'us-west-2',
-      ],
-      default: 'us-east-1',
-      description:
-        'The Coveo Platform region to log in to. See <https://docs.coveo.com/en/2976>.',
-    }),
-    environment: flags.string({
-      char: 'e',
-      options: ['dev', 'qa', 'prod', 'hipaa'],
-      default: 'prod',
-      description: 'The Coveo Platform environment to log in to.',
-    }),
+    ...withRegion(),
+    ...withEnvironment(),
     token: flags.string({
       char: 't',
       description:
@@ -88,7 +70,7 @@ export default class Token extends Command {
     const flags = this.flags;
     const cfg = this.configuration;
     cfg.set('environment', flags.environment as PlatformEnvironment);
-    cfg.set('region', flags.region as PlatformRegion);
+    cfg.set('region', flags.region as Region);
   }
 
   private async fetchAndSaveOrgId() {

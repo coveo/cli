@@ -1,7 +1,6 @@
 jest.mock('../../utils/process');
 
 import {dedent} from 'ts-dedent';
-import {constants} from 'os';
 import {mocked} from 'ts-jest/utils';
 import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from './testsUtils/utils';
@@ -32,7 +31,7 @@ describe('IsNodeVersionInRange', () => {
   describe('when Node.js is not installed', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
-        exitCode: constants.errno.ENOENT,
+        exitCode: 'ENOENT',
         stderr: '',
         stdout: '',
       });
@@ -57,7 +56,7 @@ describe('IsNodeVersionInRange', () => {
   describe('when an unknown error happens while getting the node version', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
-        exitCode: 1,
+        exitCode: '1',
         stderr: 'some random error oh no',
         stdout: '',
       });
@@ -84,7 +83,7 @@ describe('IsNodeVersionInRange', () => {
   describe('when the installed version of node is lower than the required one', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
-        exitCode: 0,
+        exitCode: '0',
         stderr: '',
         stdout: 'v0.9.0',
       });
@@ -110,7 +109,7 @@ describe('IsNodeVersionInRange', () => {
   describe('when the installed version of node is above than the required one', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
-        exitCode: 0,
+        exitCode: '0',
         stderr: '',
         stdout: 'v1.1.0',
       });
@@ -129,7 +128,7 @@ describe('IsNodeVersionInRange', () => {
   describe('when the installed version of node is the same as the required one', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
-        exitCode: 0,
+        exitCode: '0',
         stderr: '',
         stdout: 'v1.0.0',
       });

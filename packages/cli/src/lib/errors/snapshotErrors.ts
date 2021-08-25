@@ -1,12 +1,48 @@
 import {blueBright} from 'chalk';
+import {cli} from 'cli-ux';
 import dedent from 'ts-dedent';
 import {Configuration} from '../config/config';
 import {Snapshot} from '../snapshot/snapshot';
 import {SnapshotUrlBuilder} from '../snapshot/snapshotUrlBuilder';
 
-export class SnapshotOperationTimeoutError extends Error {
-  public constructor(public snapshot: Snapshot) {
+enum SeverityLevel {
+  Info = 'info',
+  Warn = 'warn',
+  Error = 'error',
+}
+
+interface IDetailedReportable extends SnapshotError {
+  snapshot: Snapshot;
+  level: SeverityLevel;
+  projectPath?: string;
+}
+
+function trySavingDetailedReport(error: IDetailedReportable) {
+  if (error.projectPath) {
+    const reportPath = error.snapshot.saveDetailedReport(error.projectPath);
+    error.message += dedent`\n\n
+          Detailed report saved at ${reportPath}`;
+  }
+}
+
+export class SnapshotError extends Error {
+  public constructor(public level: SeverityLevel) {
     super();
+  }
+
+  public print() {
+    cli.log();
+    cli[this.level]('\n' + this.message);
+  }
+}
+
+export class SnapshotOperationTimeoutError
+  extends SnapshotError
+  implements IDetailedReportable
+{
+  public name = 'Snapshot Operation Timeout Error';
+  public constructor(public snapshot: Snapshot) {
+    super(SeverityLevel.Info);
     this.message = dedent`${
       snapshot.latestReport.type
     } operation is taking a long time to complete.
@@ -16,9 +52,17 @@ export class SnapshotOperationTimeoutError extends Error {
   }
 }
 
-export class SnapshotSynchronizationError extends Error {
-  public constructor(public snapshot: Snapshot, public cfg: Configuration) {
-    super();
+export class SnapshotSynchronizationError
+  extends SnapshotError
+  implements IDetailedReportable
+{
+  public name = 'Snapshot Synchronization Error';
+  public constructor(
+    public snapshot: Snapshot,
+    public cfg: Configuration,
+    public projectPath?: string
+  ) {
+    super(SeverityLevel.Warn);
     const urlBuilder = new SnapshotUrlBuilder(cfg);
     const synchronizationPlanUrl = urlBuilder.getSynchronizationPage(snapshot);
 
@@ -26,24 +70,30 @@ export class SnapshotSynchronizationError extends Error {
       Some conflicts were detected while comparing changes between the snapshot and the target organization.
       Click on the URL below to synchronize your snapshot with your organization before running another push command.
       ${synchronizationPlanUrl}`;
+
+    trySavingDetailedReport(this);
   }
 }
 
-export class SnapshotGenericError extends Error {
+export class SnapshotGenericError
+  extends SnapshotError
+  implements IDetailedReportable
+{
+  public name = 'Snapshot Error';
   public constructor(
     public snapshot: Snapshot,
     public cfg: Configuration,
-    public pathToReport: string
+    public projectPath?: string
   ) {
-    super();
+    super(SeverityLevel.Error);
     const report = snapshot.latestReport;
     const urlBuilder = new SnapshotUrlBuilder(cfg);
     const snapshotUrl = urlBuilder.getSnapshotPage(snapshot);
 
     this.message = dedent`Invalid snapshot - ${report.resultCode}.
-      Detailed report saved at ${pathToReport}.
-
       You can also use this link to view the snapshot in the Coveo Admin Console
       ${snapshotUrl}`;
+
+    trySavingDetailedReport(this);
   }
 }

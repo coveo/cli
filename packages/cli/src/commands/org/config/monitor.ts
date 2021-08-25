@@ -1,7 +1,6 @@
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
 import {cli} from 'cli-ux';
-import dedent from 'ts-dedent';
 import {
   buildAnalyticsFailureHook,
   buildAnalyticsSuccessHook,
@@ -17,10 +16,10 @@ import {
   waitFlag,
   getTargetOrg,
   handleSnapshotError,
+  handleReportWithErrors,
 } from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
-import {SnapshotUrlBuilder} from '../../../lib/snapshot/snapshotUrlBuilder';
 
 export default class Monitor extends Command {
   public static description = 'Monitor a Snapshot operation';
@@ -77,27 +76,10 @@ export default class Monitor extends Command {
     reporter: SnapshotReporter
   ) {
     if (!reporter.isSuccessReport()) {
-      await this.displaySnapshotError(snapshot, reporter);
+      const cfg = await this.configuration.get();
+      cli.log(ReportViewerStyles.error(reporter.resultCode));
+      await handleReportWithErrors(snapshot, cfg);
     }
-  }
-
-  // TODO: CDX-533: use Custom error instead
-  private async displaySnapshotError(
-    snapshot: Snapshot,
-    reporter: SnapshotReporter
-  ) {
-    cli.log(ReportViewerStyles.error(reporter.resultCode));
-    cli.log();
-    const cfg = await this.configuration.get();
-    const urlBuilder = new SnapshotUrlBuilder(cfg);
-    const snapshotUrl = urlBuilder.getSnapshotPage(snapshot);
-
-    cli.error(
-      dedent`Invalid snapshot - ${snapshot.latestReport.resultCode}.
-
-        You can also use this link to view the snapshot in the Coveo Admin Console:
-        ${snapshotUrl}`
-    );
   }
 
   private printHeader() {

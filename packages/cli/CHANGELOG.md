@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.13.0](https://github.com/coveo/cli/compare/v1.12.0...v1.13.0) (2021-08-12)
+
+
+### Bug Fixes
+
+* **cli:** add description fields in package.json ([#396](https://github.com/coveo/cli/issues/396)) ([4dfc8d3](https://github.com/coveo/cli/commit/4dfc8d3fe35771fbe66f15a95c8c0a02a8eaff3a))
+* **cli:** handle npx 7 ([#409](https://github.com/coveo/cli/issues/409)) ([fb2a849](https://github.com/coveo/cli/commit/fb2a849bb524f8b914f7ad9e470c0977594dad35))
+* **deps:** update all dependencies j:cdx-227 ([#411](https://github.com/coveo/cli/issues/411)) ([c2363ff](https://github.com/coveo/cli/commit/c2363ffbb7e68b819f84b5fcc528893e574bdbb8))
+* **snapshot:** add check before generating expanded preview ([#427](https://github.com/coveo/cli/issues/427)) ([4207eab](https://github.com/coveo/cli/commit/4207eab8647372f4ac9a92e2e94961323317602c))
+* **snapshot:** do not delete snapshot if cannot apply ([#422](https://github.com/coveo/cli/issues/422)) ([b499bca](https://github.com/coveo/cli/commit/b499bca1d534d5a597f207c6753d890ca4aaed91))
+
+
+### Features
+
+* **cli:** expanded preview ([#267](https://github.com/coveo/cli/issues/267)) ([69262c1](https://github.com/coveo/cli/commit/69262c1c62d2df43cdc9aedc4f6e9d3ae4191a0c)), closes [#365](https://github.com/coveo/cli/issues/365)
+* **snapshot:** add a `--wait` flag on all `org:config:*` commands ([#397](https://github.com/coveo/cli/issues/397)) ([a74c1de](https://github.com/coveo/cli/commit/a74c1de0a2685e4748078b2490194061cc06b4ce)), closes [#398](https://github.com/coveo/cli/issues/398) [#404](https://github.com/coveo/cli/issues/404)
+* **snapshot:** add better logs to monitor command ([#412](https://github.com/coveo/cli/issues/412)) ([792f716](https://github.com/coveo/cli/commit/792f716d9a9474e552a3c34ba6fda01a5bc596b5))
+* **snapshot:** change `--wait` flag character ([#414](https://github.com/coveo/cli/issues/414)) ([00cd92c](https://github.com/coveo/cli/commit/00cd92c812b95d25f8891fcd0ef1ff5815063650))
+* **snapshot:** enforce json format. ([#405](https://github.com/coveo/cli/issues/405)) ([d0146d5](https://github.com/coveo/cli/commit/d0146d5b9338862e6ee75a7e853cb5263c124007)), closes [#365](https://github.com/coveo/cli/issues/365)
+
+
+
+
+
 # [1.12.0](https://github.com/coveo/cli/compare/v1.11.0...v1.12.0) (2021-08-03)
 
 
