@@ -1,6 +1,7 @@
 jest.mock('../../../lib/decorators/preconditions/npm');
 jest.mock('../../../lib/decorators/preconditions/node');
 jest.mock('../../../lib/decorators/preconditions/ng');
+jest.mock('../../../lib/decorators/preconditions/apiKeyPrivilege');
 jest.mock('../../../lib/utils/process');
 jest.mock('../../../lib/oauth/oauth');
 jest.mock('../../../lib/config/config');
