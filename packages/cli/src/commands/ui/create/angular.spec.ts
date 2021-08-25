@@ -12,7 +12,7 @@ jest.mock('@coveord/platform-client');
 
 import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
-import {spawnProcess} from '../../../lib/utils/process';
+import {spawnProcess, spawnProcessOutput} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
 import {Config} from '../../../lib/config/config';
@@ -28,6 +28,7 @@ import {configurationMock} from '../../../__stub__/configuration';
 describe('ui:create:angular', () => {
   const mockedConfig = mocked(Config);
   const mockedSpawnProcess = mocked(spawnProcess, true);
+  const mockedSpawnProcessOutput = mocked(spawnProcessOutput, true);
   const mockedPlatformClient = mocked(PlatformClient);
   const mockedGetPackageVersion = mocked(getPackageVersion);
   const mockedAuthenticatedClient = mocked(AuthenticatedClient);
@@ -58,6 +59,11 @@ describe('ui:create:angular', () => {
 
   const doMockSpawnProcess = () => {
     mockedSpawnProcess.mockResolvedValue(Promise.resolve(0));
+    mockedSpawnProcessOutput.mockResolvedValue({
+      stdout: '',
+      stderr: '',
+      exitCode: '',
+    });
   };
 
   const doMockedGetPackageVersion = () => {
@@ -144,7 +150,6 @@ describe('ui:create:angular', () => {
     .it(
       'should start a spawn process with the appropriate arguments',
       async () => {
-        expect(mockedSpawnProcess).toHaveBeenCalledTimes(2);
         expect(mockedSpawnProcess).nthCalledWith(
           1,
           expect.stringContaining('ng'),
