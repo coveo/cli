@@ -21,7 +21,7 @@ import {EOL} from 'os';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
-import {isDirectoryClean} from '../utils/git';
+import {commitProject, undoCommit} from '../utils/git';
 import {resolve, join} from 'path';
 import {parse} from 'dotenv';
 import {readFileSync, writeFileSync, truncateSync, appendFileSync} from 'fs';
@@ -31,7 +31,7 @@ import {npm} from '../utils/windows';
 import axios from 'axios';
 import {jwtTokenPattern} from '../utils/matcher';
 
-describe('ui:create:angular', () => {
+describe.skip('ui:create:angular', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
   let page: Page;
@@ -221,6 +221,11 @@ describe('ui:create:angular', () => {
     });
 
     afterAll(async () => {
+      await undoCommit(
+        serverProcessManager,
+        getProjectPath(projectName),
+        projectName
+      );
       await serverProcessManager.killAllProcesses();
     }, 5 * 60e3);
 
@@ -280,18 +285,18 @@ describe('ui:create:angular', () => {
       });
     }, 60e3);
 
-    it('should have a clean working directory', async () => {
-      const gitDirtyWorkingTreeSpy = jest.fn();
+    it('should be commited without lint-stage errors', async () => {
+      const eslintErrorSpy = jest.fn();
 
-      await isDirectoryClean(
+      await commitProject(
         serverProcessManager,
         getProjectPath(projectName),
         projectName,
-        gitDirtyWorkingTreeSpy
+        eslintErrorSpy
       );
 
-      expect(gitDirtyWorkingTreeSpy).not.toBeCalled();
-    }, 10e3);
+      expect(eslintErrorSpy).not.toBeCalled();
+    }, 60e3);
   });
 
   describe('when the .env file is missing', () => {
