@@ -43,8 +43,10 @@ export class BrowserConsoleInterceptor {
   ) {
     if (typesToIntercept.some((type) => type === message.type)) {
       message.args.forEach((arg) => {
-        this.interceptedMessages.push(arg.value);
-        this.logMessage(arg.value, message.type);
+        if (arg.value) {
+          this.interceptedMessages.push(arg.value);
+          this.logMessage(arg.value, message.type);
+        }
       });
     }
   }
