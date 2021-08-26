@@ -20,6 +20,7 @@ import {
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {EOL} from 'os';
 import {npxInPty} from '../../../lib/utils/npx';
+import {tryGitCommit} from '../../../lib/utils/git';
 
 export default class React extends Command {
   public static templateName = '@coveo/cra-template';
@@ -70,6 +71,7 @@ export default class React extends Command {
     cli.action.start('Creating search token server');
     await this.setupServer(args.name);
     await this.setupEnvironmentVariables(args.name);
+    await tryGitCommit(args.name, 'Add token server to project');
     cli.action.stop();
 
     this.log(EOL);
