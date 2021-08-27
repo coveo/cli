@@ -1,6 +1,7 @@
 jest.mock('../../../lib/decorators/preconditions/npm');
 jest.mock('../../../lib/decorators/preconditions/node');
 jest.mock('../../../lib/decorators/preconditions/ng');
+jest.mock('../../../lib/decorators/preconditions/apiKeyPrivilege');
 jest.mock('../../../lib/utils/process');
 jest.mock('../../../lib/oauth/oauth');
 jest.mock('../../../lib/config/config');
@@ -19,6 +20,7 @@ import {Config} from '../../../lib/config/config';
 import {
   IsNpmVersionInRange,
   IsNodeVersionInRange,
+  HasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import Command from '@oclif/command';
@@ -34,10 +36,13 @@ describe('ui:create:angular', () => {
   const mockedIsNpmVersionInRange = mocked(IsNpmVersionInRange, true);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
   const mockedIsNgInstalled = mocked(IsNgInstalled, true);
+  const mockedApiKeyPrivilege = mocked(HasNecessaryCoveoPrivileges, true);
+  const mockedCreateImpersonateApiKey = jest.fn();
   const preconditionStatus = {
     node: true,
     npm: true,
     ng: true,
+    apiKey: true,
   };
   const doMockPreconditions = function () {
     const mockNode = function (_target: Command) {
@@ -51,9 +56,15 @@ describe('ui:create:angular', () => {
     const mockNg = function (_target: Command) {
       return new Promise<boolean>((resolve) => resolve(preconditionStatus.ng));
     };
+    const mockApiKeyPrivilege = function (_target: Command) {
+      return new Promise<boolean>((resolve) =>
+        resolve(preconditionStatus.apiKey)
+      );
+    };
     mockedIsNodeVersionInRange.mockReturnValue(mockNode);
     mockedIsNpmVersionInRange.mockReturnValue(mockNpm);
     mockedIsNgInstalled.mockReturnValue(mockNg);
+    mockedApiKeyPrivilege.mockReturnValue(mockApiKeyPrivilege);
   };
 
   const doMockSpawnProcess = () => {
@@ -69,13 +80,14 @@ describe('ui:create:angular', () => {
   };
 
   const doMockAuthenticatedClient = () => {
+    mockedCreateImpersonateApiKey.mockImplementation((_name: string) =>
+      Promise.resolve({value: 'foo'})
+    );
+
     mockedAuthenticatedClient.mockImplementation(
       () =>
         ({
-          createImpersonateApiKey: (_name: string) =>
-            Promise.resolve({
-              value: 'foo',
-            }),
+          createImpersonateApiKey: mockedCreateImpersonateApiKey,
           getUserInfo: () =>
             Promise.resolve({
               username: 'bob@coveo.com',
@@ -90,7 +102,7 @@ describe('ui:create:angular', () => {
               })
             ),
           cfg: mockedConfig.getMockImplementation()!('./'),
-        } as AuthenticatedClient)
+        } as unknown as AuthenticatedClient)
     );
   };
 
@@ -113,12 +125,25 @@ describe('ui:create:angular', () => {
     preconditionStatus.npm = true;
     preconditionStatus.node = true;
     preconditionStatus.ng = true;
+    preconditionStatus.apiKey = true;
   });
 
   afterEach(() => {
     mockedIsNodeVersionInRange.mockClear();
     mockedIsNpmVersionInRange.mockClear();
   });
+
+  test
+    .do(() => {
+      preconditionStatus.apiKey = false;
+    })
+    .command(['ui:create:angular', 'myapp'])
+    .it(
+      'should not execute the command if the API key preconditions are not respected',
+      async () => {
+        expect(mockedCreateImpersonateApiKey).toHaveBeenCalledTimes(0);
+      }
+    );
 
   test
     .do(() => {

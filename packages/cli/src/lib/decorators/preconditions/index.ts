@@ -4,4 +4,5 @@ export * from './npx';
 export * from './npm';
 export * from './ng';
 export * from './authenticated';
+export * from './apiKeyPrivilege';
 export * from './preconditions';
