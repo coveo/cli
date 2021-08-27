@@ -13,6 +13,7 @@ import {
   IsAuthenticated,
   IsNodeVersionInRange,
   IsNpmVersionInRange,
+  HasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions/';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {IsNgInstalled} from '../../../lib/decorators/preconditions/ng';
@@ -54,7 +55,8 @@ export default class Angular extends Command {
     IsAuthenticated(),
     IsNodeVersionInRange(Angular.requiredNodeVersion),
     IsNpmVersionInRange(Angular.requiredNpmVersion),
-    IsNgInstalled()
+    IsNgInstalled(),
+    HasNecessaryCoveoPrivileges()
   )
   public async run() {
     const {args, flags} = this.parse(Angular);
