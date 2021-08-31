@@ -6,6 +6,7 @@ import {
   PlatformClient,
   ResourceSnapshotsReportType,
   SnapshotExportContentFormat,
+  ResourceSnapshotsSynchronizationReportModel,
 } from '@coveord/platform-client';
 import retry from 'async-retry';
 import {ReportViewer} from './reportPreviewer/reportPreviewer';
@@ -15,7 +16,12 @@ import {SnapshotReporter} from './snapshotReporter';
 import {SnapshotOperationTimeoutError} from '../errors';
 import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer';
 import {Project} from '../project/project';
+import {SynchronizationPlan} from './synchronization/synchronizationPlan';
+import {SnapshotSynchronizationReporter} from './synchronization/synchronizationReporter';
 
+export type SnapshotReport =
+  | ResourceSnapshotsReportModel
+  | ResourceSnapshotsSynchronizationReportModel;
 export interface WaitUntilDoneOptions {
   /**
    * The maximum number of seconds to wait before the commands exits with a timeout error.
@@ -110,9 +116,38 @@ export class Snapshot {
     });
   }
 
+  public async createSynchronizationPlan(options: WaitUntilDoneOptions = {}) {
+    const plan = await this.snapshotClient.createSynchronizationPlan(this.id);
+
+    await this.waitUntilDone({
+      operationToWaitFor: ResourceSnapshotsReportType.CreateSynchronizationPlan,
+      ...options,
+    });
+
+    return new SynchronizationPlan(plan);
+    // return plan;
+  }
+
+  public async applySynchronizationPlan(
+    planId: string,
+    options: WaitUntilDoneOptions = {}
+  ) {
+    const report = await this.snapshotClient.applySynchronizationPlan(
+      this.id,
+      planId
+    );
+
+    await this.waitUntilDone({
+      operationToWaitFor: ResourceSnapshotsReportType.ApplySynchronizationPlan,
+      ...options,
+    });
+
+    return new SnapshotSynchronizationReporter(report);
+    // return report;
+  }
+
   public requiresSynchronization() {
-    // TODO: backend should provide a specific result code for snapshots that are out of sync with the target org.
-    // Waiting for the JIRA number...
+    // TODO: CDX-556: add a better check to know if the snapshot contains synchronization errors
     return (
       this.latestReport.resultCode ===
       ResourceSnapshotsReportResultCode.ResourcesInError
@@ -131,11 +166,20 @@ export class Snapshot {
   }
 
   public get latestReport(): ResourceSnapshotsReportModel {
-    if (!Array.isArray(this.model.reports) || this.model.reports.length === 0) {
+    const reports = this.model.reports;
+    if (!Array.isArray(reports) || reports.length === 0) {
       throw new Error(`No detailed report found for the snapshot ${this.id}`);
     }
-    const sortedReports = this.model.reports.sort(
-      (a, b) => b.updatedDate - a.updatedDate
+    const sortedReports = reports.sort((a, b) => b.updatedDate - a.updatedDate);
+    return sortedReports[0];
+  }
+
+  public get latestSynchronizationReport() {
+    if (!this.wasSynchronizedAtLeastOnce(this.model.synchronizationReports)) {
+      return null;
+    }
+    const sortedReports = this.sortReportsByDate(
+      this.model.synchronizationReports
     );
     return sortedReports[0];
   }
@@ -148,8 +192,19 @@ export class Snapshot {
     return this.model.targetId;
   }
 
-  private get snapshotClient() {
+  public get snapshotClient() {
     return this.client.resourceSnapshot;
+  }
+
+  private sortReportsByDate<T extends SnapshotReport>(report: T[]) {
+    return report.sort((a, b) => b.updatedDate - a.updatedDate);
+  }
+
+  private wasSynchronizedAtLeastOnce(
+    synchronizationReports?: ResourceSnapshotsSynchronizationReportModel[]
+  ): synchronizationReports is ResourceSnapshotsSynchronizationReportModel[] {
+    const reports = this.model.synchronizationReports;
+    return Array.isArray(reports) && reports.length > 0;
   }
 
   private displayLightPreview() {
@@ -200,16 +255,26 @@ export class Snapshot {
     return (async () => {
       await this.refreshSnapshotData();
 
+      // TODO:  AIE AIE... un peu trop complexe a lire
       const isExpectedOperation =
-        !operationToWaitFor || this.latestReport.type === operationToWaitFor;
+        !operationToWaitFor ||
+        this.latestReport.type === operationToWaitFor ||
+        !this.latestSynchronizationReport ||
+        this.latestSynchronizationReport.type === operationToWaitFor;
 
       const isOngoing = Snapshot.ongoingReportStatuses.includes(
         this.latestReport.status
       );
 
+      const isSynchronizing =
+        this.latestSynchronizationReport &&
+        Snapshot.ongoingReportStatuses?.includes(
+          this.latestSynchronizationReport.status
+        );
+
       onRetryCb(this.latestReport);
 
-      if (isOngoing || !isExpectedOperation) {
+      if (isOngoing || isSynchronizing || !isExpectedOperation) {
         throw new SnapshotOperationTimeoutError(this);
       }
     }).bind(this);
