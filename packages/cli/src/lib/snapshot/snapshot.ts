@@ -124,8 +124,12 @@ export class Snapshot {
       ...options,
     });
 
-    return new SynchronizationPlan(plan);
-    // return plan;
+    const upToDatePlan = await this.snapshotClient.getSynchronizationPlan(
+      this.id,
+      plan.id
+    );
+
+    return new SynchronizationPlan(upToDatePlan);
   }
 
   public async applySynchronizationPlan(
@@ -248,6 +252,31 @@ export class Snapshot {
     );
   }
 
+  private isSynchronizing() {
+    if (this.latestSynchronizationReport) {
+      return Snapshot.ongoingReportStatuses?.includes(
+        this.latestSynchronizationReport.status
+      );
+    }
+    return false;
+  }
+
+  private isUnsettled() {
+    return Snapshot.ongoingReportStatuses.includes(this.latestReport.status);
+  }
+
+  private isGoingThroughOperation(
+    operation: ResourceSnapshotsReportType
+  ): boolean {
+    if (this.latestReport.type === operation) {
+      return true;
+    }
+    if (this.latestSynchronizationReport) {
+      return this.latestSynchronizationReport.type === operation;
+    }
+    return false;
+  }
+
   private waitUntilDoneRetryFunction(
     onRetryCb: (report: ResourceSnapshotsReportModel) => void,
     operationToWaitFor?: ResourceSnapshotsReportType
@@ -255,26 +284,14 @@ export class Snapshot {
     return (async () => {
       await this.refreshSnapshotData();
 
-      // TODO:  AIE AIE... un peu trop complexe a lire
+      const isUnsettled = this.isUnsettled();
+      const isSynchronizing = this.isSynchronizing();
       const isExpectedOperation =
-        !operationToWaitFor ||
-        this.latestReport.type === operationToWaitFor ||
-        !this.latestSynchronizationReport ||
-        this.latestSynchronizationReport.type === operationToWaitFor;
-
-      const isOngoing = Snapshot.ongoingReportStatuses.includes(
-        this.latestReport.status
-      );
-
-      const isSynchronizing =
-        this.latestSynchronizationReport &&
-        Snapshot.ongoingReportStatuses?.includes(
-          this.latestSynchronizationReport.status
-        );
+        operationToWaitFor && this.isGoingThroughOperation(operationToWaitFor);
 
       onRetryCb(this.latestReport);
 
-      if (isOngoing || isSynchronizing || !isExpectedOperation) {
+      if (isUnsettled || isSynchronizing || !isExpectedOperation) {
         throw new SnapshotOperationTimeoutError(this);
       }
     }).bind(this);
