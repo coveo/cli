@@ -4,7 +4,7 @@ module.exports = (api, options, rootOptions) => {
       postinstall: 'node ./scripts/setup-server.js',
       'allocate-port': 'node ./scripts/port-allocator.mjs',
       serve:
-        'npm run allocate-port && concurrently -k "npm run start-server" "vue-cli-service serve"',
+        'npm run allocate-port && concurrently  "npm run start-server" "vue-cli-service serve"',
       start: 'npm run serve',
       'start-server': 'node ./scripts/start-server.js',
     },
