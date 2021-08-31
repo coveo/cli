@@ -5,13 +5,9 @@ import {Snapshot, WaitUntilDoneOptions} from './snapshot';
 import {red, green} from 'chalk';
 import {normalize} from 'path';
 import {Config, Configuration} from '../config/config';
-import {
-  SnapshotError,
-  SnapshotGenericError,
-  SnapshotSynchronizationError,
-} from '../errors/snapshotErrors';
+import {SnapshotError, SnapshotGenericError} from '../errors/snapshotErrors';
 import {flags} from '@oclif/command';
-import {SynchronizationPlanPreviewer} from './synchronization/synchronizationPlanPreviewer';
+import {SnapshotFacade} from './snapshotFacade';
 
 export interface DryRunOptions {
   deleteMissingResources?: boolean;
@@ -67,52 +63,19 @@ export function cleanupProject(projectPath: string) {
   project.deleteTemporaryZipFile();
 }
 
-export async function tryAutomaticSynchronization(
-  snapshot: Snapshot
-): Promise<boolean> {
-  cli.action.start('Creating synchronization plan');
-  const plan = await snapshot.createSynchronizationPlan();
-
-  const canBeSyncronized = await plan.containsUnambiguousMatches();
-  if (!canBeSyncronized) {
-    return false;
-  }
-
-  const previewer = new SynchronizationPlanPreviewer(plan.model);
-  previewer.display();
-
-  const canApplySynchronizationPlan = await cli.confirm(
-    'TODO: Would you like to apply synchronization blablabla ? (y/n)'
-  );
-  if (canApplySynchronizationPlan) {
-    cli.action.start('Applying synchronization plan');
-    const reporter = await snapshot.applySynchronizationPlan(plan.model.id);
-    const success = reporter.isSuccessReport();
-
-    if (!success) {
-      return false;
-    }
-
-    //   cli.action.stop(success ? green('✔') : red.bold('!'));
-  }
-  cli.action.stop();
-  return true;
-}
-
 export async function handleReportWithErrors(
   snapshot: Snapshot,
   cfg: Configuration,
   projectPath?: string
 ) {
   if (snapshot.requiresSynchronization()) {
-    cli.warn('Out of sync resource detected'); // TODO: Better message
-    const successfulSync = await tryAutomaticSynchronization(snapshot);
-    if (!successfulSync) {
-      throw new SnapshotSynchronizationError(snapshot, cfg, projectPath);
-    }
+    cli.warn('Unsynchronized resource detected');
+    cli.log();
+    const facade = new SnapshotFacade(snapshot, cfg);
+    await facade.tryAutomaticSynchronization();
+  } else {
+    throw new SnapshotGenericError(snapshot, cfg, projectPath);
   }
-
-  throw new SnapshotGenericError(snapshot, cfg, projectPath);
 }
 
 export function handleSnapshotError(err?: Error) {

@@ -52,23 +52,52 @@ export class SnapshotOperationTimeoutError
   }
 }
 
-export class SnapshotSynchronizationError
+export class SnapshotSynchronizationAbort
   extends SnapshotError
   implements IDetailedReportable
 {
-  public name = 'Snapshot Synchronization Error';
-  public constructor(
-    public snapshot: Snapshot,
-    public cfg: Configuration,
-    public projectPath?: string
-  ) {
+  public name = 'Snapshot Synchronization Abort';
+  public constructor(public snapshot: Snapshot, public cfg: Configuration) {
+    super(SeverityLevel.Info);
+
+    this.message = 'Snapshot synchronization abort';
+
+    trySavingDetailedReport(this);
+  }
+}
+
+export class SnapshotSynchronizationAmbiguousMatchesError
+  extends SnapshotError
+  implements IDetailedReportable
+{
+  public name = 'Snapshot Ambiguous Synchronization Matches';
+  public constructor(public snapshot: Snapshot, public cfg: Configuration) {
     super(SeverityLevel.Warn);
     const urlBuilder = new SnapshotUrlBuilder(cfg);
     const synchronizationPlanUrl = urlBuilder.getSynchronizationPage(snapshot);
 
     this.message = dedent`
-      The snapshot contains unsynchronized resources that cannot be resolved automatically
-      Click on the URL below to synchronize your snapshot with your organization before running another push command.
+      The snapshot contains unsynchronized resources that cannot be resolved automatically.
+      Click on the URL below to manually resolve your snapshot conflicts in the Coveo Admin console.
+      ${synchronizationPlanUrl}`;
+
+    trySavingDetailedReport(this);
+  }
+}
+
+export class SnapshotSynchronizationUnknownError
+  extends SnapshotError
+  implements IDetailedReportable
+{
+  public name = 'Snapshot Synchronization Unknown Error';
+  public constructor(public snapshot: Snapshot, public cfg: Configuration) {
+    super(SeverityLevel.Error);
+    const urlBuilder = new SnapshotUrlBuilder(cfg);
+    const synchronizationPlanUrl = urlBuilder.getSynchronizationPage(snapshot);
+
+    this.message = dedent`
+      The snapshot synchronization has unexpectedly failed.
+      Click on the URL below for more info.
       ${synchronizationPlanUrl}`;
 
     trySavingDetailedReport(this);
