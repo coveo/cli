@@ -67,7 +67,7 @@ export class SnapshotSynchronizationError
     const synchronizationPlanUrl = urlBuilder.getSynchronizationPage(snapshot);
 
     this.message = dedent`
-      Some conflicts were detected while comparing changes between the snapshot and the target organization.
+      The snapshot contains unsynchronized resources that cannot be resolved automatically
       Click on the URL below to synchronize your snapshot with your organization before running another push command.
       ${synchronizationPlanUrl}`;
 
