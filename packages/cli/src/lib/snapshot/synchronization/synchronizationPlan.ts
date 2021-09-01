@@ -12,18 +12,17 @@ export class SynchronizationPlan {
       return false;
     }
 
-    for (const operations of Object.values(synchronizationOperations)) {
-      for (let i = 0; i < operations.length; i++) {
-        const matches = operations[i].matches;
-        for (let j = 0; j < matches.length; j++) {
-          const match = matches[j];
-          if (match.associationScore && match.associationScore < 1) {
-            return false;
-          }
+    for (const synchronizationOperation of Object.values(
+      synchronizationOperations
+    )) {
+      for (const operation of synchronizationOperation) {
+        if (
+          operation.matches.some((match) => (match.associationScore || 0) < 1)
+        ) {
+          return false;
         }
       }
     }
-
     return true;
   }
 }
