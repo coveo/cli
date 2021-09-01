@@ -28,7 +28,6 @@ export class SnapshotFacade {
   }
 
   private async createSynchronizationPlan() {
-    cli.log();
     cli.action.start('Checking for automatic synchronization');
     const plan = await this.snapshot.createSynchronizationPlan();
 
@@ -44,7 +43,7 @@ export class SnapshotFacade {
   }
 
   private async applySynchronizationPlan(plan: SynchronizationPlan) {
-    cli.action.start('Applying synchronization plan');
+    cli.action.start('Synchronizing resources');
     const reporter = await this.snapshot.applySynchronizationPlan(
       plan.model.id
     );

@@ -58,9 +58,11 @@ export default class Preview extends Command {
   public async run() {
     const {flags} = this.parse(Preview);
     const target = await getTargetOrg(this.configuration, flags.target);
+    const cfg = await this.configuration.get();
     const {reporter, snapshot, project} = await dryRun(
       target,
       this.projectPath,
+      cfg,
       this.options
     );
 

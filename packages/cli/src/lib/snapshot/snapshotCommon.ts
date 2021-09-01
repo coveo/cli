@@ -29,6 +29,7 @@ export const waitFlag = {
 export async function dryRun(
   targetOrg: string,
   projectPath: string,
+  cfg: Configuration,
   options?: DryRunOptions
 ) {
   const defaultOptions: DryRunOptions = {
@@ -37,14 +38,24 @@ export async function dryRun(
 
   const opt = {...defaultOptions, ...options};
   const project = new Project(normalize(projectPath));
-
   const snapshot = await getSnapshotForDryRun(project, targetOrg, opt);
 
   cli.action.start('Validating snapshot');
-  const reporter = await snapshot.validate(
+  let reporter = await snapshot.validate(
     opt.deleteMissingResources,
     opt.waitUntilDone
   );
+
+  if (snapshot.requiresSynchronization()) {
+    cli.warn('Unsynchronized resource detected');
+    await handleUnsynchronizedResources(snapshot, cfg);
+
+    cli.action.start('Validating synchronized snapshot');
+    reporter = await snapshot.validate(
+      opt.deleteMissingResources,
+      opt.waitUntilDone
+    );
+  }
 
   cli.action.stop(reporter.isSuccessReport() ? green('✔') : red.bold('!'));
   return {reporter, snapshot, project};
@@ -68,13 +79,15 @@ export async function handleReportWithErrors(
   cfg: Configuration,
   projectPath?: string
 ) {
-  if (snapshot.requiresSynchronization()) {
-    cli.warn('Unsynchronized resource detected');
-    const facade = new SnapshotFacade(snapshot, cfg);
-    await facade.tryAutomaticSynchronization();
-  } else {
-    throw new SnapshotGenericError(snapshot, cfg, projectPath);
-  }
+  throw new SnapshotGenericError(snapshot, cfg, projectPath);
+}
+
+export async function handleUnsynchronizedResources(
+  snapshot: Snapshot,
+  cfg: Configuration
+) {
+  const facade = new SnapshotFacade(snapshot, cfg);
+  await facade.tryAutomaticSynchronization();
 }
 
 export function handleSnapshotError(err?: Error) {
