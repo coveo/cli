@@ -74,7 +74,7 @@ export default class Preview extends Command {
   public async catch(err?: Error) {
     const {flags} = this.parse(Preview);
     cleanupProject(this.projectPath);
-    await handleSnapshotError(err);
+    handleSnapshotError(err);
     await this.displayAdditionalErrorMessage(err);
     await this.config.runHook(
       'analytics',
