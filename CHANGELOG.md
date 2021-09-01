@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.14.0](https://github.com/coveo/cli/compare/v1.13.0...v1.14.0) (2021-08-27)
+
+
+### Bug Fixes
+
+* add repository key on search-token-server ([#445](https://github.com/coveo/cli/issues/445)) ([f1f0034](https://github.com/coveo/cli/commit/f1f00340d78cb97955d0ecb20084c3e852040754))
+* **cli:** use proper region suffix ([4af6fb1](https://github.com/coveo/cli/commit/4af6fb14338da1fcf341cfcd908b81a3790e224a))
+* **deps:** update all dependencies j:cdx-227 ([#439](https://github.com/coveo/cli/issues/439)) ([05dc662](https://github.com/coveo/cli/commit/05dc6624f661040b7c3376e899f91f00b7f95fa5))
+* **deps:** update dependency @coveord/platform-client to v25 j:cdx-227 ([#440](https://github.com/coveo/cli/issues/440)) ([3943634](https://github.com/coveo/cli/commit/394363414acf30d440055c22a2d254b8fbfe3706))
+
+
+### Features
+
+* add better message when user doesn't have permissions to create an API key ([#447](https://github.com/coveo/cli/issues/447)) ([9db1dde](https://github.com/coveo/cli/commit/9db1dde448a5703cd16c9302bd7c211497c5c83c))
+* add feedback during and after computing the expanded preview ([#448](https://github.com/coveo/cli/issues/448)) ([34d3658](https://github.com/coveo/cli/commit/34d3658bc568e1c4f1b95a472fcda2578849766c))
+* **cli:** add version on config.json ([#442](https://github.com/coveo/cli/issues/442)) ([66e903b](https://github.com/coveo/cli/commit/66e903b0004685d03b05d364d3d1dde17683df10))
+* **cli:** unbundle 3rd-party CLIs ([#434](https://github.com/coveo/cli/issues/434)) ([377c6f5](https://github.com/coveo/cli/commit/377c6f514e388461de62b166617ff22f47c125fc))
+* **react:** commit /server directory on project creation ([#444](https://github.com/coveo/cli/issues/444)) ([e1d0694](https://github.com/coveo/cli/commit/e1d06940445b07b6e9c37e551977d2063b20bd79))
+* **snapshot:** enhance snapshot error messages ([#431](https://github.com/coveo/cli/issues/431)) ([46947b3](https://github.com/coveo/cli/commit/46947b361c78f56664217495541cd21c5c1c71c0))
+* **ui:** add better message when user doesn't have permissions to create an API key ([#429](https://github.com/coveo/cli/issues/429)) ([2f2f986](https://github.com/coveo/cli/commit/2f2f986fe11554c554e45bb44d8b5745d9d9fc79))
+
+
+### Reverts
+
+* **ui:** add better message when user doesn't have permission ([#436](https://github.com/coveo/cli/issues/436)) ([3eb2d06](https://github.com/coveo/cli/commit/3eb2d06074ea1901521c7b7dcb557fa9b3899dec))
+
+
+
+
+
 # [1.13.0](https://github.com/coveo/cli/compare/v1.12.0...v1.13.0) (2021-08-12)
 
 

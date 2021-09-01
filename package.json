@@ -11,7 +11,7 @@
   "devDependencies": {
     "@actions/core": "1.5.0",
     "@actions/github": "5.0.0",
-    "@commitlint/config-conventional": "13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
     "@commitlint/config-lerna-scopes": "13.1.0",
     "@commitlint/lint": "13.1.0",
     "@oclif/dev-cli": "1.26.0",

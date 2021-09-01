@@ -6,7 +6,7 @@ import {existsSync, mkdirSync, readdirSync, rmSync} from 'fs';
 import {join, relative, resolve} from 'path';
 import {cli} from 'cli-ux';
 import {Project} from '../../project/project';
-import {spawnProcess} from '../../utils/process';
+import {spawnProcess, spawnProcessOutput} from '../../utils/process';
 import {SnapshotFactory} from '../snapshotFactory';
 import dedent from 'ts-dedent';
 import {Dirent} from 'fs';
@@ -49,16 +49,19 @@ export class ExpandedPreviewer {
       recursive: true,
     });
     const project = new Project(resolve(dirPath));
+    cli.action.start('Generating preview details');
     await this.initPreviewDirectory(dirPath, project);
     await this.applySnapshotToPreview(dirPath);
-    // TODO: Remove/move as tests progress.
-    if (Date.now() > 0) return;
+    const commitHash = await this.getCommitHash(dirPath);
+
     cli.info(dedent`
-    
+
     A Git repository representing the modification has been created here:
     ${dirPath}
-    
+
+    with the associated commit hash: ${commitHash.stdout}
     `);
+    cli.action.stop();
   }
 
   private deleteOldestPreviews() {
@@ -90,6 +93,12 @@ export class ExpandedPreviewer {
     const beforeSnapshot = await this.getBeforeSnapshot();
     await project.refresh(beforeSnapshot);
     await this.initialPreviewCommit(dirPath);
+  }
+
+  private async getCommitHash(dirPath: string) {
+    return spawnProcessOutput('git', ['rev-parse', '--short', 'HEAD'], {
+      cwd: dirPath,
+    });
   }
 
   private async initialPreviewCommit(dirPath: string) {

@@ -17,7 +17,7 @@ import {ExpandedPreviewer} from './expandedPreviewer';
 import {Project} from '../../project/project';
 import {SnapshotFactory} from '../snapshotFactory';
 import {Snapshot} from '../snapshot';
-import {spawnProcess} from '../../utils/process';
+import {spawnProcess, spawnProcessOutput} from '../../utils/process';
 import {recursiveDirectoryDiff} from './filesDiffProcessor';
 import {getDirectory} from '../../../__test__/fsUtils';
 import {resolve} from 'path';
@@ -32,6 +32,7 @@ describe('ExpandedPreviewer', () => {
   const mockedRmSync = mocked(rmSync);
   const mockedMkdirSync = mocked(mkdirSync);
   const mockedSpawnProcess = mocked(spawnProcess);
+  const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
   const mockedProject = mocked(Project);
   const mockedProjectRefresh = jest.fn();
   const mockedSnapshotFactory = mocked(SnapshotFactory, true);
@@ -69,11 +70,20 @@ describe('ExpandedPreviewer', () => {
     );
   };
 
+  const mockSpawnProcess = () => {
+    mockedSpawnProcessOutput.mockResolvedValue({
+      exitCode: 'ENOENT',
+      stderr: '',
+      stdout: '',
+    });
+  };
+
   const defaultMocks = () => {
     mockExistsSync();
     mockExistingPreviews();
     mockProject();
     mockSnapshotFactory();
+    mockSpawnProcess();
     jest.spyOn(Date, 'now').mockImplementation(() => 42);
   };
 
@@ -258,6 +268,16 @@ describe('ExpandedPreviewer', () => {
         {
           cwd: previewPath,
           stdio: 'ignore',
+        }
+      );
+    });
+
+    it('should get the commit hash', async () => {
+      expect(mockedSpawnProcessOutput).toHaveBeenCalledWith(
+        'git',
+        ['rev-parse', '--short', 'HEAD'],
+        {
+          cwd: previewPath,
         }
       );
     });

@@ -20,7 +20,7 @@ $ npm install -g @coveo/cli
 $ coveo COMMAND
 running command...
 $ coveo (-v|--version|version)
-@coveo/cli/1.13.0 linux-x64 node-v14.17.4
+@coveo/cli/1.14.0 linux-x64 node-v14.17.5
 $ coveo --help [COMMAND]
 USAGE
   $ coveo COMMAND
@@ -56,22 +56,20 @@ USAGE
   $ coveo auth:login
 
 OPTIONS
-  -e, --environment=dev|qa|prod|hipaa                                  [default: prod] The Coveo Platform environment to
-                                                                       log in to.
+  -e, --environment=dev|qa|hipaa|prod  [default: prod] The Coveo Platform environment to log in to.
 
-  -o, --organization=myOrgID                                           The identifier of the organization to log in to.
-                                                                       If not specified, the CLI logs you in to the
-                                                                       first available organization. See also commands
-                                                                       `config:get`, `config:set`, and `org:list`.
+  -o, --organization=myOrgID           The identifier of the organization to log in to. If not specified, the CLI logs
+                                       you in to the first available organization. See also commands `config:get`,
+                                       `config:set`, and `org:list`.
 
-  -r, --region=us-east-1|eu-west-1|eu-west-3|ap-southeast-2|us-west-2  [default: us-east-1] The Coveo Platform region to
-                                                                       log in to. See <https://docs.coveo.com/en/2976>.
+  -r, --region=US|EU|AU                [default: us] The Coveo Platform region to log in to. See
+                                       <https://docs.coveo.com/en/2976>.
 
 EXAMPLE
   $ coveo auth:login
 ```
 
-_See code: [src/commands/auth/login.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/auth/login.ts)_
+_See code: [src/commands/auth/login.ts](https://github.com/coveo/cli/blob/v1.14.0/packages/cli/src/commands/auth/login.ts)_
 
 ## `coveo auth:token`
 
@@ -82,22 +80,20 @@ USAGE
   $ coveo auth:token
 
 OPTIONS
-  -e, --environment=dev|qa|prod|hipaa                                  [default: prod] The Coveo Platform environment to
-                                                                       log in to.
+  -e, --environment=dev|qa|hipaa|prod  [default: prod] The Coveo Platform environment to log in to.
 
-  -r, --region=us-east-1|eu-west-1|eu-west-3|ap-southeast-2|us-west-2  [default: us-east-1] The Coveo Platform region to
-                                                                       log in to. See <https://docs.coveo.com/en/2976>.
+  -r, --region=US|EU|AU                [default: us] The Coveo Platform region to log in to. See
+                                       <https://docs.coveo.com/en/2976>.
 
-  -t, --token=xxx-api-key                                              (required) The API-Key that shall be used to
-                                                                       authenticate you to the organization. See
-                                                                       <https://github.com/coveo/cli/wiki/Using-the-CLI-
-                                                                       using-an-API-Key>.
+  -t, --token=xxx-api-key              (required) The API-Key that shall be used to authenticate you to the
+                                       organization. See
+                                       <https://github.com/coveo/cli/wiki/Using-the-CLI-using-an-API-Key>.
 
 EXAMPLE
   $ coveo auth:token
 ```
 
-_See code: [src/commands/auth/token.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/auth/token.ts)_
+_See code: [src/commands/auth/token.ts](https://github.com/coveo/cli/blob/v1.14.0/packages/cli/src/commands/auth/token.ts)_
 
 ## `coveo config:get`
 
@@ -108,7 +104,7 @@ USAGE
   $ coveo config:get
 ```
 
-_See code: [src/commands/config/get.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/config/get.ts)_
+_See code: [src/commands/config/get.ts](https://github.com/coveo/cli/blob/v1.14.0/packages/cli/src/commands/config/get.ts)_
 
 ## `coveo config:set`
 
@@ -119,22 +115,16 @@ USAGE
   $ coveo config:set
 
 OPTIONS
-  -a, --analytics=y|n                                                  Whether to enable analytics and telemetry
-                                                                       tracking.
+  -a, --analytics=y|n                  Whether to enable analytics and telemetry tracking.
+  -e, --environment=dev|qa|hipaa|prod  The Coveo Platform environment to log in to.
 
-  -e, --environment=dev|qa|prod|hipaa                                  The Coveo Platform environment inside which to
-                                                                       perform operations.
+  -o, --organization=myOrgID           The identifier of the organization inside which to perform operations. See
+                                       <https://docs.coveo.com/en/1562/#organization-id-and-other-information>.
 
-  -o, --organization=myOrgID                                           The identifier of the organization inside which
-                                                                       to perform operations. See
-                                                                       <https://docs.coveo.com/en/1562/#organization-id-
-                                                                       and-other-information>.
-
-  -r, --region=us-east-1|eu-west-1|eu-west-3|ap-southeast-2|us-west-2  The Coveo Platform region inside which to perform
-                                                                       operations. See <https://docs.coveo.com/en/2976>.
+  -r, --region=US|EU|AU                The Coveo Platform region to log in to. See <https://docs.coveo.com/en/2976>.
 ```
 
-_See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/config/set.ts)_
+_See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v1.14.0/packages/cli/src/commands/config/set.ts)_
 
 ## `coveo help [COMMAND]`
 
@@ -172,7 +162,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/org/list.ts)_
+_See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v1.14.0/packages/cli/src/commands/org/list.ts)_
 
 ## `coveo org:search:dump`
 
@@ -205,7 +195,7 @@ OPTIONS
                                            included.
 ```
 
-_See code: [src/commands/org/search/dump.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/org/search/dump.ts)_
+_See code: [src/commands/org/search/dump.ts](https://github.com/coveo/cli/blob/v1.14.0/packages/cli/src/commands/org/search/dump.ts)_
 
 ## `coveo source:push:add SOURCEID`
 
@@ -224,7 +214,7 @@ OPTIONS
   -f, --file=myfile.json                             One or multiple file to push. Can be repeated.
 ```
 
-_See code: [src/commands/source/push/add.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/source/push/add.ts)_
+_See code: [src/commands/source/push/add.ts](https://github.com/coveo/cli/blob/v1.14.0/packages/cli/src/commands/source/push/add.ts)_
 
 ## `coveo source:push:delete SOURCEID`
 
@@ -252,7 +242,7 @@ OPTIONS
       `source:push:batch` command instead.
 ```
 
-_See code: [src/commands/source/push/delete.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/source/push/delete.ts)_
+_See code: [src/commands/source/push/delete.ts](https://github.com/coveo/cli/blob/v1.14.0/packages/cli/src/commands/source/push/delete.ts)_
 
 ## `coveo source:push:list`
 
@@ -273,7 +263,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/source/push/list.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/source/push/list.ts)_
+_See code: [src/commands/source/push/list.ts](https://github.com/coveo/cli/blob/v1.14.0/packages/cli/src/commands/source/push/list.ts)_
 
 ## `coveo source:push:new NAME`
 
@@ -292,7 +282,7 @@ OPTIONS
                                                    https://docs.coveo.com/en/1779/index-content/content-security
 ```
 
-_See code: [src/commands/source/push/new.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/source/push/new.ts)_
+_See code: [src/commands/source/push/new.ts](https://github.com/coveo/cli/blob/v1.14.0/packages/cli/src/commands/source/push/new.ts)_
 
 ## `coveo ui:create:angular NAME`
 
@@ -307,10 +297,10 @@ ARGUMENTS
 
 OPTIONS
   -d, --defaults         Whether to automatically select the default value for all prompts that have a default value.
-  -v, --version=version  [default: 1.13.0] The version of @coveo/angular to use.
+  -v, --version=version  [default: 1.14.0] The version of @coveo/angular to use.
 ```
 
-_See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/ui/create/angular.ts)_
+_See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/v1.14.0/packages/cli/src/commands/ui/create/angular.ts)_
 
 ## `coveo ui:create:react NAME`
 
@@ -324,14 +314,14 @@ ARGUMENTS
   NAME  The name of the application to create.
 
 OPTIONS
-  -v, --version=version  [default: 1.13.0] Version of @coveo/cra-template to use.
+  -v, --version=version  [default: 1.14.0] Version of @coveo/cra-template to use.
 
 EXAMPLES
   $ coveo ui:create:react myapp
   $ coveo ui:create:react --help
 ```
 
-_See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/ui/create/react.ts)_
+_See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v1.14.0/packages/cli/src/commands/ui/create/react.ts)_
 
 ## `coveo ui:create:vue NAME`
 
@@ -352,14 +342,14 @@ OPTIONS
                          For more information about Vue CLI presets, see
                          https://cli.vuejs.org/guide/plugins-and-presets.html#presets.
 
-  -v, --version=version  [default: 1.13.0] The version of @coveo/vue-cli-plugin-typescript to use.
+  -v, --version=version  [default: 1.14.0] The version of @coveo/vue-cli-plugin-typescript to use.
 
 EXAMPLES
   $ coveo ui:create:vue --preset path/to/my/preset.json
   $ coveo ui:create:vue --help
 ```
 
-_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v1.13.0/packages/cli/src/commands/ui/create/vue.ts)_
+_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v1.14.0/packages/cli/src/commands/ui/create/vue.ts)_
 
 ## `coveo update [CHANNEL]`
 
