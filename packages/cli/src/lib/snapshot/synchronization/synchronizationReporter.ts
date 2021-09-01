@@ -9,9 +9,9 @@ export class SnapshotSynchronizationReporter {
     public readonly report: ResourceSnapshotsSynchronizationReportModel
   ) {}
 
-  // TODO: figure a way to remove duplicate method
   public isSuccessReport(): boolean {
     const {status, resultCode} = this.report;
+
     return (
       status === ResourceSnapshotsReportStatus.Completed &&
       resultCode === ResourceSnapshotsReportResultCode.Success

@@ -18,6 +18,10 @@ import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer';
 import {Project} from '../project/project';
 import {SynchronizationPlan} from './synchronization/synchronizationPlan';
 import {SnapshotSynchronizationReporter} from './synchronization/synchronizationReporter';
+import {
+  SnapshotNoReportFoundError,
+  SnapshotNoSynchronizationReportFoundError,
+} from '../errors/snapshotErrors';
 
 export type SnapshotReport =
   | ResourceSnapshotsReportModel
@@ -136,18 +140,16 @@ export class Snapshot {
     planId: string,
     options: WaitUntilDoneOptions = {}
   ) {
-    const report = await this.snapshotClient.applySynchronizationPlan(
-      this.id,
-      planId
-    );
+    await this.snapshotClient.applySynchronizationPlan(this.id, planId);
 
     await this.waitUntilDone({
       operationToWaitFor: ResourceSnapshotsReportType.ApplySynchronizationPlan,
       ...options,
     });
 
-    return new SnapshotSynchronizationReporter(report);
-    // return report;
+    return new SnapshotSynchronizationReporter(
+      this.latestSynchronizationReport
+    );
   }
 
   public requiresSynchronization() {
@@ -169,23 +171,20 @@ export class Snapshot {
     return pathToReport;
   }
 
-  public get latestReport(): ResourceSnapshotsReportModel {
+  public get latestReport() {
     const reports = this.model.reports;
     if (!Array.isArray(reports) || reports.length === 0) {
-      throw new Error(`No detailed report found for the snapshot ${this.id}`);
+      throw new SnapshotNoReportFoundError(this);
     }
-    const sortedReports = reports.sort((a, b) => b.updatedDate - a.updatedDate);
-    return sortedReports[0];
+    return this.sortReportsByDate(reports)[0];
   }
 
   public get latestSynchronizationReport() {
-    if (!this.wasSynchronizedAtLeastOnce(this.model.synchronizationReports)) {
-      return null;
+    const reports = this.model.synchronizationReports;
+    if (!this.hasBegunSynchronization(reports)) {
+      throw new SnapshotNoSynchronizationReportFoundError(this);
     }
-    const sortedReports = this.sortReportsByDate(
-      this.model.synchronizationReports
-    );
-    return sortedReports[0];
+    return this.sortReportsByDate(reports)[0];
   }
 
   public get id() {
@@ -204,9 +203,9 @@ export class Snapshot {
     return report.sort((a, b) => b.updatedDate - a.updatedDate);
   }
 
-  private wasSynchronizedAtLeastOnce(
-    synchronizationReports?: ResourceSnapshotsSynchronizationReportModel[]
-  ): synchronizationReports is ResourceSnapshotsSynchronizationReportModel[] {
+  private hasBegunSynchronization(
+    _synchronizationReports?: ResourceSnapshotsSynchronizationReportModel[]
+  ): _synchronizationReports is ResourceSnapshotsSynchronizationReportModel[] {
     const reports = this.model.synchronizationReports;
     return Array.isArray(reports) && reports.length > 0;
   }
@@ -253,7 +252,7 @@ export class Snapshot {
   }
 
   private isSynchronizing() {
-    if (this.latestSynchronizationReport) {
+    if (this.hasBegunSynchronization()) {
       return Snapshot.ongoingReportStatuses?.includes(
         this.latestSynchronizationReport.status
       );
@@ -271,7 +270,7 @@ export class Snapshot {
     if (this.latestReport.type === operation) {
       return true;
     }
-    if (this.latestSynchronizationReport) {
+    if (this.hasBegunSynchronization()) {
       return this.latestSynchronizationReport.type === operation;
     }
     return false;

@@ -1,41 +1,34 @@
-import {ResourceSnapshotsSynchronizationPlanModel} from '@coveord/platform-client';
 import {green, red} from 'chalk';
 import {cli} from 'cli-ux';
 import {Configuration} from '../config/config';
 import {
-  SnapshotSynchronizationAbort,
+  SnapshotOperationAbort,
   SnapshotSynchronizationAmbiguousMatchesError,
   SnapshotSynchronizationUnknownError,
 } from '../errors/snapshotErrors';
 import {Snapshot} from './snapshot';
 import {SynchronizationPlan} from './synchronization/synchronizationPlan';
-import {SynchronizationPlanPreviewer} from './synchronization/synchronizationPlanPreviewer';
 
 export class SnapshotFacade {
   public constructor(private snapshot: Snapshot, private cfg: Configuration) {}
 
   public async tryAutomaticSynchronization() {
-    const plan = await this.canApplyPlan();
-    this.previewPlan(plan.model);
+    const plan = await this.createSynchronizationPlan();
     await this.waitForConfirmation();
-    await this.applyPlan(plan);
+    await this.applySynchronizationPlan(plan);
   }
 
   private async waitForConfirmation() {
     const canApplySynchronizationPlan = await cli.confirm(
-      'Would you like to synchronize your snapshot? (y/n)'
+      'Synchronization plan matched all resources with great confidence, do you want to proceed? (y/n)'
     );
     if (!canApplySynchronizationPlan) {
-      throw new SnapshotSynchronizationAbort(this.snapshot, this.cfg);
+      throw new SnapshotOperationAbort(this.snapshot, this.cfg);
     }
   }
 
-  private previewPlan(model: ResourceSnapshotsSynchronizationPlanModel) {
-    const previewer = new SynchronizationPlanPreviewer(model);
-    previewer.display();
-  }
-
-  private async canApplyPlan() {
+  private async createSynchronizationPlan() {
+    cli.log();
     cli.action.start('Checking for automatic synchronization');
     const plan = await this.snapshot.createSynchronizationPlan();
 
@@ -50,7 +43,7 @@ export class SnapshotFacade {
     return plan;
   }
 
-  private async applyPlan(plan: SynchronizationPlan) {
+  private async applySynchronizationPlan(plan: SynchronizationPlan) {
     cli.action.start('Applying synchronization plan');
     const reporter = await this.snapshot.applySynchronizationPlan(
       plan.model.id

@@ -52,15 +52,39 @@ export class SnapshotOperationTimeoutError
   }
 }
 
-export class SnapshotSynchronizationAbort
+export class SnapshotNoReportFoundError
   extends SnapshotError
   implements IDetailedReportable
 {
-  public name = 'Snapshot Synchronization Abort';
+  public name = 'No Report Found Error';
+  public constructor(public snapshot: Snapshot) {
+    super(SeverityLevel.Error);
+    this.message = dedent`
+    No detailed report found for the snapshot ${this.snapshot.id}`;
+  }
+}
+export class SnapshotNoSynchronizationReportFoundError
+  extends SnapshotError
+  implements IDetailedReportable
+{
+  public name = 'No Synchronization Report Found Error';
+  public constructor(public snapshot: Snapshot) {
+    super(SeverityLevel.Error);
+    this.message = dedent`
+    No synchronization report found for the snapshot ${this.snapshot.id}.
+    The snapshot should first be synchronized`;
+  }
+}
+
+export class SnapshotOperationAbort
+  extends SnapshotError
+  implements IDetailedReportable
+{
+  public name = 'Snapshot Operation Aborted';
   public constructor(public snapshot: Snapshot, public cfg: Configuration) {
     super(SeverityLevel.Info);
 
-    this.message = 'Snapshot synchronization abort';
+    this.message = 'Snapshot operation aborted';
 
     trySavingDetailedReport(this);
   }

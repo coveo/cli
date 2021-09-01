@@ -70,7 +70,6 @@ export async function handleReportWithErrors(
 ) {
   if (snapshot.requiresSynchronization()) {
     cli.warn('Unsynchronized resource detected');
-    cli.log();
     const facade = new SnapshotFacade(snapshot, cfg);
     await facade.tryAutomaticSynchronization();
   } else {
