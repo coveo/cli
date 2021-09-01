@@ -27,7 +27,6 @@
     "fs-extra": "^10.0.0",
     "isomorphic-fetch": "^3.0.0",
     "json2csv": "^5.0.6",
-    "node-pty": "^0.10.0",
     "patch-package": "^6.2.2",
     "semver": "^7.3.4",
     "ts-dedent": "^2.1.1",
