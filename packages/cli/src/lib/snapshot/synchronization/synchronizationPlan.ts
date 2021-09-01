@@ -12,7 +12,7 @@ export class SynchronizationPlan {
       return false;
     }
 
-    for (const [_, operations] of Object.entries(synchronizationOperations)) {
+    for (const operations of Object.values(synchronizationOperations)) {
       for (let i = 0; i < operations.length; i++) {
         const matches = operations[i].matches;
         for (let j = 0; j < matches.length; j++) {
