@@ -122,6 +122,12 @@ describe('ui:create:vue', () => {
     return serverTerminal;
   };
 
+  const stopApplication = (appTerminal: Terminal) => {
+    const exitPromise = appTerminal.when('exit').on('process').do().once();
+    appTerminal.orchestrator.process.emit('SIGINT');
+    return exitPromise;
+  };
+
   beforeAll(async () => {
     const buildProcessManager = new ProcessManager();
     processManagers.push(buildProcessManager);
@@ -150,6 +156,7 @@ describe('ui:create:vue', () => {
 
   describe('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
+    let appTerminal: Terminal;
     let interceptedRequests: HTTPRequest[] = [];
     let consoleInterceptor: BrowserConsoleInterceptor;
     const searchboxSelector = '#search-page .autocomplete input';
@@ -157,7 +164,7 @@ describe('ui:create:vue', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      const appTerminal = await startApplication(
+      appTerminal = await startApplication(
         serverProcessManager,
         'vue-server-valid'
       );
@@ -186,6 +193,7 @@ describe('ui:create:vue', () => {
         getProjectPath(projectName),
         projectName
       );
+      await stopApplication(appTerminal);
       await serverProcessManager.killAllProcesses();
     }, 5 * 60e3);
 
@@ -257,19 +265,21 @@ describe('ui:create:vue', () => {
 
   describe('when starting the server', () => {
     let serverProcessManager: ProcessManager;
+    let serverTerminal: Terminal;
 
     beforeEach(() => {
       serverProcessManager = new ProcessManager();
     });
 
     afterEach(async () => {
+      await stopApplication(serverTerminal);
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
     it(
       'should not have any ESLint warning or error',
       async () => {
-        const serverTerminal = await startApplication(
+        serverTerminal = await startApplication(
           serverProcessManager,
           'vue-server-eslint'
         );
@@ -289,6 +299,7 @@ describe('ui:create:vue', () => {
 
   describe('when the .env file is missing', () => {
     let serverProcessManager: ProcessManager;
+    let appTerminal: Terminal;
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
@@ -297,6 +308,7 @@ describe('ui:create:vue', () => {
     });
 
     afterAll(async () => {
+      await stopApplication(appTerminal);
       await serverProcessManager.killAllProcesses();
       restoreEnvironmentFile(projectName);
     }, 30e3);
@@ -306,7 +318,7 @@ describe('ui:create:vue', () => {
       async () => {
         const missingEnvErrorSpy = jest.fn();
 
-        const appTerminal = await startApplication(
+        appTerminal = await startApplication(
           serverProcessManager,
           'vue-server-missing-env'
         );
@@ -325,13 +337,14 @@ describe('ui:create:vue', () => {
 
   describe('when required environment variables are not defined', () => {
     let serverProcessManager: ProcessManager;
+    let appTerminal: Terminal;
     let envFileContent = '';
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
       envFileContent = flushEnvFile(projectName);
-      const appTerminal = await startApplication(
+      appTerminal = await startApplication(
         serverProcessManager,
         'vue-server-invalid'
       );
@@ -340,6 +353,7 @@ describe('ui:create:vue', () => {
     }, 2 * 60e3);
 
     afterAll(async () => {
+      await stopApplication(appTerminal);
       overwriteEnvFile(projectName, envFileContent);
       await serverProcessManager.killAllProcesses();
     }, 30e3);
@@ -352,6 +366,7 @@ describe('ui:create:vue', () => {
 
   describe('when the ports are manually specified', () => {
     let serverProcessManager: ProcessManager;
+    let appTerminal: Terminal;
     let hardCodedClientPort: number;
     let hardCodedServerPort: number;
 
@@ -362,7 +377,7 @@ describe('ui:create:vue', () => {
       processManagers.push(serverProcessManager);
       forceApplicationPorts(hardCodedClientPort, hardCodedServerPort);
 
-      const appTerminal = await startApplication(
+      appTerminal = await startApplication(
         serverProcessManager,
         'vue-server-port-test'
       );
@@ -371,6 +386,7 @@ describe('ui:create:vue', () => {
     }, 2 * 60e3);
 
     afterAll(async () => {
+      await stopApplication(appTerminal);
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
@@ -386,6 +402,7 @@ describe('ui:create:vue', () => {
   describe('when the ports are busy', () => {
     const dummyServers: DummyServer[] = [];
     let serverProcessManager: ProcessManager;
+    let appTerminal: Terminal;
     let usedClientPort: number;
     let usedServerPort: number;
 
@@ -401,7 +418,7 @@ describe('ui:create:vue', () => {
         new DummyServer(usedServerPort)
       );
 
-      const appTerminal = await startApplication(
+      appTerminal = await startApplication(
         serverProcessManager,
         'vue-server-port-test'
       );
@@ -411,6 +428,7 @@ describe('ui:create:vue', () => {
 
     afterAll(async () => {
       await Promise.all(dummyServers.map((server) => server.close()));
+      await stopApplication(appTerminal);
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
