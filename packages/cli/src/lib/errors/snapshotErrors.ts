@@ -63,6 +63,7 @@ export class SnapshotNoReportFoundError
     No detailed report found for the snapshot ${this.snapshot.id}`;
   }
 }
+
 export class SnapshotNoSynchronizationReportFoundError
   extends SnapshotError
   implements IDetailedReportable

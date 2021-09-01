@@ -53,6 +53,6 @@ export class SnapshotFacade {
       throw new SnapshotSynchronizationUnknownError(this.snapshot, this.cfg);
     }
 
-    cli.action.stop(success ? green('✔') : red.bold('!'));
+    cli.action.stop(green('✔'));
   }
 }

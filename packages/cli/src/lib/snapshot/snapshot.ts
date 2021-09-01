@@ -200,7 +200,7 @@ export class Snapshot {
     return this.client.resourceSnapshot;
   }
 
-  private sortReportsByDate<T extends SnapshotReport>(report: T[]) {
+  private sortReportsByDate<T extends SnapshotReport>(report: T[]): T[] {
     return report.sort((a, b) => b.updatedDate - a.updatedDate);
   }
 
