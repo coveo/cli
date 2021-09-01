@@ -26,6 +26,7 @@ import {
 export type SnapshotReport =
   | ResourceSnapshotsReportModel
   | ResourceSnapshotsSynchronizationReportModel;
+
 export interface WaitUntilDoneOptions {
   /**
    * The maximum number of seconds to wait before the commands exits with a timeout error.
@@ -195,7 +196,7 @@ export class Snapshot {
     return this.model.targetId;
   }
 
-  public get snapshotClient() {
+  private get snapshotClient() {
     return this.client.resourceSnapshot;
   }
 

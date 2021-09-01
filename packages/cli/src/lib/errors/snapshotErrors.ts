@@ -83,9 +83,7 @@ export class SnapshotOperationAbort
   public name = 'Snapshot Operation Aborted';
   public constructor(public snapshot: Snapshot, public cfg: Configuration) {
     super(SeverityLevel.Info);
-
     this.message = 'Snapshot operation aborted';
-
     trySavingDetailedReport(this);
   }
 }

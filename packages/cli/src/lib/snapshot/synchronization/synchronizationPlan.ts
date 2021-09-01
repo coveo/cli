@@ -1,7 +1,5 @@
 import {ResourceSnapshotsSynchronizationPlanModel} from '@coveord/platform-client';
 
-// SnapshotSynchronizer
-// SnapshotSynchronation
 export class SynchronizationPlan {
   public constructor(
     public readonly model: ResourceSnapshotsSynchronizationPlanModel
