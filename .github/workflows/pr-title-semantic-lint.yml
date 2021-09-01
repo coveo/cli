@@ -1,0 +1,16 @@
+name: PrTitleSemanticLint
+on:
+  pull_request:
+    branches: [ master ]
+    types: [opened, edited, synchronize, reopened]
+jobs:
+  Lint:
+      runs-on: ubuntu-latest
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      steps:
+        - uses: actions/checkout@v2
+        - name: Ensure PR Title is Semantic
+          run: |
+            npm ci
+            npx @coveo/is-pr-title-semantic
