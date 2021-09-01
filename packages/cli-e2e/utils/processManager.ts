@@ -51,6 +51,8 @@ export class ProcessManager {
               );
               return resolve();
             }
+            process.kill(-currentProcess.pid);
+            resolve();
             if (process.platform === 'win32') {
               try {
                 recurseProcessKillWindows(currentProcess);
