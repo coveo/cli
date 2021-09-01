@@ -155,12 +155,6 @@ describe('ui:create:angular', () => {
     return serverTerminal;
   };
 
-  const stopApplication = (appTerminal: Terminal) => {
-    const exitPromise = appTerminal.when('exit').on('process').do().once();
-    appTerminal.orchestrator.process.emit('SIGINT');
-    return exitPromise;
-  };
-
   const waitForAppRunning = (appTerminal: Terminal) =>
     appTerminal
       .when(/Compiled successfully/)
@@ -196,7 +190,6 @@ describe('ui:create:angular', () => {
 
   describe('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
-    let appTerminal: Terminal;
     let interceptedRequests: HTTPRequest[] = [];
     let consoleInterceptor: BrowserConsoleInterceptor;
     const searchboxSelector = 'app-search-page app-search-box input';
@@ -204,7 +197,7 @@ describe('ui:create:angular', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      appTerminal = await startApplication(
+      const appTerminal = await startApplication(
         serverProcessManager,
         'angular-server-valid'
       );
@@ -233,7 +226,6 @@ describe('ui:create:angular', () => {
         getProjectPath(projectName),
         projectName
       );
-      await stopApplication(appTerminal);
       await serverProcessManager.killAllProcesses();
     }, 5 * 60e3);
 
@@ -309,7 +301,6 @@ describe('ui:create:angular', () => {
 
   describe('when the .env file is missing', () => {
     let serverProcessManager: ProcessManager;
-    let appTerminal: Terminal;
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
@@ -318,7 +309,6 @@ describe('ui:create:angular', () => {
     });
 
     afterAll(async () => {
-      await stopApplication(appTerminal);
       restoreEnvironmentFile(join(projectName, 'server'));
       await serverProcessManager.killAllProcesses();
     }, 30e3);
@@ -328,7 +318,7 @@ describe('ui:create:angular', () => {
       async () => {
         const missingEnvErrorSpy = jest.fn();
 
-        appTerminal = await startApplication(
+        const appTerminal = await startApplication(
           serverProcessManager,
           'angular-server-missing-env'
         );
@@ -347,14 +337,13 @@ describe('ui:create:angular', () => {
 
   describe('when the required environment variables are missing', () => {
     let serverProcessManager: ProcessManager;
-    let appTerminal: Terminal;
     let envFileContent = '';
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
       envFileContent = flushEnvFile(join(projectName, 'server'));
-      appTerminal = await startApplication(
+      const appTerminal = await startApplication(
         serverProcessManager,
         'angular-server-invalid'
       );
@@ -363,7 +352,6 @@ describe('ui:create:angular', () => {
     }, 2 * 60e3);
 
     afterAll(async () => {
-      await stopApplication(appTerminal);
       overwriteEnvFile(join(projectName, 'server'), envFileContent);
       await serverProcessManager.killAllProcesses();
     }, 30e3);
@@ -377,7 +365,6 @@ describe('ui:create:angular', () => {
   describe('when the a custom token Endpoint is specified', () => {
     const customTokenEndpoint = 'http://dummyendpoint.com/some-kind-of-path';
     let serverProcessManager: ProcessManager;
-    let appTerminal: Terminal;
     let interceptedRequests: HTTPRequest[] = [];
 
     beforeAll(async () => {
@@ -385,7 +372,7 @@ describe('ui:create:angular', () => {
       processManagers.push(serverProcessManager);
       setCustomTokenEndpoint(customTokenEndpoint);
 
-      appTerminal = await startApplication(
+      const appTerminal = await startApplication(
         serverProcessManager,
         'angular-server-port-test'
       );
@@ -394,7 +381,6 @@ describe('ui:create:angular', () => {
     }, 2 * 60e3);
 
     afterAll(async () => {
-      await stopApplication(appTerminal);
       await serverProcessManager.killAllProcesses();
       resetCustomTokenEndpoint();
     }, 30e3);
@@ -426,7 +412,6 @@ describe('ui:create:angular', () => {
   describe('when the ports are busy', () => {
     const dummyServers: DummyServer[] = [];
     let serverProcessManager: ProcessManager;
-    let appTerminal: Terminal;
     let usedClientPort: number;
     let usedServerPort: number;
 
@@ -443,7 +428,7 @@ describe('ui:create:angular', () => {
         new DummyServer(usedServerPort)
       );
 
-      appTerminal = await startApplication(
+      const appTerminal = await startApplication(
         serverProcessManager,
         'angular-server-port-test'
       );
@@ -452,7 +437,6 @@ describe('ui:create:angular', () => {
     }, 2 * 60e3);
 
     afterAll(async () => {
-      await stopApplication(appTerminal);
       await Promise.all(dummyServers.map((server) => server.close()));
       await serverProcessManager.killAllProcesses();
     }, 30e3);
