@@ -64,7 +64,6 @@ export class ProcessManager {
           })
         );
       });
-      current = processIterator.next();
     }
 
     await Promise.all(promises);
