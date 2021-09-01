@@ -1,15 +1,22 @@
 import {cli} from 'cli-ux';
 import {Command, flags} from '@oclif/command';
+
+import {join} from 'path';
+import {EOL} from 'os';
+import {Transform} from 'stream';
+import {spawn} from 'child_process';
+
 import {
   buildAnalyticsFailureHook,
   buildAnalyticsSuccessHook,
 } from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {platformUrl} from '../../../lib/platform/environment';
-import {spawnProcessOutput} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {spawnProcessOutput} from '../../../lib/utils/process';
 import {getPackageVersion} from '../../../lib/utils/misc';
-import {join} from 'path';
+import {appendCmdIfWindows} from '../../../lib/utils/os';
+import {tryGitCommit} from '../../../lib/utils/git';
 import {
   Preconditions,
   IsAuthenticated,
@@ -17,10 +24,7 @@ import {
   IsNpxInstalled,
   HasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions';
-import {appendCmdIfWindows} from '../../../lib/utils/os';
-import {EOL} from 'os';
-import {npxInPty} from '../../../lib/utils/npx';
-import {tryGitCommit} from '../../../lib/utils/git';
+import {ReactStdoutTransformer} from '../../../lib/ui/create/react/reactStdoutTransformer';
 
 export default class React extends Command {
   public static templateName = '@coveo/cra-template';
@@ -169,38 +173,26 @@ export default class React extends Command {
     return true;
   }
 
-  private async runReactCliCommand(commandArgs: string[], options = {}) {
-    const child = await npxInPty(
+  private async runReactCliCommand(commandArgs: string[]) {
+    const reactProcess = spawn(
+      appendCmdIfWindows`npx`,
       [`${React.cliPackage}@${getPackageVersion(React.cliPackage)}`].concat([
         ...commandArgs,
       ]),
-      options
+      {stdio: ['inherit', 'pipe', 'inherit']}
     );
 
-    return new Promise<string>((resolve, reject) => {
-      const args = this.args;
-      let stopWritingInTerminal = false;
-      let remainingString = '';
+    const stdoutTransformer = new ReactStdoutTransformer(this.args.name);
+    reactProcess.stdout.pipe(stdoutTransformer).pipe(process.stdout);
 
-      child.onData((d) => {
-        if (
-          stopWritingInTerminal ||
-          d.indexOf(`Success! Created ${args.name}`) !== -1 // https://github.com/facebook/create-react-app/blob/v4.0.3/packages/react-scripts/scripts/init.js#L371
-        ) {
-          remainingString += d;
-          stopWritingInTerminal = true;
-        } else {
-          process.stdout.write(d);
-        }
-      });
-
-      child.onExit(({exitCode}) => {
-        if (exitCode) {
-          reject();
-        }
-        resolve(remainingString);
-      });
-    });
+    const exitCode = await new Promise((resolve) =>
+      reactProcess.on('close', (code) => resolve(code || 0))
+    );
+    if (exitCode) {
+      return Promise.reject();
+    } else {
+      return stdoutTransformer.remainingStdout;
+    }
   }
 
   private get configuration() {

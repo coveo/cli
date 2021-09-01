@@ -1,3 +1,6 @@
+import type internal from 'stream';
+
+jest.mock('child_process');
 jest.mock('../../../lib/decorators/preconditions/npx');
 jest.mock('../../../lib/decorators/preconditions/node');
 jest.mock('../../../lib/decorators/preconditions/apiKeyPrivilege');
@@ -8,13 +11,12 @@ jest.mock('../../../hooks/analytics/analytics');
 jest.mock('../../../hooks/prerun/prerun');
 jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
-jest.mock('../../../lib/utils/npx');
+jest.mock('../../../lib/ui/create/react/reactStdoutTransformer');
 jest.mock('@coveord/platform-client');
 
 import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
 import {spawnProcessOutput} from '../../../lib/utils/process';
-import {npxInPty} from '../../../lib/utils/npx';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
 import {Config} from '../../../lib/config/config';
@@ -24,14 +26,15 @@ import {
   HasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
+import {ReactStdoutTransformer} from '../../../lib/ui/create/react/reactStdoutTransformer';
 import Command from '@oclif/command';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
-import {IPty} from 'node-pty';
 import {configurationMock} from '../../../__stub__/configuration';
+import {ChildProcessByStdio, spawn} from 'child_process';
 
 describe('ui:create:react', () => {
   const mockedConfig = mocked(Config);
-  const mockedNpxInPty = mocked(npxInPty);
+  const mockedSpawn = mocked(spawn, true);
   const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
   const mockedPlatformClient = mocked(PlatformClient);
   const mockedGetPackageVersion = mocked(getPackageVersion);
@@ -39,7 +42,12 @@ describe('ui:create:react', () => {
   const mockedIsNpxInstalled = mocked(IsNpxInstalled, true);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
   const mockedApiKeyPrivilege = mocked(HasNecessaryCoveoPrivileges, true);
+  const mockedReactStdoutTransformer = mocked(ReactStdoutTransformer, true);
   const mockedCreateImpersonateApiKey = jest.fn();
+  const mockedSpawnStdoutPipe = jest.fn();
+  const mockedSpawnStdoutPipePipe = jest.fn();
+  const mockedSpawnProcessOn = jest.fn();
+
   const processExitCode = {
     spawn: 0,
     spawnOutput: 0,
@@ -72,14 +80,21 @@ describe('ui:create:react', () => {
     mockedSpawnProcessOutput.mockResolvedValue({
       stdout: '',
       stderr: '',
-      exitCode: String(processExitCode.spawn),
+      exitCode: String(processExitCode.spawnOutput),
     });
-
-    mockedNpxInPty.mockResolvedValue({
-      onData: () => {},
-      onExit: (callback: (e: {exitCode: number}) => void) =>
-        callback({exitCode: processExitCode.spawnOutput}),
-    } as unknown as IPty);
+    mockedSpawnStdoutPipe.mockReturnValue({pipe: mockedSpawnStdoutPipePipe});
+    mockedSpawnProcessOn.mockImplementation((_event, callback) => {
+      callback(processExitCode.spawn);
+    });
+    mockedSpawn.mockImplementation(
+      () =>
+        ({
+          stdout: {
+            pipe: mockedSpawnStdoutPipe,
+          },
+          on: mockedSpawnProcessOn,
+        } as unknown as ChildProcessByStdio<null, internal.Readable, null>)
+    );
   };
 
   const doMockedGetPackageVersion = () => {
@@ -126,6 +141,15 @@ describe('ui:create:react', () => {
     );
   };
 
+  const doMockReactStdoutTransformer = () => {
+    mockedReactStdoutTransformer.mockImplementation(
+      () =>
+        ({
+          remainingStdout: 'some string',
+        } as unknown as ReactStdoutTransformer)
+    );
+  };
+
   beforeEach(() => {
     doMockedGetPackageVersion();
     doMockSpawnProcess();
@@ -133,6 +157,7 @@ describe('ui:create:react', () => {
     doMockConfiguration();
     doMockAuthenticatedClient();
     doMockPreconditions();
+    doMockReactStdoutTransformer();
     preconditionStatus.npx = true;
     preconditionStatus.node = true;
     preconditionStatus.apiKey = true;
@@ -166,7 +191,7 @@ describe('ui:create:react', () => {
     .it(
       'should not execute the command if the preconditions are not respected',
       async () => {
-        expect(mockedNpxInPty).toHaveBeenCalledTimes(0);
+        expect(mockedSpawn).toHaveBeenCalledTimes(0);
       }
     );
 
@@ -180,7 +205,7 @@ describe('ui:create:react', () => {
   test
     .command(['ui:create:react', 'myapp'])
     .it('should spawn on regular process once', async () => {
-      expect(mockedNpxInPty).toHaveBeenCalledTimes(1);
+      expect(mockedSpawn).toHaveBeenCalledTimes(1);
     });
 
   test
@@ -191,18 +216,23 @@ describe('ui:create:react', () => {
 
   test
     .command(['ui:create:react', 'myapp'])
-    .it('should start a process to create the project', () => {
-      expect(mockedNpxInPty).nthCalledWith(
-        1,
-        [
-          'create-react-app@1.0.0',
-          'myapp',
-          '--template',
-          '@coveo/cra-template@1.0.0',
-        ],
-        expect.objectContaining({})
-      );
-    });
+    .it(
+      'should start a process and a transformer to create the project',
+      () => {
+        expect(mockedSpawn).nthCalledWith(
+          1,
+          expect.stringContaining('npx'),
+          [
+            'create-react-app@1.0.0',
+            'myapp',
+            '--template',
+            '@coveo/cra-template@1.0.0',
+          ],
+          expect.objectContaining({})
+        );
+        expect(mockedReactStdoutTransformer).toBeCalledWith('myapp');
+      }
+    );
 
   test
     .command(['ui:create:react', 'myapp'])
@@ -240,7 +270,7 @@ describe('ui:create:react', () => {
 
   test
     .do(() => {
-      processExitCode.spawnOutput = 99;
+      processExitCode.spawn = 99;
     })
     .command(['ui:create:react', 'myapp'])
     .catch(/unable to create the project/)
