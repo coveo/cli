@@ -1,4 +1,4 @@
-import {green, red} from 'chalk';
+import {green} from 'chalk';
 import {cli} from 'cli-ux';
 import {Configuration} from '../config/config';
 import {
