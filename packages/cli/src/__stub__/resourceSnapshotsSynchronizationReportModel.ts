@@ -27,7 +27,7 @@ const getPlan = (
   synchronizationPlanId: 'some-plan-id',
   linkOperationDetails: {},
   linkOperations: {},
-  resourcesProcessed: 6,
+  resourcesProcessed: 123,
   resultCode,
   status,
   type: ResourceSnapshotsReportType.CreateSynchronizationPlan,
