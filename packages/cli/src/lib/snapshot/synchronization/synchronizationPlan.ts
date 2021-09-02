@@ -1,4 +1,7 @@
-import {ResourceSnapshotsSynchronizationPlanModel} from '@coveord/platform-client';
+import {
+  ResourceSnapshotsSynchronizationOperationsModel,
+  ResourceSnapshotsSynchronizationPlanModel,
+} from '@coveord/platform-client';
 
 export class SynchronizationPlan {
   public constructor(
@@ -16,13 +19,17 @@ export class SynchronizationPlan {
       synchronizationOperations
     )) {
       for (const operation of synchronizationOperation) {
-        if (
-          operation.matches.some((match) => (match.associationScore || 0) < 1)
-        ) {
+        if (this.hasUncertainMatch(operation)) {
           return false;
         }
       }
     }
     return true;
+  }
+
+  private hasUncertainMatch(
+    operation: ResourceSnapshotsSynchronizationOperationsModel
+  ) {
+    return operation.matches.some((match) => (match.associationScore || 0) < 1);
   }
 }
