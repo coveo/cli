@@ -6,6 +6,7 @@ jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/snapshot/snapshot');
 jest.mock('../../../lib/snapshot/snapshotFactory');
 jest.mock('../../../lib/project/project');
+jest.mock('../../../lib/snapshot/snapshotFacade');
 jest.mock('@oclif/errors');
 
 import {mocked} from 'ts-jest/utils';
@@ -16,7 +17,7 @@ import {cwd} from 'process';
 import {Config} from '../../../lib/config/config';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {warn, error} from '@oclif/errors';
+import {error} from '@oclif/errors';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {
@@ -25,11 +26,11 @@ import {
 } from '../../../__stub__/resourceSnapshotsReportModel';
 import {Command} from '@oclif/command';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions';
+import {SnapshotFacade} from '../../../lib/snapshot/snapshotFacade';
 
 const mockedSnapshotFactory = mocked(SnapshotFactory, true);
 const mockedConfig = mocked(Config);
 const mockedProject = mocked(Project);
-const mockedWarn = mocked(warn);
 const mockedError = mocked(error);
 const mockedConfigGet = jest.fn();
 const mockedDeleteTemporaryZipFile = jest.fn();
@@ -39,7 +40,12 @@ const mockedRequiresSynchronization = jest.fn();
 const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
 const mockedLastReport = jest.fn();
+const mockedCreateSynchronizationPlan = jest.fn();
+const mockedApplySynchronizationPlan = jest.fn();
+const mockedTryAutomaticSynchronization = jest.fn();
 const mockedIsGitInstalled = mocked(IsGitInstalled, true);
+const mockedSnapshotFacade = mocked(SnapshotFacade, true);
+
 const mockProject = () => {
   mockedProject.mockImplementation(
     () =>
@@ -78,6 +84,8 @@ const mockSnapshotFactory = async () => {
       saveDetailedReport: mockedSaveDetailedReport,
       requiresSynchronization: mockedRequiresSynchronization,
       latestReport: mockedLastReport,
+      createSynchronizationPlan: mockedCreateSynchronizationPlan,
+      applySynchronizationPlan: mockedApplySynchronizationPlan,
       id: 'banana-snapshot',
       targetId: 'potato-org',
     } as unknown as Snapshot)
@@ -102,6 +110,14 @@ const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
   const reporter = new SnapshotReporter(errorReport);
   mockedValidateSnapshot.mockResolvedValue(reporter);
   await mockSnapshotFactory();
+};
+
+const mockSnapshotFacade = () => {
+  mockedSnapshotFacade.prototype.tryAutomaticSynchronization =
+    mockedTryAutomaticSynchronization;
+  // .mockImplementation(() => ({
+  //   tryAutomaticSynchronization: jest.fn(),
+  // }));
 };
 
 describe('org:config:preview', () => {
@@ -259,6 +275,7 @@ describe('org:config:preview', () => {
   describe('when the snapshot is not in sync with the target org', () => {
     beforeAll(async () => {
       await mockSnapshotFactoryReturningInvalidSnapshot();
+      mockSnapshotFacade();
     });
 
     beforeEach(() => {
@@ -272,22 +289,8 @@ describe('org:config:preview', () => {
 
     test
       .command(['org:config:preview'])
-      .it('should have detected some conflicts', () => {
-        expect(mockedWarn).toHaveBeenCalledWith(
-          expect.stringContaining(
-            'Some conflicts were detected while comparing changes between the snapshot and the target organization'
-          )
-        );
-      });
-
-    test
-      .command(['org:config:preview'])
-      .it('should print an url to the synchronization page', () => {
-        expect(mockedWarn).toHaveBeenCalledWith(
-          expect.stringContaining(
-            'https://platform.cloud.coveo.com/admin/#potato-org/organization/resource-snapshots/banana-snapshot/synchronization'
-          )
-        );
+      .it('should have detected and tried to resolves the conflicts', () => {
+        expect(mockedTryAutomaticSynchronization).toHaveBeenCalled();
       });
   });
 });

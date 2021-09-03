@@ -286,12 +286,13 @@ export class Snapshot {
 
       const isUnsettled = this.isUnsettled();
       const isSynchronizing = this.isSynchronizing();
-      const isExpectedOperation =
-        operationToWaitFor && this.isGoingThroughOperation(operationToWaitFor);
+      const isUnexpectedOperation = operationToWaitFor
+        ? this.isGoingThroughOperation(operationToWaitFor)
+        : false;
 
       onRetryCb(this.latestReport);
 
-      if (isUnsettled || isSynchronizing || !isExpectedOperation) {
+      if (isUnsettled || isSynchronizing || isUnexpectedOperation) {
         throw new SnapshotOperationTimeoutError(this);
       }
     }).bind(this);
