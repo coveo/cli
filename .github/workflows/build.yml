@@ -20,6 +20,10 @@ jobs:
       COVEO_DISABLE_AUTOUPDATE: true
       UI_TEMPLATE_VERSION: '0.0.0'
     steps:
+      - name: WTTSC
+        run: |
+          which tsc
+          tsc --version
       - name: Setup runner
         if: ${{matrix.os == 'ubuntu-latest'}}
         # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
