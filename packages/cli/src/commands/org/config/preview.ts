@@ -14,6 +14,7 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
+import {sync, wait} from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {
@@ -21,7 +22,6 @@ import {
   getTargetOrg,
   handleReportWithErrors,
   handleSnapshotError,
-  waitFlag,
   DryRunOptions,
   cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
@@ -30,7 +30,8 @@ export default class Preview extends Command {
   public static description = 'Preview resource updates';
 
   public static flags = {
-    ...waitFlag,
+    ...wait(),
+    ...sync(),
     target: flags.string({
       char: 't',
       description:
@@ -118,6 +119,7 @@ export default class Preview extends Command {
     return {
       deleteMissingResources: flags.showMissingResources,
       waitUntilDone: {wait: flags.wait},
+      sync: flags.sync,
     };
   }
 

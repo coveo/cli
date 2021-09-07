@@ -10,10 +10,10 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
+import {wait} from '../../../lib/flags/snapshotCommonFlags';
 import {ReportViewerStyles} from '../../../lib/snapshot/reportPreviewer/reportPreviewerStyles';
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {
-  waitFlag,
   getTargetOrg,
   handleSnapshotError,
   handleReportWithErrors,
@@ -25,7 +25,7 @@ export default class Monitor extends Command {
   public static description = 'Monitor a Snapshot operation';
 
   public static flags = {
-    ...waitFlag,
+    ...wait(),
     target: flags.string({
       char: 't',
       description:
