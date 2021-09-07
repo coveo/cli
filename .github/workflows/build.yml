@@ -41,7 +41,10 @@ jobs:
         run: npm run test
       - name: Build CLI
         working-directory: ./packages/cli
-        run: tsc -b
+        run: |
+          which tsc
+          tsc --version
+          tsc -b
       - name: End-to-end Tests
         if: ${{matrix.os == 'ubuntu-latest'}}
         run: bash packages/cli-e2e/entrypoints/ci.sh
