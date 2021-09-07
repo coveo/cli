@@ -229,7 +229,7 @@ export default class SourcePushAdd extends Command {
       });
       this.successMessageOnAdd(fileNames, batch.length, res);
     } catch (e) {
-      this.errorMessageOnAdd(e);
+      this.errorMessageOnAdd(e as ErrorFromAPI);
     }
   }
 
