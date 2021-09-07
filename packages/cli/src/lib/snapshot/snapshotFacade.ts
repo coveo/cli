@@ -12,9 +12,11 @@ import {SynchronizationPlan} from './synchronization/synchronizationPlan';
 export class SnapshotFacade {
   public constructor(private snapshot: Snapshot, private cfg: Configuration) {}
 
-  public async tryAutomaticSynchronization() {
+  public async tryAutomaticSynchronization(skipPrompt = false) {
     const plan = await this.createSynchronizationPlan();
-    await this.waitForConfirmation();
+    if (!skipPrompt) {
+      await this.waitForConfirmation();
+    }
     await this.applySynchronizationPlan(plan);
   }
 
