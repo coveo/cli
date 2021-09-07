@@ -39,12 +39,9 @@ const getDummySnapshot = () =>
     applySynchronizationPlan: mockedApplySynchronizationPlan,
   } as unknown as Snapshot);
 
-const getdummyConfig = () => ({} as unknown as Configuration); // TODO: clean that
-
 describe('SnapshotFacade', () => {
   const snapshot = getDummySnapshot();
-  const config = getdummyConfig();
-  const facade = new SnapshotFacade(snapshot, config);
+  const facade = new SnapshotFacade(snapshot, {} as Configuration);
 
   beforeAll(() => {
     doMockConfirm();
