@@ -46,7 +46,7 @@ export async function dryRun(
     opt.waitUntilDone
   );
 
-  if (snapshot.requiresSynchronization()) {
+  if (snapshot.areResourcesInError()) {
     cli.warn('Unsynchronized resource detected');
     await handleUnsynchronizedResources(snapshot, cfg);
 

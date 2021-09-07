@@ -153,8 +153,7 @@ export class Snapshot {
     );
   }
 
-  public requiresSynchronization() {
-    // TODO: CDX-556: add a better check to know if the snapshot contains synchronization errors
+  public areResourcesInError() {
     return (
       this.latestReport.resultCode ===
       ResourceSnapshotsReportResultCode.ResourcesInError
