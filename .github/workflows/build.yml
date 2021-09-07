@@ -33,6 +33,10 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: ${{matrix.node}}
+      - name: WTTSC
+        run: |
+          which tsc
+          tsc --version
       - name: Setup repo
         run: npm run setup
       - name: Check linting
