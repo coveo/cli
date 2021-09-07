@@ -74,8 +74,8 @@ export class OAuth {
       );
       return response;
     } catch (e) {
-      console.log('ERROR: ', e);
-      return e;
+      console.error('ERROR: ', e as string);
+      throw e;
     }
   }
 
