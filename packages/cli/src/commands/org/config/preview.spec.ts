@@ -115,9 +115,6 @@ const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
 const mockSnapshotFacade = () => {
   mockedSnapshotFacade.prototype.tryAutomaticSynchronization =
     mockedTryAutomaticSynchronization;
-  // .mockImplementation(() => ({
-  //   tryAutomaticSynchronization: jest.fn(),
-  // }));
 };
 
 describe('org:config:preview', () => {
@@ -290,7 +287,16 @@ describe('org:config:preview', () => {
     test
       .command(['org:config:preview'])
       .it('should have detected and tried to resolves the conflicts', () => {
-        expect(mockedTryAutomaticSynchronization).toHaveBeenCalled();
+        expect(mockedTryAutomaticSynchronization).toHaveBeenCalledWith(false);
       });
+
+    test
+      .command(['org:config:preview', '--sync'])
+      .it(
+        'should try to apply synchronization plan without asking for confirmation',
+        () => {
+          expect(mockedTryAutomaticSynchronization).toHaveBeenCalledWith(true);
+        }
+      );
   });
 });
