@@ -287,7 +287,7 @@ export class Snapshot {
       const isUnsettled = this.isUnsettled();
       const isSynchronizing = this.isSynchronizing();
       const isUnexpectedOperation = operationToWaitFor
-        ? this.isGoingThroughOperation(operationToWaitFor)
+        ? !this.isGoingThroughOperation(operationToWaitFor)
         : false;
 
       onRetryCb(this.latestReport);
