@@ -143,7 +143,7 @@
   "repository": "coveo/cli",
   "scripts": {
     "postpack": "rimraf -f oclif.manifest.json",
-    "prepack": "rimraf -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rimraf -rf lib && node_modules/.bin/tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "jest",
     "lint": "prettier --config ../../.prettierrc.js --check . && eslint .",
     "version": "oclif-dev readme && git add README.md",

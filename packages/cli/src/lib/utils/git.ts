@@ -28,7 +28,7 @@ export async function tryGitCommit(
       });
     } catch (error) {
       cli.warn('Git commit not created');
-      cli.warn(error);
+      cli.warn(error as string | Error);
     }
   }
 }
