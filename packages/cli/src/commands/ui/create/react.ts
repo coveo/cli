@@ -3,7 +3,6 @@ import {Command, flags} from '@oclif/command';
 
 import {join} from 'path';
 import {EOL} from 'os';
-import {Transform} from 'stream';
 import {spawn} from 'child_process';
 
 import {
