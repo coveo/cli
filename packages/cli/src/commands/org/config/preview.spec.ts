@@ -287,7 +287,7 @@ describe('org:config:preview', () => {
     test
       .command(['org:config:preview'])
       .it('should have detected and tried to resolves the conflicts', () => {
-        expect(mockedTryAutomaticSynchronization).toHaveBeenCalledWith(false);
+        expect(mockedTryAutomaticSynchronization).toHaveBeenCalledWith(true);
       });
 
     test
@@ -295,7 +295,7 @@ describe('org:config:preview', () => {
       .it(
         'should try to apply synchronization plan without asking for confirmation',
         () => {
-          expect(mockedTryAutomaticSynchronization).toHaveBeenCalledWith(true);
+          expect(mockedTryAutomaticSynchronization).toHaveBeenCalledWith(false);
         }
       );
   });

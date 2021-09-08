@@ -33,7 +33,7 @@ export async function dryRun(
   if (snapshot.requiresSynchronization()) {
     cli.warn('Unsynchronized resource detected');
     const facade = new SnapshotFacade(snapshot, cfg);
-    await facade.tryAutomaticSynchronization(options.sync);
+    await facade.tryAutomaticSynchronization(!options.sync);
 
     cli.action.start('Validating synchronized snapshot');
     reporter = await snapshot.validate(
