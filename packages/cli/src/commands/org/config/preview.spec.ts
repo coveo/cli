@@ -115,9 +115,6 @@ const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
 const mockSnapshotFacade = () => {
   mockedSnapshotFacade.prototype.tryAutomaticSynchronization =
     mockedTryAutomaticSynchronization;
-  // .mockImplementation(() => ({
-  //   tryAutomaticSynchronization: jest.fn(),
-  // }));
 };
 
 describe('org:config:preview', () => {

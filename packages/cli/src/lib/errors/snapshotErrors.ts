@@ -73,7 +73,7 @@ export class SnapshotNoSynchronizationReportFoundError
     super(SeverityLevel.Error);
     this.message = dedent`
     No synchronization report found for the snapshot ${this.snapshot.id}.
-    The snapshot should first be synchronized`;
+    The snapshot should first be synchronized.`;
   }
 }
 
