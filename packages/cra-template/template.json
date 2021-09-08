@@ -22,7 +22,7 @@
       "postinstall": "npm run setup-server && npm run setup-env && npm run setup-cleanup",
       "setup-server": "node ./scripts/setup-server.js",
       "setup-env": "node ./scripts/setup-env.js",
-      "setup-cleanup": "node./scripts/clean-up.js",
+      "setup-cleanup": "node ./scripts/clean-up.js",
       "start-server": "node ./scripts/start-server.js",
       "allocate-port": "node ./scripts/port-allocator.mjs",
       "start": "npm run allocate-port && concurrently --raw \"npm run start-server\" \"react-scripts start\""

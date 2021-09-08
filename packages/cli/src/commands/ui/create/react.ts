@@ -1,7 +1,4 @@
-import {cli} from 'cli-ux';
 import {Command, flags} from '@oclif/command';
-
-import {EOL} from 'os';
 
 import {
   buildAnalyticsFailureHook,
@@ -13,7 +10,6 @@ import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {spawnProcess} from '../../../lib/utils/process';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
-import {tryGitCommit} from '../../../lib/utils/git';
 import {
   Preconditions,
   IsAuthenticated,
