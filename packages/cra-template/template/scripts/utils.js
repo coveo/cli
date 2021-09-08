@@ -3,12 +3,12 @@ const appendCmdIfWindows = (cmd) =>
 
 const DEFAULT_PACKAGE_MANAGER = 'npm';
 
-function getPackageManager() {
+function getPackageManager(noCmd = false) {
   const firstUserAgent = /^\w+(?=\/)/;
   const packageManager =
     process.env['npm_config_user_agent'].match(firstUserAgent) ??
     DEFAULT_PACKAGE_MANAGER;
-  return appendCmdIfWindows(packageManager);
+  return noCmd ? packageManager : appendCmdIfWindows(packageManager);
 }
 
 module.exports = {getPackageManager};
