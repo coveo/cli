@@ -97,16 +97,18 @@ export default class React extends Command {
       platformUrl: platformUrl({environment: cfg.environment}),
     };
 
-    return this.runReactCliCommand(
+    const exitCode = await this.runReactCliCommand(
       [name, '--template', `${React.templateName}@${templateVersion}`],
       env
-    ).catch((_e) =>
-      Promise.reject(
+    );
+
+    if (exitCode !== 0) {
+      this.error(
         new Error(
           'create-react-app was unable to create the project. See the logs above for more information.'
         )
-      )
-    );
+      );
+    }
   }
 
   private async runReactCliCommand(args: string[], env: ReactProcessEnv) {

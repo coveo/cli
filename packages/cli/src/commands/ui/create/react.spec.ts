@@ -11,12 +11,11 @@ jest.mock('../../../hooks/analytics/analytics');
 jest.mock('../../../hooks/prerun/prerun');
 jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
-jest.mock('../../../lib/ui/create/react/reactStdoutTransformer');
 jest.mock('@coveord/platform-client');
 
 import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
-import {spawnProcessOutput} from '../../../lib/utils/process';
+import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
 import {Config} from '../../../lib/config/config';
@@ -26,32 +25,20 @@ import {
   HasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
-import {ReactStdoutTransformer} from '../../../lib/ui/create/react/reactStdoutTransformer';
 import Command from '@oclif/command';
-import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {configurationMock} from '../../../__stub__/configuration';
-import {ChildProcessByStdio, spawn} from 'child_process';
 
 describe('ui:create:react', () => {
   const mockedConfig = mocked(Config);
-  const mockedSpawn = mocked(spawn, true);
-  const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
+  const mockedSpawnProcess = mocked(spawnProcess, true);
   const mockedPlatformClient = mocked(PlatformClient);
   const mockedGetPackageVersion = mocked(getPackageVersion);
   const mockedAuthenticatedClient = mocked(AuthenticatedClient);
   const mockedIsNpxInstalled = mocked(IsNpxInstalled, true);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
+  const createReactAppPackage = 'create-react-app';
   const mockedApiKeyPrivilege = mocked(HasNecessaryCoveoPrivileges, true);
-  const mockedReactStdoutTransformer = mocked(ReactStdoutTransformer, true);
   const mockedCreateImpersonateApiKey = jest.fn();
-  const mockedSpawnStdoutPipe = jest.fn();
-  const mockedSpawnStdoutPipePipe = jest.fn();
-  const mockedSpawnProcessOn = jest.fn();
-
-  const processExitCode = {
-    spawn: 0,
-    spawnOutput: 0,
-  };
   const preconditionStatus = {
     node: true,
     npx: true,
@@ -77,24 +64,7 @@ describe('ui:create:react', () => {
   };
 
   const doMockSpawnProcess = () => {
-    mockedSpawnProcessOutput.mockResolvedValue({
-      stdout: '',
-      stderr: '',
-      exitCode: String(processExitCode.spawnOutput),
-    });
-    mockedSpawnStdoutPipe.mockReturnValue({pipe: mockedSpawnStdoutPipePipe});
-    mockedSpawnProcessOn.mockImplementation((_event, callback) => {
-      callback(processExitCode.spawn);
-    });
-    mockedSpawn.mockImplementation(
-      () =>
-        ({
-          stdout: {
-            pipe: mockedSpawnStdoutPipe,
-          },
-          on: mockedSpawnProcessOn,
-        } as unknown as ChildProcessByStdio<null, internal.Readable, null>)
-    );
+    mockedSpawnProcess.mockReturnValue(Promise.resolve(0));
   };
 
   const doMockedGetPackageVersion = () => {
@@ -141,15 +111,6 @@ describe('ui:create:react', () => {
     );
   };
 
-  const doMockReactStdoutTransformer = () => {
-    mockedReactStdoutTransformer.mockImplementation(
-      () =>
-        ({
-          remainingStdout: 'some string',
-        } as unknown as ReactStdoutTransformer)
-    );
-  };
-
   beforeEach(() => {
     doMockedGetPackageVersion();
     doMockSpawnProcess();
@@ -157,17 +118,13 @@ describe('ui:create:react', () => {
     doMockConfiguration();
     doMockAuthenticatedClient();
     doMockPreconditions();
-    doMockReactStdoutTransformer();
-    preconditionStatus.npx = true;
     preconditionStatus.node = true;
+    preconditionStatus.npx = true;
     preconditionStatus.apiKey = true;
-    processExitCode.spawn = 0;
-    processExitCode.spawnOutput = 0;
   });
 
   afterEach(() => {
     mockedIsNodeVersionInRange.mockClear();
-    mockedIsNpxInstalled.mockClear();
     mockedApiKeyPrivilege.mockClear();
   });
 
@@ -185,13 +142,13 @@ describe('ui:create:react', () => {
 
   test
     .do(() => {
-      preconditionStatus.npx = false;
+      preconditionStatus.node = false;
     })
     .command(['ui:create:react', 'myapp'])
     .it(
       'should not execute the command if the preconditions are not respected',
       async () => {
-        expect(mockedSpawn).toHaveBeenCalledTimes(0);
+        expect(mockedSpawnProcess).toHaveBeenCalledTimes(0);
       }
     );
 
@@ -200,79 +157,65 @@ describe('ui:create:react', () => {
     .catch((ctx) => {
       expect(ctx.message).toContain('Missing 1 required arg:');
     })
-    .it('requires application name argument');
+    .it('requires application name argument', async () => {});
 
   test
     .command(['ui:create:react', 'myapp'])
-    .it('should spawn on regular process once', async () => {
-      expect(mockedSpawn).toHaveBeenCalledTimes(1);
-    });
-
-  test
-    .command(['ui:create:react', 'myapp'])
-    .it('should spawn 2 output processes', async () => {
-      expect(mockedSpawnProcessOutput).toHaveBeenCalledTimes(3);
-    });
-
-  test
-    .command(['ui:create:react', 'myapp'])
-    .it(
-      'should start a process and a transformer to create the project',
-      () => {
-        expect(mockedSpawn).nthCalledWith(
-          1,
-          expect.stringContaining('npx'),
-          [
-            'create-react-app@1.0.0',
-            'myapp',
-            '--template',
-            '@coveo/cra-template@1.0.0',
-          ],
-          expect.objectContaining({})
-        );
-        expect(mockedReactStdoutTransformer).toBeCalledWith('myapp');
-      }
-    );
-
-  test
-    .command(['ui:create:react', 'myapp'])
-    .it('should start an output process to setup the server', () => {
-      expect(mockedSpawnProcessOutput).nthCalledWith(
+    .it('should start 1 spawn processes with the good template', () => {
+      expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
+      expect(mockedSpawnProcess).nthCalledWith(
         1,
-        appendCmdIfWindows`npm`,
-        ['run', 'setup-server'],
-        expect.objectContaining({})
+        expect.stringContaining('npx'),
+        [
+          `${createReactAppPackage}@1.0.0`,
+          'myapp',
+          '--template',
+          '@coveo/cra-template@1.0.0',
+        ],
+        expect.objectContaining({
+          env: {
+            orgId: expect.any(String),
+            apiKey: expect.any(String),
+            user: expect.any(String),
+            platformUrl: expect.any(String),
+          },
+        })
       );
     });
 
   test
-    .command(['ui:create:react', 'myapp'])
-    .it('should start an output process setup environment variables', () => {
-      expect(mockedSpawnProcessOutput).nthCalledWith(
-        2,
-        appendCmdIfWindows`npm`,
+    .command(['ui:create:react', 'myapp', '-v=1.2.3'])
+    .it('should use the version from the flag if provided', () => {
+      expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
+      expect(mockedSpawnProcess).nthCalledWith(
+        1,
+        expect.stringContaining('npx'),
         [
-          'run',
-          'setup-env',
-          '--',
-          '--orgId',
-          'my-org',
-          '--apiKey',
-          'foo',
-          '--platformUrl',
-          'https://platformdev.cloud.coveo.com',
-          '--user',
-          'bob@coveo.com',
+          `${createReactAppPackage}@1.0.0`,
+          'myapp',
+          '--template',
+          '@coveo/cra-template@1.2.3',
         ],
-        {cwd: 'myapp'}
+        expect.objectContaining({
+          env: {
+            orgId: expect.any(String),
+            apiKey: expect.any(String),
+            user: expect.any(String),
+            platformUrl: expect.any(String),
+          },
+        })
       );
     });
 
   test
     .do(() => {
-      processExitCode.spawn = 99;
+      mockedSpawnProcess.mockReturnValueOnce(Promise.resolve(1));
     })
     .command(['ui:create:react', 'myapp'])
-    .catch(/unable to create the project/)
-    .it('should start an output process setup environment variables');
+    .catch((ctx) => {
+      expect(ctx.message).toBe(
+        'create-react-app was unable to create the project. See the logs above for more information.'
+      );
+    })
+    .it('should blame create-react-app if it fails.', async () => {});
 });
