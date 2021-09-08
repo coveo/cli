@@ -20,12 +20,15 @@
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=10"
+    "node": ">=14"
   },
   "files": [
     "template",
     "template.json"
   ],
+  "dependencies": {
+    "fs-extra": "10.0.0"
+  },
   "devDependencies": {
     "@coveo/headless": "latest",
     "@material-ui/core": "4.12.3",

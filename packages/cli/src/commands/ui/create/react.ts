@@ -1,9 +1,7 @@
 import {cli} from 'cli-ux';
 import {Command, flags} from '@oclif/command';
 
-import {join} from 'path';
 import {EOL} from 'os';
-import {spawn} from 'child_process';
 
 import {
   buildAnalyticsFailureHook,
@@ -12,7 +10,7 @@ import {
 import {Config} from '../../../lib/config/config';
 import {platformUrl} from '../../../lib/platform/environment';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {spawnProcessOutput} from '../../../lib/utils/process';
+import {spawnProcess} from '../../../lib/utils/process';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {tryGitCommit} from '../../../lib/utils/git';
@@ -23,18 +21,23 @@ import {
   IsNpxInstalled,
   HasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions';
-import {ReactStdoutTransformer} from '../../../lib/ui/create/react/reactStdoutTransformer';
+
+type ReactProcessEnv = {
+  orgId: string;
+  apiKey: string;
+  user: string;
+  platformUrl: string;
+};
 
 export default class React extends Command {
   public static templateName = '@coveo/cra-template';
   public static cliPackage = 'create-react-app';
 
   /**
-   * Node.JS v10.16.0 is the first version that included NPX (via NPM).
-   * Future requirement should be based on https://create-react-app.dev/docs/getting-started/#creating-an-app
-   * and https://www.npmjs.com/package/create-react-app package.json engines section.
+   * "You’ll need to have Node 14.0.0 or later version on your local development machine"
+   *  https://github.com/facebook/create-react-app#creating-an-app
    */
-  public static requiredNodeVersion = '>=10.16.0';
+  public static requiredNodeVersion = '>=14.0.0';
 
   public static description =
     'Create a Coveo Headless-powered search page with the React web framework. See <https://docs.coveo.com/headless> and <https://reactjs.org/>.';
@@ -68,18 +71,7 @@ export default class React extends Command {
   )
   public async run() {
     const args = this.args;
-
-    const finalOutput = await this.createProject(args.name);
-
-    cli.action.start('Creating search token server');
-    await this.setupServer(args.name);
-    await this.setupEnvironmentVariables(args.name);
-    await tryGitCommit(args.name, 'Add token server to project');
-    cli.action.stop();
-
-    this.log(EOL);
-    process.stdout.write(finalOutput);
-
+    await this.createProject(args.name);
     await this.config.runHook('analytics', buildAnalyticsSuccessHook(this, {}));
   }
 
@@ -94,13 +86,25 @@ export default class React extends Command {
 
   private async createProject(name: string) {
     const flags = this.flags;
+    const args = this.args;
+    const cfg = this.configuration.get();
+    const authenticatedClient = new AuthenticatedClient();
+    const userInfo = await authenticatedClient.getUserInfo();
+    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
+
     const templateVersion =
       flags.version || getPackageVersion(React.templateName);
-    return this.runReactCliCommand([
-      name,
-      '--template',
-      `${React.templateName}@${templateVersion}`,
-    ]).catch((_e) =>
+    const env: ReactProcessEnv = {
+      orgId: cfg.organization,
+      apiKey: apiKey.value!,
+      user: userInfo.providerUsername,
+      platformUrl: platformUrl({environment: cfg.environment}),
+    };
+
+    return this.runReactCliCommand(
+      [name, '--template', `${React.templateName}@${templateVersion}`],
+      env
+    ).catch((_e) =>
       Promise.reject(
         new Error(
           'create-react-app was unable to create the project. See the logs above for more information.'
@@ -109,89 +113,14 @@ export default class React extends Command {
     );
   }
 
-  private async setupEnvironmentVariables(name: string) {
-    const args = this.args;
-    const cfg = await this.configuration.get();
-    const authenticatedClient = new AuthenticatedClient();
-    const userInfo = await authenticatedClient.getUserInfo();
-    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
-    const output = await spawnProcessOutput(
-      appendCmdIfWindows`npm`,
-      [
-        'run',
-        'setup-env',
-        '--',
-        '--orgId',
-        cfg.organization,
-        '--apiKey',
-        apiKey.value!,
-        '--platformUrl',
-        platformUrl({environment: cfg.environment}),
-        '--user',
-        userInfo.providerUsername,
-      ],
-      {
-        cwd: name,
-      }
-    );
-
-    if (output.stderr) {
-      this.warn(`
-      An unknown error occurred while trying to create the .env file in the project. Please refer to ${join(
-        name,
-        'README.md'
-      )} for more information.
-      ${output.stderr}
-      `);
-      return false;
-    }
-
-    return true;
-  }
-
-  private async setupServer(name: string) {
-    const output = await spawnProcessOutput(
-      appendCmdIfWindows`npm`,
-      ['run', 'setup-server'],
-      {
-        cwd: name,
-      }
-    );
-
-    if (output.exitCode) {
-      this.warn(`
-      An unknown error occurred while trying to copy the search token server. Please refer to ${join(
-        name,
-        'README.md'
-      )} for more information.
-      ${output.stderr ?? ''}
-      `);
-      return false;
-    }
-
-    return true;
-  }
-
-  private async runReactCliCommand(commandArgs: string[]) {
-    const reactProcess = spawn(
+  private async runReactCliCommand(args: string[], env: ReactProcessEnv) {
+    return spawnProcess(
       appendCmdIfWindows`npx`,
       [`${React.cliPackage}@${getPackageVersion(React.cliPackage)}`].concat([
-        ...commandArgs,
+        ...args,
       ]),
-      {stdio: ['inherit', 'pipe', 'inherit']}
+      {env}
     );
-
-    const stdoutTransformer = new ReactStdoutTransformer(this.args.name);
-    reactProcess.stdout.pipe(stdoutTransformer).pipe(process.stdout);
-
-    const exitCode = await new Promise((resolve) =>
-      reactProcess.on('close', (code) => resolve(code || 0))
-    );
-    if (exitCode) {
-      return Promise.reject();
-    } else {
-      return stdoutTransformer.remainingStdout;
-    }
   }
 
   private get configuration() {
