@@ -20,7 +20,7 @@ function getEnvVariables() {
 
 function startServer() {
   const serverPath = join(process.cwd(), 'server');
-  const child = spawn(getPackageManager, ['run', 'start'], {
+  const child = spawn(getPackageManager(), ['run', 'start'], {
     stdio: 'inherit',
     env: getEnvVariables(),
     cwd: resolve(serverPath),
