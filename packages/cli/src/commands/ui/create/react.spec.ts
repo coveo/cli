@@ -173,12 +173,12 @@ describe('ui:create:react', () => {
           '@coveo/cra-template@1.0.0',
         ],
         expect.objectContaining({
-          env: {
+          env: expect.objectContaining({
             orgId: expect.any(String),
             apiKey: expect.any(String),
             user: expect.any(String),
             platformUrl: expect.any(String),
-          },
+          }),
         })
       );
     });
@@ -197,12 +197,12 @@ describe('ui:create:react', () => {
           '@coveo/cra-template@1.2.3',
         ],
         expect.objectContaining({
-          env: {
+          env: expect.objectContaining({
             orgId: expect.any(String),
             apiKey: expect.any(String),
             user: expect.any(String),
             platformUrl: expect.any(String),
-          },
+          }),
         })
       );
     });

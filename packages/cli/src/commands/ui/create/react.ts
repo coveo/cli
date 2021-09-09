@@ -115,7 +115,7 @@ export default class React extends Command {
     return spawnProcess(
       appendCmdIfWindows`npx`,
       [`${React.cliPackage}@${getPackageVersion(React.cliPackage)}`, ...args],
-      {env}
+      {env: {...process.env, ...env}}
     );
   }
 
