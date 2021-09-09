@@ -1,6 +1,7 @@
 name: 'Delete Test API Keys'
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '0 0 * * SAT'
 
@@ -11,6 +12,9 @@ jobs:
       TEST_ORG_ID: ${{ secrets.ORG_ID }}
       ACCESS_TOKEN: ${{ secrets.PLATFORM_API_KEY }}
     steps:
-      - name: Delete test API keys
-        if: always()
-        run: node ./scripts/delete-api-keys.js
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - run: npm i
+      - run: node ./scripts/delete-api-keys.js

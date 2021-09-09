@@ -54,13 +54,8 @@ async function main() {
   if (!testRunId) {
     cliApiKeys = cliApiKeys.filter(isAtLeastOneDayOld);
   }
-  console.log('*********************');
-  console.log(testRunId);
-  console.log(cliApiKeys);
-  console.log('*********************');
 
-  deleteApiKeys;
-  // (testOrgId, accessToken, cliApiKeys);
+  await deleteApiKeys(testOrgId, accessToken, cliApiKeys);
 }
 
 main();
