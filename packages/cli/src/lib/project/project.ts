@@ -83,7 +83,7 @@ export class Project {
       });
       return this.temporaryZipPath;
     } catch (error) {
-      cli.error(error);
+      cli.error(error as string | Error);
     }
   }
 

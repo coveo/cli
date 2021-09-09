@@ -103,7 +103,7 @@ export default class SourcePushDelete extends Command {
       );
       this.successMessageOnDeletion(toDelete, res);
     } catch (e) {
-      this.errorMessageOnDeletion(toDelete, e);
+      this.errorMessageOnDeletion(toDelete, e as ErrorFromAPI);
     }
   }
 
@@ -119,7 +119,7 @@ export default class SourcePushDelete extends Command {
           );
           this.successMessageOnDeletion(toDelete, res);
         } catch (e) {
-          this.errorMessageOnDeletion(toDelete, e);
+          this.errorMessageOnDeletion(toDelete, e as ErrorFromAPI);
         }
       })
     );
