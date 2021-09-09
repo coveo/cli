@@ -114,9 +114,7 @@ export default class React extends Command {
   private async runReactCliCommand(args: string[], env: ReactProcessEnv) {
     return spawnProcess(
       appendCmdIfWindows`npx`,
-      [`${React.cliPackage}@${getPackageVersion(React.cliPackage)}`].concat([
-        ...args,
-      ]),
+      [`${React.cliPackage}@${getPackageVersion(React.cliPackage)}`, ...args],
       {env}
     );
   }
