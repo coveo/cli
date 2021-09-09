@@ -32,6 +32,7 @@ async function createTestOrgAndSaveOrgIdToEnv(orgName: string) {
   saveToEnvFile(pathToEnv, {
     TEST_ORG_ID: testOrgId,
     ACCESS_TOKEN: accessToken,
+    TEST_RUN_ID: process.env.TEST_RUN_ID,
   });
 }
 
