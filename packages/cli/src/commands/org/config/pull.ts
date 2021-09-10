@@ -5,7 +5,10 @@ import {blueBright} from 'chalk';
 import {cli} from 'cli-ux';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
-import {buildAnalyticsFailureHook} from '../../../hooks/analytics/analytics';
+import {
+  buildAnalyticsFailureHook,
+  buildAnalyticsSuccessHook,
+} from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {
   IsAuthenticated,
@@ -70,6 +73,7 @@ export default class Pull extends Command {
 
     await snapshot.delete();
     cli.action.stop('Project updated');
+    this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
   public async catch(err?: Error) {
