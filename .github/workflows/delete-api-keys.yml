@@ -17,4 +17,4 @@ jobs:
         with:
           node-version: '14'
       - run: npm i
-      - run: node ./scripts/delete-api-keys.js
+      - run: node ./scripts/delete-api-keys.js --olderThan 1d
