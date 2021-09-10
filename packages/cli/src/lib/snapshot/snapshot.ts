@@ -153,8 +153,7 @@ export class Snapshot {
     );
   }
 
-  public requiresSynchronization() {
-    // TODO: CDX-556: add a better check to know if the snapshot contains synchronization errors
+  public areResourcesInError() {
     return (
       this.latestReport.resultCode ===
       ResourceSnapshotsReportResultCode.ResourcesInError
@@ -207,8 +206,8 @@ export class Snapshot {
   private hasBegunSynchronization(
     _synchronizationReports?: ResourceSnapshotsSynchronizationReportModel[]
   ): _synchronizationReports is ResourceSnapshotsSynchronizationReportModel[] {
-    const reports = this.model.synchronizationReports;
-    return Array.isArray(reports) && reports.length > 0;
+    const reports = this.model.synchronizationReports || [];
+    return reports.length > 0;
   }
 
   private displayLightPreview() {

@@ -31,7 +31,7 @@ const mockedConfigGet = jest.fn();
 const mockedDeleteTemporaryZipFile = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
 const mockedSaveDetailedReport = jest.fn();
-const mockedRequiresSynchronization = jest.fn();
+const mockedAreResourcesInError = jest.fn();
 const mockedApplySnapshot = jest.fn();
 const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
@@ -73,7 +73,7 @@ const mockSnapshotFactory = async () => {
       preview: mockedPreviewSnapshot,
       delete: mockedDeleteSnapshot,
       saveDetailedReport: mockedSaveDetailedReport,
-      requiresSynchronization: mockedRequiresSynchronization,
+      areResourcesInError: mockedAreResourcesInError,
       latestReport: mockedLastReport,
       id: 'banana-snapshot',
       targetId: 'potato-org',

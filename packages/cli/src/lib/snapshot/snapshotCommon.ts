@@ -30,7 +30,7 @@ export async function dryRun(
     options.waitUntilDone
   );
 
-  if (snapshot.requiresSynchronization()) {
+  if (snapshot.areResourcesInError()) {
     cli.warn('Unsynchronized resource detected');
     const facade = new SnapshotFacade(snapshot, cfg);
     await facade.tryAutomaticSynchronization(!options.sync);
@@ -65,6 +65,14 @@ export async function handleReportWithErrors(
   projectPath?: string
 ) {
   throw new SnapshotGenericError(snapshot, cfg, projectPath);
+}
+
+export async function handleUnsynchronizedResources(
+  snapshot: Snapshot,
+  cfg: Configuration
+) {
+  const facade = new SnapshotFacade(snapshot, cfg);
+  await facade.tryAutomaticSynchronization();
 }
 
 export function handleSnapshotError(err?: Error) {

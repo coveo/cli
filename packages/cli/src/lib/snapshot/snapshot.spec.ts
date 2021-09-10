@@ -327,7 +327,7 @@ describe('Snapshot', () => {
     });
   });
 
-  describe('#requiresSynchronization', () => {
+  describe('#areResourcesInError', () => {
     let latestReport: ResourceSnapshotsReportModel;
     beforeEach(async () => {
       [snapshot] = await getSnapshot(latestReport);
@@ -339,7 +339,7 @@ describe('Snapshot', () => {
       });
 
       it('should return true', () => {
-        expect(snapshot.requiresSynchronization()).toBe(true);
+        expect(snapshot.areResourcesInError()).toBe(true);
       });
     });
 
@@ -349,7 +349,7 @@ describe('Snapshot', () => {
       });
 
       it('should return false', () => {
-        expect(snapshot.requiresSynchronization()).toBe(false);
+        expect(snapshot.areResourcesInError()).toBe(false);
       });
     });
   });

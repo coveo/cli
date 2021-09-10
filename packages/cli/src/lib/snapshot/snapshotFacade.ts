@@ -22,7 +22,7 @@ export class SnapshotFacade {
 
   private async waitForConfirmation() {
     const canApplySynchronizationPlan = await cli.confirm(
-      'Synchronization plan matched all resources with great confidence, do you want to proceed? (y/n)'
+      'Synchronization plan matched all resources, do you want to proceed? (y/n)'
     );
     if (!canApplySynchronizationPlan) {
       throw new SnapshotOperationAbort(this.snapshot, this.cfg);

@@ -36,7 +36,7 @@ const mockedConfigGet = jest.fn();
 const mockedDeleteTemporaryZipFile = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
 const mockedSaveDetailedReport = jest.fn();
-const mockedRequiresSynchronization = jest.fn();
+const mockedAreResourcesInError = jest.fn();
 const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
 const mockedLastReport = jest.fn();
@@ -82,7 +82,7 @@ const mockSnapshotFactory = async () => {
       preview: mockedPreviewSnapshot,
       delete: mockedDeleteSnapshot,
       saveDetailedReport: mockedSaveDetailedReport,
-      requiresSynchronization: mockedRequiresSynchronization,
+      areResourcesInError: mockedAreResourcesInError,
       latestReport: mockedLastReport,
       createSynchronizationPlan: mockedCreateSynchronizationPlan,
       applySynchronizationPlan: mockedApplySynchronizationPlan,
@@ -240,7 +240,7 @@ describe('org:config:preview', () => {
     });
 
     beforeEach(() => {
-      mockedRequiresSynchronization.mockReturnValueOnce(false);
+      mockedAreResourcesInError.mockReturnValueOnce(false);
       mockedSaveDetailedReport.mockReturnValueOnce(
         normalize(join('saved', 'snapshot'))
       );
@@ -276,7 +276,7 @@ describe('org:config:preview', () => {
     });
 
     beforeEach(() => {
-      mockedRequiresSynchronization.mockReturnValueOnce(true);
+      mockedAreResourcesInError.mockReturnValueOnce(true);
       mockedSaveDetailedReport.mockReturnValueOnce(join('saved', 'snapshot'));
     });
 
