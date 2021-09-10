@@ -53,7 +53,9 @@ function parseDuration(input) {
   if (match) {
     return [match[1], match[2]];
   }
-  throw new Error('Invalid input');
+  throw new Error(
+    'Invalid input. Should follow the format <Amount:number><Unit:unitOfTime>. For more info on duration, visit https://momentjs.com/docs/#/durations/creating/'
+  );
 }
 
 async function main(amount, unit) {
