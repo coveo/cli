@@ -58,9 +58,11 @@ export default class Push extends Command {
   public async run() {
     const {flags} = this.parse(Push);
     const target = await getTargetOrg(this.configuration, flags.target);
+    const cfg = await this.configuration.get();
     const {reporter, snapshot, project} = await dryRun(
       target,
       this.projectPath,
+      cfg,
       this.options
     );
 
@@ -88,12 +90,11 @@ export default class Push extends Command {
     snapshot: Snapshot,
     reporter: SnapshotReporter
   ) {
-    if (reporter.isSuccessReport()) {
-      await this.handleValidReport(reporter, snapshot);
-    } else {
+    if (!reporter.isSuccessReport()) {
       const cfg = await this.configuration.get();
       await handleReportWithErrors(snapshot, cfg, this.projectPath);
     }
+    await this.handleValidReport(reporter, snapshot);
   }
 
   private async cleanup(snapshot: Snapshot, project: Project) {

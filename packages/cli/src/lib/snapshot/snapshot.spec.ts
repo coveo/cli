@@ -49,6 +49,9 @@ const mockedExportSnapshot = jest.fn();
 const mockedApplySnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
+const mockedCreateSynchronizationPlan = jest.fn();
+const mockedApplySynchronizationPlan = jest.fn();
+const mockedGetSynchronizationPlan = jest.fn();
 //#endregion Mocks
 
 describe('Snapshot', () => {
@@ -83,6 +86,9 @@ describe('Snapshot', () => {
           get: mockedGetSnapshot,
           export: mockedExportSnapshot,
           apply: mockedApplySnapshot,
+          createSynchronizationPlan: mockedCreateSynchronizationPlan,
+          applySynchronizationPlan: mockedApplySynchronizationPlan,
+          getSynchronizationPlan: mockedGetSynchronizationPlan,
         },
       })
     );
@@ -333,7 +339,7 @@ describe('Snapshot', () => {
       });
 
       it('should return true', () => {
-        expect(snapshot.requiresSynchronization()).toBe(true);
+        expect(snapshot.areResourcesInError()).toBe(true);
       });
     });
 
@@ -343,7 +349,7 @@ describe('Snapshot', () => {
       });
 
       it('should return false', () => {
-        expect(snapshot.requiresSynchronization()).toBe(false);
+        expect(snapshot.areResourcesInError()).toBe(false);
       });
     });
   });

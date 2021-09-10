@@ -5,12 +5,9 @@ import {Snapshot, WaitUntilDoneOptions} from './snapshot';
 import {red, green} from 'chalk';
 import {normalize} from 'path';
 import {Config, Configuration} from '../config/config';
-import {
-  SnapshotError,
-  SnapshotGenericError,
-  SnapshotSynchronizationError,
-} from '../errors/snapshotErrors';
+import {SnapshotError, SnapshotGenericError} from '../errors/snapshotErrors';
 import {flags} from '@oclif/command';
+import {SnapshotFacade} from './snapshotFacade';
 
 export interface DryRunOptions {
   deleteMissingResources?: boolean;
@@ -32,6 +29,7 @@ export const waitFlag = {
 export async function dryRun(
   targetOrg: string,
   projectPath: string,
+  cfg: Configuration,
   options?: DryRunOptions
 ) {
   const defaultOptions: DryRunOptions = {
@@ -40,14 +38,24 @@ export async function dryRun(
 
   const opt = {...defaultOptions, ...options};
   const project = new Project(normalize(projectPath));
-
   const snapshot = await getSnapshotForDryRun(project, targetOrg, opt);
 
   cli.action.start('Validating snapshot');
-  const reporter = await snapshot.validate(
+  let reporter = await snapshot.validate(
     opt.deleteMissingResources,
     opt.waitUntilDone
   );
+
+  if (snapshot.areResourcesInError()) {
+    cli.warn('Unsynchronized resource detected');
+    await handleUnsynchronizedResources(snapshot, cfg);
+
+    cli.action.start('Validating synchronized snapshot');
+    reporter = await snapshot.validate(
+      opt.deleteMissingResources,
+      opt.waitUntilDone
+    );
+  }
 
   cli.action.stop(reporter.isSuccessReport() ? green('✔') : red.bold('!'));
   return {reporter, snapshot, project};
@@ -71,11 +79,15 @@ export async function handleReportWithErrors(
   cfg: Configuration,
   projectPath?: string
 ) {
-  if (snapshot.requiresSynchronization()) {
-    throw new SnapshotSynchronizationError(snapshot, cfg, projectPath);
-  }
-
   throw new SnapshotGenericError(snapshot, cfg, projectPath);
+}
+
+export async function handleUnsynchronizedResources(
+  snapshot: Snapshot,
+  cfg: Configuration
+) {
+  const facade = new SnapshotFacade(snapshot, cfg);
+  await facade.tryAutomaticSynchronization();
 }
 
 export function handleSnapshotError(err?: Error) {
