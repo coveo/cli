@@ -29,7 +29,7 @@ Afterward, you can run `coveo update` at any time to update your CLI installatio
 
 ### Option 2: Install via NPM
 
-If you have [installed node-gyp](https://github.com/nodejs/node-gyp#installation), you can alternatively install globally via [npm](https://www.npmjs.com/package/@coveo/cli):
+You can alternatively install the CLI globally via [npm](https://www.npmjs.com/package/@coveo/cli):
 
 ```sh
 npm install -g @coveo/cli
@@ -37,7 +37,7 @@ npm install -g @coveo/cli
 
 Afterward, you can run `npm update -g @coveo/cli` at any time to update your npm-based CLI installation to the latest version.
 
-With node-gyp, you can also run the CLI via [npx](https://www.npmjs.com/package/npx):
+You can also run the CLI via [npx](https://www.npmjs.com/package/npx):
 
 ```sh
 npx @coveo/cli

@@ -36,5 +36,5 @@ cd packages/cli-e2e
 node entrypoints/utils/wait-for-published-packages.js
 
 while ! timeout 1 bash -c "echo > /dev/tcp/localhost/9222"; do sleep 10; done
-
+yarn config delete -- --mutex
 npm run jest
