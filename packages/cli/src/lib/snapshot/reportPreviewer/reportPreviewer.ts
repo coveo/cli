@@ -97,6 +97,7 @@ export class ReportViewer {
     for (const resourceType in operationResults) {
       this.logResourceErrors(resourceType);
     }
+    this.printNewLine();
   }
 
   private logResourceErrors(ResourceSnapshotType: string) {
@@ -131,5 +132,9 @@ export class ReportViewer {
         )
       );
     }
+  }
+
+  private printNewLine() {
+    cli.log('');
   }
 }
