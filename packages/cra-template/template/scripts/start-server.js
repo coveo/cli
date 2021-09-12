@@ -1,7 +1,7 @@
 const {spawn} = require('child_process');
 const {resolve, join} = require('path');
 const {config} = require('dotenv');
-const {appendCmdIfWindows} = require('./utils');
+const {getPackageManager} = require('./utils');
 config();
 
 function getEnvVariables() {
@@ -20,7 +20,7 @@ function getEnvVariables() {
 
 function startServer() {
   const serverPath = join(process.cwd(), 'server');
-  const child = spawn(appendCmdIfWindows`npm`, ['run', 'start'], {
+  const child = spawn(getPackageManager(), ['run', 'start'], {
     stdio: 'inherit',
     env: getEnvVariables(),
     cwd: resolve(serverPath),

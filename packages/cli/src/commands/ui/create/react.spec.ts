@@ -1,3 +1,6 @@
+import type internal from 'stream';
+
+jest.mock('child_process');
 jest.mock('../../../lib/decorators/preconditions/npx');
 jest.mock('../../../lib/decorators/preconditions/node');
 jest.mock('../../../lib/decorators/preconditions/apiKeyPrivilege');
@@ -8,13 +11,11 @@ jest.mock('../../../hooks/analytics/analytics');
 jest.mock('../../../hooks/prerun/prerun');
 jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
-jest.mock('../../../lib/utils/npx');
 jest.mock('@coveord/platform-client');
 
 import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
-import {spawnProcessOutput} from '../../../lib/utils/process';
-import {npxInPty} from '../../../lib/utils/npx';
+import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
 import {Config} from '../../../lib/config/config';
@@ -25,25 +26,19 @@ import {
 } from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import Command from '@oclif/command';
-import {appendCmdIfWindows} from '../../../lib/utils/os';
-import {IPty} from 'node-pty';
 import {configurationMock} from '../../../__stub__/configuration';
 
 describe('ui:create:react', () => {
   const mockedConfig = mocked(Config);
-  const mockedNpxInPty = mocked(npxInPty);
-  const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
+  const mockedSpawnProcess = mocked(spawnProcess, true);
   const mockedPlatformClient = mocked(PlatformClient);
   const mockedGetPackageVersion = mocked(getPackageVersion);
   const mockedAuthenticatedClient = mocked(AuthenticatedClient);
   const mockedIsNpxInstalled = mocked(IsNpxInstalled, true);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
+  const createReactAppPackage = 'create-react-app';
   const mockedApiKeyPrivilege = mocked(HasNecessaryCoveoPrivileges, true);
   const mockedCreateImpersonateApiKey = jest.fn();
-  const processExitCode = {
-    spawn: 0,
-    spawnOutput: 0,
-  };
   const preconditionStatus = {
     node: true,
     npx: true,
@@ -69,17 +64,7 @@ describe('ui:create:react', () => {
   };
 
   const doMockSpawnProcess = () => {
-    mockedSpawnProcessOutput.mockResolvedValue({
-      stdout: '',
-      stderr: '',
-      exitCode: String(processExitCode.spawn),
-    });
-
-    mockedNpxInPty.mockResolvedValue({
-      onData: () => {},
-      onExit: (callback: (e: {exitCode: number}) => void) =>
-        callback({exitCode: processExitCode.spawnOutput}),
-    } as unknown as IPty);
+    mockedSpawnProcess.mockReturnValue(Promise.resolve(0));
   };
 
   const doMockedGetPackageVersion = () => {
@@ -133,16 +118,13 @@ describe('ui:create:react', () => {
     doMockConfiguration();
     doMockAuthenticatedClient();
     doMockPreconditions();
-    preconditionStatus.npx = true;
     preconditionStatus.node = true;
+    preconditionStatus.npx = true;
     preconditionStatus.apiKey = true;
-    processExitCode.spawn = 0;
-    processExitCode.spawnOutput = 0;
   });
 
   afterEach(() => {
     mockedIsNodeVersionInRange.mockClear();
-    mockedIsNpxInstalled.mockClear();
     mockedApiKeyPrivilege.mockClear();
   });
 
@@ -160,13 +142,13 @@ describe('ui:create:react', () => {
 
   test
     .do(() => {
-      preconditionStatus.npx = false;
+      preconditionStatus.node = false;
     })
     .command(['ui:create:react', 'myapp'])
     .it(
       'should not execute the command if the preconditions are not respected',
       async () => {
-        expect(mockedNpxInPty).toHaveBeenCalledTimes(0);
+        expect(mockedSpawnProcess).toHaveBeenCalledTimes(0);
       }
     );
 
@@ -175,74 +157,65 @@ describe('ui:create:react', () => {
     .catch((ctx) => {
       expect(ctx.message).toContain('Missing 1 required arg:');
     })
-    .it('requires application name argument');
+    .it('requires application name argument', async () => {});
 
   test
     .command(['ui:create:react', 'myapp'])
-    .it('should spawn on regular process once', async () => {
-      expect(mockedNpxInPty).toHaveBeenCalledTimes(1);
-    });
-
-  test
-    .command(['ui:create:react', 'myapp'])
-    .it('should spawn 2 output processes', async () => {
-      expect(mockedSpawnProcessOutput).toHaveBeenCalledTimes(3);
-    });
-
-  test
-    .command(['ui:create:react', 'myapp'])
-    .it('should start a process to create the project', () => {
-      expect(mockedNpxInPty).nthCalledWith(
+    .it('should start 1 spawn processes with the good template', () => {
+      expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
+      expect(mockedSpawnProcess).nthCalledWith(
         1,
+        expect.stringContaining('npx'),
         [
-          'create-react-app@1.0.0',
+          `${createReactAppPackage}@1.0.0`,
           'myapp',
           '--template',
           '@coveo/cra-template@1.0.0',
         ],
-        expect.objectContaining({})
+        expect.objectContaining({
+          env: expect.objectContaining({
+            orgId: expect.any(String),
+            apiKey: expect.any(String),
+            user: expect.any(String),
+            platformUrl: expect.any(String),
+          }),
+        })
       );
     });
 
   test
-    .command(['ui:create:react', 'myapp'])
-    .it('should start an output process to setup the server', () => {
-      expect(mockedSpawnProcessOutput).nthCalledWith(
+    .command(['ui:create:react', 'myapp', '-v=1.2.3'])
+    .it('should use the version from the flag if provided', () => {
+      expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
+      expect(mockedSpawnProcess).nthCalledWith(
         1,
-        appendCmdIfWindows`npm`,
-        ['run', 'setup-server'],
-        expect.objectContaining({})
-      );
-    });
-
-  test
-    .command(['ui:create:react', 'myapp'])
-    .it('should start an output process setup environment variables', () => {
-      expect(mockedSpawnProcessOutput).nthCalledWith(
-        2,
-        appendCmdIfWindows`npm`,
+        expect.stringContaining('npx'),
         [
-          'run',
-          'setup-env',
-          '--',
-          '--orgId',
-          'my-org',
-          '--apiKey',
-          'foo',
-          '--platformUrl',
-          'https://platformdev.cloud.coveo.com',
-          '--user',
-          'bob@coveo.com',
+          `${createReactAppPackage}@1.0.0`,
+          'myapp',
+          '--template',
+          '@coveo/cra-template@1.2.3',
         ],
-        {cwd: 'myapp'}
+        expect.objectContaining({
+          env: expect.objectContaining({
+            orgId: expect.any(String),
+            apiKey: expect.any(String),
+            user: expect.any(String),
+            platformUrl: expect.any(String),
+          }),
+        })
       );
     });
 
   test
     .do(() => {
-      processExitCode.spawnOutput = 99;
+      mockedSpawnProcess.mockReturnValueOnce(Promise.resolve(1));
     })
     .command(['ui:create:react', 'myapp'])
-    .catch(/unable to create the project/)
-    .it('should start an output process setup environment variables');
+    .catch((ctx) => {
+      expect(ctx.message).toBe(
+        'create-react-app was unable to create the project. See the logs above for more information.'
+      );
+    })
+    .it('should blame create-react-app if it fails.', async () => {});
 });
