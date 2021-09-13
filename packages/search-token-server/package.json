@@ -1,6 +1,6 @@
 {
   "name": "@coveo/search-token-server",
-  "version": "1.14.0",
+  "version": "1.15.0",
   "main": "server.ts",
   "license": "Apache-2.0",
   "repository": {
