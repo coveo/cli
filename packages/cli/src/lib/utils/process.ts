@@ -1,6 +1,4 @@
 import {spawn, SpawnOptions} from 'child_process';
-import {spawn as ptySpawn, IWindowsPtyForkOptions} from 'node-pty';
-
 function isErrnoException(error: Error): error is NodeJS.ErrnoException {
   return Object.hasOwnProperty.call(error, 'errno');
 }
@@ -83,20 +81,4 @@ export async function spawnProcessOutput(
       }
     });
   });
-}
-
-export function spawnProcessPTY(
-  command: string,
-  args: string[],
-  options: IWindowsPtyForkOptions = {}
-) {
-  const ptyProcess = ptySpawn(command, args, {
-    name: 'xterm-color',
-    cols: process.stdout.columns,
-    rows: process.stdout.rows,
-    cwd: options.cwd ?? process.cwd(),
-    useConpty: false,
-  });
-
-  return ptyProcess;
 }

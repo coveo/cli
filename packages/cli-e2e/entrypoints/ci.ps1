@@ -40,4 +40,6 @@ npm run npm:publish:template
 Set-Location packages/cli-e2e
 
 node entrypoints/utils/wait-for-published-packages.js
+# `( )` are important here. See https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_operators?view=powershell-7.1#grouping-operator--
+(Get-Content ~/.yarnrc) | Select-String -Pattern "--mutex network" -NotMatch | Set-Content -Path ~/.yarnrc
 npm run jest
