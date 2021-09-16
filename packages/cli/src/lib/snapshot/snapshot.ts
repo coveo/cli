@@ -244,6 +244,7 @@ export class Snapshot {
       // Setting the retry mechanism to follow a time-based logic instead of specifying the  number of attempts.
       {
         retries: Math.ceil(opts.wait / opts.waitInterval),
+        forever: opts.wait === 0,
         minTimeout: toMilliseconds(opts.waitInterval),
         maxTimeout: toMilliseconds(opts.waitInterval),
         maxRetryTime: toMilliseconds(opts.wait),
