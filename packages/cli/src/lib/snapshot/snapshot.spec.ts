@@ -397,9 +397,22 @@ describe('Snapshot', () => {
           Snapshot.defaultWaitOptions.wait /
             Snapshot.defaultWaitOptions.waitInterval
         ),
+        forever: false,
         minTimeout: Snapshot.defaultWaitOptions.waitInterval * 1e3,
         maxTimeout: Snapshot.defaultWaitOptions.waitInterval * 1e3,
         maxRetryTime: Snapshot.defaultWaitOptions.wait * 1e3,
+      });
+    });
+
+    it('should wait indefinitely', () => {
+      snapshot.waitUntilDone({wait: 0});
+
+      expect(mockedRetry).toHaveBeenCalledWith(expect.anything(), {
+        retries: 0,
+        forever: true,
+        minTimeout: Snapshot.defaultWaitOptions.waitInterval * 1e3,
+        maxTimeout: Snapshot.defaultWaitOptions.waitInterval * 1e3,
+        maxRetryTime: 0,
       });
     });
 
@@ -408,6 +421,7 @@ describe('Snapshot', () => {
 
       expect(mockedRetry).toHaveBeenCalledWith(expect.anything(), {
         retries: 2,
+        forever: false,
         minTimeout: 5 * 1e3,
         maxTimeout: 5 * 1e3,
         maxRetryTime: 10 * 1e3,
