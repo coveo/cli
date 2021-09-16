@@ -26,6 +26,17 @@ export const waitFlag = {
   }),
 };
 
+export const previewLevel = {
+  previewLevel: flags.enum({
+    char: 'p',
+    description:
+      'Whether to only display a light or detailed preview of the overall changes',
+    options: ['light', 'detailed'],
+    default: 'detailed',
+    exclusive: ['skipPreview'],
+  }),
+};
+
 export async function dryRun(
   targetOrg: string,
   projectPath: string,

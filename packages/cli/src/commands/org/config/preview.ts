@@ -22,6 +22,7 @@ import {
   handleReportWithErrors,
   handleSnapshotError,
   waitFlag,
+  previewLevel,
   DryRunOptions,
   cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
@@ -31,6 +32,7 @@ export default class Preview extends Command {
 
   public static flags = {
     ...waitFlag,
+    ...previewLevel,
     target: flags.string({
       char: 't',
       description:
@@ -66,7 +68,11 @@ export default class Preview extends Command {
       this.options
     );
 
-    await snapshot.preview(project, this.options.deleteMissingResources);
+    await snapshot.preview(
+      project,
+      this.options.deleteMissingResources,
+      this.shouldDisplayExpandedPreview()
+    );
     await this.processReport(snapshot, reporter);
     await this.cleanup(snapshot, project);
 
@@ -82,6 +88,11 @@ export default class Preview extends Command {
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
     );
+  }
+
+  private shouldDisplayExpandedPreview() {
+    const {flags} = this.parse(Preview);
+    return flags.previewLevel === 'detailed';
   }
 
   private async processReport(snapshot: Snapshot, reporter: SnapshotReporter) {

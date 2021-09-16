@@ -85,11 +85,12 @@ export class Snapshot {
 
   public async preview(
     projectToPreview: Project,
-    deleteMissingResources = false
+    deleteMissingResources = false,
+    expandedPreview = true
   ) {
     this.displayLightPreview();
     const reporter = new SnapshotReporter(this.latestReport);
-    if (reporter.isSuccessReport()) {
+    if (reporter.isSuccessReport() && expandedPreview) {
       await this.generateExpandedPreview(
         projectToPreview,
         deleteMissingResources
