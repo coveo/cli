@@ -1,4 +1,5 @@
-const axios = require('axios');
+const {Environment} = require('@coveord/platform-client');
+const PlatformClient = require('@coveord/platform-client').default;
 const yargs = require('yargs/yargs');
 const moment = require('moment');
 const {hideBin} = require('yargs/helpers');
@@ -6,9 +7,6 @@ const {homedir} = require('os');
 const {join} = require('path');
 const {config} = require('dotenv');
 config({path: join(homedir(), '.env')});
-
-// TODO: CDX-98: URL should vary in function of the target environment.
-const platformHost = 'https://platformdev.cloud.coveo.com/rest/';
 
 function wasCreatedByTheCli(testRunId = '') {
   return (key) =>
@@ -23,26 +21,11 @@ function wasCreatedBefore(amount, unit) {
   };
 }
 
-function authHeader(accessToken) {
-  return {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  };
-}
-
-async function getAllApiKeys(orgId, accessToken) {
-  const apiKeysUrl = `${platformHost}organizations/${orgId}/apikeys`;
-  const response = await axios.get(apiKeysUrl, authHeader(accessToken));
-  return response.data;
-}
-
-async function deleteApiKeys(orgId, accessToken, apiKeysToDelete) {
+async function deleteApiKeys(platform, apiKeysToDelete) {
   for (let i = 0; i < apiKeysToDelete.length; i++) {
     const apiKey = apiKeysToDelete[i];
-    const apiKeyUrl = `${platformHost}organizations/${orgId}/apikeys/${apiKey.id}`;
     console.log(`Deleting ${apiKey.displayName}`);
-    await axios.delete(apiKeyUrl, authHeader(accessToken));
+    await platform.apiKey.delete(apiKey.id);
   }
   console.log(`\nDeleted ${apiKeysToDelete.length} API keys`);
 }
@@ -58,17 +41,26 @@ function parseDuration(input) {
   );
 }
 
+function getClient(organizationId, accessToken) {
+  return new PlatformClient({
+    organizationId,
+    accessToken,
+    environment: Environment.dev, // TODO: CDX-98: URL should vary in function of the target environment.
+  });
+}
+
 async function main(amount, unit) {
   const testOrgId = process.env.TEST_ORG_ID;
   const accessToken = process.env.ACCESS_TOKEN;
   const testRunId = process.env.TEST_RUN_ID;
-  const apiKeys = await getAllApiKeys(testOrgId, accessToken);
+  const platform = getClient(testOrgId, accessToken);
+  const apiKeys = await platform.apiKey.list();
 
   const cliApiKeys = apiKeys
     .filter(wasCreatedByTheCli(testRunId))
     .filter(wasCreatedBefore(amount, unit));
 
-  await deleteApiKeys(testOrgId, accessToken, cliApiKeys);
+  await deleteApiKeys(platform, cliApiKeys);
 }
 
 const argv = yargs(hideBin(process.argv))
