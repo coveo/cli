@@ -13,10 +13,10 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
+import {wait} from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {
-  waitFlag,
   getTargetOrg,
   handleSnapshotError,
   cleanupProject,
@@ -28,7 +28,7 @@ export default class Pull extends Command {
   public static description = 'Pull resources from an organization';
 
   public static flags = {
-    ...waitFlag,
+    ...wait(),
     target: flags.string({
       char: 't',
       helpValue: 'destinationorganizationg7dg3gd',
