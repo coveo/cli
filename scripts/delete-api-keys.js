@@ -1,5 +1,4 @@
-const {Environment} = require('@coveord/platform-client');
-const PlatformClient = require('@coveord/platform-client').default;
+const {Environment, PlatformClient} = require('@coveord/platform-client');
 const yargs = require('yargs/yargs');
 const moment = require('moment');
 const {hideBin} = require('yargs/helpers');
