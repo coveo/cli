@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.15.1](https://github.com/coveo/cli/compare/v1.15.0...v1.15.1) (2021-09-13)
+
+**Note:** Version bump only for package cli-tools
+
+
+
+
+
+# [1.15.0](https://github.com/coveo/cli/compare/v1.14.0...v1.15.0) (2021-09-13)
+
+
+### Bug Fixes
+
+* **cli:** typescript issues ([#459](https://github.com/coveo/cli/issues/459)) ([c568967](https://github.com/coveo/cli/commit/c568967be59f2d610937dc4668f4e83a2b014324))
+
+
+### Features
+
+* **react:** use transform instead of pty ([#461](https://github.com/coveo/cli/issues/461)) ([6a96572](https://github.com/coveo/cli/commit/6a965724e660c373a03e3dcb9ff5a9da4b711fa4))
+* **snapshot:** handle snapshot synchronization ([#455](https://github.com/coveo/cli/issues/455)) ([b1deed7](https://github.com/coveo/cli/commit/b1deed72e6ad0a6f9456cc1dc4774c6b5b6c2f70))
+
+
+
+
+
 # [1.14.0](https://github.com/coveo/cli/compare/v1.13.0...v1.14.0) (2021-08-27)
 
 

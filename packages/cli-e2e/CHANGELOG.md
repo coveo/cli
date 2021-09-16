@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.15.1](https://github.com/coveo/cli/compare/v1.15.0...v1.15.1) (2021-09-13)
+
+**Note:** Version bump only for package @coveo/cli-e2e
+
+
+
+
+
+# [1.15.0](https://github.com/coveo/cli/compare/v1.14.0...v1.15.0) (2021-09-13)
+
+
+### Features
+
+* **react:** use transform instead of pty ([#461](https://github.com/coveo/cli/issues/461)) ([6a96572](https://github.com/coveo/cli/commit/6a965724e660c373a03e3dcb9ff5a9da4b711fa4))
+
+
+
+
+
 # [1.14.0](https://github.com/coveo/cli/compare/v1.13.0...v1.14.0) (2021-08-27)
 
 
