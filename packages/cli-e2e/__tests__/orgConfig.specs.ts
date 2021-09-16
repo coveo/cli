@@ -50,6 +50,7 @@ describe('org:config', () => {
       'org:config:push',
       '--skipPreview',
       `-t=${targetOrg}`,
+      '--wait=0',
     ];
     const pushTerminal = createNewTerminal(
       args,
