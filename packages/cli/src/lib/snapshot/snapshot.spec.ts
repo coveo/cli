@@ -404,6 +404,18 @@ describe('Snapshot', () => {
       });
     });
 
+    it('should wait indefinitely', () => {
+      snapshot.waitUntilDone({wait: 0});
+
+      expect(mockedRetry).toHaveBeenCalledWith(expect.anything(), {
+        retries: 0,
+        forever: true,
+        minTimeout: Snapshot.defaultWaitOptions.waitInterval * 1e3,
+        maxTimeout: Snapshot.defaultWaitOptions.waitInterval * 1e3,
+        maxRetryTime: 0,
+      });
+    });
+
     it('should use provided wait and waitInterval and compute how many attempts to do', () => {
       snapshot.waitUntilDone({wait: 10, waitInterval: 5});
 
