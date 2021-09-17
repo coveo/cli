@@ -51,6 +51,9 @@ jobs:
       - name: Delete test org
         if: always()
         run: node ./scripts/delete-org.js
+      - name: Delete test API key
+        if: always()
+        run: node ./scripts/delete-api-keys.js
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
