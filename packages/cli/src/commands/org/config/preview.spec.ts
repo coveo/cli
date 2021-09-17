@@ -307,7 +307,16 @@ describe('org:config:preview', () => {
     test
       .command(['org:config:preview'])
       .it('should have detected and tried to resolves the conflicts', () => {
-        expect(mockedTryAutomaticSynchronization).toHaveBeenCalled();
+        expect(mockedTryAutomaticSynchronization).toHaveBeenCalledWith(true);
       });
+
+    test
+      .command(['org:config:preview', '--sync'])
+      .it(
+        'should try to apply synchronization plan without asking for confirmation',
+        () => {
+          expect(mockedTryAutomaticSynchronization).toHaveBeenCalledWith(false);
+        }
+      );
   });
 });

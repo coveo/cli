@@ -327,7 +327,7 @@ describe('Snapshot', () => {
     });
   });
 
-  describe('#requiresSynchronization', () => {
+  describe('#areResourcesInError', () => {
     let latestReport: ResourceSnapshotsReportModel;
     beforeEach(async () => {
       [snapshot] = await getSnapshot(latestReport);

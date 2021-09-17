@@ -6,65 +6,39 @@ import {red, green} from 'chalk';
 import {normalize} from 'path';
 import {Config, Configuration} from '../config/config';
 import {SnapshotError, SnapshotGenericError} from '../errors/snapshotErrors';
-import {flags} from '@oclif/command';
 import {SnapshotFacade} from './snapshotFacade';
 
 export interface DryRunOptions {
+  sync?: boolean;
   deleteMissingResources?: boolean;
   snapshotId?: string;
   waitUntilDone?: WaitUntilDoneOptions;
 }
 
-export const waitFlag = {
-  wait: flags.integer({
-    char: 'w',
-    default: Snapshot.defaultWaitOptions.wait,
-    helpValue: 'seconds',
-    required: false,
-    description:
-      'The maximum number of seconds to wait before the commands exits with a timeout error. A value of zero means that the command will wait indefinitely.',
-  }),
-};
-
-export const previewLevel = {
-  previewLevel: flags.enum({
-    char: 'p',
-    description:
-      'Whether to only display a light or detailed preview of the overall changes',
-    options: ['light', 'detailed'],
-    default: 'detailed',
-    exclusive: ['skipPreview'],
-  }),
-};
-
 export async function dryRun(
   targetOrg: string,
   projectPath: string,
   cfg: Configuration,
-  options?: DryRunOptions
+  options: DryRunOptions = {}
 ) {
-  const defaultOptions: DryRunOptions = {
-    deleteMissingResources: false,
-  };
-
-  const opt = {...defaultOptions, ...options};
   const project = new Project(normalize(projectPath));
-  const snapshot = await getSnapshotForDryRun(project, targetOrg, opt);
+  const snapshot = await getSnapshotForDryRun(project, targetOrg, options);
 
   cli.action.start('Validating snapshot');
   let reporter = await snapshot.validate(
-    opt.deleteMissingResources,
-    opt.waitUntilDone
+    options.deleteMissingResources,
+    options.waitUntilDone
   );
 
   if (snapshot.areResourcesInError()) {
     cli.warn('Unsynchronized resource detected');
-    await handleUnsynchronizedResources(snapshot, cfg);
+    const facade = new SnapshotFacade(snapshot, cfg);
+    await facade.tryAutomaticSynchronization(!options.sync);
 
     cli.action.start('Validating synchronized snapshot');
     reporter = await snapshot.validate(
-      opt.deleteMissingResources,
-      opt.waitUntilDone
+      options.deleteMissingResources,
+      options.waitUntilDone
     );
   }
 

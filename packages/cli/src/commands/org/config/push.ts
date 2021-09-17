@@ -8,14 +8,12 @@ import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {red, green, bold} from 'chalk';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {
-  waitFlag,
   dryRun,
   getTargetOrg,
   handleReportWithErrors,
   handleSnapshotError,
   cleanupProject,
   DryRunOptions,
-  previewLevel,
 } from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '../../../lib/config/config';
 import {cwd} from 'process';
@@ -24,14 +22,16 @@ import {
   buildAnalyticsSuccessHook,
 } from '../../../hooks/analytics/analytics';
 import {Project} from '../../../lib/project/project';
+import {previewLevel, sync, wait} from '../../../lib/flags/snapshotCommonFlags';
 
 export default class Push extends Command {
   public static description =
     'Preview, validate and deploy your changes to the destination org';
 
   public static flags = {
-    ...waitFlag,
-    ...previewLevel,
+    ...wait(),
+    ...sync(),
+    ...previewLevel(),
     target: flags.string({
       char: 't',
       description:
@@ -162,6 +162,7 @@ export default class Push extends Command {
     return {
       deleteMissingResources: flags.deleteMissingResources,
       waitUntilDone: {wait: flags.wait},
+      sync: flags.sync,
     };
   }
 

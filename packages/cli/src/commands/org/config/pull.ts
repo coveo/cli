@@ -5,7 +5,10 @@ import {blueBright} from 'chalk';
 import {cli} from 'cli-ux';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
-import {buildAnalyticsFailureHook} from '../../../hooks/analytics/analytics';
+import {
+  buildAnalyticsFailureHook,
+  buildAnalyticsSuccessHook,
+} from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {
   IsAuthenticated,
@@ -13,10 +16,10 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
+import {wait} from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {
-  waitFlag,
   getTargetOrg,
   handleSnapshotError,
   cleanupProject,
@@ -28,7 +31,7 @@ export default class Pull extends Command {
   public static description = 'Pull resources from an organization';
 
   public static flags = {
-    ...waitFlag,
+    ...wait(),
     target: flags.string({
       char: 't',
       helpValue: 'destinationorganizationg7dg3gd',
@@ -70,6 +73,7 @@ export default class Pull extends Command {
 
     await snapshot.delete();
     cli.action.stop('Project updated');
+    this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
   public async catch(err?: Error) {
