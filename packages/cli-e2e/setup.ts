@@ -30,6 +30,7 @@ async function createTestOrgAndSaveOrgIdToEnv(orgName: string) {
   console.log(`Created org ${testOrgId}`);
   const pathToEnv = getPathToHomedirEnvFile();
   saveToEnvFile(pathToEnv, {
+    TEST_RUN_ID: process.env.TEST_RUN_ID,
     TEST_ORG_ID: testOrgId,
     ACCESS_TOKEN: accessToken,
   });
