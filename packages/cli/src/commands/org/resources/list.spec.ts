@@ -28,7 +28,7 @@ const mockListSnapshots = jest
   .fn()
   .mockReturnValue(Promise.resolve([mockResourceSnapshotModel()]));
 
-describe('org:config:list', () => {
+describe('org:resources:list', () => {
   mockedAuthenticatedClient.mockImplementation(
     () =>
       ({
@@ -50,7 +50,7 @@ describe('org:config:list', () => {
       mockListSnapshots.mockReturnValueOnce(Promise.resolve([]));
     })
     .stdout()
-    .command(['org:config:list', '-t', 'foo'])
+    .command(['org:resources:list', '-t', 'foo'])
     .it('works when there is no snapshot available', (ctx) => {
       expect(ctx.stdout).toContain(
         'There is no configuration snapshot available in organization foo'
@@ -59,7 +59,7 @@ describe('org:config:list', () => {
 
   test
     .stdout()
-    .command(['org:config:list', '-t', 'foo'])
+    .command(['org:resources:list', '-t', 'foo'])
     .it('print the available snapshot in a table', (ctx) => {
       // headers of table
       expect(ctx.stdout).toContain('Id');

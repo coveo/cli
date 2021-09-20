@@ -48,7 +48,7 @@ export default class Preview extends Command {
     snapshotId: flags.string({
       char: 's',
       description:
-        'The unique identifier of the snapshot to preview. If not specified, a new snapshot will be created from your local project. You can list available snapshots in your organization with org:config:list',
+        'The unique identifier of the snapshot to preview. If not specified, a new snapshot will be created from your local project. You can list available snapshots in your organization with org:resources:list',
       required: false,
     }),
   };
@@ -107,7 +107,7 @@ export default class Preview extends Command {
 
           Once the snapshot is created, you can preview it with the following command:
 
-            ${blueBright`coveo org:config:preview -t ${target} -s ${snapshot.id}`}
+            ${blueBright`coveo org:resources:preview -t ${target} -s ${snapshot.id}`}
 
             `
       );

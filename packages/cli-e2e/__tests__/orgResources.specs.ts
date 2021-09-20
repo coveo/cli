@@ -9,7 +9,7 @@ import {getPlatformClient} from '../utils/platform';
 import {readdirSync} from 'fs';
 config({path: getPathToHomedirEnvFile()});
 
-describe('org:config', () => {
+describe('org:resources', () => {
   const testOrgId = process.env.TEST_ORG_ID!;
   const {accessToken} = getConfig();
   const snapshotProjectPath = join('snapshot-project');
@@ -32,7 +32,7 @@ describe('org:config', () => {
   const previewChange = (targetOrg: string, procManager: ProcessManager) => {
     const args: string[] = [
       CLI_EXEC_PATH,
-      'org:config:preview',
+      'org:resources:preview',
       `-t=${targetOrg}`,
     ];
 
@@ -47,7 +47,7 @@ describe('org:config', () => {
   const pushToOrg = async (targetOrg: string, procManager: ProcessManager) => {
     const args: string[] = [
       CLI_EXEC_PATH,
-      'org:config:push',
+      'org:resources:push',
       '--skipPreview',
       `-t=${targetOrg}`,
       '--wait=0',
@@ -69,7 +69,7 @@ describe('org:config', () => {
   ) => {
     const args: string[] = [
       CLI_EXEC_PATH,
-      'org:config:pull',
+      'org:resources:pull',
       `-t=${targetOrg}`,
       '--no-git',
     ];
@@ -93,7 +93,7 @@ describe('org:config', () => {
     await processManager.killAllProcesses();
   });
 
-  describe('org:config:preview', () => {
+  describe('org:resources:preview', () => {
     it(
       'should preview the snapshot',
       async () => {
@@ -115,7 +115,7 @@ describe('org:config', () => {
     );
   });
 
-  describe('org:config:push', () => {
+  describe('org:resources:push', () => {
     beforeAll(async () => {
       await pushToOrg(testOrgId, processManager);
     }, defaultTimeout);
@@ -138,7 +138,7 @@ describe('org:config', () => {
     });
   });
 
-  describe('org:config:pull', () => {
+  describe('org:resources:pull', () => {
     const destinationPath = join('new-snapshot-project');
 
     beforeAll(() => {
