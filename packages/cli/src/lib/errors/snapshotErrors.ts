@@ -93,13 +93,9 @@ export class SnapshotSynchronizationAmbiguousMatchesError
   extends SnapshotError
   implements IDetailedReportable
 {
-  private synchronizationPlanUrl: string;
   public name = 'Snapshot Ambiguous Synchronization Matches';
   public constructor(public snapshot: Snapshot, public cfg: Configuration) {
     super(SeverityLevel.Info);
-    const urlBuilder = new SnapshotUrlBuilder(cfg);
-    this.synchronizationPlanUrl = urlBuilder.getSynchronizationPage(snapshot);
-
     this.message = dedent`
       The snapshot contains unsynchronized resources that cannot be resolved automatically.`;
 
@@ -108,8 +104,12 @@ export class SnapshotSynchronizationAmbiguousMatchesError
 
   public print() {
     super.print();
+    const urlBuilder = new SnapshotUrlBuilder(this.cfg);
+    const synchronizationPlanUrl = urlBuilder.getSynchronizationPage(
+      this.snapshot
+    );
     const additionalMessage = dedent`Click on the URL below to manually resolve your snapshot conflicts.
-    ${this.synchronizationPlanUrl}`;
+    ${synchronizationPlanUrl}`;
     cli.log(additionalMessage);
   }
 }
@@ -118,13 +118,9 @@ export class SnapshotSynchronizationUnknownError
   extends SnapshotError
   implements IDetailedReportable
 {
-  private synchronizationPlanUrl: string;
   public name = 'Snapshot Synchronization Unknown Error';
   public constructor(public snapshot: Snapshot, public cfg: Configuration) {
     super(SeverityLevel.Error);
-    const urlBuilder = new SnapshotUrlBuilder(cfg);
-    this.synchronizationPlanUrl = urlBuilder.getSynchronizationPage(snapshot);
-
     this.message = dedent`
       The snapshot synchronization has unexpectedly failed.`;
 
@@ -133,8 +129,12 @@ export class SnapshotSynchronizationUnknownError
 
   public print() {
     super.print();
+    const urlBuilder = new SnapshotUrlBuilder(this.cfg);
+    const synchronizationPlanUrl = urlBuilder.getSynchronizationPage(
+      this.snapshot
+    );
     const additionalMessage = dedent`Click on the URL below for more information.
-    ${this.synchronizationPlanUrl}`;
+    ${synchronizationPlanUrl}`;
     cli.log(additionalMessage);
   }
 }
