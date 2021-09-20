@@ -97,20 +97,21 @@ export class SnapshotSynchronizationAmbiguousMatchesError
   private synchronizationPlanUrl: string;
   public name = 'Snapshot Ambiguous Synchronization Matches';
   public constructor(public snapshot: Snapshot, public cfg: Configuration) {
-    super(SeverityLevel.Warn);
+    super(SeverityLevel.Info);
     const urlBuilder = new SnapshotUrlBuilder(cfg);
     this.synchronizationPlanUrl = urlBuilder.getSynchronizationPage(snapshot);
 
     this.message = dedent`
-      The snapshot contains unsynchronized resources that cannot be resolved automatically.
-      Click on the URL below to manually resolve your snapshot conflicts in the Coveo Admin console.`;
+      The snapshot contains unsynchronized resources that cannot be resolved automatically.`;
 
     trySavingDetailedReport(this);
   }
 
   public print() {
     super.print();
-    cli.log(this.synchronizationPlanUrl);
+    const additionalMessage = dedent`Click on the URL below to manually resolve your snapshot conflicts.
+    ${this.synchronizationPlanUrl}`;
+    cli.log(additionalMessage);
   }
 }
 
@@ -126,15 +127,16 @@ export class SnapshotSynchronizationUnknownError
     this.synchronizationPlanUrl = urlBuilder.getSynchronizationPage(snapshot);
 
     this.message = dedent`
-      The snapshot synchronization has unexpectedly failed.
-      Click on the URL below for more info.`;
+      The snapshot synchronization has unexpectedly failed.`;
 
     trySavingDetailedReport(this);
   }
 
   public print() {
     super.print();
-    cli.log(this.synchronizationPlanUrl);
+    const additionalMessage = dedent`Click on the URL below for more information.
+    ${this.synchronizationPlanUrl}`;
+    cli.log(additionalMessage);
   }
 }
 
