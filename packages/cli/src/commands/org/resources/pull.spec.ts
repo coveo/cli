@@ -49,7 +49,7 @@ const doMockSnapshotFactory = async () => {
   );
 };
 
-describe('org:config:pull', () => {
+describe('org:resources:pull', () => {
   beforeAll(() => {
     doMockConfig();
     doMockSnapshotFactory();
@@ -61,16 +61,18 @@ describe('org:config:pull', () => {
     );
   });
 
-  test.command(['org:config:pull']).it('should download the snapshot', () => {
-    expect(mockedDownloadSnapshot).toHaveBeenCalled();
-  });
+  test
+    .command(['org:resources:pull'])
+    .it('should download the snapshot', () => {
+      expect(mockedDownloadSnapshot).toHaveBeenCalled();
+    });
 
-  test.command(['org:config:pull']).it('should delete the snapshot', () => {
+  test.command(['org:resources:pull']).it('should delete the snapshot', () => {
     expect(mockedDeleteSnapshot).toHaveBeenCalled();
   });
 
   test
-    .command(['org:config:pull'])
+    .command(['org:resources:pull'])
     .it('should select all resource types', () => {
       expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
         expect.arrayContaining([
@@ -87,7 +89,7 @@ describe('org:config:pull', () => {
     });
 
   test
-    .command(['org:config:pull', '-r', 'field', 'featuredResult', 'source'])
+    .command(['org:resources:pull', '-r', 'field', 'featuredResult', 'source'])
     .it('should select specified resource types', () => {
       expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
         ['FIELD', 'FEATURED_RESULT', 'SOURCE'],
@@ -97,7 +99,7 @@ describe('org:config:pull', () => {
     });
 
   test
-    .command(['org:config:pull'])
+    .command(['org:resources:pull'])
     .it('should set a 60 seconds timeout', () => {
       expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
         expect.arrayContaining([]),
@@ -107,7 +109,7 @@ describe('org:config:pull', () => {
     });
 
   test
-    .command(['org:config:pull', '-w', '78'])
+    .command(['org:resources:pull', '-w', '78'])
     .it('should set a 78 seconds timeout', () => {
       expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
         expect.arrayContaining([]),
@@ -117,7 +119,7 @@ describe('org:config:pull', () => {
     });
 
   test
-    .command(['org:config:pull', '-r', 'invalidresource'])
+    .command(['org:resources:pull', '-r', 'invalidresource'])
     .catch((ctx) => {
       expect(ctx.message).toContain(
         'Expected --resourceTypes=invalidresource to be one of'

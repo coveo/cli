@@ -117,7 +117,7 @@ const mockSnapshotFacade = () => {
     mockedTryAutomaticSynchronization;
 };
 
-describe('org:config:preview', () => {
+describe('org:resources:preview', () => {
   const preconditionStatus = {
     git: true,
   };
@@ -147,12 +147,14 @@ describe('org:config:preview', () => {
       mockedSnapshotFactory.mockReset();
     });
 
-    test.command(['org:config:preview']).it('should use cwd as project', () => {
-      expect(mockedProject).toHaveBeenCalledWith(cwd());
-    });
+    test
+      .command(['org:resources:preview'])
+      .it('should use cwd as project', () => {
+        expect(mockedProject).toHaveBeenCalledWith(cwd());
+      });
 
     test
-      .command(['org:config:preview'])
+      .command(['org:resources:preview'])
       .it('should work with default connected org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
@@ -162,7 +164,7 @@ describe('org:config:preview', () => {
       });
 
     test
-      .command(['org:config:preview', '-t', 'myorg'])
+      .command(['org:resources:preview', '-t', 'myorg'])
       .it('should work with specified target org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
@@ -172,7 +174,7 @@ describe('org:config:preview', () => {
       });
 
     test
-      .command(['org:config:preview'])
+      .command(['org:resources:preview'])
       .it('should set a 60 seconds wait', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
@@ -182,7 +184,7 @@ describe('org:config:preview', () => {
       });
 
     test
-      .command(['org:config:preview', '-w', '312'])
+      .command(['org:resources:preview', '-w', '312'])
       .it('should set a 312 seconds wait', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
@@ -192,25 +194,25 @@ describe('org:config:preview', () => {
       });
 
     test
-      .command(['org:config:preview'])
+      .command(['org:resources:preview'])
       .it('#validate should not take into account missing resources', () => {
         expect(mockedValidateSnapshot).toHaveBeenCalledWith(false, {wait: 60});
       });
 
     test
-      .command(['org:config:preview', '-d'])
+      .command(['org:resources:preview', '-d'])
       .it('#validate should take into account missing resoucres', () => {
         expect(mockedValidateSnapshot).toHaveBeenCalledWith(true, {wait: 60});
       });
 
     test
-      .command(['org:config:preview'])
+      .command(['org:resources:preview'])
       .it('should preview the snapshot', () => {
         expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
       });
 
     test
-      .command(['org:config:preview'])
+      .command(['org:resources:preview'])
       .it('should delete the compressed folder', () => {
         expect(mockedDeleteTemporaryZipFile).toHaveBeenCalledTimes(1);
       });
@@ -221,14 +223,14 @@ describe('org:config:preview', () => {
           throw new Error('You shall not pass');
         });
       })
-      .command(['org:config:preview'])
+      .command(['org:resources:preview'])
       .catch(() => {
         expect(mockedDeleteTemporaryZipFile).toHaveBeenCalledTimes(1);
       })
       .it('should delete the compressed folder on error');
 
     test
-      .command(['org:config:preview'])
+      .command(['org:resources:preview'])
       .it('should delete the snapshot', () => {
         expect(mockedDeleteSnapshot).toHaveBeenCalledTimes(1);
       });
@@ -251,7 +253,7 @@ describe('org:config:preview', () => {
     });
 
     test
-      .command(['org:config:preview'])
+      .command(['org:resources:preview'])
       .it('should throw an error for invalid snapshots', () => {
         expect(mockedError).toHaveBeenCalledWith(
           expect.stringContaining('Invalid snapshot')
@@ -259,7 +261,7 @@ describe('org:config:preview', () => {
       });
 
     test
-      .command(['org:config:preview'])
+      .command(['org:resources:preview'])
       .it('should print an URL to the snapshot page', () => {
         expect(mockedError).toHaveBeenCalledWith(
           expect.stringContaining(
@@ -285,13 +287,13 @@ describe('org:config:preview', () => {
     });
 
     test
-      .command(['org:config:preview'])
+      .command(['org:resources:preview'])
       .it('should have detected and tried to resolves the conflicts', () => {
         expect(mockedTryAutomaticSynchronization).toHaveBeenCalledWith(true);
       });
 
     test
-      .command(['org:config:preview', '--sync'])
+      .command(['org:resources:preview', '--sync'])
       .it(
         'should try to apply synchronization plan without asking for confirmation',
         () => {

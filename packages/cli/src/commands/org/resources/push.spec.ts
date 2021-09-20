@@ -116,7 +116,7 @@ const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
   await mockSnapshotFactory();
 };
 
-describe('org:config:push', () => {
+describe('org:resources:push', () => {
   beforeAll(() => {
     mockConfig();
     mockProject();
@@ -133,28 +133,28 @@ describe('org:config:push', () => {
 
     test
       .stub(cli, 'confirm', () => async () => true)
-      .command(['org:config:push'])
+      .command(['org:resources:push'])
       .it('should preview the snapshot', () => {
         expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
       });
 
     test
       .stub(cli, 'confirm', () => async () => true)
-      .command(['org:config:push'])
+      .command(['org:resources:push'])
       .it('should apply the snapshot after confirmation', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledTimes(1);
       });
 
     test
       .stub(cli, 'confirm', () => async () => false)
-      .command(['org:config:push'])
+      .command(['org:resources:push'])
       .it('should not apply the snapshot if not confirmed', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledTimes(0);
       });
 
     test
       .stub(cli, 'confirm', () => async () => true)
-      .command(['org:config:push'])
+      .command(['org:resources:push'])
       .it('should work with default connected org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
@@ -165,7 +165,7 @@ describe('org:config:push', () => {
 
     test
       .stub(cli, 'confirm', () => async () => true)
-      .command(['org:config:push', '-t', 'myorg'])
+      .command(['org:resources:push', '-t', 'myorg'])
       .it('should work with specified target org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
@@ -176,7 +176,7 @@ describe('org:config:push', () => {
 
     test
       .stub(cli, 'confirm', () => async () => true)
-      .command(['org:config:push'])
+      .command(['org:resources:push'])
       .it('should set a 60 seconds wait', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
@@ -187,7 +187,7 @@ describe('org:config:push', () => {
 
     test
       .stub(cli, 'confirm', () => async () => true)
-      .command(['org:config:push', '-w', '99'])
+      .command(['org:resources:push', '-w', '99'])
       .it('should set a 99 seconds wait', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
@@ -198,21 +198,21 @@ describe('org:config:push', () => {
 
     test
       .stub(cli, 'confirm', () => async () => true)
-      .command(['org:config:push'])
+      .command(['org:resources:push'])
       .it('#should not apply missing resources', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledWith(false, {wait: 60});
       });
 
     test
       .stub(cli, 'confirm', () => async () => true)
-      .command(['org:config:push', '-d'])
+      .command(['org:resources:push', '-d'])
       .it('should apply missing resoucres', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledWith(true, {wait: 60});
       });
 
     test
       .stub(cli, 'confirm', () => async () => true)
-      .command(['org:config:push'])
+      .command(['org:resources:push'])
       .it('should delete the compressed folder', () => {
         expect(mockedDeleteTemporaryZipFile).toHaveBeenCalledTimes(1);
       });
@@ -224,7 +224,7 @@ describe('org:config:push', () => {
           throw new Error('You shall not pass');
         });
       })
-      .command(['org:config:push'])
+      .command(['org:resources:push'])
       .catch(() => {
         expect(mockedDeleteTemporaryZipFile).toHaveBeenCalledTimes(1);
       })
@@ -232,13 +232,13 @@ describe('org:config:push', () => {
 
     test
       .stub(cli, 'confirm', () => async () => true)
-      .command(['org:config:push'])
+      .command(['org:resources:push'])
       .it('should delete the snapshot', () => {
         expect(mockedDeleteSnapshot).toHaveBeenCalledTimes(1);
       });
 
     test
-      .command(['org:config:push', '--skipPreview'])
+      .command(['org:resources:push', '--skipPreview'])
       .it('should apply snapshot without confrimation', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledTimes(1);
       });
@@ -255,20 +255,20 @@ describe('org:config:push', () => {
 
     test
       .stderr()
-      .command(['org:config:push'])
+      .command(['org:resources:push'])
       .it('should show the failed validation', (ctx) => {
         expect(ctx.stderr).toContain('Validating snapshot... !');
       });
 
     test
-      .command(['org:config:push'])
+      .command(['org:resources:push'])
       .it('should only preview the snapshot', () => {
         expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
         expect(mockedApplySnapshot).toHaveBeenCalledTimes(0);
       });
 
     test
-      .command(['org:config:push'])
+      .command(['org:resources:push'])
       .it('should return an invalid snapshot error message', () => {
         expect(mockedError).toHaveBeenCalledWith(
           expect.stringContaining('Invalid snapshot')

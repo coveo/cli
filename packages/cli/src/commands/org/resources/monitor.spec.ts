@@ -48,7 +48,7 @@ const doMockAuthenticatedClient = () => {
   );
 };
 
-describe('org:config:monitor', () => {
+describe('org:resources:monitor', () => {
   beforeAll(() => {
     doMockConfig();
     doMockAuthenticatedClient();
@@ -61,14 +61,14 @@ describe('org:config:monitor', () => {
   });
 
   test
-    .command(['org:config:monitor'])
+    .command(['org:resources:monitor'])
     .catch((ctx) => {
       expect(ctx.message).toContain('Missing 1 required arg:');
     })
     .it('requires snapshotId name argument');
 
   test
-    .command(['org:config:monitor', 'my-snapshot'])
+    .command(['org:resources:monitor', 'my-snapshot'])
     .it('should work with default connected org', () => {
       expect(mockedGetClient).toHaveBeenCalledWith({
         organization: 'default-org',
@@ -76,7 +76,7 @@ describe('org:config:monitor', () => {
     });
 
   test
-    .command(['org:config:monitor', 'other-snapshot', '-t', 'different-org'])
+    .command(['org:resources:monitor', 'other-snapshot', '-t', 'different-org'])
     .it('should work with default connected org', () => {
       expect(mockedGetClient).toHaveBeenCalledWith({
         organization: 'different-org',

@@ -51,7 +51,7 @@ export default class Pull extends Command {
       char: 's',
       exclusive: ['resourceTypes'],
       description:
-        'The unique identifier of the snapshot to pull. If not specified, a new snapshot will be created. You can list available snapshot in your organization with org:config:list',
+        'The unique identifier of the snapshot to pull. If not specified, a new snapshot will be created. You can list available snapshot in your organization with org:resources:list',
     }),
     git: flags.boolean({
       char: 'g',
@@ -97,7 +97,7 @@ export default class Pull extends Command {
 
           Once the snapshot is created, you can pull it with the following command:
 
-            ${blueBright`coveo org:config:pull -t ${target} -s ${snapshot.id}`}
+            ${blueBright`coveo org:resources:pull -t ${target} -s ${snapshot.id}`}
 
             `
       );
