@@ -28,6 +28,7 @@ function trySavingDetailedReport(error: IDetailedReportable) {
 export class SnapshotError extends Error {
   public constructor(public level: SeverityLevel) {
     super();
+    cli.warn;
   }
 
   public print() {
@@ -93,18 +94,23 @@ export class SnapshotSynchronizationAmbiguousMatchesError
   extends SnapshotError
   implements IDetailedReportable
 {
+  private synchronizationPlanUrl: string;
   public name = 'Snapshot Ambiguous Synchronization Matches';
   public constructor(public snapshot: Snapshot, public cfg: Configuration) {
     super(SeverityLevel.Warn);
     const urlBuilder = new SnapshotUrlBuilder(cfg);
-    const synchronizationPlanUrl = urlBuilder.getSynchronizationPage(snapshot);
+    this.synchronizationPlanUrl = urlBuilder.getSynchronizationPage(snapshot);
 
     this.message = dedent`
       The snapshot contains unsynchronized resources that cannot be resolved automatically.
-      Click on the URL below to manually resolve your snapshot conflicts in the Coveo Admin console.
-      ${synchronizationPlanUrl}`;
+      Click on the URL below to manually resolve your snapshot conflicts in the Coveo Admin console.`;
 
     trySavingDetailedReport(this);
+  }
+
+  public print() {
+    super.print();
+    cli.log(this.synchronizationPlanUrl);
   }
 }
 
@@ -112,18 +118,23 @@ export class SnapshotSynchronizationUnknownError
   extends SnapshotError
   implements IDetailedReportable
 {
+  private synchronizationPlanUrl: string;
   public name = 'Snapshot Synchronization Unknown Error';
   public constructor(public snapshot: Snapshot, public cfg: Configuration) {
     super(SeverityLevel.Error);
     const urlBuilder = new SnapshotUrlBuilder(cfg);
-    const synchronizationPlanUrl = urlBuilder.getSynchronizationPage(snapshot);
+    this.synchronizationPlanUrl = urlBuilder.getSynchronizationPage(snapshot);
 
     this.message = dedent`
       The snapshot synchronization has unexpectedly failed.
-      Click on the URL below for more info.
-      ${synchronizationPlanUrl}`;
+      Click on the URL below for more info.`;
 
     trySavingDetailedReport(this);
+  }
+
+  public print() {
+    super.print();
+    cli.log(this.synchronizationPlanUrl);
   }
 }
 
