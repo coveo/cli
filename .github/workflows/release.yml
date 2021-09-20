@@ -8,7 +8,8 @@ on:
         default: ''
 
 jobs:
-  run-script:
+  release:
+    environment: 'Release'
     runs-on: ubuntu-latest
     env:
       GITHUB_CREDENTIALS: ${{ secrets.CLI_RELEASE }}
@@ -29,6 +30,20 @@ jobs:
           git config --global user.email action@github.com
           git config --global user.name GitHub Action
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+      - name: Setup git SSH remote
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "${DEPLOY_KEY}" > ~/.ssh/id_rsa
+          chmod 400 ~/.ssh/id_rsa
+          echo "Host coveo-cli" > ~/.ssh/config
+          echo "Hostname github.com" >> ~/.ssh/config
+          echo "PreferredAuthentications publickey" >> ~/.ssh/config
+          echo -n "IdentityFile " >> ~/.ssh/config
+          echo -n ~ >> ~/.ssh/config
+          echo "/.ssh/id_rsa" >> ~/.ssh/config
+          git remote set-url origin git@coveo-cli:coveo/cli.git
       - run: node_modules/.bin/lerna changed
         if: ${{ github.event.inputs.version == ''}}
       - name: Manually bump version
