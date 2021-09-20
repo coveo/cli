@@ -28,7 +28,6 @@ function trySavingDetailedReport(error: IDetailedReportable) {
 export class SnapshotError extends Error {
   public constructor(public level: SeverityLevel) {
     super();
-    cli.warn;
   }
 
   public print() {
