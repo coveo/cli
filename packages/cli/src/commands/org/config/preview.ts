@@ -14,7 +14,12 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
-import {previewLevel, sync, wait} from '../../../lib/flags/snapshotCommonFlags';
+import {
+  PreviewLevel,
+  previewLevel,
+  sync,
+  wait,
+} from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {
@@ -92,7 +97,7 @@ export default class Preview extends Command {
 
   private shouldDisplayExpandedPreview() {
     const {flags} = this.parse(Preview);
-    return flags.previewLevel === 'detailed';
+    return flags.previewLevel === PreviewLevel.Detailed;
   }
 
   private async processReport(snapshot: Snapshot, reporter: SnapshotReporter) {

@@ -22,7 +22,12 @@ import {
   buildAnalyticsSuccessHook,
 } from '../../../hooks/analytics/analytics';
 import {Project} from '../../../lib/project/project';
-import {previewLevel, sync, wait} from '../../../lib/flags/snapshotCommonFlags';
+import {
+  PreviewLevel,
+  previewLevel,
+  sync,
+  wait,
+} from '../../../lib/flags/snapshotCommonFlags';
 
 export default class Push extends Command {
   public static description =
@@ -94,7 +99,7 @@ export default class Push extends Command {
 
   private shouldDisplayExpandedPreview() {
     const {flags} = this.parse(Push);
-    return flags.previewLevel === 'detailed';
+    return flags.previewLevel === PreviewLevel.Detailed;
   }
 
   private async processReportAndExecuteRemainingActions(
