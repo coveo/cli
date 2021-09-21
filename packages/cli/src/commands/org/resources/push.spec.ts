@@ -245,7 +245,7 @@ describe('org:resources:push', () => {
 
     test
       .stub(cli, 'confirm', () => async () => true)
-      .command(['org:config:push', '--previewLevel', 'light'])
+      .command(['org:resources:push', '--previewLevel', 'light'])
       .it('should only display light preview', () => {
         expect(mockedPreviewSnapshot).toHaveBeenCalledWith(
           expect.anything(),
@@ -256,7 +256,7 @@ describe('org:resources:push', () => {
 
     test
       .stub(cli, 'confirm', () => async () => true)
-      .command(['org:config:push', '--previewLevel', 'detailed'])
+      .command(['org:resources:push', '--previewLevel', 'detailed'])
       .it('should display light and expanded preview', () => {
         expect(mockedPreviewSnapshot).toHaveBeenCalledWith(
           expect.anything(),

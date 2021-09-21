@@ -236,7 +236,7 @@ describe('org:resources:preview', () => {
       });
 
     test
-      .command(['org:config:preview'])
+      .command(['org:resources:preview'])
       .it('should display expanded preview', () => {
         expect(mockedPreviewSnapshot).toHaveBeenCalledWith(
           expect.anything(),
@@ -246,7 +246,7 @@ describe('org:resources:preview', () => {
       });
 
     test
-      .command(['org:config:preview', '--previewLevel', 'light'])
+      .command(['org:resources:preview', '--previewLevel', 'light'])
       .it('should only display light preview', () => {
         expect(mockedPreviewSnapshot).toHaveBeenCalledWith(
           expect.anything(),
