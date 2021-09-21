@@ -31,7 +31,7 @@ export const previewLevel = () => ({
   previewLevel: flags.enum({
     char: 'p',
     description:
-      'The verbosity of the preview. The `light` preview is faster to generate but only contains a limited amount of information, as opposed to the `detailed` preview which takes more time to generate, but returns a diff representation of all the changes to apply.',
+      'The verbosity of the preview. The `light` preview is faster to generate but only contains a limited amount of information, as opposed to the `detailed` preview that takes more time to generate, but returns a diff representation of all the changes to apply.',
     options: [PreviewLevel.Light, PreviewLevel.Detailed],
     default: PreviewLevel.Detailed,
     exclusive: ['skipPreview'],
