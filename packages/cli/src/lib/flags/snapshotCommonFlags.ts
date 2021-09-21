@@ -1,7 +1,7 @@
 import {flags} from '@oclif/command';
 import {Snapshot} from '../snapshot/snapshot';
 
-export enum PreviewLevel {
+export enum PreviewLevelValue {
   Light = 'light',
   Detailed = 'detailed',
 }
@@ -32,8 +32,8 @@ export const previewLevel = () => ({
     char: 'p',
     description:
       'The verbosity of the preview. The `light` preview is faster to generate but only contains a limited amount of information, as opposed to the `detailed` preview that takes more time to generate, but returns a diff representation of all the changes to apply.',
-    options: [PreviewLevel.Light, PreviewLevel.Detailed],
-    default: PreviewLevel.Detailed,
+    options: Object.values(PreviewLevelValue),
+    default: PreviewLevelValue.Detailed,
     exclusive: ['skipPreview'],
   }),
 });

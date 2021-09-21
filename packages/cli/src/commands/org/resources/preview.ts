@@ -15,7 +15,7 @@ import {
 import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {
-  PreviewLevel,
+  PreviewLevelValue,
   previewLevel,
   sync,
   wait,
@@ -97,7 +97,7 @@ export default class Preview extends Command {
 
   private shouldDisplayExpandedPreview() {
     const {flags} = this.parse(Preview);
-    return flags.previewLevel === PreviewLevel.Detailed;
+    return flags.previewLevel === PreviewLevelValue.Detailed;
   }
 
   private async processReport(snapshot: Snapshot, reporter: SnapshotReporter) {

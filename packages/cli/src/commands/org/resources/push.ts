@@ -23,7 +23,7 @@ import {
 } from '../../../hooks/analytics/analytics';
 import {Project} from '../../../lib/project/project';
 import {
-  PreviewLevel,
+  PreviewLevelValue,
   previewLevel,
   sync,
   wait,
@@ -99,7 +99,7 @@ export default class Push extends Command {
 
   private shouldDisplayExpandedPreview() {
     const {flags} = this.parse(Push);
-    return flags.previewLevel === PreviewLevel.Detailed;
+    return flags.previewLevel === PreviewLevelValue.Detailed;
   }
 
   private async processReportAndExecuteRemainingActions(
