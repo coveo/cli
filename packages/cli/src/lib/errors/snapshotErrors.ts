@@ -25,6 +25,17 @@ function trySavingDetailedReport(error: IDetailedReportable) {
   }
 }
 
+function printMessageWithSynchronizationPlanUrl(
+  message: string,
+  snapshot: Snapshot,
+  cfg: Configuration
+) {
+  const urlBuilder = new SnapshotUrlBuilder(cfg);
+  const synchronizationPlanUrl = urlBuilder.getSynchronizationPage(snapshot);
+  cli.log(dedent`${message}
+  ${synchronizationPlanUrl}`);
+}
+
 export class SnapshotError extends Error {
   public constructor(public level: SeverityLevel) {
     super();
@@ -104,13 +115,11 @@ export class SnapshotSynchronizationAmbiguousMatchesError
 
   public print() {
     super.print();
-    const urlBuilder = new SnapshotUrlBuilder(this.cfg);
-    const synchronizationPlanUrl = urlBuilder.getSynchronizationPage(
-      this.snapshot
+    printMessageWithSynchronizationPlanUrl(
+      'Click on the URL below to manually resolve your snapshot conflicts.',
+      this.snapshot,
+      this.cfg
     );
-    const additionalMessage = dedent`Click on the URL below to manually resolve your snapshot conflicts.
-    ${synchronizationPlanUrl}`;
-    cli.log(additionalMessage);
   }
 }
 
@@ -129,13 +138,11 @@ export class SnapshotSynchronizationUnknownError
 
   public print() {
     super.print();
-    const urlBuilder = new SnapshotUrlBuilder(this.cfg);
-    const synchronizationPlanUrl = urlBuilder.getSynchronizationPage(
-      this.snapshot
+    printMessageWithSynchronizationPlanUrl(
+      'Click on the URL below for more information.',
+      this.snapshot,
+      this.cfg
     );
-    const additionalMessage = dedent`Click on the URL below for more information.
-    ${synchronizationPlanUrl}`;
-    cli.log(additionalMessage);
   }
 }
 
