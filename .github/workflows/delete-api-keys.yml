@@ -3,7 +3,7 @@ name: 'Delete Test API Keys'
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * SAT'
+    - cron: '0 0 * * *'
 
 jobs:
   run-script:
