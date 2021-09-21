@@ -7,7 +7,7 @@ const {hideBin} = require('yargs/helpers');
 const {homedir} = require('os');
 const {join} = require('path');
 const {config} = require('dotenv');
-config({path: join(homedir(), '.env')});
+config({path: join(homedir(), 'packages', 'cli-e2e', '.env')});
 
 function wasCreatedByTheCli(testRunId = '') {
   return (key) =>
