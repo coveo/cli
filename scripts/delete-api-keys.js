@@ -56,6 +56,7 @@ async function main(amount, unit) {
   const testRunId = process.env.TEST_RUN_ID;
   console.log('********* testRunId *********');
   console.log(testRunId);
+  console.log(__dirname);
   console.log(existsSync(join(__dirname, '..', 'packages', 'cli-e2e', '.env')));
   console.log('*****************************');
 
