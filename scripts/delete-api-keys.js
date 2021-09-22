@@ -7,6 +7,7 @@ const {hideBin} = require('yargs/helpers');
 const {homedir} = require('os');
 const {join} = require('path');
 const {config} = require('dotenv');
+const {existsSync} = require('fs');
 config({path: join(homedir(), 'packages', 'cli-e2e', '.env')});
 
 function wasCreatedByTheCli(testRunId = '') {
@@ -56,6 +57,7 @@ async function main(amount, unit) {
   const testRunId = process.env.TEST_RUN_ID;
   console.log('********* testRunId *********');
   console.log(testRunId);
+  console.log(existsSync(join(homedir(), 'packages', 'cli-e2e', '.env')));
   console.log('*****************************');
 
   const platform = getClient(testOrgId, accessToken);
@@ -82,11 +84,5 @@ const argv = yargs(hideBin(process.argv))
   .alias('h', 'help').argv;
 
 const {amount, unit} = argv.olderThan;
-try {
-  main(amount, unit);
-} catch (error) {
-  console.log('********** ERROR **********');
-  console.log({amount, unit});
-  console.log(error);
-  console.log('*********************');
-}
+console.log({amount, unit});
+main(amount, unit);
