@@ -4,10 +4,9 @@ const {Environment, PlatformClient} = require('@coveord/platform-client');
 const yargs = require('yargs/yargs');
 const moment = require('moment');
 const {hideBin} = require('yargs/helpers');
-const {homedir} = require('os');
 const {join} = require('path');
 const {config} = require('dotenv');
-const {existsSync, readdirSync} = require('fs');
+const {existsSync} = require('fs');
 config({path: join(__dirname, '..', 'packages', 'cli-e2e', '.env')});
 
 function wasCreatedByTheCli(testRunId = '') {
