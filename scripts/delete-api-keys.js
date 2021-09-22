@@ -54,6 +54,10 @@ async function main(amount, unit) {
   const testOrgId = process.env.TEST_ORG_ID;
   const accessToken = process.env.ACCESS_TOKEN;
   const testRunId = process.env.TEST_RUN_ID;
+  console.log('********* testRunId *********');
+  console.log(testRunId);
+  console.log('*****************************');
+
   const platform = getClient(testOrgId, accessToken);
   const apiKeys = await platform.apiKey.list();
 
@@ -78,4 +82,11 @@ const argv = yargs(hideBin(process.argv))
   .alias('h', 'help').argv;
 
 const {amount, unit} = argv.olderThan;
-main(amount, unit);
+try {
+  main(amount, unit);
+} catch (error) {
+  console.log('********** ERROR **********');
+  console.log({amount, unit});
+  console.log(error);
+  console.log('*********************');
+}
