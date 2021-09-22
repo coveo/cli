@@ -6,8 +6,10 @@ const moment = require('moment');
 const {hideBin} = require('yargs/helpers');
 const {join} = require('path');
 const {config} = require('dotenv');
-const {existsSync, readdirSync} = require('fs');
-config({path: join(__dirname, '..', 'packages', 'cli-e2e', '.env')});
+const {existsSync} = require('fs');
+const {homedir} = require('os');
+// config({path: join(__dirname, '..', 'packages', 'cli-e2e', '.env')});
+config({path: join(homedir(), '.env')});
 
 function wasCreatedByTheCli(testRunId = '') {
   return (key) =>
@@ -56,8 +58,7 @@ async function main(amount, unit) {
   const testRunId = process.env.TEST_RUN_ID;
   console.log('********* testRunId *********');
   console.log(testRunId);
-  console.log(readdirSync(join(__dirname, '..', 'packages', 'cli-e2e')));
-  console.log(existsSync(join(__dirname, '..', 'packages', 'cli-e2e', '.env')));
+  console.log(existsSync(join(homedir(), '.env')));
   console.log('*****************************');
 
   const platform = getClient(testOrgId, accessToken);
