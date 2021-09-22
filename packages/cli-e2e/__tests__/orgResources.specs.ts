@@ -1,5 +1,10 @@
 import {join} from 'path';
-import {CLI_EXEC_PATH, getConfig, getPathToHomedirEnvFile} from '../utils/cli';
+import {
+  answerPrompt,
+  CLI_EXEC_PATH,
+  getConfig,
+  getPathToHomedirEnvFile,
+} from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
@@ -7,6 +12,7 @@ import {ensureDirSync} from 'fs-extra';
 import PlatformClient from '@coveord/platform-client';
 import {getPlatformClient} from '../utils/platform';
 import {readdirSync} from 'fs';
+import {EOL} from 'os';
 config({path: getPathToHomedirEnvFile()});
 
 describe('org:resources', () => {
@@ -94,25 +100,48 @@ describe('org:resources', () => {
   });
 
   describe('org:resources:preview', () => {
-    it(
-      'should preview the snapshot',
-      async () => {
-        const previewTerminal = previewChange(testOrgId, processManager);
+    describe('when resources are not synchronized', () => {
+      it(
+        'should throw a synchronization warning',
+        async () => {
+          const previewTerminal = previewChange(testOrgId, processManager);
+          const warningRegex = new RegExp(
+            /Warning: Unsynchronized resource detected/
+          );
 
-        const expectedOutput = [
-          'Extensions',
-          '\\+   1 to create',
-          'Fields',
-          '\\+   2 to create',
-          'Filters',
-          '\\+   1 to create',
-        ].join('\\s*');
-        const regex = new RegExp(expectedOutput, 'gm');
+          await previewTerminal
+            .when(warningRegex)
+            .on('stdout')
+            .do(answerPrompt(`y${EOL}`))
+            .once();
+        },
+        defaultTimeout
+      );
+    });
 
-        await previewTerminal.when(regex).on('stdout').do().once();
-      },
-      defaultTimeout
-    );
+    describe('when resources are synchronized', () => {
+      it(
+        'should preview the snapshot',
+        async () => {
+          const previewTerminal = previewChange(testOrgId, processManager);
+
+          const expectedOutput = [
+            'Extensions',
+            '\\+   1 to create',
+            'Fields',
+            '\\+   2 to create',
+            'Filters',
+            '\\+   1 to create',
+            'Query Pipelines',
+            '\\+   1 to create',
+          ].join('\\s*');
+          const regex = new RegExp(expectedOutput, 'gm');
+
+          await previewTerminal.when(regex).on('stdout').do().once();
+        },
+        defaultTimeout
+      );
+    });
   });
 
   describe('org:resources:push', () => {

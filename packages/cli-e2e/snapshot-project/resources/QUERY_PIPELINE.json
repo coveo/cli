@@ -5,6 +5,15 @@
   "resources": {
     "QUERY_PIPELINE": [
       {
+        "resourceName": "default_m23BFf",
+        "parents": {},
+        "model": {
+          "name": "default",
+          "splitTestEnabled": false,
+          "isDefault": true
+        }
+      },
+      {
         "resourceName": "custom_p56INx",
         "parents": {},
         "model": {
