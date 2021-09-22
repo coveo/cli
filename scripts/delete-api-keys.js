@@ -8,7 +8,7 @@ const {homedir} = require('os');
 const {join} = require('path');
 const {config} = require('dotenv');
 const {existsSync, readdirSync} = require('fs');
-config({path: join(homedir(), 'packages', 'cli-e2e', '.env')});
+config({path: join(__dirname, '..', 'packages', 'cli-e2e', '.env')});
 
 function wasCreatedByTheCli(testRunId = '') {
   return (key) =>
@@ -57,9 +57,7 @@ async function main(amount, unit) {
   const testRunId = process.env.TEST_RUN_ID;
   console.log('********* testRunId *********');
   console.log(testRunId);
-  console.log(homedir());
-  console.log(readdirSync(homedir()));
-  console.log(existsSync(join(homedir(), 'packages', 'cli-e2e', '.env')));
+  console.log(existsSync(join(__dirname, '..', 'packages', 'cli-e2e', '.env')));
   console.log('*****************************');
 
   const platform = getClient(testOrgId, accessToken);
