@@ -6,7 +6,7 @@ const moment = require('moment');
 const {hideBin} = require('yargs/helpers');
 const {join} = require('path');
 const {config} = require('dotenv');
-const {existsSync} = require('fs');
+const {existsSync, readdirSync} = require('fs');
 config({path: join(__dirname, '..', 'packages', 'cli-e2e', '.env')});
 
 function wasCreatedByTheCli(testRunId = '') {
@@ -56,7 +56,7 @@ async function main(amount, unit) {
   const testRunId = process.env.TEST_RUN_ID;
   console.log('********* testRunId *********');
   console.log(testRunId);
-  console.log(__dirname);
+  console.log(readdirSync(join(__dirname, '..', 'packages', 'cli-e2e')));
   console.log(existsSync(join(__dirname, '..', 'packages', 'cli-e2e', '.env')));
   console.log('*****************************');
 
