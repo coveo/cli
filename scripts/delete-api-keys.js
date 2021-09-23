@@ -6,7 +6,6 @@ const moment = require('moment');
 const {hideBin} = require('yargs/helpers');
 const {join} = require('path');
 const {config} = require('dotenv');
-const {existsSync} = require('fs');
 const {homedir} = require('os');
 // config({path: join(__dirname, '..', 'packages', 'cli-e2e', '.env')});
 config({path: join(homedir(), '.env')});
