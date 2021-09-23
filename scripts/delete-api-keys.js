@@ -4,9 +4,9 @@ const {Environment, PlatformClient} = require('@coveord/platform-client');
 const yargs = require('yargs/yargs');
 const moment = require('moment');
 const {hideBin} = require('yargs/helpers');
+const {homedir} = require('os');
 const {join} = require('path');
 const {config} = require('dotenv');
-const {homedir} = require('os');
 config({path: join(homedir(), '.env')});
 
 function wasCreatedByTheCli(testRunId = '') {
