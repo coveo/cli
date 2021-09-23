@@ -54,19 +54,12 @@ async function main(amount, unit) {
   const testOrgId = process.env.ORG_ID;
   const accessToken = process.env.PLATFORM_API_KEY;
   const testRunId = process.env.TEST_RUN_ID;
-  console.log('********* testRunId *********');
-  console.log(testRunId);
-  console.log('*****************************');
-
   const platform = getClient(testOrgId, accessToken);
   const apiKeys = await platform.apiKey.list();
 
   const cliApiKeys = apiKeys
     .filter(wasCreatedByTheCli(testRunId))
     .filter(wasCreatedBefore(amount, unit));
-  console.log('********* cliApiKeys ************');
-  console.log(cliApiKeys.length);
-  console.log('*********************');
 
   await deleteApiKeys(platform, cliApiKeys);
 }
@@ -85,5 +78,4 @@ const argv = yargs(hideBin(process.argv))
   .alias('h', 'help').argv;
 
 const {amount, unit} = argv.olderThan;
-console.log({amount, unit});
 main(amount, unit);
