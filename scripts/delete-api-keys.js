@@ -58,7 +58,6 @@ async function main(amount, unit) {
   const testRunId = process.env.TEST_RUN_ID;
   console.log('********* testRunId *********');
   console.log(testRunId);
-  console.log(existsSync(join(homedir(), '.env')));
   console.log('*****************************');
 
   const platform = getClient(testOrgId, accessToken);
@@ -67,6 +66,9 @@ async function main(amount, unit) {
   const cliApiKeys = apiKeys
     .filter(wasCreatedByTheCli(testRunId))
     .filter(wasCreatedBefore(amount, unit));
+  console.log('********* cliApiKeys ************');
+  console.log(cliApiKeys.length);
+  console.log('*********************');
 
   await deleteApiKeys(platform, cliApiKeys);
 }
