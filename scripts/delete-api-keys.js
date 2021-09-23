@@ -52,7 +52,7 @@ function getClient(organizationId, accessToken) {
 
 async function main(amount, unit) {
   const testOrgId = process.env.ORG_ID;
-  const accessToken = process.env.ACCESS_TOKEN;
+  const accessToken = process.env.PLATFORM_API_KEY;
   const testRunId = process.env.TEST_RUN_ID;
   console.log('********* testRunId *********');
   console.log(testRunId);

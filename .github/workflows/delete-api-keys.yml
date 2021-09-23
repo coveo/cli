@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ORG_ID: ${{ secrets.ORG_ID }}
-      ACCESS_TOKEN: ${{ secrets.PLATFORM_API_KEY }}
+      PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
