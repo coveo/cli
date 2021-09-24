@@ -111,7 +111,7 @@ describe('org:resources', () => {
 
           await previewTerminal
             .when(warningRegex)
-            .on('stdout')
+            .on('stderr')
             .do(answerPrompt(`y${EOL}`))
             .once();
         },
