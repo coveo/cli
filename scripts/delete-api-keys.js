@@ -7,7 +7,7 @@ const {hideBin} = require('yargs/helpers');
 const {homedir} = require('os');
 const {join} = require('path');
 const {config} = require('dotenv');
-config({path: join(homedir(), 'packages', 'cli-e2e', '.env')});
+config({path: join(homedir(), '.env')});
 
 function wasCreatedByTheCli(testRunId = '') {
   return (key) =>
@@ -51,8 +51,8 @@ function getClient(organizationId, accessToken) {
 }
 
 async function main(amount, unit) {
-  const testOrgId = process.env.TEST_ORG_ID;
-  const accessToken = process.env.ACCESS_TOKEN;
+  const testOrgId = process.env.ORG_ID;
+  const accessToken = process.env.PLATFORM_API_KEY;
   const testRunId = process.env.TEST_RUN_ID;
   const platform = getClient(testOrgId, accessToken);
   const apiKeys = await platform.apiKey.list();
