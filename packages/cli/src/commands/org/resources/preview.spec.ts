@@ -234,6 +234,26 @@ describe('org:resources:preview', () => {
       .it('should delete the snapshot', () => {
         expect(mockedDeleteSnapshot).toHaveBeenCalledTimes(1);
       });
+
+    test
+      .command(['org:resources:preview'])
+      .it('should display expanded preview', () => {
+        expect(mockedPreviewSnapshot).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          true
+        );
+      });
+
+    test
+      .command(['org:resources:preview', '--previewLevel', 'light'])
+      .it('should only display light preview', () => {
+        expect(mockedPreviewSnapshot).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          false
+        );
+      });
   });
 
   describe('when the report contains resources in error', () => {

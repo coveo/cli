@@ -14,7 +14,12 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
-import {sync, wait} from '../../../lib/flags/snapshotCommonFlags';
+import {
+  PreviewLevelValue,
+  previewLevel,
+  sync,
+  wait,
+} from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {
@@ -32,6 +37,7 @@ export default class Preview extends Command {
   public static flags = {
     ...wait(),
     ...sync(),
+    ...previewLevel(),
     target: flags.string({
       char: 't',
       description:
@@ -67,7 +73,11 @@ export default class Preview extends Command {
       this.options
     );
 
-    await snapshot.preview(project, this.options.deleteMissingResources);
+    await snapshot.preview(
+      project,
+      this.options.deleteMissingResources,
+      this.shouldDisplayExpandedPreview()
+    );
     await this.processReport(snapshot, reporter);
     await this.cleanup(snapshot, project);
 
@@ -83,6 +93,11 @@ export default class Preview extends Command {
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
     );
+  }
+
+  private shouldDisplayExpandedPreview() {
+    const {flags} = this.parse(Preview);
+    return flags.previewLevel === PreviewLevelValue.Detailed;
   }
 
   private async processReport(snapshot: Snapshot, reporter: SnapshotReporter) {
