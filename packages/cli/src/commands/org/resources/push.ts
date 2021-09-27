@@ -22,7 +22,12 @@ import {
   buildAnalyticsSuccessHook,
 } from '../../../hooks/analytics/analytics';
 import {Project} from '../../../lib/project/project';
-import {sync, wait} from '../../../lib/flags/snapshotCommonFlags';
+import {
+  PreviewLevelValue,
+  previewLevel,
+  sync,
+  wait,
+} from '../../../lib/flags/snapshotCommonFlags';
 
 export default class Push extends Command {
   public static description =
@@ -31,6 +36,7 @@ export default class Push extends Command {
   public static flags = {
     ...wait(),
     ...sync(),
+    ...previewLevel(),
     target: flags.string({
       char: 't',
       description:
@@ -68,7 +74,11 @@ export default class Push extends Command {
     );
 
     if (!flags.skipPreview) {
-      await snapshot.preview(project, this.options.deleteMissingResources);
+      await snapshot.preview(
+        project,
+        this.options.deleteMissingResources,
+        this.shouldDisplayExpandedPreview()
+      );
     }
 
     await this.processReportAndExecuteRemainingActions(snapshot, reporter);
@@ -85,6 +95,11 @@ export default class Push extends Command {
       'analytics',
       buildAnalyticsFailureHook(this, flags, err)
     );
+  }
+
+  private shouldDisplayExpandedPreview() {
+    const {flags} = this.parse(Push);
+    return flags.previewLevel === PreviewLevelValue.Detailed;
   }
 
   private async processReportAndExecuteRemainingActions(

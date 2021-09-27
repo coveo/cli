@@ -1,6 +1,11 @@
 import {flags} from '@oclif/command';
 import {Snapshot} from '../snapshot/snapshot';
 
+export enum PreviewLevelValue {
+  Light = 'light',
+  Detailed = 'detailed',
+}
+
 export const wait = () => ({
   wait: flags.integer({
     char: 'w',
@@ -19,5 +24,16 @@ export const sync = () => ({
     required: false,
     description:
       'Apply synchronization when there is a 100% match between organization and snapshot resources.',
+  }),
+});
+
+export const previewLevel = () => ({
+  previewLevel: flags.enum({
+    char: 'p',
+    description:
+      'The verbosity of the preview. The `light` preview is faster to generate but only contains a limited amount of information, as opposed to the `detailed` preview that takes more time to generate, but returns a diff representation of all the changes to apply.',
+    options: Object.values(PreviewLevelValue),
+    default: PreviewLevelValue.Detailed,
+    exclusive: ['skipPreview'],
   }),
 });
