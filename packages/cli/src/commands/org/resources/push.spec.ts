@@ -242,6 +242,28 @@ describe('org:resources:push', () => {
       .it('should apply snapshot without confrimation', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledTimes(1);
       });
+
+    test
+      .stub(cli, 'confirm', () => async () => true)
+      .command(['org:resources:push', '--previewLevel', 'light'])
+      .it('should only display light preview', () => {
+        expect(mockedPreviewSnapshot).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          false
+        );
+      });
+
+    test
+      .stub(cli, 'confirm', () => async () => true)
+      .command(['org:resources:push', '--previewLevel', 'detailed'])
+      .it('should display light and expanded preview', () => {
+        expect(mockedPreviewSnapshot).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          true
+        );
+      });
   });
 
   describe('when the dryRun returns a report with errors', () => {
