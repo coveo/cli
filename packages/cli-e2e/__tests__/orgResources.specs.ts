@@ -40,6 +40,7 @@ describe('org:resources', () => {
       CLI_EXEC_PATH,
       'org:resources:preview',
       `-t=${targetOrg}`,
+      '--sync',
     ];
 
     return createNewTerminal(
@@ -109,11 +110,7 @@ describe('org:resources', () => {
             /Warning: Unsynchronized resource detected/
           );
 
-          await previewTerminal
-            .when(warningRegex)
-            .on('stderr')
-            .do(answerPrompt(`y${EOL}`))
-            .once();
+          await previewTerminal.when(warningRegex).on('stderr').do().once();
         },
         defaultTimeout
       );
