@@ -1,18 +1,12 @@
 import {join} from 'path';
-import {
-  answerPrompt,
-  CLI_EXEC_PATH,
-  getConfig,
-  getPathToHomedirEnvFile,
-} from '../utils/cli';
+import {CLI_EXEC_PATH, getConfig, getPathToHomedirEnvFile} from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
 import {ensureDirSync} from 'fs-extra';
-import PlatformClient from '@coveord/platform-client';
+import PlatformClient, {FieldTypes} from '@coveord/platform-client';
 import {getPlatformClient} from '../utils/platform';
 import {readdirSync} from 'fs';
-import {EOL} from 'os';
 config({path: getPathToHomedirEnvFile()});
 
 describe('org:resources', () => {
@@ -33,6 +27,30 @@ describe('org:resources', () => {
       args.unshift('node');
     }
     return new Terminal(args.shift()!, args, {cwd}, procManager, debugName);
+  };
+
+  const createFieldWithoutUsingSnapshot = async (client: PlatformClient) => {
+    await client.field.create({
+      dateFormat: '',
+      includeInQuery: true,
+      hierarchicalFacet: false,
+      mergeWithLexicon: false,
+      description: '',
+      useCacheForComputedFacet: false,
+      sort: false,
+      type: FieldTypes.STRING,
+      smartDateFacet: false,
+      multiValueFacet: false,
+      multiValueFacetTokenizers: ';',
+      useCacheForNestedQuery: false,
+      name: 'dummyfield',
+      stemming: false,
+      includeInResults: true,
+      ranking: false,
+      useCacheForSort: false,
+      facet: false,
+      useCacheForNumericQuery: false,
+    });
   };
 
   const previewChange = (targetOrg: string, procManager: ProcessManager) => {
@@ -101,21 +119,6 @@ describe('org:resources', () => {
   });
 
   describe('org:resources:preview', () => {
-    describe('when resources are not synchronized', () => {
-      it(
-        'should throw a synchronization warning',
-        async () => {
-          const previewTerminal = previewChange(testOrgId, processManager);
-          const warningRegex = new RegExp(
-            /Warning: Unsynchronized resource detected/
-          );
-
-          await previewTerminal.when(warningRegex).on('stderr').do().once();
-        },
-        defaultTimeout
-      );
-    });
-
     describe('when resources are synchronized', () => {
       it(
         'should preview the snapshot',
@@ -139,6 +142,25 @@ describe('org:resources', () => {
         defaultTimeout
       );
     });
+
+    describe('when resources are not synchronized', () => {
+      beforeAll(async () => {
+        await createFieldWithoutUsingSnapshot(platformClient);
+      });
+
+      it(
+        'should throw a synchronization warning on a field',
+        async () => {
+          const previewTerminal = previewChange(testOrgId, processManager);
+          const warningRegex = new RegExp(
+            /Warning: Unsynchronized resource detected/
+          );
+
+          await previewTerminal.when(warningRegex).on('stderr').do().once();
+        },
+        defaultTimeout
+      );
+    });
   });
 
   describe('org:resources:push', () => {
@@ -152,6 +174,7 @@ describe('org:resources', () => {
         expect.arrayContaining([
           expect.objectContaining({name: 'firstfield'}),
           expect.objectContaining({name: 'whereisbrian'}),
+          expect.objectContaining({name: 'dummyfield'}),
         ])
       );
     });
