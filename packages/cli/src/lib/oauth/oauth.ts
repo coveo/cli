@@ -65,7 +65,7 @@ export class OAuth {
       );
       emitter.once(ServerEventsEmitter.ON_ERROR, (err: unknown) => {
         server.close();
-        reject(err); // TODO: not sure that is the best way here
+        reject(err); // TODO: try to handle without emitter
       });
     });
 

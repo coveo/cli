@@ -5,6 +5,7 @@ import {IncomingMessage, ServerResponse} from 'http';
 import {join} from 'path';
 import {EventEmitter} from 'stream';
 import {URLSearchParams} from 'url';
+import {AuthorizationError, InvalidStateError} from './authorizationError';
 import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
 
 export class ServerEventsEmitter extends EventEmitter {
@@ -25,18 +26,14 @@ export class RequestHandler {
         const {tokenEndpoint} = this.authServiceConfig;
 
         if (!state || !code) {
-          // ignore irrelevant requests (e.g. favicon.ico)
           return;
         }
 
-        // TODO: handle errors
-
         if (state !== expectedState) {
-          cli.error('TODO:Fine a better message here');
+          throw new InvalidStateError(state, expectedState);
         }
 
         const data = this.getTokenQueryString(code);
-
         const authRequest = await axios({
           method: 'post',
           url: tokenEndpoint,
@@ -91,6 +88,11 @@ export class RequestHandler {
     const url = new URL(`http://127.0.0.1${req.url}`);
     const state = url.searchParams.get('state');
     const code = url.searchParams.get('code');
+    const error = url.searchParams.get('error');
+
+    if (error) {
+      throw new AuthorizationError(url);
+    }
 
     return {state, code};
   }
