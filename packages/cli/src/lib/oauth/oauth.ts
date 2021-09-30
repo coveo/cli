@@ -10,7 +10,6 @@ import {randomBytes} from 'crypto';
 import {createServer} from 'http';
 import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
 import {RequestHandler, ServerEventsEmitter} from './requestHandler';
-import {cli} from 'cli-ux';
 
 export interface OAuthOptions {
   port: number;
@@ -36,11 +35,8 @@ export class OAuth {
   }
 
   public async getToken() {
-    cli.info('generateState');
     const state = this.generateState(10);
-    cli.info('startClientServer. state: ' + state);
     const token = this.startClientServer(state);
-    cli.info('open login page');
     this.openLoginPage(state);
 
     return token;
@@ -57,7 +53,6 @@ export class OAuth {
     const requestListener = requestHandler.requestListener(state, emitter);
     const server = createServer(requestListener);
 
-    cli.log('listening on port ' + this.opts.port);
     server.listen(this.opts.port, '127.0.0.1');
 
     const accessToken = await new Promise<string>((resolve, reject) => {

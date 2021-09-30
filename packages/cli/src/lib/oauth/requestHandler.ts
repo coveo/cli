@@ -20,30 +20,29 @@ export class RequestHandler {
 
   public requestListener(expectedState: string, emitter: ServerEventsEmitter) {
     const handler = async (req: IncomingMessage, res: ServerResponse) => {
-      const {code, state} = this.parseUrl(req);
-      const {tokenEndpoint} = this.authServiceConfig;
-
-      if (!state || !code) {
-        // ignore irrelevant requests (e.g. favicon.ico)
-        return;
-      }
-
-      // TODO: handle errors
-
-      if (state !== expectedState) {
-        cli.error('TODO:Fine a better message here');
-      }
-
-      const data = this.getTokenQueryString(code);
-
       try {
+        const {code, state} = this.parseUrl(req);
+        const {tokenEndpoint} = this.authServiceConfig;
+
+        if (!state || !code) {
+          // ignore irrelevant requests (e.g. favicon.ico)
+          return;
+        }
+
+        // TODO: handle errors
+
+        if (state !== expectedState) {
+          cli.error('TODO:Fine a better message here');
+        }
+
+        const data = this.getTokenQueryString(code);
+
         const authRequest = await axios({
           method: 'post',
           url: tokenEndpoint,
           ...this.requestConfig,
           data,
         });
-        console.log('---> accessToken');
         const accessToken = authRequest.data.access_token;
 
         emitter.emit(
@@ -51,10 +50,7 @@ export class RequestHandler {
           accessToken
         );
         this.terminateFlow(res);
-      } catch (error) {
-        console.log('********* error ************');
-        console.log(error.response); // TODO: handle that
-        console.log('*********************');
+      } catch (error: unknown) {
         emitter.emit(ServerEventsEmitter.ON_ERROR, error);
       }
     };
