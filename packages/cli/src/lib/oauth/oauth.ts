@@ -1,24 +1,16 @@
+import opener from 'opener';
 import {
   DEFAULT_ENVIRONMENT,
   DEFAULT_REGION,
   PlatformEnvironment,
   platformUrl,
 } from '../platform/environment';
-import {
-  AuthorizationNotifier,
-  AuthorizationRequest,
-  AuthorizationServiceConfiguration,
-  AuthorizationServiceConfigurationJson,
-  BaseTokenRequestHandler,
-  GRANT_TYPE_AUTHORIZATION_CODE,
-  TokenRequest,
-} from '@openid/appauth';
-import {
-  NodeBasedHandler,
-  NodeCrypto,
-  NodeRequestor,
-} from '@openid/appauth/built/node_support';
 import {Region} from '@coveord/platform-client';
+import {randomBytes} from 'crypto';
+import {createServer} from 'http';
+import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
+import {RequestHandler, ServerEventsEmitter} from './requestHandler';
+import {cli} from 'cli-ux';
 
 export interface OAuthOptions {
   port: number;
@@ -28,6 +20,7 @@ export interface OAuthOptions {
 
 export class OAuth {
   private opts: OAuthOptions;
+
   public constructor(opts?: Partial<OAuthOptions>) {
     const baseOptions: OAuthOptions = {
       port: 32111,
@@ -43,69 +36,71 @@ export class OAuth {
   }
 
   public async getToken() {
-    const config = new AuthorizationServiceConfiguration({
-      ...this.clientConfig,
-      ...this.authServiceConfig,
-    });
+    cli.info('generateState');
+    const state = this.generateState(10);
+    cli.info('startClientServer. state: ' + state);
+    const token = this.startClientServer(state);
+    cli.info('open login page');
+    this.openLoginPage(state);
 
-    const {code} = await this.getAuthorizationCode(config);
-    return await this.getAccessToken(config, code);
+    return token;
   }
 
-  private async getAccessToken(
-    configuration: AuthorizationServiceConfiguration,
-    code: string
-  ): Promise<{accessToken: string}> {
-    const tokenHandler = new BaseTokenRequestHandler(new NodeRequestor());
+  private async startClientServer(state: string): Promise<{
+    accessToken: string;
+  }> {
+    const emitter = new ServerEventsEmitter();
+    const requestHandler = new RequestHandler(
+      this.clientConfig,
+      this.authServiceConfig
+    );
+    const requestListener = requestHandler.requestListener(state, emitter);
+    const server = createServer(requestListener);
 
-    const request = new TokenRequest({
-      ...this.clientConfig,
-      grant_type: GRANT_TYPE_AUTHORIZATION_CODE,
-      code,
-      extras: {
-        client_secret: this.clientConfig.client_id,
-      },
-    });
+    cli.log('listening on port ' + this.opts.port);
+    server.listen(this.opts.port, '127.0.0.1');
 
-    try {
-      const response = await tokenHandler.performTokenRequest(
-        configuration,
-        request
-      );
-      return response;
-    } catch (e) {
-      console.error('ERROR: ', e as string);
-      throw e;
-    }
-  }
-
-  private getAuthorizationCode(
-    configuration: AuthorizationServiceConfiguration
-  ): Promise<{code: string; verifier: string}> {
-    return new Promise((res) => {
-      const notifier = new AuthorizationNotifier();
-      const authorizationHandler = new NodeBasedHandler(this.opts.port);
-      const request = new AuthorizationRequest(
-        {
-          ...this.clientConfig,
-          response_type: AuthorizationRequest.RESPONSE_TYPE_CODE,
-        },
-        new NodeCrypto(),
-        true
-      );
-
-      authorizationHandler.setAuthorizationNotifier(notifier);
-      notifier.setAuthorizationListener((request, response) => {
-        if (response) {
-          const {code} = response;
-          res({code, verifier: request.internal!.verifier});
+    const accessToken = await new Promise<string>((resolve, reject) => {
+      emitter.once(
+        ServerEventsEmitter.ON_ACCESS_TOKEN_DELIVERED,
+        (token: string) => {
+          server.close();
+          resolve(token);
         }
+      );
+      emitter.once(ServerEventsEmitter.ON_ERROR, (err: unknown) => {
+        server.close();
+        reject(err); // TODO: not sure that is the best way here
       });
-      authorizationHandler.performAuthorizationRequest(configuration, request);
     });
+
+    return {accessToken};
   }
 
-  private get clientConfig() {
+  private openLoginPage(state: string) {
+    const url = this.buildAuthorizationUrl(state);
+    opener(url);
+  }
+
+  private buildAuthorizationUrl(state: string) {
+    const {authorizationEndpoint} = this.authServiceConfig;
+    const {redirect_uri, client_id, scope} = this.clientConfig;
+    const url = new URL(authorizationEndpoint);
+
+    url.searchParams.append('response_type', 'code');
+    url.searchParams.append('client_id', client_id);
+    url.searchParams.append('redirect_uri', redirect_uri);
+    url.searchParams.append('state', state);
+    url.searchParams.append('scope', scope);
+
+    return url.href;
+  }
+
+  private generateState(size: number) {
+    return randomBytes(size).toString('hex');
+  }
+
+  private get clientConfig(): ClientConfig {
     return {
       client_id: 'cli',
       redirect_uri: `http://127.0.0.1:${this.opts.port}`,
@@ -113,15 +108,15 @@ export class OAuth {
     };
   }
 
-  private get authServiceConfig(): AuthorizationServiceConfigurationJson {
+  private get authServiceConfig(): AuthorizationServiceConfiguration {
     const baseURL = platformUrl({
       environment: this.opts.environment,
       region: this.opts.region,
     });
     return {
-      authorization_endpoint: `${baseURL}/oauth/authorize`,
-      revocation_endpoint: `${baseURL}/logout`,
-      token_endpoint: `${baseURL}/oauth/token`,
+      authorizationEndpoint: `${baseURL}/oauth/authorize`,
+      revocationEndpoint: `${baseURL}/logout`,
+      tokenEndpoint: `${baseURL}/oauth/token`,
     };
   }
 }
