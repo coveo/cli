@@ -62,7 +62,6 @@ describe('ReportViewer', () => {
     });
 
     test
-      .only()
       .stdout()
       .do(() => {
         viewer.display();
