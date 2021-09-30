@@ -5,7 +5,7 @@
   "scripts": {
     "test": "npm run build && jasmine dist/**/*_spec.js",
     "lint": "prettier --check . && eslint .",
-    "build": "node_modules/.bin/tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json",
     "prebuild": "node ./scripts/clean.js",
     "postbuild": "node ./scripts/setup.js",
     "prepublishOnly": "npm run build",
