@@ -1,58 +1,52 @@
 import axios, {AxiosRequestConfig} from 'axios';
 import {cli} from 'cli-ux';
 import {readFileSync} from 'fs';
-import {IncomingMessage, ServerResponse} from 'http';
+import {createServer, IncomingMessage, ServerResponse} from 'http';
 import {join} from 'path';
-import {EventEmitter} from 'stream';
 import {URLSearchParams} from 'url';
 import {AuthorizationError, InvalidStateError} from './authorizationError';
 import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
 
-export class ServerEventsEmitter extends EventEmitter {
-  public static ON_ACCESS_TOKEN_DELIVERED = 'access_token_delivered';
-  public static ON_ERROR = 'on_error';
-}
-
-export class RequestHandler {
+export class OauthClientServer {
   public constructor(
     private clientConfig: ClientConfig,
     private authServiceConfig: AuthorizationServiceConfiguration
   ) {}
 
-  public requestListener(expectedState: string, emitter: ServerEventsEmitter) {
-    const handler = async (req: IncomingMessage, res: ServerResponse) => {
-      try {
-        const {code, state} = this.parseUrl(req);
-        const {tokenEndpoint} = this.authServiceConfig;
+  public startServer(port: number, hostname: string, expectedState: string) {
+    return new Promise<{accessToken: string}>((resolve, reject) => {
+      const listener = async (req: IncomingMessage, res: ServerResponse) => {
+        try {
+          const {code, state} = this.parseUrl(req);
+          const {tokenEndpoint} = this.authServiceConfig;
 
-        if (!state || !code) {
-          return;
+          if (!state || !code) {
+            return;
+          }
+
+          if (state !== expectedState) {
+            throw new InvalidStateError(state, expectedState);
+          }
+
+          const data = this.getTokenQueryString(code);
+          const authRequest = await axios({
+            method: 'post',
+            url: tokenEndpoint,
+            ...this.requestConfig,
+            data,
+          });
+          const accessToken = authRequest.data.access_token;
+
+          this.terminateFlow(res);
+          resolve({accessToken});
+        } catch (error: unknown) {
+          reject(error);
         }
+      };
 
-        if (state !== expectedState) {
-          throw new InvalidStateError(state, expectedState);
-        }
-
-        const data = this.getTokenQueryString(code);
-        const authRequest = await axios({
-          method: 'post',
-          url: tokenEndpoint,
-          ...this.requestConfig,
-          data,
-        });
-        const accessToken = authRequest.data.access_token;
-
-        emitter.emit(
-          ServerEventsEmitter.ON_ACCESS_TOKEN_DELIVERED,
-          accessToken
-        );
-        this.terminateFlow(res);
-      } catch (error: unknown) {
-        emitter.emit(ServerEventsEmitter.ON_ERROR, error);
-      }
-    };
-
-    return handler;
+      const server = createServer(listener);
+      server.listen(port, hostname);
+    });
   }
 
   private get requestConfig(): AxiosRequestConfig {
@@ -99,7 +93,9 @@ export class RequestHandler {
 
   private terminateFlow(res: ServerResponse) {
     const html = readFileSync(join(__dirname, 'terminator.html'));
-    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.writeHead(200, {
+      'Content-Type': 'text/html',
+    });
     res.write(html);
     res.end();
   }

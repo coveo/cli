@@ -7,9 +7,8 @@ import {
 } from '../platform/environment';
 import {Region} from '@coveord/platform-client';
 import {randomBytes} from 'crypto';
-import {createServer} from 'http';
 import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
-import {RequestHandler, ServerEventsEmitter} from './requestHandler';
+import {OauthClientServer} from './oauthClientServer';
 
 export interface OAuthOptions {
   port: number;
@@ -36,40 +35,21 @@ export class OAuth {
 
   public async getToken() {
     const state = this.generateState(10);
-    const token = this.startClientServer(state);
+    const clientServerPromise = this.startClientServer(state);
     this.openLoginPage(state);
 
-    return token;
+    return clientServerPromise;
   }
 
   private async startClientServer(state: string): Promise<{
     accessToken: string;
   }> {
-    const emitter = new ServerEventsEmitter();
-    const requestHandler = new RequestHandler(
+    const requestHandler = new OauthClientServer(
       this.clientConfig,
       this.authServiceConfig
     );
-    const requestListener = requestHandler.requestListener(state, emitter);
-    const server = createServer(requestListener);
 
-    server.listen(this.opts.port, '127.0.0.1');
-
-    const accessToken = await new Promise<string>((resolve, reject) => {
-      emitter.once(
-        ServerEventsEmitter.ON_ACCESS_TOKEN_DELIVERED,
-        (token: string) => {
-          server.close();
-          resolve(token);
-        }
-      );
-      emitter.once(ServerEventsEmitter.ON_ERROR, (err: unknown) => {
-        server.close();
-        reject(err); // TODO: try to handle without emitter
-      });
-    });
-
-    return {accessToken};
+    return requestHandler.startServer(this.opts.port, '127.0.0.1', state);
   }
 
   private openLoginPage(state: string) {
@@ -85,8 +65,8 @@ export class OAuth {
     url.searchParams.append('response_type', 'code');
     url.searchParams.append('client_id', client_id);
     url.searchParams.append('redirect_uri', redirect_uri);
-    url.searchParams.append('state', state);
     url.searchParams.append('scope', scope);
+    url.searchParams.append('state', state);
 
     return url.href;
   }
