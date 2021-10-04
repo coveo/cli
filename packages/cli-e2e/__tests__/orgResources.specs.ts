@@ -53,7 +53,11 @@ describe('org:resources', () => {
     });
   };
 
-  const previewChange = (targetOrg: string, procManager: ProcessManager) => {
+  const previewChange = (
+    targetOrg: string,
+    procManager: ProcessManager,
+    debugName = 'org-config-preview'
+  ) => {
     const args: string[] = [
       CLI_EXEC_PATH,
       'org:resources:preview',
@@ -61,15 +65,14 @@ describe('org:resources', () => {
       '--sync',
     ];
 
-    return createNewTerminal(
-      args,
-      procManager,
-      snapshotProjectPath,
-      'org-config-preview'
-    );
+    return createNewTerminal(args, procManager, snapshotProjectPath, debugName);
   };
 
-  const pushToOrg = async (targetOrg: string, procManager: ProcessManager) => {
+  const pushToOrg = async (
+    targetOrg: string,
+    procManager: ProcessManager,
+    debugName = 'org-config-push'
+  ) => {
     const args: string[] = [
       CLI_EXEC_PATH,
       'org:resources:push',
@@ -81,7 +84,7 @@ describe('org:resources', () => {
       args,
       procManager,
       snapshotProjectPath,
-      'org-config-push'
+      debugName
     );
 
     await pushTerminal.when('exit').on('process').do().once();
@@ -123,7 +126,11 @@ describe('org:resources', () => {
       it(
         'should preview the snapshot',
         async () => {
-          const previewTerminal = previewChange(testOrgId, processManager);
+          const previewTerminal = previewChange(
+            testOrgId,
+            processManager,
+            'org-config-preview-sync'
+          );
 
           const expectedOutput = [
             'Extensions',
@@ -132,7 +139,7 @@ describe('org:resources', () => {
             '\\+   2 to create',
             'Filters',
             '\\+   1 to create',
-            'Query Pipelines',
+            'Ml models',
             '\\+   1 to create',
           ].join('\\s*');
           const regex = new RegExp(expectedOutput, 'gm');
@@ -151,7 +158,11 @@ describe('org:resources', () => {
       it(
         'should throw a synchronization warning on a field',
         async () => {
-          const previewTerminal = previewChange(testOrgId, processManager);
+          const previewTerminal = previewChange(
+            testOrgId,
+            processManager,
+            'org-config-preview-unsync'
+          );
           const warningRegex = new RegExp(
             /Warning: Unsynchronized resource detected/
           );
