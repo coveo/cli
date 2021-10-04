@@ -35,21 +35,20 @@ export class OAuth {
 
   public async getToken() {
     const state = this.generateState(10);
-    const clientServerPromise = this.startClientServer(state);
-    this.openLoginPage(state);
-
-    return clientServerPromise;
-  }
-
-  private async startClientServer(state: string): Promise<{
-    accessToken: string;
-  }> {
     const requestHandler = new OauthClientServer(
       this.clientConfig,
       this.authServiceConfig
     );
 
-    return requestHandler.startServer(this.opts.port, '127.0.0.1', state);
+    const clientServerPromise = requestHandler.startServer(
+      this.opts.port,
+      '127.0.0.1',
+      state
+    );
+
+    this.openLoginPage(state);
+
+    return clientServerPromise;
   }
 
   private openLoginPage(state: string) {

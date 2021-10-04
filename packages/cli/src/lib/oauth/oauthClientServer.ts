@@ -1,8 +1,6 @@
 import axios, {AxiosRequestConfig} from 'axios';
 import {cli} from 'cli-ux';
-import {readFileSync} from 'fs';
 import {createServer, IncomingMessage, ServerResponse} from 'http';
-import {join} from 'path';
 import {URLSearchParams} from 'url';
 import {AuthorizationError, InvalidStateError} from './authorizationError';
 import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
@@ -37,10 +35,12 @@ export class OauthClientServer {
           });
           const accessToken = authRequest.data.access_token;
 
-          this.terminateFlow(res);
+          res.end('Close your browser to continue');
           resolve({accessToken});
+          server.close();
         } catch (error: unknown) {
           reject(error);
+          server.close();
         }
       };
 
@@ -89,15 +89,6 @@ export class OauthClientServer {
     }
 
     return {state, code};
-  }
-
-  private terminateFlow(res: ServerResponse) {
-    const html = readFileSync(join(__dirname, 'terminator.html'));
-    res.writeHead(200, {
-      'Content-Type': 'text/html',
-    });
-    res.write(html);
-    res.end();
   }
 
   private getTokenQueryString(code: string) {
