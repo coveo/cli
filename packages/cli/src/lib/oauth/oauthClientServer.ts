@@ -60,7 +60,6 @@ export class OauthClientServer {
     };
     const proxy = process.env.HTTPS_PROXY;
     if (proxy) {
-      cli.info(`using proxy ${proxy}`);
       const proxyUrl = new URL(proxy);
       config.proxy = {
         host: proxyUrl.host,
