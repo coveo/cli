@@ -24,7 +24,7 @@ export default class Angular extends Command {
    * Requirements Based on https://angular.io/guide/setup-local
    * and https://www.npmjs.com/package/@angular/cli package.json engines section.
    */
-  public static requiredNodeVersion = '>=12.13.0 <15.0.0';
+  public static requiredNodeVersion = '^12.14.1 || >=14.0.0';
   public static requiredNpmVersion = '^6.11.0 || ^7.5.6';
 
   public static description =

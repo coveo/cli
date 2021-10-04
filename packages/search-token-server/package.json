@@ -23,7 +23,7 @@
     "start": "ts-node server.ts",
     "test": "jest",
     "npm:bump:template": "npm --no-git-tag-version version",
-    "npm:publish:template": "npm publish --access public --tag latest"
+    "npm:publish:template": "npm publish --access public --tag latest --registry http://localhost:4873"
   },
   "devDependencies": {
     "@types/cors": "2.8.12",
