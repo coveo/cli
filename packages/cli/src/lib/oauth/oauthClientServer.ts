@@ -1,5 +1,4 @@
 import axios, {AxiosRequestConfig} from 'axios';
-import {cli} from 'cli-ux';
 import {createServer, IncomingMessage, ServerResponse} from 'http';
 import {URLSearchParams} from 'url';
 import {AuthorizationError, InvalidStateError} from './authorizationError';

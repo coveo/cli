@@ -1,126 +1,116 @@
 import {Region} from '@coveord/platform-client';
-import {
-  AuthorizationServiceConfiguration,
-  BaseTokenRequestHandler,
-} from '@openid/appauth';
-import {NodeBasedHandler} from '@openid/appauth/built/node_support';
+import {mocked} from 'ts-jest/utils';
 import {PlatformEnvironment, platformUrl} from '../platform/environment';
 import {OAuth} from './oauth';
+import {OauthClientServer} from './oauthClientServer';
 
-jest.mock('@openid/appauth/built/node_support');
+jest.mock('./oauthClientServer');
+jest.mock('opener');
 
-jest.mock('@openid/appauth', () => ({
-  AuthorizationServiceConfiguration: jest.fn().mockImplementation(() => {}),
-  AuthorizationNotifier: jest.fn().mockImplementation(() => ({
-    setAuthorizationListener: (cb: Function) => {
-      cb({internal: {verifier: 'the-verifier'}}, {code: 'the-code'}, null);
-    },
-  })),
-  AuthorizationRequest: jest.fn().mockImplementation(() => {}),
-  TokenRequest: jest.fn().mockImplementation(() => {}),
-  BaseTokenRequestHandler: jest.fn().mockImplementation(() => ({
-    performTokenRequest: () =>
-      Promise.resolve({
-        accessToken: 'the-access-token',
-      }),
-  })),
-}));
+const mockedOauthClientServer = mocked(OauthClientServer, true);
+const mockedStartServer = jest.fn();
+
+mockedOauthClientServer.prototype.startServer.mockImplementation(
+  mockedStartServer
+);
 
 describe('OAuth', () => {
   it('should return the access token when requested', async () => {
-    (BaseTokenRequestHandler as jest.Mock).mockImplementationOnce(() => ({
-      performTokenRequest: () =>
-        Promise.resolve({
-          accessToken: 'this-is-the-new-access-token',
-        }),
-    }));
+    mockedStartServer.mockResolvedValueOnce({
+      accessToken: 'this-is-the-new-access-token',
+    });
     const {accessToken} = await new OAuth().getToken();
     expect(accessToken).toEqual('this-is-the-new-access-token');
   });
 
-  describe('should use proper port for @openid', () => {
+  describe('should use proper port for client server', () => {
     it('using default port', async () => {
       await new OAuth().getToken();
-      expect(NodeBasedHandler).toHaveBeenCalledWith(32111);
+      expect(mockedStartServer).toHaveBeenCalledWith(
+        32111,
+        expect.anything(),
+        expect.anything()
+      );
     });
 
     it('using configured port', async () => {
       await new OAuth({port: 444}).getToken();
-      expect(NodeBasedHandler).toHaveBeenCalledWith(444);
+      expect(mockedStartServer).toHaveBeenCalledWith(
+        444,
+        expect.anything(),
+        expect.anything()
+      );
     });
   });
 
-  describe('should use proper @openid AuthorizationServiceConfiguration', () => {
+  describe('should use proper ClientConfig', () => {
     const endpoints = (opts?: {
       environment?: PlatformEnvironment;
       region?: Region;
     }) => ({
-      authorization_endpoint: `${platformUrl(opts)}/oauth/authorize`,
-      revocation_endpoint: `${platformUrl(opts)}/logout`,
-      token_endpoint: `${platformUrl(opts)}/oauth/token`,
+      authorizationEndpoint: `${platformUrl(opts)}/oauth/authorize`,
+      revocationEndpoint: `${platformUrl(opts)}/logout`,
+      tokenEndpoint: `${platformUrl(opts)}/oauth/token`,
     });
+
+    const defaultClientConfig = {
+      client_id: 'cli',
+      redirect_uri: 'http://127.0.0.1:32111',
+      scope: 'full',
+    };
 
     it('in prod', async () => {
       const opts = {environment: PlatformEnvironment.Prod};
       await new OAuth(opts).getToken();
-      expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
-        expect.objectContaining({
-          client_id: 'cli',
-          redirect_uri: 'http://127.0.0.1:32111',
-          scope: 'full',
-          ...endpoints(opts),
-        })
+      expect(mockedOauthClientServer).toHaveBeenCalledWith(
+        defaultClientConfig,
+        endpoints(opts)
       );
     });
 
     it('in qa', async () => {
       const opts = {environment: PlatformEnvironment.QA};
       await new OAuth(opts).getToken();
-      expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
-        expect.objectContaining({
-          ...endpoints(opts),
-        })
+      expect(mockedOauthClientServer).toHaveBeenCalledWith(
+        defaultClientConfig,
+        endpoints(opts)
       );
     });
 
     it('in dev', async () => {
       const opts = {environment: PlatformEnvironment.Dev};
       await new OAuth(opts).getToken();
-      expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
-        expect.objectContaining({
-          ...endpoints(opts),
-        })
+      expect(mockedOauthClientServer).toHaveBeenCalledWith(
+        defaultClientConfig,
+        endpoints(opts)
       );
     });
 
     it('in hipaa', async () => {
       const opts = {environment: PlatformEnvironment.QA};
       await new OAuth(opts).getToken();
-      expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
-        expect.objectContaining({
-          ...endpoints(opts),
-        })
+      expect(mockedOauthClientServer).toHaveBeenCalledWith(
+        defaultClientConfig,
+        endpoints(opts)
       );
     });
 
     it('in Europe', async () => {
       const opts = {region: Region.EU};
       await new OAuth(opts).getToken();
-      expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
-        expect.objectContaining({
-          ...endpoints(opts),
-        })
+      expect(mockedOauthClientServer).toHaveBeenCalledWith(
+        defaultClientConfig,
+        endpoints(opts)
       );
     });
 
     it('it should be U.S. prod by default', async () => {
       await new OAuth().getToken();
-      expect(AuthorizationServiceConfiguration).toHaveBeenCalledWith(
-        expect.objectContaining({
-          ...endpoints({
-            environment: PlatformEnvironment.Prod,
-            region: Region.US,
-          }),
+      expect(mockedOauthClientServer).toHaveBeenCalledWith(
+        defaultClientConfig,
+        endpoints({
+          environment: PlatformEnvironment.Prod,
+          region: Region.US,
         })
       );
     });
