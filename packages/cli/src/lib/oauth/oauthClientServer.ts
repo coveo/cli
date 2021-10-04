@@ -62,7 +62,7 @@ export class OAuthClientServer {
       const proxyUrl = new URL(proxy);
       config.proxy = {
         host: proxyUrl.host,
-        port: parseInt(proxyUrl.port),
+        port: parseInt(proxyUrl.port, 10),
       };
     }
 
