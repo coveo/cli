@@ -10,6 +10,9 @@ google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usag
 
 xdg-settings set default-web-browser google-chrome.desktop
 
+npm install -g @angular/cli
+npm install -g ts-node
+
 docker run \
   -d \
   -p 4873:4873 \
@@ -21,10 +24,9 @@ git config --global user.email "notgroot@coveo.com"
 
 while ! timeout 1 bash -c "echo > /dev/tcp/localhost/4873"; do sleep 10; done
 
-npm install -g @angular/cli
-
 export UI_TEMPLATE_VERSION=0.0.0
-npm set registry http://localhost:4873
+npm config set registry http://localhost:4873
+ts-node --transpile-only ./packages/cli-e2e/utils/npmLogin.ts
 yarn config set  registry http://localhost:4873
 yarn config set -- --mutex network
 yarn config set -- --install.silent true

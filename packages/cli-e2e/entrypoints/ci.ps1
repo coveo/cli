@@ -27,8 +27,10 @@ git config --global user.name "notgroot"
 git config --global user.email "notgroot@coveo.com"
 
 npm install -g @angular/cli
+npm install -g ts-node
 
 npm set registry http://localhost:4873
+ts-node --transpile-only ./packages/cli-e2e/utils/npmLogin.ts
 yarn config set registry http://localhost:4873
 Write-Output "--mutex network" | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
 Write-Output "--install.silent true" | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
