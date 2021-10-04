@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.16.0](https://coveo-cli/coveo/cli/compare/v1.15.1...v1.16.0) (2021-10-04)
+
+
+### Bug Fixes
+
+* **node:** use node 16, npm 7 and lockfileVersion 2 exclusively ([#486](https://coveo-cli/coveo/cli/issues/486)) ([1c4e0f8](https://coveo-cli/coveo/cli/commits/1c4e0f898450b06b8c101230a902b97e7783adb2))
+
+
+
+
+
 ## [1.15.1](https://github.com/coveo/cli/compare/v1.15.0...v1.15.1) (2021-09-13)
 
 **Note:** Version bump only for package @coveo/angular

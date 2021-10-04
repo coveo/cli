@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.16.0](https://github.com/coveo/cli/compare/v1.15.1...v1.16.0) (2021-10-04)
+
+
+### Bug Fixes
+
+* **cli:** remove decompress ([#492](https://github.com/coveo/cli/issues/492)) ([0c88e4e](https://github.com/coveo/cli/commit/0c88e4e0269439d039a8ba3bbe1e2951da34a3c5))
+* **node:** use node 16, npm 7 and lockfileVersion 2 exclusively ([#486](https://github.com/coveo/cli/issues/486)) ([1c4e0f8](https://github.com/coveo/cli/commit/1c4e0f898450b06b8c101230a902b97e7783adb2))
+* remove line break from url ([#479](https://github.com/coveo/cli/issues/479)) ([1e55084](https://github.com/coveo/cli/commit/1e55084c986e6ae65e05d428cfb7015a3ac41c3e))
+* **snapshot:** wait flag should support the value `0` ([#474](https://github.com/coveo/cli/issues/474)) ([4b6e567](https://github.com/coveo/cli/commit/4b6e567c01a3b9589d5ac13031003cf1a1fb170c))
+
+
+### Features
+
+* control the granularity of the preview with a `--previewLevel` ([#477](https://github.com/coveo/cli/issues/477)) ([8637c88](https://github.com/coveo/cli/commit/8637c88918437338e94cc896fcb258cfff8fbb97))
+* **snapshot:** add `--sync` flag to automatically apply sync plan (if 100% confidence) ([#460](https://github.com/coveo/cli/issues/460)) ([152318b](https://github.com/coveo/cli/commit/152318b467beb6763336a8c2ff289532b4b80117))
+* **snapshot:** add analytic hook to pull command ([#465](https://github.com/coveo/cli/issues/465)) ([b35874d](https://github.com/coveo/cli/commit/b35874df3a64382107144a717198b852ad72f1ff))
+
+
+
+
+
 ## [1.15.1](https://github.com/coveo/cli/compare/v1.15.0...v1.15.1) (2021-09-13)
 
 **Note:** Version bump only for package @coveo/cli
