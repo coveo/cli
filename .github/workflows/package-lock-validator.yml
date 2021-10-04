@@ -1,0 +1,19 @@
+name: 'package-lock.json validator'
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - '**/package-lock.json'
+  pull_request:
+    branches: [master]
+    paths:
+      - '**/package-lock.json'
+
+jobs:
+  lockfile-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check lockfileVersion of all package-lock.json
+        run: node scripts/check-lockfile-versions.js $(find ./ -xdev -wholename '**/package-lock.json')

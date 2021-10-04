@@ -7,7 +7,7 @@ const repo = 'cli';
 
 const getPullRequestTitle = async () => {
   const pull_number = getPullRequestNumber();
-  return (await octokit.pulls.get({owner, repo, pull_number})).data.title;
+  return (await octokit.rest.pulls.get({owner, repo, pull_number})).data.title;
 };
 
 const getPullRequestNumber = () => {
