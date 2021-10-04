@@ -12,6 +12,10 @@ class Process {
   }
 }
 
+function isErrnoException(error: unknown): error is NodeJS.ErrnoException {
+  return Object.hasOwnProperty.call(error, 'errno');
+}
+
 /**
  * Kill a process and all its children
  * @param pid the PID of the process to kill with all its descendants
@@ -45,8 +49,8 @@ const recursiveKilling = (inputProcess: Process) => {
     spawnSync('powershell.exe', ['-Command', killCommand], {
       encoding: 'utf-8',
     });
-  } catch (error) {
-    if (error.errno !== OsConstants.errno.ESRCH) {
+  } catch (error: unknown) {
+    if (!isErrnoException(error) || error.errno !== OsConstants.errno.ESRCH) {
       throw error;
     }
   }

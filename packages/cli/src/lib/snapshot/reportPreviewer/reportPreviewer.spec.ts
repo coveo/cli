@@ -73,15 +73,19 @@ describe('ReportViewer', () => {
           .map((s) => s.trimEnd())
           .join('');
 
-        expect(trimedStdout).toContain(dedent`
-        Previewing resource changes:
-           Extensions
-        +   1 to create
-        -   2 to delete
-        ~   1 to update
-           Fields
-        ~   1 to update
-        `);
+        expect(trimedStdout).toContain(
+          '\n' +
+            dedent`
+              Previewing resource changes:
+               ────────────────────────────
+                  Extensions
+               +   1 to create
+               -   2 to delete
+               ~   1 to update
+                  Fields
+               ~   1 to update
+            `
+        );
       });
   });
 

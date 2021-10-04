@@ -389,8 +389,8 @@ describe('Snapshot', () => {
       [snapshot, initialModel] = await getSnapshot(someReport);
     });
 
-    it('should use default wait, waitInterval and callback by default', () => {
-      snapshot.waitUntilDone();
+    it('should use default wait, waitInterval and callback by default', async () => {
+      await snapshot.waitUntilDone();
 
       expect(mockedRetry).toHaveBeenCalledWith(expect.anything(), {
         retries: Math.ceil(
@@ -404,8 +404,8 @@ describe('Snapshot', () => {
       });
     });
 
-    it('should wait indefinitely', () => {
-      snapshot.waitUntilDone({wait: 0});
+    it('should wait indefinitely', async () => {
+      await snapshot.waitUntilDone({wait: 0});
 
       expect(mockedRetry).toHaveBeenCalledWith(expect.anything(), {
         retries: 0,
@@ -416,8 +416,8 @@ describe('Snapshot', () => {
       });
     });
 
-    it('should use provided wait and waitInterval and compute how many attempts to do', () => {
-      snapshot.waitUntilDone({wait: 10, waitInterval: 5});
+    it('should use provided wait and waitInterval and compute how many attempts to do', async () => {
+      await snapshot.waitUntilDone({wait: 10, waitInterval: 5});
 
       expect(mockedRetry).toHaveBeenCalledWith(expect.anything(), {
         retries: 2,
@@ -428,20 +428,22 @@ describe('Snapshot', () => {
       });
     });
 
-    it('should return the retrier from async-retry', () => {
+    it('should return the retrier from async-retry', async () => {
       const expectedReturnPromise = Promise.resolve();
       mockedRetry.mockReturnValue(expectedReturnPromise);
 
       const returnValue = snapshot.waitUntilDone();
 
       expect(returnValue).toBe(expectedReturnPromise);
+
+      await returnValue;
     });
 
     describe('when a retry happens', () => {
       it('should refresh the snapshotData and call the onRetryCallback', async () => {
         mockedGetSnapshot.mockReturnValue(initialModel);
         const someCallBack = jest.fn();
-        snapshot.waitUntilDone({onRetryCb: someCallBack});
+        await snapshot.waitUntilDone({onRetryCb: someCallBack});
         const waitUntilDoneRetryFunction = mockedRetry.mock.calls[0][0];
 
         await waitUntilDoneRetryFunction(jest.fn(), 0);
@@ -461,9 +463,9 @@ describe('Snapshot', () => {
         snapshot.waitUntilDone();
         const waitUntilDoneRetryFunction = mockedRetry.mock.calls[0][0];
 
-        expect(waitUntilDoneRetryFunction(jest.fn(), 0)).rejects.toMatch(
-          expect.any(SnapshotOperationTimeoutError)
-        );
+        await expect(
+          waitUntilDoneRetryFunction(jest.fn(), 0)
+        ).rejects.toBeInstanceOf(SnapshotOperationTimeoutError);
       });
 
       describe("when there's no operation to wait for", () => {
@@ -471,10 +473,10 @@ describe('Snapshot', () => {
           const model = {...initialModel};
           model.reports = [getSuccessApplyReport(snapshotId)];
           mockedGetSnapshot.mockReturnValue(model);
-          snapshot.waitUntilDone();
+          await snapshot.waitUntilDone();
           const waitUntilDoneRetryFunction = mockedRetry.mock.calls[0][0];
 
-          expect(
+          await expect(
             waitUntilDoneRetryFunction(jest.fn(), 0)
           ).resolves.not.toThrow();
         });
@@ -485,12 +487,12 @@ describe('Snapshot', () => {
           const model = {...initialModel};
           model.reports = [getSuccessApplyReport(snapshotId)];
           mockedGetSnapshot.mockReturnValue(model);
-          snapshot.waitUntilDone({
+          await snapshot.waitUntilDone({
             operationToWaitFor: ResourceSnapshotsReportType.Apply,
           });
           const waitUntilDoneRetryFunction = mockedRetry.mock.calls[0][0];
 
-          expect(
+          await expect(
             waitUntilDoneRetryFunction(jest.fn(), 0)
           ).resolves.not.toThrow();
         });
@@ -499,14 +501,14 @@ describe('Snapshot', () => {
           const model = {...initialModel};
           model.reports = [getSuccessApplyReport(snapshotId)];
           mockedGetSnapshot.mockReturnValue(model);
-          snapshot.waitUntilDone({
+          await snapshot.waitUntilDone({
             operationToWaitFor: ResourceSnapshotsReportType.DryRun,
           });
           const waitUntilDoneRetryFunction = mockedRetry.mock.calls[0][0];
 
-          expect(waitUntilDoneRetryFunction(jest.fn(), 0)).rejects.toMatch(
-            expect.any(SnapshotOperationTimeoutError)
-          );
+          await expect(
+            waitUntilDoneRetryFunction(jest.fn(), 0)
+          ).rejects.toBeInstanceOf(SnapshotOperationTimeoutError);
         });
       });
     });

@@ -5,12 +5,12 @@
   "scripts": {
     "test": "npm run build && jasmine dist/**/*_spec.js",
     "lint": "prettier --check . && eslint .",
-    "build": "node_modules/.bin/tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json",
     "prebuild": "node ./scripts/clean.js",
     "postbuild": "node ./scripts/setup.js",
     "prepublishOnly": "npm run build",
     "npm:bump:template": "npm --no-git-tag-version version",
-    "npm:publish:template": "npm publish --access public"
+    "npm:publish:template": "npm publish --access public --registry http://localhost:4873"
   },
   "keywords": [
     "schematics",
