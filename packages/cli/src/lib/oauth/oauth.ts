@@ -8,7 +8,7 @@ import {
 import {Region} from '@coveord/platform-client';
 import {randomBytes} from 'crypto';
 import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
-import {OauthClientServer} from './oauthClientServer';
+import {OAuthClientServer} from './oauthClientServer';
 
 export interface OAuthOptions {
   port: number;
@@ -35,7 +35,7 @@ export class OAuth {
 
   public async getToken() {
     const state = this.generateState(10);
-    const requestHandler = new OauthClientServer(
+    const requestHandler = new OAuthClientServer(
       this.clientConfig,
       this.authServiceConfig
     );

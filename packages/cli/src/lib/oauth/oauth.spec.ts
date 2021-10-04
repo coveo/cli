@@ -2,12 +2,12 @@ import {Region} from '@coveord/platform-client';
 import {mocked} from 'ts-jest/utils';
 import {PlatformEnvironment, platformUrl} from '../platform/environment';
 import {OAuth} from './oauth';
-import {OauthClientServer} from './oauthClientServer';
+import {OAuthClientServer} from './oauthClientServer';
 
 jest.mock('./oauthClientServer');
 jest.mock('opener');
 
-const mockedOauthClientServer = mocked(OauthClientServer, true);
+const mockedOauthClientServer = mocked(OAuthClientServer, true);
 const mockedStartServer = jest.fn();
 
 mockedOauthClientServer.prototype.startServer.mockImplementation(

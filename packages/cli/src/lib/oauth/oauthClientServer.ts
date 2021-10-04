@@ -4,7 +4,7 @@ import {URLSearchParams} from 'url';
 import {AuthorizationError, InvalidStateError} from './authorizationError';
 import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
 
-export class OauthClientServer {
+export class OAuthClientServer {
   public constructor(
     private clientConfig: ClientConfig,
     private authServiceConfig: AuthorizationServiceConfiguration
