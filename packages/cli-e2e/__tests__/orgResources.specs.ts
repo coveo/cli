@@ -13,7 +13,7 @@ describe('org:resources', () => {
   const testOrgId = process.env.TEST_ORG_ID!;
   const {accessToken} = getConfig();
   const snapshotProjectPath = join('snapshot-project');
-  const defaultTimeout = 2 * 60e3;
+  const defaultTimeout = 10 * 60e3;
   let processManager: ProcessManager;
   let platformClient: PlatformClient;
 
