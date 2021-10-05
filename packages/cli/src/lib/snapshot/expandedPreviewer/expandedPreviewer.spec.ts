@@ -246,6 +246,7 @@ describe('ExpandedPreviewer', () => {
         Object.keys(fakeReport.resourceOperationResults),
         'someorg'
       );
+      expect(mockedSnapshotDownload).toHaveBeenCalled();
       expect(mockedProjectRefresh).toHaveBeenCalledWith(fakeBlob);
     });
 
@@ -311,6 +312,10 @@ describe('ExpandedPreviewer', () => {
           stdio: 'ignore',
         }
       );
+    });
+
+    it('should delete the snapshot created in the target org', () => {
+      expect(mockedSnapshotDelete).toHaveBeenCalled();
     });
   });
 });
