@@ -37,6 +37,7 @@ describe('ExpandedPreviewer', () => {
   const mockedProjectRefresh = jest.fn();
   const mockedSnapshotFactory = mocked(SnapshotFactory, true);
   const mockedSnapshotDownload = jest.fn().mockReturnValue(fakeBlob);
+  const mockedSnapshotDelete = jest.fn();
 
   let nbOfExistingPreview: number;
   const mockExistingPreviews = () => {
@@ -66,6 +67,7 @@ describe('ExpandedPreviewer', () => {
     mockedSnapshotFactory.createFromOrg.mockReturnValue(
       Promise.resolve({
         download: mockedSnapshotDownload,
+        delete: mockedSnapshotDelete,
       } as unknown as Snapshot)
     );
   };
