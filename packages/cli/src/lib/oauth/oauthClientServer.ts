@@ -1,5 +1,5 @@
 import axios, {AxiosRequestConfig} from 'axios';
-import {createServer, IncomingMessage, ServerResponse} from 'http';
+import {createServer, IncomingMessage, Server, ServerResponse} from 'http';
 import {URLSearchParams} from 'url';
 import {AuthorizationError, InvalidStateError} from './authorizationError';
 import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
@@ -11,41 +11,48 @@ export class OAuthClientServer {
   ) {}
 
   public startServer(port: number, hostname: string, expectedState: string) {
-    return new Promise<{accessToken: string}>((resolve, reject) => {
-      const listener = async (req: IncomingMessage, res: ServerResponse) => {
-        try {
-          const {code, state} = this.parseUrl(req);
-          const {tokenEndpoint} = this.authServiceConfig;
+    let server: Server;
+    const serverPromise = new Promise<{accessToken: string}>(
+      (resolve, reject) => {
+        const listener = async (req: IncomingMessage, res: ServerResponse) => {
+          try {
+            const {code, state} = this.parseUrl(req);
+            const {tokenEndpoint} = this.authServiceConfig;
 
-          if (!state || !code) {
-            return;
+            if (!state || !code) {
+              return;
+            }
+
+            if (state !== expectedState) {
+              throw new InvalidStateError(state, expectedState);
+            }
+
+            const data = this.getTokenQueryString(code);
+            const authRequest = await axios({
+              method: 'post',
+              url: tokenEndpoint,
+              ...this.requestConfig,
+              data,
+            });
+            const accessToken = authRequest.data.access_token;
+
+            res.end('Close your browser to continue');
+            resolve({accessToken});
+          } catch (error: unknown) {
+            reject(error);
           }
+        };
 
-          if (state !== expectedState) {
-            throw new InvalidStateError(state, expectedState);
-          }
+        server = createServer(listener);
+        server.listen(port, hostname);
+      }
+    );
 
-          const data = this.getTokenQueryString(code);
-          const authRequest = await axios({
-            method: 'post',
-            url: tokenEndpoint,
-            ...this.requestConfig,
-            data,
-          });
-          const accessToken = authRequest.data.access_token;
-
-          res.end('Close your browser to continue');
-          resolve({accessToken});
-          server.close();
-        } catch (error: unknown) {
-          reject(error);
-          server.close();
-        }
-      };
-
-      const server = createServer(listener);
-      server.listen(port, hostname);
+    serverPromise.finally(() => {
+      server?.close();
     });
+
+    return serverPromise;
   }
 
   private get requestConfig(): AxiosRequestConfig {
