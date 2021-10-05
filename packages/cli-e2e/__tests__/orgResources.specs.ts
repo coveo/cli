@@ -1,5 +1,10 @@
 import {join} from 'path';
-import {CLI_EXEC_PATH, getConfig, getPathToHomedirEnvFile} from '../utils/cli';
+import {
+  answerPrompt,
+  CLI_EXEC_PATH,
+  getConfig,
+  getPathToHomedirEnvFile,
+} from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
@@ -7,6 +12,7 @@ import {ensureDirSync} from 'fs-extra';
 import PlatformClient, {FieldTypes} from '@coveord/platform-client';
 import {getPlatformClient} from '../utils/platform';
 import {readdirSync} from 'fs';
+import {EOL} from 'os';
 config({path: getPathToHomedirEnvFile()});
 
 describe('org:resources', () => {
@@ -31,25 +37,23 @@ describe('org:resources', () => {
 
   const createFieldWithoutUsingSnapshot = async (client: PlatformClient) => {
     await client.field.create({
-      dateFormat: '',
-      includeInQuery: true,
-      hierarchicalFacet: false,
-      mergeWithLexicon: false,
       description: '',
-      useCacheForComputedFacet: false,
-      sort: false,
-      type: FieldTypes.STRING,
-      smartDateFacet: false,
+      facet: false,
+      includeInQuery: true,
+      includeInResults: true,
+      mergeWithLexicon: false,
       multiValueFacet: false,
       multiValueFacetTokenizers: ';',
-      useCacheForNestedQuery: false,
       name: 'firstfield',
-      stemming: false,
-      includeInResults: true,
       ranking: false,
-      useCacheForSort: false,
-      facet: false,
+      sort: false,
+      stemming: false,
+      system: false,
+      type: FieldTypes.STRING,
+      useCacheForComputedFacet: false,
+      useCacheForNestedQuery: false,
       useCacheForNumericQuery: false,
+      useCacheForSort: false,
     });
   };
 
@@ -62,7 +66,7 @@ describe('org:resources', () => {
       CLI_EXEC_PATH,
       'org:resources:preview',
       `-t=${targetOrg}`,
-      '--sync',
+      '-p=light',
     ];
 
     return createNewTerminal(args, procManager, snapshotProjectPath, debugName);
@@ -164,10 +168,20 @@ describe('org:resources', () => {
             'org-config-preview-unsync'
           );
           const warningRegex = new RegExp(
-            /Warning: Unsynchronized resource detected/
+            /Synchronization plan matched all resources, do you want to proceed/
           );
 
-          await previewTerminal.when(warningRegex).on('stderr').do().once();
+          const previewTerminalExitPromise = previewTerminal
+            .when(/Previewing resource changes/)
+            .on('stdout')
+            .do()
+            .once();
+
+          await previewTerminal
+            .when(warningRegex)
+            .on('stderr')
+            .do(answerPrompt(`y${EOL}`))
+            .until(previewTerminalExitPromise);
         },
         defaultTimeout
       );
@@ -185,7 +199,6 @@ describe('org:resources', () => {
         expect.arrayContaining([
           expect.objectContaining({name: 'firstfield'}),
           expect.objectContaining({name: 'whereisbrian'}),
-          expect.objectContaining({name: 'dummyfield'}),
         ])
       );
     });
