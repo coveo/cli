@@ -9,12 +9,10 @@ import {cli} from 'cli-ux';
 import {Project} from '../../../../../lib/project/project';
 
 import {cwd} from 'process';
-import {SnaphsotPullModel} from '../../../../../lib/snapshot/pullModel/interfaces';
+import {SnapshotPullModel} from '../../../../../lib/snapshot/pullModel/interfaces';
 import {validateSnapshotPullModel} from '../../../../../lib/snapshot/pullModel/validation/validate';
-
-// TODO CDX-630: Extract in JSON files.
-const fullTemplate: SnaphsotPullModel = {};
-const emptyTemplate: SnaphsotPullModel = {};
+import fullTemplate from '../../../../../lib/snapshot/pullModel/templates/full.json';
+import emptyTemplate from '../../../../../lib/snapshot/pullModel/templates/empty.json';
 
 enum PredefinedTemplates {
   Full = 'full',
@@ -143,7 +141,7 @@ export class New extends Command {
     }
   }
 
-  private copyTemplate(starterJson: SnaphsotPullModel) {
+  private copyTemplate(starterJson: SnapshotPullModel) {
     this.modelToWrite = starterJson;
   }
 
