@@ -12,10 +12,6 @@
       "groupSlug": "all"
     },
     {
-      "matchPackageNames": ["@types/node"],
-      "allowedVersions": "14.x"
-    },
-    {
       "matchPackageNames": ["strip-ansi"],
       "allowedVersions": "6.x"
     }
