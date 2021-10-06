@@ -4,7 +4,7 @@ import {SnapshotPullModel} from '../interfaces';
 import {InvalidSPMError, UnknownSPMValidationError} from './errors';
 
 export function validateSnapshotPullModel(
-  templateJson: unknown = {},
+  templateJson: unknown,
   shouldContactCoveo = false
 ): templateJson is SnapshotPullModel {
   const validation = validate(templateJson, pullModelSchema);
