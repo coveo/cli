@@ -9,7 +9,6 @@ import {cli} from 'cli-ux';
 import {Project} from '../../../../../lib/project/project';
 
 import {cwd} from 'process';
-import dedent from 'ts-dedent';
 import {SnaphsotPullModel} from '../../../../../lib/snapshot/pullModel/interfaces';
 import {validateSnapshotPullModel} from '../../../../../lib/snapshot/pullModel/validation/validate';
 

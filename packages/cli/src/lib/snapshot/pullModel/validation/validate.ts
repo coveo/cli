@@ -1,6 +1,5 @@
-import {ValidationError, validate} from 'jsonschema';
+import {validate} from 'jsonschema';
 import pullModelSchema from './model.schema.json';
-import dedent from 'ts-dedent';
 import {SnaphsotPullModel} from '../interfaces';
 import {InvalidSPMError, UnknownSPMValidationError} from './errors';
 
