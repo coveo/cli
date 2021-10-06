@@ -51,7 +51,7 @@ export class New extends Command {
     return args;
   }
 
-  private modelToWrite: SnapshotPullModel | undefined;
+  private modelToWrite: SnaphsotPullModel | undefined;
 
   @Preconditions(IsAuthenticated())
   public async run() {
