@@ -4,7 +4,7 @@ import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
 import {ensureDirSync} from 'fs-extra';
-import PlatformClient from '@coveord/platform-client';
+import PlatformClient, {FieldTypes} from '@coveord/platform-client';
 import {getPlatformClient} from '../utils/platform';
 import {readdirSync} from 'fs';
 config({path: getPathToHomedirEnvFile()});
@@ -29,22 +29,49 @@ describe('org:resources', () => {
     return new Terminal(args.shift()!, args, {cwd}, procManager, debugName);
   };
 
-  const previewChange = (targetOrg: string, procManager: ProcessManager) => {
+  const createFieldWithoutUsingSnapshot = async (client: PlatformClient) => {
+    await client.field.create({
+      description: '',
+      facet: false,
+      includeInQuery: true,
+      includeInResults: true,
+      mergeWithLexicon: false,
+      multiValueFacet: false,
+      multiValueFacetTokenizers: ';',
+      name: 'firstfield',
+      ranking: false,
+      sort: false,
+      stemming: false,
+      system: false,
+      type: FieldTypes.STRING,
+      useCacheForComputedFacet: false,
+      useCacheForNestedQuery: false,
+      useCacheForNumericQuery: false,
+      useCacheForSort: false,
+    });
+  };
+
+  const previewChange = (
+    targetOrg: string,
+    procManager: ProcessManager,
+    debugName = 'org-config-preview'
+  ) => {
     const args: string[] = [
       CLI_EXEC_PATH,
       'org:resources:preview',
       `-t=${targetOrg}`,
+      '--sync',
+      '-p=light',
     ];
 
-    return createNewTerminal(
-      args,
-      procManager,
-      snapshotProjectPath,
-      'org-config-preview'
-    );
+    return createNewTerminal(args, procManager, snapshotProjectPath, debugName);
   };
 
-  const pushToOrg = async (targetOrg: string, procManager: ProcessManager) => {
+  const pushToOrg = async (
+    targetOrg: string,
+    procManager: ProcessManager,
+    debugName = 'org-config-push'
+  ) => {
     const args: string[] = [
       CLI_EXEC_PATH,
       'org:resources:push',
@@ -56,7 +83,7 @@ describe('org:resources', () => {
       args,
       procManager,
       snapshotProjectPath,
-      'org-config-push'
+      debugName
     );
 
     await pushTerminal.when('exit').on('process').do().once();
@@ -94,25 +121,80 @@ describe('org:resources', () => {
   });
 
   describe('org:resources:preview', () => {
-    it(
-      'should preview the snapshot',
-      async () => {
-        const previewTerminal = previewChange(testOrgId, processManager);
+    describe('when resources are synchronized', () => {
+      it(
+        'should preview the snapshot',
+        async () => {
+          const previewTerminal = previewChange(
+            testOrgId,
+            processManager,
+            'org-config-preview-sync'
+          );
 
-        const expectedOutput = [
-          'Extensions',
-          '\\+   1 to create',
-          'Fields',
-          '\\+   2 to create',
-          'Filters',
-          '\\+   1 to create',
-        ].join('\\s*');
-        const regex = new RegExp(expectedOutput, 'gm');
+          const expectedOutput = [
+            'Extensions',
+            '\\+   1 to create',
+            'Fields',
+            '\\+   2 to create',
+            'Filters',
+            '\\+   1 to create',
+            'Ml models',
+            '\\+   1 to create',
+          ].join('\\s*');
+          const regex = new RegExp(expectedOutput, 'gm');
 
-        await previewTerminal.when(regex).on('stdout').do().once();
-      },
-      defaultTimeout
-    );
+          await previewTerminal.when(regex).on('stdout').do().once();
+        },
+        defaultTimeout
+      );
+    });
+
+    describe('when resources are not synchronized', () => {
+      beforeAll(async () => {
+        await createFieldWithoutUsingSnapshot(platformClient);
+      });
+
+      it(
+        'should throw a synchronization warning on a field',
+        async () => {
+          let returnedSynchronizationWarning = false;
+          let returnedPreview = false;
+
+          const previewTerminal = previewChange(
+            testOrgId,
+            processManager,
+            'org-config-preview-unsync'
+          );
+
+          const previewTerminalExitPromise = previewTerminal
+            .when('exit')
+            .on('process')
+            .do()
+            .once();
+
+          previewTerminal
+            .when(/Checking for automatic synchronization/)
+            .on('stderr')
+            .do(() => {
+              returnedSynchronizationWarning = true;
+            })
+            .until(previewTerminalExitPromise);
+
+          previewTerminal
+            .when(/Previewing resource changes/)
+            .on('stdout')
+            .do(() => {
+              returnedPreview = true;
+            })
+            .until(previewTerminalExitPromise);
+
+          await previewTerminalExitPromise;
+          expect(returnedSynchronizationWarning).toBe(true);
+          expect(returnedPreview).toBe(true);
+        },
+        defaultTimeout
+      );
+    });
   });
 
   describe('org:resources:push', () => {
