@@ -157,7 +157,7 @@ describe('org:resources', () => {
       it(
         'should throw a synchronization warning on a field',
         async () => {
-          let returnedSyncronizationWarning = false;
+          let returnedSynchronizationWarning = false;
           let returnedPreview = false;
 
           const previewTerminal = previewChange(
@@ -176,7 +176,7 @@ describe('org:resources', () => {
             .when(/Checking for automatic synchronization/)
             .on('stderr')
             .do(() => {
-              returnedSyncronizationWarning = true;
+              returnedSynchronizationWarning = true;
             })
             .until(previewTerminalExitPromise);
 
@@ -189,7 +189,7 @@ describe('org:resources', () => {
             .until(previewTerminalExitPromise);
 
           await previewTerminalExitPromise;
-          expect(returnedSyncronizationWarning).toBe(true);
+          expect(returnedSynchronizationWarning).toBe(true);
           expect(returnedPreview).toBe(true);
         },
         defaultTimeout
