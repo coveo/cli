@@ -1,14 +1,15 @@
 import type {ResourceSnapshotType} from '@coveord/platform-client';
 
-export type SnapshotPullModelResourceType =
+type SnapshotPullModelResourceType =
   | ResourceSnapshotType.extension
   | ResourceSnapshotType.field
   | ResourceSnapshotType.mlModel
   | ResourceSnapshotType.queryPipeline
   | ResourceSnapshotType.searchPage
+  | ResourceSnapshotType.source
   | ResourceSnapshotType.subscription;
 
-export type SnapshotPullModelResources = Partial<
+type SnapshotPullModelResources = Partial<
   Record<SnapshotPullModelResourceType, Array<string>>
 >;
 
