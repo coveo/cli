@@ -7,7 +7,11 @@ import {
 } from '../../../../../lib/decorators/preconditions';
 import {cli} from 'cli-ux';
 import {Project} from '../../../../../lib/project/project';
+import {validate as schemaValidate, ValidationError} from 'jsonschema';
+import pullModelSchema from '../../../../../lib/snapshot/pullmodel.schema.json';
+
 import {cwd} from 'process';
+import dedent from 'ts-dedent';
 
 // TODO CDX-630: Define SPM schema
 interface SnapshotPullModel {
@@ -163,7 +167,33 @@ export class New extends Command {
     templateJson: unknown = {},
     shouldContactCoveo = false
   ): templateJson is SnapshotPullModel {
-    // TODO CDX-632: Validate JSON
-    throw new Error('Method not implemented.');
+    const validation = schemaValidate(templateJson, pullModelSchema);
+
+    // TODO: Modify error handling depending on this value (i.e. if true, pls contact us kthx)
+    !!shouldContactCoveo;
+    if (validation.valid) {
+      return true;
+    }
+
+    if (validation.errors.length === 0) {
+      this.error(
+        "An unknown error occured while validating the custom template. Try recreating it from 'empty' or 'full'."
+      );
+    } else {
+      this.error(dedent`
+      The template does not satisify the Snapshot Pull Model Schema, please correct the following issues:
+        ${this.getPrettyValidationErrors(validation.errors)}`);
+    }
+  }
+
+  private getPrettyValidationErrors(errors: ValidationError[]): string {
+    const stackToPrettyError = (stack: string) =>
+      ` - ${stack.replace(/^instance\./, '')}\n`;
+    return errors
+      .reduce<string>(
+        (errors, error) => (errors += stackToPrettyError(error.stack)),
+        '\n'
+      )
+      .replace(/\n$/, '');
   }
 }

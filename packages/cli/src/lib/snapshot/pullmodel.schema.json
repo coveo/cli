@@ -1,0 +1,8 @@
+{
+  "//": "TODO",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/coveo/cli/blob/master/packages/cli/src/lib/snapshot/pullmodel.schema.json",
+  "title": "SnapshotPullModel",
+  "description": "A configuration to pull snaphots",
+  "type": "object"
+}
