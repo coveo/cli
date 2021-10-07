@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.17.0](https://coveo-cli/coveo/cli/compare/v1.16.0...v1.17.0) (2021-10-07)
+
+
+### Features
+
+* support proxies ([#490](https://coveo-cli/coveo/cli/issues/490)) ([a8d5060](https://coveo-cli/coveo/cli/commits/a8d506054f79d3ccc2ac9a7ecc1e5353bf415d7a))
+
+
+
+
+
 # [1.16.0](https://coveo-cli/coveo/cli/compare/v1.15.1...v1.16.0) (2021-10-04)
 
 
