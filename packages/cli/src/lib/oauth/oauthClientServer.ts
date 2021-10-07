@@ -40,6 +40,8 @@ export class OAuthClientServer {
             resolve({accessToken});
           } catch (error: unknown) {
             reject(error);
+          } finally {
+            server.close();
           }
         };
 
@@ -47,10 +49,6 @@ export class OAuthClientServer {
         server.listen(port, hostname);
       }
     );
-
-    serverPromise.finally(() => {
-      server?.close();
-    });
 
     return serverPromise;
   }
@@ -64,14 +62,6 @@ export class OAuthClientServer {
         password: client_id,
       },
     };
-    const proxy = process.env.HTTPS_PROXY;
-    if (proxy) {
-      const proxyUrl = new URL(proxy);
-      config.proxy = {
-        host: proxyUrl.host,
-        port: parseInt(proxyUrl.port, 10),
-      };
-    }
 
     return config;
   }
