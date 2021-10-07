@@ -92,7 +92,7 @@ describe('OAuthClientServer', () => {
       expect(accessToken).toEqual('token-returned-by-the-platform');
     });
 
-    it('should make a POST call to the Prod endpoint', () => {
+    it('should make a POST call to the right endpoint', () => {
       const opts = {environment: PlatformEnvironment.Prod};
       authServiceConfig(opts).tokenEndpoint;
       expect(mockedAxiosPost).toHaveBeenCalledWith(
