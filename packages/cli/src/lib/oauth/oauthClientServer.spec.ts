@@ -17,31 +17,30 @@ import {InvalidStateError} from './authorizationError';
 import {OAuthClientServer} from './oauthClientServer';
 import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
 
-const mockedAxios = mocked(axios, true);
-// TODO: figure a cleaner way
-const mockedCreateServer = mocked(createServer) as unknown as MockedFunction<{
+type createServerInitialOverload = MockedFunction<{
   (requestListener?: RequestListener | undefined): Server;
 }>;
-// const mockedHttp = mocked(http);
+const mockedAxios = mocked(axios, true);
+const mockedCreateServer = mocked(
+  createServer
+) as unknown as createServerInitialOverload;
 const mockedServerListen = jest.fn();
 const mockedServerClose = jest.fn();
 const mockedAxiosPost = jest.fn();
 
 mockedAxios.mockImplementation(mockedAxiosPost);
 
-mockedCreateServer.mockImplementation(
-  (listener?: RequestListener | undefined) => {
-    const req = {
-      url: '/?code=TheCode&state=TheState',
-    } as unknown as IncomingMessage;
-    const res = {end: jest.fn()} as unknown as ServerResponse;
-    process.nextTick(() => listener && listener(req, res));
-    return {
-      listen: mockedServerListen,
-      close: mockedServerClose,
-    } as unknown as Server;
-  }
-);
+mockedCreateServer.mockImplementation((listener?: RequestListener) => {
+  const req = {
+    url: '/?code=TheCode&state=TheState',
+  } as unknown as IncomingMessage;
+  const res = {end: jest.fn()} as unknown as ServerResponse;
+  process.nextTick(() => listener && listener(req, res));
+  return {
+    listen: mockedServerListen,
+    close: mockedServerClose,
+  } as unknown as Server;
+});
 
 describe('OAuthClientServer', () => {
   let oAuthClientServer: OAuthClientServer;
@@ -66,14 +65,13 @@ describe('OAuthClientServer', () => {
       clientConfig,
       authServiceConfig(opts)
     );
+    mockedAxiosPost.mockResolvedValue({
+      data: {access_token: 'token-returned-by-the-platform'},
+    });
   });
 
   describe('when authenticating without error', () => {
     beforeEach(async () => {
-      mockedAxiosPost.mockResolvedValue({
-        data: {access_token: 'token-returned-by-the-platform'},
-      });
-
       const serverResponse = await oAuthClientServer.startServer(
         8989,
         'http://127.0.0.1',
@@ -94,11 +92,13 @@ describe('OAuthClientServer', () => {
       expect(accessToken).toEqual('token-returned-by-the-platform');
     });
 
-    it('should make a POST call to the right endpoint', () => {
+    it('should make a POST call to the Prod endpoint', () => {
+      const opts = {environment: PlatformEnvironment.Prod};
+      authServiceConfig(opts).tokenEndpoint;
       expect(mockedAxiosPost).toHaveBeenCalledWith(
         expect.objectContaining({
           method: 'post',
-          url: 'https://platform.cloud.coveo.com/oauth/token',
+          url: authServiceConfig(opts).tokenEndpoint,
         })
       );
     });
@@ -120,19 +120,13 @@ describe('OAuthClientServer', () => {
   });
 
   describe('when the state is unexpected', () => {
-    let startServer: () => Promise<{
-      accessToken: string;
-    }>;
-    beforeEach(async () => {
-      mockedAxiosPost.mockResolvedValue({
-        data: {access_token: 'token-returned-by-the-platform'},
-      });
-
-      startServer = () =>
-        oAuthClientServer.startServer(8989, 'http://127.0.0.1', 'InvalidState');
-    });
-
     it('should throw an error if the state is invalid', async () => {
+      const startServer = () =>
+        oAuthClientServer.startServer(
+          8989,
+          'http://127.0.0.1',
+          'expectedState'
+        );
       await expect(startServer()).rejects.toBeInstanceOf(InvalidStateError);
     });
   });
