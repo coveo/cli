@@ -126,7 +126,19 @@ export class New extends Command {
   }
 
   private handleCustomTemplate(templateFlags: string) {
-    const templateJSON = readJSONSync(resolve(templateFlags));
+    let templateResolvedPath: string | undefined;
+    let templateJSON: string;
+    try {
+      templateResolvedPath = resolve(templateFlags);
+      templateJSON = readJSONSync(templateResolvedPath);
+    } catch (error) {
+      this.error(
+        `An error occured while trying to read the template at ${
+          templateResolvedPath || templateFlags
+        }, check the value of the --template flag.
+        )}`
+      );
+    }
     if (this.validateSnapshotPullModel(templateJSON)) {
       this.copyTemplate(templateJSON);
     }
