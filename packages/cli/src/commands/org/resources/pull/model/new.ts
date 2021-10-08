@@ -7,16 +7,12 @@ import {
 } from '../../../../../lib/decorators/preconditions';
 import {cli} from 'cli-ux';
 import {Project} from '../../../../../lib/project/project';
-import {validate as schemaValidate, ValidationError} from 'jsonschema';
-import pullModelSchema from '../../../../../lib/snapshot/pullmodel.schema.json';
 
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
+import {SnaphsotPullModel} from '../../../../../lib/snapshot/pullModel/interfaces';
+import {validateSnapshotPullModel} from '../../../../../lib/snapshot/pullModel/validation/validate';
 
-// TODO CDX-630: Define SPM schema
-interface SnaphsotPullModel {
-  foo?: string;
-}
 // TODO CDX-630: Extract in JSON files.
 const fullTemplate: SnaphsotPullModel = {};
 const emptyTemplate: SnaphsotPullModel = {};
@@ -63,7 +59,7 @@ export class New extends Command {
     if (await this.shouldStartInteractive()) {
       await this.startInteractiveSession();
     }
-    this.validateSnapshotPullModel(this.modelToWrite, true);
+    validateSnapshotPullModel(this.modelToWrite, true);
     this.writeTemplate();
   }
 
@@ -143,7 +139,7 @@ export class New extends Command {
         )}`
       );
     }
-    if (this.validateSnapshotPullModel(templateJSON)) {
+    if (validateSnapshotPullModel(templateJSON)) {
       this.copyTemplate(templateJSON);
     }
   }
@@ -161,39 +157,5 @@ export class New extends Command {
       outputFilePath = join(project.pathToProject, 'pullModels');
     }
     writeJSONSync(outputFilePath, this.modelToWrite);
-  }
-
-  private validateSnapshotPullModel(
-    templateJson: unknown = {},
-    shouldContactCoveo = false
-  ): templateJson is SnaphsotPullModel {
-    const validation = schemaValidate(templateJson, pullModelSchema);
-
-    // TODO: Modify error handling depending on this value (i.e. if true, pls contact us kthx)
-    !!shouldContactCoveo;
-    if (validation.valid) {
-      return true;
-    }
-
-    if (validation.errors.length === 0) {
-      this.error(
-        "An unknown error occured while validating the custom template. Try recreating it from 'empty' or 'full'."
-      );
-    } else {
-      this.error(dedent`
-      The template does not satisify the Snapshot Pull Model Schema, please correct the following issues:
-        ${this.getPrettyValidationErrors(validation.errors)}`);
-    }
-  }
-
-  private getPrettyValidationErrors(errors: ValidationError[]): string {
-    const stackToPrettyError = (stack: string) =>
-      ` - ${stack.replace(/^instance\./, '')}\n`;
-    return errors
-      .reduce<string>(
-        (errors, error) => (errors += stackToPrettyError(error.stack)),
-        '\n'
-      )
-      .replace(/\n$/, '');
   }
 }
