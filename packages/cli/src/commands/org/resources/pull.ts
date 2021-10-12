@@ -86,11 +86,11 @@ export default class Pull extends Command {
     const {flags} = this.parse(Pull);
     cleanupProject(this.projectPath);
     handleSnapshotError(err);
-    // await this.displayAdditionalErrorMessage(err);
-    // await this.config.runHook(
-    //   'analytics',
-    //   buildAnalyticsFailureHook(this, flags, err)
-    // );
+    await this.displayAdditionalErrorMessage(err);
+    await this.config.runHook(
+      'analytics',
+      buildAnalyticsFailureHook(this, flags, err)
+    );
   }
 
   private async displayAdditionalErrorMessage(err?: Error) {
