@@ -7,6 +7,11 @@ import {mocked} from 'ts-jest/utils';
 import {Config} from '../../config/config';
 import {AuthenticatedClient} from '../../platform/authenticatedClient';
 import {HasNecessaryCoveoPrivileges} from './apiKeyPrivilege';
+import {
+  createApiKeyPrivilege,
+  impersonatePrivilege,
+  PlatformPrivilege,
+} from './platformPrivilege';
 import {getFakeCommand} from './testsUtils/utils';
 
 const mockConfig = mocked(Config);
@@ -38,28 +43,21 @@ describe('apiKeyPrivilege', () => {
   });
 
   describe.each([
+    [createApiKeyPrivilege, 'You are not authorized to create an API Key'],
     [
-      true,
-      false,
+      impersonatePrivilege,
       'You are not authorized to create an API Key with the Impersonate privilege',
     ],
-    [false, true, 'You are not authorized to create an API Key'],
   ])(
     'when the API key condition is %s and the impersonate condition is %s.',
-    (
-      apiKeyCondition: boolean,
-      impersonateCondition: boolean,
-      expectedWarning: string
-    ) => {
+    (privilege: PlatformPrivilege, expectedWarning: string) => {
       it(`warns '${expectedWarning}' and returns false`, async () => {
-        mockEvaluate
-          .mockReturnValueOnce({approved: apiKeyCondition})
-          .mockReturnValueOnce({approved: impersonateCondition});
+        mockEvaluate.mockReturnValueOnce({approved: false});
 
         const fakeCommand = getFakeCommand();
-        await expect(HasNecessaryCoveoPrivileges()(fakeCommand)).resolves.toBe(
-          false
-        );
+        await expect(
+          HasNecessaryCoveoPrivileges(privilege)(fakeCommand)
+        ).resolves.toBe(false);
         expect(fakeCommand.warn).toHaveBeenCalledTimes(1);
         expect(fakeCommand.warn).toHaveBeenCalledWith(
           expect.stringContaining(expectedWarning)
