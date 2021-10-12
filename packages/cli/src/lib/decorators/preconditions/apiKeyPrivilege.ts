@@ -1,84 +1,50 @@
 import PlatformClient, {
   PrivilegeEvaluatorModel,
+  PrivilegeModel,
 } from '@coveord/platform-client';
 import Command from '@oclif/command';
-import dedent from 'ts-dedent';
 import {Config} from '../../config/config';
 import {AuthenticatedClient} from '../../platform/authenticatedClient';
+import {PlatformPrivilege} from './platformPrivilege';
 
-export const impersonatePrivilege = {
-  requestedPrivilege: {
-    owner: 'SEARCH_API',
-    targetDomain: 'IMPERSONATE',
-    targetId: '*',
-  },
-};
-
-export const createApiKeyPrivilege = {
-  requestedPrivilege: {
-    owner: 'PLATFORM',
-    targetDomain: 'API_KEY',
-    targetId: '*',
-    type: 'CREATE',
-  },
-};
-
-export function HasNecessaryCoveoPrivileges() {
+export function HasNecessaryCoveoPrivileges(
+  ...privileges: PlatformPrivilege[]
+) {
   return async function (target: Command) {
     const authenticatedClient = new AuthenticatedClient();
-
     const client = await authenticatedClient.getClient();
     const {organization, anonymous} = await getConfiguration(target);
 
-    if (!(await hasCreateApiKeyPrivilege(client, organization))) {
-      target.warn(
-        anonymous
-          ? 'Your API key is missing the privilege to create other API keys. Make sure to grant this privilege before running the command again. See https://docs.coveo.com/en/1707/#api-keys-domain.'
-          : 'You are not authorized to create an API Key. Please contact an administrator of your Coveo organization and ask for that privilege. See https://docs.coveo.com/en/1707/#api-keys-domain.'
-      );
-      return false;
+    for (let i = 0; i < privileges.length; i++) {
+      const privilege = privileges[i];
+
+      for (let j = 0; j < privilege.model.length; j++) {
+        const model = privilege.model[j];
+        if (!(await hasPrivilege(client, organization, model))) {
+          target.warn(
+            anonymous
+              ? privilege.conditionNotSatisfiedAnonymousMessage
+              : privilege.conditionNotSatisfiedMessage
+          );
+          return false;
+        }
+      }
     }
-    if (!(await hasImpersonatePrivilege(client, organization))) {
-      target.warn(
-        anonymous
-          ? dedent`Your API key is missing the Impersonate privilege. Make sure to grant this privilege to your API key before running the command again.
-                   See https://docs.coveo.com/en/1707/#impersonate-domain-1.`
-          : 'You are not authorized to create an API Key with the Impersonate privilege. Please contact an administrator of your Coveo organization and ask for that privilege.  See https://docs.coveo.com/en/1707/#impersonate-domain-1.'
-      );
-      return false;
-    }
+
     return true;
   };
 }
 
-async function hasImpersonatePrivilege(
-  client: PlatformClient,
-  organizationId: string
-) {
-  const model: PrivilegeEvaluatorModel = {
-    ...impersonatePrivilege,
-    organizationId,
-  };
-
-  return await hasPrivilege(client, model);
-}
-
-async function hasCreateApiKeyPrivilege(
-  client: PlatformClient,
-  organizationId: string
-) {
-  const model: PrivilegeEvaluatorModel = {
-    ...createApiKeyPrivilege,
-    organizationId,
-  };
-
-  return await hasPrivilege(client, model);
-}
-
 async function hasPrivilege(
   client: PlatformClient,
-  model: PrivilegeEvaluatorModel
+  organizationId: string,
+  privilege: PrivilegeModel
 ) {
+  const model: PrivilegeEvaluatorModel = {
+    ...{requestedPrivilege: privilege},
+    organizationId,
+  };
+
   const validation = await client.privilegeEvaluator.evaluate(model);
   return validation.approved;
 }

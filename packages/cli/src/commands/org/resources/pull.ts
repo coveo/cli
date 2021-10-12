@@ -11,10 +11,12 @@ import {
 } from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {
+  HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
+import {createSnapshotPrivilege} from '../../../lib/decorators/preconditions/platformPrivilege';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {wait} from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
@@ -64,7 +66,11 @@ export default class Pull extends Command {
 
   public static hidden = true;
 
-  @Preconditions(IsAuthenticated(), IsGitInstalled())
+  @Preconditions(
+    IsAuthenticated(),
+    IsGitInstalled(),
+    HasNecessaryCoveoPrivileges(createSnapshotPrivilege)
+  )
   public async run() {
     const snapshot = await this.getSnapshot();
 
@@ -80,11 +86,11 @@ export default class Pull extends Command {
     const {flags} = this.parse(Pull);
     cleanupProject(this.projectPath);
     handleSnapshotError(err);
-    await this.displayAdditionalErrorMessage(err);
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, flags, err)
-    );
+    // await this.displayAdditionalErrorMessage(err);
+    // await this.config.runHook(
+    //   'analytics',
+    //   buildAnalyticsFailureHook(this, flags, err)
+    // );
   }
 
   private async displayAdditionalErrorMessage(err?: Error) {
@@ -128,11 +134,17 @@ export default class Pull extends Command {
       );
     }
     cli.action.start('Creating Snapshot');
-    return SnapshotFactory.createFromOrg(
+    const a = SnapshotFactory.createFromOrg(
       this.resourceSnapshotTypesToExport,
       target,
       this.waitOption
     );
+    // a.catch((e) => {
+    //   console.log('*********************');
+    //   console.log(e);
+    //   console.log('*********************');
+    // });
+    return a;
   }
 
   private get waitOption(): WaitUntilDoneOptions {

@@ -17,6 +17,10 @@ import {
 } from '../../../lib/decorators/preconditions/';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {IsNgInstalled} from '../../../lib/decorators/preconditions/ng';
+import {
+  createApiKeyPrivilege,
+  impersonatePrivilege,
+} from '../../../lib/decorators/preconditions/platformPrivilege';
 
 export default class Angular extends Command {
   public static templateName = '@coveo/angular';
@@ -56,7 +60,7 @@ export default class Angular extends Command {
     IsNodeVersionInRange(Angular.requiredNodeVersion),
     IsNpmVersionInRange(Angular.requiredNpmVersion),
     IsNgInstalled(),
-    HasNecessaryCoveoPrivileges()
+    HasNecessaryCoveoPrivileges(createApiKeyPrivilege, impersonatePrivilege)
   )
   public async run() {
     const {args, flags} = this.parse(Angular);
