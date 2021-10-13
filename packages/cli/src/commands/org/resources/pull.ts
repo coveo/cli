@@ -134,17 +134,11 @@ export default class Pull extends Command {
       );
     }
     cli.action.start('Creating Snapshot');
-    const a = SnapshotFactory.createFromOrg(
+    return SnapshotFactory.createFromOrg(
       this.resourceSnapshotTypesToExport,
       target,
       this.waitOption
     );
-    // a.catch((e) => {
-    //   console.log('*********************');
-    //   console.log(e);
-    //   console.log('*********************');
-    // });
-    return a;
   }
 
   private get waitOption(): WaitUntilDoneOptions {
