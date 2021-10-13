@@ -14,7 +14,7 @@ const PromptValueColorMap = {
   [ResourceTypeActions.Add]: chalk.green,
   [ResourceTypeActions.Delete]: chalk.red,
   [ResourceTypeActions.Edit]: chalk.cyan,
-  [ResourceTypeActions.Skip]: chalk.white,
+  [ResourceTypeActions.Skip]: chalk.whiteBright,
 };
 
 const boldCapitalizeString = (string: string) =>
@@ -44,6 +44,8 @@ export async function getSelectResourceTypesPrompt(
   question: string,
   defaults: ResourcePromptDefaults = {}
 ) {
+  // Legit: We have 8 custom key chords + enter + default.
+  process.stdin.setMaxListeners(11);
   inquirer.registerPrompt(CustomizablePrompt.name, CustomizablePrompt);
   const answers = await inquirer.prompt<CustomizablePromptAnswers>([
     {

@@ -1,6 +1,6 @@
 import type {ResourceSnapshotType} from '@coveord/platform-client';
 
-type SnapshotPullModelResourceType =
+export type SnapshotPullModelResourceType =
   | ResourceSnapshotType.extension
   | ResourceSnapshotType.field
   | ResourceSnapshotType.mlModel

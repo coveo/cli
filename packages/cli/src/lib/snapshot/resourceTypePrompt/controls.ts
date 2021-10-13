@@ -35,13 +35,14 @@ function actionToKeyListener(action: ResourceTypeActions) {
       );
     }
     this.assignValueToKey(this.pointer[1], valueIndex);
+    this.render();
   };
 }
 
-const onCtrlAChord = actionToKeyListener(ResourceTypeActions.Add);
-const onCtrlDChord = actionToKeyListener(ResourceTypeActions.Delete);
-const onCtrlEChord = actionToKeyListener(ResourceTypeActions.Edit);
-const onCtrlSChord = actionToKeyListener(ResourceTypeActions.Skip);
+const onAKey = actionToKeyListener(ResourceTypeActions.Add);
+const onDKey = actionToKeyListener(ResourceTypeActions.Delete);
+const onEKey = actionToKeyListener(ResourceTypeActions.Edit);
+const onSKey = actionToKeyListener(ResourceTypeActions.Skip);
 
 function onSpaceKey(this: CustomizablePrompt) {
   this.assignValueToKey(this.pointer[1], this.pointer[0]);
@@ -103,40 +104,40 @@ export const checkboxControls: {key: Key; handler: KeyHandler}[] = [
     key: {
       sequence: 'a',
       name: 'a',
-      ctrl: true,
+      ctrl: false,
       meta: false,
       shift: false,
     },
-    handler: onCtrlAChord,
+    handler: onAKey,
   },
   {
     key: {
       sequence: 'd',
       name: 'd',
-      ctrl: true,
+      ctrl: false,
       meta: false,
       shift: false,
     },
-    handler: onCtrlDChord,
+    handler: onDKey,
   },
   {
     key: {
       sequence: 'e',
       name: 'e',
-      ctrl: true,
+      ctrl: false,
       meta: false,
       shift: false,
     },
-    handler: onCtrlEChord,
+    handler: onEKey,
   },
   {
     key: {
       sequence: 's',
       name: 's',
-      ctrl: true,
+      ctrl: false,
       meta: false,
       shift: false,
     },
-    handler: onCtrlSChord,
+    handler: onSKey,
   },
 ];
