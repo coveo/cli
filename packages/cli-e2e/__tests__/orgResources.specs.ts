@@ -1,10 +1,5 @@
 import {join} from 'path';
-import {
-  answerPrompt,
-  CLI_EXEC_PATH,
-  getConfig,
-  getPathToHomedirEnvFile,
-} from '../utils/cli';
+import {CLI_EXEC_PATH, getConfig, getPathToHomedirEnvFile} from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
@@ -12,7 +7,6 @@ import {ensureDirSync} from 'fs-extra';
 import PlatformClient, {FieldTypes} from '@coveord/platform-client';
 import {getPlatformClient} from '../utils/platform';
 import {readdirSync} from 'fs';
-import {EOL} from 'os';
 config({path: getPathToHomedirEnvFile()});
 
 describe('org:resources', () => {
@@ -66,6 +60,7 @@ describe('org:resources', () => {
       CLI_EXEC_PATH,
       'org:resources:preview',
       `-t=${targetOrg}`,
+      '--sync',
       '-p=light',
     ];
 
@@ -162,26 +157,40 @@ describe('org:resources', () => {
       it(
         'should throw a synchronization warning on a field',
         async () => {
+          let returnedSynchronizationWarning = false;
+          let returnedPreview = false;
+
           const previewTerminal = previewChange(
             testOrgId,
             processManager,
             'org-config-preview-unsync'
           );
-          const warningRegex = new RegExp(
-            /Synchronization plan matched all resources, do you want to proceed/
-          );
 
           const previewTerminalExitPromise = previewTerminal
-            .when(/Previewing resource changes/)
-            .on('stdout')
+            .when('exit')
+            .on('process')
             .do()
             .once();
 
-          await previewTerminal
-            .when(warningRegex)
+          previewTerminal
+            .when(/Checking for automatic synchronization/)
             .on('stderr')
-            .do(answerPrompt(`y${EOL}`))
+            .do(() => {
+              returnedSynchronizationWarning = true;
+            })
             .until(previewTerminalExitPromise);
+
+          previewTerminal
+            .when(/Previewing resource changes/)
+            .on('stdout')
+            .do(() => {
+              returnedPreview = true;
+            })
+            .until(previewTerminalExitPromise);
+
+          await previewTerminalExitPromise;
+          expect(returnedSynchronizationWarning).toBe(true);
+          expect(returnedPreview).toBe(true);
         },
         defaultTimeout
       );

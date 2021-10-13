@@ -1,24 +1,14 @@
+import opener from 'opener';
 import {
   DEFAULT_ENVIRONMENT,
   DEFAULT_REGION,
   PlatformEnvironment,
   platformUrl,
 } from '../platform/environment';
-import {
-  AuthorizationNotifier,
-  AuthorizationRequest,
-  AuthorizationServiceConfiguration,
-  AuthorizationServiceConfigurationJson,
-  BaseTokenRequestHandler,
-  GRANT_TYPE_AUTHORIZATION_CODE,
-  TokenRequest,
-} from '@openid/appauth';
-import {
-  NodeBasedHandler,
-  NodeCrypto,
-  NodeRequestor,
-} from '@openid/appauth/built/node_support';
 import {Region} from '@coveord/platform-client';
+import {randomBytes} from 'crypto';
+import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
+import {OAuthClientServer} from './oauthClientServer';
 
 export interface OAuthOptions {
   port: number;
@@ -28,6 +18,7 @@ export interface OAuthOptions {
 
 export class OAuth {
   private opts: OAuthOptions;
+
   public constructor(opts?: Partial<OAuthOptions>) {
     const baseOptions: OAuthOptions = {
       port: 32111,
@@ -43,69 +34,47 @@ export class OAuth {
   }
 
   public async getToken() {
-    const config = new AuthorizationServiceConfiguration({
-      ...this.clientConfig,
-      ...this.authServiceConfig,
-    });
+    const state = this.generateState(10);
+    const requestHandler = new OAuthClientServer(
+      this.clientConfig,
+      this.authServiceConfig
+    );
 
-    const {code} = await this.getAuthorizationCode(config);
-    return await this.getAccessToken(config, code);
+    const clientServerPromise = requestHandler.startServer(
+      this.opts.port,
+      '127.0.0.1',
+      state
+    );
+
+    this.openLoginPage(state);
+
+    return clientServerPromise;
   }
 
-  private async getAccessToken(
-    configuration: AuthorizationServiceConfiguration,
-    code: string
-  ): Promise<{accessToken: string}> {
-    const tokenHandler = new BaseTokenRequestHandler(new NodeRequestor());
-
-    const request = new TokenRequest({
-      ...this.clientConfig,
-      grant_type: GRANT_TYPE_AUTHORIZATION_CODE,
-      code,
-      extras: {
-        client_secret: this.clientConfig.client_id,
-      },
-    });
-
-    try {
-      const response = await tokenHandler.performTokenRequest(
-        configuration,
-        request
-      );
-      return response;
-    } catch (e) {
-      console.error('ERROR: ', e as string);
-      throw e;
-    }
+  private openLoginPage(state: string) {
+    const url = this.buildAuthorizationUrl(state);
+    opener(url);
   }
 
-  private getAuthorizationCode(
-    configuration: AuthorizationServiceConfiguration
-  ): Promise<{code: string; verifier: string}> {
-    return new Promise((res) => {
-      const notifier = new AuthorizationNotifier();
-      const authorizationHandler = new NodeBasedHandler(this.opts.port);
-      const request = new AuthorizationRequest(
-        {
-          ...this.clientConfig,
-          response_type: AuthorizationRequest.RESPONSE_TYPE_CODE,
-        },
-        new NodeCrypto(),
-        true
-      );
+  private buildAuthorizationUrl(state: string) {
+    const {authorizationEndpoint} = this.authServiceConfig;
+    const {redirect_uri, client_id, scope} = this.clientConfig;
+    const url = new URL(authorizationEndpoint);
 
-      authorizationHandler.setAuthorizationNotifier(notifier);
-      notifier.setAuthorizationListener((request, response) => {
-        if (response) {
-          const {code} = response;
-          res({code, verifier: request.internal!.verifier});
-        }
-      });
-      authorizationHandler.performAuthorizationRequest(configuration, request);
-    });
+    url.searchParams.append('response_type', 'code');
+    url.searchParams.append('client_id', client_id);
+    url.searchParams.append('redirect_uri', redirect_uri);
+    url.searchParams.append('scope', scope);
+    url.searchParams.append('state', state);
+
+    return url.href;
   }
 
-  private get clientConfig() {
+  private generateState(size: number) {
+    return randomBytes(size).toString('hex');
+  }
+
+  private get clientConfig(): ClientConfig {
     return {
       client_id: 'cli',
       redirect_uri: `http://127.0.0.1:${this.opts.port}`,
@@ -113,15 +82,15 @@ export class OAuth {
     };
   }
 
-  private get authServiceConfig(): AuthorizationServiceConfigurationJson {
+  private get authServiceConfig(): AuthorizationServiceConfiguration {
     const baseURL = platformUrl({
       environment: this.opts.environment,
       region: this.opts.region,
     });
     return {
-      authorization_endpoint: `${baseURL}/oauth/authorize`,
-      revocation_endpoint: `${baseURL}/logout`,
-      token_endpoint: `${baseURL}/oauth/token`,
+      authorizationEndpoint: `${baseURL}/oauth/authorize`,
+      revocationEndpoint: `${baseURL}/logout`,
+      tokenEndpoint: `${baseURL}/oauth/token`,
     };
   }
 }

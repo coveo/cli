@@ -3,3 +3,5 @@ CHANGELOG.md
 **/CHANGELOG.md
 packages/cli/README.md
 packages/cli-e2e/ui-packages
+package-lock.json
+**/package-lock.json
