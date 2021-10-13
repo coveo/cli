@@ -22,9 +22,7 @@ export function HasNecessaryCoveoPrivileges(
         const model = privilege.model[j];
         if (!(await hasPrivilege(client, organization, model))) {
           target.warn(
-            anonymous
-              ? privilege.conditionNotSatisfiedAnonymousMessage
-              : privilege.conditionNotSatisfiedMessage
+            privilege.unsatisfiedConditionMessage(Boolean(anonymous))
           );
           return false;
         }
