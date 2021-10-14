@@ -1,21 +1,31 @@
 import {getSelectResourceTypesPrompt} from './index';
 import {fancy} from 'fancy-test';
 import getSnapshot from './__snapshots__/getSnasphot';
+import {writeFileSync} from 'fs';
+import {MockSTDIN, stdin} from 'mock-stdin';
 
 describe('ResourceTypePrompt - Integration Test', () => {
+  let mockedStdin: MockSTDIN;
+  beforeEach(() => {
+    mockedStdin = stdin();
+  });
+
+  afterEach(() => {
+    mockedStdin.restore();
+  });
+
   describe('when started', () => {
     fancy
       .env({FORCE_COLOR: '3'})
       .stdout({stripColor: false})
-      .stdin('\n')
-      .it(
-        'should display the question and the first 7 resources',
-        async (output) => {
-          const expectedStdout = getSnapshot('whenStarted.ansi');
-          await getSelectResourceTypesPrompt('someQuestion');
-          expect(output.stdout).toBe(expectedStdout);
-        }
-      );
+      .it('should display the question and the first 7 resources', (output) => {
+        const expectedStdout = getSnapshot('whenStarted.ansi');
+        getSelectResourceTypesPrompt('someQuestion');
+
+        expect(output.stdout).toBe(expectedStdout);
+
+        mockedStdin.end();
+      });
   });
   //#region Refactor that
   describe('when pressing a', () => {
