@@ -1,7 +1,21 @@
+import {getSelectResourceTypesPrompt} from './index';
+import {fancy} from 'fancy-test';
+import getSnapshot from './__snapshots__/getSnasphot';
+
 describe('ResourceTypePrompt - Integration Test', () => {
   describe('when started', () => {
-    it.todo('should display the question');
-    it.todo('should display the TODO_INSERT_# first options');
+    fancy
+      .env({FORCE_COLOR: '3'})
+      .stdout({stripColor: false})
+      .stdin('\n')
+      .it(
+        'should display the question and the first 7 resources',
+        async (output) => {
+          const expectedStdout = getSnapshot('whenStarted.ansi');
+          await getSelectResourceTypesPrompt('someQuestion');
+          expect(output.stdout).toBe(expectedStdout);
+        }
+      );
   });
   //#region Refactor that
   describe('when pressing a', () => {

@@ -12,4 +12,5 @@ module.exports = {
   ],
   clearMocks: true,
   testTimeout: 60e3,
+  testMatch: ['**/?(*.)+(spec|test).?(it.)[jt]s?(x)'],
 };
