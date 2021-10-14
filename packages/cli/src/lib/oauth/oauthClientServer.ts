@@ -1,6 +1,6 @@
 import axios, {AxiosRequestConfig} from 'axios';
 import {createServer, IncomingMessage, Server, ServerResponse} from 'http';
-import {URLSearchParams} from 'url';
+import {URL, URLSearchParams} from 'url';
 import {AuthorizationError, InvalidStateError} from './authorizationError';
 import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
 

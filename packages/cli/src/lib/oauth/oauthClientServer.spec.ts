@@ -12,6 +12,7 @@ import {
 } from 'http';
 import {MockedFunction} from 'ts-jest/dist/utils/testing';
 import {mocked} from 'ts-jest/utils';
+import {URLSearchParams} from 'url';
 import {PlatformEnvironment, platformUrl} from '../platform/environment';
 import {InvalidStateError} from './authorizationError';
 import {OAuthClientServer} from './oauthClientServer';
