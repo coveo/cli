@@ -2,7 +2,7 @@ jest.mock('axios');
 jest.mock('http');
 
 import {Region} from '@coveord/platform-client';
-import axios from 'axios';
+import axios, {Axios} from 'axios';
 import {
   createServer,
   IncomingMessage,
@@ -28,7 +28,7 @@ const mockedServerListen = jest.fn();
 const mockedServerClose = jest.fn();
 const mockedAxiosPost = jest.fn();
 
-mockedAxios.mockImplementation(mockedAxiosPost);
+mockedAxios.post.mockImplementation(mockedAxiosPost);
 
 mockedCreateServer.mockImplementation((listener?: RequestListener) => {
   const req = {
@@ -92,18 +92,8 @@ describe('OAuthClientServer', () => {
       expect(accessToken).toEqual('token-returned-by-the-platform');
     });
 
-    it('should make a POST call to the right endpoint', () => {
+    it('should make a POST call to the right endpoint, with the right paramet', () => {
       const opts = {environment: PlatformEnvironment.Prod};
-      authServiceConfig(opts).tokenEndpoint;
-      expect(mockedAxiosPost).toHaveBeenCalledWith(
-        expect.objectContaining({
-          method: 'post',
-          url: authServiceConfig(opts).tokenEndpoint,
-        })
-      );
-    });
-
-    it('should make a POST call with the appropriate params', () => {
       const expectedParams = {
         grant_type: 'authorization_code',
         redirect_uri: 'http://127.0.0.1:1234',
@@ -111,8 +101,9 @@ describe('OAuthClientServer', () => {
       };
 
       expect(mockedAxiosPost).toHaveBeenCalledWith(
+        authServiceConfig(opts).tokenEndpoint,
+        new URLSearchParams(expectedParams),
         expect.objectContaining({
-          data: new URLSearchParams(expectedParams),
           headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         })
       );
