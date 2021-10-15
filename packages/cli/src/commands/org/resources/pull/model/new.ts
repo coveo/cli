@@ -16,7 +16,10 @@ import {
 import {validateSnapshotPullModel} from '../../../../../lib/snapshot/pullModel/validation/validate';
 import fullTemplate from '../../../../../lib/snapshot/pullModel/templates/full.json';
 import emptyTemplate from '../../../../../lib/snapshot/pullModel/templates/empty.json';
-import {getSelectResourceTypesPrompt} from '../../../../../lib/snapshot/resourceTypePrompt';
+import {
+  getSelectResourceTypesPrompt,
+  ResourcePromptDefaults,
+} from '../../../../../lib/snapshot/resourceTypePrompt';
 import {ResourceTypeActions} from '../../../../../lib/snapshot/resourceTypePrompt/interfaces';
 
 enum PredefinedTemplates {
@@ -56,7 +59,7 @@ export class New extends Command {
   private modelToWrite: SnapshotPullModel | undefined;
   private resourcesToSelect: SnapshotPullModelResourceType[] | undefined;
 
-  @Preconditions(IsAuthenticated())
+  // @Preconditions(IsAuthenticated())
   public async run() {
     this.handleTemplate();
     if (await this.shouldStartInteractive()) {
@@ -76,7 +79,7 @@ export class New extends Command {
   }
 
   private async startInteractiveSession<TResource = unknown>() {
-    this.modelToWrite = emptyTemplate;
+    this.modelToWrite = this.modelToWrite ?? emptyTemplate;
     this.resourcesToSelect = [];
     const resourceTypes = await this.selectResourceTypes(); //an array of somesort.
     this.setResourceTypes(resourceTypes);
@@ -127,7 +130,17 @@ export class New extends Command {
   > {
     const promptName =
       'Select the resource types you want to use in your model';
-    const promptAnswers = await getSelectResourceTypesPrompt(promptName);
+    const resourceTypePromptDefaults: ResourcePromptDefaults = {};
+    if (this.modelToWrite?.resources) {
+      for (const key of Object.keys(this.modelToWrite?.resources)) {
+        resourceTypePromptDefaults[key as SnapshotPullModelResourceType] =
+          ResourceTypeActions.Skip;
+      }
+    }
+    const promptAnswers = await getSelectResourceTypesPrompt(
+      promptName,
+      resourceTypePromptDefaults
+    );
     return promptAnswers[promptName];
   }
 

@@ -1,8 +1,39 @@
-import {getSelectResourceTypesPrompt} from './index';
+import {getSelectResourceTypesPrompt, ResourcePromptDefaults} from './index';
 import {fancy} from 'fancy-test';
 import {MockSTDIN, stdin} from 'mock-stdin';
+import {ResourceTypeActions} from './interfaces';
+import {SnapshotPullModelResourceType} from '../pullModel/interfaces';
+import {ResourceSnapshotType} from '@coveord/platform-client';
 
 describe('ResourceTypePrompt - Integration Test', () => {
+  const defaultAnswers: [SnapshotPullModelResourceType, ResourceTypeActions][] =
+    [
+      [ResourceSnapshotType.extension, ResourceTypeActions.Skip],
+      [ResourceSnapshotType.field, ResourceTypeActions.Skip],
+      [ResourceSnapshotType.mlModel, ResourceTypeActions.Skip],
+      [ResourceSnapshotType.queryPipeline, ResourceTypeActions.Skip],
+      [ResourceSnapshotType.searchPage, ResourceTypeActions.Skip],
+      [ResourceSnapshotType.source, ResourceTypeActions.Skip],
+      [ResourceSnapshotType.subscription, ResourceTypeActions.Skip],
+    ];
+
+  const arrowKeys = {
+    up: '\x1b[A',
+    down: '\x1b[B',
+    left: '\x1b[C',
+    right: '\x1b[D',
+  };
+
+  /**
+   * ANSI Escape Sequence
+   * https://vt100.net/docs/vt510-rm/CHA.html
+   * ISO-6429/ECMA-48 5th Edition, Section 8.3.9
+   * In non-beepboop language: It move the cursor at the beginning of the line.
+   */
+  const ansiCursorHorizontalAbsolute = '\x1b[G';
+
+  const fancyIt = () =>
+    fancy.env({FORCE_COLOR: '3'}).stdout({stripColor: false}).it;
   let mockedStdin: MockSTDIN;
 
   beforeEach(() => {
@@ -14,69 +45,207 @@ describe('ResourceTypePrompt - Integration Test', () => {
   });
 
   describe('when started', () => {
-    fancy
-      .env({FORCE_COLOR: '3'})
-      .stdout({stripColor: false})
-      .it('should display the question and the first 7 resources', (output) => {
+    fancyIt()(
+      'should display the question and the first 7 resources',
+      (output) => {
         getSelectResourceTypesPrompt('someQuestion');
 
         expect(output.stdout).toMatchSnapshot();
 
         mockedStdin.end();
+      }
+    );
+  });
+
+  describe.each([
+    ['a', ResourceTypeActions.Add, {}, {EXTENSION: ResourceTypeActions.Skip}],
+    ['s', ResourceTypeActions.Skip, {}, null],
+    [
+      'd',
+      ResourceTypeActions.Delete,
+      {EXTENSION: ResourceTypeActions.Skip},
+      {},
+    ],
+    ['e', ResourceTypeActions.Edit, {EXTENSION: ResourceTypeActions.Skip}, {}],
+  ])(
+    'when pressing %s',
+    (
+      key: string,
+      associatedAction: ResourceTypeActions,
+      compatibleDefault: ResourcePromptDefaults,
+      incompatibleDefault: ResourcePromptDefaults | null
+    ) => {
+      let answersWithAssociatedAction: [
+        SnapshotPullModelResourceType,
+        ResourceTypeActions
+      ][];
+
+      beforeAll(() => {
+        answersWithAssociatedAction = [...defaultAnswers];
+        answersWithAssociatedAction.shift();
+        answersWithAssociatedAction.unshift([
+          ResourceSnapshotType.extension,
+          associatedAction,
+        ]);
       });
-  });
-  //#region Refactor that
-  describe('when pressing a', () => {
-    it.todo('should select Add for the highlighted resource if possible');
-    it.todo(
-      'should do nothing if the resource/operation association is invalid'
-    );
-  });
-  describe('when pressing s', () => {
-    it.todo('should select Skip for the highlighted resource');
-    it.todo(
-      'should do nothing if the resource/operation association is invalid'
-    );
-  });
-  describe('when pressing e', () => {
-    it.todo('should select Edit for the highlighted resource');
-    it.todo(
-      'should do nothing if the resource/operation association is invalid'
-    );
-  });
-  describe('when pressing d', () => {
-    it.todo('should select Delete for the highlighted resource');
-    it.todo(
-      'should do nothing if the resource/operation association is invalid'
-    );
-  });
-  //#endregion
+
+      fancyIt()(
+        `should select ${associatedAction} for the highlighted resource if possible`,
+        async (output) => {
+          const promptPromise = getSelectResourceTypesPrompt(
+            'someQuestion',
+            compatibleDefault
+          );
+          const preStdoutLength = output.stdout.length;
+          mockedStdin.send(key);
+
+          expect(output.stdout.substr(preStdoutLength)).toMatchSnapshot();
+          mockedStdin.send('\n');
+          await expect(promptPromise).resolves.toEqual({
+            someQuestion: answersWithAssociatedAction,
+          });
+          mockedStdin.end();
+        }
+      );
+
+      fancyIt()(
+        `should do nothing if the resource is already associated to ${associatedAction}`,
+        async (output) => {
+          const promptPromise = getSelectResourceTypesPrompt('someQuestion', {
+            EXTENSION: associatedAction,
+          });
+          const preInputStdout = output.stdout;
+
+          mockedStdin.send(key);
+
+          const postInputStdout = output.stdout.split(
+            ansiCursorHorizontalAbsolute
+          )[1];
+
+          mockedStdin.send('\n');
+
+          expect(postInputStdout).toEqual(preInputStdout);
+          await expect(promptPromise).resolves.toEqual({
+            someQuestion: answersWithAssociatedAction,
+          });
+          mockedStdin.end();
+        }
+      );
+
+      if (incompatibleDefault) {
+        fancyIt()(
+          'should do nothing if the resource/operation association is invalid',
+          async (output) => {
+            const promptPromise = getSelectResourceTypesPrompt(
+              'someQuestion',
+              incompatibleDefault
+            );
+            const preInputStdout = output.stdout;
+
+            mockedStdin.send(key);
+
+            const postInputStdout = output.stdout.split(
+              ansiCursorHorizontalAbsolute
+            )[1];
+
+            mockedStdin.send('\n');
+
+            expect(postInputStdout).toEqual(preInputStdout);
+            await expect(promptPromise).resolves.toEqual({
+              someQuestion: defaultAnswers,
+            });
+            mockedStdin.end();
+          }
+        );
+      }
+    }
+  );
+
   //#region Refactor maybe
-  describe('when pressing left arrow key', () => {
-    it.todo('should select the next value on the left if there is one');
-    it.todo(
-      'should select the most right value if there is no other value on the left'
+  describe.each([
+    ['up', arrowKeys.up, false],
+    ['down', arrowKeys.down, false],
+    ['left', arrowKeys.left, true],
+    ['right', arrowKeys.right, true],
+  ])('when pressing %s arrow key', (_direction, asciiCode, shouldLoop) => {
+    fancyIt()(
+      'should select the next valid value/key if there is one',
+      (output) => {
+        getSelectResourceTypesPrompt('someQuestion');
+        const preInputStdout = output.stdout;
+
+        mockedStdin.send(asciiCode);
+
+        const postInputStdout = output.stdout.split(
+          ansiCursorHorizontalAbsolute
+        )[1];
+
+        expect(postInputStdout).not.toEqual(preInputStdout);
+        expect(postInputStdout).toMatchSnapshot();
+
+        mockedStdin.end();
+      }
     );
+
+    if (shouldLoop) {
+      it.todo('should loop and select the next valid value/key');
+    } else {
+      it.todo('should do nothing');
+    }
   });
-  describe('when pressing left arrow key', () => {
-    it.todo('should select the next value on the right if there is one');
-    it.todo(
-      'should select the most left value if there is no other value on the right'
-    );
-  });
-  describe('when pressing up arrow key', () => {
-    it.todo('should select the previous key if there is one');
-    it.todo('should do nothing if there is no previous key');
-  });
-  describe('when pressing down arrow key', () => {
-    it.todo('should select the next key if there is one');
-    it.todo('should do nothing if there is no next key');
-  });
-  //#endregion
+
   describe('when pressing space bar', () => {
-    it.todo('should select the highlighted value for the highlighted resource');
+    fancyIt()(
+      'should do nothing if the highlighted key/value combination is disabled',
+      (output) => {
+        getSelectResourceTypesPrompt('someQuestion');
+        const preInputStdout = output.stdout;
+
+        mockedStdin.send(' ');
+
+        const postInputStdout = output.stdout.split(
+          ansiCursorHorizontalAbsolute
+        )[1];
+
+        expect(postInputStdout).toEqual(preInputStdout);
+        expect(postInputStdout).toMatchSnapshot();
+
+        mockedStdin.end();
+      }
+    );
+
+    fancyIt()(
+      'should select if the highlighted key/value combination is not disabled',
+      (output) => {
+        getSelectResourceTypesPrompt('someQuestion', {});
+        const preInputStdout = output.stdout;
+
+        mockedStdin.send(' ');
+
+        const postInputStdout = output.stdout.split(
+          ansiCursorHorizontalAbsolute
+        )[1];
+
+        expect(postInputStdout).not.toEqual(preInputStdout);
+        expect(postInputStdout).toMatchSnapshot();
+
+        mockedStdin.end();
+      }
+    );
   });
+
   describe('when pressing enter', () => {
-    it.todo('should resolves the promise with the returned values');
+    fancyIt()(
+      'should resolves the promise with the returned values',
+      async () => {
+        const promptPromise = getSelectResourceTypesPrompt('someQuestion');
+
+        mockedStdin.send('\n');
+        await expect(promptPromise).resolves.toEqual({
+          someQuestion: defaultAnswers,
+        });
+        mockedStdin.end();
+      }
+    );
   });
 });

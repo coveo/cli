@@ -9,6 +9,10 @@ import chalk from 'chalk';
 import {ResourceSnapshotType} from '@coveord/platform-client';
 import Separator from 'inquirer/lib/objects/separator';
 import {ResourceTypeActions} from './interfaces';
+import {
+  SnapshotPullModelResourceType,
+  SnapshotPullModelResourceTypes,
+} from '../pullModel/interfaces';
 
 const PromptValueColorMap = {
   [ResourceTypeActions.Add]: chalk.green,
@@ -32,17 +36,32 @@ const resourceTypePromptValues = Object.values(ResourceTypeActions).map(
 );
 
 // TODO CDX-499: Use proper strings.
-const resourceTypePromptKeys = Object.values(ResourceSnapshotType).map(
-  (resourceType) => ({displayName: resourceType, id: resourceType})
-);
+const resourceTypePromptKeys = Object.values(
+  SnapshotPullModelResourceTypes
+).map((resourceType) => ({displayName: resourceType, id: resourceType}));
 
-type ResourcePromptDefaults = Partial<
-  Record<ResourceSnapshotType, ResourceTypeActions>
+export type ResourcePromptDefaults = Partial<
+  Record<SnapshotPullModelResourceType, ResourceTypeActions>
 >;
+
+export type UnsupportedResources = Exclude<
+  ResourceSnapshotType,
+  SnapshotPullModelResourceType
+>;
+
+const resourcePromptDefaults: Required<ResourcePromptDefaults> = {
+  EXTENSION: ResourceTypeActions.Skip,
+  FIELD: ResourceTypeActions.Skip,
+  ML_MODEL: ResourceTypeActions.Skip,
+  QUERY_PIPELINE: ResourceTypeActions.Skip,
+  SEARCH_PAGE: ResourceTypeActions.Skip,
+  SOURCE: ResourceTypeActions.Skip,
+  SUBSCRIPTION: ResourceTypeActions.Skip,
+};
 
 export async function getSelectResourceTypesPrompt(
   question: string,
-  defaults: ResourcePromptDefaults = {}
+  defaults: ResourcePromptDefaults = resourcePromptDefaults
 ) {
   // Legit: We have 8 custom key chords + enter + default.
   process.stdin.setMaxListeners(11);
@@ -55,7 +74,7 @@ export async function getSelectResourceTypesPrompt(
       values: resourceTypePromptValues,
       controls,
       renderer,
-      default: defaults,
+      default: {...resourcePromptDefaults, ...defaults},
       disabled: getDisabledFromDefaults(defaults),
       shouldLoop: true,
     },
@@ -65,24 +84,21 @@ export async function getSelectResourceTypesPrompt(
   return answers;
 }
 
-function getDisabledFromDefaults(
-  defaults: Partial<Record<ResourceSnapshotType, ResourceTypeActions>>
-) {
+function getDisabledFromDefaults(defaults: ResourcePromptDefaults) {
   const disabledMap: Partial<
-    Record<ResourceSnapshotType, ResourceTypeActions[]>
+    Record<SnapshotPullModelResourceType, ResourceTypeActions[]>
   > = {};
-  for (const resourceType of Object.values(ResourceSnapshotType)) {
+  for (const resourceType of SnapshotPullModelResourceTypes) {
     disabledMap[resourceType] = defaults[resourceType]
-      ? validActionIfExisting
-      : validActionIfNotExisting;
+      ? invalidActionIfExisting
+      : invalidActionIfNotExisting;
   }
+  return disabledMap;
 }
 
-const validActionIfExisting = Object.values(ResourceTypeActions).filter(
-  (action) => action !== ResourceTypeActions.Add
-);
+const invalidActionIfExisting = [ResourceTypeActions.Add];
 
-const validActionIfNotExisting = Object.values(ResourceTypeActions).filter(
+const invalidActionIfNotExisting = Object.values(ResourceTypeActions).filter(
   (action) =>
     [ResourceTypeActions.Delete, ResourceTypeActions.Edit].includes(action)
 );
