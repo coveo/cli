@@ -27,7 +27,7 @@ describe('ResourceTypePrompt - Integration Test', () => {
   /**
    * ANSI Escape Sequence - Cursor Horizontal Absolute
    * https://vt100.net/docs/vt510-rm/CHA.html
-   * ISO-6429/ECMA-48 5th Edition, Section 8.3.9
+   * ECMA-48 5th Edition, Section 8.3.9
    * In non-beepboop language: It move the cursor at the beginning of the line.
    */
   const ansiCursorHorizontalAbsolute = '\x1b[G';
