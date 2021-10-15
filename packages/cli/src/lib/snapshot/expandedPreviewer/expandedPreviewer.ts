@@ -91,8 +91,10 @@ export class ExpandedPreviewer {
 
   private async initPreviewDirectory(dirPath: string, project: Project) {
     const beforeSnapshot = await this.getBeforeSnapshot();
-    await project.refresh(beforeSnapshot);
+    const beforeSnapshotContent = await beforeSnapshot.download();
+    await project.refresh(beforeSnapshotContent);
     await this.initialPreviewCommit(dirPath);
+    await beforeSnapshot.delete();
   }
 
   private async getCommitHash(dirPath: string) {
@@ -133,6 +135,6 @@ export class ExpandedPreviewer {
       this.orgId
     );
 
-    return snapshot.download();
+    return snapshot;
   }
 }
