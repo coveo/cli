@@ -1,0 +1,12 @@
+{
+  "$schema": "../validation/model.schema.json",
+  "resources": {
+    "EXTENSION": [""],
+    "FIELD": [""],
+    "ML_MODEL": [""],
+    "QUERY_PIPELINE": [""],
+    "SEARCH_PAGE": [""],
+    "SOURCE": [""],
+    "SUBSCRIPTION": [""]
+  }
+}

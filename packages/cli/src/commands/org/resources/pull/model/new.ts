@@ -7,15 +7,12 @@ import {
 } from '../../../../../lib/decorators/preconditions';
 import {cli} from 'cli-ux';
 import {Project} from '../../../../../lib/project/project';
-import {cwd} from 'process';
 
-// TODO CDX-630: Define SPM schema
-interface SnapshotPullModel {
-  foo?: string;
-}
-// TODO CDX-630: Extract in JSON files.
-const fullTemplate: SnapshotPullModel = {};
-const emptyTemplate: SnapshotPullModel = {};
+import {cwd} from 'process';
+import {SnapshotPullModel} from '../../../../../lib/snapshot/pullModel/interfaces';
+import {validateSnapshotPullModel} from '../../../../../lib/snapshot/pullModel/validation/validate';
+import fullTemplate from '../../../../../lib/snapshot/pullModel/templates/full.json';
+import emptyTemplate from '../../../../../lib/snapshot/pullModel/templates/empty.json';
 
 enum PredefinedTemplates {
   Full = 'full',
@@ -59,7 +56,7 @@ export class New extends Command {
     if (await this.shouldStartInteractive()) {
       await this.startInteractiveSession();
     }
-    this.validateSnapshotPullModel(this.modelToWrite, true);
+    validateSnapshotPullModel(this.modelToWrite, true);
     this.writeTemplate();
   }
 
@@ -139,7 +136,7 @@ export class New extends Command {
         )}`
       );
     }
-    if (this.validateSnapshotPullModel(templateJSON)) {
+    if (validateSnapshotPullModel(templateJSON)) {
       this.copyTemplate(templateJSON);
     }
   }
@@ -157,13 +154,5 @@ export class New extends Command {
       outputFilePath = join(project.pathToProject, 'pullModels');
     }
     writeJSONSync(outputFilePath, this.modelToWrite);
-  }
-
-  private validateSnapshotPullModel(
-    templateJson: unknown = {},
-    shouldContactCoveo = false
-  ): templateJson is SnapshotPullModel {
-    // TODO CDX-632: Validate JSON
-    throw new Error('Method not implemented.');
   }
 }
