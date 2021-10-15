@@ -1,11 +1,10 @@
 import {getSelectResourceTypesPrompt} from './index';
 import {fancy} from 'fancy-test';
-import getSnapshot from './__snapshots__/getSnasphot';
-import {writeFileSync} from 'fs';
 import {MockSTDIN, stdin} from 'mock-stdin';
 
 describe('ResourceTypePrompt - Integration Test', () => {
   let mockedStdin: MockSTDIN;
+
   beforeEach(() => {
     mockedStdin = stdin();
   });
@@ -19,10 +18,9 @@ describe('ResourceTypePrompt - Integration Test', () => {
       .env({FORCE_COLOR: '3'})
       .stdout({stripColor: false})
       .it('should display the question and the first 7 resources', (output) => {
-        const expectedStdout = getSnapshot('whenStarted.ansi');
         getSelectResourceTypesPrompt('someQuestion');
 
-        expect(output.stdout).toBe(expectedStdout);
+        expect(output.stdout).toMatchSnapshot();
 
         mockedStdin.end();
       });

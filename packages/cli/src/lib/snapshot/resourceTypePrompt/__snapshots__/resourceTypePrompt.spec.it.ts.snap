@@ -1,4 +1,7 @@
-[32m?[39m [1msomeQuestion:[22m[0m [0m[2m([object Object]) [22m
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ResourceTypePrompt - Integration Test when started should display the question and the first 7 resources 1`] = `
+"?[39m [1msomeQuestion:[22m[0m [0m[2m([object Object]) [22m
 [36m❯[39mEXTENSION               	 [7m[32m[1mA[22mdd[39m[27m [97m[1mS[22mkip[39m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
  FEATURED_RESULT         	 [32m[1mA[22mdd[39m [97m[1mS[22mkip[39m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
  FIELD                   	 [32m[1mA[22mdd[39m [97m[1mS[22mkip[39m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
@@ -6,4 +9,5 @@
  MAPPING                 	 [32m[1mA[22mdd[39m [97m[1mS[22mkip[39m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
  ML_MODEL                	 [32m[1mA[22mdd[39m [97m[1mS[22mkip[39m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
  ML_MODEL_ASSOCIATION    	 [32m[1mA[22mdd[39m [97m[1mS[22mkip[39m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
-[2m(Move up and down to reveal more choices)[22m[41D[41C
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
