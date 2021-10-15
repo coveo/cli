@@ -10,12 +10,12 @@ import {Project} from '../../../../../lib/project/project';
 import {cwd} from 'process';
 
 // TODO CDX-630: Define SPM schema
-interface SnaphsotPullModel {
+interface SnapshotPullModel {
   foo?: string;
 }
 // TODO CDX-630: Extract in JSON files.
-const fullTemplate: SnaphsotPullModel = {};
-const emptyTemplate: SnaphsotPullModel = {};
+const fullTemplate: SnapshotPullModel = {};
+const emptyTemplate: SnapshotPullModel = {};
 
 enum PredefinedTemplates {
   Full = 'full',
@@ -144,7 +144,7 @@ export class New extends Command {
     }
   }
 
-  private copyTemplate(starterJson: SnaphsotPullModel) {
+  private copyTemplate(starterJson: SnapshotPullModel) {
     this.modelToWrite = starterJson;
   }
 
@@ -162,7 +162,7 @@ export class New extends Command {
   private validateSnapshotPullModel(
     templateJson: unknown = {},
     shouldContactCoveo = false
-  ): templateJson is SnaphsotPullModel {
+  ): templateJson is SnapshotPullModel {
     // TODO CDX-632: Validate JSON
     throw new Error('Method not implemented.');
   }
