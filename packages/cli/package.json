@@ -150,7 +150,7 @@
     "postpack": "rimraf oclif.manifest.json",
     "prepack": "rimraf lib && npm run build && oclif-dev manifest && oclif-dev readme",
     "build": "tsc -b",
-    "test": "jest",
+    "test": "jest --colors",
     "lint": "prettier --config ../../.prettierrc.js --check . && eslint .",
     "version": "oclif-dev readme && git add README.md",
     "postinstall": "patch-package"

@@ -197,8 +197,8 @@ describe('ResourceTypePrompt - Integration Test', () => {
   describe('when pressing space bar', () => {
     fancyIt()(
       'should do nothing if the highlighted key/value combination is disabled',
-      (output) => {
-        getSelectResourceTypesPrompt('someQuestion');
+      async (output) => {
+        const promptPromise = getSelectResourceTypesPrompt('someQuestion');
         const preInputStdout = output.stdout;
 
         mockedStdin.send(' ');
@@ -211,13 +211,14 @@ describe('ResourceTypePrompt - Integration Test', () => {
         expect(postInputStdout).toMatchSnapshot();
 
         mockedStdin.end();
+        await promptPromise;
       }
     );
 
     fancyIt()(
       'should select if the highlighted key/value combination is not disabled',
-      (output) => {
-        getSelectResourceTypesPrompt('someQuestion', {});
+      async (output) => {
+        const promptPromise = getSelectResourceTypesPrompt('someQuestion', {});
         const preInputStdout = output.stdout;
 
         mockedStdin.send(' ');
@@ -230,6 +231,7 @@ describe('ResourceTypePrompt - Integration Test', () => {
         expect(postInputStdout).toMatchSnapshot();
 
         mockedStdin.end();
+        await promptPromise;
       }
     );
   });
