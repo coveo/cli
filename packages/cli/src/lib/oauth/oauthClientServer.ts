@@ -4,6 +4,10 @@ import {URL, URLSearchParams} from 'url';
 import {AuthorizationError, InvalidStateError} from './authorizationError';
 import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
 
+interface AccessTokenResponse {
+  access_token: string;
+}
+
 export class OAuthClientServer {
   public constructor(
     private clientConfig: ClientConfig,
@@ -28,12 +32,11 @@ export class OAuthClientServer {
             }
 
             const data = this.getTokenQueryString(code);
-            const authRequest = await axios({
-              method: 'post',
-              url: tokenEndpoint,
-              ...this.requestConfig,
+            const authRequest = await axios.post<AccessTokenResponse>(
+              tokenEndpoint,
               data,
-            });
+              this.requestConfig
+            );
             const accessToken = authRequest.data.access_token;
 
             res.end('Close your browser to continue');

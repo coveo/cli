@@ -59,7 +59,7 @@ export class New extends Command {
   private modelToWrite: SnapshotPullModel | undefined;
   private resourcesToSelect: SnapshotPullModelResourceType[] | undefined;
 
-  // @Preconditions(IsAuthenticated())
+  @Preconditions(IsAuthenticated())
   public async run() {
     this.handleTemplate();
     if (await this.shouldStartInteractive()) {
@@ -81,7 +81,7 @@ export class New extends Command {
   private async startInteractiveSession<TResource = unknown>() {
     this.modelToWrite = this.modelToWrite ?? emptyTemplate;
     this.resourcesToSelect = [];
-    const resourceTypes = await this.selectResourceTypes(); //an array of somesort.
+    const resourceTypes = await this.selectResourceTypes();
     this.setResourceTypes(resourceTypes);
 
     for (const resourceType of resourceTypes) {
