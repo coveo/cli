@@ -13,6 +13,7 @@ import {
 import {MockedFunction} from 'ts-jest/dist/utils/testing';
 import {mocked} from 'ts-jest/utils';
 import {URLSearchParams} from 'url';
+import {fancyIt} from '../../__test__/it';
 import {PlatformEnvironment, platformUrl} from '../platform/environment';
 import {InvalidStateError} from './authorizationError';
 import {OAuthClientServer} from './oauthClientServer';
@@ -81,38 +82,41 @@ describe('OAuthClientServer', () => {
       accessToken = serverResponse.accessToken;
     });
 
-    it('should listen on the right port and hostname', () => {
+    fancyIt()('should listen on the right port and hostname', () => {
       expect(mockedServerListen).toHaveBeenCalledWith(8989, 'http://127.0.0.1');
     });
 
-    it('should close the server', () => {
+    fancyIt()('should close the server', () => {
       expect(mockedServerClose).toHaveBeenCalledTimes(1);
     });
 
-    it('should have returned an access token', () => {
+    fancyIt()('should have returned an access token', () => {
       expect(accessToken).toEqual('token-returned-by-the-platform');
     });
 
-    it('should make a POST call to the right endpoint, with the right paramet', () => {
-      const opts = {environment: PlatformEnvironment.Prod};
-      const expectedParams = {
-        grant_type: 'authorization_code',
-        redirect_uri: 'http://127.0.0.1:1234',
-        code: 'TheCode',
-      };
+    fancyIt()(
+      'should make a POST call to the right endpoint, with the right paramet',
+      () => {
+        const opts = {environment: PlatformEnvironment.Prod};
+        const expectedParams = {
+          grant_type: 'authorization_code',
+          redirect_uri: 'http://127.0.0.1:1234',
+          code: 'TheCode',
+        };
 
-      expect(mockedAxiosPost).toHaveBeenCalledWith(
-        authServiceConfig(opts).tokenEndpoint,
-        new URLSearchParams(expectedParams),
-        expect.objectContaining({
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        })
-      );
-    });
+        expect(mockedAxiosPost).toHaveBeenCalledWith(
+          authServiceConfig(opts).tokenEndpoint,
+          new URLSearchParams(expectedParams),
+          expect.objectContaining({
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          })
+        );
+      }
+    );
   });
 
   describe('when the state is unexpected', () => {
-    it('should throw an error if the state is invalid', async () => {
+    fancyIt()('should throw an error if the state is invalid', async () => {
       const startServer = () =>
         oAuthClientServer.startServer(
           8989,

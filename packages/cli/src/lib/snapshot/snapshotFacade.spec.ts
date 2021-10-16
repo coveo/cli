@@ -2,6 +2,7 @@ jest.mock('./snapshot');
 jest.mock('cli-ux');
 
 import {cli} from 'cli-ux';
+import {fancyIt} from '../../__test__/it';
 import {Configuration} from '../config/config';
 import {
   SnapshotOperationAbort,
@@ -61,7 +62,7 @@ describe('SnapshotFacade', () => {
       mockedContainsUnambiguousMatches.mockReturnValue(false);
     });
 
-    it('should throw an error', async () => {
+    fancyIt()('should throw an error', async () => {
       await expect(facade.tryAutomaticSynchronization()).rejects.toThrow(
         SnapshotSynchronizationAmbiguousMatchesError
       );
@@ -74,7 +75,7 @@ describe('SnapshotFacade', () => {
       mockedContainsUnambiguousMatches.mockReturnValue(true);
     });
 
-    it('should end the execution', async () => {
+    fancyIt()('should end the execution', async () => {
       await expect(facade.tryAutomaticSynchronization()).rejects.toThrow(
         SnapshotOperationAbort
       );
@@ -90,7 +91,7 @@ describe('SnapshotFacade', () => {
       }));
     });
 
-    it('should throw an error', async () => {
+    fancyIt()('should throw an error', async () => {
       await expect(facade.tryAutomaticSynchronization()).rejects.toThrow(
         SnapshotSynchronizationUnknownError
       );
@@ -106,12 +107,12 @@ describe('SnapshotFacade', () => {
       }));
     });
 
-    it('should create a synchronization plan', async () => {
+    fancyIt()('should create a synchronization plan', async () => {
       await facade.tryAutomaticSynchronization();
       expect(mockedCreateSynchronizationPlan).toBeCalled();
     });
 
-    it('should create a apply the synchronization plan', async () => {
+    fancyIt()('should create a apply the synchronization plan', async () => {
       await facade.tryAutomaticSynchronization();
       expect(mockedApplySynchronizationPlan).toBeCalledWith('some-plan-id');
     });

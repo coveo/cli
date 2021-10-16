@@ -8,6 +8,7 @@ import {Snapshot} from './snapshot';
 import {SnapshotUrlBuilder} from './snapshotUrlBuilder';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {PlatformEnvironment} from '../platform/environment';
+import {fancyIt} from '../../__test__/it';
 
 const createSnapshot = async () => {
   const snapshotID = 'my-snapshot';
@@ -49,23 +50,29 @@ describe('SnapshotUrlBuilder', () => {
     snapshotUrlBuilder = new SnapshotUrlBuilder(getUSProdConfig());
   });
 
-  it('#createSnapshotPage should return the snapshot URL', () => {
+  fancyIt()('#createSnapshotPage should return the snapshot URL', () => {
     expect(snapshotUrlBuilder.getSnapshotPage(snapshot)).toEqual(
       'https://platform.cloud.coveo.com/admin/#foo/organization/resource-snapshots/my-snapshot'
     );
   });
 
-  it('#getSynchronizationPage should return the URL to the synchronization page', () => {
-    snapshotUrlBuilder = new SnapshotUrlBuilder(getUSProdConfig());
-    expect(snapshotUrlBuilder.getSynchronizationPage(snapshot)).toEqual(
-      'https://platform.cloud.coveo.com/admin/#foo/organization/resource-snapshots/my-snapshot/synchronization'
-    );
-  });
+  fancyIt()(
+    '#getSynchronizationPage should return the URL to the synchronization page',
+    () => {
+      snapshotUrlBuilder = new SnapshotUrlBuilder(getUSProdConfig());
+      expect(snapshotUrlBuilder.getSynchronizationPage(snapshot)).toEqual(
+        'https://platform.cloud.coveo.com/admin/#foo/organization/resource-snapshots/my-snapshot/synchronization'
+      );
+    }
+  );
 
-  it('#getSynchronizationPage should return the URL to the synchronization page for Dev', () => {
-    snapshotUrlBuilder = new SnapshotUrlBuilder(getEUDevConfig());
-    expect(snapshotUrlBuilder.getSynchronizationPage(snapshot)).toEqual(
-      'https://platformdev-eu.cloud.coveo.com/admin/#foo/organization/resource-snapshots/my-snapshot/synchronization'
-    );
-  });
+  fancyIt()(
+    '#getSynchronizationPage should return the URL to the synchronization page for Dev',
+    () => {
+      snapshotUrlBuilder = new SnapshotUrlBuilder(getEUDevConfig());
+      expect(snapshotUrlBuilder.getSynchronizationPage(snapshot)).toEqual(
+        'https://platformdev-eu.cloud.coveo.com/admin/#foo/organization/resource-snapshots/my-snapshot/synchronization'
+      );
+    }
+  );
 });

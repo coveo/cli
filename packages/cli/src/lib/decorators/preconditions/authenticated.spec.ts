@@ -2,6 +2,7 @@ jest.mock('../../platform/authenticatedClient');
 jest.mock('@oclif/command');
 
 import {mocked} from 'ts-jest/utils';
+import {fancyIt} from '../../../__test__/it';
 import {
   AuthenticationStatus,
   getAuthenticationStatus,
@@ -39,7 +40,7 @@ describe('authenticated', () => {
       authenticationStatus: AuthenticationStatus,
       expectedWarning: string
     ) => {
-      it(`warns '${expectedWarning}' and returns false`, async () => {
+      fancyIt()(`warns '${expectedWarning}' and returns false`, async () => {
         mockedAuthenticatedClient.mockResolvedValue(authenticationStatus);
         const fakeCommand = getFakeCommand();
 
@@ -51,7 +52,7 @@ describe('authenticated', () => {
   );
 
   describe('when the user is logged in', () => {
-    it('returns true and does not warn', async () => {
+    fancyIt()('returns true and does not warn', async () => {
       mockedAuthenticatedClient.mockResolvedValue(
         AuthenticationStatus.LOGGED_IN
       );

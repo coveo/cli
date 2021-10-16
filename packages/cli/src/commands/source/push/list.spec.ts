@@ -43,6 +43,7 @@ describe('source:push:list', () => {
 
   test
     .stdout()
+    .stderr()
     .command(['source:push:list'])
     .it('works when there is no push source configured', (ctx) => {
       expect(ctx.stdout).toContain(
@@ -60,6 +61,7 @@ describe('source:push:list', () => {
       );
     })
     .stdout()
+    .stderr()
     .command(['source:push:list'])
     .it('works when the user has access to a list of push source', (ctx) => {
       // headers of table

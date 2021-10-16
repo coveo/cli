@@ -62,16 +62,24 @@ describe('org:resources:pull', () => {
   });
 
   test
+    .stdout()
+    .stderr()
     .command(['org:resources:pull'])
     .it('should download the snapshot', () => {
       expect(mockedDownloadSnapshot).toHaveBeenCalled();
     });
 
-  test.command(['org:resources:pull']).it('should delete the snapshot', () => {
-    expect(mockedDeleteSnapshot).toHaveBeenCalled();
-  });
+  test
+    .stdout()
+    .stderr()
+    .command(['org:resources:pull'])
+    .it('should delete the snapshot', () => {
+      expect(mockedDeleteSnapshot).toHaveBeenCalled();
+    });
 
   test
+    .stdout()
+    .stderr()
     .command(['org:resources:pull'])
     .it('should select all resource types', () => {
       expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
@@ -89,6 +97,8 @@ describe('org:resources:pull', () => {
     });
 
   test
+    .stdout()
+    .stderr()
     .command(['org:resources:pull', '-r', 'field', 'featuredResult', 'source'])
     .it('should select specified resource types', () => {
       expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
@@ -99,6 +109,8 @@ describe('org:resources:pull', () => {
     });
 
   test
+    .stdout()
+    .stderr()
     .command(['org:resources:pull'])
     .it('should set a 60 seconds timeout', () => {
       expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
@@ -109,6 +121,8 @@ describe('org:resources:pull', () => {
     });
 
   test
+    .stdout()
+    .stderr()
     .command(['org:resources:pull', '-w', '78'])
     .it('should set a 78 seconds timeout', () => {
       expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
@@ -119,6 +133,8 @@ describe('org:resources:pull', () => {
     });
 
   test
+    .stdout()
+    .stderr()
     .command(['org:resources:pull', '-r', 'invalidresource'])
     .catch((ctx) => {
       expect(ctx.message).toContain(

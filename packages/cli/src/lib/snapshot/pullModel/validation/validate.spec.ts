@@ -7,6 +7,7 @@ const trueErrors = jest.requireActual('./errors');
 import {validate, ValidatorResult} from 'jsonschema';
 import {validateSnapshotPullModel} from './validate';
 import {InvalidSPMError, UnknownSPMValidationError} from './errors';
+import {fancyIt} from '../../../../__test__/it';
 
 describe('validate', () => {
   const getFakeValidationError = () => ({
@@ -35,7 +36,7 @@ describe('validate', () => {
         mockValidateReturnValue({valid: true});
       });
 
-      it('should return true', () => {
+      fancyIt()('should return true', () => {
         expect(validateSnapshotPullModel({})).toBe(true);
       });
     });
@@ -49,7 +50,7 @@ describe('validate', () => {
       });
 
       describe('if shouldContactCoveo is true', () => {
-        it('should call the ErrorConstructor with true', () => {
+        fancyIt()('should call the ErrorConstructor with true', () => {
           try {
             validateSnapshotPullModel({}, true);
           } catch (error) {
@@ -59,7 +60,7 @@ describe('validate', () => {
       });
 
       describe('if shouldContactCoveo is false', () => {
-        it('should call the ErrorConstructor with false', () => {
+        fancyIt()('should call the ErrorConstructor with false', () => {
           try {
             validateSnapshotPullModel({}, false);
           } catch (error) {
@@ -69,7 +70,7 @@ describe('validate', () => {
       });
 
       describe('if shouldContactCoveo is unset', () => {
-        it('should call the ErrorConstructor with false', () => {
+        fancyIt()('should call the ErrorConstructor with false', () => {
           try {
             validateSnapshotPullModel({}, false);
           } catch (error) {
@@ -86,7 +87,7 @@ describe('validate', () => {
           });
         });
 
-        it('should throw a InvalidSPMError', () => {
+        fancyIt()('should throw a InvalidSPMError', () => {
           expect(() => {
             validateSnapshotPullModel({});
           }).toThrow(trueErrors.InvalidSPMError);
@@ -101,7 +102,7 @@ describe('validate', () => {
           });
         });
 
-        it('should throw a UnknownSPMValidationError', () => {
+        fancyIt()('should throw a UnknownSPMValidationError', () => {
           expect(() => {
             validateSnapshotPullModel({});
           }).toThrow(trueErrors.UnknownSPMValidationError);
