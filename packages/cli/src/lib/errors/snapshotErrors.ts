@@ -5,7 +5,7 @@ import {Configuration} from '../config/config';
 import {Snapshot} from '../snapshot/snapshot';
 import {SnapshotUrlBuilder} from '../snapshot/snapshotUrlBuilder';
 
-enum SeverityLevel {
+export enum SeverityLevel {
   Info = 'info',
   Warn = 'warn',
   Error = 'error',

@@ -9,10 +9,15 @@ import {
 } from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {
+  HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
+import {
+  writeLinkPrivilege,
+  writeSnapshotPrivilege,
+} from '../../../lib/decorators/preconditions/platformPrivilege';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {
   PreviewLevelValue,
@@ -61,7 +66,11 @@ export default class Preview extends Command {
 
   public static hidden = true;
 
-  @Preconditions(IsAuthenticated(), IsGitInstalled())
+  @Preconditions(
+    IsAuthenticated(),
+    IsGitInstalled(),
+    HasNecessaryCoveoPrivileges(writeSnapshotPrivilege, writeLinkPrivilege)
+  )
   public async run() {
     const {flags} = this.parse(Preview);
     const target = await getTargetOrg(this.configuration, flags.target);

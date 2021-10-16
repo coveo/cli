@@ -16,7 +16,10 @@ import {
   Preconditions,
 } from '../../../lib/decorators/preconditions';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
-import {createSnapshotPrivilege} from '../../../lib/decorators/preconditions/platformPrivilege';
+import {
+  readSnapshotPrivilege,
+  writeSnapshotPrivilege,
+} from '../../../lib/decorators/preconditions/platformPrivilege';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {wait} from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
@@ -69,7 +72,7 @@ export default class Pull extends Command {
   @Preconditions(
     IsAuthenticated(),
     IsGitInstalled(),
-    HasNecessaryCoveoPrivileges(createSnapshotPrivilege)
+    HasNecessaryCoveoPrivileges(writeSnapshotPrivilege)
   )
   public async run() {
     const snapshot = await this.getSnapshot();

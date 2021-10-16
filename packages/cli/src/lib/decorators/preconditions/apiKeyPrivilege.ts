@@ -3,33 +3,31 @@ import PlatformClient, {
   PrivilegeModel,
 } from '@coveord/platform-client';
 import Command from '@oclif/command';
+import {cli} from 'cli-ux';
 import {Config} from '../../config/config';
+import {MissingPrivilegeError} from '../../errors/platformError';
 import {AuthenticatedClient} from '../../platform/authenticatedClient';
 import {PlatformPrivilege} from './platformPrivilege';
 
 export function HasNecessaryCoveoPrivileges(
   ...privileges: PlatformPrivilege[]
 ) {
-  return async function (target: Command) {
+  return async function (this: Command, command: Command) {
+    const {flags} = this.parse(command.ctor);
     const authenticatedClient = new AuthenticatedClient();
     const client = await authenticatedClient.getClient();
-    const {organization, anonymous} = await getConfiguration(target);
+    const {organization: target, anonymous} = await getConfiguration();
+    const organization = flags.target || target;
 
-    for (let i = 0; i < privileges.length; i++) {
-      const privilege = privileges[i];
-
-      for (let j = 0; j < privilege.model.length; j++) {
-        const model = privilege.model[j];
+    const promises = privileges.flatMap((privilege) =>
+      privilege.models.map(async (model) => {
         if (!(await hasPrivilege(client, organization, model))) {
-          target.warn(
-            privilege.unsatisfiedConditionMessage(Boolean(anonymous))
-          );
-          return false;
+          throw new MissingPrivilegeError(privilege, anonymous);
         }
-      }
-    }
+      })
+    );
 
-    return true;
+    return Boolean(await Promise.all(promises));
   };
 }
 
@@ -44,10 +42,10 @@ async function hasPrivilege(
   };
 
   const validation = await client.privilegeEvaluator.evaluate(model);
-  return validation.approved;
+  return Boolean(validation.approved);
 }
 
-async function getConfiguration(target: Command) {
-  const config = new Config(global.config.configDir, target.error);
+async function getConfiguration() {
+  const config = new Config(global.config.configDir, cli.error);
   return config.get();
 }
