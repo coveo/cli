@@ -19,7 +19,7 @@
       },
       "rules": {
         "@typescript-eslint/no-unused-vars": [
-          "warn",
+          "error",
           {"ignoreRestSiblings": true, "argsIgnorePattern": "^_"}
         ],
         "@typescript-eslint/explicit-module-boundary-types": "off",
