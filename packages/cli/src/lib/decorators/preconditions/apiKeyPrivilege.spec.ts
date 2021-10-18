@@ -1,7 +1,7 @@
-jest.mock('@oclif/command');
 jest.mock('../../platform/authenticatedClient');
 jest.mock('../../config/config');
 
+import Command from '@oclif/command';
 import {IConfig} from '@oclif/config';
 import {mocked} from 'ts-jest/utils';
 import {Config} from '../../config/config';
@@ -11,6 +11,8 @@ import {
   createApiKeyPrivilege,
   impersonatePrivilege,
   PlatformPrivilege,
+  writeLinkPrivilege,
+  writeSnapshotPrivilege,
 } from './platformPrivilege';
 import {getFakeCommand} from './testsUtils/utils';
 
@@ -51,12 +53,12 @@ describe('apiKeyPrivilege', () => {
   ])(
     'when the API key condition is %s and the impersonate condition is %s.',
     (privilege: PlatformPrivilege, expectedWarning: string) => {
-      it(`warns '${expectedWarning}' and returns false`, async () => {
+      it(`warns '${expectedWarning}' and returns false`, async function (this: Command) {
         mockEvaluate.mockReturnValueOnce({approved: false});
 
         const fakeCommand = getFakeCommand();
         await expect(
-          HasNecessaryCoveoPrivileges(privilege)(fakeCommand)
+          HasNecessaryCoveoPrivileges(privilege).call(this, fakeCommand)
         ).resolves.toBe(false);
         expect(fakeCommand.warn).toHaveBeenCalledTimes(1);
         expect(fakeCommand.warn).toHaveBeenCalledWith(
@@ -67,15 +69,16 @@ describe('apiKeyPrivilege', () => {
   );
 
   describe('when the user has all the required privileges', () => {
+    const privileges = [writeSnapshotPrivilege, writeLinkPrivilege];
     beforeEach(() => {
       mockEvaluate.mockReturnValue({approved: true});
     });
 
-    it('returns true and does not warn', async () => {
+    it('returns true and does not warn', async function (this: Command) {
       const fakeCommand = getFakeCommand();
-      await expect(HasNecessaryCoveoPrivileges()(fakeCommand)).resolves.toBe(
-        true
-      );
+      await expect(
+        HasNecessaryCoveoPrivileges(...privileges).call(this, fakeCommand)
+      ).resolves.toBe(true);
       expect(fakeCommand.warn).not.toHaveBeenCalled();
     });
   });
