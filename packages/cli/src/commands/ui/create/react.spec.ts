@@ -1,5 +1,3 @@
-import type internal from 'stream';
-
 jest.mock('child_process');
 jest.mock('../../../lib/decorators/preconditions/npx');
 jest.mock('../../../lib/decorators/preconditions/node');

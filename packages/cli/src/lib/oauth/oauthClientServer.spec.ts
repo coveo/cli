@@ -2,7 +2,7 @@ jest.mock('axios');
 jest.mock('http');
 
 import {Region} from '@coveord/platform-client';
-import axios, {Axios} from 'axios';
+import axios from 'axios';
 import {
   createServer,
   IncomingMessage,

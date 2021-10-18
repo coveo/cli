@@ -4,7 +4,7 @@ jest.mock('cli-ux');
 
 import {dedent} from 'ts-dedent';
 import {mocked} from 'ts-jest/utils';
-import {spawnProcessOutput, spawnProcess} from '../../utils/process';
+import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from './testsUtils/utils';
 import {cli} from 'cli-ux';
 
