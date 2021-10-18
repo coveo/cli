@@ -29,7 +29,7 @@ function renderChoices(this: CustomizablePrompt, pointer: [number, number]) {
       this.keys.realChoices.map((choice) => choice.name)
     );
   }
-  this.keys.forEach((choice, i) => {
+  this.keys.forEach((choice) => {
     if (choice.type === 'separator') {
       output += ` ${choice}\n`;
       return;
@@ -60,7 +60,7 @@ function getRenderedValues(
   isLineDisabled: boolean
 ) {
   let renderedValues = '';
-  this.values.forEach((choice, i) => {
+  this.values.forEach((choice) => {
     if (choice.type === 'separator') {
       renderedValues += ` ${choice}`;
       return;
