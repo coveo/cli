@@ -46,9 +46,10 @@ export const readSnapshotPrivilege: PlatformPrivilege = {
   ],
   unsatisfiedConditionMessage: (anonymous: boolean) =>
     anonymous
-      ? `Your API key doesn't have the privilege to create snapshots.
+      ? `Your API key doesn't have the privilege to view snapshots. Make sure to grant this privilege to your API key before running the command again
 See https://docs.coveo.com/en/3357.`
-      : 'TODO: not anonymous error message',
+      : `You are not authorized to view snapshots. Make sure you are granted this privilege before running the command again.
+See https://docs.coveo.com/en/3357.`,
 };
 
 export const writeSnapshotPrivilege: PlatformPrivilege = {
@@ -69,9 +70,10 @@ export const writeSnapshotPrivilege: PlatformPrivilege = {
   ],
   unsatisfiedConditionMessage: (anonymous: boolean) =>
     anonymous
-      ? `Your API key doesn't have the privilege to create snapshots.
+      ? `Your API key doesn't have the privilege to create snapshots. Make sure to grant this privilege to your API key before running the command again
 See https://docs.coveo.com/en/3357.`
-      : 'TODO: not anonymous error message',
+      : `You are not authorized to create snapshots. Make sure you are granted this privilege before running the command again.
+See https://docs.coveo.com/en/3357.`,
 };
 
 export const readLinkPrivilege: PlatformPrivilege = {
@@ -85,9 +87,10 @@ export const readLinkPrivilege: PlatformPrivilege = {
   ],
   unsatisfiedConditionMessage: (anonymous: boolean) =>
     anonymous
-      ? `Your API key doesn't have the privilege to create snapshots.
+      ? `Your API key doesn't have the privilege to read synchronization plans. Make sure to grant this privilege to your API key before running the command again
 See https://docs.coveo.com/en/3357.`
-      : 'TODO: not anonymous error message',
+      : `You are not authorized to view synchronization plans. Make sure you are granted this privilege before running the command again.
+      See https://docs.coveo.com/en/3357.`,
 };
 
 export const writeLinkPrivilege: PlatformPrivilege = {
@@ -108,7 +111,8 @@ export const writeLinkPrivilege: PlatformPrivilege = {
   ],
   unsatisfiedConditionMessage: (anonymous: boolean) =>
     anonymous
-      ? `Your API key doesn't have the privilege to create snapshots.
+      ? `Your API key doesn't have the privilege to create synchronization plans. Make sure to grant this privilege to your API key before running the command again
 See https://docs.coveo.com/en/3357.`
-      : 'TODO: not anonymous error message',
+      : `You are not authorized to create synchronization plans. Make sure you are granted this privilege before running the command again.
+See https://docs.coveo.com/en/3357.`,
 };
