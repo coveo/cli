@@ -26,6 +26,7 @@ import extract from 'extract-zip';
 import {Writable} from 'stream';
 import {error} from '@oclif/errors';
 import {getDirectory, getFile} from '../../__test__/fsUtils';
+import {fancyIt} from '../../__test__/it';
 
 const mockedExistSync = mocked(existsSync);
 const mockedReadDirSync = mocked(readdirSync);
@@ -84,7 +85,7 @@ describe('Project', () => {
   });
 
   describe('if the project is invalid', () => {
-    it('should ensure resources folder exists', async () => {
+    fancyIt()('should ensure resources folder exists', async () => {
       doMockFileDoesNotExists('resources');
       const project = projectCreator();
       await project.compressResources();
@@ -102,7 +103,7 @@ describe('Project', () => {
       );
     });
 
-    it('should ensure .coveo hidden folder exists', async () => {
+    fancyIt()('should ensure .coveo hidden folder exists', async () => {
       doMockFileDoesNotExists('_');
       const project = projectCreator();
       doMockFileDoesNotExists('.coveo');
@@ -123,7 +124,7 @@ describe('Project', () => {
     });
   });
 
-  it('should create .coveo project if absent', () => {
+  fancyIt()('should create .coveo project if absent', () => {
     doMockFileDoesNotExists('.coveo');
     mockedPathExistsSync.mockReturnValueOnce(false);
     projectCreator();
@@ -149,26 +150,38 @@ describe('Project', () => {
       await project.compressResources();
     });
 
-    it('#compressResources should create a write stream the appropriate path to the zip file', () => {
-      expect(mockedCreateWriteStream).toHaveBeenCalledWith(pathToZip);
-    });
+    fancyIt()(
+      '#compressResources should create a write stream the appropriate path to the zip file',
+      () => {
+        expect(mockedCreateWriteStream).toHaveBeenCalledWith(pathToZip);
+      }
+    );
 
-    it('#compressResources should append files from the resource directory', () => {
-      const putTheContentAtTheRootOfTheArchive = false;
-      expect(mockedPassDirectory).toHaveBeenCalledWith(
-        pathToResources,
-        putTheContentAtTheRootOfTheArchive
-      );
-    });
+    fancyIt()(
+      '#compressResources should append files from the resource directory',
+      () => {
+        const putTheContentAtTheRootOfTheArchive = false;
+        expect(mockedPassDirectory).toHaveBeenCalledWith(
+          pathToResources,
+          putTheContentAtTheRootOfTheArchive
+        );
+      }
+    );
 
-    it('#compressResources should finalize when there are no more resources to zip', () => {
-      expect(mockedFinalize).toHaveBeenCalledTimes(1);
-    });
+    fancyIt()(
+      '#compressResources should finalize when there are no more resources to zip',
+      () => {
+        expect(mockedFinalize).toHaveBeenCalledTimes(1);
+      }
+    );
 
-    it('#deleteTemporaryZipFile should delete the temporary a zip file', () => {
-      project.deleteTemporaryZipFile();
-      expect(mockedUnlinkSync).toHaveBeenCalledWith(pathToZip);
-    });
+    fancyIt()(
+      '#deleteTemporaryZipFile should delete the temporary a zip file',
+      () => {
+        project.deleteTemporaryZipFile();
+        expect(mockedUnlinkSync).toHaveBeenCalledWith(pathToZip);
+      }
+    );
 
     it.todo(
       '#compressResources should reject if the archiver returns an error'
@@ -191,7 +204,7 @@ describe('Project', () => {
         global.DataView = trueDataView;
       });
 
-      it('should write the zip on disk', async () => {
+      fancyIt()('should write the zip on disk', async () => {
         const project = projectCreator();
         const fakeBlob = new Blob();
         await project.refresh(fakeBlob);
@@ -204,7 +217,7 @@ describe('Project', () => {
         );
       });
 
-      it('should extract the zip in the resource folder', async () => {
+      fancyIt()('should extract the zip in the resource folder', async () => {
         const project = projectCreator();
         const fakeBlob = new Blob();
         await project.refresh(fakeBlob);
@@ -215,61 +228,64 @@ describe('Project', () => {
         );
       });
 
-      it('should format every JSON files in the resource folder', async () => {
-        const project = projectCreator();
-        const fakeBlob = new Blob();
-        mockedReadJSONSync
-          .mockReturnValueOnce({call: 1})
-          .mockReturnValueOnce({call: 2});
-        mockedReadDirSync
-          .mockImplementationOnce(() => [
-            getFile('somefile.json'),
-            getFile('somefile.notJson'),
-            getDirectory('someDirectory'),
-          ])
-          .mockImplementationOnce(() => [getFile('someFileInASubDir.json')]);
+      fancyIt()(
+        'should format every JSON files in the resource folder',
+        async () => {
+          const project = projectCreator();
+          const fakeBlob = new Blob();
+          mockedReadJSONSync
+            .mockReturnValueOnce({call: 1})
+            .mockReturnValueOnce({call: 2});
+          mockedReadDirSync
+            .mockImplementationOnce(() => [
+              getFile('somefile.json'),
+              getFile('somefile.notJson'),
+              getDirectory('someDirectory'),
+            ])
+            .mockImplementationOnce(() => [getFile('someFileInASubDir.json')]);
 
-        await project.refresh(fakeBlob);
+          await project.refresh(fakeBlob);
 
-        expect(mockedReadDirSync).toHaveBeenNthCalledWith(
-          1,
-          resolve('dummy/path', 'resources'),
-          {withFileTypes: true}
-        );
-        expect(mockedReadDirSync).toHaveBeenNthCalledWith(
-          2,
-          resolve('dummy/path', 'resources', 'someDirectory'),
-          {withFileTypes: true}
-        );
-        expect(mockedReadJSONSync).toHaveBeenCalledTimes(2);
-        expect(mockedReadJSONSync).toHaveBeenCalledWith(
-          resolve('dummy/path', 'resources', 'somefile.json')
-        );
-        expect(mockedReadJSONSync).toHaveBeenCalledWith(
-          resolve(
-            'dummy/path',
-            'resources',
-            'someDirectory',
-            'someFileInASubDir.json'
-          )
-        );
-        expect(mockedWriteJSONSync).toHaveBeenCalledTimes(2);
-        expect(mockedWriteJSONSync).toHaveBeenCalledWith(
-          resolve('dummy/path', 'resources', 'somefile.json'),
-          {call: 1},
-          {spaces: '\t'}
-        );
-        expect(mockedWriteJSONSync).toHaveBeenCalledWith(
-          resolve(
-            'dummy/path',
-            'resources',
-            'someDirectory',
-            'someFileInASubDir.json'
-          ),
-          {call: 2},
-          {spaces: '\t'}
-        );
-      });
+          expect(mockedReadDirSync).toHaveBeenNthCalledWith(
+            1,
+            resolve('dummy/path', 'resources'),
+            {withFileTypes: true}
+          );
+          expect(mockedReadDirSync).toHaveBeenNthCalledWith(
+            2,
+            resolve('dummy/path', 'resources', 'someDirectory'),
+            {withFileTypes: true}
+          );
+          expect(mockedReadJSONSync).toHaveBeenCalledTimes(2);
+          expect(mockedReadJSONSync).toHaveBeenCalledWith(
+            resolve('dummy/path', 'resources', 'somefile.json')
+          );
+          expect(mockedReadJSONSync).toHaveBeenCalledWith(
+            resolve(
+              'dummy/path',
+              'resources',
+              'someDirectory',
+              'someFileInASubDir.json'
+            )
+          );
+          expect(mockedWriteJSONSync).toHaveBeenCalledTimes(2);
+          expect(mockedWriteJSONSync).toHaveBeenCalledWith(
+            resolve('dummy/path', 'resources', 'somefile.json'),
+            {call: 1},
+            {spaces: '\t'}
+          );
+          expect(mockedWriteJSONSync).toHaveBeenCalledWith(
+            resolve(
+              'dummy/path',
+              'resources',
+              'someDirectory',
+              'someFileInASubDir.json'
+            ),
+            {call: 2},
+            {spaces: '\t'}
+          );
+        }
+      );
     });
   });
 });

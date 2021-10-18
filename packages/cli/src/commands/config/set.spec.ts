@@ -32,6 +32,7 @@ describe('config:set', () => {
 
   test
     .stdout()
+    .stderr()
     .command(['config:set'])
     .it(
       'allows to call set without any flags and should not modify configuration',
@@ -43,6 +44,7 @@ describe('config:set', () => {
   Object.values(PlatformEnvironment).forEach((environment) => {
     test
       .stdout()
+      .stderr()
       .command(['config:set', '-e', environment])
       .it(`allows to modify environment ${environment}`, () => {
         expect(mockSet).toHaveBeenCalledWith('environment', environment);
@@ -51,6 +53,7 @@ describe('config:set', () => {
 
   test
     .stdout()
+    .stderr()
     .command(['config:set', '-e', 'foo'])
     .catch(/Expected --environment=foo/)
     .it('fails when trying to set an invalid environment', () => {
@@ -60,6 +63,7 @@ describe('config:set', () => {
   Object.keys(Region).forEach((region) => {
     test
       .stdout()
+      .stderr()
       .command(['config:set', '-r', region])
       .it(`allows to modify region ${region}`, () => {
         expect(mockSet).toHaveBeenCalledWith('region', region);
@@ -68,6 +72,7 @@ describe('config:set', () => {
 
   test
     .stdout()
+    .stderr()
     .command(['config:set', '-r', 'foo'])
     .catch(/Expected --region=foo/)
     .it('fails when trying to set an invalid region', () => {
@@ -76,6 +81,7 @@ describe('config:set', () => {
 
   test
     .stdout()
+    .stderr()
     .do(() => {
       mockGetHasAccessToOrg.mockReturnValueOnce(Promise.resolve(true));
     })
@@ -89,6 +95,7 @@ describe('config:set', () => {
 
   test
     .stdout()
+    .stderr()
     .do(() => {
       mockGetHasAccessToOrg.mockReturnValueOnce(Promise.resolve(false));
     })
@@ -103,6 +110,7 @@ describe('config:set', () => {
 
   test
     .stdout()
+    .stderr()
     .command(['config:set', '-a', 'y'])
     .it('allows to modify the analytics configuration', () => {
       expect(mockSet).toHaveBeenCalledWith('analyticsEnabled', true);

@@ -6,6 +6,7 @@ import {ResourceSnapshotType} from '@coveord/platform-client';
 import {readFileSync} from 'fs';
 import {join} from 'path';
 import {mocked} from 'ts-jest/utils';
+import {fancyIt} from '../../__test__/it';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {Snapshot} from './snapshot';
 import {SnapshotFactory} from './snapshotFactory';
@@ -62,29 +63,41 @@ describe('SnapshotFactory', () => {
       await SnapshotFactory.createFromZip(pathToZip, 'my-target-org');
     });
 
-    it('should create a client connected to the right organization', () => {
-      expect(mockedGetClient).toHaveBeenCalledWith({
-        organization: 'my-target-org',
-      });
-    });
+    fancyIt()(
+      'should create a client connected to the right organization',
+      () => {
+        expect(mockedGetClient).toHaveBeenCalledWith({
+          organization: 'my-target-org',
+        });
+      }
+    );
 
-    it('#createSnapshotFromZip should retrieve an authenticated client', () => {
-      expect(mockedCreateSnapshotFromBuffer).toHaveBeenCalledTimes(1);
-    });
+    fancyIt()(
+      '#createSnapshotFromZip should retrieve an authenticated client',
+      () => {
+        expect(mockedCreateSnapshotFromBuffer).toHaveBeenCalledTimes(1);
+      }
+    );
 
-    it('#createSnapshotFromZip should create a snapshot from Zip with appropriate parameters', () => {
-      expect(mockedCreateSnapshotFromBuffer).toHaveBeenCalledWith(
-        Buffer.from('hello there'),
-        'ZIP',
-        {
-          developerNotes: 'cli-created-from-zip',
-        }
-      );
-    });
+    fancyIt()(
+      '#createSnapshotFromZip should create a snapshot from Zip with appropriate parameters',
+      () => {
+        expect(mockedCreateSnapshotFromBuffer).toHaveBeenCalledWith(
+          Buffer.from('hello there'),
+          'ZIP',
+          {
+            developerNotes: 'cli-created-from-zip',
+          }
+        );
+      }
+    );
 
-    it('#createSnapshotFromZip should create a readstream with the appropriate path to zip', () => {
-      expect(mockedReadFileSync).toHaveBeenCalledWith(join('dummy', 'path'));
-    });
+    fancyIt()(
+      '#createSnapshotFromZip should create a readstream with the appropriate path to zip',
+      () => {
+        expect(mockedReadFileSync).toHaveBeenCalledWith(join('dummy', 'path'));
+      }
+    );
   });
 
   describe('when the snapshot is created from an exisiting one', () => {
@@ -95,13 +108,16 @@ describe('SnapshotFactory', () => {
       await SnapshotFactory.createFromExistingSnapshot(snapshotId, targetId);
     });
 
-    it('should create a client connected to the right organization', () => {
-      expect(mockedGetClient).toHaveBeenCalledWith({
-        organization: 'target-id',
-      });
-    });
+    fancyIt()(
+      'should create a client connected to the right organization',
+      () => {
+        expect(mockedGetClient).toHaveBeenCalledWith({
+          organization: 'target-id',
+        });
+      }
+    );
 
-    it('should get the content of an existing snapshot', () => {
+    fancyIt()('should get the content of an existing snapshot', () => {
       expect(mockedGetSnapshot).toHaveBeenCalledWith('snapshot-id', {
         includeReports: true,
       });
@@ -119,13 +135,16 @@ describe('SnapshotFactory', () => {
       await SnapshotFactory.createFromOrg(resourcesToExport, targetId);
     });
 
-    it('should create a client connected to the right organization', () => {
-      expect(mockedGetClient).toHaveBeenCalledWith({
-        organization: 'target-id',
-      });
-    });
+    fancyIt()(
+      'should create a client connected to the right organization',
+      () => {
+        expect(mockedGetClient).toHaveBeenCalledWith({
+          organization: 'target-id',
+        });
+      }
+    );
 
-    it('should create a snapshot with the specified resources', () => {
+    fancyIt()('should create a snapshot with the specified resources', () => {
       expect(mockedCreateFromOrganization).toHaveBeenCalledWith(
         {resourcesToExport: {EXTENSION: ['*'], FIELD: ['*']}},
         expect.objectContaining({})

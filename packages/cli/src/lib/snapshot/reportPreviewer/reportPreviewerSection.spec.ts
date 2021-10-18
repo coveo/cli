@@ -1,5 +1,6 @@
 import stripAnsi from 'strip-ansi';
 import dedent from 'ts-dedent';
+import {fancyIt} from '../../../__test__/it';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
@@ -41,7 +42,7 @@ describe('ReportViewerSection', () => {
   ];
 
   describe('when there are no resource changes', () => {
-    it('should print nothing', () => {
+    fancyIt()('should print nothing', () => {
       const section = new ReportViewerSection(
         unsyncedResource,
         allOperationsAllowed
@@ -57,7 +58,7 @@ describe('ReportViewerSection', () => {
       allOperationsAllowed
     );
 
-    it('should print all operations with changes', () => {
+    fancyIt()('should print all operations with changes', () => {
       expect(stripAnsi(section.display(0))).toContain(dedent`
       +10 to create
       -2 to delete
@@ -66,7 +67,7 @@ describe('ReportViewerSection', () => {
       `);
     });
 
-    it('should indent with right amount of spaces', () => {
+    fancyIt()('should indent with right amount of spaces', () => {
       expect(stripAnsi(section.display(3))).toContain(dedent`
       +  10 to create
       -  2 to delete
@@ -81,7 +82,7 @@ describe('ReportViewerSection', () => {
       'resourcesDeleted',
     ]);
 
-    it('should print allowed operation', () => {
+    fancyIt()('should print allowed operation', () => {
       expect(stripAnsi(section.display(0))).toContain(dedent`
       -2 to delete
       `);

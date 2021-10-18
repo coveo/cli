@@ -132,6 +132,8 @@ describe('org:resources:push', () => {
     });
 
     test
+      .stdout()
+      .stderr()
       .stub(cli, 'confirm', () => async () => true)
       .command(['org:resources:push'])
       .it('should preview the snapshot', () => {
@@ -139,6 +141,8 @@ describe('org:resources:push', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .stub(cli, 'confirm', () => async () => true)
       .command(['org:resources:push'])
       .it('should apply the snapshot after confirmation', () => {
@@ -146,6 +150,8 @@ describe('org:resources:push', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .stub(cli, 'confirm', () => async () => false)
       .command(['org:resources:push'])
       .it('should not apply the snapshot if not confirmed', () => {
@@ -153,6 +159,8 @@ describe('org:resources:push', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .stub(cli, 'confirm', () => async () => true)
       .command(['org:resources:push'])
       .it('should work with default connected org', () => {
@@ -164,6 +172,8 @@ describe('org:resources:push', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .stub(cli, 'confirm', () => async () => true)
       .command(['org:resources:push', '-t', 'myorg'])
       .it('should work with specified target org', () => {
@@ -175,6 +185,8 @@ describe('org:resources:push', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .stub(cli, 'confirm', () => async () => true)
       .command(['org:resources:push'])
       .it('should set a 60 seconds wait', () => {
@@ -186,6 +198,8 @@ describe('org:resources:push', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .stub(cli, 'confirm', () => async () => true)
       .command(['org:resources:push', '-w', '99'])
       .it('should set a 99 seconds wait', () => {
@@ -197,6 +211,8 @@ describe('org:resources:push', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .stub(cli, 'confirm', () => async () => true)
       .command(['org:resources:push'])
       .it('#should not apply missing resources', () => {
@@ -204,6 +220,8 @@ describe('org:resources:push', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .stub(cli, 'confirm', () => async () => true)
       .command(['org:resources:push', '-d'])
       .it('should apply missing resoucres', () => {
@@ -211,6 +229,8 @@ describe('org:resources:push', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .stub(cli, 'confirm', () => async () => true)
       .command(['org:resources:push'])
       .it('should delete the compressed folder', () => {
@@ -218,6 +238,8 @@ describe('org:resources:push', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .stub(cli, 'confirm', () => async () => true)
       .do(() => {
         mockedValidateSnapshot.mockImplementationOnce(() => {
@@ -231,6 +253,8 @@ describe('org:resources:push', () => {
       .it('should delete the compressed folder on error');
 
     test
+      .stdout()
+      .stderr()
       .stub(cli, 'confirm', () => async () => true)
       .command(['org:resources:push'])
       .it('should delete the snapshot', () => {
@@ -238,12 +262,16 @@ describe('org:resources:push', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .command(['org:resources:push', '--skipPreview'])
       .it('should apply snapshot without confrimation', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledTimes(1);
       });
 
     test
+      .stdout()
+      .stderr()
       .stub(cli, 'confirm', () => async () => true)
       .command(['org:resources:push', '--previewLevel', 'light'])
       .it('should only display light preview', () => {
@@ -255,6 +283,8 @@ describe('org:resources:push', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .stub(cli, 'confirm', () => async () => true)
       .command(['org:resources:push', '--previewLevel', 'detailed'])
       .it('should display light and expanded preview', () => {
@@ -276,6 +306,7 @@ describe('org:resources:push', () => {
     });
 
     test
+      .stdout()
       .stderr()
       .command(['org:resources:push'])
       .it('should show the failed validation', (ctx) => {
@@ -283,6 +314,8 @@ describe('org:resources:push', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .command(['org:resources:push'])
       .it('should only preview the snapshot', () => {
         expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
@@ -290,6 +323,8 @@ describe('org:resources:push', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .command(['org:resources:push'])
       .it('should return an invalid snapshot error message', () => {
         expect(mockedError).toHaveBeenCalledWith(

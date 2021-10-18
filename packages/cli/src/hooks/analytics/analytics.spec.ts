@@ -18,6 +18,7 @@ import {
   configurationMock,
   defaultConfiguration,
 } from '../../__stub__/configuration';
+import {fancyIt} from '../../__test__/it';
 const mockedAnalytics = mocked(CoveoAnalyticsClient);
 const mockedConfig = mocked(Config);
 const mockedPlatformClient = mocked(PlatformClient);
@@ -103,19 +104,22 @@ describe('analytics hook', () => {
     sendCustomEvent.mockClear();
   });
 
-  it('should properly format the command ID by removing semi colon and using underscore', async () => {
-    await hook(getAnalyticsHook({commandID: 'hello:world'}));
-    expect(sendCustomEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        eventType: 'com_coveo_cli',
-        eventValue: 'hello_world',
-        originLevel1: 'com_coveo_cli',
-        originLevel2: 'hello_world',
-      })
-    );
-  });
+  fancyIt()(
+    'should properly format the command ID by removing semi colon and using underscore',
+    async () => {
+      await hook(getAnalyticsHook({commandID: 'hello:world'}));
+      expect(sendCustomEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventType: 'com_coveo_cli',
+          eventValue: 'hello_world',
+          originLevel1: 'com_coveo_cli',
+          originLevel2: 'hello_world',
+        })
+      );
+    }
+  );
 
-  it('should send user agent from config', async () => {
+  fancyIt()('should send user agent from config', async () => {
     await hook(getAnalyticsHook({config: {userAgent: 'the-agent'} as IConfig}));
     expect(sendCustomEvent).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -124,7 +128,7 @@ describe('analytics hook', () => {
     );
   });
 
-  it('should send operating system from config', async () => {
+  fancyIt()('should send operating system from config', async () => {
     await hook(getAnalyticsHook({config: {platform: 'linux'} as IConfig}));
     expect(sendCustomEvent).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -133,7 +137,7 @@ describe('analytics hook', () => {
     );
   });
 
-  it('should send environment from config', async () => {
+  fancyIt()('should send environment from config', async () => {
     await hook(getAnalyticsHook({}));
     expect(sendCustomEvent).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -142,7 +146,7 @@ describe('analytics hook', () => {
     );
   });
 
-  it('should send organization from config', async () => {
+  fancyIt()('should send organization from config', async () => {
     await hook(getAnalyticsHook({}));
     expect(sendCustomEvent).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -151,7 +155,7 @@ describe('analytics hook', () => {
     );
   });
 
-  it('should send region from config', async () => {
+  fancyIt()('should send region from config', async () => {
     await hook(getAnalyticsHook({}));
     expect(sendCustomEvent).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -160,7 +164,7 @@ describe('analytics hook', () => {
     );
   });
 
-  it('should send userDisplayName from platform-client', async () => {
+  fancyIt()('should send userDisplayName from platform-client', async () => {
     await hook(getAnalyticsHook({}));
     expect(sendCustomEvent).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -169,7 +173,7 @@ describe('analytics hook', () => {
     );
   });
 
-  it('should send username from platform-client', async () => {
+  fancyIt()('should send username from platform-client', async () => {
     await hook(getAnalyticsHook({}));
     expect(sendCustomEvent).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -178,7 +182,7 @@ describe('analytics hook', () => {
     );
   });
 
-  it('should send command flags', async () => {
+  fancyIt()('should send command flags', async () => {
     const flags = {'-e': 'dev', '-r': 'us'};
     await hook(getAnalyticsHook({flags}));
     expect(sendCustomEvent).toHaveBeenCalledWith(
@@ -188,7 +192,7 @@ describe('analytics hook', () => {
     );
   });
 
-  it('should send meta (error)', async () => {
+  fancyIt()('should send meta (error)', async () => {
     const err: Error = new Error('oh no');
     await hook(getAnalyticsHook({err}));
     expect(sendCustomEvent).toHaveBeenCalledWith(
@@ -202,7 +206,7 @@ describe('analytics hook', () => {
     );
   });
 
-  it('should not send any analytics if disabled', async () => {
+  fancyIt()('should not send any analytics if disabled', async () => {
     mockedConfig.mockImplementation(
       () =>
         ({
@@ -217,28 +221,34 @@ describe('analytics hook', () => {
     expect(sendCustomEvent).not.toHaveBeenCalled();
   });
 
-  it('should not throw an error when the user is not logged in', async () => {
-    mockedAuthenticationStatus.mockImplementationOnce(() =>
-      Promise.resolve(AuthenticationStatus.LOGGED_OUT)
-    );
+  fancyIt()(
+    'should not throw an error when the user is not logged in',
+    async () => {
+      mockedAuthenticationStatus.mockImplementationOnce(() =>
+        Promise.resolve(AuthenticationStatus.LOGGED_OUT)
+      );
 
-    await expect(hook(getAnalyticsHook({}))).resolves.not.toThrow();
-  });
+      await expect(hook(getAnalyticsHook({}))).resolves.not.toThrow();
+    }
+  );
 
-  it('should not throw an error when the user is expired', async () => {
+  fancyIt()('should not throw an error when the user is expired', async () => {
     mockedAuthenticationStatus.mockImplementationOnce(() =>
       Promise.resolve(AuthenticationStatus.EXPIRED)
     );
     await expect(hook(getAnalyticsHook({}))).resolves.not.toThrow();
   });
 
-  it('should not fetch userinfo if anonymous is set to true in the config', async () => {
-    mockedConfig.mockImplementation(
-      configurationMock({...defaultConfiguration, anonymous: true})
-    );
+  fancyIt()(
+    'should not fetch userinfo if anonymous is set to true in the config',
+    async () => {
+      mockedConfig.mockImplementation(
+        configurationMock({...defaultConfiguration, anonymous: true})
+      );
 
-    await hook(getAnalyticsHook({}));
+      await hook(getAnalyticsHook({}));
 
-    expect(mockedUserGet).not.toBeCalled();
-  });
+      expect(mockedUserGet).not.toBeCalled();
+    }
+  );
 });
