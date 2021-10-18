@@ -1,6 +1,7 @@
 import {EventEmitter} from 'events';
 import {ChildProcess} from 'child_process';
 import {spawnProcess} from './process';
+import {fancyIt} from '../../__test__/it';
 
 jest.mock('child_process', () => ({
   spawn: jest
@@ -18,14 +19,14 @@ jest.mock('child_process', () => ({
 }));
 
 describe('spawnProcess', () => {
-  it('should resolves with a success exit code', () => {
+  fancyIt()('should resolves with a success exit code', () => {
     const command = 'some valid command';
     const args = ['-valid', 'option'];
 
     return expect(spawnProcess(command, args)).resolves.toEqual(0);
   });
 
-  it('should reject', () => {
+  fancyIt()('should reject', () => {
     const command = 'invalid commande';
     const args = ['-foo', 'bar'];
 

@@ -92,12 +92,12 @@ export class New extends Command {
     }
   }
 
-  private setResources(type: unknown, resources: unknown[]) {
+  private setResources(_type: unknown, _resources: unknown[]) {
     // TODO CDX-631: Modify modelToWrite to set the resource associated to the resourcetype.
     throw new Error('Method not implemented.');
   }
 
-  private selectResource(resourceType: unknown): unknown {
+  private selectResource(_resourceType: unknown): unknown {
     // TODO CDX-631: Start a custom prompt to fetch the resource associated
     throw new Error('Method not implemented.');
   }

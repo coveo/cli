@@ -148,12 +148,16 @@ describe('org:resources:preview', () => {
     });
 
     test
+      .stdout()
+      .stderr()
       .command(['org:resources:preview'])
       .it('should use cwd as project', () => {
         expect(mockedProject).toHaveBeenCalledWith(cwd());
       });
 
     test
+      .stdout()
+      .stderr()
       .command(['org:resources:preview'])
       .it('should work with default connected org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
@@ -164,6 +168,8 @@ describe('org:resources:preview', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .command(['org:resources:preview', '-t', 'myorg'])
       .it('should work with specified target org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
@@ -174,6 +180,8 @@ describe('org:resources:preview', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .command(['org:resources:preview'])
       .it('should set a 60 seconds wait', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
@@ -184,6 +192,8 @@ describe('org:resources:preview', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .command(['org:resources:preview', '-w', '312'])
       .it('should set a 312 seconds wait', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
@@ -194,30 +204,40 @@ describe('org:resources:preview', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .command(['org:resources:preview'])
       .it('#validate should not take into account missing resources', () => {
         expect(mockedValidateSnapshot).toHaveBeenCalledWith(false, {wait: 60});
       });
 
     test
+      .stdout()
+      .stderr()
       .command(['org:resources:preview', '-d'])
       .it('#validate should take into account missing resoucres', () => {
         expect(mockedValidateSnapshot).toHaveBeenCalledWith(true, {wait: 60});
       });
 
     test
+      .stdout()
+      .stderr()
       .command(['org:resources:preview'])
       .it('should preview the snapshot', () => {
         expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
       });
 
     test
+      .stdout()
+      .stderr()
       .command(['org:resources:preview'])
       .it('should delete the compressed folder', () => {
         expect(mockedDeleteTemporaryZipFile).toHaveBeenCalledTimes(1);
       });
 
     test
+      .stdout()
+      .stderr()
       .do(() => {
         mockedValidateSnapshot.mockImplementationOnce(() => {
           throw new Error('You shall not pass');
@@ -230,12 +250,16 @@ describe('org:resources:preview', () => {
       .it('should delete the compressed folder on error');
 
     test
+      .stdout()
+      .stderr()
       .command(['org:resources:preview'])
       .it('should delete the snapshot', () => {
         expect(mockedDeleteSnapshot).toHaveBeenCalledTimes(1);
       });
 
     test
+      .stdout()
+      .stderr()
       .command(['org:resources:preview'])
       .it('should display expanded preview', () => {
         expect(mockedPreviewSnapshot).toHaveBeenCalledWith(
@@ -246,6 +270,8 @@ describe('org:resources:preview', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .command(['org:resources:preview', '--previewLevel', 'light'])
       .it('should only display light preview', () => {
         expect(mockedPreviewSnapshot).toHaveBeenCalledWith(
@@ -273,6 +299,8 @@ describe('org:resources:preview', () => {
     });
 
     test
+      .stdout()
+      .stderr()
       .command(['org:resources:preview'])
       .it('should throw an error for invalid snapshots', () => {
         expect(mockedError).toHaveBeenCalledWith(
@@ -281,6 +309,8 @@ describe('org:resources:preview', () => {
       });
 
     test
+      .stdout()
+      .stderr()
       .command(['org:resources:preview'])
       .it('should print an URL to the snapshot page', () => {
         expect(mockedError).toHaveBeenCalledWith(
@@ -307,12 +337,16 @@ describe('org:resources:preview', () => {
     });
 
     test
+      .stdout()
+      .stderr()
       .command(['org:resources:preview'])
       .it('should have detected and tried to resolves the conflicts', () => {
         expect(mockedTryAutomaticSynchronization).toHaveBeenCalledWith(true);
       });
 
     test
+      .stdout()
+      .stderr()
       .command(['org:resources:preview', '--sync'])
       .it(
         'should try to apply synchronization plan without asking for confirmation',

@@ -1,5 +1,6 @@
 import {Region} from '@coveord/platform-client';
 import {mocked} from 'ts-jest/utils';
+import {fancyIt} from '../../__test__/it';
 import {PlatformEnvironment, platformUrl} from '../platform/environment';
 import {OAuth} from './oauth';
 import {OAuthClientServer} from './oauthClientServer';
@@ -15,7 +16,7 @@ mockedOauthClientServer.prototype.startServer.mockImplementation(
 );
 
 describe('OAuth', () => {
-  it('should return the access token when requested', async () => {
+  fancyIt()('should return the access token when requested', async () => {
     mockedStartServer.mockResolvedValueOnce({
       accessToken: 'this-is-the-new-access-token',
     });
@@ -24,7 +25,7 @@ describe('OAuth', () => {
   });
 
   describe('should use proper port for client server', () => {
-    it('using default port', async () => {
+    fancyIt()('using default port', async () => {
       await new OAuth().getToken();
       expect(mockedStartServer).toHaveBeenCalledWith(
         32111,
@@ -33,7 +34,7 @@ describe('OAuth', () => {
       );
     });
 
-    it('using configured port', async () => {
+    fancyIt()('using configured port', async () => {
       await new OAuth({port: 444}).getToken();
       expect(mockedStartServer).toHaveBeenCalledWith(
         444,
@@ -59,7 +60,7 @@ describe('OAuth', () => {
       scope: 'full',
     };
 
-    it('in prod', async () => {
+    fancyIt()('in prod', async () => {
       const opts = {environment: PlatformEnvironment.Prod};
       await new OAuth(opts).getToken();
       expect(mockedOauthClientServer).toHaveBeenCalledWith(
@@ -68,7 +69,7 @@ describe('OAuth', () => {
       );
     });
 
-    it('in qa', async () => {
+    fancyIt()('in qa', async () => {
       const opts = {environment: PlatformEnvironment.QA};
       await new OAuth(opts).getToken();
       expect(mockedOauthClientServer).toHaveBeenCalledWith(
@@ -77,7 +78,7 @@ describe('OAuth', () => {
       );
     });
 
-    it('in dev', async () => {
+    fancyIt()('in dev', async () => {
       const opts = {environment: PlatformEnvironment.Dev};
       await new OAuth(opts).getToken();
       expect(mockedOauthClientServer).toHaveBeenCalledWith(
@@ -86,7 +87,7 @@ describe('OAuth', () => {
       );
     });
 
-    it('in hipaa', async () => {
+    fancyIt()('in hipaa', async () => {
       const opts = {environment: PlatformEnvironment.QA};
       await new OAuth(opts).getToken();
       expect(mockedOauthClientServer).toHaveBeenCalledWith(
@@ -95,7 +96,7 @@ describe('OAuth', () => {
       );
     });
 
-    it('in Europe', async () => {
+    fancyIt()('in Europe', async () => {
       const opts = {region: Region.EU};
       await new OAuth(opts).getToken();
       expect(mockedOauthClientServer).toHaveBeenCalledWith(
@@ -104,7 +105,7 @@ describe('OAuth', () => {
       );
     });
 
-    it('it should be U.S. prod by default', async () => {
+    fancyIt()('it should be U.S. prod by default', async () => {
       await new OAuth().getToken();
       expect(mockedOauthClientServer).toHaveBeenCalledWith(
         defaultClientConfig,

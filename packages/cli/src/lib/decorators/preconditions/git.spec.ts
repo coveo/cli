@@ -6,6 +6,7 @@ import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from './testsUtils/utils';
 
 import {IsGitInstalled} from './git';
+import {fancyIt} from '../../../__test__/it';
 
 describe('IsGitInstalled', () => {
   const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
@@ -22,7 +23,7 @@ describe('IsGitInstalled', () => {
       });
     });
 
-    it('should return false and warn', async () => {
+    fancyIt()('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsGitInstalled()(fakeCommand)).resolves.toBe(false);
@@ -49,7 +50,7 @@ describe('IsGitInstalled', () => {
       });
     });
 
-    it('should return false and warn', async () => {
+    fancyIt()('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsGitInstalled()(fakeCommand)).resolves.toBe(false);
@@ -74,7 +75,7 @@ describe('IsGitInstalled', () => {
       });
     });
 
-    it('should return true and not warn', async () => {
+    fancyIt()('should return true and not warn', async () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsGitInstalled()(fakeCommand)).resolves.toBe(true);

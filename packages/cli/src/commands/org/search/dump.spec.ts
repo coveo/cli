@@ -53,6 +53,7 @@ describe('org:search:dump', () => {
       mockReturnNumberOfResults(0);
     })
     .stdout()
+    .stderr()
     .command(['org:search:dump', '-s', 'the_source'])
     .it('should pass the source as a search filter', () =>
       expect(mockSearch).toHaveBeenCalledWith(
@@ -67,6 +68,7 @@ describe('org:search:dump', () => {
       mockReturnNumberOfResults(0);
     })
     .stdout()
+    .stderr()
     .command(['org:search:dump', '-s', 'the_source_1', '-s', 'the_source_2'])
     .it('should pass multiple sources as a search filter', () =>
       expect(mockSearch).toHaveBeenCalledWith(
@@ -83,6 +85,7 @@ describe('org:search:dump', () => {
       mockReturnNumberOfResults(0);
     })
     .stdout()
+    .stderr()
     .command(['org:search:dump', '-s', 'the_source_1', '-p', 'mypipeline'])
     .it('should pass pipeline as a search parameter', () =>
       expect(mockSearch).toHaveBeenCalledWith(
@@ -97,6 +100,7 @@ describe('org:search:dump', () => {
       mockReturnNumberOfResults(0);
     })
     .stdout()
+    .stderr()
     .command([
       'org:search:dump',
       '-s',
@@ -119,6 +123,7 @@ describe('org:search:dump', () => {
       mockReturnNumberOfResults(0);
     })
     .stdout()
+    .stderr()
     .command(['org:search:dump', '-s', 'the_source', '-f', 'my-filter'])
     .it('should pass additional filter as a search filter', () =>
       expect(mockSearch).toHaveBeenCalledWith(
@@ -133,6 +138,7 @@ describe('org:search:dump', () => {
       mockReturnNumberOfResults(0);
     })
     .stdout()
+    .stderr()
     .command(['org:search:dump', '-s', 'the_source'])
     .it('should do only one query when no results are returned', () =>
       expect(mockSearch).toHaveBeenCalledTimes(1)
@@ -143,6 +149,7 @@ describe('org:search:dump', () => {
       mockReturnNumberOfResults(0);
     })
     .stdout()
+    .stderr()
     .command(['org:search:dump', '-s', 'the_source'])
     .it('should sort by rowid', () =>
       expect(mockSearch).toHaveBeenCalledWith(
@@ -157,6 +164,7 @@ describe('org:search:dump', () => {
       mockReturnNumberOfResults(0);
     })
     .stdout()
+    .stderr()
     .command(['org:search:dump', '-s', 'the_source'])
     .it('should request 1000 results', () =>
       expect(mockSearch).toHaveBeenCalledWith(
@@ -172,6 +180,7 @@ describe('org:search:dump', () => {
       mockReturnNumberOfResults(234);
     })
     .stdout()
+    .stderr()
     .command(['org:search:dump', '-s', 'the_source'])
     .it('should perform subsequent query with rowid filter', () => {
       expect(mockSearch).toHaveBeenCalledTimes(2);

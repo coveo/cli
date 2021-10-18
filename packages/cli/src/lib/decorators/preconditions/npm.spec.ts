@@ -7,6 +7,7 @@ import {getFakeCommand} from './testsUtils/utils';
 
 import {IsNpmVersionInRange} from './npm';
 import {appendCmdIfWindows} from '../../utils/os';
+import {fancyIt} from '../../../__test__/it';
 
 describe('IsNpmVersionInRange', () => {
   const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
@@ -15,7 +16,7 @@ describe('IsNpmVersionInRange', () => {
   });
 
   describe('when the requiredVersion is not a semver valid string', () => {
-    it('should return false and warn', async () => {
+    fancyIt()('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsNpmVersionInRange('foo')(fakeCommand)).resolves.toBe(
@@ -38,7 +39,7 @@ describe('IsNpmVersionInRange', () => {
       });
     });
 
-    it('should return false and warn', async () => {
+    fancyIt()('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsNpmVersionInRange('>=0.0.1')(fakeCommand)).resolves.toBe(
@@ -61,7 +62,7 @@ describe('IsNpmVersionInRange', () => {
       });
     });
 
-    it('should return false and warn', async () => {
+    fancyIt()('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsNpmVersionInRange('>=0.0.1')(fakeCommand)).resolves.toBe(
@@ -88,7 +89,7 @@ describe('IsNpmVersionInRange', () => {
       });
     });
 
-    it('should return false and warn', async () => {
+    fancyIt()('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsNpmVersionInRange('>=1.0.0')(fakeCommand)).resolves.toBe(
@@ -114,7 +115,7 @@ describe('IsNpmVersionInRange', () => {
       });
     });
 
-    it('should return true and not warn', async () => {
+    fancyIt()('should return true and not warn', async () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsNpmVersionInRange('>=1.0.0')(fakeCommand)).resolves.toBe(
@@ -133,7 +134,7 @@ describe('IsNpmVersionInRange', () => {
       });
     });
 
-    it('should return true and not warn', async () => {
+    fancyIt()('should return true and not warn', async () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsNpmVersionInRange('>=1.0.0')(fakeCommand)).resolves.toBe(

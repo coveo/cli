@@ -61,18 +61,21 @@ describe('source:push:add', () => {
 
   test
     .stdout()
+    .stderr()
     .command(['source:push:add', 'mysource'])
     .catch(/You must minimally set the `file` or the `folder` flag/)
     .it('throws when no flags are specified');
 
   test
     .stdout()
+    .stderr()
     .command(['source:push:add', 'mysource', '-f', 'foo', '-d', 'bar'])
     .catch(/--folder= cannot also be provided when using --file=/)
     .it('throws when incompatible flags for file and folder are passed');
 
   test
     .stdout()
+    .stderr()
     .command([
       'source:push:add',
       'mysource',
@@ -84,12 +87,15 @@ describe('source:push:add', () => {
     });
 
   test
+    .stdout()
+    .stderr()
     .command(['source:push:add', 'mysource', '-f', 'should_explode'])
     .catch(/should_explode is not a valid file, or does not exists/)
     .it('returns an error when trying to load a file that does not exists');
 
   test
     .stdout()
+    .stderr()
     .command([
       'source:push:add',
       'mysource',
@@ -104,6 +110,7 @@ describe('source:push:add', () => {
 
   test
     .stdout()
+    .stderr()
     .command([
       'source:push:add',
       'mysource',
@@ -119,6 +126,7 @@ describe('source:push:add', () => {
 
   test
     .stdout()
+    .stderr()
     .command([
       'source:push:add',
       'mysource',
@@ -132,6 +140,7 @@ describe('source:push:add', () => {
 
   test
     .stdout()
+    .stderr()
     .command([
       'source:push:add',
       'mysource',
@@ -145,6 +154,7 @@ describe('source:push:add', () => {
 
   test
     .stdout()
+    .stderr()
     .command([
       'source:push:add',
       'mysource',
@@ -184,6 +194,7 @@ describe('source:push:add', () => {
 
   test
     .stdout()
+    .stderr()
     .command([
       'source:push:add',
       'mysource',
@@ -197,6 +208,7 @@ describe('source:push:add', () => {
 
   test
     .stdout()
+    .stderr()
     .command([
       'source:push:add',
       'mysource',
@@ -210,6 +222,7 @@ describe('source:push:add', () => {
 
   test
     .stdout()
+    .stderr()
     .command([
       'source:push:add',
       'mysource',
@@ -226,6 +239,7 @@ describe('source:push:add', () => {
 
   test
     .stdout()
+    .stderr()
     .command([
       'source:push:add',
       'mysource',

@@ -23,6 +23,7 @@ describe('source:push:new', () => {
 
   test
     .stdout()
+    .stderr()
     .command(['source:push:new', 'my source'])
     .it('uses source visibility SECURED by default', () => {
       expect(spyCreate).toHaveBeenCalledWith(
@@ -35,6 +36,7 @@ describe('source:push:new', () => {
 
   test
     .stdout()
+    .stderr()
     .command(['source:push:new', '-v', 'SHARED', 'my source'])
     .it('uses source visibility flag when specified', () => {
       expect(spyCreate).toHaveBeenCalledWith(
