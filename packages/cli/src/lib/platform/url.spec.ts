@@ -1,5 +1,6 @@
 import {Region} from '@coveord/platform-client';
 import {mocked} from 'ts-jest/utils';
+import {fancyIt} from '../../__test__/it';
 
 jest.mock('./environment');
 import {PlatformEnvironment, platformUrl} from './environment';
@@ -16,7 +17,7 @@ describe('url', () => {
   });
 
   describe('#snapshotUrl', () => {
-    it('should build the URL properly', () => {
+    fancyIt()('should build the URL properly', () => {
       expect(
         snapshotUrl('some-org', 'some-snapshot', {
           environment: PlatformEnvironment.QA,
@@ -34,7 +35,7 @@ describe('url', () => {
   });
 
   describe('#snapshotSyncrhonizationUrl', () => {
-    it('should build the URL properly', () => {
+    fancyIt()('should build the URL properly', () => {
       expect(
         snapshotSynchronizationUrl('some-org', 'some-snapshot', {
           environment: PlatformEnvironment.QA,

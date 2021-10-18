@@ -3,6 +3,7 @@ import {
   getAmbiguousPlan,
   getUnambiguousPlan,
 } from '../../../__stub__/resourceSnapshotsSynchronizationPlanModel';
+import {fancyIt} from '../../../__test__/it';
 import {SynchronizationPlan} from './synchronizationPlan';
 
 describe('SynchronizationPlan', () => {
@@ -12,7 +13,7 @@ describe('SynchronizationPlan', () => {
       model = getAmbiguousPlan();
     });
 
-    it('#containsUnambiguousMatches should return false', () => {
+    fancyIt()('#containsUnambiguousMatches should return false', () => {
       const plan = new SynchronizationPlan(model);
       expect(plan.containsUnambiguousMatches()).toBe(false);
     });
@@ -24,7 +25,7 @@ describe('SynchronizationPlan', () => {
       model = getUnambiguousPlan();
     });
 
-    it('#containsUnambiguousMatches should return true', () => {
+    fancyIt()('#containsUnambiguousMatches should return true', () => {
       const plan = new SynchronizationPlan(model);
       expect(plan.containsUnambiguousMatches()).toBe(true);
     });

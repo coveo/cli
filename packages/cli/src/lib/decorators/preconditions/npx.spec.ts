@@ -7,6 +7,7 @@ import {getFakeCommand} from './testsUtils/utils';
 
 import {IsNpxInstalled} from './npx';
 import {appendCmdIfWindows} from '../../utils/os';
+import {fancyIt} from '../../../__test__/it';
 
 describe('IsNpxInstalled', () => {
   const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
@@ -23,7 +24,7 @@ describe('IsNpxInstalled', () => {
       });
     });
 
-    it('should return false and warn', async () => {
+    fancyIt()('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsNpxInstalled()(fakeCommand)).resolves.toBe(false);
@@ -54,7 +55,7 @@ describe('IsNpxInstalled', () => {
       });
     });
 
-    it('should return false and warn', async () => {
+    fancyIt()('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsNpxInstalled()(fakeCommand)).resolves.toBe(false);
@@ -82,7 +83,7 @@ describe('IsNpxInstalled', () => {
       });
     });
 
-    it('should return true and not warn', async () => {
+    fancyIt()('should return true and not warn', async () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsNpxInstalled()(fakeCommand)).resolves.toBe(true);

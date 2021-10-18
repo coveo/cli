@@ -126,6 +126,8 @@ describe('ui:create:vue', () => {
   });
 
   test
+    .stdout()
+    .stderr()
     .do(() => {
       preconditionStatus.apiKey = false;
     })
@@ -138,6 +140,8 @@ describe('ui:create:vue', () => {
     );
 
   test
+    .stdout()
+    .stderr()
     .do(() => {
       preconditionStatus.node = false;
     })
@@ -150,6 +154,8 @@ describe('ui:create:vue', () => {
     );
 
   test
+    .stdout()
+    .stderr()
     .command(['ui:create:vue'])
     .catch((ctx) => {
       expect(ctx.message).toContain('Missing 1 required arg:');
@@ -157,6 +163,8 @@ describe('ui:create:vue', () => {
     .it('requires application name argument', async () => {});
 
   test
+    .stdout()
+    .stderr()
     .command(['ui:create:vue', 'myapp'])
     .it('should start 2 spawn processes with default preset arguments', () => {
       expect(mockedSpawnProcess).toHaveBeenCalledTimes(2);

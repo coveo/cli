@@ -1,3 +1,4 @@
+import {fancyIt} from '../../__test__/it';
 import {getPackageVersion} from './misc';
 
 describe('#getPackageVersion', () => {
@@ -20,11 +21,14 @@ describe('#getPackageVersion', () => {
     jest.restoreAllMocks();
   });
 
-  it('should try to resolve to the production dependencies first', () => {
-    mockPackageJson(filledPackageJson);
+  fancyIt()(
+    'should try to resolve to the production dependencies first',
+    () => {
+      mockPackageJson(filledPackageJson);
 
-    expect(getPackageVersion('myPackage')).toBe('1.0.0');
-  });
+      expect(getPackageVersion('myPackage')).toBe('1.0.0');
+    }
+  );
 
   describe('when the package is not in the production dependencies', () => {
     beforeEach(() => {
@@ -34,7 +38,7 @@ describe('#getPackageVersion', () => {
       });
     });
 
-    it('should fallback to the dev dependencies', () => {
+    fancyIt()('should fallback to the dev dependencies', () => {
       expect(getPackageVersion('myPackage')).toBe('2.0.0');
     });
   });
@@ -48,7 +52,7 @@ describe('#getPackageVersion', () => {
       });
     });
 
-    it('should fallback to the peer dependencies', () => {
+    fancyIt()('should fallback to the peer dependencies', () => {
       expect(getPackageVersion('myPackage')).toBe('3.0.0');
     });
   });
@@ -62,7 +66,7 @@ describe('#getPackageVersion', () => {
       });
     });
 
-    it('should return undefined', () => {
+    fancyIt()('should return undefined', () => {
       expect(getPackageVersion('myPackage')).toBeUndefined();
     });
   });

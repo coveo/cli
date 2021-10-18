@@ -50,6 +50,7 @@ describe('org:resources:list', () => {
       mockListSnapshots.mockReturnValueOnce(Promise.resolve([]));
     })
     .stdout()
+    .stderr()
     .command(['org:resources:list', '-t', 'foo'])
     .it('works when there is no snapshot available', (ctx) => {
       expect(ctx.stdout).toContain(
@@ -59,6 +60,7 @@ describe('org:resources:list', () => {
 
   test
     .stdout()
+    .stderr()
     .command(['org:resources:list', '-t', 'foo'])
     .it('print the available snapshot in a table', (ctx) => {
       // headers of table

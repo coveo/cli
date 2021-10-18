@@ -4,6 +4,7 @@ import {
   getSuccessfulSynchronizationReport,
   getUnsuccessfulSynchronizationReport,
 } from '../../../__stub__/resourceSnapshotsSynchronizationReportModel';
+import {fancyIt} from '../../../__test__/it';
 
 describe('SynchronizationReporter', () => {
   describe('if the report contains a successful synchronization', () => {
@@ -12,7 +13,7 @@ describe('SynchronizationReporter', () => {
       report = getSuccessfulSynchronizationReport();
     });
 
-    it('#isSuccessReport should return true', () => {
+    fancyIt()('#isSuccessReport should return true', () => {
       const reporter = new SnapshotSynchronizationReporter(report);
       expect(reporter.isSuccessReport()).toBe(true);
     });
@@ -24,7 +25,7 @@ describe('SynchronizationReporter', () => {
       report = getUnsuccessfulSynchronizationReport();
     });
 
-    it('#isSuccessReport should return false', () => {
+    fancyIt()('#isSuccessReport should return false', () => {
       const reporter = new SnapshotSynchronizationReporter(report);
       expect(reporter.isSuccessReport()).toBe(false);
     });

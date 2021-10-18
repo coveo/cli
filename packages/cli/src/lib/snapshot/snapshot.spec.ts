@@ -5,7 +5,7 @@ import {
   SnapshotExportContentFormat,
 } from '@coveord/platform-client';
 import {mocked} from 'ts-jest/utils';
-
+import {stdout, stderr} from 'stdout-stderr';
 import {getDummySnapshotModel} from '../../__stub__/resourceSnapshotsModel';
 import {
   getErrorReport,
@@ -33,6 +33,7 @@ import {Project} from '../project/project';
 import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer';
 import {join} from 'path';
 import {SnapshotOperationTimeoutError} from '../errors';
+import {fancyIt} from '../../__test__/it';
 
 const mockedRetry = mocked(retry);
 const mockedExpandedPreviewer = mocked(ExpandedPreviewer, true);
@@ -151,15 +152,21 @@ describe('Snapshot', () => {
     ])(
       'should request to dry-run the snapshot to the platform',
       async (validateParam, snapshotClientParam) => {
+        stderr.start();
+        stdout.start();
+
         await snapshot.validate(validateParam);
 
         expect(mockedDryRunSnapshot).toHaveBeenCalledWith(snapshotId, {
           deleteMissingResources: snapshotClientParam,
         });
+
+        stderr.stop();
+        stdout.stop();
       }
     );
 
-    it('should wait for the backend-operation to complete', async () => {
+    fancyIt()('should wait for the backend-operation to complete', async () => {
       await snapshot.validate();
       await snapshot.validate(undefined, {wait: 10});
 
@@ -172,13 +179,16 @@ describe('Snapshot', () => {
       });
     });
 
-    it('should create and return a SnapshotReporter of the latest report', async () => {
-      const returnedReporter = await snapshot.validate();
+    fancyIt()(
+      'should create and return a SnapshotReporter of the latest report',
+      async () => {
+        const returnedReporter = await snapshot.validate();
 
-      expect(mockedSnapshotReporter).toHaveBeenCalledTimes(1);
-      expect(mockedSnapshotReporter).toHaveBeenCalledWith(mockedDryRunReport);
-      expect(returnedReporter).toBe(mockedSnapshotReporter.mock.instances[0]);
-    });
+        expect(mockedSnapshotReporter).toHaveBeenCalledTimes(1);
+        expect(mockedSnapshotReporter).toHaveBeenCalledWith(mockedDryRunReport);
+        expect(returnedReporter).toBe(mockedSnapshotReporter.mock.instances[0]);
+      }
+    );
   });
 
   describe('#preview', () => {
@@ -189,7 +199,7 @@ describe('Snapshot', () => {
       [snapshot] = await getSnapshot(someReport);
     });
 
-    it('should display the the light preview', async () => {
+    fancyIt()('should display the the light preview', async () => {
       await snapshot.preview(new Project(''));
 
       expect(mockedSnapshotReporter).toBeCalledWith(someReport);
@@ -215,6 +225,9 @@ describe('Snapshot', () => {
       ])(
         'should generate the expanded preview',
         async (previewParam, expandedPreviewerParam) => {
+          stderr.start();
+          stdout.start();
+
           const someProject = new Project('');
 
           await snapshot.preview(someProject, previewParam);
@@ -228,6 +241,9 @@ describe('Snapshot', () => {
           expect(
             mockedExpandedPreviewer.mock.instances[0].preview
           ).toHaveBeenCalled();
+
+          stderr.stop();
+          stdout.stop();
         }
       );
     });
@@ -242,7 +258,7 @@ describe('Snapshot', () => {
         );
       });
 
-      it('should not generate the expanded preview', async () => {
+      fancyIt()('should not generate the expanded preview', async () => {
         await snapshot.preview(new Project(''));
 
         expect(mockedExpandedPreviewer).not.toBeCalled();
@@ -267,15 +283,21 @@ describe('Snapshot', () => {
     ])(
       'should request to apply the snapshot to the platform',
       async (validateParam, snapshotClientParam) => {
+        stderr.start();
+        stdout.start();
+
         await snapshot.apply(validateParam);
 
         expect(mockedApplySnapshot).toHaveBeenCalledWith(snapshotId, {
           deleteMissingResources: snapshotClientParam,
         });
+
+        stderr.stop();
+        stdout.stop();
       }
     );
 
-    it('should wait for the backend-operation to complete', async () => {
+    fancyIt()('should wait for the backend-operation to complete', async () => {
       await snapshot.apply();
       await snapshot.apply(true, {wait: 10});
 
@@ -288,13 +310,18 @@ describe('Snapshot', () => {
       });
     });
 
-    it('should create and return a SnapshotReporter of the latest report', async () => {
-      const returnedReporter = await snapshot.apply();
+    fancyIt()(
+      'should create and return a SnapshotReporter of the latest report',
+      async () => {
+        const returnedReporter = await snapshot.apply();
 
-      expect(mockedSnapshotReporter).toHaveBeenCalledTimes(1);
-      expect(mockedSnapshotReporter).toHaveBeenCalledWith(mockedApplyRunReport);
-      expect(returnedReporter).toBe(mockedSnapshotReporter.mock.instances[0]);
-    });
+        expect(mockedSnapshotReporter).toHaveBeenCalledTimes(1);
+        expect(mockedSnapshotReporter).toHaveBeenCalledWith(
+          mockedApplyRunReport
+        );
+        expect(returnedReporter).toBe(mockedSnapshotReporter.mock.instances[0]);
+      }
+    );
   });
 
   describe('#delete', () => {
@@ -302,11 +329,14 @@ describe('Snapshot', () => {
       [snapshot] = await getSnapshot();
     });
 
-    it('should request to delete the snapshot to the platform', async () => {
-      await snapshot.delete();
+    fancyIt()(
+      'should request to delete the snapshot to the platform',
+      async () => {
+        await snapshot.delete();
 
-      expect(mockedDeleteSnapshot).toHaveBeenCalledWith(snapshotId);
-    });
+        expect(mockedDeleteSnapshot).toHaveBeenCalledWith(snapshotId);
+      }
+    );
   });
 
   describe('#download', () => {
@@ -314,7 +344,7 @@ describe('Snapshot', () => {
       [snapshot] = await getSnapshot();
     });
 
-    it('should download the snapshot', async () => {
+    fancyIt()('should download the snapshot', async () => {
       const fakeResponse = Promise.resolve();
       mockedExportSnapshot.mockReturnValueOnce(fakeResponse);
 
@@ -338,7 +368,7 @@ describe('Snapshot', () => {
         latestReport = getErrorApplyReport(snapshotId);
       });
 
-      it('should return true', () => {
+      fancyIt()('should return true', () => {
         expect(snapshot.areResourcesInError()).toBe(true);
       });
     });
@@ -348,7 +378,7 @@ describe('Snapshot', () => {
         latestReport = getSuccessApplyReport(snapshotId);
       });
 
-      it('should return false', () => {
+      fancyIt()('should return false', () => {
         expect(snapshot.areResourcesInError()).toBe(false);
       });
     });
@@ -361,23 +391,30 @@ describe('Snapshot', () => {
       [snapshot] = await getSnapshot(someReport);
     });
 
-    it('should write the report on disk at the appropriate path and return the latter', () => {
-      const somePathStr = 'foo/bar/baz';
+    fancyIt()(
+      'should write the report on disk at the appropriate path and return the latter',
+      () => {
+        const somePathStr = 'foo/bar/baz';
 
-      const returnValue = snapshot.saveDetailedReport(somePathStr);
+        const returnValue = snapshot.saveDetailedReport(somePathStr);
 
-      const expectedFilePath = join(
-        somePathStr,
-        'snapshot-reports',
-        `${someReport.id}.json`
-      );
+        const expectedFilePath = join(
+          somePathStr,
+          'snapshot-reports',
+          `${someReport.id}.json`
+        );
 
-      expect(mockedEnsureFileSync).toBeCalledWith(expectedFilePath);
-      expect(mockedWriteJsonSync).toBeCalledWith(expectedFilePath, someReport, {
-        spaces: 2,
-      });
-      expect(returnValue).toBe(expectedFilePath);
-    });
+        expect(mockedEnsureFileSync).toBeCalledWith(expectedFilePath);
+        expect(mockedWriteJsonSync).toBeCalledWith(
+          expectedFilePath,
+          someReport,
+          {
+            spaces: 2,
+          }
+        );
+        expect(returnValue).toBe(expectedFilePath);
+      }
+    );
   });
 
   describe('#waitUntilDone', () => {
@@ -389,22 +426,25 @@ describe('Snapshot', () => {
       [snapshot, initialModel] = await getSnapshot(someReport);
     });
 
-    it('should use default wait, waitInterval and callback by default', async () => {
-      await snapshot.waitUntilDone();
+    fancyIt()(
+      'should use default wait, waitInterval and callback by default',
+      async () => {
+        await snapshot.waitUntilDone();
 
-      expect(mockedRetry).toHaveBeenCalledWith(expect.anything(), {
-        retries: Math.ceil(
-          Snapshot.defaultWaitOptions.wait /
-            Snapshot.defaultWaitOptions.waitInterval
-        ),
-        forever: false,
-        minTimeout: Snapshot.defaultWaitOptions.waitInterval * 1e3,
-        maxTimeout: Snapshot.defaultWaitOptions.waitInterval * 1e3,
-        maxRetryTime: Snapshot.defaultWaitOptions.wait * 1e3,
-      });
-    });
+        expect(mockedRetry).toHaveBeenCalledWith(expect.anything(), {
+          retries: Math.ceil(
+            Snapshot.defaultWaitOptions.wait /
+              Snapshot.defaultWaitOptions.waitInterval
+          ),
+          forever: false,
+          minTimeout: Snapshot.defaultWaitOptions.waitInterval * 1e3,
+          maxTimeout: Snapshot.defaultWaitOptions.waitInterval * 1e3,
+          maxRetryTime: Snapshot.defaultWaitOptions.wait * 1e3,
+        });
+      }
+    );
 
-    it('should wait indefinitely', async () => {
+    fancyIt()('should wait indefinitely', async () => {
       await snapshot.waitUntilDone({wait: 0});
 
       expect(mockedRetry).toHaveBeenCalledWith(expect.anything(), {
@@ -416,19 +456,22 @@ describe('Snapshot', () => {
       });
     });
 
-    it('should use provided wait and waitInterval and compute how many attempts to do', async () => {
-      await snapshot.waitUntilDone({wait: 10, waitInterval: 5});
+    fancyIt()(
+      'should use provided wait and waitInterval and compute how many attempts to do',
+      async () => {
+        await snapshot.waitUntilDone({wait: 10, waitInterval: 5});
 
-      expect(mockedRetry).toHaveBeenCalledWith(expect.anything(), {
-        retries: 2,
-        forever: false,
-        minTimeout: 5 * 1e3,
-        maxTimeout: 5 * 1e3,
-        maxRetryTime: 10 * 1e3,
-      });
-    });
+        expect(mockedRetry).toHaveBeenCalledWith(expect.anything(), {
+          retries: 2,
+          forever: false,
+          minTimeout: 5 * 1e3,
+          maxTimeout: 5 * 1e3,
+          maxRetryTime: 10 * 1e3,
+        });
+      }
+    );
 
-    it('should return the retrier from async-retry', async () => {
+    fancyIt()('should return the retrier from async-retry', async () => {
       const expectedReturnPromise = Promise.resolve();
       mockedRetry.mockReturnValue(expectedReturnPromise);
 
@@ -440,76 +483,91 @@ describe('Snapshot', () => {
     });
 
     describe('when a retry happens', () => {
-      it('should refresh the snapshotData and call the onRetryCallback', async () => {
-        mockedGetSnapshot.mockReturnValue(initialModel);
-        const someCallBack = jest.fn();
-        await snapshot.waitUntilDone({onRetryCb: someCallBack});
-        const waitUntilDoneRetryFunction = mockedRetry.mock.calls[0][0];
-
-        await waitUntilDoneRetryFunction(jest.fn(), 0);
-
-        expect(mockedGetSnapshot).toHaveBeenCalledWith(snapshotId, {
-          includeReports: true,
-        });
-        expect(someCallBack).toHaveBeenCalledWith(someReport);
-      });
-
-      it('should not resolves when the latestReport status is an ongoing on', async () => {
-        const model = {...initialModel};
-        model.reports = [
-          getPendingReport(snapshotId, ResourceSnapshotsReportType.Apply),
-        ];
-        mockedGetSnapshot.mockReturnValue(model);
-        snapshot.waitUntilDone();
-        const waitUntilDoneRetryFunction = mockedRetry.mock.calls[0][0];
-
-        await expect(
-          waitUntilDoneRetryFunction(jest.fn(), 0)
-        ).rejects.toBeInstanceOf(SnapshotOperationTimeoutError);
-      });
-
-      describe("when there's no operation to wait for", () => {
-        it('should resolves when the latestReport status is not an ongoing on', async () => {
-          const model = {...initialModel};
-          model.reports = [getSuccessApplyReport(snapshotId)];
-          mockedGetSnapshot.mockReturnValue(model);
-          await snapshot.waitUntilDone();
+      fancyIt()(
+        'should refresh the snapshotData and call the onRetryCallback',
+        async () => {
+          mockedGetSnapshot.mockReturnValue(initialModel);
+          const someCallBack = jest.fn();
+          await snapshot.waitUntilDone({onRetryCb: someCallBack});
           const waitUntilDoneRetryFunction = mockedRetry.mock.calls[0][0];
 
-          await expect(
-            waitUntilDoneRetryFunction(jest.fn(), 0)
-          ).resolves.not.toThrow();
-        });
-      });
+          await waitUntilDoneRetryFunction(jest.fn(), 0);
 
-      describe("when there's an operation to wait for", () => {
-        it('should resolves when the latestReport status is not an ongoing on and the latesReport operations match', async () => {
-          const model = {...initialModel};
-          model.reports = [getSuccessApplyReport(snapshotId)];
-          mockedGetSnapshot.mockReturnValue(model);
-          await snapshot.waitUntilDone({
-            operationToWaitFor: ResourceSnapshotsReportType.Apply,
+          expect(mockedGetSnapshot).toHaveBeenCalledWith(snapshotId, {
+            includeReports: true,
           });
-          const waitUntilDoneRetryFunction = mockedRetry.mock.calls[0][0];
+          expect(someCallBack).toHaveBeenCalledWith(someReport);
+        }
+      );
 
-          await expect(
-            waitUntilDoneRetryFunction(jest.fn(), 0)
-          ).resolves.not.toThrow();
-        });
-
-        it('should not resolves when the latestReport operation does not match', async () => {
+      fancyIt()(
+        'should not resolves when the latestReport status is an ongoing on',
+        async () => {
           const model = {...initialModel};
-          model.reports = [getSuccessApplyReport(snapshotId)];
+          model.reports = [
+            getPendingReport(snapshotId, ResourceSnapshotsReportType.Apply),
+          ];
           mockedGetSnapshot.mockReturnValue(model);
-          await snapshot.waitUntilDone({
-            operationToWaitFor: ResourceSnapshotsReportType.DryRun,
-          });
+          snapshot.waitUntilDone();
           const waitUntilDoneRetryFunction = mockedRetry.mock.calls[0][0];
 
           await expect(
             waitUntilDoneRetryFunction(jest.fn(), 0)
           ).rejects.toBeInstanceOf(SnapshotOperationTimeoutError);
-        });
+        }
+      );
+
+      describe("when there's no operation to wait for", () => {
+        fancyIt()(
+          'should resolves when the latestReport status is not an ongoing on',
+          async () => {
+            const model = {...initialModel};
+            model.reports = [getSuccessApplyReport(snapshotId)];
+            mockedGetSnapshot.mockReturnValue(model);
+            await snapshot.waitUntilDone();
+            const waitUntilDoneRetryFunction = mockedRetry.mock.calls[0][0];
+
+            await expect(
+              waitUntilDoneRetryFunction(jest.fn(), 0)
+            ).resolves.not.toThrow();
+          }
+        );
+      });
+
+      describe("when there's an operation to wait for", () => {
+        fancyIt()(
+          'should resolves when the latestReport status is not an ongoing on and the latesReport operations match',
+          async () => {
+            const model = {...initialModel};
+            model.reports = [getSuccessApplyReport(snapshotId)];
+            mockedGetSnapshot.mockReturnValue(model);
+            await snapshot.waitUntilDone({
+              operationToWaitFor: ResourceSnapshotsReportType.Apply,
+            });
+            const waitUntilDoneRetryFunction = mockedRetry.mock.calls[0][0];
+
+            await expect(
+              waitUntilDoneRetryFunction(jest.fn(), 0)
+            ).resolves.not.toThrow();
+          }
+        );
+
+        fancyIt()(
+          'should not resolves when the latestReport operation does not match',
+          async () => {
+            const model = {...initialModel};
+            model.reports = [getSuccessApplyReport(snapshotId)];
+            mockedGetSnapshot.mockReturnValue(model);
+            await snapshot.waitUntilDone({
+              operationToWaitFor: ResourceSnapshotsReportType.DryRun,
+            });
+            const waitUntilDoneRetryFunction = mockedRetry.mock.calls[0][0];
+
+            await expect(
+              waitUntilDoneRetryFunction(jest.fn(), 0)
+            ).rejects.toBeInstanceOf(SnapshotOperationTimeoutError);
+          }
+        );
       });
     });
   });
@@ -520,7 +578,7 @@ describe('Snapshot', () => {
         [snapshot] = await getSnapshot(reports);
       });
 
-      it('should throw an Error', () => {
+      fancyIt()('should throw an Error', () => {
         expect(() => snapshot.latestReport).toThrowError(
           `No detailed report found for the snapshot ${snapshotId}`
         );
@@ -542,7 +600,7 @@ describe('Snapshot', () => {
         [snapshot] = await getSnapshot(reports);
       });
 
-      it('should return the most recent one', () => {
+      fancyIt()('should return the most recent one', () => {
         expect(snapshot.latestReport).toBe(mostRecentReport);
       });
     });
