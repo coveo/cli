@@ -98,6 +98,7 @@ describe('ResourceTypePrompt - Integration Test', () => {
           );
           const preStdoutLength = output.stdout.length;
           mockedStdin.send(key);
+          await Promise.resolve();
 
           expect(output.stdout.substr(preStdoutLength)).toMatchSnapshot();
           mockedStdin.send('\n');
@@ -117,6 +118,7 @@ describe('ResourceTypePrompt - Integration Test', () => {
           const preInputStdout = output.stdout;
 
           mockedStdin.send(key);
+          await Promise.resolve();
 
           const postInputStdout = output.stdout.split(
             ansiCursorHorizontalAbsolute
@@ -143,6 +145,7 @@ describe('ResourceTypePrompt - Integration Test', () => {
             const preInputStdout = output.stdout;
 
             mockedStdin.send(key);
+            await Promise.resolve();
 
             const postInputStdout = output.stdout.split(
               ansiCursorHorizontalAbsolute
@@ -163,36 +166,70 @@ describe('ResourceTypePrompt - Integration Test', () => {
 
   //#region Refactor maybe
   describe.each([
-    ['up', arrowKeys.up, false],
-    ['down', arrowKeys.down, false],
-    ['left', arrowKeys.left, true],
-    ['right', arrowKeys.right, true],
-  ])('when pressing %s arrow key', (_direction, asciiCode, shouldLoop) => {
-    fancyIt()(
-      'should select the next valid value/key if there is one',
-      (output) => {
-        getSelectResourceTypesPrompt('someQuestion');
-        const preInputStdout = output.stdout;
+    ['up', arrowKeys.up, 6],
+    ['down', arrowKeys.down, 6],
+    ['left', arrowKeys.left, 3],
+    ['right', arrowKeys.right, 3],
+  ])(
+    'when pressing %s arrow key',
+    (_direction, asciiCode, nbKeyPressBeforeLooping) => {
+      fancyIt()(
+        'should select the next valid value/key if there is one',
+        async (output) => {
+          getSelectResourceTypesPrompt('someQuestion');
 
-        mockedStdin.send(asciiCode);
+          for (let i = 0; i < nbKeyPressBeforeLooping; i++) {
+            mockedStdin.send(asciiCode);
+          }
+          await Promise.resolve();
 
-        const postInputStdout = output.stdout.split(
-          ansiCursorHorizontalAbsolute
-        )[1];
+          const preInputStdout = output.stdout
+            .split(ansiCursorHorizontalAbsolute)
+            .pop();
 
-        expect(postInputStdout).not.toEqual(preInputStdout);
-        expect(postInputStdout).toMatchSnapshot();
+          mockedStdin.send(asciiCode);
+          await Promise.resolve();
 
-        mockedStdin.end();
-      }
-    );
+          const postInputStdout = output.stdout
+            .split(ansiCursorHorizontalAbsolute)
+            .pop();
 
-    if (shouldLoop) {
-      it.todo('should loop and select the next valid value/key');
-    } else {
-      it.todo('should do nothing');
+          expect(postInputStdout).not.toEqual(preInputStdout);
+          expect(postInputStdout).toMatchSnapshot();
+
+          mockedStdin.end();
+        }
+      );
+
+      fancyIt()(
+        'should loop and select the next valid value/key',
+        async (output) => {
+          getSelectResourceTypesPrompt('someQuestion');
+
+          for (let i = 0; i < nbKeyPressBeforeLooping; i++) {
+            mockedStdin.send(asciiCode);
+          }
+          await Promise.resolve();
+
+          const preInputStdout = output.stdout
+            .split(ansiCursorHorizontalAbsolute)
+            .pop();
+
+          mockedStdin.send(asciiCode);
+          await Promise.resolve();
+
+          const postInputStdout = output.stdout
+            .split(ansiCursorHorizontalAbsolute)
+            .pop();
+
+          expect(postInputStdout).not.toEqual(preInputStdout);
+          expect(postInputStdout).toMatchSnapshot();
+
+          mockedStdin.end();
+        }
+      );
     }
-  });
+  );
 
   describe('when pressing space bar', () => {
     fancyIt()(
@@ -202,6 +239,7 @@ describe('ResourceTypePrompt - Integration Test', () => {
         const preInputStdout = output.stdout;
 
         mockedStdin.send(' ');
+        await Promise.resolve();
 
         const postInputStdout = output.stdout.split(
           ansiCursorHorizontalAbsolute
@@ -222,6 +260,7 @@ describe('ResourceTypePrompt - Integration Test', () => {
         const preInputStdout = output.stdout;
 
         mockedStdin.send(' ');
+        await Promise.resolve();
 
         const postInputStdout = output.stdout.split(
           ansiCursorHorizontalAbsolute

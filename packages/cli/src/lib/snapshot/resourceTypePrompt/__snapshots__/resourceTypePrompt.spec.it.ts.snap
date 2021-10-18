@@ -24,15 +24,27 @@ exports[`ResourceTypePrompt - Integration Test when pressing d should select del
 [2m(Move up and down to reveal more choices)[22m[41D[41C"
 `;
 
-exports[`ResourceTypePrompt - Integration Test when pressing down arrow key should select the next valid value/key if there is one 1`] = `
+exports[`ResourceTypePrompt - Integration Test when pressing down arrow key should loop and select the next valid value/key 1`] = `
 "[32m?[39m [1msomeQuestion:[22m[0m [0m[2m([object Object]) [22m
- EXTENSION     	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
-[36m❯[39mFIELD         	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
- ML_MODEL      	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
- QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
- SEARCH_PAGE   	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
  SOURCE        	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
  SUBSCRIPTION  	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ [2m*[22m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ FIELD         	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ ML_MODEL      	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
+
+exports[`ResourceTypePrompt - Integration Test when pressing down arrow key should select the next valid value/key if there is one 1`] = `
+"[32m?[39m [1msomeQuestion:[22m[0m [0m[2m([object Object]) [22m
+ SOURCE        	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SUBSCRIPTION  	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ [2m*[22m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ FIELD         	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ ML_MODEL      	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
 [2m(Move up and down to reveal more choices)[22m[41D[41C"
 `;
 
@@ -48,9 +60,33 @@ exports[`ResourceTypePrompt - Integration Test when pressing e should select edi
 [2m(Move up and down to reveal more choices)[22m[41D[41C"
 `;
 
+exports[`ResourceTypePrompt - Integration Test when pressing left arrow key should loop and select the next valid value/key 1`] = `
+"[32m?[39m [1msomeQuestion:[22m[0m [0m[2m([object Object]) [22m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ FIELD         	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ ML_MODEL      	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SEARCH_PAGE   	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SOURCE        	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SUBSCRIPTION  	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
+
 exports[`ResourceTypePrompt - Integration Test when pressing left arrow key should select the next valid value/key if there is one 1`] = `
 "[32m?[39m [1msomeQuestion:[22m[0m [0m[2m([object Object]) [22m
-[36m❯[39mEXTENSION     	 [90mAdd[39m [4m[7m[97m[1mS[22mkip[39m[27m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ FIELD         	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ ML_MODEL      	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SEARCH_PAGE   	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SOURCE        	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SUBSCRIPTION  	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
+
+exports[`ResourceTypePrompt - Integration Test when pressing right arrow key should loop and select the next valid value/key 1`] = `
+"[32m?[39m [1msomeQuestion:[22m[0m [0m[2m([object Object]) [22m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
  FIELD         	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
  ML_MODEL      	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
  QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
@@ -62,7 +98,7 @@ exports[`ResourceTypePrompt - Integration Test when pressing left arrow key shou
 
 exports[`ResourceTypePrompt - Integration Test when pressing right arrow key should select the next valid value/key if there is one 1`] = `
 "[32m?[39m [1msomeQuestion:[22m[0m [0m[2m([object Object]) [22m
-[36m❯[39mEXTENSION     	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [7m[36m[1mE[22mdit[39m[27m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
  FIELD         	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
  ML_MODEL      	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
  QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
@@ -108,15 +144,27 @@ exports[`ResourceTypePrompt - Integration Test when pressing space bar should se
 [2m(Move up and down to reveal more choices)[22m[41D[41C"
 `;
 
+exports[`ResourceTypePrompt - Integration Test when pressing up arrow key should loop and select the next valid value/key 1`] = `
+"[32m?[39m [1msomeQuestion:[22m[0m [0m[2m([object Object]) [22m
+ SOURCE        	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SUBSCRIPTION  	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ [2m*[22m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ FIELD         	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ ML_MODEL      	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
+
 exports[`ResourceTypePrompt - Integration Test when pressing up arrow key should select the next valid value/key if there is one 1`] = `
 "[32m?[39m [1msomeQuestion:[22m[0m [0m[2m([object Object]) [22m
- QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
- SEARCH_PAGE   	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
  SOURCE        	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
-[36m❯[39mSUBSCRIPTION  	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SUBSCRIPTION  	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
  [2m*[22m
- EXTENSION     	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
  FIELD         	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ ML_MODEL      	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
 [2m(Move up and down to reveal more choices)[22m[41D[41C"
 `;
 
