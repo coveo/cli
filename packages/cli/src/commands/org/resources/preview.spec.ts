@@ -7,7 +7,6 @@ jest.mock('../../../lib/snapshot/snapshot');
 jest.mock('../../../lib/snapshot/snapshotFactory');
 jest.mock('../../../lib/project/project');
 jest.mock('../../../lib/snapshot/snapshotFacade');
-jest.mock('@oclif/errors');
 
 import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
@@ -17,7 +16,6 @@ import {cwd} from 'process';
 import {Config} from '../../../lib/config/config';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {error} from '@oclif/errors';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {
@@ -27,11 +25,11 @@ import {
 import {Command} from '@oclif/command';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions';
 import {SnapshotFacade} from '../../../lib/snapshot/snapshotFacade';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 
 const mockedSnapshotFactory = mocked(SnapshotFactory, true);
 const mockedConfig = mocked(Config);
 const mockedProject = mocked(Project);
-const mockedError = mocked(error);
 const mockedConfigGet = jest.fn();
 const mockedDeleteTemporaryZipFile = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
@@ -45,6 +43,8 @@ const mockedApplySynchronizationPlan = jest.fn();
 const mockedTryAutomaticSynchronization = jest.fn();
 const mockedIsGitInstalled = mocked(IsGitInstalled, true);
 const mockedSnapshotFacade = mocked(SnapshotFacade, true);
+const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+const mockEvaluate = jest.fn();
 
 const mockProject = () => {
   mockedProject.mockImplementation(
@@ -66,13 +66,25 @@ const mockConfig = () => {
     })
   );
 
-  // TODO: use prototype
-  mockedConfig.mockImplementation(
-    () =>
-      ({
-        get: mockedConfigGet,
-      } as unknown as Config)
-  );
+  mockedConfig.prototype.get = mockedConfigGet;
+};
+
+const mockAuthenticatedClient = () => {
+  const mockGetClient = jest.fn().mockResolvedValue({
+    privilegeEvaluator: {
+      evaluate: mockEvaluate,
+    },
+  });
+
+  mockedAuthenticatedClient.prototype.getClient = mockGetClient;
+};
+
+const mockUserHavingAllRequiredPlatformPrivileges = () => {
+  mockEvaluate.mockResolvedValue({approved: true});
+};
+
+const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
+  mockEvaluate.mockResolvedValue({approved: false});
 };
 
 const mockSnapshotFactory = async () => {
@@ -131,13 +143,18 @@ describe('org:resources:preview', () => {
   beforeAll(() => {
     mockConfig();
     mockProject();
+    mockAuthenticatedClient();
   });
+
   beforeEach(() => {
     doMockPreconditions();
+    mockUserHavingAllRequiredPlatformPrivileges();
   });
+
   afterEach(() => {
     mockedIsGitInstalled.mockClear();
   });
+
   describe('when the report contains no resources in error', () => {
     beforeAll(async () => {
       await mockSnapshotFactoryReturningValidSnapshot();
@@ -146,6 +163,20 @@ describe('org:resources:preview', () => {
     afterAll(() => {
       mockedSnapshotFactory.mockReset();
     });
+
+    test
+      .do(() => {
+        mockUserNotHavingAllRequiredPlatformPrivileges();
+      })
+      .stdout()
+      .stderr()
+      .command(['org:resources:preview'])
+      .catch((ctx) => {
+        expect(ctx.message).toContain(
+          'You are not authorized to create snapshot'
+        );
+      })
+      .it('should return an error message if privileges are missing');
 
     test
       .stdout()
@@ -302,23 +333,21 @@ describe('org:resources:preview', () => {
       .stdout()
       .stderr()
       .command(['org:resources:preview'])
-      .it('should throw an error for invalid snapshots', () => {
-        expect(mockedError).toHaveBeenCalledWith(
-          expect.stringContaining('Invalid snapshot')
-        );
-      });
+      .catch((ctx) => {
+        expect(ctx.message).toContain('Invalid snapshot');
+      })
+      .it('should throw an error for invalid snapshots');
 
     test
       .stdout()
       .stderr()
       .command(['org:resources:preview'])
-      .it('should print an URL to the snapshot page', () => {
-        expect(mockedError).toHaveBeenCalledWith(
-          expect.stringContaining(
-            'https://platform.cloud.coveo.com/admin/#potato-org/organization/resource-snapshots/banana-snapshot'
-          )
+      .catch((ctx) => {
+        expect(ctx.message).toContain(
+          'https://platform.cloud.coveo.com/admin/#potato-org/organization/resource-snapshots/banana-snapshot'
         );
-      });
+      })
+      .it('should print an URL to the snapshot page');
   });
 
   describe('when the snapshot is not in sync with the target org', () => {
@@ -340,19 +369,20 @@ describe('org:resources:preview', () => {
       .stdout()
       .stderr()
       .command(['org:resources:preview'])
-      .it('should have detected and tried to resolves the conflicts', () => {
+      .catch(() => {
         expect(mockedTryAutomaticSynchronization).toHaveBeenCalledWith(true);
-      });
+      })
+      .it('should have detected and tried to resolves the conflicts');
 
     test
       .stdout()
       .stderr()
       .command(['org:resources:preview', '--sync'])
+      .catch(() => {
+        expect(mockedTryAutomaticSynchronization).toHaveBeenCalledWith(false);
+      })
       .it(
-        'should try to apply synchronization plan without asking for confirmation',
-        () => {
-          expect(mockedTryAutomaticSynchronization).toHaveBeenCalledWith(false);
-        }
+        'should try to apply synchronization plan without asking for confirmation'
       );
   });
 });
