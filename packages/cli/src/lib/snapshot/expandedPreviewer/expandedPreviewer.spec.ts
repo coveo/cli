@@ -21,6 +21,8 @@ import {spawnProcess, spawnProcessOutput} from '../../utils/process';
 import {recursiveDirectoryDiff} from './filesDiffProcessor';
 import {getDirectory} from '../../../__test__/fsUtils';
 import {resolve} from 'path';
+import {fancyIt} from '../../../__test__/it';
+import {stderr, stdout} from 'stdout-stderr';
 
 describe('ExpandedPreviewer', () => {
   const Blob = jest.fn();
@@ -37,6 +39,7 @@ describe('ExpandedPreviewer', () => {
   const mockedProjectRefresh = jest.fn();
   const mockedSnapshotFactory = mocked(SnapshotFactory, true);
   const mockedSnapshotDownload = jest.fn().mockReturnValue(fakeBlob);
+  const mockedSnapshotDelete = jest.fn();
 
   let nbOfExistingPreview: number;
   const mockExistingPreviews = () => {
@@ -66,6 +69,7 @@ describe('ExpandedPreviewer', () => {
     mockedSnapshotFactory.createFromOrg.mockReturnValue(
       Promise.resolve({
         download: mockedSnapshotDownload,
+        delete: mockedSnapshotDelete,
       } as unknown as Snapshot)
     );
   };
@@ -113,7 +117,7 @@ describe('ExpandedPreviewer', () => {
       nbOfExistingPreview = 4;
     });
 
-    it('should delete the exceeding preview directories', async () => {
+    fancyIt()('should delete the exceeding preview directories', async () => {
       const expandedPreviewer = new ExpandedPreviewer(
         getSuccessReport('some-id', ResourceSnapshotsReportType.DryRun),
         'someorg',
@@ -137,7 +141,7 @@ describe('ExpandedPreviewer', () => {
   });
 
   describe('when no preview has been done yet', () => {
-    it('should not delete any preview directories', async () => {
+    fancyIt()('should not delete any preview directories', async () => {
       mockedExistsSync.mockReturnValueOnce(false);
       const expandedPreviewer = new ExpandedPreviewer(
         getSuccessReport('some-id', ResourceSnapshotsReportType.DryRun),
@@ -161,7 +165,7 @@ describe('ExpandedPreviewer', () => {
       nbOfExistingPreview = 4;
     });
 
-    it('should not delete any preview directories', async () => {
+    fancyIt()('should not delete any preview directories', async () => {
       const expandedPreviewer = new ExpandedPreviewer(
         getSuccessReport('some-id', ResourceSnapshotsReportType.DryRun),
         'someorg',
@@ -178,39 +182,45 @@ describe('ExpandedPreviewer', () => {
   });
 
   describe('when shouldDelete is false', () => {
-    it('should call the fillDiffProcessor with the proper options', async () => {
-      const expandedPreviewer = new ExpandedPreviewer(
-        getSuccessReport('some-id', ResourceSnapshotsReportType.DryRun),
-        'someorg',
-        new Project('my/awesome/path'),
-        false
-      );
-      await expandedPreviewer.preview();
+    fancyIt()(
+      'should call the fillDiffProcessor with the proper options',
+      async () => {
+        const expandedPreviewer = new ExpandedPreviewer(
+          getSuccessReport('some-id', ResourceSnapshotsReportType.DryRun),
+          'someorg',
+          new Project('my/awesome/path'),
+          false
+        );
+        await expandedPreviewer.preview();
 
-      expect(mockedRecursiveDirectoryDiff).toBeCalledWith(
-        expect.anything(),
-        expect.anything(),
-        false
-      );
-    });
+        expect(mockedRecursiveDirectoryDiff).toBeCalledWith(
+          expect.anything(),
+          expect.anything(),
+          false
+        );
+      }
+    );
   });
 
   describe('when shouldDelete is true', () => {
-    it('should call the fillDiffProcessor with the proper options', async () => {
-      const expandedPreviewer = new ExpandedPreviewer(
-        getSuccessReport('some-id', ResourceSnapshotsReportType.DryRun),
-        'someorg',
-        new Project('my/awesome/path'),
-        true
-      );
-      await expandedPreviewer.preview();
+    fancyIt()(
+      'should call the fillDiffProcessor with the proper options',
+      async () => {
+        const expandedPreviewer = new ExpandedPreviewer(
+          getSuccessReport('some-id', ResourceSnapshotsReportType.DryRun),
+          'someorg',
+          new Project('my/awesome/path'),
+          true
+        );
+        await expandedPreviewer.preview();
 
-      expect(mockedRecursiveDirectoryDiff).toBeCalledWith(
-        expect.anything(),
-        expect.anything(),
-        true
-      );
-    });
+        expect(mockedRecursiveDirectoryDiff).toBeCalledWith(
+          expect.anything(),
+          expect.anything(),
+          true
+        );
+      }
+    );
   });
 
   describe('when calling #preview', () => {
@@ -219,6 +229,9 @@ describe('ExpandedPreviewer', () => {
     let previewPath: string;
 
     beforeEach(async () => {
+      stderr.start();
+      stdout.start();
+
       previewPath = join('.coveo/preview', 'someorg-42');
       fakeReport = getSuccessReport(
         'some-id',
@@ -231,9 +244,12 @@ describe('ExpandedPreviewer', () => {
         false
       );
       await expandedPreviewer.preview();
+
+      stderr.stop();
+      stdout.stop();
     });
 
-    it('should get a snapshot of the target org', async () => {
+    fancyIt()('should get a snapshot of the target org', async () => {
       const previewPath = join('.coveo', 'preview', 'someorg-42');
       expect(mockedMkdirSync).toHaveBeenCalledWith(previewPath, {
         recursive: true,
@@ -244,10 +260,11 @@ describe('ExpandedPreviewer', () => {
         Object.keys(fakeReport.resourceOperationResults),
         'someorg'
       );
+      expect(mockedSnapshotDownload).toHaveBeenCalled();
       expect(mockedProjectRefresh).toHaveBeenCalledWith(fakeBlob);
     });
 
-    it('should commit the snapshot of the target org', async () => {
+    fancyIt()('should commit the snapshot of the target org', async () => {
       expect(mockedSpawnProcess).toHaveBeenNthCalledWith(1, 'git', ['init'], {
         cwd: previewPath,
         stdio: 'ignore',
@@ -272,7 +289,7 @@ describe('ExpandedPreviewer', () => {
       );
     });
 
-    it('should get the commit hash', async () => {
+    fancyIt()('should get the commit hash', async () => {
       expect(mockedSpawnProcessOutput).toHaveBeenCalledWith(
         'git',
         ['rev-parse', '--short', 'HEAD'],
@@ -282,15 +299,18 @@ describe('ExpandedPreviewer', () => {
       );
     });
 
-    it('should write the diff between the snapshot of the target org and the snapshot on file', async () => {
-      expect(mockedRecursiveDirectoryDiff).toBeCalledWith(
-        join('.coveo/preview', 'someorg-42', 'resources'),
-        join('my/awesome/path', 'resources'),
-        expect.anything()
-      );
-    });
+    fancyIt()(
+      'should write the diff between the snapshot of the target org and the snapshot on file',
+      async () => {
+        expect(mockedRecursiveDirectoryDiff).toBeCalledWith(
+          join('.coveo/preview', 'someorg-42', 'resources'),
+          join('my/awesome/path', 'resources'),
+          expect.anything()
+        );
+      }
+    );
 
-    it('should commit the diff', () => {
+    fancyIt()('should commit the diff', () => {
       expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
         4,
         'git',
@@ -309,6 +329,10 @@ describe('ExpandedPreviewer', () => {
           stdio: 'ignore',
         }
       );
+    });
+
+    fancyIt()('should delete the snapshot created in the target org', () => {
+      expect(mockedSnapshotDelete).toHaveBeenCalled();
     });
   });
 });

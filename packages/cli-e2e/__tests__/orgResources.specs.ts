@@ -240,4 +240,9 @@ describe('org:resources', () => {
       defaultTimeout
     );
   });
+
+  it('should not have any snapshot in the target org', async () => {
+    const snapshotlist = await platformClient.resourceSnapshot.list();
+    expect(snapshotlist).toHaveLength(0);
+  });
 });

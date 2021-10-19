@@ -6,6 +6,7 @@ import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from './testsUtils/utils';
 
 import {IsNodeVersionInRange} from './node';
+import {fancyIt} from '../../../__test__/it';
 
 describe('IsNodeVersionInRange', () => {
   const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
@@ -14,7 +15,7 @@ describe('IsNodeVersionInRange', () => {
   });
 
   describe('when the requiredVersion is not a semver valid string', () => {
-    it('should return false and warn', async () => {
+    fancyIt()('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsNodeVersionInRange('foo')(fakeCommand)).resolves.toBe(
@@ -37,7 +38,7 @@ describe('IsNodeVersionInRange', () => {
       });
     });
 
-    it('should return false and warn', async () => {
+    fancyIt()('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsNodeVersionInRange('>=0.0.1')(fakeCommand)).resolves.toBe(
@@ -62,7 +63,7 @@ describe('IsNodeVersionInRange', () => {
       });
     });
 
-    it('should return false and warn', async () => {
+    fancyIt()('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsNodeVersionInRange('>=0.0.1')(fakeCommand)).resolves.toBe(
@@ -89,7 +90,7 @@ describe('IsNodeVersionInRange', () => {
       });
     });
 
-    it('should return false and warn', async () => {
+    fancyIt()('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsNodeVersionInRange('>=1.0.0')(fakeCommand)).resolves.toBe(
@@ -115,7 +116,7 @@ describe('IsNodeVersionInRange', () => {
       });
     });
 
-    it('should return true and not warn', async () => {
+    fancyIt()('should return true and not warn', async () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsNodeVersionInRange('>=1.0.0')(fakeCommand)).resolves.toBe(
@@ -134,7 +135,7 @@ describe('IsNodeVersionInRange', () => {
       });
     });
 
-    it('should return true and not warn', async () => {
+    fancyIt()('should return true and not warn', async () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsNodeVersionInRange('>=1.0.0')(fakeCommand)).resolves.toBe(

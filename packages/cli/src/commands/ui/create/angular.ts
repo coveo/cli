@@ -29,7 +29,7 @@ export default class Angular extends Command {
    * and https://www.npmjs.com/package/@angular/cli package.json engines section.
    */
   public static requiredNodeVersion = '^12.14.1 || >=14.0.0';
-  public static requiredNpmVersion = '^6.11.0 || ^7.5.6';
+  public static requiredNpmVersion = '^6.11.0 || ^7.5.6 || >=8.0.0';
 
   public static description =
     'Create a Coveo Headless-powered search page with the Angular web framework. See <https://docs.coveo.com/headless> and <https://angular.io/>.';

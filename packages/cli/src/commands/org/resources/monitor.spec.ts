@@ -61,6 +61,8 @@ describe('org:resources:monitor', () => {
   });
 
   test
+    .stdout()
+    .stderr()
     .command(['org:resources:monitor'])
     .catch((ctx) => {
       expect(ctx.message).toContain('Missing 1 required arg:');
@@ -68,6 +70,8 @@ describe('org:resources:monitor', () => {
     .it('requires snapshotId name argument');
 
   test
+    .stdout()
+    .stderr()
     .command(['org:resources:monitor', 'my-snapshot'])
     .it('should work with default connected org', () => {
       expect(mockedGetClient).toHaveBeenCalledWith({
@@ -76,6 +80,8 @@ describe('org:resources:monitor', () => {
     });
 
   test
+    .stdout()
+    .stderr()
     .command(['org:resources:monitor', 'other-snapshot', '-t', 'different-org'])
     .it('should work with default connected org', () => {
       expect(mockedGetClient).toHaveBeenCalledWith({

@@ -9,6 +9,7 @@ import {Region} from '@coveord/platform-client';
 import {randomBytes} from 'crypto';
 import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
 import {OAuthClientServer} from './oauthClientServer';
+import {URL} from 'url';
 
 export interface OAuthOptions {
   port: number;

@@ -6,6 +6,7 @@
     "importHelpers": true,
     "module": "commonjs",
     "lib": ["ESNext"],
+    "resolveJsonModule": true,
     "outDir": "lib",
     "rootDir": "src",
     "strict": true,
@@ -13,8 +14,7 @@
     "noEmitOnError": false,
     "skipLibCheck": true,
     "types": ["jest"],
-    "esModuleInterop": true,
-    "lib": ["WebWorker", "ES2019"]
+    "esModuleInterop": true
   },
   "include": ["src/**/*", "src/typings/**/*.d.ts"]
 }

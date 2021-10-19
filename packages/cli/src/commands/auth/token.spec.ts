@@ -55,11 +55,15 @@ describe('auth:token', () => {
   });
 
   test
+    .stdout()
+    .stderr()
     .command(['auth:token', '-e', 'foo'])
     .catch(/Expected --environment=foo/)
     .it('reject invalid environment', async () => {});
 
   test
+    .stdout()
+    .stderr()
     .command(['auth:token', '-r', 'foo'])
     .catch(/Expected --region=foo/)
     .it('reject invalid region', async () => {});
@@ -67,6 +71,7 @@ describe('auth:token', () => {
   Object.values(PlatformEnvironment).forEach((environment) => {
     test
       .stdout()
+      .stderr()
       .command(['auth:token', '-e', environment, '-t', 'someToken'])
       .it(`writes the -e=${environment} flag to the configuration`, () => {
         expect(mockConfigSet).toHaveBeenCalledWith('environment', environment);
@@ -76,6 +81,7 @@ describe('auth:token', () => {
   Object.keys(Region).forEach((region) => {
     test
       .stdout()
+      .stderr()
       .command(['auth:token', '-r', region, '-t', 'someToken'])
       .it(`writes the -r=${region} flag  and configuration`, () => {
         expect(mockConfigSet).toHaveBeenCalledWith('region', region);
@@ -85,6 +91,7 @@ describe('auth:token', () => {
   describe('writes the token and set anonymous to true in the configuration ', () => {
     test
       .stdout()
+      .stderr()
       .command(['auth:token', '-t', 'this-is-the-token'])
       .it('save token from oauth service', () => {
         expect(mockConfigSet).toHaveBeenCalledWith(
@@ -97,12 +104,14 @@ describe('auth:token', () => {
 
   test
     .stdout()
+    .stderr()
     .command(['auth:token'])
     .exit(2)
     .it('fails when the token flag is not set');
 
   test
     .stdout()
+    .stderr()
     .do(() => {
       mockGetHasAccessToOrg.mockReturnValueOnce(Promise.resolve(true));
     })
@@ -121,6 +130,7 @@ describe('auth:token', () => {
       );
     })
     .stdout()
+    .stderr()
     .command(['auth:token', '-t', 'some-token'])
     .it(
       'find the org associated with the token and saves it in the config',

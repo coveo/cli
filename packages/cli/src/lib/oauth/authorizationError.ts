@@ -1,4 +1,5 @@
 import dedent from 'ts-dedent';
+import type {URL} from 'url';
 
 export class AuthorizationError extends Error {
   public name = 'Authorization Error';

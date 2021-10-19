@@ -65,11 +65,15 @@ describe('auth:login', () => {
   });
 
   test
+    .stdout()
+    .stderr()
     .command(['auth:login', '-e', 'foo'])
     .catch(/Expected --environment=foo/)
     .it('reject invalid environment', async () => {});
 
   test
+    .stdout()
+    .stderr()
     .command(['auth:login', '-r', 'foo'])
     .catch(/Expected --region=foo/)
     .it('reject invalid region', async () => {});
@@ -77,6 +81,7 @@ describe('auth:login', () => {
   ['dev', 'qa', 'prod', 'hipaa'].forEach((environment) => {
     test
       .stdout()
+      .stderr()
       .command(['auth:login', '-e', environment, '-o', 'foo'])
       .it(
         `passes the -e=${environment} flag to oauth and configuration`,
@@ -93,6 +98,7 @@ describe('auth:login', () => {
   Object.keys(Region).forEach((region) => {
     test
       .stdout()
+      .stderr()
       .command(['auth:login', '-r', region, '-o', 'foo'])
       .it(`passes the -e=${region} flag to oauth and configuration`, () => {
         expect(mockedOAuth.mock.calls[0][0]?.region).toBe(region);
@@ -102,6 +108,7 @@ describe('auth:login', () => {
 
   test
     .stdout()
+    .stderr()
     .command(['auth:login', '-e', 'qa', '-o', 'foo'])
     .it('passed the -e=dev flag to oauth as an environment', () => {
       expect(mockedOAuth.mock.calls[0][0]?.environment).toBe('qa');
@@ -110,6 +117,7 @@ describe('auth:login', () => {
   describe('retrieves token from oauth service', () => {
     test
       .stdout()
+      .stderr()
       .command(['auth:login', '-o', 'foo'])
       .it('save token from oauth service', () => {
         expect(mockConfigSet).toHaveBeenCalledWith(
@@ -121,6 +129,7 @@ describe('auth:login', () => {
 
   test
     .stdout()
+    .stderr()
     .do(() => {
       mockGetHasAccessToOrg.mockReturnValueOnce(Promise.resolve(false));
     })
@@ -133,6 +142,7 @@ describe('auth:login', () => {
       mockListOrgs.mockReturnValueOnce(Promise.resolve([]));
     })
     .stdout()
+    .stderr()
     .command(['auth:login'])
     .exit(2)
     .it(
@@ -141,6 +151,7 @@ describe('auth:login', () => {
 
   test
     .stdout()
+    .stderr()
     .command(['auth:login', '-o', 'foo'])
     .it('succeed when organization flag is valid', (ctx) => {
       expect(ctx.stdout).toContain('Success');
@@ -160,6 +171,7 @@ describe('auth:login', () => {
       );
     })
     .stdout()
+    .stderr()
     .command(['auth:login'])
     .it(
       'succeed when no organization flag is passed, and uses the first available org instead',

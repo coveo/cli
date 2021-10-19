@@ -32,17 +32,17 @@
     "typescript": "^4.3.5"
   },
   "devDependencies": {
-    "@angular/core": "12.2.8",
-    "@angular/forms": "12.2.8",
-    "@angular/material": "12.2.8",
-    "@angular/router": "12.2.8",
+    "@angular/core": "12.2.10",
+    "@angular/forms": "12.2.10",
+    "@angular/material": "12.2.10",
+    "@angular/router": "12.2.10",
     "@coveo/headless": "latest",
     "@types/fs-extra": "9.0.13",
-    "@types/jasmine": "3.9.1",
+    "@types/jasmine": "3.10.0",
     "@types/mocha": "9.0.0",
-    "@types/node": "14.17.20",
+    "@types/node": "16.11.1",
     "fs-extra": "10.0.0",
-    "jasmine": "3.9.0",
+    "jasmine": "3.10.0",
     "prettier": "2.4.1"
   },
   "publishConfig": {

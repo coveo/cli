@@ -14,6 +14,7 @@ import {
   castEnvironmentToPlatformClient,
   PlatformEnvironment,
 } from './environment';
+import {fancyIt} from '../../__test__/it';
 const mockConfig = mocked(Config);
 const mockPlatformClient = mocked(PlatformClient);
 
@@ -56,79 +57,111 @@ describe('AuthenticatedClient', () => {
     global.config = {configDir: 'the_config_dir'} as IConfig;
   });
 
-  it('should automatically use the config dir as specified in the NodeJS.Global', () => {
-    new AuthenticatedClient();
-    expect(mockConfig).toHaveBeenCalledWith('the_config_dir');
-  });
+  fancyIt()(
+    'should automatically use the config dir as specified in the NodeJS.Global',
+    () => {
+      new AuthenticatedClient();
+      expect(mockConfig).toHaveBeenCalledWith('the_config_dir');
+    }
+  );
 
-  it('should correctly identify #isLoggedIn if the config contains no access token', async () => {
-    mockGet.mockReturnValueOnce(Promise.resolve({accessToken: undefined}));
-    expect(await new AuthenticatedClient().isLoggedIn()).toBe(false);
-  });
+  fancyIt()(
+    'should correctly identify #isLoggedIn if the config contains no access token',
+    async () => {
+      mockGet.mockReturnValueOnce(Promise.resolve({accessToken: undefined}));
+      expect(await new AuthenticatedClient().isLoggedIn()).toBe(false);
+    }
+  );
 
-  it('should correctly identify #isLoggedIn if the config contains an access token', async () => {
-    mockGet.mockReturnValueOnce(Promise.resolve({accessToken: 'the_token'}));
-    expect(await new AuthenticatedClient().isLoggedIn()).toBe(true);
-  });
+  fancyIt()(
+    'should correctly identify #isLoggedIn if the config contains an access token',
+    async () => {
+      mockGet.mockReturnValueOnce(Promise.resolve({accessToken: 'the_token'}));
+      expect(await new AuthenticatedClient().isLoggedIn()).toBe(true);
+    }
+  );
 
-  it('should correctly identify #isExpired if the platform client returns an error on initialize', async () => {
-    mockInitialize.mockRejectedValueOnce('oh no');
-    expect(await new AuthenticatedClient().isExpired()).toBe(true);
-  });
+  fancyIt()(
+    'should correctly identify #isExpired if the platform client returns an error on initialize',
+    async () => {
+      mockInitialize.mockRejectedValueOnce('oh no');
+      expect(await new AuthenticatedClient().isExpired()).toBe(true);
+    }
+  );
 
-  it('should correctly identify #isExpired if the platform client returns no error on initialize', async () => {
-    mockInitialize.mockReturnValueOnce(Promise.resolve());
-    expect(await new AuthenticatedClient().isExpired()).toBe(false);
-    mockGet.mockClear();
-  });
+  fancyIt()(
+    'should correctly identify #isExpired if the platform client returns no error on initialize',
+    async () => {
+      mockInitialize.mockReturnValueOnce(Promise.resolve());
+      expect(await new AuthenticatedClient().isExpired()).toBe(false);
+      mockGet.mockClear();
+    }
+  );
 
-  it('should correctly initialize the #platformClient based on config', async () => {
-    await new AuthenticatedClient().getClient();
-    expect(mockPlatformClient).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        environment: castEnvironmentToPlatformClient(PlatformEnvironment.Dev),
-        region: 'eu',
-        organizationId: 'my_org',
-        accessToken: 'my_token',
-      })
-    );
-  });
+  fancyIt()(
+    'should correctly initialize the #platformClient based on config',
+    async () => {
+      await new AuthenticatedClient().getClient();
+      expect(mockPlatformClient).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          environment: castEnvironmentToPlatformClient(PlatformEnvironment.Dev),
+          region: 'eu',
+          organizationId: 'my_org',
+          accessToken: 'my_token',
+        })
+      );
+    }
+  );
 
-  it('#getAuthenticationStatus should return proper status if config contains no token', async () => {
-    mockGet.mockReturnValueOnce({accessToken: undefined});
-    expect(await getAuthenticationStatus()).toBe(
-      AuthenticationStatus.LOGGED_OUT
-    );
-  });
+  fancyIt()(
+    '#getAuthenticationStatus should return proper status if config contains no token',
+    async () => {
+      mockGet.mockReturnValueOnce({accessToken: undefined});
+      expect(await getAuthenticationStatus()).toBe(
+        AuthenticationStatus.LOGGED_OUT
+      );
+    }
+  );
 
-  it('#getAuthenticationStatus should return proper status if token is expired', async () => {
-    mockInitialize.mockRejectedValueOnce('boom');
-    expect(await getAuthenticationStatus()).toBe(AuthenticationStatus.EXPIRED);
-  });
+  fancyIt()(
+    '#getAuthenticationStatus should return proper status if token is expired',
+    async () => {
+      mockInitialize.mockRejectedValueOnce('boom');
+      expect(await getAuthenticationStatus()).toBe(
+        AuthenticationStatus.EXPIRED
+      );
+    }
+  );
 
-  it('#getAuthenticationStatus should return proper status if token is not expired', async () => {
-    mockInitialize.mockReturnValueOnce(Promise.resolve());
-    expect(await getAuthenticationStatus()).toBe(
-      AuthenticationStatus.LOGGED_IN
-    );
-  });
+  fancyIt()(
+    '#getAuthenticationStatus should return proper status if token is not expired',
+    async () => {
+      mockInitialize.mockReturnValueOnce(Promise.resolve());
+      expect(await getAuthenticationStatus()).toBe(
+        AuthenticationStatus.LOGGED_IN
+      );
+    }
+  );
 
-  it('#createImpersonateApiKey should create an API key with impersonate privileges', async () => {
-    await new AuthenticatedClient().createImpersonateApiKey('my-key');
+  fancyIt()(
+    '#createImpersonateApiKey should create an API key with impersonate privileges',
+    async () => {
+      await new AuthenticatedClient().createImpersonateApiKey('my-key');
 
-    expect(mockCreate).toHaveBeenCalledWith(
-      expect.objectContaining({
-        displayName: 'cli-my-key',
-        description: 'Generated by the Coveo CLI',
-        enabled: true,
-        privileges: [
-          {targetDomain: 'IMPERSONATE', targetId: '*', owner: 'SEARCH_API'},
-        ],
-      })
-    );
-  });
+      expect(mockCreate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          displayName: 'cli-my-key',
+          description: 'Generated by the Coveo CLI',
+          enabled: true,
+          privileges: [
+            {targetDomain: 'IMPERSONATE', targetId: '*', owner: 'SEARCH_API'},
+          ],
+        })
+      );
+    }
+  );
 
-  it('#getUserInfo should return the user info', async () => {
+  fancyIt()('#getUserInfo should return the user info', async () => {
     const userInfo = await new AuthenticatedClient().getUserInfo();
     expect(mockInitialize).toHaveBeenCalled();
     expect(userInfo).toStrictEqual({providerUsername: 'bob@coveo.com'});

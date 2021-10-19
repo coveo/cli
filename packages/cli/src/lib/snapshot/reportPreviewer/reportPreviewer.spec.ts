@@ -22,6 +22,7 @@ describe('ReportViewer', () => {
 
     test
       .stdout()
+      .stderr()
       .do(() => {
         viewer.display();
       })
@@ -35,6 +36,7 @@ describe('ReportViewer', () => {
 
     test
       .stdout()
+      .stderr()
       .do(() => {
         viewer.display();
       })
@@ -63,6 +65,7 @@ describe('ReportViewer', () => {
 
     test
       .stdout()
+      .stderr()
       .do(() => {
         viewer.display();
       })
@@ -103,6 +106,7 @@ describe('ReportViewer', () => {
 
     test
       .stdout()
+      .stderr()
       .do(() => {
         viewer.display();
       })

@@ -52,12 +52,14 @@ describe('source:push:delete', () => {
 
   test
     .stdout()
+    .stderr()
     .command(['source:push:delete', 'mysource'])
     .catch(/ou must minimally set the `delete` or the `deleteOlderThan` flag/)
     .it('throws when no flags are specified');
 
   test
     .stdout()
+    .stderr()
     .command(['source:push:delete', 'mysource', '-x', 'foo', '-d', 'bar'])
     .catch(/--delete= cannot also be provided when using --deleteOlderThan=/)
     .it(
@@ -66,6 +68,7 @@ describe('source:push:delete', () => {
 
   test
     .stdout()
+    .stderr()
     .command(['source:push:delete', 'mysource', '-d', '2000/01/01'])
     .it('pass correct configuration information to push-api-client', () => {
       expect(mockedSource).toHaveBeenCalledWith('the_token', 'the_org');
@@ -79,6 +82,7 @@ describe('source:push:delete', () => {
   ].forEach((testCase) => {
     test
       .stdout()
+      .stderr()
       .command(['source:push:delete', 'mysource', '-d', testCase])
       .it(
         `pass correct values to push-api-client when deleting with date as string: ${testCase}`,
@@ -93,6 +97,7 @@ describe('source:push:delete', () => {
 
   test
     .stdout()
+    .stderr()
     .command(['source:push:delete', 'mysource', '-d', '123123123'])
     .it(
       'pass correct values to push-api-client when deleting with date as number',
@@ -108,6 +113,7 @@ describe('source:push:delete', () => {
       );
     })
     .stdout()
+    .stderr()
     .command(['source:push:delete', 'mysource', '-d', '12345'])
     .it(
       'returns an information message on successful deletion with older than',
@@ -153,6 +159,7 @@ describe('source:push:delete', () => {
       );
     })
     .stdout()
+    .stderr()
     .command(['source:push:delete', 'mysource', '-x', 'https://foo.com'])
     .it(
       'returns an information message on successful deletion with document uri',
@@ -166,6 +173,7 @@ describe('source:push:delete', () => {
 
   test
     .stdout()
+    .stderr()
     .command([
       'source:push:delete',
       'mysource',
@@ -197,6 +205,7 @@ describe('source:push:delete', () => {
       );
     })
     .stdout()
+    .stderr()
     .command(['source:push:delete', 'mysource', '-x', 'https://foo.com'])
     .it(
       'returns an information message on deletion failure with document uri',
@@ -222,6 +231,7 @@ describe('source:push:delete', () => {
       mockeleteDocument.mockRejectedValueOnce(err).mockRejectedValueOnce(err);
     })
     .stdout()
+    .stderr()
     .command([
       'source:push:delete',
       'mysource',
@@ -253,6 +263,7 @@ describe('source:push:delete', () => {
       );
     })
     .stdout()
+    .stderr()
     .command([
       'source:push:delete',
       'mysource',

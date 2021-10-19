@@ -4,7 +4,7 @@ jest.mock('cli-ux');
 
 import {dedent} from 'ts-dedent';
 import {mocked} from 'ts-jest/utils';
-import {spawnProcessOutput, spawnProcess} from '../../utils/process';
+import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from './testsUtils/utils';
 import {cli} from 'cli-ux';
 
@@ -12,6 +12,7 @@ import {IsNgInstalled} from './ng';
 import type {Command} from '@oclif/command';
 import {appendCmdIfWindows} from '../../utils/os';
 import {getPackageVersion} from '../../utils/misc';
+import {fancyIt} from '../../../__test__/it';
 
 describe('IsNgInstalled', () => {
   const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
@@ -41,7 +42,7 @@ describe('IsNgInstalled', () => {
       });
     });
 
-    it('should return false and warn', async () => {
+    fancyIt()('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
       await expect(IsNgInstalled()(fakeCommand)).resolves.toBe(false);
@@ -72,7 +73,7 @@ describe('IsNgInstalled', () => {
       });
     });
 
-    it('should return false and warn', async () => {
+    fancyIt()('should return false and warn', async () => {
       await expect(IsNgInstalled()(fakeCommand)).resolves.toBe(false);
       expect(fakeCommand.warn).toHaveBeenCalledTimes(3);
       expect(fakeCommand.warn).toHaveBeenNthCalledWith(
@@ -105,7 +106,7 @@ describe('IsNgInstalled', () => {
       });
     });
 
-    it('should return true and not warn', async () => {
+    fancyIt()('should return true and not warn', async () => {
       await expect(IsNgInstalled()(fakeCommand)).resolves.toBe(true);
       expect(fakeCommand.warn).toHaveBeenCalledTimes(0);
     });
