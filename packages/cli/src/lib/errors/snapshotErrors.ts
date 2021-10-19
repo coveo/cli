@@ -4,16 +4,10 @@ import dedent from 'ts-dedent';
 import {Configuration} from '../config/config';
 import {Snapshot} from '../snapshot/snapshot';
 import {SnapshotUrlBuilder} from '../snapshot/snapshotUrlBuilder';
+import {PrintableError, SeverityLevel} from './printableError';
 
-export enum SeverityLevel {
-  Info = 'info',
-  Warn = 'warn',
-  Error = 'error',
-}
-
-interface IDetailedReportable extends SnapshotError {
+interface IDetailedReportable extends PrintableError {
   snapshot: Snapshot;
-  level: SeverityLevel;
   projectPath?: string;
 }
 
@@ -36,19 +30,8 @@ function printMessageWithSynchronizationPlanUrl(
   ${synchronizationPlanUrl}`);
 }
 
-export class SnapshotError extends Error {
-  public constructor(public level: SeverityLevel) {
-    super();
-  }
-
-  public print() {
-    cli.log();
-    cli[this.level]('\n' + this.message);
-  }
-}
-
 export class SnapshotOperationTimeoutError
-  extends SnapshotError
+  extends PrintableError
   implements IDetailedReportable
 {
   public name = 'Snapshot Operation Timeout Error';
@@ -64,7 +47,7 @@ export class SnapshotOperationTimeoutError
 }
 
 export class SnapshotNoReportFoundError
-  extends SnapshotError
+  extends PrintableError
   implements IDetailedReportable
 {
   public name = 'No Report Found Error';
@@ -76,7 +59,7 @@ export class SnapshotNoReportFoundError
 }
 
 export class SnapshotNoSynchronizationReportFoundError
-  extends SnapshotError
+  extends PrintableError
   implements IDetailedReportable
 {
   public name = 'No Synchronization Report Found Error';
@@ -89,7 +72,7 @@ export class SnapshotNoSynchronizationReportFoundError
 }
 
 export class SnapshotOperationAbort
-  extends SnapshotError
+  extends PrintableError
   implements IDetailedReportable
 {
   public name = 'Snapshot Operation Aborted';
@@ -101,7 +84,7 @@ export class SnapshotOperationAbort
 }
 
 export class SnapshotSynchronizationAmbiguousMatchesError
-  extends SnapshotError
+  extends PrintableError
   implements IDetailedReportable
 {
   public name = 'Snapshot Ambiguous Synchronization Matches';
@@ -124,7 +107,7 @@ export class SnapshotSynchronizationAmbiguousMatchesError
 }
 
 export class SnapshotSynchronizationUnknownError
-  extends SnapshotError
+  extends PrintableError
   implements IDetailedReportable
 {
   public name = 'Snapshot Synchronization Unknown Error';
@@ -147,7 +130,7 @@ export class SnapshotSynchronizationUnknownError
 }
 
 export class SnapshotGenericError
-  extends SnapshotError
+  extends PrintableError
   implements IDetailedReportable
 {
   public name = 'Snapshot Error';
