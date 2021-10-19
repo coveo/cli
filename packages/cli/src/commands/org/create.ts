@@ -11,23 +11,12 @@ import {
 } from '../../lib/decorators/preconditions/';
 import {OrganizationCreationOrigin} from '@coveord/platform-client';
 import {Config} from '../../lib/config/config';
-
-export enum publicTemplates {
-  Developer = 'developer',
-}
+import {bold} from 'chalk';
 
 export default class Create extends Command {
-  public static description = 'Create a Coveo organization.';
+  public static description = 'Create a new test Coveo organization.';
 
   public static flags = {
-    template: flags.string({
-      hidden: true,
-      char: 't',
-      helpValue: 'TODO:',
-      options: Object.keys(publicTemplates),
-      default: publicTemplates.Developer,
-      description: 'The name of the template to base the new organization on.',
-    }),
     setDefaultOrganization: flags.boolean({
       char: 'd',
       default: false,
@@ -44,13 +33,10 @@ export default class Create extends Command {
     },
   ];
 
-  @Preconditions(
-    IsAuthenticated()
-    //   TODO: check if some platform privilege is required to create an org
-  )
+  @Preconditions(IsAuthenticated())
   public async run() {
     const {id} = await this.createOrganization();
-    this.showFeedback(id);
+    this.displayFeedback(id);
     await this.config.runHook(
       'analytics',
       buildAnalyticsSuccessHook(this, flags)
@@ -67,22 +53,22 @@ export default class Create extends Command {
   }
 
   private async createOrganization() {
-    const {args, flags} = this.parse(Create);
+    const {args} = this.parse(Create);
     const client = await new AuthenticatedClient().getClient();
     return client.organization.create({
       creationOrigin: OrganizationCreationOrigin.CLI,
       name: args.name,
-      organizationTemplate: flags.template,
+      organizationTemplate: 'Developer',
     });
   }
 
-  private showFeedback(orgId: string) {
+  private displayFeedback(orgId: string) {
     const {flags} = this.parse(Create);
     if (flags.setDefaultOrganization) {
       this.configuration.set('organization', orgId);
-      cli.log(`Organization ${orgId} created and set as default`);
+      cli.log(`Organization ${bold.cyan(orgId)} created and set as default`);
     } else {
-      cli.log(`Organization ${orgId} created`);
+      cli.log(`Organization ${bold.cyan(orgId)} created`);
     }
   }
 
