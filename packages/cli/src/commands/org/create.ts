@@ -37,7 +37,9 @@ export default class Create extends Command {
   public async run() {
     cli.action.start('Creating organization');
     const {id} = await this.createOrganization();
-    this.displayFeedback(id);
+    const endMessage = this.generateEndMessageFromOrgId(id);
+    cli.action.stop(endMessage);
+
     await this.config.runHook(
       'analytics',
       buildAnalyticsSuccessHook(this, flags)
@@ -63,7 +65,7 @@ export default class Create extends Command {
     });
   }
 
-  private displayFeedback(orgId: string) {
+  private generateEndMessageFromOrgId(orgId: string) {
     const {flags} = this.parse(Create);
     let message = `Organization ${bold.cyan(orgId)} created`;
 
@@ -72,7 +74,7 @@ export default class Create extends Command {
       message += ' and set as default';
     }
 
-    cli.action.stop(message);
+    return message;
   }
 
   private get configuration() {
