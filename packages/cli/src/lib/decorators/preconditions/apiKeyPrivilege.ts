@@ -27,6 +27,7 @@ export function HasNecessaryCoveoPrivileges(
       })
     );
 
+    // TODO: CDX-649: rework the return type of preconditions so it can resolve or reject (instead of returning a boolean)
     return Boolean(await Promise.all(promises));
   };
 }

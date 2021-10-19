@@ -1,7 +1,6 @@
 jest.mock('../../platform/authenticatedClient');
 jest.mock('../../config/config');
 
-import Command from '@oclif/command';
 import {IConfig} from '@oclif/config';
 import {mocked} from 'ts-jest/utils';
 import {Config} from '../../config/config';
@@ -53,17 +52,13 @@ describe('apiKeyPrivilege', () => {
   ])(
     'when the API key condition is %s and the impersonate condition is %s.',
     (privilege: PlatformPrivilege, expectedWarning: string) => {
-      it(`warns '${expectedWarning}' and returns false`, async function (this: Command) {
+      it(`warns '${expectedWarning}' and returns false`, async () => {
         mockEvaluate.mockReturnValueOnce({approved: false});
 
         const fakeCommand = getFakeCommand();
         await expect(
-          HasNecessaryCoveoPrivileges(privilege).call(this, fakeCommand)
-        ).resolves.toBe(false);
-        expect(fakeCommand.warn).toHaveBeenCalledTimes(1);
-        expect(fakeCommand.warn).toHaveBeenCalledWith(
-          expect.stringContaining(expectedWarning)
-        );
+          HasNecessaryCoveoPrivileges(privilege).call(fakeCommand, fakeCommand)
+        ).rejects.toThrow(expectedWarning);
       });
     }
   );
@@ -74,10 +69,13 @@ describe('apiKeyPrivilege', () => {
       mockEvaluate.mockReturnValue({approved: true});
     });
 
-    it('returns true and does not warn', async function (this: Command) {
+    it('returns true and does not warn', async () => {
       const fakeCommand = getFakeCommand();
       await expect(
-        HasNecessaryCoveoPrivileges(...privileges).call(this, fakeCommand)
+        HasNecessaryCoveoPrivileges(...privileges).call(
+          fakeCommand,
+          fakeCommand
+        )
       ).resolves.toBe(true);
       expect(fakeCommand.warn).not.toHaveBeenCalled();
     });
