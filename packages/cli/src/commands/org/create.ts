@@ -35,6 +35,7 @@ export default class Create extends Command {
 
   @Preconditions(IsAuthenticated())
   public async run() {
+    cli.action.start('Creating organization');
     const {id} = await this.createOrganization();
     this.displayFeedback(id);
     await this.config.runHook(
@@ -64,12 +65,14 @@ export default class Create extends Command {
 
   private displayFeedback(orgId: string) {
     const {flags} = this.parse(Create);
+    let message = `Organization ${bold.cyan(orgId)} created`;
+
     if (flags.setDefaultOrganization) {
       this.configuration.set('organization', orgId);
-      cli.log(`Organization ${bold.cyan(orgId)} created and set as default`);
-    } else {
-      cli.log(`Organization ${bold.cyan(orgId)} created`);
+      message += ' and set as default';
     }
+
+    cli.action.stop(message);
   }
 
   private get configuration() {
