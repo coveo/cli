@@ -3,6 +3,7 @@ jest.mock('../../config/config');
 
 import {IConfig} from '@oclif/config';
 import {mocked} from 'ts-jest/utils';
+import {fancyIt} from '../../../__test__/it';
 import {Config} from '../../config/config';
 import {AuthenticatedClient} from '../../platform/authenticatedClient';
 import {HasNecessaryCoveoPrivileges} from './apiKeyPrivilege';
@@ -52,7 +53,7 @@ describe('apiKeyPrivilege', () => {
   ])(
     'when the API key condition is %s and the impersonate condition is %s.',
     (privilege: PlatformPrivilege, expectedWarning: string) => {
-      it(`warns '${expectedWarning}' and returns false`, async () => {
+      fancyIt()(`warns '${expectedWarning}' and returns false`, async () => {
         mockEvaluate.mockReturnValueOnce({approved: false});
 
         const fakeCommand = getFakeCommand();
@@ -69,7 +70,7 @@ describe('apiKeyPrivilege', () => {
       mockEvaluate.mockReturnValue({approved: true});
     });
 
-    it('returns true and does not warn', async () => {
+    fancyIt()('returns true and does not warn', async () => {
       const fakeCommand = getFakeCommand();
       await expect(
         HasNecessaryCoveoPrivileges(...privileges).call(
