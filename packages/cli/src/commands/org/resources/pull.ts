@@ -16,10 +16,7 @@ import {
   Preconditions,
 } from '../../../lib/decorators/preconditions';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
-import {
-  readSnapshotPrivilege,
-  writeSnapshotPrivilege,
-} from '../../../lib/decorators/preconditions/platformPrivilege';
+import {writeSnapshotPrivilege} from '../../../lib/decorators/preconditions/platformPrivilege';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {wait} from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
