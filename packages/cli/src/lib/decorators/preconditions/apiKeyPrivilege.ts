@@ -5,14 +5,20 @@ import PlatformClient, {
 import Command from '@oclif/command';
 import {cli} from 'cli-ux';
 import {Config} from '../../config/config';
-import {MissingPrivilegeError} from '../../errors/platformError';
+import {
+  PreconditionError,
+  PreconditionErrorCategory,
+} from '../../errors/preconditionError';
 import {AuthenticatedClient} from '../../platform/authenticatedClient';
 import {PlatformPrivilege} from './platformPrivilege';
 
 export function HasNecessaryCoveoPrivileges(
   ...privileges: PlatformPrivilege[]
 ) {
-  return async function (this: Command, command: Command) {
+  return async function (
+    this: Command,
+    command: Command
+  ): Promise<void | never> {
     const {flags} = this.parse(command.ctor);
     const authenticatedClient = new AuthenticatedClient();
     const client = await authenticatedClient.getClient();
@@ -22,13 +28,18 @@ export function HasNecessaryCoveoPrivileges(
     const promises = privileges.flatMap((privilege) =>
       privilege.models.map(async (model) => {
         if (!(await hasPrivilege(client, organization, model))) {
-          throw new MissingPrivilegeError(privilege, anonymous);
+          const message = privilege.unsatisfiedConditionMessage(
+            Boolean(anonymous)
+          );
+          throw new PreconditionError(
+            message,
+            PreconditionErrorCategory.MissingPlatformPrivilege
+          );
         }
       })
     );
 
-    // TODO: CDX-649: rework the return type of preconditions so it can resolve or reject (instead of returning a boolean)
-    return Boolean(await Promise.all(promises));
+    await Promise.all(promises);
   };
 }
 
