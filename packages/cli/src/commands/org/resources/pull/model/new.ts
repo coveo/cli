@@ -57,7 +57,7 @@ export class New extends Command {
   }
 
   private modelToWrite: SnapshotPullModel | undefined;
-  private resourcesToSelect: SnapshotPullModelResourceType[] | undefined;
+  private resourcesToSelect: SnapshotPullModelResourceType[] = [];
 
   @Preconditions(IsAuthenticated())
   public async run() {

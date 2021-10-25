@@ -74,7 +74,7 @@ export async function getSelectResourceTypesPrompt(
       values: resourceTypePromptValues,
       controls,
       renderer,
-      default: {...resourcePromptDefaults, ...defaults},
+      defaultAnswers: {...resourcePromptDefaults, ...defaults},
       disabled: getDisabledFromDefaults(defaults),
       shouldLoop: true,
     },
@@ -98,7 +98,7 @@ function getDisabledFromDefaults(defaults: ResourcePromptDefaults) {
 
 const invalidActionIfExisting = [ResourceTypeActions.Add];
 
-const invalidActionIfNotExisting = Object.values(ResourceTypeActions).filter(
-  (action) =>
-    [ResourceTypeActions.Delete, ResourceTypeActions.Edit].includes(action)
-);
+const invalidActionIfNotExisting = [
+  ResourceTypeActions.Delete,
+  ResourceTypeActions.Edit,
+];
