@@ -1,8 +1,7 @@
 import {PlatformPrivilege} from '../decorators/preconditions/platformPrivilege';
-import {SeverityLevel, SnapshotError} from './snapshotErrors';
+import {PrintableError, SeverityLevel} from './printableError';
 
-// TODO: CDX-646 rename "SnapshotError" class to "PrintableError"
-export class MissingPrivilegeError extends SnapshotError {
+export class MissingPrivilegeError extends PrintableError {
   public constructor(
     public privilege: PlatformPrivilege,
     public anonymous?: boolean
