@@ -13,6 +13,9 @@ const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
 const mockedConfig = mocked(Config, true);
 const mockedCreate = jest.fn();
 const mockConfigSet = jest.fn();
+const mockConfigGet = jest.fn().mockResolvedValue({
+  organization: 'foo',
+});
 
 const mockAuthenticatedClient = () => {
   mockedAuthenticatedClient.mockImplementation(
@@ -29,6 +32,7 @@ const mockConfig = () => {
     () =>
       ({
         set: mockConfigSet,
+        get: mockConfigGet,
       } as unknown as Config)
   );
 };
@@ -57,21 +61,15 @@ describe('org:create', () => {
     .stderr()
     .command(['org:create', 'my-test-org'])
     .it('should log the newly created org id', (ctx) => {
-      expect(ctx.stdout).toContain('mytestorg12345');
+      expect(ctx.stderr).toContain(
+        'Organization mytestorg12345 successfully created.'
+      );
     });
 
   test
     .stdout()
     .stderr()
     .command(['org:create', 'my-test-org'])
-    .it('should log the newly created org id', (ctx) => {
-      expect(ctx.stdout).toContain('mytestorg12345');
-    });
-
-  test
-    .stdout()
-    .stderr()
-    .command(['org:create', 'my-test-org', '-d'])
     .it('should set the newly created org as the default one', () => {
       expect(mockConfigSet).toHaveBeenCalledWith(
         'organization',
@@ -82,7 +80,7 @@ describe('org:create', () => {
   test
     .stdout()
     .stderr()
-    .command(['org:create', 'my-test-org'])
+    .command(['org:create', 'my-test-org', '--no-setDefaultOrganization'])
     .it('should not set default org', () => {
       expect(mockConfigSet).toHaveBeenCalledTimes(0);
     });
