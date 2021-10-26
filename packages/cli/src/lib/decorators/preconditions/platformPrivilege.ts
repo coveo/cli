@@ -16,7 +16,7 @@ export const createApiKeyPrivilege: PlatformPrivilege = {
   ],
   unsatisfiedConditionMessage: (anonymous: boolean) =>
     anonymous
-      ? 'Your API key is missing the privilege to create other API keys. Make sure to grant this privilege before running the command again. See https://docs.coveo.com/en/1707/#api-keys-domain.'
+      ? 'Your access token is missing the privilege to create API keys. Make sure to grant this privilege before running the command again. See https://docs.coveo.com/en/1707/#api-keys-domain.'
       : 'You are not authorized to create an API Key. Please contact an administrator of your Coveo organization and ask for that privilege. See https://docs.coveo.com/en/1707/#api-keys-domain.',
 };
 
@@ -30,7 +30,7 @@ export const impersonatePrivilege: PlatformPrivilege = {
   ],
   unsatisfiedConditionMessage: (anonymous: boolean) =>
     anonymous
-      ? `Your API key is missing the Impersonate privilege. Make sure to grant this privilege to your API key before running the command again.
+      ? `Your access token is missing the Impersonate privilege. Make sure to grant this privilege to your API key before running the command again.
 See https://docs.coveo.com/en/1707/#impersonate-domain-1.`
       : 'You are not authorized to create an API Key with the Impersonate privilege. Please contact an administrator of your Coveo organization and ask for that privilege.  See https://docs.coveo.com/en/1707/#impersonate-domain-1.',
 };
