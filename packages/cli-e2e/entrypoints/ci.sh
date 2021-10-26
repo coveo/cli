@@ -14,6 +14,8 @@ npm install -g @angular/cli
 npm install -g ts-node
 
 tmp_registry_log=`mktemp`
+mkdir -p "$GITHUB_WORKSPACE/packages/cli-e2e/docker/config/verdaccio/storage"
+touch "$GITHUB_WORKSPACE/packages/cli-e2e/docker/config/verdaccio/storage/htpasswd"
 npx verdaccio --config "$GITHUB_WORKSPACE/packages/cli-e2e/docker/config/config.yaml" &>$tmp_registry_log & 
 
 git config --global user.name "notgroot"
