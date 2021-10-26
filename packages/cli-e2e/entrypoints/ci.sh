@@ -13,11 +13,7 @@ xdg-settings set default-web-browser google-chrome.desktop
 npm install -g @angular/cli
 npm install -g ts-node
 
-docker run \
-  -d \
-  -p 4873:4873 \
-  -v "$GITHUB_WORKSPACE/packages/cli-e2e/docker/config:/verdaccio/conf" \
-  verdaccio/verdaccio:5.1.6 
+npx verdaccio --config "$GITHUB_WORKSPACE/packages/cli-e2e/docker/config/config.yaml"
 
 git config --global user.name "notgroot"
 git config --global user.email "notgroot@coveo.com"
