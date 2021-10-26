@@ -31,10 +31,9 @@ export function HasNecessaryCoveoPrivileges(
           const message = privilege.unsatisfiedConditionMessage(
             Boolean(anonymous)
           );
-          throw new PreconditionError(
-            message,
-            PreconditionErrorCategory.MissingPlatformPrivilege
-          );
+          throw new PreconditionError(message, {
+            category: PreconditionErrorCategory.MissingPlatformPrivilege,
+          });
         }
       })
     );

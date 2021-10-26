@@ -37,10 +37,9 @@ export function getBinVersionPrecondition(
           Required version invalid: "${versionRange}".
           Please report this error to Coveo: https://github.com/coveo/cli/issues/new
         `;
-        throw new PreconditionError(
-          message,
-          PreconditionErrorCategory.InvalidBinVersionRange
-        );
+        throw new PreconditionError(message, {
+          category: PreconditionErrorCategory.InvalidBinVersionRange,
+        });
       }
 
       const output = await spawnProcessOutput(
@@ -59,10 +58,9 @@ export function getBinVersionPrecondition(
 
           ${warnHowToInstallBin(appliedOptions)}
         `;
-        throw new PreconditionError(
-          message,
-          PreconditionErrorCategory.InvalidBinVersionRange
-        );
+        throw new PreconditionError(message, {
+          category: PreconditionErrorCategory.InvalidBinVersionRange,
+        });
       }
     };
   };
@@ -100,10 +98,9 @@ async function checkIfBinIsInstalled(
     } to run.
 
     ${warnHowToInstallBin(options)}`;
-    throw new PreconditionError(
-      warningMessage,
-      PreconditionErrorCategory.MissingBin
-    );
+    throw new PreconditionError(warningMessage, {
+      category: PreconditionErrorCategory.MissingBin,
+    });
   }
 
   if (output.exitCode !== '0') {
@@ -116,10 +113,9 @@ async function checkIfBinIsInstalled(
 
       ${warnHowToInstallBin(options)}
     `;
-    throw new PreconditionError(
-      message,
-      PreconditionErrorCategory.InvalidBinInstallation
-    );
+    throw new PreconditionError(message, {
+      category: PreconditionErrorCategory.InvalidBinInstallation,
+    });
   }
 }
 

@@ -8,15 +8,20 @@ export enum PreconditionErrorCategory {
   Authentication = 'Authentication',
 }
 
+export interface PreconditionErrorOptions {
+  category?: PreconditionErrorCategory;
+  level?: SeverityLevel;
+}
+
 export class PreconditionError extends PrintableError {
   public constructor(
     public message: string,
-    public category?: PreconditionErrorCategory
+    public options?: PreconditionErrorOptions
   ) {
-    super(SeverityLevel.Warn);
+    super(options?.level || SeverityLevel.Error);
     this.name = 'Precondition Error';
-    if (this.category) {
-      this.name += ` - ${this.category}`;
+    if (this.options?.category) {
+      this.name += ` - ${this.options?.category}`;
     }
   }
 }
