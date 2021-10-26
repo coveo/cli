@@ -17,7 +17,7 @@ docker run \
   -d \
   -p 4873:4873 \
   -v "$GITHUB_WORKSPACE/packages/cli-e2e/docker/config:/verdaccio/conf" \
-  verdaccio/verdaccio 
+  verdaccio/verdaccio:5.1.6 
 
 git config --global user.name "notgroot"
 git config --global user.email "notgroot@coveo.com"
