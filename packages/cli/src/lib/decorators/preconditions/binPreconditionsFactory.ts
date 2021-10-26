@@ -98,6 +98,7 @@ async function checkIfBinIsInstalled(
     const warningMessage = dedent`${target.id} requires ${
       options.prettyName
     } to run.
+
     ${warnHowToInstallBin(options)}`;
     throw new PreconditionError(
       warningMessage,
@@ -112,6 +113,7 @@ async function checkIfBinIsInstalled(
       ' '
     )}.
       ${output.stderr}
+
       ${warnHowToInstallBin(options)}
     `;
     throw new PreconditionError(
@@ -122,9 +124,13 @@ async function checkIfBinIsInstalled(
 }
 
 function warnHowToInstallBin(options: BinPreconditionsOptions) {
-  let howToInstallMessage = `Please visit ${options.installLink} for more detailed installation information.`;
+  const newParagraph = '\n\n';
+  const howToInstallMessage = [];
   if (options.howToInstallBinText) {
-    howToInstallMessage += options.howToInstallBinText;
+    howToInstallMessage.push(options.howToInstallBinText);
   }
-  return howToInstallMessage;
+  howToInstallMessage.push(
+    `Please visit ${options.installLink} for more detailed installation information.`
+  );
+  return howToInstallMessage.join(newParagraph);
 }

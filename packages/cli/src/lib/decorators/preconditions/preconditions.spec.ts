@@ -1,9 +1,10 @@
 import {fancyIt} from '../../../__test__/it';
+import {PreconditionError} from '../../errors/preconditionError';
 import {Preconditions} from './preconditions';
 import {getFakeCommand} from './testsUtils/utils';
 
 describe('preconditions', () => {
-  const preconditions = new Array<jest.Mock<Boolean>>(5);
+  const preconditions = new Array<jest.Mock<void>>(5);
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -18,7 +19,6 @@ describe('preconditions', () => {
           jest.fn(
             (() => {
               orderChecker(counter++);
-              return true;
             }).bind(this)
           )
         );
@@ -57,14 +57,13 @@ describe('preconditions', () => {
           jest.fn(
             (() => {
               orderChecker(counter++);
-              return true;
             }).bind(this)
           )
         );
         preconditions[2] = jest.fn(
           (() => {
             orderChecker('fail');
-            return false;
+            throw new PreconditionError('failed precondition');
           }).bind(this)
         );
 
@@ -77,7 +76,7 @@ describe('preconditions', () => {
         };
 
         await Preconditions(...preconditions)(fakeCommand, '', fakeDescriptor);
-        await fakeDescriptor.value();
+        await expect(fakeDescriptor.value()).rejects.toThrow(PreconditionError);
 
         expect(orderChecker).toHaveBeenCalledTimes(3);
         for (let index = 0; index < 2; index++) {

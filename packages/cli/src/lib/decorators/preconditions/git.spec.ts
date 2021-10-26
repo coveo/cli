@@ -7,6 +7,7 @@ import {getFakeCommand} from './testsUtils/utils';
 
 import {IsGitInstalled} from './git';
 import {fancyIt} from '../../../__test__/it';
+import {PreconditionError} from '../../errors/preconditionError';
 
 describe('IsGitInstalled', () => {
   const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
@@ -26,17 +27,10 @@ describe('IsGitInstalled', () => {
     fancyIt()('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsGitInstalled()(fakeCommand)).resolves.toBe(false);
-      expect(fakeCommand.warn).toHaveBeenCalledTimes(2);
-      expect(fakeCommand.warn).toHaveBeenNthCalledWith(
-        1,
-        'foo requires Git to run.'
-      );
-      expect(fakeCommand.warn).toHaveBeenNthCalledWith(
-        2,
-        dedent`
-       Please visit https://git-scm.com/book/en/v2/Getting-Started-Installing-Git for more detailed installation information.
-      `
+      await expect(IsGitInstalled()(fakeCommand)).rejects.toThrow(
+        new PreconditionError(dedent`foo requires Git to run.
+
+      Please visit https://git-scm.com/book/en/v2/Getting-Started-Installing-Git for more detailed installation information.`)
       );
     });
   });
@@ -50,19 +44,18 @@ describe('IsGitInstalled', () => {
       });
     });
 
-    fancyIt()('should return false and warn', async () => {
+    fancyIt()('should throw and warn', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsGitInstalled()(fakeCommand)).resolves.toBe(false);
-      expect(fakeCommand.warn).toHaveBeenCalledTimes(2);
-      expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
+      await expect(IsGitInstalled()(fakeCommand)).rejects.toThrow(
+        new PreconditionError(dedent`
         foo requires a valid Git installation to run.
         An unknown error happened while running git --version.
         some random error oh no
-      `);
-      expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
+
         Please visit https://git-scm.com/book/en/v2/Getting-Started-Installing-Git for more detailed installation information.
-      `);
+      `)
+      );
     });
   });
 
@@ -75,11 +68,10 @@ describe('IsGitInstalled', () => {
       });
     });
 
-    fancyIt()('should return true and not warn', async () => {
+    fancyIt()('should not throw', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsGitInstalled()(fakeCommand)).resolves.toBe(true);
-      expect(fakeCommand.warn).toHaveBeenCalledTimes(0);
+      await expect(IsGitInstalled()(fakeCommand)).resolves.not.toThrow();
     });
   });
 });

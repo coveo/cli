@@ -25,6 +25,7 @@ import {
 import {getPackageVersion} from '../../../lib/utils/misc';
 import Command from '@oclif/command';
 import {configurationMock} from '../../../__stub__/configuration';
+import {PreconditionError} from '../../../lib/errors/preconditionError';
 
 describe('ui:create:react', () => {
   const mockedConfig = mocked(Config);
@@ -43,18 +44,24 @@ describe('ui:create:react', () => {
     apiKey: true,
   };
   const doMockPreconditions = function () {
+    const thrower = (reason: string) => {
+      throw new PreconditionError(`${reason} Precondition Error`);
+    };
+
     const mockNode = function (_target: Command) {
-      return new Promise<boolean>((resolve) =>
-        resolve(preconditionStatus.node)
-      );
+      return new Promise<void | never>((resolve) => {
+        preconditionStatus.node ? resolve() : thrower('node');
+      });
     };
     const mockNpx = function (_target: Command) {
-      return new Promise<boolean>((resolve) => resolve(preconditionStatus.npx));
+      return new Promise<void | never>((resolve) => {
+        preconditionStatus.npx ? resolve() : thrower('npx');
+      });
     };
     const mockApiKeyPrivilege = function (_target: Command) {
-      return new Promise<boolean>((resolve) =>
-        resolve(preconditionStatus.apiKey)
-      );
+      return new Promise<void | never>((resolve) => {
+        preconditionStatus.apiKey ? resolve() : thrower('apiKey');
+      });
     };
     mockedIsNodeVersionInRange.mockReturnValue(mockNode);
     mockedIsNpxInstalled.mockReturnValue(mockNpx);
@@ -133,11 +140,9 @@ describe('ui:create:react', () => {
       preconditionStatus.apiKey = false;
     })
     .command(['ui:create:react', 'myapp'])
+    .catch(/apiKey Precondition Error/)
     .it(
-      'should not execute the command if the API key preconditions are not respected',
-      async () => {
-        expect(mockedCreateImpersonateApiKey).toHaveBeenCalledTimes(0);
-      }
+      'should not execute the command if the API key preconditions are not respected'
     );
 
   test
@@ -147,11 +152,9 @@ describe('ui:create:react', () => {
       preconditionStatus.node = false;
     })
     .command(['ui:create:react', 'myapp'])
+    .catch(/node Precondition Error/)
     .it(
-      'should not execute the command if the preconditions are not respected',
-      async () => {
-        expect(mockedSpawnProcess).toHaveBeenCalledTimes(0);
-      }
+      'should not execute the command if the preconditions are not respected'
     );
 
   test

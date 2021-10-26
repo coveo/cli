@@ -1,14 +1,13 @@
 jest.mock('../../platform/authenticatedClient');
-jest.mock('@oclif/command');
 
 import {mocked} from 'ts-jest/utils';
 import {fancyIt} from '../../../__test__/it';
+import {PreconditionError} from '../../errors/preconditionError';
 import {
   AuthenticationStatus,
   getAuthenticationStatus,
 } from '../../platform/authenticatedClient';
 import {IsAuthenticated} from './authenticated';
-import {getFakeCommand} from './testsUtils/utils';
 
 describe('authenticated', () => {
   const mockedAuthenticatedClient = mocked(getAuthenticationStatus);
@@ -42,24 +41,17 @@ describe('authenticated', () => {
     ) => {
       fancyIt()(`warns '${expectedWarning}' and returns false`, async () => {
         mockedAuthenticatedClient.mockResolvedValue(authenticationStatus);
-        const fakeCommand = getFakeCommand();
-
-        await expect(IsAuthenticated()(fakeCommand)).resolves.toBe(false);
-        expect(fakeCommand.warn).toHaveBeenCalledTimes(1);
-        expect(fakeCommand.warn).toHaveBeenCalledWith(expectedWarning);
+        await expect(IsAuthenticated()()).rejects.toThrow(PreconditionError);
       });
     }
   );
 
   describe('when the user is logged in', () => {
-    fancyIt()('returns true and does not warn', async () => {
+    fancyIt()('should not throw', async () => {
       mockedAuthenticatedClient.mockResolvedValue(
         AuthenticationStatus.LOGGED_IN
       );
-      const fakeCommand = getFakeCommand();
-
-      await expect(IsAuthenticated()(fakeCommand)).resolves.toBe(true);
-      expect(fakeCommand.warn).not.toHaveBeenCalled();
+      await expect(IsAuthenticated()()).resolves.not.toThrow();
     });
   });
 });
