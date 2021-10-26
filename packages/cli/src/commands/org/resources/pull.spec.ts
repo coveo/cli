@@ -18,6 +18,7 @@ import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import Command from '@oclif/command';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions';
+import {PreconditionError} from '../../../lib/errors/preconditionError';
 
 const mockedSnapshotFactory = mocked(SnapshotFactory, true);
 const mockedConfig = mocked(Config);
@@ -45,8 +46,14 @@ const doMockPreconditions = () => {
   const preconditionStatus = {
     git: true,
   };
+
+  const thrower = () => {
+    throw new PreconditionError('Precondition error');
+  };
   const mockGit = function (_target: Command) {
-    return new Promise<boolean>((resolve) => resolve(preconditionStatus.git));
+    return new Promise<void>((resolve) =>
+      preconditionStatus.git ? resolve() : thrower()
+    );
   };
   mockedIsGitInstalled.mockReturnValue(mockGit);
 };
@@ -108,11 +115,7 @@ describe('org:resources:pull', () => {
     .stdout()
     .stderr()
     .command(['org:resources:pull'])
-    .catch((ctx) => {
-      expect(ctx.message).toContain(
-        'You are not authorized to create snapshot'
-      );
-    })
+    .catch(/You are not authorized to create snapshot/)
     .it('should return an error message if privileges are missing');
 
   test
@@ -190,10 +193,6 @@ describe('org:resources:pull', () => {
     .stdout()
     .stderr()
     .command(['org:resources:pull', '-r', 'invalidresource'])
-    .catch((ctx) => {
-      expect(ctx.message).toContain(
-        'Expected --resourceTypes=invalidresource to be one of'
-      );
-    })
+    .catch(/Expected --resourceTypes=invalidresource to be one of/)
     .it('should not allow invalid resource');
 });
