@@ -161,10 +161,8 @@ describe('ui:create:react', () => {
     .stdout()
     .stderr()
     .command(['ui:create:react'])
-    .catch((ctx) => {
-      expect(ctx.message).toContain('Missing 1 required arg:');
-    })
-    .it('requires application name argument', async () => {});
+    .catch(/Missing 1 required arg/)
+    .it('requires application name argument');
 
   test
     .stdout()

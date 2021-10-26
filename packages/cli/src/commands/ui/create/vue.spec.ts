@@ -159,10 +159,8 @@ describe('ui:create:vue', () => {
     .stdout()
     .stderr()
     .command(['ui:create:vue'])
-    .catch((ctx) => {
-      expect(ctx.message).toContain('Missing 1 required arg:');
-    })
-    .it('requires application name argument', async () => {});
+    .catch(/Missing 1 required arg/)
+    .it('requires application name argument');
 
   test
     .stdout()

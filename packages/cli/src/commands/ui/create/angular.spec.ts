@@ -170,10 +170,8 @@ describe('ui:create:angular', () => {
     .stdout()
     .stderr()
     .command(['ui:create:angular'])
-    .catch((ctx) => {
-      expect(ctx.message).toContain('Missing 1 required arg:');
-    })
-    .it('requires application name argument', async () => {});
+    .catch(/Missing 1 required arg/)
+    .it('requires application name argument');
 
   test
     .stdout()
