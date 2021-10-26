@@ -43,7 +43,7 @@ function renderChoices(
     const isCurrentLine = choice === this.keys.realChoices[pointer[1]];
     output +=
       (isCurrentLine ? chalk.cyan`❯` : ' ') +
-      choice.name.padEnd(longestKeyDisplayNameLength, ' ') +
+      choice.name.padEnd(this.state.longestKeyDisplayNameLength!, ' ') +
       '\t' +
       getRenderedValues.call(
         this,
