@@ -28,7 +28,7 @@ yarn config set  registry http://localhost:4873
 yarn config set -- --mutex network
 yarn config set -- --install.silent true
 yarn config set -- --silent true
-
+echo $tmp_registry_log
 npm run npm:bump:template -- -- $UI_TEMPLATE_VERSION
 npm run npm:publish:template
 cd packages/cli-e2e
