@@ -13,12 +13,13 @@ xdg-settings set default-web-browser google-chrome.desktop
 npm install -g @angular/cli
 npm install -g ts-node
 
-npx verdaccio --config "$GITHUB_WORKSPACE/packages/cli-e2e/docker/config/config.yaml" >/dev/null 2>&1 & 
+tmp_registry_log=`mktemp`
+npx verdaccio --config "$GITHUB_WORKSPACE/packages/cli-e2e/docker/config/config.yaml" &>$tmp_registry_log & 
 
 git config --global user.name "notgroot"
 git config --global user.email "notgroot@coveo.com"
 
-while ! timeout 1 bash -c "echo > /dev/tcp/localhost/4873"; do sleep 10; done
+grep -q 'http address' <(tail -f $tmp_registry_log)
 
 export UI_TEMPLATE_VERSION=0.0.0
 npm config set registry http://localhost:4873
