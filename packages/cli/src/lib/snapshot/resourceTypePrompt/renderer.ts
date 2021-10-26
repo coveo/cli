@@ -6,9 +6,12 @@ import type {
 import Choice from 'inquirer/lib/objects/choice';
 import chalk, {Chalk} from 'chalk';
 import stripAnsi from 'strip-ansi';
+import {ResourceTypePromptState} from './interfaces';
 
-let longestKeyDisplayNameLength = 0;
-export function renderer(this: CustomizablePrompt, error: string) {
+export function renderer(
+  this: CustomizablePrompt<ResourceTypePromptState>,
+  error: string
+) {
   let message = this.getQuestion();
   let bottomContent = '';
   const choicesStr = renderChoices.call(this, this.pointer);
@@ -22,10 +25,13 @@ export function renderer(this: CustomizablePrompt, error: string) {
   this.screen.render(message, bottomContent);
 }
 
-function renderChoices(this: CustomizablePrompt, pointer: [number, number]) {
+function renderChoices(
+  this: CustomizablePrompt<ResourceTypePromptState>,
+  pointer: [number, number]
+) {
   let output = '';
-  if (!longestKeyDisplayNameLength) {
-    longestKeyDisplayNameLength = getLongestStringLength(
+  if (!this.state.longestKeyDisplayNameLength) {
+    this.state.longestKeyDisplayNameLength = getLongestStringLength(
       this.keys.realChoices.map((choice) => choice.name)
     );
   }

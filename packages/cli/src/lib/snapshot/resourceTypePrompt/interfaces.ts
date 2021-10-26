@@ -4,3 +4,7 @@ export enum ResourceTypeActions {
   Delete = 'delete',
   Edit = 'edit',
 }
+
+export interface ResourceTypePromptState {
+  longestKeyDisplayNameLength: number;
+}
