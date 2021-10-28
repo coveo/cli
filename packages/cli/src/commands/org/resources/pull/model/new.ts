@@ -9,10 +9,18 @@ import {cli} from 'cli-ux';
 import {Project} from '../../../../../lib/project/project';
 
 import {cwd} from 'process';
-import {SnapshotPullModel} from '../../../../../lib/snapshot/pullModel/interfaces';
+import {
+  SnapshotPullModel,
+  SnapshotPullModelResourceType,
+} from '../../../../../lib/snapshot/pullModel/interfaces';
 import {validateSnapshotPullModel} from '../../../../../lib/snapshot/pullModel/validation/validate';
 import fullTemplate from '../../../../../lib/snapshot/pullModel/templates/full.json';
 import emptyTemplate from '../../../../../lib/snapshot/pullModel/templates/empty.json';
+import {
+  getSelectResourceTypesPrompt,
+  ResourcePromptDefaults,
+} from '../../../../../lib/snapshot/resourceTypePrompt';
+import {ResourceTypeActions} from '../../../../../lib/snapshot/resourceTypePrompt/interfaces';
 
 enum PredefinedTemplates {
   Full = 'full',
@@ -49,6 +57,7 @@ export class New extends Command {
   }
 
   private modelToWrite: SnapshotPullModel | undefined;
+  private resourcesToSelect: SnapshotPullModelResourceType[] = [];
 
   @Preconditions(IsAuthenticated())
   public async run() {
@@ -69,12 +78,10 @@ export class New extends Command {
     );
   }
 
-  private async startInteractiveSession<
-    TResourceTypesWhaterv = unknown,
-    TResource = unknown
-  >() {
-    const resourceTypes: TResourceTypesWhaterv[] =
-      (await this.selectResourceTypes()) as unknown as TResourceTypesWhaterv[]; //an array of somesort.
+  private async startInteractiveSession<TResource = unknown>() {
+    this.modelToWrite = this.modelToWrite ?? emptyTemplate;
+    this.resourcesToSelect = [];
+    const resourceTypes = await this.selectResourceTypes();
     this.setResourceTypes(resourceTypes);
 
     for (const resourceType of resourceTypes) {
@@ -95,13 +102,46 @@ export class New extends Command {
     throw new Error('Method not implemented.');
   }
 
-  private setResourceTypes(_resourceTypes: unknown) {
-    // TODO CDX-630: Modify modelToWrite to set the resourceType or something like that
+  private setResourceTypes(
+    resourceTypes: [SnapshotPullModelResourceType, ResourceTypeActions][]
+  ) {
+    for (const [resourceType, action] of resourceTypes) {
+      switch (action) {
+        case ResourceTypeActions.Delete:
+          delete this.modelToWrite!.resources[resourceType];
+          break;
+        case ResourceTypeActions.Add:
+          this.modelToWrite!.resources[resourceType] = [];
+          this.resourcesToSelect!.push(resourceType);
+          break;
+        case ResourceTypeActions.Edit:
+          this.resourcesToSelect!.push(resourceType);
+          break;
+        case ResourceTypeActions.Skip:
+        default:
+          break;
+      }
+    }
     throw new Error('Method not implemented.');
   }
 
-  private async selectResourceTypes() {
-    // TODO CDX-630: Invoke resourceType prompt
+  private async selectResourceTypes(): Promise<
+    [SnapshotPullModelResourceType, ResourceTypeActions][]
+  > {
+    const promptName =
+      'Select the resource types you want to use in your model';
+    const resourceTypePromptDefaults: ResourcePromptDefaults = {};
+    if (this.modelToWrite?.resources) {
+      for (const key of Object.keys(this.modelToWrite?.resources)) {
+        resourceTypePromptDefaults[key as SnapshotPullModelResourceType] =
+          ResourceTypeActions.Skip;
+      }
+    }
+    const promptAnswers = await getSelectResourceTypesPrompt(
+      promptName,
+      resourceTypePromptDefaults
+    );
+    return promptAnswers[promptName];
   }
 
   private handleTemplate() {

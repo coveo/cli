@@ -14,12 +14,12 @@
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873"
   },
   "devDependencies": {
-    "@coveo/headless": "1.23.0",
+    "@coveo/headless": "1.28.2",
     "buefy": "0.9.10",
     "dotenv": "10.0.0",
     "vue": "2.6.14",
     "vue-property-decorator": "9.1.2",
-    "vue-router": "3.5.2"
+    "vue-router": "3.5.3"
   },
   "publishConfig": {
     "access": "public"
