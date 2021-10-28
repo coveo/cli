@@ -122,6 +122,11 @@ describe('org:resources', () => {
 
   describe('org:resources:preview', () => {
     describe('when resources are synchronized', () => {
+      let stdout = '';
+      const stdoutListener = (chunk: string) => {
+        stdout += chunk;
+      };
+
       it(
         'should preview the snapshot',
         async () => {
@@ -140,57 +145,80 @@ describe('org:resources', () => {
             '\\+   1 to create',
             'Ml models',
             '\\+   1 to create',
+            'Query parameters',
+            '\\+   1 to create',
+            'Query pipelines',
+            '\\+   1 to create',
+            'Query pipeline conditions',
+            '\\+   2 to create',
+            'Ranking weights',
+            '\\+   1 to create',
+            'Triggers',
+            '\\+   1 to create',
           ].join('\\s*');
           const regex = new RegExp(expectedOutput, 'gm');
 
-          await previewTerminal.when(regex).on('stdout').do().once();
+          previewTerminal.orchestrator.process.stdout.on(
+            'data',
+            stdoutListener
+          );
+
+          const previewTerminalExitPromise = previewTerminal
+            .when('exit')
+            .on('process')
+            .do((proc) => {
+              proc.stdout.off('data', stdoutListener);
+            })
+            .once();
+
+          await previewTerminalExitPromise;
+          expect(stdout).toMatch(regex);
         },
         defaultTimeout
       );
     });
 
     describe('when resources are not synchronized', () => {
+      let stdout: string;
+      let stderr: string;
+
+      const stdoutListener = (chunk: string) => {
+        stdout += chunk;
+      };
+      const stderrListener = (chunk: string) => {
+        stderr += chunk;
+      };
+
       beforeAll(async () => {
+        stdout = stderr = '';
         await createFieldWithoutUsingSnapshot(platformClient);
       });
 
       it(
         'should throw a synchronization warning on a field',
         async () => {
-          let returnedSynchronizationWarning = false;
-          let returnedPreview = false;
-
           const previewTerminal = previewChange(
             testOrgId,
             processManager,
             'org-config-preview-unsync'
           );
 
+          const process = previewTerminal.orchestrator.process;
+          process.stdout.on('data', stdoutListener);
+          process.stderr.on('data', stderrListener);
+
           const previewTerminalExitPromise = previewTerminal
             .when('exit')
             .on('process')
-            .do()
+            .do((proc) => {
+              proc.stdout.off('data', stdoutListener);
+              proc.stderr.off('data', stderrListener);
+            })
             .once();
 
-          previewTerminal
-            .when(/Checking for automatic synchronization/)
-            .on('stderr')
-            .do(() => {
-              returnedSynchronizationWarning = true;
-            })
-            .until(previewTerminalExitPromise);
-
-          previewTerminal
-            .when(/Previewing resource changes/)
-            .on('stdout')
-            .do(() => {
-              returnedPreview = true;
-            })
-            .until(previewTerminalExitPromise);
-
           await previewTerminalExitPromise;
-          expect(returnedSynchronizationWarning).toBe(true);
-          expect(returnedPreview).toBe(true);
+          expect(stdout).toMatch(/Previewing resource changes/);
+          expect(stderr).toMatch(/Checking for automatic synchronization/);
         },
         defaultTimeout
       );
