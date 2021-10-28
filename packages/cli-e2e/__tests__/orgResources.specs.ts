@@ -125,6 +125,7 @@ describe('org:resources', () => {
       it(
         'should preview the snapshot',
         async () => {
+          let returnedPreview = false;
           const previewTerminal = previewChange(
             testOrgId,
             processManager,
@@ -140,10 +141,35 @@ describe('org:resources', () => {
             '\\+   1 to create',
             'Ml models',
             '\\+   1 to create',
+            'Query parameters',
+            '\\+   1 to create',
+            'Query pipelines',
+            '\\+   1 to create',
+            'Query pipeline conditions',
+            '\\+   2 to create',
+            'Ranking weights',
+            '\\+   1 to create',
+            'Triggers',
+            '\\+   1 to create',
           ].join('\\s*');
           const regex = new RegExp(expectedOutput, 'gm');
 
-          await previewTerminal.when(regex).on('stdout').do().once();
+          const previewTerminalExitPromise = previewTerminal
+            .when('exit')
+            .on('process')
+            .do()
+            .once();
+
+          previewTerminal
+            .when(regex)
+            .on('stdout')
+            .do(() => {
+              returnedPreview = true;
+            })
+            .until(previewTerminalExitPromise);
+
+          await previewTerminalExitPromise;
+          expect(returnedPreview).toBe(true);
         },
         defaultTimeout
       );
