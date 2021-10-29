@@ -33,7 +33,7 @@ export function setupDependencies(_options: CoveoSchema): Rule {
       addToPackageJson('@angular/material', '^11.2.11'),
       addToPackageJson('@coveo/headless'),
       addToPackageJson('@coveo/search-token-server'),
-      addToPackageJson('get-port', '^5.1.1'),
+      addToPackageJson('get-port', '6.0.0'),
       addToPackageJson('dotenv', '^8.6.0'),
       addToPackageJson('concurrently'),
       runPackageInstallTask(),

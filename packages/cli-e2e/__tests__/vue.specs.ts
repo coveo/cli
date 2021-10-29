@@ -24,7 +24,8 @@ import {commitProject, undoCommit} from '../utils/git';
 import {parse} from 'dotenv';
 import {DummyServer} from '../utils/server';
 import {appendFileSync, readFileSync, truncateSync} from 'fs';
-import getPort from 'get-port';
+const getPort = await import('get-port');
+
 import {npm} from '../utils/windows';
 import axios from 'axios';
 import {jwtTokenPattern} from '../utils/matcher';

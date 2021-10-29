@@ -15,7 +15,7 @@ module.exports = (api, options, rootOptions) => {
       bulma: '^0.9.3',
       concurrently: '^5.3.0',
       dotenv: '^9.0.2',
-      'get-port': '^5.1.1',
+      'get-port': '6.0.0',
       'fs-extra': '^10.0.0',
     },
     devDependencies: {

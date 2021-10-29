@@ -26,7 +26,7 @@ import {resolve, join} from 'path';
 import {parse} from 'dotenv';
 import {readFileSync, writeFileSync, truncateSync, appendFileSync} from 'fs';
 import {DummyServer} from '../utils/server';
-import getPort from 'get-port';
+const getPort = await import('get-port');
 import {npm} from '../utils/windows';
 import axios from 'axios';
 import {jwtTokenPattern} from '../utils/matcher';
