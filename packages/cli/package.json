@@ -7,6 +7,8 @@
     "node": ">=14.15.1"
   },
   "dependencies": {
+    "@amplitude/identify": "^1.9.0",
+    "@amplitude/node": "^1.9.0",
     "@coveo/bueno": "^0.32.0",
     "@coveo/push-api-client": "^1.1.2",
     "@coveord/platform-client": "^25.1.1",

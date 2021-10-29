@@ -13,6 +13,7 @@ import {SnapshotPullModel} from '../../../../../lib/snapshot/pullModel/interface
 import {validateSnapshotPullModel} from '../../../../../lib/snapshot/pullModel/validation/validate';
 import fullTemplate from '../../../../../lib/snapshot/pullModel/templates/full.json';
 import emptyTemplate from '../../../../../lib/snapshot/pullModel/templates/empty.json';
+import {Trackable} from '../../../../../lib/decorators/preconditions/trackable';
 
 enum PredefinedTemplates {
   Full = 'full',
@@ -50,6 +51,7 @@ export class New extends Command {
 
   private modelToWrite: SnapshotPullModel | undefined;
 
+  @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
     this.handleTemplate();
@@ -58,6 +60,11 @@ export class New extends Command {
     }
     validateSnapshotPullModel(this.modelToWrite, true);
     this.writeTemplate();
+  }
+
+  @Trackable()
+  public async catch(err?: Error) {
+    throw err;
   }
 
   private async shouldStartInteractive() {

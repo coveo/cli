@@ -7,10 +7,7 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import dedent from 'ts-dedent';
-import {
-  buildAnalyticsFailureHook,
-  buildAnalyticsSuccessHook,
-} from '../../../hooks/analytics/analytics';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 
 export default class SourcePushList extends Command {
   public static description =
@@ -20,6 +17,7 @@ export default class SourcePushList extends Command {
     ...cli.table.flags(),
   };
 
+  @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = this.parse(SourcePushList);
@@ -57,16 +55,10 @@ export default class SourcePushList extends Command {
       },
       {...flags}
     );
-
-    this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
+  @Trackable()
   public async catch(err?: Error) {
-    const {flags} = this.parse(SourcePushList);
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, flags, err)
-    );
     throw err;
   }
 

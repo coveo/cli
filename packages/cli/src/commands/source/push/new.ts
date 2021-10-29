@@ -3,13 +3,10 @@ import {Command, flags} from '@oclif/command';
 import {green} from 'chalk';
 import dedent from 'ts-dedent';
 import {
-  buildAnalyticsFailureHook,
-  buildAnalyticsSuccessHook,
-} from '../../../hooks/analytics/analytics';
-import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 
 export default class SourcePushNew extends Command {
@@ -38,6 +35,7 @@ export default class SourcePushNew extends Command {
     },
   ];
 
+  @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags, args} = this.parse(SourcePushNew);
@@ -60,15 +58,10 @@ export default class SourcePushNew extends Command {
         )
       )
     );
-    this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
+  @Trackable()
   public async catch(err?: Error) {
-    const {flags} = this.parse(SourcePushNew);
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, flags, err)
-    );
     throw err;
   }
 }

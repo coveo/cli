@@ -2,10 +2,6 @@ import {Command, flags} from '@oclif/command';
 import {platformUrl} from '../../../lib/platform/environment';
 import {Config} from '../../../lib/config/config';
 import {spawnProcess} from '../../../lib/utils/process';
-import {
-  buildAnalyticsFailureHook,
-  buildAnalyticsSuccessHook,
-} from '../../../hooks/analytics/analytics';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {
@@ -21,6 +17,7 @@ import {
   createApiKeyPrivilege,
   impersonatePrivilege,
 } from '../../../lib/decorators/preconditions/platformPrivilege';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 
 export default class Angular extends Command {
   public static templateName = '@coveo/angular';
@@ -55,6 +52,7 @@ export default class Angular extends Command {
     },
   ];
 
+  @Trackable()
   @Preconditions(
     IsAuthenticated(),
     IsNodeVersionInRange(Angular.requiredNodeVersion),
@@ -67,10 +65,6 @@ export default class Angular extends Command {
     await this.createProject(args.name, flags.defaults);
     await this.addCoveoToProject(args.name, flags.defaults);
     this.displayFeedbackAfterSuccess(args.name);
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsSuccessHook(this, flags)
-    );
   }
 
   private async createProject(name: string, defaults: boolean) {
@@ -118,12 +112,8 @@ export default class Angular extends Command {
     return spawnProcess(appendCmdIfWindows`ng`, args, options);
   }
 
+  @Trackable()
   public async catch(err?: Error) {
-    const flags = this.flags;
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, flags, err)
-    );
     throw err;
   }
 

@@ -1,15 +1,12 @@
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
 import {cli} from 'cli-ux';
-import {
-  buildAnalyticsFailureHook,
-  buildAnalyticsSuccessHook,
-} from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {wait} from '../../../lib/flags/snapshotCommonFlags';
 import {ReportViewerStyles} from '../../../lib/snapshot/reportPreviewer/reportPreviewerStyles';
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
@@ -45,6 +42,7 @@ export default class Monitor extends Command {
 
   public static hidden = true;
 
+  @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
     this.printHeader();
@@ -52,16 +50,11 @@ export default class Monitor extends Command {
     const snapshot = await this.getSnapshot();
 
     await this.monitorSnapshot(snapshot);
-    this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
+  @Trackable()
   public async catch(err?: Error) {
-    const {flags} = this.parse(Monitor);
     handleSnapshotError(err);
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, flags, err)
-    );
   }
 
   private async monitorSnapshot(snapshot: Snapshot) {

@@ -6,10 +6,6 @@ import {
   Preconditions,
 } from '../../../lib/decorators/preconditions';
 import dedent from 'ts-dedent';
-import {
-  buildAnalyticsFailureHook,
-  buildAnalyticsSuccessHook,
-} from '../../../hooks/analytics/analytics';
 import {green, red} from 'chalk';
 import {
   AxiosResponse,
@@ -17,6 +13,7 @@ import {
   errorMessage,
   successMessage,
 } from '../../../lib/push/userFeedback';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 
 export default class SourcePushDelete extends Command {
   public static description =
@@ -53,6 +50,7 @@ export default class SourcePushDelete extends Command {
     },
   ];
 
+  @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = this.parse(SourcePushDelete);
@@ -81,10 +79,6 @@ export default class SourcePushDelete extends Command {
 
       await this.doDeletionDocumentURI(source);
     }
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsSuccessHook(this, flags)
-    );
   }
 
   private get isNumberOfDeletionTooLarge() {
@@ -147,12 +141,8 @@ export default class SourcePushDelete extends Command {
     );
   }
 
+  @Trackable()
   public async catch(err?: Error) {
-    const {flags} = this.parse(SourcePushDelete);
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, flags, err)
-    );
     throw err;
   }
 }

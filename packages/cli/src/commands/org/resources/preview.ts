@@ -3,10 +3,6 @@ import {blueBright} from 'chalk';
 import {cli} from 'cli-ux';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
-import {
-  buildAnalyticsFailureHook,
-  buildAnalyticsSuccessHook,
-} from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {
   HasNecessaryCoveoPrivileges,
@@ -18,6 +14,7 @@ import {
   writeLinkPrivilege,
   writeSnapshotPrivilege,
 } from '../../../lib/decorators/preconditions/platformPrivilege';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {
   PreviewLevelValue,
@@ -66,6 +63,7 @@ export default class Preview extends Command {
 
   public static hidden = true;
 
+  @Trackable()
   @Preconditions(
     IsAuthenticated(),
     IsGitInstalled(),
@@ -89,19 +87,13 @@ export default class Preview extends Command {
     );
     await this.processReport(snapshot, reporter);
     await this.cleanup(snapshot, project);
-
-    this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
+  @Trackable()
   public async catch(err?: Error) {
-    const {flags} = this.parse(Preview);
     cleanupProject(this.projectPath);
     handleSnapshotError(err);
     await this.displayAdditionalErrorMessage(err);
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, flags, err)
-    );
   }
 
   private shouldDisplayExpandedPreview() {

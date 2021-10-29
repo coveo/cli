@@ -2,13 +2,10 @@ import {Command} from '@oclif/command';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {cli} from 'cli-ux';
 import {
-  buildAnalyticsFailureHook,
-  buildAnalyticsSuccessHook,
-} from '../../hooks/analytics/analytics';
-import {
   Preconditions,
   IsAuthenticated,
 } from '../../lib/decorators/preconditions/';
+import {Trackable} from '../../lib/decorators/preconditions/trackable';
 
 export default class List extends Command {
   public static description = 'List Coveo organizations.';
@@ -17,6 +14,7 @@ export default class List extends Command {
     ...cli.table.flags(),
   };
 
+  @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = this.parse(List);
@@ -46,19 +44,10 @@ export default class List extends Command {
         {...flags}
       );
     }
-
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsSuccessHook(this, flags)
-    );
   }
 
+  @Trackable()
   public async catch(err?: Error) {
-    const {flags} = this.parse(List);
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, flags, err)
-    );
     throw err;
   }
 }
