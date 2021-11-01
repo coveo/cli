@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@coveo/headless": "1.28.2",
-    "buefy": "0.9.10",
+    "buefy": "0.9.11",
     "dotenv": "10.0.0",
     "vue": "2.6.14",
     "vue-property-decorator": "9.1.2",
