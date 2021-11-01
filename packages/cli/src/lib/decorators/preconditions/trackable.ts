@@ -21,6 +21,7 @@ export function Trackable(overrideEventProperties?: Record<string, unknown>) {
       if (cmdArgs.length > 0) {
         await trackError.call(this, name, properties, originalCommand, cmdArgs);
       } else {
+        console.log('track command');
         await trackCommand.call(this, name, properties, originalCommand);
       }
     };
