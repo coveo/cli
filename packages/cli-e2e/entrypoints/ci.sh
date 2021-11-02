@@ -1,9 +1,10 @@
 #!/bin/bash
 set -e
 
+docker pull mitmproxy/mitmproxy:latest
+
 sudo apt-get update
 sudo apt-get install libssl-dev zlib1g-dev llvm libncurses5-dev libncursesw5-dev tk-dev
-
 export DISPLAY=:1
 Xvfb :1 -screen 0 1024x768x16 & sleep 1
 google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720 >/dev/null 2>&1 &
