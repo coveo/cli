@@ -4,11 +4,10 @@ import {CLI_EXEC_PATH} from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 
-const startMitmProxy = async (processManager: ProcessManager) => {
+const startMitmProxy = (processManager: ProcessManager) => {
   const args = [
     'docker',
     'run',
-    '-d',
     '-i',
     '--rm',
     '-v',
@@ -44,7 +43,7 @@ describe('org:list', () => {
     beforeAll(async () => {
       const proxyProcessManager = new ProcessManager();
       processManagers.push(proxyProcessManager);
-      proxyTerminal = await startMitmProxy(proxyProcessManager);
+      proxyTerminal = startMitmProxy(proxyProcessManager);
       await waitForProxyRunning(proxyTerminal);
     });
 
@@ -71,7 +70,7 @@ describe('org:list', () => {
         args,
         undefined,
         cliProcessManager,
-        'auth-login'
+        'org-list-proxied'
       );
 
       await cliTerminal
