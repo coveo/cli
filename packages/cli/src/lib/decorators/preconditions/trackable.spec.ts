@@ -92,7 +92,6 @@ describe('trackable', () => {
     fancyIt()('should properly format events', () => {
       const event = {
         event_properties: {
-          errorMessage: 'Some kind of error',
           errorName: 'Error',
           command: 'foo:bar',
         },
