@@ -95,7 +95,7 @@ export const buildEvent = (
 export const buildError = (arg: unknown) => {
   /**
    * TODO: CDX-660: Make sure to remove any PII from the Error object.
-   *       error.message may contain data that we is not allowed to be tracked for non-Trial users
+   *       error.message could contain data that is not allowed to be tracked for non-Trial users
    *       example: orgID, sourceID, ...
    */
   if (arg instanceof Error) {
