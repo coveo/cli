@@ -3,17 +3,14 @@ import {buildError, buildEvent} from '../../../hooks/analytics/analytics';
 
 export function Trackable(overrideEventProperties?: Record<string, unknown>) {
   return function (
-    target: Command,
+    _target: Command,
     _propertyKey: string,
     descriptor: TypedPropertyDescriptor<() => Promise<void>>
   ) {
     const originalCommand = descriptor.value!;
     descriptor.value = async function (this: Command, ...cmdArgs: unknown[]) {
       const name = getEventName(this);
-      const {flags, args} = this.parse(target.ctor);
       const properties = {
-        args,
-        ...flags,
         ...overrideEventProperties,
         command: this.id,
       };

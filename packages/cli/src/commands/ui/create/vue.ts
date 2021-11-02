@@ -28,6 +28,7 @@ export default class Vue extends Command {
    * @see https://github.com/vuejs/vue-cli/blob/dev/CHANGELOG.md for upcoming requirements.
    */
   public static requiredNodeVersion = '>=12';
+  public static title = 'ui create';
   public static description =
     'Create a Coveo Headless-powered search page with the Vue.js web framework. See <https://docs.coveo.com/headless> and <https://vuejs.org/>.';
 
@@ -62,7 +63,7 @@ export default class Vue extends Command {
     },
   ];
 
-  @Trackable()
+  @Trackable({framework: 'vue'})
   @Preconditions(
     IsAuthenticated(),
     IsNodeVersionInRange(Vue.requiredNodeVersion),

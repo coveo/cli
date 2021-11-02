@@ -8,6 +8,7 @@ import {Trackable} from '../../lib/decorators/preconditions/trackable';
 
 export default class Token extends Command {
   private configuration!: Config;
+  public static title = 'auth login - token';
   public static description =
     'Log in to the Coveo Platform using the OAuth2 flow.';
 

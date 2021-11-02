@@ -35,6 +35,8 @@ export default class React extends Command {
    */
   public static requiredNodeVersion = '>=14.0.0';
 
+  public static title = 'ui create';
+
   public static description =
     'Create a Coveo Headless-powered search page with the React web framework. See <https://docs.coveo.com/headless> and <https://reactjs.org/>.';
 
@@ -59,7 +61,7 @@ export default class React extends Command {
     },
   ];
 
-  @Trackable()
+  @Trackable({framework: 'react'})
   @Preconditions(
     IsAuthenticated(),
     IsNodeVersionInRange(React.requiredNodeVersion),
