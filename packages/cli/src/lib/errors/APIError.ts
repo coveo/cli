@@ -7,6 +7,6 @@ export interface APIErrorResponse {
 export class APIError extends Error {
   public constructor(error: APIErrorResponse) {
     super(error.message);
-    this.name = error.errorCode;
+    this.name = `APIError - ${error.errorCode}`;
   }
 }

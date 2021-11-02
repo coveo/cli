@@ -7,6 +7,7 @@ import {
   AuthenticationStatus,
   getAuthenticationStatus,
 } from '../../lib/platform/authenticatedClient';
+import {UnknownError} from '../../lib/errors/unknownError';
 
 export interface AnalyticsHook {
   event: Event;
@@ -60,7 +61,6 @@ const platformInfoIdentifier = async () => {
 
 const errorIdentifier = (err?: Error) => ({
   ...(err && {
-    errorMessage: err.message,
     errorName: err.name,
   }),
 });
@@ -93,11 +93,6 @@ export const buildEvent = (
 };
 
 export const buildError = (arg: unknown) => {
-  /**
-   * TODO: CDX-660: Make sure to remove any PII from the Error object.
-   *       error.message could contain data that is not allowed to be tracked for non-Trial users
-   *       example: orgID, sourceID, ...
-   */
   if (arg instanceof Error) {
     return arg;
   }
@@ -114,7 +109,7 @@ export const buildError = (arg: unknown) => {
   const isErrorFromAPI = validate(arg, schema);
   return isErrorFromAPI
     ? new APIError(arg as APIErrorResponse)
-    : new Error('Unknown Error');
+    : new UnknownError();
 };
 
 export default hook;
