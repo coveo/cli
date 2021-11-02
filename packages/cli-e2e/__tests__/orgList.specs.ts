@@ -1,8 +1,10 @@
 import {homedir} from 'os';
-import {resolve} from 'path';
+import {join, resolve} from 'path';
 import {CLI_EXEC_PATH} from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
+
+const certFolder = resolve(homedir(), '.mitmproxy');
 
 const startMitmProxy = (processManager: ProcessManager) => {
   const args = [
@@ -11,7 +13,7 @@ const startMitmProxy = (processManager: ProcessManager) => {
     '-i',
     '--rm',
     '-v',
-    `${resolve(homedir(), '.mitmproxy')}:/home/mitmproxy/.mitmproxy`,
+    `${certFolder}:/home/mitmproxy/.mitmproxy`,
     '-p',
     '8080:8080',
     'mitmproxy/mitmproxy',
@@ -68,7 +70,12 @@ describe('org:list', () => {
       const cliTerminal = new Terminal(
         args.shift()!,
         args,
-        undefined,
+        {
+          env: {
+            NODE_EXTRA_CA_CERTS: join(certFolder, 'mitmproxy-ca-cert.pem'),
+            HTTPS_PROXY: 'http://localhost:8080',
+          },
+        },
         cliProcessManager,
         'org-list-proxied'
       );
