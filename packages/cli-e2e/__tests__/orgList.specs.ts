@@ -8,6 +8,7 @@ const startMitmProxy = async (processManager: ProcessManager) => {
   const args = [
     'docker',
     'run',
+    '-d',
     '-i',
     '--rm',
     '-v',
