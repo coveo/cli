@@ -11,9 +11,17 @@ import {strictEqual} from 'assert';
 import {readJSON, writeJSON, existsSync} from 'fs-extra';
 import {Terminal} from './terminal/terminal';
 
+function getPlatformEnvironment() {
+  return process.env.PLATFORM_ENV;
+}
+
+function getPlatformHostname() {
+  const env = getPlatformEnvironment();
+  return `https://platform${env}.cloud.coveo.com`;
+}
+
 function isLoginPage(page: Page) {
-  // TODO: CDX-98: URL should vary in fonction of the targeted environment.
-  return page.url() === 'https://platformdev.cloud.coveo.com/login';
+  return page.url() === `${getPlatformHostname()}/login`;
 }
 
 export async function isLoggedin() {
@@ -50,8 +58,7 @@ async function staySignedIn(page: Page) {
 }
 
 async function possiblyAcceptCustomerAgreement(page: Page) {
-  // TODO: CDX-98: URL should vary in fonction of the targeted environment.
-  if (page.url().startsWith('https://platformdev.cloud.coveo.com/eula')) {
+  if (page.url().startsWith(`${getPlatformHostname()}/eula`)) {
     await page.waitForSelector(LoginSelectors.coveoCheckboxButton, {
       visible: true,
     });
@@ -65,7 +72,12 @@ async function possiblyAcceptCustomerAgreement(page: Page) {
 }
 
 export function runLoginCommand(orgId: string) {
-  const args: string[] = [CLI_EXEC_PATH, 'auth:login', '-e=dev', `-o=${orgId}`];
+  const args: string[] = [
+    CLI_EXEC_PATH,
+    'auth:login',
+    `-e=${getPlatformEnvironment()}`,
+    `-o=${orgId}`,
+  ];
   if (process.platform === 'win32') {
     args.unshift('node');
   }
