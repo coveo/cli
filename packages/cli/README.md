@@ -43,6 +43,7 @@ USAGE
 * [`coveo source:push:delete SOURCEID`](#coveo-sourcepushdelete-sourceid)
 * [`coveo source:push:list`](#coveo-sourcepushlist)
 * [`coveo source:push:new NAME`](#coveo-sourcepushnew-name)
+* [`coveo ui:create:atomic NAME`](#coveo-uicreateatomic-name)
 * [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
 * [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
 * [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
@@ -301,6 +302,20 @@ OPTIONS
 ```
 
 _See code: [src/commands/source/push/new.ts](https://github.com/coveo/cli/blob/v1.18.0/packages/cli/src/commands/source/push/new.ts)_
+
+## `coveo ui:create:atomic NAME`
+
+Create a Coveo Headless-powered search page with Coveo's own Atomic framework. See <https://docs.coveo.com/atomic> and <https://docs.coveo.com/headless>.
+
+```
+USAGE
+  $ coveo ui:create:atomic NAME
+
+ARGUMENTS
+  NAME  The name of the application to create.
+```
+
+_See code: [src/commands/ui/create/atomic.ts](https://github.com/coveo/cli/blob/v1.18.0/packages/cli/src/commands/ui/create/atomic.ts)_
 
 ## `coveo ui:create:angular NAME`
 
