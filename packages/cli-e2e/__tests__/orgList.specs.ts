@@ -1,3 +1,4 @@
+import {spawnSync} from 'child_process';
 import {homedir} from 'os';
 import {join} from 'path';
 import {resolve} from 'path';
@@ -7,36 +8,17 @@ import {Terminal} from '../utils/terminal/terminal';
 
 const certFolder = resolve(homedir(), '.mitmproxy');
 
-const stopMitmProxy = (processManager: ProcessManager) => {
-  const args = ['docker', 'stop', 'mitmproxy'];
-  const serverTerminal = new Terminal(
-    args.shift()!,
-    args,
-    undefined,
-    processManager,
-    'mitmproxy_killer'
-  );
-  return serverTerminal;
+const resolveBinary = (programName: string) => {
+  const whereOrWhich = process.platform === 'win32' ? 'where.exe' : 'which';
+  const spawner = spawnSync(whereOrWhich, [programName], {encoding: 'utf-8'});
+  return spawner.stdout;
 };
 
 const startMitmProxy = (processManager: ProcessManager) => {
-  const args = [
-    'docker',
-    'run',
-    '--name',
-    'mitmproxy',
-    '-i',
-    '--rm',
-    '-v',
-    `${certFolder}:/home/mitmproxy/.mitmproxy`,
-    '-p',
-    '8080:8080',
-    'mitmproxy/mitmproxy',
-    'mitmdump',
-  ];
+  const mitmPath = resolveBinary('mitmdump');
   const serverTerminal = new Terminal(
-    args.shift()!,
-    args,
+    mitmPath,
+    [],
     undefined,
     processManager,
     'mitmproxy'
@@ -65,13 +47,6 @@ describe('org:list', () => {
     });
 
     afterAll(async () => {
-      const proxyKillerProcessManager = new ProcessManager();
-      processManagers.push(proxyKillerProcessManager);
-      await stopMitmProxy(proxyKillerProcessManager)
-        .when('exit')
-        .on('process')
-        .do()
-        .once();
       await Promise.all(
         processManagers.map((manager) => manager.killAllProcesses())
       );
