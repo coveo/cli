@@ -66,7 +66,7 @@ const errorIdentifier = (err?: Error) => ({
 });
 
 const configureAmplitudeClient = () => {
-  // TODO: support proxy
+  // TODO: CDX-667: support proxy
   const amplitudeClient = init(analyticsAPIKey);
   return amplitudeClient;
 };
