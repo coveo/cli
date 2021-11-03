@@ -5,8 +5,9 @@ import {Snapshot, WaitUntilDoneOptions} from './snapshot';
 import {red, green} from 'chalk';
 import {normalize} from 'path';
 import {Config, Configuration} from '../config/config';
-import {SnapshotError, SnapshotGenericError} from '../errors/snapshotErrors';
+import {SnapshotGenericError} from '../errors/snapshotErrors';
 import {SnapshotFacade} from './snapshotFacade';
+import {PrintableError} from '../errors/printableError';
 
 export interface DryRunOptions {
   sync?: boolean;
@@ -80,7 +81,7 @@ export function handleSnapshotError(err?: Error) {
     cli.action.stop(err?.name);
   }
 
-  if (err instanceof SnapshotError) {
+  if (err instanceof PrintableError) {
     err.print();
   } else {
     throw err;
