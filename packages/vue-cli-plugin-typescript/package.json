@@ -14,7 +14,7 @@
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873"
   },
   "devDependencies": {
-    "@coveo/headless": "1.28.2",
+    "@coveo/headless": "1.30.0",
     "buefy": "0.9.11",
     "dotenv": "10.0.0",
     "vue": "2.6.14",
