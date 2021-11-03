@@ -1,24 +1,25 @@
 import Command from '@oclif/command';
+import {PreconditionFunction} from '../lib/decorators/preconditions';
 import {PreconditionError} from '../lib/errors/preconditionError';
 
 const thrower = (reason: string) => {
   throw new PreconditionError(`${reason} Precondition Error`);
 };
 
-export const mockPreconditions = <Type extends Record<string, boolean>>(
-  preconditionStatus: Type
+export const mockPreconditions = <
+  PreconditionStatus extends Record<string, boolean>
+>(
+  preconditionStatus: PreconditionStatus
 ) => {
-  type StatusPromises = Record<
-    keyof typeof preconditionStatus,
-    (_target: Command) => Promise<void>
-  >;
+  type preconditionKeys = keyof typeof preconditionStatus;
+  type preconditionPromises = Record<preconditionKeys, PreconditionFunction>;
 
   const keys = Object.keys(preconditionStatus);
-  const mockedPreconditions = {} as StatusPromises;
+  const mockedPreconditions = {} as preconditionPromises;
 
   keys.forEach(
     (key) =>
-      (mockedPreconditions[key as keyof Type] = (_target: Command) =>
+      (mockedPreconditions[key as preconditionKeys] = (_target: Command) =>
         new Promise<void>((resolve) =>
           preconditionStatus[key] ? resolve() : thrower(key)
         ))
