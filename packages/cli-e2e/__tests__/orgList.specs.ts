@@ -63,7 +63,10 @@ describe('org:list', () => {
         const proxyStdoutListener = (chunk: string) => {
           proxyStdout += chunk;
         };
-        proxyTerminal.orchestrator.process.on('data', proxyStdoutListener);
+        proxyTerminal.orchestrator.process.stdout.on(
+          'data',
+          proxyStdoutListener
+        );
         const args: string[] = [CLI_EXEC_PATH, 'org:list'];
         if (process.platform === 'win32') {
           args.unshift('node');
