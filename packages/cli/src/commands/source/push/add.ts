@@ -155,9 +155,9 @@ export default class SourcePushAdd extends Command {
 
     return successMessage(
       this,
-      `Success: ${green(
-        numAdded
-      )} documents accepted by the Push API from ${green(fileNames)}.`,
+      `Success: ${green(numAdded)} document${
+        numAdded > 1 ? 's' : ''
+      } accepted by the Push API from ${green(fileNames)}.`,
       res
     );
   }
