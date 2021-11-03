@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-sudo brew install mitmproxy
+brew install mitmproxy
 sudo apt-get update
 sudo apt-get install libssl-dev zlib1g-dev llvm libncurses5-dev libncursesw5-dev tk-dev
 export DISPLAY=:1
