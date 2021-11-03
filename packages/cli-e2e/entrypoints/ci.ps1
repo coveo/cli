@@ -28,11 +28,9 @@ git config --global user.name "notgroot"
 git config --global user.email "notgroot@coveo.com"
 
 choco.exe install mitmproxy -y
-$path = [Environment]::GetEnvironmentVariable('Path', 'Machine');
-$path += ';' + 'C:\Program Files (x86)\mitmproxy\bin'
-[Environment]::SetEnvironmentVariable("Path", $path, 'Machine')
+Write-Output 'C:\Program Files (x86)\mitmproxy\bin' >> $GITHUB_PATH
 RefreshEnv.cmd
-Write-Output [Environment]::GetEnvironmentVariable('Path', 'Machine');
+
 where.exe "mitmproxy.exe"
 where.exe mitmproxy.exe
 where.exe mitmproxy
