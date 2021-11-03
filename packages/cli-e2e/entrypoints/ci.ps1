@@ -1,5 +1,4 @@
 New-Item -Path "./packages/cli-e2e/docker/config/verdaccio/storage/htpasswd" -Force
-Start-Process "choco" -ArgumentList "install mitmproxy -y"
 $VerdaccioConfigPath = Resolve-Path './packages/cli-e2e/docker/config/config.yaml' 
 Start-Process "npx" -ArgumentList "verdaccio --config $VerdaccioConfigPath"
 Start-Process "C:/Program Files/Google/Chrome/Application/chrome.exe" -ArgumentList "--no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720"
@@ -28,6 +27,7 @@ do {
 git config --global user.name "notgroot"
 git config --global user.email "notgroot@coveo.com"
 
+choco.exe install mitmproxy -y
 npm install -g @angular/cli
 npm install -g ts-node
 
