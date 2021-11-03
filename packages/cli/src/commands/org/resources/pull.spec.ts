@@ -1,3 +1,4 @@
+jest.mock('../../../lib/decorators/preconditions/git');
 jest.mock('../../../lib/config/config');
 jest.mock('../../../hooks/analytics/analytics');
 jest.mock('../../../hooks/prerun/prerun');
@@ -5,7 +6,6 @@ jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/snapshot/snapshotFactory');
 jest.mock('../../../lib/project/project');
 jest.mock('../../../lib/utils/process');
-jest.mock('../../../lib/decorators/preconditions');
 
 import {Config} from '../../../lib/config/config';
 import {mocked} from 'ts-jest/utils';
@@ -15,6 +15,9 @@ import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel';
 import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import Command from '@oclif/command';
+import {IsGitInstalled} from '../../../lib/decorators/preconditions';
 
 const mockedSnapshotFactory = mocked(SnapshotFactory, true);
 const mockedConfig = mocked(Config);
@@ -22,6 +25,9 @@ const mockedConfigGet = jest.fn();
 const mockedGetSnapshot = jest.fn();
 const mockedDownloadSnapshot = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
+const mockedIsGitInstalled = mocked(IsGitInstalled, true);
+const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+const mockEvaluate = jest.fn();
 
 const doMockConfig = () => {
   mockedConfigGet.mockReturnValue(
@@ -32,12 +38,35 @@ const doMockConfig = () => {
     })
   );
 
-  mockedConfig.mockImplementation(
-    () =>
-      ({
-        get: mockedConfigGet,
-      } as unknown as Config)
-  );
+  mockedConfig.prototype.get = mockedConfigGet;
+};
+
+const doMockPreconditions = () => {
+  const preconditionStatus = {
+    git: true,
+  };
+  const mockGit = function (_target: Command) {
+    return new Promise<boolean>((resolve) => resolve(preconditionStatus.git));
+  };
+  mockedIsGitInstalled.mockReturnValue(mockGit);
+};
+
+const mockAuthenticatedClient = () => {
+  const mockGetClient = jest.fn().mockResolvedValue({
+    privilegeEvaluator: {
+      evaluate: mockEvaluate,
+    },
+  });
+
+  mockedAuthenticatedClient.prototype.getClient = mockGetClient;
+};
+
+const mockUserHavingAllRequiredPlatformPrivileges = () => {
+  mockEvaluate.mockResolvedValue({approved: true});
+};
+
+const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
+  mockEvaluate.mockResolvedValue({approved: false});
 };
 
 const doMockSnapshotFactory = async () => {
@@ -53,6 +82,7 @@ describe('org:resources:pull', () => {
   beforeAll(() => {
     doMockConfig();
     doMockSnapshotFactory();
+    mockAuthenticatedClient();
 
     mockedGetSnapshot.mockResolvedValue(
       getDummySnapshotModel('default-org', 'my-snapshot', [
@@ -60,6 +90,30 @@ describe('org:resources:pull', () => {
       ])
     );
   });
+
+  beforeEach(() => {
+    doMockPreconditions();
+    mockUserHavingAllRequiredPlatformPrivileges();
+  });
+
+  afterEach(() => {
+    mockEvaluate.mockClear();
+    mockedIsGitInstalled.mockClear();
+  });
+
+  test
+    .do(() => {
+      mockUserNotHavingAllRequiredPlatformPrivileges();
+    })
+    .stdout()
+    .stderr()
+    .command(['org:resources:pull'])
+    .catch((ctx) => {
+      expect(ctx.message).toContain(
+        'You are not authorized to create snapshot'
+      );
+    })
+    .it('should return an error message if privileges are missing');
 
   test
     .stdout()

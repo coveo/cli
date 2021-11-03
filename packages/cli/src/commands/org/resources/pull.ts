@@ -11,10 +11,12 @@ import {
 } from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {
+  HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
+import {writeSnapshotPrivilege} from '../../../lib/decorators/preconditions/platformPrivilege';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {wait} from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
@@ -64,7 +66,11 @@ export default class Pull extends Command {
 
   public static hidden = true;
 
-  @Preconditions(IsAuthenticated(), IsGitInstalled())
+  @Preconditions(
+    IsAuthenticated(),
+    IsGitInstalled(),
+    HasNecessaryCoveoPrivileges(writeSnapshotPrivilege)
+  )
   public async run() {
     const snapshot = await this.getSnapshot();
 

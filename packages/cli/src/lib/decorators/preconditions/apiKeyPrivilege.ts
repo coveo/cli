@@ -1,89 +1,52 @@
 import PlatformClient, {
   PrivilegeEvaluatorModel,
+  PrivilegeModel,
 } from '@coveord/platform-client';
 import Command from '@oclif/command';
-import dedent from 'ts-dedent';
+import {cli} from 'cli-ux';
 import {Config} from '../../config/config';
+import {MissingPrivilegeError} from '../../errors/platformError';
 import {AuthenticatedClient} from '../../platform/authenticatedClient';
+import {PlatformPrivilege} from './platformPrivilege';
 
-export const impersonatePrivilege = {
-  requestedPrivilege: {
-    owner: 'SEARCH_API',
-    targetDomain: 'IMPERSONATE',
-    targetId: '*',
-  },
-};
-
-export const createApiKeyPrivilege = {
-  requestedPrivilege: {
-    owner: 'PLATFORM',
-    targetDomain: 'API_KEY',
-    targetId: '*',
-    type: 'CREATE',
-  },
-};
-
-export function HasNecessaryCoveoPrivileges() {
-  return async function (target: Command) {
+export function HasNecessaryCoveoPrivileges(
+  ...privileges: PlatformPrivilege[]
+) {
+  return async function (this: Command, command: Command) {
+    const {flags} = this.parse(command.ctor);
     const authenticatedClient = new AuthenticatedClient();
-
     const client = await authenticatedClient.getClient();
-    const {organization, anonymous} = await getConfiguration(target);
+    const {organization: target, anonymous} = await getConfiguration();
+    const organization = flags.target || target;
 
-    if (!(await hasCreateApiKeyPrivilege(client, organization))) {
-      target.warn(
-        anonymous
-          ? 'Your API key is missing the privilege to create other API keys. Make sure to grant this privilege before running the command again. See https://docs.coveo.com/en/1707/#api-keys-domain.'
-          : 'You are not authorized to create an API Key. Please contact an administrator of your Coveo organization and ask for that privilege. See https://docs.coveo.com/en/1707/#api-keys-domain.'
-      );
-      return false;
-    }
-    if (!(await hasImpersonatePrivilege(client, organization))) {
-      target.warn(
-        anonymous
-          ? dedent`Your API key is missing the Impersonate privilege. Make sure to grant this privilege to your API key before running the command again.
-                   See https://docs.coveo.com/en/1707/#impersonate-domain-1.`
-          : 'You are not authorized to create an API Key with the Impersonate privilege. Please contact an administrator of your Coveo organization and ask for that privilege.  See https://docs.coveo.com/en/1707/#impersonate-domain-1.'
-      );
-      return false;
-    }
-    return true;
+    const promises = privileges.flatMap((privilege) =>
+      privilege.models.map(async (model) => {
+        if (!(await hasPrivilege(client, organization, model))) {
+          throw new MissingPrivilegeError(privilege, anonymous);
+        }
+      })
+    );
+
+    // TODO: CDX-649: rework the return type of preconditions so it can resolve or reject (instead of returning a boolean)
+    return Boolean(await Promise.all(promises));
   };
-}
-
-async function hasImpersonatePrivilege(
-  client: PlatformClient,
-  organizationId: string
-) {
-  const model: PrivilegeEvaluatorModel = {
-    ...impersonatePrivilege,
-    organizationId,
-  };
-
-  return await hasPrivilege(client, model);
-}
-
-async function hasCreateApiKeyPrivilege(
-  client: PlatformClient,
-  organizationId: string
-) {
-  const model: PrivilegeEvaluatorModel = {
-    ...createApiKeyPrivilege,
-    organizationId,
-  };
-
-  return await hasPrivilege(client, model);
 }
 
 async function hasPrivilege(
   client: PlatformClient,
-  model: PrivilegeEvaluatorModel
+  organizationId: string,
+  privilege: PrivilegeModel
 ) {
+  const model: PrivilegeEvaluatorModel = {
+    ...{requestedPrivilege: privilege},
+    organizationId,
+  };
+
   const validation = await client.privilegeEvaluator.evaluate(model);
-  return validation.approved;
+  return Boolean(validation.approved);
 }
 
-async function getConfiguration(target: Command) {
-  const config = new Config(global.config.configDir, target.error);
+async function getConfiguration() {
+  const config = new Config(global.config.configDir, cli.error);
   return config.get();
 }

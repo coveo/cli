@@ -17,6 +17,10 @@ import {
   IsNpxInstalled,
   HasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions';
+import {
+  createApiKeyPrivilege,
+  impersonatePrivilege,
+} from '../../../lib/decorators/preconditions/platformPrivilege';
 
 type ReactProcessEnv = {
   orgId: string;
@@ -63,7 +67,7 @@ export default class React extends Command {
     IsAuthenticated(),
     IsNodeVersionInRange(React.requiredNodeVersion),
     IsNpxInstalled(),
-    HasNecessaryCoveoPrivileges()
+    HasNecessaryCoveoPrivileges(createApiKeyPrivilege, impersonatePrivilege)
   )
   public async run() {
     const args = this.args;

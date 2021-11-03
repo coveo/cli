@@ -17,6 +17,10 @@ import {platformUrl} from '../../../lib/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
+import {
+  createApiKeyPrivilege,
+  impersonatePrivilege,
+} from '../../../lib/decorators/preconditions/platformPrivilege';
 
 export default class Vue extends Command {
   public static templateName = '@coveo/vue-cli-plugin-typescript';
@@ -65,7 +69,7 @@ export default class Vue extends Command {
     IsAuthenticated(),
     IsNodeVersionInRange(Vue.requiredNodeVersion),
     IsNpxInstalled(),
-    HasNecessaryCoveoPrivileges()
+    HasNecessaryCoveoPrivileges(createApiKeyPrivilege, impersonatePrivilege)
   )
   public async run() {
     const {args, flags} = this.parse(Vue);
