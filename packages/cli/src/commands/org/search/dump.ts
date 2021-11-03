@@ -13,7 +13,6 @@ import {
   buildAnalyticsFailureHook,
   buildAnalyticsSuccessHook,
 } from '../../../hooks/analytics/analytics';
-// eslint-disable-next-line node/no-extraneous-import
 import {SingleBar} from 'cli-progress';
 
 interface SearchResult {
