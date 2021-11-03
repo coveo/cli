@@ -72,6 +72,7 @@ describe('org:list', () => {
         args,
         {
           env: {
+            ...process.env,
             NODE_EXTRA_CA_CERTS: join(certFolder, 'mitmproxy-ca-cert.pem'),
             HTTPS_PROXY: 'http://localhost:8080',
           },
