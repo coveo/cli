@@ -1,5 +1,5 @@
 import {homedir} from 'os';
-// import {join} from 'path';
+import {join} from 'path';
 import {resolve} from 'path';
 import {CLI_EXEC_PATH} from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
@@ -76,8 +76,8 @@ describe('org:list', () => {
           {
             env: {
               ...process.env,
-              // NODE_EXTRA_CA_CERTS: join(certFolder, 'mitmproxy-ca-cert.pem'),
-              // HTTPS_PROXY: 'http://localhost:8080',
+              NODE_EXTRA_CA_CERTS: join(certFolder, 'mitmproxy-ca-cert.pem'),
+              HTTPS_PROXY: 'http://localhost:8080',
             },
           },
           cliProcessManager,
