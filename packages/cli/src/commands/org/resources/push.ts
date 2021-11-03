@@ -1,6 +1,7 @@
 import {cli} from 'cli-ux';
 import {flags, Command} from '@oclif/command';
 import {
+  HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
@@ -28,6 +29,10 @@ import {
   sync,
   wait,
 } from '../../../lib/flags/snapshotCommonFlags';
+import {
+  writeLinkPrivilege,
+  writeSnapshotPrivilege,
+} from '../../../lib/decorators/preconditions/platformPrivilege';
 
 export default class Push extends Command {
   public static description =
@@ -61,7 +66,10 @@ export default class Push extends Command {
 
   public static hidden = true;
 
-  @Preconditions(IsAuthenticated())
+  @Preconditions(
+    IsAuthenticated(),
+    HasNecessaryCoveoPrivileges(writeSnapshotPrivilege, writeLinkPrivilege)
+  )
   public async run() {
     const {flags} = this.parse(Push);
     const target = await getTargetOrg(this.configuration, flags.target);
