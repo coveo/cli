@@ -1,8 +1,8 @@
-import {homedir} from 'os';
-import {join, resolve} from 'path';
-import {CLI_EXEC_PATH} from '../utils/cli';
-import {ProcessManager} from '../utils/processManager';
-import {Terminal} from '../utils/terminal/terminal';
+import { homedir } from 'os';
+import { join, resolve } from 'path';
+import { CLI_EXEC_PATH } from '../utils/cli';
+import { ProcessManager } from '../utils/processManager';
+import { Terminal } from '../utils/terminal/terminal';
 
 const certFolder = resolve(homedir(), '.mitmproxy');
 
@@ -53,7 +53,7 @@ describe('org:list', () => {
       await Promise.all(
         processManagers.map((manager) => manager.killAllProcesses())
       );
-    });
+    }, 2 * 60e3);
 
     it('should query the list of orgs throught the proxy', async () => {
       let proxyStdout = '';
@@ -73,8 +73,8 @@ describe('org:list', () => {
         {
           env: {
             ...process.env,
-            NODE_EXTRA_CA_CERTS: join(certFolder, 'mitmproxy-ca-cert.pem'),
-            HTTPS_PROXY: 'http://localhost:8080',
+            // NODE_EXTRA_CA_CERTS: join(certFolder, 'mitmproxy-ca-cert.pem'),
+            // HTTPS_PROXY: 'http://localhost:8080',
           },
         },
         cliProcessManager,
@@ -95,6 +95,6 @@ describe('org:list', () => {
       expect(proxyStdout).toMatch(
         /GET https:\/\/platformdev\.cloud\.coveo\.com\/rest\/organizations\s* << 200 OK/
       );
-    });
+    }, 2 * 60e3);
   });
 });
