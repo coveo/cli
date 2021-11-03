@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.18.0](https://github.com/coveo/cli/compare/v1.17.0...v1.18.0) (2021-10-29)
+
+
+### Bug Fixes
+
+* delete successful snapshots from the org ([#493](https://github.com/coveo/cli/issues/493)) ([c6d2bfa](https://github.com/coveo/cli/commit/c6d2bfad6a72adb7554db24537097ab305c9694f))
+* **deps:** update dependency devtools-protocol to v0.0.936174 j:cdx-227 ([#516](https://github.com/coveo/cli/issues/516)) ([04970b6](https://github.com/coveo/cli/commit/04970b67048b425fe801bf28defc07fbeeafd386))
+
+
+### Features
+
+* sketch out the spm:new command ([#495](https://github.com/coveo/cli/issues/495)) ([6c21f99](https://github.com/coveo/cli/commit/6c21f99ebc7aff8ddf035e1ff762766673e7bb13))
+* **spm:** add resourceType selection ([#502](https://github.com/coveo/cli/issues/502)) ([7af835e](https://github.com/coveo/cli/commit/7af835eda6064c063d24bafaa68ec5ce31f0a17c))
+
+
+
+
+
 # [1.17.0](https://github.com/coveo/cli/compare/v1.16.0...v1.17.0) (2021-10-07)
 
 **Note:** Version bump only for package @coveo/cli-e2e

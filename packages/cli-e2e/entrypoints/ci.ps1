@@ -1,3 +1,5 @@
+New-Item -Path "./packages/cli-e2e/docker/config/verdaccio/storage/htpasswd" -Force
+
 $VerdaccioConfigPath = Resolve-Path './packages/cli-e2e/docker/config/config.yaml' 
 Start-Process "npx" -ArgumentList "verdaccio --config $VerdaccioConfigPath"
 Start-Process "C:/Program Files/Google/Chrome/Application/chrome.exe" -ArgumentList "--no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720"
