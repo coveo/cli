@@ -11,9 +11,6 @@ const certFolder = resolve(homedir(), '.mitmproxy');
 const resolveBinary = (programName: string) => {
   const whereOrWhich = process.platform === 'win32' ? 'where.exe' : 'which';
   const spawner = spawnSync(whereOrWhich, [programName], {shell: true});
-  console.log(spawner.stdout.toString());
-  console.log('ERR:');
-  console.log(spawner.stderr.toString());
   return spawner.stdout.toString().trim();
 };
 

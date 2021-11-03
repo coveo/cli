@@ -9,7 +9,7 @@ import {getPlatformClient} from '../utils/platform';
 import {readdirSync} from 'fs';
 config({path: getPathToHomedirEnvFile()});
 
-describe.skip('org:resources', () => {
+describe('org:resources', () => {
   const testOrgId = process.env.TEST_ORG_ID!;
   const {accessToken} = getConfig();
   const snapshotProjectPath = join('snapshot-project');

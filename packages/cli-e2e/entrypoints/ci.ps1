@@ -28,14 +28,7 @@ git config --global user.name "notgroot"
 git config --global user.email "notgroot@coveo.com"
 
 choco.exe install mitmproxy -y
-Write-Output "C:\Program Files (x86)\mitmproxy\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-Write-Output $env:Path
 $env:Path = $env:Path + ";C:\Program Files (x86)\mitmproxy\bin"
-Write-Output $env:Path
-RefreshEnv.cmd
-where.exe "mitmproxy.exe"
-where.exe mitmproxy.exe
-where.exe mitmproxy
 npm install -g @angular/cli
 npm install -g ts-node
 
