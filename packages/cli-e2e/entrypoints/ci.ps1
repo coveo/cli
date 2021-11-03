@@ -29,6 +29,8 @@ git config --global user.email "notgroot@coveo.com"
 
 choco.exe install mitmproxy -y
 RefreshEnv.cmd
+where.exe mitmdump
+where.exe mitmproxy
 npm install -g @angular/cli
 npm install -g ts-node
 
