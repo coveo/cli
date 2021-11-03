@@ -1,4 +1,3 @@
-jest.mock('@oclif/command');
 jest.mock('../../platform/authenticatedClient');
 jest.mock('../../config/config');
 
@@ -8,6 +7,13 @@ import {fancyIt} from '../../../__test__/it';
 import {Config} from '../../config/config';
 import {AuthenticatedClient} from '../../platform/authenticatedClient';
 import {HasNecessaryCoveoPrivileges} from './apiKeyPrivilege';
+import {
+  createApiKeyPrivilege,
+  impersonatePrivilege,
+  PlatformPrivilege,
+  writeLinkPrivilege,
+  writeSnapshotPrivilege,
+} from './platformPrivilege';
 import {getFakeCommand} from './testsUtils/utils';
 
 const mockConfig = mocked(Config);
@@ -39,46 +45,39 @@ describe('apiKeyPrivilege', () => {
   });
 
   describe.each([
+    [createApiKeyPrivilege, 'You are not authorized to create an API Key'],
     [
-      true,
-      false,
+      impersonatePrivilege,
       'You are not authorized to create an API Key with the Impersonate privilege',
     ],
-    [false, true, 'You are not authorized to create an API Key'],
   ])(
     'when the API key condition is %s and the impersonate condition is %s.',
-    (
-      apiKeyCondition: boolean,
-      impersonateCondition: boolean,
-      expectedWarning: string
-    ) => {
+    (privilege: PlatformPrivilege, expectedWarning: string) => {
       fancyIt()(`warns '${expectedWarning}' and returns false`, async () => {
-        mockEvaluate
-          .mockReturnValueOnce({approved: apiKeyCondition})
-          .mockReturnValueOnce({approved: impersonateCondition});
+        mockEvaluate.mockReturnValueOnce({approved: false});
 
         const fakeCommand = getFakeCommand();
-        await expect(HasNecessaryCoveoPrivileges()(fakeCommand)).resolves.toBe(
-          false
-        );
-        expect(fakeCommand.warn).toHaveBeenCalledTimes(1);
-        expect(fakeCommand.warn).toHaveBeenCalledWith(
-          expect.stringContaining(expectedWarning)
-        );
+        await expect(
+          HasNecessaryCoveoPrivileges(privilege).call(fakeCommand, fakeCommand)
+        ).rejects.toThrow(expectedWarning);
       });
     }
   );
 
   describe('when the user has all the required privileges', () => {
+    const privileges = [writeSnapshotPrivilege, writeLinkPrivilege];
     beforeEach(() => {
       mockEvaluate.mockReturnValue({approved: true});
     });
 
     fancyIt()('returns true and does not warn', async () => {
       const fakeCommand = getFakeCommand();
-      await expect(HasNecessaryCoveoPrivileges()(fakeCommand)).resolves.toBe(
-        true
-      );
+      await expect(
+        HasNecessaryCoveoPrivileges(...privileges).call(
+          fakeCommand,
+          fakeCommand
+        )
+      ).resolves.toBe(true);
       expect(fakeCommand.warn).not.toHaveBeenCalled();
     });
   });

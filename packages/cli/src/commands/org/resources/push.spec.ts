@@ -5,7 +5,6 @@ jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/snapshot/snapshot');
 jest.mock('../../../lib/snapshot/snapshotFactory');
 jest.mock('../../../lib/project/project');
-jest.mock('@oclif/errors');
 
 import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
@@ -15,18 +14,17 @@ import {cli} from 'cli-ux';
 import {Config} from '../../../lib/config/config';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {error} from '@oclif/errors';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {
   getErrorReport,
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 
 const mockedSnapshotFactory = mocked(SnapshotFactory, true);
 const mockedConfig = mocked(Config);
 const mockedProject = mocked(Project);
-const mockedError = mocked(error);
 const mockedConfigGet = jest.fn();
 const mockedDeleteTemporaryZipFile = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
@@ -36,6 +34,8 @@ const mockedApplySnapshot = jest.fn();
 const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
 const mockedLastReport = jest.fn();
+const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+const mockEvaluate = jest.fn();
 
 const mockProject = () => {
   mockedProject.mockImplementation(
@@ -57,12 +57,7 @@ const mockConfig = () => {
     })
   );
 
-  mockedConfig.mockImplementation(
-    () =>
-      ({
-        get: mockedConfigGet,
-      } as unknown as Config)
-  );
+  mockedConfig.prototype.get = mockedConfigGet;
 };
 
 const mockSnapshotFactory = async () => {
@@ -79,6 +74,24 @@ const mockSnapshotFactory = async () => {
       targetId: 'potato-org',
     } as unknown as Snapshot)
   );
+};
+
+const mockAuthenticatedClient = () => {
+  const mockGetClient = jest.fn().mockResolvedValue({
+    privilegeEvaluator: {
+      evaluate: mockEvaluate,
+    },
+  });
+
+  mockedAuthenticatedClient.prototype.getClient = mockGetClient;
+};
+
+const mockUserHavingAllRequiredPlatformPrivileges = () => {
+  mockEvaluate.mockResolvedValue({approved: true});
+};
+
+const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
+  mockEvaluate.mockResolvedValue({approved: false});
 };
 
 const mockSnapshotFactoryReturningValidSnapshot = async () => {
@@ -120,6 +133,31 @@ describe('org:resources:push', () => {
   beforeAll(() => {
     mockConfig();
     mockProject();
+    mockAuthenticatedClient();
+  });
+
+  beforeEach(() => {
+    mockUserHavingAllRequiredPlatformPrivileges();
+  });
+
+  afterEach(() => {
+    mockEvaluate.mockClear();
+  });
+
+  describe('when preconditions are not respected', () => {
+    test
+      .do(() => {
+        mockUserNotHavingAllRequiredPlatformPrivileges();
+      })
+      .stdout()
+      .stderr()
+      .command(['org:resources:push'])
+      .catch((ctx) => {
+        expect(ctx.message).toContain(
+          'You are not authorized to create snapshot'
+        );
+      })
+      .it('should return an error message if privileges are missing');
   });
 
   describe('when the dryRun returns a report without errors', () => {
@@ -309,27 +347,28 @@ describe('org:resources:push', () => {
       .stdout()
       .stderr()
       .command(['org:resources:push'])
-      .it('should show the failed validation', (ctx) => {
-        expect(ctx.stderr).toContain('Validating snapshot... !');
-      });
+      .catch((ctx) => {
+        expect(ctx.message).toContain('Invalid snapshot');
+      })
+      .it('should show the invalid snapshot error');
 
     test
       .stdout()
       .stderr()
       .command(['org:resources:push'])
-      .it('should only preview the snapshot', () => {
+      .catch(() => {
         expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
         expect(mockedApplySnapshot).toHaveBeenCalledTimes(0);
-      });
+      })
+      .it('should only preview the snapshot');
 
     test
       .stdout()
       .stderr()
       .command(['org:resources:push'])
-      .it('should return an invalid snapshot error message', () => {
-        expect(mockedError).toHaveBeenCalledWith(
-          expect.stringContaining('Invalid snapshot')
-        );
-      });
+      .catch((ctx) => {
+        expect(ctx.message).toContain('Invalid snapshot');
+      })
+      .it('should return an invalid snapshot error message');
   });
 });
