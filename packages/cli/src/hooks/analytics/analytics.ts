@@ -39,7 +39,7 @@ const hook = async function (options: AnalyticsHook) {
     return;
   }
 
-  await amplitudeClient.logEvent(event);
+  amplitudeClient.logEvent(event);
 };
 
 const platformInfoIdentifier = async () => {
