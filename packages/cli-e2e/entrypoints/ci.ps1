@@ -28,7 +28,7 @@ git config --global user.name "notgroot"
 git config --global user.email "notgroot@coveo.com"
 
 choco.exe install mitmproxy -y
-Write-Output 'C:\Program Files (x86)\mitmproxy\bin' >> $GITHUB_PATH
+Write-Output 'C:\Program Files (x86)\mitmproxy\bin' | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 RefreshEnv.cmd
 
 where.exe "mitmproxy.exe"
