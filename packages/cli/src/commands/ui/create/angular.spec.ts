@@ -24,7 +24,7 @@ import {
 } from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import Command from '@oclif/command';
-import {IsNgInstalled} from '../../../lib/decorators/preconditions/ng';
+import {IsNgVersionInRange} from '../../../lib/decorators/preconditions/ng';
 import {configurationMock} from '../../../__stub__/configuration';
 
 describe('ui:create:angular', () => {
@@ -35,7 +35,7 @@ describe('ui:create:angular', () => {
   const mockedAuthenticatedClient = mocked(AuthenticatedClient);
   const mockedIsNpmVersionInRange = mocked(IsNpmVersionInRange, true);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
-  const mockedIsNgInstalled = mocked(IsNgInstalled, true);
+  const mockedIsNgInstalled = mocked(IsNgVersionInRange, true);
   const mockedApiKeyPrivilege = mocked(HasNecessaryCoveoPrivileges, true);
   const mockedCreateImpersonateApiKey = jest.fn();
   const preconditionStatus = {

@@ -1,7 +1,7 @@
 import {appendCmdIfWindows} from '../../utils/os';
-import {getBinInstalledPrecondition} from './binPreconditionsFactory';
+import {getBinVersionPrecondition} from './binPreconditionsFactory';
 
-export const IsNgInstalled = getBinInstalledPrecondition(
+export const IsNgVersionInRange = getBinVersionPrecondition(
   appendCmdIfWindows`ng`,
   {
     prettyName: 'Angular-CLI',
