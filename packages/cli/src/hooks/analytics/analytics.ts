@@ -7,6 +7,7 @@ import {
   AuthenticationStatus,
   getAuthenticationStatus,
 } from '../../lib/platform/authenticatedClient';
+import {Identifier} from './identifier';
 
 export interface AnalyticsHook {
   event: Event;
@@ -38,6 +39,9 @@ const hook = async function (options: AnalyticsHook) {
   if (license.type !== 'TRIAL') {
     return;
   }
+
+  const identifier = new Identifier(amplitudeClient);
+  identifier.identify();
 
   amplitudeClient.logEvent(event);
 };

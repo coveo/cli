@@ -1,63 +1,64 @@
 import {NodeClient} from '@amplitude/node';
 import {Identify} from '@amplitude/identify';
 import {machineId} from 'node-machine-id';
-import {cli} from 'cli-ux';
-import {Config} from '../../lib/config/config';
+import {createHash} from 'crypto';
+import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import PlatformClient from '@coveord/platform-client';
 
 export class Identifier {
-  public constructor(private client: NodeClient) {}
+  private authenticatedClient: AuthenticatedClient;
 
-  public async init() {
-    const identify = new Identify();
+  public constructor(private amplitudeClient: NodeClient) {
+    this.authenticatedClient = new AuthenticatedClient();
+  }
 
-    // TODO: rename
-    // const info = {
-    //   ...(await this.getCliInfo()),
-    //   ...(await this.getPlatformInfo()),
-    //   ...this.getAdditionalInfo(),
-    //   ...this.getDeviceInfo(),
-    // };
-
-    identify
-      .set('start_date', 'March 3rd')
-      .add('num_clicks', 4)
-      .unset('needs_to_activate');
-
-    const userId = await this.getUserId();
+  public async identify() {
+    const platformClient = await this.authenticatedClient.getClient();
+    await platformClient.initialize();
+    const {email} = await platformClient.user.get();
+    const userId = this.configuration.anonymous ? null : await this.hash(email);
     const deviceId = await machineId();
-    this.client.identify(userId, deviceId, identify);
+    const identify = new Identify();
+    const identity = {
+      ...(await this.getCliInfo()),
+      ...(await this.getPlatformInfo(platformClient)),
+      ...this.getAdditionalInfo(),
+      ...this.getDeviceInfo(),
+      ...{isInternalUser: email.match(/@coveo\.com/) !== null}, // TODO: clean that shit
+    };
+
+    Object.entries(identity).forEach(([key, value]) => {
+      identify.set(key, value);
+    });
+
+    this.amplitudeClient.identify(userId, deviceId, identify);
   }
 
-  public getUserId(): string {
-    throw new Error('TODO:');
+  private async hash(word: string) {
+    const md5sum = createHash('md5');
+    const hash = md5sum.update(word);
+    return hash.digest('hex').toString();
   }
 
-  public async getDeviceId() {
-    const id = await machineId();
-    return id;
-  }
-
-  public async getCliInfo() {
-    const cfg = await this.configuration.get();
+  private async getCliInfo() {
+    const {version} = this.configuration;
     return {
-      cliVersion: cfg.version,
-      // isLatestCliVersion: '', TODO:
-      // firstInteraction: '', TODO:
+      cliVersion: version,
     };
   }
 
-  public async getPlatformInfo() {
-    // const {environment, region, organization, accessToken} =
-    const {environment, region} = await this.configuration.get();
+  private async getPlatformInfo(platformClient: PlatformClient) {
+    const {environment, region, organization} = this.configuration;
+    const {type} = await platformClient.organization.get(organization);
+
     return {
-      // organizationType: '', TODO:
+      organizationType: type,
       environment,
       region,
-      // isInternalUser: '', TODO:
     };
   }
 
-  public getDeviceInfo() {
+  private getDeviceInfo() {
     const {shell, arch, platform, windows, bin, userAgent, debug} = config;
     return {
       shell,
@@ -70,13 +71,13 @@ export class Identifier {
     };
   }
 
-  public getAdditionalInfo() {
+  private getAdditionalInfo() {
     return {
       // lastSeenDate: '', // TODO:
     };
   }
 
   private get configuration() {
-    return new Config(config.configDir, cli.error);
+    return this.authenticatedClient.cfg.get();
   }
 }
