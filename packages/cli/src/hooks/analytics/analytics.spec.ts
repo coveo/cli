@@ -117,10 +117,10 @@ describe('analytics_hook', () => {
     expect(mockedAmplitudeClient).toHaveBeenCalledTimes(1);
   });
 
-  // TODO: CDX-651: should send environment from config
-  // TODO: CDX-651: should send organization type from config
-  // TODO: CDX-651: should send region from config
-  // TODO: CDX-651: should send hashed username from platform-client
+  it.todo('TODO: CDX-651: should send environment from config');
+  it.todo('TODO: CDX-651: should send organization type from config');
+  it.todo('TODO: CDX-651: should send region from config');
+  it.todo('TODO: CDX-651: should send hashed username from platform-client');
 
   fancyIt()('should not send any analytics if disabled', async () => {
     mockedConfig.mockImplementation(
