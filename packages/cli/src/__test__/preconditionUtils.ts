@@ -11,7 +11,7 @@ export const mockPreconditions = <
 >(
   preconditionStatus: PreconditionStatus
 ) => {
-  type preconditionKeys = keyof typeof preconditionStatus;
+  type preconditionKeys = keyof PreconditionStatus;
   type preconditionPromises = Record<preconditionKeys, PreconditionFunction>;
 
   const keys = Object.keys(preconditionStatus);
