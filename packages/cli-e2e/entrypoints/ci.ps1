@@ -27,8 +27,8 @@ do {
 
 git config --global user.name "notgroot"
 git config --global user.email "notgroot@coveo.com"
-
-npm install -g @angular/cli
+# TODO CDX-672 remove version lock
+npm install -g @angular/cli@12.x
 npm install -g ts-node
 
 npm set registry http://localhost:4873
