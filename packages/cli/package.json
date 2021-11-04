@@ -28,6 +28,7 @@
     "isomorphic-fetch": "^3.0.0",
     "json2csv": "^5.0.6",
     "jsonschema": "^1.4.0",
+    "node-machine-id": "^1.1.12",
     "opener": "^1.5.2",
     "patch-package": "^6.2.2",
     "semver": "^7.3.4",
