@@ -9,7 +9,6 @@ import PlatformClient from '@coveord/platform-client';
 import {writeFile} from 'fs-extra';
 import {Parser} from 'json2csv';
 import {cli} from 'cli-ux';
-// eslint-disable-next-line node/no-extraneous-import
 import {SingleBar} from 'cli-progress';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 
