@@ -2,6 +2,10 @@ import type Command from '@oclif/command';
 import {dedent} from 'ts-dedent';
 import {spawnProcessOutput, SpawnProcessOutput} from '../../utils/process';
 import {satisfies, validRange} from 'semver';
+import {
+  PreconditionError,
+  PreconditionErrorCategory,
+} from '../../errors/preconditionError';
 
 export interface BinPreconditionsOptions {
   params?: Array<string>;
@@ -29,11 +33,13 @@ export function getBinVersionPrecondition(
   return function (versionRange: string) {
     return async function (target: Command) {
       if (!validRange(versionRange)) {
-        target.warn(dedent`
+        const message = dedent`
           Required version invalid: "${versionRange}".
           Please report this error to Coveo: https://github.com/coveo/cli/issues/new
-        `);
-        return false;
+        `;
+        throw new PreconditionError(message, {
+          category: PreconditionErrorCategory.InvalidBinVersionRange,
+        });
       }
 
       const output = await spawnProcessOutput(
@@ -41,20 +47,21 @@ export function getBinVersionPrecondition(
         appliedOptions.params
       );
 
-      if (!(await isBinInstalled(target, binaryName, appliedOptions, output))) {
-        return false;
-      }
+      await checkIfBinIsInstalled(target, binaryName, appliedOptions, output);
 
       if (!satisfies(output.stdout, versionRange)) {
-        target.warn(dedent`
-          ${target.id} needs a ${appliedOptions.prettyName} version in this range: "${versionRange}"
+        const message = dedent`
+          ${target.id} needs a ${
+          appliedOptions.prettyName
+        } version in this range: "${versionRange}"
           Version detected: ${output.stdout}
-        `);
-        warnHowToInstallBin(target, appliedOptions);
-        return false;
-      }
 
-      return true;
+          ${warnHowToInstallBin(appliedOptions)}
+        `;
+        throw new PreconditionError(message, {
+          category: PreconditionErrorCategory.InvalidBinVersionRange,
+        });
+      }
     };
   };
 }
@@ -69,51 +76,57 @@ export function getBinInstalledPrecondition(
     prettyName: options.prettyName,
   };
   return function () {
-    return async function (target: Command): Promise<Boolean> {
+    return async function (target: Command) {
       const output = await spawnProcessOutput(
         binaryName,
         appliedOptions.params
       );
-      return isBinInstalled(target, binaryName, appliedOptions, output);
+      await checkIfBinIsInstalled(target, binaryName, appliedOptions, output);
     };
   };
 }
 
-async function isBinInstalled(
+async function checkIfBinIsInstalled(
   target: Command,
   binaryName: string,
   options: Required<BinPreconditionsOptions>,
   output: SpawnProcessOutput
-): Promise<boolean> {
+): Promise<void | never> {
   if (output.exitCode === 'ENOENT') {
-    target.warn(`${target.id} requires ${options.prettyName} to run.`);
-    warnHowToInstallBin(target, options);
-    return false;
+    const warningMessage = dedent`${target.id} requires ${
+      options.prettyName
+    } to run.
+
+    ${warnHowToInstallBin(options)}`;
+    throw new PreconditionError(warningMessage, {
+      category: PreconditionErrorCategory.MissingBin,
+    });
   }
 
   if (output.exitCode !== '0') {
-    target.warn(dedent`
+    const message = dedent`
       ${target.id} requires a valid ${options.prettyName} installation to run.
       An unknown error happened while running ${binaryName} ${options.params.join(
       ' '
     )}.
       ${output.stderr}
-    `);
-    warnHowToInstallBin(target, options);
-    return false;
-  }
 
-  return true;
+      ${warnHowToInstallBin(options)}
+    `;
+    throw new PreconditionError(message, {
+      category: PreconditionErrorCategory.InvalidBinInstallation,
+    });
+  }
 }
 
-function warnHowToInstallBin(
-  target: Command,
-  options: BinPreconditionsOptions
-) {
-  target.warn(
+function warnHowToInstallBin(options: BinPreconditionsOptions) {
+  const newParagraph = '\n\n';
+  const howToInstallMessage = [];
+  if (options.howToInstallBinText) {
+    howToInstallMessage.push(options.howToInstallBinText);
+  }
+  howToInstallMessage.push(
     `Please visit ${options.installLink} for more detailed installation information.`
   );
-  if (options.howToInstallBinText) {
-    target.warn(options.howToInstallBinText);
-  }
+  return howToInstallMessage.join(newParagraph);
 }
