@@ -9,8 +9,8 @@ Xvfb :1 -screen 0 1024x768x16 & sleep 1
 google-chrome --no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720 >/dev/null 2>&1 &
 
 xdg-settings set default-web-browser google-chrome.desktop
-
-npm install -g @angular/cli
+# TODO CDX-672 remove version lock
+npm install -g @angular/cli@12.x
 npm install -g ts-node
 
 tmp_registry_log=`mktemp`
