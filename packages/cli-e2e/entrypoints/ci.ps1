@@ -12,7 +12,8 @@ Start-Process -FilePath $SetUserFTAPath -ArgumentList '.html ChromeHTML' -PassTh
 Write-Output "::endgroup::"
 
 Write-Output "::group::Install NPM Global dependencies"
-npm install -g @angular/cli
+# TODO CDX-672 remove version lock
+npm install -g @angular/cli@12.x
 npm install -g ts-node
 Write-Output "::endgroup::"
 

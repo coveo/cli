@@ -130,13 +130,8 @@ const mockSnapshotFacade = () => {
 };
 
 describe('org:resources:preview', () => {
-  const preconditionStatus = {
-    git: true,
-  };
   const doMockPreconditions = function () {
-    const mockGit = function (_target: Command) {
-      return new Promise<boolean>((resolve) => resolve(preconditionStatus.git));
-    };
+    const mockGit = (_target: Command) => Promise.resolve();
     mockedIsGitInstalled.mockReturnValue(mockGit);
   };
 
@@ -152,6 +147,7 @@ describe('org:resources:preview', () => {
   });
 
   afterEach(() => {
+    mockEvaluate.mockClear();
     mockedIsGitInstalled.mockClear();
   });
 
@@ -171,11 +167,7 @@ describe('org:resources:preview', () => {
       .stdout()
       .stderr()
       .command(['org:resources:preview'])
-      .catch((ctx) => {
-        expect(ctx.message).toContain(
-          'You are not authorized to create snapshot'
-        );
-      })
+      .catch(/You are not authorized to create snapshot/)
       .it('should return an error message if privileges are missing');
 
     test
@@ -333,9 +325,7 @@ describe('org:resources:preview', () => {
       .stdout()
       .stderr()
       .command(['org:resources:preview'])
-      .catch((ctx) => {
-        expect(ctx.message).toContain('Invalid snapshot');
-      })
+      .catch(/Invalid snapshot/)
       .it('should throw an error for invalid snapshots');
 
     test
