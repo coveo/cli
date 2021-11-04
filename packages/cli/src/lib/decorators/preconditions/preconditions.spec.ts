@@ -4,7 +4,7 @@ import {Preconditions} from './preconditions';
 import {getFakeCommand} from './testsUtils/utils';
 
 describe('preconditions', () => {
-  const preconditions = new Array<jest.Mock<Promise<void>>>(5);
+  const preconditions = new Array<jest.Mock<void>>(5);
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -17,7 +17,7 @@ describe('preconditions', () => {
         const orderChecker = jest.fn();
         preconditions.fill(
           jest.fn(
-            (async () => {
+            (() => {
               orderChecker(counter++);
             }).bind(this)
           )
@@ -55,7 +55,7 @@ describe('preconditions', () => {
         const orderChecker = jest.fn();
         preconditions.fill(
           jest.fn(
-            (async () => {
+            (() => {
               orderChecker(counter++);
             }).bind(this)
           )

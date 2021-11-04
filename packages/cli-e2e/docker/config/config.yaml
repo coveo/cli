@@ -5,16 +5,17 @@
 #       https://github.com/verdaccio/verdaccio/tree/master/conf
 
 # path to a directory with all packages
-storage: ./storage/data
+storage: /verdaccio/storage/data
 # path to a directory with plugins to include
-plugins: ./plugins
+plugins: /verdaccio/plugins
+
 web:
   enable: false
   title: Verdaccio
 
 auth:
   htpasswd:
-    file: ./verdaccio/storage/htpasswd
+    file: /verdaccio/storage/htpasswd
 
 # a list of other known registries we can talk to
 uplinks:
@@ -43,4 +44,4 @@ middlewares:
 
 # log settings
 logs:
-  - {type: stdout, format: pretty, level: trace}
+  - {type: stdout, format: pretty, level: http}

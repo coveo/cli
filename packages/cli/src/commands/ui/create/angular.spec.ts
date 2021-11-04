@@ -23,9 +23,10 @@ import {
   HasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
+import Command from '@oclif/command';
 import {IsNgInstalled} from '../../../lib/decorators/preconditions/ng';
 import {configurationMock} from '../../../__stub__/configuration';
-import {mockPreconditions} from '../../../__test__/preconditionUtils';
+import {PreconditionError} from '../../../lib/errors/preconditionError';
 
 describe('ui:create:angular', () => {
   const mockedConfig = mocked(Config);
@@ -45,11 +46,34 @@ describe('ui:create:angular', () => {
     apiKey: true,
   };
   const doMockPreconditions = function () {
-    const mockedPreconditions = mockPreconditions(preconditionStatus);
-    mockedIsNodeVersionInRange.mockReturnValue(mockedPreconditions.node);
-    mockedIsNpmVersionInRange.mockReturnValue(mockedPreconditions.npm);
-    mockedIsNgInstalled.mockReturnValue(mockedPreconditions.ng);
-    mockedApiKeyPrivilege.mockReturnValue(mockedPreconditions.apiKey);
+    const thrower = (reason: string) => {
+      throw new PreconditionError(`${reason} Precondition Error`);
+    };
+
+    const mockNode = function (_target: Command) {
+      return new Promise<void>((resolve) =>
+        preconditionStatus.node ? resolve() : thrower('node')
+      );
+    };
+    const mockNpm = function (_target: Command) {
+      return new Promise<void>((resolve) =>
+        preconditionStatus.npm ? resolve() : thrower('npm')
+      );
+    };
+    const mockNg = function (_target: Command) {
+      return new Promise<void>((resolve) =>
+        preconditionStatus.ng ? resolve() : thrower('ng')
+      );
+    };
+    const mockApiKeyPrivilege = function (_target: Command) {
+      return new Promise<void>((resolve) =>
+        preconditionStatus.apiKey ? resolve() : thrower('apiKey')
+      );
+    };
+    mockedIsNodeVersionInRange.mockReturnValue(mockNode);
+    mockedIsNpmVersionInRange.mockReturnValue(mockNpm);
+    mockedIsNgInstalled.mockReturnValue(mockNg);
+    mockedApiKeyPrivilege.mockReturnValue(mockApiKeyPrivilege);
   };
 
   const doMockSpawnProcess = () => {

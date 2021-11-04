@@ -23,8 +23,9 @@ import {
   HasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
+import Command from '@oclif/command';
 import {configurationMock} from '../../../__stub__/configuration';
-import {mockPreconditions} from '../../../__test__/preconditionUtils';
+import {PreconditionError} from '../../../lib/errors/preconditionError';
 
 describe('ui:create:react', () => {
   const mockedConfig = mocked(Config);
@@ -43,10 +44,28 @@ describe('ui:create:react', () => {
     apiKey: true,
   };
   const doMockPreconditions = function () {
-    const mockedPreconditions = mockPreconditions(preconditionStatus);
-    mockedIsNodeVersionInRange.mockReturnValue(mockedPreconditions.node);
-    mockedIsNpxInstalled.mockReturnValue(mockedPreconditions.npx);
-    mockedApiKeyPrivilege.mockReturnValue(mockedPreconditions.apiKey);
+    const thrower = (reason: string) => {
+      throw new PreconditionError(`${reason} Precondition Error`);
+    };
+
+    const mockNode = function (_target: Command) {
+      return new Promise<void | never>((resolve) => {
+        preconditionStatus.node ? resolve() : thrower('node');
+      });
+    };
+    const mockNpx = function (_target: Command) {
+      return new Promise<void | never>((resolve) => {
+        preconditionStatus.npx ? resolve() : thrower('npx');
+      });
+    };
+    const mockApiKeyPrivilege = function (_target: Command) {
+      return new Promise<void | never>((resolve) => {
+        preconditionStatus.apiKey ? resolve() : thrower('apiKey');
+      });
+    };
+    mockedIsNodeVersionInRange.mockReturnValue(mockNode);
+    mockedIsNpxInstalled.mockReturnValue(mockNpx);
+    mockedApiKeyPrivilege.mockReturnValue(mockApiKeyPrivilege);
   };
 
   const doMockSpawnProcess = () => {

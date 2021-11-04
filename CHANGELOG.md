@@ -3,27 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [1.18.0](https://coveo-cli/coveo/cli/compare/v1.17.0...v1.18.0) (2021-10-29)
-
-
-### Bug Fixes
-
-* **angular:** support NPM 8 ([#501](https://coveo-cli/coveo/cli/issues/501)) ([5cc2b58](https://coveo-cli/coveo/cli/commits/5cc2b589b74737fc06aca4b3ccfe24e354fabf72))
-* delete successful snapshots from the org ([#493](https://coveo-cli/coveo/cli/issues/493)) ([c6d2bfa](https://coveo-cli/coveo/cli/commits/c6d2bfad6a72adb7554db24537097ab305c9694f))
-* **deps:** update dependency devtools-protocol to v0.0.936174 j:cdx-227 ([#516](https://coveo-cli/coveo/cli/issues/516)) ([04970b6](https://coveo-cli/coveo/cli/commits/04970b67048b425fe801bf28defc07fbeeafd386))
-
-
-### Features
-
-* add `coveo:org:create` command ([#509](https://coveo-cli/coveo/cli/issues/509)) ([50aee3c](https://coveo-cli/coveo/cli/commits/50aee3c928e2501878113d5aa33eedaeb28e7261))
-* add SourcePullModel Validation ([#497](https://coveo-cli/coveo/cli/issues/497)) ([cd085ba](https://coveo-cli/coveo/cli/commits/cd085ba69e6b28d6afae8aa9c1a356650b4fb042))
-* sketch out the spm:new command ([#495](https://coveo-cli/coveo/cli/issues/495)) ([6c21f99](https://coveo-cli/coveo/cli/commits/6c21f99ebc7aff8ddf035e1ff762766673e7bb13))
-* **spm:** add resourceType selection ([#502](https://coveo-cli/coveo/cli/issues/502)) ([7af835e](https://coveo-cli/coveo/cli/commits/7af835eda6064c063d24bafaa68ec5ce31f0a17c))
-
-
-
-
-
 # [1.17.0](https://coveo-cli/coveo/cli/compare/v1.16.0...v1.17.0) (2021-10-07)
 
 
