@@ -60,7 +60,7 @@ const validateRequiredKeysAndGetDocumentBuilder = (
   const requiredDocumentId = new RequiredKeyValidator<string>(
     ['documentid', 'uri'],
     caseInsensitiveDoc,
-    new StringValue({required: true, emptyAllowed: false, url: true})
+    new StringValue({required: true, emptyAllowed: false})
   );
 
   if (!requiredDocumentId.isValid) {
