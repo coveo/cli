@@ -64,9 +64,7 @@ describe('org:resources:monitor', () => {
     .stdout()
     .stderr()
     .command(['org:resources:monitor'])
-    .catch((ctx) => {
-      expect(ctx.message).toContain('Missing 1 required arg:');
-    })
+    .catch(/Missing 1 required arg/)
     .it('requires snapshotId name argument');
 
   test

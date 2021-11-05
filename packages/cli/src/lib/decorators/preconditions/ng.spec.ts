@@ -13,6 +13,7 @@ import type {Command} from '@oclif/command';
 import {appendCmdIfWindows} from '../../utils/os';
 import {getPackageVersion} from '../../utils/misc';
 import {fancyIt} from '../../../__test__/it';
+import {PreconditionError} from '../../errors/preconditionError';
 
 describe('IsNgInstalled', () => {
   const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
@@ -45,21 +46,13 @@ describe('IsNgInstalled', () => {
     fancyIt()('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNgInstalled()(fakeCommand)).resolves.toBe(false);
-      expect(fakeCommand.warn).toHaveBeenCalledTimes(3);
-      expect(fakeCommand.warn).toHaveBeenNthCalledWith(
-        1,
-        'foo requires Angular-CLI to run.'
-      );
-      expect(fakeCommand.warn).toHaveBeenNthCalledWith(
-        2,
-        dedent`
-       Please visit https://angular.io/guide/setup-local#install-the-angular-cli for more detailed installation information.
-      `
-      );
-      expect(fakeCommand.warn).toHaveBeenNthCalledWith(
-        3,
-        'You can install the Angular-CLI by running npm i -g @angular/cli'
+      await expect(IsNgInstalled()(fakeCommand)).rejects.toThrow(
+        new PreconditionError(dedent`foo requires Angular-CLI to run.
+
+        You can install the Angular-CLI by running npm i -g @angular/cli
+
+        Please visit https://angular.io/guide/setup-local#install-the-angular-cli for more detailed installation information.
+       `)
       );
     });
   });
@@ -74,25 +67,16 @@ describe('IsNgInstalled', () => {
     });
 
     fancyIt()('should return false and warn', async () => {
-      await expect(IsNgInstalled()(fakeCommand)).resolves.toBe(false);
-      expect(fakeCommand.warn).toHaveBeenCalledTimes(3);
-      expect(fakeCommand.warn).toHaveBeenNthCalledWith(
-        1,
-        dedent`
+      await expect(IsNgInstalled()(fakeCommand)).rejects.toThrow(
+        new PreconditionError(dedent`
         foo requires a valid Angular-CLI installation to run.
         An unknown error happened while running ${appendCmdIfWindows`ng`} --version.
         some random error oh no
-      `
-      );
-      expect(fakeCommand.warn).toHaveBeenNthCalledWith(
-        2,
-        dedent`
+
+        You can install the Angular-CLI by running npm i -g @angular/cli
+
         Please visit https://angular.io/guide/setup-local#install-the-angular-cli for more detailed installation information.
-      `
-      );
-      expect(fakeCommand.warn).toHaveBeenNthCalledWith(
-        3,
-        'You can install the Angular-CLI by running npm i -g @angular/cli'
+       `)
       );
     });
   });
@@ -107,8 +91,7 @@ describe('IsNgInstalled', () => {
     });
 
     fancyIt()('should return true and not warn', async () => {
-      await expect(IsNgInstalled()(fakeCommand)).resolves.toBe(true);
-      expect(fakeCommand.warn).toHaveBeenCalledTimes(0);
+      await expect(IsNgInstalled()(fakeCommand)).resolves.not.toThrow();
     });
   });
 });
