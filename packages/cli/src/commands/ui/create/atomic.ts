@@ -12,6 +12,8 @@ import {
   createApiKeyPrivilege,
   impersonatePrivilege,
 } from '../../../lib/decorators/preconditions/platformPrivilege';
+import {appendCmdIfWindows} from '../../../lib/utils/os';
+import {spawnProcess} from '../../../lib/utils/process';
 
 interface AtomicArguments {
   name: string;
@@ -48,7 +50,10 @@ export default class Atomic extends Command {
   }
 
   private async createProject() {
-    console.log('Creating new app:', this.args.name);
+    spawnProcess(appendCmdIfWindows`echo`, [
+      '...creating new Atomic project:',
+      this.args.name,
+    ]);
   }
 
   private get args() {
