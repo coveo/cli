@@ -8,6 +8,7 @@ import {getFakeCommand} from './testsUtils/utils';
 import {IsNpxInstalled} from './npx';
 import {appendCmdIfWindows} from '../../utils/os';
 import {fancyIt} from '../../../__test__/it';
+import {PreconditionError} from '../../errors/preconditionError';
 
 describe('IsNpxInstalled', () => {
   const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
@@ -24,24 +25,16 @@ describe('IsNpxInstalled', () => {
       });
     });
 
-    fancyIt()('should return false and warn', async () => {
+    fancyIt()('should throw', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNpxInstalled()(fakeCommand)).resolves.toBe(false);
-      expect(fakeCommand.warn).toHaveBeenCalledTimes(3);
-      expect(fakeCommand.warn).toHaveBeenNthCalledWith(
-        1,
-        'foo requires npx to run.'
-      );
-      expect(fakeCommand.warn).toHaveBeenNthCalledWith(
-        2,
-        dedent`
-       Please visit https://github.com/coveo/cli/wiki/Node.js,-NPM-and-NPX-requirements for more detailed installation information.
-      `
-      );
-      expect(fakeCommand.warn).toHaveBeenNthCalledWith(
-        3,
-        'Newer version Node.js comes bundled with npx.'
+      await expect(IsNpxInstalled()(fakeCommand)).rejects.toThrow(
+        new PreconditionError(dedent`foo requires npx to run.
+
+        Newer version Node.js comes bundled with npx.
+
+        Please visit https://github.com/coveo/cli/wiki/Node.js,-NPM-and-NPX-requirements for more detailed installation information.
+        `)
       );
     });
   });
@@ -55,21 +48,19 @@ describe('IsNpxInstalled', () => {
       });
     });
 
-    fancyIt()('should return false and warn', async () => {
+    fancyIt()('should throw', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNpxInstalled()(fakeCommand)).resolves.toBe(false);
-      expect(fakeCommand.warn).toHaveBeenCalledTimes(3);
-      expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
+      await expect(IsNpxInstalled()(fakeCommand)).rejects.toThrow(
+        new PreconditionError(dedent`
         foo requires a valid npx installation to run.
         An unknown error happened while running ${appendCmdIfWindows`npx`} --version.
         some random error oh no
-      `);
-      expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
+
+        Newer version Node.js comes bundled with npx.
+
         Please visit https://github.com/coveo/cli/wiki/Node.js,-NPM-and-NPX-requirements for more detailed installation information.
-      `);
-      expect(fakeCommand.warn).toHaveBeenCalledWith(
-        'Newer version Node.js comes bundled with npx.'
+        `)
       );
     });
   });
@@ -86,8 +77,7 @@ describe('IsNpxInstalled', () => {
     fancyIt()('should return true and not warn', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNpxInstalled()(fakeCommand)).resolves.toBe(true);
-      expect(fakeCommand.warn).toHaveBeenCalledTimes(0);
+      await expect(IsNpxInstalled()(fakeCommand)).resolves.not.toThrow();
     });
   });
 });

@@ -77,8 +77,7 @@ describe('apiKeyPrivilege', () => {
           fakeCommand,
           fakeCommand
         )
-      ).resolves.toBe(true);
-      expect(fakeCommand.warn).not.toHaveBeenCalled();
+      ).resolves.not.toThrow();
     });
   });
 });
