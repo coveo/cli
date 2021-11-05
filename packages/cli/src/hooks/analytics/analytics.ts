@@ -14,49 +14,47 @@ export interface AnalyticsHook {
   config: IConfig;
 }
 
-// import {Identifier} from './identifier';
-
 // TODO: CDX-656: replace with Production API key on build
 const analyticsAPIKey = '2b06992f1a80d36396ba7297a8daf913';
 
 const hook = async function (options: AnalyticsHook) {
-  const {event} = options;
   if (!(await isLoggedIn())) {
     // TODO: track event with anonymous user
     return;
   }
   const amplitudeClient = configureAmplitudeClient();
-  // TODO: CDX-651: Identify unique users
-  const {organization, analyticsEnabled} = await platformInfoIdentifier();
+  const {organization, analyticsEnabled, authenticatedClient} =
+    await platformInfoIdentifier();
 
   if (!analyticsEnabled) {
     return;
   }
-  const platformClient = await new AuthenticatedClient().getClient({
+
+  // TODO: CDX-676: remove this block to track events from all org types
+  // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+  const platformClient = await authenticatedClient.getClient({
     organization,
   });
   const license = await platformClient.license.full();
-  if (license.type !== 'TRIAL') {
+
+  if (license.productType !== 'TRIAL') {
     return;
   }
+  // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
   const identifier = new Identifier(amplitudeClient);
-  identifier.identify();
-
-  amplitudeClient.logEvent(event);
+  const {userId, deviceId} = await identifier.identify();
+  await amplitudeClient.logEvent({
+    device_id: deviceId,
+    ...(userId && {user_id: userId}),
+    ...options.event,
+  });
 };
 
 const platformInfoIdentifier = async () => {
   const authenticatedClient = new AuthenticatedClient();
-  const platformClient = await authenticatedClient.getClient();
-  await platformClient.initialize();
   const config = authenticatedClient.cfg.get();
-  let userInfo;
-  if (!config.anonymous) {
-    userInfo = await platformClient.user.get();
-  }
   return {
-    userInfo,
     authenticatedClient,
     ...config,
   };

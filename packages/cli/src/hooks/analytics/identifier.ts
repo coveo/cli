@@ -13,25 +13,27 @@ export class Identifier {
   }
 
   public async identify() {
+    // TODO: not sure that is the right place
     const platformClient = await this.authenticatedClient.getClient();
     await platformClient.initialize();
-    const {email} = await platformClient.user.get();
-    const userId = this.configuration.anonymous ? null : await this.hash(email);
-    const deviceId = await machineId();
+
     const identify = new Identify();
+    const {userId, isInternalUser} = await this.getUserInfo(platformClient);
+    const deviceId = await machineId();
+    const platformInfo = await this.getPlatformInfo(platformClient);
     const identity = {
-      ...(await this.getCliInfo()),
-      ...(await this.getPlatformInfo(platformClient)),
-      ...this.getAdditionalInfo(),
+      ...platformInfo,
+      ...this.getCliInfo(),
       ...this.getDeviceInfo(),
-      ...{isInternalUser: email.match(/@coveo\.com/) !== null}, // TODO: clean that shit
+      ...{isInternalUser},
     };
 
     Object.entries(identity).forEach(([key, value]) => {
       identify.set(key, value);
     });
 
-    this.amplitudeClient.identify(userId, deviceId, identify);
+    await this.amplitudeClient.identify(userId, deviceId, identify);
+    return {userId, deviceId};
   }
 
   private async hash(word: string) {
@@ -40,7 +42,15 @@ export class Identifier {
     return hash.digest('hex').toString();
   }
 
-  private async getCliInfo() {
+  private async getUserInfo(platformClient: PlatformClient) {
+    const {email} = await platformClient.user.get();
+    return {
+      userId: this.configuration.anonymous ? null : await this.hash(email),
+      isInternalUser: email.match(/@coveo\.com/) !== null,
+    };
+  }
+
+  private getCliInfo() {
     const {version} = this.configuration;
     return {
       cliVersion: version,
@@ -68,12 +78,6 @@ export class Identifier {
       bin,
       userAgent,
       debug,
-    };
-  }
-
-  private getAdditionalInfo() {
-    return {
-      // lastSeenDate: '', // TODO:
     };
   }
 
