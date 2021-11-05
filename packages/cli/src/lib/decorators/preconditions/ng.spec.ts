@@ -21,7 +21,6 @@ describe('IsNgInstalled', () => {
   const mockConfirm = () => {
     Object.defineProperty(cli, 'confirm', {value: jest.fn()});
   };
-
   let fakeCommand: Command;
 
   beforeAll(() => {
@@ -98,7 +97,7 @@ describe('IsNgInstalled', () => {
       mockedSpawnProcessOutput.mockResolvedValue({
         exitCode: '0',
         stderr: '',
-        stdout: 'v0.9.0',
+        stdout: 'Angular CLI: 0.9.0',
       });
     });
 
@@ -108,7 +107,7 @@ describe('IsNgInstalled', () => {
       await expect(IsNgVersionInRange('>=1.0.0')(fakeCommand)).rejects.toThrow(
         dedent`
         foo needs a Angular-CLI version in this range: ">=1.0.0"
-        Version detected: v0.9.0
+        Version detected: 0.9.0
         
         You can install the Angular-CLI by running npm i -g @angular/cli
         
@@ -123,7 +122,7 @@ describe('IsNgInstalled', () => {
       mockedSpawnProcessOutput.mockResolvedValue({
         exitCode: '0',
         stderr: '',
-        stdout: 'v1.1.0',
+        stdout: 'Angular CLI: 1.1.0',
       });
     });
 
