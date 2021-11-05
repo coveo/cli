@@ -1,4 +1,4 @@
-import opener from 'opener';
+import open from 'open';
 import {
   DEFAULT_ENVIRONMENT,
   DEFAULT_REGION,
@@ -54,7 +54,9 @@ export class OAuth {
 
   private openLoginPage(state: string) {
     const url = this.buildAuthorizationUrl(state);
-    opener(url);
+    open(url).then((browserProcess) => {
+      browserProcess.unref();
+    });
   }
 
   private buildAuthorizationUrl(state: string) {

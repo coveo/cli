@@ -6,7 +6,7 @@ import {OAuth} from './oauth';
 import {OAuthClientServer} from './oauthClientServer';
 
 jest.mock('./oauthClientServer');
-jest.mock('opener');
+jest.mock('open');
 
 const mockedOauthClientServer = mocked(OAuthClientServer, true);
 const mockedStartServer = jest.fn();
