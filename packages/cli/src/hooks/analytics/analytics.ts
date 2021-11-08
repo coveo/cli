@@ -1,7 +1,5 @@
-import {validate} from 'jsonschema';
 import {init, Event} from '@amplitude/node';
 import {IConfig} from '@oclif/config';
-import {APIError, APIErrorResponse} from '../../lib/errors/APIError';
 import {
   AuthenticatedClient,
   AuthenticationStatus,
@@ -60,13 +58,6 @@ const platformInfoIdentifier = async () => {
   };
 };
 
-const errorIdentifier = (err?: Error) => ({
-  ...(err && {
-    errorMessage: err.message,
-    errorName: err.name,
-  }),
-});
-
 const configureAmplitudeClient = () => {
   // TODO: CDX-667: support proxy
   const amplitudeClient = init(analyticsAPIKey);
@@ -76,47 +67,6 @@ const configureAmplitudeClient = () => {
 const isLoggedIn = async () => {
   const status = await getAuthenticationStatus();
   return status === AuthenticationStatus.LOGGED_IN;
-};
-
-export const buildEvent = (
-  eventName: string,
-  properties: Record<string, unknown>,
-  err?: Error
-): Event => {
-  const analyticsData = {
-    event_type: eventName,
-    event_properties: {
-      ...properties,
-      ...errorIdentifier(err),
-    },
-  };
-
-  return analyticsData;
-};
-
-export const buildError = (arg: unknown) => {
-  /**
-   * TODO: CDX-660: Make sure to remove any PII from the Error object.
-   *       error.message could contain data that is not allowed to be tracked for non-Trial users
-   *       example: orgID, sourceID, ...
-   */
-  if (arg instanceof Error) {
-    return arg;
-  }
-
-  if (typeof arg === 'string') {
-    return new Error(arg);
-  }
-
-  const schema = {
-    message: 'string',
-    errorCode: 'string',
-    requestID: 'string',
-  };
-  const isErrorFromAPI = validate(arg, schema);
-  return isErrorFromAPI
-    ? new APIError(arg as APIErrorResponse)
-    : new Error('Unknown Error');
 };
 
 export default hook;

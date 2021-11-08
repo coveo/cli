@@ -36,6 +36,7 @@
     "tslib": "^2"
   },
   "devDependencies": {
+    "@amplitude/types": "^1.9.0",
     "@coveo/angular": "^1.17.0",
     "@coveo/cra-template": "^1.17.0",
     "@coveo/vue-cli-plugin-typescript": "^1.17.0",
