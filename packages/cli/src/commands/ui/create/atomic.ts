@@ -79,7 +79,8 @@ export default class Atomic extends Command {
     To get started:
 
     cd ${this.args.name}
-    npm run start
+    npm install
+    npm start
 
     Happy hacking!
     `);
