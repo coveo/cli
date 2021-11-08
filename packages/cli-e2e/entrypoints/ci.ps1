@@ -32,6 +32,10 @@ Write-Output "::group::Publishing UI templates"
 git config --global user.name "notgroot"
 git config --global user.email "notgroot@coveo.com"
 
+Write-Output "::group::Setup mitmproxy"
+choco.exe install mitmproxy -y
+$env:Path = $env:Path + ";C:\Program Files (x86)\mitmproxy\bin"
+Write-Output "::endgroup::"
 npm set registry http://localhost:4873
 ts-node --transpile-only ./packages/cli-e2e/utils/npmLogin.ts
 yarn config set registry http://localhost:4873
