@@ -62,6 +62,7 @@
     "node": ">=14.16.1"
   },
   "scripts": {
+    "clean": "rimraf **/package-lock.json && lerna clean -y",
     "setup": "npm i && lerna bootstrap",
     "build": "lerna run build",
     "test": "lerna run test",
