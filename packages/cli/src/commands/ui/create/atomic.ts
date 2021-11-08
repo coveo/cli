@@ -34,6 +34,7 @@ export default class Atomic extends Command {
 
   @Preconditions(
     IsAuthenticated(),
+    // @Trackable(),
     HasNecessaryCoveoPrivileges(createApiKeyPrivilege, impersonatePrivilege)
   )
   public async run() {
