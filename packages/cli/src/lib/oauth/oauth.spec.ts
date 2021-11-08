@@ -1,21 +1,32 @@
+import type {ChildProcess} from 'child_process';
+
 import {Region} from '@coveord/platform-client';
 import {mocked} from 'ts-jest/utils';
 import {fancyIt} from '../../__test__/it';
 import {PlatformEnvironment, platformUrl} from '../platform/environment';
 import {OAuth} from './oauth';
 import {OAuthClientServer} from './oauthClientServer';
+import open from 'open';
 
 jest.mock('./oauthClientServer');
 jest.mock('open');
 
-const mockedOauthClientServer = mocked(OAuthClientServer, true);
-const mockedStartServer = jest.fn();
-
-mockedOauthClientServer.prototype.startServer.mockImplementation(
-  mockedStartServer
-);
-
 describe('OAuth', () => {
+  const mockedOauthClientServer = mocked(OAuthClientServer, true);
+  const mockedOpen = mocked(open, true);
+  const mockedStartServer = jest.fn();
+
+  beforeAll(() => {
+    mockedOauthClientServer.prototype.startServer.mockImplementation(
+      mockedStartServer
+    );
+    mockedOpen.mockResolvedValue({unref: () => {}} as ChildProcess);
+  });
+
+  afterAll(() => {
+    jest.restoreAllMocks();
+  });
+
   fancyIt()('should return the access token when requested', async () => {
     mockedStartServer.mockResolvedValueOnce({
       accessToken: 'this-is-the-new-access-token',
