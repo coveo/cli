@@ -23,7 +23,8 @@ const defaultOptions: Required<Omit<BinPreconditionsOptions, 'prettyName'>> = {
 
 export function getBinVersionPrecondition(
   binaryName: string,
-  options: BinPreconditionsOptions
+  options: BinPreconditionsOptions,
+  versionExtractor: (stdout: string) => string = (stdout) => stdout
 ) {
   const appliedOptions: Required<BinPreconditionsOptions> = {
     ...defaultOptions,
@@ -48,13 +49,14 @@ export function getBinVersionPrecondition(
       );
 
       await checkIfBinIsInstalled(target, binaryName, appliedOptions, output);
+      const version = versionExtractor(output.stdout);
 
-      if (!satisfies(output.stdout, versionRange)) {
+      if (!satisfies(version, versionRange)) {
         const message = dedent`
           ${target.id} needs a ${
           appliedOptions.prettyName
         } version in this range: "${versionRange}"
-          Version detected: ${output.stdout}
+          Version detected: ${version}
 
           ${warnHowToInstallBin(appliedOptions)}
         `;
