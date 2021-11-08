@@ -1,0 +1,7 @@
+{
+    "extends": "../../.eslintrc",
+    "rules": {
+      "node/no-unpublished-import": ["off"]
+    }
+  }
+  

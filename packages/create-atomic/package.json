@@ -1,0 +1,29 @@
+{
+  "name": "@coveo/create-atomic",
+  "description": "Coveo Atomic Generator",
+  "version": "0.1.0",
+  "bin": {
+    "create-atomic": "./index.js"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "plop",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "npm:publish:template": "npm publish --access public --registry http://localhost:4873"
+  },
+  "keywords": [
+    "coveo",
+    "headless",
+    "atomic",
+    "template",
+    "generator"
+  ],
+  "author": "Coveo",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "plop": "^2.7.6"
+  }
+}
