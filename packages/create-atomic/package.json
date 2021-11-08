@@ -1,7 +1,7 @@
 {
   "name": "@coveo/create-atomic",
   "description": "Coveo Atomic Generator",
-  "version": "0.1.0",
+  "version": "1.18.0",
   "bin": {
     "create-atomic": "./index.js"
   },
