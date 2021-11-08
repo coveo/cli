@@ -3,6 +3,7 @@ jest.mock('@amplitude/node');
 jest.mock('../../lib/config/config');
 jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
+jest.mock('./identifier');
 import {mocked} from 'ts-jest/utils';
 import {Configuration, Config} from '../../lib/config/config';
 import {
@@ -19,14 +20,18 @@ import {
 } from '../../__stub__/configuration';
 import {fancyIt} from '../../__test__/it';
 import {init, NodeClient} from '@amplitude/node';
+import {Identifier} from './identifier';
 const mockedConfig = mocked(Config);
 const mockedPlatformClient = mocked(PlatformClient);
 const mockedAuthenticatedClient = mocked(AuthenticatedClient);
 const mockedAuthenticationStatus = mocked(getAuthenticationStatus);
 const mockedAmplitudeClient = mocked(init);
+const mockedIdentifier = mocked(Identifier);
 
 describe('analytics_hook', () => {
-  let logEvent: jest.Mock;
+  const mockedLogEvent = jest.fn();
+  const mockedUserGet = jest.fn();
+  const mockedLicense = jest.fn();
   const getAnalyticsHook = (input: Partial<AnalyticsHook>): AnalyticsHook => {
     return {
       event: {
@@ -39,18 +44,26 @@ describe('analytics_hook', () => {
       ...input,
     };
   };
+
   const doMockAnalytics = () => {
-    logEvent = jest.fn();
-    mockedAmplitudeClient.mockImplementationOnce(
+    mockedAmplitudeClient.mockImplementation(
       () =>
         ({
-          logEvent: logEvent as unknown,
+          logEvent: mockedLogEvent as unknown,
         } as NodeClient)
     );
   };
 
-  const mockedUserGet = jest.fn();
-  const mockedLicense = jest.fn();
+  const doMockIdentifier = () => {
+    mockedIdentifier.mockImplementation(
+      () =>
+        ({
+          identify: () =>
+            Promise.resolve({userId: 'user-123', deviceId: 'device-456'}),
+        } as unknown as Identifier)
+    );
+  };
+
   const doMockPlatformClient = () => {
     mockedUserGet.mockReturnValue(
       Promise.resolve({
@@ -58,7 +71,7 @@ describe('analytics_hook', () => {
         displayName: 'bob',
       })
     );
-    mockedLicense.mockReturnValue(Promise.resolve({type: 'TRIAL'}));
+    mockedLicense.mockReturnValue(Promise.resolve({productType: 'TRIAL'}));
     mockedPlatformClient.mockImplementation(
       () =>
         ({
@@ -101,6 +114,7 @@ describe('analytics_hook', () => {
     doMockPlatformClient();
     doMockConfiguration();
     doMockAuthenticatedClient();
+    doMockIdentifier();
   });
 
   afterEach(() => {
@@ -109,7 +123,7 @@ describe('analytics_hook', () => {
     mockedPlatformClient.mockClear();
     mockedConfig.mockClear();
     mockedAuthenticatedClient.mockClear();
-    logEvent.mockClear();
+    mockedIdentifier.mockClear();
   });
 
   fancyIt()('should initialize an Amplitude client', async () => {
@@ -117,10 +131,21 @@ describe('analytics_hook', () => {
     expect(mockedAmplitudeClient).toHaveBeenCalledTimes(1);
   });
 
-  it.todo('TODO: CDX-651: should send environment from config');
-  it.todo('TODO: CDX-651: should send organization type from config');
-  it.todo('TODO: CDX-651: should send region from config');
-  it.todo('TODO: CDX-651: should send hashed username from platform-client');
+  fancyIt()('should log one event', async () => {
+    await hook(getAnalyticsHook({}));
+    expect(mockedLogEvent).toHaveBeenCalledTimes(1);
+  });
+
+  fancyIt()('should identify the event', async () => {
+    await hook(getAnalyticsHook({}));
+
+    expect(mockedLogEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        device_id: 'device-456',
+        user_id: 'user-123',
+      })
+    );
+  });
 
   fancyIt()('should not send any analytics if disabled', async () => {
     mockedConfig.mockImplementation(
@@ -134,16 +159,16 @@ describe('analytics_hook', () => {
     );
 
     await hook(getAnalyticsHook({}));
-    expect(logEvent).not.toHaveBeenCalled();
+    expect(mockedLogEvent).not.toHaveBeenCalled();
   });
 
   fancyIt()(
     'should not send any analytics if license is not TRIAL',
     async () => {
-      mockedLicense.mockResolvedValue({type: 'PROD'});
+      mockedLicense.mockResolvedValue({productType: 'PROD'});
 
       await hook(getAnalyticsHook({}));
-      expect(logEvent).not.toHaveBeenCalled();
+      expect(mockedLogEvent).not.toHaveBeenCalled();
     }
   );
 
