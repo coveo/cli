@@ -136,9 +136,18 @@ describe('analytics_hook', () => {
     expect(mockedLogEvent).toHaveBeenCalledTimes(1);
   });
 
+  fancyIt()('should log event type and properties', async () => {
+    await hook(getAnalyticsHook({}));
+    expect(mockedLogEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event_properties: {key: 'value'},
+        event_type: 'started foo bar',
+      })
+    );
+  });
+
   fancyIt()('should identify the event', async () => {
     await hook(getAnalyticsHook({}));
-
     expect(mockedLogEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         device_id: 'device-456',
