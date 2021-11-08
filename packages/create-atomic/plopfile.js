@@ -1,6 +1,7 @@
-import {NodePlopAPI} from 'plop';
-
-export default function (plop: NodePlopAPI) {
+module.exports = function (
+  /** @type {import('plop').NodePlopAPI} */
+  plop
+) {
   const currentPath = process.cwd();
   plop.setGenerator('@coveo/atomic', {
     description: 'A Coveo Atomic Generator',
@@ -39,4 +40,4 @@ export default function (plop: NodePlopAPI) {
       },
     ],
   });
-}
+};

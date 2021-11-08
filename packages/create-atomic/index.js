@@ -7,7 +7,7 @@ const argv = require('minimist')(args);
 Plop.launch(
   {
     cwd: argv.cwd,
-    configPath: path.join(__dirname, 'plopfile.ts'),
+    configPath: path.join(__dirname, 'plopfile.js'),
     require: argv.require,
     completion: argv.completion,
   },
