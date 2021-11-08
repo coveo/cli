@@ -3,7 +3,7 @@ import type Command from '@oclif/command';
 export type PreconditionFunction = (
   target: Command,
   instance?: Command
-) => Boolean | Promise<Boolean>;
+) => Promise<never | void>;
 
 export function Preconditions(...preconditions: PreconditionFunction[]) {
   return function (
@@ -14,9 +14,7 @@ export function Preconditions(...preconditions: PreconditionFunction[]) {
     const originalRunCommand = descriptor.value!;
     descriptor.value = async function (this: Command) {
       for (const precondition of preconditions) {
-        if (!(await precondition.call(this, target))) {
-          return;
-        }
+        await precondition.call(this, target);
       }
       await originalRunCommand.apply(this);
     };

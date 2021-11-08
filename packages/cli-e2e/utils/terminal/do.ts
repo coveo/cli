@@ -152,7 +152,7 @@ export class Do implements Promise<void> {
       onParams = [
         'data',
         (data: Buffer) => {
-          if (stripAnsi(data.toString()).replace(/\n/g, '').match(condition)) {
+          if (condition.test(stripAnsi(data.toString()).replace(/\n/g, ''))) {
             callback(this.action.process, resolve);
           }
         },

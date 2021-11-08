@@ -152,11 +152,7 @@ describe('org:resources:push', () => {
       .stdout()
       .stderr()
       .command(['org:resources:push'])
-      .catch((ctx) => {
-        expect(ctx.message).toContain(
-          'You are not authorized to create snapshot'
-        );
-      })
+      .catch(/You are not authorized to create snapshot/)
       .it('should return an error message if privileges are missing');
   });
 
@@ -347,9 +343,7 @@ describe('org:resources:push', () => {
       .stdout()
       .stderr()
       .command(['org:resources:push'])
-      .catch((ctx) => {
-        expect(ctx.message).toContain('Invalid snapshot');
-      })
+      .catch(/Invalid snapshot/)
       .it('should show the invalid snapshot error');
 
     test
@@ -366,9 +360,7 @@ describe('org:resources:push', () => {
       .stdout()
       .stderr()
       .command(['org:resources:push'])
-      .catch((ctx) => {
-        expect(ctx.message).toContain('Invalid snapshot');
-      })
+      .catch(/Invalid snapshot/)
       .it('should return an invalid snapshot error message');
   });
 });

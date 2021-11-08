@@ -4,7 +4,7 @@ require('abortcontroller-polyfill');
 import PlatformClient from '@coveord/platform-client';
 import {Config, Configuration} from '../config/config';
 import {castEnvironmentToPlatformClient} from './environment';
-
+import HttpsProxyAgent from 'https-proxy-agent';
 export class AuthenticatedClient {
   public cfg: Config;
   public constructor() {
@@ -29,8 +29,15 @@ export class AuthenticatedClient {
   public async getClient(overrideConfig?: Partial<Configuration>) {
     const configFromDisk = await this.cfg.get();
     const resolvedConfig = {...configFromDisk, ...overrideConfig};
-
+    const globalRequestSettings: Record<string, unknown> = {};
+    const proxyServer =
+      process.env['https_proxy'] || process.env['HTTPS_PROXY'];
+    if (proxyServer) {
+      const httpsProxyAgent = HttpsProxyAgent(proxyServer);
+      globalRequestSettings.agent = httpsProxyAgent;
+    }
     return new PlatformClient({
+      globalRequestSettings,
       environment: castEnvironmentToPlatformClient(resolvedConfig.environment),
       region: resolvedConfig.region,
       organizationId: resolvedConfig.organization,
