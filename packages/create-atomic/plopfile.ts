@@ -1,7 +1,7 @@
 import {NodePlopAPI} from 'plop';
 
 export default function (plop: NodePlopAPI) {
-  const currentPath = process.env.INIT_CWD;
+  const currentPath = process.cwd();
   plop.setGenerator('@coveo/atomic', {
     description: 'A Coveo Atomic Generator',
     prompts: [
