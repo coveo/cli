@@ -30,6 +30,7 @@ export default class Atomic extends Command {
       required: true,
     },
   ];
+  public static hidden = true;
 
   @Preconditions(
     IsAuthenticated(),
