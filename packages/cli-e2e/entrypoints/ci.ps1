@@ -13,7 +13,7 @@ Write-Output "::endgroup::"
 
 Write-Output "::group::Install NPM Global dependencies"
 # TODO CDX-672 remove version lock
-npm install -g @angular/cli@12.x
+npm install -g @angular/cli@13.x
 npm install -g ts-node
 Write-Output "::endgroup::"
 
