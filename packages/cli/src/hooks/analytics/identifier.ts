@@ -13,7 +13,6 @@ export class Identifier {
   }
 
   public async identify() {
-    // TODO: not sure that is the right place
     const platformClient = await this.authenticatedClient.getClient();
     await platformClient.initialize();
 
