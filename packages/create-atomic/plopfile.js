@@ -29,11 +29,6 @@ module.exports = function (
       },
       {
         type: 'add',
-        path: currentPath + '/{{project}}/package-lock.json',
-        templateFile: 'templates/package-lock.hbs',
-      },
-      {
-        type: 'add',
         path: currentPath + '/{{project}}/public/index.html',
         templateFile: 'templates/public/index.hbs',
       },
