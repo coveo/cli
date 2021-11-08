@@ -19,14 +19,12 @@ describe('IsNpmVersionInRange', () => {
     fancyIt()('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNpmVersionInRange('foo')(fakeCommand)).resolves.toBe(
-        false
-      );
-      expect(fakeCommand.warn).toHaveBeenCalledTimes(1);
-      expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
+      await expect(IsNpmVersionInRange('foo')(fakeCommand)).rejects.toThrow(
+        dedent`
         Required version invalid: "foo".
         Please report this error to Coveo: https://github.com/coveo/cli/issues/new
-      `);
+      `
+      );
     });
   });
 
@@ -42,14 +40,12 @@ describe('IsNpmVersionInRange', () => {
     fancyIt()('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNpmVersionInRange('>=0.0.1')(fakeCommand)).resolves.toBe(
-        false
-      );
-      expect(fakeCommand.warn).toHaveBeenCalledTimes(2);
-      expect(fakeCommand.warn).toHaveBeenCalledWith('foo requires npm to run.');
-      expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
+      await expect(IsNpmVersionInRange('>=0.0.1')(fakeCommand)).rejects.toThrow(
+        dedent`foo requires npm to run.
+
        Please visit https://github.com/coveo/cli/wiki/Node.js,-NPM-and-NPX-requirements for more detailed installation information.
-      `);
+      `
+      );
     });
   });
 
@@ -65,18 +61,15 @@ describe('IsNpmVersionInRange', () => {
     fancyIt()('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNpmVersionInRange('>=0.0.1')(fakeCommand)).resolves.toBe(
-        false
-      );
-      expect(fakeCommand.warn).toHaveBeenCalledTimes(2);
-      expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
+      await expect(IsNpmVersionInRange('>=0.0.1')(fakeCommand)).rejects.toThrow(
+        dedent`
         foo requires a valid npm installation to run.
         An unknown error happened while running ${appendCmdIfWindows`npm`} --version.
         some random error oh no
-      `);
-      expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
+
         Please visit https://github.com/coveo/cli/wiki/Node.js,-NPM-and-NPX-requirements for more detailed installation information.
-      `);
+      `
+      );
     });
   });
 
@@ -92,15 +85,11 @@ describe('IsNpmVersionInRange', () => {
     fancyIt()('should return false and warn', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNpmVersionInRange('>=1.0.0')(fakeCommand)).resolves.toBe(
-        false
-      );
-      expect(fakeCommand.warn).toHaveBeenCalledTimes(2);
-      expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
+      await expect(IsNpmVersionInRange('>=1.0.0')(fakeCommand)).rejects
+        .toThrow(dedent`
         foo needs a npm version in this range: ">=1.0.0"
         Version detected: v0.9.0
-      `);
-      expect(fakeCommand.warn).toHaveBeenCalledWith(dedent`
+
         Please visit https://github.com/coveo/cli/wiki/Node.js,-NPM-and-NPX-requirements for more detailed installation information.
       `);
     });
@@ -118,10 +107,9 @@ describe('IsNpmVersionInRange', () => {
     fancyIt()('should return true and not warn', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNpmVersionInRange('>=1.0.0')(fakeCommand)).resolves.toBe(
-        true
-      );
-      expect(fakeCommand.warn).toHaveBeenCalledTimes(0);
+      await expect(
+        IsNpmVersionInRange('>=1.0.0')(fakeCommand)
+      ).resolves.not.toThrow();
     });
   });
 
@@ -137,10 +125,9 @@ describe('IsNpmVersionInRange', () => {
     fancyIt()('should return true and not warn', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNpmVersionInRange('>=1.0.0')(fakeCommand)).resolves.toBe(
-        true
-      );
-      expect(fakeCommand.warn).toHaveBeenCalledTimes(0);
+      await expect(
+        IsNpmVersionInRange('>=1.0.0')(fakeCommand)
+      ).resolves.not.toThrow();
     });
   });
 });

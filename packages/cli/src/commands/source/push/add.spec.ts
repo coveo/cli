@@ -159,12 +159,14 @@ describe('source:push:add', () => {
       'source:push:add',
       'mysource',
       '-f',
-      cwd() + '/src/__stub__/jsondocuments/invalidID.json',
+      cwd() + '/src/__stub__/jsondocuments/notAnUrl.json',
     ])
-    .catch(
-      `${cwd()}/src/__stub__/jsondocuments/invalidID.json is not a valid JSON document: Document contains an invalid value for documentid: value is not a valid URL.`
-    )
-    .it('should output error message on invalid format for documentID');
+    .it('should accept non-url documentIDs', (ctx) => {
+      expect(ctx.stdout).toContain(
+        `Success: 1 document accepted by the Push API from ${cwd()}/src/__stub__/jsondocuments/notAnUrl.json`
+      );
+      expect(ctx.stdout).toContain('Status code: 202 👌');
+    });
 
   test
     .do(() => {

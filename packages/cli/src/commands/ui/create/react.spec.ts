@@ -23,8 +23,8 @@ import {
   HasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
-import Command from '@oclif/command';
 import {configurationMock} from '../../../__stub__/configuration';
+import {mockPreconditions} from '../../../__test__/preconditionUtils';
 
 describe('ui:create:react', () => {
   const mockedConfig = mocked(Config);
@@ -43,22 +43,10 @@ describe('ui:create:react', () => {
     apiKey: true,
   };
   const doMockPreconditions = function () {
-    const mockNode = function (_target: Command) {
-      return new Promise<boolean>((resolve) =>
-        resolve(preconditionStatus.node)
-      );
-    };
-    const mockNpx = function (_target: Command) {
-      return new Promise<boolean>((resolve) => resolve(preconditionStatus.npx));
-    };
-    const mockApiKeyPrivilege = function (_target: Command) {
-      return new Promise<boolean>((resolve) =>
-        resolve(preconditionStatus.apiKey)
-      );
-    };
-    mockedIsNodeVersionInRange.mockReturnValue(mockNode);
-    mockedIsNpxInstalled.mockReturnValue(mockNpx);
-    mockedApiKeyPrivilege.mockReturnValue(mockApiKeyPrivilege);
+    const mockedPreconditions = mockPreconditions(preconditionStatus);
+    mockedIsNodeVersionInRange.mockReturnValue(mockedPreconditions.node);
+    mockedIsNpxInstalled.mockReturnValue(mockedPreconditions.npx);
+    mockedApiKeyPrivilege.mockReturnValue(mockedPreconditions.apiKey);
   };
 
   const doMockSpawnProcess = () => {
@@ -133,11 +121,9 @@ describe('ui:create:react', () => {
       preconditionStatus.apiKey = false;
     })
     .command(['ui:create:react', 'myapp'])
+    .catch(/apiKey Precondition Error/)
     .it(
-      'should not execute the command if the API key preconditions are not respected',
-      async () => {
-        expect(mockedCreateImpersonateApiKey).toHaveBeenCalledTimes(0);
-      }
+      'should not execute the command if the API key preconditions are not respected'
     );
 
   test
@@ -147,21 +133,17 @@ describe('ui:create:react', () => {
       preconditionStatus.node = false;
     })
     .command(['ui:create:react', 'myapp'])
+    .catch(/node Precondition Error/)
     .it(
-      'should not execute the command if the preconditions are not respected',
-      async () => {
-        expect(mockedSpawnProcess).toHaveBeenCalledTimes(0);
-      }
+      'should not execute the command if the preconditions are not respected'
     );
 
   test
     .stdout()
     .stderr()
     .command(['ui:create:react'])
-    .catch((ctx) => {
-      expect(ctx.message).toContain('Missing 1 required arg:');
-    })
-    .it('requires application name argument', async () => {});
+    .catch(/Missing 1 required arg/)
+    .it('requires application name argument');
 
   test
     .stdout()

@@ -23,9 +23,9 @@ import {
   HasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions/';
 import {getPackageVersion} from '../../../lib/utils/misc';
-import Command from '@oclif/command';
 import {IsNgInstalled} from '../../../lib/decorators/preconditions/ng';
 import {configurationMock} from '../../../__stub__/configuration';
+import {mockPreconditions} from '../../../__test__/preconditionUtils';
 
 describe('ui:create:angular', () => {
   const mockedConfig = mocked(Config);
@@ -45,26 +45,11 @@ describe('ui:create:angular', () => {
     apiKey: true,
   };
   const doMockPreconditions = function () {
-    const mockNode = function (_target: Command) {
-      return new Promise<boolean>((resolve) =>
-        resolve(preconditionStatus.node)
-      );
-    };
-    const mockNpm = function (_target: Command) {
-      return new Promise<boolean>((resolve) => resolve(preconditionStatus.npm));
-    };
-    const mockNg = function (_target: Command) {
-      return new Promise<boolean>((resolve) => resolve(preconditionStatus.ng));
-    };
-    const mockApiKeyPrivilege = function (_target: Command) {
-      return new Promise<boolean>((resolve) =>
-        resolve(preconditionStatus.apiKey)
-      );
-    };
-    mockedIsNodeVersionInRange.mockReturnValue(mockNode);
-    mockedIsNpmVersionInRange.mockReturnValue(mockNpm);
-    mockedIsNgInstalled.mockReturnValue(mockNg);
-    mockedApiKeyPrivilege.mockReturnValue(mockApiKeyPrivilege);
+    const mockedPreconditions = mockPreconditions(preconditionStatus);
+    mockedIsNodeVersionInRange.mockReturnValue(mockedPreconditions.node);
+    mockedIsNpmVersionInRange.mockReturnValue(mockedPreconditions.npm);
+    mockedIsNgInstalled.mockReturnValue(mockedPreconditions.ng);
+    mockedApiKeyPrivilege.mockReturnValue(mockedPreconditions.apiKey);
   };
 
   const doMockSpawnProcess = () => {
@@ -140,11 +125,9 @@ describe('ui:create:angular', () => {
       preconditionStatus.apiKey = false;
     })
     .command(['ui:create:angular', 'myapp'])
+    .catch(/apiKey Precondition Error/)
     .it(
-      'should not execute the command if the API key preconditions are not respected',
-      async () => {
-        expect(mockedCreateImpersonateApiKey).toHaveBeenCalledTimes(0);
-      }
+      'should not execute the command if the API key preconditions are not respected'
     );
 
   test
@@ -154,21 +137,17 @@ describe('ui:create:angular', () => {
       preconditionStatus.npm = false;
     })
     .command(['ui:create:angular', 'myapp'])
+    .catch(/npm Precondition Error/)
     .it(
-      'should not execute the command if the preconditions are not respected',
-      async () => {
-        expect(mockedSpawnProcess).toHaveBeenCalledTimes(0);
-      }
+      'should not execute the command if the preconditions are not respected'
     );
 
   test
     .stdout()
     .stderr()
     .command(['ui:create:angular'])
-    .catch((ctx) => {
-      expect(ctx.message).toContain('Missing 1 required arg:');
-    })
-    .it('requires application name argument', async () => {});
+    .catch(/Missing 1 required arg/)
+    .it('requires application name argument');
 
   test
     .stdout()
