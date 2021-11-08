@@ -10,7 +10,15 @@ module.exports = function (
         type: 'input',
         name: 'project',
         message: 'Name of the project',
-        // TODO validate NPM pattern "^(?:@[a-z0-9-*~][a-z0-9-*._~]*/)?[a-z0-9-~][a-z0-9-._~]*$"
+        validate: (input) => {
+          const pattern =
+            '^(?:@[a-z0-9-*~][a-z0-9-*._~]*/)?[a-z0-9-~][a-z0-9-._~]*';
+          if (!new RegExp(pattern).test(input)) {
+            return `The project name should match the pattern "${pattern}" (https://docs.npmjs.com/cli/v7/configuring-npm/package-json#name)`;
+          }
+
+          return true;
+        },
       },
     ],
     actions: [
