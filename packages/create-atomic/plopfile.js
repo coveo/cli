@@ -37,8 +37,10 @@ module.exports = function (
         destination: currentPath + '/{{project}}/',
         base: 'templates',
         templateFiles: [
-          'templates/public/style/layout.css',
-          'templates/public/style/theme.css',
+          'templates/public/style/*',
+          'templates/scripts/*',
+          'templates/.env.example',
+          'templates/.gitignore',
         ],
       },
     ],
