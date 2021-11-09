@@ -1,9 +1,5 @@
 import {Command} from '@oclif/command';
 import {
-  buildAnalyticsFailureHook,
-  buildAnalyticsSuccessHook,
-} from '../../../hooks/analytics/analytics';
-import {
   Preconditions,
   IsAuthenticated,
   HasNecessaryCoveoPrivileges,
@@ -14,6 +10,7 @@ import {
 } from '../../../lib/decorators/preconditions/platformPrivilege';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {spawnProcess} from '../../../lib/utils/process';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 
 interface AtomicArguments {
   name: string;
@@ -32,22 +29,18 @@ export default class Atomic extends Command {
   ];
   public static hidden = true;
 
+  @Trackable()
   @Preconditions(
     IsAuthenticated(),
-    // @Trackable(),
     HasNecessaryCoveoPrivileges(createApiKeyPrivilege, impersonatePrivilege)
   )
   public async run() {
     await this.createProject();
     this.displayFeedbackAfterSuccess();
-    await this.config.runHook('analytics', buildAnalyticsSuccessHook(this, {}));
   }
 
+  @Trackable()
   public async catch(err?: Error) {
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, {}, err)
-    );
     throw err;
   }
 
