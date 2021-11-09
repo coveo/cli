@@ -1,9 +1,5 @@
 import {Command, flags} from '@oclif/command';
 import {resolve} from 'path';
-import {
-  buildAnalyticsFailureHook,
-  buildAnalyticsSuccessHook,
-} from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {
   Preconditions,
@@ -21,6 +17,7 @@ import {
   createApiKeyPrivilege,
   impersonatePrivilege,
 } from '../../../lib/decorators/preconditions/platformPrivilege';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 
 export default class Vue extends Command {
   public static templateName = '@coveo/vue-cli-plugin-typescript';
@@ -65,6 +62,7 @@ export default class Vue extends Command {
     },
   ];
 
+  @Trackable()
   @Preconditions(
     IsAuthenticated(),
     IsNodeVersionInRange(Vue.requiredNodeVersion),
@@ -86,18 +84,10 @@ export default class Vue extends Command {
     await this.createProject(args.name, preset);
     await this.invokePlugin(args.name);
     this.displayFeedbackAfterSuccess(args.name);
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsSuccessHook(this, flags)
-    );
   }
 
+  @Trackable()
   public async catch(err?: Error) {
-    const flags = this.flags;
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, flags, err)
-    );
     throw err;
   }
 

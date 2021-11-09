@@ -1,8 +1,4 @@
 import {Command, flags} from '@oclif/command';
-import {
-  buildAnalyticsFailureHook,
-  buildAnalyticsSuccessHook,
-} from '../../hooks/analytics/analytics';
 import {Config} from '../../lib/config/config';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {
@@ -12,6 +8,7 @@ import {
 import {PlatformEnvironment} from '../../lib/platform/environment';
 import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
 import {Region} from '@coveord/platform-client';
+import {Trackable} from '../../lib/decorators/preconditions/trackable';
 
 export default class Set extends Command {
   public static description = 'Modify the current configuration.';
@@ -32,6 +29,7 @@ export default class Set extends Command {
     }),
   };
 
+  @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = this.parse(Set);
@@ -49,18 +47,10 @@ export default class Set extends Command {
     if (flags.analytics) {
       cfg.set('analyticsEnabled', flags.analytics === 'y');
     }
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsSuccessHook(this, flags)
-    );
   }
 
+  @Trackable()
   public async catch(err?: Error) {
-    const {flags} = this.parse(Set);
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, flags, err)
-    );
     throw err;
   }
 
