@@ -1,3 +1,5 @@
+const {spawn} = require('child_process');
+
 module.exports = function (
   /** @type {import('plop').NodePlopAPI} */
   plop
@@ -42,6 +44,14 @@ module.exports = function (
           'templates/.env.example',
           'templates/.gitignore',
         ],
+      },
+      function installPackages(answers) {
+        const {project} = answers;
+        spawn('npm', ['i'], {
+          cwd: `${currentPath}/${project}/`,
+          shell: true,
+          stdio: 'inherit',
+        });
       },
     ],
   });
