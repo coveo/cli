@@ -2,12 +2,9 @@ import {Command, flags} from '@oclif/command';
 import {Config} from '../../lib/config/config';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {PlatformEnvironment} from '../../lib/platform/environment';
-import {
-  buildAnalyticsFailureHook,
-  buildAnalyticsSuccessHook,
-} from '../../hooks/analytics/analytics';
 import {Region} from '@coveord/platform-client';
 import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
+import {Trackable} from '../../lib/decorators/preconditions/trackable';
 
 export default class Token extends Command {
   private configuration!: Config;
@@ -28,21 +25,17 @@ export default class Token extends Command {
     }),
   };
 
+  @Trackable()
   public async run() {
     this.configuration = new Config(this.config.configDir, this.error);
     this.saveToken();
     this.saveRegionAndEnvironment();
     await this.fetchAndSaveOrgId();
     await this.feedbackOnSuccessfulLogin();
-    this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
+  @Trackable()
   public async catch(err?: Error) {
-    const flags = this.flags;
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, flags, err)
-    );
     throw err;
   }
 

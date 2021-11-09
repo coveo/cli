@@ -1,9 +1,9 @@
-jest.mock('coveo.analytics');
+jest.mock('jsonschema');
+jest.mock('@amplitude/node');
 jest.mock('../../lib/config/config');
 jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
 import {mocked} from 'ts-jest/utils';
-import {CoveoAnalyticsClient, IRuntimeEnvironment} from 'coveo.analytics';
 import {Configuration, Config} from '../../lib/config/config';
 import {
   AuthenticatedClient,
@@ -13,41 +13,44 @@ import {
 import hook, {AnalyticsHook} from './analytics';
 import {IConfig} from '@oclif/config';
 import {PlatformClient} from '@coveord/platform-client';
-import {WebStorage} from 'coveo.analytics/dist/definitions/storage';
 import {
   configurationMock,
   defaultConfiguration,
 } from '../../__stub__/configuration';
 import {fancyIt} from '../../__test__/it';
-const mockedAnalytics = mocked(CoveoAnalyticsClient);
+import {init, NodeClient} from '@amplitude/node';
 const mockedConfig = mocked(Config);
 const mockedPlatformClient = mocked(PlatformClient);
 const mockedAuthenticatedClient = mocked(AuthenticatedClient);
 const mockedAuthenticationStatus = mocked(getAuthenticationStatus);
+const mockedAmplitudeClient = mocked(init);
 
-describe('analytics hook', () => {
-  let sendCustomEvent: jest.Mock;
+describe('analytics_hook', () => {
+  let logEvent: jest.Mock;
   const getAnalyticsHook = (input: Partial<AnalyticsHook>): AnalyticsHook => {
     return {
-      commandID: 'foo:bar',
+      event: {
+        event_type: 'started foo bar',
+        event_properties: {
+          key: 'value',
+        },
+      },
       config: {} as IConfig,
-      flags: {},
-      err: undefined,
       ...input,
     };
   };
   const doMockAnalytics = () => {
-    sendCustomEvent = jest.fn();
-    mockedAnalytics.mockImplementationOnce(
+    logEvent = jest.fn();
+    mockedAmplitudeClient.mockImplementationOnce(
       () =>
         ({
-          runtime: {storage: {} as WebStorage} as IRuntimeEnvironment,
-          sendCustomEvent: sendCustomEvent as unknown,
-        } as CoveoAnalyticsClient)
+          logEvent: logEvent as unknown,
+        } as NodeClient)
     );
   };
 
   const mockedUserGet = jest.fn();
+  const mockedLicense = jest.fn();
   const doMockPlatformClient = () => {
     mockedUserGet.mockReturnValue(
       Promise.resolve({
@@ -55,12 +58,16 @@ describe('analytics hook', () => {
         displayName: 'bob',
       })
     );
+    mockedLicense.mockReturnValue(Promise.resolve({type: 'TRIAL'}));
     mockedPlatformClient.mockImplementation(
       () =>
         ({
           initialize: () => Promise.resolve(),
           user: {
             get: mockedUserGet,
+          },
+          license: {
+            full: mockedLicense,
           },
         } as unknown as PlatformClient)
     );
@@ -97,114 +104,23 @@ describe('analytics hook', () => {
   });
 
   afterEach(() => {
-    mockedAnalytics.mockClear();
+    mockedLicense.mockClear();
+    mockedAmplitudeClient.mockClear();
     mockedPlatformClient.mockClear();
     mockedConfig.mockClear();
     mockedAuthenticatedClient.mockClear();
-    sendCustomEvent.mockClear();
+    logEvent.mockClear();
   });
 
-  fancyIt()(
-    'should properly format the command ID by removing semi colon and using underscore',
-    async () => {
-      await hook(getAnalyticsHook({commandID: 'hello:world'}));
-      expect(sendCustomEvent).toHaveBeenCalledWith(
-        expect.objectContaining({
-          eventType: 'com_coveo_cli',
-          eventValue: 'hello_world',
-          originLevel1: 'com_coveo_cli',
-          originLevel2: 'hello_world',
-        })
-      );
-    }
-  );
-
-  fancyIt()('should send user agent from config', async () => {
-    await hook(getAnalyticsHook({config: {userAgent: 'the-agent'} as IConfig}));
-    expect(sendCustomEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        userAgent: 'the-agent',
-      })
-    );
-  });
-
-  fancyIt()('should send operating system from config', async () => {
-    await hook(getAnalyticsHook({config: {platform: 'linux'} as IConfig}));
-    expect(sendCustomEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        customData: expect.objectContaining({os: 'linux'}),
-      })
-    );
-  });
-
-  fancyIt()('should send environment from config', async () => {
+  fancyIt()('should initialize an Amplitude client', async () => {
     await hook(getAnalyticsHook({}));
-    expect(sendCustomEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        customData: expect.objectContaining({environment: 'dev'}),
-      })
-    );
+    expect(mockedAmplitudeClient).toHaveBeenCalledTimes(1);
   });
 
-  fancyIt()('should send organization from config', async () => {
-    await hook(getAnalyticsHook({}));
-    expect(sendCustomEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        customData: expect.objectContaining({organization: 'my-org'}),
-      })
-    );
-  });
-
-  fancyIt()('should send region from config', async () => {
-    await hook(getAnalyticsHook({}));
-    expect(sendCustomEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        customData: expect.objectContaining({region: 'us'}),
-      })
-    );
-  });
-
-  fancyIt()('should send userDisplayName from platform-client', async () => {
-    await hook(getAnalyticsHook({}));
-    expect(sendCustomEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        userDisplayName: 'bob',
-      })
-    );
-  });
-
-  fancyIt()('should send username from platform-client', async () => {
-    await hook(getAnalyticsHook({}));
-    expect(sendCustomEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        username: 'bob@coveo.com',
-      })
-    );
-  });
-
-  fancyIt()('should send command flags', async () => {
-    const flags = {'-e': 'dev', '-r': 'us'};
-    await hook(getAnalyticsHook({flags}));
-    expect(sendCustomEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        customData: expect.objectContaining({flags: JSON.stringify(flags)}),
-      })
-    );
-  });
-
-  fancyIt()('should send meta (error)', async () => {
-    const err: Error = new Error('oh no');
-    await hook(getAnalyticsHook({err}));
-    expect(sendCustomEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        customData: expect.objectContaining({
-          errorMessage: err.message,
-          errorName: err.name,
-          errorStacktrace: err.stack,
-        }),
-      })
-    );
-  });
+  it.todo('TODO: CDX-651: should send environment from config');
+  it.todo('TODO: CDX-651: should send organization type from config');
+  it.todo('TODO: CDX-651: should send region from config');
+  it.todo('TODO: CDX-651: should send hashed username from platform-client');
 
   fancyIt()('should not send any analytics if disabled', async () => {
     mockedConfig.mockImplementation(
@@ -218,8 +134,18 @@ describe('analytics hook', () => {
     );
 
     await hook(getAnalyticsHook({}));
-    expect(sendCustomEvent).not.toHaveBeenCalled();
+    expect(logEvent).not.toHaveBeenCalled();
   });
+
+  fancyIt()(
+    'should not send any analytics if license is not TRIAL',
+    async () => {
+      mockedLicense.mockResolvedValue({type: 'PROD'});
+
+      await hook(getAnalyticsHook({}));
+      expect(logEvent).not.toHaveBeenCalled();
+    }
+  );
 
   fancyIt()(
     'should not throw an error when the user is not logged in',

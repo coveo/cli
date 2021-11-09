@@ -16,6 +16,7 @@ import {
 import {validateSnapshotPullModel} from '../../../../../lib/snapshot/pullModel/validation/validate';
 import fullTemplate from '../../../../../lib/snapshot/pullModel/templates/full.json';
 import emptyTemplate from '../../../../../lib/snapshot/pullModel/templates/empty.json';
+import {Trackable} from '../../../../../lib/decorators/preconditions/trackable';
 import {
   getSelectResourceTypesPrompt,
   ResourcePromptDefaults,
@@ -59,6 +60,7 @@ export class New extends Command {
   private modelToWrite: SnapshotPullModel | undefined;
   private resourcesToSelect: SnapshotPullModelResourceType[] = [];
 
+  @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
     this.handleTemplate();
@@ -67,6 +69,11 @@ export class New extends Command {
     }
     validateSnapshotPullModel(this.modelToWrite, true);
     this.writeTemplate();
+  }
+
+  @Trackable()
+  public async catch(err?: Error) {
+    throw err;
   }
 
   private async shouldStartInteractive() {

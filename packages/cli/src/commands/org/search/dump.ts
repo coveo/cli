@@ -9,11 +9,9 @@ import PlatformClient from '@coveord/platform-client';
 import {writeFile} from 'fs-extra';
 import {Parser} from 'json2csv';
 import {cli} from 'cli-ux';
-import {
-  buildAnalyticsFailureHook,
-  buildAnalyticsSuccessHook,
-} from '../../../hooks/analytics/analytics';
+// eslint-disable-next-line node/no-extraneous-import
 import {SingleBar} from 'cli-progress';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 
 interface SearchResult {
   raw: {rowid: string};
@@ -82,6 +80,7 @@ export default class Dump extends Command {
     }),
   };
 
+  @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = this.parse(Dump);
@@ -106,16 +105,10 @@ export default class Dump extends Command {
     } else {
       await this.writeChunks(allResults);
     }
-
-    this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
+  @Trackable()
   public async catch(err?: Error) {
-    const {flags} = this.parse(Dump);
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, flags, err)
-    );
     throw err;
   }
 

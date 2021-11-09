@@ -6,13 +6,10 @@ import {readdirSync} from 'fs';
 import path from 'path';
 import dedent from 'ts-dedent';
 import {
-  buildAnalyticsFailureHook,
-  buildAnalyticsSuccessHook,
-} from '../../../hooks/analytics/analytics';
-import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {parseAndGetDocumentBuilderFromJSONDocument} from '../../../lib/push/parseFile';
 import {
@@ -58,6 +55,7 @@ export default class SourcePushAdd extends Command {
     },
   ];
 
+  @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = this.parse(SourcePushAdd);
@@ -76,11 +74,6 @@ export default class SourcePushAdd extends Command {
     if (flags.folder) {
       await this.doPushFolder(source);
     }
-
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsSuccessHook(this, flags)
-    );
   }
 
   private async doPushFolder(source: Source) {
@@ -174,12 +167,8 @@ export default class SourcePushAdd extends Command {
     );
   }
 
+  @Trackable()
   public async catch(err?: Error) {
-    const {flags} = this.parse(SourcePushAdd);
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, flags, err)
-    );
     throw err;
   }
 
