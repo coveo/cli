@@ -1,4 +1,4 @@
-import {NodeClient} from '@amplitude/node';
+import type {NodeClient} from '@amplitude/node';
 import {Identify} from '@amplitude/identify';
 import {machineId} from 'node-machine-id';
 import {createHash} from 'crypto';
