@@ -12,7 +12,7 @@ import {
   HasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions/';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
-import {IsNgInstalled} from '../../../lib/decorators/preconditions/ng';
+import {IsNgVersionInRange} from '../../../lib/decorators/preconditions/ng';
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,
@@ -27,6 +27,8 @@ export default class Angular extends Command {
    */
   public static requiredNodeVersion = '^12.14.1 || >=14.0.0';
   public static requiredNpmVersion = '^6.11.0 || ^7.5.6 || >=8.0.0';
+  // TODO CDX-672: Update Ng range.
+  public static requiredNgVersion = '^12.0.0';
 
   public static description =
     'Create a Coveo Headless-powered search page with the Angular web framework. See <https://docs.coveo.com/headless> and <https://angular.io/>.';
@@ -57,7 +59,7 @@ export default class Angular extends Command {
     IsAuthenticated(),
     IsNodeVersionInRange(Angular.requiredNodeVersion),
     IsNpmVersionInRange(Angular.requiredNpmVersion),
-    IsNgInstalled(),
+    IsNgVersionInRange(Angular.requiredNgVersion),
     HasNecessaryCoveoPrivileges(createApiKeyPrivilege, impersonatePrivilege)
   )
   public async run() {

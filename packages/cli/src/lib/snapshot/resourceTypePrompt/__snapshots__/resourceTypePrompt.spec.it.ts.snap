@@ -1,0 +1,181 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ResourceTypePrompt - Integration Test when pressing a should select add for the highlighted resource if possible 1`] = `
+"[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G[32m?[39m [1msomeQuestion:[22m[0m [0m
+[36m❯[39mEXTENSION     	 [4m[7m[32m[1mA[22mdd[39m[27m[24m [97m[1mS[22mkip[39m [90mDelete[39m [90mEdit[39m
+ FIELD         	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ ML_MODEL      	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ QUERY_PIPELINE	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ SEARCH_PAGE   	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ SOURCE        	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ SUBSCRIPTION  	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
+
+exports[`ResourceTypePrompt - Integration Test when pressing d should select delete for the highlighted resource if possible 1`] = `
+"[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G[32m?[39m [1msomeQuestion:[22m[0m [0m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [97m[1mS[22mkip[39m [4m[31m[1mD[22melete[39m[24m [36m[1mE[22mdit[39m
+ FIELD         	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ ML_MODEL      	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ QUERY_PIPELINE	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ SEARCH_PAGE   	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ SOURCE        	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ SUBSCRIPTION  	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
+
+exports[`ResourceTypePrompt - Integration Test when pressing down arrow key should loop and select the next valid value/key 1`] = `
+"[32m?[39m [1msomeQuestion:[22m[0m [0m
+ SOURCE        	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SUBSCRIPTION  	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ [2m*[22m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ FIELD         	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ ML_MODEL      	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
+
+exports[`ResourceTypePrompt - Integration Test when pressing down arrow key should select the next valid value/key if there is one 1`] = `
+"[32m?[39m [1msomeQuestion:[22m[0m [0m
+ SOURCE        	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SUBSCRIPTION  	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ [2m*[22m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ FIELD         	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ ML_MODEL      	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
+
+exports[`ResourceTypePrompt - Integration Test when pressing e should select edit for the highlighted resource if possible 1`] = `
+"[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G[32m?[39m [1msomeQuestion:[22m[0m [0m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [97m[1mS[22mkip[39m [31m[1mD[22melete[39m [4m[36m[1mE[22mdit[39m[24m
+ FIELD         	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ ML_MODEL      	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ QUERY_PIPELINE	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ SEARCH_PAGE   	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ SOURCE        	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ SUBSCRIPTION  	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
+
+exports[`ResourceTypePrompt - Integration Test when pressing left arrow key should loop and select the next valid value/key 1`] = `
+"[32m?[39m [1msomeQuestion:[22m[0m [0m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ FIELD         	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ ML_MODEL      	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SEARCH_PAGE   	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SOURCE        	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SUBSCRIPTION  	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
+
+exports[`ResourceTypePrompt - Integration Test when pressing left arrow key should select the next valid value/key if there is one 1`] = `
+"[32m?[39m [1msomeQuestion:[22m[0m [0m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ FIELD         	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ ML_MODEL      	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SEARCH_PAGE   	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SOURCE        	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SUBSCRIPTION  	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
+
+exports[`ResourceTypePrompt - Integration Test when pressing right arrow key should loop and select the next valid value/key 1`] = `
+"[32m?[39m [1msomeQuestion:[22m[0m [0m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ FIELD         	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ ML_MODEL      	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SEARCH_PAGE   	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SOURCE        	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SUBSCRIPTION  	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
+
+exports[`ResourceTypePrompt - Integration Test when pressing right arrow key should select the next valid value/key if there is one 1`] = `
+"[32m?[39m [1msomeQuestion:[22m[0m [0m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ FIELD         	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ ML_MODEL      	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SEARCH_PAGE   	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SOURCE        	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SUBSCRIPTION  	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
+
+exports[`ResourceTypePrompt - Integration Test when pressing s should select skip for the highlighted resource if possible 1`] = `
+"[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G[32m?[39m [1msomeQuestion:[22m[0m [0m
+[36m❯[39mEXTENSION     	 [7m[32m[1mA[22mdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ FIELD         	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ ML_MODEL      	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ QUERY_PIPELINE	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ SEARCH_PAGE   	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ SOURCE        	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ SUBSCRIPTION  	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
+
+exports[`ResourceTypePrompt - Integration Test when pressing space bar should do nothing if the highlighted key/value combination is disabled 1`] = `
+"[32m?[39m [1msomeQuestion:[22m[0m [0m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ FIELD         	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ ML_MODEL      	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SEARCH_PAGE   	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SOURCE        	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SUBSCRIPTION  	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
+
+exports[`ResourceTypePrompt - Integration Test when pressing space bar should select if the highlighted key/value combination is not disabled 1`] = `
+"[32m?[39m [1msomeQuestion:[22m[0m [0m
+[36m❯[39mEXTENSION     	 [4m[7m[32m[1mA[22mdd[39m[27m[24m [97m[1mS[22mkip[39m [90mDelete[39m [90mEdit[39m
+ FIELD         	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ ML_MODEL      	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ QUERY_PIPELINE	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ SEARCH_PAGE   	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ SOURCE        	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+ SUBSCRIPTION  	 [32m[1mA[22mdd[39m [4m[97m[1mS[22mkip[39m[24m [90mDelete[39m [90mEdit[39m
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
+
+exports[`ResourceTypePrompt - Integration Test when pressing up arrow key should loop and select the next valid value/key 1`] = `
+"[32m?[39m [1msomeQuestion:[22m[0m [0m
+ SOURCE        	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SUBSCRIPTION  	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ [2m*[22m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ FIELD         	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ ML_MODEL      	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
+
+exports[`ResourceTypePrompt - Integration Test when pressing up arrow key should select the next valid value/key if there is one 1`] = `
+"[32m?[39m [1msomeQuestion:[22m[0m [0m
+ SOURCE        	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SUBSCRIPTION  	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ [2m*[22m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ FIELD         	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ ML_MODEL      	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
+
+exports[`ResourceTypePrompt - Integration Test when started should display the question and the first 7 resources 1`] = `
+"[32m?[39m [1msomeQuestion:[22m[0m [0m
+[36m❯[39mEXTENSION     	 [7m[90mAdd[39m[27m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ FIELD         	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ ML_MODEL      	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ QUERY_PIPELINE	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SEARCH_PAGE   	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SOURCE        	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+ SUBSCRIPTION  	 [90mAdd[39m [4m[97m[1mS[22mkip[39m[24m [31m[1mD[22melete[39m [36m[1mE[22mdit[39m
+[2m(Move up and down to reveal more choices)[22m[41D[41C"
+`;
