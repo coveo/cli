@@ -36,8 +36,7 @@ export class Identifier {
   }
 
   private async hash(word: string) {
-    const md5sum = createHash('md5');
-    const hash = md5sum.update(word);
+    const hash = createHash('sha256').update(word);
     return hash.digest('hex').toString();
   }
 
