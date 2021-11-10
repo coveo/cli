@@ -44,7 +44,7 @@ export class Identifier {
     const {email} = await platformClient.user.get();
     return {
       userId: this.configuration.anonymous ? null : await this.hash(email),
-      isInternalUser: email.match(/@coveo\.com/) !== null,
+      isInternalUser: email.match(/@coveo\.com$/) !== null,
     };
   }
 
