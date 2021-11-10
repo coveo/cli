@@ -14,10 +14,11 @@ module.exports = function (
         name: 'project',
         message: 'Name of the project',
         validate: (input) => {
-          const pattern =
+          // Taken from http://json.schemastore.org/package
+          const npmPackageRegex =
             '^(?:@[a-z0-9-*~][a-z0-9-*._~]*/)?[a-z0-9-~][a-z0-9-._~]*';
-          if (!new RegExp(pattern).test(input)) {
-            return `The project name should match the pattern "${pattern}" (https://docs.npmjs.com/cli/v7/configuring-npm/package-json#name)`;
+          if (!new RegExp(npmPackageRegex).test(input)) {
+            return `Project name is invalid, please follow the guidelines: https://docs.npmjs.com/cli/v7/configuring-npm/package-json#name)`;
           }
 
           return true;
