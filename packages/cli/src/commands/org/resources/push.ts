@@ -18,10 +18,6 @@ import {
 } from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '../../../lib/config/config';
 import {cwd} from 'process';
-import {
-  buildAnalyticsFailureHook,
-  buildAnalyticsSuccessHook,
-} from '../../../hooks/analytics/analytics';
 import {Project} from '../../../lib/project/project';
 import {
   PreviewLevelValue,
@@ -33,6 +29,7 @@ import {
   writeLinkPrivilege,
   writeSnapshotPrivilege,
 } from '../../../lib/decorators/preconditions/platformPrivilege';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 
 export default class Push extends Command {
   public static description =
@@ -66,6 +63,7 @@ export default class Push extends Command {
 
   public static hidden = true;
 
+  @Trackable()
   @Preconditions(
     IsAuthenticated(),
     HasNecessaryCoveoPrivileges(writeSnapshotPrivilege, writeLinkPrivilege)
@@ -91,18 +89,12 @@ export default class Push extends Command {
 
     await this.processReportAndExecuteRemainingActions(snapshot, reporter);
     await this.cleanup(snapshot, project);
-
-    this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
+  @Trackable()
   public async catch(err?: Error) {
-    const {flags} = this.parse(Push);
     cleanupProject(this.projectPath);
     handleSnapshotError(err);
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, flags, err)
-    );
   }
 
   private shouldDisplayExpandedPreview() {

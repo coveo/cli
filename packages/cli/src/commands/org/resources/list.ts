@@ -7,11 +7,8 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
-import {
-  buildAnalyticsFailureHook,
-  buildAnalyticsSuccessHook,
-} from '../../../hooks/analytics/analytics';
 import dedent from 'ts-dedent';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 
 export default class List extends Command {
   public static description = 'List available snapshots from an organization';
@@ -29,6 +26,7 @@ export default class List extends Command {
 
   public static hidden = true;
 
+  @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = this.parse(List);
@@ -57,19 +55,14 @@ export default class List extends Command {
       targetId: {header: 'Target id'},
       developerNote: {header: 'Developer note'},
     });
-
-    this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
   private get configuration() {
     return new Config(this.config.configDir, this.error);
   }
 
+  @Trackable()
   public async catch(err?: Error) {
-    const {flags} = this.parse(List);
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, flags, err)
-    );
+    throw err;
   }
 }
