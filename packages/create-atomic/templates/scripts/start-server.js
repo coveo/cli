@@ -25,9 +25,12 @@ function startServer() {
     env: getEnvVariables(),
     cwd: resolve(serverPath),
   });
-  process.on('SIGINT', () => {
+  const handleKill = () => {
     child.kill();
-  });
+  };
+  process.on('SIGINT', handleKill);
+  process.on('SIGHUP', handleKill);
+  process.on('SIGBREAK', handleKill);
 }
 
 function main() {
