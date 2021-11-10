@@ -25,6 +25,7 @@
     "access": "public"
   },
   "dependencies": {
-    "plop": "^2.7.6"
+    "plop": "^2.7.6",
+    "minimist": "^1.2.5"
   }
 }
