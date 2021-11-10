@@ -1,6 +1,7 @@
 {
     "extends": "../../.eslintrc",
     "rules": {
+      // TODO: remove after publishing
       "node/no-unpublished-import": ["off"]
     }
   }
