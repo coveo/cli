@@ -2,11 +2,11 @@
 
 The `@coveo/create-atomic` package contains the necessary components to set up a search page using [Coveo Atomic](https://docs.coveo.com/atomic), which is built upon [Coveo Headless](https://docs.coveo.com/headless).
 
-If you want to create a new Coveo Headless-powered search page with the Coveo Atomic web framework from scratch, it is simpler to use the [`coveo ui:create:atomic` command in the Coveo CLI](https://github.com/coveo/cli/blob/master/packages/cli/README.md#coveo-uicreateatomic-name). The Coveo CLI will handle a lot of complexity for you.
+If you want to create a new Coveo Headless-powered search page with the Coveo Atomic web framework from scratch, it is simpler to use the [`coveo ui:create:atomic` command in the Coveo CLI](../cli/README.md#coveo-uicreateatomic-name). The Coveo CLI will handle a lot of complexity for you.
 
 ## Installation
 
-We recommend using the [`coveo ui:create:atomic` command in the Coveo CLI](https://github.com/coveo/cli/blob/master/packages/cli/README.md#coveo-uicreateatomic-name), but to use the project directly, you can also run:
+We recommend using the [`coveo ui:create:atomic` command in the Coveo CLI](../cli/README.md#coveo-uicreateatomic-name), but to use the project directly, you can also run:
 
 ```
 npm init @coveo/atomic myapp
