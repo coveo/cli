@@ -1,4 +1,5 @@
 const {spawn} = require('child_process');
+const {getPackageManager} = require('../cra-template/template/scripts/utils');
 
 module.exports = function (
   /** @type {import('plop').NodePlopAPI} */
@@ -47,10 +48,9 @@ module.exports = function (
       },
       function installPackages(answers) {
         const {project} = answers;
-        spawn('npm', ['i'], {
-          cwd: `${currentPath}/${project}/`,
-          shell: true,
+        spawn(getPackageManager(), ['install'], {
           stdio: 'inherit',
+          cwd: `${currentPath}/${project}/`,
         });
       },
     ],
