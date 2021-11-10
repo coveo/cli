@@ -6,6 +6,7 @@ import {
   getAuthenticationStatus,
 } from '../../lib/platform/authenticatedClient';
 import {Identifier} from './identifier';
+import check from './session';
 
 export interface AnalyticsHook {
   event: Event;
@@ -44,6 +45,7 @@ const hook = async function (options: AnalyticsHook) {
   const {userId, deviceId} = await identifier.identify();
   await amplitudeClient.logEvent({
     device_id: deviceId,
+    session_id: check(),
     ...(userId && {user_id: userId}),
     ...options.event,
   });

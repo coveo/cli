@@ -2,36 +2,34 @@ import {cli} from 'cli-ux';
 import {Config} from '../../lib/config/config';
 
 interface SessionOptions {
-  duration: number;
+  timeout: number;
 }
 
 export const DefaultSessionOptions: SessionOptions = {
-  duration: 5 * 60 * 1000,
+  timeout: 10 * 60e3,
 };
 
-const check = async (overrideOptions?: SessionOptions) => {
-  const {duration} = {...DefaultSessionOptions, ...overrideOptions};
+const check = (overrideOptions?: SessionOptions) => {
+  const now = Date.now();
   const cfg = new Config(config.configDir, cli.error);
-  const configuration = await cfg.get();
-  const [startTime, endTime] =
-    configuration.amplitudeSession || generate(duration);
-  const session = isExpired(endTime) ? Date.now() : startTime;
+  const {timeout} = {...DefaultSessionOptions, ...overrideOptions};
+  const {amplitudeSession, lastEventLoggedTime} = {
+    ...{lastEventLoggedTime: now, amplitudeSession: now},
+    ...cfg.get(),
+  };
+  const session = hasBeenToolong(lastEventLoggedTime, now - timeout)
+    ? now
+    : amplitudeSession;
 
-  cfg.set('amplitudeSession', extend(session, duration));
+  cfg.set('amplitudeSession', session);
+  cfg.set('lastEventLoggedTime', now);
+
   return session;
 };
 
-const isExpired = (expiryDate: number) => {
-  return expiryDate < Date.now();
-};
-
-const generate = (duration: number) => {
-  return extend(Date.now(), duration);
-};
-
-const extend = (startTime: number, duration: number) => {
-  const endTime = startTime + duration;
-  return [startTime, endTime];
+const hasBeenToolong = (lastEventFired: number, threshold: number) => {
+  console.log(lastEventFired < threshold);
+  return lastEventFired < threshold;
 };
 
 export default check;
