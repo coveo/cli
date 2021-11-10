@@ -6,7 +6,7 @@ interface SessionOptions {
 }
 
 export const DefaultSessionOptions: SessionOptions = {
-  timeout: 10 * 60e3,
+  timeout: 30 * 60e3,
 };
 
 const check = (overrideOptions?: SessionOptions) => {
