@@ -1,4 +1,4 @@
-import {Command} from '@oclif/command';
+import {Command, flags} from '@oclif/command';
 import {
   Preconditions,
   IsAuthenticated,
@@ -32,6 +32,13 @@ export default class Atomic extends Command {
       required: true,
     },
   ];
+  public static flags = {
+    version: flags.string({
+      char: 'v',
+      description: `The version of ${Atomic.cliPackage} to use.`,
+      default: getPackageVersion(Atomic.cliPackage),
+    }),
+  };
   public static hidden = true;
 
   @Trackable()
@@ -45,7 +52,6 @@ export default class Atomic extends Command {
     await this.createProject();
     this.displayFeedbackAfterSuccess();
     // TODO: add env variables
-    await this.config.runHook('analytics', buildAnalyticsSuccessHook(this, {}));
   }
 
   @Trackable()
@@ -55,7 +61,7 @@ export default class Atomic extends Command {
 
   private async createProject() {
     return spawnProcess(appendCmdIfWindows`npx`, [
-      `${Atomic.cliPackage}@${getPackageVersion(Atomic.cliPackage)}`,
+      `${Atomic.cliPackage}@${flags.version}`,
       this.args.name,
     ]);
   }
