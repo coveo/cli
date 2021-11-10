@@ -5,10 +5,6 @@ import {blueBright} from 'chalk';
 import {cli} from 'cli-ux';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
-import {
-  buildAnalyticsFailureHook,
-  buildAnalyticsSuccessHook,
-} from '../../../hooks/analytics/analytics';
 import {Config} from '../../../lib/config/config';
 import {
   HasNecessaryCoveoPrivileges,
@@ -17,6 +13,7 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
 import {writeSnapshotPrivilege} from '../../../lib/decorators/preconditions/platformPrivilege';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {wait} from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
@@ -66,6 +63,7 @@ export default class Pull extends Command {
 
   public static hidden = true;
 
+  @Trackable()
   @Preconditions(
     IsAuthenticated(),
     IsGitInstalled(),
@@ -79,18 +77,13 @@ export default class Pull extends Command {
 
     await snapshot.delete();
     cli.action.stop('Project updated');
-    this.config.runHook('analytics', buildAnalyticsSuccessHook(this, flags));
   }
 
+  @Trackable()
   public async catch(err?: Error) {
-    const {flags} = this.parse(Pull);
     cleanupProject(this.projectPath);
     handleSnapshotError(err);
     await this.displayAdditionalErrorMessage(err);
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, flags, err)
-    );
   }
 
   private async displayAdditionalErrorMessage(err?: Error) {

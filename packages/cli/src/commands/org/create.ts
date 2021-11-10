@@ -2,10 +2,6 @@ import {Command, flags} from '@oclif/command';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {cli} from 'cli-ux';
 import {
-  buildAnalyticsFailureHook,
-  buildAnalyticsSuccessHook,
-} from '../../hooks/analytics/analytics';
-import {
   Preconditions,
   IsAuthenticated,
 } from '../../lib/decorators/preconditions/';
@@ -13,6 +9,7 @@ import {OrganizationCreationOrigin} from '@coveord/platform-client';
 import {Config} from '../../lib/config/config';
 import {bold} from 'chalk';
 import dedent from 'ts-dedent';
+import {Trackable} from '../../lib/decorators/preconditions/trackable';
 
 export default class Create extends Command {
   public static description = 'Create a new test Coveo organization.';
@@ -35,25 +32,17 @@ export default class Create extends Command {
     },
   ];
 
+  @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
     cli.action.start('Creating organization');
     const {id} = await this.createOrganization();
     const endMessage = await this.generateEndMessageFromOrgId(id);
     cli.action.stop(endMessage);
-
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsSuccessHook(this, flags)
-    );
   }
 
+  @Trackable()
   public async catch(err?: Error) {
-    const {flags} = this.parse(Create);
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, flags, err)
-    );
     throw err;
   }
 

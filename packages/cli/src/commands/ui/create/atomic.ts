@@ -1,9 +1,5 @@
 import {Command} from '@oclif/command';
 import {
-  buildAnalyticsFailureHook,
-  buildAnalyticsSuccessHook,
-} from '../../../hooks/analytics/analytics';
-import {
   Preconditions,
   IsAuthenticated,
   HasNecessaryCoveoPrivileges,
@@ -17,6 +13,7 @@ import {
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {spawnProcess} from '../../../lib/utils/process';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 
 interface AtomicArguments {
   name: string;
@@ -37,7 +34,7 @@ export default class Atomic extends Command {
   ];
   public static hidden = true;
 
-  // TODO: add @Trackable()
+  @Trackable()
   @Preconditions(
     IsAuthenticated(),
     IsNpxInstalled(),
@@ -51,12 +48,8 @@ export default class Atomic extends Command {
     await this.config.runHook('analytics', buildAnalyticsSuccessHook(this, {}));
   }
 
-  // TODO: add @Trackable()
+  @Trackable()
   public async catch(err?: Error) {
-    await this.config.runHook(
-      'analytics',
-      buildAnalyticsFailureHook(this, {}, err)
-    );
     throw err;
   }
 
