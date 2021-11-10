@@ -23,6 +23,7 @@ export interface Configuration {
   [k: string]: unknown;
   analyticsEnabled: boolean | undefined;
   accessToken: string | undefined;
+  amplitudeSession?: number[] | undefined;
   anonymous?: boolean | undefined;
 }
 
