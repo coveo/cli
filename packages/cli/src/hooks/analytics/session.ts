@@ -28,7 +28,6 @@ const check = (overrideOptions?: SessionOptions) => {
 };
 
 const hasBeenToolong = (lastEventFired: number, threshold: number) => {
-  console.log(lastEventFired < threshold);
   return lastEventFired < threshold;
 };
 
