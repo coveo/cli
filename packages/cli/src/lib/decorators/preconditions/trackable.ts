@@ -68,7 +68,7 @@ function getEventName(target: Command) {
   return target.id!.replace(/:/g, ' ');
 }
 
-function buildEvent(
+export function buildEvent(
   eventName: string,
   properties: Record<string, unknown>,
   err?: Error
