@@ -28,7 +28,7 @@ describe('hooks:command_not_found', () => {
         expect(mockedAnalytics).toHaveBeenCalledWith(
           expect.objectContaining({
             event: {
-              event_type: 'cancelled operation',
+              event_type: 'invalid command',
               event_properties: {
                 command: 'this:is:an:invalid:command💥',
               },
