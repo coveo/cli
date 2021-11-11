@@ -4,6 +4,7 @@ import {machineId} from 'node-machine-id';
 import {createHash} from 'crypto';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
+import {camelToSnakeCase} from '../../lib/utils/string';
 
 export class Identifier {
   private authenticatedClient: AuthenticatedClient;
@@ -28,7 +29,7 @@ export class Identifier {
     };
 
     Object.entries(identity).forEach(([key, value]) => {
-      identify.set(key, value);
+      identify.set(camelToSnakeCase(key), value);
     });
 
     await this.amplitudeClient.identify(userId, deviceId, identify);
@@ -44,7 +45,6 @@ export class Identifier {
     const {email} = await platformClient.user.get();
     return {
       userId: this.configuration.anonymous ? null : await this.hash(email),
-      // TODO: CDX-660: convert all properties to snake-case
       isInternalUser: email.match(/@coveo\.com$/) !== null,
     };
   }
@@ -52,7 +52,6 @@ export class Identifier {
   private getCliInfo() {
     const {version} = this.configuration;
     return {
-      // TODO: CDX-660: convert all properties to snake-case
       cliVersion: version,
     };
   }
@@ -62,7 +61,6 @@ export class Identifier {
     const {type} = await platformClient.organization.get(organization);
 
     return {
-      // TODO: CDX-660: convert all properties to snake-case
       organizationType: type,
       environment,
       region,
@@ -77,7 +75,6 @@ export class Identifier {
       platform,
       windows,
       bin,
-      // TODO: CDX-660: convert all properties to snake-case
       userAgent,
       debug,
     };
