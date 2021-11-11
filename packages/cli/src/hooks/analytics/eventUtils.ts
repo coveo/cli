@@ -1,6 +1,7 @@
 import type {Event} from '@amplitude/types';
 import {validate} from 'jsonschema';
 import {APIError, APIErrorResponse} from '../../lib/errors/APIError';
+import {UnknownError} from '../../lib/errors/unknownError';
 
 export function buildEvent(
   eventName: string,
@@ -40,7 +41,7 @@ export function buildError(arg: unknown) {
   const isErrorFromAPI = validate(arg, schema);
   return isErrorFromAPI
     ? new APIError(arg as APIErrorResponse)
-    : new Error('Unknown Error');
+    : new UnknownError();
 }
 
 function errorIdentifier(err?: Error) {
