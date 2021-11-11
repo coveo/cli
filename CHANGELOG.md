@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.19.0](https://coveo-cli/coveo/cli/compare/v1.18.0...v1.19.0) (2021-11-11)
+
+
+### Bug Fixes
+
+* accept non-url documentIDs ([#527](https://coveo-cli/coveo/cli/issues/527)) ([e2f55ab](https://coveo-cli/coveo/cli/commits/e2f55ab0e68e7bd4bd8c8ad0a9c5cf52f2880751))
+* **angular:** update schematic and cli to angular 13 ([#530](https://coveo-cli/coveo/cli/issues/530)) ([7bca4f2](https://coveo-cli/coveo/cli/commits/7bca4f2c9add7c8a081c6d18830bb18846dc018c))
+* **deps:** update all dependencies j:cdx-227 ([#519](https://coveo-cli/coveo/cli/issues/519)) ([b965188](https://coveo-cli/coveo/cli/commits/b9651886461f82f00e3a1998a3c1227294ad57dc))
+* lock angular cli to 12.x in test environments ([#532](https://coveo-cli/coveo/cli/issues/532)) ([057710a](https://coveo-cli/coveo/cli/commits/057710a1ebc30999fad39934570f158566508685))
+* **proxy:** pass proxy along to platform-client ([#512](https://coveo-cli/coveo/cli/issues/512)) ([d88e9c9](https://coveo-cli/coveo/cli/commits/d88e9c92d4fe22da62952b8134d39544ccd370b8))
+* remove eslint ignore, add missing dep ([#524](https://coveo-cli/coveo/cli/issues/524)) ([a54420b](https://coveo-cli/coveo/cli/commits/a54420b3df9a1dcd4e4cfd0bc9f2bb2efd440ac1))
+
+
+### Features
+
+* add "coveo ui:create:atomic" command ([#534](https://coveo-cli/coveo/cli/issues/534)) ([61b08f1](https://coveo-cli/coveo/cli/commits/61b08f17e925877d34c5a10ffe1d6676f916023c))
+* add ng range check ([#533](https://coveo-cli/coveo/cli/issues/533)) ([cafaa17](https://coveo-cli/coveo/cli/commits/cafaa1777a9d9367886463749e3697143f8e31d2))
+* add preconditions on `org:resources:*` commands ([#507](https://coveo-cli/coveo/cli/issues/507)) ([7d9e6c6](https://coveo-cli/coveo/cli/commits/7d9e6c68397bb66d6ae4acff438ce5d10f5d2ef9))
+* catch precondition errors ([#514](https://coveo-cli/coveo/cli/issues/514)) ([ca558d4](https://coveo-cli/coveo/cli/commits/ca558d4c29369a2c445a89463710bbf5ae386c00))
+* improve compatibility with WSL ([#535](https://coveo-cli/coveo/cli/issues/535)) ([f268a89](https://coveo-cli/coveo/cli/commits/f268a8940f6ea818cc5a3b1595317def7f82f907))
+
+
+
+
+
 # [1.18.0](https://coveo-cli/coveo/cli/compare/v1.17.0...v1.18.0) (2021-10-29)
 
 
