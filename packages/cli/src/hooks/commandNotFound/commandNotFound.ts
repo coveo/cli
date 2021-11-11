@@ -1,5 +1,5 @@
 import {Hook} from '@oclif/config';
-import {buildEvent} from '../../lib/decorators/preconditions/trackable';
+import {buildEvent} from '../analytics/eventUtils';
 
 const hook: Hook<'command_not_found'> = async function (options) {
   this.config.runHook('analytics', {
