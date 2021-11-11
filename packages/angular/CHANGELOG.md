@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.19.0](https://coveo-cli/coveo/cli/compare/v1.18.0...v1.19.0) (2021-11-11)
+
+
+### Bug Fixes
+
+* **angular:** update schematic and cli to angular 13 ([#530](https://coveo-cli/coveo/cli/issues/530)) ([7bca4f2](https://coveo-cli/coveo/cli/commits/7bca4f2c9add7c8a081c6d18830bb18846dc018c))
+* **deps:** update all dependencies j:cdx-227 ([#519](https://coveo-cli/coveo/cli/issues/519)) ([b965188](https://coveo-cli/coveo/cli/commits/b9651886461f82f00e3a1998a3c1227294ad57dc))
+
+
+
+
+
 # [1.18.0](https://coveo-cli/coveo/cli/compare/v1.17.0...v1.18.0) (2021-10-29)
 
 
