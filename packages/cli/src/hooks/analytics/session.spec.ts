@@ -43,7 +43,7 @@ describe('session', () => {
     check();
     expect(mockedConfigSet).toHaveBeenNthCalledWith(
       1,
-      'amplitudeSession',
+      'amplitudeSessionID',
       expect.anything()
     );
   });
@@ -64,7 +64,7 @@ describe('session', () => {
 
       expect(mockedConfigSet).toHaveBeenNthCalledWith(
         1,
-        'amplitudeSession',
+        'amplitudeSessionID',
         theDate.getTime()
       );
     });
@@ -84,13 +84,13 @@ describe('session', () => {
       it(`should ${message}`, () => {
         mockedConfigGet.mockReturnValue({
           lastEventLoggedTime: getTimeBefore(minutesInThePast),
-          amplitudeSession: dummySessionId,
+          amplitudeSessionID: dummySessionId,
         });
         check();
 
         expect(mockedConfigSet).toHaveBeenNthCalledWith(
           1,
-          'amplitudeSession',
+          'amplitudeSessionID',
           expectedSession
         );
       });
@@ -103,13 +103,13 @@ describe('session', () => {
       const previousSession = 1234567;
       mockedConfigGet.mockReturnValue({
         lastEventLoggedTime,
-        amplitudeSession: previousSession,
+        amplitudeSessionID: previousSession,
       });
       check();
 
       expect(mockedConfigSet).toHaveBeenNthCalledWith(
         1,
-        'amplitudeSession',
+        'amplitudeSessionID',
         previousSession
       );
     });
