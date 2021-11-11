@@ -3,7 +3,10 @@ import {buildEvent} from '../analytics/eventUtils';
 
 const hook: Hook<'command_not_found'> = async function (options) {
   this.config.runHook('analytics', {
-    event: buildEvent('invalid command', {command: options.id}),
+    event: buildEvent('received error', {
+      command: options.id,
+      error_type: 'COMMAND NOT FOUND',
+    }),
   });
 };
 
