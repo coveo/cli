@@ -29,24 +29,16 @@ export default function (plop: NodePlopAPI) {
     ],
     actions: [
       {
-        type: 'add',
-        path: currentPath + '/{{project}}/package.json',
-        templateFile: 'templates/package.hbs',
-      },
-      {
-        type: 'add',
-        path: currentPath + '/{{project}}/public/index.html',
-        templateFile: 'templates/public/index.hbs',
-      },
-      {
         type: 'addMany',
         destination: currentPath + '/{{project}}/',
         base: 'templates',
         templateFiles: [
           'templates/public/style/*',
+          'templates/public/index.html',
           'templates/scripts/*',
           'templates/.env.example',
           'templates/.gitignore',
+          'templates/package.json',
         ],
       },
       function installPackages(answers) {

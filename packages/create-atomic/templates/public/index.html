@@ -1,0 +1,69 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{project}}</title>
+    <script
+      type="module"
+      src="https://static.cloud.coveo.com/atomic/v1/atomic.esm.js"
+    ></script>
+    <link rel="stylesheet" href="./style/theme.css" />
+    <link rel="stylesheet" href="./style/layout.css" />
+    <script>
+      (async () => {
+        await customElements.whenDefined('atomic-search-interface');
+        const searchInterface = document.querySelector('#search');
+
+        // TODO: fetch token from local server
+        await searchInterface.initialize({
+          accessToken: 'xx564559b1-0045-48e1-953c-3addd1ee4457',
+          organizationId: 'searchuisamples',
+        });
+
+        searchInterface.executeFirstSearch();
+      })();
+    </script>
+  </head>
+  <body>
+    <atomic-search-interface id="search">
+      <div class="header-bg"></div>
+      <atomic-search-box></atomic-search-box>
+      <atomic-facet-manager>
+        <atomic-facet field="author" label="Authors"></atomic-facet>
+        <atomic-facet field="language" label="Language"></atomic-facet>
+        <atomic-facet
+          field="objecttype"
+          label="Type"
+          display-values-as="link"
+        ></atomic-facet>
+      </atomic-facet-manager>
+      <atomic-breadbox></atomic-breadbox>
+      <div class="topbar">
+        <atomic-query-summary enable-duration="false"></atomic-query-summary>
+        <atomic-refine-toggle></atomic-refine-toggle>
+        <atomic-sort-dropdown>
+          <atomic-sort-expression
+            label="relevance"
+            expression="relevancy"
+          ></atomic-sort-expression>
+          <atomic-sort-expression
+            label="most-recent"
+            expression="date descending"
+          ></atomic-sort-expression>
+        </atomic-sort-dropdown>
+      </div>
+      <div class="results">
+        <atomic-did-you-mean></atomic-did-you-mean>
+        <atomic-result-list></atomic-result-list>
+      </div>
+      <div class="pagination">
+        <atomic-load-more-results></atomic-load-more-results>
+      </div>
+      <div class="status">
+        <atomic-query-error></atomic-query-error>
+        <atomic-no-results></atomic-no-results>
+      </div>
+    </atomic-search-interface>
+  </body>
+</html>
