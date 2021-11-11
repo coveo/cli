@@ -1,10 +1,12 @@
-const {spawn} = require('child_process');
-const {getPackageManager} = require('../cra-template/template/scripts/utils');
+import {NodePlopAPI} from 'plop';
+import {spawn} from 'child_process';
+import {getPackageManager} from './utils';
 
-module.exports = function (
-  /** @type {import('plop').NodePlopAPI} */
-  plop
-) {
+interface PromptsAnswers {
+  project: string;
+}
+
+module.exports = function (plop: NodePlopAPI) {
   const currentPath = process.cwd();
   plop.setGenerator('@coveo/atomic', {
     description: 'A Coveo Atomic Generator',
@@ -18,7 +20,7 @@ module.exports = function (
           const npmPackageRegex =
             '^(?:@[a-z0-9-*~][a-z0-9-*._~]*/)?[a-z0-9-~][a-z0-9-._~]*';
           if (!new RegExp(npmPackageRegex).test(input)) {
-            return `Project name is invalid, please follow the guidelines: https://docs.npmjs.com/cli/v7/configuring-npm/package-json#name)`;
+            return 'Project name is invalid, please follow the guidelines: https://docs.npmjs.com/cli/v7/configuring-npm/package-json#name)';
           }
 
           return true;
@@ -48,11 +50,12 @@ module.exports = function (
         ],
       },
       function installPackages(answers) {
-        const {project} = answers;
+        const {project} = answers as PromptsAnswers;
         spawn(getPackageManager(), ['install'], {
           stdio: 'inherit',
           cwd: `${currentPath}/${project}/`,
         });
+        return 'Packages installed 🚀';
       },
     ],
   });

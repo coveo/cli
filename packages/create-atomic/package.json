@@ -3,9 +3,9 @@
   "description": "Coveo Atomic Generator",
   "version": "1.18.0",
   "bin": {
-    "create-atomic": "./index.js"
+    "create-atomic": "./index.mjs"
   },
-  "main": "index.js",
+  "main": "index.mjs",
   "scripts": {
     "start": "plop",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -26,6 +26,8 @@
   },
   "dependencies": {
     "plop": "^2.7.6",
-    "minimist": "^1.2.5"
+    "minimist": "^1.2.5",
+    "typescript": "^4.4.4",
+    "ts-node": "^10.4.0"
   }
 }
