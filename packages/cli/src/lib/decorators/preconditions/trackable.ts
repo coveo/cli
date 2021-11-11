@@ -58,7 +58,5 @@ async function trackError(
 }
 
 function getEventName(target: Command) {
-  // TODO: CDX-648: Clean event name
-  // return (target.ctor.title || target.id)!.replace(/:/g, ' ');
-  return target.id!.replace(/:/g, ' ');
+  return (target.ctor.title || target.id)!.replace(/:/g, ' ');
 }
