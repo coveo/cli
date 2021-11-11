@@ -6,7 +6,7 @@ interface PromptsAnswers {
   project: string;
 }
 
-module.exports = function (plop: NodePlopAPI) {
+export default function (plop: NodePlopAPI) {
   const currentPath = process.cwd();
   plop.setGenerator('@coveo/atomic', {
     description: 'A Coveo Atomic Generator',
@@ -18,8 +18,8 @@ module.exports = function (plop: NodePlopAPI) {
         validate: (input) => {
           // Taken from http://json.schemastore.org/package
           const npmPackageRegex =
-            '^(?:@[a-z0-9-*~][a-z0-9-*._~]*/)?[a-z0-9-~][a-z0-9-._~]*';
-          if (!new RegExp(npmPackageRegex).test(input)) {
+            /^(?:@[a-z0-9-*~][a-z0-9-*._~]*\/)?[a-z0-9-~][a-z0-9-._~]*/;
+          if (!npmPackageRegex.test(input)) {
             return 'Project name is invalid, please follow the guidelines: https://docs.npmjs.com/cli/v7/configuring-npm/package-json#name)';
           }
 
@@ -55,8 +55,8 @@ module.exports = function (plop: NodePlopAPI) {
           stdio: 'inherit',
           cwd: `${currentPath}/${project}/`,
         });
-        return 'Packages installed 🚀';
+        return 'Installing packages 🚀';
       },
     ],
   });
-};
+}

@@ -1,5 +1,6 @@
 {
   "name": "@coveo/create-atomic",
+  "private": true,
   "description": "Coveo Atomic Generator",
   "version": "1.18.0",
   "bin": {
@@ -8,9 +9,9 @@
   "main": "index.mjs",
   "scripts": {
     "start": "plop",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "npm:bump:template": "npm --no-git-tag-version version",
-    "npm:publish:template": "npm publish --access public --registry http://localhost:4873"
+    "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
+    "lint": "prettier --check . && eslint ."
   },
   "keywords": [
     "coveo",
