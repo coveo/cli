@@ -1,5 +1,5 @@
-import Command from '@oclif/command';
-import {buildError, buildEvent} from '../../../hooks/analytics/analytics';
+import type Command from '@oclif/command';
+import {buildError, buildEvent} from '../../../hooks/analytics/eventUtils';
 
 export function Trackable(overrideEventProperties?: Record<string, unknown>) {
   return function (

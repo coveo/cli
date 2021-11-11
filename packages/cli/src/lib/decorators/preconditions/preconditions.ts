@@ -3,7 +3,7 @@ import type Command from '@oclif/command';
 export type PreconditionFunction = (
   target: Command,
   instance?: Command
-) => never | void | Promise<never | void>;
+) => Promise<never | void>;
 
 export function Preconditions(...preconditions: PreconditionFunction[]) {
   return function (

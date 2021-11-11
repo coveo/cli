@@ -1,72 +1,67 @@
-import {validate} from 'jsonschema';
 import {init, Event} from '@amplitude/node';
 import {IConfig} from '@oclif/config';
-import {APIError, APIErrorResponse} from '../../lib/errors/APIError';
 import {
   AuthenticatedClient,
   AuthenticationStatus,
   getAuthenticationStatus,
 } from '../../lib/platform/authenticatedClient';
-import {UnknownError} from '../../lib/errors/unknownError';
+import {Identifier} from './identifier';
+import check from './session';
 
 export interface AnalyticsHook {
   event: Event;
   config: IConfig;
 }
 
-// import {Identifier} from './identifier';
-
 // TODO: CDX-656: replace with Production API key on build
 const analyticsAPIKey = '2b06992f1a80d36396ba7297a8daf913';
 
 const hook = async function (options: AnalyticsHook) {
-  const {event} = options;
   if (!(await isLoggedIn())) {
     // TODO: track event with anonymous user
     return;
   }
   const amplitudeClient = configureAmplitudeClient();
-  // TODO: CDX-651: Identify unique users
-  const {organization, analyticsEnabled} = await platformInfoIdentifier();
+  const {organization, analyticsEnabled, authenticatedClient} =
+    await platformInfoIdentifier();
 
   if (!analyticsEnabled) {
     return;
   }
-  const platformClient = await new AuthenticatedClient().getClient({
+
+  // TODO: CDX-676: remove this block to track events from all org types
+  // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+  const platformClient = await authenticatedClient.getClient({
     organization,
   });
   const license = await platformClient.license.full();
-  if (license.type !== 'TRIAL') {
+
+  if (license.productType !== 'TRIAL') {
     return;
   }
+  // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
-  await amplitudeClient.logEvent(event);
+  const identifier = new Identifier(amplitudeClient);
+  const {userId, deviceId} = await identifier.identify();
+  await amplitudeClient.logEvent({
+    device_id: deviceId,
+    session_id: check(),
+    ...(userId && {user_id: userId}),
+    ...options.event,
+  });
 };
 
 const platformInfoIdentifier = async () => {
   const authenticatedClient = new AuthenticatedClient();
-  const platformClient = await authenticatedClient.getClient();
-  await platformClient.initialize();
   const config = authenticatedClient.cfg.get();
-  let userInfo;
-  if (!config.anonymous) {
-    userInfo = await platformClient.user.get();
-  }
   return {
-    userInfo,
     authenticatedClient,
     ...config,
   };
 };
 
-const errorIdentifier = (err?: Error) => ({
-  ...(err && {
-    errorName: err.name,
-  }),
-});
-
 const configureAmplitudeClient = () => {
-  // TODO: support proxy
+  // TODO: CDX-667: support proxy
   const amplitudeClient = init(analyticsAPIKey);
   return amplitudeClient;
 };
@@ -74,42 +69,6 @@ const configureAmplitudeClient = () => {
 const isLoggedIn = async () => {
   const status = await getAuthenticationStatus();
   return status === AuthenticationStatus.LOGGED_IN;
-};
-
-export const buildEvent = (
-  eventName: string,
-  properties: Record<string, unknown>,
-  err?: Error
-): Event => {
-  const analyticsData = {
-    event_type: eventName,
-    event_properties: {
-      ...properties,
-      ...errorIdentifier(err),
-    },
-  };
-
-  return analyticsData;
-};
-
-export const buildError = (arg: unknown) => {
-  if (arg instanceof Error) {
-    return arg;
-  }
-
-  if (typeof arg === 'string') {
-    return new Error(arg);
-  }
-
-  const schema = {
-    message: 'string',
-    errorCode: 'string',
-    requestID: 'string',
-  };
-  const isErrorFromAPI = validate(arg, schema);
-  return isErrorFromAPI
-    ? new APIError(arg as APIErrorResponse)
-    : new UnknownError();
 };
 
 export default hook;

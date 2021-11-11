@@ -1,4 +1,3 @@
-// jest.mock('@oclif/command');
 import {fancyIt} from '../../../__test__/it';
 import {getFakeCommand} from './testsUtils/utils';
 import {Trackable} from './trackable';
@@ -9,7 +8,7 @@ describe('trackable', () => {
     jest.clearAllMocks();
   });
 
-  describe('if command successfully completes', () => {
+  describe('when the command successfully completes', () => {
     const fakeOriginalFunction = jest.fn();
 
     beforeEach(async () => {
@@ -56,7 +55,7 @@ describe('trackable', () => {
     });
   });
 
-  describe('if the command throws an error', () => {
+  describe('when the command throws an error', () => {
     const fakeOriginalFunction = jest.fn();
 
     beforeEach(async () => {
