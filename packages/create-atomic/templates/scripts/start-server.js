@@ -30,7 +30,6 @@ function startServer() {
   };
   process.on('SIGINT', handleKill);
   process.on('SIGHUP', handleKill);
-  process.on('SIGBREAK', handleKill);
 }
 
 function main() {
