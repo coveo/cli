@@ -91,13 +91,13 @@ describe('trackable', () => {
     fancyIt()('should properly format events', () => {
       const event = {
         event_properties: {
-          errorName: 'Error',
+          error_type: 'Unknown CLI Error',
           command: 'foo:bar',
         },
       };
 
       expect(mockedAnalyticHook).toHaveBeenNthCalledWith(1, 'analytics', {
-        event: {...event, ...{event_type: 'failed foo bar'}},
+        event: {...event, ...{event_type: 'received error'}},
       });
     });
   });
