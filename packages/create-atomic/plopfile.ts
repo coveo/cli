@@ -26,8 +26,38 @@ export default function (plop: NodePlopAPI) {
           return true;
         },
       },
+      {
+        type: 'input',
+        name: 'platform-url',
+        message:
+          'The Plaform URL to use. See https://docs.coveo.com/en/2976/coveo-solutions/deployment-regions-and-strategies',
+        default: 'https://platform.cloud.coveo.com',
+      },
+      {
+        type: 'input',
+        name: 'org-id',
+        message:
+          'The unique identifier of the organization in which to generate a search token. See https://docs.coveo.com/en/148/manage-an-organization/retrieve-the-organization-id',
+      },
+      {
+        type: 'input',
+        name: 'api-key',
+        message:
+          'An API key granting the impersonate privilege in your organization. The API key should have the impersonate privilege. See https://docs.coveo.com/en/1718/manage-an-organization/manage-api-keys#add-an-api-key',
+      },
+      {
+        type: 'input',
+        name: 'user',
+        message:
+          'The name of the security identity to impersonate, e.g. "alicesmith@example.com". See https://docs.coveo.com/en/56/#name-string-required.',
+      },
     ],
     actions: [
+      {
+        type: 'add',
+        path: currentPath + '/{{project}}/.env',
+        templateFile: 'templates/.env.hbs',
+      },
       {
         type: 'addMany',
         destination: currentPath + '/{{project}}/',
