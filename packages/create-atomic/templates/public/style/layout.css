@@ -1,0 +1,119 @@
+:root {
+  --spacing: 16px;
+  --search-box-width: 648px;
+}
+
+body {
+  margin: 0;
+}
+
+body.atomic-modal-opened {
+  overflow-y: hidden;
+}
+
+atomic-search-interface {
+  display: grid;
+  grid-template-columns: var(--spacing) 1fr var(--spacing);
+  grid-template-areas:
+    '. search      .'
+    '. status      .'
+    '. breadbox    .'
+    '. topbar      .'
+    '. results     .'
+    '. pagination  .'
+    '. .           .';
+}
+
+.header-bg {
+  background-color: var(--atomic-neutral-light);
+  grid-area: 1 / -1 / 1 / 1;
+}
+
+atomic-facet-manager {
+  display: none;
+}
+
+atomic-sort-dropdown {
+  display: none;
+}
+
+atomic-search-box {
+  grid-area: search;
+  margin: var(--spacing) 0;
+  max-width: var(--search-box-width);
+  height: 3rem;
+}
+
+.status {
+  grid-area: status;
+}
+
+atomic-facet-manager {
+  grid-area: facets;
+  margin-top: var(--spacing);
+}
+
+atomic-facet-manager > * {
+  margin-bottom: var(--spacing);
+}
+
+atomic-breadbox {
+  grid-area: breadbox;
+  margin-top: var(--spacing);
+  padding-bottom: var(--spacing);
+  border-bottom: 1px solid var(--atomic-neutral);
+}
+
+.topbar {
+  grid-area: topbar;
+  margin: var(--spacing) 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.results {
+  grid-area: results;
+}
+
+.pagination {
+  grid-area: pagination;
+  margin: var(--spacing) 0;
+}
+
+.atomic-search-interface-no-results .topbar,
+.atomic-search-interface-no-results .results,
+.atomic-search-interface-no-results .pagination {
+  display: none;
+}
+
+@media only screen and (min-width: 1024px) {
+  atomic-search-interface {
+    column-gap: var(--spacing);
+    grid-template-columns: 1fr minmax(150px, 325px) minmax(500px, 1100px) 1fr;
+    grid-template-areas:
+      '. .      search      .'
+      '. facets breadbox .'
+      '. facets topbar      .'
+      '. facets results     .'
+      '. facets pagination  .'
+      '. facets status      .'
+      '. facets .           .';
+  }
+
+  atomic-facet-manager {
+    display: block;
+  }
+
+  atomic-refine-toggle {
+    display: none;
+  }
+
+  atomic-sort-dropdown {
+    display: block;
+  }
+
+  .status {
+    max-width: var(--search-box-width);
+  }
+}

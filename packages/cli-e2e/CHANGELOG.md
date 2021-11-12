@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.19.0](https://github.com/coveo/cli/compare/v1.18.0...v1.19.0) (2021-11-11)
+
+
+### Bug Fixes
+
+* **angular:** update schematic and cli to angular 13 ([#530](https://github.com/coveo/cli/issues/530)) ([7bca4f2](https://github.com/coveo/cli/commit/7bca4f2c9add7c8a081c6d18830bb18846dc018c))
+* **deps:** update all dependencies j:cdx-227 ([#519](https://github.com/coveo/cli/issues/519)) ([b965188](https://github.com/coveo/cli/commit/b9651886461f82f00e3a1998a3c1227294ad57dc))
+* lock angular cli to 12.x in test environments ([#532](https://github.com/coveo/cli/issues/532)) ([057710a](https://github.com/coveo/cli/commit/057710a1ebc30999fad39934570f158566508685))
+* **proxy:** pass proxy along to platform-client ([#512](https://github.com/coveo/cli/issues/512)) ([d88e9c9](https://github.com/coveo/cli/commit/d88e9c92d4fe22da62952b8134d39544ccd370b8))
+* remove eslint ignore, add missing dep ([#524](https://github.com/coveo/cli/issues/524)) ([a54420b](https://github.com/coveo/cli/commit/a54420b3df9a1dcd4e4cfd0bc9f2bb2efd440ac1))
+
+
+
+
+
 # [1.18.0](https://github.com/coveo/cli/compare/v1.17.0...v1.18.0) (2021-10-29)
 
 
