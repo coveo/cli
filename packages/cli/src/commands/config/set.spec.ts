@@ -14,12 +14,14 @@ const mockedClient = mocked(AuthenticatedClient);
 
 describe('config:set', () => {
   const mockSet = jest.fn();
+  const mockGet = jest.fn().mockReturnValue({});
   const mockGetHasAccessToOrg = jest.fn();
 
   mockedConfig.mockImplementation(
     () =>
       ({
         set: mockSet,
+        get: mockGet,
       } as unknown as Config)
   );
 
@@ -114,5 +116,13 @@ describe('config:set', () => {
     .command(['config:set', '-a', 'y'])
     .it('allows to modify the analytics configuration', () => {
       expect(mockSet).toHaveBeenCalledWith('analyticsEnabled', true);
+    });
+
+  test
+    .stdout()
+    .stderr()
+    .command(['config:set', '-a', 'y'])
+    .it('should display the config', () => {
+      expect(mockSet).toHaveBeenCalledTimes(1);
     });
 });

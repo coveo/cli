@@ -47,6 +47,8 @@ export default class Set extends Command {
     if (flags.analytics) {
       cfg.set('analyticsEnabled', flags.analytics === 'y');
     }
+
+    this.displayConfig(cfg);
   }
 
   @Trackable()
@@ -63,5 +65,26 @@ export default class Set extends Command {
         `You either don't have access to organization ${org}, or it doesn't exist.`
       );
     }
+  }
+
+  private async displayConfig(cfg: Config) {
+    const allowed = [
+      'environment',
+      'organization',
+      'region',
+      'analyticsEnabled',
+    ];
+    const configuration = cfg.get();
+    const allowedConfig = Object.keys(configuration)
+      .filter((key) => allowed.includes(key))
+      .reduce(
+        (obj, key) => ({
+          ...obj,
+          [key]: configuration[key],
+        }),
+        {}
+      );
+
+    this.log(JSON.stringify(allowedConfig, null, 4));
   }
 }
