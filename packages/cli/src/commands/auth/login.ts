@@ -9,7 +9,6 @@ import {Trackable} from '../../lib/decorators/preconditions/trackable';
 
 export default class Login extends Command {
   private configuration!: Config;
-  public static title = 'auth login - browser';
   public static description =
     'Log in to the Coveo Platform using the OAuth2 flow.';
 
@@ -26,7 +25,7 @@ export default class Login extends Command {
     }),
   };
 
-  @Trackable()
+  @Trackable({eventName: 'auth login - browser'})
   public async run() {
     this.configuration = new Config(this.config.configDir, this.error);
     await this.loginAndPersistToken();

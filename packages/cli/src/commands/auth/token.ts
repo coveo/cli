@@ -8,7 +8,6 @@ import {Trackable} from '../../lib/decorators/preconditions/trackable';
 
 export default class Token extends Command {
   private configuration!: Config;
-  public static title = 'auth login - token';
   public static description =
     'Log in to the Coveo Platform using the OAuth2 flow.';
 
@@ -26,7 +25,7 @@ export default class Token extends Command {
     }),
   };
 
-  @Trackable()
+  @Trackable({eventName: 'auth login token'})
   public async run() {
     this.configuration = new Config(this.config.configDir, this.error);
     this.saveToken();

@@ -30,8 +30,6 @@ export default class Angular extends Command {
   // TODO CDX-672: Update Ng range.
   public static requiredNgVersion = '^12.0.0';
 
-  public static title = 'ui create';
-
   public static description =
     'Create a Coveo Headless-powered search page with the Angular web framework. See <https://docs.coveo.com/headless> and <https://angular.io/>.';
 
@@ -56,7 +54,10 @@ export default class Angular extends Command {
     },
   ];
 
-  @Trackable({framework: 'angular'})
+  @Trackable({
+    eventName: 'ui create',
+    overrideEventProperties: {framework: 'angular'},
+  })
   @Preconditions(
     IsAuthenticated(),
     IsNodeVersionInRange(Angular.requiredNodeVersion),

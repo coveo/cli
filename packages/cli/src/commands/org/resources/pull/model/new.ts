@@ -29,7 +29,6 @@ enum PredefinedTemplates {
 }
 export class New extends Command {
   public static hidden = true;
-  public static title = 'org resources pull - new model';
   public static description = 'description of this example command';
 
   public static flags = {
@@ -61,7 +60,7 @@ export class New extends Command {
   private modelToWrite: SnapshotPullModel | undefined;
   private resourcesToSelect: SnapshotPullModelResourceType[] = [];
 
-  @Trackable()
+  @Trackable({eventName: 'org resources pull new model'})
   @Preconditions(IsAuthenticated())
   public async run() {
     this.handleTemplate();

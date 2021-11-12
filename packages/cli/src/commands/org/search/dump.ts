@@ -32,7 +32,6 @@ interface FetchParameters {
 }
 
 export default class Dump extends Command {
-  public static title = 'source content dump';
   public static description =
     'Dump the content of one or more sources in CSV format.';
 
@@ -81,7 +80,7 @@ export default class Dump extends Command {
     }),
   };
 
-  @Trackable()
+  @Trackable({eventName: 'source content dump'})
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = this.parse(Dump);
