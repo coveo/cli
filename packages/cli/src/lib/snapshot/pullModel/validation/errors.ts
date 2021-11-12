@@ -1,6 +1,7 @@
 import {ValidationError} from 'jsonschema';
+import {CLIBaseError} from '../../../errors/CLIBaseError';
 
-abstract class BaseSPMError extends Error {
+abstract class BaseSPMError extends CLIBaseError {
   private static messageSuffix =
     '\nThis is probably a problem with the Coveo CLI, please report this issue at https://github.com/coveo/cli/issues';
   private messageSuffix: string;
