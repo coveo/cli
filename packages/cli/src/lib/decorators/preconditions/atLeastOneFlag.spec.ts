@@ -10,7 +10,7 @@ describe('atLeastOneFlag', () => {
   const runDecorator = async (
     fakeCommand: Command,
     fakeDescriptor: {
-      value: jest.Mock<any, any>;
+      value: jest.Mock<Promise<void>>;
     }
   ) => {
     await AtLeastOneFlag()(fakeCommand, '', fakeDescriptor);
