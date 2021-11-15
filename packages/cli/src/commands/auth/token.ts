@@ -5,6 +5,7 @@ import {PlatformEnvironment} from '../../lib/platform/environment';
 import {Region} from '@coveord/platform-client';
 import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
 import {Trackable} from '../../lib/decorators/preconditions/trackable';
+import {feedbackOnSuccessfulLogin} from '../../lib/login/loginCommon';
 
 export default class Token extends Command {
   private configuration!: Config;
@@ -31,26 +32,12 @@ export default class Token extends Command {
     this.saveToken();
     this.saveRegionAndEnvironment();
     await this.fetchAndSaveOrgId();
-    await this.feedbackOnSuccessfulLogin();
+    await feedbackOnSuccessfulLogin(this.configuration);
   }
 
   @Trackable()
   public async catch(err?: Error) {
     throw err;
-  }
-
-  private async feedbackOnSuccessfulLogin() {
-    const cfg = this.configuration.get();
-    this.log(`
-    Successfully logged in!
-    Close your browser to continue.
-
-    You are currently logged in:
-    Organization: ${cfg.organization}
-    Region: ${cfg.region}
-    Environment: ${cfg.environment}
-    Run auth:login --help to see the available options to log in to a different organization, region, or environment.
-    `);
   }
 
   private saveToken() {

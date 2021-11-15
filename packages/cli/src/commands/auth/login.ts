@@ -6,6 +6,8 @@ import {PlatformEnvironment} from '../../lib/platform/environment';
 import {Region} from '@coveord/platform-client';
 import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
 import {Trackable} from '../../lib/decorators/preconditions/trackable';
+import colors from '../../lib/utils/color-utils';
+import {feedbackOnSuccessfulLogin} from '../../lib/login/loginCommon';
 
 export default class Login extends Command {
   private configuration!: Config;
@@ -19,8 +21,9 @@ export default class Login extends Command {
     ...withEnvironment(),
     organization: flags.string({
       char: 'o',
-      description:
-        'The identifier of the organization to log in to. If not specified, the CLI logs you in to the first available organization. See also commands `config:get`, `config:set`, and `org:list`.',
+      description: `The identifier of the organization to log in to. If not specified, the CLI logs you in to the first available organization. See also commands ${colors.cmd(
+        'config:get'
+      )}, ${colors.cmd('config:set')}, and ${colors.cmd('org:list')}.`,
       helpValue: 'myOrgID',
     }),
   };
@@ -32,26 +35,12 @@ export default class Login extends Command {
     await this.persistRegionAndEnvironment();
     await this.verifyOrganization();
     await this.persistOrganization();
-    await this.feedbackOnSuccessfulLogin();
+    await feedbackOnSuccessfulLogin(this.configuration);
   }
 
   @Trackable()
   public async catch(err?: Error) {
     throw err;
-  }
-
-  private async feedbackOnSuccessfulLogin() {
-    const cfg = await this.configuration.get();
-    this.log(`
-    Successfully logged in!
-    Close your browser to continue.
-
-    You are currently logged in:
-    Organization: ${cfg.organization}
-    Region: ${cfg.region}
-    Environment: ${cfg.environment}
-    Run auth:login --help to see the available options to log in to a different organization, region, or environment.
-    `);
   }
 
   private async loginAndPersistToken() {
