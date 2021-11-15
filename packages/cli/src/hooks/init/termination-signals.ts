@@ -1,9 +1,9 @@
 import {buildEvent} from '../analytics/eventUtils';
 
-export const signalExits = ['SIGINT', 'SIGTERM', 'SIGQUIT', 'SIGHUP'] as const;
+export const exitSignals = ['SIGINT', 'SIGTERM', 'SIGQUIT', 'SIGHUP'] as const;
 
 export const handleTerminationSignals = () => {
-  signalExits.forEach((signal) =>
+  exitSignals.forEach((signal) =>
     process.on(signal, (_sig: string, code: number) => {
       trackEvent(signal, code);
     })
