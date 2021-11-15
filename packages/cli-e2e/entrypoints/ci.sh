@@ -15,7 +15,7 @@ xdg-settings set default-web-browser google-chrome.desktop
 echo "::endgroup::"
 
 echo "::group::Install NPM Global dependencies"
-npm install -g @angular/cli@12.x
+npm install -g @angular/cli@13.x
 npm install -g ts-node
 echo "::endgroup::"
 
