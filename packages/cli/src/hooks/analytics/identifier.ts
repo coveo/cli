@@ -45,6 +45,7 @@ export class Identifier {
     const {email} = await platformClient.user.get();
     return {
       userId: this.configuration.anonymous ? null : await this.hash(email),
+      // TODO: CDX-660: convert all properties to snake-case
       isInternalUser: email.match(/@coveo\.com$/) !== null,
     };
   }
@@ -52,6 +53,7 @@ export class Identifier {
   private getCliInfo() {
     const {version} = this.configuration;
     return {
+      // TODO: CDX-660: convert all properties to snake-case
       cliVersion: version,
     };
   }
@@ -61,6 +63,7 @@ export class Identifier {
     const {type} = await platformClient.organization.get(organization);
 
     return {
+      // TODO: CDX-660: convert all properties to snake-case
       organizationType: type,
       environment,
       region,
@@ -75,6 +78,7 @@ export class Identifier {
       platform,
       windows,
       bin,
+      // TODO: CDX-660: convert all properties to snake-case
       userAgent,
       debug,
     };
