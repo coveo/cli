@@ -1,5 +1,4 @@
 import {Command, flags} from '@oclif/command';
-import {blueBright} from 'chalk';
 import {cli} from 'cli-ux';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
@@ -33,6 +32,7 @@ import {
   cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+import colors from '../../../lib/utils/color-utils';
 export default class Preview extends Command {
   public static description = 'Preview resource updates';
 
@@ -123,7 +123,7 @@ export default class Preview extends Command {
 
           Once the snapshot is created, you can preview it with the following command:
 
-            ${blueBright`coveo org:resources:preview -t ${target} -s ${snapshot.id}`}
+            ${colors.cmd`coveo org:resources:preview -t ${target} -s ${snapshot.id}`}
 
             `
       );

@@ -1,6 +1,6 @@
 import {DocumentBuilder, Source} from '@coveo/push-api-client';
 import {Command, flags} from '@oclif/command';
-import {blueBright, green} from 'chalk';
+import colors from '../../../lib/utils/color-utils';
 import {cli} from 'cli-ux';
 import {readdirSync} from 'fs';
 import path from 'path';
@@ -148,9 +148,9 @@ export default class SourcePushAdd extends Command {
 
     return successMessage(
       this,
-      `Success: ${green(numAdded)} document${
+      `Success: ${colors.green(numAdded)} document${
         numAdded > 1 ? 's' : ''
-      } accepted by the Push API from ${green(fileNames)}.`,
+      } accepted by the Push API from ${colors.green(fileNames)}.`,
       res
     );
   }
@@ -162,7 +162,7 @@ export default class SourcePushAdd extends Command {
   private successMessageOnParseFile(file: string, numParsed: number) {
     this.log(
       dedent(
-        `Parsed ${blueBright(file)} into ${blueBright(numParsed)} documents.`
+        `Parsed ${colors.cmd(file)} into ${colors.cmd(numParsed)} documents.`
       )
     );
   }

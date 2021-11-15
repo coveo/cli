@@ -1,7 +1,7 @@
 import {ResourceSnapshotType} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
 import {IOptionFlag} from '@oclif/command/lib/flags';
-import {blueBright} from 'chalk';
+import colors from '../../../lib/utils/color-utils';
 import {cli} from 'cli-ux';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
@@ -96,7 +96,7 @@ export default class Pull extends Command {
 
           Once the snapshot is created, you can pull it with the following command:
 
-            ${blueBright`coveo org:resources:pull -t ${target} -s ${snapshot.id}`}
+            ${colors.cmd`coveo org:resources:pull -t ${target} -s ${snapshot.id}`}
 
             `
       );

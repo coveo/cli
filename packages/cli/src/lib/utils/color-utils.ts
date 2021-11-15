@@ -9,7 +9,7 @@ export const customColors = {
   gray: chalk.gray,
 
   error: chalk.bgHex('#F64D64').hex('#272C3A'),
-  cmd: chalk.cyan.bold,
+  cmd: chalk.blueBright.bold,
 };
 
 type availableColors = typeof customColors | typeof chalk;
