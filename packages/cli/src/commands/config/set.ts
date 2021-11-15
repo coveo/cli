@@ -9,7 +9,7 @@ import {PlatformEnvironment} from '../../lib/platform/environment';
 import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
 import {Region} from '@coveord/platform-client';
 import {Trackable} from '../../lib/decorators/preconditions/trackable';
-import {AtLeastOneFlag} from '../../lib/decorators/preconditions/atLeastOneFlag';
+import {InvalidCommandError} from '../../lib/errors/InvalidCommandError';
 
 export default class Set extends Command {
   public static description = 'Modify the current configuration.';
@@ -30,11 +30,13 @@ export default class Set extends Command {
     }),
   };
 
-  @AtLeastOneFlag()
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = this.parse(Set);
+    if (Object.entries(flags).length === 0) {
+      throw new InvalidCommandError('Command should contain at least 1 flag');
+    }
     const cfg = new Config(this.config.configDir, this.error);
     if (flags.environment) {
       cfg.set('environment', flags.environment as PlatformEnvironment);
