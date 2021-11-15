@@ -1,7 +1,7 @@
 import type Command from '@oclif/command';
 import {buildError, buildEvent} from '../../../hooks/analytics/eventUtils';
 
-export interface trackableOptions {
+export interface TrackableOptions {
   /**
    * Event name used to identify the command.
    * The expression should go as follows: **(Subject) (Process)?**
@@ -25,7 +25,7 @@ export interface trackableOptions {
 export function Trackable({
   eventName,
   overrideEventProperties,
-}: trackableOptions = {}) {
+}: TrackableOptions = {}) {
   return function (
     _target: Command,
     _propertyKey: string,

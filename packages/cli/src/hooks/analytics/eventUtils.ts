@@ -24,12 +24,15 @@ export function buildEvent(
   return analyticsData;
 }
 
+function isErrorFromAPI(arg: unknown): arg is APIErrorResponse {
+  return validate(arg, APIErrorSchema).valid;
+}
+
 export function buildError(arg: unknown) {
-  const isErrorFromAPI = validate(arg, APIErrorSchema).valid;
   const isCLIBaseError = arg instanceof CLIBaseError;
 
-  if (isErrorFromAPI) {
-    return new APIError(arg as APIErrorResponse);
+  if (isErrorFromAPI(arg)) {
+    return new APIError(arg);
   } else if (isCLIBaseError) {
     return arg;
   } else {
