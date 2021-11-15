@@ -34,7 +34,7 @@ describe('config:set', () => {
     .stdout()
     .stderr()
     .command(['config:set'])
-    .catch(/Command should at least have 1 flag/)
+    .catch(/Command should contain at least 1 flag/)
     .it('should not allows to call set without any flags');
 
   Object.values(PlatformEnvironment).forEach((environment) => {
