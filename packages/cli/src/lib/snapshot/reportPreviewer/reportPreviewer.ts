@@ -1,7 +1,7 @@
+import colors from '../../utils/color-utils';
 import {cli} from 'cli-ux';
 import {red, italic, green} from 'chalk';
 import {ReportViewerSection} from './reportPreviewerSection';
-import {ReportViewerStyles} from './reportPreviewerStyles';
 import {SnapshotReporter} from '../snapshotReporter';
 import {
   ReportViewerOperationName,
@@ -52,13 +52,13 @@ export class ReportViewer {
     );
 
     if (changedResources.length === 0) {
-      cli.log(ReportViewerStyles.header('\nNo changes detected'));
+      cli.log(colors.header('\nNo changes detected'));
       return;
     }
 
     cli.table(changedResources, {
       resourceName: {
-        header: ReportViewerStyles.header('\nPreviewing resource changes:'),
+        header: colors.header('\nPreviewing resource changes:'),
         get: (resource) => this.createSection(resource),
       },
     });
@@ -84,9 +84,9 @@ export class ReportViewer {
     const totalErrorCount =
       this.reporter.getOperationTypeTotalCount('resourcesInError');
 
-    cli.log(ReportViewerStyles.header('Error Report:'));
+    cli.log(colors.header('Error Report:'));
     cli.log(
-      ReportViewerStyles.error(
+      colors.error(
         `   ${totalErrorCount} resource${
           totalErrorCount > 1 ? 's' : ''
         } in error `

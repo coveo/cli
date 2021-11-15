@@ -1,4 +1,4 @@
-import {ReportViewerStyles} from './reportPreviewerStyles';
+import {customColors} from '../../utils/color-utils';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
@@ -8,14 +8,14 @@ import {ResourceSnapshotsReportOperationModel} from '@coveord/platform-client';
 class ReportViewerOperationLogFactory {
   public constructor(
     private operator: string,
-    private color: keyof typeof ReportViewerStyles,
+    private color: keyof typeof customColors,
     private templateString: (count: number) => string
   ) {}
 
   public getString(count: number, indentation: number) {
-    return `${ReportViewerStyles[this.color](
+    return `${customColors[this.color](
       this.operator.padEnd(indentation)
-    )}${ReportViewerStyles[this.color](this.templateString(count))}\n`;
+    )}${customColors[this.color](this.templateString(count))}\n`;
   }
 }
 

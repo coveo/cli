@@ -1,3 +1,4 @@
+import colors from '../../../lib/utils/color-utils';
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
 import {cli} from 'cli-ux';
@@ -8,7 +9,6 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {wait} from '../../../lib/flags/snapshotCommonFlags';
-import {ReportViewerStyles} from '../../../lib/snapshot/reportPreviewer/reportPreviewerStyles';
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {
   getTargetOrg,
@@ -70,7 +70,7 @@ export default class Monitor extends Command {
   ) {
     if (!reporter.isSuccessReport()) {
       const cfg = await this.configuration.get();
-      cli.log(ReportViewerStyles.error(reporter.resultCode));
+      cli.log(colors.error(reporter.resultCode));
       await handleReportWithErrors(snapshot, cfg);
     }
   }
@@ -78,9 +78,7 @@ export default class Monitor extends Command {
   private printHeader() {
     const {args} = this.parse(Monitor);
     const snapshotId = args.snapshotId;
-    const header = ReportViewerStyles.header(
-      `Monitoring snapshot ${snapshotId}`
-    );
+    const header = colors.header(`Monitoring snapshot ${snapshotId}`);
     cli.log('');
     cli.action.start(header);
   }
