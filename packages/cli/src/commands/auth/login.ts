@@ -108,7 +108,9 @@ export default class Login extends Command {
       this.error(`
       You don't have access to any Coveo organization in this region and environment.
       Ensure that you have access to at least one Coveo organization, and that you're targeting the correct region and environment.
-      Run auth:login --help to see the available options to log in to a different organization, region or environment.
+      Run ${colors.cmd(
+        'coveo auth:login --help'
+      )} to see the available options to log in to a different organization, region or environment.
       `);
     }
   }

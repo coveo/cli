@@ -1,9 +1,9 @@
-import {blueBright} from 'chalk';
 import {cli} from 'cli-ux';
 import dedent from 'ts-dedent';
 import {Configuration} from '../config/config';
 import {Snapshot} from '../snapshot/snapshot';
 import {SnapshotUrlBuilder} from '../snapshot/snapshotUrlBuilder';
+import colors from '../utils/color-utils';
 import {PrintableError, SeverityLevel} from './printableError';
 
 interface DetailedReportable extends PrintableError {
@@ -42,7 +42,7 @@ export class SnapshotOperationTimeoutError
     } operation is taking a long time to complete.
     Run the following command to monitor the operation:
 
-      ${blueBright`coveo org:resources:monitor ${snapshot.id} -t ${snapshot.targetId}`}`;
+      ${colors.cmd`coveo org:resources:monitor ${snapshot.id} -t ${snapshot.targetId}`}`;
   }
 }
 
