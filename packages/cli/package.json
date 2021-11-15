@@ -11,7 +11,7 @@
     "@amplitude/node": "^1.9.0",
     "@coveo/bueno": "^0.32.0",
     "@coveo/push-api-client": "^1.1.2",
-    "@coveord/platform-client": "^25.1.1",
+    "@coveord/platform-client": "^26.0.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^3.2.3",
