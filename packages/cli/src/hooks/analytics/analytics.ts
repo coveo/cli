@@ -1,32 +1,52 @@
-import {init, Event} from '@amplitude/node';
+import {Event} from '@amplitude/node';
 import {IConfig} from '@oclif/config';
 import {
   AuthenticatedClient,
   AuthenticationStatus,
   getAuthenticationStatus,
 } from '../../lib/platform/authenticatedClient';
+import {amplitudeClient} from './amplitudeClient';
 import {Identifier} from './identifier';
 import check from './session';
 
 export interface AnalyticsHook {
   event: Event;
   config: IConfig;
+  identify?: boolean;
 }
 
-// TODO: CDX-656: replace with Production API key on build
-const analyticsAPIKey = '2b06992f1a80d36396ba7297a8daf913';
-
 const hook = async function (options: AnalyticsHook) {
-  if (!(await isLoggedIn())) {
-    // TODO: track event with anonymous user
+  if (!(await canLogEvent())) {
     return;
   }
-  const amplitudeClient = configureAmplitudeClient();
+
+  const {userId, deviceId, identify} = await new Identifier().getIdentity();
+  if (options.identify) {
+    amplitudeClient.identify(userId, deviceId, identify);
+  }
+
+  amplitudeClient.logEvent({
+    device_id: deviceId,
+    session_id: check(),
+    ...(userId && {user_id: userId}),
+    ...options.event,
+  });
+};
+
+export const flush = async () => {
+  await amplitudeClient.flush();
+};
+
+const canLogEvent = async () => {
+  if (!(await isLoggedIn())) {
+    // TODO: track event with anonymous user
+    return false;
+  }
   const {organization, analyticsEnabled, authenticatedClient} =
     await platformInfoIdentifier();
 
   if (!analyticsEnabled) {
-    return;
+    return false;
   }
 
   // TODO: CDX-676: remove this block to track events from all org types
@@ -37,18 +57,10 @@ const hook = async function (options: AnalyticsHook) {
   const license = await platformClient.license.full();
 
   if (license.productType !== 'TRIAL') {
-    return;
+    return false;
   }
   // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-
-  const identifier = new Identifier(amplitudeClient);
-  const {userId, deviceId} = await identifier.identify();
-  await amplitudeClient.logEvent({
-    device_id: deviceId,
-    session_id: check(),
-    ...(userId && {user_id: userId}),
-    ...options.event,
-  });
+  return true;
 };
 
 const platformInfoIdentifier = async () => {
@@ -58,12 +70,6 @@ const platformInfoIdentifier = async () => {
     authenticatedClient,
     ...config,
   };
-};
-
-const configureAmplitudeClient = () => {
-  // TODO: CDX-667: support proxy
-  const amplitudeClient = init(analyticsAPIKey);
-  return amplitudeClient;
 };
 
 const isLoggedIn = async () => {

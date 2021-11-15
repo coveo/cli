@@ -1,4 +1,3 @@
-import type {NodeClient} from '@amplitude/node';
 import {Identify} from '@amplitude/identify';
 import {machineId} from 'node-machine-id';
 import {createHash} from 'crypto';
@@ -8,11 +7,11 @@ import PlatformClient from '@coveord/platform-client';
 export class Identifier {
   private authenticatedClient: AuthenticatedClient;
 
-  public constructor(private amplitudeClient: NodeClient) {
+  public constructor() {
     this.authenticatedClient = new AuthenticatedClient();
   }
 
-  public async identify() {
+  public async getIdentity() {
     const platformClient = await this.authenticatedClient.getClient();
     await platformClient.initialize();
 
@@ -31,8 +30,7 @@ export class Identifier {
       identify.set(key, value);
     });
 
-    await this.amplitudeClient.identify(userId, deviceId, identify);
-    return {userId, deviceId};
+    return {userId, deviceId, identify};
   }
 
   private async hash(word: string) {

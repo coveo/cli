@@ -1,4 +1,5 @@
 import type Command from '@oclif/command';
+import {flush} from '../../../hooks/analytics/analytics';
 import {buildError, buildEvent} from '../../../hooks/analytics/eventUtils';
 
 export function Trackable(overrideEventProperties?: Record<string, unknown>) {
@@ -33,13 +34,14 @@ async function trackCommand(
   properties: Record<string, unknown>,
   originalRunCommand: () => Promise<void>
 ) {
-  this.config.runHook('analytics', {
+  await this.config.runHook('analytics', {
     event: buildEvent(`started ${eventName}`, properties),
+    identify: true,
   });
 
   await originalRunCommand.apply(this);
 
-  this.config.runHook('analytics', {
+  await this.config.runHook('analytics', {
     event: buildEvent(`completed ${eventName}`, properties),
   });
 }
@@ -51,12 +53,13 @@ async function trackError(
   originalCatchCommand: (...args: unknown[]) => Promise<void>,
   args: unknown[]
 ) {
-  args.forEach((arg) => {
-    this.config.runHook('analytics', {
-      event: buildEvent(`failed ${eventName}`, properties, buildError(arg)),
+  for (let i = 0; i < args.length; i++) {
+    await this.config.runHook('analytics', {
+      event: buildEvent(`failed ${eventName}`, properties, buildError(args[i])),
     });
-  });
+  }
 
+  await flush();
   await originalCatchCommand.apply(this, args);
 }
 
