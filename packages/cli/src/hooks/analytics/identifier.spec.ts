@@ -112,9 +112,9 @@ describe('identifier', () => {
       expect(identity.userId).not.toBeNull();
     });
 
-    it('should set isInternalUser to true', async () => {
+    it('should set is_internal_user to true', async () => {
       await new Identifier().getIdentity();
-      expect(mockSetIdentity).toHaveBeenCalledWith('isInternalUser', true);
+      expect(mockSetIdentity).toHaveBeenCalledWith('is_internal_user', true);
     });
 
     it('should not identify event with (un-hashed) email', async () => {
@@ -138,9 +138,9 @@ describe('identifier', () => {
       expect(identity.userId).not.toBeNull();
     });
 
-    it('should set isInternalUser to false', async () => {
+    it('should set is_internal_user to false', async () => {
       await new Identifier().getIdentity();
-      expect(mockSetIdentity).toHaveBeenCalledWith('isInternalUser', false);
+      expect(mockSetIdentity).toHaveBeenCalledWith('is_internal_user', false);
     });
   });
 
