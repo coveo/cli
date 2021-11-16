@@ -1,4 +1,5 @@
 import {cli} from 'cli-ux';
+import {CLIBaseError} from './CLIBaseError';
 
 export enum SeverityLevel {
   Info = 'info',
@@ -6,7 +7,7 @@ export enum SeverityLevel {
   Error = 'error',
 }
 
-export class PrintableError extends Error {
+export class PrintableError extends CLIBaseError {
   public constructor(public level: SeverityLevel) {
     super();
   }

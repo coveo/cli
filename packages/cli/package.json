@@ -11,7 +11,7 @@
     "@amplitude/node": "^1.9.0",
     "@coveo/bueno": "^0.32.0",
     "@coveo/push-api-client": "^1.1.2",
-    "@coveord/platform-client": "^25.1.1",
+    "@coveord/platform-client": "^26.0.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^3.2.3",
@@ -40,7 +40,7 @@
     "tslib": "^2"
   },
   "devDependencies": {
-    "@amplitude/types": "^1.9.0",
+    "@amplitude/types": "1.9.0",
     "@coveo/angular": "^1.19.0",
     "@coveo/cra-template": "^1.19.0",
     "@coveo/vue-cli-plugin-typescript": "^1.19.0",
@@ -54,9 +54,9 @@
     "@types/inquirer": "8.1.3",
     "@types/jest": "27.0.2",
     "@types/json2csv": "5.0.3",
-    "@types/node": "16.11.6",
+    "@types/node": "16.11.7",
     "chai": "4.3.4",
-    "eslint": "8.1.0",
+    "eslint": "8.2.0",
     "fancy-test": "1.4.10",
     "jest": "27.3.1",
     "mock-stdin": "1.0.0",
@@ -139,6 +139,7 @@
     "hooks": {
       "init": "./lib/hooks/init/set-global-config",
       "analytics": "./lib/hooks/analytics/analytics",
+      "command_not_found": "./lib/hooks/commandNotFound/commandNotFound",
       "prerun": "./lib/hooks/prerun/prerun"
     },
     "macos": {

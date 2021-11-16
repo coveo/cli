@@ -60,7 +60,7 @@ export class New extends Command {
   private modelToWrite: SnapshotPullModel | undefined;
   private resourcesToSelect: SnapshotPullModelResourceType[] = [];
 
-  @Trackable()
+  @Trackable({eventName: 'org resources pull new model'})
   @Preconditions(IsAuthenticated())
   public async run() {
     this.handleTemplate();
