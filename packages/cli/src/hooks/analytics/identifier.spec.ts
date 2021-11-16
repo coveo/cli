@@ -119,7 +119,7 @@ describe('identifier', () => {
 
     it('should not identify event with (un-hashed) email', async () => {
       const identity = await new Identifier().getIdentity();
-      expect(identity.userId).not.toMatch(/^bob@.*?\.com$.*/);
+      expect(identity.userId).not.toMatch(/^bob@.*?\.com$/);
     });
 
     it('should always identify events with a device ID', async () => {
