@@ -23,6 +23,10 @@ describe('identifier', () => {
   const mockUserGet = jest.fn();
   const mockSetIdentity = jest.fn();
 
+  // TODO: Remove after update to Typescript 4.5
+  type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T;
+  let identity: Awaited<ReturnType<Identifier['getIdentity']>>;
+
   const doMockIdentify = () => {
     mockedIdentify.prototype.set.mockImplementation(mockSetIdentity);
   };
@@ -90,6 +94,7 @@ describe('identifier', () => {
   describe('when the user is internal', () => {
     beforeEach(async () => {
       await mockForInternalUser();
+      identity = await new Identifier().getIdentity();
     });
 
     afterEach(() => {
@@ -98,7 +103,6 @@ describe('identifier', () => {
     });
 
     it('should set platform information', async () => {
-      await new Identifier().getIdentity();
       expect(mockSetIdentity).toHaveBeenCalledWith(
         'organization_type',
         'Production'
@@ -108,22 +112,18 @@ describe('identifier', () => {
     });
 
     it('should set the user ID', async () => {
-      const identity = await new Identifier().getIdentity();
       expect(identity.userId).not.toBeNull();
     });
 
     it('should set is_internal_user to true', async () => {
-      await new Identifier().getIdentity();
       expect(mockSetIdentity).toHaveBeenCalledWith('is_internal_user', true);
     });
 
     it('should not identify event with (un-hashed) email', async () => {
-      const identity = await new Identifier().getIdentity();
       expect(identity.userId).not.toMatch(/^bob@.*?\.com$/);
     });
 
     it('should always identify events with a device ID', async () => {
-      const identity = await new Identifier().getIdentity();
       expect(identity.deviceId).toBeDefined();
     });
   });
@@ -131,15 +131,14 @@ describe('identifier', () => {
   describe('when the user is external', () => {
     beforeEach(async () => {
       await mockForExternalUser();
+      identity = await new Identifier().getIdentity();
     });
 
     it('should set the user ID', async () => {
-      const identity = await new Identifier().getIdentity();
       expect(identity.userId).not.toBeNull();
     });
 
     it('should set is_internal_user to false', async () => {
-      await new Identifier().getIdentity();
       expect(mockSetIdentity).toHaveBeenCalledWith('is_internal_user', false);
     });
   });
@@ -147,10 +146,10 @@ describe('identifier', () => {
   describe('when the user is anonymous', () => {
     beforeEach(async () => {
       await mockForAnonymousUser();
+      identity = await new Identifier().getIdentity();
     });
 
     it('should set the user ID to null', async () => {
-      const identity = await new Identifier().getIdentity();
       expect(identity.userId).toBeNull();
     });
   });

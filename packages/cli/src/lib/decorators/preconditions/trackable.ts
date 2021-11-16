@@ -73,9 +73,9 @@ async function trackError(
   originalCatchCommand: (...args: unknown[]) => Promise<void>,
   args: unknown[]
 ) {
-  for (let i = 0; i < args.length; i++) {
+  for (const arg of args) {
     await this.config.runHook('analytics', {
-      event: buildEvent('received error', properties, buildError(args[i])),
+      event: buildEvent('received error', properties, buildError(arg)),
     });
   }
 
