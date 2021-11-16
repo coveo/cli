@@ -1,6 +1,9 @@
 {
   "enabled": true,
-  "extends": [":semanticPrefixFixDepsChoreOthers"],
+  "extends": [
+    ":semanticPrefixFixDepsChoreOthers",
+    "helpers:pinGitHubActionDigests"
+  ],
   "schedule": ["before 2am"],
   "vulnerabilityAlerts": {
     "commitMessageSuffix": "[SECURITY] J:CDX-227"
