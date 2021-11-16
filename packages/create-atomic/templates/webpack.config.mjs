@@ -10,7 +10,7 @@ const isProd = process.env.NODE_ENV === 'production';
 
 export default {
   mode: isProd ? 'production' : 'development',
-  entry: ['./src/index.js', './src/style/index.css'],
+  entry: ['./src/index.ts', './src/style/index.css'],
   output: {clean: true},
   devServer: {
     static: {
@@ -36,6 +36,7 @@ export default {
           'css-loader',
         ],
       },
+      {test: /\.tsx?$/, loader: 'ts-loader'},
     ],
   },
 };

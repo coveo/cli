@@ -69,6 +69,7 @@ export default function (plop: NodePlopAPI) {
           '../templates/scripts/*',
           '../templates/.env.example',
           '../templates/.gitignore',
+          '../templates/tsconfig.json',
           '../templates/package.json',
           '../templates/webpack.config.mjs',
         ],
