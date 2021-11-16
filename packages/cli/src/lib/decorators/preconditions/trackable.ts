@@ -4,7 +4,7 @@ import {buildError, buildEvent} from '../../../hooks/analytics/eventUtils';
 export interface TrackableOptions {
   /**
    * Event name used to identify the command.
-   * The expression should go as follows: **(Subject) (Process)?**
+   * The expression should go as follows: **(Subject) [Process]?**
    *
    * Ex.: *auth login token*
    * - *auth login* is the **Subject**
