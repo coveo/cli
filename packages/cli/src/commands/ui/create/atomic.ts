@@ -10,10 +10,12 @@ import {
   createApiKeyPrivilege,
   impersonatePrivilege,
 } from '../../../lib/decorators/preconditions/platformPrivilege';
-import {getPackageVersion} from '../../../lib/utils/misc';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {spawnProcess} from '../../../lib/utils/process';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {Config} from '../../../lib/config/config';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {platformUrl} from '../../../lib/platform/environment';
 
 interface AtomicArguments {
   name: string;
@@ -36,7 +38,8 @@ export default class Atomic extends Command {
     version: flags.string({
       char: 'v',
       description: `The version of ${Atomic.cliPackage} to use.`,
-      default: getPackageVersion(Atomic.cliPackage),
+      // default: getPackageVersion(Atomic.cliPackage), TODO: uncomment when @coveo/create-atomic added to package.json
+      default: 'latest',
     }),
   };
   public static hidden = true;
@@ -51,7 +54,6 @@ export default class Atomic extends Command {
   public async run() {
     await this.createProject();
     this.displayFeedbackAfterSuccess();
-    // TODO: add env variables
   }
 
   @Trackable()
@@ -60,15 +62,42 @@ export default class Atomic extends Command {
   }
 
   private async createProject() {
-    return spawnProcess(appendCmdIfWindows`npx`, [
-      `${Atomic.cliPackage}@${flags.version}`,
+    const cfg = this.configuration.get();
+    const authenticatedClient = new AuthenticatedClient();
+    const userInfo = await authenticatedClient.getUserInfo();
+    const apiKey = await authenticatedClient.createImpersonateApiKey(
+      this.args.name
+    );
+
+    const cliArgs = [
+      `${Atomic.cliPackage}@${this.flags.version}`,
+      '--project',
       this.args.name,
-    ]);
+      '--org-id',
+      cfg.organization,
+      '--api-key',
+      apiKey.value!,
+      '--platform-url',
+      platformUrl({environment: cfg.environment}),
+      '--user',
+      userInfo.providerUsername,
+    ];
+
+    return spawnProcess(appendCmdIfWindows`npx`, cliArgs);
+  }
+
+  private get configuration() {
+    return new Config(this.config.configDir, this.error);
   }
 
   private get args() {
     const {args} = this.parse<{}, AtomicArguments>(Atomic);
     return args;
+  }
+
+  private get flags() {
+    const {flags} = this.parse(Atomic);
+    return flags;
   }
 
   private displayFeedbackAfterSuccess() {
