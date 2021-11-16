@@ -36,12 +36,8 @@ describe('config:set', () => {
     .stdout()
     .stderr()
     .command(['config:set'])
-    .it(
-      'allows to call set without any flags and should not modify configuration',
-      () => {
-        expect(mockSet).not.toHaveBeenCalled();
-      }
-    );
+    .catch(/Command should contain at least 1 flag/)
+    .it('should not allows to call set without any flags');
 
   Object.values(PlatformEnvironment).forEach((environment) => {
     test

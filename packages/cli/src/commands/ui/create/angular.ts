@@ -53,7 +53,10 @@ export default class Angular extends Command {
     },
   ];
 
-  @Trackable()
+  @Trackable({
+    eventName: 'ui create',
+    overrideEventProperties: {framework: 'angular'},
+  })
   @Preconditions(
     IsAuthenticated(),
     IsNodeVersionInRange(Angular.requiredNodeVersion),

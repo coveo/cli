@@ -1,6 +1,12 @@
 import type {Event} from '@amplitude/types';
 import {validate} from 'jsonschema';
-import {APIError, APIErrorResponse} from '../../lib/errors/APIError';
+import {
+  APIError,
+  APIErrorResponse,
+  APIErrorSchema,
+} from '../../lib/errors/APIError';
+import {CLIBaseError} from '../../lib/errors/CLIBaseError';
+import {UnknownError} from '../../lib/errors/unknownError';
 
 export function buildEvent(
   eventName: string,
@@ -18,36 +24,26 @@ export function buildEvent(
   return analyticsData;
 }
 
+function isErrorFromAPI(arg: unknown): arg is APIErrorResponse {
+  return validate(arg, APIErrorSchema).valid;
+}
+
 export function buildError(arg: unknown) {
-  /**
-   * TODO: CDX-660: Make sure to remove any PII from the Error object.
-   *       error.message could contain data that is not allowed to be tracked for non-Trial users
-   *       example: orgID, sourceID, ...
-   */
-  if (arg instanceof Error) {
+  const isCLIBaseError = arg instanceof CLIBaseError;
+
+  if (isErrorFromAPI(arg)) {
+    return new APIError(arg);
+  } else if (isCLIBaseError) {
     return arg;
+  } else {
+    return new UnknownError();
   }
-
-  if (typeof arg === 'string') {
-    return new Error(arg);
-  }
-
-  const schema = {
-    message: 'string',
-    errorCode: 'string',
-    requestID: 'string',
-  };
-  const isErrorFromAPI = validate(arg, schema);
-  return isErrorFromAPI
-    ? new APIError(arg as APIErrorResponse)
-    : new Error('Unknown Error');
 }
 
 function errorIdentifier(err?: Error) {
   return {
     ...(err && {
-      errorMessage: err.message,
-      errorName: err.name,
+      error_type: err.name,
     }),
   };
 }

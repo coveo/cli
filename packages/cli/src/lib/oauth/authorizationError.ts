@@ -1,7 +1,8 @@
 import dedent from 'ts-dedent';
 import type {URL} from 'url';
+import {CLIBaseError} from '../errors/CLIBaseError';
 
-export class AuthorizationError extends Error {
+export class AuthorizationError extends CLIBaseError {
   public name = 'Authorization Error';
   public constructor(public url: URL) {
     super();
@@ -16,7 +17,7 @@ export class AuthorizationError extends Error {
   }
 }
 
-export class InvalidStateError extends Error {
+export class InvalidStateError extends CLIBaseError {
   public name = 'Invalid State Error';
   public constructor(receivedState: string, expectedState: string) {
     super();

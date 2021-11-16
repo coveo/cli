@@ -80,7 +80,7 @@ export default class Dump extends Command {
     }),
   };
 
-  @Trackable()
+  @Trackable({eventName: 'source content dump'})
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = this.parse(Dump);

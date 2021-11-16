@@ -12,7 +12,7 @@ const __dirname = dirname(__filename);
 Plop.launch(
   {
     cwd: argv.cwd,
-    configPath: join(__dirname, 'plopfile.ts'),
+    configPath: join(__dirname, 'lib/plopfile.js'),
     require: argv.require,
     completion: argv.completion,
   },
