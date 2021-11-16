@@ -4,6 +4,7 @@ import {machineId} from 'node-machine-id';
 import {createHash} from 'crypto';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
+import {camelToSnakeCase} from '../../lib/utils/string';
 
 export class Identifier {
   private authenticatedClient: AuthenticatedClient;
@@ -28,7 +29,7 @@ export class Identifier {
     };
 
     Object.entries(identity).forEach(([key, value]) => {
-      identify.set(key, value);
+      identify.set(camelToSnakeCase(key), value);
     });
 
     await this.amplitudeClient.identify(userId, deviceId, identify);

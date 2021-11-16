@@ -1,25 +1,46 @@
 import type Command from '@oclif/command';
 import {buildError, buildEvent} from '../../../hooks/analytics/eventUtils';
 
-export function Trackable(overrideEventProperties?: Record<string, unknown>) {
+export interface TrackableOptions {
+  /**
+   * Event name used to identify the command.
+   * The expression should go as follows: **(Subject) [Process]?**
+   *
+   * Ex.: *auth login token*
+   * - *auth login* is the **Subject**
+   * - *token* is the **Process**
+   *
+   * If omited, the Command ID will be used to identify all events fired from that same command.
+   * For long commands, we recommend populating this value to keep analytic events consistent.
+   *
+   * Visit https://coveord.atlassian.net/wiki/spaces/RD/pages/2855141440/New+Taxonomy+Definition for more info
+   */
+  eventName?: string;
+  /**
+   * Additional properties to be added to all events fired for a particular command.
+   */
+  overrideEventProperties?: Record<string, unknown>;
+}
+
+export function Trackable({
+  eventName,
+  overrideEventProperties,
+}: TrackableOptions = {}) {
   return function (
-    target: Command,
+    _target: Command,
     _propertyKey: string,
     descriptor: TypedPropertyDescriptor<() => Promise<void>>
   ) {
     const originalCommand = descriptor.value!;
     descriptor.value = async function (this: Command, ...cmdArgs: unknown[]) {
-      const name = getEventName(this);
-      const {flags, args} = this.parse(target.ctor);
+      const name = eventName || getEventName(this);
       const properties = {
-        args,
-        ...flags,
         ...overrideEventProperties,
         command: this.id,
       };
 
       if (cmdArgs.length > 0) {
-        await trackError.call(this, name, properties, originalCommand, cmdArgs);
+        await trackError.call(this, properties, originalCommand, cmdArgs);
       } else {
         await trackCommand.call(this, name, properties, originalCommand);
       }
@@ -46,14 +67,13 @@ async function trackCommand(
 
 async function trackError(
   this: Command,
-  eventName: string,
   properties: Record<string, unknown>,
   originalCatchCommand: (...args: unknown[]) => Promise<void>,
   args: unknown[]
 ) {
   args.forEach((arg) => {
     this.config.runHook('analytics', {
-      event: buildEvent(`failed ${eventName}`, properties, buildError(arg)),
+      event: buildEvent('received error', properties, buildError(arg)),
     });
   });
 
@@ -61,7 +81,5 @@ async function trackError(
 }
 
 function getEventName(target: Command) {
-  // TODO: CDX-648: Clean event name
-  // return (target.ctor.title || target.id)!.replace(/:/g, ' ');
   return target.id!.replace(/:/g, ' ');
 }
