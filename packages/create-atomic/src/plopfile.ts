@@ -56,19 +56,19 @@ export default function (plop: NodePlopAPI) {
       {
         type: 'add',
         path: currentPath + '/{{project}}/.env',
-        templateFile: 'templates/.env.hbs',
+        templateFile: '../templates/.env.hbs',
       },
       {
         type: 'addMany',
         destination: currentPath + '/{{project}}/',
-        base: 'templates',
+        base: '../templates',
         templateFiles: [
-          'templates/public/style/*',
-          'templates/public/index.html',
-          'templates/scripts/*',
-          'templates/.env.example',
-          'templates/.gitignore',
-          'templates/package.json',
+          '../templates/public/style/*',
+          '../templates/public/index.html',
+          '../templates/scripts/*',
+          '../templates/.env.example',
+          '../templates/.gitignore',
+          '../templates/package.json',
         ],
       },
       function installPackages(answers) {
