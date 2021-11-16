@@ -1,7 +1,7 @@
 import type {IConfig} from '@oclif/config';
-import {handleTerminationSignals, signals} from './termination-signals';
+import {handleTerminationSignals, exitSignals} from './termination-signals';
 
-type supportedSignals = typeof signals[number];
+type supportedExitSignals = typeof exitSignals[number];
 
 describe('termination-signal', () => {
   const mockedAnalyticHook = jest.fn();
@@ -25,8 +25,8 @@ describe('termination-signal', () => {
     'should terminate the process and send an interruption event',
     async (signal: string) => {
       const signalTuple = (<const>[signal, signal]) as [
-        supportedSignals,
-        supportedSignals
+        supportedExitSignals,
+        supportedExitSignals
       ];
 
       process.emit(...signalTuple);

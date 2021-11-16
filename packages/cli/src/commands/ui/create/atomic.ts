@@ -1,8 +1,10 @@
-import {Command} from '@oclif/command';
+import {Command, flags} from '@oclif/command';
 import {
   Preconditions,
   IsAuthenticated,
   HasNecessaryCoveoPrivileges,
+  IsNpxInstalled,
+  IsNodeVersionInRange,
 } from '../../../lib/decorators/preconditions/';
 import {
   createApiKeyPrivilege,
@@ -11,15 +13,20 @@ import {
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {spawnProcess} from '../../../lib/utils/process';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {Config} from '../../../lib/config/config';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {platformUrl} from '../../../lib/platform/environment';
 
 interface AtomicArguments {
   name: string;
 }
 
 export default class Atomic extends Command {
+  public static cliPackage = '@coveo/create-atomic';
+  public static requiredNodeVersion = '>=14.0.0';
   public static description =
     "Create a Coveo Headless-powered search page with Coveo's own Atomic framework. See <https://docs.coveo.com/atomic> and <https://docs.coveo.com/headless>.";
-
+  public static examples = ['$ coveo ui:create:atomic myapp'];
   public static args = [
     {
       name: 'name',
@@ -27,11 +34,21 @@ export default class Atomic extends Command {
       required: true,
     },
   ];
+  public static flags = {
+    version: flags.string({
+      char: 'v',
+      description: `The version of ${Atomic.cliPackage} to use.`,
+      // default: getPackageVersion(Atomic.cliPackage), TODO: uncomment when @coveo/create-atomic added to package.json
+      default: 'latest',
+    }),
+  };
   public static hidden = true;
 
   @Trackable()
   @Preconditions(
     IsAuthenticated(),
+    IsNpxInstalled(),
+    IsNodeVersionInRange(Atomic.requiredNodeVersion),
     HasNecessaryCoveoPrivileges(createApiKeyPrivilege, impersonatePrivilege)
   )
   public async run() {
@@ -45,10 +62,32 @@ export default class Atomic extends Command {
   }
 
   private async createProject() {
-    spawnProcess(appendCmdIfWindows`echo`, [
-      '...creating new Atomic project:',
+    const cfg = this.configuration.get();
+    const authenticatedClient = new AuthenticatedClient();
+    const userInfo = await authenticatedClient.getUserInfo();
+    const apiKey = await authenticatedClient.createImpersonateApiKey(
+      this.args.name
+    );
+
+    const cliArgs = [
+      `${Atomic.cliPackage}@${this.flags.version}`,
+      '--project',
       this.args.name,
-    ]);
+      '--org-id',
+      cfg.organization,
+      '--api-key',
+      apiKey.value!,
+      '--platform-url',
+      platformUrl({environment: cfg.environment}),
+      '--user',
+      userInfo.providerUsername,
+    ];
+
+    return spawnProcess(appendCmdIfWindows`npx`, cliArgs);
+  }
+
+  private get configuration() {
+    return new Config(this.config.configDir, this.error);
   }
 
   private get args() {
@@ -56,12 +95,17 @@ export default class Atomic extends Command {
     return args;
   }
 
+  private get flags() {
+    const {flags} = this.parse(Atomic);
+    return flags;
+  }
+
   private displayFeedbackAfterSuccess() {
     this.log(`
     To get started:
 
     cd ${this.args.name}
-    npm run start
+    npm start
 
     Happy hacking!
     `);
