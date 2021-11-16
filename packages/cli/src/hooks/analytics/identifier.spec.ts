@@ -113,15 +113,15 @@ describe('identifier', () => {
 
     it('should set platform information', () => {
       expect(mockSetIdentity).toHaveBeenCalledWith(
-        'organizationType',
+        'organization_type',
         'Production'
       );
       expect(mockSetIdentity).toHaveBeenCalledWith('environment', 'dev');
       expect(mockSetIdentity).toHaveBeenCalledWith('region', 'us');
     });
 
-    it('should set isInternalUser to true', () => {
-      expect(mockSetIdentity).toHaveBeenCalledWith('isInternalUser', true);
+    it('should set is_internal_user to true', () => {
+      expect(mockSetIdentity).toHaveBeenCalledWith('is_internal_user', true);
     });
 
     it('should not identify event with (un-hashed) email', () => {
@@ -148,8 +148,8 @@ describe('identifier', () => {
       await mockForExternalUser();
     });
 
-    it('should set isInternalUser to false', () => {
-      expect(mockSetIdentity).toHaveBeenCalledWith('isInternalUser', false);
+    it('should set is_internal_user to false', () => {
+      expect(mockSetIdentity).toHaveBeenCalledWith('is_internal_user', false);
     });
   });
 
