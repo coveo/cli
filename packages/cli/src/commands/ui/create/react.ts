@@ -59,7 +59,10 @@ export default class React extends Command {
     },
   ];
 
-  @Trackable()
+  @Trackable({
+    eventName: 'ui create',
+    overrideEventProperties: {framework: 'react'},
+  })
   @Preconditions(
     IsAuthenticated(),
     IsNodeVersionInRange(React.requiredNodeVersion),

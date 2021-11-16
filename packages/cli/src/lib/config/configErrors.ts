@@ -1,8 +1,9 @@
 import {coerce, gt, lt} from 'semver';
 import dedent from 'ts-dedent';
+import {CLIBaseError} from '../errors/CLIBaseError';
 import {Config} from './config';
 
-export class IncompatibleConfigurationError extends Error {
+export class IncompatibleConfigurationError extends CLIBaseError {
   public constructor(version: unknown) {
     super();
     switch (typeof version) {

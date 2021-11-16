@@ -100,7 +100,7 @@ describe('identifier', () => {
     it('should set platform information', async () => {
       await new Identifier().getIdentity();
       expect(mockSetIdentity).toHaveBeenCalledWith(
-        'organizationType',
+        'organization_type',
         'Production'
       );
       expect(mockSetIdentity).toHaveBeenCalledWith('environment', 'dev');

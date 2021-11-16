@@ -62,7 +62,10 @@ export default class Vue extends Command {
     },
   ];
 
-  @Trackable()
+  @Trackable({
+    eventName: 'ui create',
+    overrideEventProperties: {framework: 'vue'},
+  })
   @Preconditions(
     IsAuthenticated(),
     IsNodeVersionInRange(Vue.requiredNodeVersion),

@@ -43,10 +43,7 @@ describe('trackable', () => {
     fancyIt()('should properly format events', () => {
       const event = {
         event_properties: {
-          args: ['argument'],
           command: 'foo:bar',
-          stringFlag: 'power level is over',
-          numberFlag: 9000,
         },
       };
       expect(mockedAnalyticHook).toHaveBeenNthCalledWith(1, 'analytics', {
@@ -95,17 +92,13 @@ describe('trackable', () => {
     fancyIt()('should properly format events', () => {
       const event = {
         event_properties: {
-          errorMessage: 'Some kind of error',
-          errorName: 'Error',
-          args: ['argument'],
+          error_type: 'Unknown CLI Error',
           command: 'foo:bar',
-          stringFlag: 'power level is over',
-          numberFlag: 9000,
         },
       };
 
       expect(mockedAnalyticHook).toHaveBeenNthCalledWith(1, 'analytics', {
-        event: {...event, ...{event_type: 'failed foo bar'}},
+        event: {...event, ...{event_type: 'received error'}},
       });
     });
   });
