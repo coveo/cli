@@ -1,4 +1,5 @@
 import {Region} from '@coveord/platform-client';
+import {cli} from 'cli-ux';
 import {
   pathExistsSync,
   createFileSync,
@@ -15,12 +16,11 @@ import {
 } from '../platform/environment';
 import {IncompatibleConfigurationError} from './configErrors';
 
-export interface Configuration {
+export interface BaseConfiguration {
   version: string;
   region: Region;
   environment: PlatformEnvironment;
   organization: string;
-  [k: string]: unknown;
   analyticsEnabled: boolean | undefined;
   accessToken: string | undefined;
   /**
@@ -36,12 +36,38 @@ export interface Configuration {
   anonymous?: boolean | undefined;
 }
 
+interface additionalConfiguration {
+  [k: string]: unknown;
+}
+export type Configuration = BaseConfiguration & additionalConfiguration;
+
 export class Config {
   public static readonly CurrentSchemaVersion = '1.0.0';
+  public static userFacingConfigKeys: (keyof BaseConfiguration)[] = [
+    'environment',
+    'organization',
+    'region',
+    'analyticsEnabled',
+  ];
   public constructor(
     private configDir: string,
     private error = console.error
   ) {}
+
+  public print(keysToDisplay = Config.userFacingConfigKeys) {
+    const configuration = this.get();
+    const allowedConfig = Object.keys(configuration)
+      .filter((key) => keysToDisplay.includes(key as keyof BaseConfiguration))
+      .reduce(
+        (obj, key) => ({
+          ...obj,
+          [key]: configuration[key],
+        }),
+        {}
+      );
+
+    cli.styledJSON(allowedConfig);
+  }
 
   public get(): Configuration {
     this.ensureExists();
