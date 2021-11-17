@@ -32,7 +32,7 @@ describe('trackable', () => {
       await fakeDescriptor.value.call(fakeCommand);
     });
 
-    fancyIt()('should track run the original function', () => {
+    fancyIt()('should run the original function', () => {
       expect(fakeOriginalFunction).toHaveBeenCalledTimes(1);
     });
 
@@ -81,7 +81,7 @@ describe('trackable', () => {
       await fakeDescriptor.value.call(fakeCommand, error);
     });
 
-    fancyIt()('should track run the original function', async () => {
+    fancyIt()('should run the original function', async () => {
       expect(fakeOriginalFunction).toHaveBeenCalledTimes(1);
     });
 
