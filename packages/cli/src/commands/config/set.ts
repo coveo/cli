@@ -10,6 +10,7 @@ import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
 import {Region} from '@coveord/platform-client';
 import {Trackable} from '../../lib/decorators/preconditions/trackable';
 import {InvalidCommandError} from '../../lib/errors/InvalidCommandError';
+import {ConfigRenderer} from '../../lib/config/configRenderer';
 
 export default class Set extends Command {
   public static description = 'Modify the current configuration.';
@@ -52,7 +53,7 @@ export default class Set extends Command {
       cfg.set('analyticsEnabled', flags.analytics === 'y');
     }
 
-    cfg.print();
+    ConfigRenderer.render(cfg);
   }
 
   @Trackable()

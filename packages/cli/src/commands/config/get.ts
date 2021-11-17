@@ -1,5 +1,6 @@
 import {Command} from '@oclif/command';
 import {Config} from '../../lib/config/config';
+import {ConfigRenderer} from '../../lib/config/configRenderer';
 import {Trackable} from '../../lib/decorators/preconditions/trackable';
 
 export default class Get extends Command {
@@ -23,7 +24,8 @@ export default class Get extends Command {
   public async run() {
     const {args} = this.parse(Get);
     const cfg = new Config(this.config.configDir, this.error);
-    cfg.print(args.key ? [args.key] : undefined);
+    const keysToRender = args.key ? [args.key] : undefined;
+    ConfigRenderer.render(cfg, keysToRender);
   }
 
   @Trackable()

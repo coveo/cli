@@ -1,5 +1,4 @@
 import {Region} from '@coveord/platform-client';
-import {cli} from 'cli-ux';
 import {
   pathExistsSync,
   createFileSync,
@@ -53,21 +52,6 @@ export class Config {
     private configDir: string,
     private error = console.error
   ) {}
-
-  public print(keysToDisplay = Config.userFacingConfigKeys) {
-    const configuration = this.get();
-    const allowedConfig = Object.keys(configuration)
-      .filter((key) => keysToDisplay.includes(key as keyof BaseConfiguration))
-      .reduce(
-        (obj, key) => ({
-          ...obj,
-          [key]: configuration[key],
-        }),
-        {}
-      );
-
-    cli.styledJSON(allowedConfig);
-  }
 
   public get(): Configuration {
     this.ensureExists();
