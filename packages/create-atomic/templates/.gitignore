@@ -9,3 +9,6 @@ npm-debug.log*
 
 # Sensitive
 .env
+
+# Build
+dist
