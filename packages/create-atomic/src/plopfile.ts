@@ -63,12 +63,15 @@ export default function (plop: NodePlopAPI) {
         destination: currentPath + '/{{project}}/',
         base: '../templates',
         templateFiles: [
-          '../templates/public/style/*',
-          '../templates/public/index.html',
+          '../templates/src/*',
+          '../templates/src/style/*',
+          '../templates/src/templates/*',
           '../templates/scripts/*',
           '../templates/.env.example',
           '../templates/.gitignore',
+          '../templates/tsconfig.json',
           '../templates/package.json',
+          '../templates/webpack.config.mjs',
         ],
       },
       function installPackages(answers) {
