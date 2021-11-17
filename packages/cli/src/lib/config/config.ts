@@ -35,10 +35,10 @@ export interface BaseConfiguration {
   anonymous?: boolean | undefined;
 }
 
-interface additionalConfiguration {
+interface AdditionalConfiguration {
   [k: string]: unknown;
 }
-export type Configuration = BaseConfiguration & additionalConfiguration;
+export type Configuration = BaseConfiguration & AdditionalConfiguration;
 
 export class Config {
   public static readonly CurrentSchemaVersion = '1.0.0';
