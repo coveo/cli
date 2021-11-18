@@ -1,4 +1,5 @@
 import type Command from '@oclif/command';
+import {flush} from '../../../hooks/analytics/analytics';
 import {buildError, buildEvent} from '../../../hooks/analytics/eventUtils';
 
 export interface TrackableOptions {
@@ -54,13 +55,14 @@ async function trackCommand(
   properties: Record<string, unknown>,
   originalRunCommand: () => Promise<void>
 ) {
-  this.config.runHook('analytics', {
+  await this.config.runHook('analytics', {
     event: buildEvent(`started ${eventName}`, properties),
+    identify: true,
   });
 
   await originalRunCommand.apply(this);
 
-  this.config.runHook('analytics', {
+  await this.config.runHook('analytics', {
     event: buildEvent(`completed ${eventName}`, properties),
   });
 }
@@ -71,12 +73,13 @@ async function trackError(
   originalCatchCommand: (...args: unknown[]) => Promise<void>,
   args: unknown[]
 ) {
-  args.forEach((arg) => {
-    this.config.runHook('analytics', {
+  for (const arg of args) {
+    await this.config.runHook('analytics', {
       event: buildEvent('received error', properties, buildError(arg)),
     });
-  });
+  }
 
+  await flush();
   await originalCatchCommand.apply(this, args);
 }
 
