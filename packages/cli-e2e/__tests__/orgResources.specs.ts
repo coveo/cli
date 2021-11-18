@@ -92,13 +92,16 @@ describe('org:resources', () => {
   const pullFromOrg = async (
     targetOrg: string,
     procManager: ProcessManager,
-    destinationPath: string
+    destinationPath: string,
+    additionalFlags: string[] = []
   ) => {
     const args: string[] = [
       CLI_EXEC_PATH,
       'org:resources:pull',
       `-t=${targetOrg}`,
+      '-o',
       '--no-git',
+      ...additionalFlags,
     ];
 
     const pullTerminal = createNewTerminal(
@@ -264,6 +267,22 @@ describe('org:resources', () => {
         const destinationFiles = readdirSync(destinationPath);
 
         expect(snapshotFiles).toEqual(destinationFiles);
+      },
+      defaultTimeout
+    );
+
+    it(
+      'directory should only contains pulled resources',
+      async () => {
+        await pullFromOrg(testOrgId, processManager, destinationPath, [
+          '-r=field',
+        ]);
+
+        const snapshotFiles = readdirSync(snapshotProjectPath);
+        const destinationFiles = readdirSync(destinationPath);
+
+        expect(destinationFiles.length).toBeGreaterThan(0);
+        expect(destinationFiles.length).toBeLessThan(snapshotFiles.length);
       },
       defaultTimeout
     );

@@ -59,6 +59,11 @@ export default class Pull extends Command {
       default: true,
       allowNo: true,
     }),
+    override: flags.boolean({
+      char: 'o',
+      description: 'Overwrite resources directory if it exists.',
+      default: false,
+    }),
   };
 
   public static hidden = true;
@@ -70,10 +75,13 @@ export default class Pull extends Command {
     HasNecessaryCoveoPrivileges(writeSnapshotPrivilege)
   )
   public async run() {
+    const project = new Project(this.projectPath);
+    await this.ensureProjectReset(project);
+
     const snapshot = await this.getSnapshot();
 
     cli.action.start('Updating project with Snapshot');
-    await this.refreshProject(snapshot);
+    await this.refreshProject(project, snapshot);
 
     await snapshot.delete();
     cli.action.stop('Project updated');
@@ -103,9 +111,8 @@ export default class Pull extends Command {
     }
   }
 
-  private async refreshProject(snapshot: Snapshot) {
+  private async refreshProject(project: Project, snapshot: Snapshot) {
     const {flags} = this.parse(Pull);
-    const project = new Project(this.projectPath);
     if (flags.git && !project.contains('.git')) {
       await spawnProcess('git', ['init', `${this.projectPath}`], {
         stdio: 'ignore',
@@ -113,6 +120,21 @@ export default class Pull extends Command {
     }
     const snapshotBlob = await snapshot.download();
     await project.refresh(snapshotBlob);
+  }
+
+  private async ensureProjectReset(project: Project) {
+    const {flags} = this.parse(Pull);
+    if (!flags.override && project.contains(Project.resourceFolderName)) {
+      const override =
+        await cli.confirm(dedent`There is already a Coveo project with resources in it.
+        This command will override the ${Project.resourceFolderName} folder content, do you want to proceed? (y/n)`);
+
+      if (!override) {
+        this.exit();
+      }
+    }
+
+    project.reset();
   }
 
   private async getSnapshot() {
