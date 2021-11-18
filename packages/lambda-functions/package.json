@@ -1,0 +1,37 @@
+{
+  "name": "@coveo/lambda-functions",
+  "version": "1.19.0",
+  "private": "true",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:coveo/cli.git",
+    "directory": "packages/lambda-functions"
+  },
+  "scripts": {
+    "test": "jest",
+    "npm:bump:template": "npm --no-git-tag-version version",
+    "npm:publish:template": "npm publish --access public --tag latest --registry http://localhost:4873"
+  },
+  "dependencies": {
+    "@coveord/platform-client": "^26.0.1",
+    "abortcontroller-polyfill": "^1.7.3",
+    "isomorphic-fetch": "^3.0.0"
+  },
+  "devDependencies": {
+    "@netlify/functions": "^0.9.0",
+    "@types/jest": "27.0.2",
+    "@types/supertest": "2.0.11",
+    "@typescript-eslint/eslint-plugin": "5.4.0",
+    "eslint": "8.2.0",
+    "gts": "3.1.0",
+    "jest": "27.3.1",
+    "netlify-cli": "^6.14.25",
+    "supertest": "6.1.6",
+    "ts-jest": "27.0.7",
+    "typescript": "^4.5.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
