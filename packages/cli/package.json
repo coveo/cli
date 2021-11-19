@@ -140,7 +140,8 @@
       "init": "./lib/hooks/init/set-global-config",
       "analytics": "./lib/hooks/analytics/analytics",
       "command_not_found": "./lib/hooks/commandNotFound/commandNotFound",
-      "prerun": "./lib/hooks/prerun/prerun"
+      "prerun": "./lib/hooks/prerun/prerun",
+      "postrun": "./lib/hooks/postrun/postrun"
     },
     "macos": {
       "identifier": "com.coveo.cli"
