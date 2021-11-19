@@ -17,6 +17,7 @@ import {
   errorMessage,
   successMessage,
 } from '../../../lib/push/userFeedback';
+import {isDotFile} from '../../../lib/utils/file';
 
 interface AxiosResponse {
   status: number;
@@ -95,13 +96,15 @@ export default class SourcePushAdd extends Command {
     await Promise.all(
       flags.folder.flatMap((folder) => {
         return Promise.all(
-          readdirSync(folder).flatMap(async (file) => {
-            const fullPath = path.join(folder, file);
-            const docBuilders =
-              parseAndGetDocumentBuilderFromJSONDocument(fullPath);
-            this.successMessageOnParseFile(fullPath, docBuilders.length);
-            await send(docBuilders);
-          })
+          readdirSync(folder)
+            .filter((file) => !isDotFile(file))
+            .flatMap(async (file) => {
+              const fullPath = path.join(folder, file);
+              const docBuilders =
+                parseAndGetDocumentBuilderFromJSONDocument(fullPath);
+              this.successMessageOnParseFile(fullPath, docBuilders.length);
+              await send(docBuilders);
+            })
         );
       })
     );

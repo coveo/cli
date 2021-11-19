@@ -15,16 +15,18 @@ import {
 import {existsSync, lstatSync, PathLike, readFileSync} from 'fs';
 import {CaseInsensitiveDocument} from './caseInsensitiveDocument';
 import {KnownKeys} from './knownKey';
-import {InvalidDocument, NotAFileError} from './validatorErrors';
+import {
+  InvalidDocument,
+  NotAFileError,
+  NotAJsonFileError,
+} from './validatorErrors';
 import {RequiredKeyValidator} from './requiredKeyValidator';
+import {readJSONSync} from 'fs-extra';
 
 export const parseAndGetDocumentBuilderFromJSONDocument = (
   documentPath: PathLike
 ) => {
-  const isAFile = isFile(documentPath);
-  if (!isAFile) {
-    throw new NotAFileError(documentPath);
-  }
+  ensureFileIntegrity(documentPath);
 
   const fileContent = JSON.parse(readFileSync(documentPath).toString()) as
     | Record<string, string>
@@ -214,11 +216,29 @@ const processMetadata = (
   });
 };
 
+const ensureFileIntegrity = (documentPath: PathLike) => {
+  if (!isFile(documentPath)) {
+    throw new NotAFileError(documentPath);
+  }
+  if (!isValidJsonFile(documentPath)) {
+    throw new NotAJsonFileError(documentPath);
+  }
+};
+
 const isFile = (p: PathLike) => {
   if (!existsSync(p)) {
     return false;
   }
   return lstatSync(p).isFile();
+};
+
+const isValidJsonFile = (p: PathLike) => {
+  try {
+    readJSONSync(p.toString());
+  } catch (e) {
+    return false;
+  }
+  return true;
 };
 
 const getSecurityIdentitySchemaValidation =
