@@ -33,15 +33,14 @@ export const errorMessage = (
   e: Error,
   options = {exit: false}
 ) => {
-  if (isErrorFromAPI(e)) {
-    const apiError = new APIError(e, tagLine);
-    if (options.exit) {
-      throw apiError;
-    } else {
-      cmd.warn(apiError.message);
-    }
+  const error = isErrorFromAPI(e)
+    ? new APIError(e, tagLine)
+    : new UnknownError(e);
+
+  if (options.exit) {
+    throw error;
   } else {
-    throw new UnknownError(e);
+    cmd.warn(error.message);
   }
 };
 
