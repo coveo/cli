@@ -41,6 +41,14 @@ export default class SourcePushAdd extends Command {
       description:
         'One or multiple folder containing json files. Can be repeated',
     }),
+    maxConcurrent: flags.integer({
+      multiple: true,
+      exclusive: ['file'],
+      char: 'c',
+      default: 10,
+      description:
+        'The number of files to handle at the same time (TODO: better explanation..). The greater the value, the faster the push. but it will also consume more memorry.., If you experience memory issue, consider reducing this value',
+    }),
   };
 
   public static args = [
@@ -89,21 +97,26 @@ export default class SourcePushAdd extends Command {
 
     cli.action.start('Processing...');
 
-    await Promise.all(
-      flags.folder.flatMap((folder) => {
-        return Promise.all(
-          readdirSync(folder)
-            .filter((file) => !isDotFile(file))
-            .flatMap(async (file) => {
-              const fullPath = path.join(folder, file);
-              const docBuilders =
-                parseAndGetDocumentBuilderFromJSONDocument(fullPath);
-              this.successMessageOnParseFile(fullPath, docBuilders.length);
-              await send(docBuilders);
-            })
-        );
-      })
+    const folderIterator: string[] = flags.folder.flatMap((folder) =>
+      readdirSync(folder)
+        .filter((file) => !isDotFile(file))
+        .flatMap((file) => path.join(folder, file))
     );
+
+    const consume = async (iterator: IterableIterator<string>) => {
+      for (const fullPath of iterator) {
+        const docBuilders =
+          parseAndGetDocumentBuilderFromJSONDocument(fullPath);
+        this.successMessageOnParseFile(fullPath, docBuilders.length);
+        await send(docBuilders);
+      }
+    };
+
+    const workers = new Array(flags.maxConcurrent)
+      .fill(folderIterator.values())
+      .map(consume);
+
+    await Promise.allSettled(workers);
 
     await close();
     cli.action.stop();
