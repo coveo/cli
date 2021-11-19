@@ -9,7 +9,6 @@ import dedent from 'ts-dedent';
 import {green, red} from 'chalk';
 import {
   AxiosResponse,
-  ErrorFromAPI,
   errorMessage,
   successMessage,
 } from '../../../lib/push/userFeedback';
@@ -97,7 +96,7 @@ export default class SourcePushDelete extends Command {
       );
       this.successMessageOnDeletion(toDelete, res);
     } catch (e) {
-      this.errorMessageOnDeletion(toDelete, e as ErrorFromAPI);
+      this.errorMessageOnDeletion(toDelete, e as Error);
     }
   }
 
@@ -113,7 +112,7 @@ export default class SourcePushDelete extends Command {
           );
           this.successMessageOnDeletion(toDelete, res);
         } catch (e) {
-          this.errorMessageOnDeletion(toDelete, e as ErrorFromAPI);
+          this.errorMessageOnDeletion(toDelete, e as Error);
         }
       })
     );
@@ -123,7 +122,7 @@ export default class SourcePushDelete extends Command {
     return this.parse(SourcePushDelete).flags;
   }
 
-  private errorMessageOnDeletion(toDelete: string, e: ErrorFromAPI) {
+  private errorMessageOnDeletion(toDelete: string, e: Error) {
     return errorMessage(
       this,
       `Error while trying to delete document: ${red(toDelete)}.`,

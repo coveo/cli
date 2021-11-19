@@ -1,4 +1,6 @@
-import {CLIBaseError} from './CLIBaseError';
+import {red} from 'chalk';
+import dedent from 'ts-dedent';
+import {PrintableError, SeverityLevel} from './printableError';
 
 export interface APIErrorResponse {
   message: string;
@@ -6,17 +8,82 @@ export interface APIErrorResponse {
   requestID: string;
 }
 
+export interface AxiosErrorFromAPI {
+  response: {
+    status: number;
+    data: APIErrorResponse;
+  };
+}
+
 export const APIErrorSchema = {
   type: 'object',
-  message: {type: 'string'},
-  errorCode: {type: 'string'},
-  requestID: {type: 'string'},
-  required: ['message', 'errorCode', 'requestID'],
+  required: ['errorCode', 'message'],
+  properties: {
+    errorCode: {
+      type: 'string',
+    },
+    message: {
+      type: 'string',
+    },
+  },
 };
 
-export class APIError extends CLIBaseError {
-  public constructor(error: APIErrorResponse) {
-    super(error.message);
-    this.name = `APIError - ${error.errorCode}`;
+export const AxiosErrorFromAPISchema = {
+  type: 'object',
+  required: ['response'],
+  properties: {
+    response: {
+      type: 'object',
+      required: ['status', 'data'],
+      properties: {
+        status: {
+          type: 'integer',
+        },
+        data: APIErrorSchema,
+      },
+    },
+  },
+};
+
+export class APIError extends PrintableError {
+  public constructor(
+    error: APIErrorResponse | AxiosErrorFromAPI,
+    tagLine?: string
+  ) {
+    super(SeverityLevel.Error);
+    let errorCode: string;
+    let message: string;
+    let status: number | undefined;
+    if (this.isFromAxios(error)) {
+      errorCode = error.response.data.errorCode;
+      message = error.response.data.message;
+      status = error.response.status;
+    } else {
+      errorCode = error.errorCode;
+      message = error.message;
+    }
+
+    this.name = `APIError - ${errorCode}`;
+    this.message = dedent`
+    ${tagLine}
+    `;
+
+    if (status) {
+      this.message += dedent`
+
+      Status code: ${status}
+      `;
+    }
+    this.message += dedent`
+
+    Error code: ${red(errorCode)}
+    Message: ${red(message)}
+    `;
+  }
+
+  private isFromAxios(
+    error: APIErrorResponse | AxiosErrorFromAPI
+  ): error is AxiosErrorFromAPI {
+    return 'response' in error;
   }
 }
