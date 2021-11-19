@@ -186,12 +186,14 @@ export default class SourcePushAdd extends Command {
         );
 
         if (accumulator.size + sizeOfDoc >= SourcePushAdd.maxContentLength) {
-          await this.uploadBatch(
-            source,
-            sourceId,
-            accumulator.chunks,
-            fileNames
-          );
+          if (accumulator.chunks.length > 0) {
+            await this.uploadBatch(
+              source,
+              sourceId,
+              accumulator.chunks,
+              fileNames
+            );
+          }
           accumulator.chunks = [docBuilder];
           accumulator.size = sizeOfDoc;
         } else {
