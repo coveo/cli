@@ -39,4 +39,7 @@ export default {
       {test: /\.tsx?$/, loader: 'ts-loader'},
     ],
   },
+  resolve: {
+    extensions: ['.js', '.ts', '.tsx'],
+  },
 };
