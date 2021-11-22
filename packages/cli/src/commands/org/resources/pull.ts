@@ -59,7 +59,7 @@ export default class Pull extends Command {
       default: true,
       allowNo: true,
     }),
-    override: flags.boolean({
+    overwrite: flags.boolean({
       char: 'o',
       description: 'Overwrite resources directory if it exists.',
       default: false,
@@ -124,12 +124,12 @@ export default class Pull extends Command {
 
   private async ensureProjectReset(project: Project) {
     const {flags} = this.parse(Pull);
-    if (!flags.override && project.contains(Project.resourceFolderName)) {
-      const override =
+    if (!flags.overwrite && project.contains(Project.resourceFolderName)) {
+      const overwrite =
         await cli.confirm(dedent`There is already a Coveo project with resources in it.
-        This command will override the ${Project.resourceFolderName} folder content, do you want to proceed? (y/n)`);
+        This command will overwrite the ${Project.resourceFolderName} folder content, do you want to proceed? (y/n)`);
 
-      if (!override) {
+      if (!overwrite) {
         this.exit();
       }
     }
