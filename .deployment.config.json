@@ -73,8 +73,8 @@
         }
       },
       {
-        "project_name": "lambda-functions",
-        "directory": "packages/lambda-functions",
+        "project_name": "search-token-lambda",
+        "directory": "packages/search-token-lambda",
         "additional_config": {
           "scan_dev_dependencies": true
         }

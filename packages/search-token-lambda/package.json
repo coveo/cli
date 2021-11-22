@@ -1,12 +1,12 @@
 {
-  "name": "@coveo/lambda-functions",
+  "name": "@coveo/search-token-lambda",
   "version": "1.19.0",
   "private": "true",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git@github.com:coveo/cli.git",
-    "directory": "packages/lambda-functions"
+    "directory": "packages/search-token-lambda"
   },
   "scripts": {
     "start:dev": "netlify functions:serve",
