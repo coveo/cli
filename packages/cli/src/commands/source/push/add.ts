@@ -17,7 +17,7 @@ import {
   errorMessage,
   successMessage,
 } from '../../../lib/push/userFeedback';
-import {isDotFile} from '../../../lib/utils/file';
+import {isJsonFile} from '../../../lib/utils/file';
 
 interface AxiosResponse {
   status: number;
@@ -97,7 +97,7 @@ export default class SourcePushAdd extends Command {
       flags.folder.flatMap((folder) => {
         return Promise.all(
           readdirSync(folder)
-            .filter((file) => !isDotFile(file))
+            .filter(isJsonFile)
             .flatMap(async (file) => {
               const fullPath = path.join(folder, file);
               const docBuilders =
