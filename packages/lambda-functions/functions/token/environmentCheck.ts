@@ -1,7 +1,7 @@
 export function environmentCheck() {
-  return !(
-    process.env.ORGANIZATION_ID === undefined ||
-    process.env.API_KEY === undefined ||
-    process.env.USER_EMAIL === undefined
+  return Boolean(
+    process.env.ORGANIZATION_ID &&
+    process.env.API_KEY &&
+    process.env.USER_EMAIL
   );
 }
