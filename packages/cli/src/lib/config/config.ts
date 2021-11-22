@@ -15,12 +15,11 @@ import {
 } from '../platform/environment';
 import {IncompatibleConfigurationError} from './configErrors';
 
-export interface Configuration {
+export interface BaseConfiguration {
   version: string;
   region: Region;
   environment: PlatformEnvironment;
   organization: string;
-  [k: string]: unknown;
   analyticsEnabled: boolean | undefined;
   accessToken: string | undefined;
   /**
@@ -36,8 +35,19 @@ export interface Configuration {
   anonymous?: boolean | undefined;
 }
 
+interface AdditionalConfiguration {
+  [k: string]: unknown;
+}
+export type Configuration = BaseConfiguration & AdditionalConfiguration;
+
 export class Config {
   public static readonly CurrentSchemaVersion = '1.0.0';
+  public static userFacingConfigKeys: (keyof BaseConfiguration)[] = [
+    'environment',
+    'organization',
+    'region',
+    'analyticsEnabled',
+  ];
   public constructor(
     private configDir: string,
     private error = console.error
