@@ -5,6 +5,7 @@ jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
 jest.mock('./session');
 jest.mock('./identifier');
+
 import {mocked} from 'ts-jest/utils';
 import {Configuration, Config} from '../../lib/config/config';
 import {
@@ -20,19 +21,27 @@ import {
   defaultConfiguration,
 } from '../../__stub__/configuration';
 import {fancyIt} from '../../__test__/it';
-import {init, NodeClient} from '@amplitude/node';
 import {Identifier} from './identifier';
 const mockedConfig = mocked(Config);
 const mockedPlatformClient = mocked(PlatformClient);
 const mockedAuthenticatedClient = mocked(AuthenticatedClient);
 const mockedAuthenticationStatus = mocked(getAuthenticationStatus);
-const mockedAmplitudeClient = mocked(init);
 const mockedIdentifier = mocked(Identifier);
+const mockedLogEvent = jest.fn();
+const mockedIdentify = jest.fn();
 
+jest.mock('./amplitudeClient', () => ({
+  get amplitudeClient() {
+    return {
+      logEvent: mockedLogEvent,
+      identify: mockedIdentify,
+    };
+  },
+}));
 describe('analytics_hook', () => {
-  const mockedLogEvent = jest.fn();
   const mockedUserGet = jest.fn();
   const mockedLicense = jest.fn();
+
   const getAnalyticsHook = (input: Partial<AnalyticsHook>): AnalyticsHook => {
     return {
       event: {
@@ -46,21 +55,16 @@ describe('analytics_hook', () => {
     };
   };
 
-  const doMockAnalytics = () => {
-    mockedAmplitudeClient.mockImplementation(
-      () =>
-        ({
-          logEvent: mockedLogEvent as unknown,
-        } as NodeClient)
-    );
-  };
-
   const doMockIdentifier = () => {
     mockedIdentifier.mockImplementation(
       () =>
         ({
-          identify: () =>
-            Promise.resolve({userId: 'user-123', deviceId: 'device-456'}),
+          getIdentity: () =>
+            Promise.resolve({
+              userId: 'user-123',
+              deviceId: 'device-456',
+              identify: {},
+            }),
         } as unknown as Identifier)
     );
   };
@@ -111,7 +115,6 @@ describe('analytics_hook', () => {
   };
 
   beforeEach(() => {
-    doMockAnalytics();
     doMockPlatformClient();
     doMockConfiguration();
     doMockAuthenticatedClient();
@@ -120,16 +123,10 @@ describe('analytics_hook', () => {
 
   afterEach(() => {
     mockedLicense.mockClear();
-    mockedAmplitudeClient.mockClear();
     mockedPlatformClient.mockClear();
     mockedConfig.mockClear();
     mockedAuthenticatedClient.mockClear();
     mockedIdentifier.mockClear();
-  });
-
-  fancyIt()('should initialize an Amplitude client', async () => {
-    await hook(getAnalyticsHook({}));
-    expect(mockedAmplitudeClient).toHaveBeenCalledTimes(1);
   });
 
   fancyIt()('should log one event', async () => {
@@ -144,6 +141,36 @@ describe('analytics_hook', () => {
         event_properties: {key: 'value'},
         event_type: 'started foo bar',
       })
+    );
+  });
+
+  fancyIt()('should not identify the user if not asked', async () => {
+    await hook(getAnalyticsHook({}));
+    expect(mockedIdentify).toHaveBeenCalledTimes(0);
+  });
+
+  fancyIt()('should identify the user only if asked', async () => {
+    await hook(getAnalyticsHook({identify: true}));
+    expect(mockedIdentify).toHaveBeenCalledTimes(1);
+  });
+
+  fancyIt()('should not identify event with (un-hashed) email', async () => {
+    await hook(getAnalyticsHook({identify: true}));
+    const userIdCheck = expect.stringMatching(/^(?!bob@.*?\.com).*/);
+    expect(mockedIdentify).toHaveBeenCalledWith(
+      userIdCheck,
+      expect.anything(),
+      expect.anything()
+    );
+  });
+
+  fancyIt()('should identify event with device ID', async () => {
+    await hook(getAnalyticsHook({identify: true}));
+    const deviceIdCheck = expect.stringMatching(/.*/);
+    expect(mockedIdentify).toHaveBeenCalledWith(
+      expect.anything(),
+      deviceIdCheck,
+      expect.anything()
     );
   });
 

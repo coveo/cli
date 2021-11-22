@@ -48,6 +48,7 @@ describe('trackable', () => {
       };
       expect(mockedAnalyticHook).toHaveBeenNthCalledWith(1, 'analytics', {
         event: {...event, ...{event_type: 'started foo bar'}},
+        identify: true,
       });
       expect(mockedAnalyticHook).toHaveBeenNthCalledWith(2, 'analytics', {
         event: {...event, ...{event_type: 'completed foo bar'}},
