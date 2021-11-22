@@ -9,7 +9,9 @@
     "directory": "packages/lambda-functions"
   },
   "scripts": {
+    "start:dev": "netlify functions:serve",
     "test": "jest",
+    "test:watch": "jest --watch",
     "npm:bump:template": "npm --no-git-tag-version version",
     "npm:publish:template": "npm publish --access public --tag latest --registry http://localhost:4873"
   },
@@ -19,7 +21,6 @@
     "isomorphic-fetch": "^3.0.0"
   },
   "devDependencies": {
-    "@netlify/functions": "^0.9.0",
     "@types/jest": "27.0.2",
     "@types/supertest": "2.0.11",
     "@typescript-eslint/eslint-plugin": "5.4.0",
