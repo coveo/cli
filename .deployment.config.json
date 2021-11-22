@@ -73,6 +73,13 @@
         }
       },
       {
+        "project_name": "lambda-functions",
+        "directory": "packages/lambda-functions",
+        "additional_config": {
+          "scan_dev_dependencies": true
+        }
+      },
+      {
         "project_name": "vue-cli-plugin",
         "directory": "packages/vue-cli-plugin-typescript",
         "additional_config": {

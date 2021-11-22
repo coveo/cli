@@ -8,6 +8,7 @@ const publicPackages = [
   '@coveo/angular',
   '@coveo/cra-template',
   '@coveo/vue-cli-plugin-typescript',
+  '@coveo/lambda-functions',
 ];
 
 function getExpectedVersion() {
