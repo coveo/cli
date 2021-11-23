@@ -3,7 +3,7 @@ require('abortcontroller-polyfill');
 
 import {PlatformClient, RestUserIdType} from '@coveord/platform-client';
 
-export async function ensureTokenGenerated() {
+export async function generateToken() {
   const platform: PlatformClient = new PlatformClient({
     /**
      * The Plaform URL to use.

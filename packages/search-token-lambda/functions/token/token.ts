@@ -1,8 +1,8 @@
-import {environmentCheck} from './environmentCheck';
-import {ensureTokenGenerated} from './ensureTokenGenerated';
+import {areEnvironmentVariablesSet} from './areEnvironmentVariablesSet';
+import {generateToken} from './generateToken';
 
 export const handler = async () => {
-  if (!environmentCheck()) {
+  if (!areEnvironmentVariablesSet()) {
     return {
       statusCode: 401,
       body: JSON.stringify({
@@ -12,7 +12,7 @@ export const handler = async () => {
     };
   }
 
-  const token = await ensureTokenGenerated();
+  const token = await generateToken();
   if (!token) {
     return {
       statusCode: 500,
