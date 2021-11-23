@@ -1,5 +1,6 @@
 {
   "name": "@coveo/search-token-lambda",
+  "author": "Coveo",
   "version": "1.19.0",
   "license": "Apache-2.0",
   "repository": {
@@ -8,7 +9,7 @@
     "directory": "packages/search-token-lambda"
   },
   "scripts": {
-    "start:dev": "netlify functions:serve",
+    "start": "netlify functions:serve",
     "test": "jest",
     "test:watch": "jest --watch",
     "npm:bump:template": "npm --no-git-tag-version version",
