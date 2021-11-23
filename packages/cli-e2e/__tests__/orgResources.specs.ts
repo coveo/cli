@@ -3,7 +3,7 @@ import {CLI_EXEC_PATH, getConfig, getPathToHomedirEnvFile} from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
-import {ensureDirSync} from 'fs-extra';
+import {ensureDirSync, rmSync} from 'fs-extra';
 import PlatformClient, {FieldTypes} from '@coveord/platform-client';
 import {getPlatformClient} from '../utils/platform';
 import {readdirSync} from 'fs';
@@ -253,8 +253,10 @@ describe('org:resources', () => {
 
   describe('org:resources:pull', () => {
     const destinationPath = join('new-snapshot-project');
+    const snapshotFiles = readdirSync(snapshotProjectPath);
 
-    beforeAll(() => {
+    beforeEach(() => {
+      rmSync(destinationPath, {recursive: true, force: true});
       ensureDirSync(destinationPath);
     });
 
@@ -262,8 +264,6 @@ describe('org:resources', () => {
       "should pull the org's content",
       async () => {
         await pullFromOrg(testOrgId, processManager, destinationPath);
-
-        const snapshotFiles = readdirSync(snapshotProjectPath);
         const destinationFiles = readdirSync(destinationPath);
 
         expect(snapshotFiles).toEqual(destinationFiles);
@@ -277,8 +277,6 @@ describe('org:resources', () => {
         await pullFromOrg(testOrgId, processManager, destinationPath, [
           '-r=field',
         ]);
-
-        const snapshotFiles = readdirSync(snapshotProjectPath);
         const destinationFiles = readdirSync(destinationPath);
 
         expect(destinationFiles.length).toBeGreaterThan(0);
