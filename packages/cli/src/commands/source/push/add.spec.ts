@@ -130,6 +130,38 @@ describe('source:push:add', () => {
     .command([
       'source:push:add',
       'mysource',
+      '-d',
+      cwd() + '/src/__stub__/mixdocuments',
+    ])
+    .it('should only push JSON documents', (ctx) => {
+      expect(ctx.stdout).toContain(
+        `Success: 2 documents accepted by the Push API from ${cwd()}/src/__stub__/mixdocuments/valid.json`
+      );
+      expect(ctx.stdout).toContain('Status code: 202 👌');
+    });
+
+  test
+    .stdout()
+    .stderr()
+    .command([
+      'source:push:add',
+      'mysource',
+      '-d',
+      cwd() + '/src/__stub__/mixdocuments',
+    ])
+    .it('should not include non JSON documents in success message', (ctx) => {
+      const invalidFiles = ['.somedotfile', 'json.txt', 'noextension'];
+      invalidFiles.map((file) => {
+        expect(ctx.stdout).not.toContain(file);
+      });
+    });
+
+  test
+    .stdout()
+    .stderr()
+    .command([
+      'source:push:add',
+      'mysource',
       '-f',
       cwd() + '/src/__stub__/jsondocuments/noID.json',
     ])

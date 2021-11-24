@@ -82,7 +82,7 @@ export default class SourcePushAdd extends Command {
 
     const fileNames = flags.folder.flatMap((folder) => {
       const files = readdirSync(folder);
-      return files.map((f) => `${path.join(folder, f)}`);
+      return files.filter(isJsonFile).map((f) => `${path.join(folder, f)}`);
     });
 
     const {send, close} = this.splitByChunkAndUpload(
