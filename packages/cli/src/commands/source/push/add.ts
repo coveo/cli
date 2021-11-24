@@ -154,7 +154,7 @@ export default class SourcePushAdd extends Command {
     );
   }
 
-  private errorMessageOnAdd(e: Error) {
+  private errorMessageOnAdd(e: unknown) {
     return errorMessage(this, 'Error while trying to add document.', e, {
       exit: true,
     });
@@ -218,8 +218,8 @@ export default class SourcePushAdd extends Command {
         delete: [],
       });
       this.successMessageOnAdd(fileNames, batch.length, res);
-    } catch (e) {
-      this.errorMessageOnAdd(e as Error);
+    } catch (e: unknown) {
+      this.errorMessageOnAdd(e);
     }
   }
 

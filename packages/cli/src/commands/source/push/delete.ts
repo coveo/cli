@@ -95,8 +95,8 @@ export default class SourcePushDelete extends Command {
         isNumber ? parseInt(flags.deleteOlderThan!, 10) : flags.deleteOlderThan!
       );
       this.successMessageOnDeletion(toDelete, res);
-    } catch (e) {
-      this.errorMessageOnDeletion(toDelete, e as Error);
+    } catch (e: unknown) {
+      this.errorMessageOnDeletion(toDelete, e);
     }
   }
 
@@ -111,8 +111,8 @@ export default class SourcePushDelete extends Command {
             flags.deleteChildren
           );
           this.successMessageOnDeletion(toDelete, res);
-        } catch (e) {
-          this.errorMessageOnDeletion(toDelete, e as Error);
+        } catch (e: unknown) {
+          this.errorMessageOnDeletion(toDelete, e);
         }
       })
     );
@@ -122,7 +122,7 @@ export default class SourcePushDelete extends Command {
     return this.parse(SourcePushDelete).flags;
   }
 
-  private errorMessageOnDeletion(toDelete: string, e: Error) {
+  private errorMessageOnDeletion(toDelete: string, e: unknown) {
     return errorMessage(
       this,
       `Error while trying to delete document: ${red(toDelete)}.`,
