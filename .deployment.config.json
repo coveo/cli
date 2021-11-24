@@ -73,6 +73,13 @@
         }
       },
       {
+        "project_name": "search-token-lambda",
+        "directory": "packages/search-token-lambda",
+        "additional_config": {
+          "scan_dev_dependencies": true
+        }
+      },
+      {
         "project_name": "vue-cli-plugin",
         "directory": "packages/vue-cli-plugin-typescript",
         "additional_config": {
