@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.20.0](https://coveo-cli/coveo/cli/compare/v1.19.0...v1.20.0) (2021-11-25)
+
+
+### Bug Fixes
+
+* **deps:** update all dependencies j:cdx-227 ([#529](https://coveo-cli/coveo/cli/issues/529)) ([74a0d36](https://coveo-cli/coveo/cli/commits/74a0d36ce09e3f12b9def51a7bc08b1e05f91be3))
+
+
+### Features
+
+* create new @coveo/lambda-functions package ([#558](https://coveo-cli/coveo/cli/issues/558)) ([667749c](https://coveo-cli/coveo/cli/commits/667749c10fe0de41a42523e4338fda9391f5d9f1))
+
+
+
+
+
 # [1.19.0](https://coveo-cli/coveo/cli/compare/v1.18.0...v1.19.0) (2021-11-11)
 
 
