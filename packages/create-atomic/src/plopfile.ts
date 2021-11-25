@@ -72,6 +72,7 @@ export default function (plop: NodePlopAPI) {
           '../templates/tsconfig.json',
           '../templates/package.json',
           '../templates/webpack.config.mjs',
+          '../templates/netlify.toml',
         ],
       },
       function installPackages(answers) {
