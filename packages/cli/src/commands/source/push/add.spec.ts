@@ -178,7 +178,7 @@ describe('source:push:add', () => {
 
   test
     .do(() => {
-      const largeFileSize = 5 * 1024 * 1024;
+      const largeFileSize = 5e6;
       mockedMarshal.mockReturnValueOnce(Buffer.alloc(largeFileSize).toJSON());
     })
     .stdout()
