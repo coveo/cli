@@ -253,7 +253,8 @@ describe('org:resources', () => {
 
   describe('org:resources:pull', () => {
     const destinationPath = join('new-snapshot-project');
-    const snapshotFiles = readdirSync(snapshotProjectPath);
+    const getResourceFolderContent = (projectPath: string) =>
+      readdirSync(join(projectPath, 'resources'));
 
     beforeEach(() => {
       rmSync(destinationPath, {recursive: true, force: true});
@@ -264,6 +265,7 @@ describe('org:resources', () => {
       "should pull the org's content",
       async () => {
         await pullFromOrg(testOrgId, processManager, destinationPath);
+        const snapshotFiles = readdirSync(snapshotProjectPath);
         const destinationFiles = readdirSync(destinationPath);
 
         expect(snapshotFiles).toEqual(destinationFiles);
@@ -277,10 +279,13 @@ describe('org:resources', () => {
         await pullFromOrg(testOrgId, processManager, destinationPath, [
           '-r=field',
         ]);
-        const destinationFiles = readdirSync(destinationPath);
+        const originalResources = getResourceFolderContent(snapshotProjectPath);
+        const destinationResources = getResourceFolderContent(destinationPath);
 
-        expect(destinationFiles.length).toBeGreaterThan(0);
-        expect(destinationFiles.length).toBeLessThan(snapshotFiles.length);
+        expect(destinationResources.length).toBeGreaterThan(0);
+        expect(destinationResources.length).toBeLessThan(
+          originalResources.length
+        );
       },
       defaultTimeout
     );
