@@ -26,7 +26,6 @@ function copySearchTokenLambdaToRoot() {
     resolve('node_modules', '@coveo', 'search-token-lambda'),
     resolve('lambda'),
     {
-      // TODO: filter more ?
       filter: (src, dest) => !isNodeModule(dest) && !isEnvFile(dest),
     }
   );

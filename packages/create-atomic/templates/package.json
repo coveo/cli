@@ -3,13 +3,15 @@
   "description": "{{titleCase project}} project",
   "version": "0.1.0",
   "scripts": {
-    "postinstall": "npm run setup-server && npm run setup-cleanup && netlify link",
+    "postinstall": "npm run setup-lambda && npm run setup-cleanup",
     "setup-lambda": "node ./scripts/setup-lambda.js",
     "setup-cleanup": "node ./scripts/clean-up.js",
     "build": "NODE_ENV=production webpack",
+    "site:init": "netlify init",
+    "site:link": "netlify link",
     "start": "netlify dev",
-    "live": "netlify dev --live",
-    "deploy": "npm run build && netlify env:import .env && netlify deploy --prod --open"
+    "dev:live": "npm run site:link && netlify dev --live",
+    "site:deploy": "npm run site:link && npm run build && netlify env:import .env && netlify deploy --prod --open"
   },
   "dependencies": {
     "@coveo/atomic": "latest",
