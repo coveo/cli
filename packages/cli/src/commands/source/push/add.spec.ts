@@ -18,11 +18,32 @@ import {APIError} from '../../../lib/errors/APIError';
 const mockedClient = mocked(AuthenticatedClient);
 const mockedSource = mocked(Source);
 const mockedDocumentBuilder = mocked(DocumentBuilder);
+const mockedMarshal = jest.fn();
 
 describe('source:push:add', () => {
   const mockBatchUpdate = jest
     .fn()
     .mockReturnValue(Promise.resolve(doMockAxiosSuccess(202, '👌')));
+
+  beforeEach(() => {
+    mockedMarshal.mockReturnValue(
+      JSON.stringify({
+        documentId: 'https://perdu.com',
+        title: 'hello world',
+      })
+    );
+  });
+
+  mockedDocumentBuilder.mockImplementation(
+    () =>
+      ({
+        marshal: mockedMarshal,
+        withData: jest.fn(),
+        withDate: jest.fn(),
+        withFileExtension: jest.fn(),
+        withMetadataValue: jest.fn(),
+      } as unknown as DocumentBuilder)
+  );
 
   mockedClient.mockImplementation(
     () =>
@@ -42,21 +63,6 @@ describe('source:push:add', () => {
       ({
         batchUpdateDocuments: mockBatchUpdate,
       } as unknown as Source)
-  );
-
-  mockedDocumentBuilder.mockImplementation(
-    () =>
-      ({
-        marshal: () =>
-          JSON.stringify({
-            documentId: 'https://perdu.com',
-            title: 'hello world',
-          }),
-        withData: jest.fn(),
-        withDate: jest.fn(),
-        withFileExtension: jest.fn(),
-        withMetadataValue: jest.fn(),
-      } as unknown as DocumentBuilder)
   );
 
   beforeAll(() => {});
@@ -166,6 +172,29 @@ describe('source:push:add', () => {
     .it('should accept non-url documentIDs', (ctx) => {
       expect(ctx.stdout).toContain(
         `Success: 1 document accepted by the Push API from ${cwd()}/src/__stub__/jsondocuments/notAnUrl.json`
+      );
+      expect(ctx.stdout).toContain('Status code: 202 👌');
+    });
+
+  test
+    .do(() => {
+      // TODO: ensure folder instead of creating it
+      // mkdirSync(cwd() + '/src/__stub__/largefolder');
+      const largeFileSize = 5 * 1024 * 1024;
+      mockedMarshal.mockReturnValueOnce(Buffer.alloc(largeFileSize).toJSON());
+    })
+    .stdout()
+    .stderr()
+    .only()
+    .command([
+      'source:push:add',
+      'mysource',
+      '-d',
+      cwd() + '/src/__stub__/largefolder',
+    ])
+    .it('should not upload an empty batch', (ctx) => {
+      expect(ctx.stdout).not.toContain(
+        'Success: 0 document accepted by the Push API from '
       );
       expect(ctx.stdout).toContain('Status code: 202 👌');
     });
