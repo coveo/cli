@@ -6,9 +6,16 @@
 
 <!-- endremovefromdocs -->
 
-## About
+## What is it?
 
-Coveo CLI is a command line interface to interact with the Coveo platform. It allows you to quickly create a [Coveo Headless](https://docs.coveo.com/headless)-powered search page for your Coveo organization, relying on [Angular](https://angular.io), [React](https://reactjs.org/) or [Vue.js](https://vuejs.org/).
+The Coveo CLI is a powerful command-line interface (CLI) that interacts with the Coveo platform to facilitate development and build automation.
+Key features include the following.
+
+- Quickly create a [Coveo Headless](https://docs.coveo.com/headless)-powered search page for your Coveo organization, relying on popular frameworks like [Angular](https://angular.io), [React](https://reactjs.org/) and [Vue.js](https://vuejs.org/).
+- Create and manage Coveo organizations
+- Automate deployments between organizations
+- Manage Coveo Push API sources
+- Perform queries against a Coveo index
 
 ## Installation
 
@@ -45,11 +52,25 @@ npx @coveo/cli
 
 <!-- removefromdocs -->
 
-## Usage
+## Verifying your installation
 
-In practice, you'll typically want to [`login`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-authlogin) to your Coveo Organization, [`configure`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-configset) the CLI to connect to this organization, and finally create a search page (see [`coveo ui:create:angular NAME`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-uicreateangular-name), [`coveo ui:create:react NAME`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-uicreatereact-name) and [`coveo ui:create:vue NAME`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-uicreatevue-name)).
+To verify your CLI installation, use the `coveo --version` command:
 
-You can check out the other commands [here](https://github.com/coveo/cli/tree/master/packages/cli).
+```
+$ coveo --version
+@coveo/cli/1.19.0 darwin-x64 node-v16.10.0
+```
+
+## Getting started
+
+After you install the CLI, you'll typically want to [`login`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-authlogin) to your Coveo Organization.
+You can check out all the available commands [here](https://github.com/coveo/cli/tree/master/packages/cli).
+
+<!--
+  Add full examples for each use case:
+  TODO: CDX-492 One example to explain how to use org:resources commands.
+  Similar to the SFDX CLI intro (https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
+-->
 
 The project is still under heavy development and more features are coming, stay tuned!
 
