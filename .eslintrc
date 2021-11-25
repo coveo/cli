@@ -22,7 +22,8 @@
           "error",
           {"ignoreRestSiblings": true, "argsIgnorePattern": "^_"}
         ],
-        "@typescript-eslint/explicit-member-accessibility": "error"
+        "@typescript-eslint/explicit-member-accessibility": "error",
+        "@typescript-eslint/prefer-for-of": "error"
       }
     },
     {
