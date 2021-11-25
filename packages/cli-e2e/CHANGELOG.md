@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.20.0](https://github.com/coveo/cli/compare/v1.19.0...v1.20.0) (2021-11-25)
+
+
+### Bug Fixes
+
+* **deps:** update all dependencies j:cdx-227 ([#529](https://github.com/coveo/cli/issues/529)) ([74a0d36](https://github.com/coveo/cli/commit/74a0d36ce09e3f12b9def51a7bc08b1e05f91be3))
+* erase resources folder content before pulling resources ([#554](https://github.com/coveo/cli/issues/554)) ([22b30a2](https://github.com/coveo/cli/commit/22b30a2f0ca2aabf44942021f3f791bcfd4a7074))
+
+
+### Features
+
+* add "create-atomic" package ([#536](https://github.com/coveo/cli/issues/536)) ([1acd626](https://github.com/coveo/cli/commit/1acd6269c1f01febe76d755ab7396fef05b578df))
+* create new @coveo/lambda-functions package ([#558](https://github.com/coveo/cli/issues/558)) ([667749c](https://github.com/coveo/cli/commit/667749c10fe0de41a42523e4338fda9391f5d9f1))
+
+
+
+
+
 # [1.19.0](https://github.com/coveo/cli/compare/v1.18.0...v1.19.0) (2021-11-11)
 
 
