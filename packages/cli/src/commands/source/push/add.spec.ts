@@ -9,6 +9,7 @@ import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {DocumentBuilder, Source} from '@coveo/push-api-client';
 import {cwd} from 'process';
+import {join} from 'path';
 import {
   doMockAxiosError,
   doMockAxiosSuccess,
@@ -119,7 +120,13 @@ describe('source:push:add', () => {
     ])
     .it('should output feedback message when uploading documents', (ctx) => {
       expect(ctx.stdout).toContain(
-        `Success: 2 documents accepted by the Push API from ${cwd()}/src/__stub__/jsondocuments/batman.json.`
+        `Success: 2 documents accepted by the Push API from ${join(
+          cwd(),
+          'src',
+          '__stub__',
+          'jsondocuments',
+          'batman.json'
+        )}`
       );
       expect(ctx.stdout).toContain('Status code: 202 👌');
     });
@@ -135,7 +142,13 @@ describe('source:push:add', () => {
     ])
     .it('should only push JSON documents', (ctx) => {
       expect(ctx.stdout).toContain(
-        `Success: 2 documents accepted by the Push API from ${cwd()}/src/__stub__/mixdocuments/valid.json`
+        `Success: 2 documents accepted by the Push API from ${join(
+          cwd(),
+          'src',
+          '__stub__',
+          'mixdocuments',
+          'valid.json'
+        )}`
       );
       expect(ctx.stdout).toContain('Status code: 202 👌');
     });
