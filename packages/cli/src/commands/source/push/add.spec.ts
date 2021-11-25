@@ -178,19 +178,16 @@ describe('source:push:add', () => {
 
   test
     .do(() => {
-      // TODO: ensure folder instead of creating it
-      // mkdirSync(cwd() + '/src/__stub__/largefolder');
       const largeFileSize = 5 * 1024 * 1024;
       mockedMarshal.mockReturnValueOnce(Buffer.alloc(largeFileSize).toJSON());
     })
     .stdout()
     .stderr()
-    .only()
     .command([
       'source:push:add',
       'mysource',
-      '-d',
-      cwd() + '/src/__stub__/largefolder',
+      '-f',
+      cwd() + '/src/__stub__/jsondocuments/batman.json',
     ])
     .it('should not upload an empty batch', (ctx) => {
       expect(ctx.stdout).not.toContain(
