@@ -9,13 +9,13 @@
 ## What is it?
 
 The Coveo CLI is a powerful command-line interface (CLI) that interacts with the Coveo platform to facilitate development and build automation.
-Key features include the following.
+Key features include the following:
 
 - Quickly create a [Coveo Headless](https://docs.coveo.com/headless)-powered search page for your Coveo organization, relying on popular frameworks like [Angular](https://angular.io), [React](https://reactjs.org/) and [Vue.js](https://vuejs.org/).
-- Create and manage Coveo organizations
+- Create and manage Coveo [organizations](https://docs.coveo.com/en/2015)
 - Automate deployments between organizations
-- Manage Coveo Push API sources
-- Perform queries against a Coveo index
+- Manage Coveo [Push API](https://docs.coveo.com/en/68) sources
+- Perform [queries](https://docs.coveo.com/en/l25h0358) against a Coveo index
 
 ## Installation
 
@@ -52,9 +52,9 @@ npx @coveo/cli
 
 <!-- removefromdocs -->
 
-## Verifying your installation
+## Validating your installation
 
-To verify your CLI installation, use the `coveo --version` command:
+To validate your CLI installation, use the `coveo --version` command:
 
 ```
 $ coveo --version
