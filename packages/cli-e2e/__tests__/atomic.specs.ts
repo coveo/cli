@@ -20,7 +20,7 @@ describe('ui:create:atomic', () => {
 
   const waitForAppRunning = (appTerminal: Terminal) =>
     appTerminal
-      .when(/Project is running at/)
+      .when(/Server now ready/)
       .on('stdout')
       .do()
       .once();
@@ -126,6 +126,11 @@ describe('ui:create:atomic', () => {
         waitUntil: 'networkidle2',
       });
 
+      console.log(
+        'consoleInterceptor.interceptedMessages',
+        consoleInterceptor.interceptedMessages
+      );
+
       expect(consoleInterceptor.interceptedMessages).toEqual([]);
     });
 
@@ -133,9 +138,8 @@ describe('ui:create:atomic', () => {
       await page.goto(searchPageEndpoint, {
         waitUntil: 'networkidle2',
       });
-      await page.waitForSelector(searchInterfaceSelector);
 
-      expect(await page.$('atomic-search-interface')).not.toBeNull();
+      expect(await page.$(searchInterfaceSelector)).not.toBeNull();
     });
 
     it('should retrieve the search token on the page load', async () => {
