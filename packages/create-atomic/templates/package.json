@@ -7,10 +7,10 @@
     "setup-lambda": "node ./scripts/setup-lambda.js",
     "setup-cleanup": "node ./scripts/clean-up.js",
     "build": "NODE_ENV=production webpack",
-    "site:init": "netlify init",
-    "site:link": "netlify link",
     "start": "netlify dev",
     "dev:live": "npm run site:link && netlify dev --live",
+    "site:init": "netlify init",
+    "site:link": "netlify link",
     "site:deploy": "npm run site:link && npm run build && netlify env:import .env && netlify deploy --prod --open"
   },
   "dependencies": {
@@ -25,7 +25,7 @@
     "html-loader": "^3.0.1",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.4.4",
-    "netlify-cli": "^6.14.25",
+    "netlify-cli": "^8.0.3",
     "style-loader": "^3.3.1",
     "ts-loader": "^9.2.6",
     "webpack": "^5.64.0",
