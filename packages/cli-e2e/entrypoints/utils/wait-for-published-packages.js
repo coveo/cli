@@ -8,12 +8,13 @@ const {spawnSync} = require('child_process');
  * with a version matching this format: 0.0.x
  */
 const packagesToWait = [
-  '@coveo/cra-template',
-  '@coveo/vue-cli-plugin-typescript',
-  '@coveo/angular',
+  // TODO: uncomment
+  // '@coveo/cra-template',
+  // '@coveo/vue-cli-plugin-typescript',
+  // '@coveo/angular',
   '@coveo/create-atomic',
   '@coveo/search-token-lambda',
-  '@coveo/search-token-server',
+  // '@coveo/search-token-server',
 ];
 
 function getPackageLatestVersion(packageName) {
