@@ -15,8 +15,8 @@
     "start": "plop --plopfile ./lib/plopfile.js",
     "build": "tsc",
     "prepublishOnly": "npm run build",
-    "notyet:npm:bump:template": "npm --no-git-tag-version version",
-    "notyet:npm:publish:template": "npm publish --access public --registry http://localhost:4873",
+    "npm:bump:template": "npm --no-git-tag-version version",
+    "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
     "lint": "prettier --check . && eslint ."
   },
   "keywords": [
