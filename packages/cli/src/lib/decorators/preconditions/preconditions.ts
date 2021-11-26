@@ -1,4 +1,4 @@
-import type Command from '@oclif/core';;
+import type {Command} from '@oclif/core';
 
 export type PreconditionFunction = (
   target: Command,

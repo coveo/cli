@@ -1,4 +1,4 @@
-import Command from '@oclif/core';;
+import {Command} from '@oclif/core';
 
 /**
  * This is a base class inherited by every command in the CLI
@@ -16,10 +16,10 @@ export default abstract class extends Command {
     // Send command instruction to Coveo
     await this.sendCommandToCoveo(this.id);
   }
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     // add any custom logic to handle errors from the command
     // or simply return the parent class error handling
-    return super.catch(err);
+    return super.catch(err!);
   }
 
   private async sendCommandToCoveo(commandId?: string) {

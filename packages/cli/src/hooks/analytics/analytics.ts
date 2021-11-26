@@ -1,5 +1,5 @@
 import {Event} from '@amplitude/node';
-import {IConfig} from '@oclif/config';
+import {Interfaces} from '@oclif/core';
 import {
   AuthenticatedClient,
   AuthenticationStatus,
@@ -11,7 +11,7 @@ import check from './session';
 
 export interface AnalyticsHook {
   event: Event;
-  config: IConfig;
+  config: Interfaces.Config;
   identify?: boolean;
 }
 

@@ -16,7 +16,7 @@ import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import Command from '@oclif/core';
+import {Command} from '@oclif/core';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions';
 import {PreconditionError} from '../../../lib/errors/preconditionError';
 

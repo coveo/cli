@@ -49,7 +49,7 @@ export class ReportViewer {
   private printTable() {
     const changedResources = this.reporter.getChangedResources(
       this.operationsToDisplay
-    );
+    ) as Array<ReportViewerResourceReportModel & Record<string, unknown>>;
 
     if (changedResources.length === 0) {
       cli.log(ReportViewerStyles.header('\nNo changes detected'));

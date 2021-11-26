@@ -1,5 +1,5 @@
 import {Region} from '@coveord/platform-client';
-import {flags} from '@oclif/core';;
+import {Flags} from '@oclif/core';
 import {
   DEFAULT_ENVIRONMENT,
   DEFAULT_REGION,
@@ -7,7 +7,7 @@ import {
 } from '../platform/environment';
 
 export const withRegion = (withDefault = true) => ({
-  region: flags.string({
+  region: Flags.string({
     char: 'r',
     options: Object.keys(Region),
     default: withDefault ? DEFAULT_REGION : undefined,
@@ -17,7 +17,7 @@ export const withRegion = (withDefault = true) => ({
 });
 
 export const withEnvironment = (withDefault = true) => ({
-  environment: flags.string({
+  environment: Flags.string({
     char: 'e',
     options: Object.values(PlatformEnvironment),
     default: withDefault ? DEFAULT_ENVIRONMENT : undefined,

@@ -1,4 +1,4 @@
-import Command from '@oclif/core';;
+import {Command} from '@oclif/core';
 import {green, red} from 'chalk';
 import dedent from 'ts-dedent';
 

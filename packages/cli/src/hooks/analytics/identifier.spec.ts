@@ -13,7 +13,7 @@ import {
   configurationMock,
   defaultConfiguration,
 } from '../../__stub__/configuration';
-import {IConfig} from '@oclif/config';
+import {Interfaces} from '@oclif/core';
 
 describe('identifier', () => {
   const mockedConfig = mocked(Config);
@@ -83,7 +83,7 @@ describe('identifier', () => {
   };
 
   beforeAll(() => {
-    global.config = {configDir: 'the_config_dir'} as IConfig;
+    global.config = {configDir: 'the_config_dir'} as Interfaces.Config;
   });
 
   beforeEach(() => {

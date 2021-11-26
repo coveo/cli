@@ -1,6 +1,6 @@
 jest.mock('../config/config');
 jest.mock('@coveord/platform-client');
-import {IConfig} from '@oclif/config';
+import {Interfaces} from '@oclif/core';
 import {
   AuthenticatedClient,
   AuthenticationStatus,
@@ -54,7 +54,7 @@ describe('AuthenticatedClient', () => {
   );
 
   beforeEach(() => {
-    global.config = {configDir: 'the_config_dir'} as IConfig;
+    global.config = {configDir: 'the_config_dir'} as Interfaces.Config;
   });
 
   fancyIt()(

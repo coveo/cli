@@ -2,7 +2,7 @@ import PlatformClient, {
   PrivilegeEvaluatorModel,
   PrivilegeModel,
 } from '@coveord/platform-client';
-import Command from '@oclif/core';;
+import {Command} from '@oclif/core';
 import {cli} from 'cli-ux';
 import {Config} from '../../config/config';
 import {
@@ -19,7 +19,7 @@ export function HasNecessaryCoveoPrivileges(
     this: Command,
     command: Command
   ): Promise<void | never> {
-    const {flags} = this.parse(command.ctor);
+    const {flags} = await this.parse(command.ctor);
     const authenticatedClient = new AuthenticatedClient();
     const client = await authenticatedClient.getClient();
     const {organization: target, anonymous} = await getConfiguration();

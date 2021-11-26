@@ -1,6 +1,6 @@
 jest.mock('../analytics/analytics');
 
-import type {IConfig} from '@oclif/config';
+import type {Interfaces} from '@oclif/core';
 import {mocked} from 'ts-jest/utils';
 import {fancyIt} from '../../__test__/it';
 import {flush} from '../analytics/analytics';
@@ -28,7 +28,7 @@ describe('termination-signal', () => {
     global.config = {
       configDir: 'the_config_dir',
       runHook: mockedAnalyticHook,
-    } as unknown as IConfig;
+    } as unknown as Interfaces.Config;
     handleTerminationSignals();
   });
 

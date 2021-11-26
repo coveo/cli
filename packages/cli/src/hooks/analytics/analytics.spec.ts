@@ -14,7 +14,7 @@ import {
   getAuthenticationStatus,
 } from '../../lib/platform/authenticatedClient';
 import hook, {AnalyticsHook} from './analytics';
-import {IConfig} from '@oclif/config';
+import {Interfaces} from '@oclif/core';
 import {PlatformClient} from '@coveord/platform-client';
 import {
   configurationMock,
@@ -50,7 +50,7 @@ describe('analytics_hook', () => {
           key: 'value',
         },
       },
-      config: {} as IConfig,
+      config: {} as Interfaces.Config,
       ...input,
     };
   };

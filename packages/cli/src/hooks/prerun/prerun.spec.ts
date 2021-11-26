@@ -1,5 +1,5 @@
 jest.mock('../../lib/config/config');
-import {IConfig} from '@oclif/config';
+import {Interfaces} from '@oclif/core';
 import {mocked} from 'ts-jest/utils';
 import {Config} from '../../lib/config/config';
 import {cli} from 'cli-ux';
@@ -15,7 +15,7 @@ describe('hooks:prerun', () => {
   );
 
   beforeEach(() => {
-    global.config = {configDir: 'the_config_dir'} as IConfig;
+    global.config = {configDir: 'the_config_dir'} as Interfaces.Config;
   });
 
   test
