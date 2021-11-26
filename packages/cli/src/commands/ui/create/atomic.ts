@@ -42,7 +42,6 @@ export default class Atomic extends Command {
       default: getPackageVersion(Atomic.cliPackage),
     }),
   };
-  public static hidden = true;
 
   @Trackable()
   @Preconditions(
