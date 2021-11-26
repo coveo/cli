@@ -16,6 +16,7 @@ import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {Config} from '../../../lib/config/config';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {platformUrl} from '../../../lib/platform/environment';
+import {getPackageVersion} from '../../../lib/utils/misc';
 
 interface AtomicArguments {
   name: string;
@@ -38,8 +39,7 @@ export default class Atomic extends Command {
     version: flags.string({
       char: 'v',
       description: `The version of ${Atomic.cliPackage} to use.`,
-      // default: getPackageVersion(Atomic.cliPackage), TODO: uncomment when @coveo/create-atomic added to package.json
-      default: 'latest',
+      default: getPackageVersion(Atomic.cliPackage),
     }),
   };
   public static hidden = true;
