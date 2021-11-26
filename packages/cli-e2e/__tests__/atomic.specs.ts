@@ -126,11 +126,6 @@ describe('ui:create:atomic', () => {
         waitUntil: 'networkidle2',
       });
 
-      console.log(
-        'consoleInterceptor.interceptedMessages',
-        consoleInterceptor.interceptedMessages
-      );
-
       expect(consoleInterceptor.interceptedMessages).toEqual([]);
     });
 
@@ -162,21 +157,6 @@ describe('ui:create:atomic', () => {
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
     });
 
-    // it('should send a search query on searchbox submit', async () => {
-    //   await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-    //   const searchBox = await page.waitForSelector('atomic-search-box');
-
-    //   interceptedRequests = [];
-
-    //   await page.focus(searchboxSelector);
-    //   await page.keyboard.type('my query');
-    //   await page.keyboard.press('Enter');
-
-    //   await retry(async () => {
-    //     expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-    //   });
-    // });
-
     it('should have a clean working directory', async () => {
       const gitDirtyWorkingTreeSpy = jest.fn();
 
@@ -190,74 +170,4 @@ describe('ui:create:atomic', () => {
       expect(gitDirtyWorkingTreeSpy).not.toBeCalled();
     }, 10e3);
   });
-
-  //   describe('when the .env file is missing', () => {
-  //     let serverProcessManager: ProcessManager;
-
-  //     beforeAll(async () => {
-  //       serverProcessManager = new ProcessManager();
-  //       processManagers.push(serverProcessManager);
-  //       deactivateEnvironmentFile(projectName);
-  //     });
-
-  //     afterAll(async () => {
-  //       restoreEnvironmentFile(projectName);
-  //       await serverProcessManager.killAllProcesses();
-  //     }, 30e3);
-
-  //     it(
-  //       'should not start the application',
-  //       async () => {
-  //         const missingEnvErrorSpy = jest.fn();
-
-  //         const appTerminal = await startApplication(
-  //           serverProcessManager,
-  //           'react-server-missing-env'
-  //         );
-
-  //         await appTerminal
-  //           .when(/\.env file not found in the project root/)
-  //           .on('stderr')
-  //           .do(missingEnvErrorSpy)
-  //           .once();
-
-  //         expect(missingEnvErrorSpy).toHaveBeenCalled();
-  //       },
-  //       2 * 60e3
-  //     );
-  //   });
-
-  //   describe('when required environment variables are not defined', () => {
-  //     let serverProcessManager: ProcessManager;
-  //     let envFileContent = '';
-  //     const errorMessageSelector = 'div.container';
-
-  //     beforeAll(async () => {
-  //       serverProcessManager = new ProcessManager();
-  //       processManagers.push(serverProcessManager);
-  //       envFileContent = flushEnvFile(projectName);
-  //       const appTerminal = await startApplication(
-  //         serverProcessManager,
-  //         'react-server-invalid'
-  //       );
-  //       await waitForAppRunning(appTerminal);
-  //       [clientPort, serverPort] = getAllocatedPorts();
-  //     }, 2 * 60e3);
-
-  //     afterAll(async () => {
-  //       overwriteEnvFile(projectName, envFileContent);
-  //       await serverProcessManager.killAllProcesses();
-  //     }, 30e3);
-
-  //     it('should redirect the user to an error page', async () => {
-  //       await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
-  //       const pageErrorMessage = await page.$eval(
-  //         errorMessageSelector,
-  //         (el) => el.textContent
-  //       );
-  //       expect(pageErrorMessage).toContain(
-  //         'You should have a valid .env file at the root of this project'
-  //       );
-  //     });
-  //   });
 });
