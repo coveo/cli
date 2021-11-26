@@ -2,7 +2,7 @@ import PlatformClient, {
   PrivilegeEvaluatorModel,
   PrivilegeModel,
 } from '@coveord/platform-client';
-import Command from '@oclif/command';
+import Command from '@oclif/core';;
 import {cli} from 'cli-ux';
 import {Config} from '../../config/config';
 import {

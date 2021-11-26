@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/config';
+import {Hook} from '@oclif/core';
 import {cli} from 'cli-ux';
 import {Config} from '../../lib/config/config';
 

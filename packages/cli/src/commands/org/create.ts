@@ -1,4 +1,4 @@
-import {Command, flags} from '@oclif/command';
+import {Command, Flags} from '@oclif/core';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {cli} from 'cli-ux';
 import {
@@ -15,7 +15,7 @@ export default class Create extends Command {
   public static description = 'Create a new test Coveo organization.';
 
   public static flags = {
-    setDefaultOrganization: flags.boolean({
+    setDefaultOrganization: Flags.boolean({
       char: 's',
       default: true,
       allowNo: true,
@@ -42,12 +42,12 @@ export default class Create extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     throw err;
   }
 
   private async createOrganization() {
-    const {args} = this.parse(Create);
+    const {args} = await this.parse(Create);
     const client = await new AuthenticatedClient().getClient();
     return client.organization.create({
       creationOrigin: OrganizationCreationOrigin.CLI,
@@ -57,7 +57,7 @@ export default class Create extends Command {
   }
 
   private async generateEndMessageFromOrgId(orgId: string) {
-    const {flags} = this.parse(Create);
+    const {flags} = await this.parse(Create);
     const color1 = bold.cyan;
     let color2 = bold.magenta;
     if (flags.setDefaultOrganization) {

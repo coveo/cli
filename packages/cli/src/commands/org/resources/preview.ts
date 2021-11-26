@@ -1,4 +1,4 @@
-import {Command, flags} from '@oclif/command';
+import {Command, Flags} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {cli} from 'cli-ux';
 import {cwd} from 'process';
@@ -28,7 +28,7 @@ import {
   dryRun,
   getTargetOrg,
   handleReportWithErrors,
-  handleSnapshotError,
+  // handleSnapshotError,
   DryRunOptions,
   cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
@@ -40,20 +40,20 @@ export default class Preview extends Command {
     ...wait(),
     ...sync(),
     ...previewLevel(),
-    target: flags.string({
+    target: Flags.string({
       char: 't',
       description:
         'The unique identifier of the organization where to send the changes. If not specified, the organization you are connected to will be used.',
       helpValue: 'destinationorganizationg7dg3gd',
       required: false,
     }),
-    showMissingResources: flags.boolean({
+    showMissingResources: Flags.boolean({
       char: 'd',
       description: 'Preview resources deletion when enabled',
       default: false,
       required: false,
     }),
-    snapshotId: flags.string({
+    snapshotId: Flags.string({
       char: 's',
       description:
         'The unique identifier of the snapshot to preview. If not specified, a new snapshot will be created from your local project. You can list available snapshots in your organization with org:resources:list',
@@ -70,34 +70,37 @@ export default class Preview extends Command {
     HasNecessaryCoveoPrivileges(writeSnapshotPrivilege, writeLinkPrivilege)
   )
   public async run() {
-    const {flags} = this.parse(Preview);
+    const flags = (await this.parse(Preview)).flags;
     const target = await getTargetOrg(this.configuration, flags.target);
     const cfg = await this.configuration.get();
     const {reporter, snapshot, project} = await dryRun(
       target,
       this.projectPath,
       cfg,
-      this.options
+      await this.getOptions()
     );
 
     await snapshot.preview(
       project,
-      this.options.deleteMissingResources,
-      this.shouldDisplayExpandedPreview()
+      (
+        await this.getOptions()
+      ).deleteMissingResources,
+      await this.shouldDisplayExpandedPreview()
     );
     await this.processReport(snapshot, reporter);
     await this.cleanup(snapshot, project);
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     cleanupProject(this.projectPath);
-    handleSnapshotError(err);
-    await this.displayAdditionalErrorMessage(err);
+    // handleSnapshotError(err);
+    // await this.displayAdditionalErrorMessage(err);
+    throw err;
   }
 
-  private shouldDisplayExpandedPreview() {
-    const {flags} = this.parse(Preview);
+  private async shouldDisplayExpandedPreview() {
+    const {flags} = await this.parse(Preview);
     return flags.previewLevel === PreviewLevelValue.Detailed;
   }
 
@@ -115,7 +118,7 @@ export default class Preview extends Command {
 
   private async displayAdditionalErrorMessage(err?: Error) {
     if (err instanceof SnapshotOperationTimeoutError) {
-      const {flags} = this.parse(Preview);
+      const {flags} = await this.parse(Preview);
       const snapshot = err.snapshot;
       const target = await getTargetOrg(this.configuration, flags.target);
       cli.log(
@@ -130,8 +133,8 @@ export default class Preview extends Command {
     }
   }
 
-  private get options(): DryRunOptions {
-    const {flags} = this.parse(Preview);
+  private async getOptions(): Promise<DryRunOptions> {
+    const {flags} = await this.parse(Preview);
     return {
       deleteMissingResources: flags.showMissingResources,
       waitUntilDone: {wait: flags.wait},

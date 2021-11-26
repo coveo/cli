@@ -1,4 +1,4 @@
-import Command, {flags} from '@oclif/command';
+import {Command, Flags} from '@oclif/core';
 import {readJSONSync, writeJSONSync} from 'fs-extra';
 import {join, resolve} from 'path';
 import {
@@ -32,7 +32,7 @@ export class New extends Command {
   public static description = 'description of this example command';
 
   public static flags = {
-    template: flags.string({
+    template: Flags.string({
       char: 't',
       description: 'The template to use while creating the pull model',
       helpValue: 'full|empty|path/to/existing/model.json',
@@ -47,14 +47,12 @@ export class New extends Command {
     },
   ];
 
-  private get flags() {
-    const {flags} = this.parse(New);
-    return flags;
+  private async getFlags() {
+    return (await this.parse(New)).flags;
   }
 
-  private get args() {
-    const {args} = this.parse(New);
-    return args;
+  private async getArgs() {
+    return (await this.parse(New)).args;
   }
 
   private modelToWrite: SnapshotPullModel | undefined;
@@ -63,16 +61,16 @@ export class New extends Command {
   @Trackable({eventName: 'org resources pull new model'})
   @Preconditions(IsAuthenticated())
   public async run() {
-    this.handleTemplate();
+    await this.handleTemplate();
     if (await this.shouldStartInteractive()) {
       await this.startInteractiveSession();
     }
     validateSnapshotPullModel(this.modelToWrite, true);
-    this.writeTemplate();
+    await this.writeTemplate();
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     throw err;
   }
 
@@ -151,8 +149,9 @@ export class New extends Command {
     return promptAnswers[promptName];
   }
 
-  private handleTemplate() {
-    switch (this.flags.template) {
+  private async handleTemplate() {
+    const flags = await this.getFlags();
+    switch (flags.template) {
       case PredefinedTemplates.Full:
         this.copyTemplate(fullTemplate);
         break;
@@ -164,7 +163,7 @@ export class New extends Command {
       case null:
         break;
       default:
-        this.handleCustomTemplate(this.flags.template);
+        this.handleCustomTemplate(flags.template);
         break;
     }
   }
@@ -192,10 +191,11 @@ export class New extends Command {
     this.modelToWrite = starterJson;
   }
 
-  private writeTemplate() {
+  private async writeTemplate() {
+    const args = await this.getArgs();
     let outputFilePath = '';
-    if (/\/\\/.test(this.args.name)) {
-      outputFilePath = resolve(this.args.name);
+    if (/\/\\/.test(args.name)) {
+      outputFilePath = resolve(args.name);
     } else {
       const project = new Project(cwd());
       outputFilePath = join(project.pathToProject, 'pullModels');

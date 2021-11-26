@@ -1,4 +1,4 @@
-import {Command} from '@oclif/command';
+import {Command} from '@oclif/core';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {cli} from 'cli-ux';
 import {
@@ -6,25 +6,29 @@ import {
   IsAuthenticated,
 } from '../../lib/decorators/preconditions/';
 import {Trackable} from '../../lib/decorators/preconditions/trackable';
+import {OrganizationModel} from '@coveord/platform-client';
 
 export default class List extends Command {
   public static description = 'List Coveo organizations.';
 
-  public static flags = {
+  public static flags: typeof cli.table.Flags = {
     ...cli.table.flags(),
   };
 
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
-    const {flags} = this.parse(List);
-    const orgs = await new AuthenticatedClient().getAllOrgsUserHasAccessTo();
+    const {flags} = await this.parse(List);
+    const orgs =
+      (await new AuthenticatedClient().getAllOrgsUserHasAccessTo()) as Array<
+        OrganizationModel & Record<string, undefined>
+      >;
     if (orgs.length === 0) {
       this.log(
         'You do not have access to any organization. Make sure you are logged in the correct environment and region, with coveo auth:login'
       );
     } else {
-      cli.table(
+      cli.table<OrganizationModel & Record<string, undefined>>(
         orgs,
         {
           id: {},
@@ -47,7 +51,7 @@ export default class List extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     throw err;
   }
 }

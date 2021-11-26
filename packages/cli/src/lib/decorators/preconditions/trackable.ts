@@ -1,7 +1,6 @@
-import type Command from '@oclif/command';
+import {Command} from '@oclif/core';
 import {flush} from '../../../hooks/analytics/analytics';
 import {buildError, buildEvent} from '../../../hooks/analytics/eventUtils';
-
 export interface TrackableOptions {
   /**
    * Event name used to identify the command.

@@ -1,4 +1,4 @@
-import {Command, flags} from '@oclif/command';
+import {Command, Flags} from '@oclif/core';
 import {Config} from '../../lib/config/config';
 import {OAuth} from '../../lib/oauth/oauth';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
@@ -17,7 +17,7 @@ export default class Login extends Command {
   public static flags = {
     ...withRegion(),
     ...withEnvironment(),
-    organization: flags.string({
+    organization: Flags.string({
       char: 'o',
       description:
         'The identifier of the organization to log in to. If not specified, the CLI logs you in to the first available organization. See also commands `config:get`, `config:set`, and `org:list`.',
@@ -36,7 +36,7 @@ export default class Login extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     throw err;
   }
 
@@ -55,7 +55,7 @@ export default class Login extends Command {
   }
 
   private async loginAndPersistToken() {
-    const flags = this.flags;
+    const flags = await this.getFlags();
     const {accessToken} = await new OAuth({
       environment: flags.environment as PlatformEnvironment,
       region: flags.region as Region,
@@ -64,14 +64,14 @@ export default class Login extends Command {
   }
 
   private async persistRegionAndEnvironment() {
-    const flags = this.flags;
+    const flags = await this.getFlags();
     const cfg = this.configuration;
     await cfg.set('environment', flags.environment as PlatformEnvironment);
     await cfg.set('region', flags.region as Region);
   }
 
   private async persistOrganization() {
-    const flags = this.flags;
+    const flags = await this.getFlags();
     const cfg = this.configuration;
 
     if (flags.organization) {
@@ -93,13 +93,12 @@ export default class Login extends Command {
     return orgs[0]?.id;
   }
 
-  private get flags() {
-    const {flags} = this.parse(Login);
-    return flags;
+  private async getFlags() {
+    return (await this.parse(Login)).flags;
   }
 
   private async verifyOrganization() {
-    const flags = this.flags;
+    const flags = await this.getFlags();
     const authenticatedClient = new AuthenticatedClient();
 
     if (flags.organization) {

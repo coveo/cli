@@ -1,6 +1,7 @@
 import {ResourceSnapshotType} from '@coveord/platform-client';
-import {flags, Command} from '@oclif/command';
-import {IOptionFlag} from '@oclif/command/lib/flags';
+import {Command, Flags} from '@oclif/core';
+import {OptionFlag} from '@oclif/core/lib/interfaces';
+
 import {blueBright} from 'chalk';
 import {cli} from 'cli-ux';
 import {cwd} from 'process';
@@ -20,7 +21,7 @@ import {Project} from '../../../lib/project/project';
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {
   getTargetOrg,
-  handleSnapshotError,
+  // handleSnapshotError,
   cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
@@ -31,35 +32,35 @@ export default class Pull extends Command {
 
   public static flags = {
     ...wait(),
-    target: flags.string({
+    target: Flags.string({
       char: 't',
       helpValue: 'destinationorganizationg7dg3gd',
       required: false,
       description:
         'The unique identifier of the organization from which to pull the resources. If not specified, the organization you are connected to will be used.',
     }),
-    resourceTypes: flags.string({
+    resourceTypes: Flags.string({
       char: 'r',
       helpValue: 'type1 type2',
       options: Object.keys(ResourceSnapshotType),
       default: Object.keys(ResourceSnapshotType),
       multiple: true,
       description: 'The resources types to pull from the organization.',
-    }) as IOptionFlag<(keyof typeof ResourceSnapshotType)[]>,
-    snapshotId: flags.string({
+    }) as OptionFlag<(keyof typeof ResourceSnapshotType)[]>,
+    snapshotId: Flags.string({
       char: 's',
       exclusive: ['resourceTypes'],
       description:
         'The unique identifier of the snapshot to pull. If not specified, a new snapshot will be created. You can list available snapshot in your organization with org:resources:list',
     }),
-    git: flags.boolean({
+    git: Flags.boolean({
       char: 'g',
       description:
         'Whether to create a git repository when creating a new project.',
       default: true,
       allowNo: true,
     }),
-    overwrite: flags.boolean({
+    overwrite: Flags.boolean({
       char: 'o',
       description: 'Overwrite resources directory if it exists.',
       default: false,
@@ -88,15 +89,16 @@ export default class Pull extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     cleanupProject(this.projectPath);
-    handleSnapshotError(err);
-    await this.displayAdditionalErrorMessage(err);
+    // handleSnapshotError(err);
+    // await this.displayAdditionalErrorMessage(err);
+    throw err;
   }
 
   private async displayAdditionalErrorMessage(err?: Error) {
     if (err instanceof SnapshotOperationTimeoutError) {
-      const {flags} = this.parse(Pull);
+      const {flags} = await this.parse(Pull);
       const snapshot = err.snapshot;
       const target = await getTargetOrg(this.configuration, flags.target);
       cli.log(
@@ -112,7 +114,7 @@ export default class Pull extends Command {
   }
 
   private async refreshProject(project: Project, snapshot: Snapshot) {
-    const {flags} = this.parse(Pull);
+    const {flags} = await this.parse(Pull);
     if (flags.git && !project.contains('.git')) {
       await spawnProcess('git', ['init', `${this.projectPath}`], {
         stdio: 'ignore',
@@ -123,7 +125,7 @@ export default class Pull extends Command {
   }
 
   private async ensureProjectReset(project: Project) {
-    const {flags} = this.parse(Pull);
+    const {flags} = await this.parse(Pull);
     if (!flags.overwrite && project.contains(Project.resourceFolderName)) {
       const overwrite =
         await cli.confirm(dedent`There is already a Coveo project with resources in it.
@@ -138,26 +140,26 @@ export default class Pull extends Command {
   }
 
   private async getSnapshot() {
-    const {flags} = this.parse(Pull);
+    const {flags} = await this.parse(Pull);
     const target = await getTargetOrg(this.configuration, flags.target);
     if (flags.snapshotId) {
       cli.action.start('Retrieving Snapshot');
       return SnapshotFactory.createFromExistingSnapshot(
         flags.snapshotId,
         target,
-        this.waitOption
+        await this.getWaitOption()
       );
     }
     cli.action.start('Creating Snapshot');
     return SnapshotFactory.createFromOrg(
-      this.resourceSnapshotTypesToExport,
+      await this.getResourceSnapshotTypesToExport(),
       target,
-      this.waitOption
+      await this.getWaitOption()
     );
   }
 
-  private get waitOption(): WaitUntilDoneOptions {
-    const {flags} = this.parse(Pull);
+  private async getWaitOption(): Promise<WaitUntilDoneOptions> {
+    const {flags} = await this.parse(Pull);
     return {wait: flags.wait};
   }
 
@@ -165,9 +167,11 @@ export default class Pull extends Command {
     return new Config(this.config.configDir, this.error);
   }
 
-  private get resourceSnapshotTypesToExport() {
-    const {flags} = this.parse(Pull);
-    return flags.resourceTypes.map((type) => ResourceSnapshotType[type]);
+  private async getResourceSnapshotTypesToExport() {
+    const {flags} = await this.parse(Pull);
+    return flags.resourceTypes.map(
+      (type) => ResourceSnapshotType[type] as ResourceSnapshotType
+    );
   }
 
   private get projectPath() {

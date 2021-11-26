@@ -1,4 +1,4 @@
-import {Command, flags} from '@oclif/command';
+import {Command, Flags} from '@oclif/core';
 import {platformUrl} from '../../../lib/platform/environment';
 import {Config} from '../../../lib/config/config';
 import {spawnProcess} from '../../../lib/utils/process';
@@ -33,12 +33,12 @@ export default class Angular extends Command {
     'Create a Coveo Headless-powered search page with the Angular web framework. See <https://docs.coveo.com/headless> and <https://angular.io/>.';
 
   public static flags = {
-    version: flags.string({
+    version: Flags.string({
       char: 'v',
       description: `The version of ${Angular.templateName} to use.`,
       default: getPackageVersion(Angular.templateName),
     }),
-    defaults: flags.boolean({
+    defaults: Flags.boolean({
       char: 'd',
       description:
         'Whether to automatically select the default value for all prompts that have a default value.',
@@ -65,7 +65,7 @@ export default class Angular extends Command {
     HasNecessaryCoveoPrivileges(createApiKeyPrivilege, impersonatePrivilege)
   )
   public async run() {
-    const {args, flags} = this.parse(Angular);
+    const {args, flags} = await this.parse(Angular);
     await this.createProject(args.name, flags.defaults);
     await this.addCoveoToProject(args.name, flags.defaults);
     this.displayFeedbackAfterSuccess(args.name);
@@ -83,11 +83,10 @@ export default class Angular extends Command {
 
   private async addCoveoToProject(applicationName: string, defaults: boolean) {
     const cfg = await this.configuration.get();
-    const args = this.args;
+    const {args, flags} = await this.parse(Angular);
     const authenticatedClient = new AuthenticatedClient();
     const userInfo = await authenticatedClient.getUserInfo();
     const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
-    const flags = this.flags;
     const schematicVersion =
       flags.version || getPackageVersion(Angular.templateName);
 
@@ -117,22 +116,12 @@ export default class Angular extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     throw err;
   }
 
   private get configuration() {
     return new Config(this.config.configDir, this.error);
-  }
-
-  private get flags() {
-    const {flags} = this.parse(Angular);
-    return flags;
-  }
-
-  private get args() {
-    const {args} = this.parse(Angular);
-    return args;
   }
 
   private displayFeedbackAfterSuccess(name: string) {

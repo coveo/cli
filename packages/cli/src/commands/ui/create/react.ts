@@ -1,4 +1,4 @@
-import {Command, flags} from '@oclif/command';
+import {Command, Flags} from '@oclif/core';
 import {Config} from '../../../lib/config/config';
 import {platformUrl} from '../../../lib/platform/environment';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
@@ -44,7 +44,7 @@ export default class React extends Command {
   ];
 
   public static flags = {
-    version: flags.string({
+    version: Flags.string({
       char: 'v',
       description: `Version of ${React.templateName} to use.`,
       default: getPackageVersion(React.templateName),
@@ -70,18 +70,16 @@ export default class React extends Command {
     HasNecessaryCoveoPrivileges(createApiKeyPrivilege, impersonatePrivilege)
   )
   public async run() {
-    const args = this.args;
-    await this.createProject(args.name);
+    await this.createProject();
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     throw err;
   }
 
-  private async createProject(name: string) {
-    const flags = this.flags;
-    const args = this.args;
+  private async createProject() {
+    const {flags, args} = await this.parse(React);
     const cfg = this.configuration.get();
     const authenticatedClient = new AuthenticatedClient();
     const userInfo = await authenticatedClient.getUserInfo();
@@ -97,7 +95,7 @@ export default class React extends Command {
     };
 
     const exitCode = await this.runReactCliCommand(
-      [name, '--template', `${React.templateName}@${templateVersion}`],
+      [args.name, '--template', `${React.templateName}@${templateVersion}`],
       env
     );
 
@@ -120,15 +118,5 @@ export default class React extends Command {
 
   private get configuration() {
     return new Config(this.config.configDir, this.error);
-  }
-
-  private get flags() {
-    const {flags} = this.parse(React);
-    return flags;
-  }
-
-  private get args() {
-    const {args} = this.parse(React);
-    return args;
   }
 }

@@ -1,5 +1,5 @@
 import {Region} from '@coveord/platform-client';
-import {flags} from '@oclif/command';
+import {flags} from '@oclif/core';;
 import {
   DEFAULT_ENVIRONMENT,
   DEFAULT_REGION,

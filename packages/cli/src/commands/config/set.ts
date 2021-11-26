@@ -1,4 +1,4 @@
-import {Command, flags} from '@oclif/command';
+import {Command, Flags} from '@oclif/core';
 import {Config} from '../../lib/config/config';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {
@@ -18,13 +18,13 @@ export default class Set extends Command {
   public static flags = {
     ...withRegion(false),
     ...withEnvironment(false),
-    organization: flags.string({
+    organization: Flags.string({
       char: 'o',
       description:
         'The identifier of the organization inside which to perform operations. See <https://docs.coveo.com/en/1562/#organization-id-and-other-information>.',
       helpValue: 'myOrgID',
     }),
-    analytics: flags.string({
+    analytics: Flags.string({
       char: 'a',
       options: ['y', 'n'],
       description: 'Whether to enable analytics and telemetry tracking.',
@@ -34,7 +34,7 @@ export default class Set extends Command {
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
-    const {flags} = this.parse(Set);
+    const flags = (await this.parse(Set)).flags;
     if (Object.entries(flags).length === 0) {
       throw new InvalidCommandError('Command should contain at least 1 flag');
     }
@@ -57,7 +57,7 @@ export default class Set extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     throw err;
   }
 

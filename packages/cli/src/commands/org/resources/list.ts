@@ -1,4 +1,4 @@
-import {Command, flags} from '@oclif/command';
+import {Command, Flags} from '@oclif/core';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '../../../lib/config/config';
@@ -9,13 +9,16 @@ import {
 } from '../../../lib/decorators/preconditions';
 import dedent from 'ts-dedent';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {ResourceSnapshotsModel} from '@coveord/platform-client';
 
 export default class List extends Command {
   public static description = 'List available snapshots from an organization';
 
-  public static flags = {
+  public static flags: typeof cli.table.Flags & {
+    target: ReturnType<typeof Flags.string>;
+  } = {
     ...cli.table.flags(),
-    target: flags.string({
+    target: Flags.string({
       char: 't',
       description:
         'The unique identifier of the organization containing the snapshots. If not specified, the organization you are connected to will be used.',
@@ -29,12 +32,14 @@ export default class List extends Command {
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
-    const {flags} = this.parse(List);
+    const flags = await (await this.parse(List)).flags;
     const org = await getTargetOrg(this.configuration, flags.target);
     const platformClient = await new AuthenticatedClient().getClient({
       organization: org,
     });
-    const snapshots = await platformClient.resourceSnapshot.list();
+    const snapshots = (await platformClient.resourceSnapshot.list()) as Array<
+      ResourceSnapshotsModel & Record<string, unknown>
+    >;
     if (snapshots.length === 0) {
       this.log(
         dedent(
@@ -62,7 +67,7 @@ export default class List extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     throw err;
   }
 }

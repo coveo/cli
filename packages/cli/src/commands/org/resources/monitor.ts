@@ -1,5 +1,5 @@
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
-import {flags, Command} from '@oclif/command';
+import {Command, Flags} from '@oclif/core';
 import {cli} from 'cli-ux';
 import {Config} from '../../../lib/config/config';
 import {
@@ -12,7 +12,7 @@ import {ReportViewerStyles} from '../../../lib/snapshot/reportPreviewer/reportPr
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {
   getTargetOrg,
-  handleSnapshotError,
+  // handleSnapshotError,
   handleReportWithErrors,
 } from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
@@ -23,7 +23,7 @@ export default class Monitor extends Command {
 
   public static flags = {
     ...wait(),
-    target: flags.string({
+    target: Flags.string({
       char: 't',
       description:
         'The unique identifier of the organization containing the snapshot. If not specified, the organization you are connected to will be used.',
@@ -53,14 +53,14 @@ export default class Monitor extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Error) {
-    handleSnapshotError(err);
+  public async catch(err?: Record<string, unknown>) {
+    throw err;
   }
 
   private async monitorSnapshot(snapshot: Snapshot) {
     const reporter = new SnapshotReporter(snapshot.latestReport);
     cli.action.start(`Operation ${reporter.type}`, reporter.status);
-    await snapshot.waitUntilDone(this.waitOption);
+    await snapshot.waitUntilDone(await this.getWaitOption());
     await this.displayMonitorResult(snapshot, reporter);
   }
 
@@ -75,8 +75,8 @@ export default class Monitor extends Command {
     }
   }
 
-  private printHeader() {
-    const {args} = this.parse(Monitor);
+  private async printHeader() {
+    const {args} = await this.parse(Monitor);
     const snapshotId = args.snapshotId;
     const header = ReportViewerStyles.header(
       `Monitoring snapshot ${snapshotId}`
@@ -91,15 +91,15 @@ export default class Monitor extends Command {
   }
 
   private async getSnapshot(): Promise<Snapshot> {
-    const {args, flags} = this.parse(Monitor);
+    const {args, flags} = await this.parse(Monitor);
     const snapshotId = args.snapshotId;
     const target = await getTargetOrg(this.configuration, flags.target);
 
     return SnapshotFactory.createFromExistingSnapshot(snapshotId, target);
   }
 
-  private get waitOption(): WaitUntilDoneOptions {
-    const {flags} = this.parse(Monitor);
+  private async getWaitOption(): Promise<WaitUntilDoneOptions> {
+    const flags = (await this.parse(Monitor)).flags;
     return {
       wait: flags.wait,
       // TODO: revisit with a progress bar once the response contains the remaining resources to process

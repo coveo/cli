@@ -1,4 +1,4 @@
-import Command from '@oclif/command';
+import Command from '@oclif/core';;
 
 /**
  * This is a base class inherited by every command in the CLI

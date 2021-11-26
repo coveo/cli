@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/config';
+import {Hook} from '@oclif/core';
 import {buildEvent} from '../analytics/eventUtils';
 
 const hook: Hook<'command_not_found'> = async function (options) {

@@ -1,5 +1,5 @@
 import {cli} from 'cli-ux';
-import {flags, Command} from '@oclif/command';
+import {Command, Flags} from '@oclif/core';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
@@ -12,7 +12,7 @@ import {
   dryRun,
   getTargetOrg,
   handleReportWithErrors,
-  handleSnapshotError,
+  // handleSnapshotError,
   cleanupProject,
   DryRunOptions,
 } from '../../../lib/snapshot/snapshotCommon';
@@ -39,20 +39,20 @@ export default class Push extends Command {
     ...wait(),
     ...sync(),
     ...previewLevel(),
-    target: flags.string({
+    target: Flags.string({
       char: 't',
       description:
         'The unique identifier of the organization where to send the changes. If not specified, the organization you are connected to will be used.',
       helpValue: 'destinationorganizationg7dg3gd',
       required: false,
     }),
-    deleteMissingResources: flags.boolean({
+    deleteMissingResources: Flags.boolean({
       char: 'd',
       description: 'Delete missing resources when enabled',
       default: false,
       required: false,
     }),
-    skipPreview: flags.boolean({
+    skipPreview: Flags.boolean({
       char: 's',
       description:
         'Do not preview changes before applying them to the organization',
@@ -69,21 +69,23 @@ export default class Push extends Command {
     HasNecessaryCoveoPrivileges(writeSnapshotPrivilege, writeLinkPrivilege)
   )
   public async run() {
-    const {flags} = this.parse(Push);
+    const {flags} = await this.parse(Push);
     const target = await getTargetOrg(this.configuration, flags.target);
     const cfg = await this.configuration.get();
     const {reporter, snapshot, project} = await dryRun(
       target,
       this.projectPath,
       cfg,
-      this.options
+      await this.getOptions()
     );
 
     if (!flags.skipPreview) {
       await snapshot.preview(
         project,
-        this.options.deleteMissingResources,
-        this.shouldDisplayExpandedPreview()
+        (
+          await this.getOptions()
+        ).deleteMissingResources,
+        await this.shouldDisplayExpandedPreview()
       );
     }
 
@@ -92,13 +94,14 @@ export default class Push extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     cleanupProject(this.projectPath);
-    handleSnapshotError(err);
+    // handleSnapshotError(err);
+    throw err;
   }
 
-  private shouldDisplayExpandedPreview() {
-    const {flags} = this.parse(Push);
+  private async shouldDisplayExpandedPreview() {
+    const {flags} = await this.parse(Push);
     return flags.previewLevel === PreviewLevelValue.Detailed;
   }
 
@@ -126,7 +129,7 @@ export default class Push extends Command {
       return;
     }
 
-    const {flags} = this.parse(Push);
+    const {flags} = await this.parse(Push);
     const canBeApplied = flags.skipPreview || (await this.askForConfirmation());
 
     if (canBeApplied) {
@@ -135,7 +138,7 @@ export default class Push extends Command {
   }
 
   private async askForConfirmation() {
-    const {flags} = this.parse(Push);
+    const {flags} = await this.parse(Push);
     const target = await getTargetOrg(this.configuration, flags.target);
     const canBeApplied = await cli.confirm(
       `\nWould you like to apply these changes to the org ${bold(
@@ -147,10 +150,12 @@ export default class Push extends Command {
 
   private async applySnapshot(snapshot: Snapshot) {
     cli.action.start('Applying snapshot');
-    const {flags} = this.parse(Push);
+    const {flags} = await this.parse(Push);
     const reporter = await snapshot.apply(
       flags.deleteMissingResources,
-      this.options.waitUntilDone
+      (
+        await this.getOptions()
+      ).waitUntilDone
     );
     const success = reporter.isSuccessReport();
 
@@ -162,8 +167,8 @@ export default class Push extends Command {
     cli.action.stop(success ? green('✔') : red.bold('!'));
   }
 
-  private get options(): DryRunOptions {
-    const {flags} = this.parse(Push);
+  private async getOptions(): Promise<DryRunOptions> {
+    const {flags} = await this.parse(Push);
     return {
       deleteMissingResources: flags.deleteMissingResources,
       waitUntilDone: {wait: flags.wait},

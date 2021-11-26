@@ -1,6 +1,6 @@
 import {FilterHostType, SourceModel} from '@coveord/platform-client';
 import {cli} from 'cli-ux';
-import {Command} from '@oclif/command';
+import {Command} from '@oclif/core';
 import {
   IsAuthenticated,
   Preconditions,
@@ -13,14 +13,14 @@ export default class SourcePushList extends Command {
   public static description =
     'List all available push sources in your Coveo organization';
 
-  public static flags = {
+  public static flags: typeof cli.table.Flags = {
     ...cli.table.flags(),
   };
 
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
-    const {flags} = this.parse(SourcePushList);
+    const {flags} = await this.parse(SourcePushList);
     const authenticatedClient = new AuthenticatedClient();
     const org = (await authenticatedClient.cfg.get()).organization;
     const platformClient = await authenticatedClient.getClient();
@@ -58,7 +58,7 @@ export default class SourcePushList extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     throw err;
   }
 

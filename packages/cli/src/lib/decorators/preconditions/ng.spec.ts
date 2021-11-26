@@ -9,7 +9,7 @@ import {getFakeCommand} from './testsUtils/utils';
 import {cli} from 'cli-ux';
 
 import {IsNgVersionInRange} from './ng';
-import type {Command} from '@oclif/command';
+import type {Command} from '@oclif/core';;
 import {appendCmdIfWindows} from '../../utils/os';
 import {getPackageVersion} from '../../utils/misc';
 import {fancyIt} from '../../../__test__/it';
