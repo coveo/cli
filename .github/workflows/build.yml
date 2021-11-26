@@ -36,19 +36,12 @@ jobs:
           node-version: ${{matrix.node}}
       - name: Setup repo
         run: npm run setup
-      - name: Check linting
-        run: npm run lint
-      - name: Tests
-        run: npm run test
       - name: Build CLI
         working-directory: ./packages/cli
         run: npm run build
       - name: End-to-end Tests
         if: ${{matrix.os == 'ubuntu-latest'}}
         run: bash packages/cli-e2e/entrypoints/ci.sh
-      - name: End-to-end Tests
-        if: ${{matrix.os == 'windows-latest'}}
-        run: packages/cli-e2e/entrypoints/ci.ps1
       - name: Delete test org
         if: always()
         run: node ./scripts/delete-org.js
