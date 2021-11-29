@@ -7,14 +7,7 @@ const {spawnSync} = require('child_process');
  * The following packages will be published before every E2E test
  * with a version matching this format: 0.0.x
  */
-const packagesToWait = [
-  '@coveo/cra-template',
-  '@coveo/vue-cli-plugin-typescript',
-  '@coveo/angular',
-  '@coveo/create-atomic',
-  '@coveo/search-token-lambda',
-  '@coveo/search-token-server',
-];
+const packagesToWait = ['@coveo/create-atomic', '@coveo/search-token-lambda'];
 
 function getPackageLatestVersion(packageName) {
   const ciTestVersion = spawnSync('npm', ['show', packageName, 'version']);

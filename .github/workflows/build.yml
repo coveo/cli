@@ -34,12 +34,6 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: ${{matrix.node}}
-      - name: Setup repo
-        run: npm run setup
-      - name: Check linting
-        run: npm run lint
-      - name: Tests
-        run: npm run test
       - name: Build CLI
         working-directory: ./packages/cli
         run: npm run build

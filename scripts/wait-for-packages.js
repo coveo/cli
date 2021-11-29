@@ -3,14 +3,7 @@ const {get} = require('axios');
 const {readFileSync} = require('fs');
 const retry = require('async-retry');
 
-const publicPackages = [
-  '@coveo/search-token-server',
-  '@coveo/angular',
-  '@coveo/cra-template',
-  '@coveo/vue-cli-plugin-typescript',
-  '@coveo/search-token-lambda',
-  '@coveo/create-atomic',
-];
+const publicPackages = ['@coveo/search-token-lambda', '@coveo/create-atomic'];
 
 function getExpectedVersion() {
   const lernaJson = JSON.parse(readFileSync('lerna.json', {encoding: 'utf8'}));
