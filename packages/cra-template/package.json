@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cra-template",
-  "version": "1.21.0",
+  "version": "1.21.1",
   "scripts": {
     "lint": "prettier --check . && eslint .",
     "npm:bump:template": "npm --no-git-tag-version version",
