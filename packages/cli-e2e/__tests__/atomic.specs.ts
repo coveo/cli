@@ -19,7 +19,7 @@ describe('ui:create:atomic', () => {
 
   const waitForAppRunning = (appTerminal: Terminal) =>
     appTerminal
-      .when(/Server now ready/)
+      .when(/Project is running/)
       .on('stdout')
       .do()
       .once();
