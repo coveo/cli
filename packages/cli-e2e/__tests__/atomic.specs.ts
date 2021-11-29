@@ -5,7 +5,6 @@ import {isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
-import {isDirectoryClean} from '../utils/git';
 import {npm} from '../utils/windows';
 import {jwtTokenPattern} from '../utils/matcher';
 
@@ -156,18 +155,5 @@ describe('ui:create:atomic', () => {
 
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
     });
-
-    it('should have a clean working directory', async () => {
-      const gitDirtyWorkingTreeSpy = jest.fn();
-
-      await isDirectoryClean(
-        serverProcessManager,
-        getProjectPath(projectName),
-        projectName,
-        gitDirtyWorkingTreeSpy
-      );
-
-      expect(gitDirtyWorkingTreeSpy).not.toBeCalled();
-    }, 10e3);
   });
 });
