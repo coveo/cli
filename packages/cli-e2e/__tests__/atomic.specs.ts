@@ -65,7 +65,7 @@ describe('ui:create:atomic', () => {
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
     await buildProcessManager.killAllProcesses();
-  }, 15 * 60e3);
+  }, 20 * 60e3);
 
   beforeEach(async () => {
     jest.resetModules();
@@ -83,7 +83,7 @@ describe('ui:create:atomic', () => {
     await Promise.all(
       processManagers.map((manager) => manager.killAllProcesses())
     );
-  });
+  }, 5 * 60e3);
 
   describe('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
@@ -99,7 +99,7 @@ describe('ui:create:atomic', () => {
         'atomic-server-valid'
       );
       await waitForAppRunning(appTerminal);
-    }, 2 * 60e3);
+    }, 15 * 60e3);
 
     beforeEach(async () => {
       consoleInterceptor = new BrowserConsoleInterceptor(page, projectName);
@@ -126,7 +126,7 @@ describe('ui:create:atomic', () => {
       });
 
       expect(consoleInterceptor.interceptedMessages).toEqual([]);
-    });
+    }, 60e3);
 
     it('should contain a search page section', async () => {
       await page.goto(searchPageEndpoint, {
@@ -134,7 +134,7 @@ describe('ui:create:atomic', () => {
       });
 
       expect(await page.$(searchInterfaceSelector)).not.toBeNull();
-    });
+    }, 60e3);
 
     it('should retrieve the search token on the page load', async () => {
       const tokenResponseListener = page.waitForResponse(tokenServerEndpoint);
@@ -147,13 +147,13 @@ describe('ui:create:atomic', () => {
       ).toMatchObject({
         token: expect.stringMatching(jwtTokenPattern),
       });
-    });
+    }, 60e3);
 
     it('should send a search query when the page is loaded', async () => {
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchInterfaceSelector);
 
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-    });
+    }, 60e3);
   });
 });
