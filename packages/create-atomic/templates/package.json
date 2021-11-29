@@ -3,22 +3,21 @@
   "description": "{{titleCase project}} project",
   "version": "0.1.0",
   "scripts": {
-    "postinstall": "npm run setup-server && npm run setup-cleanup",
-    "setup-server": "node ./scripts/setup-server.js",
+    "postinstall": "npm run setup-lambda && npm run setup-cleanup",
+    "setup-lambda": "node ./scripts/setup-lambda.js",
     "setup-cleanup": "node ./scripts/clean-up.js",
-    "start-server": "node ./scripts/start-server.js",
-    "allocate-port": "node ./scripts/port-allocator.mjs",
     "build": "NODE_ENV=production webpack",
-    "start": "npm run allocate-port && concurrently --raw \"npm run start-server\" \"webpack serve\""
+    "start": "netlify dev",
+    "dev:live": "npm run site:link && netlify dev --live",
+    "site:init": "netlify init",
+    "site:link": "netlify link",
+    "site:deploy": "npm run site:link && npm run build && netlify env:import .env && netlify deploy --prod --open"
   },
   "dependencies": {
     "@coveo/atomic": "latest",
-    "@coveo/search-token-server": "latest",
-    "get-port": "^5.1.1",
-    "dotenv": "10.0.0"
+    "@coveo/search-token-lambda": "latest"
   },
   "devDependencies": {
-    "concurrently": "6.4.0",
     "css-loader": "^6.5.1",
     "dotenv-webpack": "^7.0.3",
     "fs-extra": "10.0.0",
@@ -26,6 +25,7 @@
     "html-loader": "^3.0.1",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.4.4",
+    "netlify-cli": "^8.0.3",
     "style-loader": "^3.3.1",
     "ts-loader": "^9.2.6",
     "webpack": "^5.64.0",

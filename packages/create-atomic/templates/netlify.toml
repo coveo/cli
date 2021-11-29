@@ -1,0 +1,8 @@
+[build]
+    functions = "lambda/functions/"
+    publish = "dist/"
+
+[dev]
+    command = "webpack serve --port 50021"
+    targetPort = 50021
+    framework = "#custom"
