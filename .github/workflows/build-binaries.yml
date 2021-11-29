@@ -61,7 +61,7 @@ jobs:
           Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win/coveo-${{env.tag}}-x64.exe" -PassThru | Wait-Process
           Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win/coveo-${{env.tag}}-x86.exe" -PassThru | Wait-Process
       - name: Upload binaries
-        uses: svenstaro/upload-release-action@1d71c233f746f1dbd928efaf6de63056aa65f6eb
+        uses: svenstaro/upload-release-action@483c1e56f95e88835747b1c7c60581215016cbf2 # renovate: tag=v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./packages/cli/dist/**/*
