@@ -8,7 +8,7 @@ The root folder should contain a `.env` file. Replace all placeholder variables 
 
 ### CDN
 
-By default, the project installs the latest major Atomic version, v1, to allow types and more advanced customizations. [Coveo Headless](https://www.npmjs.com/package/@coveo/headless) is also bundled with Atomci and accessible at `@coveo/atomic/headless`
+By default, the project installs the latest major Atomic version, v1, to allow types and more advanced customizations. [Coveo Headless](https://www.npmjs.com/package/@coveo/headless) is also bundled with Atomic and accessible at `@coveo/atomic/headless`
 
 When running, the app will use the Atomic Coveo CDN with the deployed v1, at [https://static.cloud.coveo.com/atomic/v1/](https://static.cloud.coveo.com/atomic/v1/atomic.esm.js).
 
