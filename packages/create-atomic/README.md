@@ -25,4 +25,4 @@ npm install -g @coveo/create-atomic
 create-atomic myapp
 ```
 
-Running the project directly, you will be prompted in order to fill out your organization's authentication information.
+If you run the project directly, you will be prompted to fill out your organization's authentication information.
