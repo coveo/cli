@@ -34,7 +34,7 @@
     "jsonschema": "^1.4.0",
     "node-machine-id": "^1.1.12",
     "open": "^8.4.0",
-    "patch-package": "^6.2.2",
+    "patch-package": "^6.4.7",
     "semver": "^7.3.4",
     "ts-dedent": "^2.1.1",
     "tslib": "^2"
