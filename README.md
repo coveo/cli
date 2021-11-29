@@ -8,7 +8,7 @@
 
 ## About
 
-Coveo CLI is a command line interface to interact with the Coveo platform. It allows you to quickly create a [Coveo Headless](https://docs.coveo.com/headless)-powered search page for your Coveo organization, relying on [Angular](https://angular.io), [React](https://reactjs.org/) or [Vue.js](https://vuejs.org/).
+Coveo CLI is a command line interface to interact with the Coveo platform. With this tool, you are able to create [Coveo Headless](https://docs.coveo.com/headless)-powered search pages, push data to your organization, automate resource deployments, and create your own test organizations.
 
 ## Installation
 
@@ -47,9 +47,7 @@ npx @coveo/cli
 
 ## Usage
 
-In practice, you'll typically want to [`login`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-authlogin) to your Coveo Organization, [`configure`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-configset) the CLI to connect to this organization, and finally create a search page (see [`coveo ui:create:angular NAME`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-uicreateangular-name), [`coveo ui:create:react NAME`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-uicreatereact-name) and [`coveo ui:create:vue NAME`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-uicreatevue-name)).
-
-You can check out the other commands [here](https://github.com/coveo/cli/tree/master/packages/cli).
+You can check out the available commands [here](https://github.com/coveo/cli/tree/master/packages/cli).
 
 The project is still under heavy development and more features are coming, stay tuned!
 
