@@ -3,10 +3,10 @@ const {copySync} = require('fs-extra');
 const {sep, resolve} = require('path');
 const {getPackageManager} = require('./utils');
 
-function installSearchTokenServerDependencies() {
+function installSearchTokenLambdaDependencies() {
   const child = spawnSync(getPackageManager(), ['install'], {
     stdio: 'inherit',
-    cwd: resolve('server'),
+    cwd: resolve('lambda'),
   });
   if (child.status !== 0) {
     process.exit(child.status);
@@ -21,10 +21,10 @@ function isEnvFile(path) {
   return path.split(sep).indexOf('.env.example') !== -1;
 }
 
-function copySearchTokenServerToRoot() {
+function copySearchTokenLambdaToRoot() {
   copySync(
-    resolve('node_modules', '@coveo', 'search-token-server'),
-    resolve('server'),
+    resolve('node_modules', '@coveo', 'search-token-lambda'),
+    resolve('lambda'),
     {
       filter: (src, dest) => !isNodeModule(dest) && !isEnvFile(dest),
     }
@@ -32,8 +32,8 @@ function copySearchTokenServerToRoot() {
 }
 
 function main() {
-  copySearchTokenServerToRoot();
-  installSearchTokenServerDependencies();
+  copySearchTokenLambdaToRoot();
+  installSearchTokenLambdaDependencies();
 }
 
 main();

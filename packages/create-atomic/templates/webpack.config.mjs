@@ -16,7 +16,6 @@ export default {
     static: {
       directory: join(dirname(fileURLToPath(import.meta.url)), 'dist'),
     },
-    port: parseInt(process.env.PORT),
     hot: false,
   },
   plugins: [

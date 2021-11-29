@@ -1,7 +1,8 @@
 {
   "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
-    "lib": ["es2018", "DOM"]
+    "lib": ["es2018", "DOM"],
+    "types": ["@coveo/atomic"]
   },
-  "exclude": ["node_modules", "server"]
+  "exclude": ["node_modules", "lambda"]
 }
