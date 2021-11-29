@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.21.0](https://coveo-cli/coveo/cli/compare/v1.20.0...v1.21.0) (2021-11-29)
+
+
+### Features
+
+* use search-token-lambda with generated Atomic project & add deploy command ([#562](https://coveo-cli/coveo/cli/issues/562)) ([e7d3df3](https://coveo-cli/coveo/cli/commits/e7d3df392474837c723b93208f22e182970a31f6))
+
+
+
+
+
 # [1.20.0](https://coveo-cli/coveo/cli/compare/v1.19.0...v1.20.0) (2021-11-25)
 
 

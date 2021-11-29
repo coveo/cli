@@ -1,6 +1,6 @@
 {
   "name": "@coveo/angular",
-  "version": "1.20.0",
+  "version": "1.21.0",
   "description": "Coveo schematic for angular",
   "scripts": {
     "test": "npm run build && jasmine dist/**/*_spec.js",
