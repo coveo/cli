@@ -5,8 +5,7 @@ import PlatformClient from '@coveord/platform-client';
 import axios from 'axios';
 import {HTTPRequest} from 'puppeteer';
 
-// TODO: CDX-98: URL should vary in function of the target environment.
-export const platformHost = 'https://platformdev.cloud.coveo.com/';
+export const platformHost = process.env.PLATFORM_HOST;
 
 export function getPlatformClient(organizationId: string, accessToken: string) {
   return new PlatformClient({
@@ -17,9 +16,8 @@ export function getPlatformClient(organizationId: string, accessToken: string) {
 }
 
 export function isSearchRequest(request: HTTPRequest) {
-  return request
-    .url()
-    .startsWith(`${platformHost}rest/search/v2?organizationId`);
+  const searchUrl = new URL('/rest/search/v2?organizationId', platformHost);
+  return request.url().startsWith(searchUrl.href);
 }
 
 export async function createOrg(
@@ -27,11 +25,11 @@ export async function createOrg(
   accessToken: string,
   organizationTemplate = 'Developer'
 ): Promise<string> {
-  const request = await axios.post(
-    `${platformHost}rest/organizations?name=${name}&organizationTemplate=${organizationTemplate}`,
-    {},
-    authHeader(accessToken)
+  const url = new URL(
+    `rest/organizations?name=${name}&organizationTemplate=${organizationTemplate}`,
+    platformHost
   );
+  const request = await axios.post(url.href, {}, authHeader(accessToken));
 
   return request.data.id;
 }

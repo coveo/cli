@@ -14,6 +14,7 @@ jobs:
         os: ['ubuntu-latest', 'windows-latest']
         node: [16]
     env:
+      PLATFORM_ENV: 'dev' # Possible values: dev, qa, hipaa, prod
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
       PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}

@@ -61,6 +61,7 @@ describe('org:resources', () => {
       'org:resources:preview',
       `-t=${targetOrg}`,
       '--sync',
+      '--wait=0',
       '-p=light',
     ];
 
@@ -100,6 +101,7 @@ describe('org:resources', () => {
       'org:resources:pull',
       `-t=${targetOrg}`,
       '-o',
+      '--wait=0',
       '--no-git',
       ...additionalFlags,
     ];
