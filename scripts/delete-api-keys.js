@@ -42,11 +42,11 @@ function parseDuration(input) {
   );
 }
 
-function getClient(organizationId, accessToken, environment) {
+function getClient(organizationId, accessToken, host) {
   return new PlatformClient({
     organizationId,
     accessToken,
-    environment,
+    host,
   });
 }
 
@@ -55,9 +55,9 @@ async function main(amount, unit) {
     ORG_ID: testOrgId,
     TEST_RUN_ID: testRunId,
     PLATFORM_API_KEY: accessToken,
-    PLATFORM_ENV: environment,
+    PLATFORM_HOST: host,
   } = process.env;
-  const platform = getClient(testOrgId, accessToken, environment);
+  const platform = getClient(testOrgId, accessToken, host);
   const apiKeys = await platform.apiKey.list();
 
   const cliApiKeys = apiKeys
