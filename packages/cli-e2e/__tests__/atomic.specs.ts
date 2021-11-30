@@ -64,7 +64,7 @@ describe('ui:create:atomic', () => {
     processManagers.push(buildProcessManager);
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
-    await buildProcessManager.killAllProcesses();
+    // await buildProcessManager.killAllProcesses();
   }, 20 * 60e3);
 
   beforeEach(async () => {
