@@ -9,6 +9,7 @@ import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {DocumentBuilder, Source} from '@coveo/push-api-client';
 import {cwd} from 'process';
+import {join} from 'path';
 import {
   doMockAxiosError,
   doMockAxiosSuccess,
@@ -18,6 +19,7 @@ const mockedSource = mocked(Source);
 const mockedDocumentBuilder = mocked(DocumentBuilder);
 
 describe('source:push:add', () => {
+  const pathToStub = join(cwd(), 'src', '__stub__');
   const mockBatchUpdate = jest
     .fn()
     .mockReturnValue(Promise.resolve(doMockAxiosSuccess(202, '👌')));
@@ -80,7 +82,7 @@ describe('source:push:add', () => {
       'source:push:add',
       'mysource',
       '-f',
-      cwd() + '/src/__stub__/jsondocuments/batman.json',
+      join(pathToStub, 'jsondocuments', 'batman.json'),
     ])
     .it('pass correct configuration information to push-api-client', () => {
       expect(mockedSource).toHaveBeenCalledWith('the_token', 'the_org');
@@ -100,11 +102,15 @@ describe('source:push:add', () => {
       'source:push:add',
       'mysource',
       '-f',
-      cwd() + '/src/__stub__/jsondocuments/batman.json',
+      join(pathToStub, 'jsondocuments', 'batman.json'),
     ])
     .it('should output feedback message when parsing documents', (ctx) => {
       expect(ctx.stdout).toContain(
-        `Parsed ${cwd()}/src/__stub__/jsondocuments/batman.json into 2 documents`
+        `Parsed ${join(
+          pathToStub,
+          'jsondocuments',
+          'batman.json'
+        )} into 2 documents`
       );
     });
 
@@ -115,11 +121,15 @@ describe('source:push:add', () => {
       'source:push:add',
       'mysource',
       '-f',
-      cwd() + '/src/__stub__/jsondocuments/batman.json',
+      join(pathToStub, 'jsondocuments', 'batman.json'),
     ])
     .it('should output feedback message when uploading documents', (ctx) => {
       expect(ctx.stdout).toContain(
-        `Success: 2 documents accepted by the Push API from ${cwd()}/src/__stub__/jsondocuments/batman.json.`
+        `Success: 2 documents accepted by the Push API from ${join(
+          pathToStub,
+          'jsondocuments',
+          'batman.json'
+        )}`
       );
       expect(ctx.stdout).toContain('Status code: 202 👌');
     });
@@ -130,11 +140,51 @@ describe('source:push:add', () => {
     .command([
       'source:push:add',
       'mysource',
+      '-d',
+      join(pathToStub, 'mixdocuments'),
+    ])
+    .it('should only push JSON documents', (ctx) => {
+      expect(ctx.stdout).toContain(
+        `Success: 2 documents accepted by the Push API from ${join(
+          pathToStub,
+          'mixdocuments',
+          'valid.json'
+        )}`
+      );
+      expect(ctx.stdout).toContain('Status code: 202 👌');
+    });
+
+  test
+    .stdout()
+    .stderr()
+    .command([
+      'source:push:add',
+      'mysource',
+      '-d',
+      join(pathToStub, 'mixdocuments'),
+    ])
+    .it('should not include non JSON documents in success message', (ctx) => {
+      const invalidFiles = ['.somedotfile', 'json.txt', 'noextension'];
+      invalidFiles.map((file) => {
+        expect(ctx.stdout).not.toContain(file);
+      });
+    });
+
+  test
+    .stdout()
+    .stderr()
+    .command([
+      'source:push:add',
+      'mysource',
       '-f',
-      cwd() + '/src/__stub__/jsondocuments/noID.json',
+      join(pathToStub, 'jsondocuments', 'noID.json'),
     ])
     .catch(
-      `${cwd()}/src/__stub__/jsondocuments/noID.json is not a valid JSON document: Document contains an invalid value for documentid: value is required.`
+      `${join(
+        pathToStub,
+        'jsondocuments',
+        'noID.json'
+      )} is not a valid JSON document: Document contains an invalid value for documentid: value is required.`
     )
     .it('should output error message on missing documentID');
 
@@ -145,10 +195,14 @@ describe('source:push:add', () => {
       'source:push:add',
       'mysource',
       '-f',
-      cwd() + '/src/__stub__/jsondocuments/noTitle.json',
+      join(pathToStub, 'jsondocuments', 'noTitle.json'),
     ])
     .catch(
-      `${cwd()}/src/__stub__/jsondocuments/noTitle.json is not a valid JSON document: Document contains an invalid value for title: value is required.`
+      `${join(
+        pathToStub,
+        'jsondocuments',
+        'noTitle.json'
+      )} is not a valid JSON document: Document contains an invalid value for title: value is required.`
     )
     .it('should output error message on missing title');
 
@@ -159,11 +213,15 @@ describe('source:push:add', () => {
       'source:push:add',
       'mysource',
       '-f',
-      cwd() + '/src/__stub__/jsondocuments/notAnUrl.json',
+      join(pathToStub, 'jsondocuments', 'notAnUrl.json'),
     ])
     .it('should accept non-url documentIDs', (ctx) => {
       expect(ctx.stdout).toContain(
-        `Success: 1 document accepted by the Push API from ${cwd()}/src/__stub__/jsondocuments/notAnUrl.json`
+        `Success: 1 document accepted by the Push API from ${join(
+          pathToStub,
+          'jsondocuments',
+          'notAnUrl.json'
+        )}`
       );
       expect(ctx.stdout).toContain('Status code: 202 👌');
     });
@@ -184,7 +242,7 @@ describe('source:push:add', () => {
       'source:push:add',
       'mysource',
       '-f',
-      cwd() + '/src/__stub__/jsondocuments/batman.json',
+      join(pathToStub, 'jsondocuments', 'batman.json'),
     ])
     .it('returns an information message on add failure from the API', (ctx) => {
       expect(ctx.stdout).toContain(
@@ -201,10 +259,14 @@ describe('source:push:add', () => {
       'source:push:add',
       'mysource',
       '-f',
-      cwd() + '/src/__stub__/jsondocuments/noIdentity.json',
+      join(pathToStub, 'jsondocuments', 'noIdentity.json'),
     ])
     .catch(
-      `${cwd()}/src/__stub__/jsondocuments/noIdentity.json is not a valid JSON document: Document contains an invalid value for allowedpermissions:  value does not contain identity`
+      `${join(
+        pathToStub,
+        'jsondocuments',
+        'noIdentity.json'
+      )} is not a valid JSON document: Document contains an invalid value for allowedpermissions:  value does not contain identity`
     )
     .it('should output error message on missing identity');
 
@@ -215,10 +277,14 @@ describe('source:push:add', () => {
       'source:push:add',
       'mysource',
       '-f',
-      cwd() + '/src/__stub__/jsondocuments/identityNotAString.json',
+      join(pathToStub, 'jsondocuments', 'identityNotAString.json'),
     ])
     .catch(
-      `${cwd()}/src/__stub__/jsondocuments/identityNotAString.json is not a valid JSON document: Document contains an invalid value for allowedpermissions:   value is not a string.`
+      `${join(
+        pathToStub,
+        'jsondocuments',
+        'identityNotAString.json'
+      )} is not a valid JSON document: Document contains an invalid value for allowedpermissions:   value is not a string.`
     )
     .it('should output error message on identity with an invalid string');
 
@@ -229,11 +295,18 @@ describe('source:push:add', () => {
       'source:push:add',
       'mysource',
       '-f',
-      cwd() +
-        '/src/__stub__/jsondocuments/identityAllowAnonymousNotABoolean.json',
+      join(
+        pathToStub,
+        'jsondocuments',
+        'identityAllowAnonymousNotABoolean.json'
+      ),
     ])
     .catch(
-      `${cwd()}/src/__stub__/jsondocuments/identityAllowAnonymousNotABoolean.json is not a valid JSON document: Document contains an invalid value for allowanonymous: value is not a boolean.`
+      `${join(
+        pathToStub,
+        'jsondocuments',
+        'identityAllowAnonymousNotABoolean.json'
+      )} is not a valid JSON document: Document contains an invalid value for allowanonymous: value is not a boolean.`
     )
     .it(
       'should output error message on allow anonymous with an invalid boolean'
@@ -246,10 +319,14 @@ describe('source:push:add', () => {
       'source:push:add',
       'mysource',
       '-f',
-      cwd() + '/src/__stub__/jsondocuments/identityTypeInvalidValue.json',
+      join(pathToStub, 'jsondocuments', 'identityTypeInvalidValue.json'),
     ])
     .catch(
-      `${cwd()}/src/__stub__/jsondocuments/identityTypeInvalidValue.json is not a valid JSON document: Document contains an invalid value for allowedpermissions:   value should be one of: UNKNOWN, USER, GROUP, VIRTUAL_GROUP.`
+      `${join(
+        pathToStub,
+        'jsondocuments',
+        'identityTypeInvalidValue.json'
+      )} is not a valid JSON document: Document contains an invalid value for allowedpermissions:   value should be one of: UNKNOWN, USER, GROUP, VIRTUAL_GROUP.`
     )
     .it('should output error message on identityType with an invalid value');
 });
