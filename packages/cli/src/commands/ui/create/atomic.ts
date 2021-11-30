@@ -43,7 +43,10 @@ export default class Atomic extends Command {
     }),
   };
 
-  @Trackable()
+  @Trackable({
+    eventName: 'ui create',
+    overrideEventProperties: {framework: 'atomic'},
+  })
   @Preconditions(
     IsAuthenticated(),
     IsNpxInstalled(),
