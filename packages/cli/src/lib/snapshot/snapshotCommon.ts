@@ -68,14 +68,6 @@ export async function handleReportWithErrors(
   throw new SnapshotGenericError(snapshot, cfg, projectPath);
 }
 
-export async function handleUnsynchronizedResources(
-  snapshot: Snapshot,
-  cfg: Configuration
-) {
-  const facade = new SnapshotFacade(snapshot, cfg);
-  await facade.tryAutomaticSynchronization();
-}
-
 export function handleSnapshotError(err?: Error) {
   if (cli.action.running) {
     cli.action.stop(err?.name);
