@@ -95,7 +95,7 @@ describe('org:list', () => {
           .once();
 
         expect(proxyStdout).toMatch(
-          /GET https:\/\/platformqa\.cloud\.coveo\.com\/rest\/organizations\s* << 200 OK/
+          /GET https:\/\/platform[a-z]*\.cloud\.coveo\.com\/rest\/organizations\s* << 200 OK/
         );
       },
       2 * 60e3
