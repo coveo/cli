@@ -38,21 +38,21 @@ async function createTestOrgAndSaveOrgIdToEnv(orgName: string) {
   const testOrgId = await createOrg(orgName, accessToken);
   console.log(`Created org ${testOrgId}`);
   const pathToEnv = getPathToHomedirEnvFile();
-  const additionalEnv = {
+  saveToEnvFile(pathToEnv, {
     PLATFORM_ENV: getPlatformEnv(),
     PLATFORM_HOST: getPlatformHost(),
     TEST_RUN_ID: process.env.TEST_RUN_ID,
     TEST_ORG_ID: testOrgId,
     ACCESS_TOKEN: accessToken,
-  };
-  process.env = {...process.env, ...additionalEnv};
-  saveToEnvFile(pathToEnv, additionalEnv);
+  });
 }
 
 export default async function () {
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
   // runId must start and finish with letters to satisfies Angular.
   process.env.TEST_RUN_ID = `id${randomBytes(16).toString('hex')}g`;
+  process.env.PLATFORM_ENV = getPlatformEnv();
+  process.env.PLATFORM_HOST = getPlatformHost();
   const testOrgName = `cli-e2e-${process.env.TEST_RUN_ID}`;
   const browser = await connectToChromeBrowser();
   await clearChromeBrowsingData(browser);
