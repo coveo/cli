@@ -14,10 +14,15 @@ jobs:
         os: ['ubuntu-latest', 'windows-latest']
         node: [16]
     env:
-      PLATFORM_ENV: 'dev' # Possible values: dev, qa, hipaa, prod
+      # Platform environment to log into for the e2e tests.
+      PLATFORM_ENV: 'qa'
+      # Username used to log into the organization whose ID is stored in the ORG_ID variable
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
+      # Password used to log into the organization whose ID is stored in the ORG_ID variable
       PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
+      # API key to delete all the API keys created by the e2e tests
       PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
+      # ID of the organization to log into for the e2e tests
       ORG_ID: ${{ secrets.ORG_ID }}
       COVEO_DISABLE_AUTOUPDATE: true
       UI_TEMPLATE_VERSION: '0.0.0'
