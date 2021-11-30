@@ -1,7 +1,7 @@
 {
   "name": "@coveo/cli-e2e",
   "private": true,
-  "version": "1.21.0",
+  "version": "1.21.1",
   "description": "End-to-End test of Coveo's CLI",
   "author": "Coveo",
   "homepage": "https://github.com/coveo/cli#readme",
@@ -35,27 +35,27 @@
     "@types/async-retry": "1.4.3",
     "@types/fs-extra": "9.0.13",
     "@types/is-running": "2.1.0",
-    "@types/jest": "27.0.2",
-    "eslint": "8.2.0",
+    "@types/jest": "27.0.3",
+    "eslint": "8.3.0",
     "is-running": "2.1.0"
   },
   "dependencies": {
     "@babel/core": "7.16.0",
-    "@babel/preset-env": "7.16.0",
+    "@babel/preset-env": "7.16.4",
     "@babel/preset-typescript": "7.16.0",
-    "@coveord/platform-client": "26.0.1",
+    "@coveord/platform-client": "26.2.0",
     "abortcontroller-polyfill": "1.7.3",
     "async-retry": "1.3.3",
     "axios": "0.24.0",
-    "babel-jest": "27.3.1",
-    "devtools-protocol": "0.0.942138",
+    "babel-jest": "27.4.0",
+    "devtools-protocol": "0.0.945905",
     "dotenv": "10.0.0",
     "fs-extra": "10.0.0",
     "get-port": "5.1.1",
     "isomorphic-fetch": "3.0.0",
-    "jest": "27.3.1",
+    "jest": "27.4.0",
     "puppeteer": "11.0.0",
     "strip-ansi": "6.0.1",
-    "typescript": "4.4.4"
+    "typescript": "4.5.2"
   }
 }

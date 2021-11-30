@@ -1,7 +1,7 @@
 {
   "name": "@coveo/create-atomic",
   "description": "Coveo Atomic Generator",
-  "version": "1.21.0",
+  "version": "1.21.1",
   "files": [
     "/lib",
     "/templates"
@@ -32,8 +32,8 @@
   },
   "dependencies": {
     "minimist": "1.2.5",
-    "plop": "3.0.0",
+    "plop": "3.0.1",
     "ts-node": "10.4.0",
-    "typescript": "4.4.4"
+    "typescript": "4.5.2"
   }
 }
