@@ -38,13 +38,15 @@ async function createTestOrgAndSaveOrgIdToEnv(orgName: string) {
   const testOrgId = await createOrg(orgName, accessToken);
   console.log(`Created org ${testOrgId}`);
   const pathToEnv = getPathToHomedirEnvFile();
-  saveToEnvFile(pathToEnv, {
+  const additionalEnv = {
     PLATFORM_ENV: getPlatformEnv(),
     PLATFORM_HOST: getPlatformHost(),
     TEST_RUN_ID: process.env.TEST_RUN_ID,
     TEST_ORG_ID: testOrgId,
     ACCESS_TOKEN: accessToken,
-  });
+  };
+  process.env = {...process.env, ...additionalEnv};
+  saveToEnvFile(pathToEnv, additionalEnv);
 }
 
 export default async function () {
