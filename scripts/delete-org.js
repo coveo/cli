@@ -20,7 +20,7 @@ async function deleteTestOrg(orgId, accessToken, platformHost) {
 
   if (orgId) {
     console.log(`Deleting org ${orgId}`);
-    const url = new URL(`/organizations/${orgId}`, platformHost);
+    const url = new URL(`/rest/organizations/${orgId}`, platformHost);
     await axios.delete(url.href, authHeader(accessToken));
   } else {
     console.log('No org to delete');
