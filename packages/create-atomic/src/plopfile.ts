@@ -72,15 +72,42 @@ export default function (plop: NodePlopAPI) {
           '../templates/tsconfig.json',
           '../templates/package.json',
           '../templates/webpack.config.mjs',
+          '../templates/netlify.toml',
         ],
       },
-      function installPackages(answers) {
-        const {project} = answers as PromptsAnswers;
-        spawn(getPackageManager(), ['install'], {
-          stdio: 'inherit',
-          cwd: `${currentPath}/${project}/`,
-        });
+      function installPackagesPrompt() {
         return 'Installing packages 🚀';
+      },
+      function installPackages(answers) {
+        return new Promise((resolve, reject) => {
+          const {project} = answers as PromptsAnswers;
+          const process = spawn(getPackageManager(), ['install'], {
+            stdio: 'inherit',
+            cwd: `${currentPath}/${project}/`,
+          });
+
+          process.on('close', (code) => {
+            if (code === 0) {
+              resolve('Packages installed correctly');
+            } else {
+              reject(`npm install exited with ${code}`);
+            }
+          });
+        });
+      },
+      function getStarted(answers) {
+        const {project} = answers as PromptsAnswers;
+        return `
+        To get started:
+        > cd ${project}
+        > npm run site:init (optional, sets up a new Netlify site)
+        > npm start
+
+        To share your site with the world:
+        > npm run site:deploy
+    
+        Happy hacking!
+        `;
       },
     ],
   });

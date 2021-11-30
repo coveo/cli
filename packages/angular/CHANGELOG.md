@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.21.1](https://coveo-cli/coveo/cli/compare/v1.21.0...v1.21.1) (2021-11-29)
+
+
+### Bug Fixes
+
+* **deps:** update all dependencies j:cdx-227 (major) ([#560](https://coveo-cli/coveo/cli/issues/560)) ([335fd49](https://coveo-cli/coveo/cli/commits/335fd49b96b285ad92c6b90cfd0c0a608151c70b))
+
+
+
+
+
+# [1.21.0](https://coveo-cli/coveo/cli/compare/v1.20.0...v1.21.0) (2021-11-29)
+
+**Note:** Version bump only for package @coveo/angular
+
+
+
+
+
 # [1.20.0](https://coveo-cli/coveo/cli/compare/v1.19.0...v1.20.0) (2021-11-25)
 
 
