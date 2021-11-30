@@ -39,7 +39,7 @@ export default class Atomic extends Command {
     version: flags.string({
       char: 'v',
       description: `The version of ${Atomic.cliPackage} to use.`,
-      default: getPackageVersion(Atomic.cliPackage),
+      default: getPackageVersion(Atomic.cliPackage) || 'latest',
     }),
   };
 
