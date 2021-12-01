@@ -46,7 +46,7 @@ const updatePullRequestComment = (comment_id, body) => {
 
 const getLatestTag = async () => {
   const tags = await octokit.rest.repos.listTags({owner, repo});
-  return tags.data[0].name;
+  return tags.data[0];
 };
 
 const createOrUpdateReleaseDescription = async (tag, body) => {

@@ -7,7 +7,7 @@ async function main() {
   // This folder structure needs to be respected in order for the CLI update plugin to
   // be able to do it's job properly.
   const topLevelDirectory = './artifacts';
-  const subDirectoryForTarball = `${topLevelDirectory}/coveo-${tag}`;
+  const subDirectoryForTarball = `${topLevelDirectory}/coveo-${tag.name}`;
   const binariesMatcher =
     /^coveo(_|-)(?<_version>v?\d+\.\d+\.\d+(-\d+)?)(?<longExt>.*\.(exe|deb|pkg))$/;
 
@@ -28,6 +28,8 @@ async function main() {
       return topLevelDirectory;
     }
   });
+
+  fs.writeFileSync('latest-commit', tag.commit.sha);
 
   const files = fs.readdirSync(topLevelDirectory, {withFileTypes: true});
   files.forEach((file) => {
