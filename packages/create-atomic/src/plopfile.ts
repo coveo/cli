@@ -1,6 +1,6 @@
 import {NodePlopAPI} from 'plop';
 import {spawn} from 'child_process';
-import {getPackageManager} from './utils';
+import {getPackageManager} from './utils.js';
 
 interface PromptsAnswers {
   project: string;

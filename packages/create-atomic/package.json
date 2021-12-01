@@ -7,11 +7,12 @@
     "/templates"
   ],
   "bin": {
-    "create-atomic": "./index.mjs"
+    "create-atomic": "./index.js"
   },
+  "type": "module",
   "main": "index.mjs",
   "scripts": {
-    "start": "plop --plopfile ./lib/plopfile.js",
+    "start": "./index.js",
     "build": "tsc",
     "prepublishOnly": "npm run build",
     "npm:bump:template": "npm --no-git-tag-version version",
