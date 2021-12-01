@@ -6,11 +6,15 @@ import {
   SnapshotSynchronizationAmbiguousMatchesError,
   SnapshotSynchronizationUnknownError,
 } from '../errors/snapshotErrors';
-import {Snapshot} from './snapshot';
+import {Snapshot, WaitUntilDoneOptions} from './snapshot';
 import {SynchronizationPlan} from './synchronization/synchronizationPlan';
 
 export class SnapshotFacade {
-  public constructor(private snapshot: Snapshot, private cfg: Configuration) {}
+  public constructor(
+    private snapshot: Snapshot,
+    private cfg: Configuration,
+    private waitUntilDone?: WaitUntilDoneOptions
+  ) {}
 
   public async tryAutomaticSynchronization(prompt = true) {
     const plan = await this.createSynchronizationPlan();
@@ -47,7 +51,8 @@ export class SnapshotFacade {
   private async applySynchronizationPlan(plan: SynchronizationPlan) {
     cli.action.start('Synchronizing resources');
     const reporter = await this.snapshot.applySynchronizationPlan(
-      plan.model.id
+      plan.model.id,
+      this.waitUntilDone
     );
     const success = reporter.isSuccessReport();
 

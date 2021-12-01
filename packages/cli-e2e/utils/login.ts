@@ -12,8 +12,8 @@ import {readJSON, writeJSON, existsSync} from 'fs-extra';
 import {Terminal} from './terminal/terminal';
 
 function isLoginPage(page: Page) {
-  // TODO: CDX-98: URL should vary in fonction of the targeted environment.
-  return page.url() === 'https://platformdev.cloud.coveo.com/login';
+  const loginUrl = new URL('/login', process.env.PLATFORM_HOST);
+  return page.url() === loginUrl.href;
 }
 
 export async function isLoggedin() {
@@ -50,8 +50,8 @@ async function staySignedIn(page: Page) {
 }
 
 async function possiblyAcceptCustomerAgreement(page: Page) {
-  // TODO: CDX-98: URL should vary in fonction of the targeted environment.
-  if (page.url().startsWith('https://platformdev.cloud.coveo.com/eula')) {
+  const customerAgreementUrl = new URL('/eula', process.env.PLATFORM_HOST);
+  if (page.url().startsWith(customerAgreementUrl.href)) {
     await page.waitForSelector(LoginSelectors.coveoCheckboxButton, {
       visible: true,
     });
@@ -64,8 +64,13 @@ async function possiblyAcceptCustomerAgreement(page: Page) {
   }
 }
 
-export function runLoginCommand(orgId: string) {
-  const args: string[] = [CLI_EXEC_PATH, 'auth:login', '-e=dev', `-o=${orgId}`];
+export function runLoginCommand(orgId: string, env: string) {
+  const args: string[] = [
+    CLI_EXEC_PATH,
+    'auth:login',
+    `-e=${env}`,
+    `-o=${orgId}`,
+  ];
   if (process.platform === 'win32') {
     args.unshift('node');
   }
@@ -143,15 +148,18 @@ async function startLoginFlow(browser: Browser) {
 }
 
 export async function loginWithOffice(browser: Browser) {
-  const orgId = process.env.ORG_ID;
+  const {ORG_ID: orgId, PLATFORM_ENV: env} = process.env;
   if (!orgId) {
     throw new Error('Missing organization ID');
+  }
+  if (!env) {
+    throw new Error('Missing platform environment');
   }
   if (await isLoggedin()) {
     return;
   }
 
-  const loginProcess = runLoginCommand(orgId);
+  const loginProcess = runLoginCommand(orgId, env);
 
   await startLoginFlow(browser);
   return loginProcess;
