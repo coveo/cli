@@ -65,7 +65,7 @@ describe('ui:create:atomic', () => {
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
     await buildProcessManager.killAllProcesses();
-  }, 20 * 60e3);
+  }, 15 * 60e3);
 
   beforeEach(async () => {
     jest.resetModules();
@@ -83,7 +83,7 @@ describe('ui:create:atomic', () => {
     await Promise.all(
       processManagers.map((manager) => manager.killAllProcesses())
     );
-  }, 5 * 60e3);
+  });
 
   describe('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
@@ -99,7 +99,7 @@ describe('ui:create:atomic', () => {
         'atomic-server-valid'
       );
       await waitForAppRunning(appTerminal);
-    }, 15 * 60e3);
+    }, 5 * 60e3);
 
     beforeEach(async () => {
       consoleInterceptor = new BrowserConsoleInterceptor(page, projectName);
@@ -118,7 +118,7 @@ describe('ui:create:atomic', () => {
 
     afterAll(async () => {
       await serverProcessManager.killAllProcesses();
-    }, 30e3);
+    }, 5 * 30e3);
 
     it('should not contain console errors nor warnings', async () => {
       await page.goto(searchPageEndpoint, {
