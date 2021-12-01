@@ -11,6 +11,8 @@ const packagesToWait = [
   '@coveo/cra-template',
   '@coveo/vue-cli-plugin-typescript',
   '@coveo/angular',
+  '@coveo/create-atomic',
+  '@coveo/search-token-lambda',
   '@coveo/search-token-server',
 ];
 
