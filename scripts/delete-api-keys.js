@@ -42,19 +42,22 @@ function parseDuration(input) {
   );
 }
 
-function getClient(organizationId, accessToken) {
+function getClient(organizationId, accessToken, host) {
   return new PlatformClient({
     organizationId,
     accessToken,
-    environment: Environment.dev, // TODO: CDX-98: URL should vary in function of the target environment.
+    host,
   });
 }
 
 async function main(amount, unit) {
-  const testOrgId = process.env.ORG_ID;
-  const accessToken = process.env.PLATFORM_API_KEY;
-  const testRunId = process.env.TEST_RUN_ID;
-  const platform = getClient(testOrgId, accessToken);
+  const {
+    ORG_ID: testOrgId,
+    TEST_RUN_ID: testRunId,
+    PLATFORM_API_KEY: accessToken,
+    PLATFORM_HOST: host,
+  } = process.env;
+  const platform = getClient(testOrgId, accessToken, host);
   const apiKeys = await platform.apiKey.list();
 
   const cliApiKeys = apiKeys

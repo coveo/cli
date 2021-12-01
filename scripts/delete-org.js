@@ -4,9 +4,6 @@ const {join} = require('path');
 const {config} = require('dotenv');
 config({path: join(homedir(), '.env')});
 
-// TODO: CDX-98: URL should vary in function of the target environment.
-const platformHost = 'https://platformdev.cloud.coveo.com/rest/';
-
 function authHeader(accessToken) {
   return {
     headers: {
@@ -15,26 +12,28 @@ function authHeader(accessToken) {
   };
 }
 
-async function deleteTestOrg(orgId, accessToken) {
-  if (orgId === 'connectorsteamtestsmf76kcam') {
+async function deleteTestOrg(orgId, accessToken, platformHost) {
+  const toNotDelete = ['qaregression2', 'connectorsteamtestsmf76kcam'];
+  if (toNotDelete.includes(orgId)) {
     throw new Error('Au bûcher! Au bûcher!');
   }
 
   if (orgId) {
     console.log(`Deleting org ${orgId}`);
-    await axios.delete(
-      `${platformHost}organizations/${orgId}`,
-      authHeader(accessToken)
-    );
+    const url = new URL(`/rest/organizations/${orgId}`, platformHost);
+    await axios.delete(url.href, authHeader(accessToken));
   } else {
     console.log('No org to delete');
   }
 }
 
 async function main() {
-  const testOrgId = process.env.TEST_ORG_ID;
-  const accessToken = process.env.ACCESS_TOKEN;
-  await deleteTestOrg(testOrgId, accessToken);
+  const {
+    TEST_ORG_ID: testOrgId,
+    ACCESS_TOKEN: accessToken,
+    PLATFORM_HOST: platformHost,
+  } = process.env;
+  await deleteTestOrg(testOrgId, accessToken, platformHost);
 }
 
 main();
