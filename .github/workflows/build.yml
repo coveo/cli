@@ -36,8 +36,8 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
+      - uses: actions/setup-node@04c56d2f954f1e4c69436aa54cfef261a018f458 # renovate: tag=v2
         with:
           node-version: ${{matrix.node}}
       - name: Setup repo
@@ -61,7 +61,7 @@ jobs:
       - name: Delete test API key
         if: always()
         run: node ./scripts/delete-api-keys.js
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@27121b0bdffd731efa15d66772be8dc71245d074 # renovate: tag=v2
         if: ${{ always() }}
         with:
           name: ${{matrix.os}}-test-artifacts

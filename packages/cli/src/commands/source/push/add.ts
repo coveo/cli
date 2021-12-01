@@ -17,6 +17,7 @@ import {
   errorMessage,
   successMessage,
 } from '../../../lib/push/userFeedback';
+import {isJsonFile} from '../../../lib/utils/file';
 
 interface AxiosResponse {
   status: number;
@@ -81,7 +82,7 @@ export default class SourcePushAdd extends Command {
 
     const fileNames = flags.folder.flatMap((folder) => {
       const files = readdirSync(folder);
-      return files.map((f) => `${path.join(folder, f)}`);
+      return files.filter(isJsonFile).map((f) => `${path.join(folder, f)}`);
     });
 
     const {send, close} = this.splitByChunkAndUpload(
@@ -95,13 +96,15 @@ export default class SourcePushAdd extends Command {
     await Promise.all(
       flags.folder.flatMap((folder) => {
         return Promise.all(
-          readdirSync(folder).flatMap(async (file) => {
-            const fullPath = path.join(folder, file);
-            const docBuilders =
-              parseAndGetDocumentBuilderFromJSONDocument(fullPath);
-            this.successMessageOnParseFile(fullPath, docBuilders.length);
-            await send(docBuilders);
-          })
+          readdirSync(folder)
+            .filter(isJsonFile)
+            .flatMap(async (file) => {
+              const fullPath = path.join(folder, file);
+              const docBuilders =
+                parseAndGetDocumentBuilderFromJSONDocument(fullPath);
+              this.successMessageOnParseFile(fullPath, docBuilders.length);
+              await send(docBuilders);
+            })
         );
       })
     );

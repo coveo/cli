@@ -53,7 +53,6 @@ export default class Atomic extends Command {
   )
   public async run() {
     await this.createProject();
-    this.displayFeedbackAfterSuccess();
   }
 
   @Trackable()
@@ -98,16 +97,5 @@ export default class Atomic extends Command {
   private get flags() {
     const {flags} = this.parse(Atomic);
     return flags;
-  }
-
-  private displayFeedbackAfterSuccess() {
-    this.log(`
-    To get started:
-
-    cd ${this.args.name}
-    npm start
-
-    Happy hacking!
-    `);
   }
 }

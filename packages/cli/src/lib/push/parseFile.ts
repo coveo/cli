@@ -15,25 +15,35 @@ import {
 import {existsSync, lstatSync, PathLike, readFileSync} from 'fs';
 import {CaseInsensitiveDocument} from './caseInsensitiveDocument';
 import {KnownKeys} from './knownKey';
-import {InvalidDocument, NotAFileError} from './validatorErrors';
+import {
+  InvalidDocument,
+  NotAFileError,
+  NotAJsonFileError,
+} from './validatorErrors';
 import {RequiredKeyValidator} from './requiredKeyValidator';
 
 export const parseAndGetDocumentBuilderFromJSONDocument = (
   documentPath: PathLike
 ) => {
-  const isAFile = isFile(documentPath);
-  if (!isAFile) {
-    throw new NotAFileError(documentPath);
-  }
+  ensureFileIntegrity(documentPath);
 
-  const fileContent = JSON.parse(readFileSync(documentPath).toString()) as
-    | Record<string, string>
-    | Record<string, string>[];
+  const fileContent = safeJSONParse(documentPath);
 
   if (Array.isArray(fileContent)) {
     return fileContent.map((doc) => processDocument(doc, documentPath));
   } else {
     return [processDocument(fileContent, documentPath)];
+  }
+};
+
+const safeJSONParse = (documentPath: PathLike) => {
+  const fileContent = readFileSync(documentPath).toString();
+  try {
+    return JSON.parse(fileContent) as
+      | Record<string, string>
+      | Record<string, string>[];
+  } catch (error) {
+    throw new NotAJsonFileError(documentPath);
   }
 };
 
@@ -212,6 +222,12 @@ const processMetadata = (
       v! as Extract<PrimitivesValues, MetadataValue>
     );
   });
+};
+
+const ensureFileIntegrity = (documentPath: PathLike) => {
+  if (!isFile(documentPath)) {
+    throw new NotAFileError(documentPath);
+  }
 };
 
 const isFile = (p: PathLike) => {
