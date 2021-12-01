@@ -73,6 +73,7 @@ export default function (plop: NodePlopAPI) {
           '../templates/package.json',
           '../templates/webpack.config.mjs',
           '../templates/netlify.toml',
+          '../templates/README.md',
         ],
       },
       function installPackagesPrompt() {
