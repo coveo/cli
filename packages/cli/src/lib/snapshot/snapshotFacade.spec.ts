@@ -114,7 +114,10 @@ describe('SnapshotFacade', () => {
 
     fancyIt()('should create a apply the synchronization plan', async () => {
       await facade.tryAutomaticSynchronization();
-      expect(mockedApplySynchronizationPlan).toBeCalledWith('some-plan-id');
+      expect(mockedApplySynchronizationPlan).toBeCalledWith(
+        'some-plan-id',
+        undefined
+      );
     });
   });
 });

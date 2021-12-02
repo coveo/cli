@@ -1,22 +1,22 @@
 {
   "name": "@coveo/create-atomic",
-  "private": true,
   "description": "Coveo Atomic Generator",
-  "version": "1.19.0",
+  "version": "1.21.1",
   "files": [
     "/lib",
     "/templates"
   ],
   "bin": {
-    "create-atomic": "./index.mjs"
+    "create-atomic": "./index.js"
   },
+  "type": "module",
   "main": "index.mjs",
   "scripts": {
-    "start": "plop --plopfile ./lib/plopfile.js",
+    "start": "./index.js",
     "build": "tsc",
     "prepublishOnly": "npm run build",
-    "notyet:npm:bump:template": "npm --no-git-tag-version version",
-    "notyet:npm:publish:template": "npm publish --access public --registry http://localhost:4873",
+    "npm:bump:template": "npm --no-git-tag-version version",
+    "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
     "lint": "prettier --check . && eslint ."
   },
   "keywords": [
@@ -32,9 +32,9 @@
     "access": "public"
   },
   "dependencies": {
-    "plop": "2.7.6",
     "minimist": "1.2.5",
-    "typescript": "4.4.4",
-    "ts-node": "10.4.0"
+    "plop": "^3.0.1",
+    "ts-node": "10.4.0",
+    "typescript": "4.5.2"
   }
 }

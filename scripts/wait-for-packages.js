@@ -8,6 +8,8 @@ const publicPackages = [
   '@coveo/angular',
   '@coveo/cra-template',
   '@coveo/vue-cli-plugin-typescript',
+  '@coveo/search-token-lambda',
+  '@coveo/create-atomic',
 ];
 
 function getExpectedVersion() {

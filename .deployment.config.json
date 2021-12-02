@@ -44,39 +44,56 @@
         "project_name": "cli-root",
         "file": "package-lock.json",
         "additional_config": {
-          "scan_dev_dependencies": true
+          "scan_dev_dependencies": true,
+          "image": "snyk/snyk-cli:1.778.0-docker"
         }
       },
       {
         "project_name": "cli",
-        "directory": "packages/cli"
+        "directory": "packages/cli",
+        "additional_config": {
+          "scan_dev_dependencies": true,
+          "image": "snyk/snyk-cli:1.778.0-docker"
+        }
       },
       {
         "project_name": "angular",
         "directory": "packages/angular",
         "additional_config": {
-          "scan_dev_dependencies": true
+          "scan_dev_dependencies": true,
+          "image": "snyk/snyk-cli:1.778.0-docker"
         }
       },
       {
         "project_name": "cra-template",
         "directory": "packages/cra-template",
         "additional_config": {
-          "scan_dev_dependencies": true
+          "scan_dev_dependencies": true,
+          "image": "snyk/snyk-cli:1.778.0-docker"
         }
       },
       {
         "project_name": "search-token-server",
         "directory": "packages/search-token-server",
         "additional_config": {
-          "scan_dev_dependencies": true
+          "scan_dev_dependencies": true,
+          "image": "snyk/snyk-cli:1.778.0-docker"
+        }
+      },
+      {
+        "project_name": "search-token-lambda",
+        "directory": "packages/search-token-lambda",
+        "additional_config": {
+          "scan_dev_dependencies": true,
+          "image": "snyk/snyk-cli:1.778.0-docker"
         }
       },
       {
         "project_name": "vue-cli-plugin",
         "directory": "packages/vue-cli-plugin-typescript",
         "additional_config": {
-          "scan_dev_dependencies": true
+          "scan_dev_dependencies": true,
+          "image": "snyk/snyk-cli:1.778.0-docker"
         }
       }
     ]
