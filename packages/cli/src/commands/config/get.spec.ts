@@ -18,28 +18,47 @@ describe('config:get', () => {
           set: mockSet,
         } as unknown as Config)
     );
+    mockedConfig.userFacingConfigKeys = ['organization', 'region'];
   });
 
   test
     .do(() => {
-      mockGet.mockReturnValueOnce({foo: 'bar', buzz: 'bazz'});
+      mockGet.mockReturnValueOnce({organization: 'bar', region: 'bazz'});
     })
     .stdout()
     .stderr()
     .command(['config:get'])
     .it('prints the config', (ctx) => {
-      expect(JSON.parse(ctx.stdout)).toMatchObject({foo: 'bar', buzz: 'bazz'});
+      expect(JSON.parse(ctx.stdout)).toMatchObject({
+        organization: 'bar',
+        region: 'bazz',
+      });
     });
 
   test
     .do(() => {
-      mockGet.mockReturnValueOnce({accessToken: 'oh no', foo: 'bar'});
+      mockGet.mockReturnValueOnce({organization: 'bar', region: 'bazz'});
+    })
+    .stdout()
+    .stderr()
+    .command(['config:get', 'organization'])
+    .it('prints the config value for a specific key', (ctx) => {
+      expect(JSON.parse(ctx.stdout)).not.toHaveProperty('region');
+      expect(JSON.parse(ctx.stdout)).toHaveProperty('organization');
+    });
+
+  test
+    .do(() => {
+      mockGet.mockReturnValueOnce({
+        accessToken: 'oh no',
+        organization: 'bar',
+      });
     })
     .stdout()
     .stderr()
     .command(['config:get'])
     .it('prints the config by omitting access token', (ctx) => {
       expect(JSON.parse(ctx.stdout)).not.toHaveProperty('accessToken');
-      expect(JSON.parse(ctx.stdout)).toHaveProperty('foo');
+      expect(JSON.parse(ctx.stdout)).toHaveProperty('organization');
     });
 });

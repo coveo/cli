@@ -13,7 +13,7 @@ import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {parseAndGetDocumentBuilderFromJSONDocument} from '../../../lib/push/parseFile';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
-import {isDotFile} from '../../../lib/utils/file';
+import {isJsonFile} from '../../../lib/utils/file';
 
 interface AxiosResponse {
   status: number;
@@ -78,7 +78,7 @@ export default class SourcePushAdd extends Command {
 
     const fileNames = flags.folder.flatMap((folder) => {
       const files = readdirSync(folder);
-      return files.map((f) => `${path.join(folder, f)}`);
+      return files.filter(isJsonFile).map((f) => `${path.join(folder, f)}`);
     });
 
     const {send, close} = this.splitByChunkAndUpload(
@@ -93,7 +93,7 @@ export default class SourcePushAdd extends Command {
       flags.folder.flatMap((folder) => {
         return Promise.all(
           readdirSync(folder)
-            .filter((file) => !isDotFile(file))
+            .filter(isJsonFile)
             .flatMap(async (file) => {
               const fullPath = path.join(folder, file);
               const docBuilders =
@@ -154,7 +154,7 @@ export default class SourcePushAdd extends Command {
     );
   }
 
-  private errorMessageOnAdd(e: Error) {
+  private errorMessageOnAdd(e: unknown) {
     return errorMessage(this, 'Error while trying to add document.', e, {
       exit: true,
     });
@@ -220,8 +220,8 @@ export default class SourcePushAdd extends Command {
         delete: [],
       });
       this.successMessageOnAdd(fileNames, batch.length, res);
-    } catch (e) {
-      this.errorMessageOnAdd(e as Error);
+    } catch (e: unknown) {
+      this.errorMessageOnAdd(e);
     }
   }
 
