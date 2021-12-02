@@ -18,7 +18,7 @@ const getTag = async () => {
     }
   }
   core.warning('Tag acquisition failed, fallbacking to the latest');
-  return await getLatestTag();
+  return (await getLatestTag()).name;
 };
 
 (async () => {

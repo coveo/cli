@@ -19,7 +19,7 @@ async function main() {
     fs.mkdirSync(subDirectoryForTarball);
   }
 
-  await downloadReleaseAssets(tag, (assetName) => {
+  await downloadReleaseAssets(tag.name, (assetName) => {
     if (assetName.match(/\.tar\.gz$/)) {
       console.info(assetName, `--> ${subDirectoryForTarball}`);
       return subDirectoryForTarball;
