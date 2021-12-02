@@ -23,8 +23,8 @@ export default class SourcePushDelete extends Command {
       char: 'd',
       exclusive: ['delete'],
       description:
-        'If this flag is set, all items that have been added or updated in the source before the specified ISO 8601 date or Unix timestamp will be deleted. The documents will be deleted using the default queueDelay, meaning they will stay in the index for about 15 minutes after being marked for deletion.',
-      helpValue: '2000-01-01T00:00:00-06:00 OR 946702800',
+        'If this flag is set, all items that have been added or updated in the source before the specified ISO 8601 date or timestamp in milliseconds will be deleted. The documents will be deleted using the default queueDelay, meaning they will stay in the index for about 15 minutes after being marked for deletion.',
+      helpValue: '2000-01-01T00:00:00-06:00 OR 1506700606240',
     }),
     delete: flags.string({
       char: 'x',
