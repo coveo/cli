@@ -21,7 +21,6 @@ import {
   NotAJsonFileError,
 } from './validatorErrors';
 import {RequiredKeyValidator} from './requiredKeyValidator';
-import {readJSONSync} from 'fs-extra';
 
 export const parseAndGetDocumentBuilderFromJSONDocument = (
   documentPath: PathLike
@@ -236,15 +235,6 @@ const isFile = (p: PathLike) => {
     return false;
   }
   return lstatSync(p).isFile();
-};
-
-const isValidJsonFile = (p: PathLike) => {
-  try {
-    readJSONSync(p.toString());
-  } catch (e) {
-    return false;
-  }
-  return true;
 };
 
 const getSecurityIdentitySchemaValidation =
