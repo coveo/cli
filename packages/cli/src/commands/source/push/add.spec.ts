@@ -19,12 +19,33 @@ import {APIError} from '../../../lib/errors/APIError';
 const mockedClient = mocked(AuthenticatedClient);
 const mockedSource = mocked(Source);
 const mockedDocumentBuilder = mocked(DocumentBuilder);
+const mockedMarshal = jest.fn();
 
 describe('source:push:add', () => {
   const pathToStub = join(cwd(), 'src', '__stub__');
   const mockBatchUpdate = jest
     .fn()
     .mockReturnValue(Promise.resolve(doMockAxiosSuccess(202, '👌')));
+
+  beforeEach(() => {
+    mockedMarshal.mockReturnValue(
+      JSON.stringify({
+        documentId: 'https://perdu.com',
+        title: 'hello world',
+      })
+    );
+  });
+
+  mockedDocumentBuilder.mockImplementation(
+    () =>
+      ({
+        marshal: mockedMarshal,
+        withData: jest.fn(),
+        withDate: jest.fn(),
+        withFileExtension: jest.fn(),
+        withMetadataValue: jest.fn(),
+      } as unknown as DocumentBuilder)
+  );
 
   mockedClient.mockImplementation(
     () =>
@@ -44,21 +65,6 @@ describe('source:push:add', () => {
       ({
         batchUpdateDocuments: mockBatchUpdate,
       } as unknown as Source)
-  );
-
-  mockedDocumentBuilder.mockImplementation(
-    () =>
-      ({
-        marshal: () =>
-          JSON.stringify({
-            documentId: 'https://perdu.com',
-            title: 'hello world',
-          }),
-        withData: jest.fn(),
-        withDate: jest.fn(),
-        withFileExtension: jest.fn(),
-        withMetadataValue: jest.fn(),
-      } as unknown as DocumentBuilder)
   );
 
   beforeAll(() => {});
@@ -224,6 +230,26 @@ describe('source:push:add', () => {
           'jsondocuments',
           'notAnUrl.json'
         )}`
+      );
+      expect(ctx.stdout).toContain('Status code: 202 👌');
+    });
+
+  test
+    .do(() => {
+      const largeFileSize = 5e6;
+      mockedMarshal.mockReturnValueOnce(Buffer.alloc(largeFileSize).toJSON());
+    })
+    .stdout()
+    .stderr()
+    .command([
+      'source:push:add',
+      'mysource',
+      '-f',
+      cwd() + '/src/__stub__/jsondocuments/batman.json',
+    ])
+    .it('should not upload an empty batch', (ctx) => {
+      expect(ctx.stdout).not.toContain(
+        'Success: 0 document accepted by the Push API from '
       );
       expect(ctx.stdout).toContain('Status code: 202 👌');
     });
