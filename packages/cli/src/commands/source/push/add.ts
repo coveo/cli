@@ -12,11 +12,7 @@ import {
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {parseAndGetDocumentBuilderFromJSONDocument} from '../../../lib/push/parseFile';
-import {
-  ErrorFromAPI,
-  errorMessage,
-  successMessage,
-} from '../../../lib/push/userFeedback';
+import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
 import {isJsonFile} from '../../../lib/utils/file';
 
 interface AxiosResponse {
@@ -158,8 +154,10 @@ export default class SourcePushAdd extends Command {
     );
   }
 
-  private errorMessageOnAdd(e: ErrorFromAPI) {
-    return errorMessage(this, 'Error while trying to add document.', e);
+  private errorMessageOnAdd(e: unknown) {
+    return errorMessage(this, 'Error while trying to add document.', e, {
+      exit: true,
+    });
   }
 
   private successMessageOnParseFile(file: string, numParsed: number) {
@@ -220,8 +218,8 @@ export default class SourcePushAdd extends Command {
         delete: [],
       });
       this.successMessageOnAdd(fileNames, batch.length, res);
-    } catch (e) {
-      this.errorMessageOnAdd(e as ErrorFromAPI);
+    } catch (e: unknown) {
+      this.errorMessageOnAdd(e);
     }
   }
 

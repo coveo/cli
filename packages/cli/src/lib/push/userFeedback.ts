@@ -1,16 +1,13 @@
 import Command from '@oclif/command';
-import {green, red} from 'chalk';
+import {green} from 'chalk';
+import {validate} from 'jsonschema';
 import dedent from 'ts-dedent';
-
-export interface ErrorFromAPI {
-  response: {
-    status: number;
-    data: {
-      errorCode: string;
-      message: string;
-    };
-  };
-}
+import {
+  APIError,
+  AxiosErrorFromAPI,
+  AxiosErrorFromAPISchema,
+} from '../errors/APIError';
+import {UnknownError} from '../errors/unknownError';
 
 export interface AxiosResponse {
   status: number;
@@ -33,14 +30,20 @@ export const successMessage = (
 export const errorMessage = (
   cmd: Command,
   tagLine: string,
-  e: ErrorFromAPI
+  e: unknown,
+  options = {exit: false}
 ) => {
-  cmd.warn(
-    dedent(`
-    ${tagLine}
-    Status code: ${red(e.response.status)}
-    Error code: ${red(e.response.data.errorCode)}
-    Message: ${red(e.response.data.message)}
-    `)
-  );
+  const error = isErrorFromAPI(e)
+    ? new APIError(e, tagLine)
+    : new UnknownError(e);
+
+  if (options.exit) {
+    throw error;
+  } else {
+    cmd.warn(error.message);
+  }
 };
+
+function isErrorFromAPI(error: unknown): error is AxiosErrorFromAPI {
+  return validate(error, AxiosErrorFromAPISchema).valid;
+}
