@@ -4,6 +4,7 @@ jest.mock('../../../hooks/prerun/prerun');
 jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('@coveo/push-api-client');
 
+import stripAnsi from 'strip-ansi';
 import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
@@ -14,6 +15,7 @@ import {
   doMockAxiosError,
   doMockAxiosSuccess,
 } from '../../../lib/push/testUtils';
+import {APIError} from '../../../lib/errors/APIError';
 const mockedClient = mocked(AuthenticatedClient);
 const mockedSource = mocked(Source);
 const mockedDocumentBuilder = mocked(DocumentBuilder);
@@ -244,13 +246,16 @@ describe('source:push:add', () => {
       '-f',
       join(pathToStub, 'jsondocuments', 'batman.json'),
     ])
-    .it('returns an information message on add failure from the API', (ctx) => {
-      expect(ctx.stdout).toContain(
+    .catch((error) => {
+      expect(error).toBeInstanceOf(APIError);
+      const message = stripAnsi(error.message);
+      expect(message).toContain(
         'this is a bad request and you should feel bad'
       );
-      expect(ctx.stdout).toContain('Status code: 412');
-      expect(ctx.stdout).toContain('Error code: BAD_REQUEST');
-    });
+      expect(message).toContain('Status code: 412');
+      expect(message).toContain('Error code: BAD_REQUEST');
+    })
+    .it('returns an information message on add failure from the API');
 
   test
     .stdout()
