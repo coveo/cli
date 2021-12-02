@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.21.2](https://coveo-cli/coveo/cli/compare/v1.21.1...v1.21.2) (2021-12-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency puppeteer to v12 j:cdx-227 ([#569](https://coveo-cli/coveo/cli/issues/569)) ([e57137c](https://coveo-cli/coveo/cli/commits/e57137c5d3abf6dcf4697b4ec24feee43b7ba748))
+* **source:push:** handle `ErrorFromAPI` as well as other error types ([#556](https://coveo-cli/coveo/cli/issues/556)) ([ea13e75](https://coveo-cli/coveo/cli/commits/ea13e754da7431939b363a8f5821d54dd8809f1d))
+* **source:push:** only parse valid JSON files ([#555](https://coveo-cli/coveo/cli/issues/555)) ([d7eff46](https://coveo-cli/coveo/cli/commits/d7eff466e84d7b08dfaafe56a880b053ca79dadc))
+* **source:push:** support pushing large documents  ([#557](https://coveo-cli/coveo/cli/issues/557)) ([d3810b1](https://coveo-cli/coveo/cli/commits/d3810b1b4f1e13d392301c850dfc3cc14b35901d))
+
+
+
+
+
 ## [1.21.1](https://coveo-cli/coveo/cli/compare/v1.21.0...v1.21.1) (2021-11-29)
 
 
