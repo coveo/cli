@@ -32,10 +32,10 @@
     "typescript": "^4.3.5"
   },
   "devDependencies": {
-    "@angular/core": "13.0.2",
-    "@angular/forms": "13.0.2",
-    "@angular/material": "13.0.2",
-    "@angular/router": "13.0.2",
+    "@angular/core": "13.0.3",
+    "@angular/forms": "13.0.3",
+    "@angular/material": "13.0.3",
+    "@angular/router": "13.0.3",
     "@coveo/headless": "latest",
     "@types/fs-extra": "9.0.13",
     "@types/jasmine": "3.10.2",
