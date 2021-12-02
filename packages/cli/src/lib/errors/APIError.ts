@@ -66,7 +66,7 @@ export class APIError extends PrintableError {
     this.name = `APIError - ${errorCode}`;
     this.message = dedent`
     ${tagLine}
-    ${status ? `Status code: ${status}\n` : ""}
+    ${status ? `Status code: ${status}\n` : ''}
     Error code: ${red(errorCode)}
     Message: ${red(message)}
     `;
