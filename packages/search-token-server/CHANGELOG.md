@@ -3,6 +3,57 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.21.3](https://github.com/coveo/cli/compare/v1.21.2...v1.21.3) (2021-12-03)
+
+**Note:** Version bump only for package @coveo/search-token-server
+
+
+
+
+
+## [1.21.2](https://github.com/coveo/cli/compare/v1.21.1...v1.21.2) (2021-12-02)
+
+**Note:** Version bump only for package @coveo/search-token-server
+
+
+
+
+
+## [1.21.1](https://github.com/coveo/cli/compare/v1.21.0...v1.21.1) (2021-11-29)
+
+
+### Bug Fixes
+
+* **deps:** update all dependencies j:cdx-227 (major) ([#560](https://github.com/coveo/cli/issues/560)) ([335fd49](https://github.com/coveo/cli/commit/335fd49b96b285ad92c6b90cfd0c0a608151c70b))
+
+
+
+
+
+# [1.21.0](https://github.com/coveo/cli/compare/v1.20.0...v1.21.0) (2021-11-29)
+
+**Note:** Version bump only for package @coveo/search-token-server
+
+
+
+
+
+# [1.20.0](https://github.com/coveo/cli/compare/v1.19.0...v1.20.0) (2021-11-25)
+
+
+### Bug Fixes
+
+* **deps:** update all dependencies j:cdx-227 ([#529](https://github.com/coveo/cli/issues/529)) ([74a0d36](https://github.com/coveo/cli/commit/74a0d36ce09e3f12b9def51a7bc08b1e05f91be3))
+
+
+### Features
+
+* create new @coveo/lambda-functions package ([#558](https://github.com/coveo/cli/issues/558)) ([667749c](https://github.com/coveo/cli/commit/667749c10fe0de41a42523e4338fda9391f5d9f1))
+
+
+
+
+
 # [1.19.0](https://github.com/coveo/cli/compare/v1.18.0...v1.19.0) (2021-11-11)
 
 

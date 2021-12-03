@@ -21,6 +21,10 @@
     {
       "matchPackageNames": ["get-port"],
       "allowedVersions": "5.x"
+    },
+    {
+      "matchPackageNames": ["chalk"],
+      "allowedVersions": "4.x"
     }
   ],
   "rangeStrategy": "auto",

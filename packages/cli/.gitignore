@@ -14,5 +14,7 @@ reports/*.xml
 veracode
 coverage
 yarn.lock
-
 !.vscode/extensions.json
+the_config_dir
+.coveo
+foo

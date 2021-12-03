@@ -30,7 +30,7 @@ export const successMessage = (
 export const errorMessage = (
   cmd: Command,
   tagLine: string,
-  e: Error,
+  e: unknown,
   options = {exit: false}
 ) => {
   const error = isErrorFromAPI(e)

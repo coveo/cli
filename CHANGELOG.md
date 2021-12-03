@@ -3,6 +3,74 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.21.3](https://coveo-cli/coveo/cli/compare/v1.21.2...v1.21.3) (2021-12-03)
+
+**Note:** Version bump only for package cli-tools
+
+
+
+
+
+## [1.21.2](https://coveo-cli/coveo/cli/compare/v1.21.1...v1.21.2) (2021-12-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency puppeteer to v12 j:cdx-227 ([#569](https://coveo-cli/coveo/cli/issues/569)) ([e57137c](https://coveo-cli/coveo/cli/commits/e57137c5d3abf6dcf4697b4ec24feee43b7ba748))
+* **source:push:** handle `ErrorFromAPI` as well as other error types ([#556](https://coveo-cli/coveo/cli/issues/556)) ([ea13e75](https://coveo-cli/coveo/cli/commits/ea13e754da7431939b363a8f5821d54dd8809f1d))
+* **source:push:** only parse valid JSON files ([#555](https://coveo-cli/coveo/cli/issues/555)) ([d7eff46](https://coveo-cli/coveo/cli/commits/d7eff466e84d7b08dfaafe56a880b053ca79dadc))
+* **source:push:** support pushing large documents  ([#557](https://coveo-cli/coveo/cli/issues/557)) ([d3810b1](https://coveo-cli/coveo/cli/commits/d3810b1b4f1e13d392301c850dfc3cc14b35901d))
+
+
+
+
+
+## [1.21.1](https://coveo-cli/coveo/cli/compare/v1.21.0...v1.21.1) (2021-11-29)
+
+
+### Bug Fixes
+
+* **deps:** update all dependencies j:cdx-227 (major) ([#560](https://coveo-cli/coveo/cli/issues/560)) ([335fd49](https://coveo-cli/coveo/cli/commits/335fd49b96b285ad92c6b90cfd0c0a608151c70b))
+
+
+
+
+
+# [1.21.0](https://coveo-cli/coveo/cli/compare/v1.20.0...v1.21.0) (2021-11-29)
+
+
+### Features
+
+* use search-token-lambda with generated Atomic project & add deploy command ([#562](https://coveo-cli/coveo/cli/issues/562)) ([e7d3df3](https://coveo-cli/coveo/cli/commits/e7d3df392474837c723b93208f22e182970a31f6))
+
+
+
+
+
+# [1.20.0](https://coveo-cli/coveo/cli/compare/v1.19.0...v1.20.0) (2021-11-25)
+
+
+### Bug Fixes
+
+* **deps:** update all dependencies j:cdx-227 ([#529](https://coveo-cli/coveo/cli/issues/529)) ([74a0d36](https://coveo-cli/coveo/cli/commits/74a0d36ce09e3f12b9def51a7bc08b1e05f91be3))
+* erase resources folder content before pulling resources ([#554](https://coveo-cli/coveo/cli/issues/554)) ([22b30a2](https://coveo-cli/coveo/cli/commits/22b30a2f0ca2aabf44942021f3f791bcfd4a7074))
+* flush analytic events before terminating the process ([#549](https://coveo-cli/coveo/cli/issues/549)) ([b25473c](https://coveo-cli/coveo/cli/commits/b25473c204687edc9a92d33de6823fe1e2796e78))
+* require at least one flag on the `config:set` command ([#545](https://coveo-cli/coveo/cli/issues/545)) ([4d41930](https://coveo-cli/coveo/cli/commits/4d41930b6d4888e3fe8c29cff5e26eb1d84efbc8))
+* resolve ts/js files for generated atomic project (webpack) ([#553](https://coveo-cli/coveo/cli/issues/553)) ([8b705fe](https://coveo-cli/coveo/cli/commits/8b705fe4c643c428bc264ce093439ab7f63209c0))
+
+
+### Features
+
+* add "create-atomic" package ([#536](https://coveo-cli/coveo/cli/issues/536)) ([1acd626](https://coveo-cli/coveo/cli/commits/1acd6269c1f01febe76d755ab7396fef05b578df))
+* create new @coveo/lambda-functions package ([#558](https://coveo-cli/coveo/cli/issues/558)) ([667749c](https://coveo-cli/coveo/cli/commits/667749c10fe0de41a42523e4338fda9391f5d9f1))
+* display config after `config:set` ([#544](https://coveo-cli/coveo/cli/issues/544)) ([11bad62](https://coveo-cli/coveo/cli/commits/11bad62e663a10286d81019a8cb17918afb4ec10))
+* improve generated @coveo/atomic project ([#548](https://coveo-cli/coveo/cli/issues/548)) ([67e604d](https://coveo-cli/coveo/cli/commits/67e604d3b1706ff8b0083bf69476054ab06d2841))
+* make atomic command pass arguments to @coveo/create-atomic ([#546](https://coveo-cli/coveo/cli/issues/546)) ([c03c3f7](https://coveo-cli/coveo/cli/commits/c03c3f76b1516f2e7b9cc37ac34c6330059295f5))
+
+
+
+
+
 # [1.19.0](https://coveo-cli/coveo/cli/compare/v1.18.0...v1.19.0) (2021-11-11)
 
 

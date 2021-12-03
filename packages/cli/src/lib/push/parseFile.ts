@@ -21,21 +21,29 @@ import {
   NotAJsonFileError,
 } from './validatorErrors';
 import {RequiredKeyValidator} from './requiredKeyValidator';
-import {readJSONSync} from 'fs-extra';
 
 export const parseAndGetDocumentBuilderFromJSONDocument = (
   documentPath: PathLike
 ) => {
   ensureFileIntegrity(documentPath);
 
-  const fileContent = JSON.parse(readFileSync(documentPath).toString()) as
-    | Record<string, string>
-    | Record<string, string>[];
+  const fileContent = safeJSONParse(documentPath);
 
   if (Array.isArray(fileContent)) {
     return fileContent.map((doc) => processDocument(doc, documentPath));
   } else {
     return [processDocument(fileContent, documentPath)];
+  }
+};
+
+const safeJSONParse = (documentPath: PathLike) => {
+  const fileContent = readFileSync(documentPath).toString();
+  try {
+    return JSON.parse(fileContent) as
+      | Record<string, string>
+      | Record<string, string>[];
+  } catch (error) {
+    throw new NotAJsonFileError(documentPath);
   }
 };
 
@@ -220,9 +228,6 @@ const ensureFileIntegrity = (documentPath: PathLike) => {
   if (!isFile(documentPath)) {
     throw new NotAFileError(documentPath);
   }
-  if (!isValidJsonFile(documentPath)) {
-    throw new NotAJsonFileError(documentPath);
-  }
 };
 
 const isFile = (p: PathLike) => {
@@ -230,15 +235,6 @@ const isFile = (p: PathLike) => {
     return false;
   }
   return lstatSync(p).isFile();
-};
-
-const isValidJsonFile = (p: PathLike) => {
-  try {
-    readJSONSync(p.toString());
-  } catch (e) {
-    return false;
-  }
-  return true;
 };
 
 const getSecurityIdentitySchemaValidation =

@@ -9,7 +9,11 @@ import {Terminal} from '../utils/terminal/terminal';
 
 describe('auth', () => {
   describe('login', () => {
-    const testOrg = process.env.ORG_ID;
+    const {
+      ORG_ID: testOrg,
+      PLATFORM_ENV: platformEnv,
+      PLATFORM_HOST: platformHost,
+    } = process.env;
     let browser: Browser;
     let processManager: ProcessManager;
 
@@ -24,11 +28,10 @@ describe('auth', () => {
     }, 5e3);
 
     it('should open the platform page', async () => {
-      // TODO CDX-98: Remove `-e=dev`.
       const args: string[] = [
         CLI_EXEC_PATH,
         'auth:login',
-        '-e=dev',
+        `-e=${platformEnv}`,
         `-o=${testOrg}`,
       ];
       if (process.platform === 'win32') {
@@ -51,12 +54,8 @@ describe('auth', () => {
 
       await retry(async () => {
         const pages = await browser.pages();
-        expect(
-          pages.some(
-            // TODO CDX-98: URL should vary in fonction of the targeted environment.
-            (page) => page.url() === 'https://platformdev.cloud.coveo.com/login'
-          )
-        ).toBeTruthy();
+        const loginUrl = new URL('/login', platformHost);
+        expect(pages.some((page) => page.url() === loginUrl.href)).toBeTruthy();
       });
     }, 30e3);
   });

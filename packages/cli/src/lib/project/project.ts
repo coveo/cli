@@ -4,6 +4,7 @@ import {
   readdirSync,
   unlinkSync,
   writeFileSync,
+  rmSync,
 } from 'fs';
 import {extname, join} from 'path';
 import {cli} from 'cli-ux';
@@ -14,7 +15,7 @@ import {DotFolder, DotFolderConfig} from './dotFolder';
 import {readJsonSync, writeJsonSync, WriteOptions} from 'fs-extra';
 
 export class Project {
-  private static readonly resourceFolderName = 'resources';
+  public static readonly resourceFolderName = 'resources';
   public static readonly jsonFormat: WriteOptions = {spaces: '\t'};
   public constructor(private _pathToProject: string) {
     if (!this.isCoveoProject) {
@@ -29,6 +30,12 @@ export class Project {
     await extract(this.temporaryZipPath, {dir: this.resourcePath});
     this.formatResourceFiles();
     this.deleteTemporaryZipFile();
+  }
+
+  public reset() {
+    if (this.isResourcesProject) {
+      rmSync(Project.resourceFolderName, {recursive: true, force: true});
+    }
   }
 
   private formatResourceFiles(dirPath = this.resourcePath) {
@@ -98,6 +105,7 @@ export class Project {
   public get resourcePath() {
     return join(this._pathToProject, Project.resourceFolderName);
   }
+
   public contains(fileName: string) {
     return existsSync(join(this.pathToProject, fileName));
   }

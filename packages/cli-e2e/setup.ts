@@ -24,12 +24,23 @@ async function clearChromeBrowsingData(browser: Browser) {
   return Promise.all(pageClearDataPromise);
 }
 
+function getPlatformEnv() {
+  return process.env.PLATFORM_ENV?.toLowerCase();
+}
+
+function getPlatformHost() {
+  const env = getPlatformEnv();
+  return `https://platform${env === 'prod' ? '' : env}.cloud.coveo.com`;
+}
+
 async function createTestOrgAndSaveOrgIdToEnv(orgName: string) {
   const {accessToken} = getConfig();
   const testOrgId = await createOrg(orgName, accessToken);
   console.log(`Created org ${testOrgId}`);
   const pathToEnv = getPathToHomedirEnvFile();
   saveToEnvFile(pathToEnv, {
+    PLATFORM_ENV: getPlatformEnv(),
+    PLATFORM_HOST: getPlatformHost(),
     TEST_RUN_ID: process.env.TEST_RUN_ID,
     TEST_ORG_ID: testOrgId,
     ACCESS_TOKEN: accessToken,
@@ -40,6 +51,8 @@ export default async function () {
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
   // runId must start and finish with letters to satisfies Angular.
   process.env.TEST_RUN_ID = `id${randomBytes(16).toString('hex')}g`;
+  process.env.PLATFORM_ENV = getPlatformEnv();
+  process.env.PLATFORM_HOST = getPlatformHost();
   const testOrgName = `cli-e2e-${process.env.TEST_RUN_ID}`;
   const browser = await connectToChromeBrowser();
   await clearChromeBrowsingData(browser);

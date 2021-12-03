@@ -16,7 +16,6 @@ export default {
     static: {
       directory: join(dirname(fileURLToPath(import.meta.url)), 'dist'),
     },
-    port: parseInt(process.env.PORT),
     hot: false,
   },
   plugins: [
@@ -38,5 +37,8 @@ export default {
       },
       {test: /\.tsx?$/, loader: 'ts-loader'},
     ],
+  },
+  resolve: {
+    extensions: ['.js', '.ts', '.tsx'],
   },
 };

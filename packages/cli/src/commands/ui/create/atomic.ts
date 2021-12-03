@@ -16,6 +16,7 @@ import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {Config} from '../../../lib/config/config';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {platformUrl} from '../../../lib/platform/environment';
+import {getPackageVersion} from '../../../lib/utils/misc';
 
 interface AtomicArguments {
   name: string;
@@ -38,13 +39,14 @@ export default class Atomic extends Command {
     version: flags.string({
       char: 'v',
       description: `The version of ${Atomic.cliPackage} to use.`,
-      // default: getPackageVersion(Atomic.cliPackage), TODO: uncomment when @coveo/create-atomic added to package.json
-      default: 'latest',
+      default: getPackageVersion(Atomic.cliPackage) || 'latest',
     }),
   };
-  public static hidden = true;
 
-  @Trackable()
+  @Trackable({
+    eventName: 'ui create',
+    overrideEventProperties: {framework: 'atomic'},
+  })
   @Preconditions(
     IsAuthenticated(),
     IsNpxInstalled(),
@@ -53,7 +55,6 @@ export default class Atomic extends Command {
   )
   public async run() {
     await this.createProject();
-    this.displayFeedbackAfterSuccess();
   }
 
   @Trackable()
@@ -98,16 +99,5 @@ export default class Atomic extends Command {
   private get flags() {
     const {flags} = this.parse(Atomic);
     return flags;
-  }
-
-  private displayFeedbackAfterSuccess() {
-    this.log(`
-    To get started:
-
-    cd ${this.args.name}
-    npm start
-
-    Happy hacking!
-    `);
   }
 }
