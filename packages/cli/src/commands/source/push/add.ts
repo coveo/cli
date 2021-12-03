@@ -42,7 +42,6 @@ export default class SourcePushAdd extends Command {
         'One or multiple folder containing json files. Can be repeated',
     }),
     maxConcurrent: flags.integer({
-      multiple: true,
       exclusive: ['file'],
       char: 'c',
       default: 10,
