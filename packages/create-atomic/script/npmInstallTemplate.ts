@@ -5,16 +5,16 @@ import {getPackageManager} from '../src/utils.js';
 
 (async () =>
   await new Promise((resolve, reject) => {
-    const process = spawn(
+    const childProcess = spawn(
       getPackageManager(),
-      ['install', '--ignore-scripts'],
+      [process.env.CI ? 'ci' : 'install', '--ignore-scripts'],
       {
         stdio: 'inherit',
         cwd: join(cwd(), 'templates'),
       }
     );
 
-    process.on('close', (code) => {
+    childProcess.on('close', (code) => {
       if (code === 0) {
         resolve('Packages installed correctly');
       } else {
