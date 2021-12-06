@@ -13,6 +13,7 @@
   "type": "module",
   "main": "index.mjs",
   "scripts": {
+    "postinstall": "node --loader ts-node/esm ./script/npmInstallTemplate.ts",
     "start": "./index.js",
     "build": "tsc",
     "prepublishOnly": "npm run build",
