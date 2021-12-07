@@ -11,6 +11,7 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {consumeIterator} from '../../../lib/utils/iterator';
 import {parseAndGetDocumentBuilderFromJSONDocument} from '../../../lib/push/parseFile';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
 import {isJsonFile} from '../../../lib/utils/file';
@@ -94,30 +95,23 @@ export default class SourcePushAdd extends Command {
       fileNames
     );
 
-    cli.action.start('Processing...');
-
-    const folderIterator: string[] = flags.folder.flatMap((folder) =>
+    const files: string[] = flags.folder.flatMap((folder) =>
       readdirSync(folder)
         .filter(isJsonFile)
         .flatMap((file) => path.join(folder, file))
     );
 
-    const consume = async (iterator: IterableIterator<string>) => {
-      for (const fullPath of iterator) {
-        const docBuilders =
-          parseAndGetDocumentBuilderFromJSONDocument(fullPath);
-        this.successMessageOnParseFile(fullPath, docBuilders.length);
-        await send(docBuilders);
-      }
+    const work = async (filePath: string) => {
+      const docBuilders = parseAndGetDocumentBuilderFromJSONDocument(filePath);
+      this.successMessageOnParseFile(filePath, docBuilders.length);
+      await send(docBuilders);
     };
 
-    const workers = new Array(flags.maxConcurrent)
-      .fill(folderIterator.values())
-      .map(consume);
+    cli.action.start('Processing...');
 
-    await Promise.allSettled(workers);
-
+    await consumeIterator(files.values(), work, flags.maxConcurrent);
     await close();
+
     cli.action.stop();
   }
 
