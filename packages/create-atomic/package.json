@@ -4,7 +4,8 @@
   "version": "1.21.3",
   "files": [
     "/lib",
-    "/templates"
+    "/templates",
+    "/templates/.gitignore"
   ],
   "bin": {
     "create-atomic": "./index.js"
