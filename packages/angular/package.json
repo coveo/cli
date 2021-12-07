@@ -40,10 +40,10 @@
     "@types/fs-extra": "9.0.13",
     "@types/jasmine": "3.10.2",
     "@types/mocha": "9.0.0",
-    "@types/node": "16.11.11",
+    "@types/node": "16.11.12",
     "fs-extra": "10.0.0",
     "jasmine": "3.10.0",
-    "prettier": "2.5.0"
+    "prettier": "2.5.1"
   },
   "publishConfig": {
     "access": "public"
