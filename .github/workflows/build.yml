@@ -61,7 +61,7 @@ jobs:
       - name: Delete test API key
         if: always()
         run: node ./scripts/delete-api-keys.js
-      - uses: actions/upload-artifact@27121b0bdffd731efa15d66772be8dc71245d074 # renovate: tag=v2
+      - uses: actions/upload-artifact@da838ae9595ac94171fa2d4de5a2f117b3e7ac32 # renovate: tag=v2
         if: ${{ always() }}
         with:
           name: ${{matrix.os}}-test-artifacts
