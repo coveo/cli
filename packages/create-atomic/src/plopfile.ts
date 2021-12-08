@@ -77,7 +77,7 @@ export default function (plop: NodePlopAPI) {
         ],
       },
       function installPackagesPrompt() {
-        return '🚀  Installing packages...';
+        return 'Installing packages...';
       },
       function installPackages(answers) {
         return new Promise((resolve, reject) => {
@@ -89,9 +89,9 @@ export default function (plop: NodePlopAPI) {
 
           process.on('close', (code) => {
             if (code === 0) {
-              resolve('✅ Installation succeeded!');
+              resolve('Installation complete');
             } else {
-              reject(`❌ Installation exited with ${code}`);
+              reject(`Installation exited with ${code}`);
             }
           });
         });
