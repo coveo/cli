@@ -12,11 +12,8 @@ import {
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {parseAndGetDocumentBuilderFromJSONDocument} from '../../../lib/push/parseFile';
-import {
-  ErrorFromAPI,
-  errorMessage,
-  successMessage,
-} from '../../../lib/push/userFeedback';
+import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
+import {isJsonFile} from '../../../lib/utils/file';
 
 interface AxiosResponse {
   status: number;
@@ -81,7 +78,7 @@ export default class SourcePushAdd extends Command {
 
     const fileNames = flags.folder.flatMap((folder) => {
       const files = readdirSync(folder);
-      return files.map((f) => `${path.join(folder, f)}`);
+      return files.filter(isJsonFile).map((f) => `${path.join(folder, f)}`);
     });
 
     const {send, close} = this.splitByChunkAndUpload(
@@ -95,13 +92,15 @@ export default class SourcePushAdd extends Command {
     await Promise.all(
       flags.folder.flatMap((folder) => {
         return Promise.all(
-          readdirSync(folder).flatMap(async (file) => {
-            const fullPath = path.join(folder, file);
-            const docBuilders =
-              parseAndGetDocumentBuilderFromJSONDocument(fullPath);
-            this.successMessageOnParseFile(fullPath, docBuilders.length);
-            await send(docBuilders);
-          })
+          readdirSync(folder)
+            .filter(isJsonFile)
+            .flatMap(async (file) => {
+              const fullPath = path.join(folder, file);
+              const docBuilders =
+                parseAndGetDocumentBuilderFromJSONDocument(fullPath);
+              this.successMessageOnParseFile(fullPath, docBuilders.length);
+              await send(docBuilders);
+            })
         );
       })
     );
@@ -155,8 +154,10 @@ export default class SourcePushAdd extends Command {
     );
   }
 
-  private errorMessageOnAdd(e: ErrorFromAPI) {
-    return errorMessage(this, 'Error while trying to add document.', e);
+  private errorMessageOnAdd(e: unknown) {
+    return errorMessage(this, 'Error while trying to add document.', e, {
+      exit: true,
+    });
   }
 
   private successMessageOnParseFile(file: string, numParsed: number) {
@@ -185,12 +186,14 @@ export default class SourcePushAdd extends Command {
         );
 
         if (accumulator.size + sizeOfDoc >= SourcePushAdd.maxContentLength) {
-          await this.uploadBatch(
-            source,
-            sourceId,
-            accumulator.chunks,
-            fileNames
-          );
+          if (accumulator.chunks.length > 0) {
+            await this.uploadBatch(
+              source,
+              sourceId,
+              accumulator.chunks,
+              fileNames
+            );
+          }
           accumulator.chunks = [docBuilder];
           accumulator.size = sizeOfDoc;
         } else {
@@ -217,8 +220,8 @@ export default class SourcePushAdd extends Command {
         delete: [],
       });
       this.successMessageOnAdd(fileNames, batch.length, res);
-    } catch (e) {
-      this.errorMessageOnAdd(e as ErrorFromAPI);
+    } catch (e: unknown) {
+      this.errorMessageOnAdd(e);
     }
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "@coveo/angular",
-  "version": "1.21.1",
+  "version": "1.21.3",
   "description": "Coveo schematic for angular",
   "scripts": {
     "test": "npm run build && jasmine dist/**/*_spec.js",
@@ -32,18 +32,18 @@
     "typescript": "^4.3.5"
   },
   "devDependencies": {
-    "@angular/core": "13.0.2",
-    "@angular/forms": "13.0.2",
-    "@angular/material": "13.0.2",
-    "@angular/router": "13.0.2",
+    "@angular/core": "13.0.3",
+    "@angular/forms": "13.0.3",
+    "@angular/material": "13.0.3",
+    "@angular/router": "13.0.3",
     "@coveo/headless": "latest",
     "@types/fs-extra": "9.0.13",
     "@types/jasmine": "3.10.2",
     "@types/mocha": "9.0.0",
-    "@types/node": "16.11.11",
+    "@types/node": "16.11.12",
     "fs-extra": "10.0.0",
     "jasmine": "3.10.0",
-    "prettier": "2.5.0"
+    "prettier": "2.5.1"
   },
   "publishConfig": {
     "access": "public"

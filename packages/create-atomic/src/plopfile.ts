@@ -1,6 +1,6 @@
 import {NodePlopAPI} from 'plop';
 import {spawn} from 'child_process';
-import {getPackageManager} from './utils';
+import {getPackageManager} from './utils.js';
 
 interface PromptsAnswers {
   project: string;
@@ -73,6 +73,7 @@ export default function (plop: NodePlopAPI) {
           '../templates/package.json',
           '../templates/webpack.config.mjs',
           '../templates/netlify.toml',
+          '../templates/README.md',
         ],
       },
       function installPackagesPrompt() {
