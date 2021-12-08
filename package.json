@@ -78,6 +78,7 @@
     "pr:report": "node ./scripts/pr-bot.js",
     "release:changelog": "node ./scripts/release-changelog.js",
     "npm:publish:template": "lerna run --no-bail --stream npm:publish:template",
+    "npm:publish:template:local": "lerna run --no-bail --stream npm:publish:template:local",
     "npm:bump:template": "lerna run --no-bail --stream npm:bump:template",
     "npm:pkglock": "lerna exec npm i",
     "npm:cleanPackage": "lerna exec node ../../scripts/clean-package-json.js",

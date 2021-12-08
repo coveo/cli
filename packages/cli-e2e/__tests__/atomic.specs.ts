@@ -1,12 +1,13 @@
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
-import {getProjectPath, setupUIProject} from '../utils/cli';
+import {answerPrompt, getProjectPath, setupUIProject} from '../utils/cli';
 import {isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {npm} from '../utils/windows';
 import {jwtTokenPattern} from '../utils/matcher';
+import {EOL} from 'os';
 
 describe('ui:create:atomic', () => {
   let browser: Browser;
@@ -31,7 +32,7 @@ describe('ui:create:atomic', () => {
       projectName
     );
 
-    await Promise.race([
+    const buildTerminalExitPromise = Promise.race([
       buildTerminal.when('exit').on('process').do().once(),
       buildTerminal
         .when(/Happy hacking!/)
@@ -39,6 +40,12 @@ describe('ui:create:atomic', () => {
         .do()
         .once(),
     ]);
+
+    await buildTerminal
+      .when(/\(y\)/)
+      .on('stderr')
+      .do(answerPrompt(`y${EOL}`))
+      .until(buildTerminalExitPromise);
   };
 
   const startApplication = async (

@@ -13,12 +13,13 @@
   "type": "module",
   "main": "index.mjs",
   "scripts": {
-    "postinstall": "node --loader ts-node/esm ./script/npmInstallTemplate.ts",
+    "prepare": "node --loader ts-node/esm ./script/npmInstallTemplate.ts",
     "start": "./index.js",
     "build": "tsc",
     "prepublishOnly": "npm run build",
     "npm:bump:template": "npm --no-git-tag-version version",
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
+    "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
     "lint": "prettier --check . && eslint ."
   },
   "keywords": [
