@@ -2,6 +2,7 @@
   "name": "{{project}}",
   "description": "{{titleCase project}} project",
   "version": "0.1.0",
+  "private": "true",
   "scripts": {
     "postinstall": "npm run setup-lambda && npm run setup-cleanup",
     "setup-lambda": "node ./scripts/setup-lambda.js",

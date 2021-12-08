@@ -13,7 +13,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "npm:bump:template": "npm --no-git-tag-version version",
-    "npm:publish:template": "npm publish --access public --tag latest --registry http://localhost:4873"
+    "npm:publish:template": "npm publish --access public --tag latest --registry http://localhost:4873",
+    "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873"
   },
   "dependencies": {
     "@coveord/platform-client": "26.3.1",
