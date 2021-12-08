@@ -1,4 +1,4 @@
-const appendCmdIfWindows = (cmd: string) =>
+export const appendCmdIfWindows = (cmd: string) =>
   `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
 
 const DEFAULT_PACKAGE_MANAGER = 'npm';
