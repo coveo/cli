@@ -6,7 +6,7 @@ import {getPackageManager} from '../src/utils.js';
 (async () =>
   await new Promise((resolve, reject) => {
     const childProcess = spawn(
-      getPackageManager(),
+      'npm',
       [process.env.CI ? 'ci' : 'install', '--ignore-scripts'],
       {
         stdio: 'inherit',
