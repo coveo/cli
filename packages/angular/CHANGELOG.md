@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.22.0](https://coveo-cli/coveo/cli/compare/v1.21.3...v1.22.0) (2021-12-08)
+
+
+### Bug Fixes
+
+* **deps:** update all dependencies j:cdx-227 ([#580](https://coveo-cli/coveo/cli/issues/580)) ([283bce0](https://coveo-cli/coveo/cli/commits/283bce041f26184949a9f4e8939faa612bf30994))
+
+
+### Features
+
+* **atomic:** add snyk coverage for atomic ([#581](https://coveo-cli/coveo/cli/issues/581)) ([604a044](https://coveo-cli/coveo/cli/commits/604a044a9e4a42ee44fc7c6442fc8956f1c59e27))
+
+
+
+
+
 ## [1.21.3](https://coveo-cli/coveo/cli/compare/v1.21.2...v1.21.3) (2021-12-03)
 
 **Note:** Version bump only for package @coveo/angular
