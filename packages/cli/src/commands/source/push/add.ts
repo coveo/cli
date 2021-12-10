@@ -47,7 +47,7 @@ export default class SourcePushAdd extends Command {
       char: 'c',
       default: 10,
       description:
-        'The maximum number of requests to send concurrently. Increasing this value will increase the speed at which documents are pushed to the Coveo platform. However, if you run into memory or throttling issues, consider reducing this value.',
+        'The maximum number of requests to send concurrently. Increasing this value increases the speed at which documents are pushed to the Coveo platform. However, if you run into memory or throttling issues, consider reducing this value.',
     }),
   };
 
