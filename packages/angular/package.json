@@ -1,6 +1,6 @@
 {
   "name": "@coveo/angular",
-  "version": "1.21.3",
+  "version": "1.22.2",
   "description": "Coveo schematic for angular",
   "scripts": {
     "test": "npm run build && jasmine dist/**/*_spec.js",
@@ -10,6 +10,7 @@
     "postbuild": "node ./scripts/setup.js",
     "prepublishOnly": "npm run build",
     "npm:bump:template": "npm --no-git-tag-version version",
+    "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873"
   },
   "keywords": [
@@ -40,10 +41,10 @@
     "@types/fs-extra": "9.0.13",
     "@types/jasmine": "3.10.2",
     "@types/mocha": "9.0.0",
-    "@types/node": "16.11.11",
+    "@types/node": "16.11.12",
     "fs-extra": "10.0.0",
     "jasmine": "3.10.0",
-    "prettier": "2.5.0"
+    "prettier": "2.5.1"
   },
   "publishConfig": {
     "access": "public"

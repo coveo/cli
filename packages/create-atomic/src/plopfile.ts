@@ -77,21 +77,21 @@ export default function (plop: NodePlopAPI) {
         ],
       },
       function installPackagesPrompt() {
-        return 'Installing packages 🚀';
+        return 'Installing packages...';
       },
       function installPackages(answers) {
         return new Promise((resolve, reject) => {
           const {project} = answers as PromptsAnswers;
           const process = spawn(getPackageManager(), ['install'], {
-            stdio: 'inherit',
+            stdio: 'ignore',
             cwd: `${currentPath}/${project}/`,
           });
 
           process.on('close', (code) => {
             if (code === 0) {
-              resolve('Packages installed correctly');
+              resolve('Installation complete');
             } else {
-              reject(`npm install exited with ${code}`);
+              reject(`Installation exited with ${code}`);
             }
           });
         });

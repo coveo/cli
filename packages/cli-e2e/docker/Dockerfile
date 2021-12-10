@@ -7,13 +7,15 @@ RUN apt-get update
 RUN apt-get install -y google-chrome-stable
 RUN update-alternatives --set x-www-browser /usr/bin/google-chrome-stable
 
+# Brew, used for mitmproxy
+RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
 RUN apt-get install git
 
 # Keyring deps
 RUN apt-get install -y dbus-x11
 RUN apt-get install -y gnome-keyring
 
-# Chrome deps
 RUN apt-get install -yq libgconf-2-4
 RUN apt-get install -y make build-essential libssl-dev zlib1g-dev
 RUN apt-get install -y libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm
@@ -48,6 +50,7 @@ RUN printf 'Default_keyring' > /home/notGroot/.local/share/keyrings/default
 # Give the file access to the test user.
 RUN chown -R notGroot:notGroot /home/notGroot \
     && chmod -R 777 /home/notGroot/ \
+    && chmod -R 777 /usr/ \
     && chown -R notGroot:notGroot /app \
     && chmod -R 600 /home/notGroot/.local/share/keyrings/Default_keyring.keyring \
     && chmod -R 644 /home/notGroot/.local/share/keyrings/default

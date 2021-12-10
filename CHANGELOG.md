@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.22.2](https://coveo-cli/coveo/cli/compare/v1.22.1...v1.22.2) (2021-12-09)
+
+**Note:** Version bump only for package cli-tools
+
+
+
+
+
+## [1.22.1](https://coveo-cli/coveo/cli/compare/v1.22.0...v1.22.1) (2021-12-09)
+
+**Note:** Version bump only for package cli-tools
+
+
+
+
+
+# [1.22.0](https://coveo-cli/coveo/cli/compare/v1.21.3...v1.22.0) (2021-12-08)
+
+
+### Bug Fixes
+
+* **atomic:** always use npm ([#584](https://coveo-cli/coveo/cli/issues/584)) ([7dba5bb](https://coveo-cli/coveo/cli/commits/7dba5bba957a6d40a62cdea1757eb53226df183e))
+* **deps:** update all dependencies j:cdx-227 ([#580](https://coveo-cli/coveo/cli/issues/580)) ([283bce0](https://coveo-cli/coveo/cli/commits/283bce041f26184949a9f4e8939faa612bf30994))
+* remove noise & warning when creating Atomic project ([#583](https://coveo-cli/coveo/cli/issues/583)) ([f35b80f](https://coveo-cli/coveo/cli/commits/f35b80f2b2257664a1382ef8e429c1c51934f48a))
+* specify templates/.gitignore in files ([#579](https://coveo-cli/coveo/cli/issues/579)) ([c7a7396](https://coveo-cli/coveo/cli/commits/c7a73969c2aef7f08d119e2123e79fbc7973b46a))
+
+
+### Features
+
+* **atomic:** add snyk coverage for atomic ([#581](https://coveo-cli/coveo/cli/issues/581)) ([604a044](https://coveo-cli/coveo/cli/commits/604a044a9e4a42ee44fc7c6442fc8956f1c59e27))
+
+
+
+
+
 ## [1.21.3](https://coveo-cli/coveo/cli/compare/v1.21.2...v1.21.3) (2021-12-03)
 
 **Note:** Version bump only for package cli-tools
