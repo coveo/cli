@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.22.2](https://github.com/coveo/cli/compare/v1.22.1...v1.22.2) (2021-12-09)
+
+**Note:** Version bump only for package @coveo/vue-cli-plugin-typescript
+
+
+
+
+
+## [1.22.1](https://github.com/coveo/cli/compare/v1.22.0...v1.22.1) (2021-12-09)
+
+**Note:** Version bump only for package @coveo/vue-cli-plugin-typescript
+
+
+
+
+
+# [1.22.0](https://github.com/coveo/cli/compare/v1.21.3...v1.22.0) (2021-12-08)
+
+
+### Features
+
+* **atomic:** add snyk coverage for atomic ([#581](https://github.com/coveo/cli/issues/581)) ([604a044](https://github.com/coveo/cli/commit/604a044a9e4a42ee44fc7c6442fc8956f1c59e27))
+
+
+
+
+
 ## [1.21.3](https://github.com/coveo/cli/compare/v1.21.2...v1.21.3) (2021-12-03)
 
 **Note:** Version bump only for package @coveo/vue-cli-plugin-typescript

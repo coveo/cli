@@ -1,9 +1,10 @@
 {
   "name": "@coveo/cra-template",
-  "version": "1.21.3",
+  "version": "1.22.2",
   "scripts": {
     "lint": "prettier --check . && eslint .",
     "npm:bump:template": "npm --no-git-tag-version version",
+    "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873"
   },
   "keywords": [
