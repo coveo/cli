@@ -20,7 +20,6 @@ export class Identifier {
     const {userId, isInternalUser} = await this.getUserInfo(platformClient);
     const deviceId = await machineId();
     const identity = {
-      ...this.getCliInfo(),
       ...this.getDeviceInfo(),
       ...{isInternalUser},
     };
@@ -32,6 +31,7 @@ export class Identifier {
     const identify = (amplitudeClient: NodeClient) => {
       const identifyEvent = {
         ...identifier.identifyUser(userId, deviceId),
+        ...this.getAmplitudeBaseEventProperties(),
       };
       amplitudeClient.logEvent(identifyEvent);
     };
@@ -52,13 +52,13 @@ export class Identifier {
     };
   }
 
-  private getCliInfo() {
-    const {version} = this.configuration;
+  private getAmplitudeBaseEventProperties() {
+    const {version} = config;
     return {
-      // TODO: CDX-660: convert all properties to snake-case
-      cliVersion: version,
+      app_version: version,
     };
   }
+
   private getDeviceInfo() {
     const {shell, arch, windows, platform, bin, userAgent, debug} = config;
     return {
