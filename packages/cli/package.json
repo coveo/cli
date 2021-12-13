@@ -33,6 +33,7 @@
     "jsonschema": "^1.4.0",
     "node-machine-id": "^1.1.12",
     "open": "^8.4.0",
+    "os-name": "^4.0.1",
     "patch-package": "^6.4.7",
     "semver": "^7.3.4",
     "ts-dedent": "^2.1.1",
@@ -140,6 +141,7 @@
       "analytics": "./lib/hooks/analytics/analytics",
       "command_not_found": "./lib/hooks/commandNotFound/commandNotFound",
       "prerun": "./lib/hooks/prerun/prerun",
+      "preupdate": "./lib/hooks/preupdate/preupdate",
       "postrun": "./lib/hooks/postrun/postrun"
     },
     "macos": {
