@@ -1,4 +1,4 @@
-import osName from 'os-name';
+import os from 'os';
 import {Identify} from '@amplitude/identify';
 import {machineId} from 'node-machine-id';
 import {createHash} from 'crypto';
@@ -58,7 +58,8 @@ export class Identifier {
     const {version, platform} = config;
     return {
       app_version: version,
-      os_name: osName(),
+      os_version: os.release(),
+      os_name: platform,
       platform,
     };
   }
