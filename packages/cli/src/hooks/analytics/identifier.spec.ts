@@ -102,13 +102,13 @@ describe('identifier', () => {
       mockedPlatformClient.mockClear();
     });
 
-    it('should set platform information', async () => {
-      expect(mockSetIdentity).toHaveBeenCalledWith(
+    it('should not set platform information', async () => {
+      expect(mockSetIdentity).not.toHaveBeenCalledWith(
         'organization_type',
         'Production'
       );
-      expect(mockSetIdentity).toHaveBeenCalledWith('environment', 'dev');
-      expect(mockSetIdentity).toHaveBeenCalledWith('region', 'us');
+      expect(mockSetIdentity).not.toHaveBeenCalledWith('environment', 'dev');
+      expect(mockSetIdentity).not.toHaveBeenCalledWith('region', 'us');
     });
 
     it('should set the user ID', async () => {
