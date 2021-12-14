@@ -89,7 +89,11 @@ describe('identifier', () => {
   };
 
   beforeAll(() => {
-    global.config = {configDir: 'the_config_dir', version: '1.2.3'} as IConfig;
+    global.config = {
+      configDir: 'the_config_dir',
+      version: '1.2.3',
+      platform: 'darwin',
+    } as IConfig;
   });
 
   beforeEach(() => {
@@ -160,9 +164,27 @@ describe('identifier', () => {
     });
   });
 
-  it('should add the CLI version to the event', async () => {
-    identity = await new Identifier().getIdentity();
-    identity.identify(getDummyAmplitudeClient());
-    expect(mockedLogEvent).toHaveBeenCalledWith({app_version: '1.2.3'});
+  describe('when logging for every user type', () => {
+    let identity: Awaited<ReturnType<Identifier['getIdentity']>>;
+
+    beforeEach(async () => {
+      identity = await new Identifier().getIdentity();
+      identity.identify(getDummyAmplitudeClient());
+    });
+
+    it('should add the CLI version to the event', async () => {
+      expect(mockedLogEvent).toHaveBeenCalledWith(
+        expect.objectContaining({app_version: '1.2.3'})
+      );
+    });
+
+    it('should add the OS information to the event', async () => {
+      expect(mockedLogEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          os_name: 'macOS Monterey',
+          platform: 'darwin',
+        })
+      );
+    });
   });
 });
