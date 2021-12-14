@@ -1,3 +1,4 @@
+jest.mock('@amplitude/node');
 jest.mock('@amplitude/identify');
 jest.mock('@coveord/platform-client');
 jest.mock('../../lib/platform/authenticatedClient');
@@ -14,6 +15,7 @@ import {
   defaultConfiguration,
 } from '../../__stub__/configuration';
 import {IConfig} from '@oclif/config';
+import type {NodeClient} from '@amplitude/node';
 
 describe('identifier', () => {
   const mockedConfig = mocked(Config);
@@ -22,10 +24,14 @@ describe('identifier', () => {
   const mockedPlatformClient = mocked(PlatformClient);
   const mockUserGet = jest.fn();
   const mockSetIdentity = jest.fn();
+  const mockedLogEvent = jest.fn();
 
-  // TODO: Remove after update to Typescript 4.5
-  type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T;
   let identity: Awaited<ReturnType<Identifier['getIdentity']>>;
+
+  const getDummyAmplitudeClient = () =>
+    ({
+      logEvent: mockedLogEvent,
+    } as unknown as NodeClient);
 
   const doMockIdentify = () => {
     mockedIdentify.prototype.set.mockImplementation(mockSetIdentity);
@@ -83,7 +89,7 @@ describe('identifier', () => {
   };
 
   beforeAll(() => {
-    global.config = {configDir: 'the_config_dir'} as IConfig;
+    global.config = {configDir: 'the_config_dir', version: '1.2.3'} as IConfig;
   });
 
   beforeEach(() => {
@@ -102,13 +108,13 @@ describe('identifier', () => {
       mockedPlatformClient.mockClear();
     });
 
-    it('should set platform information', async () => {
-      expect(mockSetIdentity).toHaveBeenCalledWith(
+    it('should not set platform information', async () => {
+      expect(mockSetIdentity).not.toHaveBeenCalledWith(
         'organization_type',
         'Production'
       );
-      expect(mockSetIdentity).toHaveBeenCalledWith('environment', 'dev');
-      expect(mockSetIdentity).toHaveBeenCalledWith('region', 'us');
+      expect(mockSetIdentity).not.toHaveBeenCalledWith('environment', 'dev');
+      expect(mockSetIdentity).not.toHaveBeenCalledWith('region', 'us');
     });
 
     it('should set the user ID', async () => {
@@ -152,5 +158,11 @@ describe('identifier', () => {
     it('should set the user ID to null', async () => {
       expect(identity.userId).toBeNull();
     });
+  });
+
+  it('should add the CLI version to the event', async () => {
+    identity = await new Identifier().getIdentity();
+    identity.identify(getDummyAmplitudeClient());
+    expect(mockedLogEvent).toHaveBeenCalledWith({app_version: '1.2.3'});
   });
 });

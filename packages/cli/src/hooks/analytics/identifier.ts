@@ -5,7 +5,7 @@ import {createHash} from 'crypto';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
 import {camelToSnakeCase} from '../../lib/utils/string';
-import {NodeClient} from '@amplitude/node';
+import type {NodeClient} from '@amplitude/node';
 export class Identifier {
   private authenticatedClient: AuthenticatedClient;
 
