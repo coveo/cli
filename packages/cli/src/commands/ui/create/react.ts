@@ -27,7 +27,7 @@ type ReactProcessEnv = {
 
 export default class React extends Command {
   public static templateName = '@coveo/cra-template';
-  public static cliPackage = 'create-react-app';
+  public static cliPackage = 'react-app';
 
   /**
    * "You’ll need to have Node 14.0.0 or later version on your local development machine"
@@ -113,7 +113,12 @@ export default class React extends Command {
   private async runReactCliCommand(args: string[], env: ReactProcessEnv) {
     return spawnProcess(
       appendCmdIfWindows`npx`,
-      [`${React.cliPackage}@${getPackageVersion(React.cliPackage)}`, ...args],
+      [
+        'yarn',
+        'create',
+        `${React.cliPackage}@${getPackageVersion(React.cliPackage)}`,
+        ...args,
+      ],
       {env: {...process.env, ...env}}
     );
   }
