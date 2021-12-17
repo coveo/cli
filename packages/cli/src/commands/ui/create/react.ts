@@ -113,12 +113,7 @@ export default class React extends Command {
   private async runReactCliCommand(args: string[], env: ReactProcessEnv) {
     return spawnProcess(
       appendCmdIfWindows`npx`,
-      [
-        'yarn',
-        'create',
-        `${React.cliPackage}@${getPackageVersion(React.cliPackage)}`,
-        ...args,
-      ],
+      ['yarn', 'create', `${React.cliPackage}`, ...args],
       {env: {...process.env, ...env}}
     );
   }
