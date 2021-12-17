@@ -34,7 +34,7 @@ describe('ui:create:react', () => {
   const mockedAuthenticatedClient = mocked(AuthenticatedClient);
   const mockedIsNpxInstalled = mocked(IsNpxInstalled, true);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
-  const createReactAppPackage = 'create-react-app';
+  const createReactAppPackage = 'react-app';
   const mockedApiKeyPrivilege = mocked(HasNecessaryCoveoPrivileges, true);
   const mockedCreateImpersonateApiKey = jest.fn();
   const preconditionStatus = {
@@ -155,7 +155,9 @@ describe('ui:create:react', () => {
         1,
         expect.stringContaining('npx'),
         [
-          `${createReactAppPackage}@1.0.0`,
+          'yarn',
+          'create',
+          `${createReactAppPackage}`,
           'myapp',
           '--template',
           '@coveo/cra-template@1.0.0',
@@ -181,7 +183,9 @@ describe('ui:create:react', () => {
         1,
         expect.stringContaining('npx'),
         [
-          `${createReactAppPackage}@1.0.0`,
+          'yarn',
+          'create',
+          `${createReactAppPackage}`,
           'myapp',
           '--template',
           '@coveo/cra-template@1.2.3',
