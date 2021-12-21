@@ -18,8 +18,6 @@ function main() {
   const exists = existsSync(filePath);
   if (!exists) {
     createEnvFile(filePath);
-  } else {
-    console.error(`file ${filePath} already exists`);
   }
 }
 

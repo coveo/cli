@@ -34,7 +34,7 @@ describe('ui:create:react', () => {
   const mockedAuthenticatedClient = mocked(AuthenticatedClient);
   const mockedIsNpxInstalled = mocked(IsNpxInstalled, true);
   const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
-  const createReactAppPackage = 'react-app';
+  const createReactAppPackage = 'create-react-app';
   const mockedApiKeyPrivilege = mocked(HasNecessaryCoveoPrivileges, true);
   const mockedCreateImpersonateApiKey = jest.fn();
   const preconditionStatus = {
@@ -149,27 +149,24 @@ describe('ui:create:react', () => {
     .stdout()
     .stderr()
     .command(['ui:create:react', 'myapp'])
+    .it('should run 2 spawn processes', () => {
+      expect(mockedSpawnProcess).toHaveBeenCalledTimes(2);
+    });
+
+  test
+    .stdout()
+    .stderr()
+    .command(['ui:create:react', 'myapp'])
     .it('should start 1 spawn processes with the good template', () => {
-      expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
       expect(mockedSpawnProcess).nthCalledWith(
         1,
         expect.stringContaining('npx'),
         [
-          'yarn',
-          'create',
-          `${createReactAppPackage}`,
+          `${createReactAppPackage}@1.0.0`,
           'myapp',
           '--template',
           '@coveo/cra-template@1.0.0',
-        ],
-        expect.objectContaining({
-          env: expect.objectContaining({
-            orgId: expect.any(String),
-            apiKey: expect.any(String),
-            user: expect.any(String),
-            platformUrl: expect.any(String),
-          }),
-        })
+        ]
       );
     });
 
@@ -178,18 +175,27 @@ describe('ui:create:react', () => {
     .stderr()
     .command(['ui:create:react', 'myapp', '-v=1.2.3'])
     .it('should use the version from the flag if provided', () => {
-      expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
       expect(mockedSpawnProcess).nthCalledWith(
         1,
         expect.stringContaining('npx'),
         [
-          'yarn',
-          'create',
-          `${createReactAppPackage}`,
+          `${createReactAppPackage}@1.0.0`,
           'myapp',
           '--template',
           '@coveo/cra-template@1.2.3',
-        ],
+        ]
+      );
+    });
+
+  test
+    .stdout()
+    .stderr()
+    .command(['ui:create:react', 'myapp', '-v=1.2.3'])
+    .it('should setup environemnt variables', () => {
+      expect(mockedSpawnProcess).nthCalledWith(
+        2,
+        expect.stringContaining('npm'),
+        ['run', 'setup-env'],
         expect.objectContaining({
           env: expect.objectContaining({
             orgId: expect.any(String),

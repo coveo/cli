@@ -3,11 +3,11 @@ const {join} = require('path');
 const {getPackageManager} = require('./utils');
 const pkgJson = JSON.parse(readFileSync('package.json'));
 
-['postinstall', 'setup-env', 'setup-server', 'setup-cleanup'].forEach(
+['prestart', 'setup-env', 'setup-server', 'setup-cleanup'].forEach(
   (script) => delete pkgJson['scripts'][script]
 );
 
-const pkgString = JSON.stringify(pkgJson).replace(
+const pkgString = JSON.stringify(pkgJson, null, 2).replace(
   /npm/g,
   getPackageManager(true)
 );
