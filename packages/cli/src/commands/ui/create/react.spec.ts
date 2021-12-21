@@ -162,7 +162,7 @@ describe('ui:create:react', () => {
         1,
         expect.stringContaining('npx'),
         [
-          `${createReactAppPackage}@1.0.0`,
+          `${createReactAppPackage}`,
           'myapp',
           '--template',
           '@coveo/cra-template@1.0.0',
@@ -179,7 +179,7 @@ describe('ui:create:react', () => {
         1,
         expect.stringContaining('npx'),
         [
-          `${createReactAppPackage}@1.0.0`,
+          `${createReactAppPackage}`,
           'myapp',
           '--template',
           '@coveo/cra-template@1.2.3',
