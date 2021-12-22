@@ -2,6 +2,7 @@ import {ValidationError} from 'jsonschema';
 import {CLIBaseError} from '../../../errors/CLIBaseError';
 
 abstract class BaseSPMError extends CLIBaseError {
+  public name = 'Snapshot Pull Model Error';
   private static messageSuffix =
     '\nThis is probably a problem with the Coveo CLI, please report this issue at https://github.com/coveo/cli/issues';
   private messageSuffix: string;
@@ -16,6 +17,7 @@ abstract class BaseSPMError extends CLIBaseError {
 }
 
 export class UnknownSPMValidationError extends BaseSPMError {
+  public name = 'Unknown Snapshot Pull Model Error';
   protected messageBody: string;
   public constructor(shouldContactCoveo: boolean) {
     super(shouldContactCoveo);
@@ -25,6 +27,7 @@ export class UnknownSPMValidationError extends BaseSPMError {
 }
 
 export class InvalidSPMError extends BaseSPMError {
+  public name = 'Invalid Snapshot Pull Model Error';
   protected messageBody: string;
   public constructor(shouldContactCoveo: boolean, errors: ValidationError[]) {
     super(shouldContactCoveo);
