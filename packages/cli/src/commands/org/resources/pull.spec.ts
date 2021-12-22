@@ -139,15 +139,16 @@ describe('org:resources:pull', () => {
     .stderr()
     .command(['org:resources:pull'])
     .it('should select all resource types', () => {
+      const resourcesToExport = {
+        FIELD: ['*'],
+        FEATURED_RESULT: ['*'],
+        SOURCE: ['*'],
+        QUERY_PIPELINE: ['*'],
+        SEARCH_PAGE: ['*'],
+        EXTENSION: ['*'],
+      };
       expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
-        expect.arrayContaining([
-          'FIELD',
-          'FEATURED_RESULT',
-          'SOURCE',
-          'QUERY_PIPELINE',
-          'SEARCH_PAGE',
-          'EXTENSION',
-        ]),
+        expect.objectContaining(resourcesToExport),
         'default-org',
         expect.objectContaining({})
       );
@@ -156,10 +157,15 @@ describe('org:resources:pull', () => {
   test
     .stdout()
     .stderr()
-    .command(['org:resources:pull', '-r', 'field', 'featuredResult', 'source'])
+    .command(['org:resources:pull', '-r', 'FIELD', 'FEATURED_RESULT', 'SOURCE'])
     .it('should select specified resource types', () => {
+      const resourcesToExport = {
+        FIELD: ['*'],
+        FEATURED_RESULT: ['*'],
+        SOURCE: ['*'],
+      };
       expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
-        ['FIELD', 'FEATURED_RESULT', 'SOURCE'],
+        resourcesToExport,
         'default-org',
         expect.objectContaining({})
       );

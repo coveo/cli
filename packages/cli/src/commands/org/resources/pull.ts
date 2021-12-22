@@ -1,6 +1,5 @@
 import {ResourceSnapshotType} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
-import {IOptionFlag} from '@oclif/command/lib/flags';
 import {blueBright, bold} from 'chalk';
 import {cli} from 'cli-ux';
 import {readJsonSync} from 'fs-extra';
@@ -22,6 +21,7 @@ import type {
   SnapshotPullModel,
   SnapshotPullModelResources,
 } from '../../../lib/snapshot/pullModel/interfaces';
+import {buildResourcesToExport} from '../../../lib/snapshot/pullModel/validation/model';
 import {validateSnapshotPullModel} from '../../../lib/snapshot/pullModel/validation/validate';
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {
@@ -44,14 +44,6 @@ export default class Pull extends Command {
       description:
         'The unique identifier of the organization from which to pull the resources. If not specified, the organization you are connected to will be used.',
     }),
-    resourceTypes: flags.string({
-      char: 'r',
-      helpValue: 'type1 type2',
-      options: Object.keys(ResourceSnapshotType),
-      default: Object.keys(ResourceSnapshotType),
-      multiple: true,
-      description: 'The resources types to pull from the organization.',
-    }) as IOptionFlag<(keyof typeof ResourceSnapshotType)[]>,
     snapshotId: flags.string({
       char: 's',
       exclusive: ['resourceTypes'],
@@ -70,17 +62,28 @@ export default class Pull extends Command {
       description: 'Overwrite resources directory if it exists.',
       default: false,
     }),
+    resourceTypes: flags.build<ResourceSnapshotType>({
+      parse: (resourceType: ResourceSnapshotType) => resourceType,
+    })({
+      char: 'r',
+      helpValue: 'type1 type2',
+      description: 'The resources types to pull from the organization.',
+      multiple: true,
+      options: Object.values(ResourceSnapshotType),
+      default: Object.values(ResourceSnapshotType),
+    }),
     model: flags.build<SnapshotPullModel>({
-      char: 'm',
-      helpValue: 'path/to/snapshot.json',
-      exclusive: ['snapshotId', 'resourceTypes', 'target'],
-      description: 'TODO: path to snapshot JSON model',
       parse: (input: string): SnapshotPullModel => {
         const model = readJsonSync(input);
         validateSnapshotPullModel(model);
         return model;
       },
-    })(),
+    })({
+      char: 'm',
+      helpValue: 'path/to/snapshot.json',
+      exclusive: ['snapshotId', 'resourceTypes', 'target'],
+      description: 'TODO: path to snapshot JSON model',
+    }),
   };
 
   public static hidden = true;
@@ -203,12 +206,7 @@ export default class Pull extends Command {
 
       return flags.model.resourcesToExport;
     } else {
-      const resourcesToExport: SnapshotPullModelResources = {};
-      for (const resource of flags.resourceTypes) {
-        const resourceType = ResourceSnapshotType[resource];
-        resourcesToExport[resourceType] = ['*'];
-      }
-      return resourcesToExport;
+      return buildResourcesToExport(flags.resourceTypes);
     }
   }
 

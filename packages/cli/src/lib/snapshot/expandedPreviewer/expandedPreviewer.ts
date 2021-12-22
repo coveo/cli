@@ -13,6 +13,7 @@ import {Dirent} from 'fs';
 import {recursiveDirectoryDiff} from './filesDiffProcessor';
 import {DotFolder} from '../../project/dotFolder';
 import {cwd} from 'process';
+import {buildResourcesToExport} from '../pullModel/validation/model';
 
 export class ExpandedPreviewer {
   private static readonly previewDirectoryName = 'preview';
@@ -130,8 +131,9 @@ export class ExpandedPreviewer {
   }
 
   private async getBeforeSnapshot() {
+    const resourcesToExport = buildResourcesToExport(this.resourcesToPreview);
     const snapshot = await SnapshotFactory.createFromOrg(
-      this.resourcesToPreview,
+      resourcesToExport,
       this.orgId
     );
 
