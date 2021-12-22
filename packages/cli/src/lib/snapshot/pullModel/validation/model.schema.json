@@ -8,25 +8,25 @@
     "$schema": {
       "type": "string"
     },
-    "resources": {
+    "resourcesToExport": {
       "type": "object",
       "additionalProperties": false,
-      "properties": {
-        "EXTENSION": {"type": "array", "items": {"type": "string"}},
-        "FIELD": {"type": "array", "items": {"type": "string"}},
-        "ML_MODEL": {"type": "array", "items": {"type": "string"}},
-        "QUERY_PIPELINE": {"type": "array", "items": {"type": "string"}},
-        "SEARCH_PAGE": {"type": "array", "items": {"type": "string"}},
-        "SOURCE": {"type": "array", "items": {"type": "string"}},
-        "SUBSCRIPTION": {"type": "array", "items": {"type": "string"}}
+      "patternProperties": {
+        ".*": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
-    "options": {
-      "type": "object",
-      "properties": {
-        "includeChildrenResources": {"type": "boolean"}
-      }
+    "includeChildrenResources": {
+      "type": "boolean"
+    },
+    "orgId": {
+      "type": "string"
     }
   },
-  "additionalProperties": false
+  "required": ["resourcesToExport"],
+  "additionalProperties": true
 }
