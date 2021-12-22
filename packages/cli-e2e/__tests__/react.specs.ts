@@ -151,7 +151,7 @@ describe('ui:create:react', () => {
       );
       await waitForAppRunning(appTerminal);
       [clientPort, serverPort] = getAllocatedPorts();
-    }, 2 * 60e3);
+    }, 5 * 60e3);
 
     beforeEach(async () => {
       consoleInterceptor = new BrowserConsoleInterceptor(page, projectName);
@@ -270,7 +270,7 @@ describe('ui:create:react', () => {
 
         expect(missingEnvErrorSpy).toHaveBeenCalled();
       },
-      2 * 60e3
+      5 * 60e3
     );
   });
 
