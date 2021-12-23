@@ -82,7 +82,7 @@ export default class Pull extends Command {
       char: 'm',
       helpValue: 'path/to/snapshot.json',
       exclusive: ['snapshotId', 'resourceTypes', 'target'],
-      description: 'TODO: path to snapshot JSON model',
+      description: 'The path to the snapshot JSON model',
     }),
   };
 
@@ -190,7 +190,7 @@ export default class Pull extends Command {
     if (flags.model) {
       const cfg = this.configuration.get();
       if (cfg.organization !== flags.model.orgId) {
-        // TODO: track UA event on all cli.confirm action
+        // TODO: CDX-738: track UA event on all cli.confirm action
         const pull = await cli.confirm(
           dedent`You are currently connected to the ${bold.cyan(
             cfg.organization
