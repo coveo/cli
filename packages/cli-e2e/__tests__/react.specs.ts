@@ -276,6 +276,7 @@ describe('ui:create:react', () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
       envFileContent = flushEnvFile(projectName);
+      overwriteEnvFile(projectName, 'GENERATE_SOURCEMAP=false'); // TODO: CDX-737: fix exponential-backoff compilation warnings
       const appTerminal = await startApplication(
         serverProcessManager,
         'react-server-invalid'
