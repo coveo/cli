@@ -7,6 +7,7 @@ jest.mock('../../../lib/snapshot/snapshotFactory');
 jest.mock('../../../lib/project/project');
 jest.mock('../../../lib/utils/process');
 
+import {join} from 'path';
 import {Config} from '../../../lib/config/config';
 import {mocked} from 'ts-jest/utils';
 import {ResourceSnapshotsReportType} from '@coveord/platform-client';
@@ -19,6 +20,8 @@ import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import Command from '@oclif/command';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions';
 import {PreconditionError} from '../../../lib/errors/preconditionError';
+import {cwd} from 'process';
+import {cli} from 'cli-ux';
 
 const mockedSnapshotFactory = mocked(SnapshotFactory, true);
 const mockedConfig = mocked(Config);
@@ -29,6 +32,7 @@ const mockedDeleteSnapshot = jest.fn();
 const mockedIsGitInstalled = mocked(IsGitInstalled, true);
 const mockedAuthenticatedClient = mocked(AuthenticatedClient);
 const mockEvaluate = jest.fn();
+const pathToStub = join(cwd(), 'src', '__stub__');
 
 const doMockConfig = () => {
   mockedConfigGet.mockReturnValue(
@@ -170,6 +174,103 @@ describe('org:resources:pull', () => {
         expect.objectContaining({})
       );
     });
+
+  test
+    .stdout()
+    .stderr()
+    .stub(cli, 'confirm', () => async () => true)
+    .command([
+      'org:resources:pull',
+      '-m',
+      join(pathToStub, 'snapshotPullModels', 'full.json'),
+    ])
+    .it(
+      'should create a snapshot with all resource types specified in the model',
+      () => {
+        const resourcesToExport = {
+          FIELD: ['*'],
+          QUERY_PIPELINE: ['*'],
+          ML_MODEL: ['*'],
+          SUBSCRIPTION: ['*'],
+        };
+        expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
+          resourcesToExport,
+          expect.anything(),
+          expect.objectContaining({})
+        );
+      }
+    );
+
+  test
+    .stdout()
+    .stderr()
+    .stub(cli, 'confirm', () => async () => true)
+    .command([
+      'org:resources:pull',
+      '-m',
+      join(pathToStub, 'snapshotPullModels', 'subset.json'),
+    ])
+    .it(
+      'should create a snapshot with only the specified resource items in the model',
+      () => {
+        const resourcesToExport = {
+          FIELD: ['author', 'source', 'title'],
+          QUERY_PIPELINE: ['default', 'agentPanel'],
+          ML_MODEL: null,
+          SEARCH_PAGE: null,
+          SUBSCRIPTION: null,
+        };
+        expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
+          resourcesToExport,
+          expect.anything(),
+          expect.objectContaining({})
+        );
+      }
+    );
+
+  test
+    .stdout()
+    .stderr()
+    .stub(cli, 'confirm', () => async () => true)
+    .command([
+      'org:resources:pull',
+      '-m',
+      join(pathToStub, 'snapshotPullModels', 'full.json'),
+    ])
+    .it('should use the orgId from the model', () => {
+      expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
+        expect.anything(),
+        'myorgid',
+        expect.objectContaining({})
+      );
+    });
+
+  test
+    .stdout()
+    .stderr()
+    .command([
+      'org:resources:pull',
+      '-m',
+      join(pathToStub, 'snapshotPullModels', 'missingOrgId.json'),
+    ])
+    .it('should use the orgId from the config', () => {
+      expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
+        expect.anything(),
+        'default-org',
+        expect.objectContaining({})
+      );
+    });
+
+  test
+    .stdout()
+    .stderr()
+    .command([
+      'org:resources:pull',
+      '-m',
+      join(pathToStub, 'snapshotPullModels', 'missingResources.json'),
+    ])
+    .catch(/requires property "resourcesToExport"/)
+    .it('should throw an invalid model error');
 
   test
     .stdout()
