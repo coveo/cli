@@ -2,7 +2,7 @@ import {Command, flags} from '@oclif/command';
 import {Config} from '../../../lib/config/config';
 import {platformUrl} from '../../../lib/platform/environment';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {spawnProcess} from '../../../lib/utils/process';
+import {spawnProcess, spawnProcessOutput} from '../../../lib/utils/process';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {
@@ -94,7 +94,7 @@ export default class React extends Command {
       platformUrl: platformUrl({environment: cfg.environment}),
     };
 
-    await spawnProcess(appendCmdIfWindows`npm`, ['run', 'setup-env'], {
+    await spawnProcessOutput(appendCmdIfWindows`npm`, ['run', 'setup-env'], {
       cwd: name,
       env: {...process.env, ...env},
     });
