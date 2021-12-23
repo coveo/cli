@@ -25,11 +25,12 @@
       "extends": ["react-app", "react-app/jest"]
     },
     "scripts": {
-      "prestart": "npm run setup-server && npm run setup-cleanup",
+      "prestart": "npm run setup-server && npm run setup-cleanup && npm run commit-server",
       "setup-server": "node ./scripts/setup-server.js",
       "setup-env": "node ./scripts/setup-env.js",
       "setup-cleanup": "node ./scripts/clean-up.js",
       "start-server": "node ./scripts/start-server.js",
+      "commit-server": "git add -A; git commit -m \"initialize search token server\"",
       "allocate-port": "node ./scripts/port-allocator.mjs",
       "start": "npm run allocate-port && concurrently --raw \"npm run start-server\" \"react-scripts start\""
     }
