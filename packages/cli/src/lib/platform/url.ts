@@ -17,3 +17,11 @@ export function snapshotSynchronizationUrl(
   const url = snapshotUrl(targetOrgId, snapshotId, options);
   return `${url}/synchronization`;
 }
+
+export function createSnapshotUrl(
+  targetOrgId: string,
+  options: Partial<PlatformUrlOptions>
+) {
+  const url = platformUrl(options);
+  return `${url}/admin/#${targetOrgId}/organization/resource-snapshots/create-snapshot`;
+}
