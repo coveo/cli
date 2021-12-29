@@ -4,6 +4,7 @@ jest.mock('../../../../hooks/prerun/prerun');
 jest.mock('../../../../lib/platform/authenticatedClient');
 jest.mock('open');
 
+import {Region} from '@coveord/platform-client';
 import test from '@oclif/test';
 import open from 'open';
 import {mocked} from 'ts-jest/utils';
@@ -11,6 +12,7 @@ import {AuthenticatedClient} from '../../../../lib/platform/authenticatedClient'
 import {
   DEFAULT_ENVIRONMENT,
   DEFAULT_REGION,
+  PlatformEnvironment,
 } from '../../../../lib/platform/environment';
 
 const mockedAuthenticatedClient = mocked(AuthenticatedClient);
@@ -39,8 +41,8 @@ const mockConfigWithDefaultEnvironment = () => {
 const mockConfigWithNonDefaultEnvironment = () => {
   mockedConfig.mockResolvedValue({
     organization: 'my-org',
-    environment: 'dev',
-    region: 'eu',
+    environment: PlatformEnvironment.Dev,
+    region: Region.EU,
   });
 };
 
