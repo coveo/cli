@@ -2,9 +2,7 @@ import pullModelSchema from './model.schema.json';
 import {ResourceSnapshotType} from '@coveord/platform-client';
 import {SnapshotPullModelResources} from '../interfaces';
 
-// TODO: not sure this is necessary
 export function getSnapshotModel() {
-  // TODO: use a schema version logic
   const resourcePattern =
     pullModelSchema.properties.resourcesToExport.patternProperties['.*'];
 
