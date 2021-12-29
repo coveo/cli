@@ -194,7 +194,7 @@ export default class Pull extends Command {
         const pull = await cli.confirm(
           dedent`You are currently connected to the ${bold.cyan(
             cfg.organization
-          )} organization. You are about to pull create a snapshot from the ${bold.cyan(
+          )} organization, but are about to pull resources from the ${bold.cyan(
             flags.model.orgId
           )} organization.
           Do you wish to continue? (y/n)`
