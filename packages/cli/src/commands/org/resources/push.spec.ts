@@ -6,7 +6,7 @@ jest.mock('../../../lib/snapshot/snapshot');
 jest.mock('../../../lib/snapshot/snapshotFactory');
 jest.mock('../../../lib/project/project');
 
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {test} from '@oclif/test';
 import {Project} from '../../../lib/project/project';
 import {join, normalize} from 'path';

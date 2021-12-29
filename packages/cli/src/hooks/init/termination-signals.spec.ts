@@ -1,7 +1,7 @@
 jest.mock('../analytics/analytics');
 
 import type {IConfig} from '@oclif/config';
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {fancyIt} from '../../__test__/it';
 import {flush} from '../analytics/analytics';
 import {handleTerminationSignals, exitSignals} from './termination-signals';

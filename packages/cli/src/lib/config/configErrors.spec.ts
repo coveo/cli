@@ -1,5 +1,5 @@
 import {IncompatibleConfigurationError} from './configErrors';
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 
 jest.mock('semver');
 jest.mock('./config');

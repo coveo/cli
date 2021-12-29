@@ -4,7 +4,7 @@ import {
   ResourceSnapshotsReportType,
   SnapshotExportContentFormat,
 } from '@coveord/platform-client';
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {stdout, stderr} from 'stdout-stderr';
 import {getDummySnapshotModel} from '../../__stub__/resourceSnapshotsModel';
 import {

@@ -15,7 +15,7 @@ jest.mock('./middlewares/searchToken', () => {
   return originalMiddleware;
 });
 
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {agent} from 'supertest';
 import app from './app';
 import {Request, Response, NextFunction} from 'express';

@@ -6,7 +6,7 @@ import {
 } from 'fs-extra';
 import {join} from 'path';
 import dedent from 'ts-dedent';
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {defaultConfiguration} from '../../__stub__/configuration';
 import {PlatformEnvironment} from '../platform/environment';
 import {Config} from './config';

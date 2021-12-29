@@ -3,7 +3,7 @@ jest.mock('../../hooks/analytics/analytics');
 jest.mock('../../hooks/prerun/prerun');
 jest.mock('../../lib/platform/authenticatedClient');
 
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {OrganizationModel} from '@coveord/platform-client';

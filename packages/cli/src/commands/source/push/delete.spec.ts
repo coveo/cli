@@ -4,7 +4,7 @@ jest.mock('../../../hooks/prerun/prerun');
 jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('@coveo/push-api-client');
 
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {Source} from '@coveo/push-api-client';

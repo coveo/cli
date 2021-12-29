@@ -8,7 +8,7 @@ import {
 } from './authenticatedClient';
 
 import {Config} from '../config/config';
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import PlatformClient from '@coveord/platform-client';
 import {
   castEnvironmentToPlatformClient,

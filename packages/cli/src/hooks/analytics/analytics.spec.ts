@@ -6,7 +6,7 @@ jest.mock('@coveord/platform-client');
 jest.mock('./session');
 jest.mock('./identifier');
 
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {Configuration, Config} from '../../lib/config/config';
 import {
   AuthenticatedClient,

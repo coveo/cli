@@ -5,7 +5,7 @@ jest.mock('../../../lib/platform/authenticatedClient');
 
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {Config} from '../../../lib/config/config';
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {test} from '@oclif/test';
 import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel';

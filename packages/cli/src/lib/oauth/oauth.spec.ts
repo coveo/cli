@@ -1,7 +1,7 @@
 import type {ChildProcess} from 'child_process';
 
 import {Region} from '@coveord/platform-client';
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {fancyIt} from '../../__test__/it';
 import {PlatformEnvironment, platformUrl} from '../platform/environment';
 import {OAuth} from './oauth';

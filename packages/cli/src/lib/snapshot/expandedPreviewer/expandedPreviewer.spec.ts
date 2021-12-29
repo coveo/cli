@@ -11,7 +11,7 @@ import {
 import {Dirent, existsSync, mkdirSync, readdirSync, rmSync} from 'fs';
 import {join} from 'path';
 
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
 import {ExpandedPreviewer} from './expandedPreviewer';
 import {Project} from '../../project/project';

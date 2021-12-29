@@ -11,7 +11,7 @@ jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
 jest.mock('@coveord/platform-client');
 
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {test} from '@oclif/test';
 import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
@@ -53,7 +53,7 @@ describe('ui:create:angular', () => {
   };
 
   const doMockSpawnProcess = () => {
-    mockedSpawnProcess.mockResolvedValue(Promise.resolve(0));
+    mockedSpawnProcess.mockResolvedValue(0);
   };
 
   const doMockedGetPackageVersion = () => {

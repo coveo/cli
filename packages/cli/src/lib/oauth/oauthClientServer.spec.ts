@@ -11,7 +11,7 @@ import {
   ServerResponse,
 } from 'http';
 import {MockedFunction} from 'ts-jest/dist/utils/testing';
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {URLSearchParams} from 'url';
 import {fancyIt} from '../../__test__/it';
 import {PlatformEnvironment, platformUrl} from '../platform/environment';

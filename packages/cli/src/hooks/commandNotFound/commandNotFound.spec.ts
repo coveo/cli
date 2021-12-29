@@ -2,7 +2,7 @@ jest.mock('../prerun/prerun');
 jest.mock('../analytics/analytics');
 jest.mock('../../lib/config/config');
 
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {test} from '@oclif/test';
 import analytics from '../analytics/analytics';
 

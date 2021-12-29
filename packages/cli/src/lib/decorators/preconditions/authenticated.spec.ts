@@ -1,6 +1,6 @@
 jest.mock('../../platform/authenticatedClient');
 
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {fancyIt} from '../../../__test__/it';
 import {PreconditionError} from '../../errors/preconditionError';
 import {

@@ -5,7 +5,7 @@ jest.mock('./snapshot');
 import {ResourceSnapshotType} from '@coveord/platform-client';
 import {readFileSync} from 'fs';
 import {join} from 'path';
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {fancyIt} from '../../__test__/it';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {SnapshotPullModelResources} from './pullModel/interfaces';

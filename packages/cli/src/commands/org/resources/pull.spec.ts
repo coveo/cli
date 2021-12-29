@@ -9,7 +9,7 @@ jest.mock('../../../lib/utils/process');
 
 import {join} from 'path';
 import {Config} from '../../../lib/config/config';
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {test} from '@oclif/test';
 import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel';

@@ -6,7 +6,7 @@ jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
 import {Region} from '@coveord/platform-client';
 import {test} from '@oclif/test';
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {Config} from '../../lib/config/config';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {PlatformEnvironment} from '../../lib/platform/environment';

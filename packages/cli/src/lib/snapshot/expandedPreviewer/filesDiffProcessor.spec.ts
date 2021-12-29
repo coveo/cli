@@ -1,7 +1,7 @@
 jest.mock('fs');
 jest.mock('fs-extra');
 
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 
 import {readdirSync, rmSync} from 'fs';
 import {readJSONSync, writeJSONSync} from 'fs-extra';

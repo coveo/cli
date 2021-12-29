@@ -4,7 +4,7 @@ jest.mock('archiver');
 jest.mock('@oclif/errors');
 jest.mock('fs-extra');
 jest.mock('extract-zip');
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {
   existsSync,
   createWriteStream,

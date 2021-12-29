@@ -1,5 +1,5 @@
 jest.mock('@coveord/platform-client');
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import PlatformClient from '@coveord/platform-client';
 import {handler} from './token';
 const mockedPlatformClient = mocked(PlatformClient);

@@ -1,7 +1,7 @@
 jest.mock('../../lib/config/config');
 jest.mock('../../hooks/analytics/analytics');
 jest.mock('../../hooks/prerun/prerun');
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {Config} from '../../lib/config/config';
 import {test} from '@oclif/test';
 const mockedConfig = mocked(Config);

@@ -2,7 +2,7 @@ jest.mock('../../platform/authenticatedClient');
 jest.mock('../../config/config');
 
 import {IConfig} from '@oclif/config';
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {fancyIt} from '../../../__test__/it';
 import {Config} from '../../config/config';
 import {AuthenticatedClient} from '../../platform/authenticatedClient';

@@ -4,7 +4,7 @@ jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('../../lib/config/config');
 
 import {Identify} from '@amplitude/identify';
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {Config, Configuration} from '../../lib/config/config';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {Identifier} from './identifier';

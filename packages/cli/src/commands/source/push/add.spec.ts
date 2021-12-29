@@ -5,7 +5,7 @@ jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('@coveo/push-api-client');
 
 import stripAnsi from 'strip-ansi';
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {DocumentBuilder, Source} from '@coveo/push-api-client';

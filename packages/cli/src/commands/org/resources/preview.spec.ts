@@ -8,7 +8,7 @@ jest.mock('../../../lib/snapshot/snapshotFactory');
 jest.mock('../../../lib/project/project');
 jest.mock('../../../lib/snapshot/snapshotFacade');
 
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {test} from '@oclif/test';
 import {Project} from '../../../lib/project/project';
 import {join, normalize} from 'path';
@@ -125,8 +125,12 @@ const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
 };
 
 const mockSnapshotFacade = () => {
-  mockedSnapshotFacade.prototype.tryAutomaticSynchronization =
-    mockedTryAutomaticSynchronization;
+  mockedSnapshotFacade.mockImplementation(
+    () =>
+      ({
+        tryAutomaticSynchronization: mockedTryAutomaticSynchronization,
+      } as unknown as SnapshotFacade)
+  );
 };
 
 describe('org:resources:preview', () => {

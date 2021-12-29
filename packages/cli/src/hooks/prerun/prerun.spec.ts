@@ -1,6 +1,6 @@
 jest.mock('../../lib/config/config');
 import {IConfig} from '@oclif/config';
-import {mocked} from 'ts-jest/utils';
+import {mocked} from 'jest-mock';
 import {Config} from '../../lib/config/config';
 import {cli} from 'cli-ux';
 import {test} from '@oclif/test';
