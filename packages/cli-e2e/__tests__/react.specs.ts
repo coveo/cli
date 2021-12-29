@@ -82,14 +82,7 @@ describe('ui:create:react', () => {
       projectName
     );
 
-    await Promise.race([
-      buildTerminal.when('exit').on('process').do().once(),
-      buildTerminal
-        .when(/Happy hacking!/)
-        .on('stdout')
-        .do()
-        .once(),
-    ]);
+    await buildTerminal.when('exit').on('process').do().once();
   };
 
   const startApplication = async (
@@ -151,7 +144,7 @@ describe('ui:create:react', () => {
       );
       await waitForAppRunning(appTerminal);
       [clientPort, serverPort] = getAllocatedPorts();
-    }, 2 * 60e3);
+    }, 10 * 60e3);
 
     beforeEach(async () => {
       consoleInterceptor = new BrowserConsoleInterceptor(page, projectName);
@@ -270,7 +263,7 @@ describe('ui:create:react', () => {
 
         expect(missingEnvErrorSpy).toHaveBeenCalled();
       },
-      2 * 60e3
+      10 * 60e3
     );
   });
 
@@ -283,6 +276,7 @@ describe('ui:create:react', () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
       envFileContent = flushEnvFile(projectName);
+      overwriteEnvFile(projectName, 'GENERATE_SOURCEMAP=false'); // TODO: CDX-737: fix exponential-backoff compilation warnings
       const appTerminal = await startApplication(
         serverProcessManager,
         'react-server-invalid'
