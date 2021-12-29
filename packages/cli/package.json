@@ -58,6 +58,7 @@
     "eslint": "8.4.1",
     "fancy-test": "1.4.10",
     "jest": "27.4.3",
+    "jest-mock": "^27.4.2",
     "mock-stdin": "1.0.0",
     "prettier": "2.5.1",
     "rimraf": "3.0.2",
