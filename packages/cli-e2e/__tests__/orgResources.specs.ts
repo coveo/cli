@@ -279,7 +279,7 @@ describe('org:resources', () => {
       'directory should only contains pulled resources',
       async () => {
         await pullFromOrg(testOrgId, processManager, destinationPath, [
-          '-r=field',
+          '-r=FIELD',
         ]);
         const originalResources = getResourceFolderContent(snapshotProjectPath);
         const destinationResources = getResourceFolderContent(destinationPath);
