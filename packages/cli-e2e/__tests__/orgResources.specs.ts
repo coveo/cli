@@ -3,10 +3,11 @@ import {CLI_EXEC_PATH, getConfig, getPathToHomedirEnvFile} from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
-import {ensureDirSync, rmSync} from 'fs-extra';
+import {ensureDirSync, readJsonSync, rmSync} from 'fs-extra';
 import PlatformClient, {FieldTypes} from '@coveord/platform-client';
 import {getPlatformClient} from '../utils/platform';
 import {readdirSync} from 'fs';
+import {cwd} from 'process';
 config({path: getPathToHomedirEnvFile()});
 
 describe('org:resources', () => {
@@ -16,6 +17,7 @@ describe('org:resources', () => {
   const defaultTimeout = 10 * 60e3;
   let processManager: ProcessManager;
   let platformClient: PlatformClient;
+  const pathToStub = join(cwd(), '__stub__');
 
   const createNewTerminal = (
     args: string[],
@@ -276,7 +278,7 @@ describe('org:resources', () => {
     );
 
     it(
-      'directory should only contains pulled resources',
+      'directory should only contain pulled resources',
       async () => {
         await pullFromOrg(testOrgId, processManager, destinationPath, [
           '-r=FIELD',
@@ -288,6 +290,22 @@ describe('org:resources', () => {
         expect(destinationResources.length).toBeLessThan(
           originalResources.length
         );
+      },
+      defaultTimeout
+    );
+
+    it(
+      'snapshot should only contain one single field',
+      async () => {
+        await pullFromOrg(testOrgId, processManager, destinationPath, [
+          '-m',
+          join(pathToStub, 'snapshotPullModel', 'oneFieldOnly.json'),
+        ]);
+        const fields = readJsonSync(
+          join(destinationPath, 'resources', 'FIELD.json')
+        );
+
+        expect(fields.resources.FIELD.length).toBe(1);
       },
       defaultTimeout
     );
