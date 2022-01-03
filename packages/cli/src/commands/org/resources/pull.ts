@@ -30,6 +30,7 @@ import {
   cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
+import {confirm} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
 
 export default class Pull extends Command {
@@ -145,13 +146,10 @@ export default class Pull extends Command {
   private async ensureProjectReset(project: Project) {
     const {flags} = this.parse(Pull);
     if (!flags.overwrite && project.contains(Project.resourceFolderName)) {
-      const overwrite =
-        await cli.confirm(dedent`There is already a Coveo project with resources in it.
-        This command will overwrite the ${Project.resourceFolderName} folder content, do you want to proceed? (y/n)`);
+      const question = dedent`There is already a Coveo project with resources in it.
+        This command will overwrite the ${Project.resourceFolderName} folder content, do you want to proceed? (y/n)`;
 
-      if (!overwrite) {
-        this.exit();
-      }
+      await confirm(question, {exit: true, eventName: 'project overwrite'});
     }
 
     project.reset();
@@ -191,18 +189,13 @@ export default class Pull extends Command {
     if (flags.model) {
       const cfg = this.configuration.get();
       if (cfg.organization !== flags.model.orgId) {
-        // TODO: CDX-738: track UA event on all cli.confirm action
-        const pull = await cli.confirm(
-          dedent`You are currently connected to the ${bold.cyan(
-            cfg.organization
-          )} organization, but are about to pull resources from the ${bold.cyan(
-            flags.model.orgId
-          )} organization.
-          Do you wish to continue? (y/n)`
-        );
-        if (!pull) {
-          this.exit();
-        }
+        const question = dedent`You are currently connected to the ${bold.cyan(
+          cfg.organization
+        )} organization, but are about to pull resources from the ${bold.cyan(
+          flags.model.orgId
+        )} organization.
+            Do you wish to continue? (y/n)`;
+        await confirm(question, {exit: true, eventName: 'resource pull'});
       }
 
       return flags.model.resourcesToExport;

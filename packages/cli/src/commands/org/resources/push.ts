@@ -30,6 +30,7 @@ import {
   writeSnapshotPrivilege,
 } from '../../../lib/decorators/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {confirm} from '../../../lib/utils/cli';
 
 export default class Push extends Command {
   public static description =
@@ -134,15 +135,13 @@ export default class Push extends Command {
     }
   }
 
-  private async askForConfirmation() {
+  private async askForConfirmation(): Promise<boolean> {
     const {flags} = this.parse(Push);
     const target = await getTargetOrg(this.configuration, flags.target);
-    const canBeApplied = await cli.confirm(
-      `\nWould you like to apply these changes to the org ${bold(
-        target
-      )}? (y/n)`
-    );
-    return canBeApplied;
+    const question = `\nWould you like to apply these changes to the org ${bold(
+      target
+    )}? (y/n)`;
+    return confirm(question, {eventName: 'snapshot apply'});
   }
 
   private async applySnapshot(snapshot: Snapshot) {
