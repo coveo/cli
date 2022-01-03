@@ -1,10 +1,9 @@
 jest.mock('../../lib/config/config');
 import {IConfig} from '@oclif/config';
-import {mocked} from 'jest-mock';
 import {Config} from '../../lib/config/config';
 import {cli} from 'cli-ux';
 import {test} from '@oclif/test';
-const mockConfig = mocked(Config);
+const mockConfig = jest.mocked(Config);
 
 describe('hooks:prerun', () => {
   const mockGet = jest.fn();

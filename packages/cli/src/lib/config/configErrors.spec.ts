@@ -1,5 +1,4 @@
 import {IncompatibleConfigurationError} from './configErrors';
-import {mocked} from 'jest-mock';
 
 jest.mock('semver');
 jest.mock('./config');
@@ -8,10 +7,10 @@ import {Config} from './config';
 import dedent from 'ts-dedent';
 import {fancyIt} from '../../__test__/it';
 
-const mockedCoerce = mocked(coerce);
-const mockedLt = mocked(lt);
-const mockedGt = mocked(gt);
-const mockedCurrentSchemaVersion = mocked(Config, true);
+const mockedCoerce = jest.mocked(coerce);
+const mockedLt = jest.mocked(lt);
+const mockedGt = jest.mocked(gt);
+const mockedCurrentSchemaVersion = jest.mocked(Config, true);
 describe('configErrors', () => {
   const mockedVersion = 'versionThatTheCliWant';
   beforeEach(() => {

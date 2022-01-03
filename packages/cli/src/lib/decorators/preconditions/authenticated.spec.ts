@@ -1,6 +1,5 @@
 jest.mock('../../platform/authenticatedClient');
 
-import {mocked} from 'jest-mock';
 import {fancyIt} from '../../../__test__/it';
 import {PreconditionError} from '../../errors/preconditionError';
 import {
@@ -10,7 +9,7 @@ import {
 import {IsAuthenticated} from './authenticated';
 
 describe('authenticated', () => {
-  const mockedAuthenticatedClient = mocked(getAuthenticationStatus);
+  const mockedAuthenticatedClient = jest.mocked(getAuthenticationStatus);
 
   beforeEach(() => {
     jest.resetAllMocks();

@@ -3,7 +3,6 @@ jest.mock('../../utils/misc');
 jest.mock('cli-ux');
 
 import {dedent} from 'ts-dedent';
-import {mocked} from 'jest-mock';
 import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from './testsUtils/utils';
 import {cli} from 'cli-ux';
@@ -16,8 +15,8 @@ import {fancyIt} from '../../../__test__/it';
 import {PreconditionError} from '../../errors/preconditionError';
 
 describe('IsNgInstalled', () => {
-  const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
-  const mockedGetPackageVersion = mocked(getPackageVersion);
+  const mockedSpawnProcessOutput = jest.mocked(spawnProcessOutput);
+  const mockedGetPackageVersion = jest.mocked(getPackageVersion);
   const mockConfirm = () => {
     Object.defineProperty(cli, 'confirm', {value: jest.fn()});
   };

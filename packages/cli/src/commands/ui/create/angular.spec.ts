@@ -11,7 +11,6 @@ jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
 jest.mock('@coveord/platform-client');
 
-import {mocked} from 'jest-mock';
 import {test} from '@oclif/test';
 import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
@@ -28,15 +27,15 @@ import {configurationMock} from '../../../__stub__/configuration';
 import {mockPreconditions} from '../../../__test__/preconditionUtils';
 
 describe('ui:create:angular', () => {
-  const mockedConfig = mocked(Config);
-  const mockedSpawnProcess = mocked(spawnProcess, true);
-  const mockedPlatformClient = mocked(PlatformClient);
-  const mockedGetPackageVersion = mocked(getPackageVersion);
-  const mockedAuthenticatedClient = mocked(AuthenticatedClient);
-  const mockedIsNpmVersionInRange = mocked(IsNpmVersionInRange, true);
-  const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
-  const mockedIsNgInstalled = mocked(IsNgVersionInRange, true);
-  const mockedApiKeyPrivilege = mocked(HasNecessaryCoveoPrivileges, true);
+  const mockedConfig = jest.mocked(Config);
+  const mockedSpawnProcess = jest.mocked(spawnProcess, true);
+  const mockedPlatformClient = jest.mocked(PlatformClient);
+  const mockedGetPackageVersion = jest.mocked(getPackageVersion);
+  const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
+  const mockedIsNpmVersionInRange = jest.mocked(IsNpmVersionInRange, true);
+  const mockedIsNodeVersionInRange = jest.mocked(IsNodeVersionInRange, true);
+  const mockedIsNgInstalled = jest.mocked(IsNgVersionInRange, true);
+  const mockedApiKeyPrivilege = jest.mocked(HasNecessaryCoveoPrivileges, true);
   const mockedCreateImpersonateApiKey = jest.fn();
   const preconditionStatus = {
     node: true,

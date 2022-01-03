@@ -1,5 +1,4 @@
 import {Region} from '@coveord/platform-client';
-import {mocked} from 'jest-mock';
 import {fancyIt} from '../../__test__/it';
 
 jest.mock('./environment');
@@ -11,7 +10,7 @@ import {
 } from './url';
 
 describe('url', () => {
-  const mockedPlatformUrl = mocked(platformUrl);
+  const mockedPlatformUrl = jest.mocked(platformUrl);
   beforeEach(() => {
     mockedPlatformUrl.mockReturnValue('https://foo.test');
   });

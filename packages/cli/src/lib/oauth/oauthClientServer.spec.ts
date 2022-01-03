@@ -11,7 +11,6 @@ import {
   ServerResponse,
 } from 'http';
 import {MockedFunction} from 'ts-jest/dist/utils/testing';
-import {mocked} from 'jest-mock';
 import {URLSearchParams} from 'url';
 import {fancyIt} from '../../__test__/it';
 import {PlatformEnvironment, platformUrl} from '../platform/environment';
@@ -22,8 +21,8 @@ import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
 type createServerInitialOverload = MockedFunction<{
   (requestListener?: RequestListener | undefined): Server;
 }>;
-const mockedAxios = mocked(axios, true);
-const mockedCreateServer = mocked(
+const mockedAxios = jest.mocked(axios, true);
+const mockedCreateServer = jest.mocked(
   createServer
 ) as unknown as createServerInitialOverload;
 const mockedServerListen = jest.fn();

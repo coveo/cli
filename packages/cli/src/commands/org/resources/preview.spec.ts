@@ -8,7 +8,6 @@ jest.mock('../../../lib/snapshot/snapshotFactory');
 jest.mock('../../../lib/project/project');
 jest.mock('../../../lib/snapshot/snapshotFacade');
 
-import {mocked} from 'jest-mock';
 import {test} from '@oclif/test';
 import {Project} from '../../../lib/project/project';
 import {join, normalize} from 'path';
@@ -27,9 +26,9 @@ import {IsGitInstalled} from '../../../lib/decorators/preconditions';
 import {SnapshotFacade} from '../../../lib/snapshot/snapshotFacade';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 
-const mockedSnapshotFactory = mocked(SnapshotFactory, true);
-const mockedConfig = mocked(Config);
-const mockedProject = mocked(Project);
+const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
+const mockedConfig = jest.mocked(Config);
+const mockedProject = jest.mocked(Project);
 const mockedConfigGet = jest.fn();
 const mockedDeleteTemporaryZipFile = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
@@ -41,9 +40,9 @@ const mockedLastReport = jest.fn();
 const mockedCreateSynchronizationPlan = jest.fn();
 const mockedApplySynchronizationPlan = jest.fn();
 const mockedTryAutomaticSynchronization = jest.fn();
-const mockedIsGitInstalled = mocked(IsGitInstalled, true);
-const mockedSnapshotFacade = mocked(SnapshotFacade, true);
-const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+const mockedIsGitInstalled = jest.mocked(IsGitInstalled, true);
+const mockedSnapshotFacade = jest.mocked(SnapshotFacade, true);
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockEvaluate = jest.fn();
 
 const mockProject = () => {

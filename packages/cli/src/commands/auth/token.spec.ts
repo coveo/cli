@@ -6,12 +6,11 @@ jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
 import {Region} from '@coveord/platform-client';
 import {test} from '@oclif/test';
-import {mocked} from 'jest-mock';
 import {Config} from '../../lib/config/config';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {PlatformEnvironment} from '../../lib/platform/environment';
-const mockedConfig = mocked(Config, true);
-const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+const mockedConfig = jest.mocked(Config, true);
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 
 describe('auth:token', () => {
   const mockConfigSet = jest.fn();

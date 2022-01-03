@@ -4,7 +4,6 @@ jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('../../lib/config/config');
 
 import {Identify} from '@amplitude/identify';
-import {mocked} from 'jest-mock';
 import {Config, Configuration} from '../../lib/config/config';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {Identifier} from './identifier';
@@ -16,10 +15,10 @@ import {
 import {IConfig} from '@oclif/config';
 
 describe('identifier', () => {
-  const mockedConfig = mocked(Config);
-  const mockedIdentify = mocked(Identify, true);
-  const mockedAuthenticatedClient = mocked(AuthenticatedClient);
-  const mockedPlatformClient = mocked(PlatformClient);
+  const mockedConfig = jest.mocked(Config);
+  const mockedIdentify = jest.mocked(Identify, true);
+  const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
+  const mockedPlatformClient = jest.mocked(PlatformClient);
   const mockUserGet = jest.fn();
   const mockSetIdentity = jest.fn();
 

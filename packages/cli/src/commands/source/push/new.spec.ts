@@ -4,12 +4,11 @@ jest.mock('../../../hooks/prerun/prerun');
 jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
 
-import {mocked} from 'jest-mock';
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {SourceVisibility} from '@coveord/platform-client';
 
-const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 
 const spyCreate = jest.fn().mockReturnValue({id: 'the_id'});
 

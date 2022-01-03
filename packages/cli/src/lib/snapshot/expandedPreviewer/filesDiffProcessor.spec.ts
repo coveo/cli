@@ -1,8 +1,6 @@
 jest.mock('fs');
 jest.mock('fs-extra');
 
-import {mocked} from 'jest-mock';
-
 import {readdirSync, rmSync} from 'fs';
 import {readJSONSync, writeJSONSync} from 'fs-extra';
 import {getDirectory, getFile} from '../../../__test__/fsUtils';
@@ -10,10 +8,10 @@ import {recursiveDirectoryDiff} from './filesDiffProcessor';
 import {join} from 'path';
 import {fancyIt} from '../../../__test__/it';
 
-const mockedReadDir = mocked(readdirSync);
-const mockedRm = mocked(rmSync);
-const mockedReadJson = mocked(readJSONSync);
-const mockedWriteJSON = mocked(writeJSONSync);
+const mockedReadDir = jest.mocked(readdirSync);
+const mockedRm = jest.mocked(rmSync);
+const mockedReadJson = jest.mocked(readJSONSync);
+const mockedWriteJSON = jest.mocked(writeJSONSync);
 
 const resourceA = {
   resources: {
