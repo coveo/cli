@@ -82,14 +82,7 @@ describe('ui:create:react', () => {
       projectName
     );
 
-    await Promise.race([
-      buildTerminal.when('exit').on('process').do().once(),
-      buildTerminal
-        .when(/Happy hacking!/)
-        .on('stdout')
-        .do()
-        .once(),
-    ]);
+    buildTerminal.when('exit').on('process').do().once();
   };
 
   const startApplication = async (
