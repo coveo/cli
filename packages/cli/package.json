@@ -140,7 +140,6 @@
       "analytics": "./lib/hooks/analytics/analytics",
       "command_not_found": "./lib/hooks/commandNotFound/commandNotFound",
       "prerun": "./lib/hooks/prerun/prerun",
-      "preupdate": "./lib/hooks/preupdate/preupdate",
       "postrun": "./lib/hooks/postrun/postrun"
     },
     "macos": {
