@@ -3,7 +3,7 @@ import {CLI_EXEC_PATH, getConfig, getPathToHomedirEnvFile} from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
-import {ensureDirSync, readJsonSync, rmSync} from 'fs-extra';
+import {ensureDirSync, readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
 import PlatformClient, {FieldTypes} from '@coveord/platform-client';
 import {getPlatformClient} from '../utils/platform';
 import {readdirSync} from 'fs';
@@ -90,6 +90,11 @@ describe('org:resources', () => {
     );
 
     await pushTerminal.when('exit').on('process').do().once();
+  };
+
+  const addOrgIdToModel = (modelPath: string, orgId: string) => {
+    const model = readJsonSync(modelPath);
+    writeJsonSync(modelPath, {...model, orgId});
   };
 
   const pullFromOrg = async (
@@ -298,10 +303,13 @@ describe('org:resources', () => {
     it(
       'snapshot should only contain one single field',
       async () => {
-        await pullFromOrg(processManager, destinationPath, [
-          '-m',
-          join(pathToStub, 'snapshotPullModel', 'oneFieldOnly.json'),
-        ]);
+        const modelPath = join(
+          pathToStub,
+          'snapshotPullModel',
+          'oneFieldOnly.json'
+        );
+        addOrgIdToModel(modelPath, testOrgId);
+        await pullFromOrg(processManager, destinationPath, ['-m', modelPath]);
         const fields = readJsonSync(
           join(destinationPath, 'resources', 'FIELD.json')
         );
