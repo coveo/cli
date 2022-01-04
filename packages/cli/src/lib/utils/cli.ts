@@ -28,10 +28,12 @@ export async function confirm(
     trackEvent(`confirmed ${options.eventName}`);
     return true;
   } else {
-    trackEvent(`cancelled ${options.eventName}`);
+    const track = () => trackEvent(`cancelled ${options.eventName}`);
     if (options.exit) {
+      await track();
       throw new ProcessAbort();
     }
+    track();
     return false;
   }
 }
