@@ -11,7 +11,6 @@ import {
 import {Dirent, existsSync, mkdirSync, readdirSync, rmSync} from 'fs';
 import {join} from 'path';
 
-import {mocked} from 'jest-mock';
 import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
 import {ExpandedPreviewer} from './expandedPreviewer';
 import {Project} from '../../project/project';
@@ -28,16 +27,16 @@ describe('ExpandedPreviewer', () => {
   const Blob = jest.fn();
   const fakeBlob: Blob = new Blob();
 
-  const mockedRecursiveDirectoryDiff = mocked(recursiveDirectoryDiff);
-  const mockedExistsSync = mocked(existsSync);
-  const mockedReaddirSync = mocked(readdirSync);
-  const mockedRmSync = mocked(rmSync);
-  const mockedMkdirSync = mocked(mkdirSync);
-  const mockedSpawnProcess = mocked(spawnProcess);
-  const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
-  const mockedProject = mocked(Project);
+  const mockedRecursiveDirectoryDiff = jest.mocked(recursiveDirectoryDiff);
+  const mockedExistsSync = jest.mocked(existsSync);
+  const mockedReaddirSync = jest.mocked(readdirSync);
+  const mockedRmSync = jest.mocked(rmSync);
+  const mockedMkdirSync = jest.mocked(mkdirSync);
+  const mockedSpawnProcess = jest.mocked(spawnProcess);
+  const mockedSpawnProcessOutput = jest.mocked(spawnProcessOutput);
+  const mockedProject = jest.mocked(Project);
   const mockedProjectRefresh = jest.fn();
-  const mockedSnapshotFactory = mocked(SnapshotFactory, true);
+  const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
   const mockedSnapshotDownload = jest.fn().mockReturnValue(fakeBlob);
   const mockedSnapshotDelete = jest.fn();
 

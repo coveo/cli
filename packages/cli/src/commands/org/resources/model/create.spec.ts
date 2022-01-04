@@ -7,7 +7,6 @@ jest.mock('open');
 import {Region} from '@coveord/platform-client';
 import test from '@oclif/test';
 import open from 'open';
-import {mocked} from 'jest-mock';
 import {AuthenticatedClient} from '../../../../lib/platform/authenticatedClient';
 import {
   DEFAULT_ENVIRONMENT,
@@ -15,9 +14,9 @@ import {
   PlatformEnvironment,
 } from '../../../../lib/platform/environment';
 
-const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockedConfig = jest.fn();
-const mockedOpen = mocked(open);
+const mockedOpen = jest.mocked(open);
 
 const mockAuthenticatedClient = () => {
   mockedAuthenticatedClient.mockImplementation(

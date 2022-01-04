@@ -5,14 +5,13 @@ jest.mock('../../../lib/platform/authenticatedClient');
 
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {Config} from '../../../lib/config/config';
-import {mocked} from 'jest-mock';
 import {ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {test} from '@oclif/test';
 import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel';
 import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
 
-const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
-const mockedConfig = mocked(Config);
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient, true);
+const mockedConfig = jest.mocked(Config);
 const mockedConfigGet = jest.fn();
 const mockedGetClient = jest.fn();
 const mockedGetSnapshot = jest.fn();

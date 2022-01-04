@@ -4,7 +4,6 @@ jest.mock('archiver');
 jest.mock('@oclif/errors');
 jest.mock('fs-extra');
 jest.mock('extract-zip');
-import {mocked} from 'jest-mock';
 import {
   existsSync,
   createWriteStream,
@@ -28,20 +27,20 @@ import {error} from '@oclif/errors';
 import {getDirectory, getFile} from '../../__test__/fsUtils';
 import {fancyIt} from '../../__test__/it';
 
-const mockedExistSync = mocked(existsSync);
-const mockedReadDirSync = mocked(readdirSync);
-const mockedUnlinkSync = mocked(unlinkSync);
-const mockedCreateWriteStream = mocked(createWriteStream);
-const mockedArchiver = mocked(archiver);
-const mockedExtract = mocked(extract);
+const mockedExistSync = jest.mocked(existsSync);
+const mockedReadDirSync = jest.mocked(readdirSync);
+const mockedUnlinkSync = jest.mocked(unlinkSync);
+const mockedCreateWriteStream = jest.mocked(createWriteStream);
+const mockedArchiver = jest.mocked(archiver);
+const mockedExtract = jest.mocked(extract);
 const mockedPipe = jest.fn();
 const mockedPassDirectory = jest.fn();
 const mockedFinalize = jest.fn();
-const mockedError = mocked(error);
-const mockedCreateFileSync = mocked(ensureDirSync);
-const mockedWriteJSONSync = mocked(writeJSONSync);
-const mockedReadJSONSync = mocked(readJsonSync);
-const mockedPathExistsSync = mocked(pathExistsSync);
+const mockedError = jest.mocked(error);
+const mockedCreateFileSync = jest.mocked(ensureDirSync);
+const mockedWriteJSONSync = jest.mocked(writeJSONSync);
+const mockedReadJSONSync = jest.mocked(readJsonSync);
+const mockedPathExistsSync = jest.mocked(pathExistsSync);
 
 mockedArchiver.mockImplementation(
   () =>
@@ -188,7 +187,7 @@ describe('Project', () => {
     );
 
     describe('#refresh', () => {
-      const mockedWriteFileSync = mocked(writeFileSync);
+      const mockedWriteFileSync = jest.mocked(writeFileSync);
 
       const Blob = jest.fn().mockImplementation(() => ({
         arrayBuffer: () => new ArrayBuffer(0),

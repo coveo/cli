@@ -6,11 +6,10 @@ jest.mock('../../../hooks/analytics/analytics');
 jest.mock('../../../hooks/prerun/prerun');
 
 import {test} from '@oclif/test';
-import {mocked} from 'jest-mock';
 import {Config} from '../../../lib/config/config';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-const mockedAuthenticatedClient = mocked(AuthenticatedClient);
-const mockedConfig = mocked(Config);
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
+const mockedConfig = jest.mocked(Config);
 const mockSearch = jest.fn();
 
 mockedAuthenticatedClient.mockImplementation(

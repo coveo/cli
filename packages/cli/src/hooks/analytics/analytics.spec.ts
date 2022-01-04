@@ -6,7 +6,6 @@ jest.mock('@coveord/platform-client');
 jest.mock('./session');
 jest.mock('./identifier');
 
-import {mocked} from 'jest-mock';
 import {Configuration, Config} from '../../lib/config/config';
 import {
   AuthenticatedClient,
@@ -22,11 +21,11 @@ import {
 } from '../../__stub__/configuration';
 import {fancyIt} from '../../__test__/it';
 import {Identifier} from './identifier';
-const mockedConfig = mocked(Config);
-const mockedPlatformClient = mocked(PlatformClient);
-const mockedAuthenticatedClient = mocked(AuthenticatedClient);
-const mockedAuthenticationStatus = mocked(getAuthenticationStatus);
-const mockedIdentifier = mocked(Identifier);
+const mockedConfig = jest.mocked(Config);
+const mockedPlatformClient = jest.mocked(PlatformClient);
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
+const mockedAuthenticationStatus = jest.mocked(getAuthenticationStatus);
+const mockedIdentifier = jest.mocked(Identifier);
 const mockedLogEvent = jest.fn();
 const mockedIdentify = jest.fn();
 
