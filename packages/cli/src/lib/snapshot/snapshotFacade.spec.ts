@@ -1,3 +1,4 @@
+jest.mock('../utils/cli.ts');
 jest.mock('./snapshot');
 jest.mock('cli-ux');
 
@@ -9,17 +10,14 @@ import {
   SnapshotSynchronizationAmbiguousMatchesError,
   SnapshotSynchronizationUnknownError,
 } from '../errors/snapshotErrors';
+import {confirm} from '../utils/cli';
 import {Snapshot} from './snapshot';
 import {SnapshotFacade} from './snapshotFacade';
 
-const mockedConfirm = jest.fn();
+const mockedConfirm = jest.mocked(confirm);
 const mockedApplySynchronizationPlan = jest.fn();
 const mockedCreateSynchronizationPlan = jest.fn();
 const mockedContainsUnambiguousMatches = jest.fn();
-
-const doMockConfirm = () => {
-  Object.defineProperty(cli, 'confirm', {value: mockedConfirm});
-};
 
 const doMockSpinner = () => {
   Object.defineProperty(cli, 'action', {
@@ -45,7 +43,6 @@ describe('SnapshotFacade', () => {
   const facade = new SnapshotFacade(snapshot, {} as Configuration);
 
   beforeAll(() => {
-    doMockConfirm();
     doMockSpinner();
   });
 
@@ -71,7 +68,9 @@ describe('SnapshotFacade', () => {
 
   describe('if the user refuses to apply the synchronization', () => {
     beforeAll(() => {
-      mockedConfirm.mockReturnValue(false);
+      mockedConfirm.mockImplementationOnce(() => {
+        throw new ProcessAbort();
+      });
       mockedContainsUnambiguousMatches.mockReturnValue(true);
     });
 
@@ -84,7 +83,7 @@ describe('SnapshotFacade', () => {
 
   describe('if the synchronization reports contains an error', () => {
     beforeAll(() => {
-      mockedConfirm.mockReturnValue(true);
+      mockedConfirm.mockResolvedValue(true);
       mockedContainsUnambiguousMatches.mockReturnValue(true);
       mockedApplySynchronizationPlan.mockImplementation(() => ({
         isSuccessReport: () => false,
@@ -100,7 +99,7 @@ describe('SnapshotFacade', () => {
 
   describe('if synchronization plan can automatically be applied', () => {
     beforeAll(() => {
-      mockedConfirm.mockReturnValue(true);
+      mockedConfirm.mockResolvedValue(true);
       mockedContainsUnambiguousMatches.mockReturnValue(true);
       mockedApplySynchronizationPlan.mockImplementation(() => ({
         isSuccessReport: () => true,
