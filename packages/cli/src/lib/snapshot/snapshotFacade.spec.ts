@@ -4,8 +4,8 @@ jest.mock('cli-ux');
 import {cli} from 'cli-ux';
 import {fancyIt} from '../../__test__/it';
 import {Configuration} from '../config/config';
+import {ProcessAbort} from '../errors/processError';
 import {
-  SnapshotOperationAbort,
   SnapshotSynchronizationAmbiguousMatchesError,
   SnapshotSynchronizationUnknownError,
 } from '../errors/snapshotErrors';
@@ -77,7 +77,7 @@ describe('SnapshotFacade', () => {
 
     fancyIt()('should end the execution', async () => {
       await expect(facade.tryAutomaticSynchronization()).rejects.toThrow(
-        SnapshotOperationAbort
+        ProcessAbort
       );
     });
   });
