@@ -93,7 +93,6 @@ describe('org:resources', () => {
   };
 
   const pullFromOrg = async (
-    targetOrg: string,
     procManager: ProcessManager,
     destinationPath: string,
     additionalFlags: string[] = []
@@ -101,7 +100,6 @@ describe('org:resources', () => {
     const args: string[] = [
       CLI_EXEC_PATH,
       'org:resources:pull',
-      `-t=${targetOrg}`,
       '-o',
       '--wait=0',
       '--no-git',
@@ -268,7 +266,7 @@ describe('org:resources', () => {
     it(
       "should pull the org's content",
       async () => {
-        await pullFromOrg(testOrgId, processManager, destinationPath);
+        await pullFromOrg(processManager, destinationPath, ['-t', testOrgId]);
         const snapshotFiles = readdirSync(snapshotProjectPath);
         const destinationFiles = readdirSync(destinationPath);
 
@@ -280,8 +278,11 @@ describe('org:resources', () => {
     it(
       'directory should only contain pulled resources',
       async () => {
-        await pullFromOrg(testOrgId, processManager, destinationPath, [
-          '-r=FIELD',
+        await pullFromOrg(processManager, destinationPath, [
+          '-t',
+          testOrgId,
+          '-r',
+          'FIELD',
         ]);
         const originalResources = getResourceFolderContent(snapshotProjectPath);
         const destinationResources = getResourceFolderContent(destinationPath);
@@ -297,7 +298,7 @@ describe('org:resources', () => {
     it(
       'snapshot should only contain one single field',
       async () => {
-        await pullFromOrg(testOrgId, processManager, destinationPath, [
+        await pullFromOrg(processManager, destinationPath, [
           '-m',
           join(pathToStub, 'snapshotPullModel', 'oneFieldOnly.json'),
         ]);
