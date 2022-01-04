@@ -21,7 +21,7 @@ interface ConfirmOptions {
  */
 export async function confirm(
   question: string,
-  options: ConfirmOptions
+  options: ConfirmOptions = {}
 ): Promise<boolean> {
   const doAction = await cli.confirm(question);
   if (doAction) {
@@ -39,6 +39,6 @@ export async function confirm(
 async function trackEvent(eventName?: string) {
   const defaultEventName = 'confirmation';
   await config.runHook('analytics', {
-    event: buildEvent(`cancelled ${eventName || defaultEventName}`, {}),
+    event: buildEvent(`${eventName || defaultEventName}`, {}),
   });
 }
