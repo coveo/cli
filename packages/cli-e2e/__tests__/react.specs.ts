@@ -82,7 +82,7 @@ describe('ui:create:react', () => {
       projectName
     );
 
-    buildTerminal.when('exit').on('process').do().once();
+    await buildTerminal.when('exit').on('process').do().once();
   };
 
   const startApplication = async (
