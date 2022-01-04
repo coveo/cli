@@ -42,24 +42,12 @@ const canLogEvent = async () => {
     // TODO: track event with anonymous user
     return false;
   }
-  const {organization, analyticsEnabled, authenticatedClient} =
-    await platformInfoIdentifier();
+  const {analyticsEnabled} = await platformInfoIdentifier();
 
   if (!analyticsEnabled) {
     return false;
   }
 
-  // TODO: CDX-676: remove this block to track events from all org types
-  // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-  const platformClient = await authenticatedClient.getClient({
-    organization,
-  });
-  const license = await platformClient.license.full();
-
-  if (license.productType !== 'TRIAL') {
-    return false;
-  }
-  // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
   return true;
 };
 

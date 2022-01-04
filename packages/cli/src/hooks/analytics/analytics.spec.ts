@@ -198,15 +198,12 @@ describe('analytics_hook', () => {
     expect(mockedLogEvent).not.toHaveBeenCalled();
   });
 
-  fancyIt()(
-    'should not send any analytics if license is not TRIAL',
-    async () => {
-      mockedLicense.mockResolvedValue({productType: 'PROD'});
+  fancyIt()('should send analytics regardless of the license', async () => {
+    mockedLicense.mockResolvedValue({productType: 'ANYTHING_BUT_TRIAL'});
 
-      await hook(getAnalyticsHook({}));
-      expect(mockedLogEvent).not.toHaveBeenCalled();
-    }
-  );
+    await hook(getAnalyticsHook({}));
+    expect(mockedLogEvent).toHaveBeenCalled();
+  });
 
   fancyIt()(
     'should not throw an error when the user is not logged in',
