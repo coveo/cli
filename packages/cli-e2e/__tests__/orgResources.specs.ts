@@ -1,5 +1,11 @@
 import {join} from 'path';
-import {CLI_EXEC_PATH, getConfig, getPathToHomedirEnvFile} from '../utils/cli';
+import {
+  answerPrompt,
+  CLI_EXEC_PATH,
+  getConfig,
+  getPathToHomedirEnvFile,
+  isGenericYesNoPrompt,
+} from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
@@ -8,6 +14,7 @@ import PlatformClient, {FieldTypes} from '@coveord/platform-client';
 import {getPlatformClient} from '../utils/platform';
 import {readdirSync} from 'fs';
 import {cwd} from 'process';
+import {EOL} from 'os';
 config({path: getPathToHomedirEnvFile()});
 
 describe('org:resources', () => {
@@ -118,7 +125,19 @@ describe('org:resources', () => {
       'org-config-pull'
     );
 
-    await pullTerminal.when('exit').on('process').do().once();
+    const pullTerminalExitPromise = pullTerminal
+      .when('exit')
+      .on('process')
+      .do()
+      .once();
+
+    pullTerminal
+      .when(isGenericYesNoPrompt)
+      .on('stderr')
+      .do(answerPrompt(`y${EOL}`))
+      .until(pullTerminalExitPromise);
+
+    await pullTerminalExitPromise;
   };
 
   beforeAll(async () => {
