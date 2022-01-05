@@ -127,8 +127,8 @@ describe('org:resources', () => {
     );
 
     const pullTerminalExitPromise = pullTerminal
-      .when('exit')
-      .on('process')
+      .when(/Project updated/)
+      .on('stderr')
       .do()
       .once();
 
