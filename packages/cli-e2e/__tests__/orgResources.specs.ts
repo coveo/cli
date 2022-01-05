@@ -107,7 +107,8 @@ describe('org:resources', () => {
   const pullFromOrg = async (
     procManager: ProcessManager,
     destinationPath: string,
-    additionalFlags: string[] = []
+    additionalFlags: string[] = [],
+    debugName: string
   ) => {
     const args: string[] = [
       CLI_EXEC_PATH,
@@ -122,7 +123,7 @@ describe('org:resources', () => {
       args,
       procManager,
       destinationPath,
-      'org-config-pull'
+      debugName
     );
 
     const pullTerminalExitPromise = pullTerminal
@@ -290,7 +291,12 @@ describe('org:resources', () => {
     it(
       "should pull the org's content",
       async () => {
-        await pullFromOrg(processManager, destinationPath, ['-t', testOrgId]);
+        await pullFromOrg(
+          processManager,
+          destinationPath,
+          ['-t', testOrgId],
+          'org-resources-pull-all'
+        );
         const snapshotFiles = readdirSync(snapshotProjectPath);
         const destinationFiles = readdirSync(destinationPath);
 
@@ -302,12 +308,12 @@ describe('org:resources', () => {
     it(
       'directory should only contain pulled resources',
       async () => {
-        await pullFromOrg(processManager, destinationPath, [
-          '-t',
-          testOrgId,
-          '-r',
-          'FIELD',
-        ]);
+        await pullFromOrg(
+          processManager,
+          destinationPath,
+          ['-t', testOrgId, '-r', 'FIELD'],
+          'org-resources-pull-all-fields'
+        );
         const originalResources = getResourceFolderContent(snapshotProjectPath);
         const destinationResources = getResourceFolderContent(destinationPath);
 
@@ -328,7 +334,12 @@ describe('org:resources', () => {
           'oneFieldOnly.json'
         );
         addOrgIdToModel(modelPath, testOrgId);
-        await pullFromOrg(processManager, destinationPath, ['-m', modelPath]);
+        await pullFromOrg(
+          processManager,
+          destinationPath,
+          ['-m', modelPath],
+          'org-resources-pull-one-field'
+        );
         const fields = readJsonSync(
           join(destinationPath, 'resources', 'FIELD.json')
         );
