@@ -132,13 +132,11 @@ describe('org:resources', () => {
       .do()
       .once();
 
-    pullTerminal
+    await pullTerminal
       .when(isGenericYesNoPrompt)
       .on('stderr')
       .do(answerPrompt(`y${EOL}`))
       .until(pullTerminalExitPromise);
-
-    await pullTerminalExitPromise;
   };
 
   beforeAll(async () => {
