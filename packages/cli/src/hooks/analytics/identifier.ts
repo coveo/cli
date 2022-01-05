@@ -1,3 +1,4 @@
+import os from 'os';
 import {Identify} from '@amplitude/identify';
 import {machineId} from 'node-machine-id';
 import {createHash} from 'crypto';
@@ -20,6 +21,7 @@ export class Identifier {
     const {userId, isInternalUser} = await this.getUserInfo(platformClient);
     const deviceId = await machineId();
     const identity = {
+      ...this.getShellInfo(),
       ...this.getDeviceInfo(),
       ...{isInternalUser},
     };
@@ -53,22 +55,36 @@ export class Identifier {
   }
 
   private getAmplitudeBaseEventProperties() {
-    const {version} = config;
+    const {version, platform} = config;
     return {
       app_version: version,
+      os_version: os.release(),
+      os_name: platform,
+      platform,
     };
   }
 
   private getDeviceInfo() {
-    const {shell, arch, windows, platform, bin, userAgent, debug} = config;
+    const {arch, windows, bin, userAgent, debug} = config;
     return {
-      shell,
       arch,
-      platform,
       windows,
       bin,
       userAgent,
       debug,
+    };
+  }
+
+  private getShellInfo() {
+    const {shell} = config;
+    const {
+      TERM_PROGRAM_VERSION: termProgramVersion,
+      TERM_PROGRAM: termProgram,
+    } = process.env;
+    return {
+      shell,
+      ...(termProgramVersion && {termProgramVersion}),
+      ...(termProgram && {termProgram}),
     };
   }
 

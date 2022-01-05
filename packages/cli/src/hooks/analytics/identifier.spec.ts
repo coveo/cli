@@ -3,7 +3,9 @@ jest.mock('@amplitude/identify');
 jest.mock('@coveord/platform-client');
 jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('../../lib/config/config');
+jest.mock('os');
 
+import {release} from 'os';
 import {Identify} from '@amplitude/identify';
 import {mocked} from 'ts-jest/utils';
 import {Config, Configuration} from '../../lib/config/config';
@@ -25,6 +27,7 @@ describe('identifier', () => {
   const mockUserGet = jest.fn();
   const mockSetIdentity = jest.fn();
   const mockedLogEvent = jest.fn();
+  const mockedOsVersion = mocked(release);
 
   let identity: Awaited<ReturnType<Identifier['getIdentity']>>;
 
@@ -33,6 +36,9 @@ describe('identifier', () => {
       logEvent: mockedLogEvent,
     } as unknown as NodeClient);
 
+  const doMockOS = () => {
+    mockedOsVersion.mockReturnValue('21.3.4');
+  };
   const doMockIdentify = () => {
     mockedIdentify.prototype.set.mockImplementation(mockSetIdentity);
   };
@@ -89,10 +95,15 @@ describe('identifier', () => {
   };
 
   beforeAll(() => {
-    global.config = {configDir: 'the_config_dir', version: '1.2.3'} as IConfig;
+    global.config = {
+      configDir: 'the_config_dir',
+      version: '1.2.3',
+      platform: 'darwin',
+    } as IConfig;
   });
 
   beforeEach(() => {
+    doMockOS();
     doMockIdentify();
     doMockAuthenticatedClient();
   });
@@ -160,9 +171,29 @@ describe('identifier', () => {
     });
   });
 
-  it('should add the CLI version to the event', async () => {
-    identity = await new Identifier().getIdentity();
-    identity.identify(getDummyAmplitudeClient());
-    expect(mockedLogEvent).toHaveBeenCalledWith({app_version: '1.2.3'});
+  describe('when logging for every user type', () => {
+    let identity: Awaited<ReturnType<Identifier['getIdentity']>>;
+
+    beforeEach(async () => {
+      identity = await new Identifier().getIdentity();
+      identity.identify(getDummyAmplitudeClient());
+    });
+
+    it('should add the CLI version to the event', async () => {
+      expect(mockedLogEvent).toHaveBeenCalledWith(
+        expect.objectContaining({app_version: '1.2.3'})
+      );
+    });
+
+    it('should add the OS information to the event', async () => {
+      expect(mockedLogEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          app_version: '1.2.3',
+          os_name: 'darwin',
+          os_version: '21.3.4',
+          platform: 'darwin',
+        })
+      );
+    });
   });
 });
