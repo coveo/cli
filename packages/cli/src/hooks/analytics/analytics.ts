@@ -16,14 +16,36 @@ export interface AnalyticsHook {
 }
 
 const hook = async function (options: AnalyticsHook) {
-  if (!(await canLogEvent())) {
+  if (!(await isLoggedIn())) {
+    // TODO: track event with anonymous user
+    return;
+  }
+  const platformIdentifier = await platformInfoIdentifier();
+
+  if (!platformIdentifier.analyticsEnabled) {
     return;
   }
 
+  // TODO: CDX-676: remove this block to track events from all org types
+  // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+  const platformClient = await platformIdentifier.authenticatedClient.getClient(
+    {
+      organization: platformIdentifier.organization,
+    }
+  );
+  const license = await platformClient.license.full();
+
+  if (license.productType !== 'TRIAL') {
+    return;
+  }
+  // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
   const {userId, deviceId, identify} = await new Identifier().getIdentity();
   if (options.identify) {
-    amplitudeClient.identify(userId, deviceId, identify);
+    identify(amplitudeClient);
   }
+
+  await augmentEvent(options.event, platformIdentifier);
 
   amplitudeClient.logEvent({
     device_id: deviceId,
@@ -37,30 +59,22 @@ export const flush = async () => {
   await amplitudeClient.flush();
 };
 
-const canLogEvent = async () => {
-  if (!(await isLoggedIn())) {
-    // TODO: track event with anonymous user
-    return false;
-  }
-  const {organization, analyticsEnabled, authenticatedClient} =
-    await platformInfoIdentifier();
-
-  if (!analyticsEnabled) {
-    return false;
-  }
-
-  // TODO: CDX-676: remove this block to track events from all org types
-  // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+const augmentEvent = async (
+  event: Event,
+  identifier: Awaited<ReturnType<typeof platformInfoIdentifier>>
+) => {
+  const {organization, authenticatedClient, environment, region} = identifier;
   const platformClient = await authenticatedClient.getClient({
     organization,
   });
-  const license = await platformClient.license.full();
+  const {type} = await platformClient.organization.get(organization);
 
-  if (license.productType !== 'TRIAL') {
-    return false;
-  }
-  // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-  return true;
+  event.event_properties = {
+    ...event.event_properties,
+    organization_type: type,
+    environment,
+    region,
+  };
 };
 
 const platformInfoIdentifier = async () => {
