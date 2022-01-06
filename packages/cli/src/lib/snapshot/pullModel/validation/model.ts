@@ -3,19 +3,23 @@ import {ResourceSnapshotType} from '@coveord/platform-client';
 import {SnapshotPullModelResources} from '../interfaces';
 
 export function getSnapshotModel() {
-  const resourcePattern =
-    pullModelSchema.properties.resourcesToExport.patternProperties['.*'];
+  const properties: Record<string, {}> = {};
+  Object.values(ResourceSnapshotType).forEach((resource) => {
+    properties[resource] = {
+      // TODO: CDX-741: remove null from supported types
+      type: ['array', 'null'],
+      items: {
+        type: 'string',
+      },
+    };
+  });
 
-  const supportedResources = Object.values(ResourceSnapshotType);
   return {
     ...pullModelSchema,
     ...{
       properties: {
         resourcesToExport: {
-          patternProperties: {
-            [supportedResources.map((resource) => `^${resource}$`).join('|')]:
-              resourcePattern,
-          },
+          properties,
         },
       },
     },
