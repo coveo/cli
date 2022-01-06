@@ -10,15 +10,7 @@
     },
     "resourcesToExport": {
       "type": "object",
-      "additionalProperties": false,
-      "patternProperties": {
-        ".*": {
-          "type": ["array", "null"],
-          "items": {
-            "type": "string"
-          }
-        }
-      }
+      "additionalProperties": false
     },
     "includeChildrenResources": {
       "type": "boolean"
