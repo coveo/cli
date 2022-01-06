@@ -4,7 +4,11 @@ import {fancyIt} from '../../__test__/it';
 
 jest.mock('./environment');
 import {PlatformEnvironment, platformUrl} from './environment';
-import {snapshotSynchronizationUrl, snapshotUrl} from './url';
+import {
+  createSnapshotUrl,
+  snapshotSynchronizationUrl,
+  snapshotUrl,
+} from './url';
 
 describe('url', () => {
   const mockedPlatformUrl = mocked(platformUrl);
@@ -43,6 +47,24 @@ describe('url', () => {
         })
       ).toBe(
         'https://foo.test/admin/#some-org/organization/resource-snapshots/some-snapshot/synchronization'
+      );
+
+      expect(platformUrl).toBeCalledWith({
+        environment: PlatformEnvironment.QA,
+        region: Region.AU,
+      });
+    });
+  });
+
+  describe('#createSnapshotUrl', () => {
+    fancyIt()('should build the URL properly', () => {
+      expect(
+        createSnapshotUrl('some-org', {
+          environment: PlatformEnvironment.QA,
+          region: Region.AU,
+        })
+      ).toBe(
+        'https://foo.test/admin/#some-org/organization/resource-snapshots/create-snapshot'
       );
 
       expect(platformUrl).toBeCalledWith({
