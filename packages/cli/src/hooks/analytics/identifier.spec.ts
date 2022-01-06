@@ -1,8 +1,11 @@
+jest.mock('@amplitude/node');
 jest.mock('@amplitude/identify');
 jest.mock('@coveord/platform-client');
 jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('../../lib/config/config');
+jest.mock('os');
 
+import {release} from 'os';
 import {Identify} from '@amplitude/identify';
 import {Config, Configuration} from '../../lib/config/config';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
@@ -13,6 +16,7 @@ import {
   defaultConfiguration,
 } from '../../__stub__/configuration';
 import {IConfig} from '@oclif/config';
+import type {NodeClient} from '@amplitude/node';
 
 describe('identifier', () => {
   const mockedConfig = jest.mocked(Config);
@@ -21,11 +25,19 @@ describe('identifier', () => {
   const mockedPlatformClient = jest.mocked(PlatformClient);
   const mockUserGet = jest.fn();
   const mockSetIdentity = jest.fn();
+  const mockedLogEvent = jest.fn();
+  const mockedOsVersion = mocked(release);
 
-  // TODO: Remove after update to Typescript 4.5
-  type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T;
   let identity: Awaited<ReturnType<Identifier['getIdentity']>>;
 
+  const getDummyAmplitudeClient = () =>
+    ({
+      logEvent: mockedLogEvent,
+    } as unknown as NodeClient);
+
+  const doMockOS = () => {
+    mockedOsVersion.mockReturnValue('21.3.4');
+  };
   const doMockIdentify = () => {
     mockedIdentify.prototype.set.mockImplementation(mockSetIdentity);
   };
@@ -82,10 +94,15 @@ describe('identifier', () => {
   };
 
   beforeAll(() => {
-    global.config = {configDir: 'the_config_dir'} as IConfig;
+    global.config = {
+      configDir: 'the_config_dir',
+      version: '1.2.3',
+      platform: 'darwin',
+    } as IConfig;
   });
 
   beforeEach(() => {
+    doMockOS();
     doMockIdentify();
     doMockAuthenticatedClient();
   });
@@ -101,13 +118,13 @@ describe('identifier', () => {
       mockedPlatformClient.mockClear();
     });
 
-    it('should set platform information', async () => {
-      expect(mockSetIdentity).toHaveBeenCalledWith(
+    it('should not set platform information', async () => {
+      expect(mockSetIdentity).not.toHaveBeenCalledWith(
         'organization_type',
         'Production'
       );
-      expect(mockSetIdentity).toHaveBeenCalledWith('environment', 'dev');
-      expect(mockSetIdentity).toHaveBeenCalledWith('region', 'us');
+      expect(mockSetIdentity).not.toHaveBeenCalledWith('environment', 'dev');
+      expect(mockSetIdentity).not.toHaveBeenCalledWith('region', 'us');
     });
 
     it('should set the user ID', async () => {
@@ -150,6 +167,32 @@ describe('identifier', () => {
 
     it('should set the user ID to null', async () => {
       expect(identity.userId).toBeNull();
+    });
+  });
+
+  describe('when logging for every user type', () => {
+    let identity: Awaited<ReturnType<Identifier['getIdentity']>>;
+
+    beforeEach(async () => {
+      identity = await new Identifier().getIdentity();
+      identity.identify(getDummyAmplitudeClient());
+    });
+
+    it('should add the CLI version to the event', async () => {
+      expect(mockedLogEvent).toHaveBeenCalledWith(
+        expect.objectContaining({app_version: '1.2.3'})
+      );
+    });
+
+    it('should add the OS information to the event', async () => {
+      expect(mockedLogEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          app_version: '1.2.3',
+          os_name: 'darwin',
+          os_version: '21.3.4',
+          platform: 'darwin',
+        })
+      );
     });
   });
 });
