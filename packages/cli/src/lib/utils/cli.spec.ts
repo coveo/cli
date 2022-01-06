@@ -4,8 +4,7 @@ jest.mock('cli-ux');
 import {IConfig} from '@oclif/config';
 import {cli} from 'cli-ux';
 import {fancyIt} from '../../__test__/it';
-import {ProcessAbort} from '../errors/processError';
-import {confirm} from './cli';
+import {confirmWithAnalytics} from './cli';
 
 const mockedAnalyticHook = jest.fn();
 const mockedConfirm = jest.fn();
@@ -30,7 +29,7 @@ describe('cli', () => {
   });
 
   fancyIt()('should call cli.confirm with the right question', async () => {
-    await confirm('this is a question');
+    await confirmWithAnalytics('this is a question', 'question name');
     expect(mockedConfirm).toHaveBeenCalledWith('this is a question');
   });
 
@@ -40,10 +39,10 @@ describe('cli', () => {
     });
 
     fancyIt()('should log a `confirmed` event', async () => {
-      await confirm('question', {eventName: 'event'});
+      await confirmWithAnalytics('question', 'action');
       expect(mockedAnalyticHook).toHaveBeenCalledWith('analytics', {
         event: {
-          event_type: 'confirmed event',
+          event_type: 'confirmed action',
           event_properties: {},
         },
       });
@@ -56,34 +55,12 @@ describe('cli', () => {
     });
 
     fancyIt()('should log a `cancelled` event', async () => {
-      await confirm('question', {eventName: 'event'});
+      await confirmWithAnalytics('question', 'action');
       expect(mockedAnalyticHook).toHaveBeenCalledWith('analytics', {
         event: {
-          event_type: 'cancelled event',
+          event_type: 'cancelled action',
           event_properties: {},
         },
-      });
-    });
-
-    describe('when exit option is set to true', () => {
-      fancyIt()('should terminate the process', async () => {
-        await expect(confirm('question', {exit: true})).rejects.toThrow(
-          ProcessAbort
-        );
-      });
-    });
-
-    describe('when exit option is set to false', () => {
-      fancyIt()('should not terminate the process', async () => {
-        const confirmation = await confirm('question', {exit: false});
-        expect(confirmation).toBe(false);
-      });
-    });
-
-    describe('when exit option is not specified', () => {
-      fancyIt()('should not terminate the process', async () => {
-        const confirmation = await confirm('question', {exit: false});
-        expect(confirmation).toBe(false);
       });
     });
   });

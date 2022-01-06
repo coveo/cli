@@ -30,7 +30,7 @@ import {
   writeSnapshotPrivilege,
 } from '../../../lib/decorators/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
-import {confirm} from '../../../lib/utils/cli';
+import {confirmWithAnalytics} from '../../../lib/utils/cli';
 
 export default class Push extends Command {
   public static description =
@@ -141,7 +141,7 @@ export default class Push extends Command {
     const question = `\nWould you like to apply these changes to the org ${bold(
       target
     )}? (y/n)`;
-    return confirm(question, {eventName: 'snapshot apply'});
+    return confirmWithAnalytics(question, 'snapshot apply');
   }
 
   private async applySnapshot(snapshot: Snapshot) {
