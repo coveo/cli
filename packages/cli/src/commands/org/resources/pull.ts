@@ -83,7 +83,7 @@ export default class Pull extends Command {
       helpValue: 'path/to/snapshot.json',
       exclusive: ['snapshotId', 'resourceTypes', 'target'],
       description:
-        'The path to a snapshot JSON model. This flag is useful when you want to include specific resource items to your snapshot (e.g. a subset of sources). Use the "org:resources:model:create" command to create a new Snapshot Pull Model',
+        'The path to a snapshot pull model. This flag is useful when you want to include specific resource items in your snapshot (e.g. a subset of sources). Use the "org:resources:model:create" command to create a new Snapshot Pull Model',
     }),
   };
 
