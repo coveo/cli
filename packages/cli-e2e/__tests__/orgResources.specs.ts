@@ -1,12 +1,20 @@
 import {join} from 'path';
-import {CLI_EXEC_PATH, getConfig, getPathToHomedirEnvFile} from '../utils/cli';
+import {
+  answerPrompt,
+  CLI_EXEC_PATH,
+  getConfig,
+  getPathToHomedirEnvFile,
+  isGenericYesNoPrompt,
+} from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
-import {ensureDirSync, rmSync} from 'fs-extra';
+import {ensureDirSync, readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
 import PlatformClient, {FieldTypes} from '@coveord/platform-client';
 import {getPlatformClient} from '../utils/platform';
 import {readdirSync} from 'fs';
+import {cwd} from 'process';
+import {EOL} from 'os';
 config({path: getPathToHomedirEnvFile()});
 
 describe('org:resources', () => {
@@ -16,6 +24,7 @@ describe('org:resources', () => {
   const defaultTimeout = 10 * 60e3;
   let processManager: ProcessManager;
   let platformClient: PlatformClient;
+  const pathToStub = join(cwd(), '__stub__');
 
   const createNewTerminal = (
     args: string[],
@@ -90,16 +99,20 @@ describe('org:resources', () => {
     await pushTerminal.when('exit').on('process').do().once();
   };
 
+  const addOrgIdToModel = (modelPath: string, orgId: string) => {
+    const model = readJsonSync(modelPath);
+    writeJsonSync(modelPath, {...model, orgId});
+  };
+
   const pullFromOrg = async (
-    targetOrg: string,
     procManager: ProcessManager,
     destinationPath: string,
-    additionalFlags: string[] = []
+    additionalFlags: string[] = [],
+    debugName: string
   ) => {
     const args: string[] = [
       CLI_EXEC_PATH,
       'org:resources:pull',
-      `-t=${targetOrg}`,
       '-o',
       '--wait=0',
       '--no-git',
@@ -110,10 +123,21 @@ describe('org:resources', () => {
       args,
       procManager,
       destinationPath,
-      'org-config-pull'
+      debugName
     );
 
-    await pullTerminal.when('exit').on('process').do().once();
+    const pullTerminalExitPromise = pullTerminal
+      // TODO: CDX-744: understand why cannot use process.on('exit')
+      .when(/Project updated/)
+      .on('stderr')
+      .do()
+      .once();
+
+    await pullTerminal
+      .when(isGenericYesNoPrompt)
+      .on('stderr')
+      .do(answerPrompt(`y${EOL}`))
+      .until(pullTerminalExitPromise);
   };
 
   beforeAll(async () => {
@@ -266,7 +290,12 @@ describe('org:resources', () => {
     it(
       "should pull the org's content",
       async () => {
-        await pullFromOrg(testOrgId, processManager, destinationPath);
+        await pullFromOrg(
+          processManager,
+          destinationPath,
+          ['-t', testOrgId],
+          'org-resources-pull-all'
+        );
         const snapshotFiles = readdirSync(snapshotProjectPath);
         const destinationFiles = readdirSync(destinationPath);
 
@@ -276,11 +305,14 @@ describe('org:resources', () => {
     );
 
     it(
-      'directory should only contains pulled resources',
+      'directory should only contain pulled resources',
       async () => {
-        await pullFromOrg(testOrgId, processManager, destinationPath, [
-          '-r=FIELD',
-        ]);
+        await pullFromOrg(
+          processManager,
+          destinationPath,
+          ['-t', testOrgId, '-r', 'FIELD'],
+          'org-resources-pull-all-fields'
+        );
         const originalResources = getResourceFolderContent(snapshotProjectPath);
         const destinationResources = getResourceFolderContent(destinationPath);
 
@@ -288,6 +320,30 @@ describe('org:resources', () => {
         expect(destinationResources.length).toBeLessThan(
           originalResources.length
         );
+      },
+      defaultTimeout
+    );
+
+    it(
+      'snapshot should only contain one single field',
+      async () => {
+        const modelPath = join(
+          pathToStub,
+          'snapshotPullModel',
+          'oneFieldOnly.json'
+        );
+        addOrgIdToModel(modelPath, testOrgId);
+        await pullFromOrg(
+          processManager,
+          destinationPath,
+          ['-m', modelPath],
+          'org-resources-pull-one-field'
+        );
+        const fields = readJsonSync(
+          join(destinationPath, 'resources', 'FIELD.json')
+        );
+
+        expect(fields.resources.FIELD.length).toBe(1);
       },
       defaultTimeout
     );
