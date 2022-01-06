@@ -3,12 +3,11 @@ jest.mock('../../hooks/analytics/analytics');
 jest.mock('../../hooks/prerun/prerun');
 jest.mock('../../lib/platform/authenticatedClient');
 
-import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {OrganizationModel} from '@coveord/platform-client';
 
-const mockedClient = mocked(AuthenticatedClient);
+const mockedClient = jest.mocked(AuthenticatedClient);
 const mockGetOrgs = jest.fn().mockReturnValue(Promise.resolve([]));
 
 describe('org:list', () => {

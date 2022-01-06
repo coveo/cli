@@ -4,7 +4,6 @@ jest.mock('../../../hooks/prerun/prerun');
 jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('@coveo/push-api-client');
 
-import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {Source} from '@coveo/push-api-client';
@@ -12,8 +11,8 @@ import {
   doMockAxiosError,
   doMockAxiosSuccess,
 } from '../../../lib/push/testUtils';
-const mockedClient = mocked(AuthenticatedClient);
-const mockedSource = mocked(Source);
+const mockedClient = jest.mocked(AuthenticatedClient);
+const mockedSource = jest.mocked(Source);
 
 describe('source:push:delete', () => {
   const mockDeleteOlderThan = jest

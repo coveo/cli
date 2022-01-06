@@ -36,7 +36,7 @@
     "@material-ui/lab": "4.0.0-alpha.60",
     "@testing-library/jest-dom": "5.16.1",
     "@testing-library/react": "12.1.2",
-    "@types/jest": "27.0.3",
+    "@types/jest": "27.4.0",
     "@types/react": "17.0.37",
     "@types/react-dom": "17.0.11",
     "@types/react-router-dom": "5.3.2",

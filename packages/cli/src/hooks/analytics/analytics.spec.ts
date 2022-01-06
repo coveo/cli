@@ -5,7 +5,6 @@ jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
 jest.mock('./session');
 
-import {mocked} from 'ts-jest/utils';
 import {Configuration, Config} from '../../lib/config/config';
 import {
   AuthenticatedClient,
@@ -17,10 +16,10 @@ import {IConfig} from '@oclif/config';
 import {PlatformClient} from '@coveord/platform-client';
 import {configurationMock} from '../../__stub__/configuration';
 import {fancyIt} from '../../__test__/it';
-const mockedConfig = mocked(Config);
-const mockedPlatformClient = mocked(PlatformClient);
-const mockedAuthenticatedClient = mocked(AuthenticatedClient);
-const mockedAuthenticationStatus = mocked(getAuthenticationStatus);
+const mockedConfig = jest.mocked(Config);
+const mockedPlatformClient = jest.mocked(PlatformClient);
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
+const mockedAuthenticationStatus = jest.mocked(getAuthenticationStatus);
 const mockedLogEvent = jest.fn();
 
 jest.mock('./amplitudeClient', () => ({

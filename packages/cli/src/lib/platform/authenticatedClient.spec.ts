@@ -8,15 +8,14 @@ import {
 } from './authenticatedClient';
 
 import {Config} from '../config/config';
-import {mocked} from 'ts-jest/utils';
 import PlatformClient from '@coveord/platform-client';
 import {
   castEnvironmentToPlatformClient,
   PlatformEnvironment,
 } from './environment';
 import {fancyIt} from '../../__test__/it';
-const mockConfig = mocked(Config);
-const mockPlatformClient = mocked(PlatformClient);
+const mockConfig = jest.mocked(Config);
+const mockPlatformClient = jest.mocked(PlatformClient);
 
 describe('AuthenticatedClient', () => {
   const mockGet = jest.fn().mockReturnValue(

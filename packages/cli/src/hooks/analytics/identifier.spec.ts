@@ -7,7 +7,6 @@ jest.mock('os');
 
 import {release} from 'os';
 import {Identify} from '@amplitude/identify';
-import {mocked} from 'ts-jest/utils';
 import {Config, Configuration} from '../../lib/config/config';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {Identifier} from './identifier';
@@ -20,14 +19,14 @@ import {IConfig} from '@oclif/config';
 import type {NodeClient} from '@amplitude/node';
 
 describe('identifier', () => {
-  const mockedConfig = mocked(Config);
-  const mockedIdentify = mocked(Identify, true);
-  const mockedAuthenticatedClient = mocked(AuthenticatedClient);
-  const mockedPlatformClient = mocked(PlatformClient);
+  const mockedConfig = jest.mocked(Config);
+  const mockedIdentify = jest.mocked(Identify, true);
+  const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
+  const mockedPlatformClient = jest.mocked(PlatformClient);
   const mockUserGet = jest.fn();
   const mockSetIdentity = jest.fn();
   const mockedLogEvent = jest.fn();
-  const mockedOsVersion = mocked(release);
+  const mockedOsVersion = jest.mocked(release);
 
   let identity: Awaited<ReturnType<Identifier['getIdentity']>>;
 

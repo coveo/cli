@@ -1,8 +1,7 @@
 jest.mock('@coveord/platform-client');
-import {mocked} from 'ts-jest/utils';
 import PlatformClient from '@coveord/platform-client';
 import {handler} from './token';
-const mockedPlatformClient = mocked(PlatformClient);
+const mockedPlatformClient = jest.mocked(PlatformClient);
 const mockedCreateToken = jest.fn();
 
 describe('token', () => {

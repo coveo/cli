@@ -4,7 +4,6 @@ import {
   ResourceSnapshotsReportType,
   SnapshotExportContentFormat,
 } from '@coveord/platform-client';
-import {mocked} from 'ts-jest/utils';
 import {stdout, stderr} from 'stdout-stderr';
 import {getDummySnapshotModel} from '../../__stub__/resourceSnapshotsModel';
 import {
@@ -35,13 +34,13 @@ import {join} from 'path';
 import {SnapshotOperationTimeoutError} from '../errors';
 import {fancyIt} from '../../__test__/it';
 
-const mockedRetry = mocked(retry);
-const mockedExpandedPreviewer = mocked(ExpandedPreviewer, true);
-const mockedSnapshotReporter = mocked(SnapshotReporter, true);
-const mockedReportViewer = mocked(ReportViewer, true);
-const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
-const mockedEnsureFileSync = mocked(ensureFileSync);
-const mockedWriteJsonSync = mocked(writeJSONSync);
+const mockedRetry = jest.mocked(retry);
+const mockedExpandedPreviewer = jest.mocked(ExpandedPreviewer, true);
+const mockedSnapshotReporter = jest.mocked(SnapshotReporter, true);
+const mockedReportViewer = jest.mocked(ReportViewer, true);
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient, true);
+const mockedEnsureFileSync = jest.mocked(ensureFileSync);
+const mockedWriteJsonSync = jest.mocked(writeJSONSync);
 const mockedCreateSnapshotFromBuffer = jest.fn();
 const mockedPushSnapshot = jest.fn();
 const mockedDeleteSnapshot = jest.fn();

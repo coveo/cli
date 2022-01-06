@@ -1,7 +1,6 @@
 import type {ChildProcess} from 'child_process';
 
 import {Region} from '@coveord/platform-client';
-import {mocked} from 'ts-jest/utils';
 import {fancyIt} from '../../__test__/it';
 import {PlatformEnvironment, platformUrl} from '../platform/environment';
 import {OAuth} from './oauth';
@@ -12,8 +11,8 @@ jest.mock('./oauthClientServer');
 jest.mock('open');
 
 describe('OAuth', () => {
-  const mockedOauthClientServer = mocked(OAuthClientServer, true);
-  const mockedOpen = mocked(open, true);
+  const mockedOauthClientServer = jest.mocked(OAuthClientServer, true);
+  const mockedOpen = jest.mocked(open, true);
   const mockedStartServer = jest.fn();
 
   beforeAll(() => {
