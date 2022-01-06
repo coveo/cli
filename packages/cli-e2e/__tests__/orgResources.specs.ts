@@ -127,8 +127,9 @@ describe('org:resources', () => {
     );
 
     const pullTerminalExitPromise = pullTerminal
-      .when('exit')
-      .on('process')
+      // TODO: CDX-744: understand why cannot use process.on('exit')
+      .when(/Project updated/)
+      .on('stderr')
       .do()
       .once();
 
