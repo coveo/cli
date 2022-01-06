@@ -8,6 +8,7 @@ import {join} from 'path';
 import {mocked} from 'ts-jest/utils';
 import {fancyIt} from '../../__test__/it';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
+import {SnapshotPullModelResources} from './pullModel/interfaces';
 import {Snapshot} from './snapshot';
 import {SnapshotFactory} from './snapshotFactory';
 
@@ -128,10 +129,10 @@ describe('SnapshotFactory', () => {
     const targetId = 'target-id';
 
     beforeEach(async () => {
-      const resourcesToExport: ResourceSnapshotType[] = [
-        ResourceSnapshotType.field,
-        ResourceSnapshotType.extension,
-      ];
+      const resourcesToExport: SnapshotPullModelResources = {
+        [ResourceSnapshotType.field]: ['*'],
+        [ResourceSnapshotType.extension]: ['*'],
+      };
       await SnapshotFactory.createFromOrg(resourcesToExport, targetId);
     });
 

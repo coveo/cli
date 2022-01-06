@@ -25,7 +25,11 @@ export function buildEvent(
 }
 
 function isErrorFromAPI(arg: unknown): arg is APIErrorResponse {
-  return validate(arg, APIErrorSchema).valid;
+  try {
+    return validate(arg, APIErrorSchema).valid;
+  } catch (error) {
+    return false;
+  }
 }
 
 export function buildError(arg: unknown) {

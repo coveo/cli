@@ -1,13 +1,13 @@
 import {validate} from 'jsonschema';
-import pullModelSchema from './model.schema.json';
 import {SnapshotPullModel} from '../interfaces';
 import {InvalidSPMError, UnknownSPMValidationError} from './errors';
+import {getSnapshotModel} from './model';
 
 export function validateSnapshotPullModel(
   templateJson: unknown,
   shouldContactCoveo = false
 ): templateJson is SnapshotPullModel {
-  const validation = validate(templateJson, pullModelSchema);
+  const validation = validate(templateJson, getSnapshotModel());
 
   if (validation.valid) {
     return true;

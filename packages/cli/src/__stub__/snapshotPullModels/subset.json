@@ -1,0 +1,11 @@
+{
+  "orgId": "myorgid",
+  "resourcesToExport": {
+    "FIELD": ["author", "source", "title"],
+    "ML_MODEL": null,
+    "QUERY_PIPELINE": ["default", "agentPanel"],
+    "SEARCH_PAGE": null,
+    "SUBSCRIPTION": null
+  },
+  "includeChildrenResources": true
+}

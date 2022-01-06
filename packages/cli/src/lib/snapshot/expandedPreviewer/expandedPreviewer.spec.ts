@@ -257,7 +257,7 @@ describe('ExpandedPreviewer', () => {
 
       expect(mockedProject).toHaveBeenCalledWith(resolve(previewPath));
       expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
-        Object.keys(fakeReport.resourceOperationResults),
+        fakeReport.resourceOperationResults,
         'someorg'
       );
       expect(mockedSnapshotDownload).toHaveBeenCalled();

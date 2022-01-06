@@ -2,10 +2,10 @@ import {
   CreateFromFileOptions,
   ResourceSnapshotsReportType,
   ResourceSnapshotSupportedFileTypes,
-  ResourceSnapshotType,
 } from '@coveord/platform-client';
 import {readFileSync} from 'fs';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
+import {SnapshotPullModelResources} from './pullModel/interfaces';
 import {Snapshot, WaitUntilDoneOptions} from './snapshot';
 
 export class SnapshotFactory {
@@ -53,17 +53,11 @@ export class SnapshotFactory {
   }
 
   public static async createFromOrg(
-    resourceTypesToExport: ResourceSnapshotType[],
+    resourcesToExport: SnapshotPullModelResources,
     targetOrg: string,
     options?: WaitUntilDoneOptions
   ) {
     const client = await this.getClient(targetOrg);
-    const resourcesToExport: Partial<Record<ResourceSnapshotType, string[]>> =
-      {};
-    resourceTypesToExport.forEach((currentType) => {
-      resourcesToExport[currentType] = ['*'];
-    });
-
     const model = await client.resourceSnapshot.createFromOrganization(
       {resourcesToExport},
       {includeChildrenResources: true, developerNotes: 'Created by Coveo-CLI'}
