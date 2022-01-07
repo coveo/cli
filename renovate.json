@@ -25,6 +25,31 @@
     {
       "matchPackageNames": ["chalk"],
       "allowedVersions": "4.x"
+    },
+    {
+      "matchPackageNames": ["@oclif/plugin-help"],
+      "allowedVersions": "3.x",
+      "description": "Wait for Oclif 2 TODO:CDX-746"
+    },
+    {
+      "matchPackageNames": ["@oclif/plugin-update"],
+      "allowedVersions": "1.x",
+      "description": "Wait for Oclif 2 TODO:CDX-746"
+    },
+    {
+      "matchPackageNames": ["cli-ux"],
+      "allowedVersions": "5.x",
+      "description": "Wait for Oclif 2 TODO:CDX-746"
+    },
+    {
+      "matchPackageNames": ["@oclif/test"],
+      "allowedVersions": "1.x",
+      "description": "Wait for Oclif 2 TODO:CDX-746"
+    },
+    {
+      "matchPackageNames": ["fancy-test"],
+      "allowedVersions": "1.x",
+      "description": "Wait for Oclif 2 TODO:CDX-746"
     }
   ],
   "rangeStrategy": "auto",

@@ -17,7 +17,7 @@
     "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873"
   },
   "dependencies": {
-    "@coveord/platform-client": "26.3.2",
+    "@coveord/platform-client": "28.0.0",
     "abortcontroller-polyfill": "1.7.3",
     "isomorphic-fetch": "3.0.0"
   },
