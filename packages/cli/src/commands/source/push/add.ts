@@ -11,7 +11,7 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {consumeIterator} from '../../../lib/utils/iterator';
+import {consumeGenerator} from '../../../lib/utils/iterator';
 import {parseAndGetDocumentBuilderFromJSONDocument} from '../../../lib/push/parseFile';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
 import {isJsonFile} from '../../../lib/utils/file';
@@ -89,7 +89,8 @@ export default class SourcePushAdd extends Command {
       return files.filter(isJsonFile).map((f) => `${path.join(folder, f)}`);
     });
 
-    const {send, close} = this.splitByChunkAndUpload(
+    // TODO: rename send and close. since it does not longer sends and close
+    const {send: chunksToUpload, close} = this.splitByChunkAndUpload(
       source,
       args.sourceId,
       fileNames
@@ -101,41 +102,50 @@ export default class SourcePushAdd extends Command {
         .flatMap((file) => path.join(folder, file))
     );
 
-    const work = async (filePath: string) => {
-      const docBuilders = parseAndGetDocumentBuilderFromJSONDocument(filePath);
-      this.successMessageOnParseFile(filePath, docBuilders.length);
-      await send(docBuilders);
+    // parallelize uploads within the same file
+    const docBuilderGenerator = function* (docBuilders: DocumentBuilder[]) {
+      for (const upload of chunksToUpload(docBuilders)) {
+        yield upload();
+        // TODO: CDX-712: increment progressbar here
+      }
+    };
+
+    // parallelize uploads across multiple files
+    const fileGenerator = function* (this: SourcePushAdd) {
+      for (const filePath of files.values()) {
+        const docBuilders =
+          parseAndGetDocumentBuilderFromJSONDocument(filePath);
+        this.successMessageOnParseFile(filePath, docBuilders.length);
+        yield* docBuilderGenerator(docBuilders);
+      }
     };
 
     cli.action.start('Processing...');
 
-    await consumeIterator(files.values(), work, flags.maxConcurrent);
+    await consumeGenerator(fileGenerator.bind(this), flags.maxConcurrent);
     await close();
 
     cli.action.stop();
   }
 
-  private async doPushFile(source: Source) {
-    const {flags, args} = this.parse(SourcePushAdd);
-
-    const {send, close} = this.splitByChunkAndUpload(
-      source,
-      args.sourceId,
-      flags.file
-    );
-
-    cli.action.start('Processing...');
-
-    await Promise.all(
-      flags.file.flatMap(async (file) => {
-        const docBuilders = parseAndGetDocumentBuilderFromJSONDocument(file);
-        this.successMessageOnParseFile(file, docBuilders.length);
-        await send(docBuilders);
-      })
-    );
-
-    await close();
-    cli.action.stop();
+  private async doPushFile(_source: Source) {
+    // TODO: rework
+    // const {flags, args} = this.parse(SourcePushAdd);
+    // const {send, close} = this.splitByChunkAndUpload(
+    //   source,
+    //   args.sourceId,
+    //   flags.file
+    // );
+    // cli.action.start('Processing...');
+    // await Promise.all(
+    //   flags.file.flatMap(async (file) => {
+    //     const docBuilders = parseAndGetDocumentBuilderFromJSONDocument(file);
+    //     this.successMessageOnParseFile(file, docBuilders.length);
+    //     await send(docBuilders);
+    //   })
+    // );
+    // await close();
+    // cli.action.stop();
   }
 
   private successMessageOnAdd(
@@ -185,19 +195,19 @@ export default class SourcePushAdd extends Command {
     fileNames: string[],
     accumulator = this.accumulator
   ) {
-    const send = async (documentBuilders: DocumentBuilder[]) => {
+    // TODO: rename to something more meaningful (e.g. chunksToSend)
+    const send = (documentBuilders: DocumentBuilder[]) => {
+      const batchesToUpload: Array<() => Promise<void>> = [];
       for (const docBuilder of documentBuilders) {
         const sizeOfDoc = Buffer.byteLength(
           JSON.stringify(docBuilder.marshal())
         );
 
         if (accumulator.size + sizeOfDoc >= SourcePushAdd.maxContentLength) {
-          if (accumulator.chunks.length > 0) {
-            await this.uploadBatch(
-              source,
-              sourceId,
-              accumulator.chunks,
-              fileNames
+          const chunks = accumulator.chunks;
+          if (chunks.length > 0) {
+            batchesToUpload.push(() =>
+              this.uploadBatch(source, sourceId, chunks, fileNames)
             );
           }
           accumulator.chunks = [docBuilder];
@@ -207,6 +217,7 @@ export default class SourcePushAdd extends Command {
           accumulator.chunks.push(docBuilder);
         }
       }
+      return batchesToUpload;
     };
     const close = async () => {
       await this.uploadBatch(source, sourceId, accumulator.chunks, fileNames);
