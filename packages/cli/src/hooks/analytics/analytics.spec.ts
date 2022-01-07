@@ -4,9 +4,7 @@ jest.mock('../../lib/config/config');
 jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
 jest.mock('./session');
-jest.mock('./identifier');
 
-import {mocked} from 'ts-jest/utils';
 import {Configuration, Config} from '../../lib/config/config';
 import {
   AuthenticatedClient,
@@ -16,25 +14,18 @@ import {
 import hook, {AnalyticsHook} from './analytics';
 import {IConfig} from '@oclif/config';
 import {PlatformClient} from '@coveord/platform-client';
-import {
-  configurationMock,
-  defaultConfiguration,
-} from '../../__stub__/configuration';
+import {configurationMock} from '../../__stub__/configuration';
 import {fancyIt} from '../../__test__/it';
-import {Identifier} from './identifier';
-const mockedConfig = mocked(Config);
-const mockedPlatformClient = mocked(PlatformClient);
-const mockedAuthenticatedClient = mocked(AuthenticatedClient);
-const mockedAuthenticationStatus = mocked(getAuthenticationStatus);
-const mockedIdentifier = mocked(Identifier);
+const mockedConfig = jest.mocked(Config);
+const mockedPlatformClient = jest.mocked(PlatformClient);
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
+const mockedAuthenticationStatus = jest.mocked(getAuthenticationStatus);
 const mockedLogEvent = jest.fn();
-const mockedIdentify = jest.fn();
 
 jest.mock('./amplitudeClient', () => ({
   get amplitudeClient() {
     return {
       logEvent: mockedLogEvent,
-      identify: mockedIdentify,
     };
   },
 }));
@@ -55,28 +46,13 @@ describe('analytics_hook', () => {
     };
   };
 
-  const doMockIdentifier = () => {
-    mockedIdentifier.mockImplementation(
-      () =>
-        ({
-          getIdentity: () =>
-            Promise.resolve({
-              userId: 'user-123',
-              deviceId: 'device-456',
-              identify: {},
-            }),
-        } as unknown as Identifier)
-    );
-  };
-
   const doMockPlatformClient = () => {
-    mockedUserGet.mockReturnValue(
-      Promise.resolve({
-        username: 'bob@coveo.com',
-        displayName: 'bob',
-      })
-    );
-    mockedLicense.mockReturnValue(Promise.resolve({productType: 'TRIAL'}));
+    mockedUserGet.mockResolvedValue({
+      email: 'bob@coveo.com',
+      username: 'bob@coveo.com',
+      displayName: 'bob',
+    });
+    mockedLicense.mockReturnValue({productType: 'TRIAL'});
     mockedPlatformClient.mockImplementation(
       () =>
         ({
@@ -86,6 +62,9 @@ describe('analytics_hook', () => {
           },
           license: {
             full: mockedLicense,
+          },
+          organization: {
+            get: jest.fn().mockResolvedValue({type: 'Production'}),
           },
         } as unknown as PlatformClient)
     );
@@ -114,11 +93,14 @@ describe('analytics_hook', () => {
     );
   };
 
+  beforeAll(() => {
+    global.config = {configDir: 'the_config_dir'} as IConfig;
+  });
+
   beforeEach(() => {
     doMockPlatformClient();
     doMockConfiguration();
     doMockAuthenticatedClient();
-    doMockIdentifier();
   });
 
   afterEach(() => {
@@ -126,7 +108,6 @@ describe('analytics_hook', () => {
     mockedPlatformClient.mockClear();
     mockedConfig.mockClear();
     mockedAuthenticatedClient.mockClear();
-    mockedIdentifier.mockClear();
   });
 
   fancyIt()('should log one event', async () => {
@@ -134,52 +115,73 @@ describe('analytics_hook', () => {
     expect(mockedLogEvent).toHaveBeenCalledTimes(1);
   });
 
-  fancyIt()('should log event type and properties', async () => {
+  fancyIt()('should log event type and default properties', async () => {
     await hook(getAnalyticsHook({}));
     expect(mockedLogEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        event_properties: {key: 'value'},
+        event_properties: {
+          environment: 'dev',
+          key: 'value',
+          organization_type: 'Production',
+          region: 'us',
+        },
         event_type: 'started foo bar',
       })
     );
   });
 
-  fancyIt()('should not identify the user if not asked', async () => {
-    await hook(getAnalyticsHook({}));
-    expect(mockedIdentify).toHaveBeenCalledTimes(0);
+  describe('when identify option is set to false', () => {
+    beforeEach(async () => {
+      await hook(getAnalyticsHook({}));
+    });
+    fancyIt()('should only log one event', async () => {
+      expect(mockedLogEvent).toHaveBeenCalledTimes(1);
+    });
+
+    fancyIt()('should not log any identify event', async () => {
+      expect(mockedLogEvent).toHaveReturnedWith(
+        expect.not.objectContaining({event_type: '$identify'})
+      );
+    });
   });
 
-  fancyIt()('should identify the user only if asked', async () => {
-    await hook(getAnalyticsHook({identify: true}));
-    expect(mockedIdentify).toHaveBeenCalledTimes(1);
-  });
+  describe('when identify option is set to true', () => {
+    beforeEach(async () => {
+      await hook(getAnalyticsHook({identify: true}));
+    });
 
-  fancyIt()('should not identify event with (un-hashed) email', async () => {
-    await hook(getAnalyticsHook({identify: true}));
-    const userIdCheck = expect.stringMatching(/^(?!bob@.*?\.com).*/);
-    expect(mockedIdentify).toHaveBeenCalledWith(
-      userIdCheck,
-      expect.anything(),
-      expect.anything()
-    );
-  });
+    fancyIt()('should log 2 events', async () => {
+      expect(mockedLogEvent).toHaveBeenCalledTimes(2);
+    });
 
-  fancyIt()('should identify event with device ID', async () => {
-    await hook(getAnalyticsHook({identify: true}));
-    const deviceIdCheck = expect.stringMatching(/.*/);
-    expect(mockedIdentify).toHaveBeenCalledWith(
-      expect.anything(),
-      deviceIdCheck,
-      expect.anything()
-    );
+    fancyIt()('should log an identify event', async () => {
+      expect(mockedLogEvent).toHaveBeenCalledWith(
+        expect.objectContaining({event_type: '$identify'})
+      );
+    });
+
+    fancyIt()('should not identify event with (un-hashed) email', async () => {
+      const userIdCheck = expect.stringMatching(/^(?!bob@.*?\.com).*/);
+      expect(mockedLogEvent).toHaveBeenCalledWith(
+        expect.objectContaining({user_id: userIdCheck})
+      );
+    });
+
+    fancyIt()('should identify event with device ID', async () => {
+      const deviceIdCheck = expect.stringMatching(/.*/);
+      expect(mockedLogEvent).toHaveBeenCalledWith(
+        expect.objectContaining({device_id: deviceIdCheck})
+      );
+    });
   });
 
   fancyIt()('should identify the event', async () => {
     await hook(getAnalyticsHook({}));
+    const nonEmptyString = expect.stringMatching(/.+/);
     expect(mockedLogEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        device_id: 'device-456',
-        user_id: 'user-123',
+        device_id: nonEmptyString,
+        user_id: nonEmptyString,
       })
     );
   });
@@ -226,17 +228,4 @@ describe('analytics_hook', () => {
     );
     await expect(hook(getAnalyticsHook({}))).resolves.not.toThrow();
   });
-
-  fancyIt()(
-    'should not fetch userinfo if anonymous is set to true in the config',
-    async () => {
-      mockedConfig.mockImplementation(
-        configurationMock({...defaultConfiguration, anonymous: true})
-      );
-
-      await hook(getAnalyticsHook({}));
-
-      expect(mockedUserGet).not.toBeCalled();
-    }
-  );
 });

@@ -98,7 +98,7 @@
       },
       {
         "project_name": "create-atomic",
-        "file": "packages/create-atomic",
+        "directory": "packages/create-atomic",
         "additional_config": {
           "scan_dev_dependencies": true,
           "image": "snyk/snyk-cli:1.778.0-docker"
@@ -106,7 +106,7 @@
       },
       {
         "project_name": "create-atomic-template",
-        "file": "packages/create-atomic/template",
+        "directory": "packages/create-atomic/templates",
         "additional_config": {
           "scan_dev_dependencies": true,
           "image": "snyk/snyk-cli:1.778.0-docker"

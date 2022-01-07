@@ -5,15 +5,15 @@ jest.mock('./snapshot');
 import {ResourceSnapshotType} from '@coveord/platform-client';
 import {readFileSync} from 'fs';
 import {join} from 'path';
-import {mocked} from 'ts-jest/utils';
 import {fancyIt} from '../../__test__/it';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
+import {SnapshotPullModelResources} from './pullModel/interfaces';
 import {Snapshot} from './snapshot';
 import {SnapshotFactory} from './snapshotFactory';
 
-const mockedReadFileSync = mocked(readFileSync);
-const mockedAuthenticatedClient = mocked(AuthenticatedClient, true);
-const mockedSnapshot = mocked(Snapshot, true);
+const mockedReadFileSync = jest.mocked(readFileSync);
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient, true);
+const mockedSnapshot = jest.mocked(Snapshot, true);
 const mockedCreateSnapshotFromBuffer = jest.fn();
 const mockedCreateFromOrganization = jest.fn();
 const mockedPushSnapshot = jest.fn();
@@ -128,10 +128,10 @@ describe('SnapshotFactory', () => {
     const targetId = 'target-id';
 
     beforeEach(async () => {
-      const resourcesToExport: ResourceSnapshotType[] = [
-        ResourceSnapshotType.field,
-        ResourceSnapshotType.extension,
-      ];
+      const resourcesToExport: SnapshotPullModelResources = {
+        [ResourceSnapshotType.field]: ['*'],
+        [ResourceSnapshotType.extension]: ['*'],
+      };
       await SnapshotFactory.createFromOrg(resourcesToExport, targetId);
     });
 

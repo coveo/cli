@@ -11,6 +11,7 @@ import {
 } from '../../../lib/decorators/preconditions';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {consumeIterator} from '../../../lib/utils/iterator';
 import {parseAndGetDocumentBuilderFromJSONDocument} from '../../../lib/push/parseFile';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
 import {isJsonFile} from '../../../lib/utils/file';
@@ -40,6 +41,13 @@ export default class SourcePushAdd extends Command {
       helpValue: './my_folder_with_multiple_json_files',
       description:
         'One or multiple folder containing json files. Can be repeated',
+    }),
+    maxConcurrent: flags.integer({
+      exclusive: ['file'],
+      char: 'c',
+      default: 10,
+      description:
+        'The maximum number of requests to send concurrently. Increasing this value increases the speed at which documents are pushed to the Coveo platform. However, if you run into memory or throttling issues, consider reducing this value.',
     }),
   };
 
@@ -87,25 +95,23 @@ export default class SourcePushAdd extends Command {
       fileNames
     );
 
-    cli.action.start('Processing...');
-
-    await Promise.all(
-      flags.folder.flatMap((folder) => {
-        return Promise.all(
-          readdirSync(folder)
-            .filter(isJsonFile)
-            .flatMap(async (file) => {
-              const fullPath = path.join(folder, file);
-              const docBuilders =
-                parseAndGetDocumentBuilderFromJSONDocument(fullPath);
-              this.successMessageOnParseFile(fullPath, docBuilders.length);
-              await send(docBuilders);
-            })
-        );
-      })
+    const files: string[] = flags.folder.flatMap((folder) =>
+      readdirSync(folder)
+        .filter(isJsonFile)
+        .flatMap((file) => path.join(folder, file))
     );
 
+    const work = async (filePath: string) => {
+      const docBuilders = parseAndGetDocumentBuilderFromJSONDocument(filePath);
+      this.successMessageOnParseFile(filePath, docBuilders.length);
+      await send(docBuilders);
+    };
+
+    cli.action.start('Processing...');
+
+    await consumeIterator(files.values(), work, flags.maxConcurrent);
     await close();
+
     cli.action.stop();
   }
 

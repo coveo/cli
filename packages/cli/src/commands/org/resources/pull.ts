@@ -1,8 +1,8 @@
 import {ResourceSnapshotType} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
-import {IOptionFlag} from '@oclif/command/lib/flags';
-import {blueBright} from 'chalk';
+import {blueBright, bold} from 'chalk';
 import {cli} from 'cli-ux';
+import {readJsonSync} from 'fs-extra';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
 import {Config} from '../../../lib/config/config';
@@ -15,8 +15,15 @@ import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
 import {writeSnapshotPrivilege} from '../../../lib/decorators/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
+import {ProcessAbort} from '../../../lib/errors/processError';
 import {wait} from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
+import type {
+  SnapshotPullModel,
+  SnapshotPullModelResources,
+} from '../../../lib/snapshot/pullModel/interfaces';
+import {buildResourcesToExport} from '../../../lib/snapshot/pullModel/validation/model';
+import {validateSnapshotPullModel} from '../../../lib/snapshot/pullModel/validation/validate';
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {
   getTargetOrg,
@@ -24,6 +31,7 @@ import {
   cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
+import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
 
 export default class Pull extends Command {
@@ -33,19 +41,11 @@ export default class Pull extends Command {
     ...wait(),
     target: flags.string({
       char: 't',
-      helpValue: 'destinationorganizationg7dg3gd',
+      helpValue: 'targetorganizationg7dg3gd',
       required: false,
       description:
         'The unique identifier of the organization from which to pull the resources. If not specified, the organization you are connected to will be used.',
     }),
-    resourceTypes: flags.string({
-      char: 'r',
-      helpValue: 'type1 type2',
-      options: Object.keys(ResourceSnapshotType),
-      default: Object.keys(ResourceSnapshotType),
-      multiple: true,
-      description: 'The resources types to pull from the organization.',
-    }) as IOptionFlag<(keyof typeof ResourceSnapshotType)[]>,
     snapshotId: flags.string({
       char: 's',
       exclusive: ['resourceTypes'],
@@ -63,6 +63,29 @@ export default class Pull extends Command {
       char: 'o',
       description: 'Overwrite resources directory if it exists.',
       default: false,
+    }),
+    resourceTypes: flags.build<ResourceSnapshotType>({
+      parse: (resourceType: ResourceSnapshotType) => resourceType,
+    })({
+      char: 'r',
+      helpValue: 'type1 type2',
+      description: 'The resources types to pull from the organization.',
+      multiple: true,
+      options: Object.values(ResourceSnapshotType),
+      default: Object.values(ResourceSnapshotType),
+    }),
+    model: flags.build<SnapshotPullModel>({
+      parse: (input: string): SnapshotPullModel => {
+        const model = readJsonSync(input);
+        validateSnapshotPullModel(model);
+        return model;
+      },
+    })({
+      char: 'm',
+      helpValue: 'path/to/snapshot.json',
+      exclusive: ['snapshotId', 'resourceTypes', 'target'],
+      description:
+        'The path to a snapshot pull model. This flag is useful when you want to include only specific resource items in your snapshot (e.g., a subset of sources). Use the "org:resources:model:create" command to create a new Snapshot Pull Model',
     }),
   };
 
@@ -97,9 +120,8 @@ export default class Pull extends Command {
 
   private async displayAdditionalErrorMessage(err?: Error) {
     if (err instanceof SnapshotOperationTimeoutError) {
-      const {flags} = this.parse(Pull);
       const snapshot = err.snapshot;
-      const target = await getTargetOrg(this.configuration, flags.target);
+      const target = await this.getTargetOrg();
       cli.log(
         dedent`
 
@@ -126,12 +148,12 @@ export default class Pull extends Command {
   private async ensureProjectReset(project: Project) {
     const {flags} = this.parse(Pull);
     if (!flags.overwrite && project.contains(Project.resourceFolderName)) {
-      const overwrite =
-        await cli.confirm(dedent`There is already a Coveo project with resources in it.
-        This command will overwrite the ${Project.resourceFolderName} folder content, do you want to proceed? (y/n)`);
+      const question = dedent`There is already a Coveo project with resources in it.
+        This command will overwrite the ${Project.resourceFolderName} folder content, do you want to proceed? (y/n)`;
 
+      const overwrite = confirmWithAnalytics(question, 'project overwrite');
       if (!overwrite) {
-        this.exit();
+        throw new ProcessAbort();
       }
     }
 
@@ -140,7 +162,7 @@ export default class Pull extends Command {
 
   private async getSnapshot() {
     const {flags} = this.parse(Pull);
-    const target = await getTargetOrg(this.configuration, flags.target);
+    const target = await this.getTargetOrg();
     if (flags.snapshotId) {
       cli.action.start('Retrieving Snapshot');
       return SnapshotFactory.createFromExistingSnapshot(
@@ -149,9 +171,10 @@ export default class Pull extends Command {
         this.waitOption
       );
     }
-    cli.action.start('Creating Snapshot');
+    const resourcesToExport = await this.getResourceSnapshotTypesToExport();
+    cli.action.start(`Creating Snapshot from ${bold.cyan(target)}`);
     return SnapshotFactory.createFromOrg(
-      this.resourceSnapshotTypesToExport,
+      resourcesToExport,
       target,
       this.waitOption
     );
@@ -166,9 +189,32 @@ export default class Pull extends Command {
     return new Config(this.config.configDir, this.error);
   }
 
-  private get resourceSnapshotTypesToExport() {
+  private async getResourceSnapshotTypesToExport(): Promise<SnapshotPullModelResources> {
     const {flags} = this.parse(Pull);
-    return flags.resourceTypes.map((type) => ResourceSnapshotType[type]);
+    if (flags.model) {
+      const cfg = this.configuration.get();
+      if (cfg.organization !== flags.model.orgId) {
+        const question = dedent`You are currently connected to the ${bold.cyan(
+          cfg.organization
+        )} organization, but are about to pull resources from the ${bold.cyan(
+          flags.model.orgId
+        )} organization.
+            Do you wish to continue? (y/n)`;
+        const pull = await confirmWithAnalytics(question, 'resource pull');
+        if (!pull) {
+          throw new ProcessAbort();
+        }
+      }
+
+      return flags.model.resourcesToExport;
+    } else {
+      return buildResourcesToExport(flags.resourceTypes);
+    }
+  }
+
+  private async getTargetOrg() {
+    const {flags} = this.parse(Pull);
+    return getTargetOrg(this.configuration, flags.model?.orgId || flags.target);
   }
 
   private get projectPath() {

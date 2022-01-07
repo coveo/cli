@@ -6,7 +6,6 @@ import {
 } from 'fs-extra';
 import {join} from 'path';
 import dedent from 'ts-dedent';
-import {mocked} from 'ts-jest/utils';
 import {defaultConfiguration} from '../../__stub__/configuration';
 import {PlatformEnvironment} from '../platform/environment';
 import {Config} from './config';
@@ -18,15 +17,15 @@ jest.mock('./configErrors');
 import {IncompatibleConfigurationError} from './configErrors';
 import {fancyIt} from '../../__test__/it';
 jest.mock('fs-extra');
-const mockedSemverSatisifies = mocked(satisfies);
-const mockedPathExists = mocked(pathExistsSync);
-const mockedCreateFile = mocked(createFileSync);
-const mockedWriteJSON = mocked(writeJSONSync);
-const mockedIncompatibleConfigurationError = mocked(
+const mockedSemverSatisifies = jest.mocked(satisfies);
+const mockedPathExists = jest.mocked(pathExistsSync);
+const mockedCreateFile = jest.mocked(createFileSync);
+const mockedWriteJSON = jest.mocked(writeJSONSync);
+const mockedIncompatibleConfigurationError = jest.mocked(
   IncompatibleConfigurationError,
   true
 );
-const mockedReadJSON = mocked(readJSONSync);
+const mockedReadJSON = jest.mocked(readJSONSync);
 
 describe('config', () => {
   beforeEach(() => {

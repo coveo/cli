@@ -4,13 +4,12 @@ jest.mock('../../../hooks/prerun/prerun');
 jest.mock('../../../lib/platform/authenticatedClient');
 
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
 import {ResourceSnapshotsModel} from '@coveord/platform-client';
 import {Config} from '../../../lib/config/config';
 
-const mockedAuthenticatedClient = mocked(AuthenticatedClient);
-const mockedConfig = mocked(Config);
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
+const mockedConfig = jest.mocked(Config);
 
 const mockResourceSnapshotModel: () => ResourceSnapshotsModel = () => ({
   createdBy: 'bob',

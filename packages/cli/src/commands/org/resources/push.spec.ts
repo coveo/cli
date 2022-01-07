@@ -6,7 +6,6 @@ jest.mock('../../../lib/snapshot/snapshot');
 jest.mock('../../../lib/snapshot/snapshotFactory');
 jest.mock('../../../lib/project/project');
 
-import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
 import {Project} from '../../../lib/project/project';
 import {join, normalize} from 'path';
@@ -22,9 +21,9 @@ import {
 } from '../../../__stub__/resourceSnapshotsReportModel';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 
-const mockedSnapshotFactory = mocked(SnapshotFactory, true);
-const mockedConfig = mocked(Config);
-const mockedProject = mocked(Project);
+const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
+const mockedConfig = jest.mocked(Config);
+const mockedProject = jest.mocked(Project);
 const mockedConfigGet = jest.fn();
 const mockedDeleteTemporaryZipFile = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
@@ -34,7 +33,7 @@ const mockedApplySnapshot = jest.fn();
 const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
 const mockedLastReport = jest.fn();
-const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockEvaluate = jest.fn();
 
 const mockProject = () => {

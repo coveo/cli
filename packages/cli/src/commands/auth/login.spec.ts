@@ -6,13 +6,12 @@ jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
 import {Region} from '@coveord/platform-client';
 import {test} from '@oclif/test';
-import {mocked} from 'ts-jest/utils';
 import {Config} from '../../lib/config/config';
 import {OAuth} from '../../lib/oauth/oauth';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
-const mockedOAuth = mocked(OAuth, true);
-const mockedConfig = mocked(Config, true);
-const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+const mockedOAuth = jest.mocked(OAuth, true);
+const mockedConfig = jest.mocked(Config, true);
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 
 describe('auth:login', () => {
   const mockConfigSet = jest.fn();
@@ -124,6 +123,13 @@ describe('auth:login', () => {
           'accessToken',
           'this-is-the-token'
         );
+      });
+    test
+      .stdout()
+      .stderr()
+      .command(['auth:login', '-o', 'foo'])
+      .it('set anonymous to false', () => {
+        expect(mockConfigSet).toHaveBeenCalledWith('anonymous', false);
       });
   });
 

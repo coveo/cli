@@ -1,25 +1,23 @@
+jest.mock('../utils/cli.ts');
 jest.mock('./snapshot');
 jest.mock('cli-ux');
 
 import {cli} from 'cli-ux';
 import {fancyIt} from '../../__test__/it';
 import {Configuration} from '../config/config';
+import {ProcessAbort} from '../errors/processError';
 import {
-  SnapshotOperationAbort,
   SnapshotSynchronizationAmbiguousMatchesError,
   SnapshotSynchronizationUnknownError,
 } from '../errors/snapshotErrors';
+import {confirmWithAnalytics} from '../utils/cli';
 import {Snapshot} from './snapshot';
 import {SnapshotFacade} from './snapshotFacade';
 
-const mockedConfirm = jest.fn();
+const mockedConfirm = jest.mocked(confirmWithAnalytics);
 const mockedApplySynchronizationPlan = jest.fn();
 const mockedCreateSynchronizationPlan = jest.fn();
 const mockedContainsUnambiguousMatches = jest.fn();
-
-const doMockConfirm = () => {
-  Object.defineProperty(cli, 'confirm', {value: mockedConfirm});
-};
 
 const doMockSpinner = () => {
   Object.defineProperty(cli, 'action', {
@@ -45,7 +43,6 @@ describe('SnapshotFacade', () => {
   const facade = new SnapshotFacade(snapshot, {} as Configuration);
 
   beforeAll(() => {
-    doMockConfirm();
     doMockSpinner();
   });
 
@@ -71,20 +68,22 @@ describe('SnapshotFacade', () => {
 
   describe('if the user refuses to apply the synchronization', () => {
     beforeAll(() => {
-      mockedConfirm.mockReturnValue(false);
+      mockedConfirm.mockImplementationOnce(() => {
+        throw new ProcessAbort();
+      });
       mockedContainsUnambiguousMatches.mockReturnValue(true);
     });
 
     fancyIt()('should end the execution', async () => {
       await expect(facade.tryAutomaticSynchronization()).rejects.toThrow(
-        SnapshotOperationAbort
+        ProcessAbort
       );
     });
   });
 
   describe('if the synchronization reports contains an error', () => {
     beforeAll(() => {
-      mockedConfirm.mockReturnValue(true);
+      mockedConfirm.mockResolvedValue(true);
       mockedContainsUnambiguousMatches.mockReturnValue(true);
       mockedApplySynchronizationPlan.mockImplementation(() => ({
         isSuccessReport: () => false,
@@ -100,7 +99,7 @@ describe('SnapshotFacade', () => {
 
   describe('if synchronization plan can automatically be applied', () => {
     beforeAll(() => {
-      mockedConfirm.mockReturnValue(true);
+      mockedConfirm.mockResolvedValue(true);
       mockedContainsUnambiguousMatches.mockReturnValue(true);
       mockedApplySynchronizationPlan.mockImplementation(() => ({
         isSuccessReport: () => true,

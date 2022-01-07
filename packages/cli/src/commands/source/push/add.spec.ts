@@ -5,7 +5,6 @@ jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('@coveo/push-api-client');
 
 import stripAnsi from 'strip-ansi';
-import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {DocumentBuilder, Source} from '@coveo/push-api-client';
@@ -16,9 +15,9 @@ import {
   doMockAxiosSuccess,
 } from '../../../lib/push/testUtils';
 import {APIError} from '../../../lib/errors/APIError';
-const mockedClient = mocked(AuthenticatedClient);
-const mockedSource = mocked(Source);
-const mockedDocumentBuilder = mocked(DocumentBuilder);
+const mockedClient = jest.mocked(AuthenticatedClient);
+const mockedSource = jest.mocked(Source);
+const mockedDocumentBuilder = jest.mocked(DocumentBuilder);
 const mockedMarshal = jest.fn();
 
 describe('source:push:add', () => {

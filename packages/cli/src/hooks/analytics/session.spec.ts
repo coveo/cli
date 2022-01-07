@@ -1,20 +1,24 @@
 jest.mock('../../lib/config/config');
 
 import type {IConfig} from '@oclif/config';
-import {mocked} from 'ts-jest/utils';
 import {Config} from '../../lib/config/config';
 import check from './session';
 
 describe('session', () => {
-  const mockedConfig = mocked(Config, true);
+  const mockedConfig = jest.mocked(Config, true);
   const mockedConfigGet = jest.fn();
   const mockedConfigSet = jest.fn();
   const theDate = new Date('1997-08-29T12:00:00Z');
   const dummySessionId = 1234567;
 
   const doMockConfig = () => {
-    mockedConfig.prototype.get = mockedConfigGet;
-    mockedConfig.prototype.set = mockedConfigSet;
+    mockedConfig.mockImplementation(
+      () =>
+        ({
+          get: mockedConfigGet,
+          set: mockedConfigSet,
+        } as unknown as Config)
+    );
   };
 
   const freezeTime = () => {

@@ -1,5 +1,3 @@
-import {mocked} from 'ts-jest/utils';
-
 jest.mock('jsonschema');
 jest.mock('./errors');
 const trueErrors = jest.requireActual('./errors');
@@ -13,9 +11,11 @@ describe('validate', () => {
   const getFakeValidationError = () => ({
     stack: 'instance.somestuff',
   });
-  const mockedValidate = mocked(validate);
-  const mockedInvalidSPMError = mocked(InvalidSPMError);
-  const mockedUnknownSPMValidationError = mocked(UnknownSPMValidationError);
+  const mockedValidate = jest.mocked(validate);
+  const mockedInvalidSPMError = jest.mocked(InvalidSPMError);
+  const mockedUnknownSPMValidationError = jest.mocked(
+    UnknownSPMValidationError
+  );
 
   const mockValidateReturnValue = (returnValue: unknown) =>
     mockedValidate.mockReturnValue(returnValue as ValidatorResult);
