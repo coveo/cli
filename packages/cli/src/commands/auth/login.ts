@@ -60,7 +60,8 @@ export default class Login extends Command {
       environment: flags.environment as PlatformEnvironment,
       region: flags.region as Region,
     }).getToken();
-    await this.configuration.set('accessToken', accessToken);
+    this.configuration.set('accessToken', accessToken);
+    this.configuration.set('anonymous', false);
   }
 
   private async persistRegionAndEnvironment() {

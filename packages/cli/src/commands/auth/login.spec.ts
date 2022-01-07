@@ -124,6 +124,13 @@ describe('auth:login', () => {
           'this-is-the-token'
         );
       });
+    test
+      .stdout()
+      .stderr()
+      .command(['auth:login', '-o', 'foo'])
+      .it('set anonymous to false', () => {
+        expect(mockConfigSet).toHaveBeenCalledWith('anonymous', false);
+      });
   });
 
   test
