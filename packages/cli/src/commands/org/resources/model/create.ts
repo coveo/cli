@@ -13,16 +13,14 @@ import dedent from 'ts-dedent';
 export default class Create extends Command {
   public static description = 'Create a Snapshot Pull Model';
 
-  public static flags = {};
-
   public static hidden = true;
 
   @Trackable({eventName: 'org resources pull - new model'})
   @Preconditions(IsAuthenticated())
   public async run() {
     await this.openPlatform();
-    cli.log(dedent`Make sure to save the snapshot for the CLI, so you can run
-    "org:resources:pull -m <path/to/snapshot.json>" to pull your organization resources.`);
+    cli.log(dedent`Make sure to save the resulting snapshot pull model, so you can later run
+    "org:resources:pull -m <path/to/snapshot/pull/model.json>" to create a snapshot of the target resources in your organization.`);
   }
 
   private async openPlatform() {

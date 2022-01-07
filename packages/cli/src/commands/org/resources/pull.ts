@@ -15,6 +15,7 @@ import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
 import {writeSnapshotPrivilege} from '../../../lib/decorators/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
+import {ProcessAbort} from '../../../lib/errors/processError';
 import {wait} from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
 import type {
@@ -30,7 +31,7 @@ import {
   cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
-import {confirm} from '../../../lib/utils/cli';
+import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
 
 export default class Pull extends Command {
@@ -149,7 +150,10 @@ export default class Pull extends Command {
       const question = dedent`There is already a Coveo project with resources in it.
         This command will overwrite the ${Project.resourceFolderName} folder content, do you want to proceed? (y/n)`;
 
-      await confirm(question, {exit: true, eventName: 'project overwrite'});
+      const overwrite = confirmWithAnalytics(question, 'project overwrite');
+      if (!overwrite) {
+        throw new ProcessAbort();
+      }
     }
 
     project.reset();
@@ -195,7 +199,10 @@ export default class Pull extends Command {
           flags.model.orgId
         )} organization.
             Do you wish to continue? (y/n)`;
-        await confirm(question, {exit: true, eventName: 'resource pull'});
+        const pull = await confirmWithAnalytics(question, 'resource pull');
+        if (!pull) {
+          throw new ProcessAbort();
+        }
       }
 
       return flags.model.resourcesToExport;

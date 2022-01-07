@@ -16,15 +16,22 @@ export interface AnalyticsHook {
 }
 
 const hook = async function (options: AnalyticsHook) {
-  if (!(await canLogEvent())) {
+  if (!(await isLoggedIn())) {
+    // TODO: track event with anonymous user
+    return;
+  }
+  const platformIdentifier = await platformInfoIdentifier();
+
+  if (!platformIdentifier.analyticsEnabled) {
     return;
   }
 
   const {userId, deviceId, identify} = await new Identifier().getIdentity();
   if (options.identify) {
-    amplitudeClient.identify(userId, deviceId, identify);
+    identify(amplitudeClient);
   }
 
+  await augmentEvent(options.event, platformIdentifier);
   amplitudeClient.logEvent({
     device_id: deviceId,
     session_id: check(),
@@ -37,18 +44,22 @@ export const flush = async () => {
   await amplitudeClient.flush();
 };
 
-const canLogEvent = async () => {
-  if (!(await isLoggedIn())) {
-    // TODO: track event with anonymous user
-    return false;
-  }
-  const {analyticsEnabled} = await platformInfoIdentifier();
+const augmentEvent = async (
+  event: Event,
+  identifier: Awaited<ReturnType<typeof platformInfoIdentifier>>
+) => {
+  const {organization, authenticatedClient, environment, region} = identifier;
+  const platformClient = await authenticatedClient.getClient({
+    organization,
+  });
+  const {type} = await platformClient.organization.get(organization);
 
-  if (!analyticsEnabled) {
-    return false;
-  }
-
-  return true;
+  event.event_properties = {
+    ...event.event_properties,
+    organization_type: type,
+    environment,
+    region,
+  };
 };
 
 const platformInfoIdentifier = async () => {

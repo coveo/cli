@@ -10,7 +10,6 @@ import {
   Server,
   ServerResponse,
 } from 'http';
-import {MockedFunction} from 'ts-jest/dist/utils/testing';
 import {URLSearchParams} from 'url';
 import {fancyIt} from '../../__test__/it';
 import {PlatformEnvironment, platformUrl} from '../platform/environment';
@@ -18,7 +17,7 @@ import {InvalidStateError} from './authorizationError';
 import {OAuthClientServer} from './oauthClientServer';
 import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
 
-type createServerInitialOverload = MockedFunction<{
+type createServerInitialOverload = jest.MaybeMocked<{
   (requestListener?: RequestListener | undefined): Server;
 }>;
 const mockedAxios = jest.mocked(axios, true);

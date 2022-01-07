@@ -15,7 +15,7 @@ export function answerPrompt(answer: string) {
       if (!proc.stdin.write(answer)) {
         proc.stdin.once('drain', () => resolve());
       } else {
-        process.nextTick(() => resolve);
+        process.nextTick(() => resolve());
       }
     });
 }
