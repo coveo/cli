@@ -35,7 +35,7 @@ import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
 
 export default class Pull extends Command {
-  public static description = 'Pull resources from an organization';
+  public static description = '(beta) Pull resources from an organization';
 
   public static flags = {
     ...wait(),
@@ -85,11 +85,9 @@ export default class Pull extends Command {
       helpValue: 'path/to/snapshot.json',
       exclusive: ['snapshotId', 'resourceTypes', 'target'],
       description:
-        'The path to a snapshot JSON model. This flag is useful when you want to include specific resource items to your snapshot (e.g. a subset of sources). Use the "org:resources:model:create" command to create a new Snapshot Pull Model',
+        'The path to a snapshot pull model. This flag is useful when you want to include only specific resource items in your snapshot (e.g., a subset of sources). Use the "org:resources:model:create" command to create a new Snapshot Pull Model',
     }),
   };
-
-  public static hidden = true;
 
   @Trackable()
   @Preconditions(
@@ -98,6 +96,9 @@ export default class Pull extends Command {
     HasNecessaryCoveoPrivileges(writeSnapshotPrivilege)
   )
   public async run() {
+    this.warn(
+      'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
+    );
     const project = new Project(this.projectPath);
     await this.ensureProjectReset(project);
 

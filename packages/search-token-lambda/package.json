@@ -17,19 +17,19 @@
     "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873"
   },
   "dependencies": {
-    "@coveord/platform-client": "26.3.1",
+    "@coveord/platform-client": "28.0.0",
     "abortcontroller-polyfill": "1.7.3",
     "isomorphic-fetch": "3.0.0"
   },
   "devDependencies": {
     "@types/jest": "27.4.0",
-    "@typescript-eslint/eslint-plugin": "5.6.0",
-    "eslint": "8.4.1",
+    "@typescript-eslint/eslint-plugin": "5.9.0",
+    "eslint": "8.6.0",
     "gts": "3.1.0",
-    "jest": "27.4.5",
-    "netlify-cli": "8.0.16",
-    "ts-jest": "27.1.0",
-    "typescript": "4.5.2"
+    "jest": "27.4.7",
+    "netlify-cli": "8.6.14",
+    "ts-jest": "27.1.2",
+    "typescript": "4.5.4"
   },
   "publishConfig": {
     "access": "public"
