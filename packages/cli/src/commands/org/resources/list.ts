@@ -11,7 +11,8 @@ import dedent from 'ts-dedent';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 
 export default class List extends Command {
-  public static description = 'List available snapshots from an organization';
+  public static description =
+    '(beta) List available snapshots from an organization';
 
   public static flags = {
     ...cli.table.flags(),
@@ -24,11 +25,12 @@ export default class List extends Command {
     }),
   };
 
-  public static hidden = true;
-
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
+    this.warn(
+      'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
+    );
     const {flags} = this.parse(List);
     const org = await getTargetOrg(this.configuration, flags.target);
     const platformClient = await new AuthenticatedClient().getClient({

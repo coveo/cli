@@ -34,7 +34,7 @@ import {
 } from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 export default class Preview extends Command {
-  public static description = 'Preview resource updates';
+  public static description = '(beta) Preview resource updates';
 
   public static flags = {
     ...wait(),
@@ -61,8 +61,6 @@ export default class Preview extends Command {
     }),
   };
 
-  public static hidden = true;
-
   @Trackable()
   @Preconditions(
     IsAuthenticated(),
@@ -70,6 +68,9 @@ export default class Preview extends Command {
     HasNecessaryCoveoPrivileges(writeSnapshotPrivilege, writeLinkPrivilege)
   )
   public async run() {
+    this.warn(
+      'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
+    );
     const {flags} = this.parse(Preview);
     const target = await getTargetOrg(this.configuration, flags.target);
     const cfg = await this.configuration.get();

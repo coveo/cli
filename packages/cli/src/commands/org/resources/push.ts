@@ -33,7 +33,7 @@ import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 
 export default class Push extends Command {
   public static description =
-    'Preview, validate and deploy your changes to the destination org';
+    '(beta) Preview, validate and deploy your changes to the destination org';
 
   public static flags = {
     ...wait(),
@@ -61,14 +61,15 @@ export default class Push extends Command {
     }),
   };
 
-  public static hidden = true;
-
   @Trackable()
   @Preconditions(
     IsAuthenticated(),
     HasNecessaryCoveoPrivileges(writeSnapshotPrivilege, writeLinkPrivilege)
   )
   public async run() {
+    this.warn(
+      'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
+    );
     const {flags} = this.parse(Push);
     const target = await getTargetOrg(this.configuration, flags.target);
     const cfg = await this.configuration.get();
