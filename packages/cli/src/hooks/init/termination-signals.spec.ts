@@ -1,7 +1,6 @@
 jest.mock('../analytics/analytics');
 
 import type {IConfig} from '@oclif/config';
-import {mocked} from 'ts-jest/utils';
 import {fancyIt} from '../../__test__/it';
 import {flush} from '../analytics/analytics';
 import {handleTerminationSignals, exitSignals} from './termination-signals';
@@ -9,7 +8,7 @@ import {handleTerminationSignals, exitSignals} from './termination-signals';
 type supportedExitSignals = typeof exitSignals[number];
 
 describe('termination-signal', () => {
-  const mockedFlush = mocked(flush);
+  const mockedFlush = jest.mocked(flush);
   const emit = (signal: string) => {
     const signalTuple = (<const>[signal, signal]) as [
       supportedExitSignals,

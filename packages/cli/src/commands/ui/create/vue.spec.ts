@@ -10,7 +10,6 @@ jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
 jest.mock('@coveord/platform-client');
 
-import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
 import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
@@ -26,15 +25,15 @@ import {configurationMock} from '../../../__stub__/configuration';
 import {mockPreconditions} from '../../../__test__/preconditionUtils';
 
 describe('ui:create:vue', () => {
-  const mockedConfig = mocked(Config);
-  const mockedSpawnProcess = mocked(spawnProcess, true);
-  const mockedPlatformClient = mocked(PlatformClient);
-  const mockedGetPackageVersion = mocked(getPackageVersion);
-  const mockedAuthenticatedClient = mocked(AuthenticatedClient);
-  const mockedIsNpxInstalled = mocked(IsNpxInstalled, true);
-  const mockedIsNodeVersionInRange = mocked(IsNodeVersionInRange, true);
+  const mockedConfig = jest.mocked(Config);
+  const mockedSpawnProcess = jest.mocked(spawnProcess, true);
+  const mockedPlatformClient = jest.mocked(PlatformClient);
+  const mockedGetPackageVersion = jest.mocked(getPackageVersion);
+  const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
+  const mockedIsNpxInstalled = jest.mocked(IsNpxInstalled, true);
+  const mockedIsNodeVersionInRange = jest.mocked(IsNodeVersionInRange, true);
   const vueCliPackage = '@vue/cli';
-  const mockedApiKeyPrivilege = mocked(HasNecessaryCoveoPrivileges, true);
+  const mockedApiKeyPrivilege = jest.mocked(HasNecessaryCoveoPrivileges, true);
   const mockedCreateImpersonateApiKey = jest.fn();
   const preconditionStatus = {
     node: true,
@@ -49,7 +48,7 @@ describe('ui:create:vue', () => {
   };
 
   const doMockSpawnProcess = () => {
-    mockedSpawnProcess.mockResolvedValue(Promise.resolve(0));
+    mockedSpawnProcess.mockResolvedValue(0);
   };
 
   const doMockedGetPackageVersion = () => {

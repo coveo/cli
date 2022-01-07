@@ -1,7 +1,6 @@
 jest.mock('../../utils/process');
 
 import {dedent} from 'ts-dedent';
-import {mocked} from 'ts-jest/utils';
 import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from './testsUtils/utils';
 
@@ -10,7 +9,7 @@ import {appendCmdIfWindows} from '../../utils/os';
 import {fancyIt} from '../../../__test__/it';
 
 describe('IsNpmVersionInRange', () => {
-  const mockedSpawnProcessOutput = mocked(spawnProcessOutput);
+  const mockedSpawnProcessOutput = jest.mocked(spawnProcessOutput);
   beforeEach(() => {
     jest.resetAllMocks();
   });

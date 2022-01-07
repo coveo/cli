@@ -2,12 +2,11 @@ jest.mock('../prerun/prerun');
 jest.mock('../analytics/analytics');
 jest.mock('../../lib/config/config');
 
-import {mocked} from 'ts-jest/utils';
 import {test} from '@oclif/test';
 import analytics from '../analytics/analytics';
 
 describe('hooks:command_not_found', () => {
-  const mockedAnalytics = mocked(analytics);
+  const mockedAnalytics = jest.mocked(analytics);
 
   describe('when the command is valid', () => {
     test

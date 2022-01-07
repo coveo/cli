@@ -71,18 +71,6 @@ export class SnapshotNoSynchronizationReportFoundError
   }
 }
 
-export class SnapshotOperationAbort
-  extends PrintableError
-  implements DetailedReportable
-{
-  public name = 'Snapshot Operation Aborted';
-  public constructor(public snapshot: Snapshot, public cfg: Configuration) {
-    super(SeverityLevel.Info);
-    this.message = 'Snapshot operation aborted';
-    trySavingDetailedReport(this);
-  }
-}
-
 export class SnapshotSynchronizationAmbiguousMatchesError
   extends PrintableError
   implements DetailedReportable

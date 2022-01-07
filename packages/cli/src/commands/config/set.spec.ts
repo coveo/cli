@@ -3,14 +3,13 @@ jest.mock('../../hooks/analytics/analytics');
 jest.mock('../../hooks/prerun/prerun');
 jest.mock('../../lib/platform/authenticatedClient');
 
-import {mocked} from 'ts-jest/utils';
 import {Config} from '../../lib/config/config';
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {Region} from '@coveord/platform-client';
 import {PlatformEnvironment} from '../../lib/platform/environment';
-const mockedConfig = mocked(Config);
-const mockedClient = mocked(AuthenticatedClient);
+const mockedConfig = jest.mocked(Config);
+const mockedClient = jest.mocked(AuthenticatedClient);
 
 describe('config:set', () => {
   const mockSet = jest.fn();

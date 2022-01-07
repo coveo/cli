@@ -2,7 +2,6 @@ jest.mock('../../platform/authenticatedClient');
 jest.mock('../../config/config');
 
 import {IConfig} from '@oclif/config';
-import {mocked} from 'ts-jest/utils';
 import {fancyIt} from '../../../__test__/it';
 import {Config} from '../../config/config';
 import {AuthenticatedClient} from '../../platform/authenticatedClient';
@@ -16,10 +15,10 @@ import {
 } from './platformPrivilege';
 import {getFakeCommand} from './testsUtils/utils';
 
-const mockConfig = mocked(Config);
+const mockConfig = jest.mocked(Config);
 
 describe('apiKeyPrivilege', () => {
-  const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+  const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
   const mockEvaluate = jest.fn();
   const mockGet = jest.fn().mockReturnValue({
     environment: 'dev',

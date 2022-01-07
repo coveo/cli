@@ -9,7 +9,6 @@ jest.mock('../../../lib/utils/process');
 
 import {join} from 'path';
 import {Config} from '../../../lib/config/config';
-import {mocked} from 'ts-jest/utils';
 import {ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {test} from '@oclif/test';
 import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel';
@@ -23,14 +22,14 @@ import {PreconditionError} from '../../../lib/errors/preconditionError';
 import {cwd} from 'process';
 import {cli} from 'cli-ux';
 
-const mockedSnapshotFactory = mocked(SnapshotFactory, true);
-const mockedConfig = mocked(Config);
+const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
+const mockedConfig = jest.mocked(Config);
 const mockedConfigGet = jest.fn();
 const mockedGetSnapshot = jest.fn();
 const mockedDownloadSnapshot = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
-const mockedIsGitInstalled = mocked(IsGitInstalled, true);
-const mockedAuthenticatedClient = mocked(AuthenticatedClient);
+const mockedIsGitInstalled = jest.mocked(IsGitInstalled, true);
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockEvaluate = jest.fn();
 const pathToStub = join(cwd(), 'src', '__stub__');
 

@@ -1,11 +1,12 @@
 import {green} from 'chalk';
 import {cli} from 'cli-ux';
 import {Configuration} from '../config/config';
+import {ProcessAbort} from '../errors/processError';
 import {
-  SnapshotOperationAbort,
   SnapshotSynchronizationAmbiguousMatchesError,
   SnapshotSynchronizationUnknownError,
 } from '../errors/snapshotErrors';
+import {confirmWithAnalytics} from '../utils/cli';
 import {Snapshot, WaitUntilDoneOptions} from './snapshot';
 import {SynchronizationPlan} from './synchronization/synchronizationPlan';
 
@@ -25,11 +26,14 @@ export class SnapshotFacade {
   }
 
   private async waitForConfirmation() {
-    const canApplySynchronizationPlan = await cli.confirm(
-      'Synchronization plan matched all resources, do you want to proceed? (y/n)'
+    const question =
+      'Synchronization plan matched all resources, do you want to proceed? (y/n)';
+    const synchronize = await confirmWithAnalytics(
+      question,
+      'synchronization apply'
     );
-    if (!canApplySynchronizationPlan) {
-      throw new SnapshotOperationAbort(this.snapshot, this.cfg);
+    if (!synchronize) {
+      throw new ProcessAbort();
     }
   }
 
