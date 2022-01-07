@@ -30,5 +30,5 @@ export const consumeGenerator = async (
   };
   const workers = new Array(maxConcurrent).fill(generator()).map(doWork);
 
-  return Promise.allSettled(workers);
+  return Promise.all(workers);
 };
