@@ -150,7 +150,10 @@ export default class Pull extends Command {
       const question = dedent`There is already a Coveo project with resources in it.
         This command will overwrite the ${Project.resourceFolderName} folder content, do you want to proceed? (y/n)`;
 
-      const overwrite = confirmWithAnalytics(question, 'project overwrite');
+      const overwrite = await confirmWithAnalytics(
+        question,
+        'project overwrite'
+      );
       if (!overwrite) {
         throw new ProcessAbort();
       }
