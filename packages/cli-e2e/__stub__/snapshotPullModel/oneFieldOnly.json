@@ -1,0 +1,13 @@
+{
+  "resourcesToExport": {
+    "FIELD": ["firstfield"],
+    "EXTENSION": null,
+    "QUERY_PIPELINE": null,
+    "SEARCH_PAGE": null,
+    "ML_MODEL": null,
+    "SOURCE": null,
+    "SUBSCRIPTION": null
+  },
+  "developerNotes": "test",
+  "includeChildrenResources": true
+}

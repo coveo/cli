@@ -15,6 +15,7 @@ import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
 import {writeSnapshotPrivilege} from '../../../lib/decorators/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
+import {ProcessAbort} from '../../../lib/errors/processError';
 import {wait} from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
 import type {
@@ -30,11 +31,11 @@ import {
   cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
-import {confirm} from '../../../lib/utils/cli';
+import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
 
 export default class Pull extends Command {
-  public static description = 'Pull resources from an organization';
+  public static description = '(beta) Pull resources from an organization';
 
   public static flags = {
     ...wait(),
@@ -84,11 +85,9 @@ export default class Pull extends Command {
       helpValue: 'path/to/snapshot.json',
       exclusive: ['snapshotId', 'resourceTypes', 'target'],
       description:
-        'The path to a snapshot JSON model. This flag is useful when you want to include specific resource items to your snapshot (e.g. a subset of sources). Use the "org:resources:model:create" command to create a new Snapshot Pull Model',
+        'The path to a snapshot pull model. This flag is useful when you want to include only specific resource items in your snapshot (e.g., a subset of sources). Use the "org:resources:model:create" command to create a new Snapshot Pull Model',
     }),
   };
-
-  public static hidden = true;
 
   @Trackable()
   @Preconditions(
@@ -97,6 +96,9 @@ export default class Pull extends Command {
     HasNecessaryCoveoPrivileges(writeSnapshotPrivilege)
   )
   public async run() {
+    this.warn(
+      'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
+    );
     const project = new Project(this.projectPath);
     await this.ensureProjectReset(project);
 
@@ -149,7 +151,13 @@ export default class Pull extends Command {
       const question = dedent`There is already a Coveo project with resources in it.
         This command will overwrite the ${Project.resourceFolderName} folder content, do you want to proceed? (y/n)`;
 
-      await confirm(question, {exit: true, eventName: 'project overwrite'});
+      const overwrite = await confirmWithAnalytics(
+        question,
+        'project overwrite'
+      );
+      if (!overwrite) {
+        throw new ProcessAbort();
+      }
     }
 
     project.reset();
@@ -195,7 +203,10 @@ export default class Pull extends Command {
           flags.model.orgId
         )} organization.
             Do you wish to continue? (y/n)`;
-        await confirm(question, {exit: true, eventName: 'resource pull'});
+        const pull = await confirmWithAnalytics(question, 'resource pull');
+        if (!pull) {
+          throw new ProcessAbort();
+        }
       }
 
       return flags.model.resourcesToExport;

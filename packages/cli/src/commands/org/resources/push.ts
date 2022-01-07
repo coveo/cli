@@ -30,11 +30,11 @@ import {
   writeSnapshotPrivilege,
 } from '../../../lib/decorators/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
-import {confirm} from '../../../lib/utils/cli';
+import {confirmWithAnalytics} from '../../../lib/utils/cli';
 
 export default class Push extends Command {
   public static description =
-    'Preview, validate and deploy your changes to the destination org';
+    '(beta) Preview, validate and deploy your changes to the destination org';
 
   public static flags = {
     ...wait(),
@@ -62,14 +62,15 @@ export default class Push extends Command {
     }),
   };
 
-  public static hidden = true;
-
   @Trackable()
   @Preconditions(
     IsAuthenticated(),
     HasNecessaryCoveoPrivileges(writeSnapshotPrivilege, writeLinkPrivilege)
   )
   public async run() {
+    this.warn(
+      'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
+    );
     const {flags} = this.parse(Push);
     const target = await getTargetOrg(this.configuration, flags.target);
     const cfg = await this.configuration.get();
@@ -141,7 +142,7 @@ export default class Push extends Command {
     const question = `\nWould you like to apply these changes to the org ${bold(
       target
     )}? (y/n)`;
-    return confirm(question, {eventName: 'snapshot apply'});
+    return confirmWithAnalytics(question, 'snapshot apply');
   }
 
   private async applySnapshot(snapshot: Snapshot) {

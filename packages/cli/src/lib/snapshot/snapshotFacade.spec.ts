@@ -10,11 +10,11 @@ import {
   SnapshotSynchronizationAmbiguousMatchesError,
   SnapshotSynchronizationUnknownError,
 } from '../errors/snapshotErrors';
-import {confirm} from '../utils/cli';
+import {confirmWithAnalytics} from '../utils/cli';
 import {Snapshot} from './snapshot';
 import {SnapshotFacade} from './snapshotFacade';
 
-const mockedConfirm = jest.mocked(confirm);
+const mockedConfirm = jest.mocked(confirmWithAnalytics);
 const mockedApplySynchronizationPlan = jest.fn();
 const mockedCreateSynchronizationPlan = jest.fn();
 const mockedContainsUnambiguousMatches = jest.fn();
