@@ -89,17 +89,32 @@ export default class SourcePushAdd extends Command {
       return files.filter(isJsonFile).map((f) => `${path.join(folder, f)}`);
     });
 
-    // TODO: rename send and close. since it does not longer sends and close
-    const {send: chunksToUpload, close} = this.splitByChunkAndUpload(
-      source,
-      args.sourceId,
-      fileNames
-    );
-
     const files: string[] = flags.folder.flatMap((folder) =>
       readdirSync(folder)
         .filter(isJsonFile)
         .flatMap((file) => path.join(folder, file))
+    );
+
+    await this.doPush(source, args.sourceId, files, fileNames);
+  }
+
+  private async doPushFile(source: Source) {
+    const {flags, args} = this.parse(SourcePushAdd);
+    const fileNames = flags.file.filter(isJsonFile);
+    await this.doPush(source, args.sourceId, flags.file, fileNames);
+  }
+
+  private async doPush(
+    source: Source,
+    sourceId: string,
+    filePaths: string[],
+    fileNames: string[] // TODO: CDX-712: remove filename with progressbar
+  ) {
+    const {flags} = this.parse(SourcePushAdd);
+    const {send: chunksToUpload, close} = this.splitByChunkAndUpload(
+      source,
+      sourceId,
+      fileNames
     );
 
     // parallelize uploads within the same file
@@ -112,7 +127,7 @@ export default class SourcePushAdd extends Command {
 
     // parallelize uploads across multiple files
     const fileGenerator = function* (this: SourcePushAdd) {
-      for (const filePath of files.values()) {
+      for (const filePath of filePaths.values()) {
         const docBuilders =
           parseAndGetDocumentBuilderFromJSONDocument(filePath);
         this.successMessageOnParseFile(filePath, docBuilders.length);
@@ -121,31 +136,9 @@ export default class SourcePushAdd extends Command {
     };
 
     cli.action.start('Processing...');
-
     await consumeGenerator(fileGenerator.bind(this), flags.maxConcurrent);
     await close();
-
     cli.action.stop();
-  }
-
-  private async doPushFile(_source: Source) {
-    // TODO: rework
-    // const {flags, args} = this.parse(SourcePushAdd);
-    // const {send, close} = this.splitByChunkAndUpload(
-    //   source,
-    //   args.sourceId,
-    //   flags.file
-    // );
-    // cli.action.start('Processing...');
-    // await Promise.all(
-    //   flags.file.flatMap(async (file) => {
-    //     const docBuilders = parseAndGetDocumentBuilderFromJSONDocument(file);
-    //     this.successMessageOnParseFile(file, docBuilders.length);
-    //     await send(docBuilders);
-    //   })
-    // );
-    // await close();
-    // cli.action.stop();
   }
 
   private successMessageOnAdd(
