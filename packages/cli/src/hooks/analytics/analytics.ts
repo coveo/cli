@@ -26,27 +26,12 @@ const hook = async function (options: AnalyticsHook) {
     return;
   }
 
-  // TODO: CDX-676: remove this block to track events from all org types
-  // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-  const platformClient = await platformIdentifier.authenticatedClient.getClient(
-    {
-      organization: platformIdentifier.organization,
-    }
-  );
-  const license = await platformClient.license.full();
-
-  if (license.productType !== 'TRIAL') {
-    return;
-  }
-  // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-
   const {userId, deviceId, identify} = await new Identifier().getIdentity();
   if (options.identify) {
     identify(amplitudeClient);
   }
 
   await augmentEvent(options.event, platformIdentifier);
-
   amplitudeClient.logEvent({
     device_id: deviceId,
     session_id: check(),
