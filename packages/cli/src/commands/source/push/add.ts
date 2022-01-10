@@ -111,7 +111,7 @@ export default class SourcePushAdd extends Command {
     fileNames: string[] // TODO: CDX-712: remove filename with progressbar
   ) {
     const {flags} = this.parse(SourcePushAdd);
-    const {send: chunksToUpload, close} = this.splitByChunkAndUpload(
+    const {chunksToUpload, close} = this.splitByChunkAndUpload(
       source,
       sourceId,
       fileNames
@@ -188,8 +188,7 @@ export default class SourcePushAdd extends Command {
     fileNames: string[],
     accumulator = this.accumulator
   ) {
-    // TODO: rename to something more meaningful (e.g. chunksToSend)
-    const send = (documentBuilders: DocumentBuilder[]) => {
+    const chunksToUpload = (documentBuilders: DocumentBuilder[]) => {
       const batchesToUpload: Array<() => Promise<void>> = [];
       for (const docBuilder of documentBuilders) {
         const sizeOfDoc = Buffer.byteLength(
@@ -215,7 +214,7 @@ export default class SourcePushAdd extends Command {
     const close = async () => {
       await this.uploadBatch(source, sourceId, accumulator.chunks, fileNames);
     };
-    return {send, close};
+    return {chunksToUpload, close};
   }
 
   private async uploadBatch(
