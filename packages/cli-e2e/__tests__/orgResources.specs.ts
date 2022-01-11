@@ -193,7 +193,8 @@ describe('org:resources', () => {
       );
     });
 
-    describe('when resources are not synchronized', () => {
+    // TODO CDX-753: Create new unsynchronized state for E2E tests.
+    describe.skip('when resources are not synchronized', () => {
       let stdout: string;
       let stderr: string;
 
