@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.23.0](https://github.com/coveo/cli/compare/v1.22.2...v1.23.0) (2022-01-12)
+
+
+### Bug Fixes
+
+* use latest version of `create react-app` ([#594](https://github.com/coveo/cli/issues/594)) ([f3e2ecc](https://github.com/coveo/cli/commit/f3e2ecc85002eb575c91e50e23fd88fe75e2bd37))
+
+
+### Features
+
+* track confirm actions ([#599](https://github.com/coveo/cli/issues/599)) ([1c06bd9](https://github.com/coveo/cli/commit/1c06bd9cf8925ed4d9cdf68bbf747f6309b0d26c))
+
+
+
+
+
 ## [1.22.2](https://github.com/coveo/cli/compare/v1.22.1...v1.22.2) (2021-12-09)
 
 **Note:** Version bump only for package @coveo/cra-template

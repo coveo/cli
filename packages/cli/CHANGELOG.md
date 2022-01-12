@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.23.0](https://github.com/coveo/cli/compare/v1.22.2...v1.23.0) (2022-01-12)
+
+
+### Bug Fixes
+
+* limit concurrent promises on `source:push` ([#559](https://github.com/coveo/cli/issues/559)) ([f617ba6](https://github.com/coveo/cli/commit/f617ba6f3715c1babf1005bd577888eec5acc0b6))
+* remove org info from user properties ([#591](https://github.com/coveo/cli/issues/591)) ([a999f91](https://github.com/coveo/cli/commit/a999f91cf6c1d089240137646d107c09ecd6ac34))
+* set anonymous to false on `auth:login` ([#600](https://github.com/coveo/cli/issues/600)) ([f0b5427](https://github.com/coveo/cli/commit/f0b5427ee55d0d1af6a38ae03bc18d0d807783e8))
+* track cli version from global config ([#592](https://github.com/coveo/cli/issues/592)) ([483254c](https://github.com/coveo/cli/commit/483254cbc7f49313b4452614cc8efb53e0130240))
+* update `deleteOlderThan` helpValue ([#575](https://github.com/coveo/cli/issues/575)) ([7708ee7](https://github.com/coveo/cli/commit/7708ee73bd05f60d47500ef77cc450836f91cccc))
+* use latest version of `create react-app` ([#594](https://github.com/coveo/cli/issues/594)) ([f3e2ecc](https://github.com/coveo/cli/commit/f3e2ecc85002eb575c91e50e23fd88fe75e2bd37))
+
+
+### Features
+
+* add command to create Snapshot Pull Model ([#596](https://github.com/coveo/cli/issues/596)) ([57a09d8](https://github.com/coveo/cli/commit/57a09d899fbc58ee9eae43d926075a61d3ab0c94))
+* **cli:** add support for SPM on `org:config:pull` ([#595](https://github.com/coveo/cli/issues/595)) ([ba05979](https://github.com/coveo/cli/commit/ba05979e2bd830d1f6a748917d75c9b68eb9e8f2))
+* **snapshot:** release snapshot commands into beta ([#602](https://github.com/coveo/cli/issues/602)) ([98fa935](https://github.com/coveo/cli/commit/98fa9357df49e60a7e9408fd2c07c9e8cded895d))
+* track confirm actions ([#599](https://github.com/coveo/cli/issues/599)) ([1c06bd9](https://github.com/coveo/cli/commit/1c06bd9cf8925ed4d9cdf68bbf747f6309b0d26c))
+* track os and shell data ([#593](https://github.com/coveo/cli/issues/593)) ([a898e13](https://github.com/coveo/cli/commit/a898e135f6ad85e055d0df5284f088b83aae5d6a))
+* track other license types ([#603](https://github.com/coveo/cli/issues/603)) ([c5156a4](https://github.com/coveo/cli/commit/c5156a48368f63db3bd6b3fa467d78a2105f9808))
+
+
+
+
+
 ## [1.22.2](https://github.com/coveo/cli/compare/v1.22.1...v1.22.2) (2021-12-09)
 
 **Note:** Version bump only for package @coveo/cli

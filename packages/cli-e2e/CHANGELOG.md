@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.23.0](https://github.com/coveo/cli/compare/v1.22.2...v1.23.0) (2022-01-12)
+
+
+### Bug Fixes
+
+* **deps:** update all dependencies j:cdx-227 ([#605](https://github.com/coveo/cli/issues/605)) ([c7ffa16](https://github.com/coveo/cli/commit/c7ffa162b862dd2790506976b6a0c49bc9b7b5f6))
+* use latest version of `create react-app` ([#594](https://github.com/coveo/cli/issues/594)) ([f3e2ecc](https://github.com/coveo/cli/commit/f3e2ecc85002eb575c91e50e23fd88fe75e2bd37))
+
+
+### Features
+
+* **cli:** add support for SPM on `org:config:pull` ([#595](https://github.com/coveo/cli/issues/595)) ([ba05979](https://github.com/coveo/cli/commit/ba05979e2bd830d1f6a748917d75c9b68eb9e8f2))
+
+
+
+
+
 ## [1.22.2](https://github.com/coveo/cli/compare/v1.22.1...v1.22.2) (2021-12-09)
 
 **Note:** Version bump only for package @coveo/cli-e2e
