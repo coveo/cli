@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.23.2](https://coveo-cli/coveo/cli/compare/v1.23.1...v1.23.2) (2022-01-13)
+
+
+### Bug Fixes
+
+* **deps:** update all dependencies j:cdx-227 ([#609](https://coveo-cli/coveo/cli/issues/609)) ([f7d0f95](https://coveo-cli/coveo/cli/commits/f7d0f95c7578b12f462b120b6f56d10d252a072d))
+
+
+
+
+
 ## [1.23.1](https://coveo-cli/coveo/cli/compare/v1.23.0...v1.23.1) (2022-01-12)
 
 **Note:** Version bump only for package cli-tools
