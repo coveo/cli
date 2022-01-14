@@ -21,7 +21,7 @@
     "@typescript-eslint/parser": "5.9.1",
     "abortcontroller-polyfill": "1.7.3",
     "async-retry": "1.3.3",
-    "aws-sdk": "2.1056.0",
+    "aws-sdk": "2.1057.0",
     "axios": "0.24.0",
     "cz-conventional-changelog": "3.3.0",
     "dotenv": "11.0.0",
