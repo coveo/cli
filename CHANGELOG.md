@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.23.3](https://coveo-cli/coveo/cli/compare/v1.23.2...v1.23.3) (2022-01-14)
+
+**Note:** Version bump only for package cli-tools
+
+
+
+
+
 ## [1.23.2](https://coveo-cli/coveo/cli/compare/v1.23.1...v1.23.2) (2022-01-13)
 
 
