@@ -37,7 +37,8 @@
     "@types/is-running": "2.1.0",
     "@types/jest": "27.4.0",
     "eslint": "8.6.0",
-    "is-running": "2.1.0"
+    "is-running": "2.1.0",
+    "ts-node": "10.4.0"
   },
   "dependencies": {
     "@babel/core": "7.16.7",
