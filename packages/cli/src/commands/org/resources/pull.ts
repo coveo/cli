@@ -99,7 +99,8 @@ export default class Pull extends Command {
     this.warn(
       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
     );
-    const project = new Project(this.projectPath);
+    const targetOrganization = await this.getTargetOrg();
+    const project = new Project(this.projectPath, targetOrganization);
     await this.ensureProjectReset(project);
 
     const snapshot = await this.getSnapshot();
