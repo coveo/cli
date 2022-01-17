@@ -1,20 +1,20 @@
-import {DocumentBuilder, Source} from '@coveo/push-api-client';
+import {
+  Source,
+  UploadBatchCallback,
+  UploadBatchCallbackData,
+} from '@coveo/push-api-client';
 import {Command, flags} from '@oclif/command';
-import {blueBright, green} from 'chalk';
+import {green} from 'chalk';
 import {cli} from 'cli-ux';
 import {readdirSync} from 'fs';
 import path from 'path';
-import dedent from 'ts-dedent';
 import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {consumeIterator} from '../../../lib/utils/iterator';
-import {parseAndGetDocumentBuilderFromJSONDocument} from '../../../lib/push/parseFile';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
-import {isJsonFile} from '../../../lib/utils/file';
 
 interface AxiosResponse {
   status: number;
@@ -22,7 +22,6 @@ interface AxiosResponse {
 }
 
 export default class SourcePushAdd extends Command {
-  private static maxContentLength = 5 * 1024 * 1024;
   public static description =
     'Push a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-files-with-Coveo-CLI for more information.';
 
@@ -63,79 +62,52 @@ export default class SourcePushAdd extends Command {
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
-    const {flags} = this.parse(SourcePushAdd);
+    const {args, flags} = this.parse(SourcePushAdd);
     if (!flags.file && !flags.folder) {
       this.error(
         'You must minimally set the `file` or the `folder` flag. Use `source:push:add --help` to get more information.'
       );
     }
-
     const cfg = await new AuthenticatedClient().cfg.get();
     const source = new Source(cfg.accessToken!, cfg.organization);
 
-    if (flags.file) {
-      await this.doPushFile(source);
-    }
-    if (flags.folder) {
-      await this.doPushFolder(source);
-    }
-  }
-
-  private async doPushFolder(source: Source) {
-    const {flags, args} = this.parse(SourcePushAdd);
-
-    const fileNames = flags.folder.flatMap((folder) => {
-      const files = readdirSync(folder);
-      return files.filter(isJsonFile).map((f) => `${path.join(folder, f)}`);
-    });
-
-    const {send, close} = this.splitByChunkAndUpload(
-      source,
-      args.sourceId,
-      fileNames
-    );
-
-    const files: string[] = flags.folder.flatMap((folder) =>
-      readdirSync(folder)
-        .filter(isJsonFile)
-        .flatMap((file) => path.join(folder, file))
-    );
-
-    const work = async (filePath: string) => {
-      const docBuilders = parseAndGetDocumentBuilderFromJSONDocument(filePath);
-      this.successMessageOnParseFile(filePath, docBuilders.length);
-      await send(docBuilders);
+    const callback: UploadBatchCallback = (
+      err: unknown,
+      {files, batch, res}: UploadBatchCallbackData
+    ) => {
+      if (err) {
+        this.errorMessageOnAdd(err);
+      } else {
+        this.successMessageOnAdd(files, batch.length, res!);
+      }
     };
 
     cli.action.start('Processing...');
 
-    await consumeIterator(files.values(), work, flags.maxConcurrent);
-    await close();
+    await source.batchUpdateDocumentsFromFiles(
+      args.sourceId,
+      this.fileNames,
+      callback,
+      {
+        maxConcurrent: flags.maxConcurrent,
+      }
+    );
 
     cli.action.stop();
   }
 
-  private async doPushFile(source: Source) {
-    const {flags, args} = this.parse(SourcePushAdd);
+  @Trackable()
+  public async catch(err?: Error) {
+    throw err;
+  }
 
-    const {send, close} = this.splitByChunkAndUpload(
-      source,
-      args.sourceId,
-      flags.file
-    );
-
-    cli.action.start('Processing...');
-
-    await Promise.all(
-      flags.file.flatMap(async (file) => {
-        const docBuilders = parseAndGetDocumentBuilderFromJSONDocument(file);
-        this.successMessageOnParseFile(file, docBuilders.length);
-        await send(docBuilders);
-      })
-    );
-
-    await close();
-    cli.action.stop();
+  private get fileNames() {
+    const {flags} = this.parse(SourcePushAdd);
+    return (flags.folder || [])
+      .flatMap((folder) =>
+        readdirSync(folder).map((f) => `${path.join(folder, f)}`)
+      )
+      .concat([...(flags.file || [])]);
   }
 
   private successMessageOnAdd(
@@ -164,77 +136,5 @@ export default class SourcePushAdd extends Command {
     return errorMessage(this, 'Error while trying to add document.', e, {
       exit: true,
     });
-  }
-
-  private successMessageOnParseFile(file: string, numParsed: number) {
-    this.log(
-      dedent(
-        `Parsed ${blueBright(file)} into ${blueBright(numParsed)} documents.`
-      )
-    );
-  }
-
-  @Trackable()
-  public async catch(err?: Error) {
-    throw err;
-  }
-
-  private splitByChunkAndUpload(
-    source: Source,
-    sourceId: string,
-    fileNames: string[],
-    accumulator = this.accumulator
-  ) {
-    const send = async (documentBuilders: DocumentBuilder[]) => {
-      for (const docBuilder of documentBuilders) {
-        const sizeOfDoc = Buffer.byteLength(
-          JSON.stringify(docBuilder.marshal())
-        );
-
-        if (accumulator.size + sizeOfDoc >= SourcePushAdd.maxContentLength) {
-          if (accumulator.chunks.length > 0) {
-            await this.uploadBatch(
-              source,
-              sourceId,
-              accumulator.chunks,
-              fileNames
-            );
-          }
-          accumulator.chunks = [docBuilder];
-          accumulator.size = sizeOfDoc;
-        } else {
-          accumulator.size += sizeOfDoc;
-          accumulator.chunks.push(docBuilder);
-        }
-      }
-    };
-    const close = async () => {
-      await this.uploadBatch(source, sourceId, accumulator.chunks, fileNames);
-    };
-    return {send, close};
-  }
-
-  private async uploadBatch(
-    source: Source,
-    sourceId: string,
-    batch: DocumentBuilder[],
-    fileNames: string[]
-  ) {
-    try {
-      const res = await source.batchUpdateDocuments(sourceId, {
-        addOrUpdate: batch,
-        delete: [],
-      });
-      this.successMessageOnAdd(fileNames, batch.length, res);
-    } catch (e: unknown) {
-      this.errorMessageOnAdd(e);
-    }
-  }
-
-  private get accumulator(): {size: number; chunks: DocumentBuilder[]} {
-    return {
-      size: 0,
-      chunks: [],
-    };
   }
 }
