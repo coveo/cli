@@ -50,7 +50,7 @@
     "axios": "0.24.0",
     "babel-jest": "27.4.6",
     "devtools-protocol": "0.0.959523",
-    "dotenv": "11.0.0",
+    "dotenv": "14.1.0",
     "fs-extra": "10.0.0",
     "get-port": "5.1.1",
     "isomorphic-fetch": "3.0.0",
