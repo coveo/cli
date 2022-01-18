@@ -119,17 +119,20 @@
       "org": {
         "description": "manage Coveo organizations"
       },
+      "org:resources": {
+        "description": "(beta) manage your organization resources"
+      },
       "org:resources:model": {
         "description:": "(beta) manage your Snapshot Pull Model"
+      },
+      "org:search": {
+        "description": "perform queries against a coveo index"
       },
       "ui": {
         "description": "manage user interface deployments"
       },
       "ui:create": {
         "description": "create a user interface powered by different front end frameworks and Coveo Headless"
-      },
-      "org:search": {
-        "description": "perform queries against a coveo index"
       },
       "source": {
         "description": "manage Coveo sources"
