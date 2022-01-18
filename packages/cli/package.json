@@ -119,6 +119,9 @@
       "org": {
         "description": "manage Coveo organizations"
       },
+      "org:resources:model": {
+        "description:": "(beta) manage your Snapshot Pull Model"
+      },
       "ui": {
         "description": "manage user interface deployments"
       },
