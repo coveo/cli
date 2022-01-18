@@ -3,11 +3,14 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{titleCase project}}</title>
+    <title>Atomic-Project</title>
     <script
       type="module"
       src="https://static.cloud.coveo.com/atomic/v1/atomic.esm.js"
     ></script>
+    <link href="/build/app.css" rel="stylesheet" />
+    <script type="module" src="/build/app.esm.js"></script>
+    <script type="module" src="/build/index.esm.js"></script>
   </head>
   <body>
     <atomic-search-interface id="search">
@@ -39,12 +42,10 @@
       </div>
       <div class="results">
         <atomic-did-you-mean></atomic-did-you-mean>
-        <atomic-result-list>
-          <!-- Insert templates here -->
-          <%= require('html-loader!./templates/default.html').default %>
-        </atomic-result-list>
+        <results-manager></results-manager>
       </div>
       <div class="pagination">
+        <!-- <sample-component></sample-component> -->
         <atomic-load-more-results></atomic-load-more-results>
       </div>
       <div class="status">
