@@ -21,8 +21,10 @@ import {IsGitInstalled} from '../../../lib/decorators/preconditions';
 import {PreconditionError} from '../../../lib/errors/preconditionError';
 import {cwd} from 'process';
 import {cli} from 'cli-ux';
+import {Project} from '../../../lib/project/project';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
+const mockedProject = jest.mocked(Project);
 const mockedConfig = jest.mocked(Config);
 const mockedConfigGet = jest.fn();
 const mockedGetSnapshot = jest.fn();
@@ -120,6 +122,25 @@ describe('org:resources:pull', () => {
     .command(['org:resources:pull'])
     .catch(/You are not authorized to create snapshot/)
     .it('should return an error message if privileges are missing');
+
+  test
+    .stdout()
+    .stderr()
+    .command(['org:resources:pull'])
+    .it('should use the cwd as project', () => {
+      expect(mockedProject).toHaveBeenCalledWith(cwd(), expect.anything());
+    });
+
+  test
+    .stdout()
+    .stderr()
+    .command(['org:resources:pull', '-t', 'someorgid'])
+    .it('should create Project with someOrgId', () => {
+      expect(mockedProject).toHaveBeenCalledWith(
+        expect.anything(),
+        'someorgid'
+      );
+    });
 
   test
     .stdout()
@@ -237,6 +258,7 @@ describe('org:resources:pull', () => {
       join(pathToStub, 'snapshotPullModels', 'full.json'),
     ])
     .it('should use the orgId from the model', () => {
+      expect(mockedProject).toHaveBeenCalledWith(expect.anything(), 'myorgid');
       expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
         expect.anything(),
         'myorgid',
