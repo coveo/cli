@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.24.0](https://github.com/coveo/cli/compare/v1.23.3...v1.24.0) (2022-01-18)
+
+
+### Bug Fixes
+
+* **deps:** update all dependencies j:cdx-227 ([#619](https://github.com/coveo/cli/issues/619)) ([8c739f8](https://github.com/coveo/cli/commit/8c739f870b94a6ba3d1adc847b4dea8f1bb4b05f))
+
+
+
+
+
 ## [1.23.3](https://github.com/coveo/cli/compare/v1.23.2...v1.23.3) (2022-01-14)
 
 **Note:** Version bump only for package @coveo/vue-cli-plugin-typescript

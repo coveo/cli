@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.24.0](https://github.com/coveo/cli/compare/v1.23.3...v1.24.0) (2022-01-18)
+
+**Note:** Version bump only for package @coveo/cra-template
+
+
+
+
+
 ## [1.23.3](https://github.com/coveo/cli/compare/v1.23.2...v1.23.3) (2022-01-14)
 
 **Note:** Version bump only for package @coveo/cra-template
