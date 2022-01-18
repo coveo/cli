@@ -210,6 +210,7 @@ describe('org:resources:push', () => {
       .stub(cli, 'confirm', () => async () => true)
       .command(['org:resources:push', '-t', 'myorg'])
       .it('should work with specified target org', () => {
+        expect(mockedProject).toHaveBeenCalledWith(expect.anything(), 'myorg');
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
           'myorg',
