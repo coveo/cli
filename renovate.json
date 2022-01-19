@@ -54,7 +54,7 @@
   ],
   "rangeStrategy": "auto",
   "lockFileMaintenance": {
-    "enabled": false
+    "enabled": true
   },
   "commitMessageSuffix": "J:CDX-227"
 }
