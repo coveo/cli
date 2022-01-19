@@ -2,6 +2,7 @@
   "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
     "module": "commonjs",
+    "esModuleInterop": true,
     "strict": true,
     "target": "es2017",
     "noEmitOnError": false,
