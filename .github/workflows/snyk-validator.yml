@@ -1,0 +1,29 @@
+name: 'Snyk Validator'
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - '**/package-lock.json'
+      - '**/package.json'
+  pull_request:
+    branches: [master]
+    paths:
+      - '**/package-lock.json'
+      - '**/package.json'
+
+jobs:
+  renovate-config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
+      - uses: actions/setup-node@1f8c6b94b26d0feae1e387ca63ccbdc44d27b561 # renovate: tag=v2
+      - name: Normalize package.json and package-lock.json files
+        run: |
+          npm run npm:pkglock
+          npm run npm:cleanPackage
+      - uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --dev --all-projects
