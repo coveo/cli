@@ -11,7 +11,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use(cookieSession());
+app.use(cookieSession({keys: ['key1', 'key2']}));
 app.use(csurf());
 app.use(helmet());
 
