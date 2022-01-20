@@ -20,8 +20,8 @@ export class DotFolder {
 }
 
 export class DotFolderConfig {
-  public constructor(public ownerFolder: DotFolder) {
-    this.ensureFileExists();
+  public constructor(public ownerFolder: DotFolder, orgId?: string) {
+    this.ensureFileExists(orgId);
   }
 
   public static get configName() {
@@ -35,10 +35,13 @@ export class DotFolderConfig {
     };
   }
 
-  private ensureFileExists() {
+  private ensureFileExists(orgId?: string) {
     const path = join(this.ownerFolder.path, DotFolderConfig.configName);
     if (!existsSync(path)) {
-      writeJSONSync(path, this.defaultConfig);
+      const config = orgId
+        ? {...this.defaultConfig, organization: orgId}
+        : this.defaultConfig;
+      writeJSONSync(path, config);
     }
   }
 }

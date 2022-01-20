@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.24.1](https://github.com/coveo/cli/compare/v1.24.0...v1.24.1) (2022-01-18)
+
+**Note:** Version bump only for package @coveo/cli
+
+
+
+
+
+# [1.24.0](https://github.com/coveo/cli/compare/v1.23.3...v1.24.0) (2022-01-18)
+
+
+### Bug Fixes
+
+* **cli:** add org:resources: topic ([#615](https://github.com/coveo/cli/issues/615)) ([394aebd](https://github.com/coveo/cli/commit/394aebdabbd665c3fa955a842ecf8c8808bcf518))
+* **cli:** unhid org:resources:create command ([#616](https://github.com/coveo/cli/issues/616)) ([91f6f0c](https://github.com/coveo/cli/commit/91f6f0c61b0ddda141e7d8f349c1e40653b7175b))
+* **deps:** update all dependencies j:cdx-227 ([#619](https://github.com/coveo/cli/issues/619)) ([8c739f8](https://github.com/coveo/cli/commit/8c739f870b94a6ba3d1adc847b4dea8f1bb4b05f))
+
+
+### Features
+
+* **cli:** fill up organization of .coveo/settings.json automatically ([#617](https://github.com/coveo/cli/issues/617)) ([0c02d7b](https://github.com/coveo/cli/commit/0c02d7b7c93e4b3dd6b22903bffea593a290a7e1))
+
+
+
+
+
 ## [1.23.3](https://github.com/coveo/cli/compare/v1.23.2...v1.23.3) (2022-01-14)
 
 **Note:** Version bump only for package @coveo/cli

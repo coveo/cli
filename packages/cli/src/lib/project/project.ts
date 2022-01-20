@@ -17,9 +17,9 @@ import {readJsonSync, writeJsonSync, WriteOptions} from 'fs-extra';
 export class Project {
   public static readonly resourceFolderName = 'resources';
   public static readonly jsonFormat: WriteOptions = {spaces: '\t'};
-  public constructor(private _pathToProject: string) {
+  public constructor(private _pathToProject: string, orgId?: string) {
     if (!this.isCoveoProject) {
-      this.makeCoveoProject();
+      this.makeCoveoProject(orgId);
     }
   }
 
@@ -118,8 +118,8 @@ export class Project {
     return this.contains(Project.resourceFolderName);
   }
 
-  private makeCoveoProject() {
+  private makeCoveoProject(orgId?: string) {
     const dotFolder = new DotFolder(this.pathToProject);
-    new DotFolderConfig(dotFolder);
+    new DotFolderConfig(dotFolder, orgId);
   }
 }

@@ -77,7 +77,8 @@ const doMockCreateWriteStream = () => {
 };
 
 describe('Project', () => {
-  const projectCreator = () => new Project(resolve('dummy/path'));
+  const projectCreator = (orgId?: string) =>
+    new Project(resolve('dummy/path'), orgId);
 
   beforeAll(() => {
     doMockCreateWriteStream();
@@ -135,6 +136,22 @@ describe('Project', () => {
       expect.objectContaining({version: 1})
     );
   });
+
+  fancyIt()(
+    'should use the provided orgId to initialize project if .coveo project is absent',
+    () => {
+      doMockFileDoesNotExists('.coveo');
+      mockedPathExistsSync.mockReturnValueOnce(false);
+      projectCreator('testorgid');
+      expect(mockedCreateFileSync).toHaveBeenCalledWith(
+        expect.stringContaining('.coveo')
+      );
+      expect(mockedWriteJSONSync).toHaveBeenCalledWith(
+        expect.stringContaining(join('.coveo/config.json')),
+        expect.objectContaining({version: 1, organization: 'testorgid'})
+      );
+    }
+  );
 
   describe('if the project is valid', () => {
     let pathToResources: string;

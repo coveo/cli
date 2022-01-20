@@ -178,7 +178,7 @@ describe('org:resources:preview', () => {
       .stderr()
       .command(['org:resources:preview'])
       .it('should use cwd as project', () => {
-        expect(mockedProject).toHaveBeenCalledWith(cwd());
+        expect(mockedProject).toHaveBeenCalledWith(cwd(), 'foo');
       });
 
     test

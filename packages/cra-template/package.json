@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cra-template",
-  "version": "1.23.3",
+  "version": "1.24.1",
   "scripts": {
     "lint": "prettier --check . && eslint .",
     "npm:bump:template": "npm --no-git-tag-version version",
@@ -39,7 +39,7 @@
     "@types/jest": "27.4.0",
     "@types/react": "17.0.38",
     "@types/react-dom": "17.0.11",
-    "@types/react-router-dom": "5.3.2",
+    "@types/react-router-dom": "5.3.3",
     "eslint": "8.7.0",
     "prettier": "2.5.1",
     "react": "17.0.2",
