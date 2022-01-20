@@ -7,7 +7,7 @@ import {Command, flags} from '@oclif/command';
 import {green} from 'chalk';
 import {cli} from 'cli-ux';
 import {readdirSync} from 'fs';
-import path from 'path';
+import {join} from 'path';
 import {
   IsAuthenticated,
   Preconditions,
@@ -103,11 +103,24 @@ export default class SourcePushAdd extends Command {
 
   private get fileNames() {
     const {flags} = this.parse(SourcePushAdd);
-    return (flags.folder || [])
-      .flatMap((folder) =>
-        readdirSync(folder).map((f) => `${path.join(folder, f)}`)
-      )
-      .concat([...(flags.file || [])]);
+    let fileNames: string[] = [];
+    if (flags.file) {
+      fileNames = fileNames.concat(flags.file);
+    }
+    if (flags.folder) {
+      const isString = (file: string | null): file is string => Boolean(file);
+      // CDX-781 read all files recursively
+      fileNames = fileNames.concat(
+        flags.folder
+          .flatMap((folder) =>
+            readdirSync(folder, {withFileTypes: true}).map((dirent) =>
+              dirent.isFile() ? join(folder, dirent.name) : null
+            )
+          )
+          .filter(isString)
+      );
+    }
+    return fileNames;
   }
 
   private successMessageOnAdd(
