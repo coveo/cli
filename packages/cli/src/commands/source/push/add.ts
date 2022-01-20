@@ -109,7 +109,7 @@ export default class SourcePushAdd extends Command {
     }
     if (flags.folder) {
       const isString = (file: string | null): file is string => Boolean(file);
-      // CDX-781 read all files recursively
+      // TODO: CDX-781 read all files recursively
       fileNames = fileNames.concat(
         flags.folder
           .flatMap((folder) =>
