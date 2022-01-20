@@ -27,6 +27,7 @@
     "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.10",
     "@types/cors": "2.8.12",
     "@types/jest": "27.4.0",
     "@types/supertest": "2.0.11",
