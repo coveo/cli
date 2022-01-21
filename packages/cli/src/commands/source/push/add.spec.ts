@@ -16,7 +16,6 @@ import {
 } from '../../../lib/push/testUtils';
 import {APIError} from '../../../lib/errors/APIError';
 import {UploadBatchCallback} from '@coveo/push-api-client';
-import {AxiosResponse} from 'axios';
 const mockedClient = jest.mocked(AuthenticatedClient);
 const mockedSource = jest.mocked(Source);
 const mockedDocumentBuilder = jest.mocked(DocumentBuilder);
@@ -35,7 +34,7 @@ describe('source:push:add', () => {
             new DocumentBuilder('somwhereintheinternet.com', 'Somewhere'),
             new DocumentBuilder('another.uri.com', 'The Title'),
           ],
-          res: doMockAxiosSuccess(202, '👌') as AxiosResponse,
+          res: doMockAxiosSuccess(202, '👌'),
         })
     );
   };
