@@ -33,11 +33,11 @@ jobs:
       - name: Snyk test
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-          run: npx snyk test --dev --all-projects
+        run: npx snyk test --dev --all-projects
       - name: Snyk test
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-          run: npx snyk code --dev --all-projects
+        run: npx snyk code --dev --all-projects
       - name: Setup git SSH remote
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}

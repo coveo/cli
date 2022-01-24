@@ -45,11 +45,11 @@ jobs:
       - name: Snyk test
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-          run: npx snyk test --dev --all-projects
+        run: npx snyk test --dev --all-projects
       - name: Snyk test
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-          run: npx snyk code
+        run: npx snyk code
       - name: Check linting
         run: npm run lint
       - name: Tests
