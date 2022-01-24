@@ -30,6 +30,14 @@ jobs:
           git config --global user.email action@github.com
           git config --global user.name GitHub Action
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+      - name: Snyk test
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          run: npx snyk test --dev --all-projects
+      - name: Snyk test
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          run: npx snyk code --dev --all-projects
       - name: Setup git SSH remote
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
