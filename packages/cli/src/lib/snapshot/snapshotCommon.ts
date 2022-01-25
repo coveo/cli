@@ -22,7 +22,7 @@ export async function dryRun(
   cfg: Configuration,
   options: DryRunOptions = {}
 ) {
-  const project = new Project(normalize(projectPath));
+  const project = new Project(normalize(projectPath), targetOrg);
   const snapshot = await getSnapshotForDryRun(project, targetOrg, options);
 
   cli.action.start('Validating snapshot');

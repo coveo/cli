@@ -15,4 +15,7 @@ export const doMockAxiosError = (
 export const doMockAxiosSuccess = (status: number, text: string) => ({
   status,
   statusText: text,
+  headers: {},
+  config: {},
+  data: {},
 });
