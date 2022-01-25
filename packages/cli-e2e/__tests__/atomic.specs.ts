@@ -144,9 +144,6 @@ describe('ui:create:atomic', () => {
     }, 60e3);
 
     it('should retrieve the search token on the page load', async () => {
-      await page.goto(searchPageEndpoint);
-      await page.waitForSelector(searchInterfaceSelector);
-
       expect(
         JSON.parse(
           await (await page.waitForResponse(tokenServerEndpoint)).text()
