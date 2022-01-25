@@ -15,7 +15,7 @@ export class SampleResultComponent {
   @Element() private host!: Element;
 
   // It is recommended to fetch the result context using the connectedCallback lifecycle method.
-  async connectedCallback() {
+  public async connectedCallback() {
     try {
       this.result = await resultContext(this.host);
     } catch (error) {
@@ -24,7 +24,7 @@ export class SampleResultComponent {
     }
   }
 
-  render() {
+  public render() {
     if (!this.result) {
       return;
     }

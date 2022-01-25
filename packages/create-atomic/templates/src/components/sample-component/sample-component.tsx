@@ -33,7 +33,7 @@ export class SampleComponent {
 
   // It is recommended to initialize the bindings and the Headless controllers
   // using the connectedCallback lifecycle method.
-  async connectedCallback() {
+  public async connectedCallback() {
     try {
       this.bindings = await initializeBindings(this.host);
       const statusController = buildSearchStatus(this.bindings.engine);
@@ -57,7 +57,7 @@ export class SampleComponent {
     }
   }
 
-  disconnectedCallback() {
+  public disconnectedCallback() {
     this.pagerUnsubscribe();
     this.statusUnsubscribe();
     this.i18nUnsubscribe();

@@ -4,7 +4,6 @@
     "browser": true
   },
   "rules": {
-    "node/no-unpublished-import": ["off"],
-    "@typescript-eslint/explicit-member-accessibility": ["off"]
+    "node/no-unpublished-import": ["off"]
   }
 }

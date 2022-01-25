@@ -10,7 +10,7 @@ import defaultTemplate from './default.html';
   shadow: false,
 })
 export class ResultsManager {
-  render() {
+  public render() {
     return (
       <atomic-result-list fields-to-include="">
         <atomic-result-template>
