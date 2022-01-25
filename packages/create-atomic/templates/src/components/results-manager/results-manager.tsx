@@ -16,8 +16,9 @@ export class ResultsManager {
         <atomic-result-template>
           <template innerHTML={defaultTemplate}></template>
         </atomic-result-template>
-        {/* 
-        <atomic-result-template must-match-sourcetype="Salesforce">
+        {/*
+        <atomic-result-template
+        must-match-sourcetype="Salesforce">
           <template innerHTML={anotherTemplate}></template>
         </atomic-result-template>
         */}
