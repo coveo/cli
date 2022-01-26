@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  renovate-config:
+  snyk:
     runs-on: ubuntu-latest
     steps:
       - name: Snyk test
