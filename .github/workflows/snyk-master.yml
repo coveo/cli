@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - master
-      - chore/CDX-785
+  pull_request:
 
 jobs:
   snyk:
