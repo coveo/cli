@@ -1,0 +1,23 @@
+name: Snyk
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  renovate-config:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Snyk test
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          npx snyk monitor --dev --all-projects
+          npx snyk test --dev --all-projects --sarif-file-output=./sarifs/snyk.sarif
+          npx snyk code --dev --all-projects --sarif-file-output=./sarifs/snyk-code.sarif
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v1
+        if: always()
+        with:
+          sarif_file: ./sarifs
