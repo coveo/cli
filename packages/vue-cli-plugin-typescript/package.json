@@ -15,9 +15,9 @@
     "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873"
   },
   "devDependencies": {
-    "@coveo/headless": "1.41.7",
+    "@coveo/headless": "1.42.0",
     "buefy": "0.9.14",
-    "dotenv": "14.2.0",
+    "dotenv": "14.3.2",
     "vue": "2.6.14",
     "vue-property-decorator": "9.1.2",
     "vue-router": "3.5.3"
