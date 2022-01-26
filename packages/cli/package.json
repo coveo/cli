@@ -70,7 +70,8 @@
   "peerDependencies": {
     "@angular/cli": "~13.0.1 || ~13.1.0",
     "@vue/cli": "^4.5.11",
-    "create-react-app": "latest"
+    "create-react-app": "latest",
+    "@coveo/create-atomic": "1.24.1"
   },
   "peerDependenciesMeta": {
     "create-react-app": {
@@ -80,6 +81,9 @@
       "optional": true
     },
     "@vue/cli": {
+      "optional": true
+    },
+    "@coveo/create-atomic": {
       "optional": true
     }
   },
