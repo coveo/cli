@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - master
-  workflow_dispatch:
+      - chore/CDX-785
 
 jobs:
   snyk:
