@@ -55,7 +55,7 @@
     "get-port": "5.1.1",
     "isomorphic-fetch": "3.0.0",
     "jest": "27.4.7",
-    "puppeteer": "13.1.1",
+    "puppeteer": "13.1.2",
     "strip-ansi": "6.0.1",
     "typescript": "4.5.4"
   }
