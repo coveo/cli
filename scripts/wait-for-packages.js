@@ -1,4 +1,3 @@
-// https://registry.npmjs.org/@coveo%2fcra-template
 const {get} = require('axios');
 const {readFileSync} = require('fs');
 const retry = require('async-retry');

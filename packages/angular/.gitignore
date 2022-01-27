@@ -1,6 +1,6 @@
 # Outputs
 dist
-
+src/coverage
 # IDEs
 .idea/
 jsconfig.json

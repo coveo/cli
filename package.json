@@ -15,6 +15,9 @@
     "@commitlint/config-lerna-scopes": "16.0.0",
     "@commitlint/lint": "16.0.0",
     "@coveord/platform-client": "28.5.0",
+    "@nrwl/cli": "latest",
+    "@nrwl/tao": "latest",
+    "@nrwl/workspace": "latest",
     "@oclif/dev-cli": "1.26.10",
     "@types/node": "17.0.12",
     "@typescript-eslint/eslint-plugin": "5.10.1",
@@ -41,10 +44,7 @@
     "rimraf": "3.0.2",
     "ts-node": "10.4.0",
     "typescript": "4.5.5",
-    "yargs": "17.3.1",
-    "@nrwl/workspace": "latest",
-    "@nrwl/cli": "latest",
-    "@nrwl/tao": "latest"
+    "yargs": "17.3.1"
   },
   "commitlint": {
     "extends": [
@@ -67,24 +67,17 @@
     "node": ">=14.16.1"
   },
   "scripts": {
-    "clean": "rimraf **/package-lock.json && lerna clean -y",
-    "setup": "npm i && lerna bootstrap",
-    "build": "lerna run build",
-    "test": "lerna run test",
-    "lint": "lerna run lint",
-    "lint:check": "eslint .",
-    "lint:fix": "eslint --fix .",
-    "prettier:check": "prettier .",
-    "prettier:fix": "prettier --write .",
+    "clean": "rimraf package-lock.json node_modules",
+    "build": "nx run-many --target=build --all",
+    "test": "nx run-many --target=test --all",
+    "lint": "nx run-many --target=lint --all && prettier . && eslint .",
     "version": "lerna run version",
     "commit": "git-cz",
     "pr:report": "node ./scripts/pr-bot.js",
     "release:changelog": "node ./scripts/release-changelog.js",
-    "npm:publish:template": "lerna run --no-bail --stream npm:publish:template",
-    "npm:publish:template:local": "lerna run --no-bail --stream npm:publish:template:local",
-    "npm:bump:template": "lerna run --no-bail --stream npm:bump:template",
-    "npm:pkglock": "lerna exec npm i",
-    "npm:cleanPackage": "lerna exec node ../../scripts/clean-package-json.js",
+    "npm:publish:template": "nx run-many --target=npm:publish:template",
+    "npm:publish:template:local": "nx run-many --target=npm:publish:template:local",
+    "npm:bump:template": "nx run-many --target=npm:bump:template",
     "prepare": "husky install",
     "commit-msg": "node ./hooks/commit-msg.js",
     "pre-commit": "lint-staged"
@@ -92,5 +85,8 @@
   "workspaces": [
     "packages/*",
     "packages/create-atomic/template"
-  ]
+  ],
+  "dependencies": {
+    "jest-config": "^27.4.7"
+  }
 }
