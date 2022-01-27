@@ -1,6 +1,6 @@
 {
   "name": "cli-tools",
-  "private": false,
+  "private": true,
   "version": "0.0.0",
   "author": "Coveo",
   "bin": {
@@ -41,7 +41,10 @@
     "rimraf": "3.0.2",
     "ts-node": "10.4.0",
     "typescript": "4.5.5",
-    "yargs": "17.3.1"
+    "yargs": "17.3.1",
+    "@nrwl/workspace": "latest",
+    "@nrwl/cli": "latest",
+    "@nrwl/tao": "latest"
   },
   "commitlint": {
     "extends": [
@@ -85,5 +88,9 @@
     "prepare": "husky install",
     "commit-msg": "node ./hooks/commit-msg.js",
     "pre-commit": "lint-staged"
-  }
+  },
+  "workspaces": [
+    "packages/*",
+    "packages/create-atomic/template"
+  ]
 }

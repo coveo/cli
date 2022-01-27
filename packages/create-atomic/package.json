@@ -13,9 +13,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "prepare": "node --loader ts-node/esm ./script/npmInstallTemplate.ts",
     "start": "./index.js",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.json",
     "prepublishOnly": "npm run build",
     "npm:bump:template": "npm --no-git-tag-version version",
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873",

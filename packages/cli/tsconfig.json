@@ -4,6 +4,7 @@
     "experimentalDecorators": true,
     "declaration": true,
     "importHelpers": true,
+    "moduleResolution": "node",
     "module": "commonjs",
     "lib": ["ESNext"],
     "resolveJsonModule": true,
@@ -13,7 +14,7 @@
     "target": "es2019",
     "noEmitOnError": false,
     "skipLibCheck": true,
-    "types": ["jest"],
+    "types": ["node", "jest"],
     "esModuleInterop": true
   },
   "include": ["src/**/*", "src/typings/**/*.d.ts"]
