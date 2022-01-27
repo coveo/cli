@@ -144,11 +144,13 @@ describe('ui:create:atomic', () => {
     }, 60e3);
 
     it('should retrieve the search token on the page load', async () => {
-      expect(
-        JSON.parse(
-          await (await page.waitForResponse(tokenServerEndpoint)).text()
-        )
-      ).toMatchObject({
+      await page.goto(searchPageEndpoint, {
+        waitUntil: 'networkidle2',
+      });
+
+      const tokenResponse = await page.waitForResponse(tokenServerEndpoint);
+
+      expect(JSON.parse(await tokenResponse.text())).toMatchObject({
         token: expect.stringMatching(jwtTokenPattern),
       });
     }, 60e3);
