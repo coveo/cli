@@ -6,7 +6,6 @@ import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {npm} from '../utils/windows';
-import {jwtTokenPattern} from '../utils/matcher';
 import {EOL} from 'os';
 
 describe('ui:create:atomic', () => {
@@ -16,7 +15,6 @@ describe('ui:create:atomic', () => {
   const oldEnv = process.env;
   const projectName = `${process.env.TEST_RUN_ID}-atomic-project`;
   const searchPageEndpoint = 'http://localhost:8888';
-  const tokenServerEndpoint = 'http://localhost:8888/.netlify/functions/token';
 
   const waitForAppRunning = (appTerminal: Terminal) =>
     appTerminal
@@ -144,22 +142,23 @@ describe('ui:create:atomic', () => {
     }, 60e3);
 
     it('should retrieve the search token on the page load', async () => {
-      await page.goto(searchPageEndpoint, {
-        waitUntil: 'networkidle2',
-      });
+      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchInterfaceSelector);
 
-      const tokenResponse = await page.waitForResponse(tokenServerEndpoint);
+      const isTokenRequest = (request: HTTPRequest) => {
+        const tokenUrl = new URL(
+          '/.netlify/functions/token',
+          'http://localhost:8888'
+        );
+        return request.url().startsWith(tokenUrl.href);
+      };
 
-      expect(JSON.parse(await tokenResponse.text())).toMatchObject({
-        token: expect.stringMatching(jwtTokenPattern),
-      });
-    }, 0);
+      expect(interceptedRequests.some(isTokenRequest)).toBeTruthy();
+    }, 60e3);
 
     it('should send a search query when the page is loaded', async () => {
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchInterfaceSelector);
-
-      console.log(interceptedRequests);
 
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
     }, 60e3);
