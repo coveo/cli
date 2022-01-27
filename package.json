@@ -70,7 +70,7 @@
     "clean": "rimraf package-lock.json node_modules",
     "build": "nx run-many --target=build --all",
     "test": "nx run-many --target=test --all",
-    "lint": "nx run-many --target=lint --all && prettier . && eslint .",
+    "lint": "nx run-many --target=lint --all && prettier --check . && eslint .",
     "version": "lerna run version",
     "commit": "git-cz",
     "pr:report": "node ./scripts/pr-bot.js",
