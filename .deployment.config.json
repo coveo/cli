@@ -3,17 +3,27 @@
   "team_name": "DX",
   "general": {
     "team_jenkins": "searchuibuilds",
-    "notifications": {"slack_channels": ["#searchuibuilds"]},
+    "notifications": {
+      "slack_channels": ["#searchuibuilds"]
+    },
     "environments_order": {
       "sequential": ["dev", "qa", "prd"]
     },
-    "qa": {"start_environment_automatically": true},
+    "qa": {
+      "start_environment_automatically": true
+    },
+    "prd": {
+      "start_environment_automatically": true
+    },
     "aws_regions": {
       "sequential": ["us-east-1"]
     }
   },
   "ordered_phases": [
-    {"id": "terraform", "terraform": {}},
+    {
+      "id": "terraform",
+      "terraform": {}
+    },
     {
       "id": "s3",
       "s3": {
@@ -37,94 +47,20 @@
     }
   ],
   "snyk": {
-    "org": "coveo-developer-experience",
-    "no_container_images": true,
-    "configurations": [
-      {
-        "project_name": "cli-root",
-        "file": "package-lock.json",
-        "additional_config": {
-          "scan_dev_dependencies": true,
-          "image": "snyk/snyk-cli:1.778.0-docker"
-        }
-      },
-      {
-        "project_name": "cli",
-        "directory": "packages/cli",
-        "additional_config": {
-          "scan_dev_dependencies": true,
-          "image": "snyk/snyk-cli:1.778.0-docker"
-        }
-      },
-      {
-        "project_name": "angular",
-        "directory": "packages/angular",
-        "additional_config": {
-          "scan_dev_dependencies": true,
-          "image": "snyk/snyk-cli:1.778.0-docker"
-        }
-      },
-      {
-        "project_name": "cra-template",
-        "directory": "packages/cra-template",
-        "additional_config": {
-          "scan_dev_dependencies": true,
-          "image": "snyk/snyk-cli:1.778.0-docker"
-        }
-      },
-      {
-        "project_name": "search-token-server",
-        "directory": "packages/search-token-server",
-        "additional_config": {
-          "scan_dev_dependencies": true,
-          "image": "snyk/snyk-cli:1.778.0-docker"
-        }
-      },
-      {
-        "project_name": "search-token-lambda",
-        "directory": "packages/search-token-lambda",
-        "additional_config": {
-          "scan_dev_dependencies": true,
-          "image": "snyk/snyk-cli:1.778.0-docker"
-        }
-      },
-      {
-        "project_name": "vue-cli-plugin",
-        "directory": "packages/vue-cli-plugin-typescript",
-        "additional_config": {
-          "scan_dev_dependencies": true,
-          "image": "snyk/snyk-cli:1.778.0-docker"
-        }
-      },
-      {
-        "project_name": "create-atomic",
-        "directory": "packages/create-atomic",
-        "additional_config": {
-          "scan_dev_dependencies": true,
-          "image": "snyk/snyk-cli:1.778.0-docker"
-        }
-      },
-      {
-        "project_name": "create-atomic-template",
-        "directory": "packages/create-atomic/templates",
-        "additional_config": {
-          "scan_dev_dependencies": true,
-          "image": "snyk/snyk-cli:1.778.0-docker"
-        }
-      }
-    ]
+    "no_dependencies": true,
+    "no_container_images": true
   },
   "observatory": {
     "no_endpoint": true
   },
   "veracode": {
-    "sandbox_name": "CLI",
-    "app_name": "JSUI",
-    "source": "./packages/cli/src",
-    "scan_include_patterns": "*"
+    "no_scan": true
   },
   "deployment_config_version": 2,
   "package_rollout": {
-    "only_consider_changesets_after": "591040c6568cce03b031c3059cd4d4de87de8d7c"
+    "only_consider_changesets_after": "591040c6568cce03b031c3059cd4d4de87de8d7c",
+    "jira_issues_discovery": {
+      "stop_after_first_issue": true
+    }
   }
 }
