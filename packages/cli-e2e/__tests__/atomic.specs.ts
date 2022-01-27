@@ -153,11 +153,13 @@ describe('ui:create:atomic', () => {
       expect(JSON.parse(await tokenResponse.text())).toMatchObject({
         token: expect.stringMatching(jwtTokenPattern),
       });
-    }, 60e3);
+    }, 0);
 
     it('should send a search query when the page is loaded', async () => {
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchInterfaceSelector);
+
+      console.log(interceptedRequests);
 
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
     }, 60e3);
