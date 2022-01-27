@@ -9,8 +9,7 @@ import {npm} from '../utils/windows';
 import {jwtTokenPattern} from '../utils/matcher';
 import {EOL} from 'os';
 
-// eslint-disable-next-line no-restricted-properties
-describe.only('ui:create:atomic', () => {
+describe('ui:create:atomic', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
   let page: Page;
