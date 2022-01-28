@@ -43,7 +43,7 @@ Write-Output "--mutex network" | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Ap
 Write-Output "--install.silent true" | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
 Write-Output "--silent true" | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
 
-npm run npm:bump:template -- -- "0.0.0"
+npm run npm:e2e:template
 npm run npm:publish:template
 
 Set-Location packages/cli-e2e

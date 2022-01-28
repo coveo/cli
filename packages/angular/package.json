@@ -9,7 +9,7 @@
     "prebuild": "node ./scripts/clean.js",
     "postbuild": "node ./scripts/setup.js",
     "prepublishOnly": "npm run build",
-    "npm:bump:template": "npm --no-git-tag-version version",
+    "npm:bump:template": "npm --no-git-tag-version version 0.0.0",
     "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873"
   },
