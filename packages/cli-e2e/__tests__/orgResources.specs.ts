@@ -17,7 +17,7 @@ import {cwd} from 'process';
 import {EOL} from 'os';
 config({path: getPathToHomedirEnvFile()});
 
-describe('org:resources', () => {
+describe.skip('org:resources', () => {
   const testOrgId = process.env.TEST_ORG_ID!;
   const {accessToken} = getConfig();
   const snapshotProjectPath = join('snapshot-project');
@@ -194,7 +194,7 @@ describe('org:resources', () => {
     });
 
     // TODO CDX-753: Create new unsynchronized state for E2E tests.
-    describe('when resources are not synchronized', () => {
+    describe.skip('when resources are not synchronized', () => {
       let stdout: string;
       let stderr: string;
 
