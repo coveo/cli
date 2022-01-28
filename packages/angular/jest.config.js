@@ -6,6 +6,7 @@ module.exports = {
   testEnvironment: 'node',
   verbose: true,
   collectCoverage: true,
+  coverageDirectory: '../coverage',
   coveragePathIgnorePatterns: [
     ...defaults.coveragePathIgnorePatterns,
     '/__test__/',

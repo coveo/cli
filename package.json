@@ -28,7 +28,7 @@
     "axios": "0.25.0",
     "cz-conventional-changelog": "3.3.0",
     "dotenv": "14.3.2",
-    "eslint": "8.7.0",
+    "eslint": "^8.8.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-prettier": "4.0.0",
@@ -61,7 +61,7 @@
     }
   },
   "lint-staged": {
-    "*.{ts,tsx,mjs,js,jsx,json,html,vue,scss,css,md,yml}": "prettier --write",
+    "*.{ts,tsx,mjs,js,jsx,json,html,vue,scss,css,md,yml}": "prettier --write --ignore-path .ci.prettierignore",
     "**/*.ts": "eslint --fix"
   },
   "engines": {
@@ -71,7 +71,7 @@
     "clean": "rimraf package-lock.json node_modules",
     "build": "nx run-many --target=build --all",
     "test": "nx run-many --target=test --all",
-    "lint": "nx run-many --target=lint --all && prettier --check . && eslint .",
+    "lint": "nx run-many --target=lint --all && prettier --ignore-path .ci.prettierignore --check . && eslint .",
     "version": "lerna run version",
     "commit": "git-cz",
     "pr:report": "node ./scripts/pr-bot.js",

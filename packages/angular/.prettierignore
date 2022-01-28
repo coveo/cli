@@ -1,5 +1,5 @@
 dist
-src/coverage
+coverage
 CHANGELOG.md
 
 package-lock.json
