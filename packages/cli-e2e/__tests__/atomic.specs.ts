@@ -154,7 +154,7 @@ describe('ui:create:atomic', () => {
       ).toMatchObject({
         token: expect.stringMatching(jwtTokenPattern),
       });
-    });
+    }, 60e3);
 
     it('should send a search query when the page is loaded', async () => {
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
