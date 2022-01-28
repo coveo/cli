@@ -127,23 +127,23 @@ describe('ui:create:atomic', () => {
       await serverProcessManager.killAllProcesses();
     }, 5 * 30e3);
 
-    // it('should not contain console errors nor warnings', async () => {
-    //   await page.goto(searchPageEndpoint, {
-    //     waitUntil: 'networkidle0',
-    //   });
+    it('should not contain console errors nor warnings', async () => {
+      await page.goto(searchPageEndpoint, {
+        waitUntil: 'networkidle0',
+      });
 
-    //   expect(consoleInterceptor.interceptedMessages).toEqual([]);
-    // }, 60e3);
+      expect(consoleInterceptor.interceptedMessages).toEqual([]);
+    }, 60e3);
 
-    // it('should contain a search page section', async () => {
-    //   await page.goto(searchPageEndpoint, {
-    //     waitUntil: 'networkidle0',
-    //   });
+    it('should contain a search page section', async () => {
+      await page.goto(searchPageEndpoint, {
+        waitUntil: 'networkidle0',
+      });
 
-    //   expect(
-    //     await page.$(searchInterfaceSelector + '.hydrated')
-    //   ).not.toBeNull();
-    // }, 60e3);
+      expect(
+        await page.$(searchInterfaceSelector + '.hydrated')
+      ).not.toBeNull();
+    }, 60e3);
 
     it('should send a search query when the page is loaded', async () => {
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
