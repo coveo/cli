@@ -40,6 +40,7 @@
     "lerna": "4.0.0",
     "lint-staged": "12.3.2",
     "moment": "2.29.1",
+    "patch-package": "^6.4.7",
     "prettier": "2.5.1",
     "rimraf": "3.0.2",
     "ts-node": "10.4.0",
@@ -80,7 +81,8 @@
     "npm:bump:template": "nx run-many --target=npm:bump:template",
     "prepare": "husky install",
     "commit-msg": "node ./hooks/commit-msg.js",
-    "pre-commit": "lint-staged"
+    "pre-commit": "lint-staged",
+    "postinstall": "patch-package"
   },
   "workspaces": [
     "packages/*",
