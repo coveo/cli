@@ -165,7 +165,9 @@
     "build": "tsc -p tsconfig.json",
     "test": "jest --colors",
     "lint": "prettier --config ../../.prettierrc.js --check . && eslint .",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif-dev readme && git add README.md",
+    "release:phase2": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase2-bump-all-packages.js",
+    "release:phase4": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase4-npm-publish-packages.js"
   },
   "types": "lib/index.d.ts",
   "publishConfig": {

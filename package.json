@@ -1,7 +1,7 @@
 {
   "name": "cli-tools",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.24.1",
   "author": "Coveo",
   "bin": {
     "coveo": "./bin/run"
@@ -14,6 +14,7 @@
     "@commitlint/config-conventional": "16.0.0",
     "@commitlint/config-lerna-scopes": "16.0.0",
     "@commitlint/lint": "16.0.0",
+    "@coveo/semantic-monorepo-tools": "file:packages/releaseLib",
     "@coveord/platform-client": "28.5.0",
     "@nrwl/cli": "latest",
     "@nrwl/tao": "latest",
@@ -83,7 +84,12 @@
     "commit-msg": "node ./hooks/commit-msg.js",
     "pre-commit": "lint-staged",
     "postinstall": "patch-package",
-    "snyk:prepare": "nx run-many --target=snyk:prepare --all"
+    "snyk:prepare": "nx run-many --target=snyk:prepare --all",
+    "release": "npm run release:phase1 && npm run release:phase2 npm run release:phase3 && npm run release:phase4",
+    "release:phase1": "node --experimental-specifier-resolution=node ./scripts/releaseV2/phase1-get-new-version.js",
+    "release:phase2": "nx run-many --target=release:phase2 --all",
+    "release:phase3": "node --experimental-specifier-resolution=node ./script/releaseV2/phase3-git-commit-tag-push",
+    "release:phase4": "nx run-many --target=release:phase4 --all"
   },
   "workspaces": [
     "packages/*",
