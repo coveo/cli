@@ -164,7 +164,6 @@
     "test": "jest --colors",
     "lint": "prettier --config ../../.prettierrc.js --check . && eslint .",
     "release:phase2": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase2-bump-all-packages.mjs",
-    "release:phase4": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase4-npm-publish-packages.mjs",
     "postpack": "rimraf oclif.manifest.json",
     "version": "rimraf lib && npm run build && oclif-dev manifest && oclif-dev readme"
   },

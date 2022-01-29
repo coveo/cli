@@ -2,9 +2,10 @@ import {
   getCurrentVersion,
   gitCommit,
   gitTag,
+  gitPush,
 } from '@coveo/semantic-monorepo-tools';
 
-// Get all commits since last release bump the root package.json version.
+// Commit, tag and push
 (async () => {
   const PATH = '.';
   const versionPrefix = 'v';
@@ -14,4 +15,6 @@ import {
     PATH
   );
   gitTag(releaseVersion, versionPrefix);
+  // TODO PRE_NX: Enable gitPush
+  //gitPush(); we don't want to push the tags while testing
 })();
