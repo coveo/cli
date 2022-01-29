@@ -1,6 +1,6 @@
 {
   "name": "@coveo/angular",
-  "version": "1.24.1",
+  "version": "1.25.0",
   "description": "Coveo schematic for angular",
   "scripts": {
     "snyk:prepare": "cp ../../package-lock.json ./package-lock.json && npm i",
@@ -30,7 +30,7 @@
     "@angular-devkit/schematics": "13.2.0",
     "@angular/cdk": "13.2.0",
     "@angular/cli": "13.2.0",
-    "@coveo/search-token-server": "*",
+    "@coveo/search-token-server": "1.25.0",
     "@schematics/angular": "13.2.0",
     "jest-config": "^27.4.7",
     "typescript": "^4.3.5"
