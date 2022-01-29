@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli",
-  "version": "1.24.1",
+  "version": "1.25.0",
   "author": "Coveo",
   "description": "Coveo CLI",
   "engines": {
