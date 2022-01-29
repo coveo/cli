@@ -13,7 +13,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "snyk:prepare": "cp ../../package-lock.json ./package-lock.json && npm i",
+    "snyk:prepare": "cp ../../package-lock.json ./package-lock.json && npm i && node --loader ts-node/esm ./script/npmInstallTemplate.ts",
     "start": "./index.js",
     "build": "tsc -p tsconfig.json",
     "prepublishOnly": "npm run build",
