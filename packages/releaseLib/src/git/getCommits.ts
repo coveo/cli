@@ -1,20 +1,20 @@
-import { spawnSync } from "node:child_process";
-import { randomBytes } from "node:crypto";
+import {spawnSync} from 'node:child_process';
+import {randomBytes} from 'node:crypto';
 
 export default function (
   projectPath: string,
   from: string,
-  to: string = "HEAD"
+  to: string = 'HEAD'
 ) {
-  const delimiter = `<--- ${randomBytes(64).toString("hex")} --->`;
+  const delimiter = `<--- ${randomBytes(64).toString('hex')} --->`;
   const gitParams = [
-    "log",
+    'log',
     `--pretty=format:%B%n-hash-%n%H ${delimiter}`,
-    "--dense",
+    '--dense',
     `${from}..${to}`,
     projectPath,
   ];
-  const gitPs = spawnSync("git", gitParams, { encoding: "ascii" });
+  const gitPs = spawnSync('git', gitParams, {encoding: 'ascii'});
   return gitPs.stdout
     .split(delimiter)
     .map((str) => str.trim())

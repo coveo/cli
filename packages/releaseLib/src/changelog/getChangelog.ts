@@ -1,8 +1,5 @@
-import changelogWriter, {
-  Context,
-  Options,
-} from "conventional-changelog-writer";
-import type { Commit } from "conventional-commits-parser";
+import changelogWriter, {Context, Options} from 'conventional-changelog-writer';
+import type {Commit} from 'conventional-commits-parser';
 
 export default function (
   parsedCommits: Array<Commit>,
@@ -14,12 +11,12 @@ export default function (
     ...writerContext,
     version: newVersion,
   };
-  let changelog = "";
+  let changelog = '';
   const changelogStream = changelogWriter(ctx, writerOpts);
-  changelogStream.on("data", (data) => (changelog += data.toString()));
+  changelogStream.on('data', (data) => (changelog += data.toString()));
   parsedCommits.forEach((commit) => changelogStream.write(commit));
   changelogStream.end();
   return new Promise<string>((resolve) =>
-    changelogStream.on("finish", () => resolve(changelog))
+    changelogStream.on('finish', () => resolve(changelog))
   );
 }

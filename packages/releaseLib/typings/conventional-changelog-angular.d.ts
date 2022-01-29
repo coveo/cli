@@ -1,5 +1,5 @@
-declare module "conventional-changelog-angular" {
-  import type { Commit } from "conventional-commits-parser";
+declare module 'conventional-changelog-angular' {
+  import type {Commit} from 'conventional-commits-parser';
 
   interface RecommendedBumpOptions {
     parserOpts: ParserOpts;

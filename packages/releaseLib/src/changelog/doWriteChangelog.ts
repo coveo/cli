@@ -1,4 +1,4 @@
-import { join } from "node:path";
+import {join} from 'node:path';
 import {
   createReadStream,
   createWriteStream,
@@ -6,11 +6,11 @@ import {
   truncateSync,
   writeFileSync,
   ReadStream,
-} from "node:fs";
-import tempfile from "tempfile";
+} from 'node:fs';
+import tempfile from 'tempfile';
 
 export default async function (PATH: string, changelog: string) {
-  const changelogPath = join(PATH, "CHANGELOG.md");
+  const changelogPath = join(PATH, 'CHANGELOG.md');
   ensureChangelogExist(changelogPath);
 
   const previousChangelogReadable = await getPreviousChangelogStream(
@@ -22,13 +22,13 @@ export default async function (PATH: string, changelog: string) {
   changelogWritable.write(changelog);
 
   return new Promise((resolve) => {
-    previousChangelogReadable.pipe(changelogWritable).once("finish", resolve);
+    previousChangelogReadable.pipe(changelogWritable).once('finish', resolve);
   });
 }
 
 function ensureChangelogExist(changelogPath: string) {
-  if (!statSync(changelogPath, { throwIfNoEntry: false })) {
-    writeFileSync(changelogPath, "");
+  if (!statSync(changelogPath, {throwIfNoEntry: false})) {
+    writeFileSync(changelogPath, '');
   }
 }
 
@@ -37,6 +37,6 @@ function getPreviousChangelogStream(changelogPath: string) {
   return new Promise<ReadStream>((resolve) => {
     createReadStream(changelogPath)
       .pipe(createWriteStream(tmp))
-      .once("finish", () => resolve(createReadStream(tmp)));
+      .once('finish', () => resolve(createReadStream(tmp)));
   });
 }

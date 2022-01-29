@@ -1,4 +1,4 @@
-import { sync, Commit, Options } from "conventional-commits-parser";
+import {sync, Commit, Options} from 'conventional-commits-parser';
 
 /**
  * Format raw commits into objects
