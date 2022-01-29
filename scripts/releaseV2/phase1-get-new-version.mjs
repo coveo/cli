@@ -19,5 +19,6 @@ import {
   const bumpInfo = awaitedangular.recommendedBumpOpts.whatBump(parsedCommits);
   const currentVersion = getCurrentVersion(PATH);
   const newVersion = getNextVersion(currentVersion, bumpInfo);
+  console.log(`NEW VERSION ${newVersion}`);
   npmBumpVersion(newVersion, PATH);
 })();

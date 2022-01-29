@@ -160,14 +160,13 @@
   "repository": "coveo/cli",
   "scripts": {
     "snyk:prepare": "cp ../../package-lock.json ./package-lock.json && npm i",
-    "postpack": "rimraf oclif.manifest.json",
-    "prepack": "rimraf lib && npm run build && oclif-dev manifest && oclif-dev readme",
     "build": "tsc -p tsconfig.json",
     "test": "jest --colors",
     "lint": "prettier --config ../../.prettierrc.js --check . && eslint .",
-    "version": "oclif-dev readme && git add README.md",
-    "release:phase2": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase2-bump-all-packages.js",
-    "release:phase4": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase4-npm-publish-packages.js"
+    "release:phase2": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase2-bump-all-packages.mjs",
+    "release:phase4": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase4-npm-publish-packages.mjs",
+    "postpack": "rimraf oclif.manifest.json",
+    "version": "rimraf lib && npm run build && oclif-dev manifest && oclif-dev readme",
   },
   "types": "lib/index.d.ts",
   "publishConfig": {
