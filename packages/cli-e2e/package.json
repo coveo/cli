@@ -17,6 +17,7 @@
     "url": "git+https://github.com/coveo/cli.git"
   },
   "scripts": {
+    "snyk:prepare": "cp ../../package-lock.json ./package-lock.json && npm i",
     "lint": "eslint .",
     "test-e2e": "npm run test:headless",
     "test:headless": "node ./entrypoints/entry.js",

@@ -159,6 +159,7 @@
   },
   "repository": "coveo/cli",
   "scripts": {
+    "snyk:prepare": "cp ../../package-lock.json ./package-lock.json && npm i",
     "postpack": "rimraf oclif.manifest.json",
     "prepack": "rimraf lib && npm run build && oclif-dev manifest && oclif-dev readme",
     "build": "tsc -p tsconfig.json",

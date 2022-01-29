@@ -82,7 +82,8 @@
     "prepare": "husky install",
     "commit-msg": "node ./hooks/commit-msg.js",
     "pre-commit": "lint-staged",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "snyk:prepare": "nx run-many --target=snyk:prepare --all"
   },
   "workspaces": [
     "packages/*",

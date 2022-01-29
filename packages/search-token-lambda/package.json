@@ -9,6 +9,7 @@
     "directory": "packages/search-token-lambda"
   },
   "scripts": {
+    "snyk:prepare": "cp ../../package-lock.json ./package-lock.json && npm i",
     "start": "netlify functions:serve",
     "test": "jest",
     "test:watch": "jest --watch",
