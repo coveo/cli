@@ -1,8 +1,6 @@
 {
-    "root": "packages/create-atomic",
-    "sourceRoot": "packages/create-atomic/src",
-    "projectType": "application",
-    "implicitDependencies": [
-        "create-atomic-template"
-    ]
+  "root": "packages/create-atomic",
+  "sourceRoot": "packages/create-atomic/src",
+  "projectType": "application",
+  "implicitDependencies": ["{{project}}"]
 }

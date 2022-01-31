@@ -1,6 +1,14 @@
 {
-    "name": "create-atomic-template",
-    "root": "packages/create-atomic/templates",
-    "sourceRoot": "packages/create-atomic/templates/src",
-    "projectType": "library"
+  "name": "{{project}}",
+  "root": "packages/create-atomic/templates",
+  "sourceRoot": "packages/create-atomic/templates/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "exit 0"
+      }
+    }
+  }
 }

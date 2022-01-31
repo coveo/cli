@@ -1,5 +1,5 @@
 {
-    "root": "packages/cli",
-    "sourceRoot": "packages/cli/src",
-    "projectType": "application"
+  "root": "packages/cli",
+  "sourceRoot": "packages/cli/src",
+  "projectType": "application"
 }
