@@ -1,13 +1,20 @@
 import {NodePlopAPI} from 'plop';
 import {spawn} from 'child_process';
 import {getPackageManager} from './utils.js';
+import {fetchPageDownload, PageDownload} from './fetch-page.js';
 
 interface PromptsAnswers {
   project: string;
+  'page-id': string;
+  'platform-url': string;
+  'org-id': string;
+  'api-key': string;
 }
 
 export default function (plop: NodePlopAPI) {
   const currentPath = process.cwd();
+  let pageDownload: PageDownload;
+
   plop.setGenerator('@coveo/atomic', {
     description: 'A Coveo Atomic Generator',
     prompts: [
@@ -51,8 +58,44 @@ export default function (plop: NodePlopAPI) {
         message:
           'The name of the security identity to impersonate, e.g. "alicesmith@example.com". See https://docs.coveo.com/en/56/#name-string-required.',
       },
+      {
+        type: 'input',
+        name: 'page-id',
+        default: '',
+        message:
+          'The hosted search page ID, e.g. "7944ff4a-9943-4999-a3f6-3e81a7f6fb0a".',
+      },
     ],
     actions: [
+      function downloadSearchPagePrompt(answers: PromptsAnswers) {
+        if (answers['page-id'] !== '') {
+          return 'Downloading Hosted Search Page';
+        }
+      },
+      async function downloadSearchPage(answers: PromptsAnswers) {
+        if (answers['page-id'] === '') {
+          return;
+        }
+
+        try {
+          console.log(answers['platform-url']);
+          pageDownload = await fetchPageDownload(
+            'http://localhost:8222',
+            // answers['platform-url'],
+            answers['org-id'],
+            answers['page-id'],
+            answers['api-key']
+          );
+
+          console.log('pageDownloadContent', pageDownload);
+
+          return 'Hosted Search Page Downloaded';
+        } catch (error) {
+          throw new Error(
+            `There was an error downloading search page with id "${answers['page-id']}" from the organization "${answers['org-id']}"`
+          );
+        }
+      },
       {
         type: 'add',
         path: currentPath + '/{{project}}/.env',
@@ -74,6 +117,8 @@ export default function (plop: NodePlopAPI) {
           '../templates/README.md',
         ],
       },
+      // TODO: modify content with download
+      {type: 'modify', path: '../templates/src/'},
       function installPackagesPrompt() {
         return 'Installing packages...';
       },

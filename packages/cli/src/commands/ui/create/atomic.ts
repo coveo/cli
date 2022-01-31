@@ -20,6 +20,7 @@ import {getPackageVersion} from '../../../lib/utils/misc';
 
 interface AtomicArguments {
   name: string;
+  pageId?: string;
 }
 
 export default class Atomic extends Command {
@@ -33,6 +34,11 @@ export default class Atomic extends Command {
       name: 'name',
       description: 'The name of the application to create.',
       required: true,
+    },
+    {
+      name: 'page-id',
+      description: 'The hosted search page ID.',
+      required: false,
     },
   ];
   public static flags = {
@@ -83,6 +89,8 @@ export default class Atomic extends Command {
       '--user',
       userInfo.providerUsername,
     ];
+
+    this.args.pageId && cliArgs.push('--page-id', this.args.pageId);
 
     return spawnProcess(appendCmdIfWindows`npx`, cliArgs);
   }
