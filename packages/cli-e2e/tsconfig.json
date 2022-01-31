@@ -4,7 +4,7 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "strict": true,
-    ,
+
     "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
     "types": ["jest"],

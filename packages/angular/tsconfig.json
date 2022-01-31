@@ -8,7 +8,7 @@
     "rootDir": "src/",
     "skipDefaultLibCheck": true,
     "experimentalDecorators": true,
-    ,
+
     "strictNullChecks": true,
     "target": "es6",
     "types": ["jest", "node"]
