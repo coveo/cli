@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "experimentalDecorators": true,
     "declaration": true,
@@ -13,7 +13,7 @@
     "strict": true,
     "target": "es2019",
     "noEmitOnError": false,
-    "skipLibCheck": true,
+    ,
     "types": ["node", "jest"],
     "esModuleInterop": true
   },
