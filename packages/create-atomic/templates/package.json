@@ -15,8 +15,8 @@
     "site:deploy": "npm run site:link && npm run build && netlify env:import .env && netlify deploy --prod --open"
   },
   "dependencies": {
-    "@coveo/atomic": "latest",
-    "@coveo/search-token-lambda": "latest"
+    "@coveo/atomic": "^1.24.1",
+    "@coveo/search-token-lambda": "^1.24.1"
   },
   "devDependencies": {
     "css-loader": "6.5.1",

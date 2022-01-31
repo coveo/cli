@@ -68,7 +68,7 @@
   },
   "scripts": {
     "clean": "rimraf package-lock.json node_modules",
-    "build": "nx run-many --target=build --all",
+    "build": "nx run-many --target=build --all --exclude={{project}}",
     "test": "nx run-many --target=test --all",
     "lint": "nx run-many --target=lint --all && prettier --ignore-path .ci.prettierignore --check . && eslint .",
     "commit": "git-cz",

@@ -1,0 +1,5 @@
+{
+    "root": "packages/cra-template",
+    "sourceRoot": "packages/cra-template/template",
+    "projectType": "application"
+}
