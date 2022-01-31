@@ -1,7 +1,6 @@
 import {spawn} from 'node:child_process';
 import {join} from 'node:path';
 import {cwd} from 'node:process';
-import {copyFileSync} from 'fs';
 import {appendCmdIfWindows} from '../src/utils.js';
 
 (async () =>
