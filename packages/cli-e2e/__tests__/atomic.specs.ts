@@ -129,7 +129,7 @@ describe('ui:create:atomic', () => {
 
     it('should not contain console errors nor warnings', async () => {
       await page.goto(searchPageEndpoint, {
-        waitUntil: 'networkidle0',
+        waitUntil: 'networkidle2',
       });
 
       expect(consoleInterceptor.interceptedMessages).toEqual([]);
@@ -137,7 +137,7 @@ describe('ui:create:atomic', () => {
 
     it('should contain a search page section', async () => {
       await page.goto(searchPageEndpoint, {
-        waitUntil: 'networkidle0',
+        waitUntil: 'networkidle2',
       });
 
       expect(
