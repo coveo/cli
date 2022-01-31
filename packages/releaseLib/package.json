@@ -11,8 +11,7 @@
     "prestart": "npm run build",
     "predebug": "npm run build",
     "start": "node --experimental-specifier-resolution=node dist",
-    "debug": "node --inspect-brk --experimental-specifier-resolution=node dist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "debug": "node --inspect-brk --experimental-specifier-resolution=node dist"
   },
   "keywords": [],
   "author": "",
