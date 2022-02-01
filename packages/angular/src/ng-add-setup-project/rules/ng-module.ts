@@ -1,10 +1,4 @@
-import {
-  addDeclarationToModule,
-  addSymbolToNgModuleMetadata,
-  addImportToModule,
-} from '@angular/cdk/schematics';
-import {basename, dirname} from 'path';
-import {classify} from '@angular-devkit/core/src/utils/strings';
+import {addImportToModule} from '@angular/cdk/schematics';
 import {createSourceFile, ScriptTarget} from 'typescript';
 import {getAppModulePath, getProjectMainFile} from '@angular/cdk/schematics';
 import {InsertChange} from '@schematics/angular/utility/change';
@@ -32,11 +26,7 @@ export function updateNgModule(
     );
     const updateRecorder = tree.beginUpdate(appModulePath);
 
-    const changes = [
-      ...injectInitService(source, appModulePath),
-      ...getAllCoveoComponentsToInject(tree, source, appModulePath),
-      ...injectAdditionalImports(source, appModulePath),
-    ];
+    const changes = getAdditionalImports(source, appModulePath);
 
     changes.map((change) => {
       if (change instanceof InsertChange) {
@@ -70,74 +60,13 @@ function getDefaultAppModuleContent() {
     `;
 }
 
-function isTypeScriptSourceFile(action: Action) {
-  return (
-    action.path.endsWith('.ts') &&
-    !action.path.endsWith('.d.ts') &&
-    !action.path.endsWith('.spec.ts')
-  );
-}
-
-function isCreateAction(action: Action) {
-  return action.kind === 'c';
-}
-
-function injectInitService(source: SourceFile, appModulePath: string) {
-  const changes: InsertChange[] = [];
-
-  changes.push(
-    ...(addSymbolToNgModuleMetadata(
-      source,
-      appModulePath,
-      'providers',
-      'InitProvider',
-      './init.service'
-    ) as InsertChange[])
-  );
-
-  return changes;
-}
-
-function getAllCoveoComponentsToInject(
-  tree: Tree,
-  source: SourceFile,
-  appModulePath: string
-) {
-  const changes: InsertChange[] = [];
-
-  tree.actions
-    .filter(isTypeScriptSourceFile)
-    .filter(isCreateAction)
-    .map((action) => {
-      const componentName = basename(dirname(action.path));
-      const fileLocation = `./${componentName}/${basename(action.path, '.ts')}`;
-
-      changes.push(
-        ...(addDeclarationToModule(
-          source,
-          appModulePath,
-          `${classify(componentName)}Component`,
-          fileLocation
-        ) as InsertChange[])
-      );
-    });
-  return changes;
-}
-
-export function injectAdditionalImports(
+export function getAdditionalImports(
   source: SourceFile,
   appModulePath: string
 ) {
   const modules = {
-    MatAutocompleteModule: '@angular/material/autocomplete',
-    MatFormFieldModule: '@angular/material/form-field',
-    ReactiveFormsModule: '@angular/forms',
-    MatInputModule: '@angular/material/input',
-    MatListModule: '@angular/material/list',
-    MatPaginatorModule: '@angular/material/paginator',
-    MatSelectModule: '@angular/material/select',
-    MatButtonModule: '@angular/material/button',
     AppRoutingModule: './app-routing.module',
+    CoveoComponentsModule: './coveo.components.module',
   };
 
   const changes: InsertChange[] = [];
