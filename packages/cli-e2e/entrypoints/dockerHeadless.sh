@@ -18,7 +18,6 @@ yarn config set -- --mutex network
 yarn config set -- --install.silent true
 yarn config set -- --silent true
 
-npm run npm:bump:template
 
 npm run npm:publish:template
 

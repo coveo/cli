@@ -76,7 +76,6 @@
     "release:changelog": "node ./scripts/release-changelog.js",
     "npm:publish:template": "nx run-many --target=npm:publish:template --all",
     "npm:publish:template:local": "nx run-many --target=npm:publish:template:local --all",
-    "npm:bump:template": "nx run-many --target=npm:bump:template --all",
     "prepare": "husky install",
     "commit-msg": "node ./hooks/commit-msg.js",
     "pre-commit": "lint-staged",

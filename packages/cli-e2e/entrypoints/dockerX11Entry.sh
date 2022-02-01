@@ -16,7 +16,6 @@ npm set registry http://verdaccio:4873
 yarn config set registry http://verdaccio:4873
 ts-node --transpile-only ./packages/cli-e2e/utils/npmLogin.ts
 
-npm run npm:bump:template
 
 npm run npm:publish:template:local
 
