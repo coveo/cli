@@ -1,9 +1,0 @@
-{
-  "packages": ["packages/*"],
-  "command": {
-    "version": {
-      "message": "[Version bump] chore(release): publish %s"
-    }
-  },
-  "version": "1.24.1"
-}
