@@ -17,10 +17,9 @@ jobs:
       - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
         with:
           # pulls all commits (needed for computing the next version)
-          # see https://stackoverflow.com/a/60184319/9285308 & https://github.com/actions/checkout
           fetch-depth: 0
       # pulls all tags (needed for computing the next version)
-      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/* # see https://stackoverflow.com/a/60184319/9285308
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*``
       - uses: actions/setup-node@1f8c6b94b26d0feae1e387ca63ccbdc44d27b561 # renovate: tag=v2
         with:
           node-version: '16'
