@@ -147,14 +147,14 @@ describe('ui:create:atomic', () => {
 
     it('should send a search query when the page is loaded', async () => {
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-      await page.waitForSelector(searchInterfaceSelector);
+      await page.waitForSelector(searchInterfaceSelector + '.hydrated');
 
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
     }, 60e3);
 
     it('should retrieve the search token on the page load', async () => {
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-      await page.waitForSelector(searchInterfaceSelector);
+      await page.waitForSelector(searchInterfaceSelector + '.hydrated');
 
       expect(
         JSON.parse(
