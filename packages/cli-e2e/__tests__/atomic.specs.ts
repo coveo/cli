@@ -127,31 +127,6 @@ describe('ui:create:atomic', () => {
       await serverProcessManager.killAllProcesses();
     }, 5 * 30e3);
 
-    it('should not contain console errors nor warnings', async () => {
-      await page.goto(searchPageEndpoint, {
-        waitUntil: 'networkidle0',
-      });
-
-      expect(consoleInterceptor.interceptedMessages).toEqual([]);
-    }, 60e3);
-
-    it('should contain a search page section', async () => {
-      await page.goto(searchPageEndpoint, {
-        waitUntil: 'networkidle0',
-      });
-
-      expect(
-        await page.$(searchInterfaceSelector + '.hydrated')
-      ).not.toBeNull();
-    }, 60e3);
-
-    it('should send a search query when the page is loaded', async () => {
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-      await page.waitForSelector(searchInterfaceSelector);
-
-      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-    }, 60e3);
-
     it('should retrieve the search token on the page load', async () => {
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchInterfaceSelector);
@@ -163,6 +138,29 @@ describe('ui:create:atomic', () => {
       ).toMatchObject({
         token: expect.stringMatching(jwtTokenPattern),
       });
+    }, 60e3);
+
+    it('should send a search query when the page is loaded', async () => {
+      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchInterfaceSelector);
+
+      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+    }, 60e3);
+
+    it('should not contain console errors nor warnings', async () => {
+      await page.goto(searchPageEndpoint, {
+        waitUntil: 'networkidle2',
+      });
+
+      expect(consoleInterceptor.interceptedMessages).toEqual([]);
+    }, 60e3);
+
+    it('should contain a search page section', async () => {
+      await page.goto(searchPageEndpoint, {
+        waitUntil: 'networkidle2',
+      });
+
+      expect(await page.$(searchInterfaceSelector)).not.toBeNull();
     }, 60e3);
   });
 });
