@@ -147,11 +147,11 @@ describe('ui:create:atomic', () => {
       const response = await page.goto(tokenServerEndpoint, {
         waitUntil: 'networkidle2',
       });
-      const responseText = await response.text();
+      const responseObject = JSON.parse(await response.text());
       console.log('tokenServerEndpoint', response);
-      console.log('responseText', responseText);
+      console.log('responseObject', responseObject);
 
-      expect(responseText).toMatchObject({
+      expect(responseObject).toMatchObject({
         token: expect.stringMatching(jwtTokenPattern),
       });
     }, 60e3);
