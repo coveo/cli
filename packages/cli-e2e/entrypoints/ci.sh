@@ -38,7 +38,6 @@ yarn config set -- --mutex network
 yarn config set -- --install.silent true
 yarn config set -- --silent true
 cat $tmp_registry_log
-npm run npm:bump:template
 npm run npm:publish:template
 cd packages/cli-e2e
 node entrypoints/utils/wait-for-published-packages.js
