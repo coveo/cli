@@ -3,7 +3,7 @@ import {createSourceFile, ScriptTarget} from 'typescript';
 import {getAppModulePath, getProjectMainFile} from '@angular/cdk/schematics';
 import {InsertChange} from '@schematics/angular/utility/change';
 import {ProjectDefinition} from '@angular-devkit/core/src/workspace';
-import {Action, Rule, Tree} from '@angular-devkit/schematics';
+import {Rule, Tree} from '@angular-devkit/schematics';
 import {SourceFile} from 'typescript';
 import {CoveoSchema} from '../../schema';
 
