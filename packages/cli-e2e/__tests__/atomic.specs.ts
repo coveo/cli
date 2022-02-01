@@ -106,40 +106,31 @@ describe('ui:create:atomic', () => {
         'atomic-server-valid'
       );
       await waitForAppRunning(appTerminal);
-    }, 5 * 60e3);
-
-    beforeEach(async () => {
       consoleInterceptor = new BrowserConsoleInterceptor(page, projectName);
       await consoleInterceptor.startSession();
 
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);
       });
-    });
 
-    afterEach(async () => {
+      await page.goto(searchPageEndpoint, {
+        waitUntil: 'networkidle2',
+      });
+    }, 5 * 60e3);
+
+    afterAll(async () => {
+      console.log('interceptedRequests', interceptedRequests);
       page.removeAllListeners('request');
       interceptedRequests = [];
       await consoleInterceptor.endSession();
-    });
-
-    afterAll(async () => {
       await serverProcessManager.killAllProcesses();
     }, 5 * 30e3);
 
     it('should not contain console errors nor warnings', async () => {
-      await page.goto(searchPageEndpoint, {
-        waitUntil: 'networkidle2',
-      });
-
       expect(consoleInterceptor.interceptedMessages).toEqual([]);
     }, 60e3);
 
     it('should contain a search page section', async () => {
-      await page.goto(searchPageEndpoint, {
-        waitUntil: 'networkidle2',
-      });
-
       expect(await page.$(searchInterfaceSelector)).not.toBeNull();
     }, 60e3);
 
@@ -148,8 +139,6 @@ describe('ui:create:atomic', () => {
         waitUntil: 'networkidle2',
       });
       const responseObject = JSON.parse(await response.text());
-      console.log('tokenServerEndpoint', response);
-      console.log('responseObject', responseObject);
 
       expect(responseObject).toMatchObject({
         token: expect.stringMatching(jwtTokenPattern),
@@ -157,7 +146,6 @@ describe('ui:create:atomic', () => {
     }, 60e3);
 
     it('should send a search query when the page is loaded', async () => {
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchInterfaceSelector);
 
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
