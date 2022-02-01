@@ -127,24 +127,6 @@ describe('ui:create:atomic', () => {
       await serverProcessManager.killAllProcesses();
     }, 5 * 30e3);
 
-    it('should retrieve the search token on the page load', async () => {
-      const response = await page.goto(tokenServerEndpoint, {
-        waitUntil: 'networkidle2',
-      });
-      console.log('tokenServerEndpoint', response);
-
-      expect(response.text()).toMatchObject({
-        token: expect.stringMatching(jwtTokenPattern),
-      });
-    }, 60e3);
-
-    it('should send a search query when the page is loaded', async () => {
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-      await page.waitForSelector(searchInterfaceSelector);
-
-      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-    }, 60e3);
-
     it('should not contain console errors nor warnings', async () => {
       await page.goto(searchPageEndpoint, {
         waitUntil: 'networkidle2',
@@ -159,6 +141,26 @@ describe('ui:create:atomic', () => {
       });
 
       expect(await page.$(searchInterfaceSelector)).not.toBeNull();
+    }, 60e3);
+
+    it('should retrieve the search token on the page load', async () => {
+      const response = await page.goto(tokenServerEndpoint, {
+        waitUntil: 'networkidle2',
+      });
+      const responseText = await response.text();
+      console.log('tokenServerEndpoint', response);
+      console.log('responseText', responseText);
+
+      expect(responseText).toMatchObject({
+        token: expect.stringMatching(jwtTokenPattern),
+      });
+    }, 60e3);
+
+    it('should send a search query when the page is loaded', async () => {
+      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchInterfaceSelector);
+
+      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
     }, 60e3);
   });
 });
