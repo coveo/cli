@@ -86,8 +86,6 @@
   "files": [
     "/bin",
     "/lib",
-    "/patches",
-    "!/patches/*.dev.patch",
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
