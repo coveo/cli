@@ -143,15 +143,13 @@ describe('ui:create:atomic', () => {
       expect(await page.$(searchInterfaceSelector)).not.toBeNull();
     }, 60e3);
 
-    it.skip('should retrieve the search token on the page load', async () => {
-      const tokenResponseListener = page.waitForResponse(tokenServerEndpoint);
+    it('should retrieve the search token on the page load', async () => {
+      const response = await page.goto(tokenServerEndpoint, {
+        waitUntil: 'networkidle2',
+      });
+      const responseObject = JSON.parse(await response.text());
 
-      page.goto(searchPageEndpoint);
-      await page.waitForSelector(searchInterfaceSelector);
-
-      expect(
-        JSON.parse(await (await tokenResponseListener).text())
-      ).toMatchObject({
+      expect(responseObject).toMatchObject({
         token: expect.stringMatching(jwtTokenPattern),
       });
     }, 60e3);
