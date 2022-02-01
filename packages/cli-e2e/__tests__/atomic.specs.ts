@@ -143,7 +143,7 @@ describe('ui:create:atomic', () => {
       expect(await page.$(searchInterfaceSelector)).not.toBeNull();
     }, 60e3);
 
-    it('should retrieve the search token on the page load', async () => {
+    it.skip('should retrieve the search token on the page load', async () => {
       const tokenResponseListener = page.waitForResponse(tokenServerEndpoint);
 
       page.goto(searchPageEndpoint);
