@@ -55,6 +55,3 @@ jobs:
           git remote set-url origin git@coveo-cli:coveo/cli.git
       - name: Release
         run: npm run release
-      # TODO: move it to the npm script
-      # - name: Create GitHub release.
-      #   run: npm run release:changelog

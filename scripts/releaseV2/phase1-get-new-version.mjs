@@ -2,7 +2,6 @@ import {
   getLastTag,
   parseCommits,
   getCommits,
-  angular,
   getCurrentVersion,
   getNextVersion,
   npmBumpVersion,

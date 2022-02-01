@@ -22,6 +22,7 @@
     "@types/conventional-commits-parser": "^3.0.2",
     "@types/git-raw-commits": "^2.0.1",
     "@types/semver": "^7.3.9",
+    "octokit": "^1.7.1",
     "rimraf": "^3.0.2",
     "ts-node": "^10.4.0"
   },

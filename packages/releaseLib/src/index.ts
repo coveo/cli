@@ -10,3 +10,4 @@ export {default as generateChangelog} from './changelog/getChangelog';
 export {default as getNextVersion} from './version/getNextVersion';
 export {default as getCurrentVersion} from './version/getCurrentVersion';
 export {default as parseCommits} from './semantic/getParsedCommits';
+export {default as createGitHubRelease} from './github/doCreateRelease';

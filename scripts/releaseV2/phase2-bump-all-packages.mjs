@@ -2,7 +2,6 @@ import {
   getLastTag,
   parseCommits,
   getCommits,
-  angular,
   npmBumpVersion,
   npmPublish,
   generateChangelog,
@@ -10,15 +9,16 @@ import {
 } from '@coveo/semantic-monorepo-tools';
 import {spawnSync} from 'child_process';
 import {readFileSync} from 'fs';
+import angularChangelogConvention from 'conventional-changelog-angular';
 
 // Run on each package, it generate the changelog, install the latest dependencies that are part of the workspace, publish the package.
 (async () => {
   const PATH = '.';
   const versionPrefix = 'v';
-  const awaitedangular = await angular;
+  const convention = await angularChangelogConvention;
   const lastTag = getLastTag(versionPrefix);
   const commits = getCommits(PATH, lastTag);
-  const parsedCommits = parseCommits(commits, awaitedangular.parserOpts);
+  const parsedCommits = parseCommits(commits, convention.parserOpts);
   const newVersion = getReleaseVersion();
   const changelog = await generateChangelog(
     parsedCommits,
@@ -28,7 +28,7 @@ import {readFileSync} from 'fs';
       owner: 'coveo',
       repository: 'cli',
     },
-    awaitedangular.writerOpts
+    convention.writerOpts
   );
   await writeChangelog(PATH, changelog);
   updateWorkspaceDependencies();
