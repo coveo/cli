@@ -125,34 +125,36 @@ describe('ui:create:atomic', () => {
       await serverProcessManager.killAllProcesses();
     }, 5 * 30e3);
 
-    it('should not contain console errors nor warnings', async () => {
-      await page.goto(searchPageEndpoint, {
-        waitUntil: 'networkidle2',
-      });
+    // it('should not contain console errors nor warnings', async () => {
+    //   await page.goto(searchPageEndpoint, {
+    //     waitUntil: 'networkidle2',
+    //   });
 
-      expect(consoleInterceptor.interceptedMessages).toEqual([]);
-    }, 60e3);
+    //   expect(consoleInterceptor.interceptedMessages).toEqual([]);
+    // }, 60e3);
 
-    it('should contain a search page section', async () => {
-      await page.goto(searchPageEndpoint, {
-        waitUntil: 'networkidle2',
-      });
+    // it('should contain a search page section', async () => {
+    //   await page.goto(searchPageEndpoint, {
+    //     waitUntil: 'networkidle2',
+    //   });
 
-      expect(await page.$(searchInterfaceSelector)).not.toBeNull();
-    }, 60e3);
+    //   expect(await page.$(searchInterfaceSelector)).not.toBeNull();
+    // }, 60e3);
 
-    it('should send a search query when the page is loaded', async () => {
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-      await page.waitForSelector(searchInterfaceSelector);
+    // it('should send a search query when the page is loaded', async () => {
+    //   await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+    //   await page.waitForSelector(searchInterfaceSelector);
 
-      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-    }, 60e3);
+    //   expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+    // }, 60e3);
 
     it('should send an analytics query after the initial search is complete', async () => {
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchInterfaceSelector);
 
+      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
       expect(interceptedRequests.some(isAnalyticsRequest)).toBeTruthy();
+      expect(consoleInterceptor.interceptedMessages).toEqual([]);
     }, 60e3);
   });
 });
