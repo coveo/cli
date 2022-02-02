@@ -17,7 +17,7 @@
     "url": "git+https://github.com/coveo/cli.git"
   },
   "scripts": {
-    "snyk:prepare": "rsync -r -m --ignore-existing --include=\"*/\" --include=\"package.json\" --exclude=\"*\" ../../node_modules .",
+    "snyk:prepare": "rsync -r -m --ignore-existing --include=\"*/\" --include=\"package.json\" --exclude=\"*\" ../../node_modules . && npm i --package-lock-only",
     "lint": "eslint .",
     "test-e2e": "npm run test:headless",
     "test:headless": "node ./entrypoints/entry.js",

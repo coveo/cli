@@ -9,7 +9,7 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "snyk:prepare": "rsync -r -m --ignore-existing --include=\"*/\" --include=\"package.json\" --exclude=\"*\" ../../node_modules .",
+    "snyk:prepare": "rsync -r -m --ignore-existing --include=\"*/\" --include=\"package.json\" --exclude=\"*\" ../../node_modules . && npm i --package-lock-only",
     "lint": "prettier --check . && eslint .",
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
     "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
