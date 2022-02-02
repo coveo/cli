@@ -67,27 +67,29 @@ export default function (plop: NodePlopAPI) {
       },
     ],
     actions: [
-      function downloadSearchPagePrompt(answers: PromptsAnswers) {
+      function downloadSearchPagePrompt(data) {
+        const answers = data as PromptsAnswers;
         if (answers['page-id'] !== '') {
           return 'Downloading Hosted Search Page';
         }
+
+        return '';
       },
-      async function downloadSearchPage(answers: PromptsAnswers) {
+      async function downloadSearchPage(data) {
+        const answers = data as PromptsAnswers;
         if (answers['page-id'] === '') {
-          return;
+          return '';
         }
 
         try {
-          console.log(answers['platform-url']);
           pageDownload = await fetchPageDownload(
+            // TODO: replace url
             'http://localhost:8222',
             // answers['platform-url'],
             answers['org-id'],
             answers['page-id'],
             answers['api-key']
           );
-
-          console.log('pageDownloadContent', pageDownload);
 
           return 'Hosted Search Page Downloaded';
         } catch (error) {
