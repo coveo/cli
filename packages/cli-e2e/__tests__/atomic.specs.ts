@@ -94,7 +94,7 @@ describe('ui:create:atomic', () => {
     let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
     let consoleInterceptor: BrowserConsoleInterceptor;
-    const searchInterfaceSelector = 'atomic-search-interface.hydrated';
+    const searchInterfaceSelector = 'atomic-search-interface';
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
