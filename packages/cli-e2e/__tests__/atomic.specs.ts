@@ -1,7 +1,7 @@
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {answerPrompt, getProjectPath, setupUIProject} from '../utils/cli';
-import {isAnalyticsRequest, isSearchRequest} from '../utils/platform';
+import {isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
