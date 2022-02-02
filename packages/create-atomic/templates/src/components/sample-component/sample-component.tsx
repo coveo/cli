@@ -10,7 +10,11 @@ import {
 } from '@coveo/atomic/headless';
 
 /**
- * Sample custom Atomic component, initializing itself agaisnt a parent search interface in order to retrieve the bindings.
+ * Sample custom Atomic component, initializing itself against a parent search interface in order to retrieve the bindings.
+ *
+ * This component showcase a custom made pagination component, for educational purpose.
+ *
+ * In a real life scenario, we still recommend using either https://docs.coveo.com/en/atomic/latest/reference/components/atomic-pager/ or https://docs.coveo.com/en/atomic/latest/reference/components/atomic-load-more-results/
  */
 @Component({
   tag: 'sample-component',
@@ -18,9 +22,18 @@ import {
   shadow: true,
 })
 export class SampleComponent {
+  // The Atomic bindings to be resolved on the parent atomic-search-interface.
+  // Used to access the Headless engine in order to create controllers, dispatch actions, access state, etc.
   private bindings?: Bindings;
+
+  // It is good practice to record possible errors thrown during the configuration.
   private error?: Error;
+
+  // Headless controller that contains the necessary methods
   private pagerController!: Pager;
+
+  // When disconnecting component from the page, it is recommended to remove
+  // state change listeners as well by calling the unsubscribe methods.
   private pagerUnsubscribe: Unsubscribe = () => {};
   private statusUnsubscribe: Unsubscribe = () => {};
   private i18nUnsubscribe = () => {};
@@ -28,17 +41,24 @@ export class SampleComponent {
   @Element() private host!: Element;
 
   // Headless controller state property, using the @State() decorator.
+  // Headless will automatically update these objects when the state related
+  // to the controller has changed.
   @State() private pagerState!: PagerState;
   @State() private statusState!: SearchStatusState;
 
   // It is recommended to initialize the bindings and the Headless controllers
-  // using the connectedCallback lifecycle method.
+  // using the connectedCallback lifecycle method with async/await.
+  // Using componentWillLoad will hang the parent atomic-search-interface initialization.
   public async connectedCallback() {
     try {
+      // Wait for the Atomic bindings to be resolved.
       this.bindings = await initializeBindings(this.host);
+
+      // Initialize controllers.
       const statusController = buildSearchStatus(this.bindings.engine);
       this.pagerController = buildPager(this.bindings.engine);
 
+      // Subscribe to controller state changes.
       this.statusUnsubscribe = statusController.subscribe(
         () => (this.statusState = statusController.state)
       );
@@ -47,6 +67,8 @@ export class SampleComponent {
       );
 
       // (Optional) To use if component needs to rerender when the Atomic i18n language changes.
+      // If your component does not use any strings, does not support multiple language,
+      // you can ignore everything related to i18n.
       const updateLanguage = () => forceUpdate(this);
       this.bindings!.i18n.on('languageChanged', updateLanguage);
       this.i18nUnsubscribe = () =>
@@ -57,6 +79,8 @@ export class SampleComponent {
     }
   }
 
+  // The disconnectedCallback lifecycle method should be used to unsubcribe controllers and
+  // possibly the i18n language change listener.
   public disconnectedCallback() {
     this.pagerUnsubscribe();
     this.statusUnsubscribe();

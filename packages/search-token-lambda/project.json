@@ -1,0 +1,5 @@
+{
+  "root": "packages/search-token-lambda",
+  "sourceRoot": "packages/search-token-lambda/functions",
+  "projectType": "library"
+}
