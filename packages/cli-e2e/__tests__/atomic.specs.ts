@@ -122,7 +122,7 @@ describe('ui:create:atomic', () => {
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);
         logStreamYolo.write(
-          `[${Date.now()}]: ${request.method()} ${request.url()}\n\tHEADERS: ${request.headers()}\n\tDATA:${request.postData()}`
+          `[${Date.now()}]: ${request.method()} ${request.url()}\n\tHEADERS: ${request.headers()}\n\tDATA:${request.postData()}\n`
         );
       });
     });
@@ -155,10 +155,12 @@ describe('ui:create:atomic', () => {
     }, 60e3);
 
     it('should retrieve the search token on the page load', async () => {
+      logStreamYolo.write(`[${Date.now()}]: START WAITING\n`);
       const tokenResponseListener = page.waitForResponse(tokenServerEndpoint);
 
       page.goto(searchPageEndpoint);
       await page.waitForSelector(searchInterfaceSelector);
+      logStreamYolo.write(`[${Date.now()}]: GOT SELECTOR\n`);
 
       expect(
         JSON.parse(await (await tokenResponseListener).text())
