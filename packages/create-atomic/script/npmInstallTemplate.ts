@@ -7,7 +7,7 @@ import {appendCmdIfWindows} from '../src/utils.js';
   await new Promise((resolve, reject) => {
     const childProcess = spawn(
       appendCmdIfWindows('npm'),
-      ['install', '--ignore-scripts'],
+      ['install', '--ignore-scripts', '--no-package-lock'],
       {
         stdio: 'inherit',
         cwd: join(cwd(), 'templates'),
