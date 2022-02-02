@@ -7,7 +7,7 @@ import {captureScreenshots, connectToChromeBrowser} from '../utils/browser';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 
-describe('auth', () => {
+describe.skip('auth', () => {
   describe('login', () => {
     const {
       ORG_ID: testOrg,
