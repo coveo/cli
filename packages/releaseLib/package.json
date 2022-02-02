@@ -1,0 +1,37 @@
+{
+  "name": "@coveo/semantic-monorepo-tools",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "snyk:prepare": "cp ../../package-lock.json ./package-lock.json && npm i",
+    "build": "npm run clean && tsc -p tsconfig.json",
+    "clean": "rimraf dist",
+    "prestart": "npm run build",
+    "predebug": "npm run build",
+    "start": "node --experimental-specifier-resolution=node dist",
+    "debug": "node --inspect-brk --experimental-specifier-resolution=node dist"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/conventional-changelog-writer": "^4.0.1",
+    "@types/conventional-commits-parser": "^3.0.2",
+    "@types/git-raw-commits": "^2.0.1",
+    "@types/semver": "^7.3.9",
+    "octokit": "^1.7.1",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.4.0"
+  },
+  "dependencies": {
+    "conventional-changelog-angular": "^5.0.13",
+    "conventional-changelog-writer": "^5.0.1",
+    "conventional-commits-parser": "^3.2.4",
+    "git-raw-commits": "^2.0.11",
+    "semver": "^7.3.5",
+    "tempfile": "^4.0.0"
+  }
+}
