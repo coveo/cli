@@ -3,7 +3,7 @@ import defaultTemplate from './default.html';
 
 /**
  * Component used to manage results & result templates.
- * https://docs.coveo.com/en/atomic/latest/usage/create-a-result-list/
+ * See https://docs.coveo.com/en/atomic/latest/usage/create-a-result-list/
  */
 @Component({
   tag: 'results-manager',
