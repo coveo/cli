@@ -158,9 +158,10 @@ describe('ui:create:atomic', () => {
       logStreamYolo.write(`[${Date.now()}]: START WAITING\n`);
       const tokenResponseListener = page.waitForResponse(tokenServerEndpoint);
 
-      page.goto(searchPageEndpoint);
-      await page.waitForSelector(searchInterfaceSelector);
-      logStreamYolo.write(`[${Date.now()}]: GOT SELECTOR\n`);
+      await page.goto(searchPageEndpoint, {
+        waitUntil: 'networkidle2',
+      });
+      logStreamYolo.write(`[${Date.now()}]: NET IDLE\n`);
 
       expect(
         JSON.parse(await (await tokenResponseListener).text())
