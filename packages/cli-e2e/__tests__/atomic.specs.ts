@@ -121,7 +121,9 @@ describe('ui:create:atomic', () => {
 
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);
-        logStreamYolo.write(`[${Date.now()}]: ${JSON.stringify(request)}`);
+        logStreamYolo.write(
+          `[${Date.now()}]: ${request.method()} ${request.url()}\n\tHEADERS: ${request.headers()}\n\tDATA:${request.postData()}`
+        );
       });
     });
 
