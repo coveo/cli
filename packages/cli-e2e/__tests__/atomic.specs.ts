@@ -1,12 +1,11 @@
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {answerPrompt, getProjectPath, setupUIProject} from '../utils/cli';
-import {isSearchRequest} from '../utils/platform';
+import {isAnalyticsRequest, isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {npm} from '../utils/windows';
-import {jwtTokenPattern} from '../utils/matcher';
 import {EOL} from 'os';
 
 describe('ui:create:atomic', () => {
@@ -16,7 +15,6 @@ describe('ui:create:atomic', () => {
   const oldEnv = process.env;
   const projectName = `${process.env.TEST_RUN_ID}-atomic-project`;
   const searchPageEndpoint = 'http://localhost:8888';
-  const tokenServerEndpoint = 'http://localhost:8888/.netlify/functions/token';
 
   const waitForAppRunning = (appTerminal: Terminal) =>
     appTerminal
@@ -96,7 +94,7 @@ describe('ui:create:atomic', () => {
     let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
     let consoleInterceptor: BrowserConsoleInterceptor;
-    const searchInterfaceSelector = 'atomic-search-interface';
+    const searchInterfaceSelector = 'atomic-search-interface.hydrated';
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
@@ -143,22 +141,18 @@ describe('ui:create:atomic', () => {
       expect(await page.$(searchInterfaceSelector)).not.toBeNull();
     }, 60e3);
 
-    it('should retrieve the search token on the page load', async () => {
-      const response = await page.goto(tokenServerEndpoint, {
-        waitUntil: 'networkidle2',
-      });
-      const responseObject = JSON.parse(await response.text());
-
-      expect(responseObject).toMatchObject({
-        token: expect.stringMatching(jwtTokenPattern),
-      });
-    }, 60e3);
-
     it('should send a search query when the page is loaded', async () => {
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchInterfaceSelector);
 
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+    }, 60e3);
+
+    it('should send an analytics query after the initial search is complete', async () => {
+      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchInterfaceSelector);
+
+      expect(interceptedRequests.some(isAnalyticsRequest)).toBeTruthy();
     }, 60e3);
   });
 });

@@ -21,6 +21,14 @@ export function isSearchRequest(request: HTTPRequest) {
   return request.url().startsWith(searchUrl.href);
 }
 
+export function isAnalyticsRequest(request: HTTPRequest) {
+  const searchUrl = new URL(
+    '/rest/ua/v15/analytics/search',
+    'https://analytics.cloud.coveo.com'
+  );
+  return request.url().startsWith(searchUrl.href);
+}
+
 export async function createOrg(
   name: string,
   accessToken: string,
