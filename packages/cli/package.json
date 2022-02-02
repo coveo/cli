@@ -158,7 +158,7 @@
   },
   "repository": "coveo/cli",
   "scripts": {
-    "snyk:prepare": "rsync -r -m --ignore-existing --include=\"*/\" --include=\"package.json\" --exclude=\"*\" ../../node_modules . && npm i --package-lock-only",
+    "snyk:prepare": "../../scripts/snyk_prepare.sh",
     "build": "tsc -p tsconfig.json",
     "test": "jest --colors",
     "lint": "prettier --config ../../.prettierrc.js --check . && eslint .",

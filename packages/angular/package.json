@@ -3,7 +3,7 @@
   "version": "1.24.1",
   "description": "Coveo schematic for angular",
   "scripts": {
-    "snyk:prepare": "rsync -r -m --ignore-existing --include=\"*/\" --include=\"package.json\" --exclude=\"*\" ../../node_modules . && npm i --package-lock-only",
+    "snyk:prepare": "../../scripts/snyk_prepare.sh",
     "test": "jest",
     "lint": "prettier --check . && eslint .",
     "build": "tsc -p tsconfig.json",

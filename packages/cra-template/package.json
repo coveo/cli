@@ -2,7 +2,7 @@
   "name": "@coveo/cra-template",
   "version": "1.24.1",
   "scripts": {
-    "snyk:prepare": "rsync -r -m --ignore-existing --include=\"*/\" --include=\"package.json\" --exclude=\"*\" ../../node_modules . && npm i --package-lock-only",
+    "snyk:prepare": "../../scripts/snyk_prepare.sh",
     "lint": "prettier --check . && eslint .",
     "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873",

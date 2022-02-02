@@ -9,7 +9,7 @@
     "directory": "packages/search-token-lambda"
   },
   "scripts": {
-    "snyk:prepare": "rsync -r -m --ignore-existing --include=\"*/\" --include=\"package.json\" --exclude=\"*\" ../../node_modules . && npm i --package-lock-only",
+    "snyk:prepare": "../../scripts/snyk_prepare.sh",
     "start": "netlify functions:serve",
     "test": "jest",
     "test:watch": "jest --watch",
