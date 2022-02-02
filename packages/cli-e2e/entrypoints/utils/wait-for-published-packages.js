@@ -16,35 +16,25 @@ const packagesToWait = [
   '@coveo/search-token-server',
 ];
 
-function getPackageLatestVersion(packageName) {
-  const ciTestVersion = spawnSync('npm', ['show', packageName, 'version']);
-  return ciTestVersion.stdout;
+function showPackage(packageName) {
+  spawnSync('npm', ['show', packageName]);
 }
 
-async function isLastTestVersionAvailable(packageName, lastVersion) {
-  const response = getPackageLatestVersion(packageName);
-  return response === lastVersion;
-}
-
-async function waitForPackage(packageName, version) {
+async function waitForPackage(packageName) {
   try {
     const pollInterval = 1e3;
-    await backOff(() => isLastTestVersionAvailable(packageName, version), {
+    await backOff(() => showPackage(packageName), {
       delayFirstAttempt: true,
       startingDelay: pollInterval,
       maxDelay: pollInterval * 30,
     });
   } catch (err) {
-    console.error(`Package ${packageName}@${version} does not exist`);
+    console.error(`Package ${packageName} does not exist`);
   }
 }
 
 async function main() {
-  return await Promise.all(
-    packagesToWait.map((pkg) =>
-      waitForPackage(pkg, process.env.UI_TEMPLATE_VERSION)
-    )
-  );
+  return await Promise.all(packagesToWait.map(waitForPackage));
 }
 
 main();

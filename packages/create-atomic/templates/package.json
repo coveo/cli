@@ -14,15 +14,15 @@
     "site:deploy": "npm run site:link && npm run build && netlify env:import .env && netlify deploy --prod --open"
   },
   "dependencies": {
-    "@coveo/atomic": "latest",
-    "@coveo/search-token-lambda": "latest"
+    "@coveo/atomic": "^1.23.7",
+    "@coveo/search-token-lambda": "1.24.1"
   },
   "devDependencies": {
-    "@stencil/core": "^2.12.1",
-    "gts": "^3.1.0",
-    "netlify-cli": "^8.6.23",
-    "prettier": "^2.5.1",
-    "rollup-plugin-dotenv": "^0.3.0",
-    "rollup-plugin-html": "^0.2.1"
+    "@stencil/core": "2.12.1",
+    "gts": "3.1.0",
+    "netlify-cli": "8.14.1",
+    "prettier": "2.5.1",
+    "rollup-plugin-dotenv": "0.3.0",
+    "rollup-plugin-html": "0.2.1"
   }
 }
