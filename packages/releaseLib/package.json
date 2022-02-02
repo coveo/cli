@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "snyk:prepare": "rsync -r ../../node_modules ./node_modules",
+    "snyk:prepare": "rsync -r -m --ignore-existing --include=\"*/\" --include=\"package.json\" --exclude=\"*\" ../../node_modules .",
     "build": "npm run clean && tsc -p tsconfig.json",
     "clean": "rimraf dist",
     "prestart": "npm run build",
