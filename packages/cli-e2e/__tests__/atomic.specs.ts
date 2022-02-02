@@ -148,7 +148,34 @@ describe('ui:create:atomic', () => {
     //   expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
     // }, 60e3);
 
-    it('should send an analytics query after the initial search is complete', async () => {
+    it('merged 1', async () => {
+      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchInterfaceSelector);
+
+      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+      expect(interceptedRequests.some(isAnalyticsRequest)).toBeTruthy();
+      expect(consoleInterceptor.interceptedMessages).toEqual([]);
+    }, 60e3);
+
+    it('merged 2', async () => {
+      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchInterfaceSelector);
+
+      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+      expect(interceptedRequests.some(isAnalyticsRequest)).toBeTruthy();
+      expect(consoleInterceptor.interceptedMessages).toEqual([]);
+    }, 60e3);
+
+    it('merged 3', async () => {
+      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchInterfaceSelector);
+
+      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+      expect(interceptedRequests.some(isAnalyticsRequest)).toBeTruthy();
+      expect(consoleInterceptor.interceptedMessages).toEqual([]);
+    }, 60e3);
+
+    it('merged 4', async () => {
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchInterfaceSelector);
 
