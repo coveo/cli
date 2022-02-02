@@ -24,7 +24,7 @@ jobs:
       - uses: actions/setup-node@1f8c6b94b26d0feae1e387ca63ccbdc44d27b561 # renovate: tag=v2
         with:
           node-version: '16'
-      - run: npm run setup
+      - run: npm i
       - name: Setup credentials
         run: |
           git config --global user.email action@github.com

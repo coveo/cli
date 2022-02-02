@@ -41,7 +41,7 @@ jobs:
         with:
           node-version: ${{matrix.node}}
       - name: Setup repo
-        run: npm run setup
+        run: npm i
       - name: Check linting
         run: npm run lint
       - name: Tests
