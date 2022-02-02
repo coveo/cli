@@ -158,7 +158,7 @@
   },
   "repository": "coveo/cli",
   "scripts": {
-    "snyk:prepare": "ln -s ../../node_modules ./node_modules",
+    "snyk:prepare": "rsync -r ../../node_modules ./node_modules",
     "build": "tsc -p tsconfig.json",
     "test": "jest --colors",
     "lint": "prettier --config ../../.prettierrc.js --check . && eslint .",
