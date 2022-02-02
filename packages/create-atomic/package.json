@@ -13,7 +13,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "snyk:prepare": "rsync -r -m --ignore-existing --include=\"*/\" --include=\"package.json\" --exclude=\"*\" ../../node_modules . && node --loader ts-node/esm ./script/npmInstallTemplate.ts",
+    "snyk:prepare": "node --loader ts-node/esm ./script/npmInstallTemplate.ts && rsync -r -m --ignore-existing --include=\"*/\" --include=\"package.json\" --exclude=\"*\" ../../node_modules .",
     "start": "./index.js",
     "build": "tsc -p tsconfig.json",
     "prepublishOnly": "npm run build",
