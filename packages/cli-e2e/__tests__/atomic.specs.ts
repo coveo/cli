@@ -153,8 +153,6 @@ describe('ui:create:atomic', () => {
       await page.waitForSelector(searchInterfaceSelector);
 
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-      expect(interceptedRequests.some(isAnalyticsRequest)).toBeTruthy();
-      expect(consoleInterceptor.interceptedMessages).toEqual([]);
     }, 60e3);
 
     it('merged 2', async () => {
@@ -162,8 +160,6 @@ describe('ui:create:atomic', () => {
       await page.waitForSelector(searchInterfaceSelector);
 
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-      expect(interceptedRequests.some(isAnalyticsRequest)).toBeTruthy();
-      expect(consoleInterceptor.interceptedMessages).toEqual([]);
     }, 60e3);
 
     it('merged 3', async () => {
@@ -171,8 +167,6 @@ describe('ui:create:atomic', () => {
       await page.waitForSelector(searchInterfaceSelector);
 
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-      expect(interceptedRequests.some(isAnalyticsRequest)).toBeTruthy();
-      expect(consoleInterceptor.interceptedMessages).toEqual([]);
     }, 60e3);
 
     it('merged 4', async () => {
@@ -180,8 +174,27 @@ describe('ui:create:atomic', () => {
       await page.waitForSelector(searchInterfaceSelector);
 
       expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-      expect(interceptedRequests.some(isAnalyticsRequest)).toBeTruthy();
-      expect(consoleInterceptor.interceptedMessages).toEqual([]);
+    }, 60e3);
+
+    it('merged 5', async () => {
+      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchInterfaceSelector);
+
+      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+    }, 60e3);
+
+    it('merged 6', async () => {
+      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchInterfaceSelector);
+
+      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+    }, 60e3);
+
+    it('merged 7', async () => {
+      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+      await page.waitForSelector(searchInterfaceSelector);
+
+      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
     }, 60e3);
   });
 });
