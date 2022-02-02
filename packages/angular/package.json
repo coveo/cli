@@ -3,7 +3,7 @@
   "version": "1.24.1",
   "description": "Coveo schematic for angular",
   "scripts": {
-    "snyk:prepare": "cp ../../package-lock.json ./package-lock.json && npm i",
+    "snyk:prepare": "ln -s ../../node_modules ./node_modules",
     "test": "jest",
     "lint": "prettier --check . && eslint .",
     "build": "tsc -p tsconfig.json",
