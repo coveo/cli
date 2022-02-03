@@ -38,7 +38,6 @@ cat $tmp_registry_log
 npm run npm:publish:template
 cd packages/cli-e2e
 node entrypoints/utils/wait-for-published-packages.js
-yarn config delete -- --mutex
 echo "::endgroup::"
 
 # Wait for Chrome to be up and running
