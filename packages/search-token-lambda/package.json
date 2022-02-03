@@ -9,7 +9,7 @@
     "directory": "packages/search-token-lambda"
   },
   "scripts": {
-    "snyk:prepare": "../../scripts/snyk_prepare.sh",
+    "snyk:prepare": "npm i",
     "start": "netlify functions:serve",
     "test": "jest",
     "test:watch": "jest --watch",

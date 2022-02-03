@@ -9,7 +9,7 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "snyk:prepare": "../../scripts/snyk_prepare.sh",
+    "snyk:prepare": "npm i",
     "lint": "prettier --check . && eslint .",
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
     "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
