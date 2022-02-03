@@ -31,6 +31,7 @@ import {npm} from '../utils/windows';
 import axios from 'axios';
 import {jwtTokenPattern} from '../utils/matcher';
 
+// TODO CDX-804: Enable the tests back
 describe.skip('ui:create:angular', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
