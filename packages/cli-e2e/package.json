@@ -17,7 +17,7 @@
     "url": "git+https://github.com/coveo/cli.git"
   },
   "scripts": {
-    "snyk:prepare": "npm i",
+    "snyk:prepare": "rimraf node_modules && npm i",
     "lint": "eslint .",
     "test-e2e": "npm run test:headless",
     "test:headless": "node ./entrypoints/entry.js",

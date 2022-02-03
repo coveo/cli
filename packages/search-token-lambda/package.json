@@ -9,7 +9,7 @@
     "directory": "packages/search-token-lambda"
   },
   "scripts": {
-    "snyk:prepare": "npm i",
+    "snyk:prepare": "rimraf node_modules && npm i",
     "start": "netlify functions:serve",
     "test": "jest",
     "test:watch": "jest --watch",

@@ -121,7 +121,7 @@
         "description": "(beta) manage your organization resources"
       },
       "org:resources:model": {
-        "description:": "(beta) manage your Snapshot Pull Model"
+        "description": "(beta) manage your Snapshot Pull Model"
       },
       "org:search": {
         "description": "perform queries against a coveo index"
@@ -158,7 +158,7 @@
   },
   "repository": "coveo/cli",
   "scripts": {
-    "snyk:prepare": "npm i",
+    "snyk:prepare": "rimraf node_modules && npm i",
     "build": "tsc -p tsconfig.json",
     "test": "jest --colors",
     "lint": "prettier --config ../../.prettierrc.js --check . && eslint .",
