@@ -17,7 +17,7 @@ import {cwd} from 'process';
 import {EOL} from 'os';
 config({path: getPathToHomedirEnvFile()});
 
-describe.skip('org:resources', () => {
+describe('org:resources', () => {
   const testOrgId = process.env.TEST_ORG_ID!;
   const {accessToken} = getConfig();
   const snapshotProjectPath = join('snapshot-project');
