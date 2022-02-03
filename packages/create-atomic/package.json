@@ -13,7 +13,7 @@
   "scripts": {
     "start": "./index.js",
     "build": "tsc -p tsconfig.json",
-    "prepublishOnly": "npm run build && ./scripts/prepareTemplate.sh",
+    "prepublishOnly": "npm run build && ./scripts/preparePackageJsonTemplate.sh",
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
     "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
     "lint": "prettier --check . && eslint .",
