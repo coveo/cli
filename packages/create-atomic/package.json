@@ -14,7 +14,7 @@
     "snyk:prepare": "node --loader ts-node/esm ./script/npmInstallTemplate.ts && npm i",
     "start": "./index.js",
     "build": "tsc -p tsconfig.json",
-    "prepublishOnly": "npm run build && jq '.name= \"{{project}}\"' ./templates/package.json > ./templates/package.json",
+    "prepublishOnly": "npm run build && (jq '.name= \"{{project}}\"' ./templates/package.json) > ./templates/package.json",
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
     "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
     "lint": "prettier --check . && eslint .",
