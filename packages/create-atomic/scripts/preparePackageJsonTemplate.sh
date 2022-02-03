@@ -1,0 +1,1 @@
+jq '.name="{{project}}" | .scripts.postinstall= "npm run setup-lambda && npm run setup-cleanup"' ./templates/package.json > ./templates/package.json.hbs

@@ -62,10 +62,6 @@ export default function (plop: NodePlopAPI) {
         type: 'addMany',
         destination: currentPath + '/{{project}}/',
         base: '../templates',
-        data: {
-          postinstall: 'postinstall',
-          postinstallScript: 'npm run setup-lambda && npm run setup-cleanup',
-        },
         templateFiles: [
           '../templates/src/*',
           '../templates/src/style/*',
@@ -74,11 +70,15 @@ export default function (plop: NodePlopAPI) {
           '../templates/.env.example',
           '../templates/.gitignore',
           '../templates/tsconfig.json',
-          '../templates/package.json',
           '../templates/webpack.config.mjs',
           '../templates/netlify.toml',
           '../templates/README.md',
         ],
+      },
+      {
+        type: 'add',
+        path: currentPath + '/{{project}}/package.json',
+        templateFile: '../templates/package.json.hbs',
       },
       function installPackagesPrompt() {
         return 'Installing packages...';

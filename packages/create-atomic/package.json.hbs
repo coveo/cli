@@ -1,5 +1,5 @@
 {
-  "name": "@coveo/create-atomic-template",
+  "name": "{{project}}",
   "description": "{{titleCase project}} project",
   "version": "0.1.0",
   "private": true,
@@ -11,7 +11,8 @@
     "dev:live": "npm run site:link && netlify dev --live",
     "site:init": "netlify init",
     "site:link": "netlify link",
-    "site:deploy": "npm run site:link && npm run build && netlify env:import .env && netlify deploy --prod --open"
+    "site:deploy": "npm run site:link && npm run build && netlify env:import .env && netlify deploy --prod --open",
+    "postinstall": "npm run setup-lambda && npm run setup-cleanup"
   },
   "dependencies": {
     "@coveo/atomic": "1.23.7",
