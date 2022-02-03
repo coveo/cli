@@ -33,7 +33,9 @@ git config --global user.email "notgroot@coveo.com"
 echo "::group::Publishing UI templates"
 npm config set registry http://localhost:4873
 ts-node --transpile-only ./packages/cli-e2e/utils/npmLogin.ts
-yarn config set  npmPublishRegistry http://localhost:4873
+echo 'npmRegistryServer: "http://localhost:4873"' >> .yarnrc.yml
+echo 'unsafeHttpWhitelist:"' >> .yarnrc.yml
+echo '  - localhost"' >> .yarnrc.yml
 cat $tmp_registry_log
 npm run npm:publish:template
 cd packages/cli-e2e
