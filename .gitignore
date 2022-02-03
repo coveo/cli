@@ -16,3 +16,4 @@ artifacts
 ui-projects
 
 !.vscode/extensions.json
+topology.json

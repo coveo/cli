@@ -1,41 +1,4 @@
 {
-  "ignorePatterns": ["node_modules"],
-  "env": {
-    "jest": true
-  },
-  "extends": ["prettier"],
-  "parserOptions": {
-    "ecmaVersion": 2020,
-    "sourceType": "module"
-  },
-  "overrides": [
-    {
-      "files": ["**/*.ts", "**/*.tsx"],
-      "parser": "@typescript-eslint/parser",
-      "plugins": ["@typescript-eslint"],
-      "extends": ["./node_modules/gts"],
-      "parserOptions": {
-        "jsxPragma": "h"
-      },
-      "rules": {
-        "@typescript-eslint/no-unused-vars": [
-          "error",
-          {"ignoreRestSiblings": true, "argsIgnorePattern": "^_"}
-        ],
-        "@typescript-eslint/explicit-member-accessibility": "error",
-        "@typescript-eslint/prefer-for-of": "error"
-      }
-    },
-    {
-      "files": ["**/*.js", "**/*.jsx"],
-      "extends": ["eslint:recommended"],
-      "rules": {
-        "no-unused-vars": ["error", {"argsIgnorePattern": "^_"}]
-      },
-      "env": {
-        "node": true
-      }
-    }
-  ],
-  "root": true
+  "extends": "./base.eslintrc",
+  "ignorePatterns": ["node_modules", "packages"]
 }

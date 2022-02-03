@@ -25,7 +25,6 @@ jobs:
       # ID of the organization to log into for the e2e tests
       ORG_ID: ${{ secrets.ORG_ID }}
       COVEO_DISABLE_AUTOUPDATE: true
-      UI_TEMPLATE_VERSION: '0.0.0'
     steps:
       - name: Setup runner
         if: ${{matrix.os == 'ubuntu-latest'}}
@@ -41,7 +40,7 @@ jobs:
         with:
           node-version: ${{matrix.node}}
       - name: Setup repo
-        run: npm run setup
+        run: npm install
       - name: Check linting
         run: npm run lint
       - name: Tests

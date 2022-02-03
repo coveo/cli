@@ -39,9 +39,9 @@ jobs:
         with:
           node-version: '16'
       - name: Setup
-        run: npm run setup
+        run: npm i
       - name: Get tag
-        run: node ./scripts/get-tag.js
+        run: node ./scripts/get-tag.js # ToDo (PRE_NX): replace by some jq magic
       - name: Create install kits
         working-directory: ./packages/cli
         run: ./node_modules/@oclif/dev-cli/bin/run pack${{ matrix.pack-command }}
