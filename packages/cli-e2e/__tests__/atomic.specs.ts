@@ -1,5 +1,10 @@
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
-import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
+import {
+  captureScreenshots,
+  getNewBrowser,
+  LOGS_PATH,
+  openNewPage,
+} from '../utils/browser';
 import {answerPrompt, getProjectPath, setupUIProject} from '../utils/cli';
 import {isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
@@ -7,6 +12,8 @@ import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {npm} from '../utils/windows';
 import {EOL} from 'os';
+import {createWriteStream, WriteStream} from 'fs';
+import {join} from 'path';
 
 describe('ui:create:atomic', () => {
   let browser: Browser;
@@ -15,6 +22,7 @@ describe('ui:create:atomic', () => {
   const oldEnv = process.env;
   const projectName = `${process.env.TEST_RUN_ID}-atomic-project`;
   const searchPageEndpoint = 'http://localhost:8888';
+  const stencilEndpoint = 'http://localhost:3333';
 
   const waitForAppRunning = (appTerminal: Terminal) =>
     appTerminal
@@ -63,8 +71,9 @@ describe('ui:create:atomic', () => {
     );
     return serverTerminal;
   };
-
+  let logStreamYolo: WriteStream;
   beforeAll(async () => {
+    logStreamYolo = createWriteStream(join(LOGS_PATH, 'LEEROY_JENKINS'));
     const buildProcessManager = new ProcessManager();
     processManagers.push(buildProcessManager);
     browser = await getNewBrowser();
@@ -94,8 +103,7 @@ describe('ui:create:atomic', () => {
     let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
     let consoleInterceptor: BrowserConsoleInterceptor;
-    const searchInterfaceSelector = 'atomic-search-interface';
-
+    const searchInterfaceSelector = 'atomic-search-interface.hydrated';
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
@@ -112,6 +120,9 @@ describe('ui:create:atomic', () => {
 
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);
+        logStreamYolo.write(
+          `[${Date.now()}]: ${request.method()} ${request.url()}\n\tHEADERS: ${request.headers()}\n\tDATA:${request.postData()}\n`
+        );
       });
     });
 
@@ -123,74 +134,11 @@ describe('ui:create:atomic', () => {
 
     afterAll(async () => {
       await serverProcessManager.killAllProcesses();
+      logStreamYolo.end();
     }, 5 * 30e3);
 
-    // it('should not contain console errors nor warnings', async () => {
-    //   await page.goto(searchPageEndpoint, {
-    //     waitUntil: 'networkidle2',
-    //   });
-
-    //   expect(consoleInterceptor.interceptedMessages).toEqual([]);
-    // }, 60e3);
-
-    // it('should contain a search page section', async () => {
-    //   await page.goto(searchPageEndpoint, {
-    //     waitUntil: 'networkidle2',
-    //   });
-
-    //   expect(await page.$(searchInterfaceSelector)).not.toBeNull();
-    // }, 60e3);
-
-    // it('should send a search query when the page is loaded', async () => {
-    //   await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-    //   await page.waitForSelector(searchInterfaceSelector);
-
-    //   expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-    // }, 60e3);
-
-    it('merged 1', async () => {
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-      await page.waitForSelector(searchInterfaceSelector);
-
-      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-    }, 60e3);
-
-    it('merged 2', async () => {
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-      await page.waitForSelector(searchInterfaceSelector);
-
-      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-    }, 60e3);
-
-    it('merged 3', async () => {
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-      await page.waitForSelector(searchInterfaceSelector);
-
-      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-    }, 60e3);
-
-    it('merged 4', async () => {
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-      await page.waitForSelector(searchInterfaceSelector);
-
-      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-    }, 60e3);
-
-    it('merged 5', async () => {
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-      await page.waitForSelector(searchInterfaceSelector);
-
-      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-    }, 60e3);
-
-    it('merged 6', async () => {
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-      await page.waitForSelector(searchInterfaceSelector);
-
-      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-    }, 60e3);
-
-    it('merged 7', async () => {
+    it('should send a search query when the page is loaded', async () => {
+      await page.goto(stencilEndpoint, {waitUntil: 'networkidle2'});
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchInterfaceSelector);
 
