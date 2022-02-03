@@ -91,6 +91,5 @@
   ],
   "dependencies": {
     "jest-config": "^27.4.7"
-  },
-  "packageManager": "yarn@3.1.1"
+  }
 }
