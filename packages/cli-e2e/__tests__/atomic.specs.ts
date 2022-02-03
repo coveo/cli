@@ -22,7 +22,7 @@ describe('ui:create:atomic', () => {
   const oldEnv = process.env;
   const projectName = `${process.env.TEST_RUN_ID}-atomic-project`;
   const searchPageEndpoint = 'http://localhost:8888';
-  const stencilEndpoint = 'http://localhost:3333';
+  // const stencilEndpoint = 'http://localhost:3333';
 
   const waitForAppRunning = (appTerminal: Terminal) =>
     appTerminal
@@ -137,12 +137,19 @@ describe('ui:create:atomic', () => {
       logStreamYolo.end();
     }, 5 * 30e3);
 
-    it('should send a search query when the page is loaded', async () => {
-      await page.goto(stencilEndpoint, {waitUntil: 'networkidle2'});
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-      await page.waitForSelector(searchInterfaceSelector);
+    it(
+      'should send a search query when the page is loaded',
+      async () => {
+        await page.goto(searchPageEndpoint);
+        await page.waitForResponse(
+          'http://localhost:8888/.netlify/functions/token',
+          {timeout: 60e3}
+        );
+        await page.waitForSelector(searchInterfaceSelector);
 
-      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-    }, 60e3);
+        expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+      },
+      3 * 60e3
+    );
   });
 });
