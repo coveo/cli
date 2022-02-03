@@ -79,7 +79,7 @@ The project is still under heavy development and more features are coming, stay 
 To install all dependencies and link local packages, run:
 
 ```sh
-npm run setup
+npm i
 ```
 
 To run the local version of the CLI
