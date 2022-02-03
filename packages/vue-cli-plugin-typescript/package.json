@@ -9,7 +9,6 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "snyk:prepare": "rimraf node_modules && npm i",
     "lint": "prettier --check . && eslint .",
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
     "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",

@@ -2,7 +2,6 @@
   "name": "@coveo/cra-template",
   "version": "1.24.1",
   "scripts": {
-    "snyk:prepare": "rimraf node_modules && npm i",
     "lint": "prettier --check . && eslint .",
     "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
