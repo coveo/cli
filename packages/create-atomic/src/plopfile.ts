@@ -62,6 +62,10 @@ export default function (plop: NodePlopAPI) {
         type: 'addMany',
         destination: currentPath + '/{{project}}/',
         base: '../templates',
+        data: {
+          postinstall: 'postinstall',
+          postinstallScript: 'npm run setup-lambda && npm run setup-cleanup',
+        },
         templateFiles: [
           '../templates/src/*',
           '../templates/src/style/*',

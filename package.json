@@ -37,7 +37,7 @@
     "gts": "3.1.0",
     "husky": "7.0.4",
     "isomorphic-fetch": "3.0.0",
-    "lint-staged": "12.3.2",
+    "lint-staged": "12.3.3",
     "moment": "2.29.1",
     "octokit": "^1.7.1",
     "patch-package": "^6.4.7",
@@ -88,9 +88,10 @@
   },
   "workspaces": [
     "packages/*",
-    "packages/create-atomic/template"
+    "packages/create-atomic/templates"
   ],
   "dependencies": {
     "jest-config": "^27.4.7"
-  }
+  },
+  "packageManager": "yarn@3.1.1"
 }

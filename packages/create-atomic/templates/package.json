@@ -1,10 +1,10 @@
 {
-  "name": "{{project}}",
+  "name": "@coveo/create-atomic-template",
   "description": "{{titleCase project}} project",
   "version": "0.1.0",
-  "private": "true",
+  "private": true,
   "scripts": {
-    "postinstall": "npm run setup-lambda && npm run setup-cleanup",
+    "{{postinstall}}": "{{postinstallScript}}",
     "setup-lambda": "node ./scripts/setup-lambda.js",
     "setup-cleanup": "node ./scripts/clean-up.js",
     "build": "NODE_ENV=production webpack",
@@ -15,7 +15,7 @@
     "site:deploy": "npm run site:link && npm run build && netlify env:import .env && netlify deploy --prod --open"
   },
   "dependencies": {
-    "@coveo/atomic": "^1.23.7",
+    "@coveo/atomic": "1.23.7",
     "@coveo/search-token-lambda": "1.24.1"
   },
   "devDependencies": {
