@@ -12,7 +12,7 @@ import {
   getAuthenticationStatus,
 } from '../../lib/platform/authenticatedClient';
 import hook, {AnalyticsHook} from './analytics';
-import {IConfig} from '@oclif/config';
+import {Interfaces} from '@oclif/core';
 import {PlatformClient} from '@coveord/platform-client';
 import {configurationMock} from '../../__stub__/configuration';
 import {fancyIt} from '../../__test__/it';
@@ -41,7 +41,7 @@ describe('analytics_hook', () => {
           key: 'value',
         },
       },
-      config: {} as IConfig,
+      config: {} as Interfaces.Config,
       ...input,
     };
   };
@@ -94,7 +94,7 @@ describe('analytics_hook', () => {
   };
 
   beforeAll(() => {
-    global.config = {configDir: 'the_config_dir'} as IConfig;
+    global.config = {configDir: 'the_config_dir'} as Interfaces.Config;
   });
 
   beforeEach(() => {

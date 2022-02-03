@@ -1,4 +1,4 @@
-import {Command, flags} from '@oclif/command';
+import {Command, Flags} from '@oclif/core';
 import {Config} from '../../lib/config/config';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {PlatformEnvironment} from '../../lib/platform/environment';
@@ -16,7 +16,7 @@ export default class Token extends Command {
   public static flags = {
     ...withRegion(),
     ...withEnvironment(),
-    token: flags.string({
+    token: Flags.string({
       char: 't',
       description:
         'The API-Key that shall be used to authenticate you to the organization. See <https://github.com/coveo/cli/wiki/Using-the-CLI-using-an-API-Key>.',
@@ -28,14 +28,14 @@ export default class Token extends Command {
   @Trackable({eventName: 'auth login token'})
   public async run() {
     this.configuration = new Config(this.config.configDir, this.error);
-    this.saveToken();
-    this.saveRegionAndEnvironment();
+    await this.saveToken();
+    await this.saveRegionAndEnvironment();
     await this.fetchAndSaveOrgId();
     await this.feedbackOnSuccessfulLogin();
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     throw err;
   }
 
@@ -53,14 +53,14 @@ export default class Token extends Command {
     `);
   }
 
-  private saveToken() {
-    const flags = this.flags;
+  private async saveToken() {
+    const {flags} = await this.parse(Token);
     this.configuration.set('accessToken', flags.token);
     this.configuration.set('anonymous', true);
   }
 
-  private saveRegionAndEnvironment() {
-    const flags = this.flags;
+  private async saveRegionAndEnvironment() {
+    const {flags} = await this.parse(Token);
     const cfg = this.configuration;
     cfg.set('environment', flags.environment as PlatformEnvironment);
     cfg.set('region', flags.region as Region);
@@ -71,11 +71,6 @@ export default class Token extends Command {
       'organization',
       await this.pickFirstAvailableOrganization()
     );
-  }
-
-  private get flags() {
-    const {flags} = this.parse(Token);
-    return flags;
   }
 
   private async pickFirstAvailableOrganization() {

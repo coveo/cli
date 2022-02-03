@@ -1,7 +1,7 @@
 // See https://stackoverflow.com/questions/68322578/recent-updated-version-of-types-node-is-creating-an-error-the-previous-versi
 /* eslint-disable no-var */
 
-import {IConfig} from '@oclif/config';
+import {Interfaces} from '@oclif/core';
 export declare global {
-  var config: IConfig;
+  var config: Interfaces.Config;
 }

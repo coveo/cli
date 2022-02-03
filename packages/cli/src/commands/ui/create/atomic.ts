@@ -1,4 +1,4 @@
-import {Command, flags} from '@oclif/command';
+import {Command, Flags} from '@oclif/core';
 import {
   Preconditions,
   IsAuthenticated,
@@ -18,10 +18,6 @@ import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {platformUrl} from '../../../lib/platform/environment';
 import {getPackageVersion} from '../../../lib/utils/misc';
 
-interface AtomicArguments {
-  name: string;
-}
-
 export default class Atomic extends Command {
   public static cliPackage = '@coveo/create-atomic';
   public static requiredNodeVersion = '>=14.0.0';
@@ -36,7 +32,7 @@ export default class Atomic extends Command {
     },
   ];
   public static flags = {
-    version: flags.string({
+    version: Flags.string({
       char: 'v',
       description: `The version of ${Atomic.cliPackage} to use.`,
       default: getPackageVersion(Atomic.cliPackage) || 'latest',
@@ -58,22 +54,21 @@ export default class Atomic extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     throw err;
   }
 
   private async createProject() {
+    const {flags, args} = await this.parse(Atomic);
     const cfg = this.configuration.get();
     const authenticatedClient = new AuthenticatedClient();
     const userInfo = await authenticatedClient.getUserInfo();
-    const apiKey = await authenticatedClient.createImpersonateApiKey(
-      this.args.name
-    );
+    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
 
     const cliArgs = [
-      `${Atomic.cliPackage}@${this.flags.version}`,
+      `${Atomic.cliPackage}@${flags.version}`,
       '--project',
-      this.args.name,
+      args.name,
       '--org-id',
       cfg.organization,
       '--api-key',
@@ -89,15 +84,5 @@ export default class Atomic extends Command {
 
   private get configuration() {
     return new Config(this.config.configDir, this.error);
-  }
-
-  private get args() {
-    const {args} = this.parse<{}, AtomicArguments>(Atomic);
-    return args;
-  }
-
-  private get flags() {
-    const {flags} = this.parse(Atomic);
-    return flags;
   }
 }

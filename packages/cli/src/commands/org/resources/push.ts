@@ -1,5 +1,4 @@
-import {cli} from 'cli-ux';
-import {flags, Command} from '@oclif/command';
+import {Flags, Command, CliUx} from '@oclif/core';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
@@ -40,20 +39,20 @@ export default class Push extends Command {
     ...wait(),
     ...sync(),
     ...previewLevel(),
-    target: flags.string({
+    target: Flags.string({
       char: 't',
       description:
         'The unique identifier of the organization where to send the changes. If not specified, the organization you are connected to will be used.',
       helpValue: 'destinationorganizationg7dg3gd',
       required: false,
     }),
-    deleteMissingResources: flags.boolean({
+    deleteMissingResources: Flags.boolean({
       char: 'd',
       description: 'Delete missing resources when enabled',
       default: false,
       required: false,
     }),
-    skipPreview: flags.boolean({
+    skipPreview: Flags.boolean({
       char: 's',
       description:
         'Do not preview changes before applying them to the organization',
@@ -71,22 +70,21 @@ export default class Push extends Command {
     this.warn(
       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
     );
-    const {flags} = this.parse(Push);
+    const {flags} = await this.parse(Push);
     const target = await getTargetOrg(this.configuration, flags.target);
-    const cfg = await this.configuration.get();
+    const cfg = this.configuration.get();
+    const options = await this.getOptions();
     const {reporter, snapshot, project} = await dryRun(
       target,
       this.projectPath,
       cfg,
-      this.options
+      options
     );
 
     if (!flags.skipPreview) {
-      await snapshot.preview(
-        project,
-        this.options.deleteMissingResources,
-        this.shouldDisplayExpandedPreview()
-      );
+      const display = await this.shouldDisplayExpandedPreview();
+      const {deleteMissingResources} = await this.getOptions();
+      await snapshot.preview(project, deleteMissingResources, display);
     }
 
     await this.processReportAndExecuteRemainingActions(snapshot, reporter);
@@ -94,13 +92,13 @@ export default class Push extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     cleanupProject(this.projectPath);
     handleSnapshotError(err);
   }
 
-  private shouldDisplayExpandedPreview() {
-    const {flags} = this.parse(Push);
+  private async shouldDisplayExpandedPreview() {
+    const {flags} = await this.parse(Push);
     return flags.previewLevel === PreviewLevelValue.Detailed;
   }
 
@@ -109,7 +107,7 @@ export default class Push extends Command {
     reporter: SnapshotReporter
   ) {
     if (!reporter.isSuccessReport()) {
-      const cfg = await this.configuration.get();
+      const cfg = this.configuration.get();
       await handleReportWithErrors(snapshot, cfg, this.projectPath);
     }
     await this.handleValidReport(reporter, snapshot);
@@ -128,7 +126,7 @@ export default class Push extends Command {
       return;
     }
 
-    const {flags} = this.parse(Push);
+    const {flags} = await this.parse(Push);
     const canBeApplied = flags.skipPreview || (await this.askForConfirmation());
 
     if (canBeApplied) {
@@ -137,7 +135,7 @@ export default class Push extends Command {
   }
 
   private async askForConfirmation(): Promise<boolean> {
-    const {flags} = this.parse(Push);
+    const {flags} = await this.parse(Push);
     const target = await getTargetOrg(this.configuration, flags.target);
     const question = `\nWould you like to apply these changes to the org ${bold(
       target
@@ -146,24 +144,25 @@ export default class Push extends Command {
   }
 
   private async applySnapshot(snapshot: Snapshot) {
-    cli.action.start('Applying snapshot');
-    const {flags} = this.parse(Push);
+    CliUx.ux.action.start('Applying snapshot');
+    const {flags} = await this.parse(Push);
+    const {waitUntilDone} = await this.getOptions();
     const reporter = await snapshot.apply(
       flags.deleteMissingResources,
-      this.options.waitUntilDone
+      waitUntilDone
     );
     const success = reporter.isSuccessReport();
 
     if (!success) {
-      const cfg = await this.configuration.get();
+      const cfg = this.configuration.get();
       await handleReportWithErrors(snapshot, cfg, this.projectPath);
     }
 
-    cli.action.stop(success ? green('✔') : red.bold('!'));
+    CliUx.ux.action.stop(success ? green('✔') : red.bold('!'));
   }
 
-  private get options(): DryRunOptions {
-    const {flags} = this.parse(Push);
+  private async getOptions(): Promise<DryRunOptions> {
+    const {flags} = await this.parse(Push);
     return {
       deleteMissingResources: flags.deleteMissingResources,
       waitUntilDone: {wait: flags.wait},

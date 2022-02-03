@@ -1,5 +1,5 @@
 import {SourceType, SourceVisibility} from '@coveord/platform-client';
-import {Command, flags} from '@oclif/command';
+import {Command, Flags} from '@oclif/core';
 import {green} from 'chalk';
 import dedent from 'ts-dedent';
 import {
@@ -14,7 +14,7 @@ export default class SourcePushNew extends Command {
     'Create a new push source in a Coveo organization';
 
   public static flags = {
-    sourceVisibility: flags.enum({
+    sourceVisibility: Flags.enum({
       options: [
         SourceVisibility.PRIVATE,
         SourceVisibility.SECURED,
@@ -38,7 +38,7 @@ export default class SourcePushNew extends Command {
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
-    const {flags, args} = this.parse(SourcePushNew);
+    const {flags, args} = await this.parse(SourcePushNew);
 
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();
@@ -61,7 +61,7 @@ export default class SourcePushNew extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     throw err;
   }
 }

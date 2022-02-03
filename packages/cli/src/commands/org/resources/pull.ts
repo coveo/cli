@@ -1,7 +1,6 @@
 import {ResourceSnapshotType} from '@coveord/platform-client';
-import {flags, Command} from '@oclif/command';
+import {Flags, Command, CliUx} from '@oclif/core';
 import {blueBright, bold} from 'chalk';
-import {cli} from 'cli-ux';
 import {readJsonSync} from 'fs-extra';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
@@ -39,33 +38,33 @@ export default class Pull extends Command {
 
   public static flags = {
     ...wait(),
-    target: flags.string({
+    target: Flags.string({
       char: 't',
       helpValue: 'targetorganizationg7dg3gd',
       required: false,
       description:
         'The unique identifier of the organization from which to pull the resources. If not specified, the organization you are connected to will be used.',
     }),
-    snapshotId: flags.string({
+    snapshotId: Flags.string({
       char: 's',
       exclusive: ['resourceTypes'],
       description:
         'The unique identifier of the snapshot to pull. If not specified, a new snapshot will be created. You can list available snapshot in your organization with org:resources:list',
     }),
-    git: flags.boolean({
+    git: Flags.boolean({
       char: 'g',
       description:
         'Whether to create a git repository when creating a new project.',
       default: true,
       allowNo: true,
     }),
-    overwrite: flags.boolean({
+    overwrite: Flags.boolean({
       char: 'o',
       description: 'Overwrite resources directory if it exists.',
       default: false,
     }),
-    resourceTypes: flags.build<ResourceSnapshotType>({
-      parse: (resourceType: ResourceSnapshotType) => resourceType,
+    resourceTypes: Flags.build<ResourceSnapshotType>({
+      parse: async (resourceType: ResourceSnapshotType) => resourceType,
     })({
       char: 'r',
       helpValue: 'type1 type2',
@@ -74,8 +73,8 @@ export default class Pull extends Command {
       options: Object.values(ResourceSnapshotType),
       default: Object.values(ResourceSnapshotType),
     }),
-    model: flags.build<SnapshotPullModel>({
-      parse: (input: string): SnapshotPullModel => {
+    model: Flags.build<SnapshotPullModel>({
+      parse: async (input: string): Promise<SnapshotPullModel> => {
         const model = readJsonSync(input);
         validateSnapshotPullModel(model);
         return model;
@@ -105,25 +104,25 @@ export default class Pull extends Command {
 
     const snapshot = await this.getSnapshot();
 
-    cli.action.start('Updating project with Snapshot');
+    CliUx.ux.action.start('Updating project with Snapshot');
     await this.refreshProject(project, snapshot);
 
     await snapshot.delete();
-    cli.action.stop('Project updated');
+    CliUx.ux.action.stop('Project updated');
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     cleanupProject(this.projectPath);
     handleSnapshotError(err);
     await this.displayAdditionalErrorMessage(err);
   }
 
-  private async displayAdditionalErrorMessage(err?: Error) {
+  private async displayAdditionalErrorMessage(err?: Record<string, unknown>) {
     if (err instanceof SnapshotOperationTimeoutError) {
       const snapshot = err.snapshot;
       const target = await this.getTargetOrg();
-      cli.log(
+      this.log(
         dedent`
 
           Once the snapshot is created, you can pull it with the following command:
@@ -136,7 +135,7 @@ export default class Pull extends Command {
   }
 
   private async refreshProject(project: Project, snapshot: Snapshot) {
-    const {flags} = this.parse(Pull);
+    const {flags} = await this.parse(Pull);
     if (flags.git && !project.contains('.git')) {
       await spawnProcess('git', ['init', `${this.projectPath}`], {
         stdio: 'ignore',
@@ -147,7 +146,7 @@ export default class Pull extends Command {
   }
 
   private async ensureProjectReset(project: Project) {
-    const {flags} = this.parse(Pull);
+    const {flags} = await this.parse(Pull);
     if (!flags.overwrite && project.contains(Project.resourceFolderName)) {
       const question = dedent`There is already a Coveo project with resources in it.
         This command will overwrite the ${Project.resourceFolderName} folder content, do you want to proceed? (y/n)`;
@@ -165,27 +164,25 @@ export default class Pull extends Command {
   }
 
   private async getSnapshot() {
-    const {flags} = this.parse(Pull);
+    const {flags} = await this.parse(Pull);
     const target = await this.getTargetOrg();
     if (flags.snapshotId) {
-      cli.action.start('Retrieving Snapshot');
+      CliUx.ux.action.start('Retrieving Snapshot');
+      const waitOption = await this.getWaitOption();
       return SnapshotFactory.createFromExistingSnapshot(
         flags.snapshotId,
         target,
-        this.waitOption
+        waitOption
       );
     }
     const resourcesToExport = await this.getResourceSnapshotTypesToExport();
-    cli.action.start(`Creating Snapshot from ${bold.cyan(target)}`);
-    return SnapshotFactory.createFromOrg(
-      resourcesToExport,
-      target,
-      this.waitOption
-    );
+    CliUx.ux.action.start(`Creating Snapshot from ${bold.cyan(target)}`);
+    const waitOption = await this.getWaitOption();
+    return SnapshotFactory.createFromOrg(resourcesToExport, target, waitOption);
   }
 
-  private get waitOption(): WaitUntilDoneOptions {
-    const {flags} = this.parse(Pull);
+  private async getWaitOption(): Promise<WaitUntilDoneOptions> {
+    const {flags} = await this.parse(Pull);
     return {wait: flags.wait};
   }
 
@@ -194,7 +191,7 @@ export default class Pull extends Command {
   }
 
   private async getResourceSnapshotTypesToExport(): Promise<SnapshotPullModelResources> {
-    const {flags} = this.parse(Pull);
+    const {flags} = await this.parse(Pull);
     if (flags.model) {
       const cfg = this.configuration.get();
       if (cfg.organization !== flags.model.orgId) {
@@ -217,7 +214,7 @@ export default class Pull extends Command {
   }
 
   private async getTargetOrg() {
-    const {flags} = this.parse(Pull);
+    const {flags} = await this.parse(Pull);
     return getTargetOrg(this.configuration, flags.model?.orgId || flags.target);
   }
 

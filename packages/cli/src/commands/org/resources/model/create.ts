@@ -1,4 +1,4 @@
-import {Command} from '@oclif/command';
+import {Command} from '@oclif/core';
 import {
   IsAuthenticated,
   Preconditions,
@@ -7,7 +7,6 @@ import {Trackable} from '../../../../lib/decorators/preconditions/trackable';
 import open from 'open';
 import {AuthenticatedClient} from '../../../../lib/platform/authenticatedClient';
 import {createSnapshotUrl} from '../../../../lib/platform/url';
-import {cli} from 'cli-ux';
 import dedent from 'ts-dedent';
 
 export default class Create extends Command {
@@ -20,7 +19,8 @@ export default class Create extends Command {
       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
     );
     await this.openPlatform();
-    cli.log(dedent`Make sure to save the resulting snapshot pull model, so you can later run
+    this
+      .log(dedent`Make sure to save the resulting snapshot pull model, so you can later run
     "org:resources:pull -m <path/to/snapshot/pull/model.json>" to create a snapshot of the target resources in your organization.`);
   }
 
@@ -38,7 +38,7 @@ export default class Create extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     throw err;
   }
 }

@@ -1,4 +1,4 @@
-import {Command} from '@oclif/command';
+import {Command} from '@oclif/core';
 import {Config} from '../../lib/config/config';
 import {ConfigRenderer} from '../../lib/config/configRenderer';
 import {Trackable} from '../../lib/decorators/preconditions/trackable';
@@ -22,14 +22,14 @@ export default class Get extends Command {
 
   @Trackable()
   public async run() {
-    const {args} = this.parse(Get);
+    const {args} = await this.parse(Get);
     const cfg = new Config(this.config.configDir, this.error);
     const keysToRender = args.key ? [args.key] : undefined;
     ConfigRenderer.render(cfg, keysToRender);
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     throw err;
   }
 }

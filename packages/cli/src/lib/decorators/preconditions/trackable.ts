@@ -1,4 +1,4 @@
-import type Command from '@oclif/command';
+import type {Command} from '@oclif/core';
 import {flush} from '../../../hooks/analytics/analytics';
 import {buildError, buildEvent} from '../../../hooks/analytics/eventUtils';
 
@@ -27,8 +27,8 @@ export function Trackable({
   eventName,
   overrideEventProperties,
 }: TrackableOptions = {}) {
-  return function (
-    _target: Command,
+  return function <T>(
+    _target: T,
     _propertyKey: string,
     descriptor: TypedPropertyDescriptor<() => Promise<void>>
   ) {

@@ -15,7 +15,7 @@ import {
   configurationMock,
   defaultConfiguration,
 } from '../../__stub__/configuration';
-import {IConfig} from '@oclif/config';
+import type {Interfaces} from '@oclif/core';
 import type {NodeClient} from '@amplitude/node';
 
 describe('identifier', () => {
@@ -98,7 +98,7 @@ describe('identifier', () => {
       configDir: 'the_config_dir',
       version: '1.2.3',
       platform: 'darwin',
-    } as IConfig;
+    } as Interfaces.Config;
   });
 
   beforeEach(() => {

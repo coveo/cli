@@ -1,4 +1,4 @@
-import {cli} from 'cli-ux';
+import {CliUx} from '@oclif/core';
 import {Project} from '../project/project';
 import {SnapshotFactory} from './snapshotFactory';
 import {Snapshot, WaitUntilDoneOptions} from './snapshot';
@@ -25,25 +25,25 @@ export async function dryRun(
   const project = new Project(normalize(projectPath), targetOrg);
   const snapshot = await getSnapshotForDryRun(project, targetOrg, options);
 
-  cli.action.start('Validating snapshot');
+  CliUx.ux.action.start('Validating snapshot');
   let reporter = await snapshot.validate(
     options.deleteMissingResources,
     options.waitUntilDone
   );
 
   if (snapshot.areResourcesInError()) {
-    cli.warn('Unsynchronized resource detected');
+    CliUx.ux.warn('Unsynchronized resource detected');
     const facade = new SnapshotFacade(snapshot, cfg, options.waitUntilDone);
     await facade.tryAutomaticSynchronization(!options.sync);
 
-    cli.action.start('Validating synchronized snapshot');
+    CliUx.ux.action.start('Validating synchronized snapshot');
     reporter = await snapshot.validate(
       options.deleteMissingResources,
       options.waitUntilDone
     );
   }
 
-  cli.action.stop(reporter.isSuccessReport() ? green('✔') : red.bold('!'));
+  CliUx.ux.action.stop(reporter.isSuccessReport() ? green('✔') : red.bold('!'));
   return {reporter, snapshot, project};
 }
 
@@ -68,9 +68,9 @@ export async function handleReportWithErrors(
   throw new SnapshotGenericError(snapshot, cfg, projectPath);
 }
 
-export function handleSnapshotError(err?: Error) {
-  if (cli.action.running) {
-    cli.action.stop(err?.name);
+export function handleSnapshotError(err?: Record<string, unknown>) {
+  if (CliUx.ux.action.running && typeof err?.name === 'string') {
+    CliUx.ux.action.stop(err?.name);
   }
 
   if (err instanceof PrintableError) {
@@ -95,13 +95,13 @@ async function getSnapshotForDryRun(
   options: DryRunOptions = {}
 ) {
   if (options.snapshotId) {
-    cli.action.start('Retrieving Snapshot');
+    CliUx.ux.action.start('Retrieving Snapshot');
     return SnapshotFactory.createFromExistingSnapshot(
       options.snapshotId,
       targetOrg,
       options.waitUntilDone
     );
   }
-  cli.action.start('Creating Snapshot');
+  CliUx.ux.action.start('Creating Snapshot');
   return createSnapshotFromProject(project, targetOrg, options.waitUntilDone);
 }

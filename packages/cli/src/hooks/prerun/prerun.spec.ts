@@ -1,7 +1,6 @@
 jest.mock('../../lib/config/config');
-import {IConfig} from '@oclif/config';
+import {Interfaces, CliUx} from '@oclif/core';
 import {Config} from '../../lib/config/config';
-import {cli} from 'cli-ux';
 import {test} from '@oclif/test';
 const mockConfig = jest.mocked(Config);
 
@@ -14,7 +13,7 @@ describe('hooks:prerun', () => {
   );
 
   beforeEach(() => {
-    global.config = {configDir: 'the_config_dir'} as IConfig;
+    global.config = {configDir: 'the_config_dir'} as Interfaces.Config;
   });
 
   test
@@ -37,7 +36,7 @@ describe('hooks:prerun', () => {
         Promise.resolve({analyticsEnabled: undefined})
       );
     })
-    .stub(cli, 'confirm', () => async () => true)
+    .stub(CliUx.ux, 'confirm', () => async () => true)
     .stdout()
     .stderr()
     .hook('prerun', {Command: {id: 'update'}})
@@ -54,7 +53,7 @@ describe('hooks:prerun', () => {
         Promise.resolve({analyticsEnabled: undefined})
       );
     })
-    .stub(cli, 'confirm', () => async () => true)
+    .stub(CliUx.ux, 'confirm', () => async () => true)
     .stdout()
     .stderr()
     .hook('prerun')
@@ -71,7 +70,7 @@ describe('hooks:prerun', () => {
         Promise.resolve({analyticsEnabled: undefined})
       );
     })
-    .stub(cli, 'confirm', () => async () => true)
+    .stub(CliUx.ux, 'confirm', () => async () => true)
     .stdout()
     .stderr()
     .hook('prerun')
@@ -88,7 +87,7 @@ describe('hooks:prerun', () => {
         Promise.resolve({analyticsEnabled: undefined})
       );
     })
-    .stub(cli, 'confirm', () => async () => false)
+    .stub(CliUx.ux, 'confirm', () => async () => false)
     .stdout()
     .stderr()
     .hook('prerun')

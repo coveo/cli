@@ -21,7 +21,7 @@ import {
   getErrorReport,
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
-import {Command} from '@oclif/command';
+import {Command} from '@oclif/core';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions';
 import {SnapshotFacade} from '../../../lib/snapshot/snapshotFacade';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';

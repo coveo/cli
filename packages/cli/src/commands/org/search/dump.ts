@@ -1,4 +1,4 @@
-import {Command, flags} from '@oclif/command';
+import {Command, Flags, CliUx} from '@oclif/core';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {
   Preconditions,
@@ -8,7 +8,6 @@ import {Config} from '../../../lib/config/config';
 import PlatformClient from '@coveord/platform-client';
 import {writeFile} from 'fs-extra';
 import {Parser} from 'json2csv';
-import {cli} from 'cli-ux';
 // eslint-disable-next-line node/no-extraneous-import
 import {SingleBar} from 'cli-progress';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
@@ -36,7 +35,7 @@ export default class Dump extends Command {
     'Dump the content of one or more sources in CSV format.';
 
   public static flags = {
-    source: flags.string({
+    source: Flags.string({
       char: 's',
       description:
         'The names (not the identifiers) of the sources from which to get content.',
@@ -44,36 +43,36 @@ export default class Dump extends Command {
       required: true,
       multiple: true,
     }),
-    pipeline: flags.string({
+    pipeline: Flags.string({
       char: 'p',
       description:
         'The name of the query pipeline through which to get content. If not specified, the default query pipeline is used.',
     }),
-    fieldsToExclude: flags.string({
+    fieldsToExclude: Flags.string({
       char: 'x',
       description:
         'The fields to exclude from the data dump. If not specified, all fields are included.',
       multiple: true,
     }),
-    destination: flags.string({
+    destination: Flags.string({
       char: 'd',
       description:
         "The folder in which to create the CSV files. The data dump will fail if the folder doesn't exist.",
       default: '.',
     }),
-    name: flags.string({
+    name: Flags.string({
       char: 'n',
       description:
         'The base name to use when creating a new CSV file. If more than one file is created, the CLI will append `_2`, `_3`, etc. to each new file name after the first one.',
       default: 'indexdump',
     }),
-    additionalFilter: flags.string({
+    additionalFilter: Flags.string({
       char: 'f',
       description:
         'The additional search filter to apply while getting the content. See <https://docs.coveo.com/en/1552>.',
       default: '',
     }),
-    chunkSize: flags.integer({
+    chunkSize: Flags.integer({
       char: 'c',
       description: 'The maximum number of results to dump into each CSV file.',
       default: 10000,
@@ -83,7 +82,7 @@ export default class Dump extends Command {
   @Trackable({eventName: 'source content dump'})
   @Preconditions(IsAuthenticated())
   public async run() {
-    const {flags} = this.parse(Dump);
+    const {flags} = await this.parse(Dump);
     const client = await new AuthenticatedClient().getClient();
     const organizationId = (
       await new Config(this.config.configDir, this.error).get()
@@ -108,12 +107,12 @@ export default class Dump extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     throw err;
   }
 
   private async writeChunks(allResults: SearchResult[]) {
-    const {flags} = this.parse(Dump);
+    const {flags} = await this.parse(Dump);
     let currentChunk = 0;
     while (allResults.length) {
       const chunk = allResults.splice(0, flags.chunkSize);
@@ -191,7 +190,7 @@ export default class Dump extends Command {
   }
 
   private get progressBar() {
-    return cli.progress({
+    return CliUx.ux.progress({
       format: 'Progress | {bar} | ETA: {eta}s | {value}/{total} results',
     }) as SingleBar;
   }

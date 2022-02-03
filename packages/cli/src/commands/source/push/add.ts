@@ -3,9 +3,8 @@ import {
   UploadBatchCallback,
   UploadBatchCallbackData,
 } from '@coveo/push-api-client';
-import {Command, flags} from '@oclif/command';
+import {Command, Flags, CliUx} from '@oclif/core';
 import {green} from 'chalk';
-import {cli} from 'cli-ux';
 import {readdirSync} from 'fs';
 import {join} from 'path';
 import {
@@ -26,14 +25,14 @@ export default class SourcePushAdd extends Command {
     'Push a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-files-with-Coveo-CLI for more information.';
 
   public static flags = {
-    file: flags.string({
+    file: Flags.string({
       multiple: true,
       exclusive: ['folder'],
       char: 'f',
       helpValue: 'myfile.json',
       description: 'One or multiple file to push. Can be repeated.',
     }),
-    folder: flags.string({
+    folder: Flags.string({
       multiple: true,
       exclusive: ['file'],
       char: 'd',
@@ -41,7 +40,7 @@ export default class SourcePushAdd extends Command {
       description:
         'One or multiple folder containing json files. Can be repeated',
     }),
-    maxConcurrent: flags.integer({
+    maxConcurrent: Flags.integer({
       exclusive: ['file'],
       char: 'c',
       default: 10,
@@ -62,7 +61,7 @@ export default class SourcePushAdd extends Command {
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
-    const {args, flags} = this.parse(SourcePushAdd);
+    const {args, flags} = await this.parse(SourcePushAdd);
     if (!flags.file && !flags.folder) {
       this.error(
         'You must minimally set the `file` or the `folder` flag. Use `source:push:add --help` to get more information.'
@@ -82,27 +81,28 @@ export default class SourcePushAdd extends Command {
       }
     };
 
-    cli.action.start('Processing...');
+    CliUx.ux.action.start('Processing...');
 
+    const fileNames = await this.getFileNames();
     await source.batchUpdateDocumentsFromFiles(
       args.sourceId,
-      this.fileNames,
+      fileNames,
       callback,
       {
         maxConcurrent: flags.maxConcurrent,
       }
     );
 
-    cli.action.stop();
+    CliUx.ux.action.stop();
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     throw err;
   }
 
-  private get fileNames() {
-    const {flags} = this.parse(SourcePushAdd);
+  private async getFileNames() {
+    const {flags} = await this.parse(SourcePushAdd);
     let fileNames: string[] = [];
     if (flags.file) {
       fileNames = fileNames.concat(flags.file);

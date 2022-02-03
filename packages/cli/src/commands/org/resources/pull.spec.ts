@@ -16,11 +16,10 @@ import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import Command from '@oclif/command';
+import {Command, CliUx} from '@oclif/core';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions';
 import {PreconditionError} from '../../../lib/errors/preconditionError';
 import {cwd} from 'process';
-import {cli} from 'cli-ux';
 import {Project} from '../../../lib/project/project';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
@@ -198,7 +197,7 @@ describe('org:resources:pull', () => {
   test
     .stdout()
     .stderr()
-    .stub(cli, 'confirm', () => async () => true)
+    .stub(CliUx.ux, 'confirm', () => async () => true)
     .command([
       'org:resources:pull',
       '-m',
@@ -224,7 +223,7 @@ describe('org:resources:pull', () => {
   test
     .stdout()
     .stderr()
-    .stub(cli, 'confirm', () => async () => true)
+    .stub(CliUx.ux, 'confirm', () => async () => true)
     .command([
       'org:resources:pull',
       '-m',
@@ -251,7 +250,7 @@ describe('org:resources:pull', () => {
   test
     .stdout()
     .stderr()
-    .stub(cli, 'confirm', () => async () => true)
+    .stub(CliUx.ux, 'confirm', () => async () => true)
     .command([
       'org:resources:pull',
       '-m',

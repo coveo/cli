@@ -1,7 +1,7 @@
 jest.mock('../../platform/authenticatedClient');
 jest.mock('../../config/config');
 
-import {IConfig} from '@oclif/config';
+import {Interfaces} from '@oclif/core';
 import {fancyIt} from '../../../__test__/it';
 import {Config} from '../../config/config';
 import {AuthenticatedClient} from '../../platform/authenticatedClient';
@@ -36,7 +36,7 @@ describe('apiKeyPrivilege', () => {
   mockedAuthenticatedClient.prototype.getClient = mockGetClient;
 
   beforeEach(() => {
-    global.config = {configDir: 'the_config_dir'} as IConfig;
+    global.config = {configDir: 'the_config_dir'} as Interfaces.Config;
   });
 
   afterAll(() => {

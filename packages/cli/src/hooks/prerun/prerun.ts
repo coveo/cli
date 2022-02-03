@@ -1,5 +1,4 @@
-import {Hook} from '@oclif/config';
-import {cli} from 'cli-ux';
+import {Hook, CliUx} from '@oclif/core';
 import {Config} from '../../lib/config/config';
 
 const message = `\n\nWelcome to Coveo CLI!\n
@@ -22,7 +21,7 @@ const hook: Hook<'prerun'> = async function (options) {
     return;
   }
 
-  const enable = await cli.confirm(message);
+  const enable = await CliUx.ux.confirm(message);
   cfg.set('analyticsEnabled', enable);
 };
 

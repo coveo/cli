@@ -1,4 +1,4 @@
-import {Command, flags} from '@oclif/command';
+import {Command, Flags} from '@oclif/core';
 import {resolve} from 'path';
 import {Config} from '../../../lib/config/config';
 import {
@@ -32,13 +32,12 @@ export default class Vue extends Command {
     'Create a Coveo Headless-powered search page with the Vue.js web framework. See <https://docs.coveo.com/headless> and <https://vuejs.org/>.';
 
   public static flags = {
-    help: flags.help({char: 'h'}),
-    version: flags.string({
+    version: Flags.string({
       char: 'v',
       description: `The version of ${Vue.templateName} to use.`,
       default: getPackageVersion(Vue.templateName),
     }),
-    preset: flags.string({
+    preset: Flags.string({
       char: 'p',
       helpValue: 'path',
       description: [
@@ -73,7 +72,7 @@ export default class Vue extends Command {
     HasNecessaryCoveoPrivileges(createApiKeyPrivilege, impersonatePrivilege)
   )
   public async run() {
-    const {args, flags} = this.parse(Vue);
+    const {args, flags} = await this.parse(Vue);
 
     let preset = await this.getDefaultPreset();
 
@@ -90,18 +89,16 @@ export default class Vue extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Record<string, unknown>) {
     throw err;
   }
 
   private async invokePlugin(applicationName: string) {
-    const args = this.args;
-    const cfg = await this.configuration.get();
+    const {flags, args} = await this.parse(Vue);
+    const cfg = this.configuration.get();
     const authenticatedClient = new AuthenticatedClient();
     const userInfo = await authenticatedClient.getUserInfo();
     const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
-
-    const flags = this.flags;
     const presetVersion = flags.version || getPackageVersion(Vue.templateName);
 
     const cliArgs = [
@@ -172,16 +169,6 @@ export default class Vue extends Command {
 
   private get configuration() {
     return new Config(this.config.configDir, this.error);
-  }
-
-  private get flags() {
-    const {flags} = this.parse(Vue);
-    return flags;
-  }
-
-  private get args() {
-    const {args} = this.parse(Vue);
-    return args;
   }
 
   private displayFeedbackAfterSuccess(name: string) {
