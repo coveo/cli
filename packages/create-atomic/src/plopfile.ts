@@ -86,12 +86,13 @@ export default function (plop: NodePlopAPI) {
       function installPackages(answers) {
         return new Promise((resolve, reject) => {
           const {project} = answers as PromptsAnswers;
-          const process = spawn(getPackageManager(), ['install'], {
+          const installProcess = spawn(getPackageManager(), ['install'], {
             stdio: 'ignore',
             cwd: `${currentPath}/${project}/`,
           });
-
-          process.on('close', (code) => {
+          installProcess.stdout?.pipe(process.stdout);
+          installProcess.stderr?.pipe(process.stderr);
+          installProcess.on('close', (code) => {
             if (code === 0) {
               resolve('Installation complete');
             } else {
