@@ -90,11 +90,20 @@ export default function (plop: NodePlopAPI) {
             stdio: 'pipe',
             cwd: `${currentPath}/${project}/`,
           });
+          let bloby = '';
+          installProcess.stderr.on(
+            'data',
+            (data) => (bloby += `STDERR: ${data.toString()}`)
+          );
+          installProcess.stdout.on(
+            'data',
+            (data) => (bloby += `STDOUT: ${data.toString()}`)
+          );
           installProcess.on('close', (code) => {
             if (code === 0) {
               resolve('Installation complete');
             } else {
-              reject(`Installation exited with ${code}`);
+              reject(`Installation exited with ${code}\n${bloby}`);
             }
           });
         });

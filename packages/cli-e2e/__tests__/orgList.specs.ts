@@ -33,7 +33,7 @@ const waitForProxyRunning = (proxyTerminal: Terminal) =>
     .do()
     .once();
 
-describe('org:list', () => {
+describe.skip('org:list', () => {
   const processManagers: ProcessManager[] = [];
 
   describe('when using a proxy', () => {
