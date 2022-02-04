@@ -1,3 +1,4 @@
+import {CliUx} from '@oclif/core';
 import {Region} from '@coveord/platform-client';
 import {
   pathExistsSync,
@@ -14,6 +15,7 @@ import {
   PlatformEnvironment,
 } from '../platform/environment';
 import {IncompatibleConfigurationError} from './configErrors';
+import globalConfig from './globalConfig';
 
 export interface BaseConfiguration {
   version: string;
@@ -49,8 +51,8 @@ export class Config {
     'analyticsEnabled',
   ];
   public constructor(
-    private configDir: string,
-    private error = console.error
+    private configDir: string = globalConfig.get().configDir,
+    private error = CliUx.ux.error
   ) {}
 
   public get(): Configuration {

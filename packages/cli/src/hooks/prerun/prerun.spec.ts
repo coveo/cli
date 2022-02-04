@@ -70,23 +70,6 @@ describe('hooks:prerun', () => {
         Promise.resolve({analyticsEnabled: undefined})
       );
     })
-    .stub(CliUx.ux, 'confirm', () => async () => true)
-    .stdout()
-    .stderr()
-    .hook('prerun')
-    .it(
-      'does modify config when #analytics have not been configured and the users answer #true',
-      () => {
-        expect(mockSet).toHaveBeenCalledWith('analyticsEnabled', true);
-      }
-    );
-
-  test
-    .do(() => {
-      mockGet.mockReturnValueOnce(
-        Promise.resolve({analyticsEnabled: undefined})
-      );
-    })
     .stub(CliUx.ux, 'confirm', () => async () => false)
     .stdout()
     .stderr()

@@ -1,4 +1,3 @@
-import {CliUx} from '@oclif/core';
 import {Config} from '../../lib/config/config';
 
 interface SessionOptions {
@@ -25,7 +24,7 @@ export const DefaultSessionOptions: SessionOptions = {
  */
 const check = (overrideOptions?: SessionOptions): number => {
   const now = Date.now();
-  const cfg = new Config(config.configDir, CliUx.ux.error);
+  const cfg = new Config();
   const {timeout} = {...DefaultSessionOptions, ...overrideOptions};
   const {amplitudeSessionID, lastEventLoggedTime} = {
     ...{lastEventLoggedTime: now, amplitudeSessionID: now},

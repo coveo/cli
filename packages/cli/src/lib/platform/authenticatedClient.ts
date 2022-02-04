@@ -8,7 +8,7 @@ import HttpsProxyAgent from 'https-proxy-agent';
 export class AuthenticatedClient {
   public cfg: Config;
   public constructor() {
-    this.cfg = new Config(global.config.configDir);
+    this.cfg = new Config();
   }
 
   public async isLoggedIn() {

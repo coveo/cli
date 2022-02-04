@@ -2,7 +2,7 @@ import PlatformClient, {
   PrivilegeEvaluatorModel,
   PrivilegeModel,
 } from '@coveord/platform-client';
-import {Command, CliUx} from '@oclif/core';
+import {Command} from '@oclif/core';
 import {Config} from '../../config/config';
 import {
   PreconditionError,
@@ -56,6 +56,5 @@ async function hasPrivilege(
 }
 
 async function getConfiguration() {
-  const config = new Config(global.config.configDir, CliUx.ux.error);
-  return config.get();
+  return new Config().get();
 }

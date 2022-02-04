@@ -1,5 +1,6 @@
 import {CliUx} from '@oclif/core';
 import {buildEvent} from '../../hooks/analytics/eventUtils';
+import globalConfig from '../config/globalConfig';
 
 /**
  *
@@ -23,7 +24,7 @@ export async function confirmWithAnalytics(
 }
 
 async function trackEvent(questionName: string) {
-  await config.runHook('analytics', {
+  await globalConfig.get().runHook('analytics', {
     event: buildEvent(questionName, {}),
   });
 }
