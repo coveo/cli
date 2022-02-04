@@ -140,11 +140,18 @@ describe('ui:create:atomic', () => {
     it(
       'should send a search query when the page is loaded',
       async () => {
-        await page.goto(searchPageEndpoint);
+        await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+        console.log('searchPageEndpoint loaded');
+        await page.reload({waitUntil: 'networkidle2'});
+        console.log('reload 1');
+        await page.reload({waitUntil: 'networkidle2'});
+        console.log('reload 2');
+        console.log('request', interceptedRequests);
         await page.waitForResponse(
           'http://localhost:8888/.netlify/functions/token',
           {timeout: 60e3}
         );
+        console.log('response');
         await page.waitForSelector(searchInterfaceSelector);
 
         expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
