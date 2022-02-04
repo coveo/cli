@@ -90,7 +90,7 @@ export default function (plop: NodePlopAPI) {
             stdio: 'ignore',
             cwd: `${currentPath}/${project}/`,
           });
-          
+
           process.on('close', (code) => {
             if (code === 0) {
               resolve('Installation complete');
