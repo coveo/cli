@@ -8,7 +8,7 @@ npm install -g ts-node
 rsync -r --exclude="node_modules" /home/notGroot/cli/* /home/notGroot/cli-copy/
 cd /home/notGroot/cli-copy
 
-npm run setup
+npm i
 npm run build
 
 export UI_TEMPLATE_VERSION=0.0.0
