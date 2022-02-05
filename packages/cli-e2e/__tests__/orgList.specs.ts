@@ -10,12 +10,16 @@ const certFolder = resolve(homedir(), '.mitmproxy');
 
 const resolveBinary = (programName: string) => {
   const whereOrWhich = process.platform === 'win32' ? 'where.exe' : 'which';
-  const spawner = spawnSync(whereOrWhich, [programName], {shell: true});
-  return spawner.stdout.toString().trim();
+  const spawner = spawnSync(whereOrWhich, [programName], {
+    shell: true,
+    encoding: 'utf-8',
+  });
+  return spawner.stdout.trim();
 };
 
 const startMitmProxy = (processManager: ProcessManager) => {
   const mitmPath = resolveBinary('mitmdump');
+  console.warn('MITMDUMP PATH:' + mitmPath);
   const serverTerminal = new Terminal(
     mitmPath,
     [],

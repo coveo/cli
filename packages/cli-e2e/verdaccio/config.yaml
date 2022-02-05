@@ -26,7 +26,7 @@ auth:
     # Use this one for local tests:
     # plugins: /verdaccio/storage/htpasswd
     # Use this one for CI (leave uncommented in PR)
-    file: ./verdaccio/storage/htpasswd
+    file: ./storage/htpasswd
 
 # a list of other known registries we can talk to
 uplinks:

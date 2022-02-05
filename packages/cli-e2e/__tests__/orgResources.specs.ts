@@ -3,7 +3,7 @@ import {
   answerPrompt,
   CLI_EXEC_PATH,
   getConfig,
-  getPathToHomedirEnvFile,
+  getEnvFilePath,
   isGenericYesNoPrompt,
 } from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
@@ -15,7 +15,7 @@ import {getPlatformClient} from '../utils/platform';
 import {readdirSync} from 'fs';
 import {cwd} from 'process';
 import {EOL} from 'os';
-config({path: getPathToHomedirEnvFile()});
+config({path: getEnvFilePath()});
 
 describe('org:resources', () => {
   const testOrgId = process.env.TEST_ORG_ID!;

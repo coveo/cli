@@ -23,7 +23,8 @@
     "test:debug": "node ./entrypoints/entry.js --debug",
     "test:bash": "node ./entrypoints/entry.js --bash",
     "jest": "jest --verbose --runInBand --detectOpenHandles --forceExit",
-    "jest:debug": "node --inspect=0.0.0.0:9229 node_modules/.bin/jest --runInBand"
+    "jest:debug": "node --inspect-brk ../../node_modules/jest/bin/jest.js --runInBand",
+    "verdaccio": "verdaccio --config ./verdaccio/config.yaml"
   },
   "bugs": {
     "url": "https://github.com/coveo/cli/issues"
@@ -36,9 +37,16 @@
     "@types/fs-extra": "9.0.13",
     "@types/is-running": "2.1.0",
     "@types/jest": "27.4.0",
+    "@types/tmp": "^0.2.3",
+    "@types/wait-on": "^5.3.1",
+    "chrome-launcher": "^0.15.0",
     "eslint": "8.7.0",
     "is-running": "2.1.0",
-    "ts-node": "10.4.0"
+    "open": "^8.4.0",
+    "tmp": "^0.2.1",
+    "ts-node": "10.4.0",
+    "verdaccio": "^5.5.2",
+    "wait-on": "^6.0.0"
   },
   "dependencies": {
     "@babel/core": "7.16.12",
@@ -50,7 +58,7 @@
     "axios": "0.25.0",
     "babel-jest": "27.4.6",
     "devtools-protocol": "0.0.963632",
-    "dotenv": "14.3.2",
+    "dotenv": "16.0.0",
     "fs-extra": "10.0.0",
     "get-port": "5.1.1",
     "isomorphic-fetch": "3.0.0",

@@ -10,8 +10,15 @@ import {clearAccessTokenFromConfig, loginWithOffice} from './utils/login';
 import {ProcessManager} from './utils/processManager';
 import {saveToEnvFile} from './utils/file';
 import {createOrg} from './utils/platform';
-import {getConfig, getPathToHomedirEnvFile} from './utils/cli';
-
+import {getConfig, getEnvFilePath} from './utils/cli';
+import {launch} from 'chrome-launcher';
+import waitOn from 'wait-on';
+import 'dotenv/config';
+import {spawnSync} from 'child_process';
+import {Terminal} from './utils/terminal/terminal';
+import {resolve} from 'path';
+import {cwd} from 'process';
+import {join} from 'path/posix';
 async function clearChromeBrowsingData(browser: Browser) {
   const pages = await browser.pages();
 
@@ -37,7 +44,7 @@ async function createTestOrgAndSaveOrgIdToEnv(orgName: string) {
   const {accessToken} = getConfig();
   const testOrgId = await createOrg(orgName, accessToken);
   console.log(`Created org ${testOrgId}`);
-  const pathToEnv = getPathToHomedirEnvFile();
+  const pathToEnv = getEnvFilePath();
   saveToEnvFile(pathToEnv, {
     PLATFORM_ENV: getPlatformEnv(),
     PLATFORM_HOST: getPlatformHost(),
@@ -54,12 +61,37 @@ export default async function () {
   process.env.PLATFORM_ENV = getPlatformEnv();
   process.env.PLATFORM_HOST = getPlatformHost();
   const testOrgName = `cli-e2e-${process.env.TEST_RUN_ID}`;
+  const chrome = await launch({port: 9222});
   const browser = await connectToChromeBrowser();
-  await clearChromeBrowsingData(browser);
-  await clearAccessTokenFromConfig();
+  -(await clearChromeBrowsingData(browser));
   try {
     global.processManager = new ProcessManager();
-    await loginWithOffice(browser);
+    new Terminal(
+      appendCmdIfWindows`npm`,
+      ['run', 'verdaccio'],
+      {cwd: cwd()},
+      global.processManager!,
+      'verdaccio'
+    );
+    await waitOn({resources: ['tcp:4873']});
+    await new Terminal(
+      appendCmdIfWindows`npm`,
+      ['run', 'npm:publish:template'],
+      {cwd: join(cwd(), '..', '..')},
+      global.processManager!,
+      'npmPublish'
+    )
+      .when('exit')
+      .on('process')
+      .do()
+      .once();
+
+    if (process.env.CI) {
+      await clearAccessTokenFromConfig();
+      await loginWithOffice(browser);
+    } else {
+      // TODO: Ensure user is connected
+    }
     await createTestOrgAndSaveOrgIdToEnv(testOrgName);
   } catch (e) {
     await captureScreenshots(browser, 'jestSetup');
@@ -67,3 +99,8 @@ export default async function () {
   }
   await clearChromeBrowsingData(browser);
 }
+
+function startVerdaccio() {}
+
+const appendCmdIfWindows = (cmd): string =>
+  `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;

@@ -24,14 +24,14 @@ export interface ISetupUIProjectOptionsArgs {
   flags?: string[];
 }
 
-export function getPathToHomedirEnvFile() {
-  return join(homedir(), '.env');
+export function getEnvFilePath() {
+  return join('.env');
 }
 
 export function getProjectPath(projectName: string) {
   const uiProjectFolderName = 'ui-projects';
-  mkdirSync(join(homedir(), uiProjectFolderName), {recursive: true});
-  return join(homedir(), uiProjectFolderName, projectName);
+  mkdirSync(join(uiProjectFolderName), {recursive: true});
+  return join(uiProjectFolderName, projectName);
 }
 
 export function setupUIProject(
@@ -61,6 +61,7 @@ export function setupUIProject(
     args,
     {
       cwd: resolve(getProjectPath(projectName), '..'),
+      env: {...process.env, npm_config_registry: 'http://localhost:4873'},
     },
     processManager,
     `build-${projectName}`

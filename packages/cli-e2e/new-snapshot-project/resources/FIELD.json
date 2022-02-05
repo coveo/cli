@@ -1,0 +1,35 @@
+{
+  "metadata": {
+    "schemaVersion": "v1"
+  },
+  "resources": {
+    "FIELD": [
+      {
+        "model": {
+          "dateFormat": "",
+          "description": "The first field of the universe.",
+          "facet": false,
+          "hierarchicalFacet": false,
+          "includeInQuery": true,
+          "includeInResults": true,
+          "keepAccentsDisplayValueFacet": false,
+          "mergeWithLexicon": false,
+          "multiValueFacet": false,
+          "multiValueFacetTokenizers": ";",
+          "name": "firstfield",
+          "ranking": false,
+          "smartDateFacet": false,
+          "sort": false,
+          "stemming": false,
+          "type": "STRING",
+          "useCacheForComputedFacet": false,
+          "useCacheForNestedQuery": false,
+          "useCacheForNumericQuery": false,
+          "useCacheForSort": false
+        },
+        "parents": {},
+        "resourceName": "firstfield_4drH9a"
+      }
+    ]
+  }
+}
