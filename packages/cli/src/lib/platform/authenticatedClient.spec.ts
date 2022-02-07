@@ -1,5 +1,6 @@
 jest.mock('../config/config');
 jest.mock('@coveord/platform-client');
+jest.mock('../config/globalConfig');
 import {Interfaces} from '@oclif/core';
 import {
   AuthenticatedClient,
@@ -14,10 +15,12 @@ import {
   PlatformEnvironment,
 } from './environment';
 import {fancyIt} from '../../__test__/it';
+import globalConfig from '../config/globalConfig';
 const mockConfig = jest.mocked(Config);
 const mockPlatformClient = jest.mocked(PlatformClient);
 
 describe('AuthenticatedClient', () => {
+  const mockedGlobalConfig = jest.mocked(globalConfig);
   const mockGet = jest.fn().mockReturnValue(
     Promise.resolve({
       environment: 'dev',
@@ -52,8 +55,10 @@ describe('AuthenticatedClient', () => {
       } as unknown as PlatformClient)
   );
 
-  beforeEach(() => {
-    global.config = {configDir: 'the_config_dir'} as Interfaces.Config;
+  beforeAll(() => {
+    mockedGlobalConfig.get.mockReturnValue({
+      configDir: 'the_config_dir',
+    } as Interfaces.Config);
   });
 
   fancyIt()(

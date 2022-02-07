@@ -1,6 +1,8 @@
 jest.mock('../analytics/analytics');
+jest.mock('../../lib/config/globalConfig');
 
 import type {Interfaces} from '@oclif/core';
+import globalConfig from '../../lib/config/globalConfig';
 import {fancyIt} from '../../__test__/it';
 import {flush} from '../analytics/analytics';
 import {handleTerminationSignals, exitSignals} from './termination-signals';
@@ -9,6 +11,7 @@ type supportedExitSignals = typeof exitSignals[number];
 
 describe('termination-signal', () => {
   const mockedFlush = jest.mocked(flush);
+  const mockedGlobalConfig = jest.mocked(globalConfig);
   const emit = (signal: string) => {
     const signalTuple = (<const>[signal, signal]) as [
       supportedExitSignals,
@@ -24,10 +27,11 @@ describe('termination-signal', () => {
     .mockImplementation(() => ({} as unknown as never));
 
   beforeAll(() => {
-    global.config = {
+    mockedGlobalConfig.get.mockReturnValue({
       configDir: 'the_config_dir',
       runHook: mockedAnalyticHook,
-    } as unknown as Interfaces.Config;
+    } as unknown as Interfaces.Config);
+
     handleTerminationSignals();
   });
 

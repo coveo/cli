@@ -1,7 +1,11 @@
 jest.mock('../../lib/config/config');
+jest.mock('../../lib/config/globalConfig');
+
 import {Interfaces, CliUx} from '@oclif/core';
 import {Config} from '../../lib/config/config';
 import {test} from '@oclif/test';
+import globalConfig from '../../lib/config/globalConfig';
+const mockedGlobalConfig = jest.mocked(globalConfig);
 const mockConfig = jest.mocked(Config);
 
 describe('hooks:prerun', () => {
@@ -13,7 +17,9 @@ describe('hooks:prerun', () => {
   );
 
   beforeEach(() => {
-    global.config = {configDir: 'the_config_dir'} as Interfaces.Config;
+    mockedGlobalConfig.get.mockReturnValue({
+      configDir: 'the_config_dir',
+    } as Interfaces.Config);
   });
 
   test

@@ -1,3 +1,12 @@
+const mockedSemverSatisifies = jest.fn();
+jest.mock('semver', () => ({
+  ...jest.requireActual('semver'),
+  satisfies: mockedSemverSatisifies,
+}));
+jest.mock('./configErrors');
+jest.mock('fs-extra');
+jest.mock('@oclif/core');
+
 import {
   pathExistsSync,
   createFileSync,
@@ -9,15 +18,11 @@ import dedent from 'ts-dedent';
 import {defaultConfiguration} from '../../__stub__/configuration';
 import {PlatformEnvironment} from '../platform/environment';
 import {Config} from './config';
-
-jest.mock('semver');
-import {satisfies} from 'semver';
-
-jest.mock('./configErrors');
 import {IncompatibleConfigurationError} from './configErrors';
 import {fancyIt} from '../../__test__/it';
-jest.mock('fs-extra');
-const mockedSemverSatisifies = jest.mocked(satisfies);
+import {CliUx} from '@oclif/core';
+
+const mockedUxError = jest.mocked(CliUx.ux.error);
 const mockedPathExists = jest.mocked(pathExistsSync);
 const mockedCreateFile = jest.mocked(createFileSync);
 const mockedWriteJSON = jest.mocked(writeJSONSync);
@@ -84,7 +89,6 @@ describe('config', () => {
       'should create default config if the config version is incompatible',
       () => {
         const someConfig = {foo: 'bar', version: '0.0.0'};
-        const errorSpy = jest.fn();
         mockedReadJSON.mockImplementationOnce(() => someConfig);
         mockedSemverSatisifies.mockReturnValueOnce(false);
         mockedIncompatibleConfigurationError.mockImplementationOnce(() => {
@@ -92,14 +96,14 @@ describe('config', () => {
           err.message = 'some message';
           return err;
         });
-        new Config('foo/bar', errorSpy).get();
+        new Config('foo/bar').get();
 
         expect(mockedWriteJSON).toHaveBeenCalledWith(
           join('foo', 'bar', 'config.json'),
           expect.objectContaining({})
         );
         expect(mockedIncompatibleConfigurationError).toBeCalledWith('0.0.0');
-        expect(errorSpy).toBeCalledWith(
+        expect(mockedUxError).toBeCalledWith(
           dedent`
           The configuration at ${join(
             'foo',
@@ -107,7 +111,8 @@ describe('config', () => {
             'config.json'
           )} is not compatible with this version of the CLI:
           some message
-          `
+          `,
+          {exit: false}
         );
       }
     );

@@ -5,10 +5,11 @@ import PlatformClient from '@coveord/platform-client';
 import {Config, Configuration} from '../config/config';
 import {castEnvironmentToPlatformClient} from './environment';
 import HttpsProxyAgent from 'https-proxy-agent';
+import globalConfig from '../config/globalConfig';
 export class AuthenticatedClient {
   public cfg: Config;
   public constructor() {
-    this.cfg = new Config();
+    this.cfg = new Config(globalConfig.get().configDir);
   }
 
   public async isLoggedIn() {

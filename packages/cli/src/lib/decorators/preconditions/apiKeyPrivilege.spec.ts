@@ -1,9 +1,11 @@
 jest.mock('../../platform/authenticatedClient');
 jest.mock('../../config/config');
+jest.mock('../../config/globalConfig');
 
 import {Interfaces} from '@oclif/core';
 import {fancyIt} from '../../../__test__/it';
 import {Config} from '../../config/config';
+import globalConfig from '../../config/globalConfig';
 import {AuthenticatedClient} from '../../platform/authenticatedClient';
 import {HasNecessaryCoveoPrivileges} from './apiKeyPrivilege';
 import {
@@ -16,6 +18,7 @@ import {
 import {getFakeCommand} from './testsUtils/utils';
 
 const mockConfig = jest.mocked(Config);
+const mockedGlobalConfig = jest.mocked(globalConfig);
 
 describe('apiKeyPrivilege', () => {
   const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
@@ -36,7 +39,11 @@ describe('apiKeyPrivilege', () => {
   mockedAuthenticatedClient.prototype.getClient = mockGetClient;
 
   beforeEach(() => {
-    global.config = {configDir: 'the_config_dir'} as Interfaces.Config;
+    mockedGlobalConfig.get.mockReturnValue({
+      configDir: 'the_config_dir',
+      version: '1.2.3',
+      platform: 'darwin',
+    } as Interfaces.Config);
   });
 
   afterAll(() => {

@@ -3,6 +3,7 @@ jest.mock('@amplitude/identify');
 jest.mock('@coveord/platform-client');
 jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('../../lib/config/config');
+jest.mock('../../lib/config/globalConfig');
 jest.mock('os');
 
 import {release} from 'os';
@@ -17,8 +18,10 @@ import {
 } from '../../__stub__/configuration';
 import type {Interfaces} from '@oclif/core';
 import type {NodeClient} from '@amplitude/node';
+import globalConfig from '../../lib/config/globalConfig';
 
 describe('identifier', () => {
+  const mockedGlobalConfig = jest.mocked(globalConfig);
   const mockedConfig = jest.mocked(Config);
   const mockedIdentify = jest.mocked(Identify, true);
   const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
@@ -94,11 +97,11 @@ describe('identifier', () => {
   };
 
   beforeAll(() => {
-    global.config = {
+    mockedGlobalConfig.get.mockReturnValue({
       configDir: 'the_config_dir',
       version: '1.2.3',
       platform: 'darwin',
-    } as Interfaces.Config;
+    } as Interfaces.Config);
   });
 
   beforeEach(() => {

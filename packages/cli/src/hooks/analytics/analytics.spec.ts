@@ -4,6 +4,7 @@ jest.mock('../../lib/config/config');
 jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
 jest.mock('./session');
+jest.mock('../../lib/config/globalConfig');
 
 import {Configuration, Config} from '../../lib/config/config';
 import {
@@ -16,6 +17,8 @@ import {Interfaces} from '@oclif/core';
 import {PlatformClient} from '@coveord/platform-client';
 import {configurationMock} from '../../__stub__/configuration';
 import {fancyIt} from '../../__test__/it';
+import globalConfig from '../../lib/config/globalConfig';
+const mockedGlobalConfig = jest.mocked(globalConfig);
 const mockedConfig = jest.mocked(Config);
 const mockedPlatformClient = jest.mocked(PlatformClient);
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
@@ -94,7 +97,9 @@ describe('analytics_hook', () => {
   };
 
   beforeAll(() => {
-    global.config = {configDir: 'the_config_dir'} as Interfaces.Config;
+    mockedGlobalConfig.get.mockReturnValue({
+      configDir: 'the_config_dir',
+    } as Interfaces.Config);
   });
 
   beforeEach(() => {

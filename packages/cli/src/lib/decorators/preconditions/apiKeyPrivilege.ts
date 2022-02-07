@@ -4,6 +4,7 @@ import PlatformClient, {
 } from '@coveord/platform-client';
 import {Command} from '@oclif/core';
 import {Config} from '../../config/config';
+import globalConfig from '../../config/globalConfig';
 import {
   PreconditionError,
   PreconditionErrorCategory,
@@ -56,5 +57,6 @@ async function hasPrivilege(
 }
 
 async function getConfiguration() {
-  return new Config().get();
+  const config = new Config(globalConfig.get().configDir);
+  return config.get();
 }
