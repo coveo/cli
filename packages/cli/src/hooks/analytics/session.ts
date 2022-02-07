@@ -1,4 +1,5 @@
 import {Config} from '../../lib/config/config';
+import globalConfig from '../../lib/config/globalConfig';
 
 interface SessionOptions {
   /**
@@ -24,7 +25,7 @@ export const DefaultSessionOptions: SessionOptions = {
  */
 const check = (overrideOptions?: SessionOptions): number => {
   const now = Date.now();
-  const cfg = new Config();
+  const cfg = new Config(globalConfig.get().configDir);
   const {timeout} = {...DefaultSessionOptions, ...overrideOptions};
   const {amplitudeSessionID, lastEventLoggedTime} = {
     ...{lastEventLoggedTime: now, amplitudeSessionID: now},

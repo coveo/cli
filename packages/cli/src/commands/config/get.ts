@@ -23,7 +23,7 @@ export default class Get extends Command {
   @Trackable()
   public async run() {
     const {args} = await this.parse(Get);
-    const cfg = new Config(this.config.configDir, this.error);
+    const cfg = new Config(this.config.configDir);
     const keysToRender = args.key ? [args.key] : undefined;
     ConfigRenderer.render(cfg, keysToRender);
   }

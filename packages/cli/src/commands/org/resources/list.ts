@@ -61,7 +61,7 @@ export default class List extends Command {
   }
 
   private get configuration() {
-    return new Config(this.config.configDir, this.error);
+    return new Config(this.config.configDir);
   }
 
   @Trackable()

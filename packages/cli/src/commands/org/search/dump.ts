@@ -84,9 +84,8 @@ export default class Dump extends Command {
   public async run() {
     const {flags} = await this.parse(Dump);
     const client = await new AuthenticatedClient().getClient();
-    const organizationId = (
-      await new Config(this.config.configDir, this.error).get()
-    ).organization;
+    const organizationId = (await new Config(this.config.configDir).get())
+      .organization;
 
     const allResults = await this.fetchResults({
       client,

@@ -1,5 +1,8 @@
 import {Interfaces} from '@oclif/core';
 
+/**
+ * Singleton to save Oclif's config
+ */
 class GlobalConfig {
   private config?: Interfaces.Config;
   public set(config: Interfaces.Config) {

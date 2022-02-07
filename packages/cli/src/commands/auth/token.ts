@@ -27,7 +27,7 @@ export default class Token extends Command {
 
   @Trackable({eventName: 'auth login token'})
   public async run() {
-    this.configuration = new Config(this.config.configDir, this.error);
+    this.configuration = new Config(this.config.configDir);
     await this.saveToken();
     await this.saveRegionAndEnvironment();
     await this.fetchAndSaveOrgId();

@@ -27,7 +27,7 @@ export default class Login extends Command {
 
   @Trackable({eventName: 'auth login - browser'})
   public async run() {
-    this.configuration = new Config(this.config.configDir, this.error);
+    this.configuration = new Config(this.config.configDir);
     await this.loginAndPersistToken();
     await this.persistRegionAndEnvironment();
     await this.verifyOrganization();

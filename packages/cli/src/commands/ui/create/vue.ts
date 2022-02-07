@@ -168,7 +168,7 @@ export default class Vue extends Command {
   }
 
   private get configuration() {
-    return new Config(this.config.configDir, this.error);
+    return new Config(this.config.configDir);
   }
 
   private displayFeedbackAfterSuccess(name: string) {

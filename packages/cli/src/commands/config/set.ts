@@ -38,7 +38,7 @@ export default class Set extends Command {
     if (Object.entries(flags).length === 0) {
       throw new InvalidCommandError('Command should contain at least 1 flag');
     }
-    const cfg = new Config(this.config.configDir, this.error);
+    const cfg = new Config(this.config.configDir);
     if (flags.environment) {
       cfg.set('environment', flags.environment as PlatformEnvironment);
     }

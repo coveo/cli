@@ -187,7 +187,7 @@ export default class Pull extends Command {
   }
 
   private get configuration() {
-    return new Config(this.config.configDir, this.error);
+    return new Config(this.config.configDir);
   }
 
   private async getResourceSnapshotTypesToExport(): Promise<SnapshotPullModelResources> {

@@ -1,5 +1,5 @@
-import {CliUx} from '@oclif/core';
 import {Region} from '@coveord/platform-client';
+import {CliUx} from '@oclif/core';
 import {
   pathExistsSync,
   createFileSync,
@@ -15,7 +15,6 @@ import {
   PlatformEnvironment,
 } from '../platform/environment';
 import {IncompatibleConfigurationError} from './configErrors';
-import globalConfig from './globalConfig';
 
 export interface BaseConfiguration {
   version: string;
@@ -50,10 +49,7 @@ export class Config {
     'region',
     'analyticsEnabled',
   ];
-  public constructor(
-    private configDir: string = globalConfig.get().configDir,
-    private error = CliUx.ux.error
-  ) {}
+  public constructor(private configDir: string) {}
 
   public get(): Configuration {
     this.ensureExists();
@@ -68,19 +64,24 @@ export class Config {
       return content;
     } catch (e) {
       if (e instanceof IncompatibleConfigurationError) {
-        this.error(
+        CliUx.ux.error(
           dedent`
             The configuration at ${this.configPath} is not compatible with this version of the CLI:
-            ${e.message}`
+            ${e.message}`,
+          {exit: false}
         );
       } else {
-        this.error(`Error while reading configuration at ${this.configPath}`);
+        CliUx.ux.error(
+          `Error while reading configuration at ${this.configPath}`,
+          {exit: false}
+        );
       }
       this.replace(DefaultConfig);
-      this.error(
+      CliUx.ux.error(
         `Configuration has been reset to default value: ${JSON.stringify(
           DefaultConfig
-        )}`
+        )}`,
+        {exit: false}
       );
       return DefaultConfig;
     }
