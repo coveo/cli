@@ -22,7 +22,7 @@ export function answerPrompt(answer: string) {
 
 export interface ISetupUIProjectOptionsArgs {
   flags?: string[];
-  parentDir?: string;
+  projectDir?: string;
 }
 
 export function getEnvFilePath() {
@@ -56,16 +56,16 @@ export async function setupUIProject(
   }
 
   const args = [CLI_EXEC_PATH, ...command];
-
-  if (options.parentDir) {
-    const parentFolder = join(UI_PROJECT_FOLDER_NAME, 'react');
-    mkdirSync(parentFolder, {recursive: true});
+  let parentDir = resolve(getProjectPath(projectName), '..');
+  if (options.projectDir) {
+    parentDir = resolve(options.projectDir, '..');
+    mkdirSync(parentDir, {recursive: true});
 
     const gitInitTerminal = new Terminal(
       'git',
       ['init'],
       {
-        cwd: parentFolder,
+        cwd: parentDir,
       },
       processManager,
       `${projectName}-git-init`
@@ -82,7 +82,7 @@ export async function setupUIProject(
     args.shift()!,
     args,
     {
-      cwd: options.parentDir ?? resolve(getProjectPath(projectName), '..'),
+      cwd: parentDir,
       env: {...process.env, npm_config_registry: 'http://localhost:4873'},
     },
     processManager,

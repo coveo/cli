@@ -10,7 +10,6 @@ import {
 } from 'fs-extra';
 import {parse} from 'dotenv';
 import {join} from 'path';
-import {getProjectPath} from './cli';
 import {EOL} from 'os';
 
 const deactivatedEnvFileName = '.env.disabled';
@@ -28,15 +27,15 @@ export function restoreEnvironmentFile(projectPath: string) {
   swapEnv(projectPath, deactivatedEnvFileName, activeEnvFilename);
 }
 
-export function flushEnvFile(projectName: string) {
-  const envPath = join(getProjectPath(projectName), '.env');
+export function flushEnvFile(projectPath: string) {
+  const envPath = join(projectPath, '.env');
   const env = readFileSync(envPath, 'utf-8');
   truncateSync(envPath);
   return env;
 }
 
-export function overwriteEnvFile(projectName: string, data: string) {
-  const envPath = join(getProjectPath(projectName), '.env');
+export function overwriteEnvFile(projectPath: string, data: string) {
+  const envPath = join(projectPath, '.env');
   writeFileSync(envPath, data);
 }
 

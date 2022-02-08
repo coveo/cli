@@ -16,7 +16,7 @@ import {
 } from '../utils/file';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {isDirectoryClean} from '../utils/git';
-import {appendFileSync, mkdirSync, readFileSync, truncateSync} from 'fs';
+import {appendFileSync, readFileSync, truncateSync} from 'fs';
 import {EOL} from 'os';
 import {parse} from 'dotenv';
 import {DummyServer} from '../utils/server';
@@ -25,7 +25,6 @@ import {npm} from '../utils/windows';
 import axios from 'axios';
 import {jwtTokenPattern} from '../utils/matcher';
 import {join} from 'path';
-import {cwd} from 'process';
 
 describe('ui:create:react', () => {
   let browser: Browser;
@@ -84,9 +83,7 @@ describe('ui:create:react', () => {
       processManager,
       'ui:create:react',
       projectName,
-      {
-        parentDir,
-      }
+      {projectDir: projectPath}
     );
 
     await buildTerminal.when('exit').on('process').do().once();

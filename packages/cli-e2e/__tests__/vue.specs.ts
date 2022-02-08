@@ -87,7 +87,7 @@ describe('ui:create:vue', () => {
       processManager,
       'ui:create:vue',
       projectName,
-      {parentDir}
+      {projectDir: projectPath}
     );
 
     const buildTerminalExitPromise = Promise.race([

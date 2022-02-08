@@ -26,7 +26,7 @@ describe('ui:create:atomic', () => {
       .once();
 
   const buildApplication = async (processManager: ProcessManager) => {
-    const buildTerminal = setupUIProject(
+    const buildTerminal = await setupUIProject(
       processManager,
       'ui:create:atomic',
       projectName

@@ -121,6 +121,7 @@ describe.skip('ui:create:angular', () => {
       projectName,
       {
         flags: ['--defaults'],
+        projectDir: projectPath,
       }
     );
 
