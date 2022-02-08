@@ -20,7 +20,7 @@ describe('ui:create:atomic', () => {
 
   const waitForAppRunning = (appTerminal: Terminal) =>
     appTerminal
-      .when(/Server now ready/)
+      .when(/build finished/)
       .on('stdout')
       .do()
       .once();
@@ -143,7 +143,7 @@ describe('ui:create:atomic', () => {
       expect(await page.$(searchInterfaceSelector)).not.toBeNull();
     }, 60e3);
 
-    it.skip('should retrieve the search token on the page load', async () => {
+    it('should retrieve the search token on the page load', async () => {
       const tokenResponseListener = page.waitForResponse(tokenServerEndpoint);
       page.goto(searchPageEndpoint);
       await page.waitForSelector(searchInterfaceSelector);
@@ -155,7 +155,7 @@ describe('ui:create:atomic', () => {
       });
     }, 60e3);
 
-    it.skip('should send a search query when the page is loaded', async () => {
+    it('should send a search query when the page is loaded', async () => {
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchInterfaceSelector);
 
