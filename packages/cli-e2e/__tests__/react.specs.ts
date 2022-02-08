@@ -3,11 +3,7 @@ import retry from 'async-retry';
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
 
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
-import {
-  getProjectPath,
-  setupUIProject,
-  UI_PROJECT_FOLDER_NAME,
-} from '../utils/cli';
+import {setupUIProject, UI_PROJECT_FOLDER_NAME} from '../utils/cli';
 import {isSearchRequestOrResponse} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
@@ -36,9 +32,9 @@ describe('ui:create:react', () => {
   const processManagers: ProcessManager[] = [];
   let page: Page;
   const oldEnv = process.env;
-  const reactParentFolder = 'react';
+  const parentDir = 'react';
   const projectName = `${process.env.TEST_RUN_ID}-react-project`;
-  const projectPath = join(reactParentFolder, projectName);
+  const projectPath = join(UI_PROJECT_FOLDER_NAME, parentDir, projectName);
   let clientPort: number;
   let serverPort: number;
 
@@ -84,27 +80,12 @@ describe('ui:create:react', () => {
   };
 
   const buildApplication = async (processManager: ProcessManager) => {
-    const reactParentFolder = join(UI_PROJECT_FOLDER_NAME, 'react');
-    mkdirSync(reactParentFolder, {recursive: true});
-
-    const gitInitTerminal = new Terminal(
-      'git',
-      ['init'],
-      {
-        cwd: reactParentFolder,
-      },
-      processManager,
-      'react-git-init'
-    );
-
-    await gitInitTerminal.when('exit').on('process').do().once();
-
-    const buildTerminal = setupUIProject(
+    const buildTerminal = await setupUIProject(
       processManager,
       'ui:create:react',
       projectName,
       {
-        parentDir: join(UI_PROJECT_FOLDER_NAME, 'react'),
+        parentDir,
       }
     );
 
@@ -120,7 +101,7 @@ describe('ui:create:react', () => {
       args.shift()!,
       args,
       {
-        cwd: join(cwd(), getProjectPath(projectPath)),
+        cwd: projectPath,
       },
       processManager,
       debugName
@@ -248,7 +229,7 @@ describe('ui:create:react', () => {
 
       await isDirectoryClean(
         serverProcessManager,
-        getProjectPath(projectPath),
+        projectPath,
         projectName,
         gitDirtyWorkingTreeSpy
       );

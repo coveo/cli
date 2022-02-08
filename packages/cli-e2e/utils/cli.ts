@@ -39,7 +39,7 @@ export function getProjectPath(
   return join(uiProjectFolderName, projectName);
 }
 
-export function setupUIProject(
+export async function setupUIProject(
   processManager: ProcessManager,
   commandArgs: string,
   projectName: string,
@@ -56,6 +56,23 @@ export function setupUIProject(
   }
 
   const args = [CLI_EXEC_PATH, ...command];
+
+  if (options.parentDir) {
+    const parentFolder = join(UI_PROJECT_FOLDER_NAME, 'react');
+    mkdirSync(parentFolder, {recursive: true});
+
+    const gitInitTerminal = new Terminal(
+      'git',
+      ['init'],
+      {
+        cwd: parentFolder,
+      },
+      processManager,
+      `${projectName}-git-init`
+    );
+
+    await gitInitTerminal.when('exit').on('process').do().once();
+  }
 
   if (process.platform === 'win32') {
     args.unshift('node');

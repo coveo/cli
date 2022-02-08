@@ -3,9 +3,9 @@ import type {HTTPRequest, Browser, Page} from 'puppeteer';
 
 import {
   answerPrompt,
-  getProjectPath,
   isGenericYesNoPrompt,
   setupUIProject,
+  UI_PROJECT_FOLDER_NAME,
 } from '../utils/cli';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {isSearchRequestOrResponse} from '../utils/platform';
@@ -28,13 +28,16 @@ import getPort from 'get-port';
 import {npm} from '../utils/windows';
 import axios from 'axios';
 import {jwtTokenPattern} from '../utils/matcher';
+import {join} from 'path';
 
 describe('ui:create:vue', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
   let page: Page;
   const oldEnv = process.env;
-  const projectName = `${process.env.TEST_RUN_ID}-vue-project`;
+  const parentDir = 'vue';
+  const projectName = `${process.env.TEST_RUN_ID}-${parentDir}-project`;
+  const projectPath = join(UI_PROJECT_FOLDER_NAME, parentDir, projectName);
   let clientPort: number;
   let serverPort: number;
 
@@ -43,7 +46,7 @@ describe('ui:create:vue', () => {
   const tokenServerEndpoint = () => `http://localhost:${serverPort}/token`;
 
   const forceApplicationPorts = (clientPort: number, serverPort: number) => {
-    const envPath = getPathToEnvFile(projectName);
+    const envPath = getPathToEnvFile(projectPath);
     const environment = parse(readFileSync(envPath, {encoding: 'utf-8'}));
 
     const updatedEnvironment = {
@@ -66,7 +69,7 @@ describe('ui:create:vue', () => {
 
   const getAllocatedPorts = () => {
     const envVariables = parse(
-      readFileSync(getPathToEnvFile(projectName), {encoding: 'utf-8'})
+      readFileSync(getPathToEnvFile(projectPath), {encoding: 'utf-8'})
     );
 
     if (!envVariables) {
@@ -80,10 +83,11 @@ describe('ui:create:vue', () => {
   };
 
   const buildApplication = async (processManager: ProcessManager) => {
-    const buildTerminal = setupUIProject(
+    const buildTerminal = await setupUIProject(
       processManager,
       'ui:create:vue',
-      projectName
+      projectName,
+      {parentDir}
     );
 
     const buildTerminalExitPromise = Promise.race([
@@ -114,7 +118,7 @@ describe('ui:create:vue', () => {
       args.shift()!,
       args,
       {
-        cwd: getProjectPath(projectName),
+        cwd: projectPath,
       },
       processManager,
       debugName
@@ -248,7 +252,7 @@ describe('ui:create:vue', () => {
 
       await commitProject(
         serverProcessManager,
-        getProjectPath(projectName),
+        projectPath,
         projectName,
         eslintErrorSpy
       );
@@ -295,12 +299,12 @@ describe('ui:create:vue', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      deactivateEnvironmentFile(projectName);
+      deactivateEnvironmentFile(projectPath);
     });
 
     afterAll(async () => {
       await serverProcessManager.killAllProcesses();
-      restoreEnvironmentFile(projectName);
+      restoreEnvironmentFile(projectPath);
     }, 30e3);
 
     it(
@@ -332,7 +336,7 @@ describe('ui:create:vue', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      envFileContent = flushEnvFile(projectName);
+      envFileContent = flushEnvFile(projectPath);
       const appTerminal = await startApplication(
         serverProcessManager,
         'vue-server-invalid'
@@ -342,7 +346,7 @@ describe('ui:create:vue', () => {
     }, 2 * 60e3);
 
     afterAll(async () => {
-      overwriteEnvFile(projectName, envFileContent);
+      overwriteEnvFile(projectPath, envFileContent);
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 

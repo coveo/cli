@@ -4,9 +4,9 @@ import type {HTTPRequest, Browser, Page} from 'puppeteer';
 
 import {
   answerPrompt,
-  getProjectPath,
   isGenericYesNoPrompt,
   setupUIProject,
+  UI_PROJECT_FOLDER_NAME,
 } from '../utils/cli';
 import {
   deactivateEnvironmentFile,
@@ -37,9 +37,12 @@ describe.skip('ui:create:angular', () => {
   const processManagers: ProcessManager[] = [];
   let page: Page;
   const oldEnv = process.env;
-  const projectName = `${process.env.TEST_RUN_ID}-angular-project`;
+  const parentDir = 'angular';
+  const projectName = `${process.env.TEST_RUN_ID}-${parentDir}-project`;
+  const projectPath = join(UI_PROJECT_FOLDER_NAME, parentDir, projectName);
   let clientPort: number;
   let serverPort: number;
+  const angularJsonPath = join(projectPath, 'angular.json');
 
   const searchPageEndpoint = () => `http://localhost:${clientPort}`;
 
@@ -47,7 +50,7 @@ describe.skip('ui:create:angular', () => {
 
   const setCustomTokenEndpoint = (endpoint: string) => {
     const webAppEnvironment = resolve(
-      getProjectPath(projectName),
+      projectPath,
       'src',
       'environments',
       'environment.ts'
@@ -66,7 +69,7 @@ describe.skip('ui:create:angular', () => {
   const resetCustomTokenEndpoint = () => setCustomTokenEndpoint('');
 
   const forceTokenServerPort = (port: number) => {
-    const pathToEnv = resolve(getProjectPath(projectName), 'server', '.env');
+    const pathToEnv = resolve(projectPath, 'server', '.env');
     const environment = parse(readFileSync(pathToEnv, {encoding: 'utf-8'}));
 
     const updatedEnvironment = {
@@ -81,7 +84,6 @@ describe.skip('ui:create:angular', () => {
   };
 
   const forceAppPort = (port: number) => {
-    const angularJsonPath = getProjectPath(join(projectName, 'angular.json'));
     const angularJSON = JSON.parse(readFileSync(angularJsonPath, 'utf-8'));
 
     const serve = angularJSON.projects[projectName].architect.serve;
@@ -95,7 +97,7 @@ describe.skip('ui:create:angular', () => {
 
   const getAllocatedPorts = () => {
     const envVariables = parse(
-      readFileSync(getPathToEnvFile(join(projectName, 'server')))
+      readFileSync(getPathToEnvFile(join(projectPath, 'server')))
     );
 
     if (!envVariables) {
@@ -103,7 +105,6 @@ describe.skip('ui:create:angular', () => {
     }
 
     serverPort = parseInt(envVariables.SERVER_PORT);
-    const angularJsonPath = getProjectPath(join(projectName, 'angular.json'));
 
     const angularJSON = JSON.parse(readFileSync(angularJsonPath, 'utf-8'));
     const servePort =
@@ -114,7 +115,7 @@ describe.skip('ui:create:angular', () => {
   };
 
   const buildApplication = async (processManager: ProcessManager) => {
-    const buildTerminal = setupUIProject(
+    const buildTerminal = await setupUIProject(
       processManager,
       'ui:create:angular',
       projectName,
@@ -148,7 +149,7 @@ describe.skip('ui:create:angular', () => {
       args.shift()!,
       args,
       {
-        cwd: getProjectPath(projectName),
+        cwd: projectPath,
       },
       processManager,
       debugName
@@ -222,11 +223,7 @@ describe.skip('ui:create:angular', () => {
     });
 
     afterAll(async () => {
-      await undoCommit(
-        serverProcessManager,
-        getProjectPath(projectName),
-        projectName
-      );
+      await undoCommit(serverProcessManager, projectPath, projectName);
       await serverProcessManager.killAllProcesses();
     }, 5 * 60e3);
 
@@ -293,7 +290,7 @@ describe.skip('ui:create:angular', () => {
 
       await commitProject(
         serverProcessManager,
-        getProjectPath(projectName),
+        projectPath,
         projectName,
         eslintErrorSpy
       );
@@ -308,11 +305,11 @@ describe.skip('ui:create:angular', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      deactivateEnvironmentFile(join(projectName, 'server'));
+      deactivateEnvironmentFile(join(projectPath, 'server'));
     });
 
     afterAll(async () => {
-      restoreEnvironmentFile(join(projectName, 'server'));
+      restoreEnvironmentFile(join(projectPath, 'server'));
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
@@ -355,7 +352,7 @@ describe.skip('ui:create:angular', () => {
     }, 2 * 60e3);
 
     afterAll(async () => {
-      overwriteEnvFile(join(projectName, 'server'), envFileContent);
+      overwriteEnvFile(join(projectPath, 'server'), envFileContent);
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
