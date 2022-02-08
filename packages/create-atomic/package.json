@@ -13,7 +13,7 @@
   "scripts": {
     "start": "./index.js",
     "build": "tsc -p tsconfig.json",
-    "prepublishOnly": "npm run build && ./scripts/preparePackageJsonTemplate.sh",
+    "prepublishOnly": "npm run build && node ./scripts/preparePackageJsonTemplate.mjs",
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
     "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
     "lint": "prettier --check . && eslint .",
@@ -32,6 +32,7 @@
     "access": "public"
   },
   "dependencies": {
+    "detect-indent": "^7.0.0",
     "minimist": "1.2.5",
     "plop": "^3.0.3",
     "ts-node": "10.4.0",
