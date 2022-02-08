@@ -1,10 +1,5 @@
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
-import {
-  captureScreenshots,
-  getNewBrowser,
-  LOGS_PATH,
-  openNewPage,
-} from '../utils/browser';
+import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {answerPrompt, getProjectPath, setupUIProject} from '../utils/cli';
 import {isSearchRequest} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
@@ -13,8 +8,6 @@ import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {npm} from '../utils/windows';
 import {jwtTokenPattern} from '../utils/matcher';
 import {EOL} from 'os';
-import {createWriteStream, WriteStream} from 'fs';
-import {join} from 'path';
 
 describe('ui:create:atomic', () => {
   let browser: Browser;
@@ -72,9 +65,8 @@ describe('ui:create:atomic', () => {
     );
     return serverTerminal;
   };
-  let logStreamYolo: WriteStream;
+
   beforeAll(async () => {
-    logStreamYolo = createWriteStream(join(LOGS_PATH, 'LEEROY_JENKINS'));
     const buildProcessManager = new ProcessManager();
     processManagers.push(buildProcessManager);
     browser = await getNewBrowser();
@@ -105,6 +97,7 @@ describe('ui:create:atomic', () => {
     let interceptedRequests: HTTPRequest[] = [];
     let consoleInterceptor: BrowserConsoleInterceptor;
     const searchInterfaceSelector = 'atomic-search-interface';
+
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
@@ -121,7 +114,6 @@ describe('ui:create:atomic', () => {
 
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);
-        logStreamYolo.write(`[${Date.now()}]: ${JSON.stringify(request)}`);
       });
     });
 
@@ -133,7 +125,6 @@ describe('ui:create:atomic', () => {
 
     afterAll(async () => {
       await serverProcessManager.killAllProcesses();
-      logStreamYolo.end();
     }, 5 * 30e3);
 
     it('should not contain console errors nor warnings', async () => {
@@ -153,14 +144,12 @@ describe('ui:create:atomic', () => {
     }, 60e3);
 
     it('should retrieve the search token on the page load', async () => {
-      const tokenResponseListener = page.waitForResponse(tokenServerEndpoint);
+      const response = await page.goto(tokenServerEndpoint, {
+        waitUntil: 'networkidle2',
+      });
+      const responseObject = JSON.parse(await response.text());
 
-      page.goto(searchPageEndpoint);
-      await page.waitForSelector(searchInterfaceSelector);
-
-      expect(
-        JSON.parse(await (await tokenResponseListener).text())
-      ).toMatchObject({
+      expect(responseObject).toMatchObject({
         token: expect.stringMatching(jwtTokenPattern),
       });
     }, 60e3);
