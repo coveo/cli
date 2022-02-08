@@ -1,7 +1,7 @@
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {answerPrompt, getProjectPath, setupUIProject} from '../utils/cli';
-import {isSearchRequest} from '../utils/platform';
+import {isSearchRequestOrResponse} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
@@ -159,7 +159,7 @@ describe('ui:create:atomic', () => {
       await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchInterfaceSelector);
 
-      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+      expect(interceptedRequests.some(isSearchRequestOrResponse)).toBeTruthy();
     }, 60e3);
   });
 });

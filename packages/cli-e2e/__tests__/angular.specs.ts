@@ -16,7 +16,7 @@ import {
   restoreEnvironmentFile,
 } from '../utils/file';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
-import {isSearchRequest} from '../utils/platform';
+import {isSearchRequestOrResponse} from '../utils/platform';
 import {EOL} from 'os';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
@@ -268,7 +268,7 @@ describe.skip('ui:create:angular', () => {
       await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchboxSelector);
 
-      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+      expect(interceptedRequests.some(isSearchRequestOrResponse)).toBeTruthy();
     });
 
     it('should send a search query on searchbox submit', async () => {
@@ -282,7 +282,9 @@ describe.skip('ui:create:angular', () => {
       await page.keyboard.press('Enter');
 
       await retry(async () => {
-        expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+        expect(
+          interceptedRequests.some(isSearchRequestOrResponse)
+        ).toBeTruthy();
       });
     }, 60e3);
 

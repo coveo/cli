@@ -19,6 +19,7 @@ import {Terminal} from './utils/terminal/terminal';
 import {resolve} from 'path';
 import {cwd} from 'process';
 import {join} from 'path/posix';
+import {npmLogin} from './utils/npmLogin';
 async function clearChromeBrowsingData(browser: Browser) {
   const pages = await browser.pages();
 
@@ -63,7 +64,7 @@ export default async function () {
   const testOrgName = `cli-e2e-${process.env.TEST_RUN_ID}`;
   const chrome = await launch({port: 9222});
   const browser = await connectToChromeBrowser();
-  -(await clearChromeBrowsingData(browser));
+  await clearChromeBrowsingData(browser);
   try {
     global.processManager = new ProcessManager();
     new Terminal(

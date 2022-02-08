@@ -8,7 +8,7 @@ import {
   setupUIProject,
 } from '../utils/cli';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
-import {isSearchRequest} from '../utils/platform';
+import {isSearchRequestOrResponse} from '../utils/platform';
 import {EOL} from 'os';
 import {ProcessManager} from '../utils/processManager';
 import {
@@ -223,7 +223,7 @@ describe('ui:create:vue', () => {
       await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchboxSelector);
 
-      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+      expect(interceptedRequests.some(isSearchRequestOrResponse)).toBeTruthy();
     });
 
     it('should send a search query on searchbox submit', async () => {
@@ -237,7 +237,9 @@ describe('ui:create:vue', () => {
       await page.keyboard.press('Enter');
 
       await retry(async () => {
-        expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+        expect(
+          interceptedRequests.some(isSearchRequestOrResponse)
+        ).toBeTruthy();
       });
     });
 

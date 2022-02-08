@@ -22,14 +22,19 @@ export function answerPrompt(answer: string) {
 
 export interface ISetupUIProjectOptionsArgs {
   flags?: string[];
+  parentDir?: string;
 }
 
 export function getEnvFilePath() {
   return join('.env');
 }
 
-export function getProjectPath(projectName: string) {
-  const uiProjectFolderName = 'ui-projects';
+export const UI_PROJECT_FOLDER_NAME = 'ui-projects';
+
+export function getProjectPath(
+  projectName: string,
+  uiProjectFolderName = UI_PROJECT_FOLDER_NAME
+) {
   mkdirSync(join(uiProjectFolderName), {recursive: true});
   return join(uiProjectFolderName, projectName);
 }
@@ -60,7 +65,7 @@ export function setupUIProject(
     args.shift()!,
     args,
     {
-      cwd: resolve(getProjectPath(projectName), '..'),
+      cwd: options.parentDir ?? resolve(getProjectPath(projectName), '..'),
       env: {...process.env, npm_config_registry: 'http://localhost:4873'},
     },
     processManager,
