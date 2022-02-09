@@ -27,5 +27,6 @@ $env:Path = $env:Path + ";C:\Program Files (x86)\mitmproxy\bin"
 Write-Output "::endgroup::"
 
 Write-Output "::group::Run tests"
+cd packages/cli-e2e
 npm run jest
 Write-Output "::endgroup::"
