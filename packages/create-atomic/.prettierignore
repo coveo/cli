@@ -3,3 +3,5 @@ CHANGELOG.md
 
 package-lock.json
 lib
+
+templates/package.json.hbs

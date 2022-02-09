@@ -24,6 +24,7 @@ topology.json
 !.yarn/releases
 yarn.lock
 
-# Snyk artifcatcs
+# Snyk artifacts
 .dccache
 sarifs
+packages/create-atomic/templates/package.json.hbs
