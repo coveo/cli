@@ -32,7 +32,7 @@ import axios from 'axios';
 import {jwtTokenPattern} from '../utils/matcher';
 
 // TODO CDX-804: Enable the tests back
-describe.skip('ui:create:angular', () => {
+describe('ui:create:angular', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
   let page: Page;
@@ -343,7 +343,7 @@ describe.skip('ui:create:angular', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      envFileContent = flushEnvFile(join(projectName, 'server'));
+      envFileContent = flushEnvFile(join(projectPath, 'server'));
       const appTerminal = await startApplication(
         serverProcessManager,
         'angular-server-invalid'
