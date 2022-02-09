@@ -7,7 +7,7 @@
 
     "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["jest"],
+    "types": ["jest", "node"],
     "lib": ["dom", "es2017"]
   },
   "include": ["./**/*.ts"]

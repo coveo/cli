@@ -10,7 +10,7 @@ import {clearAccessTokenFromConfig, loginWithOffice} from './utils/login';
 import {ProcessManager} from './utils/processManager';
 import {saveToEnvFile} from './utils/file';
 import {createOrg} from './utils/platform';
-import {getConfig, getEnvFilePath} from './utils/cli';
+import {getConfig as getCliConfig, getEnvFilePath} from './utils/cli';
 import {launch} from 'chrome-launcher';
 import waitOn from 'wait-on';
 import 'dotenv/config';
@@ -40,7 +40,7 @@ function getPlatformHost() {
 }
 
 async function createTestOrgAndSaveOrgIdToEnv(orgName: string) {
-  const {accessToken} = getConfig();
+  const {accessToken} = getCliConfig();
   const testOrgId = await createOrg(orgName, accessToken);
   console.log(`Created org ${testOrgId}`);
   const pathToEnv = getEnvFilePath();
@@ -54,6 +54,9 @@ async function createTestOrgAndSaveOrgIdToEnv(orgName: string) {
 }
 
 export default async function () {
+  if (!process.env.CI) {
+    useCIConfigIfEnvIncomplete();
+  }
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
   // runId must start and finish with letters to satisfies Angular.
   process.env.TEST_RUN_ID = `id${randomBytes(16).toString('hex')}g`;
@@ -112,3 +115,10 @@ async function startVerdaccio() {
 
 const appendCmdIfWindows = (cmd): string =>
   `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
+
+function useCIConfigIfEnvIncomplete() {
+  const cliConfig = getCliConfig();
+  process.env.PLATFORM_ENV = process.env.PLATFORM_ENV || cliConfig.environment;
+  process.env.ORG_ID = process.env.ORG_ID || cliConfig.organization;
+  process.env.ACCESS_TOKEN = process.env.ACCESS_TOKEN || cliConfig.accessToken;
+}
