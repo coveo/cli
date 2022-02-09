@@ -68,11 +68,15 @@ export default function (plop: NodePlopAPI) {
           '../templates/.env.example',
           '../templates/.gitignore',
           '../templates/tsconfig.json',
-          '../templates/package.json',
           '../templates/stencil.config.ts',
           '../templates/netlify.toml',
           '../templates/README.md',
         ],
+      },
+      {
+        type: 'add',
+        path: currentPath + '/{{project}}/package.json',
+        templateFile: '../templates/package.json.hbs',
       },
       function installPackagesPrompt() {
         return 'Installing packages...';

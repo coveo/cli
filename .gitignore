@@ -17,3 +17,14 @@ ui-projects
 
 !.vscode/extensions.json
 topology.json
+
+# Only use as a rosetta table between snyk and package-lock, generated on CI from the package-lock.json
+.pnp.*
+.yarn/*
+!.yarn/releases
+yarn.lock
+
+# Snyk artifacts
+.dccache
+sarifs
+packages/create-atomic/templates/package.json.hbs
