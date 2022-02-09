@@ -18,6 +18,8 @@ import {Terminal} from './utils/terminal/terminal';
 import {cwd} from 'process';
 import {join} from 'path/posix';
 import {npm} from './utils/windows';
+import {MITM_BIN_NAME, resolveBinary} from './utils/mitmproxy';
+import {parse} from 'path';
 async function clearChromeBrowsingData(browser: Browser) {
   const pages = await browser.pages();
 
@@ -55,6 +57,7 @@ async function createTestOrgAndSaveOrgIdToEnv(orgName: string) {
 
 export default async function () {
   if (!process.env.CI) {
+    isMitmProxyInstalled();
     useCIConfigIfEnvIncomplete();
   }
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
@@ -121,4 +124,13 @@ function useCIConfigIfEnvIncomplete() {
   process.env.PLATFORM_ENV = process.env.PLATFORM_ENV || cliConfig.environment;
   process.env.ORG_ID = process.env.ORG_ID || cliConfig.organization;
   process.env.ACCESS_TOKEN = process.env.ACCESS_TOKEN || cliConfig.accessToken;
+}
+
+function isMitmProxyInstalled(): void | never {
+  const pathCandidate = resolveBinary(MITM_BIN_NAME);
+  try {
+    parse(pathCandidate);
+  } catch (error) {
+    throw 'mitmdump not found in Path. Please install mitmproxy and add its binaries to your path';
+  }
 }
