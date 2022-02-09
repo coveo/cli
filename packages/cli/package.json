@@ -166,7 +166,7 @@
   "scripts": {
     "postpack": "rimraf oclif.manifest.json",
     "prepack": "rimraf lib && npm run build && oclif manifest && oclif readme",
-    "build": "tsc -b",
+    "build": "rimraf lib && tsc -b",
     "test": "jest --colors",
     "lint": "prettier --config ../../.prettierrc.js --check . && eslint .",
     "version": "oclif readme && git add README.md",
