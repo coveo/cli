@@ -68,7 +68,6 @@ export default function (plop: NodePlopAPI) {
           '../templates/.env.example',
           '../templates/.gitignore',
           '../templates/tsconfig.json',
-          '../templates/package.json',
           '../templates/stencil.config.ts',
           '../templates/netlify.toml',
           '../templates/README.md',
