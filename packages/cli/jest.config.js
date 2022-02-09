@@ -3,6 +3,7 @@ const {defaults} = require('jest-config');
 module.exports = {
   rootDir: 'src/',
   preset: 'ts-jest',
+  globalSetup: './__test__/setup.ts',
   testEnvironment: 'node',
   verbose: true,
   collectCoverage: true,
