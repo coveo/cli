@@ -17,7 +17,7 @@ export const resolveBinary = (programName: string) => {
 
 export const startMitmProxy = (
   processManager: ProcessManager,
-  terminalDebugName: string = 'mitmproxy'
+  terminalDebugName = 'mitmproxy'
 ) => {
   const mitmPath = resolveBinary(MITM_BIN_NAME);
   const serverTerminal = new Terminal(

@@ -17,7 +17,7 @@ import 'dotenv/config';
 import {Terminal} from './utils/terminal/terminal';
 import {cwd} from 'process';
 import {join} from 'path/posix';
-import {npm} from './utils/windows';
+import {npm} from './utils/npm';
 import {MITM_BIN_NAME, resolveBinary} from './utils/mitmproxy';
 import {parse} from 'path';
 async function clearChromeBrowsingData(browser: Browser) {
@@ -66,7 +66,6 @@ export default async function () {
   process.env.PLATFORM_ENV = getPlatformEnv();
   process.env.PLATFORM_HOST = getPlatformHost();
   const testOrgName = `cli-e2e-${process.env.TEST_RUN_ID}`;
-  const chrome = await launch({port: 9222});
   const browser = await connectToChromeBrowser();
   await clearChromeBrowsingData(browser);
 
@@ -115,9 +114,6 @@ async function startVerdaccio() {
   );
   await waitOn({resources: ['tcp:4873']});
 }
-
-const appendCmdIfWindows = (cmd): string =>
-  `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
 
 function useCIConfigIfEnvIncomplete() {
   const cliConfig = getCliConfig();
