@@ -11,7 +11,6 @@ import {ProcessManager} from './utils/processManager';
 import {saveToEnvFile} from './utils/file';
 import {createOrg} from './utils/platform';
 import {getConfig as getCliConfig, getEnvFilePath} from './utils/cli';
-import {launch} from 'chrome-launcher';
 import waitOn from 'wait-on';
 import 'dotenv/config';
 import {Terminal} from './utils/terminal/terminal';
