@@ -5,7 +5,7 @@ import {isSearchRequestOrResponse} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
-import {npm} from '../utils/windows';
+import {npm} from '../utils/npm';
 import {jwtTokenPattern} from '../utils/matcher';
 import {EOL} from 'os';
 
