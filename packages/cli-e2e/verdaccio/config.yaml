@@ -17,6 +17,7 @@ auth:
 uplinks:
   npmjs:
     url: https://registry.npmjs.org/
+    cache: false
 
 packages:
   # All templates packages and the search-token-server are published and fetched from Verdaccio

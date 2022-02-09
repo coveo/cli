@@ -14,12 +14,10 @@ import {getConfig, getEnvFilePath} from './utils/cli';
 import {launch} from 'chrome-launcher';
 import waitOn from 'wait-on';
 import 'dotenv/config';
-import {spawnSync} from 'child_process';
 import {Terminal} from './utils/terminal/terminal';
-import {resolve} from 'path';
 import {cwd} from 'process';
 import {join} from 'path/posix';
-import {npmLogin} from './utils/npmLogin';
+import {npm} from './utils/windows';
 async function clearChromeBrowsingData(browser: Browser) {
   const pages = await browser.pages();
 
@@ -65,27 +63,11 @@ export default async function () {
   const chrome = await launch({port: 9222});
   const browser = await connectToChromeBrowser();
   await clearChromeBrowsingData(browser);
+
   try {
     global.processManager = new ProcessManager();
-    new Terminal(
-      appendCmdIfWindows`npm`,
-      ['run', 'verdaccio'],
-      {cwd: cwd()},
-      global.processManager!,
-      'verdaccio'
-    );
-    await waitOn({resources: ['tcp:4873']});
-    await new Terminal(
-      appendCmdIfWindows`npm`,
-      ['run', 'npm:publish:template'],
-      {cwd: join(cwd(), '..', '..')},
-      global.processManager!,
-      'npmPublish'
-    )
-      .when('exit')
-      .on('process')
-      .do()
-      .once();
+    await startVerdaccio();
+    await publishPackages();
 
     if (process.env.CI) {
       await clearAccessTokenFromConfig();
@@ -101,7 +83,32 @@ export default async function () {
   await clearChromeBrowsingData(browser);
 }
 
-function startVerdaccio() {}
+async function publishPackages() {
+  const args = [...npm(), 'run', 'npm:publish:template'];
+  await new Terminal(
+    args.shift()!,
+    args,
+    {cwd: join(cwd(), '..', '..')},
+    global.processManager!,
+    'npmPublish'
+  )
+    .when('exit')
+    .on('process')
+    .do()
+    .once();
+}
+
+async function startVerdaccio() {
+  const args = [...npm(), 'run', 'verdaccio'];
+  new Terminal(
+    args.shift()!,
+    args,
+    {cwd: cwd()},
+    global.processManager!,
+    'verdaccio'
+  );
+  await waitOn({resources: ['tcp:4873']});
+}
 
 const appendCmdIfWindows = (cmd): string =>
   `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
