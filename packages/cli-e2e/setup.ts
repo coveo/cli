@@ -1,5 +1,6 @@
 import {mkdirSync} from 'fs';
 import {randomBytes} from 'crypto';
+import {launch as launchChrome} from 'chrome-launcher';
 import type {Browser} from 'puppeteer';
 import {
   captureScreenshots,
@@ -65,6 +66,7 @@ export default async function () {
   process.env.PLATFORM_ENV = getPlatformEnv();
   process.env.PLATFORM_HOST = getPlatformHost();
   const testOrgName = `cli-e2e-${process.env.TEST_RUN_ID}`;
+  await launchChrome({port: 9222});
   const browser = await connectToChromeBrowser();
   await clearChromeBrowsingData(browser);
 
