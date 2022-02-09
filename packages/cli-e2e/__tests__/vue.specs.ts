@@ -185,11 +185,7 @@ describe('ui:create:vue', () => {
     });
 
     afterAll(async () => {
-      // await undoCommit(
-      //   serverProcessManager,
-      //   getProjectPath(projectName),
-      //   projectName
-      // );
+      await undoCommit(serverProcessManager, projectPath, projectName);
       await serverProcessManager.killAllProcesses();
     }, 5 * 60e3);
 
