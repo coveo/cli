@@ -1,7 +1,6 @@
 import {init, NodeClient} from '@amplitude/node';
 
-// TODO: CDX-656: replace with Production API key on build
-const analyticsAPIKey = '2b06992f1a80d36396ba7297a8daf913';
+const analyticsAPIKey = 'af28cba7acfd392c324bebd399e2d9ea';
 
 export interface AmplitudeClient extends NodeClient {
   identified: boolean;
