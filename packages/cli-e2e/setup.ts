@@ -20,6 +20,7 @@ import {join} from 'path/posix';
 import {npm} from './utils/npm';
 import {MITM_BIN_NAME, resolveBinary} from './utils/mitmproxy';
 import {parse} from 'path';
+import {npmLogin} from './utils/npmLogin';
 async function clearChromeBrowsingData(browser: Browser) {
   const pages = await browser.pages();
 
@@ -73,6 +74,7 @@ export default async function () {
   try {
     global.processManager = new ProcessManager();
     await startVerdaccio();
+    await npmLogin();
     await publishPackages();
 
     if (process.env.CI) {
