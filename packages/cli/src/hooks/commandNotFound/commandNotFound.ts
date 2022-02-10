@@ -1,4 +1,5 @@
 import {Hook} from '@oclif/core';
+import {CLIError} from '@oclif/core/lib/errors';
 import {buildEvent} from '../analytics/eventUtils';
 
 const hook: Hook<'command_not_found'> = async function (options) {
@@ -8,6 +9,8 @@ const hook: Hook<'command_not_found'> = async function (options) {
       error_type: 'COMMAND NOT FOUND',
     }),
   });
+
+  throw new CLIError(`command ${options.id} not found`);
 };
 
 export default hook;
