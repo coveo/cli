@@ -6,7 +6,7 @@ import {
   answerPrompt,
   isGenericYesNoPrompt,
   setupUIProject,
-  UI_PROJECT_FOLDER_NAME,
+  getUIProjectPath,
 } from '../utils/cli';
 import {
   deactivateEnvironmentFile,
@@ -39,7 +39,7 @@ describe('ui:create:angular', () => {
   const oldEnv = process.env;
   const parentDir = 'angular';
   const projectName = `${process.env.TEST_RUN_ID}-${parentDir}-project`;
-  const projectPath = join(UI_PROJECT_FOLDER_NAME, parentDir, projectName);
+  const projectPath = join(getUIProjectPath(), parentDir, projectName);
   let clientPort: number;
   let serverPort: number;
   const angularJsonPath = join(projectPath, 'angular.json');

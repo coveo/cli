@@ -3,7 +3,7 @@ import retry from 'async-retry';
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
 
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
-import {setupUIProject, UI_PROJECT_FOLDER_NAME} from '../utils/cli';
+import {setupUIProject, getUIProjectPath} from '../utils/cli';
 import {isSearchRequestOrResponse} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
@@ -33,7 +33,7 @@ describe('ui:create:react', () => {
   const oldEnv = process.env;
   const parentDir = 'react';
   const projectName = `${process.env.TEST_RUN_ID}-react-project`;
-  const projectPath = join(UI_PROJECT_FOLDER_NAME, parentDir, projectName);
+  const projectPath = join(getUIProjectPath(), parentDir, projectName);
   let clientPort: number;
   let serverPort: number;
 

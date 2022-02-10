@@ -5,7 +5,7 @@ import {
   answerPrompt,
   isGenericYesNoPrompt,
   setupUIProject,
-  UI_PROJECT_FOLDER_NAME,
+  getUIProjectPath,
 } from '../utils/cli';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {isSearchRequestOrResponse} from '../utils/platform';
@@ -37,7 +37,7 @@ describe('ui:create:vue', () => {
   const oldEnv = process.env;
   const parentDir = 'vue';
   const projectName = `${process.env.TEST_RUN_ID}-${parentDir}-project`;
-  const projectPath = join(UI_PROJECT_FOLDER_NAME, parentDir, projectName);
+  const projectPath = join(getUIProjectPath(), parentDir, projectName);
   let clientPort: number;
   let serverPort: number;
 

@@ -29,11 +29,13 @@ export function getEnvFilePath() {
   return join('.env');
 }
 
-export const UI_PROJECT_FOLDER_NAME = 'ui-projects';
+export function getUIProjectPath(): string {
+  return process.env.UI_PROJECT_PATH!;
+}
 
 export function getProjectPath(
   projectName: string,
-  uiProjectFolderName = UI_PROJECT_FOLDER_NAME
+  uiProjectFolderName = getUIProjectPath()
 ) {
   mkdirSync(join(uiProjectFolderName), {recursive: true});
   return join(uiProjectFolderName, projectName);

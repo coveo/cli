@@ -1,4 +1,5 @@
 import {mkdirSync} from 'fs';
+import {dirSync as tmpDirSync} from 'tmp';
 import {randomBytes} from 'crypto';
 import {launch as launchChrome} from 'chrome-launcher';
 import type {Browser} from 'puppeteer';
@@ -67,6 +68,9 @@ export default async function () {
   process.env.PLATFORM_ENV = getPlatformEnv();
   process.env.PLATFORM_HOST = getPlatformHost();
   const testOrgName = `cli-e2e-${process.env.TEST_RUN_ID}`;
+
+  const uiProjectDir = tmpDirSync();
+  process.env.UI_PROJECT_PATH = uiProjectDir.name;
 
   global.processManager = new ProcessManager();
   await startVerdaccio();

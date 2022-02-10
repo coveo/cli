@@ -40,9 +40,7 @@ jobs:
         with:
           node-version: ${{matrix.node}}
       - name: Setup repo
-        run: |
-          npm ci
-          yarn install --no-immutable --mode=update-lockfile
+        run: npm ci
       - name: Check linting
         run: npm run lint
       - name: Tests

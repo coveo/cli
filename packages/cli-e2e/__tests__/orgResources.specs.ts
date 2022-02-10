@@ -6,7 +6,7 @@ import {
   getEnvFilePath,
   getProjectPath,
   isGenericYesNoPrompt,
-  UI_PROJECT_FOLDER_NAME,
+  getUIProjectPath,
 } from '../utils/cli';
 import {fileSync} from 'tmp';
 import {ProcessManager} from '../utils/processManager';
@@ -29,7 +29,7 @@ config({path: getEnvFilePath()});
 describe('org:resources', () => {
   const testOrgId = process.env.TEST_ORG_ID!;
   const {accessToken} = getConfig();
-  const snapshotProjectPath = join(UI_PROJECT_FOLDER_NAME, 'snapshot-project');
+  const snapshotProjectPath = join(getUIProjectPath(), 'snapshot-project');
   const defaultTimeout = 10 * 60e3;
   let processManager: ProcessManager;
   let platformClient: PlatformClient;
