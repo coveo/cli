@@ -20,7 +20,7 @@ import {getPackageVersion} from '../../../lib/utils/misc';
 
 export default class Atomic extends Command {
   public static cliPackage = '@coveo/create-atomic';
-  public static requiredNodeVersion = '>=14.0.0';
+  public static requiredNodeVersion = '>=14.0.0 <17.0.0'; // https://github.com/netlify/cli/issues/3617
   public static description =
     "Create a Coveo Headless-powered search page with Coveo's own Atomic framework. See <https://docs.coveo.com/atomic> and <https://docs.coveo.com/headless>.";
   public static examples = ['$ coveo ui:create:atomic myapp'];

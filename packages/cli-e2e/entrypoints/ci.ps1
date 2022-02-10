@@ -38,12 +38,16 @@ $env:Path = $env:Path + ";C:\Program Files (x86)\mitmproxy\bin"
 Write-Output "::endgroup::"
 npm set registry http://localhost:4873
 ts-node --transpile-only ./packages/cli-e2e/utils/npmLogin.ts
-yarn config set registry http://localhost:4873
-Write-Output "--mutex network" | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
-Write-Output "--install.silent true" | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
-Write-Output "--silent true" | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
 
-npm run npm:bump:template -- -- "0.0.0"
+# https://verdaccio.org/docs/cli-registry/#yarn-berry-2x
+Write-Output 'npmRegistryServer: "http://localhost:4873"' | Out-File -FilePath .yarnrc -Encoding utf8 -Append
+Write-Output 'unsafeHttpWhitelist:"' | Out-File -FilePath .yarnrc -Encoding utf8 -Append
+Write-Output '  - localhost"' | Out-File -FilePath .yarnrc -Encoding utf8 -Append
+
+Write-Output 'npmRegistryServer: "http://localhost:4873"' | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
+Write-Output 'unsafeHttpWhitelist:"' | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
+Write-Output '  - localhost"' | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
+
 npm run npm:publish:template
 
 Set-Location packages/cli-e2e

@@ -1,0 +1,6 @@
+{
+  "root": "packages/create-atomic",
+  "sourceRoot": "packages/create-atomic/src",
+  "projectType": "application",
+  "implicitDependencies": ["@coveo/create-atomic-template"]
+}

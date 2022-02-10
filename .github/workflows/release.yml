@@ -16,15 +16,14 @@ jobs:
     steps:
       - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
         with:
-          # pulls all commits (needed for lerna to correctly version)
-          # see https://stackoverflow.com/a/60184319/9285308 & https://github.com/actions/checkout
+          # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      # pulls all tags (needed for lerna to correctly version)
-      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/* # see https://stackoverflow.com/a/60184319/9285308
+      # pulls all tags (needed for computing the next version)
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*``
       - uses: actions/setup-node@1f8c6b94b26d0feae1e387ca63ccbdc44d27b561 # renovate: tag=v2
         with:
           node-version: '16'
-      - run: npm run setup
+      - run: npm i
       - name: Setup credentials
         run: |
           git config --global user.email action@github.com
@@ -54,27 +53,5 @@ jobs:
           echo -n ~ >> ~/.ssh/config
           echo "/.ssh/id_rsa" >> ~/.ssh/config
           git remote set-url origin git@coveo-cli:coveo/cli.git
-      - run: node_modules/.bin/lerna changed
-        if: ${{ github.event.inputs.version == ''}}
-      - name: Manually bump version
-        if: ${{ github.event.inputs.version != ''}}
-        run: node_modules/.bin/lerna publish ${{ github.event.inputs.version }} ---conventional-commits --force-publish -y --no-push --no-git-tag-version --no-git-reset --no-verify-access
-      - name: Semantically bump version
-        if: ${{ github.event.inputs.version == ''}}
-        run: node_modules/.bin/lerna publish ---conventional-commits -y --no-push --no-git-tag-version --no-git-reset --no-verify-access
-      - name: Wait for NPM cache to be updated
-        run: node ./scripts/wait-for-packages.js
-      - name: Normalize package.json and package-lock.json files
-        run: |
-          npm run npm:pkglock
-          npm run npm:cleanPackage
-      - name: Get the version
-        run: node ./scripts/get-version.js
-      - name: Commit changes, tag and push
-        run: |
-          echo -e "[Version bump] chore(release): publish v${{ env.tag }}\nlerna.json\nCHANGELOG.md\n**/CHANGELOG.md\n**/README.md" | git commit --all --file -
-          git tag "v${{ env.tag }}"
-          git push
-          git push --tags
-      - name: Create GitHub release.
-        run: npm run release:changelog
+      - name: Release
+        run: npm run release

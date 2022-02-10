@@ -3,9 +3,9 @@
   "version": "1.24.1",
   "scripts": {
     "lint": "prettier --check . && eslint .",
-    "npm:bump:template": "npm --no-git-tag-version version",
     "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
-    "npm:publish:template": "npm publish --access public --registry http://localhost:4873"
+    "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
+    "release:phase2": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase2-bump-all-packages.mjs"
   },
   "keywords": [
     "react",
@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@coveo/headless": "latest",
+    "@coveo/search-token-server": "1.24.1",
     "@material-ui/core": "4.12.3",
     "@material-ui/lab": "4.0.0-alpha.60",
     "@testing-library/jest-dom": "5.16.1",

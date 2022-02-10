@@ -1,9 +1,17 @@
 {
-  "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "declaration": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["es2018"],
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "pretty": true,
+    "sourceMap": true,
+    "target": "es2018",
     "module": "commonjs",
     "strict": true,
-    "target": "es2017",
     "noEmitOnError": false,
     "skipLibCheck": true,
     "types": ["jest"]
