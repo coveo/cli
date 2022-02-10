@@ -8,6 +8,6 @@ export default {
   globalSetup: './setup.ts',
   globalTeardown: './teardown.ts',
   testMatch: process.env.CI
-    ? ['**/__tests__/**/*specs.?(ci).ts']
+    ? ['**/__tests__/**/*specs?(.ci).ts']
     : ['**/__tests__/**/*specs.ts'],
 };
