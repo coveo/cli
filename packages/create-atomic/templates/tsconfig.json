@@ -1,8 +1,19 @@
 {
   "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
-    "lib": ["es2018", "DOM"],
+    "allowSyntheticDefaultImports": true,
+    "declaration": false,
+    "experimentalDecorators": true,
+    "lib": ["dom", "es2018"],
+    "moduleResolution": "node",
+    "module": "esnext",
+    "target": "es2018",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "jsx": "react",
+    "jsxFactory": "h",
     "types": ["@coveo/atomic"]
   },
+  "include": ["src"],
   "exclude": ["node_modules", "lambda"]
 }

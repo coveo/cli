@@ -23,7 +23,6 @@
     "typescript": "^4.1.5"
   },
   "scripts": {
-    "snyk:prepare": "cp ../../package-lock.json ./package-lock.json && npm i",
     "start": "ts-node server.ts",
     "test": "jest",
     "npm:publish:template": "npm publish --access public --tag latest --registry http://localhost:4873",

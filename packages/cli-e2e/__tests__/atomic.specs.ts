@@ -20,7 +20,7 @@ describe('ui:create:atomic', () => {
 
   const waitForAppRunning = (appTerminal: Terminal) =>
     appTerminal
-      .when(/Server now ready/)
+      .when(/build finished/)
       .on('stdout')
       .do()
       .once();
@@ -145,7 +145,6 @@ describe('ui:create:atomic', () => {
 
     it('should retrieve the search token on the page load', async () => {
       const tokenResponseListener = page.waitForResponse(tokenServerEndpoint);
-
       page.goto(searchPageEndpoint);
       await page.waitForSelector(searchInterfaceSelector);
 
