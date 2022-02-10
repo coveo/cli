@@ -1,7 +1,7 @@
 import {EOL} from 'os';
 import {answerPrompt} from './cli';
 import {Terminal} from './terminal/terminal';
-import {npm} from './windows';
+import {npm} from './npm';
 
 export const npmLogin = async () => {
   console.log('sTart');
