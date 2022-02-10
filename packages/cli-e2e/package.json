@@ -17,7 +17,6 @@
     "url": "git+https://github.com/coveo/cli.git"
   },
   "scripts": {
-    "snyk:prepare": "cp ../../package-lock.json ./package-lock.json && npm i",
     "lint": "eslint .",
     "test-e2e": "npm run test:headless",
     "test:headless": "node ./entrypoints/entry.js",
@@ -45,7 +44,6 @@
     "@babel/core": "7.16.12",
     "@babel/preset-env": "7.16.11",
     "@babel/preset-typescript": "7.16.7",
-    "@coveo/cli": "1.24.1",
     "@coveord/platform-client": "28.5.0",
     "abortcontroller-polyfill": "1.7.3",
     "async-retry": "1.3.3",

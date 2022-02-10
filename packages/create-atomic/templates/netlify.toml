@@ -1,8 +1,6 @@
 [build]
     functions = "lambda/functions/"
-    publish = "dist/"
+    publish = "www/"
 
 [dev]
-    command = "webpack serve --port 50021"
-    targetPort = 50021
-    framework = "#custom"
+    command = "stencil build --dev --watch --serve --no-open"
