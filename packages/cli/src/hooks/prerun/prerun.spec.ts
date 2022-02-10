@@ -24,7 +24,7 @@ describe('hooks:prerun', () => {
 
   test
     .do(() => {
-      mockGet.mockReturnValueOnce(Promise.resolve({analyticsEnabled: true}));
+      mockGet.mockReturnValueOnce({analyticsEnabled: true});
     })
     .stdout()
     .stderr()
@@ -38,9 +38,7 @@ describe('hooks:prerun', () => {
 
   test
     .do(() => {
-      mockGet.mockReturnValueOnce(
-        Promise.resolve({analyticsEnabled: undefined})
-      );
+      mockGet.mockReturnValueOnce({analyticsEnabled: undefined});
     })
     .stub(CliUx.ux, 'confirm', () => async () => true)
     .stdout()
@@ -55,9 +53,7 @@ describe('hooks:prerun', () => {
 
   test
     .do(() => {
-      mockGet.mockReturnValueOnce(
-        Promise.resolve({analyticsEnabled: undefined})
-      );
+      mockGet.mockReturnValueOnce({analyticsEnabled: undefined});
     })
     .stub(CliUx.ux, 'confirm', () => async () => true)
     .stdout()
@@ -72,9 +68,7 @@ describe('hooks:prerun', () => {
 
   test
     .do(() => {
-      mockGet.mockReturnValueOnce(
-        Promise.resolve({analyticsEnabled: undefined})
-      );
+      mockGet.mockReturnValueOnce({analyticsEnabled: undefined});
     })
     .stub(CliUx.ux, 'confirm', () => async () => false)
     .stdout()

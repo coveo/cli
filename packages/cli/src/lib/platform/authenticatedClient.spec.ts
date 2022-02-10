@@ -21,14 +21,12 @@ const mockPlatformClient = jest.mocked(PlatformClient);
 
 describe('AuthenticatedClient', () => {
   const mockedGlobalConfig = jest.mocked(globalConfig);
-  const mockGet = jest.fn().mockReturnValue(
-    Promise.resolve({
-      environment: 'dev',
-      region: 'eu',
-      organization: 'my_org',
-      accessToken: 'my_token',
-    })
-  );
+  const mockGet = jest.fn().mockReturnValue({
+    environment: 'dev',
+    region: 'eu',
+    organization: 'my_org',
+    accessToken: 'my_token',
+  });
 
   const mockInitialize = jest.fn();
   const mockCreate = jest.fn();
@@ -72,7 +70,7 @@ describe('AuthenticatedClient', () => {
   fancyIt()(
     'should correctly identify #isLoggedIn if the config contains no access token',
     async () => {
-      mockGet.mockReturnValueOnce(Promise.resolve({accessToken: undefined}));
+      mockGet.mockReturnValueOnce({accessToken: undefined});
       expect(await new AuthenticatedClient().isLoggedIn()).toBe(false);
     }
   );
@@ -80,7 +78,7 @@ describe('AuthenticatedClient', () => {
   fancyIt()(
     'should correctly identify #isLoggedIn if the config contains an access token',
     async () => {
-      mockGet.mockReturnValueOnce(Promise.resolve({accessToken: 'the_token'}));
+      mockGet.mockReturnValueOnce({accessToken: 'the_token'});
       expect(await new AuthenticatedClient().isLoggedIn()).toBe(true);
     }
   );
