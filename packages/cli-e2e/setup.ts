@@ -67,28 +67,27 @@ export default async function () {
   process.env.PLATFORM_ENV = getPlatformEnv();
   process.env.PLATFORM_HOST = getPlatformHost();
   const testOrgName = `cli-e2e-${process.env.TEST_RUN_ID}`;
-  await launchChrome({port: 9222});
-  const browser = await connectToChromeBrowser();
-  await clearChromeBrowsingData(browser);
 
-  try {
-    global.processManager = new ProcessManager();
-    await startVerdaccio();
-    await npmLogin();
-    await publishPackages();
+  global.processManager = new ProcessManager();
+  await startVerdaccio();
+  await npmLogin();
+  await publishPackages();
 
-    if (process.env.CI) {
+  if (process.env.CI) {
+    try {
+      await launchChrome({port: 9222, userDataDir: false});
+      const browser = await connectToChromeBrowser();
+      await clearChromeBrowsingData(browser);
       await clearAccessTokenFromConfig();
       await loginWithOffice(browser);
-    } else {
-      // TODO: Ensure user is connected
+      await clearChromeBrowsingData(browser);
+    } catch (e) {
+      await captureScreenshots(browser, 'jestSetup');
+      throw e;
     }
-    await createTestOrgAndSaveOrgIdToEnv(testOrgName);
-  } catch (e) {
-    await captureScreenshots(browser, 'jestSetup');
-    throw e;
   }
-  await clearChromeBrowsingData(browser);
+
+  await createTestOrgAndSaveOrgIdToEnv(testOrgName);
 }
 
 async function publishPackages() {
