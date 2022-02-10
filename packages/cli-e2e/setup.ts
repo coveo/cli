@@ -107,6 +107,7 @@ async function publishPackages() {
 }
 
 async function startVerdaccio() {
+  mkdirSync(join('verdaccio', 'verdaccio', 'storage'), {recursive: true});
   const args = [...npm(), 'run', 'verdaccio'];
   new Terminal(
     args.shift()!,
