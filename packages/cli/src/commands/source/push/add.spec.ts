@@ -182,7 +182,7 @@ describe('source:push:add', () => {
       );
   });
 
-  describe.skip('when the batch upload fails', () => {
+  describe('when the batch upload fails', () => {
     beforeAll(() => {
       doMockErrorBatchUpload();
     });
