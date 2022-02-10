@@ -116,7 +116,6 @@ describe('source:push:add', () => {
     });
 
     test
-      .skip()
       .stdout()
       .stderr()
       .command(['source:push:add', 'mysource'])
@@ -124,7 +123,6 @@ describe('source:push:add', () => {
       .it('throws when no flags are specified');
 
     test
-      .skip()
       .stdout()
       .stderr()
       .command(['source:push:add', 'mysource', '-f', 'foo', '-d', 'bar'])
@@ -145,7 +143,6 @@ describe('source:push:add', () => {
       });
 
     test
-      .skip()
       .stdout()
       .stderr()
       .command([
@@ -162,7 +159,6 @@ describe('source:push:add', () => {
       });
 
     test
-      .skip()
       .stdout()
       .stderr()
       .command([
