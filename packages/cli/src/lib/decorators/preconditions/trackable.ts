@@ -27,8 +27,8 @@ export function Trackable({
   eventName,
   overrideEventProperties,
 }: TrackableOptions = {}) {
-  return function <T>(
-    _target: T,
+  return function (
+    _target: Command,
     _propertyKey: string,
     descriptor: TypedPropertyDescriptor<() => Promise<void>>
   ) {
