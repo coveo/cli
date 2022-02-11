@@ -95,6 +95,16 @@ const downloadReleaseAssets = async (tag, determineAssetLocation) => {
   });
 };
 
+const getSnykCodeAlerts = () => {
+  return octokit.rest.codeScanning.listAlertsForRepo({
+    owner,
+    repo,
+    ref: 'master',
+    tool_name: 'SnykCode',
+    state: 'open',
+  });
+};
+
 module.exports = {
   getPullRequestTitle,
   getPullRequestComments,
@@ -105,4 +115,5 @@ module.exports = {
   getLatestTag,
   createOrUpdateReleaseDescription,
   downloadReleaseAssets,
+  getSnykCodeAlerts,
 };
