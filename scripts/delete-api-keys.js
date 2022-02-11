@@ -58,13 +58,18 @@ async function main(amount, unit) {
     PLATFORM_HOST: host,
   } = process.env;
   const platform = getClient(testOrgId, accessToken, host);
-  const apiKeys = await platform.apiKey.list();
+  try {
+    const apiKeys = await platform.apiKey.list();
 
-  const cliApiKeys = apiKeys
-    .filter(wasCreatedByTheCli(testRunId))
-    .filter(wasCreatedBefore(amount, unit));
+    const cliApiKeys = apiKeys
+      .filter(wasCreatedByTheCli(testRunId))
+      .filter(wasCreatedBefore(amount, unit));
 
-  await deleteApiKeys(platform, cliApiKeys);
+    await deleteApiKeys(platform, cliApiKeys);
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
 }
 
 const argv = yargs(hideBin(process.argv))
@@ -81,9 +86,4 @@ const argv = yargs(hideBin(process.argv))
   .alias('h', 'help').argv;
 
 const {amount, unit} = argv.olderThan;
-try {
-  main(amount, unit);
-} catch (error) {
-  console.log(error);
-  process.exit(1);
-}
+main(amount, unit);
