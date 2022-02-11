@@ -188,7 +188,7 @@ describe('source:push:add', () => {
         '-d',
         join(pathToStub, 'jsondocuments'),
       ])
-      .it('should update the source status', (ctx) => {
+      .it('should update the source status', () => {
         expect(mockSetSourceStatus).toHaveBeenNthCalledWith(
           1,
           'mysource',
