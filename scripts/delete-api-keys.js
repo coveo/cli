@@ -81,4 +81,9 @@ const argv = yargs(hideBin(process.argv))
   .alias('h', 'help').argv;
 
 const {amount, unit} = argv.olderThan;
-main(amount, unit);
+try {
+  main(amount, unit);
+} catch (error) {
+  console.log(error);
+  process.exit(1);
+}
