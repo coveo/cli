@@ -18,9 +18,9 @@
     "@coveo/search-token-lambda": "1.24.1"
   },
   "devDependencies": {
-    "@stencil/core": "2.12.1",
+    "@stencil/core": "2.13.0",
     "gts": "3.1.0",
-    "netlify-cli": "8.14.1",
+    "netlify-cli": "9.3.0",
     "prettier": "2.5.1",
     "rollup-plugin-dotenv": "0.3.0",
     "rollup-plugin-html": "0.2.1"

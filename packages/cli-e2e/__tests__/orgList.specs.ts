@@ -1,37 +1,11 @@
-import {spawnSync} from 'child_process';
-import {homedir} from 'os';
-import {join} from 'path';
-import {resolve} from 'path';
 import {CLI_EXEC_PATH} from '../utils/cli';
+import {
+  getMitmProxyEnvCerts,
+  startMitmProxy,
+  waitForMitmProxy,
+} from '../utils/mitmproxy';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
-
-const certFolder = resolve(homedir(), '.mitmproxy');
-
-const resolveBinary = (programName: string) => {
-  const whereOrWhich = process.platform === 'win32' ? 'where.exe' : 'which';
-  const spawner = spawnSync(whereOrWhich, [programName], {shell: true});
-  return spawner.stdout.toString().trim();
-};
-
-const startMitmProxy = (processManager: ProcessManager) => {
-  const mitmPath = resolveBinary('mitmdump');
-  const serverTerminal = new Terminal(
-    mitmPath,
-    [],
-    undefined,
-    processManager,
-    'mitmproxy'
-  );
-  return serverTerminal;
-};
-
-const waitForProxyRunning = (proxyTerminal: Terminal) =>
-  proxyTerminal
-    .when(/Proxy server listening at/)
-    .on('stdout')
-    .do()
-    .once();
 
 describe('org:list', () => {
   const processManagers: ProcessManager[] = [];
@@ -43,7 +17,7 @@ describe('org:list', () => {
       const proxyProcessManager = new ProcessManager();
       processManagers.push(proxyProcessManager);
       proxyTerminal = startMitmProxy(proxyProcessManager);
-      await waitForProxyRunning(proxyTerminal);
+      await waitForMitmProxy(proxyTerminal);
     });
 
     afterAll(async () => {
@@ -75,7 +49,7 @@ describe('org:list', () => {
           {
             env: {
               ...process.env,
-              NODE_EXTRA_CA_CERTS: join(certFolder, 'mitmproxy-ca-cert.pem'),
+              ...getMitmProxyEnvCerts(),
               HTTPS_PROXY: 'http://localhost:8080',
             },
           },

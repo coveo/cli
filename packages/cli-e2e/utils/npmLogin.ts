@@ -1,11 +1,11 @@
 import {EOL} from 'os';
 import {answerPrompt} from './cli';
 import {Terminal} from './terminal/terminal';
-import {npm} from './windows';
+import {npm} from './npm';
 
-const addUser = async () => {
+export const npmLogin = async () => {
   console.log('sTart');
-  const args = [...npm(), 'adduser'];
+  const args = [...npm(), 'adduser', '--registry=http://localhost:4873'];
   const npmAddUser = new Terminal(args.shift()!, args);
 
   npmAddUser.orchestrator.process.stdout.pipe(process.stdout);
@@ -19,7 +19,7 @@ const addUser = async () => {
   npmAddUser
     .when(/Password:/)
     .on('stdout')
-    .do(answerPrompt(`notGroot${EOL}`))
+    .do(answerPrompt(`notGrootButMoreThan10CharactersReally${EOL}`))
     .until(/Email:/);
 
   npmAddUser
@@ -34,5 +34,3 @@ const addUser = async () => {
     .do()
     .once();
 };
-
-addUser();

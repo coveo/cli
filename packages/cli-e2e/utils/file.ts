@@ -10,45 +10,41 @@ import {
 } from 'fs-extra';
 import {parse} from 'dotenv';
 import {join} from 'path';
-import {getProjectPath} from './cli';
 import {EOL} from 'os';
 
 const deactivatedEnvFileName = '.env.disabled';
 const activeEnvFilename = '.env';
 
-function swapEnv(projectName: string, frm: string, to: string) {
-  const pathToEnv = getProjectPath(projectName);
-  renameSync(join(pathToEnv, frm), join(pathToEnv, to));
+function swapEnv(projectPath: string, frm: string, to: string) {
+  renameSync(join(projectPath, frm), join(projectPath, to));
 }
 
-export function deactivateEnvironmentFile(projectName: string) {
-  swapEnv(projectName, activeEnvFilename, deactivatedEnvFileName);
+export function deactivateEnvironmentFile(projectPath: string) {
+  swapEnv(projectPath, activeEnvFilename, deactivatedEnvFileName);
 }
 
-export function restoreEnvironmentFile(projectName: string) {
-  swapEnv(projectName, deactivatedEnvFileName, activeEnvFilename);
+export function restoreEnvironmentFile(projectPath: string) {
+  swapEnv(projectPath, deactivatedEnvFileName, activeEnvFilename);
 }
 
-export function flushEnvFile(projectName: string) {
-  const envPath = join(getProjectPath(projectName), '.env');
+export function flushEnvFile(projectPath: string) {
+  const envPath = join(projectPath, '.env');
   const env = readFileSync(envPath, 'utf-8');
   truncateSync(envPath);
   return env;
 }
 
-export function overwriteEnvFile(projectName: string, data: string) {
-  const envPath = join(getProjectPath(projectName), '.env');
+export function overwriteEnvFile(projectPath: string, data: string) {
+  const envPath = join(projectPath, '.env');
   writeFileSync(envPath, data);
 }
 
-export function isEnvFileActive(projectName: string) {
-  const projectPath = getProjectPath(projectName);
+function isEnvFileActive(projectPath: string) {
   return existsSync(join(projectPath, '.env'));
 }
 
-export function getPathToEnvFile(projectName: string) {
-  const projectPath = getProjectPath(projectName);
-  return isEnvFileActive(projectName)
+export function getPathToEnvFile(projectPath: string) {
+  return isEnvFileActive(projectPath)
     ? join(projectPath, activeEnvFilename)
     : join(projectPath, deactivatedEnvFileName);
 }
