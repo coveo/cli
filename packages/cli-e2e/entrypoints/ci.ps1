@@ -17,17 +17,6 @@ npm install -g @angular/cli@13.x
 npm install -g ts-node
 Write-Output "::endgroup::"
 
-Write-Output "::group::Setup Verdaccio"
-New-Item -Path "./packages/cli-e2e/docker/config/verdaccio/storage/htpasswd" -Force
-$VerdaccioConfigPath = Resolve-Path './packages/cli-e2e/docker/config/config.yaml' 
-Start-Process "npx" -ArgumentList "verdaccio --config $VerdaccioConfigPath"
-
-do {
-    $VerdaccioTest = Test-NetConnection -ComputerName localhost -Port 4873 -InformationLevel Quiet
-    Write-Output "Verdaccio Test $VerdaccioTest"
-} while (!$VerdaccioTest)
-Write-Output "::endgroup::"
-
 Write-Output "::group::Publishing UI templates"
 git config --global user.name "notgroot"
 git config --global user.email "notgroot@coveo.com"
@@ -36,35 +25,8 @@ Write-Output "::group::Setup mitmproxy"
 choco.exe install mitmproxy -y
 $env:Path = $env:Path + ";C:\Program Files (x86)\mitmproxy\bin"
 Write-Output "::endgroup::"
-npm set registry http://localhost:4873
-ts-node --transpile-only ./packages/cli-e2e/utils/npmLogin.ts
-
-# https://verdaccio.org/docs/cli-registry/#yarn-berry-2x
-Write-Output 'npmRegistryServer: "http://localhost:4873"' | Out-File -FilePath .yarnrc -Encoding utf8 -Append
-Write-Output 'unsafeHttpWhitelist:"' | Out-File -FilePath .yarnrc -Encoding utf8 -Append
-Write-Output '  - localhost"' | Out-File -FilePath .yarnrc -Encoding utf8 -Append
-
-Write-Output 'npmRegistryServer: "http://localhost:4873"' | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
-Write-Output 'unsafeHttpWhitelist:"' | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
-Write-Output '  - localhost"' | Out-File -FilePath ~/.yarnrc -Encoding utf8 -Append
-
-npm run npm:publish:template
-
-Set-Location packages/cli-e2e
-
-node entrypoints/utils/wait-for-published-packages.js
-Write-Output "::endgroup::"
-
-Write-Output "::group:: Ensure Chrome is up"
-do {
-    $ChromeTest = Test-NetConnection -ComputerName localhost -Port 9222 -InformationLevel Quiet
-    Write-Output "Chrome Test $ChromeTest"
-} while (!$ChromeTest)
-Write-Output "::endgroup::"
-
-# `( )` are important here. See https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_operators?view=powershell-7.1#grouping-operator--
-(Get-Content ~/.yarnrc) | Select-String -Pattern "--mutex network" -NotMatch | Set-Content -Path ~/.yarnrc
 
 Write-Output "::group::Run tests"
+cd packages/cli-e2e
 npm run jest
 Write-Output "::endgroup::"

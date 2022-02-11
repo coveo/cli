@@ -4,34 +4,20 @@
 #   - Look here for more config file examples:
 #       https://github.com/verdaccio/verdaccio/tree/master/conf
 
-# path to a directory with all packages
-# TODO CDX-727: Sort out the verdaccio config shenanigans
-# Use this one for local tests:
-# storage: /verdaccio/storage/data
-# Use this one for CI (leave uncommented in PR)
-storage: ./storage/data
-# path to a directory with plugins to include
-# TODO CDX-727: Sort out the verdaccio config shenanigans
-# Use this one for local tests:
-# plugins: /verdaccio/plugins
-# Use this one for CI (leave uncommented in PR)
-plugins: ./plugins
+storage: ./verdaccio/storage/data
 web:
   enable: false
   title: Verdaccio
 
 auth:
   htpasswd:
-    # TODO CDX-727: Sort out the verdaccio config shenanigans
-    # Use this one for local tests:
-    # plugins: /verdaccio/storage/htpasswd
-    # Use this one for CI (leave uncommented in PR)
     file: ./verdaccio/storage/htpasswd
 
 # a list of other known registries we can talk to
 uplinks:
   npmjs:
     url: https://registry.npmjs.org/
+    cache: false
 
 packages:
   # All templates packages and the search-token-server are published and fetched from Verdaccio
