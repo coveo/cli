@@ -55,7 +55,7 @@ async function main(amount, unit) {
     ORG_ID: testOrgId,
     TEST_RUN_ID: testRunId,
     PLATFORM_API_KEY: accessToken,
-    PLATFOMR_ENV: env,
+    PLATFORM_ENV: env,
   } = process.env;
   const host = `https://platform${env === 'prod' ? '' : env}.cloud.coveo.com`;
   const platform = getClient(testOrgId, accessToken, host);
