@@ -22,19 +22,26 @@ export function answerPrompt(answer: string) {
 
 export interface ISetupUIProjectOptionsArgs {
   flags?: string[];
+  projectDir?: string;
 }
 
-export function getPathToHomedirEnvFile() {
-  return join(homedir(), '.env');
+export function getEnvFilePath() {
+  return join('.env');
 }
 
-export function getProjectPath(projectName: string) {
-  const uiProjectFolderName = 'ui-projects';
-  mkdirSync(join(homedir(), uiProjectFolderName), {recursive: true});
-  return join(homedir(), uiProjectFolderName, projectName);
+export function getUIProjectPath(): string {
+  return process.env.UI_PROJECT_PATH!;
 }
 
-export function setupUIProject(
+export function getProjectPath(
+  projectName: string,
+  uiProjectFolderName = getUIProjectPath()
+) {
+  mkdirSync(join(uiProjectFolderName), {recursive: true});
+  return join(uiProjectFolderName, projectName);
+}
+
+export async function setupUIProject(
   processManager: ProcessManager,
   commandArgs: string,
   projectName: string,
@@ -51,6 +58,23 @@ export function setupUIProject(
   }
 
   const args = [CLI_EXEC_PATH, ...command];
+  let parentDir = resolve(getProjectPath(projectName), '..');
+  if (options.projectDir) {
+    parentDir = resolve(options.projectDir, '..');
+    mkdirSync(parentDir, {recursive: true});
+
+    const gitInitTerminal = new Terminal(
+      'git',
+      ['init'],
+      {
+        cwd: parentDir,
+      },
+      processManager,
+      `${projectName}-git-init`
+    );
+
+    await gitInitTerminal.when('exit').on('process').do().once();
+  }
 
   if (process.platform === 'win32') {
     args.unshift('node');
@@ -60,7 +84,8 @@ export function setupUIProject(
     args.shift()!,
     args,
     {
-      cwd: resolve(getProjectPath(projectName), '..'),
+      cwd: parentDir,
+      env: {...process.env, npm_config_registry: 'http://localhost:4873'},
     },
     processManager,
     `build-${projectName}`

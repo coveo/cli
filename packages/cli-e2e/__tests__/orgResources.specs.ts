@@ -3,24 +3,33 @@ import {
   answerPrompt,
   CLI_EXEC_PATH,
   getConfig,
-  getPathToHomedirEnvFile,
+  getEnvFilePath,
+  getProjectPath,
   isGenericYesNoPrompt,
+  getUIProjectPath,
 } from '../utils/cli';
+import {fileSync} from 'tmp';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {config} from 'dotenv';
-import {ensureDirSync, readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
+import {
+  ensureDirSync,
+  readJsonSync,
+  rmSync,
+  writeJsonSync,
+  copySync,
+} from 'fs-extra';
 import PlatformClient, {FieldTypes} from '@coveord/platform-client';
 import {getPlatformClient} from '../utils/platform';
 import {readdirSync} from 'fs';
 import {cwd} from 'process';
 import {EOL} from 'os';
-config({path: getPathToHomedirEnvFile()});
+config({path: getEnvFilePath()});
 
 describe('org:resources', () => {
   const testOrgId = process.env.TEST_ORG_ID!;
   const {accessToken} = getConfig();
-  const snapshotProjectPath = join('snapshot-project');
+  const snapshotProjectPath = join(getUIProjectPath(), 'snapshot-project');
   const defaultTimeout = 10 * 60e3;
   let processManager: ProcessManager;
   let platformClient: PlatformClient;
@@ -99,9 +108,13 @@ describe('org:resources', () => {
     await pushTerminal.when('exit').on('process').do().once();
   };
 
-  const addOrgIdToModel = (modelPath: string, orgId: string) => {
-    const model = readJsonSync(modelPath);
-    writeJsonSync(modelPath, {...model, orgId});
+  const addOrgIdToModel = (
+    fromModelPath: string,
+    destinationModelPath: string,
+    orgId: string
+  ) => {
+    const model = readJsonSync(fromModelPath);
+    writeJsonSync(destinationModelPath, {...model, orgId});
   };
 
   const pullFromOrg = async (
@@ -141,6 +154,7 @@ describe('org:resources', () => {
   };
 
   beforeAll(async () => {
+    copySync('snapshot-project', snapshotProjectPath);
     platformClient = getPlatformClient(testOrgId, accessToken);
     processManager = new ProcessManager();
   });
@@ -265,7 +279,7 @@ describe('org:resources', () => {
   });
 
   describe('org:resources:pull', () => {
-    const destinationPath = join('new-snapshot-project');
+    const destinationPath = getProjectPath('new-snapshot-project');
     const getResourceFolderContent = (projectPath: string) =>
       readdirSync(join(projectPath, 'resources'));
 
@@ -314,16 +328,17 @@ describe('org:resources', () => {
     it(
       'snapshot should only contain one single field',
       async () => {
-        const modelPath = join(
+        const fixtureModelPath = join(
           pathToStub,
           'snapshotPullModel',
           'oneFieldOnly.json'
         );
-        addOrgIdToModel(modelPath, testOrgId);
+        const tmpModel = fileSync({postfix: '.json'});
+        addOrgIdToModel(fixtureModelPath, tmpModel.name, testOrgId);
         await pullFromOrg(
           processManager,
           destinationPath,
-          ['-m', modelPath],
+          ['-m', tmpModel.name],
           'org-resources-pull-one-field'
         );
         const fields = readJsonSync(
