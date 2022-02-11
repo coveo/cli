@@ -180,7 +180,6 @@ describe('source:push:add', () => {
       );
 
     test
-      .skip()
       .stdout()
       .stderr()
       .command([
