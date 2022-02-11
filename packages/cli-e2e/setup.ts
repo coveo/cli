@@ -64,7 +64,8 @@ export default async function () {
   }
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
   // runId must start and finish with letters to satisfies Angular.
-  process.env.TEST_RUN_ID = `id${randomBytes(16).toString('hex')}g`;
+  process.env.TEST_RUN_ID =
+    process.env.TEST_RUN_ID ?? `id${randomBytes(16).toString('hex')}g`;
   process.env.PLATFORM_ENV = getPlatformEnv();
   process.env.PLATFORM_HOST = getPlatformHost();
   const testOrgName = `cli-e2e-${process.env.TEST_RUN_ID}`;
