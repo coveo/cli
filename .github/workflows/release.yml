@@ -52,7 +52,7 @@ jobs:
         with:
           sarif_file: ./sarifs
       - name: Check Code Scanning alerts
-        run: node ./get-code-scanning-alerts.js
+        run: node ./scripts/get-code-scanning-alerts.js
       - name: Setup git SSH remote
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
