@@ -13,7 +13,7 @@
     "@actions/github": "5.0.0",
     "@commitlint/config-conventional": "16.0.0",
     "@commitlint/lint": "16.0.0",
-    "@coveo/semantic-monorepo-tools": "file:packages/releaseLib",
+    "@coveo/semantic-monorepo-tools": "0.0.1",
     "@coveord/platform-client": "28.7.1",
     "@nrwl/cli": "latest",
     "@nrwl/workspace": "latest",
@@ -80,7 +80,8 @@
     "commit-msg": "node ./hooks/commit-msg.js",
     "pre-commit": "lint-staged",
     "postinstall": "patch-package",
-    "release": "npm run release:phase1 && npm run release:phase2 && npm run release:phase3",
+    "release": "npm run nx:graph && npm run release:phase1 && npm run release:phase2 && npm run release:phase3",
+    "nx:graph": "nx graph --file=topology.json",
     "release:phase1": "node --experimental-specifier-resolution=node ./scripts/releaseV2/phase1-get-new-version.mjs",
     "release:phase2": "nx run-many --target=release:phase2 --all",
     "release:phase3": "node --experimental-specifier-resolution=node ./scripts/releaseV2/phase3-git-commit-tag-push.mjs"
