@@ -68,7 +68,7 @@ export async function handleReportWithErrors(
   throw new SnapshotGenericError(snapshot, cfg, projectPath);
 }
 
-export function handleSnapshotError(err?: Record<string, unknown>) {
+export function handleSnapshotError(err?: Error & {exitCode?: number}) {
   if (CliUx.ux.action.running && typeof err?.name === 'string') {
     CliUx.ux.action.stop(err?.name);
   }

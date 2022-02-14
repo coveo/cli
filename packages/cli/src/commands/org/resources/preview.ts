@@ -89,7 +89,7 @@ export default class Preview extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Record<string, unknown>) {
+  public async catch(err?: Error & {exitCode?: number}) {
     cleanupProject(this.projectPath);
     handleSnapshotError(err);
     await this.displayAdditionalErrorMessage(err);
@@ -112,7 +112,9 @@ export default class Preview extends Command {
     project.deleteTemporaryZipFile();
   }
 
-  private async displayAdditionalErrorMessage(err?: Record<string, unknown>) {
+  private async displayAdditionalErrorMessage(
+    err?: Error & {exitCode?: number}
+  ) {
     if (err instanceof SnapshotOperationTimeoutError) {
       const {flags} = await this.parse(Preview);
       const snapshot = err.snapshot;
