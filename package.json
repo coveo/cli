@@ -80,7 +80,8 @@
     "commit-msg": "node ./hooks/commit-msg.js",
     "pre-commit": "lint-staged",
     "postinstall": "patch-package",
-    "release": "npm run release:phase1 && npm run release:phase2 && npm run release:phase3",
+    "release": "npm run nx:graph && npm run release:phase1 && npm run release:phase2 && npm run release:phase3",
+    "nx:graph": "nx graph --file=topology.json",
     "release:phase1": "node --experimental-specifier-resolution=node ./scripts/releaseV2/phase1-get-new-version.mjs",
     "release:phase2": "nx run-many --target=release:phase2 --all",
     "release:phase3": "node --experimental-specifier-resolution=node ./scripts/releaseV2/phase3-git-commit-tag-push.mjs"
