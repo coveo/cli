@@ -13,7 +13,7 @@
     "@actions/github": "5.0.0",
     "@commitlint/config-conventional": "16.0.0",
     "@commitlint/lint": "16.0.0",
-    "@coveo/semantic-monorepo-tools": "file:packages/releaseLib",
+    "@coveo/semantic-monorepo-tools": "0.0.1",
     "@coveord/platform-client": "28.7.1",
     "@nrwl/cli": "latest",
     "@nrwl/workspace": "latest",
