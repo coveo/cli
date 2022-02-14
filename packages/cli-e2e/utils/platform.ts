@@ -32,9 +32,16 @@ export async function createOrg(
     `/rest/organizations?name=${name}&organizationTemplate=${organizationTemplate}`,
     process.env.PLATFORM_HOST
   );
-  const request = await axios.post(url.href, {}, authHeader(accessToken));
-
-  return request.data.id;
+  try {
+    const request = await axios.post(url.href, {}, authHeader(accessToken));
+    return request.data.id;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw JSON.stringify(error.response?.data);
+    } else {
+      throw error;
+    }
+  }
 }
 
 function authHeader(accessToken: string) {
