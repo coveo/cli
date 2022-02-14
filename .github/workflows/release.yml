@@ -23,7 +23,10 @@ jobs:
       - uses: actions/setup-node@1f8c6b94b26d0feae1e387ca63ccbdc44d27b561 # renovate: tag=v2
         with:
           node-version: '16'
-      - run: npm i
+      - name: Install dependencies
+        run: |
+          npm ci
+          yarn install --no-immutable
       - name: Setup credentials
         run: |
           git config --global user.email action@github.com
@@ -32,13 +35,24 @@ jobs:
       - name: Snyk test
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          NODE_OPTIONS: --max-old-space-size=8192
         run: |
-          npx snyk monitor --dev --all-projects
-          npx snyk test --dev --all-projects
-      - name: Snyk code
+          npx snyk monitor      --dev --yarn-workspaces --exclude="project.json"
+          npx snyk test         --dev --yarn-workspaces --exclude="project.json"
+      - name: Snyk Code
+        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: npx snyk code --dev --all-projects
+          NODE_OPTIONS: --max-old-space-size=8192
+        run: |
+          mkdir -p sarifs
+          npx snyk code test    --dev --all-projects --exclude="project.json" --sarif > ./sarifs/snyk-code.sarif
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: ./sarifs
+      - name: Check Code Scanning alerts
+        run: node ./scripts/get-code-scanning-alerts.js
       - name: Setup git SSH remote
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
