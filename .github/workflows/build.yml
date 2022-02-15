@@ -46,8 +46,7 @@ jobs:
       - name: Check linting
         run: npm run lint
       - name: Tests
-        run: npm run test -- --testPathPattern=src/hooks/analytics/identifier.spec.ts
-        working-directory: ./packages/cli
+        run: npm run test
       - name: Build CLI
         working-directory: ./packages/cli
         run: npm run build
