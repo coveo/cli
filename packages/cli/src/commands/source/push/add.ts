@@ -7,6 +7,7 @@ import {Command, Flags, CliUx} from '@oclif/core';
 import {green} from 'chalk';
 import {readdirSync} from 'fs';
 import {join} from 'path';
+import {Config} from '../../../lib/config/config';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
@@ -88,7 +89,11 @@ export default class SourcePushAdd extends Command {
       );
     }
     const cfg = await new AuthenticatedClient().cfg.get();
-    const source = new Source(cfg.accessToken!, cfg.organization);
+    const {environment, region} = this.configuration.get();
+    const source = new Source(cfg.accessToken!, cfg.organization, {
+      environment,
+      region,
+    });
 
     const callback: UploadBatchCallback = (
       err: unknown,
@@ -171,5 +176,9 @@ export default class SourcePushAdd extends Command {
     return errorMessage(this, 'Error while trying to add document.', e, {
       exit: true,
     });
+  }
+
+  private get configuration() {
+    return new Config(this.config.configDir);
   }
 }

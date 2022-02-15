@@ -51,7 +51,6 @@ describe('source:push:add', () => {
 
     mockedConfig.prototype.get = mockedConfigGet;
   };
-
   const doMockSuccessBatchUpload = () => {
     mockBatchUpdate.mockImplementation(
       (_sourceId: string, fileNames: string[], callback: UploadBatchCallback) =>
@@ -172,7 +171,10 @@ describe('source:push:add', () => {
         join(pathToStub, 'jsondocuments', 'batman.json'),
       ])
       .it('pass correct configuration information to push-api-client', () => {
-        expect(mockedSource).toHaveBeenCalledWith('the_token', 'the_org');
+        expect(mockedSource).toHaveBeenCalledWith('the_token', 'the_org', {
+          environment: 'prod',
+          region: 'au',
+        });
       });
 
     test
@@ -272,6 +274,7 @@ describe('source:push:add', () => {
 
   describe('when the batch upload fails', () => {
     beforeAll(() => {
+      mockConfig();
       doMockErrorBatchUpload();
       mockUserHavingAllRequiredPlatformPrivileges();
     });
