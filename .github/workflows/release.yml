@@ -38,7 +38,7 @@ jobs:
       - name: Check Code Scanning alerts
         run: node ./scripts/get-code-scanning-alerts.js
   release:
-    need: snyk
+    needs: snyk
     environment: 'Release'
     runs-on: ubuntu-latest
     env:
