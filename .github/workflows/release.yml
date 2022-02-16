@@ -13,6 +13,7 @@ jobs:
     env:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       NODE_OPTIONS: --max-old-space-size=8192
+      GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
       - uses: actions/setup-node@1f8c6b94b26d0feae1e387ca63ccbdc44d27b561 # renovate: tag=v2
