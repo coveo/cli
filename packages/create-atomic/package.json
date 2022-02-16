@@ -4,8 +4,8 @@
   "version": "1.24.1",
   "files": [
     "/lib",
-    "/templates",
-    "/templates/.gitignore"
+    "/template",
+    "/template/.gitignore"
   ],
   "bin": "./index.js",
   "type": "module",

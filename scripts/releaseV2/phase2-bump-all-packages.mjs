@@ -49,10 +49,10 @@ function updateWorkspaceDependencies() {
   const packageJson = JSON.parse(
     readFileSync('package.json', {encoding: 'utf-8'})
   );
-
-  topology.graph.dependencies[packageJson.name]
-    .filter((dependency) => dependency.source == packageJson.name)
-    .map((dependency) => dependency.target)
+  const packageName = packageJson.name.replace('@coveo/', '');
+  topology.graph.dependencies[packageName]
+    .filter((dependency) => dependency.source == packageName)
+    .map((dependency) => `@coveo/${dependency.target}`)
     .forEach((dependency) => updateDependency(packageJson, dependency));
 }
 
