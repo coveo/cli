@@ -42,6 +42,9 @@ jobs:
         run: npm i
       - name: Get tag
         run: node ./scripts/get-tag.js # ToDo (PRE_NX): replace by some jq magic
+      - name: Build
+        working-directory: ./packages/cli
+        run: npm run build
       - name: Create install kits
         working-directory: ./packages/cli
         run: ../../node_modules/@oclif/dev-cli/bin/run pack${{ matrix.pack-command }}
