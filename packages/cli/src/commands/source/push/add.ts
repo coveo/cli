@@ -102,7 +102,7 @@ export default class SourcePushAdd extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Record<string, unknown>) {
+  public async catch(err?: Error & {exitCode?: number}) {
     throw err;
   }
 

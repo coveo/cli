@@ -38,11 +38,7 @@ async function getWsUrl(): Promise<string> {
 }
 
 function getChromeDefaultOptions() {
-  return [
-    '--no-first-run',
-    '--disable-dev-shm-usage',
-    '--window-size=1080,720',
-  ];
+  return ['--no-first-run', '--window-size=1080,720'];
 }
 /**
  * Return the browser instance.
@@ -54,7 +50,7 @@ export async function connectToChromeBrowser(): Promise<Browser> {
 
 export async function getNewBrowser(): Promise<Browser> {
   return await puppeteer.launch({
-    headless: false,
+    headless: true,
     args: getChromeDefaultOptions(),
   });
 }
@@ -73,7 +69,7 @@ export async function captureScreenshots(
 ): Promise<void> {
   let pageCount = 0;
   for (const page of await browser.pages()) {
-    page.url;
+    page.url();
     try {
       await page.screenshot({
         fullPage: true,

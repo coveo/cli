@@ -53,7 +53,7 @@ export default class Monitor extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Record<string, unknown>) {
+  public async catch(err?: Error & {exitCode?: number}) {
     handleSnapshotError(err);
   }
 

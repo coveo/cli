@@ -4,9 +4,8 @@ jest.mock('@coveord/platform-client');
 jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('../../lib/config/config');
 jest.mock('../../lib/config/globalConfig');
-jest.mock('os');
 
-import {release} from 'os';
+import os from 'os';
 import {Identify} from '@amplitude/identify';
 import {Config, Configuration} from '../../lib/config/config';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
@@ -29,7 +28,7 @@ describe('identifier', () => {
   const mockUserGet = jest.fn();
   const mockSetIdentity = jest.fn();
   const mockedLogEvent = jest.fn();
-  const mockedOsVersion = jest.mocked(release);
+  const mockedOsVersion = jest.spyOn(os, 'release');
 
   let identity: Awaited<ReturnType<Identifier['getIdentity']>>;
 

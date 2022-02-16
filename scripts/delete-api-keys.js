@@ -55,16 +55,22 @@ async function main(amount, unit) {
     ORG_ID: testOrgId,
     TEST_RUN_ID: testRunId,
     PLATFORM_API_KEY: accessToken,
-    PLATFORM_HOST: host,
+    PLATFORM_ENV: env,
   } = process.env;
+  const host = `https://platform${env === 'prod' ? '' : env}.cloud.coveo.com`;
   const platform = getClient(testOrgId, accessToken, host);
-  const apiKeys = await platform.apiKey.list();
+  try {
+    const apiKeys = await platform.apiKey.list();
 
-  const cliApiKeys = apiKeys
-    .filter(wasCreatedByTheCli(testRunId))
-    .filter(wasCreatedBefore(amount, unit));
+    const cliApiKeys = apiKeys
+      .filter(wasCreatedByTheCli(testRunId))
+      .filter(wasCreatedBefore(amount, unit));
 
-  await deleteApiKeys(platform, cliApiKeys);
+    await deleteApiKeys(platform, cliApiKeys);
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
 }
 
 const argv = yargs(hideBin(process.argv))

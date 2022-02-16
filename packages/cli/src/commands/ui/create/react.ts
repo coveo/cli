@@ -27,7 +27,7 @@ type ReactProcessEnv = {
 
 export default class React extends Command {
   public static templateName = '@coveo/cra-template';
-  public static cliPackage = 'create-react-app';
+  public static cliPackage = 'create-react-app@latest';
 
   /**
    * "You’ll need to have Node 14.0.0 or later version on your local development machine"
@@ -76,7 +76,7 @@ export default class React extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Record<string, unknown>) {
+  public async catch(err?: Error & {exitCode?: number}) {
     throw err;
   }
 

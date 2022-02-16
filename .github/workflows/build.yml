@@ -24,6 +24,8 @@ jobs:
       PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
       # ID of the organization to log into for the e2e tests
       ORG_ID: ${{ secrets.ORG_ID }}
+      # ID of the test run to identify resources to teardown.
+      TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
       COVEO_DISABLE_AUTOUPDATE: true
     steps:
       - name: Setup runner
@@ -40,7 +42,7 @@ jobs:
         with:
           node-version: ${{matrix.node}}
       - name: Setup repo
-        run: npm install
+        run: npm ci
       - name: Check linting
         run: npm run lint
       - name: Tests

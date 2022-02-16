@@ -3,7 +3,7 @@ require('abortcontroller-polyfill');
 
 import PlatformClient from '@coveord/platform-client';
 import axios from 'axios';
-import {HTTPRequest} from 'puppeteer';
+import {HTTPRequest, HTTPResponse} from 'puppeteer';
 
 export function getPlatformClient(organizationId: string, accessToken: string) {
   return new PlatformClient({
@@ -13,12 +13,14 @@ export function getPlatformClient(organizationId: string, accessToken: string) {
   });
 }
 
-export function isSearchRequest(request: HTTPRequest) {
+export function isSearchRequestOrResponse(
+  requestOrResponse: HTTPRequest | HTTPResponse
+) {
   const searchUrl = new URL(
     '/rest/search/v2?organizationId',
     process.env.PLATFORM_HOST
   );
-  return request.url().startsWith(searchUrl.href);
+  return requestOrResponse.url().startsWith(searchUrl.href);
 }
 
 export async function createOrg(
@@ -30,9 +32,16 @@ export async function createOrg(
     `/rest/organizations?name=${name}&organizationTemplate=${organizationTemplate}`,
     process.env.PLATFORM_HOST
   );
-  const request = await axios.post(url.href, {}, authHeader(accessToken));
-
-  return request.data.id;
+  try {
+    const request = await axios.post(url.href, {}, authHeader(accessToken));
+    return request.data.id;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw JSON.stringify(error.response?.data);
+    } else {
+      throw error;
+    }
+  }
 }
 
 function authHeader(accessToken: string) {

@@ -92,7 +92,7 @@ export default class Push extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Record<string, unknown>) {
+  public async catch(err?: Error & {exitCode?: number}) {
     cleanupProject(this.projectPath);
     handleSnapshotError(err);
   }

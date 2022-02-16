@@ -1,3 +1,5 @@
 node_modules
 .env
 artifacts
+verdaccio
+!verdaccio/config.yaml
