@@ -8,6 +8,7 @@ import {
   gitCommit,
   gitTag,
   gitPush,
+  gitPushTags,
 } from '@coveo/semantic-monorepo-tools';
 import {Octokit} from 'octokit';
 import angularChangelogConvention from 'conventional-changelog-angular';
