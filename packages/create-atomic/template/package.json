@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@coveo/atomic": "1.23.7",
-    "@coveo/search-token-lambda": "1.24.1"
+    "@coveo/search-token-lambda": "1.25.0"
   },
   "devDependencies": {
     "@stencil/core": "2.13.0",
