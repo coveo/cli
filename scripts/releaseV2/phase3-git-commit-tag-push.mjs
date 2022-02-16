@@ -5,7 +5,6 @@ import {
   gitCommit,
   gitTag,
   gitPush,
-  createGitHubRelease,
 } from '@coveo/semantic-monorepo-tools';
 import {Octokit} from 'octokit';
 import angularChangelogConvention from 'conventional-changelog-angular';
@@ -40,7 +39,7 @@ import angularChangelogConvention from 'conventional-changelog-angular';
   gitPush();
 
   const octokit = new Octokit({auth: process.env.GITHUB_CREDENTIALS});
-  await createGitHubRelease(
+  await octokit.rest.repos.createRelease(
     octokit,
     changelog,
     versionTag,

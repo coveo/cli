@@ -56,27 +56,27 @@ export default function (plop: NodePlopAPI) {
       {
         type: 'add',
         path: currentPath + '/{{project}}/.env',
-        templateFile: '../templates/.env.hbs',
+        templateFile: '../template/.env.hbs',
       },
       {
         type: 'addMany',
         destination: currentPath + '/{{project}}/',
-        base: '../templates',
+        base: '../template',
         templateFiles: [
-          '../templates/src/**',
-          '../templates/scripts/*',
-          '../templates/.env.example',
-          '../templates/.gitignore',
-          '../templates/tsconfig.json',
-          '../templates/stencil.config.ts',
-          '../templates/netlify.toml',
-          '../templates/README.md',
+          '../template/src/**',
+          '../template/scripts/*',
+          '../template/.env.example',
+          '../template/.gitignore',
+          '../template/tsconfig.json',
+          '../template/stencil.config.ts',
+          '../template/netlify.toml',
+          '../template/README.md',
         ],
       },
       {
         type: 'add',
         path: currentPath + '/{{project}}/package.json',
-        templateFile: '../templates/package.json.hbs',
+        templateFile: '../template/package.json.hbs',
       },
       function installPackagesPrompt() {
         return 'Installing packages...';
