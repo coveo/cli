@@ -18,22 +18,36 @@ import angularChangelogConvention from 'conventional-changelog-angular';
   const convention = await angularChangelogConvention;
   const lastTag = getLastTag(versionPrefix);
   const commits = getCommits(PATH, lastTag);
-  const parsedCommits = parseCommits(commits, convention.parserOpts);
   const newVersion = getReleaseVersion();
-  const changelog = await generateChangelog(
-    parsedCommits,
-    newVersion,
-    {
-      host: 'https://github.com',
-      owner: 'coveo',
-      repository: 'cli',
-    },
-    convention.writerOpts
-  );
-  await writeChangelog(PATH, changelog);
+  if (commits.length > 0) {
+    const parsedCommits = parseCommits(commits, convention.parserOpts);
+    const changelog = await generateChangelog(
+      parsedCommits,
+      newVersion,
+      {
+        host: 'https://github.com',
+        owner: 'coveo',
+        repository: 'cli',
+      },
+      convention.writerOpts
+    );
+    await writeChangelog(PATH, changelog);
+  }
   updateWorkspaceDependencies();
   npmBumpVersion(newVersion, PATH);
-  npmPublish();
+  // TODO: Revert spawnSync to npmPublish.
+  // npmPublish();
+  const publish = spawnSync(appendCmdIfWindows`npm`, ['publish'], {
+    cwd: undefined,
+  });
+  publish.stdout
+    .toString()
+    .split('\n')
+    .forEach((line) => console.log(line));
+  publish.stderr
+    .toString()
+    .split('\n')
+    .forEach((line) => console.error(line));
 })();
 
 function getReleaseVersion() {
