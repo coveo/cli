@@ -27,4 +27,4 @@ yarn.lock
 # Snyk artifacts
 .dccache
 sarifs
-packages/create-atomic/templates/package.json.hbs
+packages/create-atomic/template/package.json.hbs

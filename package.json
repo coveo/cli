@@ -88,7 +88,7 @@
   },
   "workspaces": [
     "packages/*",
-    "packages/create-atomic/templates"
+    "packages/create-atomic/template"
   ],
   "dependencies": {
     "jest-config": "27.5.1"
