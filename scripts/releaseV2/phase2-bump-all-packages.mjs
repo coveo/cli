@@ -10,6 +10,7 @@ import {
 import {spawnSync} from 'child_process';
 import {readFileSync} from 'fs';
 import angularChangelogConvention from 'conventional-changelog-angular';
+import {waitForPackages} from './utils/wait-for-published-packages';
 
 // Run on each package, it generate the changelog, install the latest dependencies that are part of the workspace, publish the package.
 (async () => {
@@ -56,7 +57,7 @@ function getReleaseVersion() {
 }
 
 // TODO [PRE_NX]: Clean  this mess.
-function updateWorkspaceDependencies() {
+async function updateWorkspaceDependencies() {
   const topology = JSON.parse(
     readFileSync('../../topology.json', {encoding: 'utf-8'})
   );
@@ -64,10 +65,13 @@ function updateWorkspaceDependencies() {
     readFileSync('package.json', {encoding: 'utf-8'})
   );
   const packageName = packageJson.name.replace('@coveo/', '');
-  topology.graph.dependencies[packageName]
+  const dependencies = topology.graph.dependencies[packageName]
     .filter((dependency) => dependency.source == packageName)
-    .map((dependency) => `@coveo/${dependency.target}`)
-    .forEach((dependency) => updateDependency(packageJson, dependency));
+    .map((dependency) => `@coveo/${dependency.target}`);
+  await waitForPackages(dependencies);
+  dependencies.forEach((dependency) =>
+    updateDependency(packageJson, dependency)
+  );
 }
 
 function updateDependency(packageJson, dependency) {

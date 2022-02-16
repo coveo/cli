@@ -56,6 +56,32 @@ index a313991..382d603 100644
              // eslint-disable-next-line no-await-in-loop
              await qq.mv([installerBase, 'installer.exe'], o);
              this.log(`built ${o}`);
+diff --git a/node_modules/@oclif/dev-cli/lib/tarballs/build.js b/node_modules/@oclif/dev-cli/lib/tarballs/build.js
+index c6bd245..d4e42af 100644
+--- a/node_modules/@oclif/dev-cli/lib/tarballs/build.js
++++ b/node_modules/@oclif/dev-cli/lib/tarballs/build.js
+@@ -47,16 +47,16 @@ async function build(c, options = {}) {
+     };
+     const addDependencies = async () => {
+         qq.cd(c.workspace());
+-        const yarnRoot = findYarnWorkspaceRoot(c.root) || c.root;
+-        const yarn = await qq.exists([yarnRoot, 'yarn.lock']);
++        const workspaceRoot = findYarnWorkspaceRoot(c.root) || c.root;
++        const yarn = await qq.exists([workspaceRoot, 'yarn.lock']);
+         if (yarn) {
+-            await qq.cp([yarnRoot, 'yarn.lock'], '.');
++            await qq.cp([workspaceRoot, 'yarn.lock'], '.');
+             await qq.x('yarn --no-progress --production --non-interactive');
+         }
+         else {
+-            let lockpath = qq.join(c.root, 'package-lock.json');
++            let lockpath = qq.join(workspaceRoot, 'package-lock.json');
+             if (!await qq.exists(lockpath)) {
+-                lockpath = qq.join(c.root, 'npm-shrinkwrap.json');
++                lockpath = qq.join(workspaceRoot, 'npm-shrinkwrap.json');
+             }
+             await qq.cp(lockpath, '.');
+             await qq.x('npm install --production');
 diff --git a/node_modules/@oclif/dev-cli/lib/tarballs/node.js b/node_modules/@oclif/dev-cli/lib/tarballs/node.js
 index fabe5c4..83d286a 100644
 --- a/node_modules/@oclif/dev-cli/lib/tarballs/node.js
