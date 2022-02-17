@@ -8,7 +8,10 @@ const {getClient, yargGenerator, wasCreatedBefore} = require('./utils');
 config({path: join(homedir(), '.env')});
 
 function wasCreatedByTheCli(testRunId = '') {
-  return (key) => testRunId ? key.displayName?.startsWith(`cli-${testRunId}`) : key.displayName?.match(/cli-id.*g/);
+  return (key) =>
+    testRunId
+      ? key.displayName?.startsWith(`cli-${testRunId}`)
+      : key.displayName?.match(/cli-id.*g/);
 }
 
 async function deleteTestOrgs(platform, cliOrgs) {
