@@ -58,7 +58,7 @@ jobs:
         run: packages/cli-e2e/entrypoints/ci.ps1
       - name: Delete test org
         if: always()
-        run: node ./scripts/cleaning/delete-org.js
+        run: node ./scripts/cleaning/delete-orgs.js
       - name: Delete test API key
         if: always()
         run: node ./scripts/cleaning/delete-api-keys.js
