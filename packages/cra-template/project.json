@@ -1,5 +1,6 @@
 {
   "root": "packages/cra-template",
   "sourceRoot": "packages/cra-template/template",
-  "projectType": "application"
+  "projectType": "application",
+  "implicitDependencies": ["search-token-server"]
 }
