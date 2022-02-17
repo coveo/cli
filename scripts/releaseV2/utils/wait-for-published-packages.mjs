@@ -1,5 +1,5 @@
-const {backOff} = require('exponential-backoff');
-const {spawnSync} = require('child_process');
+import {backOff} from 'exponential-backoff';
+import {spawnSync} from 'child_process';
 
 function showPackage(packageName) {
   spawnSync('npm', ['show', packageName]);
