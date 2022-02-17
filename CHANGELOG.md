@@ -1,3 +1,9 @@
+## v1.25.1 (2022-02-17)
+
+### Bug Fixes
+
+- **oclif:** patch oclif to work with npm workspaces ([#677](https://github.com/coveo/cli/issues/677)) ([cd8bdc2](https://github.com/coveo/cli/commits/cd8bdc25ee3a3a02f9a7a502e477f188da968ba8))
+
 # v1.25.0 (2022-02-16)
 
 ### Bug Fixes
