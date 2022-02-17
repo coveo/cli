@@ -20,6 +20,14 @@ import {waitForPackages} from './utils/wait-for-published-packages';
   const lastTag = getLastTag(versionPrefix);
   const commits = getCommits(PATH, lastTag);
   const newVersion = getReleaseVersion();
+
+  updateWorkspaceDependencies();
+  npmBumpVersion(newVersion, PATH);
+
+  if (isPrivatePackage()) {
+    return;
+  }
+
   if (commits.length > 0) {
     const parsedCommits = parseCommits(commits, convention.parserOpts);
     const changelog = await generateChangelog(
@@ -34,8 +42,7 @@ import {waitForPackages} from './utils/wait-for-published-packages';
     );
     await writeChangelog(PATH, changelog);
   }
-  updateWorkspaceDependencies();
-  npmBumpVersion(newVersion, PATH);
+
   // TODO: Revert spawnSync to npmPublish.
   // npmPublish();
   const publish = spawnSync(appendCmdIfWindows`npm`, ['publish'], {
@@ -96,3 +103,10 @@ function updateDependency(packageJson, dependency) {
 
 export const appendCmdIfWindows = (cmd) =>
   `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
+
+function isPrivatePackage() {
+  const packageJson = JSON.parse(
+    readFileSync('package.json', {encoding: 'utf-8'})
+  );
+  return packageJson.private;
+}
