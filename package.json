@@ -1,7 +1,7 @@
 {
   "name": "cli-tools",
   "private": true,
-  "version": "1.24.1",
+  "version": "1.25.1",
   "author": "Coveo",
   "bin": {
     "coveo": "./bin/run"
@@ -13,7 +13,7 @@
     "@actions/github": "5.0.0",
     "@commitlint/config-conventional": "16.0.0",
     "@commitlint/lint": "16.0.0",
-    "@coveo/semantic-monorepo-tools": "0.0.1",
+    "@coveo/semantic-monorepo-tools": "0.0.2",
     "@coveord/platform-client": "28.7.1",
     "@nrwl/cli": "latest",
     "@nrwl/workspace": "latest",
@@ -32,7 +32,7 @@
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-prettier": "4.0.0",
-    "exponential-backoff": "3.1.0",
+    "exponential-backoff": "^3.1.0",
     "fs-extra": "10.0.0",
     "gts": "3.1.0",
     "husky": "7.0.4",
