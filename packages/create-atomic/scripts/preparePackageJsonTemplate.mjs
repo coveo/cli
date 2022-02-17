@@ -13,7 +13,9 @@ const pkgIndent = detectIndent(pkgRaw).indent || '\t';
 const pkgJson = JSON.parse(pkgRaw);
 
 pkgJson.name = '{{project}}';
+pkgJson.version = '0.1.0';
 pkgJson.scripts.postinstall = 'npm run setup-lambda && npm run setup-cleanup';
+delete pkgJson.scripts['release:phase2'];
 
 writeFileSync(
   resolve(__dirname, '..', 'template', 'package.json.hbs'),

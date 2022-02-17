@@ -1,7 +1,7 @@
 {
   "name": "@coveo/create-atomic-template",
   "description": "{{titleCase project}} project",
-  "version": "0.1.0",
+  "version": "1.25.1",
   "private": true,
   "scripts": {
     "setup-lambda": "node ./scripts/setup-lambda.js",
@@ -11,11 +11,12 @@
     "dev:live": "npm run site:link && netlify dev --live",
     "site:init": "netlify init",
     "site:link": "netlify link",
-    "site:deploy": "npm run site:link && npm run build && netlify env:import .env && netlify deploy --prod --open"
+    "site:deploy": "npm run site:link && npm run build && netlify env:import .env && netlify deploy --prod --open",
+    "release:phase2": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase2-bump-all-packages.mjs"
   },
   "dependencies": {
     "@coveo/atomic": "1.23.7",
-    "@coveo/search-token-lambda": "1.25.0"
+    "@coveo/search-token-lambda": "1.25.1"
   },
   "devDependencies": {
     "@stencil/core": "2.13.0",
