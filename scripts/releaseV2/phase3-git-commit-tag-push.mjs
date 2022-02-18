@@ -43,11 +43,12 @@ import {dedent} from 'ts-dedent';
   gitCommit(
     dedent`
     [version bump] chore(release): Release ${versionTag} [skip ci]
-    README.md
-    CHANGELOG.md
     **/README.md
     **/CHANGELOG.md
     **/package.json
+    README.md
+    CHANGELOG.md
+    package.json
     package-lock.json
     `,
     PATH
