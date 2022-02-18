@@ -1,6 +1,5 @@
 {
   "root": "packages/angular",
   "sourceRoot": "packages/angular/src",
-  "projectType": "application",
-  "implicitDependencies": ["search-token-server"]
+  "projectType": "application"
 }

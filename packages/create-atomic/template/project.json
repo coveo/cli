@@ -2,7 +2,6 @@
   "root": "packages/create-atomic/template",
   "sourceRoot": "packages/create-atomic/template/src",
   "projectType": "library",
-  "implicitDependencies": ["search-token-lambda"],
   "targets": {
     "build": {
       "executor": "@nrwl/workspace:run-commands",
