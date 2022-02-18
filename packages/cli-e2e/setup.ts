@@ -79,15 +79,18 @@ export default async function () {
   await publishPackages();
 
   if (process.env.CI) {
+    let browser;
     try {
       await launchChrome({port: 9222, userDataDir: false});
-      const browser = await connectToChromeBrowser();
+      browser = await connectToChromeBrowser();
       await clearChromeBrowsingData(browser);
       await clearAccessTokenFromConfig();
       await loginWithOffice(browser);
       await clearChromeBrowsingData(browser);
     } catch (e) {
-      await captureScreenshots(browser, 'jestSetup');
+      if (browser) {
+        await captureScreenshots(browser, 'jestSetup');
+      }
       throw e;
     }
   }
