@@ -58,10 +58,10 @@ jobs:
         run: packages/cli-e2e/entrypoints/ci.ps1
       - name: Delete test org
         if: always()
-        run: node ./scripts/delete-org.js
+        run: node ./scripts/cleaning/delete-orgs.js
       - name: Delete test API key
         if: always()
-        run: node ./scripts/delete-api-keys.js
+        run: node ./scripts/cleaning/delete-api-keys.js
       - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2
         if: ${{ always() }}
         with:
