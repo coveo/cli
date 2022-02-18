@@ -47,6 +47,9 @@ import {dedent} from 'ts-dedent';
     **/README.md
     **/CHANGELOG.md
     **/package.json
+    README.md
+    CHANGELOG.md
+    package.json
     package-lock.json
     `,
     PATH
