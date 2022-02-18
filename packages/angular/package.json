@@ -1,6 +1,6 @@
 {
   "name": "@coveo/angular",
-  "version": "1.25.1",
+  "version": "1.25.2",
   "description": "Coveo schematic for angular",
   "scripts": {
     "test": "jest",
@@ -29,7 +29,7 @@
     "@angular-devkit/schematics": "13.2.4",
     "@angular/cdk": "13.2.3",
     "@angular/cli": "13.2.4",
-    "@coveo/search-token-server": "1.25.1",
+    "@coveo/search-token-server": "1.25.2",
     "@schematics/angular": "13.2.4",
     "jest-config": "^27.4.7",
     "typescript": "^4.3.5"

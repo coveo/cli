@@ -1,6 +1,6 @@
 {
   "name": "@coveo/vue-cli-plugin-typescript",
-  "version": "1.25.1",
+  "version": "1.25.2",
   "description": "Vue-cli 3 plugin for adding Coveo Headless support",
   "main": "index.js",
   "repository": {
@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@coveo/headless": "1.42.0",
-    "@coveo/search-token-server": "1.25.1",
+    "@coveo/search-token-server": "1.25.2",
     "buefy": "0.9.14",
     "dotenv": "16.0.0",
     "vue": "3.2.30",
