@@ -42,13 +42,16 @@ jobs:
         run: npm i
       - name: Get tag
         run: node ./scripts/get-tag.js # ToDo (PRE_NX): replace by some jq magic
+      - name: Build
+        working-directory: ./packages/cli
+        run: npm run build
       - name: Create install kits
         working-directory: ./packages/cli
-        run: ./node_modules/.bin/oclif pack${{ matrix.pack-command }}
+        run: ../../node_modules/.bin/oclif pack${{ matrix.pack-command }}
       - name: Create packages
         working-directory: ./packages/cli
         run: |
-          ./node_modules/.bin/oclif pack -t="${{ matrix.package-targets }}"
+          ../../node_modules/.bin/oclif pack -t="${{ matrix.package-targets }}"
           mv ./dist/version ./dist/${{ matrix.os }}-version
           mv ./dist/coveo-${{ env.tag }}/coveo-${{ env.tag }}.tar.gz ./dist/coveo-${{ env.tag }}/${{ matrix.os }}-coveo-${{ env.tag }}.tar.gz
       - name: Sign Executable
