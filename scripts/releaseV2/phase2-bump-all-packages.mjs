@@ -11,7 +11,7 @@ import {spawnSync} from 'child_process';
 import {readFileSync} from 'fs';
 import angularChangelogConvention from 'conventional-changelog-angular';
 import {waitForPackages} from './utils/wait-for-published-packages';
-import {dirname, resolve} from 'path';
+import {dirname, resolve, join} from 'path';
 import {fileURLToPath} from 'url';
 
 const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');

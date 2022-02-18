@@ -70,13 +70,13 @@
   },
   "scripts": {
     "clean": "rimraf package-lock.json node_modules",
-    "build": "nx run-many --target=build --all --parallel=1",
-    "test": "nx run-many --target=test --all --parallel=1",
-    "lint": "nx run-many --target=lint --all --parallel=1 && prettier --ignore-path .ci.prettierignore --check . && eslint .",
+    "build": "nx run-many --target=build --all",
+    "test": "nx run-many --target=test --all",
+    "lint": "nx run-many --target=lint --all && prettier --ignore-path .ci.prettierignore --check . && eslint .",
     "commit": "git-cz",
     "pr:report": "node ./scripts/pr-bot.js",
-    "npm:publish:template": "nx run-many --target=npm:publish:template --all --parallel=1",
-    "npm:publish:template:local": "nx run-many --target=npm:publish:template:local --all --parallel=1",
+    "npm:publish:template": "nx run-many --target=npm:publish:template --all",
+    "npm:publish:template:local": "nx run-many --target=npm:publish:template:local --all",
     "prepare": "husky install",
     "commit-msg": "node ./hooks/commit-msg.js",
     "pre-commit": "lint-staged",
@@ -84,7 +84,7 @@
     "release": "npm run nx:graph && npm run release:phase1 && npm run release:phase2 && npm run release:phase3",
     "nx:graph": "nx graph --file=topology.json",
     "release:phase1": "node --experimental-specifier-resolution=node ./scripts/releaseV2/phase1-get-new-version.mjs",
-    "release:phase2": "nx run-many --target=release:phase2 --all --parallel=1",
+    "release:phase2": "nx run-many --target=release:phase2 --all",
     "release:phase3": "node --experimental-specifier-resolution=node ./scripts/releaseV2/phase3-git-commit-tag-push.mjs"
   },
   "workspaces": [
