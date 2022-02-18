@@ -11,7 +11,10 @@ import {spawnSync} from 'child_process';
 import {readFileSync} from 'fs';
 import angularChangelogConvention from 'conventional-changelog-angular';
 import {waitForPackages} from './utils/wait-for-published-packages';
+import {dirname, resolve, join} from 'path';
+import {fileURLToPath} from 'url';
 
+const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 // Run on each package, it generate the changelog, install the latest dependencies that are part of the workspace, publish the package.
 (async () => {
   const PATH = '.';
@@ -44,7 +47,7 @@ import {waitForPackages} from './utils/wait-for-published-packages';
   }
 
   // TODO: Revert spawnSync to npmPublish.
-  // npmPublish();
+  npmPublish();
   const publish = spawnSync(appendCmdIfWindows`npm`, ['publish'], {
     cwd: undefined,
   });
@@ -59,14 +62,15 @@ import {waitForPackages} from './utils/wait-for-published-packages';
 })();
 
 function getReleaseVersion() {
-  return JSON.parse(readFileSync('../../package.json', {encoding: 'utf-8'}))
-    .version;
+  return JSON.parse(
+    readFileSync(join(rootFolder, 'package.json'), {encoding: 'utf-8'})
+  ).version;
 }
 
 // TODO [PRE_NX]: Clean  this mess.
 async function updateWorkspaceDependencies() {
   const topology = JSON.parse(
-    readFileSync('../../topology.json', {encoding: 'utf-8'})
+    readFileSync(join(rootFolder, 'topology.json'), {encoding: 'utf-8'})
   );
   const packageJson = JSON.parse(
     readFileSync('package.json', {encoding: 'utf-8'})

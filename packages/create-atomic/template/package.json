@@ -12,7 +12,7 @@
     "site:init": "netlify init",
     "site:link": "netlify link",
     "site:deploy": "npm run site:link && npm run build && netlify env:import .env && netlify deploy --prod --open",
-    "release:phase2": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase2-bump-all-packages.mjs"
+    "release:phase2": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase2-bump-all-packages.mjs"
   },
   "dependencies": {
     "@coveo/atomic": "1.23.7",
