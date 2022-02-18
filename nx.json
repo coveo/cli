@@ -7,6 +7,9 @@
   "cli": {
     "defaultCollection": "@nrwl/workspace"
   },
+  "targetDependencies": {
+    "release:phase2": [{"target": "release:phase2", "projects": "dependencies"}]
+  },
   "tasksRunnerOptions": {
     "default": {
       "runner": "@nrwl/workspace/tasks-runners/default",
