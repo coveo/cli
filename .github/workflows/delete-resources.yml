@@ -17,4 +17,7 @@ jobs:
         with:
           node-version: '16'
       - run: npm i
-      - run: node ./scripts/delete-api-keys.js --olderThan 1d
+      - run: node ./scripts/cleaning/delete-api-keys.js --olderThan 1d
+        if: always()
+      - run: node ./scripts/cleaning/delete-orgs.js     --olderThan 1d
+        if: always()
