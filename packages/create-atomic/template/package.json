@@ -6,6 +6,7 @@
   "scripts": {
     "setup-lambda": "node ./scripts/setup-lambda.js",
     "setup-cleanup": "node ./scripts/clean-up.js",
+    "prestart": "fkill -s :3333 :8888",
     "start": "netlify dev",
     "build": "stencil build",
     "dev:live": "npm run site:link && netlify dev --live",
@@ -19,9 +20,10 @@
     "@coveo/search-token-lambda": "1.25.4"
   },
   "devDependencies": {
-    "@stencil/core": "2.13.0",
+    "@stencil/core": "2.14.0",
+    "fkill-cli": "7.1.0",
     "gts": "3.1.0",
-    "netlify-cli": "9.3.0",
+    "netlify-cli": "9.6.10",
     "prettier": "2.5.1",
     "rollup-plugin-dotenv": "0.3.0",
     "rollup-plugin-html": "0.2.1"

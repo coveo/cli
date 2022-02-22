@@ -78,6 +78,11 @@ export default function (plop: NodePlopAPI) {
         path: currentPath + '/{{project}}/package.json',
         templateFile: '../template/package.json.hbs',
       },
+      {
+        type: 'add',
+        path: currentPath + '/{{project}}/.gitignore',
+        templateFile: '../template/.gitignore.hbs',
+      },
       function installPackagesPrompt() {
         return 'Installing packages...';
       },
