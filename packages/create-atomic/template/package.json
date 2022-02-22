@@ -9,7 +9,7 @@
     "prestart": "fkill -s :3333 :8888",
     "start": "netlify dev",
     "build": "stencil build",
-    "dev:live": "npm run site:link && netlify dev --live",
+    "dev:live": "npm run site:link && npm run prestart && netlify dev --live",
     "site:init": "netlify init",
     "site:link": "netlify link",
     "site:deploy": "npm run site:link && npm run build && netlify env:import .env && netlify deploy --prod --open",
