@@ -4,9 +4,11 @@
   "version": "1.25.4",
   "private": true,
   "scripts": {
+    "postinstall": "npm run setup-lambda && npm run setup-cleanup",
     "setup-lambda": "node ./scripts/setup-lambda.js",
     "setup-cleanup": "node ./scripts/clean-up.js",
-    "prestart": "fkill -s :3333 :8888",
+    "prestart": "node ensure-port.js",
+    "kill:stencil": "fkill -s :3333",
     "start": "netlify dev",
     "build": "stencil build",
     "dev:live": "npm run site:link && npm run prestart && netlify dev --live",
@@ -21,6 +23,7 @@
   },
   "devDependencies": {
     "@stencil/core": "2.14.0",
+    "find-process": "1.4.7",
     "fkill-cli": "7.1.0",
     "gts": "3.1.0",
     "netlify-cli": "9.6.10",
