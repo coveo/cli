@@ -15,6 +15,7 @@ import {
   PlatformEnvironment,
 } from '../platform/environment';
 import {IncompatibleConfigurationError} from './configErrors';
+import {CurrentSchemaVersion} from './configSchemaVersion';
 
 export interface BaseConfiguration {
   version: string;
@@ -42,7 +43,6 @@ interface AdditionalConfiguration {
 export type Configuration = BaseConfiguration & AdditionalConfiguration;
 
 export class Config {
-  public static readonly CurrentSchemaVersion = '1.0.0';
   public static userFacingConfigKeys: (keyof BaseConfiguration)[] = [
     'environment',
     'organization',
@@ -88,7 +88,7 @@ export class Config {
   }
 
   private isSettingVersionInRange(content: Configuration) {
-    return satisfies(content.version, `^${Config.CurrentSchemaVersion}`);
+    return satisfies(content.version, `^${CurrentSchemaVersion}`);
   }
 
   public replace(config: Configuration) {
@@ -141,7 +141,7 @@ export class Config {
 }
 
 export const DefaultConfig: Configuration = {
-  version: Config.CurrentSchemaVersion,
+  version: CurrentSchemaVersion,
   environment: DEFAULT_ENVIRONMENT,
   region: DEFAULT_REGION,
   organization: '',
