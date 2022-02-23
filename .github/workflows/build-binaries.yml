@@ -21,17 +21,14 @@ jobs:
       matrix:
         include:
           - os: macos-latest
-            pack-command: ':macos'
+            pack-command: ' macos'
             for: 'macos install kit'
-            package-targets: 'darwin-x64'
           - os: windows-latest
-            pack-command: ':win'
+            pack-command: ' win'
             for: 'windows install kit'
-            package-targets: 'win32-x64,win32-x86'
           - os: ubuntu-latest
-            pack-command: ':deb'
+            pack-command: ' deb'
             for: 'linux install kit'
-            package-targets: 'linux-x64,linux-arm'
 
     steps:
       - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
@@ -47,13 +44,12 @@ jobs:
         run: npm run build
       - name: Create install kits
         working-directory: ./packages/cli
-        run: ../../node_modules/.bin/oclif pack${{ matrix.pack-command }}
+        run: ../../node_modules/oclif/bin/run pack${{ matrix.pack-command }}
       - name: Create packages
         working-directory: ./packages/cli
+        if: ${{matrix.os == 'ubuntu-latest'}}
         run: |
-          ../../node_modules/.bin/oclif pack -t="${{ matrix.package-targets }}"
-          mv ./dist/version ./dist/${{ matrix.os }}-version
-          mv ./dist/coveo-${{ env.tag }}/coveo-${{ env.tag }}.tar.gz ./dist/coveo-${{ env.tag }}/${{ matrix.os }}-coveo-${{ env.tag }}.tar.gz
+          ../../node_modules/oclif/bin/run pack tarballs"
       - name: Sign Executable
         working-directory: ./packages/cli
         if: ${{matrix.os == 'windows-latest'}}
