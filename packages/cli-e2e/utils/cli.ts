@@ -104,4 +104,4 @@ export function getConfig() {
   return readJsonSync(pathToConfig);
 }
 
-export const CLI_EXEC_PATH = resolve(__dirname, '../../cli/bin/run');
+export const CLI_EXEC_PATH = resolve(__dirname, '../../cli/bin/dev');
