@@ -19,6 +19,7 @@ import {PlatformEnvironment} from '../platform/environment';
 import {Config} from './config';
 import {IncompatibleConfigurationError} from './configErrors';
 import {fancyIt} from '../../__test__/it';
+import {CurrentSchemaVersion} from './configSchemaVersion';
 
 const mockedSemverSatisifies = jest.mocked(satisfies);
 const mockedPathExists = jest.mocked(pathExistsSync);
@@ -58,7 +59,7 @@ describe('config', () => {
   fancyIt()(
     'should not create config file when it does exists and its version is compatible',
     async () => {
-      const someConfig = {version: Config.CurrentSchemaVersion};
+      const someConfig = {version: CurrentSchemaVersion};
       mockedReadJSON.mockImplementationOnce(() => someConfig);
       mockedPathExists.mockImplementationOnce(() => true);
 
@@ -75,7 +76,7 @@ describe('config', () => {
     });
 
     fancyIt()('should return the config if no error', async () => {
-      const someConfig = {foo: 'bar', version: Config.CurrentSchemaVersion};
+      const someConfig = {foo: 'bar', version: CurrentSchemaVersion};
       mockedReadJSON.mockImplementationOnce(() => someConfig);
 
       const cfg = new Config('foo/bar').get();
@@ -136,7 +137,7 @@ describe('config', () => {
     fancyIt()('should write config on set', async () => {
       mockedReadJSON.mockImplementationOnce(() => ({
         hello: 'world',
-        version: Config.CurrentSchemaVersion,
+        version: CurrentSchemaVersion,
       }));
       new Config('foo/bar').set('environment', PlatformEnvironment.Dev);
       expect(mockedWriteJSON).toHaveBeenCalledWith(
