@@ -1,12 +1,11 @@
-const mockedSemverSatisifies = jest.fn();
-jest.mock('semver', () => ({
-  ...jest.requireActual('semver'),
-  satisfies: mockedSemverSatisifies,
+const mockedUxError = jest.fn();
+jest.mock('@oclif/core', () => ({
+  CliUx: {ux: {error: mockedUxError}},
 }));
 jest.mock('./configErrors');
 jest.mock('fs-extra');
-jest.mock('@oclif/core');
-
+jest.mock('semver');
+import {satisfies} from 'semver';
 import {
   pathExistsSync,
   createFileSync,
@@ -20,9 +19,8 @@ import {PlatformEnvironment} from '../platform/environment';
 import {Config} from './config';
 import {IncompatibleConfigurationError} from './configErrors';
 import {fancyIt} from '../../__test__/it';
-import {CliUx} from '@oclif/core';
 
-const mockedUxError = jest.mocked(CliUx.ux.error);
+const mockedSemverSatisifies = jest.mocked(satisfies);
 const mockedPathExists = jest.mocked(pathExistsSync);
 const mockedCreateFile = jest.mocked(createFileSync);
 const mockedWriteJSON = jest.mocked(writeJSONSync);

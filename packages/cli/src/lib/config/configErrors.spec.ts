@@ -1,20 +1,15 @@
-const mockedCoerce = jest.fn();
-const mockedLt = jest.fn();
-const mockedGt = jest.fn();
-jest.mock('semver', () => ({
-  ...jest.requireActual('semver'),
-  coerce: mockedCoerce,
-  lt: mockedLt,
-  gt: mockedGt,
-}));
+jest.mock('@oclif/core', () => ({}));
+jest.mock('semver');
 jest.mock('./config');
-
 import {IncompatibleConfigurationError} from './configErrors';
-import {SemVer} from 'semver';
+import {coerce, gt, lt, SemVer} from 'semver';
 import {Config} from './config';
 import dedent from 'ts-dedent';
 import {fancyIt} from '../../__test__/it';
 
+const mockedCoerce = jest.mocked(coerce);
+const mockedLt = jest.mocked(lt);
+const mockedGt = jest.mocked(gt);
 const mockedCurrentSchemaVersion = jest.mocked(Config, true);
 describe('configErrors', () => {
   const mockedVersion = 'versionThatTheCliWant';
