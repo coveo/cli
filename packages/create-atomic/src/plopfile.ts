@@ -67,7 +67,6 @@ export default function (plop: NodePlopAPI) {
           '../template/scripts/*',
           '../template/.env.example',
           '../template/tsconfig.json',
-          '../template/package.json',
           '../template/stencil.config.ts',
           '../template/netlify.toml',
           '../template/README.md',
@@ -78,6 +77,11 @@ export default function (plop: NodePlopAPI) {
         type: 'add',
         path: currentPath + '/{{project}}/.gitignore',
         templateFile: '../template/.gitignore.hbs',
+      },
+      {
+        type: 'add',
+        path: currentPath + '/{{project}}/.package.json',
+        templateFile: '../template/.package.json.hbs',
       },
       function installPackagesPrompt() {
         return 'Installing packages...';
