@@ -80,8 +80,8 @@ export default function (plop: NodePlopAPI) {
       },
       {
         type: 'add',
-        path: currentPath + '/{{project}}/.package.json',
-        templateFile: '../template/.package.json.hbs',
+        path: currentPath + '/{{project}}/package.json',
+        templateFile: '../template/package.json.hbs',
       },
       function installPackagesPrompt() {
         return 'Installing packages...';
