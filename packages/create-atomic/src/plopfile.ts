@@ -70,7 +70,7 @@ export default function (plop: NodePlopAPI) {
           '../template/stencil.config.ts',
           '../template/netlify.toml',
           '../template/README.md',
-          '../template/ensure-port.js',
+          '../template/start-netlify.mjs',
         ],
       },
       {
