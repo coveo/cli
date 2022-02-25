@@ -8,6 +8,7 @@ import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {npm} from '../utils/npm';
 import {jwtTokenPattern} from '../utils/matcher';
 import {EOL} from 'os';
+import {DummyServer} from '../utils/server';
 
 describe('ui:create:atomic', () => {
   let browser: Browser;
@@ -161,5 +162,36 @@ describe('ui:create:atomic', () => {
 
       expect(interceptedRequests.some(isSearchRequestOrResponse)).toBeTruthy();
     }, 60e3);
+
+    describe('when the default Stencil port is busy', () => {
+      let dummyServer: DummyServer;
+      let serverProcessManager: ProcessManager;
+
+      beforeAll(async () => {
+        serverProcessManager = new ProcessManager();
+        processManagers.push(serverProcessManager);
+
+        dummyServer = new DummyServer(3333);
+
+        const appTerminal = await startApplication(
+          serverProcessManager,
+          'stencil-port-test'
+        );
+        await waitForAppRunning(appTerminal);
+      }, 2 * 60e3);
+
+      afterAll(async () => {
+        await dummyServer.close();
+        await serverProcessManager.killAllProcesses();
+      }, 30e3);
+
+      it('Netlify should still load the Stencil app properly', async () => {
+        await page.goto(searchPageEndpoint, {
+          waitUntil: 'networkidle2',
+        });
+
+        expect(await page.$(searchInterfaceSelector)).not.toBeNull();
+      }, 60e3);
+    });
   });
 });
