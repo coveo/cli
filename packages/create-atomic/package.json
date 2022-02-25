@@ -13,6 +13,8 @@
   "scripts": {
     "start": "./index.js",
     "build": "tsc -p tsconfig.json",
+    "test": "jest --silent=false",
+    "test:watch": "jest --watch --colors --no-cache --silent=false",
     "prepublishOnly": "npm run build && node ./scripts/preparePackageJsonTemplate.mjs",
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
     "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
@@ -32,10 +34,16 @@
     "access": "public"
   },
   "dependencies": {
-    "detect-indent": "^7.0.0",
+    "detect-indent": "7.0.0",
+    "plop": "3.0.5",
     "minimist": "1.2.5",
-    "plop": "^3.0.3",
+    "node-fetch": "3.2.0",
     "ts-node": "10.5.0",
     "typescript": "4.5.5"
+  },
+  "devDependencies": {
+    "@types/jest": "27.4.1",
+    "jest": "27.5.1",
+    "ts-jest": "27.1.3"
   }
 }
