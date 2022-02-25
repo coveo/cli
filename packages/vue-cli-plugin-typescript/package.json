@@ -17,11 +17,11 @@
   "devDependencies": {
     "@coveo/headless": "1.42.0",
     "@coveo/search-token-server": "1.25.4",
-    "buefy": "0.9.14",
+    "buefy": "0.9.17",
     "dotenv": "16.0.0",
-    "vue": "3.2.30",
+    "vue": "2.6.14",
     "vue-property-decorator": "9.1.2",
-    "vue-router": "4.0.12"
+    "vue-router": "3.5.3"
   },
   "publishConfig": {
     "access": "public"
