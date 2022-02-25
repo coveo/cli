@@ -1,7 +1,8 @@
 const {getSnykCodeAlerts} = require('./github-client');
 
+const isHighSeverity = (alert) => alert.rule.severity === 'error';
 (async () => {
   const alerts = (await getSnykCodeAlerts()).data;
-  alerts.filter((alert) => alert.rule.severity === 'error');
-  process.exit(alerts.length > 0 ? 1 : 0);
+  const hasAtLeastOneHighAlert = alerts.some(isHighSeverity);
+  process.exit(hasAtLeastOneHighAlert ? 1 : 0);
 })();

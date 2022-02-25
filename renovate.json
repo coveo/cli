@@ -15,6 +15,10 @@
       "groupSlug": "all"
     },
     {
+      "matchPackagePatterns": ["^@angular/*", "^@angular-devkit/*"],
+      "rangeStrategy": "replace"
+    },
+    {
       "matchPackageNames": ["strip-ansi"],
       "allowedVersions": "6.x"
     },
@@ -55,6 +59,16 @@
       "matchPackageNames": ["npm"],
       "allowedVersions": "8.4.x",
       "description": "Need NPM to be fixed https://github.com/npm/cli/issues/4404 TODO:CDX-815"
+    },
+    {
+      "matchPackageNames": ["vue"],
+      "allowedVersions": "2.x",
+      "description": "Need to support Vue3 TODO:CDX-813"
+    },
+    {
+      "matchPackageNames": ["vue-router"],
+      "allowedVersions": "3.x",
+      "description": "Need to support Vue3 TODO:CDX-813"
     }
   ],
   "rangeStrategy": "auto",

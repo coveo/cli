@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli",
-  "version": "1.24.1",
+  "version": "1.25.4",
   "author": "Coveo",
   "description": "Coveo CLI",
   "engines": {
@@ -10,7 +10,7 @@
     "@amplitude/identify": "^1.9.0",
     "@amplitude/node": "^1.9.0",
     "@coveo/push-api-client": "^1.3.1",
-    "@coveord/platform-client": "^28.0.0",
+    "@coveord/platform-client": "^29.0.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^3.3.1",
@@ -18,7 +18,7 @@
     "abortcontroller-polyfill": "^1.7.1",
     "archiver": "^5.3.0",
     "async-retry": "^1.3.1",
-    "axios": "^0.25.0",
+    "axios": "^0.26.0",
     "chalk": "^4.1.1",
     "cli-progress": "^3.9.1",
     "cli-ux": "^5.6.3",
@@ -38,11 +38,11 @@
   },
   "devDependencies": {
     "@amplitude/types": "1.9.2",
-    "@babel/core": "7.17.2",
-    "@coveo/angular": "1.24.1",
-    "@coveo/cra-template": "1.24.1",
-    "@coveo/create-atomic": "1.24.1",
-    "@coveo/vue-cli-plugin-typescript": "1.24.1",
+    "@babel/core": "7.17.5",
+    "@coveo/angular": "1.25.4",
+    "@coveo/cra-template": "1.25.4",
+    "@coveo/create-atomic": "1.25.4",
+    "@coveo/vue-cli-plugin-typescript": "1.25.4",
     "@oclif/dev-cli": "1.26.10",
     "@oclif/errors": "1.3.5",
     "@oclif/test": "1.2.9",
@@ -51,11 +51,12 @@
     "@types/cli-progress": "3.9.2",
     "@types/fs-extra": "9.0.13",
     "@types/inquirer": "8.2.0",
-    "@types/jest": "27.4.0",
+    "@types/jest": "27.4.1",
     "@types/json2csv": "5.0.3",
-    "@types/node": "17.0.17",
+    "@types/node": "17.0.21",
+    "@types/semver": "^7.3.9",
     "chai": "4.3.6",
-    "eslint": "8.8.0",
+    "eslint": "8.9.0",
     "fancy-test": "1.4.10",
     "jest": "27.5.1",
     "mock-stdin": "1.0.0",
@@ -68,8 +69,8 @@
     "typescript": "4.5.5"
   },
   "peerDependencies": {
-    "@angular/cli": "^13.2.1",
-    "@vue/cli": "^4.5.11",
+    "@angular/cli": "^13.2.4",
+    "@vue/cli": "^4.5.11 || ^5.0.0",
     "create-react-app": "latest"
   },
   "peerDependenciesMeta": {
@@ -163,7 +164,7 @@
     "lint": "prettier --config ../../.prettierrc.js --check . && eslint .",
     "release:phase2": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase2-bump-all-packages.mjs",
     "postpack": "rimraf oclif.manifest.json",
-    "version": "rimraf lib && npm run build && oclif-dev manifest && oclif-dev readme"
+    "prepublishOnly": "rimraf lib && npm run build && oclif-dev manifest && oclif-dev readme"
   },
   "types": "lib/index.d.ts",
   "publishConfig": {

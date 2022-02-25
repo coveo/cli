@@ -1,15 +1,18 @@
 import {
+  getLastTag,
   parseCommits,
-  generateChangelog,
   getCurrentVersion,
+  generateChangelog,
+  writeChangelog,
+  getCommits,
   gitCommit,
   gitTag,
   gitPush,
-  createGitHubRelease,
+  gitPushTags,
 } from '@coveo/semantic-monorepo-tools';
 import {Octokit} from 'octokit';
 import angularChangelogConvention from 'conventional-changelog-angular';
-
+import {dedent} from 'ts-dedent';
 // Commit, tag and push
 (async () => {
   const REPO_OWNER = 'coveo';
@@ -19,32 +22,49 @@ import angularChangelogConvention from 'conventional-changelog-angular';
   const convention = await angularChangelogConvention;
   const lastTag = getLastTag(versionPrefix);
   const commits = getCommits(PATH, lastTag);
-  const parsedCommits = parseCommits(commits, convention.parserOpts);
   const releaseVersion = getCurrentVersion(PATH);
-  const changelog = await generateChangelog(
-    parsedCommits,
-    releaseVersion,
-    {
-      host: 'https://github.com',
-      owner: 'coveo',
-      repository: 'cli',
-    },
-    convention.writerOpts
-  );
-  await writeChangelog(PATH, changelog);
-
   const versionTag = `${versionPrefix}${releaseVersion}`;
+  let changelog = '';
+  if (commits.length > 0) {
+    const parsedCommits = parseCommits(commits, convention.parserOpts);
+    changelog = await generateChangelog(
+      parsedCommits,
+      versionTag,
+      {
+        host: 'https://github.com',
+        owner: REPO_OWNER,
+        repository: REPO_NAME,
+      },
+      convention.writerOpts
+    );
+    await writeChangelog(PATH, changelog);
+  }
 
-  gitCommit(`chore(release): Release ${versionTag} [skip ci]`, PATH);
+  gitCommit(
+    dedent`
+    [version bump] chore(release): Release ${versionTag} [skip ci]
+
+    **/README.md
+    **/CHANGELOG.md
+    **/package.json
+    README.md
+    CHANGELOG.md
+    package.json
+    package-lock.json
+    `,
+    PATH
+  );
   gitTag(versionTag);
   gitPush();
+  gitPushTags();
 
   const octokit = new Octokit({auth: process.env.GITHUB_CREDENTIALS});
-  await createGitHubRelease(
-    octokit,
-    changelog,
-    versionTag,
-    REPO_OWNER,
-    REPO_NAME
-  );
+  const [, ...bodyArray] = changelog.split('\n');
+  await octokit.rest.repos.createRelease({
+    owner: REPO_OWNER,
+    repo: REPO_NAME,
+    tag_name: versionTag,
+    name: `Release ${versionTag}`,
+    body: bodyArray.join('\n'),
+  });
 })();

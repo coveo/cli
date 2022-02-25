@@ -4,4 +4,5 @@ CHANGELOG.md
 package-lock.json
 lib
 
-templates/package.json.hbs
+template/.gitignore.hbs
+template/package.json.hbs

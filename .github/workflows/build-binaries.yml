@@ -35,20 +35,23 @@ jobs:
 
     steps:
       - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
-      - uses: actions/setup-node@1f8c6b94b26d0feae1e387ca63ccbdc44d27b561 # renovate: tag=v2
+      - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
         with:
           node-version: '16'
       - name: Setup
         run: npm i
       - name: Get tag
         run: node ./scripts/get-tag.js # ToDo (PRE_NX): replace by some jq magic
+      - name: Build
+        working-directory: ./packages/cli
+        run: npm run build
       - name: Create install kits
         working-directory: ./packages/cli
-        run: ./node_modules/@oclif/dev-cli/bin/run pack${{ matrix.pack-command }}
+        run: ../../node_modules/@oclif/dev-cli/bin/run pack${{ matrix.pack-command }}
       - name: Create packages
         working-directory: ./packages/cli
         run: |
-          ./node_modules/@oclif/dev-cli/bin/run pack -t="${{ matrix.package-targets }}"
+          ../../node_modules/@oclif/dev-cli/bin/run pack -t="${{ matrix.package-targets }}"
           mv ./dist/version ./dist/${{ matrix.os }}-version
           mv ./dist/coveo-${{ env.tag }}/coveo-${{ env.tag }}.tar.gz ./dist/coveo-${{ env.tag }}/${{ matrix.os }}-coveo-${{ env.tag }}.tar.gz
       - name: Sign Executable
