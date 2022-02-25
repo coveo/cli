@@ -1,17 +1,10 @@
 name: Build binaries
 
 on:
-  release:
-    types: [published]
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'The version where to upload the binaries'
-        required: true
+  pull_request:
 
 jobs:
   package:
-    environment: 'Release'
     env:
       GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
     name: Package for ${{ matrix.for }}
@@ -37,33 +30,17 @@ jobs:
           node-version: '16'
       - name: Setup
         run: npm i
-      - name: Get tag
-        run: node ./scripts/get-tag.js # ToDo (PRE_NX): replace by some jq magic
       - name: Build
         working-directory: ./packages/cli
         run: npm run build
       - name: Create install kits
         working-directory: ./packages/cli
-        run: |
-          ../../node_modules/oclif/bin/run pack${{ matrix.pack-command }}
-          mv${{ matrix.pack-command }}/* ./
+        run: ../../node_modules/oclif/bin/run pack${{ matrix.pack-command }}
       - name: Create packages
         working-directory: ./packages/cli
         if: ${{matrix.os == 'ubuntu-latest'}}
         run: ../../node_modules/oclif/bin/run pack tarballs
-      - name: Sign Executable
-        working-directory: ./packages/cli
-        if: ${{matrix.os == 'windows-latest'}}
-        run: |
-          New-Item -Force -ItemType directory -Path tmp
-          echo "${{ secrets.COVEO_PFX }}" > ./tmp/cert.txt
-          certutil -decode ./tmp/cert.txt ./tmp/cert.pfx
-          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win/coveo-${{env.tag}}-x64.exe" -PassThru | Wait-Process
-          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win/coveo-${{env.tag}}-x86.exe" -PassThru | Wait-Process
-      - name: Upload binaries
-        uses: svenstaro/upload-release-action@483c1e56f95e88835747b1c7c60581215016cbf2 # renovate: tag=v2
+      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./packages/cli/dist/**/*
-          file_glob: true
-          tag: ${{ env.tag }}
+          name: ${{matrix.os}}-bins
+          path: ./packages/cli/dist
