@@ -1,4 +1,4 @@
-name: 'package-lock.json version validator'
+name: 'package-lock.json root validator'
 
 on:
   push:
