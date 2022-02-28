@@ -14,7 +14,9 @@ export function parsePageDownload({html}: PageDownload): ParsedPageDownload {
   );
 
   if (!markupMatch) {
-    throw new Error('Page markup not valid.');
+    throw new Error(
+      'Page markup does not contain an "atomic-search-interface" component. You might need to upgrade the Coveo CLI.'
+    );
   }
 
   const markup = markupMatch[0];
@@ -22,7 +24,9 @@ export function parsePageDownload({html}: PageDownload): ParsedPageDownload {
   const resultsMatch = markup.match(resultsRegex);
 
   if (!resultsMatch) {
-    throw new Error('Page markup not valid.');
+    throw new Error(
+      'Page markup does not contain an "atomic-result-list" component. You might need to upgrade the Coveo CLI.'
+    );
   }
 
   return {

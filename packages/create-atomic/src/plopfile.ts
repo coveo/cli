@@ -82,6 +82,7 @@ export default function (plop: NodePlopAPI) {
 
         try {
           pageDownload = await fetchPageDownload(
+            // TODO: replace
             'http://localhost:8222', // answers['platform-url'],
             answers['org-id'],
             answers['page-id'],
