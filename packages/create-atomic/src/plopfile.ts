@@ -66,12 +66,17 @@ export default function (plop: NodePlopAPI) {
           '../template/src/**',
           '../template/scripts/*',
           '../template/.env.example',
-          '../template/.gitignore',
           '../template/tsconfig.json',
           '../template/stencil.config.ts',
           '../template/netlify.toml',
           '../template/README.md',
+          '../template/start-netlify.mjs',
         ],
+      },
+      {
+        type: 'add',
+        path: currentPath + '/{{project}}/.gitignore',
+        templateFile: '../template/.gitignore.hbs',
       },
       {
         type: 'add',

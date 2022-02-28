@@ -10,7 +10,11 @@ import {
 import {spawnSync} from 'child_process';
 import {readFileSync} from 'fs';
 import angularChangelogConvention from 'conventional-changelog-angular';
+import {waitForPackages} from './utils/wait-for-published-packages';
+import {dirname, resolve, join} from 'path';
+import {fileURLToPath} from 'url';
 
+const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 // Run on each package, it generate the changelog, install the latest dependencies that are part of the workspace, publish the package.
 (async () => {
   const PATH = '.';
@@ -19,6 +23,14 @@ import angularChangelogConvention from 'conventional-changelog-angular';
   const lastTag = getLastTag(versionPrefix);
   const commits = getCommits(PATH, lastTag);
   const newVersion = getReleaseVersion();
+
+  updateWorkspaceDependencies();
+  npmBumpVersion(newVersion, PATH);
+
+  if (isPrivatePackage()) {
+    return;
+  }
+
   if (commits.length > 0) {
     const parsedCommits = parseCommits(commits, convention.parserOpts);
     const changelog = await generateChangelog(
@@ -33,10 +45,9 @@ import angularChangelogConvention from 'conventional-changelog-angular';
     );
     await writeChangelog(PATH, changelog);
   }
-  updateWorkspaceDependencies();
-  npmBumpVersion(newVersion, PATH);
+
   // TODO: Revert spawnSync to npmPublish.
-  // npmPublish();
+  npmPublish();
   const publish = spawnSync(appendCmdIfWindows`npm`, ['publish'], {
     cwd: undefined,
   });
@@ -51,23 +62,27 @@ import angularChangelogConvention from 'conventional-changelog-angular';
 })();
 
 function getReleaseVersion() {
-  return JSON.parse(readFileSync('../../package.json', {encoding: 'utf-8'}))
-    .version;
+  return JSON.parse(
+    readFileSync(join(rootFolder, 'package.json'), {encoding: 'utf-8'})
+  ).version;
 }
 
 // TODO [PRE_NX]: Clean  this mess.
-function updateWorkspaceDependencies() {
+async function updateWorkspaceDependencies() {
   const topology = JSON.parse(
-    readFileSync('../../topology.json', {encoding: 'utf-8'})
+    readFileSync(join(rootFolder, 'topology.json'), {encoding: 'utf-8'})
   );
   const packageJson = JSON.parse(
     readFileSync('package.json', {encoding: 'utf-8'})
   );
   const packageName = packageJson.name.replace('@coveo/', '');
-  topology.graph.dependencies[packageName]
+  const dependencies = topology.graph.dependencies[packageName]
     .filter((dependency) => dependency.source == packageName)
-    .map((dependency) => `@coveo/${dependency.target}`)
-    .forEach((dependency) => updateDependency(packageJson, dependency));
+    .map((dependency) => `@coveo/${dependency.target}`);
+  await waitForPackages(dependencies);
+  dependencies.forEach((dependency) =>
+    updateDependency(packageJson, dependency)
+  );
 }
 
 function updateDependency(packageJson, dependency) {
@@ -92,3 +107,10 @@ function updateDependency(packageJson, dependency) {
 
 export const appendCmdIfWindows = (cmd) =>
   `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
+
+function isPrivatePackage() {
+  const packageJson = JSON.parse(
+    readFileSync('package.json', {encoding: 'utf-8'})
+  );
+  return packageJson.private;
+}

@@ -13,8 +13,11 @@ jobs:
       PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
     steps:
       - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
-      - uses: actions/setup-node@1f8c6b94b26d0feae1e387ca63ccbdc44d27b561 # renovate: tag=v2
+      - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
         with:
           node-version: '16'
       - run: npm i
-      - run: node ./scripts/delete-api-keys.js --olderThan 1d
+      - run: node ./scripts/cleaning/delete-api-keys.js --olderThan 1d
+        if: always()
+      - run: node ./scripts/cleaning/delete-orgs.js     --olderThan 1d
+        if: always()

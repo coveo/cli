@@ -8,9 +8,11 @@ import {
   gitCommit,
   gitTag,
   gitPush,
+  gitPushTags,
 } from '@coveo/semantic-monorepo-tools';
 import {Octokit} from 'octokit';
 import angularChangelogConvention from 'conventional-changelog-angular';
+import {dedent} from 'ts-dedent';
 // Commit, tag and push
 (async () => {
   const REPO_OWNER = 'coveo';
@@ -38,7 +40,20 @@ import angularChangelogConvention from 'conventional-changelog-angular';
     await writeChangelog(PATH, changelog);
   }
 
-  gitCommit(`chore(release): Release ${versionTag} [skip ci]`, PATH);
+  gitCommit(
+    dedent`
+    [version bump] chore(release): Release ${versionTag} [skip ci]
+
+    **/README.md
+    **/CHANGELOG.md
+    **/package.json
+    README.md
+    CHANGELOG.md
+    package.json
+    package-lock.json
+    `,
+    PATH
+  );
   gitTag(versionTag);
   gitPush();
   gitPushTags();
