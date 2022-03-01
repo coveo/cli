@@ -35,6 +35,8 @@ export class ProcessManager {
     const pids: Array<number> = Array.from(this.processes.values())
       .map((process) => process.pid)
       .filter(this.isNumber);
-    await fkill(pids, {tree: true, force: true, silent: true});
+    const groupPids =
+      process.platform === 'win32' ? pids : pids.map((pid) => -pid);
+    await fkill(groupPids, {tree: true, force: true, silent: true});
   }
 }
