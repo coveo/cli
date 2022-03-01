@@ -28,15 +28,15 @@ export class ProcessManager {
   private onExit = (process: ChildProcessWithoutNullStreams) => () => {
     this.processes.delete(process);
   };
-  private isNumber(value: unknown): value is number {
-    return typeof value === 'number';
-  }
+
   public async killAllProcesses() {
     const pids: Array<number> = Array.from(this.processes.values())
-      .map((process) => process.pid)
-      .filter(this.isNumber);
-    const groupPids =
-      process.platform === 'win32' ? pids : pids.map((pid) => -pid);
-    await fkill(groupPids, {tree: true, force: true, silent: true});
+      .map(
+        process.platform === 'win32'
+          ? (process) => process.pid || 0
+          : (process) => -(process.pid || 0)
+      )
+      .filter((pid) => pid !== 0);
+    await fkill(pids, {tree: true, force: true, silent: true});
   }
 }
