@@ -8,9 +8,15 @@ import {green} from 'chalk';
 import {readdirSync} from 'fs';
 import {join} from 'path';
 import {
+  HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
+import {
+  readOrganizationPrivilege,
+  writeFieldsPrivilege,
+  writeSourceContentPrivilege,
+} from '../../../lib/decorators/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
@@ -67,8 +73,12 @@ export default class SourcePushAdd extends Command {
 
   @Trackable()
   @Preconditions(
-    IsAuthenticated()
-    // TODO: CDX-817 add precondition on platform privileges
+    IsAuthenticated(),
+    HasNecessaryCoveoPrivileges(
+      writeFieldsPrivilege,
+      readOrganizationPrivilege,
+      writeSourceContentPrivilege
+    )
   )
   public async run() {
     const {args, flags} = await this.parse(SourcePushAdd);
