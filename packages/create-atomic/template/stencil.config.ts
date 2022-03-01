@@ -14,6 +14,9 @@ export const config: Config = {
       copy: [{src: 'pages', keepDirStructure: false}],
     },
   ],
+  devServer: {
+    port: parseInt(process.env.STENCIL_PORT) || 3333,
+  },
   plugins: [dotenvPlugin()],
   rollupPlugins: {
     before: [
