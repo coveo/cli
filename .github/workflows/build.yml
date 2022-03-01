@@ -6,28 +6,14 @@ on:
   pull_request:
 
 jobs:
-  lint-and-tests:
-    name: Lint & Unit Tests
+  lint:
+    name: Lint
     runs-on: ${{matrix.os}}
     strategy:
       fail-fast: true
       matrix:
-        os: ['ubuntu-latest', 'windows-latest']
+        os: ['ubuntu-latest']
         node: [16]
-    env:
-      # Platform environment to log into for the e2e tests.
-      PLATFORM_ENV: 'qa'
-      # Username used to log into the organization whose ID is stored in the ORG_ID variable
-      PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
-      # Password used to log into the organization whose ID is stored in the ORG_ID variable
-      PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
-      # API key to delete all the API keys created by the e2e tests
-      PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
-      # ID of the organization to log into for the e2e tests
-      ORG_ID: ${{ secrets.ORG_ID }}
-      # ID of the test run to identify resources to teardown.
-      TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
-      COVEO_DISABLE_AUTOUPDATE: true
     steps:
       - name: Setup runner
         if: ${{matrix.os == 'ubuntu-latest'}}
@@ -46,6 +32,30 @@ jobs:
         run: npm ci
       - name: Check linting
         run: npm run lint
+  unit-tests:
+    name: Unit Tests
+    runs-on: ${{matrix.os}}
+    strategy:
+      fail-fast: true
+      matrix:
+        os: ['ubuntu-latest', 'windows-latest']
+        node: [16]
+    steps:
+      - name: Setup runner
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+      - name: Setup runner
+        if: ${{matrix.os == 'windows-latest'}}
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
+      - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
+        with:
+          node-version: ${{matrix.node}}
+      - name: Setup repo
+        run: npm ci
       - name: Tests
         run: npm run test
   e2e:
@@ -81,6 +91,15 @@ jobs:
       TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
       COVEO_DISABLE_AUTOUPDATE: true
     steps:
+      - name: Setup runner
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+      - name: Setup runner
+        if: ${{matrix.os == 'windows-latest'}}
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
       - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
       - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
         with:
