@@ -115,6 +115,15 @@ jobs:
         if: ${{matrix.os == 'windows-latest'}}
         run: packages/cli-e2e/entrypoints/ci.ps1
       - name: Tests
+        if: ${{matrix.os == 'windows-latest'}}
+        env:
+          PATH: '${{env.PATH}};C:\Program Files (x86)\mitmproxy\bin'
+        working-directory: packages/cli-e2e
+        run: npm run jest -- ${{matrix.spec}}
+      - name: Tests
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        env:
+          DISPLAY: ':1'
         working-directory: packages/cli-e2e
         run: npm run jest -- ${{matrix.spec}}
   e2e-cleaning:
