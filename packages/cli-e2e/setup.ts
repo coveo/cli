@@ -11,7 +11,7 @@ import {
 import {clearAccessTokenFromConfig, loginWithOffice} from './utils/login';
 import {ProcessManager} from './utils/processManager';
 import {saveToEnvFile} from './utils/file';
-import {createOrg} from './utils/platform';
+import {createOrg, getPlatformHost} from './utils/platform';
 import {getConfig as getCliConfig, getEnvFilePath} from './utils/cli';
 import waitOn from 'wait-on';
 import 'dotenv/config';
@@ -34,29 +34,6 @@ async function clearChromeBrowsingData(browser: Browser) {
   return Promise.all(pageClearDataPromise);
 }
 
-function getPlatformEnv() {
-  return process.env.PLATFORM_ENV?.toLowerCase();
-}
-
-function getPlatformHost() {
-  const env = getPlatformEnv();
-  return `https://platform${env === 'prod' ? '' : env}.cloud.coveo.com`;
-}
-
-async function createTestOrgAndSaveOrgIdToEnv(orgName: string) {
-  const {accessToken} = getCliConfig();
-  const testOrgId = await createOrg(orgName, accessToken);
-  console.log(`Created org ${testOrgId}`);
-  const pathToEnv = getEnvFilePath();
-  saveToEnvFile(pathToEnv, {
-    PLATFORM_ENV: getPlatformEnv(),
-    PLATFORM_HOST: getPlatformHost(),
-    TEST_RUN_ID: process.env.TEST_RUN_ID,
-    TEST_ORG_ID: testOrgId,
-    ACCESS_TOKEN: accessToken,
-  });
-}
-
 export default async function () {
   if (!process.env.CI) {
     isMitmProxyInstalled();
@@ -66,9 +43,8 @@ export default async function () {
   // runId must start and finish with letters to satisfies Angular.
   process.env.TEST_RUN_ID =
     process.env.TEST_RUN_ID ?? `id${randomBytes(16).toString('hex')}g`;
-  process.env.PLATFORM_ENV = getPlatformEnv();
-  process.env.PLATFORM_HOST = getPlatformHost();
-  const testOrgName = `cli-e2e-${process.env.TEST_RUN_ID}`;
+  process.env.PLATFORM_ENV = process.env.PLATFORM_ENV?.toLowerCase() || '';
+  process.env.PLATFORM_HOST = getPlatformHost(process.env.PLATFORM_ENV);
 
   const uiProjectDir = tmpDirSync();
   process.env.UI_PROJECT_PATH = uiProjectDir.name;
