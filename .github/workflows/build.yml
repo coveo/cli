@@ -1,4 +1,4 @@
-name: Build
+name: CI
 on:
   push:
     branches:
@@ -6,7 +6,8 @@ on:
   pull_request:
 
 jobs:
-  run-script:
+  lint-and-tests:
+    name: Lint & Unit Tests
     runs-on: ${{matrix.os}}
     strategy:
       fail-fast: true
@@ -47,15 +48,68 @@ jobs:
         run: npm run lint
       - name: Tests
         run: npm run test
+  e2e:
+    name: End-to-end tests
+    runs-on: ${{matrix.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'windows-latest']
+        node: [16]
+        spec:
+          [
+            'angular.specs.ts',
+            'atomic.specs.ts',
+            'auth.specs.ci.ts',
+            'orgList.specs.ts',
+            'orgResources.specs.ts',
+            'react.specs.ts',
+            'vue.specs.ts',
+          ]
+    env:
+      # Platform environment to log into for the e2e tests.
+      PLATFORM_ENV: 'qa'
+      # Username used to log into the organization whose ID is stored in the ORG_ID variable
+      PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
+      # Password used to log into the organization whose ID is stored in the ORG_ID variable
+      PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
+      # API key to delete all the API keys created by the e2e tests
+      PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
+      # ID of the organization to log into for the e2e tests
+      ORG_ID: ${{ secrets.ORG_ID }}
+      # ID of the test run to identify resources to teardown.
+      TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
+      COVEO_DISABLE_AUTOUPDATE: true
+    steps:
       - name: Build CLI
         working-directory: ./packages/cli
-        run: npm run build
-      - name: End-to-end Tests
+        run: npm run build # TODO CDX-860: Maybe artifact that above?
+      - name: End-to-end Setup
         if: ${{matrix.os == 'ubuntu-latest'}}
         run: bash packages/cli-e2e/entrypoints/ci.sh
-      - name: End-to-end Tests
+      - name: End-to-end Setup
         if: ${{matrix.os == 'windows-latest'}}
         run: packages/cli-e2e/entrypoints/ci.ps1
+      - name: Tests
+        working-directory: packages/cli-e2e
+        run: npm run jest -- ${{matrix.spec}}
+  e2e-cleaning:
+    needs: e2e
+    runs-on: ubuntu-latest
+    env:
+      # Platform environment to log into for the e2e tests.
+      PLATFORM_ENV: 'qa'
+      # Username used to log into the organization whose ID is stored in the ORG_ID variable
+      PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
+      # Password used to log into the organization whose ID is stored in the ORG_ID variable
+      PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
+      # API key to delete all the API keys created by the e2e tests
+      PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
+      # ID of the organization to log into for the e2e tests
+      ORG_ID: ${{ secrets.ORG_ID }}
+      # ID of the test run to identify resources to teardown.
+      TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
+    steps:
       - name: Delete test org
         if: always()
         run: node ./scripts/cleaning/delete-orgs.js
@@ -65,5 +119,5 @@ jobs:
       - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2
         if: ${{ always() }}
         with:
-          name: ${{matrix.os}}-test-artifacts
+          name: ${{matrix.os}}-${{matrix.spec}}-test-artifacts
           path: ./packages/cli-e2e/artifacts

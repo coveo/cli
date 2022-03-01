@@ -20,8 +20,3 @@ echo "::endgroup::"
 
 git config --global user.name "notgroot"
 git config --global user.email "notgroot@coveo.com"
-
-echo "::group::Run tests"
-cd packages/cli-e2e
-npm run jest
-echo "::endgroup::"
