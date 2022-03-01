@@ -4,7 +4,6 @@ import {
   spawn as nativeSpawn,
 } from 'child_process';
 import fkill from 'fkill';
-import {pid} from 'process';
 export class ProcessManager {
   private processes: Set<ChildProcessWithoutNullStreams>;
   public constructor() {
