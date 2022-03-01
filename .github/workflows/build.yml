@@ -99,6 +99,7 @@ jobs:
         working-directory: packages/cli-e2e
         run: npm run jest -- ${{matrix.spec}}
   e2e-cleaning:
+    if: ${{ always() }}
     needs: e2e
     runs-on: ubuntu-latest
     env:
@@ -127,7 +128,7 @@ jobs:
         if: always()
         run: node ./scripts/cleaning/delete-api-keys.js
       - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2
-        if: ${{ always() }}
+        if: always()
         with:
           name: ${{matrix.os}}-${{matrix.spec}}-test-artifacts
           path: ./packages/cli-e2e/artifacts
