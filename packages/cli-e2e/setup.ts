@@ -56,9 +56,15 @@ export default async function () {
   if (process.env.CI) {
     let browser;
     try {
+      console.log('Starting Chrome');
       await launchChrome({port: 9222, userDataDir: false});
+      console.log('Chrome started');
+      console.log('Checking port 9222');
       await waitOn({resources: ['tcp:9222']});
+      console.log('Port 9222 is open');
+      console.log('Connecting to Chrome');
       browser = await connectToChromeBrowser();
+      console.log('Connected to Chrome');
       await clearChromeBrowsingData(browser);
       await clearAccessTokenFromConfig();
       await loginWithOffice(browser);
