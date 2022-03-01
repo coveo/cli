@@ -28,6 +28,7 @@ jobs:
       - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
         with:
           node-version: ${{matrix.node}}
+          cache: 'npm'
       - name: Setup repo
         run: npm ci
       - name: Check linting
@@ -54,6 +55,7 @@ jobs:
       - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
         with:
           node-version: ${{matrix.node}}
+          cache: 'npm'
       - name: Setup repo
         run: npm ci
       - name: Tests
@@ -104,6 +106,7 @@ jobs:
       - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
         with:
           node-version: ${{matrix.node}}
+          cache: 'npm'
       - run: npm ci
       - name: Build CLI
         working-directory: ./packages/cli
@@ -148,6 +151,7 @@ jobs:
       - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
         with:
           node-version: ${{matrix.node}}
+          cache: 'npm'
       - run: npm ci
       - name: Delete test org
         if: always()
