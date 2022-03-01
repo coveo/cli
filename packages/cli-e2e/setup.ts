@@ -57,6 +57,7 @@ export default async function () {
     let browser;
     try {
       await launchChrome({port: 9222, userDataDir: false});
+      await waitOn({resources: ['tcp:9222']});
       browser = await connectToChromeBrowser();
       await clearChromeBrowsingData(browser);
       await clearAccessTokenFromConfig();
