@@ -3,8 +3,8 @@ import {
   SpawnOptionsWithoutStdio,
   spawn as nativeSpawn,
 } from 'child_process';
-import {recurseProcessKillWindows} from './windowsProcessKiller';
-
+import fkill from 'fkill';
+import {pid} from 'process';
 export class ProcessManager {
   private processes: Set<ChildProcessWithoutNullStreams>;
   public constructor() {
@@ -28,45 +28,13 @@ export class ProcessManager {
   private onExit = (process: ChildProcessWithoutNullStreams) => () => {
     this.processes.delete(process);
   };
-
+  private isNumber(value: unknown): value is number {
+    return typeof value === 'number';
+  }
   public async killAllProcesses() {
-    const promises: Promise<void>[] = [];
-    const processIterator = this.processes.values();
-    for (
-      let current = processIterator.next();
-      !current.done;
-      current = processIterator.next()
-    ) {
-      const currentProcess = current.value;
-      await new Promise<void>((resolve) => {
-        promises.push(
-          new Promise<void>((exit) => {
-            currentProcess.removeAllListeners('exit').on('exit', () => {
-              this.onExit(currentProcess)();
-              exit();
-            });
-            if (!Number.isInteger(currentProcess.pid)) {
-              console.error(
-                `Process pid is not a number. Received pid: ${currentProcess.pid}`
-              );
-              return resolve();
-            }
-            if (process.platform === 'win32') {
-              try {
-                recurseProcessKillWindows(currentProcess);
-              } catch (error) {
-                console.error(JSON.stringify({error}));
-              }
-            } else {
-              process.kill(-currentProcess.pid);
-            }
-            resolve();
-          })
-        );
-      });
-      current = processIterator.next();
-    }
-
-    await Promise.all(promises);
+    const pids: Array<number> = Array.from(this.processes.values())
+      .map((process) => process.pid)
+      .filter(this.isNumber);
+    await fkill(pids, {tree: true, force: true, silent: true});
   }
 }
