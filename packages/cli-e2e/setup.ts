@@ -10,9 +10,8 @@ import {
 } from './utils/browser';
 import {clearAccessTokenFromConfig, loginWithOffice} from './utils/login';
 import {ProcessManager} from './utils/processManager';
-import {saveToEnvFile} from './utils/file';
-import {createOrg, getPlatformHost} from './utils/platform';
-import {getConfig as getCliConfig, getEnvFilePath} from './utils/cli';
+import {getPlatformHost} from './utils/platform';
+import {getConfig as getCliConfig} from './utils/cli';
 import waitOn from 'wait-on';
 import 'dotenv/config';
 import {Terminal} from './utils/terminal/terminal';
@@ -70,8 +69,6 @@ export default async function () {
       throw e;
     }
   }
-
-  await createTestOrgAndSaveOrgIdToEnv(testOrgName);
 }
 
 async function publishPackages() {
