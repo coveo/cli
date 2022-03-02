@@ -15,8 +15,8 @@ config({path: join(homedir(), '.env')});
 function wasCreatedByTheCli(testRunId = '') {
   return (key) =>
     testRunId
-      ? key.displayName?.startsWith(`cli-${testRunId}`)
-      : key.displayName?.match(/cli-id.*g/);
+      ? key.displayName?.startsWith(`cli-e2e-${testRunId}`)
+      : key.displayName?.match(/cli-e2e.*g/);
 }
 
 async function deleteTestOrgs(platform, cliOrgs) {
