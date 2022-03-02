@@ -8,7 +8,8 @@ const args = process.argv.slice(2);
 
 const main = async () => {
   // Dynamic Stencil port discovery feature, unsupported by Netlify.
-  const stencilPort = await getPort({port: portNumbers(3333, 3399)});
+  const stencilPort =
+    process.env.STENCIL_PORT || (await getPort({port: [3333]}));
 
   process.on('SIGINT', () => {
     // Intermittent issue with Netlify not shutting down Stencil port properly.
@@ -26,6 +27,7 @@ const main = async () => {
     ],
     {
       stdio: 'inherit',
+      env: {STENCIL_PORT: stencilPort, ...process.env},
     }
   );
 };
