@@ -1,4 +1,4 @@
-import {mkdirSync, readFileSync, writeFileSync} from 'fs';
+import {copyFileSync, mkdirSync} from 'fs';
 import {SCREENSHOTS_PATH} from '../utils/browser';
 import {getConfigFilePath} from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
@@ -6,6 +6,7 @@ import {ProcessManager} from '../utils/processManager';
 import 'dotenv/config';
 
 import {setProcessEnv, createUiProjectDirectory, startVerdaccio} from './utils';
+import {dirname} from 'path';
 
 export default async function () {
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
@@ -19,8 +20,6 @@ export default async function () {
 }
 
 async function restoreCliConfig() {
-  writeFileSync(
-    getConfigFilePath(),
-    readFileSync('decrypted', {encoding: 'utf-8'})
-  );
+  mkdirSync(dirname(getConfigFilePath()), {recursive: true});
+  copyFileSync('decrypted', getConfigFilePath());
 }
