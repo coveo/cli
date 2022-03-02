@@ -5,8 +5,10 @@ import {loginWithOffice} from './utils/login';
 import {getPlatformHost} from './utils/platform';
 import waitOn from 'wait-on';
 import 'dotenv/config';
+import {ProcessManager} from './utils/processManager';
 (async () => {
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
+  global.processManager = new ProcessManager();
   process.env.PLATFORM_ENV = process.env.PLATFORM_ENV?.toLowerCase() || '';
   process.env.PLATFORM_HOST = getPlatformHost(process.env.PLATFORM_ENV);
   console.log('Starting Chrome');
@@ -20,4 +22,5 @@ import 'dotenv/config';
   console.log('Connected to Chrome');
   await loginWithOffice(browser);
   await chrome.kill();
+  await global.processManager.killAll();
 })();
