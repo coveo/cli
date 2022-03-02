@@ -27,7 +27,7 @@ describe('auth', () => {
 
       browser = await connectToChromeBrowser();
       processManager = new ProcessManager();
-    });
+    }, 3 * 60e3);
 
     afterAll(async () => {
       chrome.kill();
