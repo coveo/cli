@@ -13,8 +13,9 @@ import {
   authenticateCli,
   CLI_CONFIG_JSON_CI_KEY,
 } from './utils';
-import {getConfig} from '../utils/cli';
+import {getConfig, getConfigFilePath} from '../utils/cli';
 import {setOutput, setSecret} from '@actions/core';
+import {encrypt} from '../utils/gpg';
 
 async function main() {
   console.log('HELLO');
@@ -28,14 +29,17 @@ async function main() {
   await publishPackages();
 
   await authenticateCli();
-  outputCliConfig();
+  await outputCliConfig();
   await global.processManager.killAllProcesses();
 }
-function outputCliConfig() {
+async function outputCliConfig() {
   const config = getConfig();
   setSecret(config.accessToken);
-  const cliConfigJson = JSON.stringify(config);
-  setOutput(CLI_CONFIG_JSON_CI_KEY, cliConfigJson);
+  const encryptedCliConfigJson = await encrypt(
+    getConfigFilePath(),
+    process.env.E2E_TOKEN_PASSPHRASE!
+  );
+  setOutput(CLI_CONFIG_JSON_CI_KEY, encryptedCliConfigJson);
 }
 
 main();

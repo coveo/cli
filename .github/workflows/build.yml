@@ -1,4 +1,6 @@
 name: CI
+env:
+  E2E_TOKEN_PASSPHRASE: ${{ secrets.E2E_TOKEN_PASSPHRASE }}
 on:
   push:
     branches:
