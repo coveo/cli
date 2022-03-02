@@ -155,7 +155,7 @@ jobs:
           path: packages/cli-e2e/verdaccio
           key: verdaccio-${{ github.sha }}-${{ github.run_attempt }}
       - name: Decrypt config
-        run: echo ${{needs.e2e-setup.outputs.cliConfigJson}} | base64 | gpg --quite --batch --yes --decrypt --passphrase="${{ secrets.E2E_TOKEN_PASSPHRASE }}" --output decrypted
+        run: echo ${{needs.e2e-setup.outputs.cliConfigJson}} | base64 | gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.E2E_TOKEN_PASSPHRASE }}" --output decrypted
       - run: npm ci
       - name: Build CLI
         working-directory: ./packages/cli
