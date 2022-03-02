@@ -51,6 +51,7 @@ describe('source:push:add', () => {
 
     mockedConfig.prototype.get = mockedConfigGet;
   };
+
   const doMockSuccessBatchUpload = () => {
     mockBatchUpdate.mockImplementation(
       (_sourceId: string, fileNames: string[], callback: UploadBatchCallback) =>
@@ -274,7 +275,6 @@ describe('source:push:add', () => {
 
   describe('when the batch upload fails', () => {
     beforeAll(() => {
-      mockConfig();
       doMockErrorBatchUpload();
       mockUserHavingAllRequiredPlatformPrivileges();
     });
