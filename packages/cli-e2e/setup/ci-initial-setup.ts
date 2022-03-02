@@ -34,4 +34,4 @@ function outputCliConfig() {
   setOutput(CLI_CONFIG_JSON_CI_KEY, cliConfigJson);
 }
 
-await main();
+main();
