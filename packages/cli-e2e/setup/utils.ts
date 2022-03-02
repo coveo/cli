@@ -38,6 +38,7 @@ export async function authenticateCli() {
       userDataDir: false,
       connectionPollInterval: 1e3,
       maxConnectionRetries: 60,
+      logLevel: 'verbose',
     });
     console.log('Chrome started');
     console.log('Checking port 9222');
