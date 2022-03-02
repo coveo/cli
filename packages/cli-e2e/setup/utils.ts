@@ -31,9 +31,10 @@ export const CLI_CONFIG_JSON_CI_KEY = 'cliConfigJson';
 
 export async function authenticateCli() {
   let browser;
+  let chrome;
   try {
     console.log('Starting Chrome');
-    await launchChrome({
+    chrome = await launchChrome({
       port: 9222,
       userDataDir: false,
       connectionPollInterval: 1e3,
@@ -56,6 +57,8 @@ export async function authenticateCli() {
       await captureScreenshots(browser, 'jestSetup');
     }
     throw e;
+  } finally {
+    await chrome?.kill();
   }
 }
 

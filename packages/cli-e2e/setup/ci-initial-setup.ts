@@ -14,7 +14,7 @@ import {
   CLI_CONFIG_JSON_CI_KEY,
 } from './utils';
 import {getConfig} from '../utils/cli';
-import {setOutput} from '@actions/core';
+import {setOutput, setSecret} from '@actions/core';
 
 async function main() {
   console.log('HELLO');
@@ -31,7 +31,9 @@ async function main() {
   outputCliConfig();
 }
 function outputCliConfig() {
-  const cliConfigJson = JSON.stringify(getConfig());
+  const config = getConfig();
+  setSecret(config.accessToken);
+  const cliConfigJson = JSON.stringify(config);
   setOutput(CLI_CONFIG_JSON_CI_KEY, cliConfigJson);
 }
 

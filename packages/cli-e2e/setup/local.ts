@@ -13,7 +13,6 @@ import {
   createUiProjectDirectory,
   startVerdaccio,
   publishPackages,
-  authenticateCli,
 } from './utils';
 
 export default async function () {
@@ -31,8 +30,4 @@ export default async function () {
   await startVerdaccio();
   await npmLogin();
   await publishPackages();
-
-  if (process.env.CI) {
-    await authenticateCli();
-  }
 }
