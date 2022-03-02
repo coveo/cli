@@ -1,5 +1,3 @@
-Write-Output "::group::Setup and start Chrome"
-Start-Process "C:/Program Files/Google/Chrome/Application/chrome.exe" -ArgumentList "--no-first-run --remote-debugging-port=9222 --disable-dev-shm-usage --window-size=1080,720"
 <#
 # Set the default user browser on Chrome.
 # See http://kolbi.cz/blog/?p=346
