@@ -44,7 +44,7 @@ describe('source:push:add', () => {
 
   const mockConfig = () => {
     mockedConfigGet.mockReturnValue({
-      region: 'us',
+      region: 'au',
       organization: 'foo',
       environment: 'prod',
     });
