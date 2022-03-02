@@ -99,7 +99,7 @@ jobs:
       - name: Encode & Output config
         id: setup
         run: |
-          echo  ${{ secrets.E2E_TOKEN_PASSPHRASE }} | gpg --batch --passphrase-fd 0 --symmetric --cipher-algo AES256 --output encodedConfig $CLI_CONFIG_PATH
+          echo "${{ secrets.E2E_TOKEN_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --symmetric --cipher-algo AES256 --output encodedConfig $CLI_CONFIG_PATH
           echo "::set-output name=cliConfigJson::$(base64 -w 0 encodedConfig)"
   e2e:
     name: End-to-end tests
