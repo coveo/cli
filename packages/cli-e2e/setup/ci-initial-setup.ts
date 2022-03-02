@@ -29,6 +29,7 @@ async function main() {
 
   await authenticateCli();
   outputCliConfig();
+  await global.processManager.killAllProcesses();
 }
 function outputCliConfig() {
   const config = getConfig();
