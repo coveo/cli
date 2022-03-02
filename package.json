@@ -85,7 +85,7 @@
     "nx:graph": "nx graph --file=topology.json",
     "release:phase1": "node --experimental-specifier-resolution=node ./scripts/releaseV2/phase1-get-new-version.mjs",
     "release:phase2": "nx run-many --target=release:phase2 --all",
-    "release:phase3": "node --experimental-specifier-resolution=node ./scripts/releaseV2/phase3-git-commit-tag-push.mjs",
+    "release:phase3": "node --experimental-specifier-resolution=node ./scripts/releaseV2/phase3-git-commit-tag-push.mjs"
   },
   "workspaces": [
     "packages/*",
