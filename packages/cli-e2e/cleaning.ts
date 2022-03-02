@@ -22,5 +22,5 @@ import {ProcessManager} from './utils/processManager';
   console.log('Connected to Chrome');
   await loginWithOffice(browser);
   await chrome.kill();
-  await global.processManager.killAll();
+  await global.processManager.killAllProcesses();
 })();
