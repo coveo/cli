@@ -10,7 +10,6 @@ import {getConfig as getCliConfig} from '../utils/cli';
 import waitOn from 'wait-on';
 import 'dotenv/config';
 import {Terminal} from '../utils/terminal/terminal';
-import {cwd} from 'process';
 import {join, resolve} from 'path';
 import {npm} from '../utils/npm';
 import {MITM_BIN_NAME, resolveBinary} from '../utils/mitmproxy';
@@ -34,7 +33,12 @@ export async function authenticateCli() {
   let browser;
   try {
     console.log('Starting Chrome');
-    await launchChrome({port: 9222, userDataDir: false});
+    await launchChrome({
+      port: 9222,
+      userDataDir: false,
+      connectionPollInterval: 1e3,
+      maxConnectionRetries: 60,
+    });
     console.log('Chrome started');
     console.log('Checking port 9222');
     await waitOn({resources: ['tcp:9222']});
