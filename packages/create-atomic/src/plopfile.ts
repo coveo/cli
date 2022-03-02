@@ -1,7 +1,8 @@
 import {NodePlopAPI} from 'plop';
 import {spawn} from 'child_process';
 import {getPackageManager} from './utils.js';
-import {fetchPageDownload, PageDownload} from './fetch-page.js';
+import {fetchPageDownload} from './fetch-page.js';
+import {defaultPageDownload} from './default/default-page.js';
 
 interface PromptsAnswers {
   project: string;
@@ -13,7 +14,7 @@ interface PromptsAnswers {
 
 export default function (plop: NodePlopAPI) {
   const currentPath = process.cwd();
-  let pageDownload: PageDownload;
+  let pageDownload = defaultPageDownload;
   plop.setGenerator('@coveo/atomic', {
     description: 'A Coveo Atomic Generator',
     prompts: [
@@ -126,8 +127,6 @@ export default function (plop: NodePlopAPI) {
         path: currentPath + '/{{project}}/package.json',
         templateFile: '../template/package.json.hbs',
       },
-      // TODO: modify content with download
-      // {type: 'modify', path: '../templates/src/'},
       function installPackagesPrompt() {
         return 'Installing packages...';
       },

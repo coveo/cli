@@ -1,7 +1,24 @@
 import fetch from 'node-fetch';
 
+export interface PageDownloadConfig {
+  title: string;
+}
+
+export interface PageDownloadHtmlResultTemplate {
+  attributes: string;
+  content: string;
+}
+
+export interface PageDownloadHtml {
+  searchInterface: string;
+  style: string;
+  resultListAttributes: string;
+  resultTemplates: PageDownloadHtmlResultTemplate[];
+}
+
 export interface PageDownload {
-  html: string;
+  html: PageDownloadHtml;
+  config: PageDownloadConfig;
 }
 
 export async function fetchPageDownload(

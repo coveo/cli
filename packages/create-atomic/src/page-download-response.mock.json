@@ -1,0 +1,92 @@
+{
+  "html": {
+    "searchInterface": "<atomic-search-interface id=\"search\">\n  <atomic-search-layout>\n    <div class=\"logo\">\n          <img src=\"https://www.coveo.com/public/img/logos/coveo/coveo_logo_en.svg\" alt=\"logo\"/>\n        </div>\n      <atomic-layout-section section=\"search\">\n      <atomic-search-box class=\"search-box-item\"></atomic-search-box>\n    </atomic-layout-section>\n    <atomic-layout-section section=\"facets\">\n      <atomic-facet-manager><atomic-facet field=\"source\" label=\"Source\" display-values-as=\"checkbox\"/><atomic-facet field=\"filetype\" label=\"Filetype\" display-values-as=\"checkbox\"/></atomic-facet-manager>\n    </atomic-layout-section>\n    <atomic-layout-section section=\"main\">\n      <atomic-layout-section section=\"status\">\n        <atomic-breadbox></atomic-breadbox>\n        <atomic-query-summary></atomic-query-summary>\n        <atomic-refine-toggle></atomic-refine-toggle>\n        <atomic-sort-dropdown><atomic-sort-expression label=\"Relevance\" expression=\"relevancy\"/><atomic-sort-expression label=\"Most recent\" expression=\"date descending\"/></atomic-sort-dropdown>\n        <atomic-did-you-mean></atomic-did-you-mean>\n      </atomic-layout-section>\n      <atomic-layout-section section=\"results\">\n        <!--result-list-->\n        <atomic-query-error></atomic-query-error>\n        <atomic-no-results></atomic-no-results>\n      </atomic-layout-section>\n      <atomic-layout-section section=\"pagination\">\n        <atomic-load-more-results></atomic-load-more-results>\n      </atomic-layout-section>\n    </atomic-layout-section>\n  </atomic-search-layout>\n</atomic-search-interface>",
+    "style": ":root {\n    --atomic-primary: ;\n    --atomic-primary-light: ;\n    --atomic-primary-dark: ;\n    --atomic-on-background: ;\n}\n\nbody {\n    margin: 0;\n}\n\natomic-search-layout {\n    padding-top: 5rem;\n    position: relative;\n}\n\n.logo {\n    position: absolute;\n    display: grid;\n    align-self: center;\n    align-items: center;\n    justify-items: center;\n    height: 4rem;\n    top: 0;\n    left: 0;\n    right: 0;\n    border-bottom: 1px solid var(--atomic-neutral);\n}\n\n.logo img {\n    display: none;\n    max-height: 2rem;\n}\n\natomic-search-interface.hydrated .logo img {\n    display: block;\n}\n\n@media only screen and (min-width: 1024px) {\n    atomic-search-layout {\n        padding-top: 0;\n    }\n\n    .logo {\n        position: unset;\n        justify-items: start;\n        grid-area: 1 / 2;\n        height: 5rem;\n        border-bottom: none;\n    }\n\n    .logo img {\n        max-height: 3rem;\n    }\n}\n",
+    "resultListAttributes": "display=\"list\" density=\"comfortable\" fields-to-include=\"source,filetype,date,source,author,sourcetype,language,filetype\"",
+    "resultTemplates": [
+      {
+        "attributes": "",
+        "content": "<style>\n    .field {\n    display: inline-flex;\n    white-space: nowrap;\n    align-items: center;\n    }\n\n    .field-label {\n    font-weight: bold;\n    margin-right: 0.25rem;\n    }\n\n    .badge-source::part(result-badge-element) {\n    background-color: #c0c0c0;\n    }\n\n    .badge-source::part(result-badge-label) {\n    color: #000000;\n    }\n    </style>\n<atomic-result-section-visual image-size=\"icon\">\n    <atomic-result-icon class=\"icon\"></atomic-result-icon>\n    <!-- We need to find a generic way of handling icon either having an input or else see SPAAS-1108 -->\n    <!-- <atomic-result-image field=\"ytthumbnailurl\"></atomic-result-image> SPAAS-1108 -->\n</atomic-result-section-visual>\n<atomic-result-section-badges>\n    <atomic-result-badge class=\"badge-source\" field=\"source\"></atomic-result-badge>\n    </atomic-result-section-badges>\n<atomic-result-section-title>\n    <atomic-result-link></atomic-result-link>\n</atomic-result-section-title>\n<atomic-result-section-title-metadata>\n</atomic-result-section-title-metadata>\n<atomic-result-section-excerpt>\n    <atomic-result-text field=\"excerpt\"></atomic-result-text>\n    </atomic-result-section-excerpt>\n<atomic-result-section-bottom-metadata>\n    <atomic-result-fields-list>\n    <atomic-field-condition class=\"field\" if-defined=\"author\">\n        <span class=\"field-label\"><atomic-text value=\"author\"></atomic-text>:</span>\n        <atomic-result-text field=\"author\"></atomic-result-text>\n        </atomic-field-condition>\n    <atomic-field-condition class=\"field\" if-defined=\"sourcetype\">\n        <span class=\"field-label\"><atomic-text value=\"source type\"></atomic-text>:</span>\n        <atomic-result-text field=\"sourcetype\"></atomic-result-text>\n        </atomic-field-condition>\n    <atomic-field-condition class=\"field\" if-defined=\"language\">\n        <span class=\"field-label\"><atomic-text value=\"language\"></atomic-text>:</span>\n        <atomic-result-text field=\"language\"></atomic-result-text>\n        </atomic-field-condition>\n    <atomic-field-condition class=\"field\" if-defined=\"filetype\">\n        <span class=\"field-label\"><atomic-text value=\"filetype\"></atomic-text>:</span>\n        <atomic-result-text field=\"filetype\"></atomic-result-text>\n        </atomic-field-condition>\n    </atomic-result-fields-list>\n</atomic-result-section-bottom-metadata>"
+      }
+    ]
+  },
+  "config": {
+    "id": "ca9eba4a-b552-481b-8f72-d8435079f6a9",
+    "name": "new search page 8",
+    "title": "new search page 8",
+    "facets": [
+      {
+        "field": "source",
+        "label": "Source"
+      },
+      {
+        "field": "filetype",
+        "label": "Filetype"
+      }
+    ],
+    "sortCriteria": [
+      {
+        "by": "relevancy",
+        "label": "Relevance"
+      },
+      {
+        "by": "field",
+        "label": "Most recent",
+        "field": "date",
+        "order": "DESC"
+      }
+    ],
+    "accesses": {
+      "users": [],
+      "domains": ["coveo.com"],
+      "sharingLinkEnabled": false,
+      "sharingDomainEnabled": false
+    },
+    "layout": "list",
+    "resultTemplates": [
+      {
+        "imageSize": "SMALL",
+        "enableDescription": true,
+        "badges": [
+          {
+            "field": "source",
+            "color": "#c0c0c0"
+          }
+        ],
+        "details": [
+          {
+            "field": "author",
+            "label": "author"
+          },
+          {
+            "field": "sourcetype",
+            "label": "source type"
+          },
+          {
+            "field": "language",
+            "label": "language"
+          },
+          {
+            "field": "filetype",
+            "label": "filetype"
+          }
+        ]
+      }
+    ],
+    "style": {
+      "primary": "#1372ec",
+      "text": "#000000",
+      "logo": {
+        "mediaType": "image/png",
+        "raw": "rawlogo"
+      }
+    },
+    "content": {
+      "pipeline": "0c4994ee-9bd1-4ad8-8622-96a55edb9462"
+    },
+    "created": "2022-02-25T16:54:01.000Z",
+    "createdBy": "jfthibodeau@coveo.com-google",
+    "updated": "2022-02-25T20:54:18.000Z",
+    "updatedBy": "jfthibodeau@coveo.com-google"
+  }
+}
