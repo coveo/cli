@@ -7,6 +7,7 @@ import {ProcessManager} from '../utils/processManager';
 import 'dotenv/config';
 
 import {setProcessEnv, createUiProjectDirectory, startVerdaccio} from './utils';
+import {join} from 'path';
 
 export default async function () {
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
@@ -23,6 +24,6 @@ export default async function () {
 function restoreCliConfig() {
   const cliJSON = process.env.CLI_CONFIG_JSON!;
   const cliConfigFilePath = getConfigFilePath();
-  mkdirSync(cliConfigFilePath, {recursive: true});
+  mkdirSync(join(cliConfigFilePath, '..'), {recursive: true});
   writeFileSync(cliConfigFilePath, cliJSON);
 }
