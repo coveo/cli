@@ -1,4 +1,4 @@
-name: Build
+name: CI
 on:
   push:
     branches:
@@ -6,13 +6,78 @@ on:
   pull_request:
 
 jobs:
-  run-script:
+  lint:
+    name: Lint
+    runs-on: ${{matrix.os}}
+    strategy:
+      fail-fast: true
+      matrix:
+        os: ['ubuntu-latest']
+        node: [16]
+    steps:
+      - name: Setup runner
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+      - name: Setup runner
+        if: ${{matrix.os == 'windows-latest'}}
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
+      - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
+        with:
+          node-version: ${{matrix.node}}
+          cache: 'npm'
+      - name: Setup repo
+        run: npm ci
+      - name: Check linting
+        run: npm run lint
+  unit-tests:
+    name: Unit Tests
     runs-on: ${{matrix.os}}
     strategy:
       fail-fast: true
       matrix:
         os: ['ubuntu-latest', 'windows-latest']
         node: [16]
+    steps:
+      - name: Setup runner
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+      - name: Setup runner
+        if: ${{matrix.os == 'windows-latest'}}
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
+      - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
+        with:
+          node-version: ${{matrix.node}}
+          cache: 'npm'
+      - name: Setup repo
+        run: npm ci
+      - name: Tests
+        run: npm run test
+  e2e:
+    name: End-to-end tests
+    runs-on: ${{matrix.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'windows-latest']
+        node: [16]
+        spec:
+          [
+            'angular.specs.ts',
+            'atomic.specs.ts',
+            'auth.specs.ci.ts',
+            'orgList.specs.ts',
+            'orgResources.specs.ts',
+            'react.specs.ts',
+            'vue.specs.ts',
+          ]
     env:
       # Platform environment to log into for the e2e tests.
       PLATFORM_ENV: 'qa'
@@ -41,29 +106,71 @@ jobs:
       - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
         with:
           node-version: ${{matrix.node}}
-      - name: Setup repo
-        run: npm ci
-      - name: Check linting
-        run: npm run lint
-      - name: Tests
-        run: npm run test
+          cache: 'npm'
+      - run: npm ci
       - name: Build CLI
         working-directory: ./packages/cli
-        run: npm run build
-      - name: End-to-end Tests
+        run: npm run build # TODO CDX-860: Maybe artifact that above?
+      - name: End-to-end Setup
         if: ${{matrix.os == 'ubuntu-latest'}}
         run: bash packages/cli-e2e/entrypoints/ci.sh
-      - name: End-to-end Tests
+      - name: End-to-end Setup
         if: ${{matrix.os == 'windows-latest'}}
         run: packages/cli-e2e/entrypoints/ci.ps1
+      - name: Tests
+        if: ${{matrix.os == 'windows-latest'}}
+        working-directory: packages/cli-e2e
+        run: |
+          $env:Path = $env:Path + ";C:\Program Files (x86)\mitmproxy\bin"
+          npm run jest -- ${{matrix.spec}}
+      - name: Tests
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        env:
+          DISPLAY: ':1'
+        working-directory: packages/cli-e2e
+        run: npm run jest -- ${{matrix.spec}}
+      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2
+        if: always()
+        with:
+          name: ${{matrix.os}}-${{matrix.spec}}-test-artifacts
+          path: ./packages/cli-e2e/artifacts
+  e2e-teardown:
+    name: End-to-end teardown
+    if: ${{ always() }}
+    needs: e2e
+    runs-on: ubuntu-latest
+    env:
+      # Platform environment to log into for the e2e tests.
+      PLATFORM_ENV: 'qa'
+      # Username used to log into the organization whose ID is stored in the ORG_ID variable
+      PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
+      # Password used to log into the organization whose ID is stored in the ORG_ID variable
+      PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
+      # API key to delete all the API keys created by the e2e tests
+      PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
+      # ID of the organization to log into for the e2e tests
+      ORG_ID: ${{ secrets.ORG_ID }}
+      # ID of the test run to identify resources to teardown.
+      TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
+    steps:
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
+      - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
+        with:
+          node-version: ${{matrix.node}}
+          cache: 'npm'
+      - run: npm ci
       - name: Delete test org
         if: always()
         run: node ./scripts/cleaning/delete-orgs.js
       - name: Delete test API key
         if: always()
         run: node ./scripts/cleaning/delete-api-keys.js
-      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2
-        if: ${{ always() }}
-        with:
-          name: ${{matrix.os}}-test-artifacts
-          path: ./packages/cli-e2e/artifacts
+  e2e-report:
+    name: End-to-end status reporter
+    if: ${{ always() }}
+    needs: e2e
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check e2e matrix status
+        if: ${{ needs.e2e.result != 'success' }}
+        run: exit 1
