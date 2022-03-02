@@ -88,9 +88,14 @@ jobs:
         with:
           path: packages/cli-e2e/verdaccio
           key: verdaccio-${{ github.sha }}-${{ github.run_attempt }}
-      - run: npm ci
+      - run: |
+          npm ci
+          Xvfb :1 -screen 0 1024x768x16 & sleep 1
+          xdg-settings set default-web-browser google-chrome.desktop
       - name: Setup E2E tests
         id: setup
+        env:
+          DISPLAY: ':1'
         run: node -r ts-node/register/transpile-only packages/cli-e2e/setup/ci-initial-setup.ts
   e2e:
     name: End-to-end tests
