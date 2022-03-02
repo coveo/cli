@@ -92,7 +92,7 @@ jobs:
       - name: Setup E2E tests
         id: setup
         working-directory: packages/cli-e2e
-        run: ts-node setup.ts
+        run: node -r ts-node/register ./setup/ci-initial-setup.ts
   e2e:
     name: End-to-end tests
     runs-on: ${{matrix.os}}
