@@ -71,7 +71,7 @@ export async function publishPackages() {
   await new Terminal(
     args.shift()!,
     args,
-    {cwd: join(cwd(), '..', '..')},
+    {cwd: join(__dirname, '..', '..', '..')},
     global.processManager!,
     'npmPublish'
   )
@@ -82,7 +82,9 @@ export async function publishPackages() {
 }
 
 export async function startVerdaccio() {
-  mkdirSync(join('verdaccio', 'verdaccio', 'storage'), {recursive: true});
+  mkdirSync(join(__dirname, '..', 'verdaccio', 'verdaccio', 'storage'), {
+    recursive: true,
+  });
   const args = [...npm(), 'run', 'verdaccio'];
   new Terminal(
     args.shift()!,
