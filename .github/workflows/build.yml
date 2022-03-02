@@ -92,6 +92,9 @@ jobs:
           npm ci
           Xvfb :1 -screen 0 1024x768x16 & sleep 1
           xdg-settings set default-web-browser google-chrome.desktop
+      - name: Build CLI
+        working-directory: ./packages/cli
+        run: npm run build
       - name: Setup E2E tests
         env:
           DISPLAY: ':1'
@@ -158,9 +161,6 @@ jobs:
         working-directory: packages/cli-e2e
         run: echo ${{needs.e2e-setup.outputs.cliConfigJson}} | base64 --decode | gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.E2E_TOKEN_PASSPHRASE }}" --output decrypted
       - run: npm ci
-      - name: Build CLI
-        working-directory: ./packages/cli
-        run: npm run build # TODO CDX-860: Maybe artifact that above?
       - name: End-to-end Setup
         if: ${{matrix.os == 'ubuntu-latest'}}
         run: bash packages/cli-e2e/entrypoints/ci.sh
