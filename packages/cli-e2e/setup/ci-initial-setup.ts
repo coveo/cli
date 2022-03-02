@@ -16,7 +16,7 @@ import {
 import {getConfig} from '../utils/cli';
 import {setOutput} from '@actions/core';
 
-export default async function () {
+async function main() {
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
   // runId must start and finish with letters to satisfies Angular.
   setProcessEnv();
@@ -33,3 +33,5 @@ function outputCliConfig() {
   const cliConfigJson = JSON.stringify(getConfig());
   setOutput(CLI_CONFIG_JSON_CI_KEY, cliConfigJson);
 }
+
+await main();
