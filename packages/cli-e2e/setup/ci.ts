@@ -22,5 +22,7 @@ export default async function () {
 
 function restoreCliConfig() {
   const cliJSON = process.env.CLI_CONFIG_JSON!;
-  writeFileSync(getConfigFilePath(), cliJSON);
+  const cliConfigFilePath = getConfigFilePath();
+  mkdirSync(cliConfigFilePath, {recursive: true});
+  writeFileSync(cliConfigFilePath, cliJSON);
 }
