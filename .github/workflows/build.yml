@@ -91,7 +91,7 @@ jobs:
       - run: npm ci
       - name: Setup E2E tests
         id: setup
-        run: node -r ts-node/register packages/cli-e2e/setup/ci-initial-setup.ts
+        run: node -r ts-node/register/transpile-only packages/cli-e2e/setup/ci-initial-setup.ts
   e2e:
     name: End-to-end tests
     runs-on: ${{matrix.os}}
