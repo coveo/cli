@@ -2,7 +2,7 @@ const {PlatformClient} = require('@coveord/platform-client');
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
 const moment = require('moment');
-const {require, resolve} = require('path');
+const {resolve} = require('path');
 const {homedir} = require('os');
 const {readFileSync} = require('fs');
 
