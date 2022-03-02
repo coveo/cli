@@ -22,11 +22,5 @@ jobs:
       - run: npm i
       - run: node ./scripts/cleaning/delete-api-keys.js --olderThan 1d
         if: always()
-      - run: |
-          Xvfb :1 -screen 0 1024x768x16 & sleep 1
-          xdg-settings set default-web-browser google-chrome.desktop
-          node -r ts-node/register/transpile-only packages/cli-e2e/cleaning.ts
-          node ./scripts/cleaning/delete-orgs.js     --olderThan 1d
+      - run: node ./scripts/cleaning/delete-orgs.js     --olderThan 1d
         if: always()
-        env:
-          DISPLAY: ':1'
