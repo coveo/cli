@@ -17,6 +17,7 @@ import {getConfig} from '../utils/cli';
 import {setOutput} from '@actions/core';
 
 async function main() {
+  console.log('HELLO');
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
   // runId must start and finish with letters to satisfies Angular.
   setProcessEnv();
