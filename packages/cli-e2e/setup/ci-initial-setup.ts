@@ -11,11 +11,9 @@ import {
   startVerdaccio,
   publishPackages,
   authenticateCli,
-  CLI_CONFIG_JSON_CI_KEY,
 } from './utils';
 import {getConfig, getConfigFilePath} from '../utils/cli';
-import {setOutput, setSecret} from '@actions/core';
-import {encrypt} from '../utils/gpg';
+import {exportVariable, setSecret} from '@actions/core';
 
 async function main() {
   console.log('HELLO');
@@ -35,11 +33,7 @@ async function main() {
 async function outputCliConfig() {
   const config = getConfig();
   setSecret(config.accessToken);
-  const encryptedCliConfigJson = await encrypt(
-    getConfigFilePath(),
-    process.env.E2E_TOKEN_PASSPHRASE!
-  );
-  setOutput(CLI_CONFIG_JSON_CI_KEY, encryptedCliConfigJson);
+  exportVariable('CLI_CONFIG_PATH', getConfigFilePath());
 }
 
 main();

@@ -1,6 +1,4 @@
 name: CI
-env:
-  E2E_TOKEN_PASSPHRASE: ${{ secrets.E2E_TOKEN_PASSPHRASE }}
 on:
   push:
     branches:
@@ -95,10 +93,14 @@ jobs:
           Xvfb :1 -screen 0 1024x768x16 & sleep 1
           xdg-settings set default-web-browser google-chrome.desktop
       - name: Setup E2E tests
-        id: setup
         env:
           DISPLAY: ':1'
         run: node -r ts-node/register/transpile-only packages/cli-e2e/setup/ci-initial-setup.ts
+      - name: Encode & Output config
+        id: setup
+        run: |
+          echo  ${{ secrets.E2E_TOKEN_PASSPHRASE }} | gpg --batch --passphrase-fd 0 --symmetric --cipher-algo AES256 $CLI_CONFIG_PATH --output encodedConfig
+          echo "::set-output name=cliConfigJson::$(base64 encodedConfig)"
   e2e:
     name: End-to-end tests
     runs-on: ${{matrix.os}}
@@ -152,6 +154,8 @@ jobs:
         with:
           path: packages/cli-e2e/verdaccio
           key: verdaccio-${{ github.sha }}-${{ github.run_attempt }}
+      - name: Decrypt config
+        run: echo ${{needs.e2e-setup.outputs.cliConfigJson}} | base64 | gpg --quite --batch --yes --decrypt --passphrase="${{ secrets.E2E_TOKEN_PASSPHRASE }}" --output decrypted
       - run: npm ci
       - name: Build CLI
         working-directory: ./packages/cli
