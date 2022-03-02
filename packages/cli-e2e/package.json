@@ -34,6 +34,7 @@
     "node": ">=14.16.1"
   },
   "devDependencies": {
+    "@actions/core": "^1.6.0",
     "@types/async-retry": "1.4.3",
     "@types/fs-extra": "9.0.13",
     "@types/is-running": "2.1.0",

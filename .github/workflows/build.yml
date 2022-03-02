@@ -60,9 +60,43 @@ jobs:
         run: npm ci
       - name: Tests
         run: npm run test
+  e2e-setup:
+    name: End-to-end setup
+    runs-on: ubuntu-latest
+    outputs:
+      cliConfigJson: ${{ steps.setup.outputs.cliConfigJson}}
+    env:
+      # Platform environment to log into for the e2e tests.
+      PLATFORM_ENV: 'qa'
+      # Username used to log into the organization whose ID is stored in the ORG_ID variable
+      PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
+      # Password used to log into the organization whose ID is stored in the ORG_ID variable
+      PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
+      # API key to delete all the API keys created by the e2e tests
+      PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
+      # ID of the organization to log into for the e2e tests
+      ORG_ID: ${{ secrets.ORG_ID }}
+      # ID of the test run to identify resources to teardown.
+      TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
+    steps:
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
+      - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
+        with:
+          node-version: ${{matrix.node}}
+          cache: 'npm'
+      - uses: actions/cache@v2
+        with:
+          path: packages/cli-e2e/verdaccio
+          key: verdaccio-${{ github.sha }}-${{ github.run_attempt }}
+      - run: npm ci
+      - name: Setup E2E tests
+        id: setup
+        working-directory: packages/cli-e2e
+        run: ts-node setup.ts
   e2e:
     name: End-to-end tests
     runs-on: ${{matrix.os}}
+    needs: e2e-setup
     strategy:
       fail-fast: false
       matrix:
@@ -92,6 +126,7 @@ jobs:
       # ID of the test run to identify resources to teardown.
       TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
       COVEO_DISABLE_AUTOUPDATE: true
+      CLI_CONFIG_JSON: ${{needs.e2e-setup.outputs.cliConfigJson}}
     steps:
       - name: Setup runner
         if: ${{matrix.os == 'ubuntu-latest'}}
@@ -107,6 +142,10 @@ jobs:
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
+      - uses: actions/cache@v2
+        with:
+          path: packages/cli-e2e/verdaccio
+          key: verdaccio-${{ github.sha }}-${{ github.run_attempt }}
       - run: npm ci
       - name: Build CLI
         working-directory: ./packages/cli
