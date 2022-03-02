@@ -11,6 +11,7 @@ jobs:
     env:
       ORG_ID: ${{ secrets.ORG_ID }}
       PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
+      PLATFORM_ENV: 'qa'
     steps:
       - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
       - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
