@@ -1,0 +1,23 @@
+import {mkdirSync} from 'fs';
+import {launch as launchChrome} from 'chrome-launcher';
+import {connectToChromeBrowser, SCREENSHOTS_PATH} from './utils/browser';
+import {loginWithOffice} from './utils/login';
+import {getPlatformHost} from './utils/platform';
+import waitOn from 'wait-on';
+import 'dotenv/config';
+(async () => {
+  mkdirSync(SCREENSHOTS_PATH, {recursive: true});
+  process.env.PLATFORM_ENV = process.env.PLATFORM_ENV?.toLowerCase() || '';
+  process.env.PLATFORM_HOST = getPlatformHost(process.env.PLATFORM_ENV);
+  console.log('Starting Chrome');
+  const chrome = await launchChrome({port: 9222, userDataDir: false});
+  console.log('Chrome started');
+  console.log('Checking port 9222');
+  await waitOn({resources: ['tcp:9222']});
+  console.log('Port 9222 is open');
+  console.log('Connecting to Chrome');
+  const browser = await connectToChromeBrowser();
+  console.log('Connected to Chrome');
+  await loginWithOffice(browser);
+  await chrome.kill();
+})();
