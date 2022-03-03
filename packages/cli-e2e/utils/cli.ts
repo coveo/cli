@@ -1,8 +1,8 @@
 import type {ChildProcessWithoutNullStreams} from 'child_process';
 import {resolve, join} from 'path';
-import {mkdirSync} from 'fs';
+import {appendFileSync, mkdirSync} from 'fs';
 import {homedir} from 'os';
-
+import {dedent} from 'ts-dedent';
 import {ProcessManager} from './processManager';
 import {readJsonSync} from 'fs-extra';
 import {Terminal} from './terminal/terminal';
@@ -23,6 +23,7 @@ export function answerPrompt(answer: string) {
 export interface ISetupUIProjectOptionsArgs {
   flags?: string[];
   projectDir?: string;
+  setupYarn?: boolean;
 }
 
 export function getEnvFilePath() {
@@ -62,7 +63,9 @@ export async function setupUIProject(
   if (options.projectDir) {
     parentDir = resolve(options.projectDir, '..');
     mkdirSync(parentDir, {recursive: true});
-
+    if (options.setupYarn) {
+      await setupYarn(parentDir, projectName, processManager);
+    }
     const gitInitTerminal = new Terminal(
       'git',
       ['init'],
@@ -105,3 +108,30 @@ export function getConfig() {
 }
 
 export const CLI_EXEC_PATH = resolve(__dirname, '../../cli/bin/run');
+
+async function setupYarn(
+  parentDir: string,
+  projectName: string,
+  processManager: ProcessManager
+) {
+  const terminal = new Terminal(
+    'yarn',
+    ['set', 'version', 'berry'],
+    {
+      cwd: parentDir,
+    },
+    processManager,
+    `${projectName}-yarn-init`
+  );
+
+  await terminal.when('exit').on('process').do().once();
+  appendFileSync(
+    resolve(parentDir, '.yarnrc.yml'),
+    dedent`
+      npmRegistryServer: "http://localhost:4873"
+
+      unsafeHttpWhitelist:
+        - localhost
+    `
+  );
+}
