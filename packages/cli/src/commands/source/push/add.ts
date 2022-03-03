@@ -88,9 +88,9 @@ export default class SourcePushAdd extends Command {
         'You must minimally set the `file` or the `folder` flag. Use `source:push:add --help` to get more information.'
       );
     }
-    const cfg = await new AuthenticatedClient().cfg.get();
-    const {environment, region} = this.configuration.get();
-    const source = new Source(cfg.accessToken!, cfg.organization, {
+    const {accessToken, organization, environment, region} =
+      await new AuthenticatedClient().cfg.get();
+    const source = new Source(accessToken!, organization, {
       environment,
       region,
     });
@@ -176,9 +176,5 @@ export default class SourcePushAdd extends Command {
     return errorMessage(this, 'Error while trying to add document.', e, {
       exit: true,
     });
-  }
-
-  private get configuration() {
-    return new Config(this.config.configDir);
   }
 }

@@ -1,4 +1,3 @@
-jest.mock('../../../lib/config/config');
 jest.mock('../../../hooks/analytics/analytics');
 jest.mock('../../../hooks/prerun/prerun');
 jest.mock('../../../lib/platform/authenticatedClient');
@@ -19,15 +18,12 @@ import {APIError} from '../../../lib/errors/APIError';
 import {UploadBatchCallback} from '@coveo/push-api-client';
 import globalConfig from '../../../lib/config/globalConfig';
 import {Interfaces} from '@oclif/core';
-import {Config} from '../../../lib/config/config';
 const mockedGlobalConfig = jest.mocked(globalConfig);
 const mockedClient = jest.mocked(AuthenticatedClient);
 const mockedSource = jest.mocked(Source);
 const mockedDocumentBuilder = jest.mocked(DocumentBuilder);
 const mockedMarshal = jest.fn();
 const mockEvaluate = jest.fn();
-const mockedConfig = jest.mocked(Config);
-const mockedConfigGet = jest.fn();
 
 describe('source:push:add', () => {
   const pathToStub = join(cwd(), 'src', '__stub__');
@@ -42,15 +38,15 @@ describe('source:push:add', () => {
     mockEvaluate.mockResolvedValue({approved: false});
   };
 
-  const mockConfig = () => {
-    mockedConfigGet.mockReturnValue({
-      region: 'au',
-      organization: 'foo',
-      environment: 'prod',
-    });
+  // const mockConfig = () => {
+  //   mockedConfigGet.mockReturnValue({
+  //     region: 'au',
+  //     organization: 'foo',
+  //     environment: 'prod',
+  //   });
 
-    mockedConfig.prototype.get = mockedConfigGet;
-  };
+  //   mockedConfig.prototype.get = mockedConfigGet;
+  // };
 
   const doMockSuccessBatchUpload = () => {
     mockBatchUpdate.mockImplementation(
@@ -84,7 +80,7 @@ describe('source:push:add', () => {
   };
 
   beforeAll(() => {
-    mockConfig();
+    // mockConfig();
     mockedGlobalConfig.get.mockReturnValue({
       configDir: 'the_config_dir',
     } as Interfaces.Config);
@@ -124,6 +120,8 @@ describe('source:push:add', () => {
             Promise.resolve({
               accessToken: 'the_token',
               organization: 'the_org',
+              region: 'au',
+              environment: 'prod',
             }),
         },
       } as unknown as AuthenticatedClient)
