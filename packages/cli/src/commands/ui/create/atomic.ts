@@ -65,11 +65,14 @@ export default class Atomic extends Command {
   private async createProject() {
     const cfg = this.configuration.get();
     const authenticatedClient = new AuthenticatedClient();
-    const userInfo = await authenticatedClient.getUserInfo();
+    console.log('Create api key');
     const apiKey = await authenticatedClient.createImpersonateApiKey(
       this.args.name
     );
-
+    console.log('API key created');
+    console.log('Get user info');
+    const userInfo = await authenticatedClient.getUserInfo();
+    console.log('User info retrieved');
     const cliArgs = [
       `${Atomic.cliPackage}@${this.flags.version}`,
       '--project',
