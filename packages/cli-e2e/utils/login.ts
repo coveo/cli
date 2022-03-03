@@ -173,3 +173,20 @@ export async function clearAccessTokenFromConfig() {
   delete cfg.accessToken;
   await writeJSON(getConfigFilePath(), cfg);
 }
+
+export async function loginWithApiKey(
+  apiKey: string,
+  orgId: string,
+  env: string
+) {
+  if (!existsSync(getConfigFilePath())) {
+    return;
+  }
+  const cfg = await readJSON(getConfigFilePath());
+  cfg.accessToken = apiKey;
+  cfg.orgId = orgId;
+  cfg.env = env;
+  cfg.analyticsEnabled = false;
+  cfg.anonymous = false;
+  await writeJSON(getConfigFilePath(), cfg);
+}
