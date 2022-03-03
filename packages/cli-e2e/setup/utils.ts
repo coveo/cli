@@ -100,13 +100,18 @@ export async function startVerdaccio() {
     }
   );
   const args = [...npm(), 'run', 'verdaccio'];
-  new Terminal(
+  const verdaccioTerminal = new Terminal(
     args.shift()!,
     args,
     {cwd: resolve(join(__dirname, '..'))},
     global.processManager!,
     'verdaccio'
   );
+  await verdaccioTerminal
+    .when(/localhost:4873/)
+    .on('stdout')
+    .do()
+    .once();
   await waitOn({resources: ['tcp:4873']});
 }
 
