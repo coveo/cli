@@ -71,7 +71,7 @@ export default class Atomic extends Command {
     );
     console.log('API key created');
     console.log('Get user info');
-    const username = await authenticatedClient.getUserName();
+    const username = await authenticatedClient.getUsername();
     console.log('User info retrieved');
     const cliArgs = [
       `${Atomic.cliPackage}@${this.flags.version}`,

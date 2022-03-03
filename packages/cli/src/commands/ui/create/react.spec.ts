@@ -70,7 +70,7 @@ describe('ui:create:react', () => {
       () =>
         ({
           createImpersonateApiKey: mockedCreateImpersonateApiKey,
-          getUserInfo: () => Promise.resolve('bob@coveo.com'),
+          getUsername: () => Promise.resolve('bob@coveo.com'),
           getClient: () =>
             Promise.resolve(
               mockedPlatformClient.getMockImplementation()!({

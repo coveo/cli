@@ -161,7 +161,7 @@ describe('AuthenticatedClient', () => {
   );
 
   fancyIt()('#getUsername should return the user info', async () => {
-    const userInfo = await new AuthenticatedClient().getUserName();
+    const userInfo = await new AuthenticatedClient().getUsername();
     expect(mockInitialize).toHaveBeenCalled();
     expect(userInfo).toStrictEqual('bob@coveo.com');
   });

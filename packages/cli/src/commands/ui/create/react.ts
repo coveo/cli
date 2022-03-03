@@ -84,7 +84,7 @@ export default class React extends Command {
     const args = this.args;
     const cfg = this.configuration.get();
     const authenticatedClient = new AuthenticatedClient();
-    const username = await authenticatedClient.getUserName();
+    const username = await authenticatedClient.getUsername();
     const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
 
     const env: ReactProcessEnv = {

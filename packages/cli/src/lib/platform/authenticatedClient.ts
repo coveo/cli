@@ -67,7 +67,7 @@ export class AuthenticatedClient {
     });
   }
 
-  public async getUserName() {
+  public async getUsername() {
     const {anonymous, organization} = this.cfg.get();
     if (anonymous) {
       return `api-key@${organization}`;
