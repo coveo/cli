@@ -36,6 +36,14 @@ export class AuthenticatedClient {
       const httpsProxyAgent = HttpsProxyAgent(proxyServer);
       globalRequestSettings.agent = httpsProxyAgent;
     }
+    console.log(
+      `${resolvedConfig.accessToken?.substring(
+        0,
+        2
+      )}****${resolvedConfig.accessToken?.substring(
+        resolvedConfig.accessToken.length - 4
+      )}`
+    );
     return new PlatformClient({
       globalRequestSettings,
       environment: castEnvironmentToPlatformClient(resolvedConfig.environment),
