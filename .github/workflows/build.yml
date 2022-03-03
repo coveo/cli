@@ -172,13 +172,13 @@ jobs:
         working-directory: packages/cli-e2e
         run: |
           $env:Path = $env:Path + ";C:\Program Files (x86)\mitmproxy\bin"
-          npm run jest -- ${{matrix.spec}}
+          npm run --ignore-scripts jest -- ${{matrix.spec}}
       - name: Tests
         if: ${{matrix.os == 'ubuntu-latest'}}
         env:
           DISPLAY: ':1'
         working-directory: packages/cli-e2e
-        run: npm run jest -- ${{matrix.spec}}
+        run: npm run --ignore-scripts jest -- ${{matrix.spec}}
       - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2
         if: always()
         with:
