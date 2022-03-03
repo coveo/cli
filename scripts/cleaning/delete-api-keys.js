@@ -36,7 +36,7 @@ async function main(amount, unit) {
 
     const cliApiKeys = apiKeys
       .filter(wasCreatedByTheCli(testRunId))
-      .filter(wasCreatedBefore(amount ?? 0, unit ?? 'd'));
+      .filter(wasCreatedBefore(amount, unit));
 
     await deleteApiKeys(platform, cliApiKeys);
   } catch (error) {
