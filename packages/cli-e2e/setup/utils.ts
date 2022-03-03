@@ -76,17 +76,20 @@ export function setProcessEnv() {
 
 export async function publishPackages() {
   const args = [...npm(), 'run', 'npm:publish:template'];
-  await new Terminal(
+  const publishTerminal = new Terminal(
     args.shift()!,
     args,
     {cwd: resolve(join(__dirname, '..', '..', '..'))},
     global.processManager!,
     'npmPublish'
-  )
-    .when('exit')
-    .on('process')
-    .do()
-    .once();
+  );
+  publishTerminal.orchestrator.process.stdout.on('data', (data) => {
+    console.log(data.toString());
+  });
+  publishTerminal.orchestrator.process.stderr.on('data', (data) => {
+    console.log(data.toString());
+  });
+  await publishTerminal.when('exit').on('process').do().once();
 }
 
 export async function startVerdaccio() {
