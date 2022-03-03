@@ -187,6 +187,6 @@ export async function loginWithApiKey(
   cfg.organization = orgId;
   cfg.environment = env;
   cfg.analyticsEnabled = false;
-  cfg.anonymous = false;
+  cfg.anonymous = true;
   await writeJSON(getConfigFilePath(), cfg);
 }
