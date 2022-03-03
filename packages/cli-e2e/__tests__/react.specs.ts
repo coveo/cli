@@ -108,7 +108,7 @@ describe('ui:create:react', () => {
   };
 
   beforeAll(async () => {
-    loginWithApiKey(
+    await loginWithApiKey(
       process.env.PLATFORM_API_KEY!,
       process.env.ORG_ID!,
       process.env.PLATFORM_ENV!
