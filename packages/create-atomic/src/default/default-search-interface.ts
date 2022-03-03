@@ -1,4 +1,4 @@
-<atomic-search-interface>
+export default `<atomic-search-interface>
   <atomic-search-layout>
     <atomic-layout-section section="search">
       <atomic-search-box></atomic-search-box>
@@ -36,4 +36,4 @@
       </atomic-layout-section>
     </atomic-layout-section>
   </atomic-search-layout>
-</atomic-search-interface>
+</atomic-search-interface>`;

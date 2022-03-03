@@ -35,5 +35,16 @@ export async function fetchPageDownload(
       Authorization: `Bearer ${apiKey}`,
     },
   });
-  return (await response.json()) as PageDownload;
+  return customizePageDownload((await response.json()) as PageDownload);
+}
+
+function customizePageDownload(pageDownload: PageDownload): PageDownload {
+  const resultListPlaceholder = '<!--result-list-->';
+  const resultManagerComponent = '<results-manager></results-manager>';
+  pageDownload.html.searchInterface = pageDownload.html.searchInterface.replace(
+    resultListPlaceholder,
+    resultManagerComponent
+  );
+
+  return pageDownload;
 }

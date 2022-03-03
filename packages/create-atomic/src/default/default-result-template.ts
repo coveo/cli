@@ -1,4 +1,4 @@
-<style>
+export default `<style>
   .field {
     display: inline-flex;
     align-items: center;
@@ -60,3 +60,4 @@
     </span>
   </atomic-result-fields-list>
 </atomic-result-section-bottom-metadata>
+`;

@@ -1,8 +1,13 @@
 import {NodePlopAPI} from 'plop';
+import Handlebars from 'handlebars';
 import {spawn} from 'child_process';
 import {getPackageManager} from './utils.js';
 import {fetchPageDownload} from './fetch-page.js';
 import {defaultPageDownload} from './default/default-page.js';
+
+Handlebars.registerHelper('inc', function (value) {
+  return parseInt(value) + 1;
+});
 
 interface PromptsAnswers {
   project: string;
@@ -103,9 +108,20 @@ export default function (plop: NodePlopAPI) {
         templateFile: '../template/.env.hbs',
       },
       {
+        type: 'add',
+        path: currentPath + '/{{project}}/.gitignore',
+        templateFile: '../template/.gitignore.hbs',
+      },
+      {
+        type: 'add',
+        path: currentPath + '/{{project}}/package.json',
+        templateFile: '../template/package.json.hbs',
+      },
+      {
         type: 'addMany',
         destination: currentPath + '/{{project}}/',
         base: '../template',
+        data: pageDownload,
         templateFiles: [
           '../template/src/**',
           '../template/scripts/*',
@@ -116,16 +132,6 @@ export default function (plop: NodePlopAPI) {
           '../template/README.md',
           '../template/start-netlify.mjs',
         ],
-      },
-      {
-        type: 'add',
-        path: currentPath + '/{{project}}/.gitignore',
-        templateFile: '../template/.gitignore.hbs',
-      },
-      {
-        type: 'add',
-        path: currentPath + '/{{project}}/package.json',
-        templateFile: '../template/package.json.hbs',
       },
       function installPackagesPrompt() {
         return 'Installing packages...';

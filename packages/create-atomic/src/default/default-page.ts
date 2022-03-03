@@ -1,6 +1,6 @@
-import {PageDownload} from '../fetch-page';
-import defaultResultTemplate from './default-result-template.html';
-import defaultSearchInterface from './default-search-interface.html';
+import {PageDownload} from '../fetch-page.js';
+import defaultResultTemplate from './default-result-template.js';
+import defaultSearchInterface from './default-search-interface.js';
 
 export const defaultPageDownload: PageDownload = {
   config: {

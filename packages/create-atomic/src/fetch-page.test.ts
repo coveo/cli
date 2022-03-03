@@ -1,4 +1,4 @@
-import {customizePageDownload} from './parse-page';
+// import {} from './fetch-page';
 
 describe('customizePageDownload', () => {
   it('customizes page download correctly', () => {
