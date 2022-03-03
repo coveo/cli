@@ -27,7 +27,7 @@ export default `<atomic-search-interface>
         <atomic-did-you-mean></atomic-did-you-mean>
       </atomic-layout-section>
       <atomic-layout-section section="results">
-        <atomic-result-list></atomic-result-list>
+        <results-manager></results-manager>
         <atomic-query-error></atomic-query-error>
         <atomic-no-results></atomic-no-results>
       </atomic-layout-section>
