@@ -68,6 +68,10 @@ export class AuthenticatedClient {
   }
 
   public async getUserInfo() {
+    const {anonymous, organization} = this.cfg.get();
+    if (anonymous) {
+      return organization;
+    }
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();
     await platformClient.initialize();
