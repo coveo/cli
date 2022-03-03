@@ -3,8 +3,6 @@ import {SCREENSHOTS_PATH} from '../utils/browser';
 import {getConfigFilePath} from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
 
-import 'dotenv/config';
-
 import {setProcessEnv, createUiProjectDirectory, startVerdaccio} from './utils';
 import {dirname} from 'path';
 

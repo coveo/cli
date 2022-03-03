@@ -180,12 +180,12 @@ export async function loginWithApiKey(
   env: string
 ) {
   if (!existsSync(getConfigFilePath())) {
-    return;
+    throw 'Missing config file';
   }
   const cfg = await readJSON(getConfigFilePath());
   cfg.accessToken = apiKey;
-  cfg.orgId = orgId;
-  cfg.env = env;
+  cfg.organization = orgId;
+  cfg.environment = env;
   cfg.analyticsEnabled = false;
   cfg.anonymous = false;
   await writeJSON(getConfigFilePath(), cfg);
