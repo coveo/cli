@@ -30,7 +30,7 @@ describe('auth', () => {
     }, 3 * 60e3);
 
     afterAll(async () => {
-      chrome.kill();
+      await chrome.kill();
     });
 
     afterEach(async () => {
