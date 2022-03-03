@@ -71,7 +71,7 @@ export default class Atomic extends Command {
     );
     console.log('API key created');
     console.log('Get user info');
-    const userInfo = await authenticatedClient.getUserInfo();
+    const username = await authenticatedClient.getUserName();
     console.log('User info retrieved');
     const cliArgs = [
       `${Atomic.cliPackage}@${this.flags.version}`,
@@ -84,7 +84,7 @@ export default class Atomic extends Command {
       '--platform-url',
       platformUrl({environment: cfg.environment}),
       '--user',
-      userInfo.providerUsername,
+      username,
     ];
 
     return spawnProcess(appendCmdIfWindows`npx`, cliArgs);
