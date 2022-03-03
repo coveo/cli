@@ -9,7 +9,7 @@ Handlebars.registerHelper('inc', function (value) {
   return parseInt(value) + 1;
 });
 
-interface PromptsAnswers {
+interface PlopData {
   project: string;
   'page-id': string;
   'platform-url': string;
@@ -19,7 +19,6 @@ interface PromptsAnswers {
 
 export default function (plop: NodePlopAPI) {
   const currentPath = process.cwd();
-  let pageDownload = defaultPageDownload;
   plop.setGenerator('@coveo/atomic', {
     description: 'A Coveo Atomic Generator',
     prompts: [
@@ -72,6 +71,7 @@ export default function (plop: NodePlopAPI) {
       },
     ],
     actions: function () {
+      let pageDownload = defaultPageDownload;
       const generateTemplates = () =>
         pageDownload.html.resultTemplates.map((resultTemplate, index) => ({
           type: 'add',
@@ -84,7 +84,7 @@ export default function (plop: NodePlopAPI) {
 
       return [
         function downloadSearchPagePrompt(data) {
-          const answers = data as PromptsAnswers;
+          const answers = data as PlopData;
           if (answers['page-id'] !== '') {
             return 'Downloading Hosted Search Page';
           }
@@ -92,7 +92,7 @@ export default function (plop: NodePlopAPI) {
           return '';
         },
         async function downloadSearchPage(data) {
-          const answers = data as PromptsAnswers;
+          const answers = data as PlopData;
           if (answers['page-id'] === '') {
             return '';
           }
@@ -148,9 +148,9 @@ export default function (plop: NodePlopAPI) {
         function installPackagesPrompt() {
           return 'Installing packages...';
         },
-        function installPackages(answers) {
+        function installPackages(data) {
           return new Promise((resolve, reject) => {
-            const {project} = answers as PromptsAnswers;
+            const {project} = data as PlopData;
             const process = spawn(getPackageManager(), ['install'], {
               stdio: 'ignore',
               cwd: `${currentPath}/${project}/`,
@@ -165,8 +165,8 @@ export default function (plop: NodePlopAPI) {
             });
           });
         },
-        function getStarted(answers) {
-          const {project} = answers as PromptsAnswers;
+        function getStarted(data) {
+          const {project} = data as PlopData;
           return `
           To get started:
           > cd ${project}
