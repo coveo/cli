@@ -2,8 +2,9 @@ import {NodePlopAPI} from 'plop';
 import Handlebars from 'handlebars';
 import {spawn} from 'child_process';
 import {getPackageManager} from './utils.js';
-import {fetchPageDownload} from './fetch-page.js';
+import {fetchPageDownload, PageDownload} from './fetch-page.js';
 import {defaultPageDownload} from './default/default-page.js';
+import fs from 'fs';
 
 Handlebars.registerHelper('inc', function (value) {
   return parseInt(value) + 1;
@@ -15,6 +16,7 @@ interface PlopData {
   'platform-url': string;
   'org-id': string;
   'api-key': string;
+  page: PageDownload;
 }
 
 export default function (plop: NodePlopAPI) {
@@ -71,45 +73,35 @@ export default function (plop: NodePlopAPI) {
       },
     ],
     actions: function () {
-      let pageDownload = defaultPageDownload;
-      const generateTemplates = () =>
-        pageDownload.html.resultTemplates.map((resultTemplate, index) => ({
-          type: 'add',
-          path: `${currentPath}/{{project}}/src/components/results-manager/template-${
-            index + 1
-          }.html`,
-          template: '{{{content}}}',
-          data: resultTemplate,
-        }));
-
       return [
         function downloadSearchPagePrompt(data) {
-          const answers = data as PlopData;
-          if (answers['page-id'] !== '') {
+          const plopData = data as PlopData;
+          if (plopData['page-id'] !== '') {
             return 'Downloading Hosted Search Page';
           }
 
           return '';
         },
         async function downloadSearchPage(data) {
-          const answers = data as PlopData;
-          if (answers['page-id'] === '') {
+          const plopData = data as PlopData;
+          if (plopData['page-id'] === '') {
+            plopData.page = defaultPageDownload;
             return '';
           }
 
           try {
-            pageDownload = await fetchPageDownload(
+            plopData.page = await fetchPageDownload(
               // TODO: replace
-              'http://localhost:8222', // answers['platform-url'],
-              answers['org-id'],
-              answers['page-id'],
-              answers['api-key']
+              'http://localhost:8222', // plopData['platform-url'],
+              plopData['org-id'],
+              plopData['page-id'],
+              plopData['api-key']
             );
 
-            return 'Hosted Search Page Downloaded';
+            return `Hosted search page "${plopData.page.config.title}" downloaded`;
           } catch (error) {
             throw new Error(
-              `There was an error downloading search page with id "${answers['page-id']}" from the organization "${answers['org-id']}"`
+              `There was an error downloading search page with id "${plopData['page-id']}" from the organization "${plopData['org-id']}"`
             );
           }
         },
@@ -132,7 +124,6 @@ export default function (plop: NodePlopAPI) {
           type: 'addMany',
           destination: currentPath + '/{{project}}/',
           base: '../template',
-          data: pageDownload,
           templateFiles: [
             '../template/src/**',
             '../template/scripts/*',
@@ -144,7 +135,20 @@ export default function (plop: NodePlopAPI) {
             '../template/start-netlify.mjs',
           ],
         },
-        ...generateTemplates(),
+        function generateTemplates(data) {
+          const {page, project} = data as PlopData;
+          page.html.resultTemplates.forEach((resultTemplate, index) => {
+            const filePath = `${currentPath}/${project}/src/components/results-manager/template-${
+              index + 1
+            }.html`;
+            fs.writeFileSync(
+              filePath,
+              plop.renderString('{{{content}}}', resultTemplate)
+            );
+          });
+
+          return `${page.html.resultTemplates.length} result template(s) generated`;
+        },
         function installPackagesPrompt() {
           return 'Installing packages...';
         },
