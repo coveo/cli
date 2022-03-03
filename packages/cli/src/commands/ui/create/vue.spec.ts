@@ -68,12 +68,7 @@ describe('ui:create:vue', () => {
       () =>
         ({
           createImpersonateApiKey: mockedCreateImpersonateApiKey,
-          getUserInfo: () =>
-            Promise.resolve({
-              username: 'bob@coveo.com',
-              providerUsername: 'bob@coveo.com',
-              displayName: 'bob',
-            }),
+          getUserInfo: () => Promise.resolve('bob@coveo.com'),
           getClient: () =>
             Promise.resolve(
               mockedPlatformClient.getMockImplementation()!({
