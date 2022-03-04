@@ -2,7 +2,6 @@ import {ResourceSnapshotType} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
 import {blueBright, bold} from 'chalk';
 import {cli} from 'cli-ux';
-import {cp} from 'fs';
 import {readJsonSync} from 'fs-extra';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
@@ -79,7 +78,6 @@ export default class Pull extends Command {
       parse: (input: string): SnapshotPullModel => {
         const model = readJsonSync(input);
         validateSnapshotPullModel(model);
-        Pull.flags.target = model.target;
         return model;
       },
     })({
@@ -138,7 +136,7 @@ export default class Pull extends Command {
   }
 
   private async refreshProject(project: Project, snapshot: Snapshot) {
-    const {flags} = this.parse(Pull);
+    const flags = this.flags;
     if (flags.git && !project.contains('.git')) {
       await spawnProcess('git', ['init', `${this.projectPath}`], {
         stdio: 'ignore',
@@ -149,7 +147,7 @@ export default class Pull extends Command {
   }
 
   private async ensureProjectReset(project: Project) {
-    const {flags} = this.parse(Pull);
+    const flags = this.flags;
     if (!flags.overwrite && project.contains(Project.resourceFolderName)) {
       const question = dedent`There is already a Coveo project with resources in it.
         This command will overwrite the ${Project.resourceFolderName} folder content, do you want to proceed? (y/n)`;
@@ -167,7 +165,7 @@ export default class Pull extends Command {
   }
 
   private async getSnapshot() {
-    const {flags} = this.parse(Pull);
+    const flags = this.flags;
     const target = await this.getTargetOrg();
     if (flags.snapshotId) {
       cli.action.start('Retrieving Snapshot');
@@ -187,7 +185,7 @@ export default class Pull extends Command {
   }
 
   private get waitOption(): WaitUntilDoneOptions {
-    const {flags} = this.parse(Pull);
+    const flags = this.flags;
     return {wait: flags.wait};
   }
 
@@ -196,7 +194,7 @@ export default class Pull extends Command {
   }
 
   private async getResourceSnapshotTypesToExport(): Promise<SnapshotPullModelResources> {
-    const {flags} = this.parse(Pull);
+    const flags = this.flags;
     if (flags.model) {
       const cfg = this.configuration.get();
       if (cfg.organization !== flags.model.orgId) {
@@ -219,8 +217,16 @@ export default class Pull extends Command {
   }
 
   private async getTargetOrg() {
-    const {flags} = this.parse(Pull);
+    const flags = this.flags;
     return getTargetOrg(this.configuration, flags.model?.orgId || flags.target);
+  }
+
+  public get flags() {
+    const {flags} = this.parse(Pull);
+    if (flags.model) {
+      return {...flags, target: flags.model.orgId};
+    }
+    return flags;
   }
 
   private get projectPath() {
