@@ -12,6 +12,7 @@ import {readFileSync} from 'node:fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const absolutePath = path.resolve(__dirname, 'lib', 'plopfile.js');
+console.log(process.cwd());
 console.log(absolutePath);
 console.log(readFileSync(absolutePath));
 
