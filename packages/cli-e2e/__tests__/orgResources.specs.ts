@@ -340,7 +340,7 @@ describe('org:resources', () => {
         await pullFromOrg(
           processManager,
           destinationPath,
-          ['-t', testOrgId, '-m', tmpModel.name],
+          ['-m', tmpModel.name],
           'org-resources-pull-one-field'
         );
         const fields = readJsonSync(
