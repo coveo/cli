@@ -88,7 +88,11 @@ export async function setupUIProject(
     args,
     {
       cwd: parentDir,
-      env: {...process.env, npm_config_registry: 'http://localhost:4873'},
+      env: {
+        ...process.env,
+        npm_config_registry: 'http://localhost:4873',
+        YARN_NPM_REGISTRY_SERVER: 'http://localhost:4873',
+      },
     },
     processManager,
     `build-${projectName}`
