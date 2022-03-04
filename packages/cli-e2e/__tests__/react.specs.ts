@@ -174,13 +174,17 @@ describe('ui:create:react', () => {
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
-    it('should not contain console errors nor warnings', async () => {
-      await page.goto(searchPageEndpoint(), {
-        waitUntil: 'networkidle2',
-      });
+    it(
+      'should not contain console errors nor warnings',
+      async () => {
+        await page.goto(searchPageEndpoint(), {
+          waitUntil: 'networkidle2',
+        });
 
-      expect(consoleInterceptor.interceptedMessages).toEqual([]);
-    });
+        expect(consoleInterceptor.interceptedMessages).toEqual([]);
+      },
+      5 * 60e3
+    );
 
     it('should contain a search page section', async () => {
       await page.goto(searchPageEndpoint(), {
