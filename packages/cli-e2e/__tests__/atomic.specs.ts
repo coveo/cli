@@ -71,6 +71,8 @@ describe('ui:create:atomic', () => {
   };
 
   beforeAll(async () => {
+    const args = [...npm(), 'install', '-g', '@coveo/create-atomic@latest'];
+    spawnSync(args.shift()!, args, {stdio: 'inherit'});
     await loginWithApiKey(
       process.env.PLATFORM_API_KEY!,
       process.env.ORG_ID!,
@@ -107,8 +109,6 @@ describe('ui:create:atomic', () => {
     let consoleInterceptor: BrowserConsoleInterceptor;
 
     beforeAll(async () => {
-      const args = [...npm(), 'install', '-g', '@coveo/create-atomic'];
-      spawnSync(args.shift()!, args);
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
       const appTerminal = await startApplication(
