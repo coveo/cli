@@ -10,6 +10,7 @@ import {jwtTokenPattern} from '../utils/matcher';
 import {EOL} from 'os';
 import {DummyServer} from '../utils/server';
 import {loginWithApiKey} from '../utils/login';
+import {spawnSync} from 'child_process';
 
 describe('ui:create:atomic', () => {
   let browser: Browser;
@@ -106,6 +107,8 @@ describe('ui:create:atomic', () => {
     let consoleInterceptor: BrowserConsoleInterceptor;
 
     beforeAll(async () => {
+      const args = [...npm(), 'install', '-g', '@coveo/create-atomic'];
+      spawnSync(args.shift()!, args);
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
       const appTerminal = await startApplication(
