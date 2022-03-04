@@ -8,13 +8,17 @@ const argv = minimist(args);
 
 import {dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {readFileSync} from 'node:fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const absolutePath = path.resolve(__dirname, 'lib', 'plopfile.js');
+console.log(absolutePath);
+console.log(readFileSync(absolutePath));
 
 Plop.prepare(
   {
     cwd: argv.cwd,
-    configPath: path.join(__dirname, 'lib', 'plopfile.js'),
+    configPath: path.resolve(__dirname, 'lib', 'plopfile.js'),
     preload: argv.preload || [],
     completion: argv.completion,
   },
