@@ -2,6 +2,7 @@ import {ResourceSnapshotType} from '@coveord/platform-client';
 import {flags, Command} from '@oclif/command';
 import {blueBright, bold} from 'chalk';
 import {cli} from 'cli-ux';
+import {cp} from 'fs';
 import {readJsonSync} from 'fs-extra';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
@@ -78,6 +79,7 @@ export default class Pull extends Command {
       parse: (input: string): SnapshotPullModel => {
         const model = readJsonSync(input);
         validateSnapshotPullModel(model);
+        Pull.flags.target = model.target;
         return model;
       },
     })({
