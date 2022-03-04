@@ -70,6 +70,24 @@ describe('ui:create:atomic', () => {
     return serverTerminal;
   };
 
+  const npmInstallG = async (
+    processManager: ProcessManager,
+    debugName = 'atomic-install'
+  ) => {
+    const args = [...npm(), 'install', '-g', '@coveo/create-atomic'];
+
+    const serverTerminal = new Terminal(
+      args.shift()!,
+      args,
+      {
+        cwd: getProjectPath(projectName),
+      },
+      processManager,
+      debugName
+    );
+    return serverTerminal;
+  };
+
   beforeAll(async () => {
     const args = [...npm(), 'install', '-g', '@coveo/create-atomic@latest'];
     spawnSync(args.shift()!, args, {stdio: 'inherit'});
@@ -80,6 +98,7 @@ describe('ui:create:atomic', () => {
     );
     const buildProcessManager = new ProcessManager();
     processManagers.push(buildProcessManager);
+    await npmInstallG(buildProcessManager);
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
     await buildProcessManager.killAllProcesses();
