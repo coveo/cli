@@ -8,12 +8,7 @@ on:
 jobs:
   lint:
     name: Lint
-    runs-on: ${{matrix.os}}
-    strategy:
-      fail-fast: true
-      matrix:
-        os: ['ubuntu-latest']
-        node: [16]
+    runs-on: 'ubuntu-latest'
     steps:
       - name: Setup runner
         if: ${{matrix.os == 'ubuntu-latest'}}
@@ -27,7 +22,7 @@ jobs:
       - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
       - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
         with:
-          node-version: ${{matrix.node}}
+          node-version: 16
           cache: 'npm'
       - name: Setup repo
         run: npm ci
