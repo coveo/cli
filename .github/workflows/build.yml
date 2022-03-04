@@ -60,9 +60,9 @@ jobs:
         run: npm ci
       - name: Tests
         run: npm run test
-  e2e-setup:
-    name: End-to-end setup
-    runs-on: ubuntu-latest
+  e2e-setup-login:
+    name: End-to-end login
+    runs-on: 'ubuntu-latest'
     outputs:
       cliConfigJson: ${{ steps.setup.outputs.cliConfigJson}}
     env:
@@ -84,10 +84,6 @@ jobs:
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
-      - uses: actions/cache@v2
-        with:
-          path: packages/cli-e2e/verdaccio
-          key: verdaccio-${{ github.sha }}-${{ github.run_attempt }}
       - run: |
           npm ci
           Xvfb :1 -screen 0 1024x768x16 & sleep 1
@@ -97,21 +93,43 @@ jobs:
       - name: Setup E2E tests
         env:
           DISPLAY: ':1'
-        run: node -r ts-node/register/transpile-only packages/cli-e2e/setup/ci-initial-setup.ts
+        run: node -r ts-node/register/transpile-only packages/cli-e2e/setup/ci-login.ts
       - name: Encode & Output config
         id: setup
         run: |
           echo "${{ secrets.E2E_TOKEN_PASSPHRASE }}" | gpg -a --batch --passphrase-fd 0 --symmetric --cipher-algo AES256 --output encodedConfig $CLI_CONFIG_PATH
           echo "::set-output name=cliConfigJson::$(base64 -w 0 encodedConfig)"
-      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2
-        if: always()
+  e2e-setup-verdaccio:
+    strategy:
+      matrix:
+        os: ['ubuntu-latest', 'windows-latest']
+    name: End-to-end publish packages
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
+      - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
         with:
-          name: verdaccio
-          path: ./packages/cli-e2e/verdaccio
+          node-version: ${{matrix.node}}
+          cache: 'npm'
+      - uses: actions/cache@v2
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        with:
+          path: packages/cli-e2e/verdaccio
+          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
+      - uses: actions/cache@v2
+        if: ${{matrix.os == 'windows-latest'}}
+        with:
+          path: packages\cli-e2e\verdaccio
+          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
+      - run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Setup E2E tests
+        run: node -r ts-node/register/transpile-only packages/cli-e2e/setup/ci-verdaccio.ts
   e2e:
     name: End-to-end tests
     runs-on: ${{matrix.os}}
-    needs: e2e-setup
+    needs: [e2e-setup-login, e2e-setup-verdaccio]
     strategy:
       fail-fast: false
       matrix:
@@ -141,7 +159,7 @@ jobs:
       # ID of the test run to identify resources to teardown.
       TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
       COVEO_DISABLE_AUTOUPDATE: true
-      CLI_CONFIG_JSON: ${{needs.e2e-setup.outputs.cliConfigJson}}
+      CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
       - name: Setup runner
         if: ${{matrix.os == 'ubuntu-latest'}}
@@ -158,12 +176,18 @@ jobs:
           node-version: ${{matrix.node}}
           cache: 'npm'
       - uses: actions/cache@v2
+        if: ${{matrix.os == 'ubuntu-latest'}}
         with:
           path: packages/cli-e2e/verdaccio
-          key: verdaccio-${{ github.sha }}-${{ github.run_attempt }}
+          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
+      - uses: actions/cache@v2
+        if: ${{matrix.os == 'windows-latest'}}
+        with:
+          path: packages\cli-e2e\verdaccio
+          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
       - name: Decrypt config
         working-directory: packages/cli-e2e
-        run: echo ${{needs.e2e-setup.outputs.cliConfigJson}} | base64 --decode | gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.E2E_TOKEN_PASSPHRASE }}" --output decrypted
+        run: echo ${{needs.e2e-setup-login.outputs.cliConfigJson}} | base64 --decode | gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.E2E_TOKEN_PASSPHRASE }}" --output decrypted
       - run: npm ci
       - name: End-to-end Setup
         if: ${{matrix.os == 'ubuntu-latest'}}

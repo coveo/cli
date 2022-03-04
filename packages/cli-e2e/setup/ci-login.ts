@@ -5,13 +5,7 @@ import {ProcessManager} from '../utils/processManager';
 
 import 'dotenv/config';
 
-import {npmLogin} from '../utils/npmLogin';
-import {
-  setProcessEnv,
-  startVerdaccio,
-  publishPackages,
-  authenticateCli,
-} from './utils';
+import {setProcessEnv, authenticateCli} from './utils';
 import {getConfig, getConfigFilePath} from '../utils/cli';
 import {exportVariable, setSecret} from '@actions/core';
 
@@ -22,10 +16,6 @@ async function main() {
   setProcessEnv();
 
   global.processManager = new ProcessManager();
-  await startVerdaccio();
-  await npmLogin();
-  await publishPackages();
-
   await authenticateCli();
   await outputCliConfig();
   await global.processManager.killAllProcesses();
