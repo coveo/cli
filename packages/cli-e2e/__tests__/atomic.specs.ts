@@ -80,7 +80,7 @@ describe('ui:create:atomic', () => {
       args.shift()!,
       args,
       {
-        cwd: getProjectPath(projectName),
+        cwd: process.cwd(),
       },
       processManager,
       debugName
