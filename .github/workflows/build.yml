@@ -190,9 +190,6 @@ jobs:
       - name: End-to-end Setup
         if: ${{matrix.os == 'windows-latest'}}
         run: packages/cli-e2e/entrypoints/ci.ps1
-      - name: Wipe create-atomic
-        if: ${{matrix.os == 'windows-latest'}}
-        run: npx rimraf packages/create-atomic
       - name: Tests
         if: ${{matrix.os == 'windows-latest'}}
         working-directory: packages/cli-e2e
