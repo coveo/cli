@@ -7,11 +7,11 @@
     "/template",
     "/template/.gitignore"
   ],
-  "bin": "./index.js",
+  "bin": "./index.mjs",
   "type": "module",
-  "main": "index.js",
+  "main": "index.mjs",
   "scripts": {
-    "start": "./index.js",
+    "start": "node ./index.mjs",
     "build": "tsc -p tsconfig.json",
     "prepublishOnly": "npm run build && node ./scripts/preparePackageJsonTemplate.mjs",
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
