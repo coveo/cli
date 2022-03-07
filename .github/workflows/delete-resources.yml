@@ -1,4 +1,4 @@
-name: 'Delete Test API Keys'
+name: 'Delete Coveo Resources'
 
 on:
   workflow_dispatch:
@@ -6,18 +6,30 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
-  run-script:
+  delete-resources:
     runs-on: ubuntu-latest
     env:
       ORG_ID: ${{ secrets.ORG_ID }}
       PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
+      PLATFORM_ENV: 'qa'
+      PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
+      PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
       - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
         with:
           node-version: '16'
-      - run: npm i
-      - run: node ./scripts/cleaning/delete-api-keys.js --olderThan 1d
+          cache: 'npm'
+      - run: npm ci
+      - name: Delete test API keys
         if: always()
-      - run: node ./scripts/cleaning/delete-orgs.js     --olderThan 1d
+        run: node ./scripts/cleaning/delete-api-keys.js --olderThan 1d
+      - name: Delete test orgs
         if: always()
+        run: |
+          Xvfb :1 -screen 0 1024x768x16 & sleep 1
+          xdg-settings set default-web-browser google-chrome.desktop
+          node -r ts-node/register/transpile-only packages/cli-e2e/cleaning.ts
+          node ./scripts/cleaning/delete-orgs.js     --olderThan 1d
+        env:
+          DISPLAY: ':1'
