@@ -38,16 +38,6 @@ describe('source:push:add', () => {
     mockEvaluate.mockResolvedValue({approved: false});
   };
 
-  // const mockConfig = () => {
-  //   mockedConfigGet.mockReturnValue({
-  //     region: 'au',
-  //     organization: 'foo',
-  //     environment: 'prod',
-  //   });
-
-  //   mockedConfig.prototype.get = mockedConfigGet;
-  // };
-
   const doMockSuccessBatchUpload = () => {
     mockBatchUpdate.mockImplementation(
       (_sourceId: string, fileNames: string[], callback: UploadBatchCallback) =>
@@ -80,7 +70,6 @@ describe('source:push:add', () => {
   };
 
   beforeAll(() => {
-    // mockConfig();
     mockedGlobalConfig.get.mockReturnValue({
       configDir: 'the_config_dir',
     } as Interfaces.Config);
