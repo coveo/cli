@@ -6,6 +6,7 @@ import {answerPrompt, CLI_EXEC_PATH, isGenericYesNoPrompt} from '../utils/cli';
 import {captureScreenshots, connectToChromeBrowser} from '../utils/browser';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
+import {launch as launchChrome, LaunchedChrome} from 'chrome-launcher';
 
 describe('auth', () => {
   describe('login', () => {
@@ -15,11 +16,21 @@ describe('auth', () => {
       PLATFORM_HOST: platformHost,
     } = process.env;
     let browser: Browser;
+    let chrome: LaunchedChrome;
     let processManager: ProcessManager;
 
     beforeAll(async () => {
+      chrome = await launchChrome({
+        port: 9222,
+        userDataDir: false,
+      });
+
       browser = await connectToChromeBrowser();
       processManager = new ProcessManager();
+    }, 3 * 60e3);
+
+    afterAll(async () => {
+      await chrome.kill();
     });
 
     afterEach(async () => {

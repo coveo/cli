@@ -30,6 +30,7 @@ import getPort from 'get-port';
 import {npm} from '../utils/npm';
 import axios from 'axios';
 import {jwtTokenPattern} from '../utils/matcher';
+import {loginWithApiKey} from '../utils/login';
 
 // TODO CDX-804: Enable the tests back
 describe('ui:create:angular', () => {
@@ -166,6 +167,11 @@ describe('ui:create:angular', () => {
       .once();
 
   beforeAll(async () => {
+    await loginWithApiKey(
+      process.env.PLATFORM_API_KEY!,
+      process.env.ORG_ID!,
+      process.env.PLATFORM_ENV!
+    );
     const buildProcessManager = new ProcessManager();
     processManagers.push(buildProcessManager);
     browser = await getNewBrowser();

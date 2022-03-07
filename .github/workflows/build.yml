@@ -8,12 +8,7 @@ on:
 jobs:
   lint:
     name: Lint
-    runs-on: ${{matrix.os}}
-    strategy:
-      fail-fast: true
-      matrix:
-        os: ['ubuntu-latest']
-        node: [16]
+    runs-on: 'ubuntu-latest'
     steps:
       - name: Setup runner
         if: ${{matrix.os == 'ubuntu-latest'}}
@@ -27,8 +22,11 @@ jobs:
       - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
       - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
         with:
-          node-version: ${{matrix.node}}
+          node-version: 16
           cache: 'npm'
+      - name: Install locked NPM version.
+        # TODO CDX-815: https://github.com/npm/cli/issues/4518
+        run: npm i -g npm@8.4.1
       - name: Setup repo
         run: npm ci
       - name: Check linting
@@ -56,13 +54,89 @@ jobs:
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
+      - name: Install locked NPM version.
+        # TODO CDX-815: https://github.com/npm/cli/issues/4518
+        run: npm i -g npm@8.4.1
       - name: Setup repo
         run: npm ci
       - name: Tests
         run: npm run test
+  e2e-setup-login:
+    name: End-to-end login
+    runs-on: 'ubuntu-latest'
+    outputs:
+      cliConfigJson: ${{ steps.setup.outputs.cliConfigJson}}
+    env:
+      # Platform environment to log into for the e2e tests.
+      PLATFORM_ENV: 'qa'
+      # Username used to log into the organization whose ID is stored in the ORG_ID variable
+      PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
+      # Password used to log into the organization whose ID is stored in the ORG_ID variable
+      PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
+      # API key to delete all the API keys created by the e2e tests
+      PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
+      # ID of the organization to log into for the e2e tests
+      ORG_ID: ${{ secrets.ORG_ID }}
+      # ID of the test run to identify resources to teardown.
+      TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
+    steps:
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
+      - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
+        with:
+          node-version: ${{matrix.node}}
+          cache: 'npm'
+      - name: Install locked NPM version.
+        # TODO CDX-815: https://github.com/npm/cli/issues/4518
+        run: npm i -g npm@8.4.1
+      - run: |
+          npm ci
+          Xvfb :1 -screen 0 1024x768x16 & sleep 1
+          xdg-settings set default-web-browser google-chrome.desktop
+      - name: Build
+        run: npm run build
+      - name: Setup E2E tests
+        env:
+          DISPLAY: ':1'
+        run: node -r ts-node/register/transpile-only packages/cli-e2e/setup/ci-login.ts
+      - name: Encode & Output config
+        id: setup
+        run: |
+          echo "${{ secrets.E2E_TOKEN_PASSPHRASE }}" | gpg -a --batch --passphrase-fd 0 --symmetric --cipher-algo AES256 --output encodedConfig $CLI_CONFIG_PATH
+          echo "::set-output name=cliConfigJson::$(base64 -w 0 encodedConfig)"
+  e2e-setup-verdaccio:
+    strategy:
+      matrix:
+        os: ['ubuntu-latest', 'windows-latest']
+    name: End-to-end publish packages
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
+      - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
+        with:
+          node-version: ${{matrix.node}}
+          cache: 'npm'
+      - uses: actions/cache@v2
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        with:
+          path: packages/cli-e2e/verdaccio
+          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
+      - uses: actions/cache@v2
+        if: ${{matrix.os == 'windows-latest'}}
+        with:
+          path: packages\cli-e2e\verdaccio
+          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
+      - name: Install locked NPM version.
+        # TODO CDX-815: https://github.com/npm/cli/issues/4518
+        run: npm i -g npm@8.4.1
+      - run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Setup E2E tests
+        run: node -r ts-node/register/transpile-only packages/cli-e2e/setup/ci-verdaccio.ts
   e2e:
     name: End-to-end tests
     runs-on: ${{matrix.os}}
+    needs: [e2e-setup-login, e2e-setup-verdaccio]
     strategy:
       fail-fast: false
       matrix:
@@ -92,6 +166,7 @@ jobs:
       # ID of the test run to identify resources to teardown.
       TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
       COVEO_DISABLE_AUTOUPDATE: true
+      CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
       - name: Setup runner
         if: ${{matrix.os == 'ubuntu-latest'}}
@@ -107,10 +182,23 @@ jobs:
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
+      - name: Install locked NPM version.
+        # TODO CDX-815: https://github.com/npm/cli/issues/4518
+        run: npm i -g npm@8.4.1
+      - uses: actions/cache@v2
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        with:
+          path: packages/cli-e2e/verdaccio
+          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
+      - uses: actions/cache@v2
+        if: ${{matrix.os == 'windows-latest'}}
+        with:
+          path: packages\cli-e2e\verdaccio
+          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
+      - name: Decrypt config
+        working-directory: packages/cli-e2e
+        run: echo ${{needs.e2e-setup-login.outputs.cliConfigJson}} | base64 --decode | gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.E2E_TOKEN_PASSPHRASE }}" --output decrypted
       - run: npm ci
-      - name: Build CLI
-        working-directory: ./packages/cli
-        run: npm run build # TODO CDX-860: Maybe artifact that above?
       - name: End-to-end Setup
         if: ${{matrix.os == 'ubuntu-latest'}}
         run: bash packages/cli-e2e/entrypoints/ci.sh
@@ -122,13 +210,13 @@ jobs:
         working-directory: packages/cli-e2e
         run: |
           $env:Path = $env:Path + ";C:\Program Files (x86)\mitmproxy\bin"
-          npm run jest -- ${{matrix.spec}}
+          npm run jest:ci -- ${{matrix.spec}}
       - name: Tests
         if: ${{matrix.os == 'ubuntu-latest'}}
         env:
           DISPLAY: ':1'
         working-directory: packages/cli-e2e
-        run: npm run jest -- ${{matrix.spec}}
+        run: npm run jest:ci -- ${{matrix.spec}}
       - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2
         if: always()
         with:
@@ -151,13 +239,16 @@ jobs:
       # ID of the organization to log into for the e2e tests
       ORG_ID: ${{ secrets.ORG_ID }}
       # ID of the test run to identify resources to teardown.
-      TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
+      TEST_RUN_ID: '${{ github.sha }}-${{ github.run_attempt }}g'
     steps:
       - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
       - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
+      - name: Install locked NPM version.
+        # TODO CDX-815: https://github.com/npm/cli/issues/4518
+        run: npm i -g npm@8.4.1
       - run: npm ci
       - name: Delete test org
         env:

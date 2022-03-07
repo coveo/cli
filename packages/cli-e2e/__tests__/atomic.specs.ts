@@ -9,6 +9,7 @@ import {npm} from '../utils/npm';
 import {jwtTokenPattern} from '../utils/matcher';
 import {EOL} from 'os';
 import {DummyServer} from '../utils/server';
+import {loginWithApiKey} from '../utils/login';
 
 describe('ui:create:atomic', () => {
   let browser: Browser;
@@ -68,9 +69,33 @@ describe('ui:create:atomic', () => {
     return serverTerminal;
   };
 
+  const npmInstallG = async (
+    processManager: ProcessManager,
+    debugName = 'atomic-install'
+  ) => {
+    const args = [...npm(), 'install', '-g', '@coveo/create-atomic'];
+
+    const npmTerminal = new Terminal(
+      args.shift()!,
+      args,
+      {
+        cwd: process.cwd(),
+      },
+      processManager,
+      debugName
+    );
+    return npmTerminal.when('exit').on('process').do().once();
+  };
+
   beforeAll(async () => {
+    await loginWithApiKey(
+      process.env.PLATFORM_API_KEY!,
+      process.env.ORG_ID!,
+      process.env.PLATFORM_ENV!
+    );
     const buildProcessManager = new ProcessManager();
     processManagers.push(buildProcessManager);
+    await npmInstallG(buildProcessManager);
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
     await buildProcessManager.killAllProcesses();
