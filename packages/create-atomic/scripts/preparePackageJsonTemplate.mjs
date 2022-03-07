@@ -15,6 +15,7 @@ const pkgJson = JSON.parse(pkgRaw);
 pkgJson.name = '{{project}}';
 pkgJson.version = '0.1.0';
 pkgJson.scripts.postinstall = 'npm run setup-lambda && npm run setup-cleanup';
+pkgJson.scripts.build = 'stencil build';
 delete pkgJson.scripts['release:phase2'];
 
 writeFileSync(
