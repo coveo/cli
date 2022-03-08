@@ -10,9 +10,8 @@ import {
 } from './utils/browser';
 import {clearAccessTokenFromConfig, loginWithOffice} from './utils/login';
 import {ProcessManager} from './utils/processManager';
-import {saveToEnvFile} from './utils/file';
-import {createOrg} from './utils/platform';
-import {getConfig as getCliConfig, getEnvFilePath} from './utils/cli';
+import {getPlatformHost} from './utils/platform';
+import {getConfig as getCliConfig} from './utils/cli';
 import waitOn from 'wait-on';
 import 'dotenv/config';
 import {Terminal} from './utils/terminal/terminal';
@@ -34,29 +33,6 @@ async function clearChromeBrowsingData(browser: Browser) {
   return Promise.all(pageClearDataPromise);
 }
 
-function getPlatformEnv() {
-  return process.env.PLATFORM_ENV?.toLowerCase();
-}
-
-function getPlatformHost() {
-  const env = getPlatformEnv();
-  return `https://platform${env === 'prod' ? '' : env}.cloud.coveo.com`;
-}
-
-async function createTestOrgAndSaveOrgIdToEnv(orgName: string) {
-  const {accessToken} = getCliConfig();
-  const testOrgId = await createOrg(orgName, accessToken);
-  console.log(`Created org ${testOrgId}`);
-  const pathToEnv = getEnvFilePath();
-  saveToEnvFile(pathToEnv, {
-    PLATFORM_ENV: getPlatformEnv(),
-    PLATFORM_HOST: getPlatformHost(),
-    TEST_RUN_ID: process.env.TEST_RUN_ID,
-    TEST_ORG_ID: testOrgId,
-    ACCESS_TOKEN: accessToken,
-  });
-}
-
 export default async function () {
   if (!process.env.CI) {
     isMitmProxyInstalled();
@@ -66,9 +42,8 @@ export default async function () {
   // runId must start and finish with letters to satisfies Angular.
   process.env.TEST_RUN_ID =
     process.env.TEST_RUN_ID ?? `id${randomBytes(16).toString('hex')}g`;
-  process.env.PLATFORM_ENV = getPlatformEnv();
-  process.env.PLATFORM_HOST = getPlatformHost();
-  const testOrgName = `cli-e2e-${process.env.TEST_RUN_ID}`;
+  process.env.PLATFORM_ENV = process.env.PLATFORM_ENV?.toLowerCase() || '';
+  process.env.PLATFORM_HOST = getPlatformHost(process.env.PLATFORM_ENV);
 
   const uiProjectDir = tmpDirSync();
   process.env.UI_PROJECT_PATH = uiProjectDir.name;
@@ -81,8 +56,15 @@ export default async function () {
   if (process.env.CI) {
     let browser;
     try {
+      console.log('Starting Chrome');
       await launchChrome({port: 9222, userDataDir: false});
+      console.log('Chrome started');
+      console.log('Checking port 9222');
+      await waitOn({resources: ['tcp:9222']});
+      console.log('Port 9222 is open');
+      console.log('Connecting to Chrome');
       browser = await connectToChromeBrowser();
+      console.log('Connected to Chrome');
       await clearChromeBrowsingData(browser);
       await clearAccessTokenFromConfig();
       await loginWithOffice(browser);
@@ -94,8 +76,6 @@ export default async function () {
       throw e;
     }
   }
-
-  await createTestOrgAndSaveOrgIdToEnv(testOrgName);
 }
 
 async function publishPackages() {

@@ -13,6 +13,10 @@ export function getPlatformClient(organizationId: string, accessToken: string) {
   });
 }
 
+export function getPlatformHost(env: string) {
+  return `https://platform${env === 'prod' ? '' : env}.cloud.coveo.com`;
+}
+
 export function isSearchRequestOrResponse(
   requestOrResponse: HTTPRequest | HTTPResponse
 ) {

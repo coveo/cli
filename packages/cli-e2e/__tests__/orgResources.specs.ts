@@ -21,13 +21,14 @@ import {
 } from 'fs-extra';
 import PlatformClient, {FieldTypes} from '@coveord/platform-client';
 import {getPlatformClient} from '../utils/platform';
+import {getTestOrg} from '../utils/testOrgSetup';
 import {readdirSync} from 'fs';
 import {cwd} from 'process';
 import {EOL} from 'os';
 config({path: getEnvFilePath()});
 
 describe('org:resources', () => {
-  const testOrgId = process.env.TEST_ORG_ID!;
+  let testOrgId = '';
   const {accessToken} = getConfig();
   const snapshotProjectPath = join(getUIProjectPath(), 'snapshot-project');
   const defaultTimeout = 10 * 60e3;
@@ -154,10 +155,11 @@ describe('org:resources', () => {
   };
 
   beforeAll(async () => {
+    testOrgId = await getTestOrg();
     copySync('snapshot-project', snapshotProjectPath);
     platformClient = getPlatformClient(testOrgId, accessToken);
     processManager = new ProcessManager();
-  });
+  }, 5 * 60e3);
 
   afterAll(async () => {
     await processManager.killAllProcesses();

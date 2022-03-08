@@ -35,6 +35,7 @@ export default class SourcePushDelete extends Command {
     deleteChildren: flags.boolean({
       char: 'c',
       default: true,
+      allowNo: true,
       description:
         'Whether to delete all items that share the same base URI as the specified item to delete.',
     }),
