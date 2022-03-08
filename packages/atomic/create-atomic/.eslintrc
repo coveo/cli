@@ -1,0 +1,6 @@
+{
+  "extends": "../../../base.eslintrc",
+  "env": {
+    "browser": true
+  }
+}

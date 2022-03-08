@@ -4,7 +4,8 @@
   "version": "1.25.4",
   "private": true,
   "scripts": {
-    "release:phase2": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase2-bump-all-packages.mjs"
+    "release:phase2": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase2-bump-all-packages.mjs",
+    "lint": "prettier --check . && eslint ."
   },
   "dependencies": {
     "@coveo/atomic": "1.23.7",

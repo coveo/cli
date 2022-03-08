@@ -1,6 +1,7 @@
 {
-  "root": "packages/create-atomic/template",
-  "sourceRoot": "packages/create-atomic/template/src",
+  "name": "create-atomic-template",
+  "root": "packages/atomic/template",
+  "sourceRoot": "packages/atomic/template/src",
   "projectType": "library",
   "targets": {
     "build": {
