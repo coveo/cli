@@ -1,14 +1,14 @@
-name: 'package-lock.json validator'
+name: 'package-lock.json version validator'
 
 on:
   push:
     branches: [master]
     paths:
-      - '**/package-lock.json'
+      - 'package-lock.json'
   pull_request:
     branches: [master]
     paths:
-      - '**/package-lock.json'
+      - 'package-lock.json'
 
 jobs:
   lockfile-version:

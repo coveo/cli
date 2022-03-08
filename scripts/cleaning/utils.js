@@ -2,6 +2,9 @@ const {PlatformClient} = require('@coveord/platform-client');
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
 const moment = require('moment');
+const {resolve} = require('path');
+const {homedir} = require('os');
+const {readFileSync} = require('fs');
 
 const getPlatformHostFromEnv = (env) =>
   `https://platform${env === 'prod' ? '' : env}.cloud.coveo.com`;
@@ -53,8 +56,20 @@ const yargGenerator = (resourceName) =>
     .help('h')
     .alias('h', 'help').argv;
 
+const getCliConfigFilePath = () => {
+  const configsDir = process.platform === 'win32' ? 'AppData/Local' : '.config';
+  return resolve(homedir(), configsDir, '@coveo', 'cli', 'config.json');
+};
+
+const getCliConfig = () => {
+  const pathToConfig = getCliConfigFilePath();
+
+  return JSON.parse(readFileSync(pathToConfig));
+};
+
 module.exports = {
   getClient,
   wasCreatedBefore,
   yargGenerator,
+  getCliConfig,
 };
