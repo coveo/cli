@@ -1,7 +1,7 @@
 // import {} from './fetch-page';
 
-describe('customizePageDownload', () => {
-  it('customizes page download correctly', () => {
+describe('customizePageManifest', () => {
+  it('customizes page manifest correctly', () => {
     // TODO: add test
   });
 });

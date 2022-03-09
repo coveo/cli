@@ -1,27 +1,27 @@
 import fetch from 'node-fetch';
 
-export interface PageDownloadConfig {
+export interface PageManifestConfig {
   title: string;
 }
 
-export interface PageDownloadHtmlResultTemplate {
+export interface PageManifestHtmlResultTemplate {
   attributes: string;
   content: string;
 }
 
-export interface PageDownloadHtml {
+export interface PageManifestHtml {
   searchInterface: string;
   style: string;
   resultListAttributes: string;
-  resultTemplates: PageDownloadHtmlResultTemplate[];
+  resultTemplates: PageManifestHtmlResultTemplate[];
 }
 
-export interface PageDownload {
-  html: PageDownloadHtml;
-  config: PageDownloadConfig;
+export interface PageManifest {
+  html: PageManifestHtml;
+  config: PageManifestConfig;
 }
 
-export async function fetchPageDownload(
+export async function fetchPageManifest(
   platformUrl: string,
   orgId: string,
   pageId: string,
@@ -35,16 +35,16 @@ export async function fetchPageDownload(
       Authorization: `Bearer ${apiKey}`,
     },
   });
-  return customizePageDownload((await response.json()) as PageDownload);
+  return customizePageManifest((await response.json()) as PageManifest);
 }
 
-function customizePageDownload(pageDownload: PageDownload): PageDownload {
+function customizePageManifest(pageManifest: PageManifest): PageManifest {
   const resultListPlaceholder = '<!--result-list-->';
   const resultManagerComponent = '<results-manager></results-manager>';
-  pageDownload.html.searchInterface = pageDownload.html.searchInterface.replace(
+  pageManifest.html.searchInterface = pageManifest.html.searchInterface.replace(
     resultListPlaceholder,
     resultManagerComponent
   );
 
-  return pageDownload;
+  return pageManifest;
 }

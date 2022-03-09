@@ -2,8 +2,8 @@ import {NodePlopAPI} from 'plop';
 import Handlebars from 'handlebars';
 import {spawn} from 'child_process';
 import {getPackageManager} from './utils.js';
-import {fetchPageDownload, PageDownload} from './fetch-page.js';
-import {defaultPageDownload} from './default/default-page.js';
+import {fetchPageManifest, PageManifest} from './fetch-page.js';
+import {defaultPageManifest} from './default/default-page.js';
 import fs from 'fs';
 
 Handlebars.registerHelper('inc', function (value) {
@@ -16,7 +16,7 @@ interface PlopData {
   'platform-url': string;
   'org-id': string;
   'api-key': string;
-  page: PageDownload;
+  page: PageManifest;
 }
 
 export default function (plop: NodePlopAPI) {
@@ -85,12 +85,12 @@ export default function (plop: NodePlopAPI) {
         async function downloadSearchPage(data) {
           const plopData = data as PlopData;
           if (plopData['page-id'] === '') {
-            plopData.page = defaultPageDownload;
+            plopData.page = defaultPageManifest;
             return '';
           }
 
           try {
-            plopData.page = await fetchPageDownload(
+            plopData.page = await fetchPageManifest(
               // TODO: replace
               'http://localhost:8222', // plopData['platform-url'],
               plopData['org-id'],
