@@ -1,5 +1,5 @@
 import {Component, h} from '@stencil/core';
-{{#each page.html.resultTemplates}}
+{{#each page.results.templates}}
 import template{{inc @index}} from './template-{{inc @index}}.html';
 {{/each}}
 
@@ -13,9 +13,9 @@ import template{{inc @index}} from './template-{{inc @index}}.html';
 })
 export class ResultsManager {
   public render() {
-    return <atomic-result-list {{{page.html.resultListAttributes}}}>
-      {{#each page.html.resultTemplates}}
-        <atomic-result-template {{{this.attributes}}}>
+    return <atomic-result-list {{#each page.results.attributes}}{{@key}}="{{{this}}}" {{/each}}>
+      {{#each page.results.templates}}
+        <atomic-result-template {{#each this.attributes}}{{@key}}="{{{this}}}" {{/each}}>
           <template innerHTML={ template{{inc @index}} }></template>
         </atomic-result-template>
       {{/each}}

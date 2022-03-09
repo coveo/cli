@@ -2,9 +2,10 @@ import {NodePlopAPI} from 'plop';
 import Handlebars from 'handlebars';
 import {spawn} from 'child_process';
 import {getPackageManager} from './utils.js';
-import {fetchPageManifest, PageManifest} from './fetch-page.js';
+import {fetchPageManifest} from './fetch-page.js';
 import {defaultPageManifest} from './default/default-page.js';
 import fs from 'fs';
+import {PageManifest} from './page-manifest.js';
 
 Handlebars.registerHelper('inc', function (value) {
   return parseInt(value) + 1;
@@ -137,17 +138,17 @@ export default function (plop: NodePlopAPI) {
         },
         function generateTemplates(data) {
           const {page, project} = data as PlopData;
-          page.html.resultTemplates.forEach((resultTemplate, index) => {
+          page.results.templates.forEach((resultTemplate, index) => {
             const filePath = `${currentPath}/${project}/src/components/results-manager/template-${
               index + 1
             }.html`;
             fs.writeFileSync(
               filePath,
-              plop.renderString('{{{content}}}', resultTemplate)
+              plop.renderString('{{{markup}}}', resultTemplate)
             );
           });
 
-          return `${page.html.resultTemplates.length} result template(s) generated`;
+          return `${page.results.templates.length} result template(s) generated`;
         },
         function installPackagesPrompt() {
           return 'Installing packages...';

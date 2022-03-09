@@ -1,25 +1,5 @@
 import fetch from 'node-fetch';
-
-export interface PageManifestConfig {
-  title: string;
-}
-
-export interface PageManifestHtmlResultTemplate {
-  attributes: string;
-  content: string;
-}
-
-export interface PageManifestHtml {
-  searchInterface: string;
-  style: string;
-  resultListAttributes: string;
-  resultTemplates: PageManifestHtmlResultTemplate[];
-}
-
-export interface PageManifest {
-  html: PageManifestHtml;
-  config: PageManifestConfig;
-}
+import {PageManifest} from './page-manifest';
 
 export async function fetchPageManifest(
   platformUrl: string,
@@ -27,7 +7,7 @@ export async function fetchPageManifest(
   pageId: string,
   apiKey: string
 ) {
-  const url = `${platformUrl}/rest/organizations/${orgId}/searchinterfaces/${pageId}/download`;
+  const url = `${platformUrl}/rest/organizations/${orgId}/searchinterfaces/${pageId}/manifest/v1`;
   const response = await fetch(url, {
     method: 'POST',
     headers: {
@@ -35,14 +15,13 @@ export async function fetchPageManifest(
       Authorization: `Bearer ${apiKey}`,
     },
   });
-  return customizePageManifest((await response.json()) as PageManifest);
+  return replaceResultsPlaceholder((await response.json()) as PageManifest);
 }
 
-function customizePageManifest(pageManifest: PageManifest): PageManifest {
-  const resultListPlaceholder = '<!--result-list-->';
+function replaceResultsPlaceholder(pageManifest: PageManifest): PageManifest {
   const resultManagerComponent = '<results-manager></results-manager>';
-  pageManifest.html.searchInterface = pageManifest.html.searchInterface.replace(
-    resultListPlaceholder,
+  pageManifest.markup = pageManifest.markup.replace(
+    pageManifest.results.placeholder,
     resultManagerComponent
   );
 
