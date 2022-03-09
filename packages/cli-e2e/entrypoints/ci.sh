@@ -1,12 +1,6 @@
 #!/bin/bash
 set -e
 
-echo "::group::System dependencies"
-brew install mitmproxy
-sudo apt-get update
-sudo apt-get install libssl-dev zlib1g-dev llvm libncurses5-dev libncursesw5-dev tk-dev
-echo "::endgroup::"
-
 echo "::group::Setup Chrome"
 export DISPLAY=:1
 Xvfb :1 -screen 0 1024x768x16 & sleep 1

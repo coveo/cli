@@ -182,9 +182,15 @@ jobs:
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
+      - uses: actions/setup-python@0ebf233433c08fb9061af664d501c3f3ff0e9e20 # tag=v3
+        with:
+          python-version: '3.x' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          cache: pip
       - name: Install locked NPM version.
         # TODO CDX-815: https://github.com/npm/cli/issues/4518
         run: npm i -g npm@8.4.1
+      - name: Install mitmproxy
+        run: pipx install mitmproxy
       - uses: actions/cache@v2
         if: ${{matrix.os == 'ubuntu-latest'}}
         with:

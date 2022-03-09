@@ -18,8 +18,3 @@ Write-Output "::endgroup::"
 Write-Output "::group::Publishing UI templates"
 git config --global user.name "notgroot"
 git config --global user.email "notgroot@coveo.com"
-
-Write-Output "::group::Setup mitmproxy"
-choco.exe install mitmproxy -y
-$env:Path = $env:Path + ";C:\Program Files (x86)\mitmproxy\bin"
-Write-Output "::endgroup::"
