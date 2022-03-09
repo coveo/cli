@@ -15,7 +15,8 @@ config({path: join(homedir(), '.env')});
 function wasCreatedByTheCli(testRunId = '') {
   return (key) =>
     testRunId
-      ? key.displayName?.startsWith(`cli-e2e-${testRunId}`)
+      ? key.displayName?.startsWith(`cli-e2e-idwindows-latest-${testRunId}`) ||
+        key.displayName?.startsWith(`cli-e2e-idubuntu-latest-${testRunId}`)
       : key.displayName?.match(/cli-e2e.*g/);
 }
 
