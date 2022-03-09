@@ -4,14 +4,19 @@ require('abortcontroller-polyfill');
 const {homedir} = require('os');
 const {join} = require('path');
 const {config} = require('dotenv');
-const {getClient, yargGenerator, wasCreatedBefore} = require('./utils');
+const {
+  getClient,
+  yargGenerator,
+  wasCreatedBefore,
+  getCliConfig,
+} = require('./utils');
 config({path: join(homedir(), '.env')});
 
 function wasCreatedByTheCli(testRunId = '') {
   return (key) =>
     testRunId
-      ? key.displayName?.startsWith(`cli-${testRunId}`)
-      : key.displayName?.match(/cli-id.*g/);
+      ? key.displayName?.startsWith(`cli-e2e-${testRunId}`)
+      : key.displayName?.match(/cli-e2e.*g/);
 }
 
 async function deleteTestOrgs(platform, cliOrgs) {
@@ -27,11 +32,8 @@ async function deleteTestOrgs(platform, cliOrgs) {
 }
 
 async function main() {
-  const {
-    TEST_RUN_ID: testRunId,
-    PLATFORM_API_KEY: accessToken,
-    PLATFORM_ENV: env,
-  } = process.env;
+  const {TEST_RUN_ID: testRunId, PLATFORM_ENV: env} = process.env;
+  const accessToken = getCliConfig().accessToken;
   const platform = getClient(accessToken, env);
   try {
     const orgs = await platform.organization.list();
