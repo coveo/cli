@@ -67,12 +67,16 @@ export class AuthenticatedClient {
     });
   }
 
-  public async getUserInfo() {
+  public async getUsername() {
+    const {anonymous, organization} = this.cfg.get();
+    if (anonymous) {
+      return `api-key@${organization}`;
+    }
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();
     await platformClient.initialize();
 
-    return platformClient.user.get();
+    return (await platformClient.user.get()).providerUsername;
   }
 }
 
