@@ -26,7 +26,7 @@ jobs:
           cache: 'npm'
       - name: Install locked NPM version.
         # TODO CDX-815: https://github.com/npm/cli/issues/4518
-        run: npm i -g npm@8.4.1
+        run: npm i -g npm@^8.5.4
       - name: Setup repo
         run: npm ci
       - name: Check linting
@@ -56,7 +56,7 @@ jobs:
           cache: 'npm'
       - name: Install locked NPM version.
         # TODO CDX-815: https://github.com/npm/cli/issues/4518
-        run: npm i -g npm@8.4.1
+        run: npm i -g npm@^8.5.4
       - name: Setup repo
         run: npm ci
       - name: Tests
@@ -87,7 +87,7 @@ jobs:
           cache: 'npm'
       - name: Install locked NPM version.
         # TODO CDX-815: https://github.com/npm/cli/issues/4518
-        run: npm i -g npm@8.4.1
+        run: npm i -g npm@^8.5.4
       - run: |
           npm ci
           Xvfb :1 -screen 0 1024x768x16 & sleep 1
@@ -127,7 +127,7 @@ jobs:
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
       - name: Install locked NPM version.
         # TODO CDX-815: https://github.com/npm/cli/issues/4518
-        run: npm i -g npm@8.4.1
+        run: npm i -g npm@^8.5.4
       - run: npm ci
       - name: Build
         run: npm run build
@@ -184,7 +184,7 @@ jobs:
           cache: 'npm'
       - name: Install locked NPM version.
         # TODO CDX-815: https://github.com/npm/cli/issues/4518
-        run: npm i -g npm@8.4.1
+        run: npm i -g npm@^8.5.4
       - uses: actions/cache@v2
         if: ${{matrix.os == 'ubuntu-latest'}}
         with:
@@ -248,7 +248,7 @@ jobs:
           cache: 'npm'
       - name: Install locked NPM version.
         # TODO CDX-815: https://github.com/npm/cli/issues/4518
-        run: npm i -g npm@8.4.1
+        run: npm i -g npm@^8.5.4
       - run: npm ci
       - name: Delete test org
         env:

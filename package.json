@@ -66,8 +66,10 @@
     "**/*.ts": "eslint --fix"
   },
   "engines": {
-    "node": ">=14.16.1"
+    "node": ">=16",
+    "npm": ">=8.5.4"
   },
+  "engineStrict": true,
   "scripts": {
     "clean": "rimraf package-lock.json node_modules",
     "build": "nx run-many --target=build --all",
@@ -88,7 +90,8 @@
     "release:phase3": "node --experimental-specifier-resolution=node ./scripts/releaseV2/phase3-git-commit-tag-push.mjs"
   },
   "workspaces": [
-    "packages/**"
+    "packages/**",
+    "!packages/cli-e2e/verdaccio/**"
   ],
   "dependencies": {
     "jest-config": "27.5.1"
