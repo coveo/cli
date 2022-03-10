@@ -190,7 +190,8 @@ jobs:
         # TODO CDX-815: https://github.com/npm/cli/issues/4518
         run: npm i -g npm@8.4.1
       - name: Install mitmproxy
-        run: pipx install mitmproxy
+        working-directory: packages/cli-e2e
+        run: pipx install $(cat requirements.txt)
       - uses: actions/cache@v2
         if: ${{matrix.os == 'ubuntu-latest'}}
         with:
