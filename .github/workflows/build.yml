@@ -189,19 +189,33 @@ jobs:
       - name: Install locked NPM version.
         # TODO CDX-815: https://github.com/npm/cli/issues/4518
         run: npm i -g npm@8.4.1
-      - name: Install mitmproxy
-        working-directory: packages/cli-e2e
-        run: pipx install $(cat requirements.txt)
-      - uses: actions/cache@v2
+      - name: Setup Verdaccio cache
+        uses: actions/cache@v2
         if: ${{matrix.os == 'ubuntu-latest'}}
         with:
           path: packages/cli-e2e/verdaccio
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-      - uses: actions/cache@v2
+      - name: Setup Verdaccio cache
+        uses: actions/cache@v2
         if: ${{matrix.os == 'windows-latest'}}
         with:
           path: packages\cli-e2e\verdaccio
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
+      - name: Setup mitmproxy cache
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        uses: actions/cache@v2
+        with:
+          path: ~/.local/pipx
+          key: ${{ matrix.os }}-${{ hashFiles('packages/cli-e2e/requirements.txt') }}
+      - name: Setup mitmproxy cache
+        if: ${{matrix.os == 'windows-latest'}}
+        uses: actions/cache@v2
+        with:
+          path: ~\.local\pipx
+          key: ${{ matrix.os }}-${{ hashFiles('packages/cli-e2e/requirements.txt') }}
+      - name: Install mitmproxy
+        working-directory: packages/cli-e2e
+        run: pipx install $(cat requirements.txt)
       - name: Decrypt config
         working-directory: packages/cli-e2e
         run: echo ${{needs.e2e-setup-login.outputs.cliConfigJson}} | base64 --decode | gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.E2E_TOKEN_PASSPHRASE }}" --output decrypted
