@@ -229,9 +229,7 @@ jobs:
       - name: Tests
         if: ${{matrix.os == 'windows-latest'}}
         working-directory: packages/cli-e2e
-        run: |
-          $env:Path = $env:Path + ";C:\Program Files (x86)\mitmproxy\bin"
-          npm run jest:ci -- ${{matrix.spec}}
+        run: npm run jest:ci -- ${{matrix.spec}}
       - name: Tests
         if: ${{matrix.os == 'ubuntu-latest'}}
         env:
