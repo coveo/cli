@@ -2,7 +2,6 @@ import type {ChildProcessWithoutNullStreams} from 'child_process';
 import {resolve, join} from 'path';
 import {mkdirSync} from 'fs';
 import {homedir} from 'os';
-
 import {ProcessManager} from './processManager';
 import {readJsonSync} from 'fs-extra';
 import {Terminal} from './terminal/terminal';
@@ -62,7 +61,6 @@ export async function setupUIProject(
   if (options.projectDir) {
     parentDir = resolve(options.projectDir, '..');
     mkdirSync(parentDir, {recursive: true});
-
     const gitInitTerminal = new Terminal(
       'git',
       ['init'],
@@ -85,7 +83,11 @@ export async function setupUIProject(
     args,
     {
       cwd: parentDir,
-      env: {...process.env, npm_config_registry: 'http://localhost:4873'},
+      env: {
+        ...process.env,
+        npm_config_registry: 'http://localhost:4873',
+        YARN_NPM_REGISTRY_SERVER: 'http://localhost:4873',
+      },
     },
     processManager,
     `build-${projectName}`
