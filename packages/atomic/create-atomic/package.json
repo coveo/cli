@@ -37,5 +37,8 @@
     "plop": "^3.0.3",
     "ts-node": "10.5.0",
     "typescript": "4.5.5"
+  },
+  "devDependencies": {
+    "fs-extra": "^10.0.1"
   }
 }

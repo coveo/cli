@@ -1,13 +1,11 @@
-import {readFileSync, writeFileSync} from 'fs';
-import {resolve, dirname} from 'path';
+import fs from 'fs-extra';
+const {readFileSync, writeFileSync, copySync} = fs;
+import {join, resolve, dirname} from 'path';
 import detectIndent from 'detect-indent';
 import {fileURLToPath} from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-// https://nodejs.org/docs/latest-v16.x/api/esm.html#importmetaresolvespecifier-parent
-const atomicTemplatePath = await import.meta.resolve(
-  '@coveo/create-atomic-template'
-);
+const atomicTemplatePath = resolve(__dirname, '..', '..', 'template');
 const bundledTemplatePath = resolve(__dirname, '..', 'template');
 
 copySync(atomicTemplatePath, bundledTemplatePath, {recursive: true});

@@ -91,7 +91,8 @@
   },
   "workspaces": [
     "packages/**",
-    "!packages/cli-e2e/verdaccio/**"
+    "!packages/cli-e2e/verdaccio/**",
+    "!packages/atomic/create-atomic/template/**"
   ],
   "dependencies": {
     "jest-config": "27.5.1"
