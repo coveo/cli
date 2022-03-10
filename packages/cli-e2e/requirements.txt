@@ -1,1 +1,1 @@
-mitmproxy~=7
+mitmproxy==7.0.4
