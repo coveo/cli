@@ -225,7 +225,7 @@ jobs:
   e2e-teardown:
     name: End-to-end teardown
     if: ${{ always() }}
-    needs: e2e
+    needs: [e2e, e2e-setup-login]
     runs-on: ubuntu-latest
     env:
       # Platform environment to log into for the e2e tests.
@@ -240,6 +240,7 @@ jobs:
       ORG_ID: ${{ secrets.ORG_ID }}
       # ID of the test run to identify resources to teardown.
       TEST_RUN_ID: '${{ github.sha }}-${{ github.run_attempt }}g'
+      CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
       - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
       - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
@@ -250,6 +251,9 @@ jobs:
         # TODO CDX-815: https://github.com/npm/cli/issues/4518
         run: npm i -g npm@8.4.1
       - run: npm ci
+      - name: Decrypt config
+        working-directory: packages/cli-e2e
+        run: echo ${{needs.e2e-setup-login.outputs.cliConfigJson}} | base64 --decode | gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.E2E_TOKEN_PASSPHRASE }}" --output decrypted
       - name: Delete test org
         env:
           DISPLAY: ':1'
