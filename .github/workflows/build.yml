@@ -229,7 +229,9 @@ jobs:
       - name: Tests
         if: ${{matrix.os == 'windows-latest'}}
         working-directory: packages/cli-e2e
-        run: npm run jest:ci -- ${{matrix.spec}}
+        run: |
+          where.exe mitmdump
+          npm run jest:ci -- ${{matrix.spec}}
       - name: Tests
         if: ${{matrix.os == 'ubuntu-latest'}}
         env:
