@@ -3,7 +3,6 @@ import {resolve} from 'path';
 import {homedir} from 'os';
 import {ProcessManager} from './processManager';
 import {Terminal} from './terminal/terminal';
-import getPort from 'get-port';
 import waitOn from 'wait-on';
 
 export const MITM_BIN_NAME = 'mitmdump';
