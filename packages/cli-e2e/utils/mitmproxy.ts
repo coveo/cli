@@ -5,7 +5,8 @@ import {ProcessManager} from './processManager';
 import {Terminal} from './terminal/terminal';
 import waitOn from 'wait-on';
 
-export const MITM_BIN_NAME = 'mitmdump';
+export const MITM_BIN_NAME =
+  process.platform === 'win32' ? 'mitmdump.exe' : 'mitmdump';
 
 export const resolveBinary = (programName: string) => {
   const whereOrWhich = process.platform === 'win32' ? 'where.exe' : 'which';
@@ -21,7 +22,7 @@ export const startMitmProxy = (
   port: number,
   terminalDebugName = 'mitmproxy'
 ) => {
-  const mitmPath = resolveBinary(MITM_BIN_NAME);
+  const mitmPath = MITM_BIN_NAME;
   const serverTerminal = new Terminal(
     mitmPath,
     ['--set', `listen_port=${port}`],
