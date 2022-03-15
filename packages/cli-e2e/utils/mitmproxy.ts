@@ -29,6 +29,10 @@ export const startMitmProxy = (
     processManager,
     terminalDebugName
   );
+  serverTerminal.orchestrator.process.stdout.emit(
+    'data',
+    `COMMAND: ${mitmPath} ${['--set', `listen_port=${port}`].join(' ')}`
+  );
   return serverTerminal;
 };
 
