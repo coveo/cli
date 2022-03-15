@@ -252,7 +252,6 @@ jobs:
         run: npm i -g npm@8.4.1
       - run: npm ci
       - name: Decrypt config
-        working-directory: packages/cli-e2e
         run: echo ${{needs.e2e-setup-login.outputs.cliConfigJson}} | base64 --decode | gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.E2E_TOKEN_PASSPHRASE }}" --output decrypted
       - name: Delete test org
         env:
