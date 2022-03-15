@@ -1,3 +1,4 @@
+import getPort from 'get-port';
 import {CLI_EXEC_PATH} from '../utils/cli';
 import {
   getMitmProxyEnvCerts,
@@ -16,8 +17,9 @@ describe('org:list', () => {
     beforeAll(async () => {
       const proxyProcessManager = new ProcessManager();
       processManagers.push(proxyProcessManager);
-      proxyTerminal = startMitmProxy(proxyProcessManager);
-      await waitForMitmProxy(proxyTerminal);
+      const mitmProxyPort = await getPort({port: 8080});
+      proxyTerminal = startMitmProxy(proxyProcessManager, mitmProxyPort);
+      await waitForMitmProxy(proxyTerminal, mitmProxyPort);
     }, 5 * 60e3);
 
     afterAll(async () => {
