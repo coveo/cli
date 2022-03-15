@@ -9,10 +9,10 @@
   },
   "dependencies": {
     "@coveo/atomic": "1.23.7",
-    "@coveo/search-token-lambda": "1.25.4"
+    "@coveo/search-token-lambda": "1.25.4",
+    "@stencil/core": "2.14.0"
   },
   "devDependencies": {
-    "@stencil/core": "2.14.0",
     "fkill": "8.0.0",
     "get-port": "6.1.2",
     "gts": "3.1.0",
