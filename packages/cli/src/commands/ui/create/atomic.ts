@@ -74,6 +74,7 @@ export default class Atomic extends Command {
     const username = await authenticatedClient.getUsername();
     console.log('User info retrieved');
     const cliArgs = [
+      '--verbose',
       `${Atomic.cliPackage}@${this.flags.version}`,
       '--project',
       this.args.name,
