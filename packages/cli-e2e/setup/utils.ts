@@ -1,4 +1,4 @@
-import {mkdirSync} from 'fs';
+import {mkdirSync, copyFileSync} from 'fs';
 import {dirSync as tmpDirSync} from 'tmp';
 import {randomBytes} from 'crypto';
 import {launch as launchChrome} from 'chrome-launcher';
@@ -6,14 +6,14 @@ import type {Browser} from 'puppeteer';
 import {captureScreenshots, connectToChromeBrowser} from '../utils/browser';
 import {clearAccessTokenFromConfig, loginWithOffice} from '../utils/login';
 import {getPlatformHost} from '../utils/platform';
-import {getConfig as getCliConfig} from '../utils/cli';
+import {getConfig as getCliConfig, getConfigFilePath} from '../utils/cli';
 import waitOn from 'wait-on';
 import 'dotenv/config';
 import {Terminal} from '../utils/terminal/terminal';
 import {join, resolve} from 'path';
 import {npm} from '../utils/npm';
 import {MITM_BIN_NAME, resolveBinary} from '../utils/mitmproxy';
-import {parse} from 'path';
+import {parse, dirname} from 'path';
 
 async function clearChromeBrowsingData(browser: Browser) {
   const pages = await browser.pages();
@@ -130,4 +130,9 @@ export function ensureMitmProxyInstalled(): void | never {
   } catch (error) {
     throw 'mitmdump not found in Path. Please install mitmproxy and add its binaries to your path';
   }
+}
+
+export function restoreCliConfig() {
+  mkdirSync(dirname(getConfigFilePath()), {recursive: true});
+  copyFileSync('decrypted', getConfigFilePath());
 }
