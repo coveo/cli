@@ -107,16 +107,6 @@ export async function startVerdaccio() {
     global.processManager!,
     'verdaccio'
   );
-  verdaccioTerminal.orchestrator.process.stdout.emit(
-    'data',
-    JSON.stringify(args)
-  );
-
-  verdaccioTerminal
-    .when('exit')
-    .on('process')
-    .do(() => process.exit(1))
-    .once();
   await verdaccioTerminal
     .when(/localhost:4873/)
     .on('stdout')
