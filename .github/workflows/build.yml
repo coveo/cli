@@ -133,6 +133,11 @@ jobs:
         run: npm run build
       - name: Setup E2E tests
         run: node -r ts-node/register/transpile-only packages/cli-e2e/setup/ci-verdaccio.ts
+      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2
+        if: always()
+        with:
+          name: ${{matrix.os}}-verdaccio-publish-artifacts
+          path: ./packages/cli-e2e/artifacts
   e2e:
     name: End-to-end tests
     runs-on: ${{matrix.os}}
