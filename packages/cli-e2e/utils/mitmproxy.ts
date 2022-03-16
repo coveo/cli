@@ -26,7 +26,7 @@ export const startMitmProxy = (
   const serverTerminal = new Terminal(
     mitmPath,
     ['--set', `listen_port=${port}`],
-    undefined,
+    {shell: true},
     processManager,
     terminalDebugName
   );
