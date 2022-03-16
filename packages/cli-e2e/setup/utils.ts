@@ -119,7 +119,8 @@ export function useCIConfigIfEnvIncomplete() {
   const cliConfig = getCliConfig();
   process.env.PLATFORM_ENV = process.env.PLATFORM_ENV || cliConfig.environment;
   process.env.ORG_ID = process.env.ORG_ID || cliConfig.organization;
-  process.env.ACCESS_TOKEN = process.env.ACCESS_TOKEN || cliConfig.accessToken;
+  process.env.PLATFORM_API_KEY =
+    process.env.PLATFORM_API_KEY || cliConfig.accessToken;
 }
 
 export function ensureMitmProxyInstalled(): void | never {

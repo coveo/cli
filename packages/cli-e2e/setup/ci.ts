@@ -4,10 +4,7 @@ import {getConfigFilePath} from '../utils/cli';
 import {ProcessManager} from '../utils/processManager';
 
 import {setProcessEnv, createUiProjectDirectory, startVerdaccio} from './utils';
-import {dirname, join, resolve} from 'path';
-import {npm} from '../utils/npm';
-import {Terminal} from '../utils/terminal/terminal';
-
+import {dirname} from 'path';
 export default async function () {
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
   // runId must start and finish with letters to satisfies Angular.
@@ -16,18 +13,6 @@ export default async function () {
   createUiProjectDirectory();
   global.processManager = new ProcessManager();
   await startVerdaccio();
-  const args = [...npm(), 'cache', 'ls', '@coveo/create-atomic'];
-  await new Terminal(
-    args.shift()!,
-    args,
-    {cwd: resolve(join(__dirname, '..'))},
-    global.processManager!,
-    'npm-cache'
-  )
-    .when('exit')
-    .on('process')
-    .do()
-    .once();
   restoreCliConfig();
 }
 

@@ -16,10 +16,8 @@ import {
 } from './utils';
 
 export default async function () {
-  if (!process.env.CI) {
-    ensureMitmProxyInstalled();
-    useCIConfigIfEnvIncomplete();
-  }
+  ensureMitmProxyInstalled();
+  useCIConfigIfEnvIncomplete();
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
   setProcessEnv();
 
