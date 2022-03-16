@@ -1,1 +1,1 @@
-export const npm = () => ['node', process.env['NPM_CLI_JS']!];
+export const npm = () => ['node', process.env['npm_execpath']!];
