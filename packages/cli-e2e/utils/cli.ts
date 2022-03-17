@@ -83,7 +83,11 @@ export async function setupUIProject(
     npm_config_registry: 'http://localhost:4873',
     YARN_NPM_REGISTRY_SERVER: 'http://localhost:4873',
   };
-  const excludeEnvVars = ['npm_config_local_prefix', 'npm_package_json'];
+  const excludeEnvVars = [
+    'npm_config_local_prefix',
+    'npm_package_json',
+    'INIT_CWD',
+  ];
 
   for (const excludeVar of excludeEnvVars) {
     delete env[excludeVar];
