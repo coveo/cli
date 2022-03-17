@@ -92,6 +92,7 @@ export async function setupUIProject(
   for (const excludeVar of excludeEnvVars) {
     delete env[excludeVar];
   }
+  const cmd = args.join(' ');
   const buildProcess = new Terminal(
     args.shift()!,
     args,
@@ -102,7 +103,7 @@ export async function setupUIProject(
     processManager,
     `build-${projectName}`
   );
-
+  buildProcess.orchestrator.process.stdout.emit('data', `${cmd}\n`);
   return buildProcess;
 }
 export function getConfigFilePath() {
