@@ -78,16 +78,22 @@ export async function setupUIProject(
     args.unshift('node');
   }
 
+  const env: Record<string, any> = {
+    ...process.env,
+    npm_config_registry: 'http://localhost:4873',
+    YARN_NPM_REGISTRY_SERVER: 'http://localhost:4873',
+  };
+  const excludeEnvVars = ['npm_config_local_prefix', 'npm_package_json'];
+
+  for (const excludeVar of excludeEnvVars) {
+    delete env[excludeVar];
+  }
   const buildProcess = new Terminal(
     args.shift()!,
     args,
     {
       cwd: parentDir,
-      env: {
-        ...process.env,
-        npm_config_registry: 'http://localhost:4873',
-        YARN_NPM_REGISTRY_SERVER: 'http://localhost:4873',
-      },
+      env,
     },
     processManager,
     `build-${projectName}`
