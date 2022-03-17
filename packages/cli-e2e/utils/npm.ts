@@ -1,2 +1,7 @@
 import {resolve} from 'path';
-export const npm = () => ['node', resolve(process.env['npm_execpath']!)];
+export const npm = () => [
+  'node',
+  process.env['npm_execpath']
+    ? resolve(process.env['npm_execpath'])
+    : require.resolve('npm'),
+];
