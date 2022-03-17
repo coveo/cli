@@ -1,7 +1,2 @@
-import {resolve} from 'path';
-export const npm = () => [
-  'node',
-  process.env['npm_execpath']
-    ? resolve(process.env['npm_execpath'])
-    : require.resolve('npm'),
-];
+export const npmPathEnvVar = 'E2E_NPM_PATH';
+export const npm = () => ['node', process.env[npmPathEnvVar]];
