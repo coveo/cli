@@ -90,6 +90,7 @@ export async function setupUIProject(
   ];
 
   const pathSep = process.platform === 'win32' ? ';' : ':';
+  console.log(`dafuk${JSON.stringify(env)}`);
   const path = env['PATH'].split(pathSep);
   const filteredPath = path.filter(
     (pathElement: string) => !pathElement.startsWith(env['GITHUB_WORKSPACE'])
