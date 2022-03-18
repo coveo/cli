@@ -25,7 +25,7 @@ jobs:
           node-version: 16
           cache: 'npm'
       - name: Install locked NPM version.
-        # TODO CDX-815: https://github.com/npm/cli/issues/4518
+        # TODO: Remove later, when `npm 8.5.4` is built in.
         run: npm i -g npm@^8.5.4
       - name: Setup repo
         run: npm ci
@@ -55,7 +55,7 @@ jobs:
           node-version: ${{matrix.node}}
           cache: 'npm'
       - name: Install locked NPM version.
-        # TODO CDX-815: https://github.com/npm/cli/issues/4518
+        # TODO: Remove later, when `npm 8.5.4` is built in.
         run: npm i -g npm@^8.5.4
       - name: Setup repo
         run: npm ci
@@ -86,7 +86,7 @@ jobs:
           node-version: ${{matrix.node}}
           cache: 'npm'
       - name: Install locked NPM version.
-        # TODO CDX-815: https://github.com/npm/cli/issues/4518
+        # TODO: Remove later, when `npm 8.5.4` is built in.
         run: npm i -g npm@^8.5.4
       - run: |
           npm ci
@@ -126,7 +126,7 @@ jobs:
           path: packages\cli-e2e\verdaccio
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
       - name: Install locked NPM version.
-        # TODO CDX-815: https://github.com/npm/cli/issues/4518
+        # TODO: Remove later, when `npm 8.5.4` is built in.
         run: npm i -g npm@^8.5.4
       - run: npm ci
       - name: Build
@@ -253,7 +253,7 @@ jobs:
           node-version: ${{matrix.node}}
           cache: 'npm'
       - name: Install locked NPM version.
-        # TODO CDX-815: https://github.com/npm/cli/issues/4518
+        # TODO: Remove later, when `npm 8.5.4` is built in.
         run: npm i -g npm@^8.5.4
       - run: npm ci
       - name: Decrypt config

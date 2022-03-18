@@ -10,10 +10,6 @@ import {dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-console.log(path.join(__dirname, 'lib/plopfile.js'));
-console.log('=-=-=-=-=-=-=- ENV DUMP -=-=-=-=-=-=-=');
-console.log(JSON.stringify(process.env));
-console.log('=-=-=-=-=-=-=- DUMP END -=-=-=-=-=-=-=');
 Plop.prepare(
   {
     cwd: argv.cwd,
