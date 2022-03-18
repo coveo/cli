@@ -89,15 +89,15 @@ export async function setupUIProject(
     'INIT_CWD',
   ];
 
-  for (const excludeVar of excludeEnvVars) {
-    delete env[excludeVar];
-  }
   const pathSep = process.platform === 'win32' ? ';' : ':';
-  const path = env.PATH.split(pathSep);
+  const path = env['PATH'].split(pathSep);
   const filteredPath = path.filter(
     (pathElement: string) => !pathElement.startsWith(env['GITHUB_WORKSPACE'])
   );
-  env.PATH = filteredPath.join(pathSep);
+  env['PATH'] = filteredPath.join(pathSep);
+  for (const excludeVar of excludeEnvVars) {
+    delete env[excludeVar];
+  }
   const cmd = args.join(' ');
   const buildProcess = new Terminal(
     args.shift()!,
