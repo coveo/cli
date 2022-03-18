@@ -79,7 +79,6 @@ export async function setupUIProject(
   }
 
   const env: Record<string, any> = getCleanEnv();
-  const cmd = args.join(' ');
   const buildProcess = new Terminal(
     args.shift()!,
     args,
