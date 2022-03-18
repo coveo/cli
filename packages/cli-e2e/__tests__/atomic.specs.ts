@@ -9,6 +9,7 @@ import {npm} from '../utils/npm';
 import {jwtTokenPattern} from '../utils/matcher';
 import {EOL} from 'os';
 import {DummyServer} from '../utils/server';
+import {loginWithApiKey} from '../utils/login';
 
 describe('ui:create:atomic', () => {
   let browser: Browser;
@@ -69,6 +70,11 @@ describe('ui:create:atomic', () => {
   };
 
   beforeAll(async () => {
+    await loginWithApiKey(
+      process.env.PLATFORM_API_KEY!,
+      process.env.ORG_ID!,
+      process.env.PLATFORM_ENV!
+    );
     const buildProcessManager = new ProcessManager();
     processManagers.push(buildProcessManager);
     browser = await getNewBrowser();

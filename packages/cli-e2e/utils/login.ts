@@ -173,3 +173,20 @@ export async function clearAccessTokenFromConfig() {
   delete cfg.accessToken;
   await writeJSON(getConfigFilePath(), cfg);
 }
+
+export async function loginWithApiKey(
+  apiKey: string,
+  orgId: string,
+  env: string
+) {
+  if (!existsSync(getConfigFilePath())) {
+    throw 'Missing config file';
+  }
+  const cfg = await readJSON(getConfigFilePath());
+  cfg.accessToken = apiKey;
+  cfg.organization = orgId;
+  cfg.environment = env;
+  cfg.analyticsEnabled = false;
+  cfg.anonymous = true;
+  await writeJSON(getConfigFilePath(), cfg);
+}

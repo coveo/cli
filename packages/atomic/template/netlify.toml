@@ -1,0 +1,6 @@
+[build]
+    functions = "lambda/functions/"
+    publish = "www/"
+
+[dev]
+    command = "stencil build --dev --watch --serve --no-open"

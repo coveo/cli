@@ -6,11 +6,13 @@ on:
     paths:
       - '**/package-lock.json'
       - '!package-lock.json'
+      - '!packages/cli-e2e/npm-shim/package-lock.json'
   pull_request:
     branches: [master]
     paths:
       - '**/package-lock.json'
       - '!package-lock.json'
+      - '!packages/cli-e2e/npm-shim/package-lock.json'
 
 jobs:
   lockfile-outside-of-root:
