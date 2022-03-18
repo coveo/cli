@@ -1,4 +1,4 @@
-import {mkdirSync, copyFileSync} from 'fs';
+import {mkdirSync, copyFileSync, copySync} from 'fs-extra';
 import {dirSync as tmpDirSync} from 'tmp';
 import {randomBytes} from 'crypto';
 import {launch as launchChrome} from 'chrome-launcher';
@@ -141,11 +141,9 @@ export function restoreCliConfig() {
 export function shimNpm() {
   const tmpDir = tmpDirSync();
   const npmDir = join(tmpDir.name, 'npmShim');
-  mkdirSync(npmDir);
-  const npmInitArgs = [appendCmdIfWindows`npm`, 'init', '-y'];
-  spawnSync(npmInitArgs.shift()!, npmInitArgs, {cwd: npmDir});
-  const npmInstall = [appendCmdIfWindows`npm`, 'install', 'npm@latest'];
-  spawnSync(npmInstall.shift()!, npmInstall, {cwd: npmDir});
+  copySync(join(__dirname, '..', 'npm-shim'), npmDir);
+  const npmCiArgs = [appendCmdIfWindows`npm`, 'ci'];
+  spawnSync(npmCiArgs.shift()!, npmCiArgs, {cwd: npmDir});
   process.env[npmPathEnvVar] = resolve(
     npmDir,
     'node_modules',

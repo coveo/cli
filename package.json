@@ -92,6 +92,7 @@
   "workspaces": [
     "packages/**",
     "!packages/cli-e2e/verdaccio/**",
+    "!packages/cli-e2e/npm-shim/**",
     "!packages/atomic/create-atomic/template/**"
   ],
   "dependencies": {
