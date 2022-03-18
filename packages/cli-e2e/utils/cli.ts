@@ -78,21 +78,17 @@ export async function setupUIProject(
     args.unshift('node');
   }
 
+  const env: Record<string, any> = getCleanEnv();
   const buildProcess = new Terminal(
     args.shift()!,
     args,
     {
       cwd: parentDir,
-      env: {
-        ...process.env,
-        npm_config_registry: 'http://localhost:4873',
-        YARN_NPM_REGISTRY_SERVER: 'http://localhost:4873',
-      },
+      env,
     },
     processManager,
     `build-${projectName}`
   );
-
   return buildProcess;
 }
 export function getConfigFilePath() {
@@ -107,3 +103,28 @@ export function getConfig() {
 }
 
 export const CLI_EXEC_PATH = resolve(__dirname, '../../cli/bin/run');
+
+function getCleanEnv(): Record<string, any> {
+  const env: Record<string, any> = {
+    ...process.env,
+    npm_config_registry: 'http://localhost:4873',
+    YARN_NPM_REGISTRY_SERVER: 'http://localhost:4873',
+  };
+  const excludeEnvVars = [
+    'npm_config_local_prefix',
+    'npm_package_json',
+    'INIT_CWD',
+  ];
+
+  const pathSep = process.platform === 'win32' ? ';' : ':';
+  const pathName = process.platform === 'win32' ? 'Path' : 'PATH';
+  const path = env[pathName].split(pathSep);
+  const filteredPath = path.filter(
+    (pathElement: string) => !pathElement.startsWith(env['GITHUB_WORKSPACE'])
+  );
+  env[pathName] = filteredPath.join(pathSep);
+  for (const excludeVar of excludeEnvVars) {
+    delete env[excludeVar];
+  }
+  return env;
+}

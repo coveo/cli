@@ -5,12 +5,12 @@ import {ProcessManager} from '../utils/processManager';
 
 import 'dotenv/config';
 
-import {setProcessEnv, authenticateCli} from './utils';
+import {setProcessEnv, authenticateCli, shimNpm} from './utils';
 import {getConfig, getConfigFilePath} from '../utils/cli';
 import {exportVariable, setSecret} from '@actions/core';
 
 async function main() {
-  console.log('HELLO');
+  shimNpm();
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
   // runId must start and finish with letters to satisfies Angular.
   setProcessEnv();

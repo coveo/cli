@@ -1,4 +1,4 @@
-import {mkdirSync, copyFileSync} from 'fs';
+import {mkdirSync, copyFileSync, copySync} from 'fs-extra';
 import {dirSync as tmpDirSync} from 'tmp';
 import {randomBytes} from 'crypto';
 import {launch as launchChrome} from 'chrome-launcher';
@@ -11,9 +11,10 @@ import waitOn from 'wait-on';
 import 'dotenv/config';
 import {Terminal} from '../utils/terminal/terminal';
 import {join, resolve} from 'path';
-import {npm} from '../utils/npm';
+import {npm, npmPathEnvVar} from '../utils/npm';
 import {MITM_BIN_NAME, resolveBinary} from '../utils/mitmproxy';
 import {parse, dirname} from 'path';
+import {spawnSync} from 'child_process';
 
 async function clearChromeBrowsingData(browser: Browser) {
   const pages = await browser.pages();
@@ -119,7 +120,8 @@ export function useCIConfigIfEnvIncomplete() {
   const cliConfig = getCliConfig();
   process.env.PLATFORM_ENV = process.env.PLATFORM_ENV || cliConfig.environment;
   process.env.ORG_ID = process.env.ORG_ID || cliConfig.organization;
-  process.env.ACCESS_TOKEN = process.env.ACCESS_TOKEN || cliConfig.accessToken;
+  process.env.PLATFORM_API_KEY =
+    process.env.PLATFORM_API_KEY || cliConfig.accessToken;
 }
 
 export function ensureMitmProxyInstalled(): void | never {
@@ -135,3 +137,21 @@ export function restoreCliConfig() {
   mkdirSync(dirname(getConfigFilePath()), {recursive: true});
   copyFileSync('decrypted', getConfigFilePath());
 }
+
+export function shimNpm() {
+  const tmpDir = tmpDirSync();
+  const npmDir = join(tmpDir.name, 'npmShim');
+  copySync(join(__dirname, '..', 'npm-shim'), npmDir);
+  const npmCiArgs = [appendCmdIfWindows`npm`, 'ci'];
+  spawnSync(npmCiArgs.shift()!, npmCiArgs, {cwd: npmDir});
+  process.env[npmPathEnvVar] = resolve(
+    npmDir,
+    'node_modules',
+    'npm',
+    'bin',
+    'npm-cli.js'
+  );
+}
+
+const appendCmdIfWindows = (cmd: TemplateStringsArray) =>
+  `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;

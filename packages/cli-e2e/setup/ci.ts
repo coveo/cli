@@ -7,13 +7,14 @@ import {
   createUiProjectDirectory,
   startVerdaccio,
   restoreCliConfig,
+  shimNpm,
 } from './utils';
 
 export default async function () {
+  shimNpm();
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
   // runId must start and finish with letters to satisfies Angular.
   setProcessEnv();
-
   createUiProjectDirectory();
   global.processManager = new ProcessManager();
   await startVerdaccio();
