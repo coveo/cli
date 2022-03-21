@@ -1,29 +1,18 @@
-import {spawnSync} from 'child_process';
-import {resolve} from 'path';
+import {join, resolve} from 'path';
 import {homedir} from 'os';
 import {ProcessManager} from './processManager';
 import {Terminal} from './terminal/terminal';
-
-export const MITM_BIN_NAME = 'mitmdump';
-
-export const resolveBinary = (programName: string) => {
-  const whereOrWhich = process.platform === 'win32' ? 'where.exe' : 'which';
-  const spawner = spawnSync(whereOrWhich, [programName], {
-    shell: true,
-    encoding: 'utf-8',
-  });
-  return spawner.stdout.trim();
-};
+import waitOn from 'wait-on';
 
 export const startMitmProxy = (
   processManager: ProcessManager,
   terminalDebugName = 'mitmproxy'
 ) => {
-  const mitmPath = resolveBinary(MITM_BIN_NAME);
-  process.stdout.write(`Starting mitmproxy: ${mitmPath}\n`);
+  process.stdout.write(JSON.stringify(process.env));
+  const mitmScript = join(__dirname, '..', 'mitmproxy', 'main.py');
   const serverTerminal = new Terminal(
-    mitmPath,
-    [],
+    'python',
+    [mitmScript],
     undefined,
     processManager,
     terminalDebugName
@@ -31,12 +20,7 @@ export const startMitmProxy = (
   return serverTerminal;
 };
 
-export const waitForMitmProxy = (proxyTerminal: Terminal) =>
-  proxyTerminal
-    .when(/Proxy server listening at/)
-    .on('stdout')
-    .do()
-    .once();
+export const waitForMitmProxy = () => waitOn({resources: ['tcp:8080']});
 
 export const getMitmProxyEnvCerts = () => ({
   NODE_EXTRA_CA_CERTS: resolve(
