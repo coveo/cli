@@ -20,6 +20,7 @@ export const startMitmProxy = (
   terminalDebugName = 'mitmproxy'
 ) => {
   const mitmPath = resolveBinary(MITM_BIN_NAME);
+  process.stdout.write(`Starting mitmproxy: ${mitmPath}\n`);
   const serverTerminal = new Terminal(
     mitmPath,
     [],
