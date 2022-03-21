@@ -1,4 +1,5 @@
 import {PageManifest} from '../page-manifest.js';
+import {defaultLayout} from './default-layout.js';
 import defaultResultTemplate from './default-result-template.js';
 import defaultSearchInterface from './default-search-interface.js';
 
@@ -8,12 +9,11 @@ export const defaultPageManifest: PageManifest = {
   },
   markup: defaultSearchInterface,
   results: {
-    placeholder: '',
     attributes: {},
     templates: [{markup: defaultResultTemplate, attributes: {}}],
   },
   style: {
     theme: '',
-    layout: '',
+    layout: defaultLayout,
   },
 };

@@ -1,3 +1,11 @@
+export const ResultsPlaceholder = '--results--';
+
+export interface PageManifestBody {
+  pagePlaceholders?: {
+    results?: string;
+  };
+}
+
 export interface PageManifestConfig {
   title: string;
 }
@@ -8,7 +16,7 @@ export interface PageManifestResultTemplate {
 }
 
 export interface PageManifestResults {
-  placeholder: string;
+  placeholder?: string;
   attributes: Record<string, string>;
   templates: PageManifestResultTemplate[];
 }
