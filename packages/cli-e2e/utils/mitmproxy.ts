@@ -19,12 +19,15 @@ export const startMitmProxy = (
   return serverTerminal;
 };
 
-export const waitForMitmProxy = () => waitOn({resources: ['tcp:8080']});
+const mitmProxyCertPath = resolve(
+  homedir(),
+  '.mitmproxy',
+  'mitmproxy-ca-cert.pem'
+);
+
+export const waitForMitmProxy = () =>
+  waitOn({resources: ['tcp:8080', `file:${mitmProxyCertPath}`]});
 
 export const getMitmProxyEnvCerts = () => ({
-  NODE_EXTRA_CA_CERTS: resolve(
-    homedir(),
-    '.mitmproxy',
-    'mitmproxy-ca-cert.pem'
-  ),
+  NODE_EXTRA_CA_CERTS: mitmProxyCertPath,
 });
