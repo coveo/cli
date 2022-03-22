@@ -8,16 +8,16 @@
     "lint": "prettier --check . && eslint ."
   },
   "dependencies": {
-    "@coveo/atomic": "1.23.7",
+    "@coveo/atomic": "1.35.0",
     "@coveo/search-token-lambda": "1.25.4",
-    "@stencil/core": "2.14.0"
+    "@stencil/core": "2.14.2"
   },
   "devDependencies": {
     "fkill": "8.0.0",
     "get-port": "6.1.2",
     "gts": "3.1.0",
-    "netlify-cli": "9.8.3",
-    "prettier": "2.5.1",
+    "netlify-cli": "9.13.3",
+    "prettier": "2.6.0",
     "rollup-plugin-dotenv": "0.3.0",
     "rollup-plugin-html": "0.2.1"
   }
