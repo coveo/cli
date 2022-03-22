@@ -17,7 +17,7 @@
     "url": "git+https://github.com/coveo/cli.git"
   },
   "scripts": {
-    "postinstall": "pip install -r mitmproxy/requirements.txt",
+    "postinstall": "pip install -r mitmproxy/requirements.txt --user",
     "lint": "eslint .",
     "test-e2e": "npm run test:headless",
     "test:headless": "node ./entrypoints/entry.js",
