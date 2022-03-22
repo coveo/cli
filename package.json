@@ -82,7 +82,7 @@
     "prepare": "husky install",
     "commit-msg": "node ./hooks/commit-msg.js",
     "pre-commit": "lint-staged",
-    "postinstall": "patch-package",
+    "postinstall": "patch-package && nx run-many --target=postinstall --all",
     "release": "npm run nx:graph && npm run release:phase1 && npm run release:phase2 && npm run release:phase3",
     "nx:graph": "nx graph --file=topology.json",
     "release:phase1": "node --experimental-specifier-resolution=node ./scripts/releaseV2/phase1-get-new-version.mjs",

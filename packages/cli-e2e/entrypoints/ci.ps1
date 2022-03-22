@@ -2,6 +2,7 @@
 # Set the default user browser on Chrome.
 # See http://kolbi.cz/blog/?p=346
 #>
+Write-Output "::group::Setup Chrome"
 $SetUserFTAPath = Resolve-Path '.\packages\cli-e2e\entrypoints\utils\SetUserFTA\SetUserFTA.exe'
 Start-Process -FilePath $SetUserFTAPath -ArgumentList ' http ChromeHTML' -PassThru | Wait-Process
 Start-Process -FilePath $SetUserFTAPath -ArgumentList ' https ChromeHTML' -PassThru | Wait-Process
@@ -15,11 +16,7 @@ npm install -g @angular/cli@13.x
 npm install -g ts-node
 Write-Output "::endgroup::"
 
-Write-Output "::group::Publishing UI templates"
+Write-Output "::group::Setup Git User"
 git config --global user.name "notgroot"
 git config --global user.email "notgroot@coveo.com"
-
-Write-Output "::group::Setup mitmproxy"
-choco.exe install mitmproxy -y
-$env:Path = $env:Path + ";C:\Program Files (x86)\mitmproxy\bin"
 Write-Output "::endgroup::"
