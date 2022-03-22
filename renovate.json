@@ -69,6 +69,12 @@
       "matchPackageNames": ["vue-router"],
       "allowedVersions": "3.x",
       "description": "Need to support Vue3 TODO:CDX-813"
+    },
+    {
+      "matchPackageNames": ["fkill"],
+      "matchCurrentVersion": "7.x",
+      "allowedVersions": "7.x",
+      "description": "Need to migrate E2E to ESM (not easy)"
     }
   ],
   "rangeStrategy": "auto",

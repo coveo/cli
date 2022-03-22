@@ -71,7 +71,7 @@
   "peerDependencies": {
     "@angular/cli": "^13.2.4",
     "@vue/cli": "^4.5.11 || ^5.0.0",
-    "create-react-app": "latest"
+    "create-react-app": "*"
   },
   "peerDependenciesMeta": {
     "@angular/cli": {

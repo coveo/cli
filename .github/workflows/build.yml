@@ -187,6 +187,11 @@ jobs:
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
+      - uses: actions/setup-python@0ebf233433c08fb9061af664d501c3f3ff0e9e20 # tag=v3
+        with:
+          cache: 'pip'
+      - name: Install Mitmproxy through pip
+        run: pip install -r packages/cli-e2e/mitmproxy/requirements.txt
       - name: Install locked NPM version.
         # TODO: Remove later, when `npm 8.5.4` is built in.
         run: npm i -g npm@^8.5.4
@@ -213,9 +218,7 @@ jobs:
       - name: Tests
         if: ${{matrix.os == 'windows-latest'}}
         working-directory: packages/cli-e2e
-        run: |
-          $env:Path = $env:Path + ";C:\Program Files (x86)\mitmproxy\bin"
-          npm run jest:ci -- ${{matrix.spec}}
+        run: npm run jest:ci -- ${{matrix.spec}}
       - name: Tests
         if: ${{matrix.os == 'ubuntu-latest'}}
         env:
