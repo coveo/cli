@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
       - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
-      - run: npm i -g @nrwl/cli
+      - run: yarn global add @nrwl/cli
       - name: Prepare snyk
         run: |
           npm ci
