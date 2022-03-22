@@ -16,7 +16,7 @@ jobs:
       - name: Prepare snyk
         run: |
           npm ci
-          yarn install --no-immutable --ignore-scripts
+          yarn install --no-immutable --mode=skip-build
       - name: Snyk Monitor
         continue-on-error: true
         if: ${{ github.event_name != 'pull_request' }}
