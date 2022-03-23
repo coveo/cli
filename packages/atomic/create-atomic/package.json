@@ -7,11 +7,11 @@
     "/template",
     "/template/.gitignore"
   ],
-  "bin": "./index.js",
+  "bin": "./index.mjs",
   "type": "module",
-  "main": "index.js",
+  "main": "index.mjs",
   "scripts": {
-    "start": "./index.js",
+    "start": "node ./index.mjs",
     "build": "tsc -p tsconfig.json",
     "prepublishOnly": "npm run build && node ./scripts/preparePackageJsonTemplate.mjs",
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
@@ -33,9 +33,12 @@
   },
   "dependencies": {
     "detect-indent": "^7.0.0",
-    "minimist": "1.2.5",
+    "minimist": "1.2.6",
     "plop": "^3.0.3",
-    "ts-node": "10.5.0",
-    "typescript": "4.5.5"
+    "ts-node": "10.7.0",
+    "typescript": "4.6.2"
+  },
+  "devDependencies": {
+    "fs-extra": "10.0.1"
   }
 }

@@ -1,9 +1,0 @@
-{
-  "extends": "../../base.eslintrc",
-  "env": {
-    "browser": true
-  },
-  "rules": {
-    "node/no-unpublished-import": ["off"]
-  }
-}
