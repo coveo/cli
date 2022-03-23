@@ -7,7 +7,6 @@ import 'dotenv/config';
 
 import {npmLogin} from '../utils/npmLogin';
 import {
-  ensureMitmProxyInstalled,
   useCIConfigIfEnvIncomplete,
   setProcessEnv,
   createUiProjectDirectory,
@@ -18,7 +17,6 @@ import {
 
 export default async function () {
   shimNpm();
-  ensureMitmProxyInstalled();
   useCIConfigIfEnvIncomplete();
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
   setProcessEnv();

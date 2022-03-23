@@ -12,8 +12,7 @@ import 'dotenv/config';
 import {Terminal} from '../utils/terminal/terminal';
 import {join, resolve} from 'path';
 import {npm, npmPathEnvVar} from '../utils/npm';
-import {MITM_BIN_NAME, resolveBinary} from '../utils/mitmproxy';
-import {parse, dirname} from 'path';
+import {dirname} from 'path';
 import {spawnSync} from 'child_process';
 
 async function clearChromeBrowsingData(browser: Browser) {
@@ -124,15 +123,6 @@ export function useCIConfigIfEnvIncomplete() {
     process.env.PLATFORM_API_KEY || cliConfig.accessToken;
 }
 
-export function ensureMitmProxyInstalled(): void | never {
-  const pathCandidate = resolveBinary(MITM_BIN_NAME);
-  try {
-    parse(pathCandidate);
-  } catch (error) {
-    throw 'mitmdump not found in Path. Please install mitmproxy and add its binaries to your path';
-  }
-}
-
 export function restoreCliConfig() {
   mkdirSync(dirname(getConfigFilePath()), {recursive: true});
   copyFileSync('decrypted', getConfigFilePath());
@@ -152,6 +142,15 @@ export function shimNpm() {
     'npm-cli.js'
   );
 }
+
+export const resolveBinary = (programName: string) => {
+  const whereOrWhich = process.platform === 'win32' ? 'where.exe' : 'which';
+  const spawner = spawnSync(whereOrWhich, [programName], {
+    shell: true,
+    encoding: 'utf-8',
+  });
+  return spawner.stdout.trim();
+};
 
 const appendCmdIfWindows = (cmd: TemplateStringsArray) =>
   `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
