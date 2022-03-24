@@ -3,7 +3,7 @@ const github = require('@actions/github');
 const {execSync} = require('child_process');
 const octokit = github.getOctokit(process.env.GITHUB_CREDENTIALS);
 const owner = 'coveo';
-const repo = 'cli';
+const repo = 'cli-v2-temp';
 
 const getPullRequestTitle = async () => {
   const pull_number = getPullRequestNumber();
