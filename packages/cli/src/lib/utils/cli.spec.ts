@@ -1,23 +1,24 @@
 jest.mock('../../hooks/analytics/analytics');
-jest.mock('cli-ux');
+jest.mock('../config/globalConfig');
 
-import {IConfig} from '@oclif/config';
-import {cli} from 'cli-ux';
+import {Interfaces, CliUx} from '@oclif/core';
 import {fancyIt} from '../../__test__/it';
+import globalConfig from '../config/globalConfig';
 import {confirmWithAnalytics} from './cli';
 
+const mockedGlobalConfig = jest.mocked(globalConfig);
 const mockedAnalyticHook = jest.fn();
 const mockedConfirm = jest.fn();
 const doMockConfirm = () => {
-  Object.defineProperty(cli, 'confirm', {value: mockedConfirm});
+  Object.defineProperty(CliUx.ux, 'confirm', {value: mockedConfirm});
 };
 
 describe('cli', () => {
   beforeAll(() => {
-    global.config = {
+    mockedGlobalConfig.get.mockReturnValue({
       configDir: 'the_config_dir',
       runHook: mockedAnalyticHook,
-    } as unknown as IConfig;
+    } as unknown as Interfaces.Config);
   });
 
   beforeEach(() => {

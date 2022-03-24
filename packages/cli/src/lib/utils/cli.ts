@@ -1,5 +1,6 @@
-import {cli} from 'cli-ux';
+import {CliUx} from '@oclif/core';
 import {buildEvent} from '../../hooks/analytics/eventUtils';
+import globalConfig from '../config/globalConfig';
 
 /**
  *
@@ -12,7 +13,7 @@ export async function confirmWithAnalytics(
   message: string,
   questionName: string
 ): Promise<boolean> {
-  const doAction = await cli.confirm(message);
+  const doAction = await CliUx.ux.confirm(message);
   if (doAction) {
     trackEvent(`confirmed ${questionName}`);
     return true;
@@ -23,7 +24,7 @@ export async function confirmWithAnalytics(
 }
 
 async function trackEvent(questionName: string) {
-  await config.runHook('analytics', {
+  await globalConfig.get().runHook('analytics', {
     event: buildEvent(questionName, {}),
   });
 }

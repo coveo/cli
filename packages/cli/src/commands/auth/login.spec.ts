@@ -16,13 +16,11 @@ const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 describe('auth:login', () => {
   const mockConfigSet = jest.fn();
 
-  const mockConfigGet = jest.fn().mockReturnValue(
-    Promise.resolve({
-      region: 'us',
-      organization: 'foo',
-      environment: 'prod',
-    })
-  );
+  const mockConfigGet = jest.fn().mockReturnValue({
+    region: 'us',
+    organization: 'foo',
+    environment: 'prod',
+  });
 
   const mockListOrgs = jest
     .fn()
@@ -168,13 +166,11 @@ describe('auth:login', () => {
       mockListOrgs.mockReturnValueOnce(
         Promise.resolve([{id: 'the_first_org_available'}])
       );
-      mockConfigGet.mockReturnValueOnce(
-        Promise.resolve({
-          region: 'us',
-          organization: 'the_first_org_available',
-          environment: 'prod',
-        })
-      );
+      mockConfigGet.mockReturnValueOnce({
+        region: 'us',
+        organization: 'the_first_org_available',
+        environment: 'prod',
+      });
     })
     .stdout()
     .stderr()

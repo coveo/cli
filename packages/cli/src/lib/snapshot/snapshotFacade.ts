@@ -1,5 +1,5 @@
 import {green} from 'chalk';
-import {cli} from 'cli-ux';
+import {CliUx} from '@oclif/core';
 import {Configuration} from '../config/config';
 import {ProcessAbort} from '../errors/processError';
 import {
@@ -38,7 +38,7 @@ export class SnapshotFacade {
   }
 
   private async createSynchronizationPlan() {
-    cli.action.start('Checking for automatic synchronization');
+    CliUx.ux.action.start('Checking for automatic synchronization');
     const plan = await this.snapshot.createSynchronizationPlan();
 
     if (!plan.containsUnambiguousMatches()) {
@@ -48,12 +48,12 @@ export class SnapshotFacade {
       );
     }
 
-    cli.action.stop(green('✔'));
+    CliUx.ux.action.stop(green('✔'));
     return plan;
   }
 
   private async applySynchronizationPlan(plan: SynchronizationPlan) {
-    cli.action.start('Synchronizing resources');
+    CliUx.ux.action.start('Synchronizing resources');
     const reporter = await this.snapshot.applySynchronizationPlan(
       plan.model.id,
       this.waitUntilDone
@@ -64,6 +64,6 @@ export class SnapshotFacade {
       throw new SnapshotSynchronizationUnknownError(this.snapshot, this.cfg);
     }
 
-    cli.action.stop(green('✔'));
+    CliUx.ux.action.stop(green('✔'));
   }
 }

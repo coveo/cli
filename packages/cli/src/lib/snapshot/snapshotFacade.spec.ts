@@ -1,8 +1,7 @@
 jest.mock('../utils/cli.ts');
 jest.mock('./snapshot');
-jest.mock('cli-ux');
 
-import {cli} from 'cli-ux';
+import {CliUx} from '@oclif/core';
 import {fancyIt} from '../../__test__/it';
 import {Configuration} from '../config/config';
 import {ProcessAbort} from '../errors/processError';
@@ -20,7 +19,7 @@ const mockedCreateSynchronizationPlan = jest.fn();
 const mockedContainsUnambiguousMatches = jest.fn();
 
 const doMockSpinner = () => {
-  Object.defineProperty(cli, 'action', {
+  Object.defineProperty(CliUx.ux, 'action', {
     value: {start: jest.fn(), stop: jest.fn()},
   });
 };

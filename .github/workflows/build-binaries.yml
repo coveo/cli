@@ -21,17 +21,14 @@ jobs:
       matrix:
         include:
           - os: macos-latest
-            pack-command: ':macos'
+            pack-command: ' macos'
             for: 'macos install kit'
-            package-targets: 'darwin-x64'
           - os: windows-latest
-            pack-command: ':win'
+            pack-command: ' win'
             for: 'windows install kit'
-            package-targets: 'win32-x64,win32-x86'
           - os: ubuntu-latest
-            pack-command: ':deb'
+            pack-command: ' deb'
             for: 'linux install kit'
-            package-targets: 'linux-x64,linux-arm'
 
     steps:
       - uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846 # tag=v3
@@ -47,13 +44,13 @@ jobs:
         run: npm run build
       - name: Create install kits
         working-directory: ./packages/cli
-        run: ../../node_modules/@oclif/dev-cli/bin/run pack${{ matrix.pack-command }}
+        run: |
+          ../../node_modules/oclif/bin/run pack${{ matrix.pack-command }}
+          mv${{ matrix.pack-command }}/* ./
       - name: Create packages
         working-directory: ./packages/cli
-        run: |
-          ../../node_modules/@oclif/dev-cli/bin/run pack -t="${{ matrix.package-targets }}"
-          mv ./dist/version ./dist/${{ matrix.os }}-version
-          mv ./dist/coveo-${{ env.tag }}/coveo-${{ env.tag }}.tar.gz ./dist/coveo-${{ env.tag }}/${{ matrix.os }}-coveo-${{ env.tag }}.tar.gz
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        run: ../../node_modules/oclif/bin/run pack tarballs
       - name: Upload binaries
         uses: svenstaro/upload-release-action@483c1e56f95e88835747b1c7c60581215016cbf2 # renovate: tag=v2
         with:

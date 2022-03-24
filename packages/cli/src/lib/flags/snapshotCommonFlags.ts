@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command';
+import {Flags} from '@oclif/core';
 import {Snapshot} from '../snapshot/snapshot';
 
 export enum PreviewLevelValue {
@@ -7,7 +7,7 @@ export enum PreviewLevelValue {
 }
 
 export const wait = () => ({
-  wait: flags.integer({
+  wait: Flags.integer({
     char: 'w',
     default: Snapshot.defaultWaitOptions.wait,
     helpValue: 'seconds',
@@ -18,7 +18,7 @@ export const wait = () => ({
 });
 
 export const sync = () => ({
-  sync: flags.boolean({
+  sync: Flags.boolean({
     char: 'y',
     default: false,
     required: false,
@@ -28,7 +28,7 @@ export const sync = () => ({
 });
 
 export const previewLevel = () => ({
-  previewLevel: flags.enum({
+  previewLevel: Flags.enum({
     char: 'p',
     description:
       'The verbosity of the preview. The `light` preview is faster to generate but only contains a limited amount of information, as opposed to the `detailed` preview that takes more time to generate, but returns a diff representation of all the changes to apply.',

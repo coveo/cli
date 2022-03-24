@@ -1,4 +1,4 @@
-import {cli} from 'cli-ux';
+import {CliUx} from '@oclif/core';
 import {BaseConfiguration, Config} from './config';
 
 export class ConfigRenderer {
@@ -17,6 +17,6 @@ export class ConfigRenderer {
         {}
       );
 
-    cli.styledJSON(allowedConfig);
+    CliUx.ux.styledJSON(allowedConfig);
   }
 }

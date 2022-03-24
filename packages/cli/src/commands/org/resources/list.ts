@@ -1,22 +1,22 @@
-import {Command, flags} from '@oclif/command';
+import {Command, Flags, CliUx} from '@oclif/core';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '../../../lib/config/config';
-import {cli} from 'cli-ux';
 import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
 import dedent from 'ts-dedent';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {recordable} from '../../../lib/utils/record';
 
 export default class List extends Command {
   public static description =
     '(beta) List available snapshots from an organization';
 
   public static flags = {
-    ...cli.table.flags(),
-    target: flags.string({
+    ...CliUx.ux.table.flags(),
+    target: Flags.string({
       char: 't',
       description:
         'The unique identifier of the organization containing the snapshots. If not specified, the organization you are connected to will be used.',
@@ -31,7 +31,7 @@ export default class List extends Command {
     this.warn(
       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
     );
-    const {flags} = this.parse(List);
+    const {flags} = await this.parse(List);
     const org = await getTargetOrg(this.configuration, flags.target);
     const platformClient = await new AuthenticatedClient().getClient({
       organization: org,
@@ -45,7 +45,8 @@ export default class List extends Command {
       );
       return;
     }
-    cli.table(snapshots, {
+
+    CliUx.ux.table(recordable(snapshots), {
       id: {},
       createdBy: {
         header: 'Created by',
@@ -60,11 +61,11 @@ export default class List extends Command {
   }
 
   private get configuration() {
-    return new Config(this.config.configDir, this.error);
+    return new Config(this.config.configDir);
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Error & {exitCode?: number}) {
     throw err;
   }
 }
