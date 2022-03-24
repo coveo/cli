@@ -152,8 +152,8 @@
     },
     "update": {
       "s3": {
-        "host": "https://static.cloud.coveo.com/cli",
-        "bucket": "https://static.cloud.coveo.com/cli"
+        "host": "https://coveo-ndev-binaries.s3.amazonaws.com/proda/StaticCDN/cli",
+        "bucket": "https://coveo-ndev-binaries.s3.amazonaws.com/proda/StaticCDN/cli"
       }
     }
   },
