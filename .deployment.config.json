@@ -50,6 +50,9 @@
     "no_dependencies": true,
     "no_container_images": true
   },
+  "snyk_code": {
+    "no_scan": true
+  },
   "observatory": {
     "no_endpoint": true
   },
