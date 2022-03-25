@@ -13,21 +13,31 @@ async function main() {
     tag.name.substring(1),
     tag.commit.sha.substring(0, 7),
   ].join('/');
+  const subDirectoryForManifest = [
+    topLevelDirectory,
+    'channels',
+    'stable',
+  ].join('/');
   const binariesMatcher =
     /^coveo[_-]{1}(?<_version>v?\d+\.\d+\.\d+(-\d+)?)[_-]{1}\w{7}[_-]{1}(?<longExt>.*\.(exe|deb|pkg))$/;
+  const manifestMatcher = /^coveo-.*-buildmanifest$/;
+  const tarballMatcher = /\.tar\.[gx]z$/;
 
-  if (!fs.existsSync(topLevelDirectory)) {
-    fs.mkdirSync(topLevelDirectory, {recursive: true});
-  }
-
-  if (!fs.existsSync(subDirectoryForTarball)) {
-    fs.mkdirSync(subDirectoryForTarball, {recursive: true});
-  }
+  [topLevelDirectory, subDirectoryForManifest, subDirectoryForTarball].forEach(
+    (dir) => {
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, {recursive: true});
+      }
+    }
+  );
 
   await downloadReleaseAssets(tag.name, (assetName) => {
-    if (assetName.match(/\.tar\.[gx]z$/)) {
+    if (assetName.match(tarballMatcher)) {
       console.info(assetName, `--> ${subDirectoryForTarball}`);
       return subDirectoryForTarball;
+    } else if (assetName.match(manifestMatcher)) {
+      console.info(assetName, `--> ${subDirectoryForManifest}`);
+      return subDirectoryForManifest;
     } else {
       console.info(assetName, `--> ${topLevelDirectory}`);
       return topLevelDirectory;
