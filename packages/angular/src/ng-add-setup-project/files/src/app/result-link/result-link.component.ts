@@ -13,7 +13,7 @@ import {EngineService} from '../engine.service';
 })
 export class ResultLinkComponent implements OnInit {
   private headlessInteractiveResult!: InteractiveResult;
-  @Input() result!: Result;
+  @Input() public result!: Result;
 
   public constructor(private engineService: EngineService) {}
 
