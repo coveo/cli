@@ -7,9 +7,12 @@ async function main() {
   // This folder structure needs to be respected in order for the CLI update plugin to
   // be able to do it's job properly.
   const topLevelDirectory = './artifacts';
-  const subDirectoryForTarball = `${topLevelDirectory}/coveo-${tag.name}`;
+  const subDirectoryForTarball = `${topLevelDirectory}/versions/${tag.commit.sha.substring(
+    0,
+    7
+  )}/${tag.name}`;
   const binariesMatcher =
-    /^coveo(_|-)(?<_version>v?\d+\.\d+\.\d+(-\d+)?)(?<longExt>.*\.(exe|deb|pkg))$/;
+    /^coveo[_-]{1}(?<_version>v?\d+\.\d+\.\d+(-\d+)?)[_-]{1}\w{7}[_-]{1}(?<longExt>.*\.(exe|deb|pkg))$/;
 
   if (!fs.existsSync(topLevelDirectory)) {
     fs.mkdirSync(topLevelDirectory);
