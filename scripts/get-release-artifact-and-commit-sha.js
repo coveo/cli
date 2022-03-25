@@ -15,11 +15,11 @@ async function main() {
     /^coveo[_-]{1}(?<_version>v?\d+\.\d+\.\d+(-\d+)?)[_-]{1}\w{7}[_-]{1}(?<longExt>.*\.(exe|deb|pkg))$/;
 
   if (!fs.existsSync(topLevelDirectory)) {
-    fs.mkdirSync(topLevelDirectory);
+    fs.mkdirSync(topLevelDirectory, {recursive: true});
   }
 
   if (!fs.existsSync(subDirectoryForTarball)) {
-    fs.mkdirSync(subDirectoryForTarball);
+    fs.mkdirSync(subDirectoryForTarball, {recursive: true});
   }
 
   await downloadReleaseAssets(tag.name, (assetName) => {
