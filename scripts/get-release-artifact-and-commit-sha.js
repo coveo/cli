@@ -7,10 +7,12 @@ async function main() {
   // This folder structure needs to be respected in order for the CLI update plugin to
   // be able to do it's job properly.
   const topLevelDirectory = './artifacts';
-  const subDirectoryForTarball = `${topLevelDirectory}/versions/${tag.commit.sha.substring(
-    0,
-    7
-  )}/${tag.name}`;
+  const subDirectoryForTarball = [
+    topLevelDirectory,
+    'versions',
+    tag.name.substring(1),
+    tag.commit.sha.substring(0, 7),
+  ].join('/');
   const binariesMatcher =
     /^coveo[_-]{1}(?<_version>v?\d+\.\d+\.\d+(-\d+)?)[_-]{1}\w{7}[_-]{1}(?<longExt>.*\.(exe|deb|pkg))$/;
 
@@ -23,7 +25,7 @@ async function main() {
   }
 
   await downloadReleaseAssets(tag.name, (assetName) => {
-    if (assetName.match(/\.tar\.gz$/)) {
+    if (assetName.match(/\.tar\.[gx]z$/)) {
       console.info(assetName, `--> ${subDirectoryForTarball}`);
       return subDirectoryForTarball;
     } else {
@@ -40,7 +42,7 @@ async function main() {
     if (!match) {
       return;
     }
-    const destName = `coveo-latest${match.groups.longExt}`;
+    const destName = `coveo-latest-${match.groups.longExt}`;
     fs.copyFileSync(
       path.resolve(topLevelDirectory, file.name),
       path.resolve(topLevelDirectory, destName)
