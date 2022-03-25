@@ -84,9 +84,12 @@ const downloadReleaseAssets = async (tag, determineAssetLocation) => {
   //   repo,
   //   release_id: release.data.id,
   // });
+  // assets.data.forEach((asset) => {
+  // #region TODO: post-oclif v2, delete this.
   const assets = release.data.assets;
 
-  assets.data.forEach((asset) => {
+  assets.forEach((asset) => {
+    // //#endregion
     console.info(
       `Downloading asset ${asset.name} from ${asset.browser_download_url}.\nSize: ${asset.size} ...`
     );
