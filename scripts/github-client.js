@@ -78,11 +78,13 @@ const createOrUpdateReleaseDescription = async (tag, body) => {
 
 const downloadReleaseAssets = async (tag, determineAssetLocation) => {
   const release = await octokit.rest.repos.getReleaseByTag({repo, owner, tag});
-  const assets = await octokit.rest.repos.listReleaseAssets({
-    owner,
-    repo,
-    release_id: release.data.id,
-  });
+  // TODO: post-Oclif v2, revert: using the assets of the tag is insecure.
+  // const assets = await octokit.rest.repos.listReleaseAssets({
+  //   owner,
+  //   repo,
+  //   release_id: release.data.id,
+  // });
+  const assets = release.data.assets;
 
   assets.data.forEach((asset) => {
     console.info(
@@ -94,7 +96,6 @@ const downloadReleaseAssets = async (tag, determineAssetLocation) => {
     );
   });
 };
-
 const getSnykCodeAlerts = () => {
   return octokit.rest.codeScanning.listAlertsForRepo({
     owner,
