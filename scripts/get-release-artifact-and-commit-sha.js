@@ -64,7 +64,7 @@ async function main() {
     if (!match) {
       return;
     }
-    const destName = `coveo-latest-${match.groups.longExt}`;
+    const destName = `coveo-latest-${match.groups.targetSignature}`;
     fs.copyFileSync(
       path.resolve(subDirectoryForManifest, file.name),
       path.resolve(subDirectoryForManifest, destName)
