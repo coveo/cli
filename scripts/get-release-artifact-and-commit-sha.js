@@ -60,13 +60,13 @@ async function main() {
   });
 
   fs.readdirSync(subDirectoryForManifest).forEach((file) => {
-    const match = manifestMatcher.exec(file.name);
+    const match = manifestMatcher.exec(file);
     if (!match) {
       return;
     }
     const destName = `coveo-latest-${match.groups.targetSignature}`;
     fs.copyFileSync(
-      path.resolve(subDirectoryForManifest, file.name),
+      path.resolve(subDirectoryForManifest, file),
       path.resolve(subDirectoryForManifest, destName)
     );
   });
