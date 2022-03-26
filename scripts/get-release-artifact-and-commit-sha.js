@@ -19,8 +19,9 @@ async function main() {
     'stable',
   ].join('/');
   const binariesMatcher =
-    /^coveo[_-]{1}(?<_version>v?\d+\.\d+\.\d+(-\d+)?)[_-]{1}\w{7}[_-]{1}(?<longExt>.*\.(exe|deb|pkg))$/;
-  const manifestMatcher = /^coveo-.*-buildmanifest$/;
+    /^coveo[_-]{1}(?<_version>v?\d+\.\d+\.\d+(-\d+)?)[_-]{1}(?<_commitSHA>\w{7})[_-]{1}(?<longExt>.*\.(exe|deb|pkg))$/;
+  const manifestMatcher =
+    /^coveo-(?<_version>v?\d+\.\d+\.\d+(-\d+)?)-(?<_commitSHA>\w{7})-(?<targetSignature>.*-buildmanifest)$/;
   const tarballMatcher = /\.tar\.[gx]z$/;
 
   [topLevelDirectory, subDirectoryForManifest, subDirectoryForTarball].forEach(
@@ -46,8 +47,7 @@ async function main() {
 
   fs.writeFileSync('latest-commit', tag.commit.sha);
 
-  const files = fs.readdirSync(topLevelDirectory, {withFileTypes: true});
-  files.forEach((file) => {
+  fs.readdirSync(topLevelDirectory, {withFileTypes: true}).forEach((file) => {
     const match = binariesMatcher.exec(file.name);
     if (!match) {
       return;
@@ -56,6 +56,18 @@ async function main() {
     fs.copyFileSync(
       path.resolve(topLevelDirectory, file.name),
       path.resolve(topLevelDirectory, destName)
+    );
+  });
+
+  fs.readdirSync(subDirectoryForManifest).forEach((file) => {
+    const match = manifestMatcher.exec(file.name);
+    if (!match) {
+      return;
+    }
+    const destName = `coveo-latest-${match.groups.longExt}`;
+    fs.copyFileSync(
+      path.resolve(subDirectoryForManifest, file.name),
+      path.resolve(subDirectoryForManifest, destName)
     );
   });
 }
