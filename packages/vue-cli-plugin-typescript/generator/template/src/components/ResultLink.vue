@@ -4,7 +4,7 @@
     @contextmenu="onSelect"
     @mousedown="onSelect"
     @mouseup="onSelect"
-    @touchstart="onSelect"
+    @touchstart="beginDelayedSelect"
     @touchend="cancelPendingSelect"
     :href="filteredUri"
     >{{ this.result.title }}</a
