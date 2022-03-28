@@ -70,7 +70,7 @@ export default function (plop: NodePlopAPI) {
         name: 'page-id',
         default: '',
         message:
-          'The hosted search page ID, e.g. "7944ff4a-9943-4999-a3f6-3e81a7f6fb0a".',
+          '(Optional) The hosted search page ID, e.g. "7944ff4a-9943-4999-a3f6-3e81a7f6fb0a".',
       },
     ],
     actions: function () {

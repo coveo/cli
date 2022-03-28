@@ -12,6 +12,6 @@
     "site:init": "netlify init",
     "site:link": "netlify link",
     "site:deploy": "npm run site:link && npm run build && netlify env:import .env && netlify deploy --prod --open",
-    "postinstall": "npm run setup-lambda && npm run setup-cleanup"
+    "postinstall": "npm run setup-lambda && npm run setup-cleanup && prettier --write . --loglevel warn"
   }
 }
