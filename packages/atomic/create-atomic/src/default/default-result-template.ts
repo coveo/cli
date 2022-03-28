@@ -1,4 +1,4 @@
-<style>
+export default `<style>
   .field {
     display: inline-flex;
     align-items: center;
@@ -19,8 +19,6 @@
 </atomic-result-section-title>
 
 <atomic-result-section-excerpt>
-  <!-- Uncomment to enable the sample result component -->
-  <!-- <sample-result-component></sample-result-component> -->
   <atomic-result-text field="excerpt"></atomic-result-text>
 </atomic-result-section-excerpt>
 
@@ -62,3 +60,4 @@
     </span>
   </atomic-result-fields-list>
 </atomic-result-section-bottom-metadata>
+`;
