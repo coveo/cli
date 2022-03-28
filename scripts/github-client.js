@@ -78,18 +78,13 @@ const createOrUpdateReleaseDescription = async (tag, body) => {
 
 const downloadReleaseAssets = async (tag, determineAssetLocation) => {
   const release = await octokit.rest.repos.getReleaseByTag({repo, owner, tag});
-  // TODO: post-Oclif v2, revert: using the assets of the tag is insecure.
-  // const assets = await octokit.rest.repos.listReleaseAssets({
-  //   owner,
-  //   repo,
-  //   release_id: release.data.id,
-  // });
-  // assets.data.forEach((asset) => {
-  // #region TODO: post-oclif v2, delete this.
-  const assets = release.data.assets;
+  const assets = await octokit.rest.repos.listReleaseAssets({
+    owner,
+    repo,
+    release_id: release.data.id,
+  });
 
-  assets.forEach((asset) => {
-    // //#endregion
+  assets.data.forEach((asset) => {
     console.info(
       `Downloading asset ${asset.name} from ${asset.browser_download_url}.\nSize: ${asset.size} ...`
     );

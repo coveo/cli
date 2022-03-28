@@ -20,7 +20,7 @@ node('linux && docker') {
 
   withDockerContainer(image: '458176070654.dkr.ecr.us-east-1.amazonaws.com/jenkins/deployment_package:v7') {
     stage('Create package') {
-      sh "deployment-package package create --overwrite --artifacts-location ./artifacts/ --with-deploy --changeset ${releaseCommit}"
+      sh "deployment-package package create --artifacts-location ./artifacts/ --with-deploy --changeset ${releaseCommit}"
     }
   }
 }

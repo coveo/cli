@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli",
-  "version": "1.25.6",
+  "version": "1.25.4",
   "author": "Coveo",
   "description": "Coveo CLI",
   "engines": {
@@ -38,10 +38,10 @@
   "devDependencies": {
     "@amplitude/types": "1.9.2",
     "@babel/core": "7.17.8",
-    "@coveo/angular": "1.25.6",
-    "@coveo/cra-template": "1.25.6",
-    "@coveo/create-atomic": "1.25.6",
-    "@coveo/vue-cli-plugin-typescript": "1.25.6",
+    "@coveo/angular": "1.25.4",
+    "@coveo/cra-template": "1.25.4",
+    "@coveo/create-atomic": "1.25.4",
+    "@coveo/vue-cli-plugin-typescript": "1.25.4",
     "@oclif/test": "2.0.3",
     "@types/archiver": "5.3.1",
     "@types/async-retry": "1.4.3",
@@ -160,8 +160,8 @@
     },
     "update": {
       "s3": {
-        "host": "https://coveo-ndev-binaries.s3.amazonaws.com/proda/StaticCDN/cli",
-        "bucket": "https://coveo-ndev-binaries.s3.amazonaws.com/proda/StaticCDN/cli"
+        "host": "https://static.cloud.coveo.com/cli",
+        "bucket": "https://static.cloud.coveo.com/cli"
       }
     }
   },
