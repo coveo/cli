@@ -15,7 +15,7 @@
     "release:phase2": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase2-bump-all-packages.mjs"
   },
   "devDependencies": {
-    "@coveo/headless": "1.52.0",
+    "@coveo/headless": "1.54.0",
     "@coveo/search-token-server": "1.25.4",
     "buefy": "0.9.19",
     "dotenv": "16.0.0",
