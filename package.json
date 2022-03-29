@@ -92,10 +92,8 @@
     "release:phase3": "node --experimental-specifier-resolution=node ./scripts/releaseV2/phase3-git-commit-tag-push.mjs"
   },
   "workspaces": [
-    "packages/**",
-    "!packages/cli-e2e/verdaccio/**",
-    "!packages/cli-e2e/npm-shim/**",
-    "!packages/atomic/create-atomic/template/**"
+    "packages/*",
+    "packages/atomic/*"
   ],
   "dependencies": {
     "jest-config": "27.5.1"

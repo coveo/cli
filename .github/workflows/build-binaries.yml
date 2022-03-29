@@ -44,9 +44,7 @@ jobs:
         run: npm run build
       - name: Create install kits
         working-directory: ./packages/cli
-        run: |
-          ../../node_modules/oclif/bin/run pack${{ matrix.pack-command }}
-          mv${{ matrix.pack-command }}/* ./
+        run: ../../node_modules/oclif/bin/run pack${{ matrix.pack-command }}
       - name: Create packages
         working-directory: ./packages/cli
         if: ${{matrix.os == 'ubuntu-latest'}}
