@@ -1,16 +1,26 @@
 import {FunctionComponent, useContext, useEffect, useState} from 'react';
 import List from '@material-ui/core/List';
-import {ListItem, Box, Typography, ListItemProps} from '@material-ui/core';
+import {ListItem, Box, Typography} from '@material-ui/core';
 import {
   buildResultList,
   Result,
   buildResultTemplatesManager,
   ResultTemplatesManager,
   ResultList as HeadlessResultList,
+  buildInteractiveResult,
+  SearchEngine,
 } from '@coveo/headless';
 import EngineContext from '../common/engineContext';
 
 type Template = (result: Result) => React.ReactNode;
+
+export function filterProtocol(uri: string) {
+  // Filters out dangerous URIs that can create XSS attacks such as `javascript:`.
+  const isAbsolute = /^(https?|ftp|file|mailto|tel):/i.test(uri);
+  const isRelative = /^(\/|\.\/|\.\.\/)/.test(uri);
+
+  return isAbsolute || isRelative ? uri : '';
+}
 
 interface FieldValueInterface {
   value: string;
@@ -20,13 +30,24 @@ interface FieldValueInterface {
 interface ResultListProps {
   controller: HeadlessResultList;
 }
-function ListItemLink(props: ListItemProps<'a'>) {
+function ListItemLink(engine: SearchEngine, result: Result) {
+  const interactiveResult = buildInteractiveResult(engine, {
+    options: {result},
+  });
   return (
-    <ListItem {...props} button component="a">
+    <a
+      href={filterProtocol(result.clickUri)}
+      onClick={() => interactiveResult.select()}
+      onContextMenu={() => interactiveResult.select()}
+      onMouseDown={() => interactiveResult.select()}
+      onMouseUp={() => interactiveResult.select()}
+      onTouchStart={() => interactiveResult.beginDelayedSelect()}
+      onTouchEnd={() => interactiveResult.cancelPendingSelect()}
+    >
       <Typography variant="body1" color="primary">
-        {props.title}
+        {result.title}
       </Typography>
-    </ListItem>
+    </a>
   );
 }
 
@@ -60,13 +81,7 @@ const ResultListRenderer: FunctionComponent<ResultListProps> = (props) => {
     content: (result: Result) => (
       <ListItem disableGutters key={result.uniqueId}>
         <Box my={2}>
-          <Box pb={1}>
-            <ListItemLink
-              disableGutters
-              title={result.title}
-              href={result.clickUri}
-            />
-          </Box>
+          <Box pb={1}>{ListItemLink(engine, result)}</Box>
 
           {result.excerpt && (
             <Box pb={1}>
