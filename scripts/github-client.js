@@ -94,6 +94,7 @@ const downloadReleaseAssets = async (tag, determineAssetLocation) => {
     );
   });
 };
+
 const getSnykCodeAlerts = () => {
   return octokit.rest.codeScanning.listAlertsForRepo({
     owner,
