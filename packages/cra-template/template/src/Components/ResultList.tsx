@@ -1,6 +1,6 @@
 import {FunctionComponent, useContext, useEffect, useState} from 'react';
-import List from '@material-ui/core/List';
-import {ListItem, Box, Typography} from '@material-ui/core';
+import List from '@mui/material/List';
+import {ListItem, Box, Typography} from '@mui/material';
 import {
   buildResultList,
   Result,
