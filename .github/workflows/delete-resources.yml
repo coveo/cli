@@ -7,7 +7,6 @@ on:
 
 jobs:
   delete-resources:
-  
     runs-on: ubuntu-latest
     environment: Cleaning
     env:
