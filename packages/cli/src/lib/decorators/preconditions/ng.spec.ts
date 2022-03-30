@@ -1,14 +1,12 @@
 jest.mock('../../utils/process');
 jest.mock('../../utils/misc');
-jest.mock('cli-ux');
 
 import {dedent} from 'ts-dedent';
 import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from './testsUtils/utils';
-import {cli} from 'cli-ux';
 
 import {IsNgVersionInRange} from './ng';
-import type {Command} from '@oclif/command';
+import {Command, CliUx} from '@oclif/core';
 import {appendCmdIfWindows} from '../../utils/os';
 import {getPackageVersion} from '../../utils/misc';
 import {fancyIt} from '../../../__test__/it';
@@ -18,7 +16,7 @@ describe('IsNgInstalled', () => {
   const mockedSpawnProcessOutput = jest.mocked(spawnProcessOutput);
   const mockedGetPackageVersion = jest.mocked(getPackageVersion);
   const mockConfirm = () => {
-    Object.defineProperty(cli, 'confirm', {value: jest.fn()});
+    Object.defineProperty(CliUx.ux, 'confirm', {value: jest.fn()});
   };
   let fakeCommand: Command;
 

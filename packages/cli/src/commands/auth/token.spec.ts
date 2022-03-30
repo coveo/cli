@@ -15,13 +15,11 @@ const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 describe('auth:token', () => {
   const mockConfigSet = jest.fn();
 
-  const mockConfigGet = jest.fn().mockReturnValue(
-    Promise.resolve({
-      region: 'us',
-      organization: 'foo',
-      environment: 'prod',
-    })
-  );
+  const mockConfigGet = jest.fn().mockReturnValue({
+    region: 'us',
+    organization: 'foo',
+    environment: 'prod',
+  });
 
   const mockListOrgs = jest
     .fn()

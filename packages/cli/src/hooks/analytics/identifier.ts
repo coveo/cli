@@ -6,6 +6,7 @@ import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
 import {camelToSnakeCase} from '../../lib/utils/string';
 import type {NodeClient} from '@amplitude/node';
+import globalConfig from '../../lib/config/globalConfig';
 export class Identifier {
   private authenticatedClient: AuthenticatedClient;
 
@@ -55,7 +56,7 @@ export class Identifier {
   }
 
   private getAmplitudeBaseEventProperties() {
-    const {version, platform} = config;
+    const {version, platform} = globalConfig.get();
     return {
       app_version: version,
       os_version: os.release(),
@@ -65,7 +66,7 @@ export class Identifier {
   }
 
   private getDeviceInfo() {
-    const {arch, windows, bin, userAgent, debug} = config;
+    const {arch, windows, bin, userAgent, debug} = globalConfig.get();
     return {
       arch,
       windows,
@@ -76,7 +77,7 @@ export class Identifier {
   }
 
   private getShellInfo() {
-    const {shell} = config;
+    const {shell} = globalConfig.get();
     const {
       TERM_PROGRAM_VERSION: termProgramVersion,
       TERM_PROGRAM: termProgram,

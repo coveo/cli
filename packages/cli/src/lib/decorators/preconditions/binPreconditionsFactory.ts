@@ -1,4 +1,4 @@
-import type Command from '@oclif/command';
+import type {Command} from '@oclif/core';
 import {dedent} from 'ts-dedent';
 import {spawnProcessOutput, SpawnProcessOutput} from '../../utils/process';
 import {satisfies, validRange} from 'semver';
