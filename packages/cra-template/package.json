@@ -28,15 +28,15 @@
     "template.json"
   ],
   "dependencies": {
-    "@emotion/react": "^11.8.2",
-    "@emotion/styled": "^11.8.1",
+    "@emotion/react": "11.8.2",
+    "@emotion/styled": "11.8.1",
     "fs-extra": "10.0.1"
   },
   "devDependencies": {
     "@coveo/headless": "latest",
     "@coveo/search-token-server": "1.25.4",
-    "@mui/material": "^5.5.3",
-    "@mui/styles": "^5.5.3",
+    "@mui/material": "5.5.3",
+    "@mui/styles": "5.5.3",
     "@testing-library/jest-dom": "5.16.3",
     "@testing-library/react": "12.1.4",
     "@types/jest": "27.4.1",
