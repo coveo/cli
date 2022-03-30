@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: |
           npm ci
-          yarn install --no-immutable
+          yarn install --no-immutable --mode=skip-build
       - name: Snyk Test
         run: |
           npx snyk monitor      --dev --yarn-workspaces --exclude="project.json"
