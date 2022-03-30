@@ -1,11 +1,11 @@
 import {FunctionComponent, useEffect, useState, useContext} from 'react';
 import {Facet as HeadlessFacet, buildFacet, FacetValue} from '@coveo/headless';
-import Button from '@material-ui/core/Button';
-import Checkbox from '@material-ui/core/Checkbox';
-import Box from '@material-ui/core/Box';
-import List from '@material-ui/core/List';
+import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
+import Box from '@mui/material/Box';
+import List from '@mui/material/List';
 import './Facet.css';
-import {Divider, ListItem, ListItemText, Typography} from '@material-ui/core';
+import {Divider, ListItem, ListItemText, Typography} from '@mui/material';
 import EngineContext from '../common/engineContext';
 
 interface FacetProps {
