@@ -1,4 +1,4 @@
-import {Command, flags} from '@oclif/command';
+import {Command, Flags} from '@oclif/core';
 import {Config} from '../../lib/config/config';
 import {OAuth} from '../../lib/oauth/oauth';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
@@ -17,7 +17,7 @@ export default class Login extends Command {
   public static flags = {
     ...withRegion(),
     ...withEnvironment(),
-    organization: flags.string({
+    organization: Flags.string({
       char: 'o',
       description:
         'The identifier of the organization to log in to. If not specified, the CLI logs you in to the first available organization. See also commands `config:get`, `config:set`, and `org:list`.',
@@ -27,21 +27,21 @@ export default class Login extends Command {
 
   @Trackable({eventName: 'auth login - browser'})
   public async run() {
-    this.configuration = new Config(this.config.configDir, this.error);
+    this.configuration = new Config(this.config.configDir);
     await this.loginAndPersistToken();
     await this.persistRegionAndEnvironment();
     await this.verifyOrganization();
     await this.persistOrganization();
-    await this.feedbackOnSuccessfulLogin();
+    this.feedbackOnSuccessfulLogin();
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Error & {exitCode?: number}) {
     throw err;
   }
 
-  private async feedbackOnSuccessfulLogin() {
-    const cfg = await this.configuration.get();
+  private feedbackOnSuccessfulLogin() {
+    const cfg = this.configuration.get();
     this.log(`
     Successfully logged in!
     Close your browser to continue.
@@ -55,7 +55,7 @@ export default class Login extends Command {
   }
 
   private async loginAndPersistToken() {
-    const flags = this.flags;
+    const {flags} = await this.parse(Login);
     const {accessToken} = await new OAuth({
       environment: flags.environment as PlatformEnvironment,
       region: flags.region as Region,
@@ -65,14 +65,14 @@ export default class Login extends Command {
   }
 
   private async persistRegionAndEnvironment() {
-    const flags = this.flags;
+    const {flags} = await this.parse(Login);
     const cfg = this.configuration;
     await cfg.set('environment', flags.environment as PlatformEnvironment);
     await cfg.set('region', flags.region as Region);
   }
 
   private async persistOrganization() {
-    const flags = this.flags;
+    const {flags} = await this.parse(Login);
     const cfg = this.configuration;
 
     if (flags.organization) {
@@ -94,13 +94,8 @@ export default class Login extends Command {
     return orgs[0]?.id;
   }
 
-  private get flags() {
-    const {flags} = this.parse(Login);
-    return flags;
-  }
-
   private async verifyOrganization() {
-    const flags = this.flags;
+    const {flags} = await this.parse(Login);
     const authenticatedClient = new AuthenticatedClient();
 
     if (flags.organization) {

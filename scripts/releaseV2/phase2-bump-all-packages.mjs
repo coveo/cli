@@ -20,8 +20,8 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
   const PATH = '.';
   const versionPrefix = 'v';
   const convention = await angularChangelogConvention;
-  const lastTag = getLastTag(versionPrefix);
-  const commits = getCommits(PATH, lastTag);
+  const lastTag = getLastTag(versionPrefix)[0];
+  const commits = getCommits(PATH, lastTag)[0];
   const newVersion = getReleaseVersion();
 
   updateWorkspaceDependencies();

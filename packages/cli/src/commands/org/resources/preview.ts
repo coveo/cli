@@ -1,6 +1,5 @@
-import {Command, flags} from '@oclif/command';
+import {Command, Flags} from '@oclif/core';
 import {blueBright} from 'chalk';
-import {cli} from 'cli-ux';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
 import {Config} from '../../../lib/config/config';
@@ -40,20 +39,20 @@ export default class Preview extends Command {
     ...wait(),
     ...sync(),
     ...previewLevel(),
-    target: flags.string({
+    target: Flags.string({
       char: 't',
       description:
         'The unique identifier of the organization where to send the changes. If not specified, the organization you are connected to will be used.',
       helpValue: 'destinationorganizationg7dg3gd',
       required: false,
     }),
-    showMissingResources: flags.boolean({
+    showMissingResources: Flags.boolean({
       char: 'd',
       description: 'Preview resources deletion when enabled',
       default: false,
       required: false,
     }),
-    snapshotId: flags.string({
+    snapshotId: Flags.string({
       char: 's',
       description:
         'The unique identifier of the snapshot to preview. If not specified, a new snapshot will be created from your local project. You can list available snapshots in your organization with org:resources:list',
@@ -71,40 +70,39 @@ export default class Preview extends Command {
     this.warn(
       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
     );
-    const {flags} = this.parse(Preview);
+    const {flags} = await this.parse(Preview);
     const target = await getTargetOrg(this.configuration, flags.target);
-    const cfg = await this.configuration.get();
+    const cfg = this.configuration.get();
+    const options = await this.getOptions();
     const {reporter, snapshot, project} = await dryRun(
       target,
       this.projectPath,
       cfg,
-      this.options
+      options
     );
 
-    await snapshot.preview(
-      project,
-      this.options.deleteMissingResources,
-      this.shouldDisplayExpandedPreview()
-    );
+    const display = await this.shouldDisplayExpandedPreview();
+    const {deleteMissingResources} = await this.getOptions();
+    await snapshot.preview(project, deleteMissingResources, display);
     await this.processReport(snapshot, reporter);
     await this.cleanup(snapshot, project);
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Error & {exitCode?: number}) {
     cleanupProject(this.projectPath);
     handleSnapshotError(err);
     await this.displayAdditionalErrorMessage(err);
   }
 
-  private shouldDisplayExpandedPreview() {
-    const {flags} = this.parse(Preview);
+  private async shouldDisplayExpandedPreview() {
+    const {flags} = await this.parse(Preview);
     return flags.previewLevel === PreviewLevelValue.Detailed;
   }
 
   private async processReport(snapshot: Snapshot, reporter: SnapshotReporter) {
     if (!reporter.isSuccessReport()) {
-      const cfg = await this.configuration.get();
+      const cfg = this.configuration.get();
       await handleReportWithErrors(snapshot, cfg, this.projectPath);
     }
   }
@@ -114,12 +112,14 @@ export default class Preview extends Command {
     project.deleteTemporaryZipFile();
   }
 
-  private async displayAdditionalErrorMessage(err?: Error) {
+  private async displayAdditionalErrorMessage(
+    err?: Error & {exitCode?: number}
+  ) {
     if (err instanceof SnapshotOperationTimeoutError) {
-      const {flags} = this.parse(Preview);
+      const {flags} = await this.parse(Preview);
       const snapshot = err.snapshot;
       const target = await getTargetOrg(this.configuration, flags.target);
-      cli.log(
+      this.log(
         dedent`
 
           Once the snapshot is created, you can preview it with the following command:
@@ -131,8 +131,8 @@ export default class Preview extends Command {
     }
   }
 
-  private get options(): DryRunOptions {
-    const {flags} = this.parse(Preview);
+  private async getOptions(): Promise<DryRunOptions> {
+    const {flags} = await this.parse(Preview);
     return {
       deleteMissingResources: flags.showMissingResources,
       waitUntilDone: {wait: flags.wait},
@@ -141,7 +141,7 @@ export default class Preview extends Command {
   }
 
   private get configuration() {
-    return new Config(this.config.configDir, this.error);
+    return new Config(this.config.configDir);
   }
 
   private get projectPath() {

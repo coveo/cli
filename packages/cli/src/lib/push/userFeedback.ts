@@ -1,4 +1,4 @@
-import Command from '@oclif/command';
+import {Command} from '@oclif/core';
 import {green} from 'chalk';
 import {validate} from 'jsonschema';
 import dedent from 'ts-dedent';

@@ -1,3 +1,11 @@
+# 1.26.0 (2022-03-31)
+
+### Bug Fixes
+
+- **angular:** unpin dependencies ([#688](https://github.com/coveo/cli/issues/688)) ([ceab0bc](https://github.com/coveo/cli/commits/ceab0bc3502d5a20deb3fd22953783dda2dd277e))
+- **deps:** update all dependencies j:cdx-227 ([#723](https://github.com/coveo/cli/issues/723)) ([88a18fd](https://github.com/coveo/cli/commits/88a18fdc3f035959a3ad13bb1aa30289a53bff72))
+- **templates:** update ui project templates to use interactive result headless controller ([#724](https://github.com/coveo/cli/issues/724)) ([cfe5c9d](https://github.com/coveo/cli/commits/cfe5c9d8f6b74bccbe8b95e38f00ef30900e0bd5))
+
 ## 1.25.2 (2022-02-18)
 
 # 1.25.0 (2022-02-16)

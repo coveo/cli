@@ -4,7 +4,7 @@ import {
 } from '@coveord/platform-client';
 import {existsSync, mkdirSync, readdirSync, rmSync} from 'fs';
 import {join, relative, resolve} from 'path';
-import {cli} from 'cli-ux';
+import {CliUx} from '@oclif/core';
 import {Project} from '../../project/project';
 import {spawnProcess, spawnProcessOutput} from '../../utils/process';
 import {SnapshotFactory} from '../snapshotFactory';
@@ -50,19 +50,19 @@ export class ExpandedPreviewer {
       recursive: true,
     });
     const project = new Project(resolve(dirPath));
-    cli.action.start('Generating preview details');
+    CliUx.ux.action.start('Generating preview details');
     await this.initPreviewDirectory(dirPath, project);
     await this.applySnapshotToPreview(dirPath);
     const commitHash = await this.getCommitHash(dirPath);
 
-    cli.info(dedent`
+    CliUx.ux.info(dedent`
 
     A Git repository representing the modification has been created here:
     ${dirPath}
 
     with the associated commit hash: ${commitHash.stdout}
     `);
-    cli.action.stop();
+    CliUx.ux.action.stop();
   }
 
   private deleteOldestPreviews() {

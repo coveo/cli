@@ -1,4 +1,4 @@
-import {Command, flags} from '@oclif/command';
+import {Command, Flags} from '@oclif/core';
 import {Config} from '../../../lib/config/config';
 import {platformUrl} from '../../../lib/platform/environment';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
@@ -44,7 +44,7 @@ export default class React extends Command {
   ];
 
   public static flags = {
-    version: flags.string({
+    version: Flags.string({
       char: 'v',
       description: `Version of ${React.templateName} to use.`,
       default: getPackageVersion(React.templateName),
@@ -70,18 +70,18 @@ export default class React extends Command {
     HasNecessaryCoveoPrivileges(createApiKeyPrivilege, impersonatePrivilege)
   )
   public async run() {
-    const args = this.args;
+    const {args} = await this.parse(React);
     await this.createProject(args.name);
     await this.setupEnvironmentVariables(args.name);
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Error & {exitCode?: number}) {
     throw err;
   }
 
   private async setupEnvironmentVariables(name: string) {
-    const args = this.args;
+    const {args} = await this.parse(React);
     const cfg = this.configuration.get();
     const authenticatedClient = new AuthenticatedClient();
     const username = await authenticatedClient.getUsername();
@@ -101,7 +101,7 @@ export default class React extends Command {
   }
 
   private async createProject(name: string) {
-    const flags = this.flags;
+    const {flags} = await this.parse(React);
     const templateVersion =
       flags.version || getPackageVersion(React.templateName);
     const exitCode = await this.runReactCliCommand([
@@ -124,16 +124,6 @@ export default class React extends Command {
   }
 
   private get configuration() {
-    return new Config(this.config.configDir, this.error);
-  }
-
-  private get flags() {
-    const {flags} = this.parse(React);
-    return flags;
-  }
-
-  private get args() {
-    const {args} = this.parse(React);
-    return args;
+    return new Config(this.config.configDir);
   }
 }

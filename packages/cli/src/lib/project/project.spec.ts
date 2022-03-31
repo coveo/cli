@@ -1,7 +1,6 @@
 jest.mock('@coveord/platform-client');
 jest.mock('fs');
 jest.mock('archiver');
-jest.mock('@oclif/errors');
 jest.mock('fs-extra');
 jest.mock('extract-zip');
 import {
@@ -23,7 +22,6 @@ import {join, resolve} from 'path';
 import archiver, {Archiver} from 'archiver';
 import extract from 'extract-zip';
 import {Writable} from 'stream';
-import {error} from '@oclif/errors';
 import {getDirectory, getFile} from '../../__test__/fsUtils';
 import {fancyIt} from '../../__test__/it';
 
@@ -36,7 +34,6 @@ const mockedExtract = jest.mocked(extract);
 const mockedPipe = jest.fn();
 const mockedPassDirectory = jest.fn();
 const mockedFinalize = jest.fn();
-const mockedError = jest.mocked(error);
 const mockedCreateFileSync = jest.mocked(ensureDirSync);
 const mockedWriteJSONSync = jest.mocked(writeJSONSync);
 const mockedReadJSONSync = jest.mocked(readJsonSync);
@@ -88,18 +85,18 @@ describe('Project', () => {
     fancyIt()('should ensure resources folder exists', async () => {
       doMockFileDoesNotExists('resources');
       const project = projectCreator();
-      await project.compressResources();
 
-      expect(mockedExistSync).toHaveBeenNthCalledWith(
-        2,
-        resolve('dummy/path', 'resources')
-      );
-      expect(mockedError).toHaveBeenCalledWith(
+      await expect(() => project.compressResources()).rejects.toThrow(
         new Error(
           `${resolve(
             'dummy/path'
           )} is not a valid project: Does not contain any resources folder`
         )
+      );
+
+      expect(mockedExistSync).toHaveBeenNthCalledWith(
+        2,
+        resolve('dummy/path', 'resources')
       );
     });
 
@@ -108,18 +105,17 @@ describe('Project', () => {
       const project = projectCreator();
       doMockFileDoesNotExists('.coveo');
 
-      await project.compressResources();
-
-      expect(mockedExistSync).toHaveBeenNthCalledWith(
-        3,
-        resolve('dummy/path', '.coveo')
-      );
-      expect(mockedError).toHaveBeenCalledWith(
+      await expect(() => project.compressResources()).rejects.toThrow(
         new Error(
           `${resolve(
             'dummy/path'
           )} is not a valid project: Does not contain any .coveo folder`
         )
+      );
+
+      expect(mockedExistSync).toHaveBeenNthCalledWith(
+        3,
+        resolve('dummy/path', '.coveo')
       );
     });
   });

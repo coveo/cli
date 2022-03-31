@@ -1,3 +1,24 @@
+# v1.26.0 (2022-03-31)
+
+### Bug Fixes
+
+- add `allowNo` option on `source:push:delete` command ([#646](https://github.com/coveo/cli/issues/646)) ([3555920](https://github.com/coveo/cli/commits/35559202222486e1780ee6f152376c9208509833))
+- **angular:** unpin dependencies ([#688](https://github.com/coveo/cli/issues/688)) ([ceab0bc](https://github.com/coveo/cli/commits/ceab0bc3502d5a20deb3fd22953783dda2dd277e))
+- **atomic:** make sure Stencil start on the good port ([#697](https://github.com/coveo/cli/issues/697)) ([662746c](https://github.com/coveo/cli/commits/662746cc87e877847ea596d50096fe84e1448a44))
+- **atomic:** use .mjs ([#707](https://github.com/coveo/cli/issues/707)) ([ba3a9df](https://github.com/coveo/cli/commits/ba3a9df0c9ad467e60c7d55b59470c631cd8c50c))
+- **deps:** update all dependencies j:cdx-227 ([#666](https://github.com/coveo/cli/issues/666)) ([09ea2e7](https://github.com/coveo/cli/commits/09ea2e7fd0bac33f2c2c1e91fa5d77adca159aa0))
+- **deps:** update all dependencies j:cdx-227 ([#723](https://github.com/coveo/cli/issues/723)) ([88a18fd](https://github.com/coveo/cli/commits/88a18fdc3f035959a3ad13bb1aa30289a53bff72))
+- **deps:** update all dependencies j:cdx-227 ([#731](https://github.com/coveo/cli/issues/731)) ([dbd0e96](https://github.com/coveo/cli/commits/dbd0e96dae656ffb156f62dabaa363be1997e145))
+- do not prompt on CI ([#721](https://github.com/coveo/cli/issues/721)) ([40c02a3](https://github.com/coveo/cli/commits/40c02a3288a1cf839f226e8eff0e4db611ace5c3))
+- **pull:** use SPM orgId for privilege preconditions ([#708](https://github.com/coveo/cli/issues/708)) ([4caa0e2](https://github.com/coveo/cli/commits/4caa0e243847d2751bf7dc18e44849e1f67f2b2a))
+- **react:** major dep updates + react 17 lock ([#730](https://github.com/coveo/cli/issues/730)) ([b7de6b2](https://github.com/coveo/cli/commits/b7de6b2ffc77a18e79cf618d0906d4b2b1707288))
+- **templates:** update ui project templates to use interactive result headless controller ([#724](https://github.com/coveo/cli/issues/724)) ([cfe5c9d](https://github.com/coveo/cli/commits/cfe5c9d8f6b74bccbe8b95e38f00ef30900e0bd5))
+- **ui:** generate username for API key authenticated user ([#706](https://github.com/coveo/cli/issues/706)) ([2765817](https://github.com/coveo/cli/commits/276581760d4ace7e3e97d128f35bc611af8b8d4b))
+
+### Features
+
+- add Stencil + Netlify port management ([#689](https://github.com/coveo/cli/issues/689)) ([1a66474](https://github.com/coveo/cli/commits/1a664741075ac633da465005bca2cfd7ca144c1d))
+
 ## v1.25.3 (2022-02-18)
 
 ## v1.25.2 (2022-02-18)

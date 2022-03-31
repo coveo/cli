@@ -1,4 +1,5 @@
 import {Region} from '@coveord/platform-client';
+import {CliUx} from '@oclif/core';
 import {
   pathExistsSync,
   createFileSync,
@@ -14,6 +15,7 @@ import {
   PlatformEnvironment,
 } from '../platform/environment';
 import {IncompatibleConfigurationError} from './configErrors';
+import {CurrentSchemaVersion} from './configSchemaVersion';
 
 export interface BaseConfiguration {
   version: string;
@@ -41,17 +43,13 @@ interface AdditionalConfiguration {
 export type Configuration = BaseConfiguration & AdditionalConfiguration;
 
 export class Config {
-  public static readonly CurrentSchemaVersion = '1.0.0';
   public static userFacingConfigKeys: (keyof BaseConfiguration)[] = [
     'environment',
     'organization',
     'region',
     'analyticsEnabled',
   ];
-  public constructor(
-    private configDir: string,
-    private error = console.error
-  ) {}
+  public constructor(private configDir: string) {}
 
   public get(): Configuration {
     this.ensureExists();
@@ -66,26 +64,31 @@ export class Config {
       return content;
     } catch (e) {
       if (e instanceof IncompatibleConfigurationError) {
-        this.error(
+        CliUx.ux.error(
           dedent`
             The configuration at ${this.configPath} is not compatible with this version of the CLI:
-            ${e.message}`
+            ${e.message}`,
+          {exit: false}
         );
       } else {
-        this.error(`Error while reading configuration at ${this.configPath}`);
+        CliUx.ux.error(
+          `Error while reading configuration at ${this.configPath}`,
+          {exit: false}
+        );
       }
       this.replace(DefaultConfig);
-      this.error(
+      CliUx.ux.error(
         `Configuration has been reset to default value: ${JSON.stringify(
           DefaultConfig
-        )}`
+        )}`,
+        {exit: false}
       );
       return DefaultConfig;
     }
   }
 
   private isSettingVersionInRange(content: Configuration) {
-    return satisfies(content.version, `^${Config.CurrentSchemaVersion}`);
+    return satisfies(content.version, `^${CurrentSchemaVersion}`);
   }
 
   public replace(config: Configuration) {
@@ -138,7 +141,7 @@ export class Config {
 }
 
 export const DefaultConfig: Configuration = {
-  version: Config.CurrentSchemaVersion,
+  version: CurrentSchemaVersion,
   environment: DEFAULT_ENVIRONMENT,
   region: DEFAULT_REGION,
   organization: '',
