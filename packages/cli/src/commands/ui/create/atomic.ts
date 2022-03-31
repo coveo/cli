@@ -93,7 +93,9 @@ export default class Atomic extends Command {
       username,
     ];
 
-    this.args.pageId && cliArgs.push('--page-id', this.args.pageId);
+    if (this.args.pageId) {
+      cliArgs.push('--page-id', this.args.pageId);
+    }
 
     return spawnProcess(appendCmdIfWindows`npx`, cliArgs);
   }
