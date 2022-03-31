@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cra-template",
-  "version": "1.25.4",
+  "version": "1.26.0",
   "scripts": {
     "lint": "prettier --check . && eslint .",
     "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@coveo/headless": "latest",
-    "@coveo/search-token-server": "1.25.4",
+    "@coveo/search-token-server": "1.26.0",
     "@mui/material": "5.5.3",
     "@mui/styles": "5.5.3",
     "@testing-library/jest-dom": "5.16.3",
