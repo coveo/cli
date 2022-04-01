@@ -1,4 +1,5 @@
 import {NodePlopAPI} from 'plop';
+// eslint-disable-next-line node/no-extraneous-import
 import Handlebars from 'handlebars';
 import {spawn} from 'child_process';
 import {getPackageManager} from './utils.js';
@@ -8,7 +9,7 @@ import {writeFileSync} from 'node:fs';
 import {PageManifest} from './page-manifest.js';
 import {join} from 'path';
 
-Handlebars.registerHelper('inc', function (value) {
+Handlebars.registerHelper('inc', (value) => {
   return parseInt(value) + 1;
 });
 
