@@ -30,10 +30,12 @@ export async function fetchPageManifest(
 
 function replaceResultsPlaceholder(pageManifest: PageManifest): PageManifest {
   const resultManagerComponent = '<results-manager></results-manager>';
-  pageManifest.markup = pageManifest.markup.replace(
-    pageManifest.results.placeholder!,
-    resultManagerComponent
-  );
+  if (pageManifest.results.placeholder) {
+    pageManifest.markup = pageManifest.markup.replace(
+      pageManifest.results.placeholder,
+      resultManagerComponent
+    );
+  }
 
   return pageManifest;
 }
