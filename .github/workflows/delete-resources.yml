@@ -8,6 +8,7 @@ on:
 jobs:
   delete-resources:
     runs-on: ubuntu-latest
+    environment: Cleaning
     env:
       ORG_ID: ${{ secrets.ORG_ID }}
       PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
@@ -33,3 +34,6 @@ jobs:
           node ./scripts/cleaning/delete-orgs.js     --olderThan 1d
         env:
           DISPLAY: ':1'
+      - name: Notify in case of failure
+        if: failure()
+        run: curl --request POST --url ${{ secrets.SLACK_WEBHOOK }}
