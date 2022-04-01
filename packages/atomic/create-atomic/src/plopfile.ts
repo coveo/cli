@@ -1,6 +1,4 @@
 import {NodePlopAPI} from 'plop';
-// eslint-disable-next-line node/no-extraneous-import
-import Handlebars from 'handlebars';
 import {spawn} from 'child_process';
 import {getPackageManager} from './utils.js';
 import {fetchPageManifest} from './fetch-page.js';
@@ -8,10 +6,6 @@ import {defaultPageManifest} from './default/default-page.js';
 import {writeFileSync} from 'node:fs';
 import {PageManifest} from './page-manifest.js';
 import {join} from 'path';
-
-Handlebars.registerHelper('inc', (value) => {
-  return parseInt(value) + 1;
-});
 
 interface PlopData {
   project: string;
@@ -24,6 +18,9 @@ interface PlopData {
 
 export default function (plop: NodePlopAPI) {
   const currentPath = process.cwd();
+
+  plop.setHelper('inc', (value) => parseInt(value) + 1);
+
   plop.setGenerator('@coveo/atomic', {
     description: 'A Coveo Atomic Generator',
     prompts: [
