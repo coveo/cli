@@ -5,6 +5,9 @@ import {
   ResultsPlaceholder,
 } from './page-manifest.js';
 
+// TODO: add call to Platform Client
+// TODO: handle proxy for Platform Client
+
 export async function fetchPageManifest(
   platformUrl: string,
   orgId: string,
