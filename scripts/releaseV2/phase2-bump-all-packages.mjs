@@ -24,7 +24,7 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
   const commits = getCommits(PATH, lastTag)[0];
   const newVersion = getReleaseVersion();
 
-  updateWorkspaceDependencies();
+  await updateWorkspaceDependencies();
   npmBumpVersion(newVersion, PATH);
 
   if (isPrivatePackage()) {
@@ -46,19 +46,7 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
     await writeChangelog(PATH, changelog);
   }
 
-  // TODO: Revert spawnSync to npmPublish.
   npmPublish();
-  const publish = spawnSync(appendCmdIfWindows`npm`, ['publish'], {
-    cwd: undefined,
-  });
-  publish.stdout
-    .toString()
-    .split('\n')
-    .forEach((line) => console.log(line));
-  publish.stderr
-    .toString()
-    .split('\n')
-    .forEach((line) => console.error(line));
 })();
 
 function getReleaseVersion() {
@@ -101,7 +89,6 @@ function updateDependency(packageJson, dependency) {
     `${dependency}@latest`,
     '-E',
     ...npmInstallFlags,
-    '--no-package-lock',
   ]);
 }
 
