@@ -3,5 +3,6 @@ CHANGELOG.md
 
 package-lock.json
 lib
+template
 
 *.hbs
