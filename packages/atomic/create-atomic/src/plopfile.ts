@@ -4,8 +4,9 @@ import {spawn} from 'child_process';
 import {getPackageManager} from './utils.js';
 import {fetchPageManifest} from './fetch-page.js';
 import {defaultPageManifest} from './default/default-page.js';
-import fs from 'fs';
+import {writeFileSync} from 'node:fs';
 import {PageManifest} from './page-manifest.js';
+import {join} from 'path';
 
 Handlebars.registerHelper('inc', function (value) {
   return parseInt(value) + 1;
@@ -139,10 +140,15 @@ export default function (plop: NodePlopAPI) {
         function generateTemplates(data) {
           const {page, project} = data as PlopData;
           page.results.templates.forEach((resultTemplate, index) => {
-            const filePath = `${currentPath}/${project}/src/components/results-manager/template-${
-              index + 1
-            }.html`;
-            fs.writeFileSync(
+            const filePath = join(
+              currentPath,
+              project,
+              'src',
+              'components',
+              'results-manager',
+              `template-${index + 1}.html`
+            );
+            writeFileSync(
               filePath,
               plop.renderString('{{{markup}}}', resultTemplate)
             );
@@ -158,7 +164,7 @@ export default function (plop: NodePlopAPI) {
             const {project} = data as PlopData;
             const process = spawn(getPackageManager(), ['install'], {
               stdio: 'ignore',
-              cwd: `${currentPath}/${project}/`,
+              cwd: join(currentPath, project),
             });
 
             process.on('close', (code) => {
