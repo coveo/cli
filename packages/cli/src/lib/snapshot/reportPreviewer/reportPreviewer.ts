@@ -1,4 +1,4 @@
-import {cli} from 'cli-ux';
+import {CliUx} from '@oclif/core';
 import {red, italic, green} from 'chalk';
 import {ReportViewerSection} from './reportPreviewerSection';
 import {ReportViewerStyles} from './reportPreviewerStyles';
@@ -8,6 +8,7 @@ import {
   ReportViewerResourceReportModel,
 } from './reportPreviewerDataModels';
 import dedent from 'ts-dedent';
+import {recordable} from '../../utils/record';
 
 export class ReportViewer {
   public static defaultOperationsToDisplay: ReportViewerOperationName[] = [
@@ -39,7 +40,7 @@ export class ReportViewer {
     }
 
     if (!this.reporter.hasChangedResources()) {
-      cli.log(dedent`${green('No resources to change')}.
+      CliUx.ux.log(dedent`${green('No resources to change')}.
 
       The target organization already matches the configuration.`);
       return;
@@ -52,11 +53,11 @@ export class ReportViewer {
     );
 
     if (changedResources.length === 0) {
-      cli.log(ReportViewerStyles.header('\nNo changes detected'));
+      CliUx.ux.log(ReportViewerStyles.header('\nNo changes detected'));
       return;
     }
 
-    cli.table(changedResources, {
+    CliUx.ux.table(recordable(changedResources), {
       resourceName: {
         header: ReportViewerStyles.header('\nPreviewing resource changes:'),
         get: (resource) => this.createSection(resource),
@@ -84,8 +85,8 @@ export class ReportViewer {
     const totalErrorCount =
       this.reporter.getOperationTypeTotalCount('resourcesInError');
 
-    cli.log(ReportViewerStyles.header('Error Report:'));
-    cli.log(
+    CliUx.ux.log(ReportViewerStyles.header('Error Report:'));
+    CliUx.ux.log(
       ReportViewerStyles.error(
         `   ${totalErrorCount} resource${
           totalErrorCount > 1 ? 's' : ''
@@ -111,7 +112,7 @@ export class ReportViewer {
       return;
     }
 
-    cli.log(`\n ${this.prettyPrintResourceName(ResourceSnapshotType)}`);
+    CliUx.ux.log(`\n ${this.prettyPrintResourceName(ResourceSnapshotType)}`);
 
     const errors = operationResultErrors.reduce(
       (acc, curr) => acc.concat(curr),
@@ -119,14 +120,14 @@ export class ReportViewer {
     );
 
     for (let j = 0; j < errors.length && remainingErrorsToPrint > 0; j++) {
-      cli.log(red(`  • ${errors[j]}`));
+      CliUx.ux.log(red(`  • ${errors[j]}`));
       remainingErrorsToPrint--;
     }
 
     const unprintedErrors =
       errors.length - ReportViewer.maximumNumberOfErrorsToPrint;
     if (unprintedErrors > 0) {
-      cli.log(
+      CliUx.ux.log(
         italic(
           `  (${unprintedErrors} more error${unprintedErrors > 1 ? 's' : ''})`
         )
@@ -135,6 +136,6 @@ export class ReportViewer {
   }
 
   private printNewLine() {
-    cli.log('');
+    CliUx.ux.log('');
   }
 }

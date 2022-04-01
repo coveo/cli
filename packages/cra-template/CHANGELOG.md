@@ -1,3 +1,12 @@
+# 1.26.0 (2022-03-31)
+
+### Bug Fixes
+
+- **deps:** update all dependencies j:cdx-227 ([#723](https://github.com/coveo/cli/issues/723)) ([88a18fd](https://github.com/coveo/cli/commits/88a18fdc3f035959a3ad13bb1aa30289a53bff72))
+- **deps:** update all dependencies j:cdx-227 ([#731](https://github.com/coveo/cli/issues/731)) ([dbd0e96](https://github.com/coveo/cli/commits/dbd0e96dae656ffb156f62dabaa363be1997e145))
+- **react:** major dep updates + react 17 lock ([#730](https://github.com/coveo/cli/issues/730)) ([b7de6b2](https://github.com/coveo/cli/commits/b7de6b2ffc77a18e79cf618d0906d4b2b1707288))
+- **templates:** update ui project templates to use interactive result headless controller ([#724](https://github.com/coveo/cli/issues/724)) ([cfe5c9d](https://github.com/coveo/cli/commits/cfe5c9d8f6b74bccbe8b95e38f00ef30900e0bd5))
+
 # 1.25.0 (2022-02-16)
 
 ### Bug Fixes

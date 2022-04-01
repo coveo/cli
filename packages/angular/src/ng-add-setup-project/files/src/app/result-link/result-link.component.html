@@ -1,0 +1,9 @@
+<a
+  href="{{ filteredUri }}"
+  (click)="select()"
+  (contextmenu)="select()"
+  (mousedown)="select()"
+  (touchstart)="beginDelayedSelect()"
+  (touchend)="cancelPendingSelect()"
+  >{{ result.title }}</a
+>

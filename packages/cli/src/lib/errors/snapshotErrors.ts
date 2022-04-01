@@ -1,5 +1,5 @@
 import {blueBright} from 'chalk';
-import {cli} from 'cli-ux';
+import {CliUx} from '@oclif/core';
 import dedent from 'ts-dedent';
 import {Configuration} from '../config/config';
 import {Snapshot} from '../snapshot/snapshot';
@@ -26,7 +26,7 @@ function printMessageWithSynchronizationPlanUrl(
 ) {
   const urlBuilder = new SnapshotUrlBuilder(cfg);
   const synchronizationPlanUrl = urlBuilder.getSynchronizationPage(snapshot);
-  cli.log(dedent`${message}
+  CliUx.ux.log(dedent`${message}
   ${synchronizationPlanUrl}`);
 }
 

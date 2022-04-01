@@ -1,3 +1,4 @@
+import globalConfig from '../../lib/config/globalConfig';
 import {flush} from '../analytics/analytics';
 import {buildEvent} from '../analytics/eventUtils';
 
@@ -23,7 +24,7 @@ export function handleTerminationSignals() {
 }
 
 async function trackEvent(termination_signal: string) {
-  await config.runHook('analytics', {
+  await globalConfig.get().runHook('analytics', {
     event: buildEvent('interrupted operation', {termination_signal}),
   });
 }

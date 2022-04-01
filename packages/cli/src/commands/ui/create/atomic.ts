@@ -1,4 +1,4 @@
-import {Command, flags} from '@oclif/command';
+import {Command, Flags} from '@oclif/core';
 import {
   Preconditions,
   IsAuthenticated,
@@ -17,11 +17,6 @@ import {Config} from '../../../lib/config/config';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {platformUrl} from '../../../lib/platform/environment';
 import {getPackageVersion} from '../../../lib/utils/misc';
-
-interface AtomicArguments {
-  name: string;
-  pageId?: string;
-}
 
 export default class Atomic extends Command {
   public static cliPackage = '@coveo/create-atomic';
@@ -42,7 +37,7 @@ export default class Atomic extends Command {
     },
   ];
   public static flags = {
-    version: flags.string({
+    version: Flags.string({
       char: 'v',
       description: `The version of ${Atomic.cliPackage} to use.`,
       default: getPackageVersion(Atomic.cliPackage) || 'latest',
@@ -64,25 +59,20 @@ export default class Atomic extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Error & {exitCode?: number}) {
     throw err;
   }
 
   private async createProject() {
+    const {flags, args} = await this.parse(Atomic);
     const cfg = this.configuration.get();
     const authenticatedClient = new AuthenticatedClient();
-    console.log('Create api key');
-    const apiKey = await authenticatedClient.createImpersonateApiKey(
-      this.args.name
-    );
-    console.log('API key created');
-    console.log('Get user info');
+    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
     const username = await authenticatedClient.getUsername();
-    console.log('User info retrieved');
     const cliArgs = [
-      `${Atomic.cliPackage}@${this.flags.version}`,
+      `${Atomic.cliPackage}@${flags.version}`,
       '--project',
-      this.args.name,
+      args.name,
       '--org-id',
       cfg.organization,
       '--api-key',
@@ -93,24 +83,14 @@ export default class Atomic extends Command {
       username,
     ];
 
-    if (this.args.pageId) {
-      cliArgs.push('--page-id', this.args.pageId);
+    if (args.pageId) {
+      cliArgs.push('--page-id', args.pageId);
     }
 
     return spawnProcess(appendCmdIfWindows`npx`, cliArgs);
   }
 
   private get configuration() {
-    return new Config(this.config.configDir, this.error);
-  }
-
-  private get args() {
-    const {args} = this.parse<{}, AtomicArguments>(Atomic);
-    return args;
-  }
-
-  private get flags() {
-    const {flags} = this.parse(Atomic);
-    return flags;
+    return new Config(this.config.configDir);
   }
 }

@@ -1,0 +1,85 @@
+diff --git a/node_modules/oclif/lib/commands/pack/deb.js b/node_modules/oclif/lib/commands/pack/deb.js
+index 8903363..db27b9e 100644
+--- a/node_modules/oclif/lib/commands/pack/deb.js
++++ b/node_modules/oclif/lib/commands/pack/deb.js
+@@ -64,8 +64,8 @@ class PackDeb extends core_1.Command {
+             await qq.write([workspace, 'DEBIAN/control'], scripts.control(buildConfig, (0, upload_util_1.debArch)(arch)));
+             await qq.chmod([workspace, 'usr/lib', config.dirname, 'bin', config.bin], 0o755);
+             await qq.x(`ln -s "../lib/${config.dirname}/bin/${config.bin}" "${workspace}/usr/bin/${config.bin}"`);
+-            await qq.x(`chown -R root "${workspace}"`);
+-            await qq.x(`chgrp -R root "${workspace}"`);
++            await qq.x(`sudo chown -R root "${workspace}"`);
++            await qq.x(`sudo chgrp -R root "${workspace}"`);
+             await qq.x(`dpkg --build "${workspace}" "${qq.join(dist, versionedDebBase)}"`);
+         };
+         const arches = _.uniq(buildConfig.targets
+diff --git a/node_modules/oclif/lib/tarballs/build.js b/node_modules/oclif/lib/tarballs/build.js
+index 78959c0..3f8e776 100644
+--- a/node_modules/oclif/lib/tarballs/build.js
++++ b/node_modules/oclif/lib/tarballs/build.js
+@@ -48,16 +48,16 @@ async function build(c, options = {}) {
+     };
+     const addDependencies = async () => {
+         qq.cd(c.workspace());
+-        const yarnRoot = findYarnWorkspaceRoot(c.root) || c.root;
+-        const yarn = await qq.exists([yarnRoot, 'yarn.lock']);
++        const workspaceRoot = findYarnWorkspaceRoot(c.root) || c.root;
++        const yarn = await qq.exists([workspaceRoot, 'yarn.lock']);
+         if (yarn) {
+-            await qq.cp([yarnRoot, 'yarn.lock'], '.');
++            await qq.cp([workspaceRoot, 'yarn.lock'], '.');
+             await qq.x('yarn --no-progress --production --non-interactive');
+         }
+         else {
+-            let lockpath = qq.join(c.root, 'package-lock.json');
++            let lockpath = qq.join(workspaceRoot, 'package-lock.json');
+             if (!await qq.exists(lockpath)) {
+-                lockpath = qq.join(c.root, 'npm-shrinkwrap.json');
++                lockpath = qq.join(workspaceRoot, 'npm-shrinkwrap.json');
+             }
+             await qq.cp(lockpath, '.');
+             await qq.x('npm install --production');
+diff --git a/node_modules/oclif/lib/tarballs/node.js b/node_modules/oclif/lib/tarballs/node.js
+index 11a2f52..daba645 100644
+--- a/node_modules/oclif/lib/tarballs/node.js
++++ b/node_modules/oclif/lib/tarballs/node.js
+@@ -2,9 +2,21 @@
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.fetchNodeBinary = void 0;
+ const core_1 = require("@oclif/core");
++const { ReadStream } = require("fs");
+ const path = require("path");
+ const qq = require("qqjs");
+ const log_1 = require("../log");
++async function checkFileSum(fileBasedir,filePath,sumFilePath) {
++    if(process.platform === 'win32') {
++        const computedSum = (await qq.x(`certUtil -hashfile ${filePath} SHA256`, {cwd: fileBasedir, stdio:'pipe'})).stdout.split('\n')[1].trim();
++        const checkSum = (await qq.x(`findstr ${path.basename(filePath)} ${sumFilePath}`,{cwd: fileBasedir, stdio:'pipe'})).stdout.split(' ')[0].trim();
++        if(computedSum !==checkSum) {
++            throw new Error(`${filePath} checksum fail!`)
++        }
++    } else {
++        await qq.x(`grep ${path.basename(filePath)} ${sumFilePath} | shasum -a 256 -c -`, {cwd: fileBasedir})
++    }
++}
+ async function checkFor7Zip() {
+     try {
+         await qq.x('7z', { stdio: [0, null, 2] });
+@@ -41,7 +53,7 @@ async function fetchNodeBinary({ nodeVersion, output, platform, arch, tmp }) {
+         const basedir = path.dirname(tarball);
+         await qq.mkdirp(basedir);
+         await qq.download(url, tarball);
+-        await qq.x(`grep "${path.basename(tarball)}" "${shasums}" | shasum -a 256 -c -`, { cwd: basedir });
++        await checkFileSum(basedir, tarball, shasums)
+     };
+     const extract = async () => {
+         (0, log_1.log)(`extracting ${nodeBase}`);
+@@ -51,7 +63,7 @@ async function fetchNodeBinary({ nodeVersion, output, platform, arch, tmp }) {
+         await qq.mkdirp(path.dirname(cache));
+         if (platform === 'win32') {
+             qq.pushd(nodeTmp);
+-            await qq.x(`7z x -bd -y "${tarball}" > /dev/null`);
++            await qq.x(`7z x -bd -y ${tarball} > ${process.platform=== 'win32' ? 'NUL' : '/dev/null'}`);
+             await qq.mv([nodeBase, 'node.exe'], cache);
+             qq.popd();
+         }

@@ -1,4 +1,4 @@
-import {cli} from 'cli-ux';
+import {CliUx} from '@oclif/core';
 import {CLIBaseError} from './CLIBaseError';
 
 export enum SeverityLevel {
@@ -13,7 +13,7 @@ export class PrintableError extends CLIBaseError {
   }
 
   public print() {
-    cli.log();
-    cli[this.level]('\n' + this.message);
+    CliUx.ux.log();
+    CliUx.ux[this.level]('\n' + this.message);
   }
 }
