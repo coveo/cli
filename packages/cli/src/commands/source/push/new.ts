@@ -1,4 +1,5 @@
 import {SourceType, SourceVisibility} from '@coveord/platform-client';
+import {PushSource} from '@coveo/push-api-client';
 import {Command, Flags} from '@oclif/core';
 import {green} from 'chalk';
 import dedent from 'ts-dedent';
@@ -7,6 +8,7 @@ import {
   Preconditions,
 } from '../../../lib/decorators/preconditions';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {withSourceVisibility} from '../../../lib/flags/sourceCommonFlags';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 
 export default class SourcePushNew extends Command {
@@ -14,17 +16,7 @@ export default class SourcePushNew extends Command {
     'Create a new push source in a Coveo organization';
 
   public static flags = {
-    sourceVisibility: Flags.enum({
-      options: [
-        SourceVisibility.PRIVATE,
-        SourceVisibility.SECURED,
-        SourceVisibility.SHARED,
-      ],
-      description:
-        'Controls the content security option that should be applied to the items in a source. See https://docs.coveo.com/en/1779/index-content/content-security',
-      default: SourceVisibility.SECURED,
-      char: 'v',
-    }),
+    ...withSourceVisibility(),
   };
 
   public static args = [
@@ -38,8 +30,8 @@ export default class SourcePushNew extends Command {
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
+    // TODO: CDX-??? use create method from push-api-client
     const {flags, args} = await this.parse(SourcePushNew);
-
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();
 
