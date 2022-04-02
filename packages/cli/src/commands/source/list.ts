@@ -3,17 +3,14 @@ import {Command, CliUx} from '@oclif/core';
 import {
   IsAuthenticated,
   Preconditions,
-} from '../../../lib/decorators/preconditions';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+} from '../../lib/decorators/preconditions';
+import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import dedent from 'ts-dedent';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
-import {magenta} from 'chalk';
-import SourceList from '../list';
+import {Trackable} from '../../lib/decorators/preconditions/trackable';
 
-export default class SourcePushList extends Command {
-  public static description = `${magenta(
-    '[Deprecated]'
-  )} List all available push sources in your Coveo organization`;
+export default class SourceList extends Command {
+  public static description =
+    'List all available push sources in your Coveo organization';
 
   public static flags = {
     ...CliUx.ux.table.flags(),
@@ -22,8 +19,7 @@ export default class SourcePushList extends Command {
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
-    CliUx.ux.warn(`${magenta('deprecated')} Use ${SourceList.id} instead`);
-    const {flags} = await this.parse(SourcePushList);
+    const {flags} = await this.parse(SourceList);
     const authenticatedClient = new AuthenticatedClient();
     const org = (await authenticatedClient.cfg.get()).organization;
     const platformClient = await authenticatedClient.getClient();
@@ -35,8 +31,10 @@ export default class SourcePushList extends Command {
     if (sources.totalEntries === 0) {
       this.log(
         dedent(`
-      There is no push source in organization ${org}
-      You can create one using source:push:new
+      There is no push nor catalog source in organization ${org}
+      You can:
+      * create a push source using source:push:new
+      * create a catalog source using source:catalog:new
       `)
       );
       return;
@@ -48,6 +46,9 @@ export default class SourcePushList extends Command {
         id: {},
         name: {},
         owner: {},
+        sourceType: {
+          header: 'Source type',
+        },
         sourceVisibility: {
           header: 'Source visibility',
         },
