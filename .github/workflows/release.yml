@@ -55,6 +55,8 @@ jobs:
         with:
           node-version: '16'
           registry-url: 'https://registry.npmjs.org'
+      # TODO: Remove later, when `npm 8.5.4` is built in.
+      - run: npm i -g npm@^8.5.4
       - name: Install dependencies
         run: npm ci
       - name: Setup credentials
