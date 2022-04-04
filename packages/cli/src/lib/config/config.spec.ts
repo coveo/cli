@@ -1,3 +1,11 @@
+const mockedUxError = jest.fn();
+jest.mock('@oclif/core', () => ({
+  CliUx: {ux: {error: mockedUxError}},
+}));
+jest.mock('./configErrors');
+jest.mock('fs-extra');
+jest.mock('semver');
+import {satisfies} from 'semver';
 import {
   pathExistsSync,
   createFileSync,
@@ -9,14 +17,10 @@ import dedent from 'ts-dedent';
 import {defaultConfiguration} from '../../__stub__/configuration';
 import {PlatformEnvironment} from '../platform/environment';
 import {Config} from './config';
-
-jest.mock('semver');
-import {satisfies} from 'semver';
-
-jest.mock('./configErrors');
 import {IncompatibleConfigurationError} from './configErrors';
 import {fancyIt} from '../../__test__/it';
-jest.mock('fs-extra');
+import {CurrentSchemaVersion} from './configSchemaVersion';
+
 const mockedSemverSatisifies = jest.mocked(satisfies);
 const mockedPathExists = jest.mocked(pathExistsSync);
 const mockedCreateFile = jest.mocked(createFileSync);
@@ -55,7 +59,7 @@ describe('config', () => {
   fancyIt()(
     'should not create config file when it does exists and its version is compatible',
     async () => {
-      const someConfig = {version: Config.CurrentSchemaVersion};
+      const someConfig = {version: CurrentSchemaVersion};
       mockedReadJSON.mockImplementationOnce(() => someConfig);
       mockedPathExists.mockImplementationOnce(() => true);
 
@@ -72,7 +76,7 @@ describe('config', () => {
     });
 
     fancyIt()('should return the config if no error', async () => {
-      const someConfig = {foo: 'bar', version: Config.CurrentSchemaVersion};
+      const someConfig = {foo: 'bar', version: CurrentSchemaVersion};
       mockedReadJSON.mockImplementationOnce(() => someConfig);
 
       const cfg = new Config('foo/bar').get();
@@ -84,7 +88,6 @@ describe('config', () => {
       'should create default config if the config version is incompatible',
       () => {
         const someConfig = {foo: 'bar', version: '0.0.0'};
-        const errorSpy = jest.fn();
         mockedReadJSON.mockImplementationOnce(() => someConfig);
         mockedSemverSatisifies.mockReturnValueOnce(false);
         mockedIncompatibleConfigurationError.mockImplementationOnce(() => {
@@ -92,14 +95,14 @@ describe('config', () => {
           err.message = 'some message';
           return err;
         });
-        new Config('foo/bar', errorSpy).get();
+        new Config('foo/bar').get();
 
         expect(mockedWriteJSON).toHaveBeenCalledWith(
           join('foo', 'bar', 'config.json'),
           expect.objectContaining({})
         );
         expect(mockedIncompatibleConfigurationError).toBeCalledWith('0.0.0');
-        expect(errorSpy).toBeCalledWith(
+        expect(mockedUxError).toBeCalledWith(
           dedent`
           The configuration at ${join(
             'foo',
@@ -107,7 +110,8 @@ describe('config', () => {
             'config.json'
           )} is not compatible with this version of the CLI:
           some message
-          `
+          `,
+          {exit: false}
         );
       }
     );
@@ -133,7 +137,7 @@ describe('config', () => {
     fancyIt()('should write config on set', async () => {
       mockedReadJSON.mockImplementationOnce(() => ({
         hello: 'world',
-        version: Config.CurrentSchemaVersion,
+        version: CurrentSchemaVersion,
       }));
       new Config('foo/bar').set('environment', PlatformEnvironment.Dev);
       expect(mockedWriteJSON).toHaveBeenCalledWith(

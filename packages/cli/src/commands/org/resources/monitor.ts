@@ -1,6 +1,5 @@
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
-import {flags, Command} from '@oclif/command';
-import {cli} from 'cli-ux';
+import {Flags, Command, CliUx} from '@oclif/core';
 import {Config} from '../../../lib/config/config';
 import {
   IsAuthenticated,
@@ -23,7 +22,7 @@ export default class Monitor extends Command {
 
   public static flags = {
     ...wait(),
-    target: flags.string({
+    target: Flags.string({
       char: 't',
       description:
         'The unique identifier of the organization containing the snapshot. If not specified, the organization you are connected to will be used.',
@@ -46,7 +45,7 @@ export default class Monitor extends Command {
     this.warn(
       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
     );
-    this.printHeader();
+    await this.printHeader();
 
     const snapshot = await this.getSnapshot();
 
@@ -54,14 +53,15 @@ export default class Monitor extends Command {
   }
 
   @Trackable()
-  public async catch(err?: Error) {
+  public async catch(err?: Error & {exitCode?: number}) {
     handleSnapshotError(err);
   }
 
   private async monitorSnapshot(snapshot: Snapshot) {
     const reporter = new SnapshotReporter(snapshot.latestReport);
-    cli.action.start(`Operation ${reporter.type}`, reporter.status);
-    await snapshot.waitUntilDone(this.waitOption);
+    CliUx.ux.action.start(`Operation ${reporter.type}`, reporter.status);
+    const waitOption = await this.getWaitOption();
+    await snapshot.waitUntilDone(waitOption);
     await this.displayMonitorResult(snapshot, reporter);
   }
 
@@ -70,37 +70,37 @@ export default class Monitor extends Command {
     reporter: SnapshotReporter
   ) {
     if (!reporter.isSuccessReport()) {
-      const cfg = await this.configuration.get();
-      cli.log(ReportViewerStyles.error(reporter.resultCode));
+      const cfg = this.configuration.get();
+      CliUx.ux.log(ReportViewerStyles.error(reporter.resultCode));
       await handleReportWithErrors(snapshot, cfg);
     }
   }
 
-  private printHeader() {
-    const {args} = this.parse(Monitor);
+  private async printHeader() {
+    const {args} = await this.parse(Monitor);
     const snapshotId = args.snapshotId;
     const header = ReportViewerStyles.header(
       `Monitoring snapshot ${snapshotId}`
     );
-    cli.log('');
-    cli.action.start(header);
+    CliUx.ux.log('');
+    CliUx.ux.action.start(header);
   }
 
   private refresh(report: ResourceSnapshotsReportModel) {
     const reporter = new SnapshotReporter(report);
-    cli.action.status = reporter.status;
+    CliUx.ux.action.status = reporter.status;
   }
 
   private async getSnapshot(): Promise<Snapshot> {
-    const {args, flags} = this.parse(Monitor);
+    const {args, flags} = await this.parse(Monitor);
     const snapshotId = args.snapshotId;
     const target = await getTargetOrg(this.configuration, flags.target);
 
     return SnapshotFactory.createFromExistingSnapshot(snapshotId, target);
   }
 
-  private get waitOption(): WaitUntilDoneOptions {
-    const {flags} = this.parse(Monitor);
+  private async getWaitOption(): Promise<WaitUntilDoneOptions> {
+    const {flags} = await this.parse(Monitor);
     return {
       wait: flags.wait,
       // TODO: revisit with a progress bar once the response contains the remaining resources to process
@@ -109,6 +109,6 @@ export default class Monitor extends Command {
   }
 
   private get configuration() {
-    return new Config(this.config.configDir, this.error);
+    return new Config(this.config.configDir);
   }
 }

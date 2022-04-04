@@ -7,7 +7,7 @@ import {
   rmSync,
 } from 'fs';
 import {extname, join} from 'path';
-import {cli} from 'cli-ux';
+import {CliUx} from '@oclif/core';
 import archiver from 'archiver';
 import {InvalidProjectError} from '../errors';
 import extract from 'extract-zip';
@@ -90,7 +90,7 @@ export class Project {
       });
       return this.temporaryZipPath;
     } catch (error) {
-      cli.error(error as string | Error);
+      CliUx.ux.error(error as string | Error);
     }
   }
 

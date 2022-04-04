@@ -1,10 +1,13 @@
 jest.mock('../../lib/config/config');
+jest.mock('../../lib/config/globalConfig');
 
-import type {IConfig} from '@oclif/config';
+import type {Interfaces} from '@oclif/core';
 import {Config} from '../../lib/config/config';
+import globalConfig from '../../lib/config/globalConfig';
 import check from './session';
 
 describe('session', () => {
+  const mockedGlobalConfig = jest.mocked(globalConfig);
   const mockedConfig = jest.mocked(Config, true);
   const mockedConfigGet = jest.fn();
   const mockedConfigSet = jest.fn();
@@ -31,7 +34,9 @@ describe('session', () => {
 
   beforeAll(() => {
     freezeTime();
-    global.config = {configDir: 'the_config_dir'} as IConfig;
+    mockedGlobalConfig.get.mockReturnValue({
+      configDir: 'the_config_dir',
+    } as Interfaces.Config);
   });
 
   beforeEach(() => {

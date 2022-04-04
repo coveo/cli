@@ -115,12 +115,12 @@ jobs:
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
-      - uses: actions/cache@4b0cf6cc4619e737324ddfcec08fff2413359514 # tag=v3
+      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # tag=v3
         if: ${{matrix.os == 'ubuntu-latest'}}
         with:
           path: packages/cli-e2e/verdaccio
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-      - uses: actions/cache@4b0cf6cc4619e737324ddfcec08fff2413359514 # tag=v3
+      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # tag=v3
         if: ${{matrix.os == 'windows-latest'}}
         with:
           path: packages\cli-e2e\verdaccio
@@ -195,12 +195,12 @@ jobs:
       - name: Install locked NPM version.
         # TODO: Remove later, when `npm 8.5.4` is built in.
         run: npm i -g npm@^8.5.4
-      - uses: actions/cache@4b0cf6cc4619e737324ddfcec08fff2413359514 # tag=v3
+      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # tag=v3
         if: ${{matrix.os == 'ubuntu-latest'}}
         with:
           path: packages/cli-e2e/verdaccio
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-      - uses: actions/cache@4b0cf6cc4619e737324ddfcec08fff2413359514 # tag=v3
+      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # tag=v3
         if: ${{matrix.os == 'windows-latest'}}
         with:
           path: packages\cli-e2e\verdaccio

@@ -1,6 +1,7 @@
 jest.mock('../config/config');
 jest.mock('@coveord/platform-client');
-import {IConfig} from '@oclif/config';
+jest.mock('../config/globalConfig');
+import {Interfaces} from '@oclif/core';
 import {
   AuthenticatedClient,
   AuthenticationStatus,
@@ -14,18 +15,18 @@ import {
   PlatformEnvironment,
 } from './environment';
 import {fancyIt} from '../../__test__/it';
+import globalConfig from '../config/globalConfig';
 const mockConfig = jest.mocked(Config);
 const mockPlatformClient = jest.mocked(PlatformClient);
 
 describe('AuthenticatedClient', () => {
-  const mockGet = jest.fn().mockReturnValue(
-    Promise.resolve({
-      environment: 'dev',
-      region: 'eu',
-      organization: 'my_org',
-      accessToken: 'my_token',
-    })
-  );
+  const mockedGlobalConfig = jest.mocked(globalConfig);
+  const mockGet = jest.fn().mockReturnValue({
+    environment: 'dev',
+    region: 'eu',
+    organization: 'my_org',
+    accessToken: 'my_token',
+  });
 
   const mockInitialize = jest.fn();
   const mockCreate = jest.fn();
@@ -52,8 +53,10 @@ describe('AuthenticatedClient', () => {
       } as unknown as PlatformClient)
   );
 
-  beforeEach(() => {
-    global.config = {configDir: 'the_config_dir'} as IConfig;
+  beforeAll(() => {
+    mockedGlobalConfig.get.mockReturnValue({
+      configDir: 'the_config_dir',
+    } as Interfaces.Config);
   });
 
   fancyIt()(
@@ -67,7 +70,7 @@ describe('AuthenticatedClient', () => {
   fancyIt()(
     'should correctly identify #isLoggedIn if the config contains no access token',
     async () => {
-      mockGet.mockReturnValueOnce(Promise.resolve({accessToken: undefined}));
+      mockGet.mockReturnValueOnce({accessToken: undefined});
       expect(await new AuthenticatedClient().isLoggedIn()).toBe(false);
     }
   );
@@ -75,7 +78,7 @@ describe('AuthenticatedClient', () => {
   fancyIt()(
     'should correctly identify #isLoggedIn if the config contains an access token',
     async () => {
-      mockGet.mockReturnValueOnce(Promise.resolve({accessToken: 'the_token'}));
+      mockGet.mockReturnValueOnce({accessToken: 'the_token'});
       expect(await new AuthenticatedClient().isLoggedIn()).toBe(true);
     }
   );

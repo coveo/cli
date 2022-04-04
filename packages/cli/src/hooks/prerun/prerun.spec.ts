@@ -1,8 +1,11 @@
 jest.mock('../../lib/config/config');
-import {IConfig} from '@oclif/config';
+jest.mock('../../lib/config/globalConfig');
+
+import {Interfaces, CliUx} from '@oclif/core';
 import {Config} from '../../lib/config/config';
-import {cli} from 'cli-ux';
 import {test} from '@oclif/test';
+import globalConfig from '../../lib/config/globalConfig';
+const mockedGlobalConfig = jest.mocked(globalConfig);
 const mockConfig = jest.mocked(Config);
 
 describe('hooks:prerun', () => {
@@ -15,7 +18,9 @@ describe('hooks:prerun', () => {
   );
 
   beforeEach(() => {
-    global.config = {configDir: 'the_config_dir'} as IConfig;
+    mockedGlobalConfig.get.mockReturnValue({
+      configDir: 'the_config_dir',
+    } as Interfaces.Config);
   });
 
   describe('When not running in a CI', () => {
@@ -32,7 +37,7 @@ describe('hooks:prerun', () => {
 
     test
       .do(() => {
-        mockGet.mockReturnValueOnce(Promise.resolve({analyticsEnabled: true}));
+        mockGet.mockReturnValueOnce({analyticsEnabled: true});
       })
       .stdout()
       .stderr()
@@ -46,11 +51,9 @@ describe('hooks:prerun', () => {
 
     test
       .do(() => {
-        mockGet.mockReturnValueOnce(
-          Promise.resolve({analyticsEnabled: undefined})
-        );
+        mockGet.mockReturnValueOnce({analyticsEnabled: undefined});
       })
-      .stub(cli, 'confirm', () => async () => true)
+      .stub(CliUx.ux, 'confirm', () => async () => true)
       .stdout()
       .stderr()
       .hook('prerun', {Command: {id: 'update'}})
@@ -63,11 +66,9 @@ describe('hooks:prerun', () => {
 
     test
       .do(() => {
-        mockGet.mockReturnValueOnce(
-          Promise.resolve({analyticsEnabled: undefined})
-        );
+        mockGet.mockReturnValueOnce({analyticsEnabled: undefined});
       })
-      .stub(cli, 'confirm', () => async () => true)
+      .stub(CliUx.ux, 'confirm', () => async () => true)
       .stdout()
       .stderr()
       .hook('prerun')
@@ -80,28 +81,9 @@ describe('hooks:prerun', () => {
 
     test
       .do(() => {
-        mockGet.mockReturnValueOnce(
-          Promise.resolve({analyticsEnabled: undefined})
-        );
+        mockGet.mockReturnValueOnce({analyticsEnabled: undefined});
       })
-      .stub(cli, 'confirm', () => async () => true)
-      .stdout()
-      .stderr()
-      .hook('prerun')
-      .it(
-        'does modify config when #analytics have not been configured and the users answer #true',
-        () => {
-          expect(mockSet).toHaveBeenCalledWith('analyticsEnabled', true);
-        }
-      );
-
-    test
-      .do(() => {
-        mockGet.mockReturnValueOnce(
-          Promise.resolve({analyticsEnabled: undefined})
-        );
-      })
-      .stub(cli, 'confirm', () => async () => false)
+      .stub(CliUx.ux, 'confirm', () => async () => false)
       .stdout()
       .stderr()
       .hook('prerun')
