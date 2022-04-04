@@ -9,7 +9,7 @@ import waitOn from 'wait-on';
 import {ProcessManager} from './utils/processManager';
 import {restoreCliConfig} from './setup/utils';
 (async () => {
-  if (!statSync('decrypted', {throwIfNoEntry: false})) {
+  if (statSync('decrypted', {throwIfNoEntry: false})) {
     restoreCliConfig();
   } else {
     mkdirSync(SCREENSHOTS_PATH, {recursive: true});
