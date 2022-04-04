@@ -7,11 +7,7 @@ jest.mock('@coveo/push-api-client');
 import stripAnsi from 'strip-ansi';
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {
-  BatchUpdateDocumentsFromFiles,
-  DocumentBuilder,
-  PushSource,
-} from '@coveo/push-api-client';
+import {DocumentBuilder, PushSource} from '@coveo/push-api-client';
 import {cwd} from 'process';
 import {join} from 'path';
 import {
@@ -19,7 +15,6 @@ import {
   doMockAxiosSuccess,
 } from '../../../lib/push/testUtils';
 import {APIError} from '../../../lib/errors/APIError';
-import {UploadBatchCallbackData} from '@coveo/push-api-client';
 import globalConfig from '../../../lib/config/globalConfig';
 import {Interfaces} from '@oclif/core';
 const mockedGlobalConfig = jest.mocked(globalConfig);
@@ -28,6 +23,41 @@ const mockedSource = jest.mocked(PushSource);
 const mockedDocumentBuilder = jest.mocked(DocumentBuilder);
 const mockedMarshal = jest.fn();
 const mockEvaluate = jest.fn();
+
+class DummyBuilderSuccess {
+  onBatchUpload(callback: Function) {
+    callback({
+      res: doMockAxiosSuccess(202, '👌'),
+      batch: [
+        new DocumentBuilder('somwhereintheinternet.com', 'Somewhere'),
+        new DocumentBuilder('another.uri.com', 'The Title'),
+      ],
+      files: ['fileA', 'fileB'],
+    });
+    return this;
+  }
+  onBatchError(_callback: Function) {
+    return this;
+  }
+  async batch() {}
+}
+
+class DummyBuilderError {
+  onBatchUpload(_callback: Function) {
+    return this;
+  }
+  onBatchError(callback: Function) {
+    callback(
+      doMockAxiosError(
+        412,
+        'this is a bad request and you should feel bad',
+        'BAD_REQUEST'
+      )
+    );
+    return this;
+  }
+  async batch() {}
+}
 
 describe('source:push:add', () => {
   const pathToStub = join(cwd(), 'src', '__stub__');
@@ -43,42 +73,11 @@ describe('source:push:add', () => {
   };
 
   const doMockSuccessBatchUpload = () => {
-    // TODO: should test arguments pass to function
-    // TODO: Should test callbacks like push sdk
-    mockBatchUpdate.mockImplementation(
-      (
-        _sourceId: string,
-        fileNames: string[],
-        options?: BatchUpdateDocumentsFromFiles
-      ) => ({
-        files: fileNames,
-        batch: [
-          new DocumentBuilder('somwhereintheinternet.com', 'Somewhere'),
-          new DocumentBuilder('another.uri.com', 'The Title'),
-        ],
-        res: doMockAxiosSuccess(202, '👌'),
-      })
-    );
+    mockBatchUpdate.mockReturnValue(new DummyBuilderSuccess());
   };
 
   const doMockErrorBatchUpload = () => {
-    mockBatchUpdate.mockImplementation(
-      (
-        _sourceId: string,
-        fileNames: string[],
-        callback: UploadBatchCallbackData
-      ) => (
-        doMockAxiosError(
-          412,
-          'this is a bad request and you should feel bad',
-          'BAD_REQUEST'
-        ),
-        {
-          files: fileNames,
-          batch: [],
-        }
-      )
-    );
+    mockBatchUpdate.mockReturnValue(new DummyBuilderError());
   };
 
   beforeAll(() => {
@@ -272,7 +271,7 @@ describe('source:push:add', () => {
 
   describe('when the batch upload fails', () => {
     beforeAll(() => {
-      // doMockErrorBatchUpload();
+      doMockErrorBatchUpload();
       mockUserHavingAllRequiredPlatformPrivileges();
     });
 

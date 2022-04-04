@@ -1,9 +1,6 @@
 import {PushSource, UploadBatchCallbackData} from '@coveo/push-api-client';
 import {Command, Flags, CliUx} from '@oclif/core';
 import {green} from 'chalk';
-import {readdirSync} from 'fs';
-import {join} from 'path';
-import {Config} from '../../../lib/config/config';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
@@ -84,8 +81,8 @@ export default class SourcePushAdd extends Command {
 
     await source
       .batchUpdateDocumentsFromFiles(args.sourceId, fileNames, options)
-      .onBatchUpload(this.successMessageOnAdd)
-      .onBatchError(this.errorMessageOnAdd)
+      .onBatchUpload((data) => this.successMessageOnAdd(data))
+      .onBatchError((data) => this.errorMessageOnAdd(data))
       .batch();
 
     await source.setSourceStatus(args.sourceId, 'IDLE');
@@ -117,8 +114,8 @@ export default class SourcePushAdd extends Command {
     );
   }
 
-  private errorMessageOnAdd(e: unknown) {
-    return errorMessage(this, 'Error while trying to add document.', e, {
+  private errorMessageOnAdd(err: unknown) {
+    return errorMessage(this, 'Error while trying to add document.', err, {
       exit: true,
     });
   }
