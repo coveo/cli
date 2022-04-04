@@ -4,8 +4,8 @@ import {getPackageManager} from './utils.js';
 import {fetchPageManifest} from './fetch-page.js';
 import {defaultPageManifest} from './default/default-page.js';
 import {writeFileSync} from 'node:fs';
-import {PageManifest} from './page-manifest.js';
 import {join} from 'path';
+import {IManifestResponse} from '@coveord/platform-client';
 
 interface PlopData {
   project: string;
@@ -13,7 +13,7 @@ interface PlopData {
   'platform-url': string;
   'org-id': string;
   'api-key': string;
-  page: PageManifest;
+  page: IManifestResponse;
 }
 
 export default function (plop: NodePlopAPI) {
@@ -101,7 +101,7 @@ export default function (plop: NodePlopAPI) {
             return `Hosted search page "${plopData.page.config.title}" downloaded`;
           } catch (error) {
             throw new Error(
-              `There was an error downloading search page with id "${plopData['page-id']}" from the organization "${plopData['org-id']}"`
+              `There was an error downloading search page with id "${plopData['page-id']}" from the organization "${plopData['org-id']}": ${error}`
             );
           }
         },

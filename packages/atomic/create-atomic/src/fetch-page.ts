@@ -1,44 +1,44 @@
-import fetch from 'node-fetch';
-import {
-  PageManifest,
-  PageManifestBody,
-  ResultsPlaceholder,
-} from './page-manifest.js';
-
-// TODO: add call to Platform Client
-// TODO: handle proxy for Platform Client
+import 'isomorphic-fetch';
+import 'abortcontroller-polyfill';
+import HttpsProxyAgent from 'https-proxy-agent';
+import {PlatformClient, IManifestResponse} from '@coveord/platform-client';
 
 export async function fetchPageManifest(
-  platformUrl: string,
-  orgId: string,
+  host: string,
+  organizationId: string,
   pageId: string,
-  apiKey: string
+  accessToken: string
 ) {
-  const url = `${platformUrl}/rest/organizations/${orgId}/searchinterfaces/${pageId}/manifest/v1`;
-  const body: PageManifestBody = {
-    pagePlaceholders: {
-      results: ResultsPlaceholder,
-    },
-  };
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify(body),
+  const globalRequestSettings: Record<string, unknown> = {};
+  const proxyServer = process.env['https_proxy'] || process.env['HTTPS_PROXY'];
+  if (proxyServer) {
+    const httpsProxyAgent = HttpsProxyAgent(proxyServer);
+    globalRequestSettings.agent = httpsProxyAgent;
+  }
+
+  const client = new PlatformClient({
+    globalRequestSettings,
+    organizationId,
+    accessToken,
+    host,
   });
-  return replaceResultsPlaceholder((await response.json()) as PageManifest);
+
+  const manifest = await client.searchInterfaces.manifest(pageId, {
+    pagePlaceholders: {
+      results: '--results--',
+    },
+  });
+  return replaceResultsPlaceholder(manifest);
 }
 
-function replaceResultsPlaceholder(pageManifest: PageManifest): PageManifest {
+function replaceResultsPlaceholder(manifestResponse: IManifestResponse) {
   const resultManagerComponent = '<results-manager></results-manager>';
-  if (pageManifest.results.placeholder) {
-    pageManifest.markup = pageManifest.markup.replace(
-      pageManifest.results.placeholder,
+  if (manifestResponse.results.placeholder) {
+    manifestResponse.markup = manifestResponse.markup.replace(
+      manifestResponse.results.placeholder,
       resultManagerComponent
     );
   }
 
-  return pageManifest;
+  return manifestResponse;
 }
