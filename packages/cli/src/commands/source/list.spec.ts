@@ -1,7 +1,7 @@
-jest.mock('../../../lib/config/config');
-jest.mock('../../../hooks/analytics/analytics');
-jest.mock('../../../hooks/prerun/prerun');
-jest.mock('../../../lib/platform/authenticatedClient');
+jest.mock('../../lib/config/config');
+jest.mock('../../hooks/analytics/analytics');
+jest.mock('../../hooks/prerun/prerun');
+jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
 
 import {test} from '@oclif/test';
@@ -18,8 +18,7 @@ const mockListSources = jest
   .fn()
   .mockReturnValue(Promise.resolve({totalEntries: 0, sourceModels: []}));
 
-// TODO: unskip!!!!
-describe.skip('source:push:list', () => {
+describe('source:push:list', () => {
   const createMockSourceModel = (id: string): SourceModel => ({
     name: `${id}_displayName`,
     id,
