@@ -30,7 +30,6 @@ export default class SourceCataloghNew extends Command {
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
-    // TODO: CDX-??? use create method from push-api-client
     const {flags, args} = await this.parse(SourceCataloghNew);
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();
