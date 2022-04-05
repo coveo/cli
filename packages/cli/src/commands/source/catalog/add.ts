@@ -40,7 +40,7 @@ export default class SourceCatalogAdd extends Command {
     ...withCreateMissingFields(),
     fullUpload: Flags.boolean({
       default: false,
-      description: `Controls the way your items are added to your catalog source
+      description: `Controls the way your items are added to your catalog source.
 
       Setting this option to ${bold(
         'false'
@@ -53,10 +53,9 @@ export default class SourceCatalogAdd extends Command {
       See https://docs.coveo.com/en/lb4a0344
         `,
     }),
-    // TODO: rename
-    skipUpdateCheck: Flags.boolean({
+    skipFullLoadCheck: Flags.boolean({
       default: false,
-      description: `When the fullUpload option is set to false, this `,
+      description: `Do not check if a catalog full load was triggered on the target source.`,
     }),
   };
 
@@ -95,7 +94,7 @@ export default class SourceCatalogAdd extends Command {
 
     if (
       !flags.fullUpload &&
-      !flags.skipUpdateCheck &&
+      !flags.skipFullLoadCheck &&
       (await this.sourceIsEmpty(args.sourceId))
     ) {
       this.error(dedent`No items detected for this source at the moment.
