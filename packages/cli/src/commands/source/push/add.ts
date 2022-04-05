@@ -1,5 +1,5 @@
 import {PushSource, UploadBatchCallbackData} from '@coveo/push-api-client';
-import {Command, Flags, CliUx} from '@oclif/core';
+import {Command, CliUx} from '@oclif/core';
 import {green} from 'chalk';
 import {
   HasNecessaryCoveoPrivileges,
@@ -21,11 +21,6 @@ import {
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
 import {getFileNames} from '../../../lib/utils/file';
-
-interface AxiosResponse {
-  status: number;
-  statusText: string;
-}
 
 export default class SourcePushAdd extends Command {
   public static description =

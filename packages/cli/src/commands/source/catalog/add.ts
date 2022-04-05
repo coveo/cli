@@ -1,4 +1,8 @@
-import {UploadBatchCallbackData, CatalogSource} from '@coveo/push-api-client';
+import {
+  UploadBatchCallbackData,
+  CatalogSource,
+  BatchUpdateDocumentsFromFiles,
+} from '@coveo/push-api-client';
 import {BatchUploadDocumentsFromFilesReturn} from '@coveo/push-api-client/dist/definitions/source/batchUploadDocumentsFromFile';
 import {Command, Flags, CliUx} from '@oclif/core';
 import {green} from 'chalk';
@@ -22,11 +26,8 @@ import {
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
 import {getFileNames} from '../../../lib/utils/file';
-
-interface AxiosResponse {
-  status: number;
-  statusText: string;
-}
+import {bold} from 'chalk';
+import dedent from 'ts-dedent';
 
 export default class SourceCatalogAdd extends Command {
   public static description =
@@ -38,11 +39,24 @@ export default class SourceCatalogAdd extends Command {
     ...withMaxConcurrent(),
     ...withCreateMissingFields(),
     fullUpload: Flags.boolean({
-      char: 'm',
       default: false,
-      description: `Initial catalog upload.
-        Chose true if you already performed a initial upload and you want to update smaller...
-        choose false if you want haven't uploaded your documents yet or if you want to completyle overwrite your catalog`,
+      description: `Controls the way your items are added to your catalog source
+
+      Setting this option to ${bold(
+        'false'
+      )} will trigger a document update (Default operation). Useful for incremental updates for smaller adjustments to your catalog without the need of pushing the entire catalog. A document update must only be performed after a full catalog upload.
+      See https://docs.coveo.com/en/l62e0540
+
+      Setting this option to ${bold(
+        'true'
+      )} will trigger a full catalog upload will start. This process acts as a full rebuild of your catalog source, therefore if the payload doesn't contain all the items, previous items will be deleted.
+      See https://docs.coveo.com/en/lb4a0344
+        `,
+    }),
+    // TODO: rename
+    skipUpdateCheck: Flags.boolean({
+      default: false,
+      description: `When the fullUpload option is set to false, this `,
     }),
   };
 
@@ -66,6 +80,7 @@ export default class SourceCatalogAdd extends Command {
   )
   public async run() {
     const {args, flags} = await this.parse(SourceCatalogAdd);
+
     if (!flags.file && !flags.folder) {
       this.error(
         'You must minimally set the `file` or the `folder` flag. Use `source:catalog:add --help` to get more information.'
@@ -78,19 +93,33 @@ export default class SourceCatalogAdd extends Command {
       region,
     });
 
+    if (
+      !flags.fullUpload &&
+      !flags.skipUpdateCheck &&
+      (await this.sourceIsEmpty(args.sourceId))
+    ) {
+      this.error(dedent`No items detected for this source at the moment.
+        As a best practice, please consider doing a full catalog upload by adding --fullUpload to your command.
+        If you are still getting this message despite having already performed a full catalog upload,
+        add --forceUpdate to your command to discard this message.
+        `);
+    }
+
+    CliUx.ux.action.start('Processing...');
+
     const fileNames = await getFileNames(flags);
     const options = {
       maxConcurrent: flags.maxConcurrent,
       createFields: flags.createMissingFields,
     };
-    const batchOperation = flags.fullUpload
-      ? source.batchUpdateDocumentsFromFiles
-      : source.batchStreamDocumentsFromFiles;
 
-    CliUx.ux.action.start('Processing...');
+    const batchOperation = flags.fullUpload
+      ? source.batchUpdateDocumentsFromFiles.bind(source)
+      : source.batchStreamDocumentsFromFiles.bind(source);
+
     await batchOperation(args.sourceId, fileNames, options)
-      .onBatchUpload(this.successMessageOnAdd)
-      .onBatchError(this.errorMessageOnAdd)
+      .onBatchUpload((data) => this.successMessageOnAdd(data))
+      .onBatchError((data) => this.errorMessageOnAdd(data))
       .batch();
 
     CliUx.ux.action.stop();
@@ -99,6 +128,15 @@ export default class SourceCatalogAdd extends Command {
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
     throw err;
+  }
+
+  private async sourceIsEmpty(sourceId: string): Promise<boolean> {
+    CliUx.ux.action.start('Checking source status...');
+    const authenticatedClient = new AuthenticatedClient();
+    const platformClient = await authenticatedClient.getClient();
+    const source = await platformClient.source.get(sourceId);
+
+    return source.information?.numberOfDocuments === 0;
   }
 
   private successMessageOnAdd({batch, files, res}: UploadBatchCallbackData) {
