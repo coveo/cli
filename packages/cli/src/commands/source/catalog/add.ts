@@ -59,7 +59,7 @@ export default class SourceCatalogAdd extends Command {
       name: 'sourceId',
       required: true,
       description:
-        'The identifier of the Catalog source on which to perform the add operation.',
+        'The identifier of the Catalog source on which to perform the add operation. See source:list to obtain the identifier.',
     },
   ];
 
