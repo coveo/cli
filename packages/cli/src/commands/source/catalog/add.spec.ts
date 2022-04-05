@@ -3,7 +3,6 @@ jest.mock('../../../hooks/prerun/prerun');
 jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/config/globalConfig');
 jest.mock('@coveo/push-api-client');
-// jest.mock('@coveord/platform-client');
 
 import stripAnsi from 'strip-ansi';
 import {test} from '@oclif/test';
@@ -14,7 +13,6 @@ import {join} from 'path';
 import {APIError} from '../../../lib/errors/APIError';
 import {Interfaces} from '@oclif/core';
 import globalConfig from '../../../lib/config/globalConfig';
-// import PlatformClient from '@coveord/platform-client';
 import {
   BatchUploadDocumentsError,
   BatchUploadDocumentsSuccess,
@@ -25,7 +23,6 @@ const mockedSource = jest.mocked(CatalogSource);
 const mockedDocumentBuilder = jest.mocked(DocumentBuilder);
 const mockedMarshal = jest.fn();
 const mockEvaluate = jest.fn();
-// const mockedPlatformClient = jest.fn();
 const mockSourceGet = jest.fn();
 const mockSetSourceStatus = jest.fn();
 const mockBatchUpdate = jest.fn();
@@ -33,6 +30,18 @@ const mockBatchStream = jest.fn();
 
 describe('source:catalog:add', () => {
   const pathToStub = join(cwd(), 'src', '__stub__');
+
+  const sourceContainsDocuments = () => {
+    mockSourceGet.mockResolvedValue({
+      information: {numberOfDocuments: 1},
+    });
+  };
+
+  const sourceDoesNotContainDocuments = () => {
+    mockSourceGet.mockResolvedValue({
+      information: {numberOfDocuments: 0},
+    });
+  };
 
   const mockUserHavingAllRequiredPlatformPrivileges = () => {
     mockEvaluate.mockResolvedValue({approved: true});
@@ -74,9 +83,7 @@ describe('source:catalog:add', () => {
                 evaluate: mockEvaluate,
               },
               source: {
-                get: mockSourceGet.mockResolvedValue({
-                  information: {numberOfDocuments: 123},
-                }),
+                get: mockSourceGet,
               },
             }),
           cfg: {
@@ -104,7 +111,6 @@ describe('source:catalog:add', () => {
   };
 
   beforeAll(() => {
-    // doMockPlatformClient();
     doMockDocumentBuilder();
     doMockAuthenticatedClient();
     doMockSource();
@@ -135,11 +141,13 @@ describe('source:catalog:add', () => {
     beforeAll(() => {
       mockUserHavingAllRequiredPlatformPrivileges();
       doMockSuccessUpload();
+      sourceContainsDocuments();
     });
 
     afterAll(() => {
       mockBatchUpdate.mockReset();
       mockEvaluate.mockReset();
+      mockSourceGet.mockReset();
     });
 
     test
@@ -270,17 +278,84 @@ describe('source:catalog:add', () => {
           expect(ctx.stdout).toContain('Status code: 202 👌');
         }
       );
+
+    test
+      .stdout()
+      .stderr()
+      .command([
+        'source:catalog:add',
+        'mysource',
+        '-f',
+        join(pathToStub, 'jsondocuments', 'batman.json'),
+      ])
+      .it('should get source info during document update', () => {
+        expect(mockSourceGet).toHaveBeenCalled();
+      });
+
+    test
+      .stdout()
+      .stderr()
+      .command([
+        'source:catalog:add',
+        'mysource',
+        '--fullUpload',
+        '-f',
+        join(pathToStub, 'jsondocuments', 'batman.json'),
+      ])
+      .it('should not get source info during document update', () => {
+        expect(mockSourceGet).not.toHaveBeenCalled();
+      });
+
+    describe('when the source does not contain items', () => {
+      beforeAll(() => {
+        mockSourceGet.mockReset();
+        sourceDoesNotContainDocuments();
+      });
+
+      test
+        .stdout()
+        .stderr()
+        .command([
+          'source:catalog:add',
+          'mysource',
+          '-f',
+          join(pathToStub, 'jsondocuments', 'batman.json'),
+        ])
+        .catch(/please consider doing a full catalog upload/)
+        .it('should show error message during document update');
+
+      test
+        .stdout()
+        .stderr()
+        .command([
+          'source:catalog:add',
+          'mysource',
+          '--skipFullUploadCheck',
+          '-f',
+          join(pathToStub, 'jsondocuments', 'batman.json'),
+        ])
+        .it(
+          'should not show a error message when using the --skipFullUploadCheck flag',
+          (ctx) => {
+            expect(ctx.stderr).not.toContain(
+              'please consider doing a full catalog upload'
+            );
+          }
+        );
+    });
   });
 
   describe('when the batch upload fails', () => {
     beforeAll(() => {
       doMockErrorUpload();
       mockUserHavingAllRequiredPlatformPrivileges();
+      sourceContainsDocuments();
     });
 
     afterAll(() => {
       mockBatchUpdate.mockReset();
       mockEvaluate.mockReset();
+      mockSourceGet.mockReset();
     });
 
     test
@@ -307,11 +382,13 @@ describe('source:catalog:add', () => {
   describe('when Platform privilege preconditions are not respected', () => {
     beforeEach(() => {
       mockUserNotHavingAllRequiredPlatformPrivileges();
+      sourceContainsDocuments();
     });
 
     afterAll(() => {
       mockBatchUpdate.mockReset();
       mockEvaluate.mockReset();
+      mockSourceGet.mockReset();
     });
 
     test
@@ -320,16 +397,5 @@ describe('source:catalog:add', () => {
       .command(['source:catalog:add', 'some-org', '-f', 'some-file'])
       .catch(/You are not authorized to create or update fields/)
       .it('should return a precondition error');
-  });
-
-  describe('when the source contains items', () => {
-    it.todo('should not get source info');
-    it.todo('should not show a error message');
-  });
-
-  describe('when the source does not contain items', () => {
-    it.todo('should get source info');
-    it.todo('should show a error message');
-    it.todo('should not show a error message when using the skip flag');
   });
 });

@@ -48,7 +48,7 @@ export default class SourceCatalogAdd extends Command {
       See https://docs.coveo.com/en/lb4a0344
         `,
     }),
-    skipFullLoadCheck: Flags.boolean({
+    skipFullUploadCheck: Flags.boolean({
       default: false,
       description: `Do not check if a catalog full load was triggered on the target source.`,
     }),
@@ -80,16 +80,10 @@ export default class SourceCatalogAdd extends Command {
         'You must minimally set the `file` or the `folder` flag. Use `source:catalog:add --help` to get more information.'
       );
     }
-    const {accessToken, organization, environment, region} =
-      await new AuthenticatedClient().cfg.get();
-    const source = new CatalogSource(accessToken!, organization, {
-      environment,
-      region,
-    });
 
     if (
       !flags.fullUpload &&
-      !flags.skipFullLoadCheck &&
+      !flags.skipFullUploadCheck &&
       (await this.sourceIsEmpty(args.sourceId))
     ) {
       this.error(dedent`No items detected for this source at the moment.
@@ -100,6 +94,13 @@ export default class SourceCatalogAdd extends Command {
     }
 
     CliUx.ux.action.start('Processing...');
+
+    const {accessToken, organization, environment, region} =
+      await new AuthenticatedClient().cfg.get();
+    const source = new CatalogSource(accessToken!, organization, {
+      environment,
+      region,
+    });
 
     const fileNames = await getFileNames(flags);
     const options = {
