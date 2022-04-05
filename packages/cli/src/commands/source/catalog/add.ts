@@ -1,9 +1,4 @@
-import {
-  UploadBatchCallbackData,
-  CatalogSource,
-  BatchUpdateDocumentsFromFiles,
-} from '@coveo/push-api-client';
-import {BatchUploadDocumentsFromFilesReturn} from '@coveo/push-api-client/dist/definitions/source/batchUploadDocumentsFromFile';
+import {UploadBatchCallbackData, CatalogSource} from '@coveo/push-api-client';
 import {Command, Flags, CliUx} from '@oclif/core';
 import {green} from 'chalk';
 import {
@@ -113,8 +108,8 @@ export default class SourceCatalogAdd extends Command {
     };
 
     const batchOperation = flags.fullUpload
-      ? source.batchUpdateDocumentsFromFiles.bind(source)
-      : source.batchStreamDocumentsFromFiles.bind(source);
+      ? source.batchStreamDocumentsFromFiles.bind(source)
+      : source.batchUpdateDocumentsFromFiles.bind(source);
 
     await batchOperation(args.sourceId, fileNames, options)
       .onBatchUpload((data) => this.successMessageOnAdd(data))
@@ -133,9 +128,9 @@ export default class SourceCatalogAdd extends Command {
     CliUx.ux.action.start('Checking source status...');
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();
-    const source = await platformClient.source.get(sourceId);
+    const {information} = await platformClient.source.get(sourceId);
 
-    return source.information?.numberOfDocuments === 0;
+    return information?.numberOfDocuments === 0;
   }
 
   private successMessageOnAdd({batch, files, res}: UploadBatchCallbackData) {
@@ -151,7 +146,7 @@ export default class SourceCatalogAdd extends Command {
       this,
       `Success: ${green(numAdded)} document${
         numAdded > 1 ? 's' : ''
-      } accepted by the Stream API from ${green(fileNames)}.`,
+      } accepted by the API from ${green(fileNames)}.`,
       res
     );
   }
