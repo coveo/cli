@@ -21,7 +21,9 @@ jobs:
         with:
           node-version: '16'
           cache: 'npm'
-      - run: npm ci
+      - run: |
+          npm ci
+          apt get install ffmpeg
       - name: Delete test API keys
         if: always()
         run: node ./scripts/cleaning/delete-api-keys.js --olderThan 1d
