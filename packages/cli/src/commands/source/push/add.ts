@@ -38,7 +38,7 @@ export default class SourcePushAdd extends Command {
       name: 'sourceId',
       required: true,
       description:
-        'The identifier of the source on which to perform the add operation. See source:list to obtain the identifier.',
+        'The identifier of the source on which to perform the add operation. See source:push:list to obtain the identifier.',
     },
   ];
 
