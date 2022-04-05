@@ -25,6 +25,7 @@ import {npm} from '../utils/npm';
 import axios from 'axios';
 import {jwtTokenPattern} from '../utils/matcher';
 import {join} from 'path';
+import {loginWithApiKey} from '../utils/login';
 
 describe('ui:create:react', () => {
   let browser: Browser;
@@ -107,6 +108,11 @@ describe('ui:create:react', () => {
   };
 
   beforeAll(async () => {
+    await loginWithApiKey(
+      process.env.PLATFORM_API_KEY!,
+      process.env.ORG_ID!,
+      process.env.PLATFORM_ENV!
+    );
     const buildProcessManager = new ProcessManager();
     processManagers.push(buildProcessManager);
     browser = await getNewBrowser();
@@ -168,13 +174,17 @@ describe('ui:create:react', () => {
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
-    it('should not contain console errors nor warnings', async () => {
-      await page.goto(searchPageEndpoint(), {
-        waitUntil: 'networkidle2',
-      });
+    it(
+      'should not contain console errors nor warnings',
+      async () => {
+        await page.goto(searchPageEndpoint(), {
+          waitUntil: 'networkidle2',
+        });
 
-      expect(consoleInterceptor.interceptedMessages).toEqual([]);
-    });
+        expect(consoleInterceptor.interceptedMessages).toEqual([]);
+      },
+      5 * 60e3
+    );
 
     it('should contain a search page section', async () => {
       await page.goto(searchPageEndpoint(), {

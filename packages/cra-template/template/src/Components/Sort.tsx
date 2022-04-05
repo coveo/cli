@@ -1,6 +1,6 @@
 import React, {FunctionComponent, useEffect} from 'react';
-import Box from '@material-ui/core/Box';
-import FormControl from '@material-ui/core/FormControl';
+import Box from '@mui/material/Box';
+import FormControl from '@mui/material/FormControl';
 import {
   buildSort,
   buildRelevanceSortCriterion,
@@ -10,7 +10,7 @@ import {
   Sort as HeadlessSort,
   SortCriterion,
 } from '@coveo/headless';
-import {InputLabel, MenuItem, Select} from '@material-ui/core';
+import {InputLabel, MenuItem, Select} from '@mui/material';
 import EngineContext from '../common/engineContext';
 
 export interface SortProps {
@@ -42,6 +42,7 @@ const SortRenderer: FunctionComponent<SortProps> = (props) => {
         <InputLabel id="sort-by-label">Sort by</InputLabel>
         <Select
           labelId="sort-by-label"
+          label="Sort by"
           id="sort-by"
           onChange={(e) =>
             controller.sortBy(getCriterionFromName(e.target.value as string)[1])

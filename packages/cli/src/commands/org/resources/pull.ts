@@ -137,7 +137,7 @@ export default class Pull extends Command {
   }
 
   private async refreshProject(project: Project, snapshot: Snapshot) {
-    const {flags} = await this.parse(Pull);
+    const flags = await this.getFlags();
     if (flags.git && !project.contains('.git')) {
       await spawnProcess('git', ['init', `${this.projectPath}`], {
         stdio: 'ignore',
@@ -148,7 +148,7 @@ export default class Pull extends Command {
   }
 
   private async ensureProjectReset(project: Project) {
-    const {flags} = await this.parse(Pull);
+    const flags = await this.getFlags();
     if (!flags.overwrite && project.contains(Project.resourceFolderName)) {
       const question = dedent`There is already a Coveo project with resources in it.
         This command will overwrite the ${Project.resourceFolderName} folder content, do you want to proceed? (y/n)`;
@@ -166,7 +166,7 @@ export default class Pull extends Command {
   }
 
   private async getSnapshot() {
-    const {flags} = await this.parse(Pull);
+    const flags = await this.getFlags();
     const target = await this.getTargetOrg();
     if (flags.snapshotId) {
       CliUx.ux.action.start('Retrieving Snapshot');
@@ -184,7 +184,7 @@ export default class Pull extends Command {
   }
 
   private async getWaitOption(): Promise<WaitUntilDoneOptions> {
-    const {flags} = await this.parse(Pull);
+    const flags = await this.getFlags();
     return {wait: flags.wait};
   }
 
@@ -193,7 +193,7 @@ export default class Pull extends Command {
   }
 
   private async getResourceSnapshotTypesToExport(): Promise<SnapshotPullModelResources> {
-    const {flags} = await this.parse(Pull);
+    const flags = await this.getFlags();
     if (flags.model) {
       const cfg = this.configuration.get();
       if (cfg.organization !== flags.model.orgId) {
@@ -216,8 +216,16 @@ export default class Pull extends Command {
   }
 
   private async getTargetOrg() {
-    const {flags} = await this.parse(Pull);
+    const flags = await this.getFlags();
     return getTargetOrg(this.configuration, flags.model?.orgId || flags.target);
+  }
+
+  public async getFlags() {
+    const {flags} = await this.parse(Pull);
+    if (flags.model) {
+      return {...flags, target: flags.model.orgId};
+    }
+    return flags;
   }
 
   private get projectPath() {

@@ -15,6 +15,10 @@
       "groupSlug": "all"
     },
     {
+      "matchPackagePatterns": ["^@angular/*", "^@angular-devkit/*"],
+      "rangeStrategy": "replace"
+    },
+    {
       "matchPackageNames": ["strip-ansi"],
       "allowedVersions": "6.x"
     },
@@ -27,34 +31,35 @@
       "allowedVersions": "4.x"
     },
     {
-      "matchPackageNames": ["@oclif/plugin-help"],
-      "allowedVersions": "3.x",
-      "description": "Wait for Oclif 2 TODO:CDX-746"
-    },
-    {
       "matchPackageNames": ["@oclif/plugin-update"],
-      "allowedVersions": "1.x",
-      "description": "Wait for Oclif 2 TODO:CDX-746"
-    },
-    {
-      "matchPackageNames": ["cli-ux"],
-      "allowedVersions": "5.x",
-      "description": "Wait for Oclif 2 TODO:CDX-746"
-    },
-    {
-      "matchPackageNames": ["@oclif/test"],
-      "allowedVersions": "1.x",
-      "description": "Wait for Oclif 2 TODO:CDX-746"
-    },
-    {
-      "matchPackageNames": ["fancy-test"],
-      "allowedVersions": "1.x",
-      "description": "Wait for Oclif 2 TODO:CDX-746"
+      "allowedVersions": "2.x",
+      "description": "Wait for Oclif 2 TODO:CDX-849"
     },
     {
       "matchPackageNames": ["npm"],
       "allowedVersions": "8.4.x",
       "description": "Need NPM to be fixed https://github.com/npm/cli/issues/4404 TODO:CDX-815"
+    },
+    {
+      "matchPackageNames": ["vue"],
+      "allowedVersions": "2.x",
+      "description": "Need to support Vue3 TODO:CDX-813"
+    },
+    {
+      "matchPackageNames": ["vue-router"],
+      "allowedVersions": "3.x",
+      "description": "Need to support Vue3 TODO:CDX-813"
+    },
+    {
+      "matchPackageNames": ["fkill"],
+      "matchCurrentVersion": "7.x",
+      "allowedVersions": "7.x",
+      "description": "Need to migrate E2E to ESM (not easy)"
+    },
+    {
+      "matchPackageNames": ["react"],
+      "allowedVersions": "17.x",
+      "description": "Need Material UI support for React 18. TODO:CDX-897"
     }
   ],
   "rangeStrategy": "auto",
