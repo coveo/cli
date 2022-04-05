@@ -103,7 +103,7 @@ export async function startVerdaccio() {
   const verdaccioTerminal = new Terminal(
     args.shift()!,
     args,
-    {cwd: resolve(join(__dirname, '..'))},
+    {cwd: resolve(join(__dirname, '..')), detached: false},
     global.processManager!,
     'verdaccio'
   );
