@@ -34,6 +34,11 @@ jobs:
           node ./scripts/cleaning/delete-orgs.js     --olderThan 1d
         env:
           DISPLAY: ':1'
+      - uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535 # tag=v3
+        if: always()
+        with:
+          name: ${{matrix.os}}-${{matrix.spec}}-test-artifacts
+          path: ./packages/cli-e2e/artifacts
       - name: Notify in case of failure
         if: failure()
         run: curl --request POST --url ${{ secrets.SLACK_WEBHOOK }}
