@@ -20,6 +20,7 @@ import {SortComponent} from './sort/sort.component';
 import {HeroComponent} from './hero/hero.component';
 import {HomeComponent} from './home/home.component';
 import {InitProvider} from './init.service';
+import {ResultLinkComponent} from './result-link/result-link.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import {InitProvider} from './init.service';
     PagerComponent,
     QuerySummaryComponent,
     ResultListComponent,
+    ResultLinkComponent,
     SearchBoxComponent,
     SearchPageComponent,
     SortComponent,

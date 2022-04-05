@@ -17,7 +17,7 @@
   - ORG_ID: the org against which you'll be running tests (tests may or may not run with custom orgs)
   - ACCESS_TOKEN: An Access Token. Not an API Key, but an Access Token.
 
-2. `npm jest`
+2. `npm run jest`
 
 3. ☕. Tests are long, if all goes well 10-12' on a good machine, 20'-25' on a decent one, 30-40' if they fail.
 

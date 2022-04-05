@@ -42,3 +42,7 @@ middlewares:
 # log settings
 logs:
   - {type: stdout, format: pretty, level: trace}
+
+listen:
+  - localhost:4873              # default value
+  - "[::1]:4873"                # ipv6

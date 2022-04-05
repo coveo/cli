@@ -17,7 +17,9 @@ const hook: Hook<'prerun'> = async function (options) {
   if (
     configuration.analyticsEnabled === true ||
     configuration.analyticsEnabled === false ||
-    options?.Command?.id === 'update'
+    options?.Command?.id === 'update' ||
+    options?.Command?.id === 'auth:token' ||
+    process.env.CI === 'true'
   ) {
     return;
   }

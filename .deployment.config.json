@@ -50,11 +50,11 @@
     "no_dependencies": true,
     "no_container_images": true
   },
+  "snyk_code": {
+    "no_scan": true
+  },
   "observatory": {
     "no_endpoint": true
-  },
-  "veracode": {
-    "no_scan": true
   },
   "deployment_config_version": 2,
   "package_rollout": {
