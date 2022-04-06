@@ -59,7 +59,10 @@ export default class SourcePushAdd extends Command {
   ];
 
   @Trackable()
-  @Preconditions(IsAuthenticated())
+  @Preconditions(
+    IsAuthenticated()
+    // TODO: CDX-817 add precondition on platform privileges
+  )
   public async run() {
     const {args, flags} = await this.parse(SourcePushAdd);
     if (!flags.file && !flags.folder) {
@@ -84,6 +87,7 @@ export default class SourcePushAdd extends Command {
     CliUx.ux.action.start('Processing...');
 
     const fileNames = await this.getFileNames();
+    await source.setSourceStatus(args.sourceId, 'REFRESH');
     await source.batchUpdateDocumentsFromFiles(
       args.sourceId,
       fileNames,
@@ -92,6 +96,7 @@ export default class SourcePushAdd extends Command {
         maxConcurrent: flags.maxConcurrent,
       }
     );
+    await source.setSourceStatus(args.sourceId, 'IDLE');
 
     CliUx.ux.action.stop();
   }
@@ -109,7 +114,6 @@ export default class SourcePushAdd extends Command {
     }
     if (flags.folder) {
       const isString = (file: string | null): file is string => Boolean(file);
-      // TODO: CDX-781 read all files recursively
       fileNames = fileNames.concat(
         flags.folder
           .flatMap((folder) =>
