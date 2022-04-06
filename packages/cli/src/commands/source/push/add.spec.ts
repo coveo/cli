@@ -33,6 +33,7 @@ describe('source:push:add', () => {
   });
 
   const pathToStub = join(cwd(), 'src', '__stub__');
+  const mockSetSourceStatus = jest.fn();
   const mockBatchUpdate = jest.fn();
 
   const doMockSuccessBatchUpload = () => {
@@ -103,6 +104,7 @@ describe('source:push:add', () => {
     () =>
       ({
         batchUpdateDocumentsFromFiles: mockBatchUpdate,
+        setSourceStatus: mockSetSourceStatus,
       } as unknown as Source)
   );
 
@@ -176,6 +178,28 @@ describe('source:push:add', () => {
           expect(ctx.stdout).toContain('Status code: 202 👌');
         }
       );
+
+    test
+      .stdout()
+      .stderr()
+      .command([
+        'source:push:add',
+        'mysource',
+        '-d',
+        join(pathToStub, 'jsondocuments'),
+      ])
+      .it('should update the source status', () => {
+        expect(mockSetSourceStatus).toHaveBeenNthCalledWith(
+          1,
+          'mysource',
+          'REFRESH'
+        );
+        expect(mockSetSourceStatus).toHaveBeenNthCalledWith(
+          2,
+          'mysource',
+          'IDLE'
+        );
+      });
   });
 
   describe('when the batch upload fails', () => {
