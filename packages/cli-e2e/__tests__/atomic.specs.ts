@@ -106,7 +106,7 @@ describe('ui:create:atomic', () => {
     const createdFilesPaths = [
       'package.json',
       'package-lock.json',
-      // '.gitignore', TODO: uncomment
+      '.gitignore',
       '.env',
       '.env.example',
       'README.md',
@@ -137,7 +137,7 @@ describe('ui:create:atomic', () => {
     const deletedFilesPaths = [
       'scripts/clean-up.js',
       'scripts/setup-lamdba.js',
-      // 'scripts/utils.js', TODO: uncomment
+      'scripts/utils.js',
     ];
 
     deletedFilesPaths.forEach(projectFileDoesNotExist);
