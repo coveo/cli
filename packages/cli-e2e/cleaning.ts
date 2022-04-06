@@ -37,6 +37,12 @@ const hasPreviousConfigFile = statSync('decrypted', {throwIfNoEntry: false});
     global.processManager!,
     'ffmpeg-record'
   );
+  recordingTerminal.orchestrator.process.stdout.on('data', (data) => {
+    process.stdout.write(data);
+  });
+  recordingTerminal.orchestrator.process.stderr.on('data', (data) => {
+    process.stderr.write(data);
+  });
   process.env.PLATFORM_ENV = process.env.PLATFORM_ENV?.toLowerCase() || '';
   process.env.PLATFORM_HOST = getPlatformHost(process.env.PLATFORM_ENV);
   const chrome = await launchChrome({port: 9222, userDataDir: false});
