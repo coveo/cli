@@ -91,15 +91,7 @@ describe('ui:create:atomic', () => {
   });
 
   function projectFileExist(path: string) {
-    expect(
-      existsSync(join(getProjectPath(projectName), ...path.split('/')))
-    ).toBe(true);
-  }
-
-  function projectFileDoesNotExist(path: string) {
-    expect(
-      existsSync(join(getProjectPath(projectName), ...path.split('/')))
-    ).toBe(false);
+    return existsSync(join(getProjectPath(projectName), ...path.split('/')));
   }
 
   it('should create the proper template files', () => {
@@ -130,7 +122,9 @@ describe('ui:create:atomic', () => {
       'src/components/sample-result-component/sample-result-component.css',
     ];
 
-    createdFilesPaths.forEach(projectFileExist);
+    createdFilesPaths.forEach((path) =>
+      expect(projectFileExist(path)).toBe(true)
+    );
   });
 
   it('should remove the proper template files', () => {
@@ -140,7 +134,9 @@ describe('ui:create:atomic', () => {
       'scripts/utils.js',
     ];
 
-    deletedFilesPaths.forEach(projectFileDoesNotExist);
+    deletedFilesPaths.forEach((path) =>
+      expect(projectFileExist(path)).toBe(false)
+    );
   });
 
   afterEach(async () => {
