@@ -10,7 +10,7 @@ import {jwtTokenPattern} from '../utils/matcher';
 import {EOL} from 'os';
 import {DummyServer} from '../utils/server';
 import {loginWithApiKey} from '../utils/login';
-import {existsSync, ensureFileSync} from 'fs-extra';
+import {existsSync} from 'fs-extra';
 import {join} from 'path';
 
 describe('ui:create:atomic', () => {
