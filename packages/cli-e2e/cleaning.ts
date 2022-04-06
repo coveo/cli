@@ -20,7 +20,7 @@ const hasPreviousConfigFile = statSync('decrypted', {throwIfNoEntry: false});
   global.processManager = new ProcessManager();
   const recordingTerminal = new Terminal(
     'ffmpeg',
-    ['-f', 'x11grab', '-i', ':1', './packages/cli-e2e/artifacts/test.mp4'],
+    ['-f', 'x11grab', '-i', ':1.0', './packages/cli-e2e/artifacts/test.mp4'],
     undefined,
     global.processManager!,
     'ffmpeg-record'
