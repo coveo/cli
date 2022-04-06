@@ -27,7 +27,7 @@ const hasPreviousConfigFile = statSync('decrypted', {throwIfNoEntry: false});
       'x11grab',
       '-i',
       ':1.0',
-      './packages/cli-e2e/artifacts/test.mp4',
+      './packages/cli-e2e/artifacts/test.webm',
     ],
     undefined,
     global.processManager!,
