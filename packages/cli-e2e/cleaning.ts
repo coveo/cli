@@ -30,6 +30,11 @@ const hasPreviousConfigFile = statSync('decrypted', {throwIfNoEntry: false});
   const chrome = await launchChrome({port: 9222, userDataDir: false});
   await waitOn({resources: ['tcp:9222']});
   const browser = await connectToChromeBrowser();
+  const recordingTerminalExitCondition = recordingTerminal
+    .when('exit')
+    .on('process')
+    .do()
+    .once();
   await recordingTerminal
     .when(
       (async () => {
@@ -39,7 +44,7 @@ const hasPreviousConfigFile = statSync('decrypted', {throwIfNoEntry: false});
     .on('process')
     .do(answerPrompt('q\n'))
     .once();
-
+  await recordingTerminalExitCondition;
   await chrome.kill();
   await global.processManager.killAllProcesses();
 })();
