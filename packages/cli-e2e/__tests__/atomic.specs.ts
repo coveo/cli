@@ -10,7 +10,7 @@ import {jwtTokenPattern} from '../utils/matcher';
 import {EOL} from 'os';
 import {DummyServer} from '../utils/server';
 import {loginWithApiKey} from '../utils/login';
-import {existsSync} from 'fs-extra';
+import {existsSync, ensureFileSync} from 'fs-extra';
 import {join} from 'path';
 
 describe('ui:create:atomic', () => {
@@ -90,9 +90,57 @@ describe('ui:create:atomic', () => {
     page = await openNewPage(browser, page);
   });
 
-  it('should create the proper files', () => {
-    const projectPath = getProjectPath(projectName);
-    existsSync(join(projectPath, 'package.json'));
+  function projectFileExist(path: string) {
+    expect(
+      existsSync(join(getProjectPath(projectName), ...path.split('/')))
+    ).toBe(true);
+  }
+
+  function projectFileDoesNotExist(path: string) {
+    expect(
+      existsSync(join(getProjectPath(projectName), ...path.split('/')))
+    ).toBe(false);
+  }
+
+  it('should create the proper template files', () => {
+    const createdFilesPaths = [
+      'package.json',
+      'package-lock.json',
+      // '.gitignore', TODO: uncomment
+      '.env',
+      '.env.example',
+      'README.md',
+      'start-netlify.mjs',
+      'netlify.toml',
+      'tsconfig.json',
+      'stencil.config.ts',
+      'lambda',
+      'src/index.ts',
+      'src/html.d.ts',
+      'src/components.d.ts',
+      'src/style/index.css',
+      'src/style/layout.css',
+      'src/style/theme.css',
+      'src/pages/index.html',
+      'src/components/results-manager/results-manager.tsx',
+      'src/components/results-manager/default.html',
+      'src/components/sample-component/sample-component.tsx',
+      'src/components/sample-component/sample-component.css',
+      'src/components/sample-result-component/sample-result-component.tsx',
+      'src/components/sample-result-component/sample-result-component.css',
+    ];
+
+    createdFilesPaths.forEach(projectFileExist);
+  });
+
+  it('should remove the proper template files', () => {
+    const deletedFilesPaths = [
+      'scripts/clean-up.js',
+      'scripts/setup-lamdba.js',
+      // 'scripts/utils.js', TODO: uncomment
+    ];
+
+    deletedFilesPaths.forEach(projectFileDoesNotExist);
   });
 
   afterEach(async () => {
