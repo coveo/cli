@@ -188,4 +188,31 @@ describe('ui:create:atomic', () => {
         ]
       );
     });
+
+  test
+    .stdout()
+    .stderr()
+    .command(['ui:create:atomic', 'myapp', '--page-id 123456'])
+    .it('should pass on the page-id if provided', () => {
+      expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
+      expect(mockedSpawnProcess).nthCalledWith(
+        1,
+        expect.stringContaining('npx'),
+        [
+          `${createAtomicPackage}`,
+          '--project',
+          'myapp',
+          '--org-id',
+          'my-org',
+          '--api-key',
+          'foo',
+          '--platform-url',
+          'https://platformdev.cloud.coveo.com',
+          '--user',
+          'bob@coveo.com',
+          '--page-id',
+          '123456',
+        ]
+      );
+    });
 });
