@@ -23,6 +23,8 @@ const hasPreviousConfigFile = statSync('decrypted', {throwIfNoEntry: false});
     [
       '-video_size',
       '1024x768',
+      '-framerate',
+      '30',
       '-f',
       'x11grab',
       '-i',
