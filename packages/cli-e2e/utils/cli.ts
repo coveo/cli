@@ -1,5 +1,5 @@
 import type {ChildProcessWithoutNullStreams} from 'child_process';
-import {resolve, join, relative, isAbsolute} from 'path';
+import {resolve, join} from 'path';
 import {mkdirSync} from 'fs';
 import {homedir} from 'os';
 import {ProcessManager} from './processManager';
