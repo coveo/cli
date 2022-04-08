@@ -57,8 +57,13 @@
       "description": "Need to migrate E2E to ESM (not easy)"
     },
     {
-      "matchPackageNames": ["react"],
+      "matchPackageNames": ["react", "react-dom"],
       "allowedVersions": "17.x",
+      "description": "Need Material UI support for React 18. TODO:CDX-897"
+    },
+    {
+      "matchPackageNames": ["@testing-library/react"],
+      "allowedVersions": "12.x",
       "description": "Need Material UI support for React 18. TODO:CDX-897"
     }
   ],
