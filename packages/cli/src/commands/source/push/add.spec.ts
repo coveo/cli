@@ -19,11 +19,15 @@ import {APIError} from '../../../lib/errors/APIError';
 import {UploadBatchCallback} from '@coveo/push-api-client';
 import globalConfig from '../../../lib/config/globalConfig';
 import {Interfaces} from '@oclif/core';
+import {Config} from '../../../lib/config/config';
 const mockedGlobalConfig = jest.mocked(globalConfig);
 const mockedClient = jest.mocked(AuthenticatedClient);
 const mockedSource = jest.mocked(Source);
 const mockedDocumentBuilder = jest.mocked(DocumentBuilder);
 const mockedMarshal = jest.fn();
+const mockEvaluate = jest.fn();
+const mockedConfig = jest.mocked(Config);
+const mockedConfigGet = jest.fn();
 
 describe('source:push:add', () => {
   beforeAll(() => {
@@ -35,6 +39,24 @@ describe('source:push:add', () => {
   const pathToStub = join(cwd(), 'src', '__stub__');
   const mockSetSourceStatus = jest.fn();
   const mockBatchUpdate = jest.fn();
+
+  const mockUserHavingAllRequiredPlatformPrivileges = () => {
+    mockEvaluate.mockResolvedValue({approved: true});
+  };
+
+  const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
+    mockEvaluate.mockResolvedValue({approved: false});
+  };
+
+  const mockConfig = () => {
+    mockedConfigGet.mockReturnValue({
+      region: 'us',
+      organization: 'foo',
+      environment: 'prod',
+    });
+
+    mockedConfig.prototype.get = mockedConfigGet;
+  };
 
   const doMockSuccessBatchUpload = () => {
     mockBatchUpdate.mockImplementation(
@@ -67,6 +89,13 @@ describe('source:push:add', () => {
     );
   };
 
+  beforeAll(() => {
+    mockConfig();
+    mockedGlobalConfig.get.mockReturnValue({
+      configDir: 'the_config_dir',
+    } as Interfaces.Config);
+  });
+
   beforeEach(() => {
     mockedMarshal.mockReturnValue(
       JSON.stringify({
@@ -90,6 +119,12 @@ describe('source:push:add', () => {
   mockedClient.mockImplementation(
     () =>
       ({
+        getClient: () =>
+          Promise.resolve({
+            privilegeEvaluator: {
+              evaluate: mockEvaluate,
+            },
+          }),
         cfg: {
           get: () =>
             Promise.resolve({
@@ -110,11 +145,13 @@ describe('source:push:add', () => {
 
   describe('when the batch upload is successfull', () => {
     beforeAll(() => {
+      mockUserHavingAllRequiredPlatformPrivileges();
       doMockSuccessBatchUpload();
     });
 
     afterAll(() => {
       mockBatchUpdate.mockReset();
+      mockEvaluate.mockReset();
     });
 
     test
@@ -242,10 +279,12 @@ describe('source:push:add', () => {
   describe('when the batch upload fails', () => {
     beforeAll(() => {
       doMockErrorBatchUpload();
+      mockUserHavingAllRequiredPlatformPrivileges();
     });
 
     afterAll(() => {
       mockBatchUpdate.mockReset();
+      mockEvaluate.mockReset();
     });
 
     test
@@ -267,5 +306,23 @@ describe('source:push:add', () => {
         expect(message).toContain('Error code: BAD_REQUEST');
       })
       .it('returns an information message on add failure from the API');
+  });
+
+  describe('when Platform privilege preconditions are not respected', () => {
+    beforeEach(() => {
+      mockUserNotHavingAllRequiredPlatformPrivileges();
+    });
+
+    afterAll(() => {
+      mockBatchUpdate.mockReset();
+      mockEvaluate.mockReset();
+    });
+
+    test
+      .stdout()
+      .stderr()
+      .command(['source:push:add', 'some-org', '-f', 'some-file'])
+      .catch(/You are not authorized to create or update fields/)
+      .it('should return a precondition error');
   });
 });
