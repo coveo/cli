@@ -116,3 +116,91 @@ See https://docs.coveo.com/en/3357.`
       : `You are not authorized to create synchronization plans. Make sure you are granted this privilege before running the command again.
 See https://docs.coveo.com/en/3357.`,
 };
+
+export const readFieldsPrivilege: PlatformPrivilege = {
+  models: [
+    ...readLinkPrivilege.models,
+    {
+      type: 'VIEW',
+      targetDomain: 'FIELD',
+      targetId: '*',
+      owner: 'PLATFORM',
+    },
+  ],
+  unsatisfiedConditionMessage: (anonymous: boolean) =>
+    anonymous
+      ? `Your API key doesn't have the privilege to view fields and their configuration. Make sure to grant this privilege to your API key before running the command again.
+      See https://docs.coveo.com/en/1707#fields-domain`
+      : `You are not authorized to view fields and their configuration. Make sure you are granted this privilege before running the command again.
+      See https://docs.coveo.com/en/1707#fields-domain`,
+};
+
+export const writeFieldsPrivilege: PlatformPrivilege = {
+  models: [
+    ...readFieldsPrivilege.models,
+    {
+      type: 'CREATE',
+      targetDomain: 'FIELD',
+      targetId: '*',
+      owner: 'PLATFORM',
+    },
+    {
+      type: 'EDIT',
+      targetDomain: 'FIELD',
+      targetId: '*',
+      owner: 'PLATFORM',
+    },
+  ],
+  unsatisfiedConditionMessage: (anonymous: boolean) =>
+    anonymous
+      ? `Your API key doesn't have the privilege to create or update fields. Make sure to grant this privilege to your API key before running the command again.
+      See https://docs.coveo.com/en/1707#fields-domain`
+      : `You are not authorized to create or update fields. Make sure you are granted this privilege before running the command again.
+      See https://docs.coveo.com/en/1707#fields-domain`,
+};
+
+export const writeSourceContentPrivilege: PlatformPrivilege = {
+  models: [
+    {
+      type: 'CREATE',
+      targetDomain: 'SOURCE',
+      targetId: '*',
+      owner: 'PLATFORM',
+    },
+    {
+      type: 'EDIT',
+      targetDomain: 'SOURCE',
+      targetId: '*',
+      owner: 'PLATFORM',
+    },
+    {
+      type: 'VIEW',
+      targetDomain: 'SOURCE',
+      targetId: '*',
+      owner: 'PLATFORM',
+    },
+  ],
+  unsatisfiedConditionMessage: (anonymous: boolean) =>
+    anonymous
+      ? `Your API key doesn't have the privilege to edit sources. Make sure to grant this privilege to your API key before running the command again.
+      See https://docs.coveo.com/en/1707#sources-domain`
+      : `You are not authorized to edit sources. Make sure you are granted this privilege before running the command again.
+      See https://docs.coveo.com/en/1707#sources-domain`,
+};
+
+export const readOrganizationPrivilege: PlatformPrivilege = {
+  models: [
+    {
+      type: 'VIEW',
+      targetDomain: 'ORGANIZATION',
+      targetId: '*',
+      owner: 'PLATFORM',
+    },
+  ],
+  unsatisfiedConditionMessage: (anonymous: boolean) =>
+    anonymous
+      ? `Your API key doesn't have the privilege to view the organization. Make sure to grant this privilege to your API key before running the command again.
+      See https://docs.coveo.com/en/1707#organization-domain`
+      : `You are not authorized to view the organization. Make sure you are granted this privilege before running the command again.
+      See https://docs.coveo.com/en/1707#organization-domain`,
+};
