@@ -47,6 +47,13 @@ export default class SourcePushAdd extends Command {
       description:
         'The maximum number of requests to send concurrently. Increasing this value increases the speed at which documents are pushed to the Coveo platform. However, if you run into memory or throttling issues, consider reducing this value.',
     }),
+    createMissingFields: Flags.boolean({
+      char: 'm',
+      allowNo: true,
+      default: true,
+      description:
+        'Analyse documents to detect and automatically create missing fields in the destination organization. When enabled, an error will be thrown if a field is used to store data of inconsistent type across documents.',
+    }),
   };
 
   public static args = [
@@ -94,6 +101,7 @@ export default class SourcePushAdd extends Command {
       callback,
       {
         maxConcurrent: flags.maxConcurrent,
+        createFields: flags.createMissingFields,
       }
     );
     await source.setSourceStatus(args.sourceId, 'IDLE');
