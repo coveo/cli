@@ -1,29 +1,19 @@
-const mockedCoerce = jest.fn();
-const mockedLt = jest.fn();
-const mockedGt = jest.fn();
-jest.mock('semver', () => ({
-  ...jest.requireActual('semver'),
-  coerce: mockedCoerce,
-  lt: mockedLt,
-  gt: mockedGt,
-}));
+const CurrentSchemaVersion = 'versionThatTheCliWant';
+jest.mock('@oclif/core', () => ({}));
+jest.mock('semver');
 jest.mock('./config');
-
+jest.mock('./configSchemaVersion', () => ({
+  CurrentSchemaVersion,
+}));
 import {IncompatibleConfigurationError} from './configErrors';
-import {SemVer} from 'semver';
-import {Config} from './config';
+import {coerce, gt, lt, SemVer} from 'semver';
 import dedent from 'ts-dedent';
 import {fancyIt} from '../../__test__/it';
 
-const mockedCurrentSchemaVersion = jest.mocked(Config, true);
+const mockedCoerce = jest.mocked(coerce);
+const mockedLt = jest.mocked(lt);
+const mockedGt = jest.mocked(gt);
 describe('configErrors', () => {
-  const mockedVersion = 'versionThatTheCliWant';
-  beforeEach(() => {
-    Object.defineProperty(mockedCurrentSchemaVersion, 'CurrentSchemaVersion', {
-      value: mockedVersion,
-    });
-  });
-
   afterEach(() => {
     jest.resetAllMocks();
   });
@@ -80,7 +70,10 @@ describe('configErrors', () => {
           expect(new IncompatibleConfigurationError('potato').message).toBe(
             "Version found in config 'potato' is greater than the one accepted by this version of the CLI."
           );
-          expect(mockedGt).toBeCalledWith(mockedSemverInstance, mockedVersion);
+          expect(mockedGt).toBeCalledWith(
+            mockedSemverInstance,
+            CurrentSchemaVersion
+          );
         }
       );
     });
@@ -99,7 +92,10 @@ describe('configErrors', () => {
           expect(new IncompatibleConfigurationError('potato').message).toBe(
             "Version found in config 'potato' is less than the one accepted by this version of the CLI."
           );
-          expect(mockedLt).toBeCalledWith(mockedSemverInstance, mockedVersion);
+          expect(mockedLt).toBeCalledWith(
+            mockedSemverInstance,
+            CurrentSchemaVersion
+          );
         }
       );
     });

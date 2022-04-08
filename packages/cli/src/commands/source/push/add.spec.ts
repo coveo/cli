@@ -30,6 +30,12 @@ const mockedConfig = jest.mocked(Config);
 const mockedConfigGet = jest.fn();
 
 describe('source:push:add', () => {
+  beforeAll(() => {
+    mockedGlobalConfig.get.mockReturnValue({
+      configDir: 'the_config_dir',
+    } as Interfaces.Config);
+  });
+
   const pathToStub = join(cwd(), 'src', '__stub__');
   const mockSetSourceStatus = jest.fn();
   const mockBatchUpdate = jest.fn();

@@ -1,4 +1,4 @@
-name: Build
+name: CI
 on:
   push:
     branches:
@@ -6,13 +6,157 @@ on:
   pull_request:
 
 jobs:
-  run-script:
+  lint:
+    name: Lint
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Setup runner
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+      - name: Setup runner
+        if: ${{matrix.os == 'windows-latest'}}
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846 # tag=v3
+      - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
+        with:
+          node-version: 16
+          cache: 'npm'
+      - name: Install locked NPM version.
+        # TODO: Remove later, when `npm 8.5.4` is built in.
+        run: npm i -g npm@^8.5.4
+      - name: Setup repo
+        run: npm ci
+      - name: Check linting
+        run: npm run lint
+  unit-tests:
+    name: Unit Tests
     runs-on: ${{matrix.os}}
     strategy:
       fail-fast: true
       matrix:
         os: ['ubuntu-latest', 'windows-latest']
         node: [16]
+    steps:
+      - name: Setup runner
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+      - name: Setup runner
+        if: ${{matrix.os == 'windows-latest'}}
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846 # tag=v3
+      - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
+        with:
+          node-version: ${{matrix.node}}
+          cache: 'npm'
+      - name: Install locked NPM version.
+        # TODO: Remove later, when `npm 8.5.4` is built in.
+        run: npm i -g npm@^8.5.4
+      - name: Setup repo
+        run: npm ci
+      - name: Tests
+        run: npm run test
+  e2e-setup-login:
+    name: End-to-end login
+    runs-on: 'ubuntu-latest'
+    outputs:
+      cliConfigJson: ${{ steps.setup.outputs.cliConfigJson}}
+    env:
+      # Platform environment to log into for the e2e tests.
+      PLATFORM_ENV: 'qa'
+      # Username used to log into the organization whose ID is stored in the ORG_ID variable
+      PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
+      # Password used to log into the organization whose ID is stored in the ORG_ID variable
+      PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
+      # API key to delete all the API keys created by the e2e tests
+      PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
+      # ID of the organization to log into for the e2e tests
+      ORG_ID: ${{ secrets.ORG_ID }}
+      # ID of the test run to identify resources to teardown.
+      TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
+    steps:
+      - uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846 # tag=v3
+      - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
+        with:
+          node-version: ${{matrix.node}}
+          cache: 'npm'
+      - name: Install locked NPM version.
+        # TODO: Remove later, when `npm 8.5.4` is built in.
+        run: npm i -g npm@^8.5.4
+      - run: |
+          npm ci
+          Xvfb :1 -screen 0 1024x768x16 & sleep 1
+          xdg-settings set default-web-browser google-chrome.desktop
+      - name: Build
+        run: npm run build
+      - name: Setup E2E tests
+        env:
+          DISPLAY: ':1'
+        run: node -r ts-node/register/transpile-only packages/cli-e2e/setup/ci-login.ts
+      - name: Encode & Output config
+        id: setup
+        run: |
+          echo "${{ secrets.E2E_TOKEN_PASSPHRASE }}" | gpg -a --batch --passphrase-fd 0 --symmetric --cipher-algo AES256 --output encodedConfig $CLI_CONFIG_PATH
+          echo "::set-output name=cliConfigJson::$(base64 -w 0 encodedConfig)"
+  e2e-setup-verdaccio:
+    strategy:
+      matrix:
+        os: ['ubuntu-latest', 'windows-latest']
+    name: End-to-end publish packages
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846 # tag=v3
+      - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
+        with:
+          node-version: ${{matrix.node}}
+          cache: 'npm'
+      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # tag=v3
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        with:
+          path: packages/cli-e2e/verdaccio
+          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
+      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # tag=v3
+        if: ${{matrix.os == 'windows-latest'}}
+        with:
+          path: packages\cli-e2e\verdaccio
+          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
+      - name: Install locked NPM version.
+        # TODO: Remove later, when `npm 8.5.4` is built in.
+        run: npm i -g npm@^8.5.4
+      - run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Setup E2E tests
+        run: node -r ts-node/register/transpile-only packages/cli-e2e/setup/ci-verdaccio.ts
+      - uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535 # tag=v3
+        if: always()
+        with:
+          name: ${{matrix.os}}-verdaccio-publish-artifacts
+          path: ./packages/cli-e2e/artifacts
+  e2e:
+    name: End-to-end tests
+    runs-on: ${{matrix.os}}
+    needs: [e2e-setup-login, e2e-setup-verdaccio]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'windows-latest']
+        node: [16]
+        spec:
+          [
+            'angular.specs.ts',
+            'atomic.specs.ts',
+            'auth.specs.ci.ts',
+            'orgList.specs.ts',
+            'orgResources.specs.ts',
+            'react.specs.ts',
+            'vue.specs.ts',
+          ]
     env:
       # Platform environment to log into for the e2e tests.
       PLATFORM_ENV: 'qa'
@@ -27,6 +171,7 @@ jobs:
       # ID of the test run to identify resources to teardown.
       TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
       COVEO_DISABLE_AUTOUPDATE: true
+      CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
       - name: Setup runner
         if: ${{matrix.os == 'ubuntu-latest'}}
@@ -37,33 +182,103 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
-      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
-      - uses: actions/setup-node@1f8c6b94b26d0feae1e387ca63ccbdc44d27b561 # renovate: tag=v2
+      - uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846 # tag=v3
+      - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
         with:
           node-version: ${{matrix.node}}
-      - name: Setup repo
-        run: npm ci
-      - name: Check linting
-        run: npm run lint
-      - name: Tests
-        run: npm run test
-      - name: Build CLI
-        working-directory: ./packages/cli
-        run: npm run build
-      - name: End-to-end Tests
+          cache: 'npm'
+      - uses: actions/setup-python@0ebf233433c08fb9061af664d501c3f3ff0e9e20 # tag=v3
+        with:
+          cache: 'pip'
+      - name: Install Mitmproxy through pip
+        run: pip install -r packages/cli-e2e/mitmproxy/requirements.txt
+      - name: Install locked NPM version.
+        # TODO: Remove later, when `npm 8.5.4` is built in.
+        run: npm i -g npm@^8.5.4
+      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # tag=v3
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        with:
+          path: packages/cli-e2e/verdaccio
+          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
+      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # tag=v3
+        if: ${{matrix.os == 'windows-latest'}}
+        with:
+          path: packages\cli-e2e\verdaccio
+          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
+      - name: Decrypt config
+        working-directory: packages/cli-e2e
+        run: echo ${{needs.e2e-setup-login.outputs.cliConfigJson}} | base64 --decode | gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.E2E_TOKEN_PASSPHRASE }}" --output decrypted
+      - run: npm ci
+      - name: End-to-end Setup
         if: ${{matrix.os == 'ubuntu-latest'}}
         run: bash packages/cli-e2e/entrypoints/ci.sh
-      - name: End-to-end Tests
+      - name: End-to-end Setup
         if: ${{matrix.os == 'windows-latest'}}
         run: packages/cli-e2e/entrypoints/ci.ps1
-      - name: Delete test org
+      - name: Tests
+        if: ${{matrix.os == 'windows-latest'}}
+        working-directory: packages/cli-e2e
+        run: npm run jest:ci -- ${{matrix.spec}}
+      - name: Tests
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        env:
+          DISPLAY: ':1'
+        working-directory: packages/cli-e2e
+        run: npm run jest:ci -- ${{matrix.spec}}
+      - uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535 # tag=v3
         if: always()
-        run: node ./scripts/delete-org.js
+        with:
+          name: ${{matrix.os}}-${{matrix.spec}}-test-artifacts
+          path: ./packages/cli-e2e/artifacts
+  e2e-teardown:
+    name: End-to-end teardown
+    if: ${{ always() }}
+    needs: [e2e, e2e-setup-login]
+    runs-on: ubuntu-latest
+    env:
+      # Platform environment to log into for the e2e tests.
+      PLATFORM_ENV: 'qa'
+      # Username used to log into the organization whose ID is stored in the ORG_ID variable
+      PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
+      # Password used to log into the organization whose ID is stored in the ORG_ID variable
+      PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
+      # API key to delete all the API keys created by the e2e tests
+      PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
+      # ID of the organization to log into for the e2e tests
+      ORG_ID: ${{ secrets.ORG_ID }}
+      # ID of the test run to identify resources to teardown.
+      TEST_RUN_ID: '${{ github.sha }}-${{ github.run_attempt }}g'
+      CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
+    steps:
+      - uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846 # tag=v3
+      - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
+        with:
+          node-version: ${{matrix.node}}
+          cache: 'npm'
+      - name: Install locked NPM version.
+        # TODO: Remove later, when `npm 8.5.4` is built in.
+        run: npm i -g npm@^8.5.4
+      - run: npm ci
+      - name: Decrypt config
+        run: echo ${{needs.e2e-setup-login.outputs.cliConfigJson}} | base64 --decode | gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.E2E_TOKEN_PASSPHRASE }}" --output decrypted
+      - name: Delete test org
+        env:
+          DISPLAY: ':1'
+        if: always()
+        run: |
+          Xvfb :1 -screen 0 1024x768x16 & sleep 1
+          xdg-settings set default-web-browser google-chrome.desktop
+          node -r ts-node/register/transpile-only packages/cli-e2e/cleaning.ts
+          node ./scripts/cleaning/delete-orgs.js
       - name: Delete test API key
         if: always()
-        run: node ./scripts/delete-api-keys.js
-      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # renovate: tag=v2
-        if: ${{ always() }}
-        with:
-          name: ${{matrix.os}}-test-artifacts
-          path: ./packages/cli-e2e/artifacts
+        run: node ./scripts/cleaning/delete-api-keys.js
+  e2e-report:
+    name: End-to-end status reporter
+    if: ${{ always() }}
+    needs: e2e
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check e2e matrix status
+        if: ${{ needs.e2e.result != 'success' }}
+        run: exit 1

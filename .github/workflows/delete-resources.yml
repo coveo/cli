@@ -1,0 +1,39 @@
+name: 'Delete Coveo Resources'
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  delete-resources:
+    runs-on: ubuntu-latest
+    environment: Cleaning
+    env:
+      ORG_ID: ${{ secrets.ORG_ID }}
+      PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
+      PLATFORM_ENV: 'qa'
+      PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
+      PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
+    steps:
+      - uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846 # tag=v3
+      - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+      - run: npm ci
+      - name: Delete test API keys
+        if: always()
+        run: node ./scripts/cleaning/delete-api-keys.js --olderThan 1d
+      - name: Delete test orgs
+        if: always()
+        run: |
+          Xvfb :1 -screen 0 1024x768x16 & sleep 1
+          xdg-settings set default-web-browser google-chrome.desktop
+          node -r ts-node/register/transpile-only packages/cli-e2e/cleaning.ts
+          node ./scripts/cleaning/delete-orgs.js     --olderThan 1d
+        env:
+          DISPLAY: ':1'
+      - name: Notify in case of failure
+        if: failure()
+        run: curl --request POST --url ${{ secrets.SLACK_WEBHOOK }}
