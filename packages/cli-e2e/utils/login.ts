@@ -131,7 +131,7 @@ async function startLoginFlow(browser: Browser) {
   });
   await Promise.all([
     page.click(`${LoginSelectors.passwordView} ${LoginSelectors.SubmitInput}`),
-    page.waitForNavigation({waitUntil: 'networkidle2'}),
+    page.waitForNavigation({waitUntil: 'networkidle2', timeout: 2 * 60e3}),
   ]);
 
   await staySignedIn(page);
@@ -171,5 +171,22 @@ export async function clearAccessTokenFromConfig() {
   }
   const cfg = await readJSON(getConfigFilePath());
   delete cfg.accessToken;
+  await writeJSON(getConfigFilePath(), cfg);
+}
+
+export async function loginWithApiKey(
+  apiKey: string,
+  orgId: string,
+  env: string
+) {
+  if (!existsSync(getConfigFilePath())) {
+    throw 'Missing config file';
+  }
+  const cfg = await readJSON(getConfigFilePath());
+  cfg.accessToken = apiKey;
+  cfg.organization = orgId;
+  cfg.environment = env;
+  cfg.analyticsEnabled = false;
+  cfg.anonymous = true;
   await writeJSON(getConfigFilePath(), cfg);
 }

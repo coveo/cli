@@ -26,6 +26,12 @@ const mockedMarshal = jest.fn();
 const mockEvaluate = jest.fn();
 
 describe('source:push:add', () => {
+  beforeAll(() => {
+    mockedGlobalConfig.get.mockReturnValue({
+      configDir: 'the_config_dir',
+    } as Interfaces.Config);
+  });
+
   const pathToStub = join(cwd(), 'src', '__stub__');
   const mockSetSourceStatus = jest.fn();
   const mockBatchUpdate = jest.fn();
@@ -163,6 +169,43 @@ describe('source:push:add', () => {
           environment: 'prod',
           region: 'au',
         });
+      });
+
+    test
+      .stdout()
+      .stderr()
+      .command([
+        'source:push:add',
+        'mysource',
+        '-f',
+        join(pathToStub, 'jsondocuments', 'batman.json'),
+      ])
+      .it('should create missing fields by default', () => {
+        expect(mockBatchUpdate).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          expect.anything(),
+          expect.objectContaining({createFields: true})
+        );
+      });
+
+    test
+      .stdout()
+      .stderr()
+      .command([
+        'source:push:add',
+        'mysource',
+        '--no-createMissingFields',
+        '-f',
+        join(pathToStub, 'jsondocuments', 'batman.json'),
+      ])
+      .it('should skip field creation if specified', () => {
+        expect(mockBatchUpdate).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          expect.anything(),
+          expect.objectContaining({createFields: false})
+        );
       });
 
     test
