@@ -7,7 +7,6 @@ import {Command, Flags, CliUx} from '@oclif/core';
 import {green} from 'chalk';
 import {readdirSync} from 'fs';
 import {join} from 'path';
-import {Config} from '../../../lib/config/config';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
