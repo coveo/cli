@@ -87,9 +87,9 @@ export default class SourceCatalogAdd extends Command {
       (await this.sourceIsEmpty(args.sourceId))
     ) {
       this.error(dedent`No items detected for this source at the moment.
-        As a best practice, please consider doing a full catalog upload by adding --fullUpload to your command.
+        As a best practice, we recommend doing a full catalog upload by appending --fullUpload to your command.
         If you are still getting this message despite having already performed a full catalog upload,
-        add --forceUpdate to your command to discard this message.
+        append --forceUpdate to your command to discard this message.
         `);
     }
 
