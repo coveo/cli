@@ -1,5 +1,7 @@
 name: Snyk
 on:
+  schedule:
+    - cron: '0 0 * * *'
   push:
     branches:
       - master
@@ -9,31 +11,31 @@ jobs:
   snyk:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # renovate: tag=v2
-      - uses: actions/setup-node@1f8c6b94b26d0feae1e387ca63ccbdc44d27b561 # renovate: tag=v2
+      - uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846 # tag=v3
+      - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
       - name: Prepare snyk
         run: |
           npm ci
-          yarn install --no-immutable
+          yarn install --no-immutable --mode=skip-build
       - name: Snyk Monitor
         continue-on-error: true
         if: ${{ github.event_name != 'pull_request' }}
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           NODE_OPTIONS: --max-old-space-size=8192
-        run: npx snyk monitor      --dev --yarn-workspaces --exclude="project.json"
+        run: npx snyk monitor      --dev --yarn-workspaces --exclude="project.json,npm-shim"
       - name: Snyk Test
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           NODE_OPTIONS: --max-old-space-size=8192
-        run: npx snyk test --dev --yarn-workspaces --exclude="project.json" --sarif-file-output=./sarifs/snyk.sarif
+        run: npx snyk test --dev --yarn-workspaces --exclude="project.json,npm-shim" --sarif-file-output=./sarifs/snyk.sarif
       - name: Snyk Code
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           NODE_OPTIONS: --max-old-space-size=8192
-        run: npx snyk code test    --dev --all-projects --exclude="project.json" --sarif > ./sarifs/snyk-code.sarif
+        run: npx snyk code test    --dev --all-projects --exclude="project.json,npm-shim" --sarif > ./sarifs/snyk-code.sarif
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v1
 

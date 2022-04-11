@@ -1,5 +1,4 @@
 import {SourceType, SourceVisibility} from '@coveord/platform-client';
-import {PushSource} from '@coveo/push-api-client';
 import {Command, Flags} from '@oclif/core';
 import {green} from 'chalk';
 import dedent from 'ts-dedent';

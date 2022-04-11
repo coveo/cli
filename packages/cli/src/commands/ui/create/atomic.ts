@@ -62,9 +62,8 @@ export default class Atomic extends Command {
     const {flags, args} = await this.parse(Atomic);
     const cfg = this.configuration.get();
     const authenticatedClient = new AuthenticatedClient();
-    const userInfo = await authenticatedClient.getUserInfo();
     const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
-
+    const username = await authenticatedClient.getUsername();
     const cliArgs = [
       `${Atomic.cliPackage}@${flags.version}`,
       '--project',
@@ -76,7 +75,7 @@ export default class Atomic extends Command {
       '--platform-url',
       platformUrl({environment: cfg.environment}),
       '--user',
-      userInfo.providerUsername,
+      username,
     ];
 
     return spawnProcess(appendCmdIfWindows`npx`, cliArgs);

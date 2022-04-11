@@ -1,12 +1,11 @@
-const mockedSemverSatisifies = jest.fn();
-jest.mock('semver', () => ({
-  ...jest.requireActual('semver'),
-  satisfies: mockedSemverSatisifies,
+const mockedUxError = jest.fn();
+jest.mock('@oclif/core', () => ({
+  CliUx: {ux: {error: mockedUxError}},
 }));
 jest.mock('./configErrors');
 jest.mock('fs-extra');
-jest.mock('@oclif/core');
-
+jest.mock('semver');
+import {satisfies} from 'semver';
 import {
   pathExistsSync,
   createFileSync,
@@ -20,9 +19,9 @@ import {PlatformEnvironment} from '../platform/environment';
 import {Config} from './config';
 import {IncompatibleConfigurationError} from './configErrors';
 import {fancyIt} from '../../__test__/it';
-import {CliUx} from '@oclif/core';
+import {CurrentSchemaVersion} from './configSchemaVersion';
 
-const mockedUxError = jest.mocked(CliUx.ux.error);
+const mockedSemverSatisifies = jest.mocked(satisfies);
 const mockedPathExists = jest.mocked(pathExistsSync);
 const mockedCreateFile = jest.mocked(createFileSync);
 const mockedWriteJSON = jest.mocked(writeJSONSync);
@@ -60,7 +59,7 @@ describe('config', () => {
   fancyIt()(
     'should not create config file when it does exists and its version is compatible',
     async () => {
-      const someConfig = {version: Config.CurrentSchemaVersion};
+      const someConfig = {version: CurrentSchemaVersion};
       mockedReadJSON.mockImplementationOnce(() => someConfig);
       mockedPathExists.mockImplementationOnce(() => true);
 
@@ -77,7 +76,7 @@ describe('config', () => {
     });
 
     fancyIt()('should return the config if no error', async () => {
-      const someConfig = {foo: 'bar', version: Config.CurrentSchemaVersion};
+      const someConfig = {foo: 'bar', version: CurrentSchemaVersion};
       mockedReadJSON.mockImplementationOnce(() => someConfig);
 
       const cfg = new Config('foo/bar').get();
@@ -138,7 +137,7 @@ describe('config', () => {
     fancyIt()('should write config on set', async () => {
       mockedReadJSON.mockImplementationOnce(() => ({
         hello: 'world',
-        version: Config.CurrentSchemaVersion,
+        version: CurrentSchemaVersion,
       }));
       new Config('foo/bar').set('environment', PlatformEnvironment.Dev);
       expect(mockedWriteJSON).toHaveBeenCalledWith(

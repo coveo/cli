@@ -29,6 +29,7 @@ import {npm} from '../utils/npm';
 import axios from 'axios';
 import {jwtTokenPattern} from '../utils/matcher';
 import {join} from 'path';
+import {loginWithApiKey} from '../utils/login';
 
 describe('ui:create:vue', () => {
   let browser: Browser;
@@ -127,6 +128,11 @@ describe('ui:create:vue', () => {
   };
 
   beforeAll(async () => {
+    await loginWithApiKey(
+      process.env.PLATFORM_API_KEY!,
+      process.env.ORG_ID!,
+      process.env.PLATFORM_ENV!
+    );
     const buildProcessManager = new ProcessManager();
     processManagers.push(buildProcessManager);
     browser = await getNewBrowser();
@@ -195,7 +201,7 @@ describe('ui:create:vue', () => {
       });
 
       expect(consoleInterceptor.interceptedMessages).toEqual([]);
-    });
+    }, 60e3);
 
     it('should contain a search page section', async () => {
       await page.goto(searchPageEndpoint(), {
@@ -204,7 +210,7 @@ describe('ui:create:vue', () => {
       await page.waitForSelector(searchboxSelector);
 
       expect(await page.$('#search-page')).not.toBeNull();
-    });
+    }, 60e3);
 
     it('should retrieve the search token on the page load', async () => {
       const tokenResponseListener = page.waitForResponse(tokenServerEndpoint());
@@ -217,14 +223,14 @@ describe('ui:create:vue', () => {
       ).toMatchObject({
         token: expect.stringMatching(jwtTokenPattern),
       });
-    });
+    }, 60e3);
 
     it('should send a search query when the page is loaded', async () => {
       await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchboxSelector);
 
       expect(interceptedRequests.some(isSearchRequestOrResponse)).toBeTruthy();
-    });
+    }, 60e3);
 
     it('should send a search query on searchbox submit', async () => {
       await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
@@ -241,7 +247,7 @@ describe('ui:create:vue', () => {
           interceptedRequests.some(isSearchRequestOrResponse)
         ).toBeTruthy();
       });
-    });
+    }, 60e3);
 
     it('should be commited without lint-stage errors', async () => {
       const eslintErrorSpy = jest.fn();
@@ -349,7 +355,7 @@ describe('ui:create:vue', () => {
     it('should redirect the user to an error page', async () => {
       await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
       expect(page.url()).toEqual(`${searchPageEndpoint()}/error`);
-    });
+    }, 60e3);
   });
 
   describe('when the ports are manually specified', () => {
@@ -378,11 +384,11 @@ describe('ui:create:vue', () => {
 
     it('should run the application on the specified port', async () => {
       expect(clientPort).toEqual(hardCodedClientPort);
-    });
+    }, 60e3);
 
     it('should run the token server on the specified port', async () => {
       expect(serverPort).toEqual(hardCodedServerPort);
-    });
+    }, 60e3);
   });
 
   describe('when the ports are busy', () => {

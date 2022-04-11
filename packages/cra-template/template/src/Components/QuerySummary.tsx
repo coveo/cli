@@ -3,7 +3,7 @@ import {
   buildQuerySummary,
   QuerySummary as HeadlessQuerySummary,
 } from '@coveo/headless';
-import {Box, Divider} from '@material-ui/core';
+import {Box, Divider} from '@mui/material';
 import EngineContext from '../common/engineContext';
 
 interface QuerySummaryProps {

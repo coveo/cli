@@ -86,4 +86,26 @@ describe('apiKeyPrivilege', () => {
       ).resolves.not.toThrow();
     });
   });
+
+  describe('when the command has a public `flags` getter', () => {
+    const privileges = [writeSnapshotPrivilege, writeLinkPrivilege];
+    beforeEach(() => {
+      mockEvaluate.mockReturnValue({approved: true});
+    });
+
+    fancyIt()('should use it', async () => {
+      const fakeCommand = getFakeCommand();
+      const getSpy = jest.fn(() => ({
+        target: 'someTarget',
+      }));
+      Object.defineProperty(fakeCommand, 'getFlags', {
+        value: getSpy,
+      });
+      await HasNecessaryCoveoPrivileges(...privileges).call(
+        fakeCommand,
+        fakeCommand
+      );
+      expect(getSpy).toBeCalled();
+    });
+  });
 });
