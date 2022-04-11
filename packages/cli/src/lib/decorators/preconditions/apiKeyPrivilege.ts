@@ -49,7 +49,6 @@ async function hasPrivilege(
   organizationId: string,
   privilege: PrivilegeModel
 ) {
-  // TODO: CDX-811: the privilege evaluation does not work on dev environment
   const model: PrivilegeEvaluatorModel = {
     ...{requestedPrivilege: privilege},
     organizationId,

@@ -1,4 +1,3 @@
-jest.mock('../../../lib/config/config');
 jest.mock('../../../hooks/analytics/analytics');
 jest.mock('../../../hooks/prerun/prerun');
 jest.mock('../../../lib/platform/authenticatedClient');
@@ -19,15 +18,12 @@ import {APIError} from '../../../lib/errors/APIError';
 import {UploadBatchCallback} from '@coveo/push-api-client';
 import globalConfig from '../../../lib/config/globalConfig';
 import {Interfaces} from '@oclif/core';
-import {Config} from '../../../lib/config/config';
 const mockedGlobalConfig = jest.mocked(globalConfig);
 const mockedClient = jest.mocked(AuthenticatedClient);
 const mockedSource = jest.mocked(Source);
 const mockedDocumentBuilder = jest.mocked(DocumentBuilder);
 const mockedMarshal = jest.fn();
 const mockEvaluate = jest.fn();
-const mockedConfig = jest.mocked(Config);
-const mockedConfigGet = jest.fn();
 
 describe('source:push:add', () => {
   beforeAll(() => {
@@ -46,16 +42,6 @@ describe('source:push:add', () => {
 
   const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
     mockEvaluate.mockResolvedValue({approved: false});
-  };
-
-  const mockConfig = () => {
-    mockedConfigGet.mockReturnValue({
-      region: 'us',
-      organization: 'foo',
-      environment: 'prod',
-    });
-
-    mockedConfig.prototype.get = mockedConfigGet;
   };
 
   const doMockSuccessBatchUpload = () => {
@@ -90,7 +76,6 @@ describe('source:push:add', () => {
   };
 
   beforeAll(() => {
-    mockConfig();
     mockedGlobalConfig.get.mockReturnValue({
       configDir: 'the_config_dir',
     } as Interfaces.Config);
@@ -130,6 +115,8 @@ describe('source:push:add', () => {
             Promise.resolve({
               accessToken: 'the_token',
               organization: 'the_org',
+              region: 'au',
+              environment: 'prod',
             }),
         },
       } as unknown as AuthenticatedClient)
@@ -178,7 +165,47 @@ describe('source:push:add', () => {
         join(pathToStub, 'jsondocuments', 'batman.json'),
       ])
       .it('pass correct configuration information to push-api-client', () => {
-        expect(mockedSource).toHaveBeenCalledWith('the_token', 'the_org');
+        expect(mockedSource).toHaveBeenCalledWith('the_token', 'the_org', {
+          environment: 'prod',
+          region: 'au',
+        });
+      });
+
+    test
+      .stdout()
+      .stderr()
+      .command([
+        'source:push:add',
+        'mysource',
+        '-f',
+        join(pathToStub, 'jsondocuments', 'batman.json'),
+      ])
+      .it('should create missing fields by default', () => {
+        expect(mockBatchUpdate).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          expect.anything(),
+          expect.objectContaining({createFields: true})
+        );
+      });
+
+    test
+      .stdout()
+      .stderr()
+      .command([
+        'source:push:add',
+        'mysource',
+        '--no-createMissingFields',
+        '-f',
+        join(pathToStub, 'jsondocuments', 'batman.json'),
+      ])
+      .it('should skip field creation if specified', () => {
+        expect(mockBatchUpdate).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          expect.anything(),
+          expect.objectContaining({createFields: false})
+        );
       });
 
     test
