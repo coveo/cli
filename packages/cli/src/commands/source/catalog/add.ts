@@ -44,7 +44,7 @@ export default class SourceCatalogAdd extends Command {
 
       Setting this option to ${bold(
         'true'
-      )} will trigger a full catalog upload will start. This process acts as a full rebuild of your catalog source, therefore if the payload doesn't contain all the items, previous items will be deleted.
+      )} will trigger a full catalog upload. This process acts as a full rebuild of your catalog source. Therefore, previous items that are not included in the new payload will be deleted.
       See https://docs.coveo.com/en/lb4a0344
         `,
     }),
