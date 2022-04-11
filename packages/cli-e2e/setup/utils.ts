@@ -11,7 +11,7 @@ import waitOn from 'wait-on';
 import 'dotenv/config';
 import {Terminal} from '../utils/terminal/terminal';
 import {join, resolve} from 'path';
-import {npm, npmPathEnvVar} from '../utils/npm';
+import {npm, npmCachePathEnvVar, npmPathEnvVar} from '../utils/npm';
 import {dirname} from 'path';
 import {spawnSync} from 'child_process';
 
@@ -131,6 +131,7 @@ export function restoreCliConfig() {
 export function shimNpm() {
   const tmpDir = tmpDirSync();
   const npmDir = join(tmpDir.name, 'npmShim');
+  process.env[npmCachePathEnvVar] = join(npmDir, 'cache');
   copySync(join(__dirname, '..', 'npm-shim'), npmDir);
   const npmCiArgs = [appendCmdIfWindows`npm`, 'ci'];
   spawnSync(npmCiArgs.shift()!, npmCiArgs, {cwd: npmDir});

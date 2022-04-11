@@ -8,9 +8,15 @@ import {green} from 'chalk';
 import {readdirSync} from 'fs';
 import {join} from 'path';
 import {
+  HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
+import {
+  readOrganizationPrivilege,
+  writeFieldsPrivilege,
+  writeSourceContentPrivilege,
+} from '../../../lib/decorators/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
@@ -47,6 +53,13 @@ export default class SourcePushAdd extends Command {
       description:
         'The maximum number of requests to send concurrently. Increasing this value increases the speed at which documents are pushed to the Coveo platform. However, if you run into memory or throttling issues, consider reducing this value.',
     }),
+    createMissingFields: Flags.boolean({
+      char: 'm',
+      allowNo: true,
+      default: true,
+      description:
+        'Analyse documents to detect and automatically create missing fields in the destination organization. When enabled, an error will be thrown if a field is used to store data of inconsistent type across documents.',
+    }),
   };
 
   public static args = [
@@ -60,8 +73,12 @@ export default class SourcePushAdd extends Command {
 
   @Trackable()
   @Preconditions(
-    IsAuthenticated()
-    // TODO: CDX-817 add precondition on platform privileges
+    IsAuthenticated(),
+    HasNecessaryCoveoPrivileges(
+      writeFieldsPrivilege,
+      readOrganizationPrivilege,
+      writeSourceContentPrivilege
+    )
   )
   public async run() {
     const {args, flags} = await this.parse(SourcePushAdd);
@@ -70,8 +87,12 @@ export default class SourcePushAdd extends Command {
         'You must minimally set the `file` or the `folder` flag. Use `source:push:add --help` to get more information.'
       );
     }
-    const cfg = await new AuthenticatedClient().cfg.get();
-    const source = new Source(cfg.accessToken!, cfg.organization);
+    const {accessToken, organization, environment, region} =
+      await new AuthenticatedClient().cfg.get();
+    const source = new Source(accessToken!, organization, {
+      environment,
+      region,
+    });
 
     const callback: UploadBatchCallback = (
       err: unknown,
@@ -94,6 +115,7 @@ export default class SourcePushAdd extends Command {
       callback,
       {
         maxConcurrent: flags.maxConcurrent,
+        createFields: flags.createMissingFields,
       }
     );
     await source.setSourceStatus(args.sourceId, 'IDLE');

@@ -1,4 +1,3 @@
-jest.mock('../../../lib/config/config');
 jest.mock('../../../hooks/analytics/analytics');
 jest.mock('../../../hooks/prerun/prerun');
 jest.mock('../../../lib/platform/authenticatedClient');
@@ -24,6 +23,7 @@ const mockedClient = jest.mocked(AuthenticatedClient);
 const mockedSource = jest.mocked(Source);
 const mockedDocumentBuilder = jest.mocked(DocumentBuilder);
 const mockedMarshal = jest.fn();
+const mockEvaluate = jest.fn();
 
 describe('source:push:add', () => {
   beforeAll(() => {
@@ -35,6 +35,14 @@ describe('source:push:add', () => {
   const pathToStub = join(cwd(), 'src', '__stub__');
   const mockSetSourceStatus = jest.fn();
   const mockBatchUpdate = jest.fn();
+
+  const mockUserHavingAllRequiredPlatformPrivileges = () => {
+    mockEvaluate.mockResolvedValue({approved: true});
+  };
+
+  const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
+    mockEvaluate.mockResolvedValue({approved: false});
+  };
 
   const doMockSuccessBatchUpload = () => {
     mockBatchUpdate.mockImplementation(
@@ -67,6 +75,12 @@ describe('source:push:add', () => {
     );
   };
 
+  beforeAll(() => {
+    mockedGlobalConfig.get.mockReturnValue({
+      configDir: 'the_config_dir',
+    } as Interfaces.Config);
+  });
+
   beforeEach(() => {
     mockedMarshal.mockReturnValue(
       JSON.stringify({
@@ -90,11 +104,19 @@ describe('source:push:add', () => {
   mockedClient.mockImplementation(
     () =>
       ({
+        getClient: () =>
+          Promise.resolve({
+            privilegeEvaluator: {
+              evaluate: mockEvaluate,
+            },
+          }),
         cfg: {
           get: () =>
             Promise.resolve({
               accessToken: 'the_token',
               organization: 'the_org',
+              region: 'au',
+              environment: 'prod',
             }),
         },
       } as unknown as AuthenticatedClient)
@@ -110,11 +132,13 @@ describe('source:push:add', () => {
 
   describe('when the batch upload is successfull', () => {
     beforeAll(() => {
+      mockUserHavingAllRequiredPlatformPrivileges();
       doMockSuccessBatchUpload();
     });
 
     afterAll(() => {
       mockBatchUpdate.mockReset();
+      mockEvaluate.mockReset();
     });
 
     test
@@ -141,7 +165,84 @@ describe('source:push:add', () => {
         join(pathToStub, 'jsondocuments', 'batman.json'),
       ])
       .it('pass correct configuration information to push-api-client', () => {
-        expect(mockedSource).toHaveBeenCalledWith('the_token', 'the_org');
+        expect(mockedSource).toHaveBeenCalledWith('the_token', 'the_org', {
+          environment: 'prod',
+          region: 'au',
+        });
+      });
+
+    test
+      .stdout()
+      .stderr()
+      .command([
+        'source:push:add',
+        'mysource',
+        '-f',
+        join(pathToStub, 'jsondocuments', 'batman.json'),
+      ])
+      .it('should create missing fields by default', () => {
+        expect(mockBatchUpdate).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          expect.anything(),
+          expect.objectContaining({createFields: true})
+        );
+      });
+
+    test
+      .stdout()
+      .stderr()
+      .command([
+        'source:push:add',
+        'mysource',
+        '--no-createMissingFields',
+        '-f',
+        join(pathToStub, 'jsondocuments', 'batman.json'),
+      ])
+      .it('should skip field creation if specified', () => {
+        expect(mockBatchUpdate).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          expect.anything(),
+          expect.objectContaining({createFields: false})
+        );
+      });
+
+    test
+      .stdout()
+      .stderr()
+      .command([
+        'source:push:add',
+        'mysource',
+        '-f',
+        join(pathToStub, 'jsondocuments', 'batman.json'),
+      ])
+      .it('should create missing fields by default', () => {
+        expect(mockBatchUpdate).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          expect.anything(),
+          expect.objectContaining({createFields: true})
+        );
+      });
+
+    test
+      .stdout()
+      .stderr()
+      .command([
+        'source:push:add',
+        'mysource',
+        '--no-createMissingFields',
+        '-f',
+        join(pathToStub, 'jsondocuments', 'batman.json'),
+      ])
+      .it('should skip field creation if specified', () => {
+        expect(mockBatchUpdate).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          expect.anything(),
+          expect.objectContaining({createFields: false})
+        );
       });
 
     test
@@ -205,10 +306,12 @@ describe('source:push:add', () => {
   describe('when the batch upload fails', () => {
     beforeAll(() => {
       doMockErrorBatchUpload();
+      mockUserHavingAllRequiredPlatformPrivileges();
     });
 
     afterAll(() => {
       mockBatchUpdate.mockReset();
+      mockEvaluate.mockReset();
     });
 
     test
@@ -230,5 +333,23 @@ describe('source:push:add', () => {
         expect(message).toContain('Error code: BAD_REQUEST');
       })
       .it('returns an information message on add failure from the API');
+  });
+
+  describe('when Platform privilege preconditions are not respected', () => {
+    beforeEach(() => {
+      mockUserNotHavingAllRequiredPlatformPrivileges();
+    });
+
+    afterAll(() => {
+      mockBatchUpdate.mockReset();
+      mockEvaluate.mockReset();
+    });
+
+    test
+      .stdout()
+      .stderr()
+      .command(['source:push:add', 'some-org', '-f', 'some-file'])
+      .catch(/You are not authorized to create or update fields/)
+      .it('should return a precondition error');
   });
 });
