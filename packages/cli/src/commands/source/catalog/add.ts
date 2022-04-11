@@ -26,7 +26,7 @@ import dedent from 'ts-dedent';
 
 export default class SourceCatalogAdd extends Command {
   public static description =
-    'Index a JSON document into a Coveo Catalog source. See https://docs.coveo.com/en/2956/coveo-for-commerce/index-commerce-catalog-content-with-the-stream-api for more information.';
+    'Index a JSON document into a Coveo Catalog source. See https://docs.coveo.com/en/2956 for more information.';
 
   public static flags = {
     ...withFile(),
@@ -39,7 +39,7 @@ export default class SourceCatalogAdd extends Command {
 
       Setting this option to ${bold(
         'false'
-      )} will trigger a document update (Default operation). Useful for incremental updates for smaller adjustments to your catalog without the need of pushing the entire catalog. A document update must only be performed after a full catalog upload.
+      )} will trigger a document update (Default operation). Useful to perform incremental updates for smaller adjustments to your catalog that do not require pushing the entire catalog. A document update must only be performed after a full catalog upload.
       See https://docs.coveo.com/en/l62e0540
 
       Setting this option to ${bold(
@@ -50,7 +50,7 @@ export default class SourceCatalogAdd extends Command {
     }),
     skipFullUploadCheck: Flags.boolean({
       default: false,
-      description: `Do not check if a catalog full load was triggered on the target source.`,
+      description: `Do not check whether a full catalog upload was triggered on the target source.`,
     }),
   };
 
@@ -77,7 +77,7 @@ export default class SourceCatalogAdd extends Command {
 
     if (!flags.file && !flags.folder) {
       this.error(
-        'You must minimally set the `file` or the `folder` flag. Use `source:catalog:add --help` to get more information.'
+        'You must minimally set the `file` or the `folder` flag. Use `source:catalog:add --help` to learn more.'
       );
     }
 
@@ -135,7 +135,7 @@ export default class SourceCatalogAdd extends Command {
   }
 
   private successMessageOnAdd({batch, files, res}: UploadBatchCallbackData) {
-    // Display the first 5 files (from the list of all files) being processed for end user feedback
+    // Display the first 5 files (from the list of all files) being processed for end user feedback.
     // Don't want to clutter the output too much if the list is very long.
     const numAdded = batch.length;
     let fileNames = files.slice(0, 5).join(', ');
