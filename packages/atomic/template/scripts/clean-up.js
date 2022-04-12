@@ -14,6 +14,6 @@ const pkgString = JSON.stringify(pkgJson, null, 2).replace(
 
 writeFileSync('package.json', pkgString);
 
-['setup-lambda.js', 'clean-up.js'].forEach((file) =>
+['setup-lambda.js', 'clean-up.js', 'utils.js'].forEach((file) =>
   unlinkSync(join(__dirname, file))
 );
