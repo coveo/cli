@@ -10,6 +10,8 @@ import {jwtTokenPattern} from '../utils/matcher';
 import {EOL} from 'os';
 import {DummyServer} from '../utils/server';
 import {loginWithApiKey} from '../utils/login';
+import {existsSync} from 'fs-extra';
+import {join} from 'path';
 
 describe('ui:create:atomic', () => {
   let browser: Browser;
@@ -86,6 +88,55 @@ describe('ui:create:atomic', () => {
     jest.resetModules();
     process.env = {...oldEnv};
     page = await openNewPage(browser, page);
+  });
+
+  function projectFileExist(path: string) {
+    return existsSync(join(getProjectPath(projectName), ...path.split('/')));
+  }
+
+  it('should create the proper template files', () => {
+    const createdFilesPaths = [
+      'package.json',
+      'package-lock.json',
+      '.gitignore',
+      '.env',
+      '.env.example',
+      'README.md',
+      'start-netlify.mjs',
+      'netlify.toml',
+      'tsconfig.json',
+      'stencil.config.ts',
+      'lambda',
+      'src/index.ts',
+      'src/html.d.ts',
+      'src/components.d.ts',
+      'src/style/index.css',
+      'src/style/layout.css',
+      'src/style/theme.css',
+      'src/pages/index.html',
+      'src/components/results-manager/results-manager.tsx',
+      'src/components/results-manager/default.html',
+      'src/components/sample-component/sample-component.tsx',
+      'src/components/sample-component/sample-component.css',
+      'src/components/sample-result-component/sample-result-component.tsx',
+      'src/components/sample-result-component/sample-result-component.css',
+    ];
+
+    createdFilesPaths.forEach((path) =>
+      expect(projectFileExist(path)).toBe(true)
+    );
+  });
+
+  it('should remove the proper template files', () => {
+    const deletedFilesPaths = [
+      'scripts/clean-up.js',
+      'scripts/setup-lamdba.js',
+      'scripts/utils.js',
+    ];
+
+    deletedFilesPaths.forEach((path) =>
+      expect(projectFileExist(path)).toBe(false)
+    );
   });
 
   afterEach(async () => {
