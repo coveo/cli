@@ -4,12 +4,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{titleCase project}}</title>
-    <script
-      type="module"
-      src="https://static.cloud.coveo.com/atomic/v1/atomic.esm.js"
-    ></script>
-    <link href="/build/app.css" rel="stylesheet" />
-    <script type="module" src="/build/app.esm.js"></script>
+    <link href="/build/{{project}}.css" rel="stylesheet" />
+    <!-- 
+      When using the Coveo CDN - Make sure you're using the same minor version as the packaged Atomic.
+      E.g., if you have "@coveo/atomic@1.44.3" installed, use the "/atomic/v1.44/" path.
+    
+      <script type="module" src="https://static.cloud.coveo.com/atomic/v1.MINOR/atomic.esm.js"></script> 
+    -->
+    <script type="module" src="/atomic/atomic.esm.js"></script>
+    <!-- Custom Elements Lazy Loading -->
+    <script type="module" src="/build/{{project}}.esm.js"></script>
+    <!-- Global initialization script -->
     <script type="module" src="/build/index.esm.js"></script>
   </head>
   <body>

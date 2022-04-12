@@ -5,13 +5,27 @@ import html from 'rollup-plugin-html';
 // https://stenciljs.com/docs/config
 
 export const config: Config = {
+  namespace: '{{project}}',
   globalStyle: 'src/style/index.css',
   taskQueue: 'async',
   outputTargets: [
     {
       type: 'www',
       serviceWorker: null, // disable service workers
-      copy: [{src: 'pages', keepDirStructure: false}],
+      copy: [
+        {src: 'pages', keepDirStructure: false},
+        {
+          src: '../node_modules/@coveo/atomic/dist/atomic',
+          dest: 'atomic',
+          keepDirStructure: false,
+        },
+      ],
+    },
+    {
+      type: 'dist',
+    },
+    {
+      type: 'dist-custom-elements',
     },
   ],
   devServer: {
