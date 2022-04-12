@@ -321,7 +321,7 @@ describe('source:catalog:add', () => {
           '-f',
           join(pathToStub, 'jsondocuments', 'batman.json'),
         ])
-        .catch(/please consider doing a full catalog upload/)
+        .catch(/No items detected for this source at the moment/)
         .it('should show error message during document update');
 
       test

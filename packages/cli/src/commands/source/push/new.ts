@@ -1,5 +1,5 @@
-import {SourceType, SourceVisibility} from '@coveord/platform-client';
-import {Command, Flags} from '@oclif/core';
+import {SourceType} from '@coveord/platform-client';
+import {Command} from '@oclif/core';
 import {green} from 'chalk';
 import dedent from 'ts-dedent';
 import {

@@ -2,7 +2,7 @@ import {DocumentBuilder} from '@coveo/push-api-client';
 import {doMockAxiosError, doMockAxiosSuccess} from '../lib/push/testUtils';
 
 export class BatchUploadDocumentsSuccess {
-  onBatchUpload(callback: Function) {
+  public onBatchUpload(callback: Function) {
     callback({
       res: doMockAxiosSuccess(202, '👌'),
       batch: [
@@ -13,17 +13,17 @@ export class BatchUploadDocumentsSuccess {
     });
     return this;
   }
-  onBatchError(_callback: Function) {
+  public onBatchError(_callback: Function) {
     return this;
   }
-  async batch() {}
+  public async batch() {}
 }
 
 export class BatchUploadDocumentsError {
-  onBatchUpload(_callback: Function) {
+  public onBatchUpload(_callback: Function) {
     return this;
   }
-  onBatchError(callback: Function) {
+  public onBatchError(callback: Function) {
     callback(
       doMockAxiosError(
         412,
@@ -33,5 +33,5 @@ export class BatchUploadDocumentsError {
     );
     return this;
   }
-  async batch() {}
+  public async batch() {}
 }

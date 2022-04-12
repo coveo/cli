@@ -50,7 +50,8 @@ export default class SourceCatalogAdd extends Command {
     }),
     skipFullUploadCheck: Flags.boolean({
       default: false,
-      description: `Do not check whether a full catalog upload was triggered on the target source.`,
+      description:
+        'Do not check whether a full catalog upload was triggered on the target source.',
     }),
   };
 
