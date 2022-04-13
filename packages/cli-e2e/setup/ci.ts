@@ -17,6 +17,8 @@ export default async function () {
   setProcessEnv();
   createUiProjectDirectory();
   global.processManager = new ProcessManager();
-  await startVerdaccio();
+  if (!(process.env.E2E_USE_NPM_REGISTRY === 'true')) {
+    await startVerdaccio();
+  }
   restoreCliConfig();
 }

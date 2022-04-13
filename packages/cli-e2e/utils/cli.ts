@@ -6,6 +6,7 @@ import {ProcessManager} from './processManager';
 import {readJsonSync} from 'fs-extra';
 import {Terminal} from './terminal/terminal';
 import {npmCachePathEnvVar} from './npm';
+import {resolveBinary} from '../setup/utils';
 
 export const isGenericYesNoPrompt = /\(y\/n\)[\s:]*$/i;
 
@@ -103,13 +104,21 @@ export function getConfig() {
   return readJsonSync(pathToConfig);
 }
 
-export const CLI_EXEC_PATH = resolve(__dirname, '../../cli/bin/dev');
+export const CLI_EXEC_PATH = process.env.E2E_USE_NPM_REGISTRY
+  ? resolveBinary('coveo')
+  : resolve(__dirname, '../../cli/bin/dev');
+
+export const registryEnv = process.env.E2E_USE_NPM_REGISTRY
+  ? {}
+  : {
+      npm_config_registry: 'http://localhost:4873',
+      YARN_NPM_REGISTRY_SERVER: 'http://localhost:4873',
+    };
 
 function getCleanEnv(): Record<string, any> {
   const env: Record<string, any> = {
     ...process.env,
-    npm_config_registry: 'http://localhost:4873',
-    YARN_NPM_REGISTRY_SERVER: 'http://localhost:4873',
+    ...registryEnv,
     npm_config_cache: process.env[npmCachePathEnvVar],
   };
   const excludeEnvVars = [
