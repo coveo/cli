@@ -1,5 +1,5 @@
 import {Command, Flags} from '@oclif/core';
-import {Source} from '@coveo/push-api-client';
+import {PushSource} from '@coveo/push-api-client';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {
   IsAuthenticated,
@@ -60,7 +60,7 @@ export default class SourcePushDelete extends Command {
       );
     }
     const cfg = await new AuthenticatedClient().cfg.get();
-    const source = new Source(cfg.accessToken!, cfg.organization);
+    const source = new PushSource(cfg.accessToken!, cfg.organization);
 
     if (flags.deleteOlderThan) {
       this.doDeletionOlderThan(source);
@@ -86,7 +86,7 @@ export default class SourcePushDelete extends Command {
     return flags.delete.length > 20;
   }
 
-  private async doDeletionOlderThan(source: Source) {
+  private async doDeletionOlderThan(source: PushSource) {
     const {flags, args} = await this.parse(SourcePushDelete);
     const toDelete = `older than ${flags.deleteOlderThan}`;
     try {
@@ -102,7 +102,7 @@ export default class SourcePushDelete extends Command {
     }
   }
 
-  private async doDeletionDocumentURI(source: Source) {
+  private async doDeletionDocumentURI(source: PushSource) {
     const {flags, args} = await this.parse(SourcePushDelete);
     return Promise.all(
       flags.delete.map(async (toDelete) => {

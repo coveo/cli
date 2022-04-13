@@ -1,8 +1,4 @@
-import {
-  Source,
-  UploadBatchCallback,
-  UploadBatchCallbackData,
-} from '@coveo/push-api-client';
+import {PushSource, UploadBatchCallbackData} from '@coveo/push-api-client';
 import {Command, Flags, CliUx} from '@oclif/core';
 import {green} from 'chalk';
 import {readdirSync} from 'fs';
@@ -20,11 +16,6 @@ import {
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
-
-interface AxiosResponse {
-  status: number;
-  statusText: string;
-}
 
 export default class SourcePushAdd extends Command {
   public static description =
@@ -89,35 +80,26 @@ export default class SourcePushAdd extends Command {
     }
     const {accessToken, organization, environment, region} =
       await new AuthenticatedClient().cfg.get();
-    const source = new Source(accessToken!, organization, {
+    const source = new PushSource(accessToken!, organization, {
       environment,
       region,
     });
 
-    const callback: UploadBatchCallback = (
-      err: unknown,
-      {files, batch, res}: UploadBatchCallbackData
-    ) => {
-      if (err) {
-        this.errorMessageOnAdd(err);
-      } else {
-        this.successMessageOnAdd(files, batch.length, res!);
-      }
-    };
-
     CliUx.ux.action.start('Processing...');
 
     const fileNames = await this.getFileNames();
+    const options = {
+      maxConcurrent: flags.maxConcurrent,
+      createFields: flags.createMissingFields,
+    };
     await source.setSourceStatus(args.sourceId, 'REFRESH');
-    await source.batchUpdateDocumentsFromFiles(
-      args.sourceId,
-      fileNames,
-      callback,
-      {
-        maxConcurrent: flags.maxConcurrent,
-        createFields: flags.createMissingFields,
-      }
-    );
+
+    await source
+      .batchUpdateDocumentsFromFiles(args.sourceId, fileNames, options)
+      .onBatchUpload((data) => this.successMessageOnAdd(data))
+      .onBatchError((data) => this.errorMessageOnAdd(data))
+      .batch();
+
     await source.setSourceStatus(args.sourceId, 'IDLE');
 
     CliUx.ux.action.stop();
@@ -149,14 +131,11 @@ export default class SourcePushAdd extends Command {
     return fileNames;
   }
 
-  private successMessageOnAdd(
-    files: string[],
-    numAdded: number,
-    res: AxiosResponse
-  ) {
+  private successMessageOnAdd({batch, files, res}: UploadBatchCallbackData) {
     // Display the first 5 files (from the list of all files) being processed for end user feedback
     // Don't want to clutter the output too much if the list is very long.
 
+    const numAdded = batch.length;
     let fileNames = files.slice(0, 5).join(', ');
     if (files.length > 5) {
       fileNames += ` and ${files.length - 5} more ...`;
@@ -171,8 +150,8 @@ export default class SourcePushAdd extends Command {
     );
   }
 
-  private errorMessageOnAdd(e: unknown) {
-    return errorMessage(this, 'Error while trying to add document.', e, {
+  private errorMessageOnAdd(err: unknown) {
+    return errorMessage(this, 'Error while trying to add document.', err, {
       exit: true,
     });
   }
