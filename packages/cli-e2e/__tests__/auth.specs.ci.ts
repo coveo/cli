@@ -2,7 +2,7 @@ import retry from 'async-retry';
 
 import type {Browser} from 'puppeteer';
 
-import {answerPrompt, CLI_EXEC_PATH, isGenericYesNoPrompt} from '../utils/cli';
+import {answerPrompt, isGenericYesNoPrompt} from '../utils/cli';
 import {captureScreenshots, connectToChromeBrowser} from '../utils/browser';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
@@ -41,7 +41,7 @@ describe('auth', () => {
 
     it('should open the platform page', async () => {
       const args: string[] = [
-        CLI_EXEC_PATH,
+        process.env.CLI_EXEC_PATH!,
         'auth:login',
         `-e=${platformEnv}`,
         `-o=${testOrg}`,

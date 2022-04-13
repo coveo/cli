@@ -6,7 +6,6 @@ import {ProcessManager} from './processManager';
 import {readJsonSync} from 'fs-extra';
 import {Terminal} from './terminal/terminal';
 import {npmCachePathEnvVar} from './npm';
-import {resolveBinary} from '../setup/utils';
 
 export const isGenericYesNoPrompt = /\(y\/n\)[\s:]*$/i;
 
@@ -58,7 +57,7 @@ export async function setupUIProject(
     console.log('Testing with published version of the template');
   }
 
-  const args = [CLI_EXEC_PATH, ...command];
+  const args = [process.env.CLI_EXEC_PATH!, ...command];
   let parentDir = resolve(getProjectPath(projectName), '..');
   if (options.projectDir) {
     parentDir = resolve(options.projectDir, '..');
@@ -103,10 +102,6 @@ export function getConfig() {
 
   return readJsonSync(pathToConfig);
 }
-
-export const CLI_EXEC_PATH = process.env.E2E_USE_NPM_REGISTRY
-  ? resolveBinary('coveo')
-  : resolve(__dirname, '../../cli/bin/dev');
 
 export const registryEnv = process.env.E2E_USE_NPM_REGISTRY
   ? {}
