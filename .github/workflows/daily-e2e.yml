@@ -5,6 +5,9 @@ on:
   # TODO: Remove before merge
   pull_request:
 
+env:
+  E2E_USE_NPM_REGISTRY: true
+
 jobs:
   e2e-setup-login:
     name: End-to-end login
@@ -33,6 +36,8 @@ jobs:
       - name: Install locked NPM version.
         # TODO: Remove later, when `npm 8.5.4` is built in.
         run: npm i -g npm@^8.5.4
+      - name: Install Coveo CLI
+        run: npm i -g @coveo/cli@latest
       - run: |
           npm ci
           Xvfb :1 -screen 0 1024x768x16 & sleep 1
@@ -82,7 +87,6 @@ jobs:
       TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
       COVEO_DISABLE_AUTOUPDATE: true
       CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
-      E2E_USE_NPM_REGISTRY: true
     steps:
       - name: Setup runner
         if: ${{matrix.os == 'ubuntu-latest'}}
