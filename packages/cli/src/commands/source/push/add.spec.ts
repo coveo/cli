@@ -7,20 +7,19 @@ jest.mock('@coveo/push-api-client');
 import stripAnsi from 'strip-ansi';
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {DocumentBuilder, Source} from '@coveo/push-api-client';
+import {DocumentBuilder, PushSource} from '@coveo/push-api-client';
 import {cwd} from 'process';
 import {join} from 'path';
-import {
-  doMockAxiosError,
-  doMockAxiosSuccess,
-} from '../../../lib/push/testUtils';
 import {APIError} from '../../../lib/errors/APIError';
-import {UploadBatchCallback} from '@coveo/push-api-client';
 import globalConfig from '../../../lib/config/globalConfig';
 import {Interfaces} from '@oclif/core';
+import {
+  BatchUploadDocumentsError,
+  BatchUploadDocumentsSuccess,
+} from '../../../__stub__/batchUploadDocumentsFromFilesReturn';
 const mockedGlobalConfig = jest.mocked(globalConfig);
 const mockedClient = jest.mocked(AuthenticatedClient);
-const mockedSource = jest.mocked(Source);
+const mockedSource = jest.mocked(PushSource);
 const mockedDocumentBuilder = jest.mocked(DocumentBuilder);
 const mockedMarshal = jest.fn();
 const mockEvaluate = jest.fn();
@@ -45,34 +44,11 @@ describe('source:push:add', () => {
   };
 
   const doMockSuccessBatchUpload = () => {
-    mockBatchUpdate.mockImplementation(
-      (_sourceId: string, fileNames: string[], callback: UploadBatchCallback) =>
-        callback(null, {
-          files: fileNames,
-          batch: [
-            new DocumentBuilder('somwhereintheinternet.com', 'Somewhere'),
-            new DocumentBuilder('another.uri.com', 'The Title'),
-          ],
-          res: doMockAxiosSuccess(202, '👌'),
-        })
-    );
+    mockBatchUpdate.mockReturnValue(new BatchUploadDocumentsSuccess());
   };
 
   const doMockErrorBatchUpload = () => {
-    mockBatchUpdate.mockImplementation(
-      (_sourceId: string, fileNames: string[], callback: UploadBatchCallback) =>
-        callback(
-          doMockAxiosError(
-            412,
-            'this is a bad request and you should feel bad',
-            'BAD_REQUEST'
-          ),
-          {
-            files: fileNames,
-            batch: [],
-          }
-        )
-    );
+    mockBatchUpdate.mockReturnValue(new BatchUploadDocumentsError());
   };
 
   beforeAll(() => {
@@ -127,7 +103,7 @@ describe('source:push:add', () => {
       ({
         batchUpdateDocumentsFromFiles: mockBatchUpdate,
         setSourceStatus: mockSetSourceStatus,
-      } as unknown as Source)
+      } as unknown as PushSource)
   );
 
   describe('when the batch upload is successfull', () => {
@@ -184,7 +160,6 @@ describe('source:push:add', () => {
         expect(mockBatchUpdate).toHaveBeenCalledWith(
           expect.anything(),
           expect.anything(),
-          expect.anything(),
           expect.objectContaining({createFields: true})
         );
       });
@@ -201,44 +176,6 @@ describe('source:push:add', () => {
       ])
       .it('should skip field creation if specified', () => {
         expect(mockBatchUpdate).toHaveBeenCalledWith(
-          expect.anything(),
-          expect.anything(),
-          expect.anything(),
-          expect.objectContaining({createFields: false})
-        );
-      });
-
-    test
-      .stdout()
-      .stderr()
-      .command([
-        'source:push:add',
-        'mysource',
-        '-f',
-        join(pathToStub, 'jsondocuments', 'batman.json'),
-      ])
-      .it('should create missing fields by default', () => {
-        expect(mockBatchUpdate).toHaveBeenCalledWith(
-          expect.anything(),
-          expect.anything(),
-          expect.anything(),
-          expect.objectContaining({createFields: true})
-        );
-      });
-
-    test
-      .stdout()
-      .stderr()
-      .command([
-        'source:push:add',
-        'mysource',
-        '--no-createMissingFields',
-        '-f',
-        join(pathToStub, 'jsondocuments', 'batman.json'),
-      ])
-      .it('should skip field creation if specified', () => {
-        expect(mockBatchUpdate).toHaveBeenCalledWith(
-          expect.anything(),
           expect.anything(),
           expect.anything(),
           expect.objectContaining({createFields: false})
