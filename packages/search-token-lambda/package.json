@@ -17,18 +17,18 @@
     "release:phase2": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase2-bump-all-packages.mjs"
   },
   "dependencies": {
-    "@coveord/platform-client": "29.13.0",
+    "@coveord/platform-client": "29.17.0",
     "abortcontroller-polyfill": "1.7.3",
     "isomorphic-fetch": "3.0.0"
   },
   "devDependencies": {
-    "@babel/core": "7.17.8",
+    "@babel/core": "7.17.9",
     "@types/jest": "27.4.1",
-    "@typescript-eslint/eslint-plugin": "5.17.0",
-    "eslint": "8.12.0",
+    "@typescript-eslint/eslint-plugin": "5.19.0",
+    "eslint": "8.13.0",
     "gts": "3.1.0",
     "jest": "27.5.1",
-    "netlify-cli": "9.15.0",
+    "netlify-cli": "9.16.6",
     "ts-jest": "27.1.4",
     "typescript": "4.6.3"
   },
