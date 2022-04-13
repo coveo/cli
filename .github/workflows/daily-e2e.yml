@@ -176,13 +176,13 @@ jobs:
       - name: Delete test API key
         if: always()
         run: node ./scripts/cleaning/delete-api-keys.js
-  e2e-report:
-    name: End-to-end status reporter
-    if: ${{ always() }}
-    needs: e2e
-    runs-on: ubuntu-latest
-    environment: Daily Tests
-    steps:
-      - name: Check e2e matrix status
-        if: ${{ needs.e2e.result != 'success' }}
-        run: curl --request POST --url ${{ secrets.SLACK_WEBHOOK }}
+  # e2e-report:
+  #   name: End-to-end status reporter
+  #   if: ${{ always() }}
+  #   needs: e2e
+  #   runs-on: ubuntu-latest
+  #   environment: Daily Tests
+  #   steps:
+  #     - name: Check e2e matrix status
+  #       if: ${{ needs.e2e.result != 'success' }}
+  #       run: curl --request POST --url ${{ secrets.SLACK_WEBHOOK }}
