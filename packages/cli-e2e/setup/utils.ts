@@ -75,7 +75,10 @@ export function setProcessEnv() {
   process.env.CLI_EXEC_PATH =
     process.env.CI && process.env.E2E_USE_NPM_REGISTRY
       ? resolveBinary('coveo')
-      : resolve(__dirname, '../../cli/bin/dev');
+      : `${process.platform === 'win32' ? 'node' : ''} ${resolve(
+          __dirname,
+          '../../cli/bin/dev'
+        )}`;
   process.stdout.write(`CLI PATH : ${process.env.CLI_EXEC_PATH}`);
 }
 

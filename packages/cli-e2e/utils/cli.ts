@@ -57,7 +57,7 @@ export async function setupUIProject(
     console.log('Testing with published version of the template');
   }
 
-  const args = [process.env.CLI_EXEC_PATH!, ...command];
+  const args = [...process.env.CLI_EXEC_PATH!.split(' '), ...command];
   let parentDir = resolve(getProjectPath(projectName), '..');
   if (options.projectDir) {
     parentDir = resolve(options.projectDir, '..');
@@ -73,10 +73,6 @@ export async function setupUIProject(
     );
 
     await gitInitTerminal.when('exit').on('process').do().once();
-  }
-
-  if (process.platform === 'win32') {
-    args.unshift('node');
   }
 
   const env: Record<string, any> = getCleanEnv();
