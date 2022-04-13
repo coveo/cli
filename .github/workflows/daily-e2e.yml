@@ -29,6 +29,11 @@ jobs:
       TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}-dailyg'
     steps:
       - uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846 # tag=v3
+        with:
+          # pulls all commits (needed for computing the next version)
+          fetch-depth: 0
+      - name: Checkout last tag
+        run: git checkout $(git describe --abbrev=0)
       - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
         with:
           node-version: ${{matrix.node}}
@@ -98,6 +103,11 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.eol lf
       - uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846 # tag=v3
+        with:
+          # pulls all commits (needed for computing the next version)
+          fetch-depth: 0
+      - name: Checkout last tag
+        run: git checkout $(git describe --abbrev=0)
       - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
         with:
           node-version: ${{matrix.node}}
@@ -158,6 +168,11 @@ jobs:
       CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
       - uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846 # tag=v3
+        with:
+          # pulls all commits (needed for computing the next version)
+          fetch-depth: 0
+      - name: Checkout last tag
+        run: git checkout $(git describe --abbrev=0)
       - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
         with:
           node-version: ${{matrix.node}}
