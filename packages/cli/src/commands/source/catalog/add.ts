@@ -24,6 +24,18 @@ import {getFileNames} from '../../../lib/utils/file';
 import {bold} from 'chalk';
 import dedent from 'ts-dedent';
 
+const fullUploadDescription = `Controls the way your items are added to your catalog source.
+
+Setting this option to ${bold(
+  'false'
+)} will trigger a document update (Default operation). Useful to perform incremental updates for smaller adjustments to your catalog that do not require pushing the entire catalog. A document update must only be performed after a full catalog upload.
+See https://docs.coveo.com/en/l62e0540
+
+Setting this option to ${bold(
+  'true'
+)} will trigger a full catalog upload. This process acts as a full rebuild of your catalog source. Therefore, previous items that are not included in the new payload will be deleted.
+See https://docs.coveo.com/en/lb4a0344
+  `;
 export default class SourceCatalogAdd extends Command {
   public static description =
     'Index a JSON document into a Coveo Catalog source. See https://docs.coveo.com/en/2956 for more information.';
@@ -35,18 +47,7 @@ export default class SourceCatalogAdd extends Command {
     ...withCreateMissingFields(),
     fullUpload: Flags.boolean({
       default: false,
-      description: `Controls the way your items are added to your catalog source.
-
-      Setting this option to ${bold(
-        'false'
-      )} will trigger a document update (Default operation). Useful to perform incremental updates for smaller adjustments to your catalog that do not require pushing the entire catalog. A document update must only be performed after a full catalog upload.
-      See https://docs.coveo.com/en/l62e0540
-
-      Setting this option to ${bold(
-        'true'
-      )} will trigger a full catalog upload. This process acts as a full rebuild of your catalog source. Therefore, previous items that are not included in the new payload will be deleted.
-      See https://docs.coveo.com/en/lb4a0344
-        `,
+      description: fullUploadDescription,
     }),
     skipFullUploadCheck: Flags.boolean({
       default: false,
@@ -89,8 +90,7 @@ export default class SourceCatalogAdd extends Command {
     ) {
       this.error(dedent`No items detected for this source at the moment.
         As a best practice, we recommend doing a full catalog upload by appending --fullUpload to your command.
-        If you are still getting this message despite having already performed a full catalog upload,
-        append --forceUpdate to your command to discard this message.
+        If you are still getting this message despite having already performed a full catalog upload, append --forceUpdate to your command to discard this message.
         `);
     }
 
