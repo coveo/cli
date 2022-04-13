@@ -17,11 +17,6 @@ import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
 
-interface AxiosResponse {
-  status: number;
-  statusText: string;
-}
-
 export default class SourcePushAdd extends Command {
   public static description =
     'Push a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-files-with-Coveo-CLI for more information.';
