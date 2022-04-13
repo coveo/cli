@@ -51,7 +51,7 @@ jobs:
   e2e:
     name: End-to-end tests
     runs-on: ${{matrix.os}}
-    needs: [e2e-setup-login, e2e-setup-verdaccio]
+    needs: [e2e-setup-login]
     strategy:
       fail-fast: false
       matrix:
