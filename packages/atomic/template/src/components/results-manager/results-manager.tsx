@@ -14,12 +14,12 @@ export class ResultsManager {
     return (
       <atomic-result-list fields-to-include="">
         <atomic-result-template>
-          <template innerHTML={defaultTemplate}></template>
+          <template dangerouslySetInnerHTML={defaultTemplate}></template>
         </atomic-result-template>
         {/*
         <atomic-result-template
         must-match-sourcetype="Salesforce">
-          <template innerHTML={anotherTemplate}></template>
+          <template dangerouslySetInnerHTML={anotherTemplate}></template>
         </atomic-result-template>
         */}
       </atomic-result-list>
