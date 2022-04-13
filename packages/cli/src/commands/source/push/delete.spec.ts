@@ -6,13 +6,13 @@ jest.mock('@coveo/push-api-client');
 
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {Source} from '@coveo/push-api-client';
+import {PushSource} from '@coveo/push-api-client';
 import {
   doMockAxiosError,
   doMockAxiosSuccess,
 } from '../../../lib/push/testUtils';
 const mockedClient = jest.mocked(AuthenticatedClient);
-const mockedSource = jest.mocked(Source);
+const mockedSource = jest.mocked(PushSource);
 
 describe('source:push:delete', () => {
   const mockDeleteOlderThan = jest
@@ -41,7 +41,7 @@ describe('source:push:delete', () => {
       ({
         deleteDocumentsOlderThan: mockDeleteOlderThan,
         deleteDocument: mockeleteDocument,
-      } as unknown as Source)
+      } as unknown as PushSource)
   );
 
   beforeEach(() => {
