@@ -72,14 +72,7 @@ export function setProcessEnv() {
     process.env.TEST_RUN_ID ?? `id${randomBytes(16).toString('hex')}g`;
   process.env.PLATFORM_ENV = process.env.PLATFORM_ENV?.toLowerCase() || '';
   process.env.PLATFORM_HOST = getPlatformHost(process.env.PLATFORM_ENV);
-  process.env.CLI_EXEC_PATH =
-    process.env.CI && process.env.E2E_USE_NPM_REGISTRY
-      ? resolveBinary('coveo')
-      : `${process.platform === 'win32' ? 'node' : ''} ${resolve(
-          __dirname,
-          '../../cli/bin/dev'
-        )}`;
-  process.stdout.write(`CLI PATH : ${process.env.CLI_EXEC_PATH}`);
+  process.env.CLI_EXEC_PATH = resolve(__dirname, '../../cli/bin/dev');
 }
 
 export async function publishPackages() {
@@ -149,6 +142,23 @@ export function shimNpm() {
     'npm',
     'bin',
     'npm-cli.js'
+  );
+}
+
+export function installCli() {
+  const tmpDir = tmpDirSync();
+  const cliDir = join(tmpDir.name, 'coveoShim');
+  const npmInstallArgs = [...npm(), 'install', '@coveo/cli'];
+  const npmInitArgs = [...npm(), 'init', '-y'];
+  spawnSync(npmInitArgs.shift()!, npmInitArgs, {cwd: cliDir});
+  spawnSync(npmInstallArgs.shift()!, npmInitArgs, {cwd: cliDir});
+  process.env.CLI_EXEC_PATH = resolve(
+    cliDir,
+    'node_modules',
+    '@coveo',
+    'cli',
+    'bin',
+    'run'
   );
 }
 
