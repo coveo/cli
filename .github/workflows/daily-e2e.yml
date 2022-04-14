@@ -33,7 +33,7 @@ jobs:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
       - name: Checkout last tag
-        run: git checkout $(git describe --abbrev=0)
+        run: git checkout $(git describe --abbrev=0 --tags)
       - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
         with:
           node-version: ${{matrix.node}}
@@ -106,6 +106,8 @@ jobs:
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
+      # pulls all tags (needed for computing the next version)
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
       - name: Checkout last tag
         run: git checkout $(git describe --abbrev=0)
       - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
@@ -171,6 +173,8 @@ jobs:
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
+      # pulls all tags (needed for computing the next version)
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
       - name: Checkout last tag
         run: git checkout $(git describe --abbrev=0)
       - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
