@@ -148,10 +148,10 @@ export function shimNpm() {
 export function installCli() {
   const tmpDir = tmpDirSync();
   const cliDir = join(tmpDir.name, 'coveoShim');
-  const npmInstallArgs = [...npm(), 'install', '@coveo/cli'];
   const npmInitArgs = [...npm(), 'init', '-y'];
-  spawnSync(npmInitArgs.shift()!, npmInitArgs, {cwd: cliDir, stdio: 'inherit'});
-  spawnSync(npmInstallArgs.shift()!, npmInitArgs, {
+  spawnSync(npmInitArgs.shift()!, npmInitArgs, {cwd: cliDir});
+  const npmInstallArgs = [...npm(), 'install', '@coveo/cli'];
+  spawnSync(npmInstallArgs.shift()!, npmInstallArgs, {
     cwd: cliDir,
     stdio: 'inherit',
   });
