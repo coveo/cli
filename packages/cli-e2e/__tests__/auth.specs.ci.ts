@@ -41,14 +41,12 @@ describe('auth', () => {
 
     it('should open the platform page', async () => {
       const args: string[] = [
+        'node',
         process.env.CLI_EXEC_PATH!,
         'auth:login',
         `-e=${platformEnv}`,
         `-o=${testOrg}`,
       ];
-      if (process.platform === 'win32') {
-        args.unshift('node');
-      }
       await captureScreenshots(browser);
       const cliTerminal = new Terminal(
         args.shift()!,

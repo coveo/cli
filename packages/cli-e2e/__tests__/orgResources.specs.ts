@@ -41,10 +41,7 @@ describe('org:resources', () => {
     cwd: string,
     debugName: string
   ) => {
-    if (process.platform === 'win32') {
-      args.unshift('node');
-    }
-    return new Terminal(args.shift()!, args, {cwd}, procManager, debugName);
+    return new Terminal('node', args, {cwd}, procManager, debugName);
   };
 
   const createFieldWithoutUsingSnapshot = async (client: PlatformClient) => {

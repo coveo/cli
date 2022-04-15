@@ -150,8 +150,11 @@ export function installCli() {
   const cliDir = join(tmpDir.name, 'coveoShim');
   const npmInstallArgs = [...npm(), 'install', '@coveo/cli'];
   const npmInitArgs = [...npm(), 'init', '-y'];
-  spawnSync(npmInitArgs.shift()!, npmInitArgs, {cwd: cliDir});
-  spawnSync(npmInstallArgs.shift()!, npmInitArgs, {cwd: cliDir});
+  spawnSync(npmInitArgs.shift()!, npmInitArgs, {cwd: cliDir, stdio: 'inherit'});
+  spawnSync(npmInstallArgs.shift()!, npmInitArgs, {
+    cwd: cliDir,
+    stdio: 'inherit',
+  });
   process.env.CLI_EXEC_PATH = resolve(
     cliDir,
     'node_modules',

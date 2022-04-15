@@ -66,11 +66,8 @@ export function runLoginCommand(orgId: string, env: string) {
     `-e=${env}`,
     `-o=${orgId}`,
   ];
-  if (process.platform === 'win32') {
-    args.unshift('node');
-  }
   const loginTerminal = new Terminal(
-    args.shift()!,
+    'node',
     args,
     undefined,
     global.processManager!,

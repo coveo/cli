@@ -57,10 +57,7 @@ export async function setupUIProject(
     console.log('Testing with published version of the template');
   }
 
-  const args = [process.env.CLI_EXEC_PATH!, ...command];
-  if (process.platform === 'win32') {
-    args.unshift('node');
-  }
+  const args = ['node', process.env.CLI_EXEC_PATH!, ...command];
   let parentDir = resolve(getProjectPath(projectName), '..');
   if (options.projectDir) {
     parentDir = resolve(options.projectDir, '..');
