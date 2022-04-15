@@ -1,3 +1,16 @@
+# v1.27.0 (2022-04-14)
+
+### Bug Fixes
+
+- **create-atomic:** prevent Atomic/Headless version mismatch & use installed Atomic version ([#753](https://github.com/coveo/cli/issues/753)) ([916240a](https://github.com/coveo/cli/commits/916240afc50d0265987e0f3f38cf887dcb2a4c70))
+
+### Features
+
+- add privileges preconditions on push command ([#702](https://github.com/coveo/cli/issues/702)) ([f50510a](https://github.com/coveo/cli/commits/f50510a83dd5685caca72368dcf6deb7abc93f46))
+- add source status update ([#658](https://github.com/coveo/cli/issues/658)) ([a590e9c](https://github.com/coveo/cli/commits/a590e9c1fb747b73bb0a4c0a0c347ce9557cbe87))
+- create missing fields for `source:push:add` command ([#699](https://github.com/coveo/cli/issues/699)) ([12cb24b](https://github.com/coveo/cli/commits/12cb24b1151cc15fae8abd84d221d1e731d1a2a7))
+- support different regions and environments for push ([#703](https://github.com/coveo/cli/issues/703)) ([41c2579](https://github.com/coveo/cli/commits/41c2579ad9f960754ded74b4a4ec39cb291dab8b))
+
 ## v1.26.1 (2022-04-01)
 
 # v1.26.0 (2022-03-31)
