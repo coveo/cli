@@ -17,7 +17,7 @@ export default async function () {
   // runId must start and finish with letters to satisfies Angular.
   setProcessEnv();
   if (process.env.E2E_USE_NPM_REGISTRY) {
-    installCli();
+    await installCli();
   }
   process.stdout.write(`CLI PATH : ${process.env.CLI_EXEC_PATH}`);
   createUiProjectDirectory();
