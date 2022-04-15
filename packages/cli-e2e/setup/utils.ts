@@ -14,6 +14,7 @@ import {join, resolve} from 'path';
 import {npm, npmCachePathEnvVar, npmPathEnvVar} from '../utils/npm';
 import {dirname} from 'path';
 import {spawnSync} from 'child_process';
+import {mkdir} from 'fs';
 
 async function clearChromeBrowsingData(browser: Browser) {
   const pages = await browser.pages();
@@ -148,6 +149,7 @@ export function shimNpm() {
 export async function installCli() {
   const tmpDir = tmpDirSync();
   const cliDir = join(tmpDir.name, 'coveoShim');
+  mkdirSync(cliDir, {recursive: true});
   const npmInitArgs = [...npm(), 'init', '-y'];
   const npmInitTerminal = new Terminal(
     npmInitArgs.shift()!,
