@@ -31,11 +31,6 @@
       "allowedVersions": "4.x"
     },
     {
-      "matchPackageNames": ["@oclif/plugin-update"],
-      "allowedVersions": "2.x",
-      "description": "Wait for Oclif 2 TODO:CDX-849"
-    },
-    {
       "matchPackageNames": ["npm"],
       "allowedVersions": "8.4.x",
       "description": "Need NPM to be fixed https://github.com/npm/cli/issues/4404 TODO:CDX-815"
