@@ -53,10 +53,6 @@ export default class SourceCataloghNew extends Command {
 
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
-    console.log('*********************');
-    console.log(err);
-    console.log('*********************');
-
     throw err;
   }
 }
