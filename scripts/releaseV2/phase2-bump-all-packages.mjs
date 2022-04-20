@@ -13,6 +13,7 @@ import angularChangelogConvention from 'conventional-changelog-angular';
 import {waitForPackages} from './utils/wait-for-published-packages';
 import {dirname, resolve, join} from 'path';
 import {fileURLToPath} from 'url';
+import retry from 'async-retry';
 
 const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 // Run on each package, it generate the changelog, install the latest dependencies that are part of the workspace, publish the package.
@@ -47,6 +48,12 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
   }
 
   npmPublish();
+  const packageJson = JSON.parse(
+    readFileSync('package.json', {encoding: 'utf-8'})
+  );
+  await retry(() => {
+    isVersionPublished(packageJson.name, newVersion);
+  });
 })();
 
 function getReleaseVersion() {
@@ -90,6 +97,16 @@ function updateDependency(packageJson, dependency) {
     '-E',
     ...npmInstallFlags,
   ]);
+}
+
+async function isVersionPublished(packageName, version) {
+  return (
+    spawnSync(
+      appendCmdIfWindows`npm`,
+      ['show', `${packageName}@latest`, 'version'],
+      {encoding: 'utf-8'}
+    ).stdout.trim() === version
+  );
 }
 
 export const appendCmdIfWindows = (cmd) =>
