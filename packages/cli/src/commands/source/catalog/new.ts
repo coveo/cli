@@ -34,8 +34,9 @@ export default class SourceCataloghNew extends Command {
     const platformClient = await authenticatedClient.getClient();
 
     const res = await platformClient.source.create({
-      sourceType: SourceType.PUSH,
+      sourceType: SourceType.CATALOG,
       pushEnabled: true,
+      streamEnabled: true,
       name: args.name,
       sourceVisibility: flags.sourceVisibility,
     });
@@ -52,6 +53,10 @@ export default class SourceCataloghNew extends Command {
 
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
+    console.log('*********************');
+    console.log(err);
+    console.log('*********************');
+
     throw err;
   }
 }
