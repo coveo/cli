@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cra-template",
-  "version": "1.27.0",
+  "version": "1.27.1",
   "scripts": {
     "lint": "prettier --check . && eslint .",
     "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
