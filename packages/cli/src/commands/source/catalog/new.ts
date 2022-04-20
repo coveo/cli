@@ -3,9 +3,11 @@ import {Command} from '@oclif/core';
 import {green} from 'chalk';
 import dedent from 'ts-dedent';
 import {
+  HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
+import {writeSourceContentPrivilege} from '../../../lib/decorators/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {withSourceVisibility} from '../../../lib/flags/sourceCommonFlags';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
@@ -27,7 +29,10 @@ export default class SourceCataloghNew extends Command {
   ];
 
   @Trackable()
-  @Preconditions(IsAuthenticated())
+  @Preconditions(
+    IsAuthenticated(),
+    HasNecessaryCoveoPrivileges(writeSourceContentPrivilege)
+  )
   public async run() {
     const {flags, args} = await this.parse(SourceCataloghNew);
     const authenticatedClient = new AuthenticatedClient();
@@ -53,10 +58,6 @@ export default class SourceCataloghNew extends Command {
 
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
-    console.log('*********************');
-    console.log(err);
-    console.log('*********************');
-
     throw err;
   }
 }
