@@ -17,7 +17,7 @@
   "devDependencies": {
     "@coveo/headless": "1.58.0",
     "@coveo/search-token-server": "1.27.0",
-    "buefy": "0.9.19",
+    "buefy": "0.9.20",
     "dotenv": "16.0.0",
     "vue": "2.6.14",
     "vue-property-decorator": "9.1.2",
