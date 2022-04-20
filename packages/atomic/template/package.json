@@ -10,7 +10,7 @@
   "dependencies": {
     "@coveo/atomic": "1.44.0",
     "@coveo/search-token-lambda": "1.27.0",
-    "@stencil/core": "2.15.0"
+    "@stencil/core": "2.15.1"
   },
   "devDependencies": {
     "fkill": "8.0.0",
