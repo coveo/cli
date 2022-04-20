@@ -52,7 +52,9 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
     readFileSync('package.json', {encoding: 'utf-8'})
   );
   await retry(() => {
-    isVersionPublished(packageJson.name, newVersion);
+    if (!isVersionPublished(packageJson.name, newVersion)) {
+      throw 'Version not available';
+    }
   });
 })();
 
