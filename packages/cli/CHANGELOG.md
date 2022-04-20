@@ -1,3 +1,12 @@
+# 1.27.0 (2022-04-14)
+
+### Features
+
+- add privileges preconditions on push command ([#702](https://github.com/coveo/cli/issues/702)) ([f50510a](https://github.com/coveo/cli/commits/f50510a83dd5685caca72368dcf6deb7abc93f46))
+- add source status update ([#658](https://github.com/coveo/cli/issues/658)) ([a590e9c](https://github.com/coveo/cli/commits/a590e9c1fb747b73bb0a4c0a0c347ce9557cbe87))
+- create missing fields for `source:push:add` command ([#699](https://github.com/coveo/cli/issues/699)) ([12cb24b](https://github.com/coveo/cli/commits/12cb24b1151cc15fae8abd84d221d1e731d1a2a7))
+- support different regions and environments for push ([#703](https://github.com/coveo/cli/issues/703)) ([41c2579](https://github.com/coveo/cli/commits/41c2579ad9f960754ded74b4a4ec39cb291dab8b))
+
 # 1.26.0 (2022-03-31)
 
 ### Bug Fixes

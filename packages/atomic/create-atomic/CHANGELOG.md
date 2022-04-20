@@ -1,3 +1,9 @@
+# 1.27.0 (2022-04-14)
+
+### Bug Fixes
+
+- **create-atomic:** prevent Atomic/Headless version mismatch & use installed Atomic version ([#753](https://github.com/coveo/cli/issues/753)) ([916240a](https://github.com/coveo/cli/commits/916240afc50d0265987e0f3f38cf887dcb2a4c70))
+
 # 1.26.0 (2022-03-31)
 
 ### Bug Fixes
