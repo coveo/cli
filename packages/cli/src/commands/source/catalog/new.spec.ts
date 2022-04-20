@@ -5,7 +5,7 @@ jest.mock('../../../lib/platform/authenticatedClient');
 
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {SourceVisibility} from '@coveord/platform-client';
+import {SourceType, SourceVisibility} from '@coveord/platform-client';
 import {Config} from '../../../lib/config/config';
 
 const mockedConfig = jest.mocked(Config);
@@ -49,7 +49,7 @@ const doMockConfig = () => {
   mockedConfig.prototype.get = mockedConfigGet;
 };
 
-describe('source:push:new', () => {
+describe('source:catalog:new', () => {
   beforeAll(() => {
     doMockConfig();
     doMockAuthenticatedClient();
@@ -67,7 +67,7 @@ describe('source:push:new', () => {
     test
       .stdout()
       .stderr()
-      .command(['source:push:new', 'my source'])
+      .command(['source:catalog:new', 'my source'])
       .it('uses source visibility SECURED by default', () => {
         expect(spyCreate).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -80,12 +80,15 @@ describe('source:push:new', () => {
     test
       .stdout()
       .stderr()
-      .command(['source:push:new', 'my source'])
+      .command(['source:catalog:new', 'my source'])
       .it('uses source visibility SECURED by default', () => {
         expect(spyCreate).toHaveBeenCalledWith(
           expect.objectContaining({
             name: 'my source',
             sourceVisibility: SourceVisibility.SECURED,
+            sourceType: SourceType.CATALOG,
+            pushEnabled: true,
+            streamEnabled: true,
           })
         );
       });
@@ -93,7 +96,7 @@ describe('source:push:new', () => {
     test
       .stdout()
       .stderr()
-      .command(['source:push:new', '-v', 'SHARED', 'my source'])
+      .command(['source:catalog:new', '-v', 'SHARED', 'my source'])
       .it('uses source visibility flag when specified', () => {
         expect(spyCreate).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -116,7 +119,7 @@ describe('source:push:new', () => {
     test
       .stdout()
       .stderr()
-      .command(['source:push:new', 'my-source'])
+      .command(['source:catalog:new', 'my-source'])
       .catch(/You are not authorized to edit sources/)
       .it('should return a precondition error');
   });
