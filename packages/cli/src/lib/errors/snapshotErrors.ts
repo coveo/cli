@@ -150,10 +150,6 @@ export class SnapshotMissingVaultEntriesError
     public projectPath?: string
   ) {
     super(SeverityLevel.Error);
-    const report = snapshot.latestReport;
-    const urlBuilder = new SnapshotUrlBuilder(cfg);
-    const snapshotUrl = urlBuilder.getSnapshotPage(snapshot);
-
     this.message = dedent`Your snapshot is missing some vault entries.
     Ensure that all entries are present on ${snapshot.targetId} and try again.`;
 
