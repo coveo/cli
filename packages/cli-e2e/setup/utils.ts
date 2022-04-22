@@ -72,6 +72,7 @@ export function setProcessEnv() {
     process.env.TEST_RUN_ID ?? `id${randomBytes(16).toString('hex')}g`;
   process.env.PLATFORM_ENV = process.env.PLATFORM_ENV?.toLowerCase() || '';
   process.env.PLATFORM_HOST = getPlatformHost(process.env.PLATFORM_ENV);
+  process.env.CLI_EXEC_PATH = resolve(__dirname, '../../cli/bin/dev');
 }
 
 export async function publishPackages() {
@@ -144,14 +145,86 @@ export function shimNpm() {
   );
 }
 
+export async function installCli() {
+  const tmpDir = tmpDirSync();
+  const cliDir = join(tmpDir.name, 'coveoShim');
+  mkdirSync(cliDir, {recursive: true});
+  const npmInitArgs = [...npm(), 'init', '-y'];
+  const npmInitTerminal = new Terminal(
+    npmInitArgs.shift()!,
+    npmInitArgs,
+    {
+      cwd: cliDir,
+    },
+    global.processManager!,
+    'cli-install-init'
+  );
+  await npmInitTerminal.when('exit').on('process').do().once();
+  const npmInstallArgs = [...npm(), 'install', '@coveo/cli'];
+  const npmInstallTerminal = new Terminal(
+    npmInstallArgs.shift()!,
+    npmInstallArgs,
+    {
+      cwd: cliDir,
+    },
+    global.processManager!,
+    'cli-install-init'
+  );
+  await npmInstallTerminal.when('exit').on('process').do().once();
+  process.env.CLI_EXEC_PATH = resolve(
+    cliDir,
+    'node_modules',
+    '@coveo',
+    'cli',
+    'bin',
+    'run'
+  );
+}
+
 export const resolveBinary = (programName: string) => {
   const whereOrWhich = process.platform === 'win32' ? 'where.exe' : 'which';
   const spawner = spawnSync(whereOrWhich, [programName], {
     shell: true,
     encoding: 'utf-8',
+    env: getCleanEnv(),
   });
   return spawner.stdout.trim();
 };
 
+const registryEnv = process.env.E2E_USE_NPM_REGISTRY
+  ? {}
+  : {
+      npm_config_registry: 'http://localhost:4873',
+      YARN_NPM_REGISTRY_SERVER: 'http://localhost:4873',
+    };
+
+export function getCleanEnv(): Record<string, any> {
+  const env: Record<string, any> = {
+    ...process.env,
+    ...registryEnv,
+    npm_config_cache: process.env[npmCachePathEnvVar],
+  };
+  const excludeEnvVars = [
+    'npm_config_local_prefix',
+    'npm_package_json',
+    'INIT_CWD',
+  ];
+  const pathSep = process.platform === 'win32' ? ';' : ':';
+  const pathName = process.platform === 'win32' ? 'Path' : 'PATH';
+  const path = env[pathName].split(pathSep);
+  const filteredPath = path.filter(
+    (pathElement: string) => !isParent(env['GITHUB_WORKSPACE'], pathElement)
+  );
+  env[pathName] = filteredPath.join(pathSep);
+  for (const excludeVar of excludeEnvVars) {
+    delete env[excludeVar];
+  }
+  return env;
+}
+
 const appendCmdIfWindows = (cmd: TemplateStringsArray) =>
   `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
+
+function isParent(parent: string, potentialChild: string) {
+  return resolve(potentialChild).startsWith(resolve(parent));
+}
