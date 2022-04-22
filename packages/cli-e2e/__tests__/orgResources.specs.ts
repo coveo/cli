@@ -1,7 +1,6 @@
 import {join} from 'path';
 import {
   answerPrompt,
-  CLI_EXEC_PATH,
   getConfig,
   getEnvFilePath,
   getProjectPath,
@@ -42,10 +41,7 @@ describe('org:resources', () => {
     cwd: string,
     debugName: string
   ) => {
-    if (process.platform === 'win32') {
-      args.unshift('node');
-    }
-    return new Terminal(args.shift()!, args, {cwd}, procManager, debugName);
+    return new Terminal('node', args, {cwd}, procManager, debugName);
   };
 
   const createFieldWithoutUsingSnapshot = async (client: PlatformClient) => {
@@ -76,7 +72,7 @@ describe('org:resources', () => {
     debugName = 'org-config-preview'
   ) => {
     const args: string[] = [
-      CLI_EXEC_PATH,
+      process.env.CLI_EXEC_PATH!,
       'org:resources:preview',
       `-t=${targetOrg}`,
       '--sync',
@@ -93,7 +89,7 @@ describe('org:resources', () => {
     debugName = 'org-config-push'
   ) => {
     const args: string[] = [
-      CLI_EXEC_PATH,
+      process.env.CLI_EXEC_PATH!,
       'org:resources:push',
       '--skipPreview',
       `-t=${targetOrg}`,
@@ -125,7 +121,7 @@ describe('org:resources', () => {
     debugName: string
   ) => {
     const args: string[] = [
-      CLI_EXEC_PATH,
+      process.env.CLI_EXEC_PATH!,
       'org:resources:pull',
       '-o',
       '--wait=0',

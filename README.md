@@ -29,7 +29,7 @@ Afterward, you can run `coveo update` at any time to update your CLI installatio
   - <https://static.cloud.coveo.com/cli/coveo-latest_amd64.deb>
   - <https://static.cloud.coveo.com/cli/coveo-latest_armel.deb>
 - Mac
-  - <https://static.cloud.coveo.com/cli/coveo-latest.pkg>
+  - <https://static.cloud.coveo.com/cli/coveo-latest-x64.pkg>
 - Windows
   - <https://static.cloud.coveo.com/cli/coveo-latest-x64.exe>
   - <https://static.cloud.coveo.com/cli/coveo-latest-x32.exe>
