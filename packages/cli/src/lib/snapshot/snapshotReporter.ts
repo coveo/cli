@@ -105,7 +105,7 @@ export class SnapshotReporter {
   }
 
   private static isVaultEntryMessage(err: string): boolean {
-    // TODO: Define contract with backend for report and upcoming contract.
+    // TODO CDX-939: Define contract with backend for report and upcoming contract.
     // Current 'contract' 😅:
     return /^The vault entry referenced by.*could not be found in the vault\.$/.test(
       err
