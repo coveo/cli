@@ -5,7 +5,10 @@ import {Snapshot, WaitUntilDoneOptions} from './snapshot';
 import {red, green} from 'chalk';
 import {normalize} from 'path';
 import {Config, Configuration} from '../config/config';
-import {SnapshotGenericError} from '../errors/snapshotErrors';
+import {
+  SnapshotGenericError,
+  SnapshotMissingVaultEntriesError,
+} from '../errors/snapshotErrors';
 import {SnapshotFacade} from './snapshotFacade';
 import {PrintableError} from '../errors/printableError';
 
@@ -66,6 +69,16 @@ export async function handleReportWithErrors(
   projectPath?: string
 ) {
   throw new SnapshotGenericError(snapshot, cfg, projectPath);
+}
+
+export async function handleReportWithMissingVaultEntries(
+  snapshot: Snapshot,
+  cfg: Configuration,
+  projectPath?: string
+) {
+  // TODO CDX-935
+  // TODO CDX-936
+  throw new SnapshotMissingVaultEntriesError(snapshot, cfg, projectPath);
 }
 
 export function handleSnapshotError(err?: Error & {exitCode?: number}) {

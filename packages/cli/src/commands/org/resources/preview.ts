@@ -22,6 +22,7 @@ import {
   wait,
 } from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
+import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {
   dryRun,
@@ -30,6 +31,7 @@ import {
   handleSnapshotError,
   DryRunOptions,
   cleanupProject,
+  handleReportWithMissingVaultEntries,
 } from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 export default class Preview extends Command {
@@ -100,10 +102,23 @@ export default class Preview extends Command {
     return flags.previewLevel === PreviewLevelValue.Detailed;
   }
 
+  // TODO: Refactor with `push.ts`
   private async processReport(snapshot: Snapshot, reporter: SnapshotReporter) {
-    if (!reporter.isSuccessReport()) {
-      const cfg = this.configuration.get();
-      await handleReportWithErrors(snapshot, cfg, this.projectPath);
+    const cfg = this.configuration.get();
+    switch (reporter.getReportStatus()) {
+      case SnapshotReportStatus.SUCCESS:
+        return;
+      case SnapshotReportStatus.MISSING_VAULT_ENTRIES:
+        await handleReportWithMissingVaultEntries(
+          snapshot,
+          cfg,
+          this.projectPath
+        );
+        break;
+      case SnapshotReportStatus.ERROR:
+      default:
+        await handleReportWithErrors(snapshot, cfg, this.projectPath);
+        break;
     }
   }
 

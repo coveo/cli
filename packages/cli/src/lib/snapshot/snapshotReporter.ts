@@ -7,6 +7,7 @@ import {
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
+  SnapshotReportStatus,
 } from './reportPreviewer/reportPreviewerDataModels';
 
 type ResourceEntries = [string, ResourceSnapshotsReportOperationModel];
@@ -54,6 +55,39 @@ export class SnapshotReporter {
     return (
       status === ResourceSnapshotsReportStatus.Completed &&
       resultCode === ResourceSnapshotsReportResultCode.Success
+    );
+  }
+
+  public getReportStatus(): SnapshotReportStatus {
+    if (this.isSuccessReport()) {
+      return SnapshotReportStatus.SUCCESS;
+    }
+    if (this.isVaultEntriesMissingReport()) {
+      return SnapshotReportStatus.MISSING_VAULT_ENTRIES;
+    }
+    return SnapshotReportStatus.ERROR;
+  }
+
+  private isVaultEntriesMissingReport(): boolean {
+    for (const resourceTypeEntry of Object.values(
+      this.report.resourceOperationResults
+    )) {
+      for (const errors of Object.values(resourceTypeEntry)) {
+        for (const err of errors) {
+          if (!SnapshotReporter.isVaultEntryMessage(err)) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
+
+  private static isVaultEntryMessage(err: string): boolean {
+    // TODO: Define contract with backend for report and upcoming contract.
+    // Current 'contract' 😅:
+    return /^The vault entry referenced by.*could not be found in the vault\.$/.test(
+      err
     );
   }
 

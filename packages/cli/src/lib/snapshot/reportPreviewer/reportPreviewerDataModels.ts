@@ -7,3 +7,9 @@ export interface ReportViewerResourceReportModel {
   name: string;
   operations: ResourceSnapshotsReportOperationModel;
 }
+
+export enum SnapshotReportStatus {
+  SUCCESS,
+  MISSING_VAULT_ENTRIES,
+  ERROR,
+}
