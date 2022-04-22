@@ -19,7 +19,7 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # tag=v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
       - uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
         with:
           node-version: 16
@@ -49,7 +49,7 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # tag=v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
       - uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
         with:
           node-version: ${{matrix.node}}
@@ -80,7 +80,7 @@ jobs:
       # ID of the test run to identify resources to teardown.
       TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
     steps:
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # tag=v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
       - uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
         with:
           node-version: ${{matrix.node}}
@@ -110,7 +110,7 @@ jobs:
     name: End-to-end publish packages
     runs-on: ${{matrix.os}}
     steps:
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # tag=v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
       - uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
         with:
           node-version: ${{matrix.node}}
@@ -182,7 +182,7 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # tag=v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
       - uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
         with:
           node-version: ${{matrix.node}}
@@ -250,7 +250,7 @@ jobs:
       TEST_RUN_ID: '${{ github.sha }}-${{ github.run_attempt }}g'
       CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # tag=v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
       - uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
         with:
           node-version: ${{matrix.node}}

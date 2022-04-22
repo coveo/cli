@@ -8,7 +8,7 @@
     "lint": "prettier --check . && eslint ."
   },
   "dependencies": {
-    "@coveo/atomic": "1.44.0",
+    "@coveo/atomic": "1.46.0",
     "@coveo/search-token-lambda": "1.27.1",
     "@stencil/core": "2.15.1"
   },
