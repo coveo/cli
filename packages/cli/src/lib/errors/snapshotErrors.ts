@@ -143,7 +143,7 @@ export class SnapshotMissingVaultEntriesError
   extends PrintableError
   implements DetailedReportable
 {
-  public name = 'Snapshot Error';
+  public name = 'Snapshot Missing Vault Entries';
   public constructor(
     public snapshot: Snapshot,
     public cfg: Configuration,
