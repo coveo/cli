@@ -27,13 +27,12 @@ import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {
   dryRun,
   getTargetOrg,
-  handleReportWithErrors,
   handleSnapshotError,
   DryRunOptions,
   cleanupProject,
-  handleReportWithMissingVaultEntries,
+  getMissingVaultEntriesReportHandler,
+  getErrorReportHandler,
 } from '../../../lib/snapshot/snapshotCommon';
-import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 export default class Preview extends Command {
   public static description = '(beta) Preview resource updates';
 
@@ -86,7 +85,16 @@ export default class Preview extends Command {
     const display = await this.shouldDisplayExpandedPreview();
     const {deleteMissingResources} = await this.getOptions();
     await snapshot.preview(project, deleteMissingResources, display);
-    await this.processReport(snapshot, reporter);
+    await reporter
+      .setReportHandler(
+        SnapshotReportStatus.MISSING_VAULT_ENTRIES,
+        getMissingVaultEntriesReportHandler(snapshot, cfg, this.projectPath)
+      )
+      .setReportHandler(
+        SnapshotReportStatus.ERROR,
+        getErrorReportHandler(snapshot, cfg, this.projectPath)
+      )
+      .handleReport();
     await this.cleanup(snapshot, project);
   }
 
@@ -100,26 +108,6 @@ export default class Preview extends Command {
   private async shouldDisplayExpandedPreview() {
     const {flags} = await this.parse(Preview);
     return flags.previewLevel === PreviewLevelValue.Detailed;
-  }
-
-  // TODO: Refactor with `push.ts`
-  private async processReport(snapshot: Snapshot, reporter: SnapshotReporter) {
-    const cfg = this.configuration.get();
-    switch (reporter.getReportStatus()) {
-      case SnapshotReportStatus.SUCCESS:
-        return;
-      case SnapshotReportStatus.MISSING_VAULT_ENTRIES:
-        await handleReportWithMissingVaultEntries(
-          snapshot,
-          cfg,
-          this.projectPath
-        );
-        break;
-      case SnapshotReportStatus.ERROR:
-      default:
-        await handleReportWithErrors(snapshot, cfg, this.projectPath);
-        break;
-    }
   }
 
   private async cleanup(snapshot: Snapshot, project: Project) {

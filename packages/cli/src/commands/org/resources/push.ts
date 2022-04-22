@@ -14,7 +14,8 @@ import {
   handleSnapshotError,
   cleanupProject,
   DryRunOptions,
-  handleReportWithMissingVaultEntries,
+  getMissingVaultEntriesReportHandler,
+  getErrorReportHandler,
 } from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '../../../lib/config/config';
 import {cwd} from 'process';
@@ -88,8 +89,20 @@ export default class Push extends Command {
       const {deleteMissingResources} = await this.getOptions();
       await snapshot.preview(project, deleteMissingResources, display);
     }
-
-    await this.processReportAndExecuteRemainingActions(snapshot, reporter);
+    await reporter
+      .setReportHandler(
+        SnapshotReportStatus.SUCCESS,
+        this.getSuccessReportHandler(snapshot)
+      )
+      .setReportHandler(
+        SnapshotReportStatus.MISSING_VAULT_ENTRIES,
+        getMissingVaultEntriesReportHandler(snapshot, cfg, this.projectPath)
+      )
+      .setReportHandler(
+        SnapshotReportStatus.ERROR,
+        getErrorReportHandler(snapshot, cfg, this.projectPath)
+      )
+      .handleReport();
     await this.cleanup(snapshot, project);
   }
 
@@ -104,49 +117,26 @@ export default class Push extends Command {
     return flags.previewLevel === PreviewLevelValue.Detailed;
   }
 
-  // TODO: Refactor with `preview.ts`
-  private async processReportAndExecuteRemainingActions(
-    snapshot: Snapshot,
-    reporter: SnapshotReporter
-  ) {
-    const cfg = this.configuration.get();
-    switch (reporter.getReportStatus()) {
-      case SnapshotReportStatus.SUCCESS:
-        this.handleValidReport(reporter, snapshot);
-        return;
-      case SnapshotReportStatus.MISSING_VAULT_ENTRIES:
-        await handleReportWithMissingVaultEntries(
-          snapshot,
-          cfg,
-          this.projectPath
-        );
-        break;
-      case SnapshotReportStatus.ERROR:
-      default:
-        await handleReportWithErrors(snapshot, cfg, this.projectPath);
-        break;
-    }
-  }
-
   private async cleanup(snapshot: Snapshot, project: Project) {
     await snapshot.delete();
     project.deleteTemporaryZipFile();
   }
 
-  private async handleValidReport(
-    reporter: SnapshotReporter,
-    snapshot: Snapshot
-  ) {
-    if (!reporter.hasChangedResources()) {
-      return;
-    }
+  private getSuccessReportHandler(snapshot: Snapshot) {
+    const pushCommand = this;
+    return async function (this: SnapshotReporter) {
+      if (!this.hasChangedResources()) {
+        return;
+      }
 
-    const {flags} = await this.parse(Push);
-    const canBeApplied = flags.skipPreview || (await this.askForConfirmation());
+      const {flags} = await pushCommand.parse(Push);
+      const canBeApplied =
+        flags.skipPreview || (await pushCommand.askForConfirmation());
 
-    if (canBeApplied) {
-      await this.applySnapshot(snapshot);
-    }
+      if (canBeApplied) {
+        await pushCommand.applySnapshot(snapshot);
+      }
+    };
   }
 
   private async askForConfirmation(): Promise<boolean> {

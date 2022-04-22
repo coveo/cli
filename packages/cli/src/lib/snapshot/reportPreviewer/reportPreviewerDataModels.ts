@@ -9,7 +9,7 @@ export interface ReportViewerResourceReportModel {
 }
 
 export enum SnapshotReportStatus {
-  SUCCESS,
-  MISSING_VAULT_ENTRIES,
-  ERROR,
+  SUCCESS = 'SUCCESS',
+  MISSING_VAULT_ENTRIES = 'MISSING_VAULT_ENTRIES',
+  ERROR = 'ERROR',
 }

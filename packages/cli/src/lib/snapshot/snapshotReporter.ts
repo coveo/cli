@@ -58,6 +58,27 @@ export class SnapshotReporter {
     );
   }
 
+  private reportHandlers: Record<
+    SnapshotReportStatus,
+    (this: SnapshotReporter) => void | Promise<void>
+  > = {
+    [SnapshotReportStatus.SUCCESS]: () => {},
+    [SnapshotReportStatus.MISSING_VAULT_ENTRIES]: () => {},
+    [SnapshotReportStatus.ERROR]: () => {},
+  };
+
+  public setReportHandler(
+    status: SnapshotReportStatus,
+    handler: (this: SnapshotReporter) => void | Promise<void>
+  ): SnapshotReporter {
+    this.reportHandlers[status] = handler;
+    return this;
+  }
+
+  public async handleReport(): Promise<void> {
+    await this.reportHandlers[this.getReportStatus()].apply(this);
+  }
+
   public getReportStatus(): SnapshotReportStatus {
     if (this.isSuccessReport()) {
       return SnapshotReportStatus.SUCCESS;

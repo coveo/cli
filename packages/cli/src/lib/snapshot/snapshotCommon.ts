@@ -63,6 +63,16 @@ export function cleanupProject(projectPath: string) {
   project.deleteTemporaryZipFile();
 }
 
+export function getErrorReportHandler(
+  snapshot: Snapshot,
+  cfg: Configuration,
+  projectPath?: string
+) {
+  return () => {
+    throw new SnapshotGenericError(snapshot, cfg, projectPath);
+  };
+}
+
 export async function handleReportWithErrors(
   snapshot: Snapshot,
   cfg: Configuration,
@@ -71,14 +81,16 @@ export async function handleReportWithErrors(
   throw new SnapshotGenericError(snapshot, cfg, projectPath);
 }
 
-export async function handleReportWithMissingVaultEntries(
+export function getMissingVaultEntriesReportHandler(
   snapshot: Snapshot,
   cfg: Configuration,
   projectPath?: string
 ) {
-  // TODO CDX-935
-  // TODO CDX-936
-  throw new SnapshotMissingVaultEntriesError(snapshot, cfg, projectPath);
+  return function (this: void) {
+    // TODO CDX-935
+    // TODO CDX-936
+    throw new SnapshotMissingVaultEntriesError(snapshot, cfg, projectPath);
+  };
 }
 
 export function handleSnapshotError(err?: Error & {exitCode?: number}) {
