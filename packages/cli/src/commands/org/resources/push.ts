@@ -123,20 +123,20 @@ export default class Push extends Command {
   }
 
   private getSuccessReportHandler(snapshot: Snapshot) {
-    const pushCommand = this;
-    return async function (this: SnapshotReporter) {
-      if (!this.hasChangedResources()) {
-        return;
-      }
+    return ((pushCommand: Push) =>
+      async function (this: SnapshotReporter) {
+        if (!this.hasChangedResources()) {
+          return;
+        }
 
-      const {flags} = await pushCommand.parse(Push);
-      const canBeApplied =
-        flags.skipPreview || (await pushCommand.askForConfirmation());
+        const {flags} = await pushCommand.parse(Push);
+        const canBeApplied =
+          flags.skipPreview || (await pushCommand.askForConfirmation());
 
-      if (canBeApplied) {
-        await pushCommand.applySnapshot(snapshot);
-      }
-    };
+        if (canBeApplied) {
+          await pushCommand.applySnapshot(snapshot);
+        }
+      })(this);
   }
 
   private async askForConfirmation(): Promise<boolean> {
