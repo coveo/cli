@@ -22,6 +22,7 @@ import {
   SnapshotNoReportFoundError,
   SnapshotNoSynchronizationReportFoundError,
 } from '../errors/snapshotErrors';
+import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
 
 export type SnapshotReport =
   | ResourceSnapshotsReportModel
@@ -88,14 +89,24 @@ export class Snapshot {
     deleteMissingResources = false,
     expandedPreview = true
   ) {
-    this.displayLightPreview();
     const reporter = new SnapshotReporter(this.latestReport);
-    if (reporter.isSuccessReport() && expandedPreview) {
-      await this.generateExpandedPreview(
-        projectToPreview,
-        deleteMissingResources
-      );
+    await this.displayLightPreview(reporter);
+    if (!expandedPreview) {
+      return;
     }
+    const onSuccess = this.generateExpandedPreview.bind(
+      this,
+      projectToPreview,
+      deleteMissingResources
+    );
+    await reporter
+      .setReportHandler(
+        SnapshotReportStatus.SUCCESS,
+        async function (this: SnapshotReporter) {
+          await onSuccess();
+        }
+      )
+      .handleReport();
   }
 
   public async apply(
@@ -211,10 +222,9 @@ export class Snapshot {
     return reports.length > 0;
   }
 
-  private displayLightPreview() {
-    const reporter = new SnapshotReporter(this.latestReport);
+  private async displayLightPreview(reporter: SnapshotReporter) {
     const viewer = new ReportViewer(reporter);
-    viewer.display();
+    await viewer.display();
   }
 
   private async generateExpandedPreview(

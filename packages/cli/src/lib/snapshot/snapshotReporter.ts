@@ -63,6 +63,7 @@ export class SnapshotReporter {
     (this: SnapshotReporter) => void | Promise<void>
   > = {
     [SnapshotReportStatus.SUCCESS]: () => {},
+    [SnapshotReportStatus.NO_CHANGES]: () => {},
     [SnapshotReportStatus.MISSING_VAULT_ENTRIES]: () => {},
     [SnapshotReportStatus.ERROR]: () => {},
   };
@@ -81,7 +82,9 @@ export class SnapshotReporter {
 
   public getReportStatus(): SnapshotReportStatus {
     if (this.isSuccessReport()) {
-      return SnapshotReportStatus.SUCCESS;
+      return this.hasChangedResources()
+        ? SnapshotReportStatus.SUCCESS
+        : SnapshotReportStatus.NO_CHANGES;
     }
     if (this.isVaultEntriesMissingReport()) {
       return SnapshotReportStatus.MISSING_VAULT_ENTRIES;

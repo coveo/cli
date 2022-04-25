@@ -126,11 +126,7 @@ export default class Push extends Command {
     const successReportWithChangesHandler =
       this.successReportWithChangesHandler.bind(this, snapshot);
     return async function (this: SnapshotReporter) {
-      if (!this.hasChangedResources()) {
-        return;
-      } else {
-        return successReportWithChangesHandler();
-      }
+      return successReportWithChangesHandler();
     };
   }
 

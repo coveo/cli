@@ -1,18 +1,18 @@
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
 import {Flags, Command, CliUx} from '@oclif/core';
-import {Config} from '../../../lib/config/config';
+import {Config, Configuration} from '../../../lib/config/config';
 import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {wait} from '../../../lib/flags/snapshotCommonFlags';
+import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 import {ReportViewerStyles} from '../../../lib/snapshot/reportPreviewer/reportPreviewerStyles';
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {
   getTargetOrg,
   handleSnapshotError,
-  handleReportWithErrors,
 } from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
@@ -58,22 +58,23 @@ export default class Monitor extends Command {
   }
 
   private async monitorSnapshot(snapshot: Snapshot) {
-    const reporter = new SnapshotReporter(snapshot.latestReport);
-    CliUx.ux.action.start(`Operation ${reporter.type}`, reporter.status);
+    const startReporter = new SnapshotReporter(snapshot.latestReport);
+    CliUx.ux.action.start(
+      `Operation ${startReporter.type}`,
+      startReporter.status
+    );
     const waitOption = await this.getWaitOption();
     await snapshot.waitUntilDone(waitOption);
-    await this.displayMonitorResult(snapshot, reporter);
+    const finalReporter = new SnapshotReporter(snapshot.latestReport);
+    await finalReporter
+      .setReportHandler(SnapshotReportStatus.ERROR, this.getErrorHandler())
+      .handleReport();
   }
 
-  private async displayMonitorResult(
-    snapshot: Snapshot,
-    reporter: SnapshotReporter
-  ) {
-    if (!reporter.isSuccessReport()) {
-      const cfg = this.configuration.get();
-      CliUx.ux.log(ReportViewerStyles.error(reporter.resultCode));
-      await handleReportWithErrors(snapshot, cfg);
-    }
+  private getErrorHandler() {
+    return async function (this: SnapshotReporter) {
+      CliUx.ux.log(ReportViewerStyles.error(this.resultCode));
+    };
   }
 
   private async printHeader() {

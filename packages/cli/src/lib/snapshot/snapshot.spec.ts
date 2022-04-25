@@ -33,6 +33,8 @@ import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer';
 import {join} from 'path';
 import {SnapshotOperationTimeoutError} from '../errors';
 import {fancyIt} from '../../__test__/it';
+import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
+import fancy from 'fancy-test';
 
 const mockedRetry = jest.mocked(retry);
 const mockedExpandedPreviewer = jest.mocked(ExpandedPreviewer, true);
@@ -59,6 +61,7 @@ describe('Snapshot', () => {
   const snapshotId = 'target-org-snapshot-id';
 
   let snapshot: Snapshot;
+
   //#region MockFactories
   const getSuccessDryRunReport = (
     snapshotId: string
@@ -98,6 +101,31 @@ describe('Snapshot', () => {
     );
   };
 
+  const doMockSnapshotReporter = (
+    snapshotReportStatus: SnapshotReportStatus
+  ) => {
+    let handlerToCall: (
+      this: SnapshotReporter
+    ) => void | Promise<void> = () => {};
+    mockedSnapshotReporter.prototype.setReportHandler.mockImplementation(
+      function (
+        this: SnapshotReporter,
+        status: SnapshotReportStatus,
+        handler: (this: SnapshotReporter) => void | Promise<void>
+      ) {
+        if (status === snapshotReportStatus) {
+          handlerToCall = handler;
+        }
+        return this;
+      }
+    );
+    mockedSnapshotReporter.prototype.handleReport.mockImplementation(
+      async function (this: SnapshotReporter) {
+        await handlerToCall.apply(this);
+      }
+    );
+  };
+
   const doMockWaitUntilDone = () => {
     const mockedWaitUntilDone = jest.fn().mockReturnValue(Promise.resolve());
     snapshot.waitUntilDone = mockedWaitUntilDone;
@@ -131,7 +159,7 @@ describe('Snapshot', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
   });
 
   describe('#validate', () => {
@@ -194,6 +222,7 @@ describe('Snapshot', () => {
     let someReport: ResourceSnapshotsReportModel;
 
     beforeEach(async () => {
+      doMockSnapshotReporter(SnapshotReportStatus.SUCCESS);
       someReport = getSuccessDryRunReport(snapshotId);
       [snapshot] = await getSnapshot(someReport);
     });
@@ -201,20 +230,15 @@ describe('Snapshot', () => {
     fancyIt()('should display the the light preview', async () => {
       await snapshot.preview(new Project(''));
 
-      expect(mockedSnapshotReporter).toBeCalledWith(someReport);
-      expect(mockedReportViewer).toBeCalledWith(
+      expect(mockedSnapshotReporter).toHaveBeenCalledWith(someReport);
+      expect(mockedReportViewer).toHaveBeenCalledWith(
         mockedSnapshotReporter.mock.instances[0]
       );
     });
 
     describe('when the latest report is succesful', () => {
       beforeEach(() => {
-        mockedSnapshotReporter.mockImplementation(
-          () =>
-            ({
-              isSuccessReport: () => true,
-            } as unknown as SnapshotReporter)
-        );
+        doMockSnapshotReporter(SnapshotReportStatus.SUCCESS);
       });
 
       it.each([
@@ -249,12 +273,7 @@ describe('Snapshot', () => {
 
     describe('when the latest report is not succesful', () => {
       beforeEach(() => {
-        mockedSnapshotReporter.mockImplementation(
-          () =>
-            ({
-              isSuccessReport: () => false,
-            } as unknown as SnapshotReporter)
-        );
+        doMockSnapshotReporter(SnapshotReportStatus.ERROR);
       });
 
       fancyIt()('should not generate the expanded preview', async () => {

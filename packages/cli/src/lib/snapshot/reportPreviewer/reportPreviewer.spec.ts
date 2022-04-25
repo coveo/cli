@@ -23,8 +23,8 @@ describe('ReportViewer', () => {
     test
       .stdout()
       .stderr()
-      .do(() => {
-        viewer.display();
+      .do(async () => {
+        await viewer.display();
       })
       .it(
         'should print a report section with the resources in error',
@@ -37,8 +37,8 @@ describe('ReportViewer', () => {
     test
       .stdout()
       .stderr()
-      .do(() => {
-        viewer.display();
+      .do(async () => {
+        await viewer.display();
       })
       .it('should not print more than 5 errors per resources', (ctx) => {
         expect(ctx.stdout).toContain(
@@ -66,8 +66,8 @@ describe('ReportViewer', () => {
     test
       .stdout()
       .stderr()
-      .do(() => {
-        viewer.display();
+      .do(async () => {
+        await viewer.display();
       })
       .it('should print resource changes', (ctx) => {
         // Remove padding added by cli-ux so we can test the text and not the padding on the line
@@ -107,8 +107,8 @@ describe('ReportViewer', () => {
     test
       .stdout()
       .stderr()
-      .do(() => {
-        viewer.display();
+      .do(async () => {
+        await viewer.display();
       })
       .it('should show that no changes were detected', (ctx) => {
         expect(ctx.stdout).toContain('No changes detected');

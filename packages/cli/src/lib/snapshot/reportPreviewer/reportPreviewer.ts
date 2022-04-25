@@ -6,6 +6,7 @@ import {SnapshotReporter} from '../snapshotReporter';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
+  SnapshotReportStatus,
 } from './reportPreviewerDataModels';
 import dedent from 'ts-dedent';
 import {recordable} from '../../utils/record';
@@ -32,19 +33,38 @@ export class ReportViewer {
       ReportViewer.defaultOperationsToDisplay.concat(operationsToDisplay);
   }
 
-  public display(): void {
+  public async display(): Promise<void> {
     this.printTable();
+    await this.reporter
+      .setReportHandler(
+        SnapshotReportStatus.ERROR,
+        this.getReportErrorsHandler()
+      )
+      .setReportHandler(
+        SnapshotReportStatus.NO_CHANGES,
+        this.getNoChangesReportHandler()
+      )
+      .handleReport();
+  }
 
-    if (!this.reporter.isSuccessReport()) {
-      this.handleReportErrors();
-    }
-
-    if (!this.reporter.hasChangedResources()) {
+  private getNoChangesReportHandler(): (
+    this: SnapshotReporter
+  ) => void | Promise<void> {
+    return function (this: SnapshotReporter) {
       CliUx.ux.log(dedent`${green('No resources to change')}.
 
       The target organization already matches the configuration.`);
       return;
-    }
+    };
+  }
+
+  private getReportErrorsHandler(): (
+    this: SnapshotReporter
+  ) => void | Promise<void> {
+    const reportHandler = this.handleReportErrors.bind(this);
+    return function (this: SnapshotReporter) {
+      reportHandler();
+    };
   }
 
   private printTable() {
