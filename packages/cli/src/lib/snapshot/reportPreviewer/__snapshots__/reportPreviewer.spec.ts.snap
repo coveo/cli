@@ -26,6 +26,28 @@ Error Report:
 "
 `;
 
+exports[`ReportViewer when the report contains missing vault entries should print the same report 1`] = `
+" 
+Previewing resource changes:
+ ──────────────────────────── 
+    Extensions                
+ +   1 to create              
+ -   2 to delete              
+                              
+    Fields                    
+ !   7 in error               
+ ~   1 to update              
+                              
+Missing vault entries:
+  • VAULT.foo_4VNj5ds5-configuration.userIdentities.UserIdentity.password
+  • VAULT.bar_4VNj5ds5-configuration.userIdentities.UserIdentity.password
+  • VAULT.dsads_4VNj5ds5-configuration.userIdentities.UserIdentity.password
+  • VAULT.fdww_4VNj5ds5-configuration.userIdentities.UserIdentity.password
+  • VAULT.csad_4VNj5ds5-configuration.userIdentities.UserIdentity.password
+  (2 more entries)
+"
+`;
+
 exports[`ReportViewer when the report contains no changes should show that no changes were detected 1`] = `
 "
 No changes detected

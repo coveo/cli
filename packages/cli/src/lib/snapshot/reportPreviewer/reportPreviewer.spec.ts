@@ -6,6 +6,7 @@ import dedent from 'ts-dedent';
 import {SnapshotReporter} from '../snapshotReporter';
 import {
   getErrorReport,
+  getMissingVaultEntryReport,
   getReportWithNoProcessedResources,
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
@@ -71,6 +72,29 @@ describe('ReportViewer', () => {
         await viewer.display();
       })
       .it('should show that no changes were detected', (ctx) => {
+        expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
+      });
+  });
+
+  describe('when the report contains missing vault entries', () => {
+    let viewer: ReportViewer;
+    beforeAll(() => {
+      const reporter = new SnapshotReporter(
+        getMissingVaultEntryReport(
+          'some-id',
+          ResourceSnapshotsReportType.DryRun
+        )
+      );
+      viewer = new ReportViewer(reporter);
+    });
+
+    test
+      .stdout()
+      .stderr()
+      .do(async () => {
+        await viewer.display();
+      })
+      .it('should print the same report', (ctx) => {
         expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
       });
   });

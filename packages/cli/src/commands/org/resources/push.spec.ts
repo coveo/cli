@@ -395,7 +395,6 @@ describe('org:resources:push', () => {
 
     describe('when the user refuses to migrate or type in the missing vault entries', () => {
       test
-        .skip() //todo
         .stdout()
         .stderr()
         .command(['org:resources:push'])
@@ -403,7 +402,6 @@ describe('org:resources:push', () => {
         .it('should show the missingVaultEntries snapshot error');
 
       test
-        .skip() //todo
         .stdout()
         .stderr()
         .command(['org:resources:push'])
