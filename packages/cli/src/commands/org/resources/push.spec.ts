@@ -363,4 +363,47 @@ describe('org:resources:push', () => {
       .catch(/Invalid snapshot/)
       .it('should return an invalid snapshot error message');
   });
+
+  describe('when the dryRun returns a report with missing vault entries', () => {
+    beforeAll(async () => {
+      await mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries();
+    });
+
+    afterAll(() => {
+      mockedSnapshotFactory.mockReset();
+    });
+
+    describe('when the user refuses to migrate or type in the missing vault entries', () => {
+      test
+        .skip() //todo
+        .stdout()
+        .stderr()
+        .command(['org:resources:push'])
+        .catch(/Invalid snapshot/)
+        .it('should show the missingVaultEntries snapshot error');
+
+      test
+        .skip() //todo
+        .stdout()
+        .stderr()
+        .command(['org:resources:push'])
+        .catch(() => {
+          expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
+          expect(mockedApplySnapshot).toHaveBeenCalledTimes(0);
+        })
+        .it('should only preview the snapshot');
+
+      test
+        .skip() //todo
+        .stdout()
+        .stderr()
+        .command(['org:resources:push'])
+        .catch(/Invalid snapshot/)
+        .it('should return a missingVaultEntries snapshot error message');
+    });
+  });
 });
+
+function mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries() {
+  //todo
+}
