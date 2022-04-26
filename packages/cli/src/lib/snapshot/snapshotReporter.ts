@@ -38,10 +38,11 @@ type SuccessfulReportHandler = {
   [K in SnapshotReportStatus]: SnapshotReporterHandler | NoopHandler;
 };
 export class SnapshotReporter {
-  private static FixableStatuses = [
-    SnapshotReportStatus.MISSING_VAULT_ENTRIES,
-  ] as const;
-  private missingVaultEntries: Set<string> = new Set();
+  private missingVaultEntriesSet: Set<string> = new Set();
+
+  public get missingVaultEntries() {
+    return this.missingVaultEntriesSet.values();
+  }
   private reportErrors: string[] = [];
   public constructor(public readonly report: ResourceSnapshotsReportModel) {}
 
@@ -107,14 +108,17 @@ export class SnapshotReporter {
     const reportStatuses = this.getReportStatuses();
     for (const handler of reportStatuses.fixables) {
       await this.reportHandlers[handler].apply(this);
+      this.reportHandlers[handler] = () => {};
     }
     if (reportStatuses.errors.length > 0) {
       for (const handler of reportStatuses.errors) {
         await this.reportHandlers[handler].apply(this);
+        this.reportHandlers[handler] = () => {};
       }
     } else if (reportStatuses.successes.length > 0) {
       for (const handler of reportStatuses.successes) {
         await this.reportHandlers[handler].apply(this);
+        this.reportHandlers[handler] = () => {};
       }
     }
   }
@@ -130,7 +134,7 @@ export class SnapshotReporter {
     };
 
     this.computeMissingVaultEntries();
-    if (this.missingVaultEntries.size > 0) {
+    if (this.missingVaultEntriesSet.size > 0) {
       statuses.fixables.push(SnapshotReportStatus.MISSING_VAULT_ENTRIES);
     }
 
@@ -156,7 +160,7 @@ export class SnapshotReporter {
         : SnapshotReportStatus.NO_CHANGES;
     }
     this.computeMissingVaultEntries();
-    if (this.missingVaultEntries.size > 0) {
+    if (this.missingVaultEntriesSet.size > 0) {
       return SnapshotReportStatus.MISSING_VAULT_ENTRIES;
     }
     return SnapshotReportStatus.ERROR;
@@ -171,7 +175,7 @@ export class SnapshotReporter {
           const missingEntry =
             SnapshotReporter.tryGetMissingVaultEntryName(err);
           if (missingEntry) {
-            this.missingVaultEntries.add(missingEntry);
+            this.missingVaultEntriesSet.add(missingEntry);
           } else {
             this.reportErrors.push(err);
           }
@@ -180,12 +184,12 @@ export class SnapshotReporter {
     }
   }
 
+  private static missingVaultMatcher =
+    /^The vault entry referenced by \{\{ (?<entryName>.*) \}\} could not be found in the vault\.$/;
   private static tryGetMissingVaultEntryName(err: string): string | undefined {
     // TODO CDX-939: Define contract with backend for report and upcoming contract.
     // Current 'contract' 😅:
-    const match = err.match(
-      /^The vault entry referenced by \{\{ (?<entryName>.*) \}\} could not be found in the vault\.$/
-    );
+    const match = err.match(SnapshotReporter.missingVaultMatcher);
     return match?.groups?.['entryName'];
   }
 

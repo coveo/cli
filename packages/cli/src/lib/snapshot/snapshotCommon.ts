@@ -11,6 +11,7 @@ import {
 } from '../errors/snapshotErrors';
 import {SnapshotFacade} from './snapshotFacade';
 import {PrintableError} from '../errors/printableError';
+import {SnapshotReporter} from './snapshotReporter';
 
 export interface DryRunOptions {
   sync?: boolean;
@@ -86,7 +87,7 @@ export function getMissingVaultEntriesReportHandler(
   cfg: Configuration,
   projectPath?: string
 ) {
-  return function (this: void) {
+  return function (this: SnapshotReporter) {
     // TODO CDX-935
     // TODO CDX-936
     throw new SnapshotMissingVaultEntriesError(snapshot, cfg, projectPath);

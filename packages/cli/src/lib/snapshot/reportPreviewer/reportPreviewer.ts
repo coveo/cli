@@ -1,5 +1,5 @@
 import {CliUx} from '@oclif/core';
-import {red, italic, green} from 'chalk';
+import {red, italic, green, yellow, ChalkFunction} from 'chalk';
 import {ReportViewerSection} from './reportPreviewerSection';
 import {ReportViewerStyles} from './reportPreviewerStyles';
 import {SnapshotReporter} from '../snapshotReporter';
@@ -11,7 +11,15 @@ import {
 import dedent from 'ts-dedent';
 import {recordable} from '../../utils/record';
 
+type Plurable = [singular: string, plural: string];
+function pluralizeIfNeeded(plurable: Plurable, unprintedMessages: number) {
+  return plurable[unprintedMessages > 1 ? 1 : 0];
+}
+
 export class ReportViewer {
+  private static errorPlurable: Plurable = ['error', 'errors'];
+  private static entryPlurable: Plurable = ['entry', 'entries'];
+
   public static defaultOperationsToDisplay: ReportViewerOperationName[] = [
     'resourcesCreated',
     'resourcesDeleted',
@@ -44,7 +52,34 @@ export class ReportViewer {
         SnapshotReportStatus.NO_CHANGES,
         this.getNoChangesReportHandler()
       )
+      .setReportHandler(
+        SnapshotReportStatus.MISSING_VAULT_ENTRIES,
+        this.getMissingEntriesHandler()
+      )
       .handleReport();
+  }
+
+  private getMissingEntriesHandler(): (
+    this: SnapshotReporter
+  ) => void | Promise<void> {
+    const missingVaultEntryPrinter = (entries: string[]) =>
+      ReportViewer.printAbridgedMessages(
+        entries,
+        ReportViewer.entryPlurable,
+        yellow
+      );
+    return function (this: SnapshotReporter) {
+      const entries = Array.from(this.missingVaultEntries);
+      CliUx.ux.log(
+        yellow(
+          `Missing vault ${pluralizeIfNeeded(
+            ReportViewer.entryPlurable,
+            entries.length
+          )}:`
+        )
+      );
+      missingVaultEntryPrinter(entries);
+    };
   }
 
   private getNoChangesReportHandler(): (
@@ -122,8 +157,6 @@ export class ReportViewer {
   }
 
   private logResourceErrors(ResourceSnapshotType: string) {
-    let remainingErrorsToPrint = ReportViewer.maximumNumberOfErrorsToPrint;
-
     const operationResults = this.reporter.report.resourceOperationResults;
     const operationResult = operationResults[ResourceSnapshotType];
     const operationResultErrors = Object.values(operationResult);
@@ -139,17 +172,29 @@ export class ReportViewer {
       []
     );
 
-    for (let j = 0; j < errors.length && remainingErrorsToPrint > 0; j++) {
-      CliUx.ux.log(red(`  • ${errors[j]}`));
+    ReportViewer.printAbridgedMessages(errors, ReportViewer.errorPlurable, red);
+  }
+
+  private static printAbridgedMessages(
+    messages: string[],
+    plurable: Plurable,
+    chalker: ChalkFunction
+  ) {
+    let remainingErrorsToPrint = ReportViewer.maximumNumberOfErrorsToPrint;
+    for (let j = 0; j < messages.length && remainingErrorsToPrint > 0; j++) {
+      CliUx.ux.log(chalker(`  • ${messages[j]}`));
       remainingErrorsToPrint--;
     }
 
-    const unprintedErrors =
-      errors.length - ReportViewer.maximumNumberOfErrorsToPrint;
-    if (unprintedErrors > 0) {
+    const unprintedMessages =
+      messages.length - ReportViewer.maximumNumberOfErrorsToPrint;
+    if (unprintedMessages > 0) {
       CliUx.ux.log(
         italic(
-          `  (${unprintedErrors} more error${unprintedErrors > 1 ? 's' : ''})`
+          `  (${unprintedMessages} more ${pluralizeIfNeeded(
+            plurable,
+            unprintedMessages
+          )})`
         )
       );
     }
