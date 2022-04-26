@@ -9,7 +9,7 @@ import {
   getReportWithNoProcessedResources,
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
-import {formatSnapshot} from '../../../__test__/jestSnapshotUtils';
+import {formatCliLog} from '../../../__test__/jestSnapshotUtils';
 
 describe('ReportViewer', () => {
   describe('when the report contains errors', () => {
@@ -28,7 +28,7 @@ describe('ReportViewer', () => {
         await viewer.display();
       })
       .it('should print the same report', (ctx) => {
-        expect(formatSnapshot(ctx.stdout)).toMatchSnapshot();
+        expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
       });
   });
 
@@ -48,7 +48,7 @@ describe('ReportViewer', () => {
         await viewer.display();
       })
       .it('should print resource changes', (ctx) => {
-        expect(formatSnapshot(ctx.stdout)).toMatchSnapshot();
+        expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
       });
   });
 
@@ -71,7 +71,7 @@ describe('ReportViewer', () => {
         await viewer.display();
       })
       .it('should show that no changes were detected', (ctx) => {
-        expect(formatSnapshot(ctx.stdout)).toMatchSnapshot();
+        expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
       });
   });
 });

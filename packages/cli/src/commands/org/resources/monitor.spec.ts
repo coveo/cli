@@ -14,7 +14,7 @@ import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {formatSnapshot} from '../../../__test__/jestSnapshotUtils';
+import {formatCliLog} from '../../../__test__/jestSnapshotUtils';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
 const mockedConfig = jest.mocked(Config);
@@ -175,8 +175,8 @@ describe('org:resources:monitor', () => {
       .stderr()
       .command(['org:resources:monitor', 'my-snapshot'])
       .it('should output the same thing', (ctx) => {
-        expect(formatSnapshot(ctx.stdout)).toMatchSnapshot();
-        expect(formatSnapshot(ctx.stderr)).toMatchSnapshot();
+        expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
+        expect(formatCliLog(ctx.stderr)).toMatchSnapshot();
       });
   });
 });

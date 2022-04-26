@@ -2,8 +2,8 @@
 
 exports[`org:resources:monitor when the operation conclude with no changes should output the same thing 1`] = `
 "  console.error
-     »   Warning: The org:resources commands are currently in public beta, please 
-     »   report any issue to github.com/coveo/cli/issues
+     ›   Warning: The org:resources commands are currently in public beta, please 
+     ›   report any issue to github.com/coveo/cli/issues
 
       43 |   @Preconditions(IsAuthenticated())
       44 |   public async run() {
@@ -33,8 +33,8 @@ Operation undefined..."
 
 exports[`org:resources:monitor when the operation fails should output the same thing 1`] = `
 "  console.error
-     »   Warning: The org:resources commands are currently in public beta, please 
-     »   report any issue to github.com/coveo/cli/issues
+     ›   Warning: The org:resources commands are currently in public beta, please 
+     ›   report any issue to github.com/coveo/cli/issues
 
       43 |   @Preconditions(IsAuthenticated())
       44 |   public async run() {
@@ -65,8 +65,8 @@ Operation undefined..."
 
 exports[`org:resources:monitor when the operation succeed should output the same thing 1`] = `
 "  console.error
-     »   Warning: The org:resources commands are currently in public beta, please 
-     »   report any issue to github.com/coveo/cli/issues
+     ›   Warning: The org:resources commands are currently in public beta, please 
+     ›   report any issue to github.com/coveo/cli/issues
 
       43 |   @Preconditions(IsAuthenticated())
       44 |   public async run() {
@@ -96,8 +96,8 @@ Operation undefined..."
 
 exports[`org:resources:monitor when the operations conclude with missing vault entries should output the same thing 1`] = `
 "  console.error
-     »   Warning: The org:resources commands are currently in public beta, please 
-     »   report any issue to github.com/coveo/cli/issues
+     ›   Warning: The org:resources commands are currently in public beta, please 
+     ›   report any issue to github.com/coveo/cli/issues
 
       43 |   @Preconditions(IsAuthenticated())
       44 |   public async run() {
