@@ -22,14 +22,10 @@ type SnapshotReporterHandlers = FixableErrorHandlers &
   SuccessfulReportHandler;
 
 type FixableErrorHandlers = {
-  [SnapshotReportStatus.MISSING_VAULT_ENTRIES]: /**
-   * TODO CDX-936: Define return type of the cb, & remove the SnapshotReporterHandler.
-   * Return type should be either a boolean if we do a 'all or nothing'
-   * handling (i.e. either we manage to do them all, or we do nothing)
-   * Return type should be a `Set<string>` if we do a 'best effort' strategy
-   * (i.e. if some entries are messed up, we ignore them and push the others)
-   */
-  ((this: SnapshotReporter) => boolean) | SnapshotReporterHandler | NoopHandler;
+  [SnapshotReportStatus.MISSING_VAULT_ENTRIES]:
+    | ((this: SnapshotReporter) => boolean)
+    | SnapshotReporterHandler
+    | NoopHandler;
 };
 
 type UnfixableErrorHandlers = {
