@@ -17,6 +17,7 @@ import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {
   getErrorReport,
+  getMissingVaultEntryReport,
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
@@ -127,6 +128,25 @@ const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
   mockedApplySnapshot.mockResolvedValue(new SnapshotReporter(errorReportApply));
   await mockSnapshotFactory();
 };
+
+const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries =
+  async () => {
+    const missingVaultEntriesValidate = getMissingVaultEntryReport(
+      'error-report',
+      ResourceSnapshotsReportType.DryRun
+    );
+    const missingVaultEntriesApply = getMissingVaultEntryReport(
+      'error-report',
+      ResourceSnapshotsReportType.Apply
+    );
+    mockedValidateSnapshot.mockResolvedValue(
+      new SnapshotReporter(missingVaultEntriesValidate)
+    );
+    mockedApplySnapshot.mockResolvedValue(
+      new SnapshotReporter(missingVaultEntriesApply)
+    );
+    await mockSnapshotFactory();
+  };
 
 describe('org:resources:push', () => {
   beforeAll(() => {
@@ -379,7 +399,7 @@ describe('org:resources:push', () => {
         .stdout()
         .stderr()
         .command(['org:resources:push'])
-        .catch(/Invalid snapshot/)
+        .catch(/Your snapshot is missing some vault entries/)
         .it('should show the missingVaultEntries snapshot error');
 
       test
@@ -392,18 +412,6 @@ describe('org:resources:push', () => {
           expect(mockedApplySnapshot).toHaveBeenCalledTimes(0);
         })
         .it('should only preview the snapshot');
-
-      test
-        .skip() //todo
-        .stdout()
-        .stderr()
-        .command(['org:resources:push'])
-        .catch(/Invalid snapshot/)
-        .it('should return a missingVaultEntries snapshot error message');
     });
   });
 });
-
-function mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries() {
-  //todo
-}
