@@ -5,6 +5,7 @@ import {
   ResourceSnapshotsReportStatus,
   ResourceSnapshotType,
 } from '@coveord/platform-client';
+import ResourceSnapshots from '@coveord/platform-client/dist/definitions/resources/ResourceSnapshots/ResourceSnapshots';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
@@ -39,7 +40,8 @@ type SuccessfulReportHandler = {
   [K in SnapshotReportStatus]: SnapshotReporterHandler | NoopHandler;
 };
 export class SnapshotReporter {
-  private missingVaultEntriesSet: Set<string> = new Set();
+  private missingVaultEntriesSet: Set<[string, ResourceSnapshotType]> =
+    new Set();
 
   public get missingVaultEntries() {
     return this.missingVaultEntriesSet.values();
@@ -169,7 +171,10 @@ export class SnapshotReporter {
           const missingEntry =
             SnapshotReporter.tryGetMissingVaultEntryName(err);
           if (missingEntry) {
-            this.missingVaultEntriesSet.add(missingEntry);
+            this.missingVaultEntriesSet.add([
+              missingEntry,
+              resourceType as ResourceSnapshotType,
+            ]);
           } else {
             // TODO: Fix PlatformClient to reflect proper typing.
             this.addResourceInError(resourceType as ResourceSnapshotType, err);

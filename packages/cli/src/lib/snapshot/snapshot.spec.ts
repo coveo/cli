@@ -159,7 +159,7 @@ describe('Snapshot', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
   });
 
   describe('#validate', () => {

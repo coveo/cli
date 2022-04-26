@@ -71,7 +71,9 @@ export class ReportViewer {
         yellow
       );
     return function (this: SnapshotReporter) {
-      const entries = Array.from(this.missingVaultEntries);
+      const entries = Array.from(this.missingVaultEntries).map(
+        (entry) => entry[0]
+      );
       CliUx.ux.log(
         yellow(
           `Missing vault ${pluralizeIfNeeded(
