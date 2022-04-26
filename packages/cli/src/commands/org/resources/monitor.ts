@@ -1,6 +1,6 @@
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
 import {Flags, Command, CliUx} from '@oclif/core';
-import {Config, Configuration} from '../../../lib/config/config';
+import {Config} from '../../../lib/config/config';
 import {
   IsAuthenticated,
   Preconditions,
