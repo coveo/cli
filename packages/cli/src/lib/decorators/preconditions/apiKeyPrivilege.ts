@@ -64,7 +64,7 @@ async function getConfiguration() {
 }
 
 function hasGetFlagMethod(
-  candidate: Command & {getFlags?: () => Promise<unknown>}
+  candidate: any
 ): candidate is Command & {getFlags: () => Promise<unknown>} {
   return Boolean(candidate?.getFlags);
 }
