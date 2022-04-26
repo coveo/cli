@@ -10,6 +10,7 @@ import {
 } from './reportPreviewerDataModels';
 import dedent from 'ts-dedent';
 import {recordable} from '../../utils/record';
+import {ResourceSnapshotType} from '@coveord/platform-client';
 
 type Plurable = [singular: string, plural: string];
 function pluralizeIfNeeded(plurable: Plurable, unprintedMessages: number) {
@@ -19,6 +20,7 @@ function pluralizeIfNeeded(plurable: Plurable, unprintedMessages: number) {
 export class ReportViewer {
   private static errorPlurable: Plurable = ['error', 'errors'];
   private static entryPlurable: Plurable = ['entry', 'entries'];
+  private static resourcePlurable: Plurable = ['resource', 'resources'];
 
   public static defaultOperationsToDisplay: ReportViewerOperationName[] = [
     'resourcesCreated',
@@ -98,7 +100,7 @@ export class ReportViewer {
   ) => void | Promise<void> {
     const reportHandler = this.handleReportErrors.bind(this);
     return function (this: SnapshotReporter) {
-      reportHandler();
+      reportHandler(this.resourceInError, this.resourceInErrorCount);
     };
   }
 
@@ -136,43 +138,36 @@ export class ReportViewer {
     return capitalized.replace(/_/g, ' ');
   }
 
-  private handleReportErrors() {
-    const totalErrorCount =
-      this.reporter.getOperationTypeTotalCount('resourcesInError');
-
+  private handleReportErrors(
+    allErrors: Map<Partial<ResourceSnapshotType>, Set<string>>,
+    totalCount: number
+  ) {
     CliUx.ux.log(ReportViewerStyles.header('Error Report:'));
     CliUx.ux.log(
       ReportViewerStyles.error(
-        `   ${totalErrorCount} resource${
-          totalErrorCount > 1 ? 's' : ''
-        } in error `
+        `   ${totalCount} ${pluralizeIfNeeded(
+          ReportViewer.resourcePlurable,
+          totalCount
+        )} in error `
       )
     );
 
-    const operationResults = this.reporter.report.resourceOperationResults;
-    for (const resourceType in operationResults) {
-      this.logResourceErrors(resourceType);
+    for (const [resourceType, errorOfThisResourceType] of allErrors) {
+      this.logResourceErrors(resourceType, errorOfThisResourceType);
     }
     this.printNewLine();
   }
 
-  private logResourceErrors(ResourceSnapshotType: string) {
-    const operationResults = this.reporter.report.resourceOperationResults;
-    const operationResult = operationResults[ResourceSnapshotType];
-    const operationResultErrors = Object.values(operationResult);
-
-    if (operationResultErrors.length === 0) {
-      return;
-    }
-
-    CliUx.ux.log(`\n ${this.prettyPrintResourceName(ResourceSnapshotType)}`);
-
-    const errors = operationResultErrors.reduce(
-      (acc, curr) => acc.concat(curr),
-      []
+  private logResourceErrors(
+    resourceSnapshotType: string,
+    errorOfThisResourceType: Set<string>
+  ) {
+    CliUx.ux.log(`\n ${this.prettyPrintResourceName(resourceSnapshotType)}`);
+    ReportViewer.printAbridgedMessages(
+      Array.from(errorOfThisResourceType),
+      ReportViewer.errorPlurable,
+      red
     );
-
-    ReportViewer.printAbridgedMessages(errors, ReportViewer.errorPlurable, red);
   }
 
   private static printAbridgedMessages(

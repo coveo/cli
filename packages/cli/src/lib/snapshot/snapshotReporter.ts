@@ -3,6 +3,7 @@ import {
   ResourceSnapshotsReportOperationModel,
   ResourceSnapshotsReportResultCode,
   ResourceSnapshotsReportStatus,
+  ResourceSnapshotType,
 } from '@coveord/platform-client';
 import {
   ReportViewerOperationName,
@@ -43,7 +44,9 @@ export class SnapshotReporter {
   public get missingVaultEntries() {
     return this.missingVaultEntriesSet.values();
   }
-  private reportErrors: string[] = [];
+  public resourceInErrorCount: number = 0;
+  public resourceInError: Map<Partial<ResourceSnapshotType>, Set<string>> =
+    new Map();
   public constructor(public readonly report: ResourceSnapshotsReportModel) {}
 
   public static convertResourceEntriesToResourceSnapshotsReportOperationModel([
@@ -107,23 +110,27 @@ export class SnapshotReporter {
   public async handleReport(): Promise<void> {
     const reportStatuses = this.getReportStatuses();
     for (const handler of reportStatuses.fixables) {
-      await this.reportHandlers[handler].apply(this);
-      this.reportHandlers[handler] = () => {};
+      await this.callAndReset(handler);
     }
     if (reportStatuses.errors.length > 0) {
       for (const handler of reportStatuses.errors) {
-        await this.reportHandlers[handler].apply(this);
-        this.reportHandlers[handler] = () => {};
+        await this.callAndReset(handler);
       }
-    } else if (reportStatuses.successes.length > 0) {
+      return;
+    }
+    if (reportStatuses.successes.length > 0) {
       for (const handler of reportStatuses.successes) {
-        await this.reportHandlers[handler].apply(this);
-        this.reportHandlers[handler] = () => {};
+        await this.callAndReset(handler);
       }
     }
   }
 
-  public getReportStatuses() {
+  private async callAndReset(handler: SnapshotReportStatus) {
+    await this.reportHandlers[handler].apply(this);
+    this.reportHandlers[handler] = () => {};
+  }
+
+  private getReportStatuses() {
     const statuses: Record<
       'fixables' | 'successes' | 'errors',
       SnapshotReportStatus[]
@@ -146,42 +153,40 @@ export class SnapshotReporter {
       statuses.successes.push(SnapshotReportStatus.SUCCESS);
     }
 
-    if (this.reportErrors.length > 0) {
+    if (this.resourceInErrorCount > 0) {
       statuses.errors.push(SnapshotReportStatus.ERROR);
     }
 
     return statuses;
   }
 
-  public getReportStatus(): SnapshotReportStatus {
-    if (this.isSuccessReport()) {
-      return this.hasChangedResources()
-        ? SnapshotReportStatus.SUCCESS
-        : SnapshotReportStatus.NO_CHANGES;
-    }
-    this.computeMissingVaultEntries();
-    if (this.missingVaultEntriesSet.size > 0) {
-      return SnapshotReportStatus.MISSING_VAULT_ENTRIES;
-    }
-    return SnapshotReportStatus.ERROR;
-  }
-
   private computeMissingVaultEntries(): void {
-    for (const resourceTypeEntry of Object.values(
+    for (const [resourceType, resource] of Object.entries(
       this.report.resourceOperationResults
     )) {
-      for (const errors of Object.values(resourceTypeEntry)) {
+      for (const errors of Object.values(resource)) {
         for (const err of errors) {
           const missingEntry =
             SnapshotReporter.tryGetMissingVaultEntryName(err);
           if (missingEntry) {
             this.missingVaultEntriesSet.add(missingEntry);
           } else {
-            this.reportErrors.push(err);
+            // TODO: Fix PlatformClient to reflect proper typing.
+            this.addResourceInError(resourceType as ResourceSnapshotType, err);
           }
         }
       }
     }
+  }
+
+  private addResourceInError(resourceType: ResourceSnapshotType, err: string) {
+    this.resourceInErrorCount++;
+    let errorSet = this.resourceInError.get(resourceType);
+    if (!errorSet) {
+      errorSet = new Set();
+      this.resourceInError.set(resourceType, errorSet);
+    }
+    errorSet.add(err);
   }
 
   private static missingVaultMatcher =
