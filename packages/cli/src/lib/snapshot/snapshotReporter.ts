@@ -3,15 +3,33 @@ import {
   ResourceSnapshotsReportOperationModel,
   ResourceSnapshotsReportResultCode,
   ResourceSnapshotsReportStatus,
+  ResourceSnapshotType,
 } from '@coveord/platform-client';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
+  SnapshotReportStatus,
 } from './reportPreviewer/reportPreviewerDataModels';
 
 type ResourceEntries = [string, ResourceSnapshotsReportOperationModel];
 
+type NoopHandler = (this: void) => void;
+type SnapshotReporterHandler = (this: SnapshotReporter) => void | Promise<void>;
+
+type SnapshotReporterHandlers = {
+  [K in SnapshotReportStatus]: SnapshotReporterHandler | NoopHandler;
+};
+
 export class SnapshotReporter {
+  private missingVaultEntriesSet: Set<[string, ResourceSnapshotType]> =
+    new Set();
+
+  public get missingVaultEntries() {
+    return this.missingVaultEntriesSet.values();
+  }
+  public resourceInErrorCount: number = 0;
+  public resourceInError: Map<Partial<ResourceSnapshotType>, Set<string>> =
+    new Map();
   public constructor(public readonly report: ResourceSnapshotsReportModel) {}
 
   public static convertResourceEntriesToResourceSnapshotsReportOperationModel([
@@ -55,6 +73,118 @@ export class SnapshotReporter {
       status === ResourceSnapshotsReportStatus.Completed &&
       resultCode === ResourceSnapshotsReportResultCode.Success
     );
+  }
+
+  private reportHandlers: SnapshotReporterHandlers = {
+    [SnapshotReportStatus.SUCCESS]: () => {},
+    [SnapshotReportStatus.NO_CHANGES]: () => {},
+    [SnapshotReportStatus.MISSING_VAULT_ENTRIES]: () => {},
+    [SnapshotReportStatus.ERROR]: () => {},
+  };
+
+  public setReportHandler<T extends SnapshotReportStatus>(
+    status: T,
+    handler: SnapshotReporterHandlers[T]
+  ): SnapshotReporter {
+    this.reportHandlers[status] = handler;
+    return this;
+  }
+
+  public async handleReport(): Promise<void> {
+    const reportStatuses = this.getReportStatuses();
+    await this.executeHandlers(reportStatuses.fixables);
+    if (reportStatuses.errors.length > 0) {
+      await this.executeHandlers(reportStatuses.errors);
+      return;
+    }
+    if (reportStatuses.successes.length > 0) {
+      await this.executeHandlers(reportStatuses.successes);
+    }
+  }
+
+  private async executeHandlers(reportStatuses: SnapshotReportStatus[]) {
+    for (const status of reportStatuses) {
+      await this.callAndReset(status);
+    }
+  }
+
+  private async callAndReset(handler: SnapshotReportStatus) {
+    await this.reportHandlers[handler].apply(this);
+    this.reportHandlers[handler] = () => {};
+  }
+
+  private getReportStatuses() {
+    const statuses: Record<
+      'fixables' | 'successes' | 'errors',
+      SnapshotReportStatus[]
+    > = {
+      fixables: [],
+      successes: [],
+      errors: [],
+    };
+
+    this.parseResourcesOperationsResults();
+    if (this.missingVaultEntriesSet.size > 0) {
+      statuses.fixables.push(SnapshotReportStatus.MISSING_VAULT_ENTRIES);
+    }
+
+    if (!this.hasChangedResources()) {
+      statuses.successes.push(SnapshotReportStatus.NO_CHANGES);
+    }
+
+    if (this.isSuccessReport()) {
+      statuses.successes.push(SnapshotReportStatus.SUCCESS);
+    }
+
+    if (this.resourceInErrorCount > 0) {
+      statuses.errors.push(SnapshotReportStatus.ERROR);
+    }
+
+    return statuses;
+  }
+
+  private parseResourcesOperationsResults(): void {
+    for (const [resourceType, resource] of Object.entries(
+      this.report.resourceOperationResults
+    )) {
+      for (const errors of Object.values(resource)) {
+        for (const err of errors) {
+          this.parseResourceOperationResult(err, resourceType);
+        }
+      }
+    }
+  }
+
+  private parseResourceOperationResult(err: string, resourceType: string) {
+    const missingEntry = SnapshotReporter.tryGetMissingVaultEntryName(err);
+    if (missingEntry) {
+      this.missingVaultEntriesSet.add([
+        missingEntry,
+        resourceType as ResourceSnapshotType,
+      ]);
+    } else {
+      // TODO: Fix PlatformClient to reflect proper typing.
+      this.addResourceInError(resourceType as ResourceSnapshotType, err);
+    }
+  }
+
+  private addResourceInError(resourceType: ResourceSnapshotType, err: string) {
+    this.resourceInErrorCount++;
+    let errorSet = this.resourceInError.get(resourceType);
+    if (!errorSet) {
+      errorSet = new Set();
+      this.resourceInError.set(resourceType, errorSet);
+    }
+    errorSet.add(err);
+  }
+
+  private static missingVaultMatcher =
+    /^The vault entry referenced by \{\{ (?<entryName>.*) \}\} could not be found in the vault\.$/;
+  private static tryGetMissingVaultEntryName(err: string): string | undefined {
+    // TODO CDX-939: Define contract with backend for report and upcoming contract.
+    // Current 'contract' 😅:
+    const match = err.match(SnapshotReporter.missingVaultMatcher);
+    return match?.groups?.['entryName'];
   }
 
   public getChangedResources(
