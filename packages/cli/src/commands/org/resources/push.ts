@@ -123,8 +123,8 @@ export default class Push extends Command {
   }
 
   private getSuccessReportHandler(snapshot: Snapshot) {
-    const successReportWithChangesHandler =
-      this.successReportWithChangesHandler.bind(this, snapshot);
+    const successReportWithChangesHandler = () =>
+      this.successReportWithChangesHandler(snapshot);
     return async function (this: SnapshotReporter) {
       return successReportWithChangesHandler();
     };

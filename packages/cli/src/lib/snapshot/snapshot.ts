@@ -94,11 +94,8 @@ export class Snapshot {
     if (!expandedPreview) {
       return;
     }
-    const onSuccess = this.generateExpandedPreview.bind(
-      this,
-      projectToPreview,
-      deleteMissingResources
-    );
+    const onSuccess = () =>
+      this.generateExpandedPreview(projectToPreview, deleteMissingResources);
     await reporter
       .setReportHandler(
         SnapshotReportStatus.SUCCESS,

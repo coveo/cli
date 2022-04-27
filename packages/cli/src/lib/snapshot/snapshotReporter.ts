@@ -5,7 +5,6 @@ import {
   ResourceSnapshotsReportStatus,
   ResourceSnapshotType,
 } from '@coveord/platform-client';
-import ResourceSnapshots from '@coveord/platform-client/dist/definitions/resources/ResourceSnapshots/ResourceSnapshots';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
@@ -17,24 +16,10 @@ type ResourceEntries = [string, ResourceSnapshotsReportOperationModel];
 type NoopHandler = (this: void) => void;
 type SnapshotReporterHandler = (this: SnapshotReporter) => void | Promise<void>;
 
-type SnapshotReporterHandlers = FixableErrorHandlers &
-  UnfixableErrorHandlers &
-  SuccessfulReportHandler;
-
-type FixableErrorHandlers = {
-  [SnapshotReportStatus.MISSING_VAULT_ENTRIES]:
-    | ((this: SnapshotReporter) => boolean)
-    | SnapshotReporterHandler
-    | NoopHandler;
-};
-
-type UnfixableErrorHandlers = {
+type SnapshotReporterHandlers = {
   [K in SnapshotReportStatus]: SnapshotReporterHandler | NoopHandler;
 };
 
-type SuccessfulReportHandler = {
-  [K in SnapshotReportStatus]: SnapshotReporterHandler | NoopHandler;
-};
 export class SnapshotReporter {
   private missingVaultEntriesSet: Set<[string, ResourceSnapshotType]> =
     new Set();
@@ -107,19 +92,19 @@ export class SnapshotReporter {
 
   public async handleReport(): Promise<void> {
     const reportStatuses = this.getReportStatuses();
-    for (const handler of reportStatuses.fixables) {
-      await this.callAndReset(handler);
-    }
+    await this.executeHandlers(reportStatuses.fixables);
     if (reportStatuses.errors.length > 0) {
-      for (const handler of reportStatuses.errors) {
-        await this.callAndReset(handler);
-      }
+      await this.executeHandlers(reportStatuses.errors);
       return;
     }
     if (reportStatuses.successes.length > 0) {
-      for (const handler of reportStatuses.successes) {
-        await this.callAndReset(handler);
-      }
+      await this.executeHandlers(reportStatuses.successes);
+    }
+  }
+
+  private async executeHandlers(reportStatuses: SnapshotReportStatus[]) {
+    for (const status of reportStatuses) {
+      await this.callAndReset(status);
     }
   }
 
@@ -138,7 +123,7 @@ export class SnapshotReporter {
       errors: [],
     };
 
-    this.computeMissingVaultEntries();
+    this.parseResourcesOperationsResults();
     if (this.missingVaultEntriesSet.size > 0) {
       statuses.fixables.push(SnapshotReportStatus.MISSING_VAULT_ENTRIES);
     }
@@ -158,25 +143,28 @@ export class SnapshotReporter {
     return statuses;
   }
 
-  private computeMissingVaultEntries(): void {
+  private parseResourcesOperationsResults(): void {
     for (const [resourceType, resource] of Object.entries(
       this.report.resourceOperationResults
     )) {
       for (const errors of Object.values(resource)) {
         for (const err of errors) {
-          const missingEntry =
-            SnapshotReporter.tryGetMissingVaultEntryName(err);
-          if (missingEntry) {
-            this.missingVaultEntriesSet.add([
-              missingEntry,
-              resourceType as ResourceSnapshotType,
-            ]);
-          } else {
-            // TODO: Fix PlatformClient to reflect proper typing.
-            this.addResourceInError(resourceType as ResourceSnapshotType, err);
-          }
+          this.parseResourceOperationResult(err, resourceType);
         }
       }
+    }
+  }
+
+  private parseResourceOperationResult(err: string, resourceType: string) {
+    const missingEntry = SnapshotReporter.tryGetMissingVaultEntryName(err);
+    if (missingEntry) {
+      this.missingVaultEntriesSet.add([
+        missingEntry,
+        resourceType as ResourceSnapshotType,
+      ]);
+    } else {
+      // TODO: Fix PlatformClient to reflect proper typing.
+      this.addResourceInError(resourceType as ResourceSnapshotType, err);
     }
   }
 

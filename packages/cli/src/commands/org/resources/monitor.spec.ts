@@ -134,17 +134,19 @@ describe('org:resources:monitor', () => {
     .it(
       'should create two differents reporters, one before the action is complete and another afterward',
       () => {
-        // First call is the one used prior to the refresh loop
-        expect(mockedSnapshotReporter).toBeCalledTimes(2);
-        expect(mockedSnapshotReporter.mock.calls[0][0].id).toBe(
-          mockedLatestReport.mock.instances[0]
-        );
-        // Last call is used when the refresh loop is complete.
-        expect(
+        const firstReport = mockedLatestReport.mock.instances[0];
+        const lastReport = mockedLatestReport.mock.instances[1];
+        const firstReportParameterId =
+          mockedSnapshotReporter.mock.calls[0][0].id;
+        const lastReportParameterId =
           mockedSnapshotReporter.mock.calls[
             mockedSnapshotReporter.mock.calls.length - 1
-          ][0].id
-        ).toBe(mockedLatestReport.mock.instances[1]);
+          ][0].id;
+        // First call is the one used prior to the refresh loop
+        expect(mockedSnapshotReporter).toBeCalledTimes(2);
+        expect(firstReportParameterId).toBe(firstReport);
+        // Last call is used when the refresh loop is complete.
+        expect(lastReportParameterId).toBe(lastReport);
       }
     );
 
