@@ -1,0 +1,126 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`org:resources:monitor when the operation conclude with no changes should output the same thing 1`] = `
+"  console.error
+     ›   Warning: The org:resources commands are currently in public beta, please 
+     ›   report any issue to github.com/coveo/cli/issues
+
+      43 |   @Preconditions(IsAuthenticated())
+      44 |   public async run() {
+    > 45 |     this.warn(
+         |          ^
+      46 |       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
+      47 |     );
+      48 |     await this.printHeader();
+
+      at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:61:13)
+      at Monitor.warn (../../../node_modules/@oclif/core/lib/command.js:86:20)
+      at Monitor.apply (commands/org/resources/monitor.ts:45:10)
+      at Monitor.descriptor.value (lib/decorators/preconditions/preconditions.ts:19:32)
+      at Monitor.trackCommand (lib/decorators/preconditions/trackable.ts:63:3)
+      at Monitor.descriptor.value (lib/decorators/preconditions/trackable.ts:46:9)
+      at Monitor._run (../../../node_modules/@oclif/core/lib/command.js:67:22)
+
+
+"
+`;
+
+exports[`org:resources:monitor when the operation conclude with no changes should output the same thing 2`] = `
+"
+Monitoring snapshot my-snapshot...
+Operation undefined..."
+`;
+
+exports[`org:resources:monitor when the operation fails should output the same thing 1`] = `
+"  console.error
+     ›   Warning: The org:resources commands are currently in public beta, please 
+     ›   report any issue to github.com/coveo/cli/issues
+
+      43 |   @Preconditions(IsAuthenticated())
+      44 |   public async run() {
+    > 45 |     this.warn(
+         |          ^
+      46 |       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
+      47 |     );
+      48 |     await this.printHeader();
+
+      at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:61:13)
+      at Monitor.warn (../../../node_modules/@oclif/core/lib/command.js:86:20)
+      at Monitor.apply (commands/org/resources/monitor.ts:45:10)
+      at Monitor.descriptor.value (lib/decorators/preconditions/preconditions.ts:19:32)
+      at Monitor.trackCommand (lib/decorators/preconditions/trackable.ts:63:3)
+      at Monitor.descriptor.value (lib/decorators/preconditions/trackable.ts:46:9)
+      at Monitor._run (../../../node_modules/@oclif/core/lib/command.js:67:22)
+
+
+undefined
+"
+`;
+
+exports[`org:resources:monitor when the operation fails should output the same thing 2`] = `
+"
+Monitoring snapshot my-snapshot...
+Operation undefined..."
+`;
+
+exports[`org:resources:monitor when the operation succeed should output the same thing 1`] = `
+"  console.error
+     ›   Warning: The org:resources commands are currently in public beta, please 
+     ›   report any issue to github.com/coveo/cli/issues
+
+      43 |   @Preconditions(IsAuthenticated())
+      44 |   public async run() {
+    > 45 |     this.warn(
+         |          ^
+      46 |       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
+      47 |     );
+      48 |     await this.printHeader();
+
+      at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:61:13)
+      at Monitor.warn (../../../node_modules/@oclif/core/lib/command.js:86:20)
+      at Monitor.apply (commands/org/resources/monitor.ts:45:10)
+      at Monitor.descriptor.value (lib/decorators/preconditions/preconditions.ts:19:32)
+      at Monitor.trackCommand (lib/decorators/preconditions/trackable.ts:63:3)
+      at Monitor.descriptor.value (lib/decorators/preconditions/trackable.ts:46:9)
+      at Monitor._run (../../../node_modules/@oclif/core/lib/command.js:67:22)
+
+
+"
+`;
+
+exports[`org:resources:monitor when the operation succeed should output the same thing 2`] = `
+"
+Monitoring snapshot my-snapshot...
+Operation undefined..."
+`;
+
+exports[`org:resources:monitor when the operations conclude with missing vault entries should output the same thing 1`] = `
+"  console.error
+     ›   Warning: The org:resources commands are currently in public beta, please 
+     ›   report any issue to github.com/coveo/cli/issues
+
+      43 |   @Preconditions(IsAuthenticated())
+      44 |   public async run() {
+    > 45 |     this.warn(
+         |          ^
+      46 |       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
+      47 |     );
+      48 |     await this.printHeader();
+
+      at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:61:13)
+      at Monitor.warn (../../../node_modules/@oclif/core/lib/command.js:86:20)
+      at Monitor.apply (commands/org/resources/monitor.ts:45:10)
+      at Monitor.descriptor.value (lib/decorators/preconditions/preconditions.ts:19:32)
+      at Monitor.trackCommand (lib/decorators/preconditions/trackable.ts:63:3)
+      at Monitor.descriptor.value (lib/decorators/preconditions/trackable.ts:46:9)
+      at Monitor._run (../../../node_modules/@oclif/core/lib/command.js:67:22)
+
+
+"
+`;
+
+exports[`org:resources:monitor when the operations conclude with missing vault entries should output the same thing 2`] = `
+"
+Monitoring snapshot my-snapshot...
+Operation undefined..."
+`;

@@ -17,6 +17,7 @@ import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {
   getErrorReport,
+  getMissingVaultEntryReport,
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
@@ -127,6 +128,25 @@ const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
   mockedApplySnapshot.mockResolvedValue(new SnapshotReporter(errorReportApply));
   await mockSnapshotFactory();
 };
+
+const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries =
+  async () => {
+    const missingVaultEntriesValidate = getMissingVaultEntryReport(
+      'error-report',
+      ResourceSnapshotsReportType.DryRun
+    );
+    const missingVaultEntriesApply = getMissingVaultEntryReport(
+      'error-report',
+      ResourceSnapshotsReportType.Apply
+    );
+    mockedValidateSnapshot.mockResolvedValue(
+      new SnapshotReporter(missingVaultEntriesValidate)
+    );
+    mockedApplySnapshot.mockResolvedValue(
+      new SnapshotReporter(missingVaultEntriesApply)
+    );
+    await mockSnapshotFactory();
+  };
 
 describe('org:resources:push', () => {
   beforeAll(() => {
@@ -362,5 +382,34 @@ describe('org:resources:push', () => {
       .command(['org:resources:push'])
       .catch(/Invalid snapshot/)
       .it('should return an invalid snapshot error message');
+  });
+
+  describe('when the dryRun returns a report with missing vault entries', () => {
+    beforeAll(async () => {
+      await mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries();
+    });
+
+    afterAll(() => {
+      mockedSnapshotFactory.mockReset();
+    });
+
+    describe('when the user refuses to migrate or type in the missing vault entries', () => {
+      test
+        .stdout()
+        .stderr()
+        .command(['org:resources:push'])
+        .catch(/Your snapshot is missing some vault entries/)
+        .it('should show the missingVaultEntries snapshot error');
+
+      test
+        .stdout()
+        .stderr()
+        .command(['org:resources:push'])
+        .catch(() => {
+          expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
+          expect(mockedApplySnapshot).toHaveBeenCalledTimes(0);
+        })
+        .it('should only preview the snapshot');
+    });
   });
 });
