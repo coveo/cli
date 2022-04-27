@@ -50,6 +50,12 @@
       "matchCurrentVersion": "7.x",
       "allowedVersions": "7.x",
       "description": "Need to migrate E2E to ESM (not easy)"
+    },
+    {
+      "matchPackageNames": ["jest", "babel-jest", "jest-config"],
+      "matchCurrentVersion": "27.x",
+      "allowedVersions": "27.x",
+      "description": "CDX-942"
     }
   ],
   "rangeStrategy": "auto",
