@@ -1,7 +1,7 @@
 name: Snyk
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * 1-5'
   push:
     branches:
       - master
@@ -11,7 +11,7 @@ jobs:
   snyk:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # tag=v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
       - uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
       - name: Prepare snyk
         run: |
@@ -37,7 +37,7 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=8192
         run: npx snyk code test    --dev --all-projects --exclude="project.json,npm-shim" --sarif > ./sarifs/snyk-code.sarif
       - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v1
+        uses: github/codeql-action/upload-sarif@e2cc7cc006b87d43538b16d71752753e7b85224d # tag=v1
 
         with:
           sarif_file: ./sarifs

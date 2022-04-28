@@ -19,6 +19,7 @@ import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {
   getErrorReport,
+  getMissingVaultEntryReport,
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
 import {Command} from '@oclif/core';
@@ -120,6 +121,17 @@ const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
   mockedValidateSnapshot.mockResolvedValue(reporter);
   await mockSnapshotFactory();
 };
+
+const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries =
+  async () => {
+    const missingVaultEntry = getMissingVaultEntryReport(
+      'missing-vault-entry',
+      ResourceSnapshotsReportType.Apply
+    );
+    const reporter = new SnapshotReporter(missingVaultEntry);
+    mockedValidateSnapshot.mockResolvedValue(reporter);
+    await mockSnapshotFactory();
+  };
 
 const mockSnapshotFacade = () => {
   mockedSnapshotFacade.mockImplementation(
@@ -375,5 +387,24 @@ describe('org:resources:preview', () => {
       .it(
         'should try to apply synchronization plan without asking for confirmation'
       );
+  });
+
+  describe('when the report contains resources with missing vault entries', () => {
+    beforeAll(async () => {
+      await mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries();
+    });
+
+    afterAll(() => {
+      mockedSnapshotFactory.mockReset();
+    });
+
+    describe('when the user refuses to migrate or type in the missing vault entries', () => {
+      test
+        .stdout()
+        .stderr()
+        .command(['org:resources:preview'])
+        .catch(/Your snapshot is missing some vault entries/)
+        .it('should throw an error for invalid snapshots');
+    });
   });
 });

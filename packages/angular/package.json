@@ -29,7 +29,7 @@
     "@angular-devkit/schematics": "^13.2.4",
     "@angular/cdk": "^13.2.3",
     "@angular/cli": "^13.2.4",
-    "@coveo/search-token-server": "1.27.0",
+    "@coveo/search-token-server": "1.27.1",
     "@schematics/angular": "^13.2.4",
     "jest-config": "^27.4.7",
     "typescript": "^4.3.5"
@@ -43,7 +43,7 @@
     "@coveo/headless": "latest",
     "@types/fs-extra": "9.0.13",
     "@types/jest": "27.4.1",
-    "@types/node": "17.0.25",
+    "@types/node": "17.0.29",
     "fs-extra": "10.1.0",
     "jest": "27.5.1",
     "prettier": "2.6.2",
