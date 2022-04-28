@@ -33,7 +33,7 @@ jobs:
           mkdir -p sarifs
           npx snyk code test    --dev --all-projects --exclude="project.json,npm-shim" --sarif > ./sarifs/snyk-code.sarif
       - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v1
+        uses: github/codeql-action/upload-sarif@e2cc7cc006b87d43538b16d71752753e7b85224d # tag=v1
         with:
           sarif_file: ./sarifs
       - name: Check Code Scanning alerts
