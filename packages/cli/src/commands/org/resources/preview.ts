@@ -21,6 +21,7 @@ import {
   sync,
   wait,
 } from '../../../lib/flags/snapshotCommonFlags';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {Project} from '../../../lib/project/project';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
