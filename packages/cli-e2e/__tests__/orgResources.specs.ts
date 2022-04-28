@@ -292,7 +292,7 @@ describe('org:resources', () => {
         await pullFromOrg(
           processManager,
           destinationPath,
-          ['-t', testOrgId],
+          ['-o', testOrgId],
           'org-resources-pull-all'
         );
         const snapshotFiles = readdirSync(snapshotProjectPath);
@@ -309,7 +309,7 @@ describe('org:resources', () => {
         await pullFromOrg(
           processManager,
           destinationPath,
-          ['-t', testOrgId, '-r', 'FIELD'],
+          ['-o', testOrgId, '-r', 'FIELD'],
           'org-resources-pull-all-fields'
         );
         const originalResources = getResourceFolderContent(snapshotProjectPath);
