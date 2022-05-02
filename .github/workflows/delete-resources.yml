@@ -23,11 +23,11 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - name: Delete test API keys
-        timeout-minutes: 5
+        timeout-minutes: 30
         if: always()
         run: node ./scripts/cleaning/delete-api-keys.js --olderThan 1d
       - name: Delete test orgs
-        timeout-minutes: 5
+        timeout-minutes: 30
         if: always()
         run: |
           Xvfb :1 -screen 0 1024x768x16 & sleep 1
