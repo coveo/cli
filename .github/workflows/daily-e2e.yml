@@ -1,7 +1,7 @@
 name: Daily test
 on:
   schedule:
-    - cron: '0 0 * * 1-5'
+    - cron: '0 23 * * 1-5'
 
 env:
   E2E_USE_NPM_REGISTRY: true
