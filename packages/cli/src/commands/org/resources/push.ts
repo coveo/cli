@@ -41,7 +41,7 @@ export default class Push extends Command {
   public static flags = {
     ...wait(),
     ...sync(),
-    // TODO: add flag to automatically transfer vault entries when transferable
+    // TODO: CDX-935 add flag to automatically transfer vault entries when transferable
     ...previewLevel(),
     target: Flags.string({
       char: 't',
