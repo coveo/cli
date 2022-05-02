@@ -4,82 +4,115 @@ import PlatformClient, {
   VaultVisibilityType,
 } from '@coveord/platform-client';
 import {CliUx} from '@oclif/core';
+import {yellow} from 'chalk';
 import {readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
 import open from 'open';
 import {join} from 'path';
 import {cwd} from 'process';
+import dedent from 'ts-dedent';
 import {InvalidVaultEntry} from '../errors/vaultErrors';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
+import {Snapshot} from './snapshot';
 import {VaultEntryAttributes} from './snapshotReporter';
 
 export class Vault {
-  public constructor(
-    private organizationId: string,
-    private client: PlatformClient
-  ) {}
+  private static defaultEntryValue = '';
+  public constructor(private organizationId: string) {}
 
-  public async getFormattedVaultEntries(
-    missingEntries: IterableIterator<VaultEntryAttributes>
-  ) {
+  public async createEntries(entries: VaultEntryAttributes[]) {
+    const client = await this.client();
     const vaultEntryFilePath = join(cwd(), `${this.organizationId}-vault.json`);
+    this.prepareFile(vaultEntryFilePath, entries);
+
     let valid = false;
 
     while (!valid) {
-      await this.waitForUserInput(vaultEntryFilePath, missingEntries);
-      const key = await CliUx.ux.prompt(
-        'Press anykey once finished. Press q to abort',
-        {type: 'single'}
-      );
+      await this.openFile(vaultEntryFilePath);
+      const key = await CliUx.ux.prompt('', {
+        type: 'single',
+        required: false,
+        prompt: 'Press any key once finished. Press q to abort\n',
+      });
       if (key === 'q') {
         return null;
       }
-      valid = this.areEntriesValid(vaultEntryFilePath, missingEntries);
+      try {
+        this.ensureEntriesValidity(vaultEntryFilePath, entries);
+        valid = true;
+      } catch (error) {
+        CliUx.ux.warn(`\n\n${error}`);
+      }
     }
     const vaultEntryModels = this.formatVaultEntries(
       vaultEntryFilePath,
-      missingEntries
+      entries
     );
     rmSync(vaultEntryFilePath);
-    return vaultEntryModels;
-  }
 
-  public async createVaultEntries(entries: VaultEntryModel[]) {
-    return Promise.all(entries.map((entry) => this.client.vault.create(entry)));
-  }
-
-  private async waitForUserInput(
-    vaultEntryFilePath: string,
-    missingEntries: IterableIterator<VaultEntryAttributes>
-  ) {
-    const data: Record<string, unknown> = {};
-    for (const {vaultEntryId} of missingEntries) {
-      data[vaultEntryId] = '';
+    if (vaultEntryModels.length === 0) {
+      return;
     }
 
-    writeJsonSync(vaultEntryFilePath, data);
+    return Promise.all(
+      vaultEntryModels.map((entry) => client.vault.create(entry))
+    );
+  }
+
+  public async transferable(
+    entries: VaultEntryAttributes[],
+    sourceOrganizationId: string
+  ): Promise<boolean> {
+    // TODO: get vault entries from source org
+    // TODO: return true if the missing entries are present in source org. Return false otherwise
+    throw 'TODO: CDX-935';
+  }
+
+  public async transfer(snapshot: Snapshot, sourceOrganizationId: string) {
+    throw 'TODO: CDX-935';
+  }
+
+  private prepareFile(
+    vaultEntryFilePath: string,
+    entries: VaultEntryAttributes[]
+  ) {
+    const data: Record<string, unknown> = {};
+    for (const {vaultEntryId} of entries) {
+      data[vaultEntryId] = Vault.defaultEntryValue;
+    }
+
+    writeJsonSync(vaultEntryFilePath, data, {spaces: 4});
+  }
+
+  private async openFile(vaultEntryFilePath: string) {
+    CliUx.ux.log(`Opening file ${vaultEntryFilePath}`);
     await open(vaultEntryFilePath);
   }
 
-  private areEntriesValid(
+  private ensureEntriesValidity(
     vaultEntryFilePath: string,
-    missingEntries: IterableIterator<VaultEntryAttributes>
-  ): boolean {
+    requiredEntries: VaultEntryAttributes[]
+  ): void | never {
+    let data: Record<string, unknown>;
     try {
-      const data: Record<string, unknown> = readJsonSync(vaultEntryFilePath);
-      for (const {vaultEntryId} of missingEntries) {
-        if (data[vaultEntryId] === undefined) {
-          return false;
-        }
-      }
-      return true;
+      data = readJsonSync(vaultEntryFilePath);
     } catch (error) {
-      return false;
+      throw dedent`Invalid JSON file
+      ${error}`;
+    }
+    for (const {vaultEntryId} of requiredEntries) {
+      if (
+        data[vaultEntryId] === undefined ||
+        data[vaultEntryId] === Vault.defaultEntryValue
+      ) {
+        throw dedent`Missing value for vault entry ${yellow(vaultEntryId)}.
+        Fill all required vault entries to proceed.`;
+      }
     }
   }
 
   private formatVaultEntries(
     vaultEntryFilePath: string,
-    entries: IterableIterator<VaultEntryAttributes>
+    entries: VaultEntryAttributes[]
   ): VaultEntryModel[] {
     const data = readJsonSync(vaultEntryFilePath);
     const models: VaultEntryModel[] = [];
@@ -115,9 +148,7 @@ export class Vault {
     return jsonPath;
   }
 
-  private async getClient() {
-    return await new AuthenticatedClient().getClient({
-      organization: this.organizationId,
-    });
+  private async client(organization = this.organizationId) {
+    return await new AuthenticatedClient().getClient({organization});
   }
 }

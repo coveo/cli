@@ -72,14 +72,14 @@ export class ReportViewer {
       );
     return function (this: SnapshotReporter) {
       const entries = Array.from(this.missingVaultEntries).map(
-        (entry) => entry[0]
+        ({vaultEntryId}) => vaultEntryId
       );
       CliUx.ux.log(
         yellow(
           `Missing vault ${pluralizeIfNeeded(
             ReportViewer.entryPlurable,
             entries.length
-          )}:`
+          )} in destination organization:`
         )
       );
       missingVaultEntryPrinter(entries);

@@ -104,12 +104,14 @@ export function getMissingVaultEntriesReportHandler(
     // **** Pseudo-code END ****
 
     const shouldCreate = await CliUx.ux.confirm(
-      `Would you like to create the missing vault entries in the destination org (${snapshot.targetId})? (y/n)`
+      `\nWould you like to create the missing vault entries in the destination organization (${snapshot.targetId})? (y/n)`
     );
     if (shouldCreate) {
       const vault = new Vault(snapshot.targetId);
-      await vault.createVaultEntries(this.missingVaultEntries);
+      await vault.createEntries(Array.from(this.missingVaultEntries));
+      return;
     }
+
     throw new SnapshotMissingVaultEntriesError(snapshot, cfg, projectPath);
   };
 }
