@@ -247,25 +247,51 @@ describe('SnapshotReporter', () => {
     it('[get]-missingVaultEntries should be properly extracted after the handling', async () => {
       await missingVaultEntryReporter.handleReport();
 
-      expect(
-        Array.from(missingVaultEntryReporter.missingVaultEntries).join(',')
-      ).toBe(
+      expect(Array.from(missingVaultEntryReporter.missingVaultEntries)).toEqual(
         [
-          'VAULT.foo_4VNj5ds5-configuration.userIdentities.UserIdentity.password',
-          'FIELD',
-          'VAULT.bar_4VNj5ds5-configuration.userIdentities.UserIdentity.password',
-          'FIELD',
-          'VAULT.dsads_4VNj5ds5-configuration.userIdentities.UserIdentity.password',
-          'FIELD',
-          'VAULT.fdww_4VNj5ds5-configuration.userIdentities.UserIdentity.password',
-          'FIELD',
-          'VAULT.csad_4VNj5ds5-configuration.userIdentities.UserIdentity.password',
-          'FIELD',
-          'VAULT.hjkd_4VNj5ds5-configuration.userIdentities.UserIdentity.password',
-          'FIELD',
-          'VAULT.fdasf_4VNj5ds5-configuration.userIdentities.UserIdentity.password',
-          'FIELD',
-        ].join(',')
+          {
+            vaultEntryId:
+              'foo_4VNj5ds5-configuration.userIdentities.UserIdentity.password',
+            resourceName: 'foo_4VNj5ds5',
+            resourceType: 'FIELD',
+          },
+          {
+            vaultEntryId:
+              'bar_4VNj5ds5-configuration.userIdentities.UserIdentity.password',
+            resourceName: 'bar_4VNj5ds5',
+            resourceType: 'FIELD',
+          },
+          {
+            vaultEntryId:
+              'dsads_4VNj5ds5-configuration.userIdentities.UserIdentity.password',
+            resourceName: 'dsads_4VNj5ds5',
+            resourceType: 'FIELD',
+          },
+          {
+            vaultEntryId:
+              'fdww_4VNj5ds5-configuration.userIdentities.UserIdentity.password',
+            resourceName: 'fdww_4VNj5ds5',
+            resourceType: 'FIELD',
+          },
+          {
+            vaultEntryId:
+              'csad_4VNj5ds5-configuration.userIdentities.UserIdentity.password',
+            resourceName: 'csad_4VNj5ds5',
+            resourceType: 'FIELD',
+          },
+          {
+            vaultEntryId:
+              'hjkd_4VNj5ds5-configuration.userIdentities.UserIdentity.password',
+            resourceName: 'hjkd_4VNj5ds5',
+            resourceType: 'FIELD',
+          },
+          {
+            vaultEntryId:
+              'fdasf_4VNj5ds5-configuration.userIdentities.UserIdentity.password',
+            resourceName: 'fdasf_4VNj5ds5',
+            resourceType: 'FIELD',
+          },
+        ]
       );
     });
   });

@@ -22,7 +22,7 @@ import {
   getMissingVaultEntryReport,
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
-import {Command} from '@oclif/core';
+import {CliUx, Command} from '@oclif/core';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions';
 import {SnapshotFacade} from '../../../lib/snapshot/snapshotFacade';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
@@ -402,8 +402,9 @@ describe('org:resources:preview', () => {
       test
         .stdout()
         .stderr()
+        .stub(CliUx.ux, 'confirm', () => async () => false)
         .command(['org:resources:preview'])
-        .catch(/Your snapshot is missing some vault entries/)
+        .catch(/Your destination organization is missing vault entries/)
         .it('should throw an error for invalid snapshots');
     });
   });

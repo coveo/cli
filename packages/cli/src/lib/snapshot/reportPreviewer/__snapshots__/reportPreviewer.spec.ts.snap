@@ -38,12 +38,12 @@ Previewing resource changes:
  !   7 in error               
  ~   1 to update              
                               
-Missing vault entries:
-  • VAULT.foo_4VNj5ds5-configuration.userIdentities.UserIdentity.password
-  • VAULT.bar_4VNj5ds5-configuration.userIdentities.UserIdentity.password
-  • VAULT.dsads_4VNj5ds5-configuration.userIdentities.UserIdentity.password
-  • VAULT.fdww_4VNj5ds5-configuration.userIdentities.UserIdentity.password
-  • VAULT.csad_4VNj5ds5-configuration.userIdentities.UserIdentity.password
+Missing vault entries in destination organization:
+  • foo_4VNj5ds5-configuration.userIdentities.UserIdentity.password
+  • bar_4VNj5ds5-configuration.userIdentities.UserIdentity.password
+  • dsads_4VNj5ds5-configuration.userIdentities.UserIdentity.password
+  • fdww_4VNj5ds5-configuration.userIdentities.UserIdentity.password
+  • csad_4VNj5ds5-configuration.userIdentities.UserIdentity.password
   (2 more entries)
 "
 `;

@@ -397,13 +397,15 @@ describe('org:resources:push', () => {
       test
         .stdout()
         .stderr()
+        .stub(CliUx.ux, 'confirm', () => async () => false)
         .command(['org:resources:push'])
-        .catch(/Your snapshot is missing some vault entries/)
+        .catch(/Your destination organization is missing vault entries/)
         .it('should show the missingVaultEntries snapshot error');
 
       test
         .stdout()
         .stderr()
+        .stub(CliUx.ux, 'confirm', () => async () => false)
         .command(['org:resources:push'])
         .catch(() => {
           expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
