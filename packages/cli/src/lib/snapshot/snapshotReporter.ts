@@ -189,7 +189,7 @@ export class SnapshotReporter {
   }
 
   private static missingVaultMatcher =
-    /^The vault entry referenced by \{\{ (?<entryName>.*) \}\} could not be found in the vault\.$/;
+    /^The vault entry referenced by \{\{ VAULT\.(?<entryName>.*) \}\} could not be found in the vault\.$/;
 
   private static tryGetMissingVaultEntryName(err: string): string | undefined {
     // TODO: CDX-939: Define contract with backend for report and upcoming contract.
