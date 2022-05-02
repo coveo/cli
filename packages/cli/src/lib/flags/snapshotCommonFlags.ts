@@ -37,3 +37,12 @@ export const previewLevel = () => ({
     exclusive: ['skipPreview'],
   }),
 });
+
+export const organization = (description: string) => ({
+  organization: Flags.string({
+    char: 'o',
+    helpValue: 'targetorganizationg7dg3gd',
+    required: false,
+    description: `${description} If not specified, the organization you are connected to will be used.`,
+  }),
+});

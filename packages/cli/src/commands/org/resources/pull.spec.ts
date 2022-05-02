@@ -133,7 +133,7 @@ describe('org:resources:pull', () => {
   test
     .stdout()
     .stderr()
-    .command(['org:resources:pull', '-t', 'someorgid'])
+    .command(['org:resources:pull', '-o', 'someorgid'])
     .it('should create Project with someOrgId', () => {
       expect(mockedProject).toHaveBeenCalledWith(
         expect.anything(),
