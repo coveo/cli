@@ -23,7 +23,6 @@ import {
   SnapshotNoSynchronizationReportFoundError,
 } from '../errors/snapshotErrors';
 import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
-import {SnapshotVault} from './vault';
 
 export type SnapshotReport =
   | ResourceSnapshotsReportModel
@@ -95,11 +94,8 @@ export class Snapshot {
     if (!expandedPreview) {
       return;
     }
-    const onSuccess = this.generateExpandedPreview.bind(
-      this,
-      projectToPreview,
-      deleteMissingResources
-    );
+    const onSuccess = () =>
+      this.generateExpandedPreview(projectToPreview, deleteMissingResources);
     await reporter
       .setReportHandler(
         SnapshotReportStatus.SUCCESS,
@@ -211,10 +207,6 @@ export class Snapshot {
   private get snapshotClient() {
     return this.client.resourceSnapshot;
   }
-
-  // public get vault() {
-  //   return new SnapshotVault(this.targetId, this.client);
-  // }
 
   private sortReportsByDate<T extends SnapshotReport>(report: T[]): T[] {
     return report.sort((a, b) => b.updatedDate - a.updatedDate);

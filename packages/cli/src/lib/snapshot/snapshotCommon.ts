@@ -12,7 +12,7 @@ import {
 import {SnapshotFacade} from './snapshotFacade';
 import {PrintableError} from '../errors/printableError';
 import {SnapshotReporter} from './snapshotReporter';
-import {createVaultEntries, getFormattedVaultEntries, Vault} from './vault';
+import {Vault} from './vault';
 
 export interface DryRunOptions {
   sync?: boolean;
@@ -91,7 +91,7 @@ export function getMissingVaultEntriesReportHandler(
   return async function (this: SnapshotReporter) {
     // **** Pseudo-code START ****
     // * prompt if "want to transfer"
-    // * get a new platformClient using the organizationId from the project (CDX-915)
+    // * get the organizationId from the project (CDX-915)
     // * check if vault entries are "transferable". i.e. find missing vault entries from origin org and compare with this.missingVaultEntries (CDX-935)
     // * if "want to transfer" && "transferable"
     //      Transfer vault entries from origin to dest org
@@ -104,21 +104,11 @@ export function getMissingVaultEntriesReportHandler(
     // **** Pseudo-code END ****
 
     const shouldCreate = await CliUx.ux.confirm(
-      `Would you like to create the missing vault entries in destination org ${snapshot.targetId}? (y/n)`
+      `Would you like to create the missing vault entries in the destination org (${snapshot.targetId})? (y/n)`
     );
     if (shouldCreate) {
-      const vault = new Vault();
-      const vaultEntryModels = await getFormattedVaultEntries(
-        snapshot.targetId,
-        this.missingVaultEntries
-      );
-      if (vaultEntryModels) {
-        try {
-          return createVaultEntries(snapshot.targetId, vaultEntryModels);
-        } catch (error) {
-          throw 'TODO: unable to create vaultEntry error';
-        }
-      }
+      const vault = new Vault(snapshot.targetId);
+      await vault.createVaultEntries(this.missingVaultEntries);
     }
     throw new SnapshotMissingVaultEntriesError(snapshot, cfg, projectPath);
   };
