@@ -74,7 +74,7 @@ describe('org:resources', () => {
     const args: string[] = [
       process.env.CLI_EXEC_PATH!,
       'org:resources:preview',
-      `-t=${targetOrg}`,
+      `-o=${targetOrg}`,
       '--sync',
       '--wait=0',
       '-p=light',
@@ -92,7 +92,7 @@ describe('org:resources', () => {
       process.env.CLI_EXEC_PATH!,
       'org:resources:push',
       '--skipPreview',
-      `-t=${targetOrg}`,
+      `-o=${targetOrg}`,
       '--wait=0',
     ];
     const pushTerminal = createNewTerminal(

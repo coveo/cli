@@ -1,4 +1,4 @@
-import {Command, Flags, CliUx} from '@oclif/core';
+import {Command, CliUx} from '@oclif/core';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '../../../lib/config/config';
