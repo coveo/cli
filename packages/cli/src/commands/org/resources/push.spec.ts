@@ -228,7 +228,7 @@ describe('org:resources:push', () => {
       .stdout()
       .stderr()
       .stub(CliUx.ux, 'confirm', () => async () => true)
-      .command(['org:resources:push', '-t', 'myorg'])
+      .command(['org:resources:push', '-o', 'myorg'])
       .it('should work with specified target org', () => {
         expect(mockedProject).toHaveBeenCalledWith(expect.anything(), 'myorg');
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
