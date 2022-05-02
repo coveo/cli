@@ -22,7 +22,7 @@ import {Project} from './project';
 import {join, resolve} from 'path';
 import archiver, {Archiver} from 'archiver';
 import extract from 'extract-zip';
-import {Writable} from 'stream';
+import {EventEmitter, Writable} from 'stream';
 import {getDirectory, getFile} from '../../__test__/fsUtils';
 import {fancyIt} from '../../__test__/it';
 
@@ -74,6 +74,19 @@ const doMockCreateWriteStream = () => {
     return writableStream as unknown as WriteStream;
   });
 };
+
+function doMockArchiverAsThrower() {
+  let eventEmitter: EventEmitter;
+  mockedArchiver.mockImplementationOnce(() => {
+    eventEmitter = new EventEmitter();
+    const archiver: Archiver = eventEmitter as Archiver;
+    archiver.pipe = jest.fn();
+    archiver.directory = jest.fn();
+    archiver.finalize = jest.fn();
+    return eventEmitter as Archiver;
+  });
+  return (err: unknown) => eventEmitter.emit('error', err);
+}
 
 describe('Project', () => {
   const pathToResources = resolve('dummy', 'path', 'resources');
@@ -234,6 +247,46 @@ describe('Project', () => {
           expect(mockedWriteJSONSync).not.toBeCalled();
         }
       );
+
+      describe('if archiver fails', () => {
+        let callToFailArchiver: (err: unknown) => void;
+        beforeAll(() => {
+          callToFailArchiver = doMockArchiverAsThrower();
+        });
+
+        it('should rejects', async () => {
+          const compressResourcesPromise = project.compressResources();
+          const errorData = 'someError';
+
+          callToFailArchiver(errorData);
+
+          await expect(compressResourcesPromise).rejects.toThrow(errorData);
+        });
+
+        fancyIt()('should restore the manifest file if it exists', async () => {
+          mockedReadJSONSync.mockReturnValueOnce({orgId: 'someOrgId'});
+
+          await project.compressResources();
+
+          expect(mockedRmSync).toBeCalledTimes(1);
+          expect(mockedWriteJSONSync).toBeCalledWith(
+            join(pathToResources, 'manifest.json'),
+            expect.objectContaining({orgId: 'someOrgId'})
+          );
+        });
+
+        fancyIt()(
+          'should not restore the manifest file if it did not exists',
+          async () => {
+            mockedReadJSONSync.mockReturnValueOnce(null);
+
+            await project.compressResources();
+
+            expect(mockedRmSync).toBeCalledTimes(1);
+            expect(mockedWriteJSONSync).not.toBeCalled();
+          }
+        );
+      });
     });
 
     fancyIt()(
@@ -370,9 +423,5 @@ describe('Project', () => {
         }
       );
     });
-  });
-
-  describe('if archiver fails', () => {
-    it.todo('should reject if the archiver returns an error');
   });
 });
