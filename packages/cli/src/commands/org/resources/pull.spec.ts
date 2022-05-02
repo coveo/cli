@@ -23,7 +23,7 @@ import {cwd} from 'process';
 import {Project} from '../../../lib/project/project';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
-const mockedProject = jest.mocked(Project);
+const mockedProject = jest.mocked(Project, true);
 const mockedConfig = jest.mocked(Config);
 const mockedConfigGet = jest.fn();
 const mockedGetSnapshot = jest.fn();
@@ -109,6 +109,7 @@ describe('org:resources:pull', () => {
 
   afterEach(() => {
     mockEvaluate.mockClear();
+    mockedProject.mockClear();
     mockedIsGitInstalled.mockClear();
   });
 
@@ -147,6 +148,14 @@ describe('org:resources:pull', () => {
     .command(['org:resources:pull'])
     .it('should download the snapshot', () => {
       expect(mockedDownloadSnapshot).toHaveBeenCalled();
+    });
+
+  test
+    .stdout()
+    .stderr()
+    .command(['org:resources:pull'])
+    .it('should write the project resources manifest', () => {
+      expect(mockedProject.prototype.writeResourcesManifest).toHaveBeenCalled();
     });
 
   test

@@ -75,8 +75,13 @@ export class Project {
   }
 
   public async compressResources() {
+    let cachedManifest;
     try {
       this.ensureProjectCompliance();
+      cachedManifest = readJsonSync(this.resourceManifestPath, {
+        throws: false,
+      });
+      rmSync(this.resourceManifestPath, {force: true});
       await new Promise<void>((resolve, reject) => {
         const outputStream = createWriteStream(this.temporaryZipPath);
         const archive = archiver('zip');
@@ -88,10 +93,22 @@ export class Project {
         archive.directory(this.resourcePath, false);
         archive.finalize();
       });
+      if (cachedManifest) {
+        writeJsonSync(this.resourceManifestPath, cachedManifest);
+      }
       return this.temporaryZipPath;
     } catch (error) {
+      if (cachedManifest) {
+        writeJsonSync(this.resourceManifestPath, cachedManifest);
+      }
       CliUx.ux.error(error as string | Error);
     }
+  }
+
+  public writeResourcesManifest(orgId: string) {
+    const manifestJson =
+      readJsonSync(this.resourceManifestPath, {throws: false}) ?? {};
+    writeJsonSync(this.resourceManifestPath, {...manifestJson, orgId});
   }
 
   public get pathToProject() {
@@ -100,6 +117,10 @@ export class Project {
 
   private get temporaryZipPath() {
     return join(this._pathToProject, 'snapshot.zip');
+  }
+
+  private get resourceManifestPath() {
+    return join(this.resourcePath, 'manifest.json');
   }
 
   public get resourcePath() {
