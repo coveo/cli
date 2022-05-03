@@ -222,7 +222,7 @@ export default class Pull extends Command {
   public async getFlags() {
     const {flags} = await this.parse(Pull);
     if (flags.model) {
-      return {...flags, target: flags.model.orgId};
+      return {...flags, organization: flags.model.orgId};
     }
     return flags;
   }
