@@ -26,6 +26,15 @@ const defaultDryRunOptions: DryRunOptions = {
   shouldAutoSync: true,
 };
 
+async function tryAutomaticSynchronization(
+  snapshot: Snapshot,
+  cfg: Configuration,
+  options: DryRunOptions
+) {
+  const facade = new SnapshotFacade(snapshot, cfg, options.waitUntilDone);
+  await facade.tryAutomaticSynchronization(!options.sync);
+}
+
 async function internalDryRun(
   project: Project,
   snapshot: Snapshot,
@@ -41,26 +50,19 @@ async function internalDryRun(
     .setReportHandler(SnapshotReportStatus.SUCCESS, () => {
       CliUx.ux.action.stop(green('✔'));
     })
-    .setReportHandler(
-      SnapshotReportStatus.ERROR,
-      options.shouldAutoSync
-        ? async () => {
-            CliUx.ux.warn('Unsynchronized resource detected');
-            const facade = new SnapshotFacade(
-              snapshot,
-              cfg,
-              options.waitUntilDone
-            );
-            await facade.tryAutomaticSynchronization(!options.sync);
-
-            CliUx.ux.action.start('Validating synchronized snapshot');
-            reporter = await internalDryRun(project, snapshot, cfg, {
-              ...options,
-              shouldAutoSync: false,
-            });
-          }
-        : () => CliUx.ux.action.stop(red.bold('!'))
-    )
+    .setReportHandler(SnapshotReportStatus.ERROR, async () => {
+      if (!options.shouldAutoSync) {
+        CliUx.ux.action.stop(red.bold('!'));
+        return;
+      }
+      CliUx.ux.warn('Unsynchronized resource detected');
+      await tryAutomaticSynchronization(snapshot, cfg, options);
+      CliUx.ux.action.start('Validating synchronized snapshot');
+      reporter = await internalDryRun(project, snapshot, cfg, {
+        ...options,
+        shouldAutoSync: false,
+      });
+    })
     .handleReport();
   return reporter;
 }
