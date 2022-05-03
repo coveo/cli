@@ -1,5 +1,4 @@
 import dedent from 'ts-dedent';
-import {yellow} from 'chalk';
 import {Plurable, pluralizeIfNeeded} from '../utils/string';
 import {PrintableError, SeverityLevel} from './printableError';
 import {CLIBaseError} from './CLIBaseError';
@@ -15,12 +14,10 @@ export class InvalidVaultEntryError extends PrintableError {
 
 export class InvalidVaultFileError extends CLIBaseError {
   public name = 'Invalid vault file';
-  public constructor(filePath: string, reason?: unknown) {
+  public constructor(reason?: unknown) {
     super();
-    this.message = dedent`Invalid vault file ${filePath}`;
     if (reason) {
-      this.message += dedent`
-      ${reason}`;
+      this.message = `${reason}`;
     }
   }
 }
@@ -30,15 +27,16 @@ export class MissingVaultEntryValueError extends CLIBaseError {
   private entryPlurable: Plurable = ['entry', 'entries'];
   public constructor(missingEntries: string[]) {
     super();
-    this.message = dedent`Missing value for vault ${pluralizeIfNeeded(
-      this.entryPlurable,
-      missingEntries.length
-    )}.`;
-
+    let message = '';
     for (const entry of missingEntries) {
-      this.message += yellow(`\n  • ${entry}`);
+      message += `\n  • ${entry}`;
     }
 
-    this.message += '\n\nFill all required vault entries to proceed.';
+    message += `\n\nFill all required vault ${pluralizeIfNeeded(
+      this.entryPlurable,
+      missingEntries.length
+    )} to proceed.`;
+
+    this.message = message;
   }
 }

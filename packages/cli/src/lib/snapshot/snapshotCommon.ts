@@ -37,6 +37,7 @@ export async function dryRun(
   );
 
   if (snapshot.areResourcesInError()) {
+    // TODO: CDX-947: areResourcesInError does not necessarily mean there are synchronization issues.
     CliUx.ux.warn('Unsynchronized resource detected');
     const facade = new SnapshotFacade(snapshot, cfg, options.waitUntilDone);
     await facade.tryAutomaticSynchronization(!options.sync);
@@ -104,7 +105,7 @@ export function getMissingVaultEntriesReportHandler(
     // **** Pseudo-code END ****
 
     const shouldCreate = await CliUx.ux.confirm(
-      `\nWould you like to create the missing vault entries in the destination organization (${snapshot.targetId})? (y/n)`
+      `\nWould you like to create the missing vault entries in the destination organization ${snapshot.targetId}? (y/n)`
     );
     if (shouldCreate) {
       const vault = new Vault(snapshot.targetId);

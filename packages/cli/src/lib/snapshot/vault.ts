@@ -8,6 +8,7 @@ import {readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
 import open from 'open';
 import {join} from 'path';
 import {cwd} from 'process';
+import {green, bgWhite} from 'chalk';
 import {
   InvalidVaultEntryError,
   InvalidVaultFileError,
@@ -16,6 +17,8 @@ import {
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {Snapshot} from './snapshot';
 import {VaultEntryAttributes} from './snapshotReporter';
+import {Plurable, pluralizeIfNeeded} from '../utils/string';
+import dedent from 'ts-dedent';
 
 export class Vault {
   private static defaultEntryValue = '';
@@ -25,19 +28,19 @@ export class Vault {
   public async createEntries(entries: VaultEntryAttributes[]) {
     const client = await this.client();
     const vaultEntryFilePath = join(cwd(), `${this.organizationId}-vault.json`);
-    this.prepareFile(vaultEntryFilePath, entries);
-
     let valid = false;
 
+    this.prepareFile(vaultEntryFilePath, entries);
+    await this.openFile(vaultEntryFilePath);
+
     while (!valid) {
-      await this.openFile(vaultEntryFilePath);
       const key = await CliUx.ux.prompt('', {
         type: 'single',
         required: false,
-        prompt: 'Press any key once finished. Press q to abort\n',
+        prompt: `\n${bgWhite('Press any key to continue. Press q to abort')}\n`,
       });
       if (key === 'q') {
-        return null;
+        return;
       }
       try {
         this.ensureEntriesValidity(vaultEntryFilePath, entries);
@@ -45,6 +48,7 @@ export class Vault {
       } catch (error) {
         CliUx.ux.log('');
         CliUx.ux.warn(`${error}`);
+        await this.openFile(vaultEntryFilePath, false);
       }
     }
     const vaultEntryModels = this.formatVaultEntries(
@@ -53,13 +57,19 @@ export class Vault {
     );
     rmSync(vaultEntryFilePath);
 
-    if (vaultEntryModels.length === 0) {
-      return;
+    if (vaultEntryModels.length > 0) {
+      const entryPlurable: Plurable = ['entry', 'entries'];
+      CliUx.ux.action.start(
+        `Creating vault ${pluralizeIfNeeded(
+          entryPlurable,
+          vaultEntryModels.length
+        )}`
+      );
+      await Promise.all(
+        vaultEntryModels.map((entry) => client.vault.create(entry))
+      );
+      CliUx.ux.action.stop(green('✔'));
     }
-
-    return Promise.all(
-      vaultEntryModels.map((entry) => client.vault.create(entry))
-    );
   }
 
   public async transferable(
@@ -87,8 +97,11 @@ export class Vault {
     writeJsonSync(vaultEntryFilePath, data, {spaces: 4});
   }
 
-  private async openFile(vaultEntryFilePath: string) {
-    CliUx.ux.log(`\nOpening file ${vaultEntryFilePath}`);
+  private async openFile(vaultEntryFilePath: string, print = true) {
+    if (print) {
+      CliUx.ux.log(dedent`\nOpening file ${vaultEntryFilePath}.
+      Please fill out all the vault entries from the JSON file.`);
+    }
     await open(vaultEntryFilePath);
   }
 
@@ -102,7 +115,7 @@ export class Vault {
     try {
       data = readJsonSync(vaultEntryFilePath);
     } catch (error) {
-      throw new InvalidVaultFileError(vaultEntryFilePath, error);
+      throw new InvalidVaultFileError(error);
     }
 
     for (const {vaultEntryId} of requiredEntries) {

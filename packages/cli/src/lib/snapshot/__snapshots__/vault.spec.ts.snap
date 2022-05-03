@@ -4,11 +4,9 @@ exports[`Vault when the user does not fill all the vault entries values #createE
 [MockFunction] {
   "calls": Array [
     Array [
-      "
-
-Missing vault entry value: Missing value for vault entries.[33m[39m
-[33m  • sitemap_yyyyyy-configuration.json.path[39m[33m[39m
-[33m  • web_xxxxxx-configuration.json.path[39m
+      "Missing vault entry value: 
+  • sitemap_yyyyyy-configuration.json.path
+  • web_xxxxxx-configuration.json.path
 
 Fill all required vault entries to proceed.",
     ],
