@@ -1,22 +1,25 @@
-import PlatformClient, {
+import {
   VaultEntryModel,
   VaultValueType,
   VaultVisibilityType,
 } from '@coveord/platform-client';
 import {CliUx} from '@oclif/core';
-import {yellow} from 'chalk';
 import {readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
 import open from 'open';
 import {join} from 'path';
 import {cwd} from 'process';
-import dedent from 'ts-dedent';
-import {InvalidVaultEntry} from '../errors/vaultErrors';
+import {
+  InvalidVaultEntryError,
+  InvalidVaultFileError,
+  MissingVaultEntryValueError,
+} from '../errors/vaultErrors';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {Snapshot} from './snapshot';
 import {VaultEntryAttributes} from './snapshotReporter';
 
 export class Vault {
   private static defaultEntryValue = '';
+
   public constructor(private organizationId: string) {}
 
   public async createEntries(entries: VaultEntryAttributes[]) {
@@ -92,21 +95,25 @@ export class Vault {
     vaultEntryFilePath: string,
     requiredEntries: VaultEntryAttributes[]
   ): void | never {
+    const missingEntries: string[] = [];
     let data: Record<string, unknown>;
+
     try {
       data = readJsonSync(vaultEntryFilePath);
     } catch (error) {
-      throw dedent`Invalid JSON file
-      ${error}`;
+      throw new InvalidVaultFileError(vaultEntryFilePath, error);
     }
+
     for (const {vaultEntryId} of requiredEntries) {
       if (
         data[vaultEntryId] === undefined ||
         data[vaultEntryId] === Vault.defaultEntryValue
       ) {
-        throw dedent`Missing value for vault entry ${yellow(vaultEntryId)}.
-        Fill all required vault entries to proceed.`;
+        missingEntries.push(vaultEntryId);
       }
+    }
+    if (missingEntries.length > 0) {
+      throw new MissingVaultEntryValueError(missingEntries);
     }
   }
 
@@ -143,7 +150,7 @@ export class Vault {
     const match = key.match(regex);
     const jsonPath = match?.groups?.['jsonPath'];
     if (!jsonPath) {
-      throw new InvalidVaultEntry(this.organizationId, key);
+      throw new InvalidVaultEntryError(this.organizationId, key);
     }
     return jsonPath;
   }
