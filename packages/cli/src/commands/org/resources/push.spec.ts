@@ -416,11 +416,11 @@ describe('org:resources:push', () => {
         .stderr()
         .stub(CliUx.ux, 'confirm', () => async () => false)
         .command(['org:resources:push'])
-        .catch(/Your destination organization is missing vault entries/)
-        .it('should only preview the snapshot', () => {
+        .catch(() => {
           expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
           expect(mockedApplySnapshot).toHaveBeenCalledTimes(0);
-        });
+        })
+        .it('should only preview the snapshot');
     });
   });
   //#endregion
