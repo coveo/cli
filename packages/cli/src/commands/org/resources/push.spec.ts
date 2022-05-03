@@ -191,7 +191,7 @@ describe('org:resources:push', () => {
       .catch(/You are not authorized to create snapshot/)
       .it('should return an error message if privileges are missing');
   });
-
+  //#region TODO: CDX-948, setup phase needs to be rewrite and assertions 'split up' (e.g. the error ain't trigger directly by the function, therefore should not be handled)
   describe('when the dryRun returns a report without errors', () => {
     beforeAll(async () => {
       await mockSnapshotFactoryReturningValidSnapshot();
@@ -421,4 +421,5 @@ describe('org:resources:push', () => {
         });
     });
   });
+  //#endregion
 });

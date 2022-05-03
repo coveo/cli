@@ -320,7 +320,7 @@ describe('org:resources:preview', () => {
         );
       });
   });
-
+  //#region TODO: CDX-948, setup phase needs to be rewrite and assertions 'split up' (e.g. the error ain't trigger directly by the function, therefore should not be handled)
   describe('when the report contains resources in error', () => {
     beforeAll(async () => {
       await mockSnapshotFactoryReturningInvalidSnapshot();
@@ -410,4 +410,5 @@ describe('org:resources:preview', () => {
         .it('should throw an error for invalid snapshots');
     });
   });
+  //#endregion
 });
