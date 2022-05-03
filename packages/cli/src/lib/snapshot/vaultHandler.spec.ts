@@ -9,6 +9,7 @@ import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
 import open from 'open';
 import {CliUx} from '@oclif/core';
+import {ProcessAbort} from '../errors/processError';
 
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockedCreate = jest.fn();
@@ -36,26 +37,22 @@ describe('VaultHandler', () => {
   const vault = new VaultHandler('myorgid');
   const anyKey = 'a';
   const abortKey = 'q';
+  const vaultEntries: VaultEntryAttributes[] = [
+    {
+      vaultEntryId: 'sitemap_yyyyyy-configuration.json.path',
+      resourceName: 'sitemap_yyyyyy',
+      resourceType: ResourceSnapshotType.source,
+    },
+    {
+      vaultEntryId: 'web_xxxxxx-configuration.json.path',
+      resourceName: 'web_xxxxxx',
+      resourceType: ResourceSnapshotType.source,
+    },
+  ];
 
   beforeAll(() => {
     doMockPrompt();
     doMockAuthenticatedClient();
-  });
-
-  beforeEach(async () => {
-    const vaultEntries: VaultEntryAttributes[] = [
-      {
-        vaultEntryId: 'sitemap_yyyyyy-configuration.json.path',
-        resourceName: 'sitemap_yyyyyy',
-        resourceType: ResourceSnapshotType.source,
-      },
-      {
-        vaultEntryId: 'web_xxxxxx-configuration.json.path',
-        resourceName: 'web_xxxxxx',
-        resourceType: ResourceSnapshotType.source,
-      },
-    ];
-    await vault.createEntries(vaultEntries);
   });
 
   afterAll(() => {
@@ -70,6 +67,10 @@ describe('VaultHandler', () => {
         'web_xxxxxx-configuration.json.path': 'another-secret',
       });
       mockedPrompt.mockReturnValue(anyKey);
+    });
+
+    beforeEach(async () => {
+      await vault.createEntries(vaultEntries);
     });
 
     it('#createEntries should create a file with missing vault entries', () => {
@@ -149,6 +150,10 @@ describe('VaultHandler', () => {
       mockedPrompt.mockReturnValue(anyKey);
     });
 
+    beforeEach(async () => {
+      await vault.createEntries(vaultEntries);
+    });
+
     it('#createEntries should warn the user about missing vault entries', () => {
       expect(mockedCliUx).toMatchSnapshot();
     });
@@ -159,8 +164,10 @@ describe('VaultHandler', () => {
       mockedPrompt.mockReturnValue(abortKey);
     });
 
-    it('#createEntries should not create vault entries', () => {
-      expect(mockedCreate).not.toHaveBeenCalled();
+    it('#createEntries should not create vault entries', async () => {
+      await expect(() => vault.createEntries(vaultEntries)).rejects.toThrow(
+        new ProcessAbort()
+      );
     });
   });
 });

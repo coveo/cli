@@ -102,7 +102,7 @@ export default class SourcePushAdd extends Command {
 
     await source.setSourceStatus(args.sourceId, 'IDLE');
 
-    CliUx.ux.action.stop();
+    CliUx.ux.action.stop(green('✔'));
   }
 
   @Trackable()

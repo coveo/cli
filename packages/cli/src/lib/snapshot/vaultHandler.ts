@@ -18,6 +18,7 @@ import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {Snapshot} from './snapshot';
 import {VaultEntryAttributes} from './snapshotReporter';
 import {Plurable, pluralizeIfNeeded} from '../utils/string';
+import {ProcessAbort} from '../../lib/errors/processError';
 import dedent from 'ts-dedent';
 
 export class VaultHandler {
@@ -40,7 +41,7 @@ export class VaultHandler {
         prompt: `\n${bgWhite('Press any key to continue. Press q to abort')}\n`,
       });
       if (key === 'q') {
-        return;
+        throw new ProcessAbort();
       }
       try {
         this.ensureEntriesValidity(vaultEntryFilePath, entries);

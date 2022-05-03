@@ -13,6 +13,7 @@ import {Dirent} from 'fs';
 import {recursiveDirectoryDiff} from './filesDiffProcessor';
 import {DotFolder} from '../../project/dotFolder';
 import {cwd} from 'process';
+import {green} from 'chalk';
 import {buildResourcesToExport} from '../pullModel/validation/model';
 
 export class ExpandedPreviewer {
@@ -62,7 +63,7 @@ export class ExpandedPreviewer {
 
     with the associated commit hash: ${commitHash.stdout}
     `);
-    CliUx.ux.action.stop();
+    CliUx.ux.action.stop(green('✔'));
   }
 
   private deleteOldestPreviews() {
