@@ -140,7 +140,7 @@ export default class Push extends Command {
   private async askForConfirmation(): Promise<boolean> {
     const {flags} = await this.parse(Push);
     const target = await getTargetOrg(this.configuration, flags.organization);
-    const question = `\nWould you like to apply these changes to the org ${bold(
+    const question = `\nWould you like to apply these changes to the org ${bold.cyan(
       target
     )}? (y/n)`;
     return confirmWithAnalytics(question, 'snapshot apply');
