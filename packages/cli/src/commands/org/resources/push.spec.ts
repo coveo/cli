@@ -5,6 +5,7 @@ jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/snapshot/snapshot');
 jest.mock('../../../lib/snapshot/snapshotFactory');
 jest.mock('../../../lib/project/project');
+jest.mock('../../../lib/snapshot/snapshotFacade');
 
 import {CliUx} from '@oclif/core';
 import {test} from '@oclif/test';
@@ -21,6 +22,7 @@ import {
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {SnapshotFacade} from '../../../lib/snapshot/snapshotFacade';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
 const mockedConfig = jest.mocked(Config);
@@ -30,6 +32,8 @@ const mockedDeleteTemporaryZipFile = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
 const mockedSaveDetailedReport = jest.fn();
 const mockedAreResourcesInError = jest.fn();
+const mockedTryAutomaticSynchronization = jest.fn();
+const mockedSnapshotFacade = jest.mocked(SnapshotFacade, true);
 const mockedApplySnapshot = jest.fn();
 const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
@@ -60,8 +64,18 @@ const mockConfig = () => {
   mockedConfig.prototype.get = mockedConfigGet;
 };
 
+const mockSnapshotFacade = () => {
+  mockedSnapshotFacade.mockImplementation(
+    () =>
+      ({
+        tryAutomaticSynchronization: mockedTryAutomaticSynchronization,
+      } as unknown as SnapshotFacade)
+  );
+};
+
 const mockSnapshotFactory = async () => {
-  mockedSnapshotFactory.createFromZip.mockReturnValue(
+  mockedPreviewSnapshot.mockReturnValue(Promise.resolve(``));
+  mockedSnapshotFactory.createFromZip.mockImplementation(() =>
     Promise.resolve({
       apply: mockedApplySnapshot,
       validate: mockedValidateSnapshot,
@@ -104,11 +118,11 @@ const mockSnapshotFactoryReturningValidSnapshot = async () => {
     ResourceSnapshotsReportType.Apply
   );
 
-  mockedValidateSnapshot.mockResolvedValue(
-    new SnapshotReporter(successReportValidate)
+  mockedValidateSnapshot.mockImplementation(
+    () => new SnapshotReporter(successReportValidate)
   );
-  mockedApplySnapshot.mockResolvedValue(
-    new SnapshotReporter(successReportApply)
+  mockedApplySnapshot.mockImplementation(
+    () => new SnapshotReporter(successReportApply)
   );
   await mockSnapshotFactory();
 };
@@ -122,11 +136,14 @@ const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
     'error-report',
     ResourceSnapshotsReportType.Apply
   );
-  mockedValidateSnapshot.mockResolvedValue(
-    new SnapshotReporter(errorReportValidate)
+  mockedValidateSnapshot.mockImplementation(
+    () => new SnapshotReporter(errorReportValidate)
   );
-  mockedApplySnapshot.mockResolvedValue(new SnapshotReporter(errorReportApply));
+  mockedApplySnapshot.mockImplementation(() =>
+    Promise.resolve(new SnapshotReporter(errorReportApply))
+  );
   await mockSnapshotFactory();
+  mockSnapshotFacade();
 };
 
 const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries =
@@ -139,11 +156,11 @@ const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries =
       'error-report',
       ResourceSnapshotsReportType.Apply
     );
-    mockedValidateSnapshot.mockResolvedValue(
-      new SnapshotReporter(missingVaultEntriesValidate)
+    mockedValidateSnapshot.mockImplementation(() =>
+      Promise.resolve(new SnapshotReporter(missingVaultEntriesValidate))
     );
-    mockedApplySnapshot.mockResolvedValue(
-      new SnapshotReporter(missingVaultEntriesApply)
+    mockedApplySnapshot.mockImplementation(() =>
+      Promise.resolve(new SnapshotReporter(missingVaultEntriesApply))
     );
     await mockSnapshotFactory();
   };
@@ -160,7 +177,7 @@ describe('org:resources:push', () => {
   });
 
   afterEach(() => {
-    mockEvaluate.mockClear();
+    jest.clearAllMocks();
   });
 
   describe('when preconditions are not respected', () => {
@@ -174,7 +191,7 @@ describe('org:resources:push', () => {
       .catch(/You are not authorized to create snapshot/)
       .it('should return an error message if privileges are missing');
   });
-
+  //#region TODO: CDX-948, setup phase needs to be rewrite and assertions 'split up' (e.g. the error ain't trigger directly by the function, therefore should not be handled)
   describe('when the dryRun returns a report without errors', () => {
     beforeAll(async () => {
       await mockSnapshotFactoryReturningValidSnapshot();
@@ -355,10 +372,6 @@ describe('org:resources:push', () => {
       await mockSnapshotFactoryReturningInvalidSnapshot();
     });
 
-    afterAll(() => {
-      mockedSnapshotFactory.mockReset();
-    });
-
     test
       .stdout()
       .stderr()
@@ -389,10 +402,6 @@ describe('org:resources:push', () => {
       await mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries();
     });
 
-    afterAll(() => {
-      mockedSnapshotFactory.mockReset();
-    });
-
     describe('when the user refuses to migrate or type in the missing vault entries', () => {
       test
         .stdout()
@@ -407,11 +416,12 @@ describe('org:resources:push', () => {
         .stderr()
         .stub(CliUx.ux, 'confirm', () => async () => false)
         .command(['org:resources:push'])
-        .catch(() => {
+        .catch(/Your snapshot is missing some vault entries/)
+        .it('should only preview the snapshot', () => {
           expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
           expect(mockedApplySnapshot).toHaveBeenCalledTimes(0);
-        })
-        .it('should only preview the snapshot');
+        });
     });
   });
+  //#endregion
 });

@@ -46,10 +46,6 @@ describe('SnapshotReporter', () => {
       }
     );
 
-    fancyIt()('#isSuccessReport should return true', () => {
-      expect(noChangeReporter.isSuccessReport()).toEqual(true);
-    });
-
     fancyIt()(
       '#handleReport should call the `NO_CHANGES` report handler with the reporter as this',
       async () => {
@@ -182,10 +178,6 @@ describe('SnapshotReporter', () => {
         ).toEqual(expect.arrayContaining(expected));
       }
     );
-
-    fancyIt()('#isSuccessReport should return true', () => {
-      expect(successReporter.isSuccessReport()).toEqual(true);
-    });
 
     it.each([SnapshotReportStatus.SUCCESS])(
       '#handleReport should call the `%s` report handler with the reporter as this',
