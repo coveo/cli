@@ -206,7 +206,7 @@ describe('org:resources:preview', () => {
     test
       .stdout()
       .stderr()
-      .command(['org:resources:preview', '-t', 'myorg'])
+      .command(['org:resources:preview', '-o', 'myorg'])
       .it('should work with specified target org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),

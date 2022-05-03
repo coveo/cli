@@ -20,6 +20,7 @@ import {
   previewLevel,
   sync,
   wait,
+  organization,
 } from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
@@ -41,13 +42,9 @@ export default class Preview extends Command {
     ...sync(),
     // TODO: CDX-935 add flag to automatically transfer vault entries when transferable
     ...previewLevel(),
-    target: Flags.string({
-      char: 't',
-      description:
-        'The unique identifier of the organization where to send the changes. If not specified, the organization you are connected to will be used.',
-      helpValue: 'destinationorganizationg7dg3gd',
-      required: false,
-    }),
+    ...organization(
+      'The unique identifier of the organization where to preview the changes'
+    ),
     showMissingResources: Flags.boolean({
       char: 'd',
       description: 'Preview resources deletion when enabled',
@@ -73,7 +70,7 @@ export default class Preview extends Command {
       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
     );
     const {flags} = await this.parse(Preview);
-    const target = await getTargetOrg(this.configuration, flags.target);
+    const target = await getTargetOrg(this.configuration, flags.organization);
     const cfg = this.configuration.get();
     const options = await this.getOptions();
     const {reporter, snapshot, project} = await dryRun(
@@ -122,7 +119,7 @@ export default class Preview extends Command {
     if (err instanceof SnapshotOperationTimeoutError) {
       const {flags} = await this.parse(Preview);
       const snapshot = err.snapshot;
-      const target = await getTargetOrg(this.configuration, flags.target);
+      const target = await getTargetOrg(this.configuration, flags.organization);
       this.log(
         dedent`
 

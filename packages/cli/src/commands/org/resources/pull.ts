@@ -15,7 +15,7 @@ import {writeSnapshotPrivilege} from '../../../lib/decorators/preconditions/plat
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {ProcessAbort} from '../../../lib/errors/processError';
-import {wait} from '../../../lib/flags/snapshotCommonFlags';
+import {organization, wait} from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
 import type {
   SnapshotPullModel,
@@ -38,13 +38,9 @@ export default class Pull extends Command {
 
   public static flags = {
     ...wait(),
-    target: Flags.string({
-      char: 't',
-      helpValue: 'targetorganizationg7dg3gd',
-      required: false,
-      description:
-        'The unique identifier of the organization from which to pull the resources. If not specified, the organization you are connected to will be used.',
-    }),
+    ...organization(
+      'The unique identifier of the organization from which to pull the resources'
+    ),
     snapshotId: Flags.string({
       char: 's',
       exclusive: ['resourceTypes'],
@@ -59,7 +55,7 @@ export default class Pull extends Command {
       allowNo: true,
     }),
     overwrite: Flags.boolean({
-      char: 'o',
+      char: 'f',
       description: 'Overwrite resources directory if it exists.',
       default: false,
     }),
@@ -217,7 +213,10 @@ export default class Pull extends Command {
 
   private async getTargetOrg() {
     const flags = await this.getFlags();
-    return getTargetOrg(this.configuration, flags.model?.orgId || flags.target);
+    return getTargetOrg(
+      this.configuration,
+      flags.model?.orgId || flags.organization
+    );
   }
 
   public async getFlags() {
