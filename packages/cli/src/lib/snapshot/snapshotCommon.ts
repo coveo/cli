@@ -57,6 +57,7 @@ async function internalDryRun(
       }
       CliUx.ux.warn('Unsynchronized resource detected');
       await tryAutomaticSynchronization(snapshot, cfg, options);
+
       CliUx.ux.action.start('Validating synchronized snapshot');
       reporter = await internalDryRun(project, snapshot, cfg, {
         ...options,

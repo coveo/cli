@@ -74,10 +74,8 @@ const mockSnapshotFacade = () => {
 };
 
 const mockSnapshotFactory = async () => {
-  mockedPreviewSnapshot.mockImplementationOnce(() => {
-    debugger;
-  });
-  mockedSnapshotFactory.createFromZip.mockReturnValue(
+  mockedPreviewSnapshot.mockReturnValue(Promise.resolve(``));
+  mockedSnapshotFactory.createFromZip.mockImplementation(() =>
     Promise.resolve({
       apply: mockedApplySnapshot,
       validate: mockedValidateSnapshot,
@@ -120,11 +118,11 @@ const mockSnapshotFactoryReturningValidSnapshot = async () => {
     ResourceSnapshotsReportType.Apply
   );
 
-  mockedValidateSnapshot.mockResolvedValue(
-    new SnapshotReporter(successReportValidate)
+  mockedValidateSnapshot.mockImplementation(
+    () => new SnapshotReporter(successReportValidate)
   );
-  mockedApplySnapshot.mockResolvedValue(
-    new SnapshotReporter(successReportApply)
+  mockedApplySnapshot.mockImplementation(
+    () => new SnapshotReporter(successReportApply)
   );
   await mockSnapshotFactory();
 };
@@ -138,10 +136,12 @@ const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
     'error-report',
     ResourceSnapshotsReportType.Apply
   );
-  mockedValidateSnapshot.mockResolvedValue(
-    new SnapshotReporter(errorReportValidate)
+  mockedValidateSnapshot.mockImplementation(
+    () => new SnapshotReporter(errorReportValidate)
   );
-  mockedApplySnapshot.mockResolvedValue(new SnapshotReporter(errorReportApply));
+  mockedApplySnapshot.mockImplementation(() =>
+    Promise.resolve(new SnapshotReporter(errorReportApply))
+  );
   await mockSnapshotFactory();
   mockSnapshotFacade();
 };
@@ -156,11 +156,11 @@ const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries =
       'error-report',
       ResourceSnapshotsReportType.Apply
     );
-    mockedValidateSnapshot.mockResolvedValue(
-      new SnapshotReporter(missingVaultEntriesValidate)
+    mockedValidateSnapshot.mockImplementation(() =>
+      Promise.resolve(new SnapshotReporter(missingVaultEntriesValidate))
     );
-    mockedApplySnapshot.mockResolvedValue(
-      new SnapshotReporter(missingVaultEntriesApply)
+    mockedApplySnapshot.mockImplementation(() =>
+      Promise.resolve(new SnapshotReporter(missingVaultEntriesApply))
     );
     await mockSnapshotFactory();
   };
@@ -414,7 +414,7 @@ describe('org:resources:push', () => {
         .stdout()
         .stderr()
         .command(['org:resources:push'])
-        .catch(() => {})
+        .catch(/Your snapshot is missing some vault entries/)
         .it('should only preview the snapshot', () => {
           expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
           expect(mockedApplySnapshot).toHaveBeenCalledTimes(0);

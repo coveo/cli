@@ -107,8 +107,9 @@ const mockSnapshotFactoryReturningValidSnapshot = async () => {
     'success-report',
     ResourceSnapshotsReportType.Apply
   );
-  const reporter = new SnapshotReporter(successReport);
-  mockedValidateSnapshot.mockResolvedValue(reporter);
+  mockedValidateSnapshot.mockImplementation(() =>
+    Promise.resolve(new SnapshotReporter(successReport))
+  );
   await mockSnapshotFactory();
 };
 
@@ -117,8 +118,9 @@ const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
     'error-report',
     ResourceSnapshotsReportType.Apply
   );
-  const reporter = new SnapshotReporter(errorReport);
-  mockedValidateSnapshot.mockResolvedValue(reporter);
+  mockedValidateSnapshot.mockImplementation(() =>
+    Promise.resolve(new SnapshotReporter(errorReport))
+  );
   await mockSnapshotFactory();
 };
 
@@ -128,8 +130,9 @@ const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries =
       'missing-vault-entry',
       ResourceSnapshotsReportType.Apply
     );
-    const reporter = new SnapshotReporter(missingVaultEntry);
-    mockedValidateSnapshot.mockResolvedValue(reporter);
+    mockedValidateSnapshot.mockImplementation(() =>
+      Promise.resolve(new SnapshotReporter(missingVaultEntry))
+    );
     await mockSnapshotFactory();
   };
 
