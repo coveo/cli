@@ -5,6 +5,7 @@ jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/snapshot/snapshot');
 jest.mock('../../../lib/snapshot/snapshotFactory');
 jest.mock('../../../lib/project/project');
+jest.mock('../../../lib/snapshot/snapshotFacade');
 
 import {CliUx} from '@oclif/core';
 import {test} from '@oclif/test';
@@ -21,6 +22,7 @@ import {
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {SnapshotFacade} from '../../../lib/snapshot/snapshotFacade';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
 const mockedConfig = jest.mocked(Config);
@@ -30,6 +32,8 @@ const mockedDeleteTemporaryZipFile = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
 const mockedSaveDetailedReport = jest.fn();
 const mockedAreResourcesInError = jest.fn();
+const mockedTryAutomaticSynchronization = jest.fn();
+const mockedSnapshotFacade = jest.mocked(SnapshotFacade, true);
 const mockedApplySnapshot = jest.fn();
 const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
@@ -60,7 +64,19 @@ const mockConfig = () => {
   mockedConfig.prototype.get = mockedConfigGet;
 };
 
+const mockSnapshotFacade = () => {
+  mockedSnapshotFacade.mockImplementation(
+    () =>
+      ({
+        tryAutomaticSynchronization: mockedTryAutomaticSynchronization,
+      } as unknown as SnapshotFacade)
+  );
+};
+
 const mockSnapshotFactory = async () => {
+  mockedPreviewSnapshot.mockImplementationOnce(() => {
+    debugger;
+  });
   mockedSnapshotFactory.createFromZip.mockReturnValue(
     Promise.resolve({
       apply: mockedApplySnapshot,
@@ -127,6 +143,7 @@ const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
   );
   mockedApplySnapshot.mockResolvedValue(new SnapshotReporter(errorReportApply));
   await mockSnapshotFactory();
+  mockSnapshotFacade();
 };
 
 const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries =
@@ -160,7 +177,7 @@ describe('org:resources:push', () => {
   });
 
   afterEach(() => {
-    mockEvaluate.mockClear();
+    jest.clearAllMocks();
   });
 
   describe('when preconditions are not respected', () => {
@@ -355,10 +372,6 @@ describe('org:resources:push', () => {
       await mockSnapshotFactoryReturningInvalidSnapshot();
     });
 
-    afterAll(() => {
-      mockedSnapshotFactory.mockReset();
-    });
-
     test
       .stdout()
       .stderr()
@@ -389,10 +402,6 @@ describe('org:resources:push', () => {
       await mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries();
     });
 
-    afterAll(() => {
-      mockedSnapshotFactory.mockReset();
-    });
-
     describe('when the user refuses to migrate or type in the missing vault entries', () => {
       test
         .stdout()
@@ -405,11 +414,11 @@ describe('org:resources:push', () => {
         .stdout()
         .stderr()
         .command(['org:resources:push'])
-        .catch(() => {
+        .catch(() => {})
+        .it('should only preview the snapshot', () => {
           expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
           expect(mockedApplySnapshot).toHaveBeenCalledTimes(0);
-        })
-        .it('should only preview the snapshot');
+        });
     });
   });
 });

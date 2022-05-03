@@ -1,8 +1,6 @@
 import {
   ResourceSnapshotsReportModel,
   ResourceSnapshotsReportOperationModel,
-  ResourceSnapshotsReportResultCode,
-  ResourceSnapshotsReportStatus,
   ResourceSnapshotType,
 } from '@coveord/platform-client';
 import {
@@ -67,14 +65,6 @@ export class SnapshotReporter {
     return count;
   }
 
-  public isSuccessReport(): boolean {
-    const {status, resultCode} = this.report;
-    return (
-      status === ResourceSnapshotsReportStatus.Completed &&
-      resultCode === ResourceSnapshotsReportResultCode.Success
-    );
-  }
-
   private reportHandlers: SnapshotReporterHandlers = {
     [SnapshotReportStatus.SUCCESS]: () => {},
     [SnapshotReportStatus.NO_CHANGES]: () => {},
@@ -132,12 +122,10 @@ export class SnapshotReporter {
       statuses.successes.push(SnapshotReportStatus.NO_CHANGES);
     }
 
-    if (this.isSuccessReport()) {
-      statuses.successes.push(SnapshotReportStatus.SUCCESS);
-    }
-
     if (this.resourceInErrorCount > 0) {
       statuses.errors.push(SnapshotReportStatus.ERROR);
+    } else {
+      statuses.successes.push(SnapshotReportStatus.SUCCESS);
     }
 
     return statuses;
