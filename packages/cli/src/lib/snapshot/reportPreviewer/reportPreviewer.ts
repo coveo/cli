@@ -11,11 +11,7 @@ import {
 import dedent from 'ts-dedent';
 import {recordable} from '../../utils/record';
 import {ResourceSnapshotType} from '@coveord/platform-client';
-
-type Plurable = [singular: string, plural: string];
-function pluralizeIfNeeded(plurable: Plurable, unprintedMessages: number) {
-  return plurable[unprintedMessages > 1 ? 1 : 0];
-}
+import {Plurable, pluralizeIfNeeded} from '../../utils/string';
 
 export class ReportViewer {
   private static errorPlurable: Plurable = ['error', 'errors'];
