@@ -4,8 +4,8 @@ jest.mock('../../lib/platform/authenticatedClient');
 
 import {ResourceSnapshotType} from '@coveord/platform-client';
 import {VaultEntryAttributes} from './snapshotReporter';
-import {Vault} from './vault';
-import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {VaultHandler} from './vaultHandler';
+import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
 import open from 'open';
 import {CliUx} from '@oclif/core';
@@ -31,9 +31,9 @@ const doMockAuthenticatedClient = () => {
   );
 };
 
-describe('Vault', () => {
+describe('VaultHandler', () => {
   const vaultEntryFile = 'myorgid-vault.json';
-  const vault = new Vault('myorgid');
+  const vault = new VaultHandler('myorgid');
   const anyKey = 'a';
   const abortKey = 'q';
 

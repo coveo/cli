@@ -20,8 +20,8 @@ import {VaultEntryAttributes} from './snapshotReporter';
 import {Plurable, pluralizeIfNeeded} from '../utils/string';
 import dedent from 'ts-dedent';
 
-export class Vault {
-  private static defaultEntryValue = '';
+export class VaultHandler {
+  private static readonly defaultEntryValue = '';
 
   public constructor(private organizationId: string) {}
 
@@ -91,7 +91,7 @@ export class Vault {
   ) {
     const data: Record<string, unknown> = {};
     for (const {vaultEntryId} of entries) {
-      data[vaultEntryId] = Vault.defaultEntryValue;
+      data[vaultEntryId] = VaultHandler.defaultEntryValue;
     }
 
     writeJsonSync(vaultEntryFilePath, data, {spaces: 4});
@@ -121,7 +121,7 @@ export class Vault {
     for (const {vaultEntryId} of requiredEntries) {
       if (
         data[vaultEntryId] === undefined ||
-        data[vaultEntryId] === Vault.defaultEntryValue
+        data[vaultEntryId] === VaultHandler.defaultEntryValue
       ) {
         missingEntries.push(vaultEntryId);
       }

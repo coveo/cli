@@ -12,7 +12,7 @@ import {
 import {SnapshotFacade} from './snapshotFacade';
 import {PrintableError} from '../errors/printableError';
 import {SnapshotReporter} from './snapshotReporter';
-import {Vault} from './vault';
+import {VaultHandler} from './vaultHandler';
 
 export interface DryRunOptions {
   sync?: boolean;
@@ -108,7 +108,7 @@ export function getMissingVaultEntriesReportHandler(
       `\nWould you like to create the missing vault entries in the destination organization ${snapshot.targetId}? (y/n)`
     );
     if (shouldCreate) {
-      const vault = new Vault(snapshot.targetId);
+      const vault = new VaultHandler(snapshot.targetId);
       await vault.createEntries(Array.from(this.missingVaultEntries));
       return;
     }
