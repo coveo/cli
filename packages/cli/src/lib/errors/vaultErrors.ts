@@ -19,7 +19,7 @@ export class InvalidVaultFileError extends CLIBaseError {
     super();
     this.message = dedent`Invalid vault file ${filePath}`;
     if (reason) {
-      this.message += `
+      this.message += dedent`
       ${reason}`;
     }
   }

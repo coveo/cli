@@ -43,7 +43,8 @@ export class Vault {
         this.ensureEntriesValidity(vaultEntryFilePath, entries);
         valid = true;
       } catch (error) {
-        CliUx.ux.warn(`\n\n${error}`);
+        CliUx.ux.log('');
+        CliUx.ux.warn(`${error}`);
       }
     }
     const vaultEntryModels = this.formatVaultEntries(
@@ -87,7 +88,7 @@ export class Vault {
   }
 
   private async openFile(vaultEntryFilePath: string) {
-    CliUx.ux.log(`Opening file ${vaultEntryFilePath}`);
+    CliUx.ux.log(`\nOpening file ${vaultEntryFilePath}`);
     await open(vaultEntryFilePath);
   }
 
