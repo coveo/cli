@@ -1,7 +1,7 @@
 name: Daily test
 on:
   schedule:
-    - cron: '0 0 * * 1-5'
+    - cron: '0 23 * * 1-5'
 
 env:
   E2E_USE_NPM_REGISTRY: true
@@ -10,6 +10,7 @@ jobs:
   e2e-setup-login:
     name: End-to-end login
     runs-on: 'ubuntu-latest'
+    timeout-minutes: 30
     outputs:
       cliConfigJson: ${{ steps.setup.outputs.cliConfigJson}}
     env:
@@ -60,6 +61,7 @@ jobs:
     name: End-to-end tests
     runs-on: ${{matrix.os}}
     needs: [e2e-setup-login]
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -107,7 +109,7 @@ jobs:
       # pulls all tags (needed for computing the next version)
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
       - name: Checkout last tag
-        run: git checkout $(git describe --abbrev=0)
+        run: git checkout $(git describe --abbrev=0 --tags)
       - uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
         with:
           node-version: ${{matrix.node}}
@@ -152,6 +154,7 @@ jobs:
     if: ${{ always() }}
     needs: [e2e, e2e-setup-login]
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       # Platform environment to log into for the e2e tests.
       PLATFORM_ENV: 'qa'
@@ -174,7 +177,7 @@ jobs:
       # pulls all tags (needed for computing the next version)
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
       - name: Checkout last tag
-        run: git checkout $(git describe --abbrev=0)
+        run: git checkout $(git describe --abbrev=0 --tags)
       - uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
         with:
           node-version: ${{matrix.node}}
@@ -199,6 +202,7 @@ jobs:
         run: node ./scripts/cleaning/delete-api-keys.js
   e2e-report:
     name: End-to-end status reporter
+    timeout-minutes: 30
     if: ${{ always() }}
     needs: e2e
     runs-on: ubuntu-latest
