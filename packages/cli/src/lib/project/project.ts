@@ -106,9 +106,13 @@ export class Project {
   }
 
   public writeResourcesManifest(orgId: string) {
-    const manifestJson =
-      readJsonSync(this.resourceManifestPath, {throws: false}) ?? {};
-    writeJsonSync(this.resourceManifestPath, {...manifestJson, orgId});
+    try {
+      const manifestJson =
+        readJsonSync(this.resourceManifestPath, {throws: false}) ?? {};
+      writeJsonSync(this.resourceManifestPath, {...manifestJson, orgId});
+    } catch (e: unknown) {
+      // noop
+    }
   }
 
   public get pathToProject() {
