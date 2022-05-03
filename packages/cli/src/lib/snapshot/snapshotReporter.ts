@@ -22,6 +22,17 @@ export class SnapshotReporter {
   private missingVaultEntriesSet: Set<[string, ResourceSnapshotType]> =
     new Set();
 
+  private operationResultsParseFuseUsed: boolean = false;
+
+  private consumeOperationResultsParseFuse() {
+    if (!this.operationResultsParseFuseUsed) {
+      return false;
+    } else {
+      this.operationResultsParseFuseUsed = true;
+      return true;
+    }
+  }
+
   public get missingVaultEntries() {
     return this.missingVaultEntriesSet.values();
   }
@@ -132,6 +143,9 @@ export class SnapshotReporter {
   }
 
   private parseResourcesOperationsResults(): void {
+    if (!this.consumeOperationResultsParseFuse()) {
+      return;
+    }
     for (const [resourceType, resource] of Object.entries(
       this.report.resourceOperationResults
     )) {
