@@ -96,7 +96,7 @@ describe('apiKeyPrivilege', () => {
     fancyIt()('should use it', async () => {
       const fakeCommand = getFakeCommand();
       const getSpy = jest.fn(() => ({
-        target: 'someTarget',
+        organization: 'someTarget',
       }));
       Object.defineProperty(fakeCommand, 'getFlags', {
         value: getSpy,
