@@ -414,11 +414,11 @@ describe('org:resources:push', () => {
         .stdout()
         .stderr()
         .command(['org:resources:push'])
-        .catch(/Your snapshot is missing some vault entries/)
-        .it('should only preview the snapshot', () => {
+        .catch(() => {
           expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
           expect(mockedApplySnapshot).toHaveBeenCalledTimes(0);
-        });
+        })
+        .it('should only preview the snapshot');
     });
   });
   //#endregion
