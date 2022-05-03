@@ -25,7 +25,7 @@ export class SnapshotReporter {
   private operationResultsParseFuseUsed: boolean = false;
 
   private consumeOperationResultsParseFuse() {
-    if (!this.operationResultsParseFuseUsed) {
+    if (this.operationResultsParseFuseUsed) {
       return false;
     } else {
       this.operationResultsParseFuseUsed = true;

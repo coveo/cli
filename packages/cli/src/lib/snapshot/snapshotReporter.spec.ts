@@ -230,6 +230,14 @@ describe('SnapshotReporter', () => {
       }
     );
 
+    it('#handleReport should parse the operation results once', async () => {
+      await missingVaultEntryReporter.handleReport();
+      await missingVaultEntryReporter.handleReport();
+      expect(
+        Array.from(missingVaultEntryReporter.missingVaultEntries).length
+      ).toBe(7);
+    });
+
     it('[get]-missingVaultEntries should be empty prior to handling', () => {
       expect(
         Array.from(missingVaultEntryReporter.missingVaultEntries).length
@@ -284,6 +292,12 @@ describe('SnapshotReporter', () => {
         expect(applySpy).toBeCalledWith(resourceInErrorReporter);
       }
     );
+
+    it('#handleReport should parse the operation results once', async () => {
+      await resourceInErrorReporter.handleReport();
+      await resourceInErrorReporter.handleReport();
+      expect(resourceInErrorReporter.resourceInErrorCount).toBe(7);
+    });
 
     it('[get]-resourceInError should be empty prior to handling', () => {
       expect(resourceInErrorReporter.resourceInError.size).toBe(0);
