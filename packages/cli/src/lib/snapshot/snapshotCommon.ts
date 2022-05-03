@@ -2,7 +2,7 @@ import {CliUx} from '@oclif/core';
 import {Project} from '../project/project';
 import {SnapshotFactory} from './snapshotFactory';
 import {Snapshot, WaitUntilDoneOptions} from './snapshot';
-import {red, green} from 'chalk';
+import {red, green, bold} from 'chalk';
 import {normalize} from 'path';
 import {Config, Configuration} from '../config/config';
 import {
@@ -105,7 +105,9 @@ export function getMissingVaultEntriesReportHandler(
     // **** Pseudo-code END ****
 
     const shouldCreate = await CliUx.ux.confirm(
-      `\nWould you like to create the missing vault entries in the destination organization ${snapshot.targetId}? (y/n)`
+      `\nWould you like to create the missing vault entries in the destination organization ${bold.cyan(
+        snapshot.targetId
+      )}? (y/n)`
     );
     if (shouldCreate) {
       const vault = new VaultHandler(snapshot.targetId);
