@@ -23,19 +23,25 @@ export default class SourcePushAdd extends Command {
 
   public static flags = {
     file: Flags.string({
+      // For retro compatibility
       multiple: true,
-      exclusive: ['folder'],
-      char: 'f',
-      helpValue: 'myfile.json',
-      description: 'One or multiple file to push. Can be repeated.',
+      exclusive: ['folder', 'files'],
+      hidden: true,
     }),
     folder: Flags.string({
+      // For retro compatibility
       multiple: true,
-      exclusive: ['file'],
+      exclusive: ['file', 'files'],
       char: 'd',
-      helpValue: './my_folder_with_multiple_json_files',
+      hidden: true,
+    }),
+    files: Flags.string({
+      multiple: true,
+      exclusive: ['folder', 'file'],
+      char: 'f',
+      helpValue: 'myfile.json',
       description:
-        'One or multiple folder containing json files. Can be repeated',
+        'Combinaison of JSON files and folders (containing JSON files) to push. Can be repeated.',
     }),
     maxConcurrent: Flags.integer({
       exclusive: ['file'],
@@ -72,12 +78,8 @@ export default class SourcePushAdd extends Command {
     )
   )
   public async run() {
+    await this.showDeprecatedFlagWarning();
     const {args, flags} = await this.parse(SourcePushAdd);
-    if (!flags.file && !flags.folder) {
-      this.error(
-        'You must minimally set the `file` or the `folder` flag. Use `source:push:add --help` to get more information.'
-      );
-    }
     const {accessToken, organization, environment, region} =
       await new AuthenticatedClient().cfg.get();
     const source = new PushSource(accessToken!, organization, {
@@ -85,7 +87,7 @@ export default class SourcePushAdd extends Command {
       region,
     });
 
-    CliUx.ux.action.start('Processing...');
+    CliUx.ux.action.start('Processing files');
 
     const fileNames = await this.getFileNames();
     const options = {
@@ -102,7 +104,7 @@ export default class SourcePushAdd extends Command {
 
     await source.setSourceStatus(args.sourceId, 'IDLE');
 
-    CliUx.ux.action.stop();
+    CliUx.ux.action.stop(green('✔'));
   }
 
   @Trackable()
@@ -112,20 +114,16 @@ export default class SourcePushAdd extends Command {
 
   private async getFileNames() {
     const {flags} = await this.parse(SourcePushAdd);
-    let fileNames: string[] = [];
-    if (flags.file) {
-      fileNames = fileNames.concat(flags.file);
-    }
-    if (flags.folder) {
-      const isString = (file: string | null): file is string => Boolean(file);
-      fileNames = fileNames.concat(
-        flags.folder
-          .flatMap((folder) =>
-            readdirSync(folder, {withFileTypes: true}).map((dirent) =>
-              dirent.isFile() ? join(folder, dirent.name) : null
-            )
-          )
-          .filter(isString)
+    const fileNames = [
+      ...(flags.files || []),
+      ...(flags.folder || []),
+      ...(flags.files || []),
+    ];
+
+    if (fileNames.length === 0) {
+      const {name} = SourcePushAdd.flags.files;
+      this.error(
+        'You must set the `files` flag. Use `source:push:add --help` to get more information.'
       );
     }
     return fileNames;
@@ -148,6 +146,13 @@ export default class SourcePushAdd extends Command {
       } accepted by the Push API from ${green(fileNames)}.`,
       res
     );
+  }
+
+  private async showDeprecatedFlagWarning() {
+    const {flags} = await this.parse(SourcePushAdd);
+    if (flags.file || flags.folder) {
+      CliUx.ux.warn('Use the `files` flag instead');
+    }
   }
 
   private errorMessageOnAdd(err: unknown) {
