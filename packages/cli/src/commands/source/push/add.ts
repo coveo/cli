@@ -1,8 +1,6 @@
 import {PushSource, UploadBatchCallbackData} from '@coveo/push-api-client';
 import {Command, Flags, CliUx} from '@oclif/core';
 import {green} from 'chalk';
-import {readdirSync} from 'fs';
-import {join} from 'path';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
@@ -115,13 +113,12 @@ export default class SourcePushAdd extends Command {
   private async getFileNames() {
     const {flags} = await this.parse(SourcePushAdd);
     const fileNames = [
-      ...(flags.files || []),
-      ...(flags.folder || []),
-      ...(flags.files || []),
+      ...(flags.files ?? []),
+      ...(flags.folder ?? []),
+      ...(flags.files ?? []),
     ];
 
     if (fileNames.length === 0) {
-      const {name} = SourcePushAdd.flags.files;
       this.error(
         'You must set the `files` flag. Use `source:push:add --help` to get more information.'
       );
