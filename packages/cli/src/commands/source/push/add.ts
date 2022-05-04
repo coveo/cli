@@ -23,19 +23,16 @@ export default class SourcePushAdd extends Command {
     file: Flags.string({
       // For retro compatibility
       multiple: true,
-      exclusive: ['folder', 'files'],
       hidden: true,
     }),
     folder: Flags.string({
       // For retro compatibility
       multiple: true,
-      exclusive: ['file', 'files'],
       char: 'd',
       hidden: true,
     }),
     files: Flags.string({
       multiple: true,
-      exclusive: ['folder', 'file'],
       char: 'f',
       helpValue: 'myfile.json',
       description:
@@ -113,7 +110,7 @@ export default class SourcePushAdd extends Command {
   private async getFileNames() {
     const {flags} = await this.parse(SourcePushAdd);
     const fileNames = [
-      ...(flags.files ?? []),
+      ...(flags.file ?? []),
       ...(flags.folder ?? []),
       ...(flags.files ?? []),
     ];

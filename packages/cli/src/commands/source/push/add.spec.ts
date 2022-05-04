@@ -127,9 +127,21 @@ describe('source:push:add', () => {
     test
       .stdout()
       .stderr()
-      .command(['source:push:add', 'mysource', '-f', 'foo', '-d', 'bar'])
-      .catch(/--files= cannot also be provided when using --folder=/)
-      .it('throws when incompatible flags for file and folder are passed');
+      .command([
+        'source:push:add',
+        'mysource',
+        '-f',
+        'foo.json',
+        '-d',
+        'directory',
+      ])
+      .it('should accept files and folder within the same command', () => {
+        expect(mockBatchUpdate).toHaveBeenCalledWith(
+          expect.anything(),
+          ['directory', 'foo.json'],
+          expect.anything()
+        );
+      });
 
     test
       .stdout()
