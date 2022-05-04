@@ -1,0 +1,20 @@
+{
+  "name": "@coveo/connector-sdk",
+  "version": "1.27.1",
+  "description": "wololo",
+  "types": "index.d.ts",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coveo/cli.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/coveo/cli/issues"
+  },
+  "homepage": "https://github.com/coveo/cli#readme"
+}

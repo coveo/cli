@@ -13,9 +13,16 @@ import {InvalidProjectError} from '../errors';
 import extract from 'extract-zip';
 import {DotFolder, DotFolderConfig} from './dotFolder';
 import {readJsonSync, writeJsonSync, WriteOptions} from 'fs-extra';
+import {boolean} from 'yargs';
+import {execSync} from 'child_process';
+import {dir} from 'console';
 
 export class Project {
+  public static isDirectoryACoveoProject = (path: string) =>
+    existsSync(join(path, DotFolder.hiddenFolderName));
+
   public static readonly resourceFolderName = 'resources';
+  public static readonly connectorFolderName = 'connectors';
   public static readonly jsonFormat: WriteOptions = {spaces: '\t'};
   public constructor(private _pathToProject: string, orgId?: string) {
     if (!this.isCoveoProject) {
@@ -106,6 +113,10 @@ export class Project {
     return join(this._pathToProject, Project.resourceFolderName);
   }
 
+  public get connectorsPath() {
+    return join(this._pathToProject, Project.connectorFolderName);
+  }
+
   public contains(fileName: string) {
     return existsSync(join(this.pathToProject, fileName));
   }
@@ -116,6 +127,36 @@ export class Project {
 
   private get isResourcesProject() {
     return this.contains(Project.resourceFolderName);
+  }
+
+  public getConnectorPath(connectorName?: string): string | null {
+    if (connectorName) {
+      const potentialConnectorPath = join(
+        this.pathToProject,
+        Project.connectorFolderName,
+        connectorName
+      );
+      return execSync(potentialConnectorPath) ? potentialConnectorPath : null;
+    } else {
+      const connectorDirs = readdirSync(this.connectorsPath, {
+        withFileTypes: true,
+      }).filter((dirent) => dirent.isDirectory());
+      return connectorDirs.length === 0
+        ? null
+        : join(
+            this.pathToProject,
+            Project.connectorFolderName,
+            connectorDirs[0].name
+          );
+    }
+  }
+
+  public get isConnectorProject() {
+    return this.contains(Project.connectorFolderName);
+  }
+
+  public get numberOfConnectors() {
+    return readdirSync(this.connectorsPath).length;
   }
 
   private makeCoveoProject(orgId?: string) {

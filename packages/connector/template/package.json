@@ -1,0 +1,26 @@
+{
+  "name": "@coveo/connector-template",
+  "version": "1.27.1",
+  "description": "Just a template",
+  "types": "index.d.ts",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coveo/cli.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/coveo/cli/issues"
+  },
+  "homepage": "https://github.com/coveo/cli#readme",
+  "dependencies": {
+    "@coveo/connector-sdk": "1.27.1"
+  },
+  "devDependencies": {
+    "@netlify/functions": "^1.0.0"
+  }
+}
