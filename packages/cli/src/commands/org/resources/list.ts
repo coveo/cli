@@ -1,4 +1,4 @@
-import {Command, Flags, CliUx} from '@oclif/core';
+import {Command, CliUx} from '@oclif/core';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '../../../lib/config/config';
@@ -9,6 +9,7 @@ import {
 import dedent from 'ts-dedent';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {recordable} from '../../../lib/utils/record';
+import {organization} from '../../../lib/flags/snapshotCommonFlags';
 
 export default class List extends Command {
   public static description =
@@ -16,13 +17,9 @@ export default class List extends Command {
 
   public static flags = {
     ...CliUx.ux.table.flags(),
-    target: Flags.string({
-      char: 't',
-      description:
-        'The unique identifier of the organization containing the snapshots. If not specified, the organization you are connected to will be used.',
-      helpValue: 'destinationorganizationg7dg3gd',
-      required: false,
-    }),
+    ...organization(
+      'The unique identifier of the organization containing the snapshots.'
+    ),
   };
 
   @Trackable()
@@ -32,7 +29,7 @@ export default class List extends Command {
       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
     );
     const {flags} = await this.parse(List);
-    const org = await getTargetOrg(this.configuration, flags.target);
+    const org = await getTargetOrg(this.configuration, flags.organization);
     const platformClient = await new AuthenticatedClient().getClient({
       organization: org,
     });

@@ -23,9 +23,11 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - name: Delete test API keys
+        timeout-minutes: 30
         if: always()
         run: node ./scripts/cleaning/delete-api-keys.js --olderThan 1d
       - name: Delete test orgs
+        timeout-minutes: 30
         if: always()
         run: |
           Xvfb :1 -screen 0 1024x768x16 & sleep 1
@@ -34,6 +36,11 @@ jobs:
           node ./scripts/cleaning/delete-orgs.js     --olderThan 1d
         env:
           DISPLAY: ':1'
+      - uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535 # tag=v3
+        if: always()
+        with:
+          name: cleaning-artifacts
+          path: ./packages/cli-e2e/artifacts
       - name: Notify in case of failure
         if: failure()
         run: curl --request POST --url ${{ secrets.SLACK_WEBHOOK }}

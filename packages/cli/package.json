@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@amplitude/types": "1.10.0",
-    "@babel/core": "7.17.9",
+    "@babel/core": "7.17.10",
     "@coveo/angular": "1.27.1",
     "@coveo/cra-template": "1.27.1",
     "@coveo/create-atomic": "1.27.1",
@@ -47,9 +47,9 @@
     "@types/cli-progress": "3.9.2",
     "@types/fs-extra": "9.0.13",
     "@types/inquirer": "8.2.1",
-    "@types/jest": "27.4.1",
+    "@types/jest": "27.5.0",
     "@types/json2csv": "5.0.3",
-    "@types/node": "17.0.29",
+    "@types/node": "17.0.31",
     "@types/semver": "7.3.9",
     "chai": "4.3.6",
     "eslint": "8.14.0",
@@ -63,7 +63,7 @@
     "strip-ansi": "6.0.1",
     "ts-jest": "27.1.4",
     "ts-node": "10.7.0",
-    "typescript": "4.6.3"
+    "typescript": "4.6.4"
   },
   "peerDependencies": {
     "@angular/cli": "^13.2.4",
