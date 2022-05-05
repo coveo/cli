@@ -67,7 +67,8 @@ export default class ItemTypeAdd extends Command {
     const dataTypeFilePath = join(
       this.connectorPath,
       'dataTypes',
-      `${itemTypeName}.ts`
+      itemTypeName,
+      'index.ts'
     );
     mkdirSync(dirname(dataTypeFilePath), {recursive: true});
     writeFileSync(
@@ -76,6 +77,7 @@ export default class ItemTypeAdd extends Command {
     );
   }
 
+  //TODO INNO-1: Refacto
   private getConnectorPath(
     args: {[name: string]: any},
     flags: {connector: string | undefined} & {json: boolean | undefined}
