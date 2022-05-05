@@ -1,8 +1,9 @@
 {
-  "name": "@coveo/connector-sdk",
-  "version": "1.27.1",
+  "name": "baguette-connector-sdk",
+  "version": "1.0.2",
   "description": "wololo",
   "types": "index.d.ts",
+  "main": "index.js",
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

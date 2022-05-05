@@ -1,24 +1,37 @@
 module.exports.ItemTypeClass = (name) =>
   `
-import {ItemType} from '@coveo/connector-sdk';
+import {
+  ItemType,
+  BaseReturnDataType,
+  BaseManifestData,
+} from "baguette-connector-sdk";
 
 export interface Args {}
 export interface RawData {}
-export interface ReturnedData {}
+export interface ReturnedData extends BaseReturnDataType {}
 
-export default class ${name}
-  implements ItemType<Args, RawData, ReturnedData>
-{
-  protected getData(): Promise<RawData> {
+export interface ManifestData extends BaseManifestData {
+  ItemType: \`\${typeof ${name}.ItemType}\`;
+  Path: \`/.netlify/functions/\${Lowercase<typeof ${name}.ItemType>}\`;
+}
+
+export default class ${name} extends ItemType<
+  Args,
+  RawData,
+  ReturnedData,
+  ManifestData
+> {
+  private static readonly ItemType: string = "${name}"
+  protected getData(): Promise<RawData[]> {
     throw new Error('Method not implemented.');
   }
-  protected process(raw: RawData): Promise<ReturnedData> {
+  protected process(raw: RawData[]): Promise<ReturnedData[]> {
     throw new Error('Method not implemented.');
   }
-  public call(args: Args): Promise<ReturnedData> {
+  public call(args: Args): Promise<ReturnedData[]> {
     throw new Error('Method not implemented.');
   }
-  public static call(args: Args): Promise<ReturnedData> {
+  public static call(args: Args): Promise<ReturnedData[]> {
     return new ${name}().call(args);
   }
 }
@@ -33,7 +46,7 @@ const getArgs: (
   event: Parameters<Handler>[0],
   context: Parameters<Handler>[1]
 ) => Args = (event, context) => {
-  return event.queryStringParameters;
+  return event.queryStringParameters as unknown as Args;
 };
 
 export const handler: Handler = async (event, context) => {

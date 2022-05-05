@@ -3,8 +3,13 @@ import * as TJS from 'typescript-json-schema';
 import {Command, Flags} from '@oclif/core';
 import {Project} from '../../lib/project/project';
 import {cwd} from 'process';
-import {join, resolve} from 'path';
+import {join, parse} from 'path';
 import {readdirSync} from 'fs';
+import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {
+  IsAuthenticated,
+  Preconditions,
+} from '../../lib/decorators/preconditions';
 
 export default class ConnectorBuild extends Command {
   static description = 'describe the command here';
@@ -12,8 +17,7 @@ export default class ConnectorBuild extends Command {
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
   static flags = {
-    // flag with a value (-n, --name=VALUE)
-    baseUrl: Flags.string({char: 'b', description: 'yadayada'}),
+    baseUrl: Flags.string({char: 'b', description: 'yadayada', required: true}),
     connector: Flags.string({
       name: 'connector',
       char: 'c',
@@ -28,6 +32,7 @@ export default class ConnectorBuild extends Command {
   private project!: Project;
   private connectorPath!: string;
 
+  @Preconditions(IsAuthenticated())
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(ConnectorBuild);
 
@@ -36,9 +41,28 @@ export default class ConnectorBuild extends Command {
 
     this.files = this.getFiles();
     this.initializeAstUtils();
+
+    const TheConfig: any = {
+      Url: flags.baseUrl,
+    };
+
+    let endpoints = [];
     for (const file of this.files) {
-      this.computeDataTypes(file);
+      endpoints.push(this.computeDataTypes(file));
     }
+    TheConfig.Endpoints = endpoints;
+
+    const platClient = new AuthenticatedClient().getClient();
+    (await platClient).source.create(
+      {
+        name: parse(this.connectorPath).name,
+        logicalIndex: 'default',
+        sourceType: 'GENERIC_REST',
+        sourceVisibility: 'SHARED',
+        restConfiguration: JSON.stringify({Services: [TheConfig]}),
+      },
+      {rebuild: true}
+    );
   }
 
   private getFiles(): any {
@@ -50,7 +74,7 @@ export default class ConnectorBuild extends Command {
   }
 
   private initializeAstUtils() {
-    this.program = ts.createProgram(this.files, {});
+    this.program = ts.createProgram(this.files, {lib: ['lib.esnext.d.ts']});
     this.typeChecker = this.program.getTypeChecker();
     const generator = TJS.buildGenerator(this.program);
     if (!generator) {
@@ -65,7 +89,7 @@ export default class ConnectorBuild extends Command {
       throw 'Source file not found, wth';
     }
 
-    const CONNECTOR_SDK_IDENTIFIER = '"@coveo/connector-sdk"';
+    const CONNECTOR_SDK_IDENTIFIER = '"baguette-connector-sdk"';
     const CONNECTOR_SDK_CLASS_NAME = 'ItemType';
 
     const hasHerited =
@@ -137,13 +161,85 @@ export default class ConnectorBuild extends Command {
     if (!Arguments) {
       throw 'No typeArguments found while extending ItemType. wtf';
     }
+    const [parameters, , returnType, manifestType] = Arguments;
+    const [parametersSchema, returnTypeSchema, manifestTypeSchema] = [
+      parameters,
+      returnType,
+      manifestType,
+    ].map((tsInterface) =>
+      this.schemaGenerator.getSchemaForSymbol(tsInterface.getText())
+    );
 
-    for (const FkInterface of Arguments) {
-      console.log(FkInterface.getText());
-      console.log(
-        this.schemaGenerator.getSchemaForSymbol(FkInterface.getText())
-      );
+    const queryParameters: Record<string, string> = {};
+    for (const [propertyKey, propertyValue] of Object.entries(
+      parametersSchema.properties ?? []
+    )) {
+      const propertyEnum = (propertyValue as any)['enum'] as
+        | Array<unknown>
+        | undefined;
+      if (!propertyEnum) {
+        throw 'Args should be fixed value';
+      }
+      if (propertyEnum.length > 1) {
+        throw 'Args should have only one value';
+      }
+      const typeOfEnumValue = typeof propertyEnum[0];
+      switch (typeOfEnumValue) {
+        case 'string':
+        case 'number':
+        case 'boolean':
+          break;
+
+        default:
+          throw 'Args should be either a string, a number or a boolean';
+      }
+      queryParameters[propertyKey] = `${propertyEnum[0]}`;
     }
+
+    const customProperties: Record<string, string> = {};
+    const config: any = {
+      Method: 'GET',
+    };
+    for (const propertyKey of Object.keys(returnTypeSchema.properties ?? [])) {
+      if (minimalMetadataKeys.includes(propertyKey)) {
+        config[propertyKey] = `%[${propertyKey}]`;
+      } else {
+        customProperties[propertyKey] = `%[${propertyKey}]`;
+      }
+    }
+
+    if (Object.keys(customProperties).length > 0) {
+      config['Metadata'] = customProperties;
+    }
+    if (Object.keys(queryParameters).length > 0) {
+      config['QueryParameters'] = queryParameters;
+    }
+
+    for (const [propertyKey, propertyValue] of Object.entries(
+      manifestTypeSchema.properties ?? []
+    )) {
+      const propertyEnum = (propertyValue as any)['enum'] as
+        | Array<unknown>
+        | undefined;
+      if (!propertyEnum) {
+        throw 'Manifest data should be fixed value';
+      }
+      if (propertyEnum.length > 1) {
+        throw 'Manifest data should have only one value';
+      }
+      const typeOfEnumValue = typeof propertyEnum[0];
+      switch (typeOfEnumValue) {
+        case 'string':
+          break;
+
+        default:
+          throw 'Manifest data should be a string';
+      }
+      config[propertyKey] = propertyEnum[0];
+    }
+
+    console.log(JSON.stringify(config, undefined, 2));
+    return config;
   }
 
   //TODO INNO-1: Refacto
@@ -172,3 +268,11 @@ export default class ConnectorBuild extends Command {
     return connectorPath;
   }
 }
+
+const minimalMetadataKeys = [
+  'ClickableUri',
+  'ItemType',
+  'Path',
+  'Uri',
+  'Title',
+];
