@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/coveo/cli#readme",
   "dependencies": {
-    "@coveo/connector-sdk": "1.27.1"
+    "baguette-connector-sdk": "1.0.3"
   },
   "devDependencies": {
     "@netlify/functions": "^1.0.0"
