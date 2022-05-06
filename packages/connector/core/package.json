@@ -1,6 +1,6 @@
 {
   "name": "baguette-connector-sdk",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "wololo",
   "types": "index.d.ts",
   "main": "index.js",

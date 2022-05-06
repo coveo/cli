@@ -74,7 +74,9 @@ export default class ConnectorBuild extends Command {
   }
 
   private initializeAstUtils() {
-    this.program = ts.createProgram(this.files, {lib: ['lib.esnext.d.ts']});
+    this.program = ts.createProgram(this.files, {
+      lib: ['lib.esnext.d.ts', 'lib.dom.d.ts'],
+    });
     this.typeChecker = this.program.getTypeChecker();
     const generator = TJS.buildGenerator(this.program);
     if (!generator) {

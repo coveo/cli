@@ -25,7 +25,7 @@ export default class ConnectorNew extends Command {
     'MyAwesomeCoveoProjectWOWOWOWOWOW';
   private projectDirectory: string = cwd();
   static TemplatePath: string = dirname(
-    require.resolve('@coveo/connector-template')
+    require.resolve('baguette-connector-template')
   );
   private project!: Project;
   public async run(): Promise<void> {
@@ -76,8 +76,8 @@ export default class ConnectorNew extends Command {
     );
 
     const pkgIndent = detectIndent(packageTemplate).indent || '\t';
-    const finalPackageJsonTemplate = JSON.parse(packageTemplate);
-    const packageJsonObject = JSON.parse(packageJson);
+    const finalPackageJsonTemplate = JSON.parse(packageJson);
+    const packageJsonObject = JSON.parse(packageTemplate);
 
     finalPackageJsonTemplate.dependencies = packageJsonObject.dependencies;
     finalPackageJsonTemplate.devDependencies =

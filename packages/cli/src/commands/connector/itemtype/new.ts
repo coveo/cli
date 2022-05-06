@@ -1,10 +1,10 @@
 import {Command, Flags} from '@oclif/core';
 import {cwd} from 'process';
 import {Project} from '../../../lib/project/project';
-import {ItemTypeClass, RouteFile} from '@coveo/connector-template';
+import {ItemTypeClass, RouteFile} from 'baguette-connector-template';
 import {mkdirSync, writeFileSync} from 'fs';
 import {dirname, join} from 'path';
-import prettier from 'prettier';
+import {format} from 'prettier';
 
 export default class ItemTypeAdd extends Command {
   public static description =
@@ -29,7 +29,7 @@ export default class ItemTypeAdd extends Command {
     }),
   };
 
-  static TemplatePath: string = require.resolve('@coveo/connector-template');
+  static TemplatePath: string = require.resolve('baguette-connector-template');
   static ItemTypeValidator: RegExp = /[a-zA-Z]+/;
   private project!: Project;
   private connectorPath!: string;
@@ -59,7 +59,7 @@ export default class ItemTypeAdd extends Command {
     mkdirSync(dirname(routeFilePath), {recursive: true});
     writeFileSync(
       routeFilePath,
-      prettier.format(RouteFile(itemTypeName), {parser: 'typescript'})
+      format(RouteFile(itemTypeName), {parser: 'typescript'})
     );
   }
 
@@ -73,7 +73,7 @@ export default class ItemTypeAdd extends Command {
     mkdirSync(dirname(dataTypeFilePath), {recursive: true});
     writeFileSync(
       dataTypeFilePath,
-      prettier.format(ItemTypeClass(itemTypeName), {parser: 'typescript'})
+      format(ItemTypeClass(itemTypeName), {parser: 'typescript'})
     );
   }
 

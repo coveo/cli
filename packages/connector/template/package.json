@@ -1,5 +1,5 @@
 {
-  "name": "@coveo/connector-template",
+  "name": "baguette-connector-template",
   "version": "1.27.1",
   "description": "Just a template",
   "types": "index.d.ts",
@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/coveo/cli#readme",
   "dependencies": {
-    "baguette-connector-sdk": "1.0.3"
+    "baguette-connector-sdk": "1.0.4"
   },
   "devDependencies": {
     "@netlify/functions": "^1.0.0"

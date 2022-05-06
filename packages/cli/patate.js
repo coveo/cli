@@ -1,3 +1,3 @@
-const {ItemTypeClass} = require('@coveo/connector-template');
+const {ItemTypeClass} = require('baguette-connector-template');
 
 console.log(ItemTypeClass('tabernak'));

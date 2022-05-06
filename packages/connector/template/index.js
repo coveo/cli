@@ -21,7 +21,7 @@ export default class ${name} extends ItemType<
   ReturnedData,
   ManifestData
 > {
-  private static readonly ItemType: string = "${name}"
+  public static readonly ItemType = "${name}" as const;
   protected getData(): Promise<RawData[]> {
     throw new Error('Method not implemented.');
   }
@@ -40,7 +40,7 @@ export default class ${name} extends ItemType<
 module.exports.RouteFile = (name) =>
   `
 import {Handler} from '@netlify/functions';
-import ${name}, {Args} from '../../dataTypes/${name}';
+import ${name}, {Args} from '../../../dataTypes/${name}';
 
 const getArgs: (
   event: Parameters<Handler>[0],
