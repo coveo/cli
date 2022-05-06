@@ -23,6 +23,10 @@ export default class ConnectorBuild extends Command {
       char: 'c',
       required: false,
     }),
+    tsConfigPath: Flags.string({
+      char: 't',
+      required: false,
+    }),
   };
 
   private files!: string[];
@@ -40,7 +44,12 @@ export default class ConnectorBuild extends Command {
     this.connectorPath = this.getConnectorPath(args, flags);
 
     this.files = this.getFiles();
-    this.initializeAstUtils();
+    const tsConfig = flags.tsConfigPath
+      ? ts.readConfigFile(flags.tsConfigPath, ts.sys.readFile).config
+      : {
+          lib: ['lib.esnext.d.ts', 'lib.dom.d.ts'],
+        };
+    this.initializeAstUtils(tsConfig);
 
     const TheConfig: any = {
       Url: flags.baseUrl,
@@ -73,10 +82,8 @@ export default class ConnectorBuild extends Command {
     );
   }
 
-  private initializeAstUtils() {
-    this.program = ts.createProgram(this.files, {
-      lib: ['lib.esnext.d.ts', 'lib.dom.d.ts'],
-    });
+  private initializeAstUtils(tsConfig: ts.CompilerOptions) {
+    this.program = ts.createProgram(this.files, tsConfig);
     this.typeChecker = this.program.getTypeChecker();
     const generator = TJS.buildGenerator(this.program);
     if (!generator) {
