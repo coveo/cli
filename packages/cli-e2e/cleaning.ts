@@ -7,11 +7,12 @@ import {loginWithOffice} from './utils/login';
 import {getPlatformHost} from './utils/platform';
 import waitOn from 'wait-on';
 import {ProcessManager} from './utils/processManager';
-import {restoreCliConfig} from './setup/utils';
+import {restoreCliConfig, setCliExecPath} from './setup/utils';
 (async () => {
   if (statSync('decrypted', {throwIfNoEntry: false})) {
     restoreCliConfig();
   } else {
+    setCliExecPath();
     mkdirSync(SCREENSHOTS_PATH, {recursive: true});
     global.processManager = new ProcessManager();
     process.env.PLATFORM_ENV = process.env.PLATFORM_ENV?.toLowerCase() || '';
