@@ -1,5 +1,5 @@
 import {PushSource, UploadBatchCallbackData} from '@coveo/push-api-client';
-import {Command, Flags, CliUx} from '@oclif/core';
+import {Command, CliUx, Flags} from '@oclif/core';
 import {green} from 'chalk';
 import {
   HasNecessaryCoveoPrivileges,
@@ -12,12 +12,18 @@ import {
   writeSourceContentPrivilege,
 } from '../../../lib/decorators/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {
+  withCreateMissingFields,
+  withFiles,
+  withMaxConcurrent,
+} from '../../../lib/flags/sourceCommonFlags';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
+import {getFileNames} from '../../../lib/utils/file';
 
 export default class SourcePushAdd extends Command {
   public static description =
-    'Push a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-files-with-Coveo-CLI for more information.';
+    'Index a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-files-with-Coveo-CLI for more information.';
 
   public static flags = {
     // TODO: CDX-856: remove file flag
@@ -33,27 +39,9 @@ export default class SourcePushAdd extends Command {
       char: 'd',
       hidden: true,
     }),
-    files: Flags.string({
-      multiple: true,
-      char: 'f',
-      helpValue: 'myfile.json',
-      description:
-        'Combinaison of JSON files and folders (containing JSON files) to push. Can be repeated.',
-    }),
-    maxConcurrent: Flags.integer({
-      exclusive: ['file'],
-      char: 'c',
-      default: 10,
-      description:
-        'The maximum number of requests to send concurrently. Increasing this value increases the speed at which documents are pushed to the Coveo platform. However, if you run into memory or throttling issues, consider reducing this value.',
-    }),
-    createMissingFields: Flags.boolean({
-      char: 'm',
-      allowNo: true,
-      default: true,
-      description:
-        'Analyse documents to detect and automatically create missing fields in the destination organization. When enabled, an error will be thrown if a field is used to store data of inconsistent type across documents.',
-    }),
+    ...withFiles(),
+    ...withMaxConcurrent(),
+    ...withCreateMissingFields(),
   };
 
   public static args = [
@@ -86,7 +74,7 @@ export default class SourcePushAdd extends Command {
 
     CliUx.ux.action.start('Processing files');
 
-    const fileNames = await this.getFileNames();
+    const fileNames = await getFileNames(flags);
     const options = {
       maxConcurrent: flags.maxConcurrent,
       createFields: flags.createMissingFields,
@@ -107,23 +95,6 @@ export default class SourcePushAdd extends Command {
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
     throw err;
-  }
-
-  private async getFileNames() {
-    const {flags} = await this.parse(SourcePushAdd);
-    const fileNames = [
-      // TODO: CDX-856: only read --files flag
-      ...(flags.file ?? []),
-      ...(flags.folder ?? []),
-      ...(flags.files ?? []),
-    ];
-
-    if (fileNames.length === 0) {
-      this.error(
-        'You must set the `files` flag. Use `source:push:add --help` to get more information.'
-      );
-    }
-    return fileNames;
   }
 
   private successMessageOnAdd({batch, files, res}: UploadBatchCallbackData) {
