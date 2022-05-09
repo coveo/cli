@@ -7,6 +7,7 @@ export interface FilesOrFolders {
 }
 
 export async function getFileNames(entries: FilesOrFolders) {
+  // TODO: CDX-856: only read --files flag
   const entryNames = [
     ...(entries.file ?? []),
     ...(entries.folder ?? []),
