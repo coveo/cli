@@ -20,11 +20,13 @@ export default class SourcePushAdd extends Command {
     'Push a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-files-with-Coveo-CLI for more information.';
 
   public static flags = {
+    // TODO: CDX-856: remove file flag
     file: Flags.string({
       // For retro compatibility
       multiple: true,
       hidden: true,
     }),
+    // TODO: CDX-856: remove folder flag
     folder: Flags.string({
       // For retro compatibility
       multiple: true,
@@ -110,6 +112,7 @@ export default class SourcePushAdd extends Command {
   private async getFileNames() {
     const {flags} = await this.parse(SourcePushAdd);
     const fileNames = [
+      // TODO: CDX-856: only read --files flag
       ...(flags.file ?? []),
       ...(flags.folder ?? []),
       ...(flags.files ?? []),
@@ -143,6 +146,7 @@ export default class SourcePushAdd extends Command {
   }
 
   private async showDeprecatedFlagWarning() {
+    // TODO: CDX-856: no longer needed once flags are removed
     const {flags} = await this.parse(SourcePushAdd);
     if (flags.file || flags.folder) {
       CliUx.ux.warn('Use the `files` flag instead');
