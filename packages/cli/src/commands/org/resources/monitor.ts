@@ -1,12 +1,12 @@
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
-import {Flags, Command, CliUx} from '@oclif/core';
+import {Command, CliUx} from '@oclif/core';
 import {Config} from '../../../lib/config/config';
 import {
   IsAuthenticated,
   Preconditions,
 } from '../../../lib/decorators/preconditions';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
-import {wait} from '../../../lib/flags/snapshotCommonFlags';
+import {organization, wait} from '../../../lib/flags/snapshotCommonFlags';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 import {ReportViewerStyles} from '../../../lib/snapshot/reportPreviewer/reportPreviewerStyles';
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
@@ -22,13 +22,9 @@ export default class Monitor extends Command {
 
   public static flags = {
     ...wait(),
-    target: Flags.string({
-      char: 't',
-      description:
-        'The unique identifier of the organization containing the snapshot. If not specified, the organization you are connected to will be used.',
-      helpValue: 'destinationorganizationg7dg3gd',
-      required: false,
-    }),
+    ...organization(
+      'The unique identifier of the organization containing the snapshot.'
+    ),
   };
 
   public static args = [
@@ -95,7 +91,7 @@ export default class Monitor extends Command {
   private async getSnapshot(): Promise<Snapshot> {
     const {args, flags} = await this.parse(Monitor);
     const snapshotId = args.snapshotId;
-    const target = await getTargetOrg(this.configuration, flags.target);
+    const target = await getTargetOrg(this.configuration, flags.organization);
 
     return SnapshotFactory.createFromExistingSnapshot(snapshotId, target);
   }

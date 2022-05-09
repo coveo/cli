@@ -25,6 +25,7 @@ import {
   previewLevel,
   sync,
   wait,
+  organization,
 } from '../../../lib/flags/snapshotCommonFlags';
 import {
   writeLinkPrivilege,
@@ -42,13 +43,9 @@ export default class Push extends Command {
     ...wait(),
     ...sync(),
     ...previewLevel(),
-    target: Flags.string({
-      char: 't',
-      description:
-        'The unique identifier of the organization where to send the changes. If not specified, the organization you are connected to will be used.',
-      helpValue: 'destinationorganizationg7dg3gd',
-      required: false,
-    }),
+    ...organization(
+      'The unique identifier of the organization where to send the changes'
+    ),
     deleteMissingResources: Flags.boolean({
       char: 'd',
       description: 'Delete missing resources when enabled',
@@ -74,7 +71,7 @@ export default class Push extends Command {
       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
     );
     const {flags} = await this.parse(Push);
-    const target = await getTargetOrg(this.configuration, flags.target);
+    const target = await getTargetOrg(this.configuration, flags.organization);
     const cfg = this.configuration.get();
     const options = await this.getOptions();
     const {reporter, snapshot, project} = await dryRun(
@@ -141,7 +138,7 @@ export default class Push extends Command {
 
   private async askForConfirmation(): Promise<boolean> {
     const {flags} = await this.parse(Push);
-    const target = await getTargetOrg(this.configuration, flags.target);
+    const target = await getTargetOrg(this.configuration, flags.organization);
     const question = `\nWould you like to apply these changes to the org ${bold(
       target
     )}? (y/n)`;
@@ -150,20 +147,22 @@ export default class Push extends Command {
 
   private async applySnapshot(snapshot: Snapshot) {
     CliUx.ux.action.start('Applying snapshot');
+    const cfg = this.configuration.get();
     const {flags} = await this.parse(Push);
     const {waitUntilDone} = await this.getOptions();
     const reporter = await snapshot.apply(
       flags.deleteMissingResources,
       waitUntilDone
     );
-    const success = reporter.isSuccessReport();
-
-    if (!success) {
-      const cfg = this.configuration.get();
-      await handleReportWithErrors(snapshot, cfg, this.projectPath);
-    }
-
-    CliUx.ux.action.stop(success ? green('✔') : red.bold('!'));
+    await reporter
+      .setReportHandler(SnapshotReportStatus.ERROR, async () => {
+        await handleReportWithErrors(snapshot, cfg, this.projectPath);
+        CliUx.ux.action.stop(red.bold('!'));
+      })
+      .setReportHandler(SnapshotReportStatus.SUCCESS, () => {
+        CliUx.ux.action.stop(green('✔'));
+      })
+      .handleReport();
   }
 
   private async getOptions(): Promise<DryRunOptions> {

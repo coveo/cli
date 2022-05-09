@@ -120,7 +120,7 @@ describe('org:resources:monitor', () => {
   test
     .stdout()
     .stderr()
-    .command(['org:resources:monitor', 'other-snapshot', '-t', 'different-org'])
+    .command(['org:resources:monitor', 'other-snapshot', '-o', 'different-org'])
     .it('should work with default connected org', () => {
       expect(
         mockedSnapshotFactory.createFromExistingSnapshot

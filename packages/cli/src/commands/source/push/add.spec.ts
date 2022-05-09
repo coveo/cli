@@ -121,15 +121,27 @@ describe('source:push:add', () => {
       .stdout()
       .stderr()
       .command(['source:push:add', 'mysource'])
-      .catch(/You must minimally set the `file` or the `folder` flag/)
+      .catch(/You must set the `files` flag/)
       .it('throws when no flags are specified');
 
     test
       .stdout()
       .stderr()
-      .command(['source:push:add', 'mysource', '-f', 'foo', '-d', 'bar'])
-      .catch(/--folder= cannot also be provided when using --file=/)
-      .it('throws when incompatible flags for file and folder are passed');
+      .command([
+        'source:push:add',
+        'mysource',
+        '-f',
+        'foo.json',
+        '-d',
+        'directory',
+      ])
+      .it('should accept files and folder within the same command', () => {
+        expect(mockBatchUpdate).toHaveBeenCalledWith(
+          expect.anything(),
+          ['directory', 'foo.json'],
+          expect.anything()
+        );
+      });
 
     test
       .stdout()
@@ -216,6 +228,39 @@ describe('source:push:add', () => {
           expect(ctx.stdout).toContain('Status code: 202 👌');
         }
       );
+
+    test
+      .stdout()
+      .stderr()
+      .command([
+        'source:push:add',
+        'mysource',
+        '-f',
+        join(pathToStub, 'jsondocuments'),
+        join(pathToStub, 'jsondocuments', 'batman.json'),
+      ])
+      .it(
+        'should output feedback message when uploading a file and a directory',
+        (ctx) => {
+          expect(ctx.stdout).toContain(
+            'Success: 2 documents accepted by the Push API from'
+          );
+          expect(ctx.stdout).toContain('Status code: 202 👌');
+        }
+      );
+
+    test
+      .stdout()
+      .stderr()
+      .command([
+        'source:push:add',
+        'mysource',
+        '-d',
+        join(pathToStub, 'jsondocuments'),
+      ])
+      .it('should show deprecated flag warning', (ctx) => {
+        expect(ctx.stdout).toContain('Use the `files` flag instead');
+      });
 
     test
       .stdout()
