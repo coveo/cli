@@ -1,8 +1,6 @@
 import {
   ResourceSnapshotsReportModel,
   ResourceSnapshotsReportOperationModel,
-  ResourceSnapshotsReportResultCode,
-  ResourceSnapshotsReportStatus,
   ResourceSnapshotType,
 } from '@coveord/platform-client';
 import {
@@ -23,6 +21,17 @@ type SnapshotReporterHandlers = {
 export class SnapshotReporter {
   private missingVaultEntriesSet: Set<[string, ResourceSnapshotType]> =
     new Set();
+
+  private operationResultsParseFuseUsed: boolean = false;
+
+  private consumeOperationResultsParseFuse() {
+    if (this.operationResultsParseFuseUsed) {
+      return false;
+    } else {
+      this.operationResultsParseFuseUsed = true;
+      return true;
+    }
+  }
 
   public get missingVaultEntries() {
     return this.missingVaultEntriesSet.values();
@@ -65,14 +74,6 @@ export class SnapshotReporter {
     );
 
     return count;
-  }
-
-  public isSuccessReport(): boolean {
-    const {status, resultCode} = this.report;
-    return (
-      status === ResourceSnapshotsReportStatus.Completed &&
-      resultCode === ResourceSnapshotsReportResultCode.Success
-    );
   }
 
   private reportHandlers: SnapshotReporterHandlers = {
@@ -132,18 +133,19 @@ export class SnapshotReporter {
       statuses.successes.push(SnapshotReportStatus.NO_CHANGES);
     }
 
-    if (this.isSuccessReport()) {
-      statuses.successes.push(SnapshotReportStatus.SUCCESS);
-    }
-
     if (this.resourceInErrorCount > 0) {
       statuses.errors.push(SnapshotReportStatus.ERROR);
+    } else {
+      statuses.successes.push(SnapshotReportStatus.SUCCESS);
     }
 
     return statuses;
   }
 
   private parseResourcesOperationsResults(): void {
+    if (!this.consumeOperationResultsParseFuse()) {
+      return;
+    }
     for (const [resourceType, resource] of Object.entries(
       this.report.resourceOperationResults
     )) {

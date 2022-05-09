@@ -46,10 +46,6 @@ describe('SnapshotReporter', () => {
       }
     );
 
-    fancyIt()('#isSuccessReport should return true', () => {
-      expect(noChangeReporter.isSuccessReport()).toEqual(true);
-    });
-
     fancyIt()(
       '#handleReport should call the `NO_CHANGES` report handler with the reporter as this',
       async () => {
@@ -183,10 +179,6 @@ describe('SnapshotReporter', () => {
       }
     );
 
-    fancyIt()('#isSuccessReport should return true', () => {
-      expect(successReporter.isSuccessReport()).toEqual(true);
-    });
-
     it.each([SnapshotReportStatus.SUCCESS])(
       '#handleReport should call the `%s` report handler with the reporter as this',
       async (status: SnapshotReportStatus) => {
@@ -237,6 +229,14 @@ describe('SnapshotReporter', () => {
         expect(applySpy).toBeCalledWith(missingVaultEntryReporter);
       }
     );
+
+    it('#handleReport should parse the operation results once', async () => {
+      await missingVaultEntryReporter.handleReport();
+      await missingVaultEntryReporter.handleReport();
+      expect(
+        Array.from(missingVaultEntryReporter.missingVaultEntries).length
+      ).toBe(7);
+    });
 
     it('[get]-missingVaultEntries should be empty prior to handling', () => {
       expect(
@@ -292,6 +292,12 @@ describe('SnapshotReporter', () => {
         expect(applySpy).toBeCalledWith(resourceInErrorReporter);
       }
     );
+
+    it('#handleReport should parse the operation results once', async () => {
+      await resourceInErrorReporter.handleReport();
+      await resourceInErrorReporter.handleReport();
+      expect(resourceInErrorReporter.resourceInErrorCount).toBe(7);
+    });
 
     it('[get]-resourceInError should be empty prior to handling', () => {
       expect(resourceInErrorReporter.resourceInError.size).toBe(0);
