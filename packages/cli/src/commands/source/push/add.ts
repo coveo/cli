@@ -14,8 +14,7 @@ import {
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {
   withCreateMissingFields,
-  withFile,
-  withFolder,
+  withFiles,
   withMaxConcurrent,
 } from '../../../lib/flags/sourceCommonFlags';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
@@ -27,8 +26,7 @@ export default class SourcePushAdd extends Command {
     'Index a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-files-with-Coveo-CLI for more information.';
 
   public static flags = {
-    ...withFile(),
-    ...withFolder(),
+    ...withFiles(),
     ...withMaxConcurrent(),
     ...withCreateMissingFields(),
   };

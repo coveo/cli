@@ -1,24 +1,13 @@
 import {SourceVisibility} from '@coveo/push-api-client';
 import {Flags} from '@oclif/core';
 
-export const withFile = () => ({
-  file: Flags.string({
+export const withFiles = () => ({
+  files: Flags.string({
     multiple: true,
-    exclusive: ['folder'],
     char: 'f',
     helpValue: 'myfile.json',
-    description: 'One or multiple file to index. Can be repeated.',
-  }),
-});
-
-export const withFolder = () => ({
-  folder: Flags.string({
-    multiple: true,
-    exclusive: ['file'],
-    char: 'd',
-    helpValue: './my_folder_with_multiple_json_files',
     description:
-      'One or multiple folder containing json files. Can be repeated',
+      'Combinaison of JSON files and folders (containing JSON files) to push. Can be repeated.',
   }),
 });
 

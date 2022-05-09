@@ -13,9 +13,8 @@ import {
 } from '../../../lib/decorators/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {
-  withFile,
+  withFiles,
   withCreateMissingFields,
-  withFolder,
   withMaxConcurrent,
 } from '../../../lib/flags/sourceCommonFlags';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
@@ -41,8 +40,7 @@ export default class SourceCatalogAdd extends Command {
     'Index a JSON document into a Coveo Catalog source. See https://docs.coveo.com/en/2956 for more information.';
 
   public static flags = {
-    ...withFile(),
-    ...withFolder(),
+    ...withFiles(),
     ...withMaxConcurrent(),
     ...withCreateMissingFields(),
     fullUpload: Flags.boolean({
@@ -77,12 +75,6 @@ export default class SourceCatalogAdd extends Command {
   public async run() {
     const {args, flags} = await this.parse(SourceCatalogAdd);
 
-    if (!flags.file && !flags.folder) {
-      this.error(
-        'You must minimally set the `file` or the `folder` flag. Use `source:catalog:add --help` to learn more.'
-      );
-    }
-
     if (
       !flags.fullUpload &&
       !flags.skipFullUploadCheck &&
@@ -94,7 +86,7 @@ export default class SourceCatalogAdd extends Command {
         `);
     }
 
-    CliUx.ux.action.start('Processing...');
+    CliUx.ux.action.start('Processing files');
 
     const {accessToken, organization, environment, region} =
       await new AuthenticatedClient().cfg.get();
@@ -118,7 +110,7 @@ export default class SourceCatalogAdd extends Command {
       .onBatchError((data) => this.errorMessageOnAdd(data))
       .batch();
 
-    CliUx.ux.action.stop();
+    CliUx.ux.action.stop(green('✔'));
   }
 
   @Trackable()

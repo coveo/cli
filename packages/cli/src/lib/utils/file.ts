@@ -1,31 +1,23 @@
-import {readdirSync, statSync} from 'fs';
-import {join} from 'path';
+import {CliUx} from '@oclif/core';
 
 export interface FilesOrFolders {
-  file?: string[];
-  folder?: string[];
+  file?: string[]; // TODO: CDX-856: remove flag
+  folder?: string[]; // TODO: CDX-856: remove flag
+  files?: string[];
 }
 
 export async function getFileNames(entries: FilesOrFolders) {
-  return [...(entries.file ?? []), ...(entries.folder ?? [])].flatMap(
-    getFilenamesRecursively
-  );
-}
-function getFilenamesRecursively(entry: string): string[] {
-  const entryStat = statSync(entry, {throwIfNoEntry: false});
-  if (!entryStat) {
-    return [];
+  const entryNames = [
+    ...(entries.file ?? []),
+    ...(entries.folder ?? []),
+    ...(entries.files ?? []),
+  ];
+
+  if (entryNames.length === 0) {
+    CliUx.ux.error(
+      'You must set the `files` flag. Use `source:push:add --help` to get more information.'
+    );
   }
-  if (entryStat.isDirectory()) {
-    return readdirSync(entry, {withFileTypes: true}).flatMap((subEntry) => {
-      const subEntryPath = join(entry, subEntry.name);
-      return subEntry.isDirectory()
-        ? getFilenamesRecursively(subEntryPath)
-        : [subEntryPath];
-    });
-  }
-  if (entryStat.isFile()) {
-    return [entry];
-  }
-  return [];
+
+  return entryNames;
 }
