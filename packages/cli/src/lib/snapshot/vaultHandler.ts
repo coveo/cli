@@ -27,13 +27,20 @@ export class VaultHandler {
   public constructor(private organizationId: string) {}
 
   public async createEntries(entries: VaultEntryAttributes[]) {
-    const client = await this.client();
-    const vaultEntryFilePath = join(cwd(), `${this.organizationId}-vault.json`);
+    await this.prepareAndOpenFile(entries);
+    await this.ensureValidityOrAbort(entries);
+    const vaultEntryModels = this.getVaultEntryModels(entries);
+    rmSync(this.vaultEntryFilePath);
+    await this.doCreateVaultEntries(vaultEntryModels);
+  }
+
+  private async prepareAndOpenFile(entries: VaultEntryAttributes[]) {
+    this.prepareFile(entries);
+    await this.openFile();
+  }
+
+  private async ensureValidityOrAbort(entries: VaultEntryAttributes[]) {
     let valid = false;
-
-    this.prepareFile(vaultEntryFilePath, entries);
-    await this.openFile(vaultEntryFilePath);
-
     while (!valid) {
       const key = await CliUx.ux.prompt('', {
         type: 'single',
@@ -44,20 +51,18 @@ export class VaultHandler {
         throw new ProcessAbort();
       }
       try {
-        this.ensureEntriesValidity(vaultEntryFilePath, entries);
+        this.ensureEntriesValidity(entries);
         valid = true;
       } catch (error) {
         CliUx.ux.log('');
         CliUx.ux.warn(`${error}`);
-        await this.openFile(vaultEntryFilePath, false);
+        await this.openFile(false);
       }
     }
-    const vaultEntryModels = this.formatVaultEntries(
-      vaultEntryFilePath,
-      entries
-    );
-    rmSync(vaultEntryFilePath);
+  }
 
+  private async doCreateVaultEntries(vaultEntryModels: VaultEntryModel[]) {
+    const client = await this.client();
     if (vaultEntryModels.length > 0) {
       const entryPlurable: Plurable = ['entry', 'entries'];
       CliUx.ux.action.start(
@@ -86,35 +91,31 @@ export class VaultHandler {
     throw 'TODO: CDX-935';
   }
 
-  private prepareFile(
-    vaultEntryFilePath: string,
-    entries: VaultEntryAttributes[]
-  ) {
+  private prepareFile(entries: VaultEntryAttributes[]) {
     const data: Record<string, unknown> = {};
     for (const {vaultEntryId} of entries) {
       data[vaultEntryId] = VaultHandler.defaultEntryValue;
     }
 
-    writeJsonSync(vaultEntryFilePath, data, {spaces: 4});
+    writeJsonSync(this.vaultEntryFilePath, data, {spaces: 4});
   }
 
-  private async openFile(vaultEntryFilePath: string, print = true) {
+  private async openFile(print = true) {
     if (print) {
-      CliUx.ux.log(dedent`\nOpening file ${vaultEntryFilePath}.
+      CliUx.ux.log(dedent`\nOpening file ${this.vaultEntryFilePath}.
       Please fill out all the vault entries from the JSON file.`);
     }
-    await open(vaultEntryFilePath);
+    await open(this.vaultEntryFilePath);
   }
 
   private ensureEntriesValidity(
-    vaultEntryFilePath: string,
     requiredEntries: VaultEntryAttributes[]
   ): void | never {
     const missingEntries: string[] = [];
     let data: Record<string, unknown>;
 
     try {
-      data = readJsonSync(vaultEntryFilePath);
+      data = readJsonSync(this.vaultEntryFilePath);
     } catch (error) {
       throw new InvalidVaultFileError(error);
     }
@@ -132,11 +133,10 @@ export class VaultHandler {
     }
   }
 
-  private formatVaultEntries(
-    vaultEntryFilePath: string,
+  private getVaultEntryModels(
     entries: VaultEntryAttributes[]
   ): VaultEntryModel[] {
-    const data = readJsonSync(vaultEntryFilePath);
+    const data = readJsonSync(this.vaultEntryFilePath);
     const models: VaultEntryModel[] = [];
     for (const {resourceName, resourceType, vaultEntryId} of entries) {
       const jsonPath = this.getVaultEntryJsonPath(vaultEntryId, resourceName);
@@ -172,5 +172,9 @@ export class VaultHandler {
 
   private async client(organization = this.organizationId) {
     return await new AuthenticatedClient().getClient({organization});
+  }
+
+  private get vaultEntryFilePath() {
+    return join(cwd(), `${this.organizationId}-vault.json`);
   }
 }
