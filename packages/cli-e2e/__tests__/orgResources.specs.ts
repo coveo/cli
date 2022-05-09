@@ -245,7 +245,7 @@ describe('org:resources', () => {
             .once();
 
           await previewTerminalExitPromise;
-          expect(stdout).toMatch(/Previewing resource changes/);
+          expect(stdout).toMatch(/Previewing snapshot changes/);
           expect(stderr).toMatch(/Checking for automatic synchronization/);
         },
         defaultTimeout

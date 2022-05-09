@@ -114,7 +114,7 @@ export class ReportViewer {
 
     CliUx.ux.table(recordable(changedResources), {
       resourceName: {
-        header: ReportViewerStyles.header('\nPreviewing resource changes:'),
+        header: ReportViewerStyles.header('\nPreviewing snapshot changes:'),
         get: (resource) => this.createSection(resource),
       },
     });
