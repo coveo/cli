@@ -147,20 +147,22 @@ export default class Push extends Command {
 
   private async applySnapshot(snapshot: Snapshot) {
     CliUx.ux.action.start('Applying snapshot');
+    const cfg = this.configuration.get();
     const {flags} = await this.parse(Push);
     const {waitUntilDone} = await this.getOptions();
     const reporter = await snapshot.apply(
       flags.deleteMissingResources,
       waitUntilDone
     );
-    const success = reporter.isSuccessReport();
-
-    if (!success) {
-      const cfg = this.configuration.get();
-      await handleReportWithErrors(snapshot, cfg, this.projectPath);
-    }
-
-    CliUx.ux.action.stop(success ? green('✔') : red.bold('!'));
+    await reporter
+      .setReportHandler(SnapshotReportStatus.ERROR, async () => {
+        await handleReportWithErrors(snapshot, cfg, this.projectPath);
+        CliUx.ux.action.stop(red.bold('!'));
+      })
+      .setReportHandler(SnapshotReportStatus.SUCCESS, () => {
+        CliUx.ux.action.stop(green('✔'));
+      })
+      .handleReport();
   }
 
   private async getOptions(): Promise<DryRunOptions> {
