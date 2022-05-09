@@ -145,6 +145,9 @@
       },
       "source:push": {
         "description": "manage Coveo Push API sources"
+      },
+      "source:catalog": {
+        "description": "manage Coveo Catalog sources"
       }
     },
     "hooks": {

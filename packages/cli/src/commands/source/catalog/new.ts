@@ -10,9 +10,9 @@ import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {withSourceVisibility} from '../../../lib/flags/sourceCommonFlags';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 
-export default class SourcePushNew extends Command {
+export default class SourceCataloghNew extends Command {
   public static description =
-    'Create a new push source in a Coveo organization';
+    'Create a new catalog source in a Coveo organization';
 
   public static flags = {
     ...withSourceVisibility(),
@@ -29,13 +29,14 @@ export default class SourcePushNew extends Command {
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
-    const {flags, args} = await this.parse(SourcePushNew);
+    const {flags, args} = await this.parse(SourceCataloghNew);
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();
 
     const res = await platformClient.source.create({
-      sourceType: SourceType.PUSH,
+      sourceType: SourceType.CATALOG,
       pushEnabled: true,
+      streamEnabled: true,
       name: args.name,
       sourceVisibility: flags.sourceVisibility,
     });
