@@ -139,3 +139,20 @@ export class SnapshotGenericError
     trySavingDetailedReport(this);
   }
 }
+export class SnapshotMissingVaultEntriesError
+  extends PrintableError
+  implements DetailedReportable
+{
+  public name = 'Snapshot Missing Vault Entries';
+  public constructor(
+    public snapshot: Snapshot,
+    public cfg: Configuration,
+    public projectPath?: string
+  ) {
+    super(SeverityLevel.Error);
+    this.message = dedent`Your snapshot is missing some vault entries.
+    Ensure that all entries are present on ${snapshot.targetId} and try again.`;
+
+    trySavingDetailedReport(this);
+  }
+}

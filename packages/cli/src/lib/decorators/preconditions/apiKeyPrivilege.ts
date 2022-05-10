@@ -25,7 +25,7 @@ export function HasNecessaryCoveoPrivileges(
     const authenticatedClient = new AuthenticatedClient();
     const client = await authenticatedClient.getClient();
     const {organization: target, anonymous} = await getConfiguration();
-    const organization = flags.target || target;
+    const organization = flags.organization || target;
 
     const promises = privileges.flatMap((privilege) =>
       privilege.models.map(async (model) => {

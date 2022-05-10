@@ -20,18 +20,20 @@ import {
   previewLevel,
   sync,
   wait,
+  organization,
 } from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
+import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {
   dryRun,
   getTargetOrg,
-  handleReportWithErrors,
   handleSnapshotError,
   DryRunOptions,
   cleanupProject,
+  getMissingVaultEntriesReportHandler,
+  getErrorReportHandler,
 } from '../../../lib/snapshot/snapshotCommon';
-import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 export default class Preview extends Command {
   public static description = '(beta) Preview resource updates';
 
@@ -39,13 +41,9 @@ export default class Preview extends Command {
     ...wait(),
     ...sync(),
     ...previewLevel(),
-    target: Flags.string({
-      char: 't',
-      description:
-        'The unique identifier of the organization where to send the changes. If not specified, the organization you are connected to will be used.',
-      helpValue: 'destinationorganizationg7dg3gd',
-      required: false,
-    }),
+    ...organization(
+      'The unique identifier of the organization where to preview the changes'
+    ),
     showMissingResources: Flags.boolean({
       char: 'd',
       description: 'Preview resources deletion when enabled',
@@ -71,7 +69,7 @@ export default class Preview extends Command {
       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
     );
     const {flags} = await this.parse(Preview);
-    const target = await getTargetOrg(this.configuration, flags.target);
+    const target = await getTargetOrg(this.configuration, flags.organization);
     const cfg = this.configuration.get();
     const options = await this.getOptions();
     const {reporter, snapshot, project} = await dryRun(
@@ -84,7 +82,16 @@ export default class Preview extends Command {
     const display = await this.shouldDisplayExpandedPreview();
     const {deleteMissingResources} = await this.getOptions();
     await snapshot.preview(project, deleteMissingResources, display);
-    await this.processReport(snapshot, reporter);
+    await reporter
+      .setReportHandler(
+        SnapshotReportStatus.MISSING_VAULT_ENTRIES,
+        getMissingVaultEntriesReportHandler(snapshot, cfg, this.projectPath)
+      )
+      .setReportHandler(
+        SnapshotReportStatus.ERROR,
+        getErrorReportHandler(snapshot, cfg, this.projectPath)
+      )
+      .handleReport();
     await this.cleanup(snapshot, project);
   }
 
@@ -100,13 +107,6 @@ export default class Preview extends Command {
     return flags.previewLevel === PreviewLevelValue.Detailed;
   }
 
-  private async processReport(snapshot: Snapshot, reporter: SnapshotReporter) {
-    if (!reporter.isSuccessReport()) {
-      const cfg = this.configuration.get();
-      await handleReportWithErrors(snapshot, cfg, this.projectPath);
-    }
-  }
-
   private async cleanup(snapshot: Snapshot, project: Project) {
     await snapshot.delete();
     project.deleteTemporaryZipFile();
@@ -118,7 +118,7 @@ export default class Preview extends Command {
     if (err instanceof SnapshotOperationTimeoutError) {
       const {flags} = await this.parse(Preview);
       const snapshot = err.snapshot;
-      const target = await getTargetOrg(this.configuration, flags.target);
+      const target = await getTargetOrg(this.configuration, flags.organization);
       this.log(
         dedent`
 

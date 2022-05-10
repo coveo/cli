@@ -1,27 +1,24 @@
-import {readdirSync} from 'fs';
-import {join} from 'path';
+import {CliUx} from '@oclif/core';
 
 export interface FilesOrFolders {
-  file?: string[];
-  folder?: string[];
+  file?: string[]; // TODO: CDX-856: remove flag
+  folder?: string[]; // TODO: CDX-856: remove flag
+  files?: string[];
 }
 
 export async function getFileNames(entries: FilesOrFolders) {
-  let fileNames: string[] = [];
-  if (entries.file) {
-    fileNames = fileNames.concat(entries.file);
-  }
-  if (entries.folder) {
-    const isString = (file: string | null): file is string => Boolean(file);
-    fileNames = fileNames.concat(
-      entries.folder
-        .flatMap((folder) =>
-          readdirSync(folder, {withFileTypes: true}).map((dirent) =>
-            dirent.isFile() ? join(folder, dirent.name) : null
-          )
-        )
-        .filter(isString)
+  // TODO: CDX-856: only read --files flag
+  const entryNames = [
+    ...(entries.file ?? []),
+    ...(entries.folder ?? []),
+    ...(entries.files ?? []),
+  ];
+
+  if (entryNames.length === 0) {
+    CliUx.ux.error(
+      'You must set the `files` flag. Use `source:push:add --help` to get more information.'
     );
   }
-  return fileNames;
+
+  return entryNames;
 }

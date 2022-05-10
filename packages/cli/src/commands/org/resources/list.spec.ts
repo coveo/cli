@@ -50,7 +50,7 @@ describe('org:resources:list', () => {
     })
     .stdout()
     .stderr()
-    .command(['org:resources:list', '-t', 'foo'])
+    .command(['org:resources:list', '-o', 'foo'])
     .it('works when there is no snapshot available', (ctx) => {
       expect(ctx.stdout).toContain(
         'There is no configuration snapshot available in organization foo'
@@ -60,7 +60,7 @@ describe('org:resources:list', () => {
   test
     .stdout()
     .stderr()
-    .command(['org:resources:list', '-t', 'foo'])
+    .command(['org:resources:list', '-o', 'foo'])
     .it('print the available snapshot in a table', (ctx) => {
       // headers of table
       expect(ctx.stdout).toContain('Id');
