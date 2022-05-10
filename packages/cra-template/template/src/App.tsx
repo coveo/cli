@@ -3,36 +3,44 @@ import SearchPage from './Components/SearchPage';
 import Hero from './Components/Hero';
 import logo from './logo.svg';
 import coveologo from './coveologo.svg';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
-import {Grid, Typography, Box} from '@material-ui/core';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
+import {Grid, Typography, Box} from '@mui/material';
 import {initializeHeadlessEngine} from './common/Engine';
 import {SearchEngine} from '@coveo/headless';
 
 export default function App() {
   return (
     <Router>
-      <GuardedRoute />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Navigate to={isEnvValid() === true ? '/home' : '/error'} replace />
+          }
+        />
+        <Route path="/home" element={<Home />} />
+        <Route path="/error" element={<Error />} />
+      </Routes>
     </Router>
   );
 }
 
-const GuardedRoute = () => {
-  const isEnvValid = () => {
-    const variables = [
-      'REACT_APP_PLATFORM_URL',
-      'REACT_APP_ORGANIZATION_ID',
-      'REACT_APP_API_KEY',
-      'REACT_APP_USER_EMAIL',
-      'REACT_APP_SERVER_PORT',
-    ];
-    const reducer = (previousValue: boolean, currentValue: string) =>
-      previousValue && Boolean(process.env[currentValue]);
-    return variables.reduce(reducer, true);
-  };
-
-  return (
-    <Route render={() => (isEnvValid() === true ? <Home /> : <Error />)} />
-  );
+const isEnvValid = () => {
+  const variables = [
+    'REACT_APP_PLATFORM_URL',
+    'REACT_APP_ORGANIZATION_ID',
+    'REACT_APP_API_KEY',
+    'REACT_APP_USER_EMAIL',
+    'REACT_APP_SERVER_PORT',
+  ];
+  const reducer = (previousValue: boolean, currentValue: string) =>
+    previousValue && Boolean(process.env[currentValue]);
+  return variables.reduce(reducer, true);
 };
 
 const Home = () => {

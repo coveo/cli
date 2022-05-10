@@ -2,10 +2,10 @@ import type {ChildProcessWithoutNullStreams} from 'child_process';
 import {resolve, join} from 'path';
 import {mkdirSync} from 'fs';
 import {homedir} from 'os';
-
 import {ProcessManager} from './processManager';
 import {readJsonSync} from 'fs-extra';
 import {Terminal} from './terminal/terminal';
+import {getCleanEnv} from '../setup/utils';
 
 export const isGenericYesNoPrompt = /\(y\/n\)[\s:]*$/i;
 
@@ -57,12 +57,11 @@ export async function setupUIProject(
     console.log('Testing with published version of the template');
   }
 
-  const args = [CLI_EXEC_PATH, ...command];
+  const args = ['node', process.env.CLI_EXEC_PATH!, ...command];
   let parentDir = resolve(getProjectPath(projectName), '..');
   if (options.projectDir) {
     parentDir = resolve(options.projectDir, '..');
     mkdirSync(parentDir, {recursive: true});
-
     const gitInitTerminal = new Terminal(
       'git',
       ['init'],
@@ -76,21 +75,17 @@ export async function setupUIProject(
     await gitInitTerminal.when('exit').on('process').do().once();
   }
 
-  if (process.platform === 'win32') {
-    args.unshift('node');
-  }
-
+  const env: Record<string, any> = getCleanEnv();
   const buildProcess = new Terminal(
     args.shift()!,
     args,
     {
       cwd: parentDir,
-      env: {...process.env, npm_config_registry: 'http://localhost:4873'},
+      env,
     },
     processManager,
     `build-${projectName}`
   );
-
   return buildProcess;
 }
 export function getConfigFilePath() {
@@ -103,5 +98,3 @@ export function getConfig() {
 
   return readJsonSync(pathToConfig);
 }
-
-export const CLI_EXEC_PATH = resolve(__dirname, '../../cli/bin/run');

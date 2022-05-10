@@ -5,7 +5,7 @@
 
 export default {
   testEnvironment: 'node',
-  globalSetup: './setup.ts',
+  globalSetup: process.env.CI ? './setup/ci.ts' : './setup/local.ts',
   globalTeardown: './teardown.ts',
   testMatch: process.env.CI
     ? ['**/__tests__/**/*specs?(.ci).ts']

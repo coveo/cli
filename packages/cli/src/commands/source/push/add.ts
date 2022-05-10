@@ -1,5 +1,5 @@
 import {PushSource, UploadBatchCallbackData} from '@coveo/push-api-client';
-import {Command, CliUx} from '@oclif/core';
+import {Command, CliUx, Flags} from '@oclif/core';
 import {green} from 'chalk';
 import {
   HasNecessaryCoveoPrivileges,
@@ -14,8 +14,7 @@ import {
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {
   withCreateMissingFields,
-  withFile,
-  withFolder,
+  withFiles,
   withMaxConcurrent,
 } from '../../../lib/flags/sourceCommonFlags';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
@@ -27,8 +26,20 @@ export default class SourcePushAdd extends Command {
     'Index a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-files-with-Coveo-CLI for more information.';
 
   public static flags = {
-    ...withFile(),
-    ...withFolder(),
+    // TODO: CDX-856: remove file flag
+    file: Flags.string({
+      // For retro compatibility
+      multiple: true,
+      hidden: true,
+    }),
+    // TODO: CDX-856: remove folder flag
+    folder: Flags.string({
+      // For retro compatibility
+      multiple: true,
+      char: 'd',
+      hidden: true,
+    }),
+    ...withFiles(),
     ...withMaxConcurrent(),
     ...withCreateMissingFields(),
   };
@@ -52,12 +63,8 @@ export default class SourcePushAdd extends Command {
     )
   )
   public async run() {
+    await this.showDeprecatedFlagWarning();
     const {args, flags} = await this.parse(SourcePushAdd);
-    if (!flags.file && !flags.folder) {
-      this.error(
-        'You must minimally set the `file` or the `folder` flag. Use `source:push:add --help` to get more information.'
-      );
-    }
     const {accessToken, organization, environment, region} =
       await new AuthenticatedClient().cfg.get();
     const source = new PushSource(accessToken!, organization, {
@@ -65,7 +72,7 @@ export default class SourcePushAdd extends Command {
       region,
     });
 
-    CliUx.ux.action.start('Processing...');
+    CliUx.ux.action.start('Processing files');
 
     const fileNames = await getFileNames(flags);
     const options = {
@@ -82,7 +89,7 @@ export default class SourcePushAdd extends Command {
 
     await source.setSourceStatus(args.sourceId, 'IDLE');
 
-    CliUx.ux.action.stop();
+    CliUx.ux.action.stop(green('✔'));
   }
 
   @Trackable()
@@ -107,6 +114,14 @@ export default class SourcePushAdd extends Command {
       } accepted by the Push API from ${green(fileNames)}.`,
       res
     );
+  }
+
+  private async showDeprecatedFlagWarning() {
+    // TODO: CDX-856: no longer needed once flags are removed
+    const {flags} = await this.parse(SourcePushAdd);
+    if (flags.file || flags.folder) {
+      CliUx.ux.warn('Use the `files` flag instead');
+    }
   }
 
   private errorMessageOnAdd(err: unknown) {

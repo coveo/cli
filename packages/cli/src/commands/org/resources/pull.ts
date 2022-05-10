@@ -15,7 +15,7 @@ import {writeSnapshotPrivilege} from '../../../lib/decorators/preconditions/plat
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {ProcessAbort} from '../../../lib/errors/processError';
-import {wait} from '../../../lib/flags/snapshotCommonFlags';
+import {organization, wait} from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
 import type {
   SnapshotPullModel,
@@ -38,13 +38,9 @@ export default class Pull extends Command {
 
   public static flags = {
     ...wait(),
-    target: Flags.string({
-      char: 't',
-      helpValue: 'targetorganizationg7dg3gd',
-      required: false,
-      description:
-        'The unique identifier of the organization from which to pull the resources. If not specified, the organization you are connected to will be used.',
-    }),
+    ...organization(
+      'The unique identifier of the organization from which to pull the resources'
+    ),
     snapshotId: Flags.string({
       char: 's',
       exclusive: ['resourceTypes'],
@@ -59,7 +55,7 @@ export default class Pull extends Command {
       allowNo: true,
     }),
     overwrite: Flags.boolean({
-      char: 'o',
+      char: 'f',
       description: 'Overwrite resources directory if it exists.',
       default: false,
     }),
@@ -106,7 +102,7 @@ export default class Pull extends Command {
 
     CliUx.ux.action.start('Updating project with Snapshot');
     await this.refreshProject(project, snapshot);
-
+    project.writeResourcesManifest(targetOrganization);
     await snapshot.delete();
     CliUx.ux.action.stop('Project updated');
   }
@@ -137,7 +133,7 @@ export default class Pull extends Command {
   }
 
   private async refreshProject(project: Project, snapshot: Snapshot) {
-    const {flags} = await this.parse(Pull);
+    const flags = await this.getFlags();
     if (flags.git && !project.contains('.git')) {
       await spawnProcess('git', ['init', `${this.projectPath}`], {
         stdio: 'ignore',
@@ -148,7 +144,7 @@ export default class Pull extends Command {
   }
 
   private async ensureProjectReset(project: Project) {
-    const {flags} = await this.parse(Pull);
+    const flags = await this.getFlags();
     if (!flags.overwrite && project.contains(Project.resourceFolderName)) {
       const question = dedent`There is already a Coveo project with resources in it.
         This command will overwrite the ${Project.resourceFolderName} folder content, do you want to proceed? (y/n)`;
@@ -166,7 +162,7 @@ export default class Pull extends Command {
   }
 
   private async getSnapshot() {
-    const {flags} = await this.parse(Pull);
+    const flags = await this.getFlags();
     const target = await this.getTargetOrg();
     if (flags.snapshotId) {
       CliUx.ux.action.start('Retrieving Snapshot');
@@ -184,7 +180,7 @@ export default class Pull extends Command {
   }
 
   private async getWaitOption(): Promise<WaitUntilDoneOptions> {
-    const {flags} = await this.parse(Pull);
+    const flags = await this.getFlags();
     return {wait: flags.wait};
   }
 
@@ -193,7 +189,7 @@ export default class Pull extends Command {
   }
 
   private async getResourceSnapshotTypesToExport(): Promise<SnapshotPullModelResources> {
-    const {flags} = await this.parse(Pull);
+    const flags = await this.getFlags();
     if (flags.model) {
       const cfg = this.configuration.get();
       if (cfg.organization !== flags.model.orgId) {
@@ -216,8 +212,19 @@ export default class Pull extends Command {
   }
 
   private async getTargetOrg() {
+    const flags = await this.getFlags();
+    return getTargetOrg(
+      this.configuration,
+      flags.model?.orgId || flags.organization
+    );
+  }
+
+  public async getFlags() {
     const {flags} = await this.parse(Pull);
-    return getTargetOrg(this.configuration, flags.model?.orgId || flags.target);
+    if (flags.model) {
+      return {...flags, organization: flags.model.orgId};
+    }
+    return flags;
   }
 
   private get projectPath() {

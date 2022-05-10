@@ -154,15 +154,8 @@ describe('source:catalog:add', () => {
       .stdout()
       .stderr()
       .command(['source:catalog:add', 'mysource'])
-      .catch(/You must minimally set the `file` or the `folder` flag/)
+      .catch(/You must set the `files` flag/)
       .it('throws when no flags are specified');
-
-    test
-      .stdout()
-      .stderr()
-      .command(['source:catalog:add', 'mysource', '-f', 'foo', '-d', 'bar'])
-      .catch(/--folder= cannot also be provided when using --file=/)
-      .it('throws when incompatible flags for file and folder are passed');
 
     test
       .stdout()
@@ -266,7 +259,7 @@ describe('source:catalog:add', () => {
       .command([
         'source:catalog:add',
         'mysource',
-        '-d',
+        '-f',
         join(pathToStub, 'jsondocuments'),
       ])
       .it(
@@ -321,7 +314,7 @@ describe('source:catalog:add', () => {
           '-f',
           join(pathToStub, 'jsondocuments', 'batman.json'),
         ])
-        .catch(/please consider doing a full catalog upload/)
+        .catch(/No items detected for this source at the moment/)
         .it('should show error message during document update');
 
       test
@@ -364,7 +357,7 @@ describe('source:catalog:add', () => {
       .command([
         'source:catalog:add',
         'mysource',
-        '-d',
+        '-f',
         join(pathToStub, 'jsondocuments'),
       ])
       .catch((error) => {

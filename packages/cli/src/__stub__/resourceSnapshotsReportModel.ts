@@ -160,3 +160,58 @@ export const getErrorReport = (
     },
   },
 });
+
+export const getMissingVaultEntryReport = (
+  snapshotId: string,
+  type: ResourceSnapshotsReportType
+): ResourceSnapshotsReportModel => ({
+  id: snapshotId,
+  type: type,
+  updatedDate: 1622555847000,
+  resourcesProcessed: 11,
+  status: ResourceSnapshotsReportStatus.Completed,
+  resultCode: ResourceSnapshotsReportResultCode.ResourcesInError,
+  resourceOperations: {
+    EXTENSION: {
+      resourcesCreated: 1,
+      resourcesUpdated: 0,
+      resourcesRecreated: 0,
+      resourcesDeleted: 2,
+      resourcesInError: 0,
+      resourcesUnchanged: 0,
+    },
+    FIELD: {
+      resourcesCreated: 0,
+      resourcesUpdated: 1,
+      resourcesRecreated: 0,
+      resourcesDeleted: 0,
+      resourcesInError: 7,
+      resourcesUnchanged: 0,
+    },
+  },
+  resourceOperationResults: {
+    FIELD: {
+      foo_4VNj5ds5: [
+        'The vault entry referenced by {{ VAULT.foo_4VNj5ds5-configuration.userIdentities.UserIdentity.password }} could not be found in the vault.',
+      ],
+      bar_4VNj5ds5: [
+        'The vault entry referenced by {{ VAULT.bar_4VNj5ds5-configuration.userIdentities.UserIdentity.password }} could not be found in the vault.',
+      ],
+      dsads_4VNj5ds5: [
+        'The vault entry referenced by {{ VAULT.dsads_4VNj5ds5-configuration.userIdentities.UserIdentity.password }} could not be found in the vault.',
+      ],
+      fdww_4VNj5ds5: [
+        'The vault entry referenced by {{ VAULT.fdww_4VNj5ds5-configuration.userIdentities.UserIdentity.password }} could not be found in the vault.',
+      ],
+      csad_4VNj5ds5: [
+        'The vault entry referenced by {{ VAULT.csad_4VNj5ds5-configuration.userIdentities.UserIdentity.password }} could not be found in the vault.',
+      ],
+      hjkd_4VNj5ds5: [
+        'The vault entry referenced by {{ VAULT.hjkd_4VNj5ds5-configuration.userIdentities.UserIdentity.password }} could not be found in the vault.',
+      ],
+      fdasf_4VNj5ds5: [
+        'The vault entry referenced by {{ VAULT.fdasf_4VNj5ds5-configuration.userIdentities.UserIdentity.password }} could not be found in the vault.',
+      ],
+    },
+  },
+});

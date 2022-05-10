@@ -10,6 +10,10 @@ import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {magenta} from 'chalk';
 import SourceList from '../list';
 
+/**
+ * @TODO: CDX-917: Remove file.
+ * @deprecated
+ **/
 export default class SourcePushList extends Command {
   public static description = `${magenta(
     '[Deprecated]'

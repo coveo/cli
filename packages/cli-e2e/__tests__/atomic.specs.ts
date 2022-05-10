@@ -8,6 +8,10 @@ import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {npm} from '../utils/npm';
 import {jwtTokenPattern} from '../utils/matcher';
 import {EOL} from 'os';
+import {DummyServer} from '../utils/server';
+import {loginWithApiKey} from '../utils/login';
+import {existsSync} from 'fs-extra';
+import {join} from 'path';
 
 describe('ui:create:atomic', () => {
   let browser: Browser;
@@ -17,6 +21,7 @@ describe('ui:create:atomic', () => {
   const projectName = `${process.env.TEST_RUN_ID}-atomic-project`;
   const searchPageEndpoint = 'http://localhost:8888';
   const tokenServerEndpoint = 'http://localhost:8888/.netlify/functions/token';
+  const searchInterfaceSelector = 'atomic-search-interface';
 
   const waitForAppRunning = (appTerminal: Terminal) =>
     appTerminal
@@ -67,6 +72,11 @@ describe('ui:create:atomic', () => {
   };
 
   beforeAll(async () => {
+    await loginWithApiKey(
+      process.env.PLATFORM_API_KEY!,
+      process.env.ORG_ID!,
+      process.env.PLATFORM_ENV!
+    );
     const buildProcessManager = new ProcessManager();
     processManagers.push(buildProcessManager);
     browser = await getNewBrowser();
@@ -78,6 +88,55 @@ describe('ui:create:atomic', () => {
     jest.resetModules();
     process.env = {...oldEnv};
     page = await openNewPage(browser, page);
+  });
+
+  function projectFileExist(path: string) {
+    return existsSync(join(getProjectPath(projectName), ...path.split('/')));
+  }
+
+  it('should create the proper template files', () => {
+    const createdFilesPaths = [
+      'package.json',
+      'package-lock.json',
+      '.gitignore',
+      '.env',
+      '.env.example',
+      'README.md',
+      'start-netlify.mjs',
+      'netlify.toml',
+      'tsconfig.json',
+      'stencil.config.ts',
+      'lambda',
+      'src/index.ts',
+      'src/html.d.ts',
+      'src/components.d.ts',
+      'src/style/index.css',
+      'src/style/layout.css',
+      'src/style/theme.css',
+      'src/pages/index.html',
+      'src/components/results-manager/results-manager.tsx',
+      'src/components/results-manager/default.html',
+      'src/components/sample-component/sample-component.tsx',
+      'src/components/sample-component/sample-component.css',
+      'src/components/sample-result-component/sample-result-component.tsx',
+      'src/components/sample-result-component/sample-result-component.css',
+    ];
+
+    createdFilesPaths.forEach((path) =>
+      expect(projectFileExist(path)).toBe(true)
+    );
+  });
+
+  it('should remove the proper template files', () => {
+    const deletedFilesPaths = [
+      'scripts/clean-up.js',
+      'scripts/setup-lamdba.js',
+      'scripts/utils.js',
+    ];
+
+    deletedFilesPaths.forEach((path) =>
+      expect(projectFileExist(path)).toBe(false)
+    );
   });
 
   afterEach(async () => {
@@ -96,7 +155,6 @@ describe('ui:create:atomic', () => {
     let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
     let consoleInterceptor: BrowserConsoleInterceptor;
-    const searchInterfaceSelector = 'atomic-search-interface';
 
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
@@ -160,6 +218,37 @@ describe('ui:create:atomic', () => {
       await page.waitForSelector(searchInterfaceSelector);
 
       expect(interceptedRequests.some(isSearchRequestOrResponse)).toBeTruthy();
+    }, 60e3);
+  });
+
+  describe('when the default Stencil port is busy', () => {
+    let dummyServer: DummyServer;
+    let serverProcessManager: ProcessManager;
+
+    beforeAll(async () => {
+      serverProcessManager = new ProcessManager();
+      processManagers.push(serverProcessManager);
+
+      dummyServer = new DummyServer(3333);
+
+      const appTerminal = await startApplication(
+        serverProcessManager,
+        'stencil-port-test'
+      );
+      await waitForAppRunning(appTerminal);
+    }, 2 * 60e3);
+
+    afterAll(async () => {
+      await dummyServer.close();
+      await serverProcessManager.killAllProcesses();
+    }, 30e3);
+
+    it('Netlify should still load the Stencil app properly', async () => {
+      await page.goto(searchPageEndpoint, {
+        waitUntil: 'networkidle2',
+      });
+
+      expect(await page.$(searchInterfaceSelector)).not.toBeNull();
     }, 60e3);
   });
 });

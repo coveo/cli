@@ -1,6 +1,5 @@
-import {CatalogSource} from '@coveo/push-api-client';
 import {SourceType} from '@coveord/platform-client';
-import {Command, Flags} from '@oclif/core';
+import {Command} from '@oclif/core';
 import {green} from 'chalk';
 import dedent from 'ts-dedent';
 import {
@@ -35,8 +34,9 @@ export default class SourceCataloghNew extends Command {
     const platformClient = await authenticatedClient.getClient();
 
     const res = await platformClient.source.create({
-      sourceType: SourceType.PUSH,
+      sourceType: SourceType.CATALOG,
       pushEnabled: true,
+      streamEnabled: true,
       name: args.name,
       sourceVisibility: flags.sourceVisibility,
     });

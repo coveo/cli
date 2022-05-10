@@ -17,7 +17,7 @@
         :key="result.uniqueId"
       >
         <div class="is-size-5 mb-2">
-          <a :href="result.clickUri">{{ result.title }}</a>
+          <ResultLink v-bind:result="result" />
         </div>
         <p>{{ result.excerpt }}</p>
         <div class="columns">
@@ -44,9 +44,9 @@
     </template>
   </section>
 </template>
-
 <script lang="ts">
 import Vue from 'vue';
+import ResultLink from './ResultLink.vue';
 import {buildResultList} from '@coveo/headless';
 import type {ResultListState, ResultList} from '@coveo/headless';
 
@@ -57,6 +57,7 @@ export interface IResultList {
 
 export default Vue.extend({
   name: 'ResultList',
+  components: {ResultLink},
   data: function (): IResultList {
     const fieldsToInclude = ['objecttype', 'filetype', 'author'];
     const resultList = buildResultList(this.$root.$data.$engine, {

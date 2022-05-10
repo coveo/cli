@@ -5,7 +5,7 @@ node('linux && docker') {
   withDockerContainer(image: 'node:16', args: '-u=root') {
 
     stage('Setup') {
-      sh 'npm ci'
+      sh 'npm ci --ignore-scripts'
     }
 
     stage('Download release assets') {

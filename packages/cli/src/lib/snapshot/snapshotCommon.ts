@@ -5,15 +5,67 @@ import {Snapshot, WaitUntilDoneOptions} from './snapshot';
 import {red, green} from 'chalk';
 import {normalize} from 'path';
 import {Config, Configuration} from '../config/config';
-import {SnapshotGenericError} from '../errors/snapshotErrors';
+import {
+  SnapshotGenericError,
+  SnapshotMissingVaultEntriesError,
+} from '../errors/snapshotErrors';
 import {SnapshotFacade} from './snapshotFacade';
 import {PrintableError} from '../errors/printableError';
+import {SnapshotReporter} from './snapshotReporter';
+import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
 
 export interface DryRunOptions {
   sync?: boolean;
   deleteMissingResources?: boolean;
   snapshotId?: string;
   waitUntilDone?: WaitUntilDoneOptions;
+  shouldAutoSync?: boolean;
+}
+
+const defaultDryRunOptions: DryRunOptions = {
+  shouldAutoSync: true,
+};
+
+async function tryAutomaticSynchronization(
+  snapshot: Snapshot,
+  cfg: Configuration,
+  options: DryRunOptions
+) {
+  const facade = new SnapshotFacade(snapshot, cfg, options.waitUntilDone);
+  await facade.tryAutomaticSynchronization(!options.sync);
+}
+
+async function internalDryRun(
+  project: Project,
+  snapshot: Snapshot,
+  cfg: Configuration,
+  options: DryRunOptions
+) {
+  let reporter = await snapshot.validate(
+    options.deleteMissingResources,
+    options.waitUntilDone
+  );
+
+  await reporter
+    .setReportHandler(SnapshotReportStatus.SUCCESS, () => {
+      CliUx.ux.action.stop(green('✔'));
+    })
+    .setReportHandler(SnapshotReportStatus.ERROR, async () => {
+      if (!options.shouldAutoSync) {
+        CliUx.ux.action.stop(red.bold('!'));
+        return;
+      }
+      CliUx.ux.warn('Unsynchronized resource detected');
+      await tryAutomaticSynchronization(snapshot, cfg, options);
+
+      CliUx.ux.action.start('Validating synchronized snapshot');
+      reporter = await internalDryRun(project, snapshot, cfg, {
+        ...options,
+        shouldAutoSync: false,
+      });
+    })
+    .handleReport();
+  return reporter;
 }
 
 export async function dryRun(
@@ -22,28 +74,13 @@ export async function dryRun(
   cfg: Configuration,
   options: DryRunOptions = {}
 ) {
+  options = {...defaultDryRunOptions, ...options};
   const project = new Project(normalize(projectPath), targetOrg);
   const snapshot = await getSnapshotForDryRun(project, targetOrg, options);
 
   CliUx.ux.action.start('Validating snapshot');
-  let reporter = await snapshot.validate(
-    options.deleteMissingResources,
-    options.waitUntilDone
-  );
+  let reporter = await internalDryRun(project, snapshot, cfg, options);
 
-  if (snapshot.areResourcesInError()) {
-    CliUx.ux.warn('Unsynchronized resource detected');
-    const facade = new SnapshotFacade(snapshot, cfg, options.waitUntilDone);
-    await facade.tryAutomaticSynchronization(!options.sync);
-
-    CliUx.ux.action.start('Validating synchronized snapshot');
-    reporter = await snapshot.validate(
-      options.deleteMissingResources,
-      options.waitUntilDone
-    );
-  }
-
-  CliUx.ux.action.stop(reporter.isSuccessReport() ? green('✔') : red.bold('!'));
   return {reporter, snapshot, project};
 }
 
@@ -60,12 +97,34 @@ export function cleanupProject(projectPath: string) {
   project.deleteTemporaryZipFile();
 }
 
+export function getErrorReportHandler(
+  snapshot: Snapshot,
+  cfg: Configuration,
+  projectPath?: string
+) {
+  return () => {
+    throw new SnapshotGenericError(snapshot, cfg, projectPath);
+  };
+}
+
 export async function handleReportWithErrors(
   snapshot: Snapshot,
   cfg: Configuration,
   projectPath?: string
 ) {
   throw new SnapshotGenericError(snapshot, cfg, projectPath);
+}
+
+export function getMissingVaultEntriesReportHandler(
+  snapshot: Snapshot,
+  cfg: Configuration,
+  projectPath?: string
+) {
+  return function (this: SnapshotReporter) {
+    // TODO CDX-935
+    // TODO CDX-936
+    throw new SnapshotMissingVaultEntriesError(snapshot, cfg, projectPath);
+  };
 }
 
 export function handleSnapshotError(err?: Error & {exitCode?: number}) {

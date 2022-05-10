@@ -4,7 +4,6 @@ import {Terminal} from './terminal/terminal';
 import {npm} from './npm';
 
 export const npmLogin = async () => {
-  console.log('sTart');
   const args = [...npm(), 'adduser', '--registry=http://localhost:4873'];
   const npmAddUser = new Terminal(args.shift()!, args);
 

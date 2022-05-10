@@ -72,12 +72,7 @@ describe('ui:create:angular', () => {
       () =>
         ({
           createImpersonateApiKey: mockedCreateImpersonateApiKey,
-          getUserInfo: () =>
-            Promise.resolve({
-              username: 'bob@coveo.com',
-              providerUsername: 'bob@coveo.com',
-              displayName: 'bob',
-            }),
+          getUsername: () => Promise.resolve('bob@coveo.com'),
           getClient: () =>
             Promise.resolve(
               mockedPlatformClient.getMockImplementation()!({

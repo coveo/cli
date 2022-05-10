@@ -85,8 +85,8 @@ export default class Angular extends Command {
     const {flags, args} = await this.parse(Angular);
     const cfg = this.configuration.get();
     const authenticatedClient = new AuthenticatedClient();
-    const userInfo = await authenticatedClient.getUserInfo();
     const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
+    const username = await authenticatedClient.getUsername();
     const schematicVersion =
       flags.version || getPackageVersion(Angular.templateName);
 
@@ -100,7 +100,7 @@ export default class Angular extends Command {
       '--platform-url',
       platformUrl({environment: cfg.environment}),
       '--user',
-      userInfo.providerUsername,
+      username,
       '--skip-confirmation',
     ];
 

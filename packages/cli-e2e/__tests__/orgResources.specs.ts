@@ -1,7 +1,6 @@
 import {join} from 'path';
 import {
   answerPrompt,
-  CLI_EXEC_PATH,
   getConfig,
   getEnvFilePath,
   getProjectPath,
@@ -21,13 +20,14 @@ import {
 } from 'fs-extra';
 import PlatformClient, {FieldTypes} from '@coveord/platform-client';
 import {getPlatformClient} from '../utils/platform';
+import {getTestOrg} from '../utils/testOrgSetup';
 import {readdirSync} from 'fs';
 import {cwd} from 'process';
 import {EOL} from 'os';
 config({path: getEnvFilePath()});
 
 describe('org:resources', () => {
-  const testOrgId = process.env.TEST_ORG_ID!;
+  let testOrgId = '';
   const {accessToken} = getConfig();
   const snapshotProjectPath = join(getUIProjectPath(), 'snapshot-project');
   const defaultTimeout = 10 * 60e3;
@@ -41,10 +41,7 @@ describe('org:resources', () => {
     cwd: string,
     debugName: string
   ) => {
-    if (process.platform === 'win32') {
-      args.unshift('node');
-    }
-    return new Terminal(args.shift()!, args, {cwd}, procManager, debugName);
+    return new Terminal('node', args, {cwd}, procManager, debugName);
   };
 
   const createFieldWithoutUsingSnapshot = async (client: PlatformClient) => {
@@ -75,9 +72,9 @@ describe('org:resources', () => {
     debugName = 'org-config-preview'
   ) => {
     const args: string[] = [
-      CLI_EXEC_PATH,
+      process.env.CLI_EXEC_PATH!,
       'org:resources:preview',
-      `-t=${targetOrg}`,
+      `-o=${targetOrg}`,
       '--sync',
       '--wait=0',
       '-p=light',
@@ -92,10 +89,10 @@ describe('org:resources', () => {
     debugName = 'org-config-push'
   ) => {
     const args: string[] = [
-      CLI_EXEC_PATH,
+      process.env.CLI_EXEC_PATH!,
       'org:resources:push',
       '--skipPreview',
-      `-t=${targetOrg}`,
+      `-o=${targetOrg}`,
       '--wait=0',
     ];
     const pushTerminal = createNewTerminal(
@@ -124,7 +121,7 @@ describe('org:resources', () => {
     debugName: string
   ) => {
     const args: string[] = [
-      CLI_EXEC_PATH,
+      process.env.CLI_EXEC_PATH!,
       'org:resources:pull',
       '-o',
       '--wait=0',
@@ -154,10 +151,11 @@ describe('org:resources', () => {
   };
 
   beforeAll(async () => {
+    testOrgId = await getTestOrg();
     copySync('snapshot-project', snapshotProjectPath);
     platformClient = getPlatformClient(testOrgId, accessToken);
     processManager = new ProcessManager();
-  });
+  }, 5 * 60e3);
 
   afterAll(async () => {
     await processManager.killAllProcesses();
@@ -294,7 +292,7 @@ describe('org:resources', () => {
         await pullFromOrg(
           processManager,
           destinationPath,
-          ['-t', testOrgId],
+          ['-o', testOrgId],
           'org-resources-pull-all'
         );
         const snapshotFiles = readdirSync(snapshotProjectPath);
@@ -306,12 +304,12 @@ describe('org:resources', () => {
     );
 
     it(
-      'directory should only contain pulled resources',
+      'directory should only contain pulled resources and manifest',
       async () => {
         await pullFromOrg(
           processManager,
           destinationPath,
-          ['-t', testOrgId, '-r', 'FIELD'],
+          ['-o', testOrgId, '-r', 'FIELD'],
           'org-resources-pull-all-fields'
         );
         const originalResources = getResourceFolderContent(snapshotProjectPath);
@@ -319,7 +317,7 @@ describe('org:resources', () => {
 
         expect(destinationResources.length).toBeGreaterThan(0);
         expect(destinationResources.length).toBeLessThan(
-          originalResources.length
+          originalResources.length + 1
         );
       },
       defaultTimeout
