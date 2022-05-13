@@ -304,7 +304,7 @@ describe('org:resources', () => {
     );
 
     it(
-      'directory should only contain pulled resources',
+      'directory should only contain pulled resources and manifest',
       async () => {
         await pullFromOrg(
           processManager,
@@ -317,7 +317,7 @@ describe('org:resources', () => {
 
         expect(destinationResources.length).toBeGreaterThan(0);
         expect(destinationResources.length).toBeLessThan(
-          originalResources.length
+          originalResources.length + 1
         );
       },
       defaultTimeout

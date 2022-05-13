@@ -1,8 +1,6 @@
 import {PushSource, UploadBatchCallbackData} from '@coveo/push-api-client';
-import {Command, Flags, CliUx} from '@oclif/core';
+import {Command, CliUx, Flags} from '@oclif/core';
 import {green} from 'chalk';
-import {readdirSync} from 'fs';
-import {join} from 'path';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
@@ -14,43 +12,36 @@ import {
   writeSourceContentPrivilege,
 } from '../../../lib/decorators/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {
+  withCreateMissingFields,
+  withFiles,
+  withMaxConcurrent,
+} from '../../../lib/flags/sourceCommonFlags';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
+import {getFileNames} from '../../../lib/utils/file';
 
 export default class SourcePushAdd extends Command {
   public static description =
-    'Push a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-files-with-Coveo-CLI for more information.';
+    'Index a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-files-with-Coveo-CLI for more information.';
 
   public static flags = {
+    // TODO: CDX-856: remove file flag
     file: Flags.string({
+      // For retro compatibility
       multiple: true,
-      exclusive: ['folder'],
-      char: 'f',
-      helpValue: 'myfile.json',
-      description: 'One or multiple file to push. Can be repeated.',
+      hidden: true,
     }),
+    // TODO: CDX-856: remove folder flag
     folder: Flags.string({
+      // For retro compatibility
       multiple: true,
-      exclusive: ['file'],
       char: 'd',
-      helpValue: './my_folder_with_multiple_json_files',
-      description:
-        'One or multiple folder containing json files. Can be repeated',
+      hidden: true,
     }),
-    maxConcurrent: Flags.integer({
-      exclusive: ['file'],
-      char: 'c',
-      default: 10,
-      description:
-        'The maximum number of requests to send concurrently. Increasing this value increases the speed at which documents are pushed to the Coveo platform. However, if you run into memory or throttling issues, consider reducing this value.',
-    }),
-    createMissingFields: Flags.boolean({
-      char: 'm',
-      allowNo: true,
-      default: true,
-      description:
-        'Analyse documents to detect and automatically create missing fields in the destination organization. When enabled, an error will be thrown if a field is used to store data of inconsistent type across documents.',
-    }),
+    ...withFiles(),
+    ...withMaxConcurrent(),
+    ...withCreateMissingFields(),
   };
 
   public static args = [
@@ -58,7 +49,7 @@ export default class SourcePushAdd extends Command {
       name: 'sourceId',
       required: true,
       description:
-        'The identifier of the source on which to perform the add operation. See source:push:list to obtain the identifier.',
+        'The identifier of the source on which to perform the add operation. See source:list to obtain the identifier.',
     },
   ];
 
@@ -72,12 +63,8 @@ export default class SourcePushAdd extends Command {
     )
   )
   public async run() {
+    await this.showDeprecatedFlagWarning();
     const {args, flags} = await this.parse(SourcePushAdd);
-    if (!flags.file && !flags.folder) {
-      this.error(
-        'You must minimally set the `file` or the `folder` flag. Use `source:push:add --help` to get more information.'
-      );
-    }
     const {accessToken, organization, environment, region} =
       await new AuthenticatedClient().cfg.get();
     const source = new PushSource(accessToken!, organization, {
@@ -85,9 +72,9 @@ export default class SourcePushAdd extends Command {
       region,
     });
 
-    CliUx.ux.action.start('Processing...');
+    CliUx.ux.action.start('Processing files');
 
-    const fileNames = await this.getFileNames();
+    const fileNames = await getFileNames(flags);
     const options = {
       maxConcurrent: flags.maxConcurrent,
       createFields: flags.createMissingFields,
@@ -110,27 +97,6 @@ export default class SourcePushAdd extends Command {
     throw err;
   }
 
-  private async getFileNames() {
-    const {flags} = await this.parse(SourcePushAdd);
-    let fileNames: string[] = [];
-    if (flags.file) {
-      fileNames = fileNames.concat(flags.file);
-    }
-    if (flags.folder) {
-      const isString = (file: string | null): file is string => Boolean(file);
-      fileNames = fileNames.concat(
-        flags.folder
-          .flatMap((folder) =>
-            readdirSync(folder, {withFileTypes: true}).map((dirent) =>
-              dirent.isFile() ? join(folder, dirent.name) : null
-            )
-          )
-          .filter(isString)
-      );
-    }
-    return fileNames;
-  }
-
   private successMessageOnAdd({batch, files, res}: UploadBatchCallbackData) {
     // Display the first 5 files (from the list of all files) being processed for end user feedback
     // Don't want to clutter the output too much if the list is very long.
@@ -148,6 +114,14 @@ export default class SourcePushAdd extends Command {
       } accepted by the Push API from ${green(fileNames)}.`,
       res
     );
+  }
+
+  private async showDeprecatedFlagWarning() {
+    // TODO: CDX-856: no longer needed once flags are removed
+    const {flags} = await this.parse(SourcePushAdd);
+    if (flags.file || flags.folder) {
+      CliUx.ux.warn('Use the `files` flag instead');
+    }
   }
 
   private errorMessageOnAdd(err: unknown) {

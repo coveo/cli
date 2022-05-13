@@ -72,6 +72,10 @@ export function setProcessEnv() {
     process.env.TEST_RUN_ID ?? `id${randomBytes(16).toString('hex')}g`;
   process.env.PLATFORM_ENV = process.env.PLATFORM_ENV?.toLowerCase() || '';
   process.env.PLATFORM_HOST = getPlatformHost(process.env.PLATFORM_ENV);
+  setCliExecPath();
+}
+
+export function setCliExecPath() {
   process.env.CLI_EXEC_PATH = resolve(__dirname, '../../cli/bin/dev');
 }
 

@@ -7,33 +7,41 @@ jest.mock('@coveo/push-api-client');
 import stripAnsi from 'strip-ansi';
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {DocumentBuilder, PushSource} from '@coveo/push-api-client';
+import {CatalogSource, DocumentBuilder} from '@coveo/push-api-client';
 import {cwd} from 'process';
 import {join} from 'path';
 import {APIError} from '../../../lib/errors/APIError';
-import globalConfig from '../../../lib/config/globalConfig';
 import {Interfaces} from '@oclif/core';
+import globalConfig from '../../../lib/config/globalConfig';
 import {
   BatchUploadDocumentsError,
   BatchUploadDocumentsSuccess,
 } from '../../../__stub__/batchUploadDocumentsFromFilesReturn';
 const mockedGlobalConfig = jest.mocked(globalConfig);
 const mockedClient = jest.mocked(AuthenticatedClient);
-const mockedSource = jest.mocked(PushSource);
+const mockedSource = jest.mocked(CatalogSource);
 const mockedDocumentBuilder = jest.mocked(DocumentBuilder);
 const mockedMarshal = jest.fn();
 const mockEvaluate = jest.fn();
+const mockSourceGet = jest.fn();
+const mockSetSourceStatus = jest.fn();
+const mockBatchUpdate = jest.fn();
+const mockBatchStream = jest.fn();
 
-describe('source:push:add', () => {
-  beforeAll(() => {
-    mockedGlobalConfig.get.mockReturnValue({
-      configDir: 'the_config_dir',
-    } as Interfaces.Config);
-  });
-
+describe('source:catalog:add', () => {
   const pathToStub = join(cwd(), 'src', '__stub__');
-  const mockSetSourceStatus = jest.fn();
-  const mockBatchUpdate = jest.fn();
+
+  const sourceContainsDocuments = () => {
+    mockSourceGet.mockResolvedValue({
+      information: {numberOfDocuments: 1},
+    });
+  };
+
+  const sourceDoesNotContainDocuments = () => {
+    mockSourceGet.mockResolvedValue({
+      information: {numberOfDocuments: 0},
+    });
+  };
 
   const mockUserHavingAllRequiredPlatformPrivileges = () => {
     mockEvaluate.mockResolvedValue({approved: true});
@@ -43,15 +51,70 @@ describe('source:push:add', () => {
     mockEvaluate.mockResolvedValue({approved: false});
   };
 
-  const doMockSuccessBatchUpload = () => {
+  const doMockSuccessUpload = () => {
     mockBatchUpdate.mockReturnValue(new BatchUploadDocumentsSuccess());
+    mockBatchStream.mockReturnValue(new BatchUploadDocumentsSuccess());
   };
 
-  const doMockErrorBatchUpload = () => {
+  const doMockErrorUpload = () => {
     mockBatchUpdate.mockReturnValue(new BatchUploadDocumentsError());
+    mockBatchStream.mockReturnValue(new BatchUploadDocumentsError());
+  };
+
+  const doMockDocumentBuilder = () => {
+    mockedDocumentBuilder.mockImplementation(
+      () =>
+        ({
+          marshal: mockedMarshal,
+          withData: jest.fn(),
+          withDate: jest.fn(),
+          withFileExtension: jest.fn(),
+          withMetadataValue: jest.fn(),
+        } as unknown as DocumentBuilder)
+    );
+  };
+  const doMockAuthenticatedClient = () => {
+    mockedClient.mockImplementation(
+      () =>
+        ({
+          getClient: () =>
+            Promise.resolve({
+              privilegeEvaluator: {
+                evaluate: mockEvaluate,
+              },
+              source: {
+                get: mockSourceGet,
+              },
+            }),
+          cfg: {
+            get: () =>
+              Promise.resolve({
+                accessToken: 'the_token',
+                organization: 'the_org',
+                region: 'au',
+                environment: 'prod',
+              }),
+          },
+        } as unknown as AuthenticatedClient)
+    );
+  };
+
+  const doMockSource = () => {
+    mockedSource.mockImplementation(
+      () =>
+        ({
+          batchUpdateDocumentsFromFiles: mockBatchUpdate,
+          batchStreamDocumentsFromFiles: mockBatchStream,
+          setSourceStatus: mockSetSourceStatus,
+        } as unknown as CatalogSource)
+    );
   };
 
   beforeAll(() => {
+    doMockDocumentBuilder();
+    doMockAuthenticatedClient();
+    doMockSource();
+
     mockedGlobalConfig.get.mockReturnValue({
       configDir: 'the_config_dir',
     } as Interfaces.Config);
@@ -66,61 +129,31 @@ describe('source:push:add', () => {
     );
   });
 
-  mockedDocumentBuilder.mockImplementation(
-    () =>
-      ({
-        marshal: mockedMarshal,
-        withData: jest.fn(),
-        withDate: jest.fn(),
-        withFileExtension: jest.fn(),
-        withMetadataValue: jest.fn(),
-      } as unknown as DocumentBuilder)
-  );
-
-  mockedClient.mockImplementation(
-    () =>
-      ({
-        getClient: () =>
-          Promise.resolve({
-            privilegeEvaluator: {
-              evaluate: mockEvaluate,
-            },
-          }),
-        cfg: {
-          get: () =>
-            Promise.resolve({
-              accessToken: 'the_token',
-              organization: 'the_org',
-              region: 'au',
-              environment: 'prod',
-            }),
-        },
-      } as unknown as AuthenticatedClient)
-  );
-
   mockedSource.mockImplementation(
     () =>
       ({
         batchUpdateDocumentsFromFiles: mockBatchUpdate,
         setSourceStatus: mockSetSourceStatus,
-      } as unknown as PushSource)
+      } as unknown as CatalogSource)
   );
 
   describe('when the batch upload is successfull', () => {
     beforeAll(() => {
       mockUserHavingAllRequiredPlatformPrivileges();
-      doMockSuccessBatchUpload();
+      doMockSuccessUpload();
+      sourceContainsDocuments();
     });
 
     afterAll(() => {
       mockBatchUpdate.mockReset();
       mockEvaluate.mockReset();
+      mockSourceGet.mockReset();
     });
 
     test
       .stdout()
       .stderr()
-      .command(['source:push:add', 'mysource'])
+      .command(['source:catalog:add', 'mysource'])
       .catch(/You must set the `files` flag/)
       .it('throws when no flags are specified');
 
@@ -128,26 +161,36 @@ describe('source:push:add', () => {
       .stdout()
       .stderr()
       .command([
-        'source:push:add',
+        'source:catalog:add',
         'mysource',
         '-f',
-        'foo.json',
-        '-d',
-        'directory',
+        join(pathToStub, 'jsondocuments', 'batman.json'),
       ])
-      .it('should accept files and folder within the same command', () => {
-        expect(mockBatchUpdate).toHaveBeenCalledWith(
-          expect.anything(),
-          ['directory', 'foo.json'],
-          expect.anything()
-        );
+      .it('should trigger a batch document update', () => {
+        expect(mockBatchUpdate).toHaveBeenCalled();
+        expect(mockBatchStream).not.toHaveBeenCalled();
       });
 
     test
       .stdout()
       .stderr()
       .command([
-        'source:push:add',
+        'source:catalog:add',
+        'mysource',
+        '--fullUpload',
+        '-f',
+        join(pathToStub, 'jsondocuments', 'batman.json'),
+      ])
+      .it('should trigger a batch stream upload ', () => {
+        expect(mockBatchStream).toHaveBeenCalled();
+        expect(mockBatchUpdate).not.toHaveBeenCalled();
+      });
+
+    test
+      .stdout()
+      .stderr()
+      .command([
+        'source:catalog:add',
         'mysource',
         '-f',
         join(pathToStub, 'jsondocuments', 'batman.json'),
@@ -163,7 +206,7 @@ describe('source:push:add', () => {
       .stdout()
       .stderr()
       .command([
-        'source:push:add',
+        'source:catalog:add',
         'mysource',
         '-f',
         join(pathToStub, 'jsondocuments', 'batman.json'),
@@ -180,7 +223,7 @@ describe('source:push:add', () => {
       .stdout()
       .stderr()
       .command([
-        'source:push:add',
+        'source:catalog:add',
         'mysource',
         '--no-createMissingFields',
         '-f',
@@ -198,14 +241,14 @@ describe('source:push:add', () => {
       .stdout()
       .stderr()
       .command([
-        'source:push:add',
+        'source:catalog:add',
         'mysource',
         '-f',
         join(pathToStub, 'jsondocuments', 'someJsonFile.json'),
       ])
       .it('should output feedback message when uploading documents', (ctx) => {
         expect(ctx.stdout).toContain(
-          'Success: 2 documents accepted by the Push API from'
+          'Success: 2 documents accepted by the API from'
         );
         expect(ctx.stdout).toContain('Status code: 202 👌');
       });
@@ -214,16 +257,16 @@ describe('source:push:add', () => {
       .stdout()
       .stderr()
       .command([
-        'source:push:add',
+        'source:catalog:add',
         'mysource',
-        '-d',
+        '-f',
         join(pathToStub, 'jsondocuments'),
       ])
       .it(
         'should output feedback message when uploading a directory',
         (ctx) => {
           expect(ctx.stdout).toContain(
-            'Success: 2 documents accepted by the Push API from'
+            'Success: 2 documents accepted by the API from'
           );
           expect(ctx.stdout).toContain('Status code: 202 👌');
         }
@@ -233,76 +276,88 @@ describe('source:push:add', () => {
       .stdout()
       .stderr()
       .command([
-        'source:push:add',
+        'source:catalog:add',
         'mysource',
         '-f',
-        join(pathToStub, 'jsondocuments'),
         join(pathToStub, 'jsondocuments', 'batman.json'),
       ])
-      .it(
-        'should output feedback message when uploading a file and a directory',
-        (ctx) => {
-          expect(ctx.stdout).toContain(
-            'Success: 2 documents accepted by the Push API from'
-          );
-          expect(ctx.stdout).toContain('Status code: 202 👌');
-        }
-      );
-
-    test
-      .stdout()
-      .stderr()
-      .command([
-        'source:push:add',
-        'mysource',
-        '-d',
-        join(pathToStub, 'jsondocuments'),
-      ])
-      .it('should show deprecated flag warning', (ctx) => {
-        expect(ctx.stdout).toContain('Use the `files` flag instead');
+      .it('should get source info during document update', () => {
+        expect(mockSourceGet).toHaveBeenCalled();
       });
 
     test
       .stdout()
       .stderr()
       .command([
-        'source:push:add',
+        'source:catalog:add',
         'mysource',
-        '-d',
-        join(pathToStub, 'jsondocuments'),
+        '--fullUpload',
+        '-f',
+        join(pathToStub, 'jsondocuments', 'batman.json'),
       ])
-      .it('should update the source status', () => {
-        expect(mockSetSourceStatus).toHaveBeenNthCalledWith(
-          1,
-          'mysource',
-          'REFRESH'
-        );
-        expect(mockSetSourceStatus).toHaveBeenNthCalledWith(
-          2,
-          'mysource',
-          'IDLE'
-        );
+      .it('should not get source info during document update', () => {
+        expect(mockSourceGet).not.toHaveBeenCalled();
       });
+
+    describe('when the source does not contain items', () => {
+      beforeAll(() => {
+        mockSourceGet.mockReset();
+        sourceDoesNotContainDocuments();
+      });
+
+      test
+        .stdout()
+        .stderr()
+        .command([
+          'source:catalog:add',
+          'mysource',
+          '-f',
+          join(pathToStub, 'jsondocuments', 'batman.json'),
+        ])
+        .catch(/No items detected for this source at the moment/)
+        .it('should show error message during document update');
+
+      test
+        .stdout()
+        .stderr()
+        .command([
+          'source:catalog:add',
+          'mysource',
+          '--skipFullUploadCheck',
+          '-f',
+          join(pathToStub, 'jsondocuments', 'batman.json'),
+        ])
+        .it(
+          'should not show a error message when using the --skipFullUploadCheck flag',
+          (ctx) => {
+            expect(ctx.stderr).not.toContain(
+              'please consider doing a full catalog upload'
+            );
+          }
+        );
+    });
   });
 
   describe('when the batch upload fails', () => {
     beforeAll(() => {
-      doMockErrorBatchUpload();
+      doMockErrorUpload();
       mockUserHavingAllRequiredPlatformPrivileges();
+      sourceContainsDocuments();
     });
 
     afterAll(() => {
       mockBatchUpdate.mockReset();
       mockEvaluate.mockReset();
+      mockSourceGet.mockReset();
     });
 
     test
       .stdout()
       .stderr()
       .command([
-        'source:push:add',
+        'source:catalog:add',
         'mysource',
-        '-d',
+        '-f',
         join(pathToStub, 'jsondocuments'),
       ])
       .catch((error) => {
@@ -320,17 +375,19 @@ describe('source:push:add', () => {
   describe('when Platform privilege preconditions are not respected', () => {
     beforeEach(() => {
       mockUserNotHavingAllRequiredPlatformPrivileges();
+      sourceContainsDocuments();
     });
 
     afterAll(() => {
       mockBatchUpdate.mockReset();
       mockEvaluate.mockReset();
+      mockSourceGet.mockReset();
     });
 
     test
       .stdout()
       .stderr()
-      .command(['source:push:add', 'some-org', '-f', 'some-file'])
+      .command(['source:catalog:add', 'some-org', '-f', 'some-file'])
       .catch(/You are not authorized to create or update fields/)
       .it('should return a precondition error');
   });

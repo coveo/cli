@@ -102,7 +102,7 @@ export default class Pull extends Command {
 
     CliUx.ux.action.start('Updating project with Snapshot');
     await this.refreshProject(project, snapshot);
-
+    project.writeResourcesManifest(targetOrganization);
     await snapshot.delete();
     CliUx.ux.action.stop('Project updated');
   }
@@ -222,7 +222,7 @@ export default class Pull extends Command {
   public async getFlags() {
     const {flags} = await this.parse(Pull);
     if (flags.model) {
-      return {...flags, target: flags.model.orgId};
+      return {...flags, organization: flags.model.orgId};
     }
     return flags;
   }

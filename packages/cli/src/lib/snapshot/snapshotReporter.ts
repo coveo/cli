@@ -38,6 +38,17 @@ export class SnapshotReporter {
     }
   }
 
+  private operationResultsParseFuseUsed: boolean = false;
+
+  private consumeOperationResultsParseFuse() {
+    if (this.operationResultsParseFuseUsed) {
+      return false;
+    } else {
+      this.operationResultsParseFuseUsed = true;
+      return true;
+    }
+  }
+
   public get missingVaultEntries() {
     return this.missingVaultEntriesSet.values();
   }
