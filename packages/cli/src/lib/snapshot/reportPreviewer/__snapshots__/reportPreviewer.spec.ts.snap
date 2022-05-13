@@ -2,7 +2,7 @@
 
 exports[`ReportViewer when the report contains errors should print the same report 1`] = `
 " 
-Previewing resource changes:
+Previewing snapshot changes:
  ──────────────────────────── 
     Extensions                
  +   1 to create              
@@ -28,7 +28,7 @@ Error Report:
 
 exports[`ReportViewer when the report contains missing vault entries should print the same report 1`] = `
 " 
-Previewing resource changes:
+Previewing snapshot changes:
  ──────────────────────────── 
     Extensions                
  +   1 to create              
@@ -59,7 +59,7 @@ The target organization already matches the configuration.
 
 exports[`ReportViewer when the report does not contain errors should print resource changes 1`] = `
 " 
-Previewing resource changes:
+Previewing snapshot changes:
  ──────────────────────────── 
     Extensions                
  +   1 to create              
