@@ -42,7 +42,7 @@ export default class Push extends Command {
   public static flags = {
     ...wait(),
     ...sync(),
-    // TODO: CDX-935 add flag to automatically transfer vault entries when transferable
+    // TODO: CDX-935 use the -y flag and update its description
     ...previewLevel(),
     ...organization(
       'The unique identifier of the organization where to send the changes'

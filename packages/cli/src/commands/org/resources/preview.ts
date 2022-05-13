@@ -40,7 +40,6 @@ export default class Preview extends Command {
   public static flags = {
     ...wait(),
     ...sync(),
-    // TODO: CDX-935 add flag to automatically transfer vault entries when transferable
     ...previewLevel(),
     ...organization(
       'The unique identifier of the organization where to preview the changes'
