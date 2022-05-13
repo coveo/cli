@@ -26,6 +26,7 @@ export class SnapshotFacade {
   }
 
   private async waitForConfirmation() {
+    // TODO: CDX-947: be specific on what the next operation will be doing
     const question =
       'Synchronization plan matched all resources, do you want to proceed? (y/n)';
     const synchronize = await confirmWithAnalytics(

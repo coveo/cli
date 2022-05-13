@@ -18,9 +18,14 @@ type SnapshotReporterHandlers = {
   [K in SnapshotReportStatus]: SnapshotReporterHandler | NoopHandler;
 };
 
+export type VaultEntryAttributes = {
+  vaultEntryId: string;
+  resourceName: string;
+  resourceType: ResourceSnapshotType;
+};
+
 export class SnapshotReporter {
-  private missingVaultEntriesSet: Set<[string, ResourceSnapshotType]> =
-    new Set();
+  private missingVaultEntriesSet: Set<VaultEntryAttributes> = new Set();
 
   private operationResultsParseFuseUsed: boolean = false;
 
@@ -149,21 +154,26 @@ export class SnapshotReporter {
     for (const [resourceType, resource] of Object.entries(
       this.report.resourceOperationResults
     )) {
-      for (const errors of Object.values(resource)) {
+      for (const [resourceName, errors] of Object.entries(resource)) {
         for (const err of errors) {
-          this.parseResourceOperationResult(err, resourceType);
+          this.parseResourceOperationResult(err, resourceName, resourceType);
         }
       }
     }
   }
 
-  private parseResourceOperationResult(err: string, resourceType: string) {
+  private parseResourceOperationResult(
+    err: string,
+    resourceName: string,
+    resourceType: string
+  ) {
     const missingEntry = SnapshotReporter.tryGetMissingVaultEntryName(err);
     if (missingEntry) {
-      this.missingVaultEntriesSet.add([
-        missingEntry,
-        resourceType as ResourceSnapshotType,
-      ]);
+      this.missingVaultEntriesSet.add({
+        vaultEntryId: missingEntry,
+        resourceName: resourceName,
+        resourceType: resourceType as ResourceSnapshotType,
+      });
     } else {
       // TODO: Fix PlatformClient to reflect proper typing.
       this.addResourceInError(resourceType as ResourceSnapshotType, err);
@@ -181,9 +191,10 @@ export class SnapshotReporter {
   }
 
   private static missingVaultMatcher =
-    /^The vault entry referenced by \{\{ (?<entryName>.*) \}\} could not be found in the vault\.$/;
+    /^The vault entry referenced by \{\{ VAULT\.(?<entryName>.*) \}\} could not be found in the vault\.$/;
+
   private static tryGetMissingVaultEntryName(err: string): string | undefined {
-    // TODO CDX-939: Define contract with backend for report and upcoming contract.
+    // TODO: CDX-939: Define contract with backend for report and upcoming contract.
     // Current 'contract' 😅:
     const match = err.match(SnapshotReporter.missingVaultMatcher);
     return match?.groups?.['entryName'];
