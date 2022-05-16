@@ -1,10 +1,12 @@
 import {CliUx} from '@oclif/core';
 import {bold} from 'chalk';
-import {Configuration} from '../config/config';
-import {SnapshotMissingVaultEntriesError} from '../errors/snapshotErrors';
-import {Snapshot} from './snapshot';
-import {SnapshotReporter} from './snapshotReporter';
-import {VaultHandler} from './vaultHandler';
+import {Configuration} from '../../config/config';
+import {SnapshotMissingVaultEntriesError} from '../../errors/snapshotErrors';
+import {Snapshot} from '../snapshot';
+import {SnapshotReporter} from '../snapshotReporter';
+import {VaultHandler} from '../vaultHandler';
+
+export {tryTransferFromOrganization} from './transferFromOrganization';
 
 export type VaultTransferFunctionsParam = {
   reporter: SnapshotReporter;
@@ -30,12 +32,10 @@ export async function tryCreateMissingVaultEntries({
   return true;
 }
 
-export function tryTransferFromOrganization() {}
-
 export function throwSnapshotMissingVaultEntriesError({
   snapshot,
   cfg,
   projectPath,
-}: VaultTransferFunctionsParam) {
+}: VaultTransferFunctionsParam): never {
   throw new SnapshotMissingVaultEntriesError(snapshot, cfg, projectPath);
 }

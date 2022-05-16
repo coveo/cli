@@ -15,7 +15,7 @@ import {
   tryTransferFromOrganization,
   tryCreateMissingVaultEntries,
   throwSnapshotMissingVaultEntriesError,
-} from './vaultTransferFunctions';
+} from './vaultEntriesFunctions';
 
 export interface DryRunOptions {
   sync?: boolean;
