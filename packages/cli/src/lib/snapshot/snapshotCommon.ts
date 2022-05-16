@@ -2,18 +2,20 @@ import {CliUx} from '@oclif/core';
 import {Project} from '../project/project';
 import {SnapshotFactory} from './snapshotFactory';
 import {Snapshot, WaitUntilDoneOptions} from './snapshot';
-import {red, green, bold} from 'chalk';
+import {red, green} from 'chalk';
 import {normalize} from 'path';
 import {Config, Configuration} from '../config/config';
-import {
-  SnapshotGenericError,
-  SnapshotMissingVaultEntriesError,
-} from '../errors/snapshotErrors';
+import {SnapshotGenericError} from '../errors/snapshotErrors';
 import {SnapshotFacade} from './snapshotFacade';
 import {PrintableError} from '../errors/printableError';
 import {SnapshotReporter} from './snapshotReporter';
-import {VaultHandler} from './vaultHandler';
 import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
+import {
+  VaultTransferFunctionsParam,
+  tryTransferFromOrganization,
+  tryCreateMissingVaultEntries,
+  throwSnapshotMissingVaultEntriesError,
+} from './vaultTransferFunctions';
 
 export interface DryRunOptions {
   sync?: boolean;
@@ -116,38 +118,27 @@ export async function handleReportWithErrors(
   throw new SnapshotGenericError(snapshot, cfg, projectPath);
 }
 
+type MissingVaultEntriesReportSubHandler = (
+  param: VaultTransferFunctionsParam
+) => Promise<boolean> | Promise<never> | boolean | never;
+
+const missingVaultEntriesSubHandlers: MissingVaultEntriesReportSubHandler[] = [
+  tryTransferFromOrganization,
+  tryCreateMissingVaultEntries,
+  throwSnapshotMissingVaultEntriesError,
+];
+
 export function getMissingVaultEntriesReportHandler(
   snapshot: Snapshot,
   cfg: Configuration,
   projectPath?: string
 ) {
   return async function (this: SnapshotReporter) {
-    // **** Pseudo-code START ****
-    // * prompt if "want to transfer"
-    // * get the organizationId from the project (CDX-915)
-    // * check if vault entries are "transferable". i.e. find missing vault entries from origin org and compare with this.missingVaultEntries (CDX-935)
-    // * if "want to transfer" && "transferable"
-    //      Transfer vault entries from origin to dest org
-    //      return
-    //
-    // * if not "transferable"
-    //      log "Vault entries could not be transfered from origin to destination org"
-    //
-    // * prompt if "want to create vault entries manually"
-    // **** Pseudo-code END ****
-
-    const shouldCreate = await CliUx.ux.confirm(
-      `\nWould you like to create the missing vault entries in the destination organization ${bold.cyan(
-        snapshot.targetId
-      )}? (y/n)`
-    );
-    if (shouldCreate) {
-      const vault = new VaultHandler(snapshot.targetId);
-      await vault.createEntries(Array.from(this.missingVaultEntries));
-      return;
+    for (const subHandler of missingVaultEntriesSubHandlers) {
+      if (await subHandler({reporter: this, snapshot, cfg, projectPath})) {
+        break;
+      }
     }
-
-    throw new SnapshotMissingVaultEntriesError(snapshot, cfg, projectPath);
   };
 }
 
