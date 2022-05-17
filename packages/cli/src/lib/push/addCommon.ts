@@ -43,7 +43,7 @@ export const handleAddError = (err: unknown) => {
     printInvalidFieldTable(unfixable);
 
     const normalizeFlag = Object.keys(normalizeInvalidFields())[0];
-    let message = `Run the same command using the --${normalizeFlag} flag to automatically normalize field names while pushing your data.`;
+    let message = `Run the same command using the \`--${normalizeFlag}\` flag to automatically normalize field names while pushing your data.`;
     if (unfixable.length > 0) {
       message = dedent`Cannot normalize some of the invalid field names detected in your data
       Review your data and ensure all field names as shown in the second table have at least one alphabetic character.`;
@@ -54,21 +54,21 @@ export const handleAddError = (err: unknown) => {
   }
 };
 
-const printInvalidFieldTable = (fieldTransformations: {valid: boolean}[]) => {
-  const count = fieldTransformations.length;
+const printInvalidFieldTable = (fields: {valid: boolean}[]) => {
+  const count = fields.length;
   const pluralized = pluralizeIfNeeded(['field', 'fields'], count);
-  const fixable = fieldTransformations[0].valid;
   if (count === 0) {
     return;
   }
 
+  const fixable = fields[0].valid;
   logNewLine();
   CliUx.ux.log(
     ` ${count} ${pluralized} detected in your data that can${
       fixable ? '' : 'not'
     } be normalized`
   );
-  CliUx.ux.table(fieldTransformations, {
+  CliUx.ux.table(fields, {
     original: {header: 'Original'},
     normalized: {header: 'Normalized'},
   });
