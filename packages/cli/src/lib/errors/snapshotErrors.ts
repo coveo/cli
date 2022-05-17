@@ -139,3 +139,21 @@ export class SnapshotGenericError
     trySavingDetailedReport(this);
   }
 }
+export class SnapshotMissingVaultEntriesError
+  extends PrintableError
+  implements DetailedReportable
+{
+  public name = 'Snapshot Missing Vault Entries';
+  public constructor(
+    public snapshot: Snapshot,
+    public cfg: Configuration,
+    public projectPath?: string
+  ) {
+    super(SeverityLevel.Error);
+    this.message = dedent`Your destination organization is missing vault entries needed by the snapshot ${snapshot.id}.
+    Ensure that all vault entries are present on the organization ${snapshot.targetId} and try again.
+    Visit https://docs.coveo.com/en/m3a90243 for more info on how to create vault entries.`;
+
+    trySavingDetailedReport(this);
+  }
+}

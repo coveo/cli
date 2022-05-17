@@ -17,14 +17,16 @@ export interface AxiosResponse {
 export const successMessage = (
   cmd: Command,
   tagLine: string,
-  res: AxiosResponse
+  res?: AxiosResponse
 ) => {
-  cmd.log(
-    dedent(`
+  let message = dedent(`
       ${tagLine}
-      Status code: ${green(res.status, res.statusText)}
-      `)
-  );
+      `);
+  if (res) {
+    message += `Status code: ${green(res.status, res.statusText)}
+    `;
+  }
+  cmd.log(message);
 };
 
 export const errorMessage = (

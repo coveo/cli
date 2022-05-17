@@ -19,9 +19,10 @@ import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {
   getErrorReport,
+  getMissingVaultEntryReport,
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
-import {Command} from '@oclif/core';
+import {CliUx, Command} from '@oclif/core';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions';
 import {SnapshotFacade} from '../../../lib/snapshot/snapshotFacade';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
@@ -106,8 +107,9 @@ const mockSnapshotFactoryReturningValidSnapshot = async () => {
     'success-report',
     ResourceSnapshotsReportType.Apply
   );
-  const reporter = new SnapshotReporter(successReport);
-  mockedValidateSnapshot.mockResolvedValue(reporter);
+  mockedValidateSnapshot.mockImplementation(() =>
+    Promise.resolve(new SnapshotReporter(successReport))
+  );
   await mockSnapshotFactory();
 };
 
@@ -116,10 +118,23 @@ const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
     'error-report',
     ResourceSnapshotsReportType.Apply
   );
-  const reporter = new SnapshotReporter(errorReport);
-  mockedValidateSnapshot.mockResolvedValue(reporter);
+  mockedValidateSnapshot.mockImplementation(() =>
+    Promise.resolve(new SnapshotReporter(errorReport))
+  );
   await mockSnapshotFactory();
 };
+
+const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries =
+  async () => {
+    const missingVaultEntry = getMissingVaultEntryReport(
+      'missing-vault-entry',
+      ResourceSnapshotsReportType.Apply
+    );
+    mockedValidateSnapshot.mockImplementation(() =>
+      Promise.resolve(new SnapshotReporter(missingVaultEntry))
+    );
+    await mockSnapshotFactory();
+  };
 
 const mockSnapshotFacade = () => {
   mockedSnapshotFacade.mockImplementation(
@@ -194,7 +209,7 @@ describe('org:resources:preview', () => {
     test
       .stdout()
       .stderr()
-      .command(['org:resources:preview', '-t', 'myorg'])
+      .command(['org:resources:preview', '-o', 'myorg'])
       .it('should work with specified target org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
@@ -305,7 +320,7 @@ describe('org:resources:preview', () => {
         );
       });
   });
-
+  //#region TODO: CDX-948, setup phase needs to be rewrite and assertions 'split up' (e.g. the error ain't trigger directly by the function, therefore should not be handled)
   describe('when the report contains resources in error', () => {
     beforeAll(async () => {
       await mockSnapshotFactoryReturningInvalidSnapshot();
@@ -376,4 +391,25 @@ describe('org:resources:preview', () => {
         'should try to apply synchronization plan without asking for confirmation'
       );
   });
+
+  describe('when the report contains resources with missing vault entries', () => {
+    beforeAll(async () => {
+      await mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries();
+    });
+
+    afterAll(() => {
+      mockedSnapshotFactory.mockReset();
+    });
+
+    describe('when the user refuses to migrate or type in the missing vault entries', () => {
+      test
+        .stdout()
+        .stderr()
+        .stub(CliUx.ux, 'confirm', () => async () => false)
+        .command(['org:resources:preview'])
+        .catch(/Your destination organization is missing vault entries/)
+        .it('should throw an error for invalid snapshots');
+    });
+  });
+  //#endregion
 });

@@ -1,4 +1,3 @@
-import {CLI_EXEC_PATH} from '../utils/cli';
 import {
   getMitmProxyEnvCerts,
   startMitmProxy,
@@ -37,10 +36,7 @@ describe('org:list', () => {
           'data',
           proxyStdoutListener
         );
-        const args: string[] = [CLI_EXEC_PATH, 'org:list'];
-        if (process.platform === 'win32') {
-          args.unshift('node');
-        }
+        const args: string[] = ['node', process.env.CLI_EXEC_PATH!, 'org:list'];
         const cliProcessManager = new ProcessManager();
         processManagers.push(cliProcessManager);
         const cliTerminal = new Terminal(

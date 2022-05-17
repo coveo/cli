@@ -14,6 +14,7 @@ import {
   publishPackages,
   shimNpm,
 } from './utils';
+import {join} from 'path';
 
 export default async function () {
   shimNpm();
@@ -22,7 +23,7 @@ export default async function () {
   setProcessEnv();
 
   createUiProjectDirectory();
-
+  process.env['GITHUB_WORKSPACE'] = join(__dirname, '..', '..', '..');
   global.processManager = new ProcessManager();
   await startVerdaccio();
   await npmLogin();

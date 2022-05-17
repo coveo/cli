@@ -7,10 +7,17 @@ import {
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import dedent from 'ts-dedent';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {magenta} from 'chalk';
+import SourceList from '../list';
 
+/**
+ * @TODO: CDX-917: Remove file.
+ * @deprecated
+ **/
 export default class SourcePushList extends Command {
-  public static description =
-    'List all available push sources in your Coveo organization';
+  public static description = `${magenta(
+    '[Deprecated]'
+  )} List all available push sources in your Coveo organization`;
 
   public static flags = {
     ...CliUx.ux.table.flags(),
@@ -19,6 +26,7 @@ export default class SourcePushList extends Command {
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
+    CliUx.ux.warn(`${magenta('deprecated')} Use ${SourceList.id} instead`);
     const {flags} = await this.parse(SourcePushList);
     const authenticatedClient = new AuthenticatedClient();
     const org = (await authenticatedClient.cfg.get()).organization;

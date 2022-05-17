@@ -14,6 +14,8 @@ import {
   handleSnapshotError,
   cleanupProject,
   DryRunOptions,
+  getMissingVaultEntriesReportHandler,
+  getErrorReportHandler,
 } from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '../../../lib/config/config';
 import {cwd} from 'process';
@@ -23,6 +25,7 @@ import {
   previewLevel,
   sync,
   wait,
+  organization,
 } from '../../../lib/flags/snapshotCommonFlags';
 import {
   writeLinkPrivilege,
@@ -30,6 +33,7 @@ import {
 } from '../../../lib/decorators/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
+import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 
 export default class Push extends Command {
   public static description =
@@ -38,14 +42,11 @@ export default class Push extends Command {
   public static flags = {
     ...wait(),
     ...sync(),
+    // TODO: CDX-935 use the -y flag and update its description
     ...previewLevel(),
-    target: Flags.string({
-      char: 't',
-      description:
-        'The unique identifier of the organization where to send the changes. If not specified, the organization you are connected to will be used.',
-      helpValue: 'destinationorganizationg7dg3gd',
-      required: false,
-    }),
+    ...organization(
+      'The unique identifier of the organization where to send the changes'
+    ),
     deleteMissingResources: Flags.boolean({
       char: 'd',
       description: 'Delete missing resources when enabled',
@@ -71,7 +72,7 @@ export default class Push extends Command {
       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
     );
     const {flags} = await this.parse(Push);
-    const target = await getTargetOrg(this.configuration, flags.target);
+    const target = await getTargetOrg(this.configuration, flags.organization);
     const cfg = this.configuration.get();
     const options = await this.getOptions();
     const {reporter, snapshot, project} = await dryRun(
@@ -86,8 +87,20 @@ export default class Push extends Command {
       const {deleteMissingResources} = await this.getOptions();
       await snapshot.preview(project, deleteMissingResources, display);
     }
-
-    await this.processReportAndExecuteRemainingActions(snapshot, reporter);
+    await reporter
+      .setReportHandler(
+        SnapshotReportStatus.SUCCESS,
+        this.getSuccessReportHandler(snapshot)
+      )
+      .setReportHandler(
+        SnapshotReportStatus.MISSING_VAULT_ENTRIES,
+        getMissingVaultEntriesReportHandler(snapshot, cfg, this.projectPath)
+      )
+      .setReportHandler(
+        SnapshotReportStatus.ERROR,
+        getErrorReportHandler(snapshot, cfg, this.projectPath)
+      )
+      .handleReport();
     await this.cleanup(snapshot, project);
   }
 
@@ -102,30 +115,20 @@ export default class Push extends Command {
     return flags.previewLevel === PreviewLevelValue.Detailed;
   }
 
-  private async processReportAndExecuteRemainingActions(
-    snapshot: Snapshot,
-    reporter: SnapshotReporter
-  ) {
-    if (!reporter.isSuccessReport()) {
-      const cfg = this.configuration.get();
-      await handleReportWithErrors(snapshot, cfg, this.projectPath);
-    }
-    await this.handleValidReport(reporter, snapshot);
-  }
-
   private async cleanup(snapshot: Snapshot, project: Project) {
     await snapshot.delete();
     project.deleteTemporaryZipFile();
   }
 
-  private async handleValidReport(
-    reporter: SnapshotReporter,
-    snapshot: Snapshot
-  ) {
-    if (!reporter.hasChangedResources()) {
-      return;
-    }
+  private getSuccessReportHandler(snapshot: Snapshot) {
+    const successReportWithChangesHandler = () =>
+      this.successReportWithChangesHandler(snapshot);
+    return async function (this: SnapshotReporter) {
+      return successReportWithChangesHandler();
+    };
+  }
 
+  private async successReportWithChangesHandler(snapshot: Snapshot) {
     const {flags} = await this.parse(Push);
     const canBeApplied = flags.skipPreview || (await this.askForConfirmation());
 
@@ -136,8 +139,8 @@ export default class Push extends Command {
 
   private async askForConfirmation(): Promise<boolean> {
     const {flags} = await this.parse(Push);
-    const target = await getTargetOrg(this.configuration, flags.target);
-    const question = `\nWould you like to apply these changes to the org ${bold(
+    const target = await getTargetOrg(this.configuration, flags.organization);
+    const question = `\nWould you like to apply the snapshot to the organization ${bold.cyan(
       target
     )}? (y/n)`;
     return confirmWithAnalytics(question, 'snapshot apply');
@@ -145,20 +148,22 @@ export default class Push extends Command {
 
   private async applySnapshot(snapshot: Snapshot) {
     CliUx.ux.action.start('Applying snapshot');
+    const cfg = this.configuration.get();
     const {flags} = await this.parse(Push);
     const {waitUntilDone} = await this.getOptions();
     const reporter = await snapshot.apply(
       flags.deleteMissingResources,
       waitUntilDone
     );
-    const success = reporter.isSuccessReport();
-
-    if (!success) {
-      const cfg = this.configuration.get();
-      await handleReportWithErrors(snapshot, cfg, this.projectPath);
-    }
-
-    CliUx.ux.action.stop(success ? green('✔') : red.bold('!'));
+    await reporter
+      .setReportHandler(SnapshotReportStatus.ERROR, async () => {
+        await handleReportWithErrors(snapshot, cfg, this.projectPath);
+        CliUx.ux.action.stop(red.bold('!'));
+      })
+      .setReportHandler(SnapshotReportStatus.SUCCESS, () => {
+        CliUx.ux.action.stop(green('✔'));
+      })
+      .handleReport();
   }
 
   private async getOptions(): Promise<DryRunOptions> {
