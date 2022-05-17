@@ -16,6 +16,7 @@ import {
   withFiles,
   withCreateMissingFields,
   withMaxConcurrent,
+  normalizeInvalidFields,
 } from '../../../lib/flags/sourceCommonFlags';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
@@ -43,6 +44,7 @@ export default class SourceCatalogAdd extends Command {
     ...withFiles(),
     ...withMaxConcurrent(),
     ...withCreateMissingFields(),
+    ...normalizeInvalidFields(),
     fullUpload: Flags.boolean({
       default: false,
       description: fullUploadDescription,
@@ -110,6 +112,7 @@ export default class SourceCatalogAdd extends Command {
       .onBatchError((data) => this.errorMessageOnAdd(data))
       .batch();
 
+    // TODO: handle invalid field names!
     CliUx.ux.action.stop(green('✔'));
   }
 
