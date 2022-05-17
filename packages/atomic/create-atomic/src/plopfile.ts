@@ -1,11 +1,10 @@
 import {NodePlopAPI} from 'plop';
 import {spawn} from 'child_process';
 import {getPackageManager} from './utils.js';
-import {fetchPageManifest} from './fetch-page.js';
+import {fetchPageManifest, IManifest} from './fetch-page.js';
 import {defaultPageManifest} from './default/default-page.js';
 import {writeFileSync} from 'node:fs';
 import {join} from 'path';
-import {IManifestResponse} from '@coveord/platform-client';
 
 interface PlopData {
   project: string;
@@ -13,7 +12,7 @@ interface PlopData {
   'platform-url': string;
   'org-id': string;
   'api-key': string;
-  page: IManifestResponse;
+  page: IManifest;
 }
 
 export default function (plop: NodePlopAPI) {

@@ -1,9 +1,9 @@
-import {IManifestResponse} from '@coveord/platform-client';
+import {IManifest} from '../fetch-page.js';
 import {defaultLayout} from './default-layout.js';
 import defaultResultTemplate from './default-result-template.js';
 import defaultSearchInterface from './default-search-interface.js';
 
-export const defaultPageManifest: IManifestResponse = {
+export const defaultPageManifest: IManifest = {
   config: {
     title: 'Atomic Stencil Project',
   },
