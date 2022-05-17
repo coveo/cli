@@ -91,8 +91,7 @@ export default function (plop: NodePlopAPI) {
 
           try {
             plopData.page = await fetchPageManifest(
-              // TODO: replace
-              'http://localhost:8222', // plopData['platform-url'],
+              plopData['platform-url'],
               plopData['org-id'],
               plopData['page-id'],
               plopData['api-key']
