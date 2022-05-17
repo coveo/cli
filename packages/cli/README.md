@@ -529,6 +529,7 @@ ARGUMENTS
 
 OPTIONS
   -v, --version=version  [default: 1.27.1] The version of @coveo/create-atomic to use.
+  -p, --pageId=id The hosted search page ID, e.g. "7944ff4a-9943-4999-a3f6-3e81a7f6fb0a".
 
 EXAMPLE
   $ coveo ui:create:atomic myapp

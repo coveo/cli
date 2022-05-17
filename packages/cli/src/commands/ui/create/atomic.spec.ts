@@ -192,8 +192,8 @@ describe('ui:create:atomic', () => {
   test
     .stdout()
     .stderr()
-    .command(['ui:create:atomic', 'myapp', '--page-id 123456'])
-    .it('should pass on the page-id if provided', () => {
+    .command(['ui:create:atomic', 'myapp', '--pageId 123456'])
+    .it('should pass on the pageId flag if provided', () => {
       expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
       expect(mockedSpawnProcess).nthCalledWith(
         1,

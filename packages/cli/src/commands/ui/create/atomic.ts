@@ -30,17 +30,17 @@ export default class Atomic extends Command {
       description: 'The name of the application to create.',
       required: true,
     },
-    {
-      name: 'page-id',
-      description: 'The hosted search page ID.',
-      required: false,
-    },
   ];
   public static flags = {
     version: Flags.string({
       char: 'v',
       description: `The version of ${Atomic.cliPackage} to use.`,
       default: getPackageVersion(Atomic.cliPackage) || 'latest',
+    }),
+    pageId: Flags.string({
+      char: 'p',
+      description: `The hosted search page ID, e.g. "7944ff4a-9943-4999-a3f6-3e81a7f6fb0a".`,
+      required: false,
     }),
   };
 
@@ -83,8 +83,8 @@ export default class Atomic extends Command {
       username,
     ];
 
-    if (args.pageId) {
-      cliArgs.push('--page-id', args.pageId);
+    if (flags.pageId) {
+      cliArgs.push('--page-id', flags.pageId);
     }
 
     return spawnProcess(appendCmdIfWindows`npx`, cliArgs);
