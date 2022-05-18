@@ -59,7 +59,7 @@ export async function tryTransferFromOrganization({
   const platformClient = await authenticatedClient.getClient();
 
   try {
-    platformClient.vault.import(
+    await platformClient.vault.import(
       snapshot.id,
       snapshot.targetId,
       originOrgId,
@@ -79,14 +79,16 @@ async function getAllVaultEntriesFrom(orgId: string) {
   });
   const vaultEntries: string[] = [];
 
-  let totalPage = 0;
-  for (let currentPage = 0; currentPage <= totalPage; currentPage++) {
+  let totalPages = 0;
+  let currentPage = 0;
+  do {
     let result = await client.vault.list({page: currentPage});
     if (currentPage === 0) {
-      totalPage = result.totalPages;
+      totalPages = result.totalPages;
     }
-    vaultEntries.concat(extractVaultEntryKeyFromResult(result.items));
-  }
+    vaultEntries.push(...extractVaultEntryKeyFromResult(result.items));
+    currentPage++;
+  } while (currentPage < totalPages);
   return vaultEntries;
 }
 
