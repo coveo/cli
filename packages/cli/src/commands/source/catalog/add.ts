@@ -75,6 +75,10 @@ export default class SourceCatalogAdd extends Command {
   public async run() {
     const {args, flags} = await this.parse(SourceCatalogAdd);
 
+    /* TODO: ask user if want to create catalog.
+       This can be a great time saver, especially if the user has nothing in his organization yet.
+    */
+
     if (
       !flags.fullUpload &&
       !flags.skipFullUploadCheck &&
