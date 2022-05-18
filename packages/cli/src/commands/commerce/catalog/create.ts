@@ -25,14 +25,12 @@ export default class CatalogCreate extends Command {
     withVariants: Flags.boolean({
       char: 'v',
       default: false,
-      exclusive: ['catalogConfiguration'],
       helpGroup: 'Catalog structure',
       description: 'Whether your catalog contains product variants',
     }),
     withAvailabilites: Flags.boolean({
       char: 'a',
       default: false,
-      exclusive: ['catalogConfiguration'],
       helpGroup: 'Catalog structure',
       description:
         'Whether your catalog contains product location and/or availabilities',
@@ -72,8 +70,6 @@ export default class CatalogCreate extends Command {
     // TODO: Add edit catalog privilege. https://docs.coveo.com/en/2956/coveo-for-commerce/index-commerce-catalog-content-with-the-stream-api#required-privileges
   )
   public async run() {
-    // TODO: CDX-980: prompt user for number of object type levels, In other words: should the catalog include variants and availabilities?
-
     // TODO: CDX-977: parse documents to extract metadata keys
     // TODO: CDX-977: throw error if no objecttype is found. throw warning if some documents are missing the objecttype
     // TODO: CDX-977: (optional) throw warning for duplicate SKUs
