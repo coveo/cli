@@ -8,10 +8,12 @@ import {writeFileSync} from 'node:fs';
 import {join} from 'path';
 import {createPlatformClient} from './client.js';
 import PlatformClient from '@coveord/platform-client';
+import ListPrompt from 'inquirer/lib/prompts/list.js';
+import {PromptQuestion} from 'node-plop';
 
 interface PlopData {
   project: string;
-  'page-id': string;
+  'page-id'?: string;
   'platform-url': string;
   'org-id': string;
   'api-key': string;
@@ -21,8 +23,21 @@ interface PlopData {
 export default async function (plop: NodePlopAPI) {
   const currentPath = process.cwd();
   let platformClient: PlatformClient;
+  function initPlatformClient(answers: PlopData) {
+    if (platformClient) {
+      return;
+    }
+
+    platformClient = createPlatformClient(
+      answers['platform-url'],
+      answers['org-id'],
+      answers['api-key']
+    );
+  }
 
   plop.setHelper('inc', (value) => parseInt(value) + 1);
+
+  plop.setPrompt('customList', ListPrompt);
 
   plop.setGenerator('@coveo/atomic', {
     description: 'A Coveo Atomic Generator',
@@ -68,28 +83,35 @@ export default async function (plop: NodePlopAPI) {
           'The name of the security identity to impersonate, e.g. "alicesmith@example.com". See https://docs.coveo.com/en/56/#name-string-required.',
       },
       {
-        // TODO: switch to custom type in order to allow bypass + async choices
-        type: 'list',
+        // Custom type necessary to allow bypassing async choices
+        type: 'customList',
         name: 'page-id',
         default: '',
         loop: false,
         pageSize: 10,
-        choices: async function (answers) {
-          platformClient = createPlatformClient(
-            answers['platform-url'],
-            answers['org-id'],
-            answers['api-key']
-          );
-
+        message:
+          'Use an existing hosted search page as a template, or start from scratch?',
+        choices: async function (answers: PlopData) {
+          initPlatformClient(answers);
           return [
             {value: '', name: 'Start from scratch'},
             {type: 'separator'},
             ...(await listSearchPagesOptions(platformClient)),
           ];
         },
-        message:
-          'Use an existing hosted search page as a template, or start from scratch?',
-      },
+        validate: async (input, answers: PlopData) => {
+          initPlatformClient(answers);
+          const pageExists = !!(
+            await listSearchPagesOptions(platformClient)
+          ).find((page) => page.value === input);
+
+          if (pageExists) {
+            return true;
+          }
+
+          return `The search page with the id "${input}" does not exist.`;
+        },
+      } as PromptQuestion,
     ],
     actions: function () {
       return [
@@ -111,7 +133,7 @@ export default async function (plop: NodePlopAPI) {
           try {
             plopData.page = await fetchPageManifest(
               platformClient,
-              plopData['page-id']
+              plopData['page-id']!
             );
 
             return `Hosted search page "${plopData.page.config.title}" downloaded`;
