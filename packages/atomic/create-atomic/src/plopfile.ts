@@ -2,9 +2,12 @@ import {NodePlopAPI} from 'plop';
 import {spawn} from 'child_process';
 import {getPackageManager} from './utils.js';
 import {fetchPageManifest, IManifest} from './fetch-page.js';
+import {listSearchPagesOptions} from './list-pages.js';
 import {defaultPageManifest} from './default/default-page.js';
 import {writeFileSync} from 'node:fs';
 import {join} from 'path';
+import {createPlatformClient} from './client.js';
+import PlatformClient from '@coveord/platform-client';
 
 interface PlopData {
   project: string;
@@ -15,8 +18,9 @@ interface PlopData {
   page: IManifest;
 }
 
-export default function (plop: NodePlopAPI) {
+export default async function (plop: NodePlopAPI) {
   const currentPath = process.cwd();
+  let platformClient: PlatformClient;
 
   plop.setHelper('inc', (value) => parseInt(value) + 1);
 
@@ -64,11 +68,27 @@ export default function (plop: NodePlopAPI) {
           'The name of the security identity to impersonate, e.g. "alicesmith@example.com". See https://docs.coveo.com/en/56/#name-string-required.',
       },
       {
-        type: 'input',
+        // TODO: switch to custom type in order to allow bypass + async choices
+        type: 'list',
         name: 'page-id',
         default: '',
+        loop: false,
+        pageSize: 10,
+        choices: async function (answers) {
+          platformClient = createPlatformClient(
+            answers['platform-url'],
+            answers['org-id'],
+            answers['api-key']
+          );
+
+          return [
+            {value: '', name: 'Start from scratch'},
+            {type: 'separator'},
+            ...(await listSearchPagesOptions(platformClient)),
+          ];
+        },
         message:
-          '(Optional) The hosted search page ID, e.g. "7944ff4a-9943-4999-a3f6-3e81a7f6fb0a".',
+          'Use an existing hosted search page as a template, or start from scratch?',
       },
     ],
     actions: function () {
@@ -90,10 +110,8 @@ export default function (plop: NodePlopAPI) {
 
           try {
             plopData.page = await fetchPageManifest(
-              plopData['platform-url'],
-              plopData['org-id'],
-              plopData['page-id'],
-              plopData['api-key']
+              platformClient,
+              plopData['page-id']
             );
 
             return `Hosted search page "${plopData.page.config.title}" downloaded`;

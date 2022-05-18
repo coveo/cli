@@ -1,6 +1,3 @@
-import 'isomorphic-fetch';
-import 'abortcontroller-polyfill';
-import HttpsProxyAgent from 'https-proxy-agent';
 import {
   PlatformClient,
   IManifestResponse,
@@ -15,25 +12,9 @@ export interface IManifest extends Omit<IManifestResponse, 'config'> {
 }
 
 export async function fetchPageManifest(
-  host: string,
-  organizationId: string,
-  pageId: string,
-  accessToken: string
+  client: PlatformClient,
+  pageId: string
 ) {
-  const globalRequestSettings: Record<string, unknown> = {};
-  const proxyServer = process.env['https_proxy'] || process.env['HTTPS_PROXY'];
-  if (proxyServer) {
-    const httpsProxyAgent = HttpsProxyAgent(proxyServer);
-    globalRequestSettings.agent = httpsProxyAgent;
-  }
-
-  const client = new PlatformClient({
-    globalRequestSettings,
-    organizationId,
-    accessToken,
-    host,
-  });
-
   const manifest = await client.searchInterfaces.manifest(pageId, {
     pagePlaceholders: {
       results: '--results--',
