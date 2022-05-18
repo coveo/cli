@@ -2,11 +2,11 @@ import {VaultFetchStrategy, VaultEntryModel} from '@coveord/platform-client';
 import {CliUx} from '@oclif/core';
 import {bold} from 'chalk';
 import dedent from 'ts-dedent';
-import {VaultTransferFunctionsParam} from '.';
 import {SnapshotMissingVaultEntriesFromOriginError} from '../../errors/vaultErrors';
 import {AuthenticatedClient} from '../../platform/authenticatedClient';
 import {Project} from '../../project/project';
-import {VaultEntryAttributes} from '../snapshotReporter';
+import type {VaultEntryAttributes} from '../snapshotReporter';
+import type {VaultTransferFunctionsParam} from './interfaces';
 
 export async function tryTransferFromOrganization({
   reporter,
