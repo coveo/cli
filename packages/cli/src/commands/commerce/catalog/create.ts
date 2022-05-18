@@ -23,6 +23,7 @@ import {
   parseAndGetDocumentBuilderFromJSONDocument,
 } from '@coveo/push-api-client';
 import {PathLike} from 'fs';
+import dedent from 'ts-dedent';
 
 export default class CatalogCreate extends Command {
   public static description = `${bold.bgYellow(
@@ -80,6 +81,7 @@ export default class CatalogCreate extends Command {
     // TODO: Add edit catalog privilege. https://docs.coveo.com/en/2956/coveo-for-commerce/index-commerce-catalog-content-with-the-stream-api#required-privileges
   )
   public async run() {
+    this.printWarningMessage();
     const client = await new AuthenticatedClient().getClient();
     const {fields, objectTypes} = await this.parseDocuments(client);
 
@@ -105,9 +107,7 @@ export default class CatalogCreate extends Command {
       const {metadata, uri} = docBuilder.build();
       if (metadata?.objecttype === undefined) {
         CliUx.ux.warn(
-          `missing ${bold(
-            'objecttype'
-          )} metadata for document ${uri} on file ${docPath}`
+          `missing ${bold('objecttype')} metadata on item ${uri} (${docPath})`
         );
       } else {
         objectTypeValues.add(metadata.objecttype);
@@ -125,7 +125,11 @@ export default class CatalogCreate extends Command {
 
     if (objectTypeValues.size === 0) {
       CliUx.ux.error(
-        `No ${bold('objecttype')} metadata detected while parsing documents`
+        dedent`
+        No ${bold('objecttype')} metadata detected while parsing documents.
+        The ${bold(
+          'objecttype'
+        )} metadata is crucial, as it will be used to identify the item as a product in the index. Ensure this metadata is set on all your items.`
       );
     }
 
@@ -182,6 +186,12 @@ export default class CatalogCreate extends Command {
       catalogConfigurationId: catalogConfiguration.id,
       name: args.name,
     });
+  }
+
+  private printWarningMessage() {
+    CliUx.ux.warn(
+      'The `commerce:catalog:create` command is currently in alpha, use at your own risk'
+    );
   }
 
   private getFieldMappings(): CatalogFieldsMapping {
