@@ -2,7 +2,7 @@ import {CliUx} from '@oclif/core';
 import {Project} from '../project/project';
 import {SnapshotFactory} from './snapshotFactory';
 import {Snapshot, WaitUntilDoneOptions} from './snapshot';
-import {red, green} from 'chalk';
+import {red, green, bold} from 'chalk';
 import {normalize} from 'path';
 import {Config, Configuration} from '../config/config';
 import {
@@ -12,6 +12,7 @@ import {
 import {SnapshotFacade} from './snapshotFacade';
 import {PrintableError} from '../errors/printableError';
 import {SnapshotReporter} from './snapshotReporter';
+import {VaultHandler} from './vaultHandler';
 import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
 
 export interface DryRunOptions {
@@ -120,17 +121,42 @@ export function getMissingVaultEntriesReportHandler(
   cfg: Configuration,
   projectPath?: string
 ) {
-  return function (this: SnapshotReporter) {
-    // TODO CDX-935
-    // TODO CDX-936
+  return async function (this: SnapshotReporter) {
+    // **** Pseudo-code START ****
+    // * prompt if "want to transfer"
+    // * get the organizationId from the project (CDX-915)
+    // * check if vault entries are "transferable". i.e. find missing vault entries from origin org and compare with this.missingVaultEntries (CDX-935)
+    // * if "want to transfer" && "transferable"
+    //      Transfer vault entries from origin to dest org
+    //      return
+    //
+    // * if not "transferable"
+    //      log "Vault entries could not be transfered from origin to destination org"
+    //
+    // * prompt if "want to create vault entries manually"
+    // **** Pseudo-code END ****
+
+    const shouldCreate = await CliUx.ux.confirm(
+      `\nWould you like to create the missing vault entries in the destination organization ${bold.cyan(
+        snapshot.targetId
+      )}? (y/n)`
+    );
+    if (shouldCreate) {
+      const vault = new VaultHandler(snapshot.targetId);
+      await vault.createEntries(Array.from(this.missingVaultEntries));
+      return;
+    }
+
     throw new SnapshotMissingVaultEntriesError(snapshot, cfg, projectPath);
   };
 }
 
 export function handleSnapshotError(err?: Error & {exitCode?: number}) {
+  let message = red.bold('!');
   if (CliUx.ux.action.running && typeof err?.name === 'string') {
-    CliUx.ux.action.stop(err?.name);
+    message += ` ${err?.name}`;
   }
+  CliUx.ux.action.stop(message);
 
   if (err instanceof PrintableError) {
     err.print();

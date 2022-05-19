@@ -11,11 +11,7 @@ import {
 import dedent from 'ts-dedent';
 import {recordable} from '../../utils/record';
 import {ResourceSnapshotType} from '@coveord/platform-client';
-
-type Plurable = [singular: string, plural: string];
-function pluralizeIfNeeded(plurable: Plurable, unprintedMessages: number) {
-  return plurable[unprintedMessages > 1 ? 1 : 0];
-}
+import {Plurable, pluralizeIfNeeded} from '../../utils/string';
 
 export class ReportViewer {
   private static errorPlurable: Plurable = ['error', 'errors'];
@@ -72,14 +68,14 @@ export class ReportViewer {
       );
     return function (this: SnapshotReporter) {
       const entries = Array.from(this.missingVaultEntries).map(
-        (entry) => entry[0]
+        ({vaultEntryId}) => vaultEntryId
       );
       CliUx.ux.log(
         yellow(
           `Missing vault ${pluralizeIfNeeded(
             ReportViewer.entryPlurable,
             entries.length
-          )}:`
+          )} in destination organization:`
         )
       );
       missingVaultEntryPrinter(entries);
@@ -118,7 +114,7 @@ export class ReportViewer {
 
     CliUx.ux.table(recordable(changedResources), {
       resourceName: {
-        header: ReportViewerStyles.header('\nPreviewing resource changes:'),
+        header: ReportViewerStyles.header('\nPreviewing snapshot changes:'),
         get: (resource) => this.createSection(resource),
       },
     });

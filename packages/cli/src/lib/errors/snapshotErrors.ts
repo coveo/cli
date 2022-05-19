@@ -150,8 +150,9 @@ export class SnapshotMissingVaultEntriesError
     public projectPath?: string
   ) {
     super(SeverityLevel.Error);
-    this.message = dedent`Your snapshot is missing some vault entries.
-    Ensure that all entries are present on ${snapshot.targetId} and try again.`;
+    this.message = dedent`Your destination organization is missing vault entries needed by the snapshot ${snapshot.id}.
+    Ensure that all vault entries are present on the organization ${snapshot.targetId} and try again.
+    Visit https://docs.coveo.com/en/m3a90243 for more info on how to create vault entries.`;
 
     trySavingDetailedReport(this);
   }
