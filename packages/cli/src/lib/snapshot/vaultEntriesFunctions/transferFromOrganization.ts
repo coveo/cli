@@ -35,10 +35,10 @@ export async function tryTransferFromOrganization({
   if (!(await authenticatedClient.getUserHasAccessToOrg(originOrgId))) {
     CliUx.ux.warn(dedent`
         We mapped this snapshot to ${bold.cyan(originOrgId)}.
-        If you want to do transfers the vault entries from ${bold.cyan(
+        If you want to transfer the vault entries from ${bold.cyan(
           originOrgId
-        )} and ${bold.cyan(snapshot.targetId)},
-        authenticate with an account that has access to both and then try again.
+        )} to ${bold.cyan(snapshot.targetId)},
+        authenticate with an account that has access to both organizations and then try again.
       `);
     return false;
   }
