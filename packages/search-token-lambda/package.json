@@ -17,7 +17,7 @@
     "release:phase2": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase2-bump-all-packages.mjs"
   },
   "dependencies": {
-    "@coveord/platform-client": "30.6.2",
+    "@coveord/platform-client": "30.7.0",
     "abortcontroller-polyfill": "1.7.3",
     "isomorphic-fetch": "3.0.0"
   },
@@ -29,7 +29,7 @@
     "gts": "3.1.0",
     "jest": "27.5.1",
     "netlify-cli": "10.3.1",
-    "ts-jest": "27.1.4",
+    "ts-jest": "27.1.5",
     "typescript": "4.6.4"
   },
   "publishConfig": {
