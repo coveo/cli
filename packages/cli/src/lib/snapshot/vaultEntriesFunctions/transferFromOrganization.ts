@@ -30,6 +30,7 @@ export async function tryTransferFromOrganization({
   if (!shouldTransfer) {
     return false;
   }
+
   const authenticatedClient = new AuthenticatedClient();
   if (!(await authenticatedClient.getUserHasAccessToOrg(originOrgId))) {
     CliUx.ux.warn(dedent`
@@ -58,6 +59,7 @@ export async function tryTransferFromOrganization({
     );
     return false;
   }
+
   const platformClient = await authenticatedClient.getClient({
     organization: snapshot.targetId,
   });
@@ -113,9 +115,7 @@ function getEntriesMissingFromOrigin(
 ) {
   let missingEntriesFromOrigin = [];
   for (const {vaultEntryId} of missingVaultEntriesFromDestination) {
-    if (originOrgVaultEntries.includes(vaultEntryId)) {
-      continue;
-    } else {
+    if (!originOrgVaultEntries.includes(vaultEntryId)) {
       missingEntriesFromOrigin.push(vaultEntryId);
     }
   }
