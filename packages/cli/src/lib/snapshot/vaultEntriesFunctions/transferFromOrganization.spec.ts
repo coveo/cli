@@ -26,6 +26,7 @@ describe('#tryTransferFromOrganization', () => {
   const mockedCliWarn = jest.mocked(warn);
   const mockedVaultList = jest.fn();
   const mockedVaultImport = jest.fn();
+  const mockedGetClient = jest.fn();
   const mockedGetUserHasAccessToOrg = jest.fn();
   const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 
@@ -51,10 +52,11 @@ describe('#tryTransferFromOrganization', () => {
       () =>
         ({
           getUserHasAccessToOrg: mockedGetUserHasAccessToOrg,
-          getClient: () =>
+          getClient: mockedGetClient.mockImplementation(() =>
             Promise.resolve({
               vault: {list: mockedVaultList, import: mockedVaultImport},
-            } as unknown as PlatformClient),
+            } as unknown as PlatformClient)
+          ),
         } as Partial<AuthenticatedClient> as AuthenticatedClient)
     );
   });
@@ -236,10 +238,23 @@ describe('#tryTransferFromOrganization', () => {
           projectPath: 'somePathYay',
           cfg: {} as Configuration,
         });
+        expect(mockedGetClient).toBeCalledTimes(2);
+        expect(mockedGetClient).toHaveBeenNthCalledWith(
+          1,
+          expect.objectContaining({
+            organization: 'someOriginOrg',
+          })
+        );
+        expect(mockedGetClient).toHaveBeenNthCalledWith(
+          2,
+          expect.objectContaining({
+            organization: 'someTargetId',
+          })
+        );
         expect(mockedVaultImport).toBeCalledTimes(1);
         expect(mockedVaultImport).toBeCalledWith(
           'someSnapshotId',
-          'someTargetId',
+          '',
           'someOriginOrg',
           VaultFetchStrategy.onlyMissing
         );

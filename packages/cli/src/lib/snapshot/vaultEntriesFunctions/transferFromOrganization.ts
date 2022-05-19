@@ -1,6 +1,6 @@
 import {VaultFetchStrategy, VaultEntryModel} from '@coveord/platform-client';
 import {CliUx} from '@oclif/core';
-import {bold} from 'chalk';
+import {bold, green, red} from 'chalk';
 import dedent from 'ts-dedent';
 import {SnapshotMissingVaultEntriesFromOriginError} from '../../errors/vaultErrors';
 import {AuthenticatedClient} from '../../platform/authenticatedClient';
@@ -56,19 +56,24 @@ export async function tryTransferFromOrganization({
     );
     return false;
   }
-  const platformClient = await authenticatedClient.getClient();
+  const platformClient = await authenticatedClient.getClient({
+    organization: snapshot.targetId,
+  });
 
   try {
+    CliUx.ux.action.start('Transfering vault entries');
     await platformClient.vault.import(
       snapshot.id,
-      snapshot.targetId,
+      '', // TODO: after CDX-992 is shipped, remove that.
       originOrgId,
       VaultFetchStrategy.onlyMissing
     );
+    CliUx.ux.action.stop(green('✔'));
     return true;
   } catch (error) {
+    CliUx.ux.action.stop(red.bold('!'));
     CliUx.ux.warn('Error encountered while transfering vault entries`');
-    CliUx.ux.warn(error as string | Error);
+    CliUx.ux.warn(typeof error === 'string' ? error : JSON.stringify(error));
     return false;
   }
 }
