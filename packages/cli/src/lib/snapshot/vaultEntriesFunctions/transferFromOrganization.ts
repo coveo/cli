@@ -23,9 +23,9 @@ export async function tryTransferFromOrganization({
   }
 
   const shouldTransfer = await CliUx.ux.confirm(
-    `\nWould you like to try transfering the vault entries from ${originOrgId} to the destination organization ${bold.cyan(
-      snapshot.targetId
-    )}? (y/n)`
+    `\nWould you like to try transfering the vault entries from ${bold.cyan(
+      originOrgId
+    )} to the destination organization ${bold.cyan(snapshot.targetId)}? (y/n)`
   );
   if (!shouldTransfer) {
     return false;
@@ -33,8 +33,10 @@ export async function tryTransferFromOrganization({
   const authenticatedClient = new AuthenticatedClient();
   if (!(await authenticatedClient.getUserHasAccessToOrg(originOrgId))) {
     CliUx.ux.warn(dedent`
-        We mapped this snapshot to ${originOrgId}.
-        If you want to do transfers the vault entries from ${originOrgId} and ${snapshot.targetId},
+        We mapped this snapshot to ${bold.cyan(originOrgId)}.
+        If you want to do transfers the vault entries from ${bold.cyan(
+          originOrgId
+        )} and ${bold.cyan(snapshot.targetId)},
         authenticate with an account that has access to both and then try again.
       `);
     return false;
@@ -87,7 +89,7 @@ async function getAllVaultEntriesFrom(orgId: string) {
   let totalPages = 0;
   let currentPage = 0;
   do {
-    let result = await client.vault.list({page: currentPage});
+    let result = await client.vault.list({page: currentPage, perPage: 1});
     if (currentPage === 0) {
       totalPages = result.totalPages;
     }
