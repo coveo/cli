@@ -13,9 +13,9 @@ import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels'
 import {
   VaultTransferFunctionsParam,
   tryTransferFromOrganization,
-  tryCreateMissingVaultEntries,
-  throwSnapshotMissingVaultEntriesError,
 } from './vaultEntriesFunctions';
+import {throwSnapshotMissingVaultEntriesError} from './throwSnapshotMissingVaultEntriesError';
+import {tryCreateMissingVaultEntries} from './tryCreateMissingVaultEntries';
 
 export interface DryRunOptions {
   sync?: boolean;
