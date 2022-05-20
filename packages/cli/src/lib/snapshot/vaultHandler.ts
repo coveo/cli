@@ -8,7 +8,7 @@ import {readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
 import open from 'open';
 import {join} from 'path';
 import {cwd} from 'process';
-import {green, bgWhite} from 'chalk';
+import {green, inverse} from 'chalk';
 import {
   InvalidVaultEntryError,
   InvalidVaultFileError,
@@ -45,7 +45,7 @@ export class VaultHandler {
       const key = await CliUx.ux.prompt('', {
         type: 'single',
         required: false,
-        prompt: `\n${bgWhite('Press any key to continue. Press q to abort')}\n`,
+        prompt: `\n${inverse('Press any key to continue. Press q to abort')}\n`,
       });
       if (key === 'q') {
         throw new ProcessAbort();
