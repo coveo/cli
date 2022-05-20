@@ -92,23 +92,20 @@ export default class SourcePushAdd extends Command {
     };
     await source.setSourceStatus(args.sourceId, 'REFRESH');
 
-    try {
-      await source
-        .batchUpdateDocumentsFromFiles(args.sourceId, fileNames, options)
-        .onBatchUpload((data) => this.successMessageOnAdd(data))
-        .onBatchError((data) => this.errorMessageOnAdd(data))
-        .batch();
-      CliUx.ux.action.stop(green('✔'));
-    } catch (err: unknown) {
-      handleAddError(err);
-      CliUx.ux.action.stop(red.bold('!'));
-    } finally {
-      await source.setSourceStatus(args.sourceId, 'IDLE');
-    }
+    await source
+      .batchUpdateDocumentsFromFiles(args.sourceId, fileNames, options)
+      .onBatchUpload((data) => this.successMessageOnAdd(data))
+      .onBatchError((data) => this.errorMessageOnAdd(data))
+      .batch();
+    await source.setSourceStatus(args.sourceId, 'IDLE');
+
+    CliUx.ux.action.stop(green('✔'));
   }
 
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
+    handleAddError(err);
+    CliUx.ux.action.stop(red.bold('!'));
     throw err;
   }
 
