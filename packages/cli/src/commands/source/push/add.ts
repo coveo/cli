@@ -73,12 +73,7 @@ export default class SourcePushAdd extends Command {
   public async run() {
     await this.showDeprecatedFlagWarning();
     const {args, flags} = await this.parse(SourcePushAdd);
-    const {accessToken, organization, environment, region} =
-      await new AuthenticatedClient().cfg.get();
-    const source = new PushSource(accessToken!, organization, {
-      environment,
-      region,
-    });
+    const source = await this.getSource();
 
     CliUx.ux.action.start('Processing files');
 
@@ -90,14 +85,13 @@ export default class SourcePushAdd extends Command {
         ? BuiltInTransformers.toLowerCase
         : BuiltInTransformers.identity,
     };
-    await source.setSourceStatus(args.sourceId, 'REFRESH');
 
+    await source.setSourceStatus(args.sourceId, 'REFRESH');
     await source
       .batchUpdateDocumentsFromFiles(args.sourceId, fileNames, options)
       .onBatchUpload((data) => this.successMessageOnAdd(data))
       .onBatchError((data) => this.errorMessageOnAdd(data))
       .batch();
-    await source.setSourceStatus(args.sourceId, 'IDLE');
 
     CliUx.ux.action.stop(green('✔'));
   }
@@ -107,6 +101,21 @@ export default class SourcePushAdd extends Command {
     handleAddError(err);
     CliUx.ux.action.stop(red.bold('!'));
     throw err;
+  }
+
+  public async finally() {
+    const {args} = await this.parse(SourcePushAdd);
+    const source = await this.getSource();
+    await source.setSourceStatus(args.sourceId, 'IDLE');
+  }
+
+  public async getSource() {
+    const {accessToken, organization, environment, region} =
+      await new AuthenticatedClient().cfg.get();
+    return new PushSource(accessToken!, organization, {
+      environment,
+      region,
+    });
   }
 
   private successMessageOnAdd({batch, files, res}: UploadBatchCallbackData) {
