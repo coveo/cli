@@ -6,6 +6,11 @@ import {pluralizeIfNeeded} from '../utils/string';
 import dedent from 'ts-dedent';
 
 const allowedCharRegExp = new RegExp('^[a-z]+[a-z0-9_]*$');
+interface PrintableUnsupportedField {
+  original: string;
+  normalized: string;
+  valid: boolean;
+}
 
 export const handleAddError = (err: unknown) => {
   const {UnsupportedFieldError} = errors;
@@ -13,48 +18,54 @@ export const handleAddError = (err: unknown) => {
     CliUx.ux.error('Invalid field name detected while parsing your data.', {
       exit: false,
     });
-    const normalizations = err.unsupportedFields.map(
-      ([original, transformed]) => {
-        const normalized = BuiltInTransformers.toLowerCase(transformed);
-        return {
-          original,
-          normalized,
-          valid: isFieldNameValid(normalized),
-        };
-      }
-    );
+    const normalizations = getNormalizations(err.unsupportedFields);
+    const fixables = normalizations.flatMap(colorizeFixableField);
+    const unfixables = normalizations.flatMap(colorizeUnFixableField);
+    const isFixable = unfixables.length === 0;
 
-    const fixable = normalizations
-      .filter(({valid}) => valid)
-      .map((field) => {
-        field.normalized = green(field.normalized);
-        return field;
-      });
-
-    const unfixable = normalizations
-      .filter(({valid}) => !valid)
-      .map((field) => {
-        const normalized =
-          field.normalized === ''
-            ? dim('(empty field name)')
-            : red(field.normalized);
-        field.normalized = normalized;
-        return field;
-      });
-
-    printInvalidFieldTable(fixable);
-    printInvalidFieldTable(unfixable);
-
-    const normalizeFlag = Object.keys(normalizeInvalidFields())[0];
-    let message = `Run the same command using the \`--${normalizeFlag}\` flag to automatically normalize field names while pushing your data.`;
-    if (unfixable.length > 0) {
-      message = dedent`Cannot normalize some of the invalid field names detected in your data
-      Review your data and ensure all field names as shown in the second table have at least one alphabetic character.`;
-    }
-    logNewLine(2);
-    CliUx.ux.error(message, {exit: false});
-    logNewLine();
+    printInvalidFieldTable(fixables);
+    printInvalidFieldTable(unfixables);
+    printErrorMessage(isFixable);
   }
+};
+
+const printErrorMessage = (isFixable: boolean) => {
+  const normalizeFlag = Object.keys(normalizeInvalidFields())[0];
+  let message = `Run the same command using the \`--${normalizeFlag}\` flag to automatically normalize field names while pushing your data.`;
+  if (!isFixable) {
+    message = dedent`Cannot normalize some of the invalid field names detected in your data
+      Review your data and ensure all field names as shown in the second table have at least one alphabetic character.`;
+  }
+  logNewLine(2);
+  CliUx.ux.error(message, {exit: false});
+  logNewLine();
+};
+
+const colorizeFixableField = (
+  field: PrintableUnsupportedField
+): PrintableUnsupportedField | [] => {
+  return field.valid ? {...field, normalized: green(field.normalized)} : [];
+};
+
+const colorizeUnFixableField = (
+  field: PrintableUnsupportedField
+): PrintableUnsupportedField | [] => {
+  const normalized =
+    field.normalized === '' ? dim('(empty field name)') : red(field.normalized);
+  return !field.valid ? {...field, normalized} : [];
+};
+
+const getNormalizations = (
+  unsupportedFields: [string, string][]
+): PrintableUnsupportedField[] => {
+  return unsupportedFields.map(([original, transformed]) => {
+    const normalized = BuiltInTransformers.toLowerCase(transformed);
+    return {
+      original,
+      normalized,
+      valid: isFieldNameValid(normalized),
+    };
+  });
 };
 
 const printInvalidFieldTable = (fields: {valid: boolean}[]) => {
