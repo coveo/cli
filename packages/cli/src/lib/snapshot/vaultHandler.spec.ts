@@ -90,6 +90,11 @@ describe('VaultHandler', () => {
       );
     });
 
+    it('#createEntries should prompt instructions for the user', () => {
+      expect(mockedPrompt).toBeCalledTimes(1);
+      expect(mockedPrompt.mock.lastCall).toMatchSnapshot();
+    });
+
     it('#createEntries should send as many requests as there is entries to create', () => {
       expect(mockedCreate).toHaveBeenCalledTimes(2);
     });
