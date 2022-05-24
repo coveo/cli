@@ -37,6 +37,12 @@ describe('ui:create:atomic', () => {
       projectName
     );
 
+    await buildTerminal
+      .when(/Use an existing hosted search page/)
+      .on('stdout')
+      .do(answerPrompt(EOL))
+      .once();
+
     const buildTerminalExitPromise = Promise.race([
       buildTerminal.when('exit').on('process').do().once(),
       buildTerminal
