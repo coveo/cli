@@ -22,7 +22,7 @@ $ npm install -g @coveo/cli
 $ coveo COMMAND
 running command...
 $ coveo (-v|--version|version)
-@coveo/cli/1.28.0 linux-x64 node-v16.15.0
+@coveo/cli/1.28.1 linux-x64 node-v16.15.0
 $ coveo --help [COMMAND]
 USAGE
   $ coveo COMMAND
@@ -85,7 +85,7 @@ EXAMPLE
   $ coveo auth:login
 ```
 
-_See code: [src/commands/auth/login.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/auth/login.ts)_
+_See code: [src/commands/auth/login.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/auth/login.ts)_
 
 ## `coveo auth:token`
 
@@ -109,7 +109,7 @@ EXAMPLE
   $ coveo auth:token
 ```
 
-_See code: [src/commands/auth/token.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/auth/token.ts)_
+_See code: [src/commands/auth/token.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/auth/token.ts)_
 
 ## `coveo config:get [KEY]`
 
@@ -128,7 +128,7 @@ EXAMPLES
   $ coveo config:get accessToken
 ```
 
-_See code: [src/commands/config/get.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/config/get.ts)_
+_See code: [src/commands/config/get.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/config/get.ts)_
 
 ## `coveo config:set`
 
@@ -148,7 +148,7 @@ OPTIONS
   -r, --region=US|EU|AU                The Coveo Platform region to log in to. See <https://docs.coveo.com/en/2976>.
 ```
 
-_See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/config/set.ts)_
+_See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/config/set.ts)_
 
 ## `coveo help [COMMAND]`
 
@@ -182,7 +182,7 @@ OPTIONS
   -s, --[no-]setDefaultOrganization  Set the created organization as the default one
 ```
 
-_See code: [src/commands/org/create.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/org/create.ts)_
+_See code: [src/commands/org/create.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/org/create.ts)_
 
 ## `coveo org:list`
 
@@ -203,7 +203,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/org/list.ts)_
+_See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/org/list.ts)_
 
 ## `coveo org:resources:list`
 
@@ -234,7 +234,7 @@ OPTIONS
   --sort=sort                                   property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/org/resources/list.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/org/resources/list.ts)_
+_See code: [src/commands/org/resources/list.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/org/resources/list.ts)_
 
 ## `coveo org:resources:model:create`
 
@@ -245,7 +245,7 @@ USAGE
   $ coveo org:resources:model:create
 ```
 
-_See code: [src/commands/org/resources/model/create.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/org/resources/model/create.ts)_
+_See code: [src/commands/org/resources/model/create.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/org/resources/model/create.ts)_
 
 ## `coveo org:resources:monitor SNAPSHOTID`
 
@@ -267,7 +267,7 @@ OPTIONS
                                                 wait indefinitely.
 ```
 
-_See code: [src/commands/org/resources/monitor.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/org/resources/monitor.ts)_
+_See code: [src/commands/org/resources/monitor.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/org/resources/monitor.ts)_
 
 ## `coveo org:resources:preview`
 
@@ -300,7 +300,7 @@ OPTIONS
                                                 and snapshot resources.
 ```
 
-_See code: [src/commands/org/resources/preview.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/org/resources/preview.ts)_
+_See code: [src/commands/org/resources/preview.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/org/resources/preview.ts)_
 
 ## `coveo org:resources:pull`
 
@@ -338,7 +338,7 @@ OPTIONS
                                                 wait indefinitely.
 ```
 
-_See code: [src/commands/org/resources/pull.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/org/resources/pull.ts)_
+_See code: [src/commands/org/resources/pull.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/org/resources/pull.ts)_
 
 ## `coveo org:resources:push`
 
@@ -369,7 +369,7 @@ OPTIONS
                                                 and snapshot resources.
 ```
 
-_See code: [src/commands/org/resources/push.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/org/resources/push.ts)_
+_See code: [src/commands/org/resources/push.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/org/resources/push.ts)_
 
 ## `coveo org:search:dump`
 
@@ -402,7 +402,7 @@ OPTIONS
                                            included.
 ```
 
-_See code: [src/commands/org/search/dump.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/org/search/dump.ts)_
+_See code: [src/commands/org/search/dump.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/org/search/dump.ts)_
 
 ## `coveo source:catalog:add SOURCEID`
 
@@ -445,7 +445,7 @@ OPTIONS
       Do not check whether a full catalog upload was triggered on the target source.
 ```
 
-_See code: [src/commands/source/catalog/add.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/source/catalog/add.ts)_
+_See code: [src/commands/source/catalog/add.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/source/catalog/add.ts)_
 
 ## `coveo source:catalog:new NAME`
 
@@ -464,7 +464,7 @@ OPTIONS
                                                    https://docs.coveo.com/en/1779/index-content/content-security
 ```
 
-_See code: [src/commands/source/catalog/new.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/source/catalog/new.ts)_
+_See code: [src/commands/source/catalog/new.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/source/catalog/new.ts)_
 
 ## `coveo source:list`
 
@@ -485,7 +485,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/source/list.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/source/list.ts)_
+_See code: [src/commands/source/list.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/source/list.ts)_
 
 ## `coveo source:push:add SOURCEID`
 
@@ -512,7 +512,7 @@ OPTIONS
                                      to store data of inconsistent type across documents.
 ```
 
-_See code: [src/commands/source/push/add.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/source/push/add.ts)_
+_See code: [src/commands/source/push/add.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/source/push/add.ts)_
 
 ## `coveo source:push:delete SOURCEID`
 
@@ -540,7 +540,7 @@ OPTIONS
       `source:push:batch` command instead.
 ```
 
-_See code: [src/commands/source/push/delete.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/source/push/delete.ts)_
+_See code: [src/commands/source/push/delete.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/source/push/delete.ts)_
 
 ## `coveo source:push:list`
 
@@ -561,7 +561,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/source/push/list.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/source/push/list.ts)_
+_See code: [src/commands/source/push/list.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/source/push/list.ts)_
 
 ## `coveo source:push:new NAME`
 
@@ -580,7 +580,7 @@ OPTIONS
                                                    https://docs.coveo.com/en/1779/index-content/content-security
 ```
 
-_See code: [src/commands/source/push/new.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/source/push/new.ts)_
+_See code: [src/commands/source/push/new.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/source/push/new.ts)_
 
 ## `coveo ui:create:angular NAME`
 
@@ -598,7 +598,7 @@ OPTIONS
   -v, --version=version  [default: 1.28.0] The version of @coveo/angular to use.
 ```
 
-_See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/ui/create/angular.ts)_
+_See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/ui/create/angular.ts)_
 
 ## `coveo ui:create:atomic NAME`
 
@@ -612,13 +612,13 @@ ARGUMENTS
   NAME  The name of the application to create.
 
 OPTIONS
-  -v, --version=version  [default: 1.27.1] The version of @coveo/create-atomic to use.
+  -v, --version=version  [default: 1.28.0] The version of @coveo/create-atomic to use.
 
 EXAMPLE
   $ coveo ui:create:atomic myapp
 ```
 
-_See code: [src/commands/ui/create/atomic.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/ui/create/atomic.ts)_
+_See code: [src/commands/ui/create/atomic.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/ui/create/atomic.ts)_
 
 ## `coveo ui:create:react NAME`
 
@@ -639,7 +639,7 @@ EXAMPLES
   $ coveo ui:create:react --help
 ```
 
-_See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/ui/create/react.ts)_
+_See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/ui/create/react.ts)_
 
 ## `coveo ui:create:vue NAME`
 
@@ -658,14 +658,14 @@ OPTIONS
                          For more information about Vue CLI presets, see
                          https://cli.vuejs.org/guide/plugins-and-presets.html#presets.
 
-  -v, --version=version  [default: 1.27.1] The version of @coveo/vue-cli-plugin-typescript to use.
+  -v, --version=version  [default: 1.28.1] The version of @coveo/vue-cli-plugin-typescript to use.
 
 EXAMPLES
   $ coveo ui:create:vue --preset path/to/my/preset.json
   $ coveo ui:create:vue --help
 ```
 
-_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v1.28.0/packages/cli/src/commands/ui/create/vue.ts)_
+_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/ui/create/vue.ts)_
 
 ## `coveo update [CHANNEL]`
 
