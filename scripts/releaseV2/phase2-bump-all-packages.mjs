@@ -25,7 +25,7 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
   const commits = getCommits(PATH, lastTag)[0];
   const newVersion = getReleaseVersion();
 
-  await updateWorkspaceDependencies();
+  await updateWorkspaceDependencies(newVersion);
   npmBumpVersion(newVersion, PATH);
 
   if (isPrivatePackage()) {
@@ -51,11 +51,14 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
   const packageJson = JSON.parse(
     readFileSync('package.json', {encoding: 'utf-8'})
   );
-  await retry(() => {
-    if (!isVersionPublished(packageJson.name, newVersion)) {
-      throw 'Version not available';
-    }
-  });
+  await retry(
+    async () => {
+      if (!isVersionPublished(packageJson.name, newVersion)) {
+        throw 'Version not available';
+      }
+    },
+    {retries: 50, maxTimeout: 90e3}
+  );
 })();
 
 function getReleaseVersion() {
@@ -65,7 +68,7 @@ function getReleaseVersion() {
 }
 
 // TODO [PRE_NX]: Clean  this mess.
-async function updateWorkspaceDependencies() {
+async function updateWorkspaceDependencies(version) {
   const topology = JSON.parse(
     readFileSync(join(rootFolder, 'topology.json'), {encoding: 'utf-8'})
   );
@@ -78,11 +81,11 @@ async function updateWorkspaceDependencies() {
     .map((dependency) => `@coveo/${dependency.target}`);
   await waitForPackages(dependencies);
   dependencies.forEach((dependency) =>
-    updateDependency(packageJson, dependency)
+    updateDependency(packageJson, dependency, version)
   );
 }
 
-function updateDependency(packageJson, dependency) {
+function updateDependency(packageJson, dependency, version) {
   const npmInstallFlags = [];
   if (Object.hasOwn(packageJson.dependencies ?? {}, dependency)) {
     ('-P');
@@ -95,13 +98,13 @@ function updateDependency(packageJson, dependency) {
   }
   spawnSync(appendCmdIfWindows`npm`, [
     'install',
-    `${dependency}@latest`,
+    `${dependency}@${version}`,
     '-E',
     ...npmInstallFlags,
   ]);
 }
 
-async function isVersionPublished(packageName, version) {
+function isVersionPublished(packageName, version) {
   return (
     spawnSync(
       appendCmdIfWindows`npm`,
