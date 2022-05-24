@@ -60,7 +60,11 @@
   "package_rollout": {
     "only_consider_changesets_after": "591040c6568cce03b031c3059cd4d4de87de8d7c",
     "jira_issues_discovery": {
-      "stop_after_first_issue": true
+      "stop_after_first_issue": true,
+      "branch_name": false,
+      "commit_message": false,
+      "pull_request_title": true,
+      "pull_request_description": true
     }
   }
 }
