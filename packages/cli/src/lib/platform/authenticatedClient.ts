@@ -64,6 +64,12 @@ export class AuthenticatedClient {
       enabled: true,
       privileges: [
         {targetDomain: 'IMPERSONATE', targetId: '*', owner: 'SEARCH_API'},
+        {
+          targetDomain: 'SEARCH_PAGES',
+          targetId: '*',
+          owner: 'SEARCH_API',
+          type: 'VIEW',
+        },
       ],
     });
   }
