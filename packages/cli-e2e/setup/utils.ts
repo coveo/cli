@@ -200,6 +200,7 @@ const registryEnv = process.env.E2E_USE_NPM_REGISTRY
   : {
       npm_config_registry: 'http://localhost:4873',
       YARN_NPM_REGISTRY_SERVER: 'http://localhost:4873',
+      YARN_REGISTRY: 'http://localhost:4873',
     };
 
 export function getCleanEnv(): Record<string, any> {
