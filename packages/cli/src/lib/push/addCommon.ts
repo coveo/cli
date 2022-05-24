@@ -92,6 +92,6 @@ const logNewLine = (lines = 1) => {
   CliUx.ux.log(new Array(lines).fill('\n').join(''));
 };
 
-export const isFieldNameValid = (fieldName: string): boolean => {
+const isFieldNameValid = (fieldName: string): boolean => {
   return allowedCharRegExp.test(fieldName.toLowerCase());
 };
