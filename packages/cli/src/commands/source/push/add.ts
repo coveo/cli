@@ -24,7 +24,7 @@ import {
   withMaxConcurrent,
 } from '../../../lib/flags/sourceCommonFlags';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {handleAddError, isFieldNameValid} from '../../../lib/push/addCommon';
+import {handleAddError} from '../../../lib/push/addCommon';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
 import {getFileNames} from '../../../lib/utils/file';
 
