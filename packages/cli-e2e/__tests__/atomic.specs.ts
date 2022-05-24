@@ -94,7 +94,7 @@ describe('ui:create:atomic', () => {
     return existsSync(join(getProjectPath(projectName), ...path.split('/')));
   }
 
-  describe('creating template files...', () => {
+  describe('validating files', () => {
     const createdFilesPaths = [
       'package.json',
       'package-lock.json',
@@ -111,11 +111,9 @@ describe('ui:create:atomic', () => {
       'src/html.d.ts',
       'src/components.d.ts',
       'src/style/index.css',
-      'src/style/layout.css',
-      'src/style/theme.css',
       'src/pages/index.html',
       'src/components/results-manager/results-manager.tsx',
-      'src/components/results-manager/default.html',
+      'src/components/results-manager/template-1.html',
       'src/components/sample-component/sample-component.tsx',
       'src/components/sample-component/sample-component.css',
       'src/components/sample-result-component/sample-result-component.tsx',
@@ -123,21 +121,20 @@ describe('ui:create:atomic', () => {
     ];
 
     createdFilesPaths.forEach((path) => {
-      it(`file ${path} should exist`, () =>
+      it(`should create the "${path}" file or directory`, () =>
         expect(projectFileExist(path)).toBe(true));
     });
-  });
 
-  it.skip('should remove the proper template files', () => {
     const deletedFilesPaths = [
       'scripts/clean-up.js',
       'scripts/setup-lamdba.js',
       'scripts/utils.js',
     ];
 
-    deletedFilesPaths.forEach((path) =>
-      expect(projectFileExist(path)).toBe(false)
-    );
+    deletedFilesPaths.forEach((path) => {
+      it(`should delete the "${path}" file or directory`, () =>
+        expect(projectFileExist(path)).toBe(false));
+    });
   });
 
   afterEach(async () => {
