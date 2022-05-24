@@ -127,7 +127,7 @@ describe('ui:create:atomic', () => {
     );
   });
 
-  it('should remove the proper template files', () => {
+  it.skip('should remove the proper template files', () => {
     const deletedFilesPaths = [
       'scripts/clean-up.js',
       'scripts/setup-lamdba.js',
@@ -151,7 +151,7 @@ describe('ui:create:atomic', () => {
     );
   });
 
-  describe('when the project is configured correctly', () => {
+  describe.skip('when the project is configured correctly', () => {
     let serverProcessManager: ProcessManager;
     let interceptedRequests: HTTPRequest[] = [];
     let consoleInterceptor: BrowserConsoleInterceptor;
@@ -221,7 +221,7 @@ describe('ui:create:atomic', () => {
     }, 60e3);
   });
 
-  describe('when the default Stencil port is busy', () => {
+  describe.skip('when the default Stencil port is busy', () => {
     let dummyServer: DummyServer;
     let serverProcessManager: ProcessManager;
 
