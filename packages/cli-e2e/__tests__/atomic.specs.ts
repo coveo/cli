@@ -94,7 +94,7 @@ describe('ui:create:atomic', () => {
     return existsSync(join(getProjectPath(projectName), ...path.split('/')));
   }
 
-  it('should create the proper template files', () => {
+  describe('creating template files...', () => {
     const createdFilesPaths = [
       'package.json',
       'package-lock.json',
@@ -122,9 +122,10 @@ describe('ui:create:atomic', () => {
       'src/components/sample-result-component/sample-result-component.css',
     ];
 
-    createdFilesPaths.forEach((path) =>
-      expect(projectFileExist(path)).toBe(true)
-    );
+    createdFilesPaths.forEach((path) => {
+      it(`file ${path} should exist`, () =>
+        expect(projectFileExist(path)).toBe(true));
+    });
   });
 
   it.skip('should remove the proper template files', () => {

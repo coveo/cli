@@ -147,15 +147,14 @@ jobs:
       matrix:
         os: ['ubuntu-latest', 'windows-latest']
         node: [16]
-        spec:
-          [
-            'angular.specs.ts',
+        spec: [
+            # 'angular.specs.ts',
             'atomic.specs.ts',
-            'auth.specs.ci.ts',
-            'orgList.specs.ts',
-            'orgResources.specs.ts',
-            'react.specs.ts',
-            'vue.specs.ts',
+            # 'auth.specs.ci.ts',
+            # 'orgList.specs.ts',
+            # 'orgResources.specs.ts',
+            # 'react.specs.ts',
+            # 'vue.specs.ts',
           ]
     env:
       # Platform environment to log into for the e2e tests.
