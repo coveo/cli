@@ -13,9 +13,6 @@ import {loginWithApiKey} from '../utils/login';
 import {existsSync} from 'fs-extra';
 import {join} from 'path';
 
-// TODO: CDX-969 use page id
-const searchPageId = '85fe78b4-2e10-4ed9-a0b7-664f5d23887d';
-
 describe('ui:create:atomic', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
@@ -38,8 +35,6 @@ describe('ui:create:atomic', () => {
       processManager,
       'ui:create:atomic',
       projectName
-      // TODO: CDX-969 use page id
-      // {flags: ['--pageId', searchPageId]}
     );
 
     const buildTerminalPagePromptPromise = buildTerminal
