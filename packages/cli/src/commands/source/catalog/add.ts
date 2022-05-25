@@ -27,7 +27,7 @@ import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
 import {getFileNames} from '../../../lib/utils/file';
 import {bold} from 'chalk';
 import dedent from 'ts-dedent';
-import {handleAddError} from '../../../lib/push/addCommon';
+import {formatErrorMessage} from '../../../lib/push/addCommon';
 
 const fullUploadDescription = `Controls the way your items are added to your catalog source.
 
@@ -125,7 +125,7 @@ export default class SourceCatalogAdd extends Command {
 
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
-    handleAddError(err);
+    formatErrorMessage(err);
     CliUx.ux.action.stop(red.bold('!'));
     throw err;
   }

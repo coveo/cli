@@ -24,7 +24,7 @@ import {
   withMaxConcurrent,
 } from '../../../lib/flags/sourceCommonFlags';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {handleAddError} from '../../../lib/push/addCommon';
+import {formatErrorMessage} from '../../../lib/push/addCommon';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
 import {getFileNames} from '../../../lib/utils/file';
 
@@ -98,7 +98,7 @@ export default class SourcePushAdd extends Command {
 
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
-    handleAddError(err);
+    formatErrorMessage(err);
     CliUx.ux.action.stop(red.bold('!'));
     throw err;
   }

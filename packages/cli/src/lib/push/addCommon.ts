@@ -12,12 +12,9 @@ interface PrintableUnsupportedField {
   valid: boolean;
 }
 
-export const handleAddError = (err: unknown) => {
+export const formatErrorMessage = (err: unknown) => {
   const {UnsupportedFieldError} = errors;
   if (err instanceof UnsupportedFieldError) {
-    CliUx.ux.error('Invalid field name detected while parsing your data.', {
-      exit: false,
-    });
     const normalizations = getNormalizations(err.unsupportedFields);
     const fixables = normalizations.flatMap(colorizeFixableField);
     const unfixables = normalizations.flatMap(colorizeUnFixableField);
@@ -25,20 +22,18 @@ export const handleAddError = (err: unknown) => {
 
     printInvalidFieldTable(fixables);
     printInvalidFieldTable(unfixables);
-    printErrorMessage(isFixable);
+    err.message = getFormattedMessage(isFixable);
   }
 };
 
-const printErrorMessage = (isFixable: boolean) => {
+const getFormattedMessage = (isFixable: boolean) => {
   const normalizeFlag = Object.keys(normalizeInvalidFields())[0];
   let message = `Run the same command using the \`--${normalizeFlag}\` flag to automatically normalize field names while pushing your data.`;
   if (!isFixable) {
     message = dedent`Cannot normalize some of the invalid field names detected in your data
       Review your data and ensure all field names as shown in the second table have at least one alphabetic character.`;
   }
-  logNewLine(2);
-  CliUx.ux.error(message, {exit: false});
-  logNewLine();
+  return message;
 };
 
 const colorizeFixableField = (
@@ -76,7 +71,6 @@ const printInvalidFieldTable = (fields: {valid: boolean}[]) => {
   }
 
   const fixable = fields[0].valid;
-  logNewLine();
   CliUx.ux.log(
     ` ${count} ${pluralized} detected in your data can${
       fixable ? '' : 'not'
@@ -86,10 +80,13 @@ const printInvalidFieldTable = (fields: {valid: boolean}[]) => {
     original: {header: 'Original'},
     normalized: {header: 'Normalized'},
   });
+  logNewLine();
 };
 
 const logNewLine = (lines = 1) => {
-  CliUx.ux.log(new Array(lines).fill('\n').join(''));
+  for (let i = 0; i < lines; i++) {
+    CliUx.ux.log('');
+  }
 };
 
 const isFieldNameValid = (fieldName: string): boolean => {
