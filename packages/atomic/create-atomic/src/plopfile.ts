@@ -86,7 +86,7 @@ export default async function (plop: NodePlopAPI) {
         // Custom type necessary to allow bypassing async choices
         type: 'customList',
         name: 'page-id',
-        default: '',
+        default: undefined,
         loop: false,
         pageSize: 10,
         message:
@@ -125,7 +125,7 @@ export default async function (plop: NodePlopAPI) {
         },
         async function downloadSearchPage(data) {
           const plopData = data as PlopData;
-          if (plopData['page-id'] === '') {
+          if (!plopData['page-id']) {
             plopData.page = defaultPageManifest;
             return '';
           }
