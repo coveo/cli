@@ -100,7 +100,7 @@ describe('ui:create:atomic', () => {
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
     await buildProcessManager.killAllProcesses();
-  }, 15 * 60e3);
+  }, 60e3);
 
   beforeEach(async () => {
     jest.resetModules();
