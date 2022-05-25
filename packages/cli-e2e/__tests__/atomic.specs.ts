@@ -13,6 +13,9 @@ import {loginWithApiKey} from '../utils/login';
 import {existsSync} from 'fs-extra';
 import {join} from 'path';
 
+// TODO: CDX-969 use page id
+const searchPageId = '85fe78b4-2e10-4ed9-a0b7-664f5d23887d';
+
 describe('ui:create:atomic', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
@@ -35,13 +38,22 @@ describe('ui:create:atomic', () => {
       processManager,
       'ui:create:atomic',
       projectName
+      // TODO: CDX-969 use page id
+      // {flags: ['--pageId', searchPageId]}
     );
 
-    await buildTerminal
+    const buildTerminalPagePromptPromise = buildTerminal
       .when(/Use an existing hosted search page/)
       .on('stdout')
       .do(answerPrompt(EOL))
       .once();
+
+    const answerYes = answerPrompt(`y${EOL}`);
+    await buildTerminal
+      .when(/\(y\)/)
+      .on('stderr')
+      .do(answerYes)
+      .until(buildTerminalPagePromptPromise);
 
     const buildTerminalExitPromise = Promise.race([
       buildTerminal.when('exit').on('process').do().once(),
@@ -55,7 +67,7 @@ describe('ui:create:atomic', () => {
     await buildTerminal
       .when(/\(y\)/)
       .on('stderr')
-      .do(answerPrompt(`y${EOL}`))
+      .do(answerYes)
       .until(buildTerminalExitPromise);
   };
 

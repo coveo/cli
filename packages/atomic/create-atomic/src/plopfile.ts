@@ -94,54 +94,33 @@ export default async function (plop: NodePlopAPI) {
         choices: async function (answers: PlopData) {
           initPlatformClient(answers);
           return [
-            {value: '', name: 'Start from scratch'},
+            {value: undefined, name: 'Start from scratch'},
             {type: 'separator'},
             ...(await listSearchPagesOptions(platformClient)),
           ];
         },
         validate: async (input, answers: PlopData) => {
-          initPlatformClient(answers);
-          const pageExists = !!(
-            await listSearchPagesOptions(platformClient)
-          ).find((page) => page.value === input);
+          try {
+            initPlatformClient(answers);
+            answers.page = await fetchPageManifest(platformClient, input);
 
-          if (pageExists) {
             return true;
+          } catch (error) {
+            return `The search page with the id "${input}" does not exist.`;
           }
-
-          return `The search page with the id "${input}" does not exist.`;
         },
       } as PromptQuestion,
     ],
     actions: function () {
       return [
-        function downloadSearchPagePrompt(data) {
+        function pageInfo(data) {
           const plopData = data as PlopData;
-          if (plopData['page-id'] !== '') {
-            return 'Downloading Hosted Search Page';
+          if (plopData.page) {
+            return `Hosted search page "${plopData.page.config.title} has been downloaded`;
           }
 
-          return '';
-        },
-        async function downloadSearchPage(data) {
-          const plopData = data as PlopData;
-          if (!plopData['page-id']) {
-            plopData.page = defaultPageManifest;
-            return '';
-          }
-
-          try {
-            plopData.page = await fetchPageManifest(
-              platformClient,
-              plopData['page-id']!
-            );
-
-            return `Hosted search page "${plopData.page.config.title}" downloaded`;
-          } catch (error) {
-            throw new Error(
-              `There was an error downloading search page with id "${plopData['page-id']}" from the organization "${plopData['org-id']}": ${error}`
-            );
-          }
+          plopData.page = defaultPageManifest;
+          return 'Using the default search page template.';
         },
         {
           type: 'add',
