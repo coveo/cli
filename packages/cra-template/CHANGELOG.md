@@ -1,3 +1,10 @@
+# 1.28.0 (2022-05-24)
+
+### Bug Fixes
+
+- **deps:** update all dependencies j:cdx-227 ([#765](https://github.com/coveo/cli/issues/765)) ([e5524a4](https://github.com/coveo/cli/commits/e5524a4d1dab8b0c71fb94a2b654c79e2c961419))
+- **react:** add null check on `root` ([#782](https://github.com/coveo/cli/issues/782)) ([cf8a3d9](https://github.com/coveo/cli/commits/cf8a3d98d4926f9c88d40255112f06193366cd97))
+
 ## 1.27.1 (2022-04-20)
 
 ### Bug Fixes

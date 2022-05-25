@@ -29,6 +29,7 @@ const mockedConfig = jest.mocked(Config);
 const mockedProject = jest.mocked(Project);
 const mockedConfigGet = jest.fn();
 const mockedDeleteTemporaryZipFile = jest.fn();
+const mockedGetResourceManifest = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
 const mockedSaveDetailedReport = jest.fn();
 const mockedAreResourcesInError = jest.fn();
@@ -48,6 +49,7 @@ const mockProject = () => {
         compressResources: () =>
           Promise.resolve(normalize(join('path', 'to', 'resources.zip'))),
         deleteTemporaryZipFile: mockedDeleteTemporaryZipFile,
+        getResourceManifest: mockedGetResourceManifest,
       } as unknown as Project)
   );
 };
