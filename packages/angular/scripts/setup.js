@@ -33,7 +33,7 @@ async function copyCollection(srcDir, destDir) {
 const srcDir = './src';
 const destDir = './dist';
 
-await Promise.all([
+Promise.all([
   copySchema(srcDir, destDir),
   copyFiles(srcDir, destDir),
   copyCollection(srcDir, destDir),
