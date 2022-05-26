@@ -9,6 +9,7 @@ import {
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,
+  viewSearchPagesPrivilege,
 } from '../../../lib/decorators/preconditions/platformPrivilege';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {spawnProcess} from '../../../lib/utils/process';
@@ -53,7 +54,11 @@ export default class Atomic extends Command {
     IsAuthenticated(),
     IsNpxInstalled(),
     IsNodeVersionInRange(Atomic.requiredNodeVersion),
-    HasNecessaryCoveoPrivileges(createApiKeyPrivilege, impersonatePrivilege)
+    HasNecessaryCoveoPrivileges(
+      createApiKeyPrivilege,
+      impersonatePrivilege,
+      viewSearchPagesPrivilege
+    )
   )
   public async run() {
     await this.createProject();

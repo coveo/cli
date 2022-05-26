@@ -199,7 +199,7 @@ describe('ui:create:atomic', () => {
         1,
         expect.stringContaining('npx'),
         [
-          `${createAtomicPackage}`,
+          `${createAtomicPackage}@1.0.0`,
           '--project',
           'myapp',
           '--org-id',
