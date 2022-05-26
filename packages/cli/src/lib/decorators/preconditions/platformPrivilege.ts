@@ -35,6 +35,22 @@ See https://docs.coveo.com/en/1707/#impersonate-domain-1.`
       : 'You are not authorized to create an API Key with the Impersonate privilege. Please contact an administrator of your Coveo organization and ask for that privilege.  See https://docs.coveo.com/en/1707/#impersonate-domain-1.',
 };
 
+export const viewSearchPagesPrivilege: PlatformPrivilege = {
+  models: [
+    {
+      owner: 'SEARCH_API',
+      targetDomain: 'VIEW',
+      targetId: '*',
+      type: 'VIEW',
+    },
+  ],
+  unsatisfiedConditionMessage: (anonymous: boolean) =>
+    anonymous
+      ? `Your access token is missing the View search pages privilege. Make sure to grant this privilege to your API key before running the command again.
+See https://docs.coveo.com/en/1707/manage-an-organization/privilege-reference#search-pages-domain.`
+      : 'You are not authorized to create an API Key with the View search pages privilege. Please contact an administrator of your Coveo organization and ask for that privilege.  See https://docs.coveo.com/en/1707/manage-an-organization/privilege-reference#search-pages-domain.',
+};
+
 export const readSnapshotPrivilege: PlatformPrivilege = {
   models: [
     {
