@@ -20,7 +20,7 @@ import {
   withFiles,
   withCreateMissingFields,
   withMaxConcurrent,
-  normalizeInvalidFields,
+  withNormalizeInvalidFields,
 } from '../../../lib/flags/sourceCommonFlags';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
@@ -49,7 +49,7 @@ export default class SourceCatalogAdd extends Command {
     ...withFiles(),
     ...withMaxConcurrent(),
     ...withCreateMissingFields(),
-    ...normalizeInvalidFields(),
+    ...withNormalizeInvalidFields(),
     fullUpload: Flags.boolean({
       default: false,
       description: fullUploadDescription,

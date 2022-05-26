@@ -31,7 +31,7 @@ export const withCreateMissingFields = () => ({
   }),
 });
 
-export const normalizeInvalidFields = () => ({
+export const withNormalizeInvalidFields = () => ({
   normalizeInvalidFields: Flags.boolean({
     char: 'n',
     allowNo: true,

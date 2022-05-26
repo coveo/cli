@@ -18,7 +18,7 @@ import {
 } from '../../../lib/decorators/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {
-  normalizeInvalidFields,
+  withNormalizeInvalidFields,
   withCreateMissingFields,
   withFiles,
   withMaxConcurrent,
@@ -49,7 +49,7 @@ export default class SourcePushAdd extends Command {
     ...withFiles(),
     ...withMaxConcurrent(),
     ...withCreateMissingFields(),
-    ...normalizeInvalidFields(),
+    ...withNormalizeInvalidFields(),
   };
 
   public static args = [

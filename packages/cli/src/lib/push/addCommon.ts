@@ -1,7 +1,7 @@
 import {CliUx} from '@oclif/core';
 import {red, dim, green} from 'chalk';
 import {BuiltInTransformers, errors} from '@coveo/push-api-client';
-import {normalizeInvalidFields} from '../flags/sourceCommonFlags';
+import {withNormalizeInvalidFields} from '../flags/sourceCommonFlags';
 import {pluralizeIfNeeded} from '../utils/string';
 import dedent from 'ts-dedent';
 
@@ -16,8 +16,7 @@ export const formatErrorMessage = (err: unknown) => {
   const {UnsupportedFieldError} = errors;
   if (err instanceof UnsupportedFieldError) {
     const normalizations = getNormalizations(err.unsupportedFields);
-    const fixables = normalizations.flatMap(colorizeFixableField);
-    const unfixables = normalizations.flatMap(colorizeUnFixableField);
+    const {fixables, unfixables} = colorizeFields(normalizations);
     const isFixable = unfixables.length === 0;
 
     printInvalidFieldTable(fixables);
@@ -27,7 +26,7 @@ export const formatErrorMessage = (err: unknown) => {
 };
 
 const getFormattedMessage = (isFixable: boolean) => {
-  const normalizeFlag = Object.keys(normalizeInvalidFields())[0];
+  const normalizeFlag = Object.keys(withNormalizeInvalidFields())[0];
   let message = `Run the same command using the \`--${normalizeFlag}\` flag to automatically normalize field names while pushing your data.`;
   if (!isFixable) {
     message = dedent`Cannot normalize some of the invalid field names detected in your data
@@ -36,18 +35,22 @@ const getFormattedMessage = (isFixable: boolean) => {
   return message;
 };
 
-const colorizeFixableField = (
-  field: PrintableUnsupportedField
-): PrintableUnsupportedField | [] => {
-  return field.valid ? {...field, normalized: green(field.normalized)} : [];
-};
-
-const colorizeUnFixableField = (
-  field: PrintableUnsupportedField
-): PrintableUnsupportedField | [] => {
-  const normalized =
-    field.normalized === '' ? dim('(empty field name)') : red(field.normalized);
-  return !field.valid ? {...field, normalized} : [];
+const colorizeFields = (fields: PrintableUnsupportedField[]) => {
+  const fixables: PrintableUnsupportedField[] = [];
+  const unfixables: PrintableUnsupportedField[] = [];
+  for (const field of fields) {
+    if (field.valid) {
+      const normalized = green(field.normalized);
+      fixables.push({...field, normalized});
+    } else {
+      const normalized =
+        field.normalized === ''
+          ? dim('(empty field name)')
+          : red(field.normalized);
+      unfixables.push({...field, normalized});
+    }
+  }
+  return {fixables, unfixables};
 };
 
 const getNormalizations = (
