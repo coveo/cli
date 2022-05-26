@@ -126,10 +126,10 @@ describe('ui:create:atomic', () => {
       'src/components/sample-result-component/sample-result-component.css',
     ];
 
-    createdFilesPaths.forEach((path) => {
-      it(`should create the "${path}" file or directory`, () =>
-        expect(projectFileExist(path)).toBe(true));
-    });
+    test.each(createdFilesPaths)(
+      'should create the %s file or directory',
+      (path) => expect(projectFileExist(path)).toBe(true)
+    );
 
     const deletedFilesPaths = [
       'scripts/clean-up.js',
@@ -137,10 +137,10 @@ describe('ui:create:atomic', () => {
       'scripts/utils.js',
     ];
 
-    deletedFilesPaths.forEach((path) => {
-      it(`should delete the "${path}" file or directory`, () =>
-        expect(projectFileExist(path)).toBe(false));
-    });
+    test.each(deletedFilesPaths)(
+      'should delete the %s file or directory',
+      (path) => expect(projectFileExist(path)).toBe(false)
+    );
   });
 
   afterEach(async () => {
