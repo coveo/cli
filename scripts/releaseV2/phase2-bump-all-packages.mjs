@@ -52,12 +52,12 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
     readFileSync('package.json', {encoding: 'utf-8'})
   );
   await retry(
-    async () => {
+    () => {
       if (!isVersionPublished(packageJson.name, newVersion)) {
         throw 'Version not available';
       }
     },
-    {retries: 50, maxTimeout: 90e3}
+    {retries: 30}
   );
 })();
 
@@ -80,12 +80,12 @@ async function updateWorkspaceDependencies(version) {
     .filter((dependency) => dependency.source == packageName)
     .map((dependency) => `@coveo/${dependency.target}`);
   await waitForPackages(dependencies);
-  dependencies.forEach((dependency) =>
-    updateDependency(packageJson, dependency, version)
-  );
+  for (const dependency of dependencies) {
+    await updateDependency(packageJson, dependency, version);
+  }
 }
 
-function updateDependency(packageJson, dependency, version) {
+async function updateDependency(packageJson, dependency, version) {
   const npmInstallFlags = [];
   if (Object.hasOwn(packageJson.dependencies ?? {}, dependency)) {
     ('-P');
@@ -96,12 +96,20 @@ function updateDependency(packageJson, dependency, version) {
   if (Object.hasOwn(packageJson.optionalDependencies ?? {}, dependency)) {
     ('-O');
   }
-  spawnSync(appendCmdIfWindows`npm`, [
-    'install',
-    `${dependency}@${version}`,
-    '-E',
-    ...npmInstallFlags,
-  ]);
+  await retry(
+    () => {
+      const installChildProcess = spawnSync(appendCmdIfWindows`npm`, [
+        'install',
+        `${dependency}@${version}`,
+        '-E',
+        ...npmInstallFlags,
+      ]);
+      if (installChildProcess.error) {
+        throw installChildProcess.error;
+      }
+    },
+    {retries: 30}
+  );
 }
 
 function isVersionPublished(packageName, version) {
