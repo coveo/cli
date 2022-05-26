@@ -39,7 +39,7 @@ export const viewSearchPagesPrivilege: PlatformPrivilege = {
   models: [
     {
       owner: 'SEARCH_API',
-      targetDomain: 'VIEW',
+      targetDomain: 'SEARCH_PAGES',
       targetId: '*',
       type: 'VIEW',
     },
