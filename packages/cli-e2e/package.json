@@ -58,7 +58,7 @@
     "@babel/core": "7.17.12",
     "@babel/preset-env": "7.17.12",
     "@babel/preset-typescript": "7.17.12",
-    "@coveord/platform-client": "30.7.0",
+    "@coveord/platform-client": "31.0.0",
     "abortcontroller-polyfill": "1.7.3",
     "async-retry": "1.3.3",
     "axios": "0.27.2",
