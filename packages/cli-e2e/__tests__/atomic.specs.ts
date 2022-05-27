@@ -169,7 +169,7 @@ describe('ui:create:atomic', () => {
       );
     });
 
-    describe.skip('when the project is configured correctly', () => {
+    describe('when the project is configured correctly', () => {
       let serverProcessManager: ProcessManager;
       let interceptedRequests: HTTPRequest[] = [];
       let consoleInterceptor: BrowserConsoleInterceptor;
@@ -241,7 +241,7 @@ describe('ui:create:atomic', () => {
       }, 60e3);
     });
 
-    describe.skip('when the default Stencil port is busy', () => {
+    describe('when the default Stencil port is busy', () => {
       let dummyServer: DummyServer;
       let serverProcessManager: ProcessManager;
 
@@ -273,7 +273,7 @@ describe('ui:create:atomic', () => {
     });
   }
 
-  describe.skip('when using the default page config (pageId not specified)', () => {
+  describe('when using the default page config (pageId not specified)', () => {
     setupTests({});
     runTests();
   });
@@ -281,6 +281,12 @@ describe('ui:create:atomic', () => {
   describe('when using an existing pageId (--pageId flag specified)', () => {
     // TODO: CDX-969 update search page id from new stg org.
     setupTests({pageId: '85fe78b4-2e10-4ed9-a0b7-664f5d23887d'});
+    runTests();
+  });
+
+  describe.skip('when using an existing pageId (using the list prompt of available pages)', () => {
+    // TODO: CDX-969 make sure stg org has at least 1 "new" hosted search page.
+    setupTests({promptAnswer: `\033[B${EOL}`});
     runTests();
   });
 });
