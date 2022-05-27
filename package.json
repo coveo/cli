@@ -17,7 +17,6 @@
     "@coveord/platform-client": "31.0.0",
     "@nrwl/cli": "latest",
     "@nrwl/workspace": "latest",
-    "@oclif/dev-cli": "1.26.10",
     "@types/node": "17.0.34",
     "@typescript-eslint/eslint-plugin": "5.25.0",
     "@typescript-eslint/parser": "5.25.0",

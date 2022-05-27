@@ -37,6 +37,12 @@ describe('ui:create:atomic', () => {
       projectName
     );
 
+    await buildTerminal
+      .when(/Use an existing hosted search page/)
+      .on('stdout')
+      .do(answerPrompt(EOL))
+      .once();
+
     const buildTerminalExitPromise = Promise.race([
       buildTerminal.when('exit').on('process').do().once(),
       buildTerminal
@@ -94,7 +100,7 @@ describe('ui:create:atomic', () => {
     return existsSync(join(getProjectPath(projectName), ...path.split('/')));
   }
 
-  it('should create the proper template files', () => {
+  describe('validating files', () => {
     const createdFilesPaths = [
       'package.json',
       'package-lock.json',
@@ -111,31 +117,29 @@ describe('ui:create:atomic', () => {
       'src/html.d.ts',
       'src/components.d.ts',
       'src/style/index.css',
-      'src/style/layout.css',
-      'src/style/theme.css',
       'src/pages/index.html',
       'src/components/results-manager/results-manager.tsx',
-      'src/components/results-manager/default.html',
+      'src/components/results-manager/template-1.html',
       'src/components/sample-component/sample-component.tsx',
       'src/components/sample-component/sample-component.css',
       'src/components/sample-result-component/sample-result-component.tsx',
       'src/components/sample-result-component/sample-result-component.css',
     ];
 
-    createdFilesPaths.forEach((path) =>
-      expect(projectFileExist(path)).toBe(true)
+    test.each(createdFilesPaths)(
+      'should create the %s file or directory',
+      (path) => expect(projectFileExist(path)).toBe(true)
     );
-  });
 
-  it('should remove the proper template files', () => {
     const deletedFilesPaths = [
       'scripts/clean-up.js',
       'scripts/setup-lamdba.js',
       'scripts/utils.js',
     ];
 
-    deletedFilesPaths.forEach((path) =>
-      expect(projectFileExist(path)).toBe(false)
+    test.each(deletedFilesPaths)(
+      'should delete the %s file or directory',
+      (path) => expect(projectFileExist(path)).toBe(false)
     );
   });
 
