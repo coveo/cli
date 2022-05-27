@@ -1,7 +1,7 @@
 require('isomorphic-fetch');
 require('abortcontroller-polyfill');
 
-import PlatformClient from '@coveord/platform-client';
+import PlatformClient, {PrivilegeModel} from '@coveord/platform-client';
 import {Config, Configuration} from '../config/config';
 import {castEnvironmentToPlatformClient} from './environment';
 import HttpsProxyAgent from 'https-proxy-agent';
@@ -56,7 +56,10 @@ export class AuthenticatedClient {
     return orgs.some((o) => o.id === org);
   }
 
-  public async createImpersonateApiKey(name: string) {
+  public async createImpersonateApiKey(
+    name: string,
+    additionnalPrivileges: PrivilegeModel[] = []
+  ) {
     const platformClient = await this.getClient();
     return await platformClient.apiKey.create({
       displayName: `cli-${name}`,
@@ -64,6 +67,7 @@ export class AuthenticatedClient {
       enabled: true,
       privileges: [
         {targetDomain: 'IMPERSONATE', targetId: '*', owner: 'SEARCH_API'},
+        ...additionnalPrivileges,
       ],
     });
   }

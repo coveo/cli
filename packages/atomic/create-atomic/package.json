@@ -13,7 +13,7 @@
   "scripts": {
     "start": "node ./index.mjs",
     "build": "tsc -p tsconfig.json",
-    "prepublishOnly": "npm run build && node ./scripts/preparePackageJsonTemplate.mjs",
+    "prepublishOnly": "rimraf template && npm run build && node ./scripts/preparePackageJsonTemplate.mjs",
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
     "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
     "lint": "prettier --check . && eslint .",
@@ -32,11 +32,17 @@
     "access": "public"
   },
   "dependencies": {
-    "detect-indent": "^7.0.0",
+    "@coveord/platform-client": "30.6.0",
+    "abortcontroller-polyfill": "1.7.3",
+    "detect-indent": "7.0.0",
     "minimist": "1.2.6",
-    "plop": "^3.0.3",
+    "https-proxy-agent": "5.0.0",
+    "isomorphic-fetch": "3.0.0",
+    "plop": "3.0.5",
     "ts-node": "10.7.0",
-    "typescript": "4.6.4"
+    "typescript": "4.6.4",
+    "inquirer": "^8.2.0",
+    "node-plop": "^0.30.0"
   },
   "devDependencies": {
     "fs-extra": "10.1.0"
