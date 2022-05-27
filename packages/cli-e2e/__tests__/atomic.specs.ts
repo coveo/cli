@@ -13,6 +13,11 @@ import {loginWithApiKey} from '../utils/login';
 import {existsSync} from 'fs-extra';
 import {join} from 'path';
 
+interface BuildAppOptions {
+  pageId?: string;
+  promptAnswer?: string;
+}
+
 describe('ui:create:atomic', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
@@ -30,18 +35,24 @@ describe('ui:create:atomic', () => {
       .do()
       .once();
 
-  const buildApplication = async (processManager: ProcessManager) => {
+  const buildApplication = async (
+    processManager: ProcessManager,
+    options: BuildAppOptions
+  ) => {
     const buildTerminal = await setupUIProject(
       processManager,
       'ui:create:atomic',
-      projectName
+      projectName,
+      {flags: options.pageId ? ['--pageId', options.pageId] : undefined}
     );
 
-    await buildTerminal
-      .when(/Use an existing hosted search page/)
-      .on('stdout')
-      .do(answerPrompt(EOL))
-      .once();
+    if (!options.pageId) {
+      await buildTerminal
+        .when(/Use an existing hosted search page/)
+        .on('stdout')
+        .do(answerPrompt(options.promptAnswer ? options.promptAnswer : EOL))
+        .once();
+    }
 
     const buildTerminalExitPromise = Promise.race([
       buildTerminal.when('exit').on('process').do().once(),
@@ -77,182 +88,199 @@ describe('ui:create:atomic', () => {
     return serverTerminal;
   };
 
-  beforeAll(async () => {
-    await loginWithApiKey(
-      process.env.PLATFORM_API_KEY!,
-      process.env.ORG_ID!,
-      process.env.PLATFORM_ENV!
-    );
-    const buildProcessManager = new ProcessManager();
-    processManagers.push(buildProcessManager);
-    browser = await getNewBrowser();
-    await buildApplication(buildProcessManager);
-    await buildProcessManager.killAllProcesses();
-  }, 15 * 60e3);
-
-  beforeEach(async () => {
-    jest.resetModules();
-    process.env = {...oldEnv};
-    page = await openNewPage(browser, page);
-  });
-
   function projectFileExist(path: string) {
     return existsSync(join(getProjectPath(projectName), ...path.split('/')));
   }
 
-  describe('validating files', () => {
-    const createdFilesPaths = [
-      'package.json',
-      'package-lock.json',
-      '.gitignore',
-      '.env',
-      '.env.example',
-      'README.md',
-      'start-netlify.mjs',
-      'netlify.toml',
-      'tsconfig.json',
-      'stencil.config.ts',
-      'lambda',
-      'src/index.ts',
-      'src/html.d.ts',
-      'src/components.d.ts',
-      'src/style/index.css',
-      'src/pages/index.html',
-      'src/components/results-manager/results-manager.tsx',
-      'src/components/results-manager/template-1.html',
-      'src/components/sample-component/sample-component.tsx',
-      'src/components/sample-component/sample-component.css',
-      'src/components/sample-result-component/sample-result-component.tsx',
-      'src/components/sample-result-component/sample-result-component.css',
-    ];
-
-    test.each(createdFilesPaths)(
-      'should create the %s file or directory',
-      (path) => expect(projectFileExist(path)).toBe(true)
-    );
-
-    const deletedFilesPaths = [
-      'scripts/clean-up.js',
-      'scripts/setup-lamdba.js',
-      'scripts/utils.js',
-    ];
-
-    test.each(deletedFilesPaths)(
-      'should delete the %s file or directory',
-      (path) => expect(projectFileExist(path)).toBe(false)
-    );
-  });
-
-  afterEach(async () => {
-    await captureScreenshots(browser);
-  });
-
-  afterAll(async () => {
-    process.env = oldEnv;
-    await browser.close();
-    await Promise.all(
-      processManagers.map((manager) => manager.killAllProcesses())
-    );
-  });
-
-  describe('when the project is configured correctly', () => {
-    let serverProcessManager: ProcessManager;
-    let interceptedRequests: HTTPRequest[] = [];
-    let consoleInterceptor: BrowserConsoleInterceptor;
-
+  function setupTests(options: BuildAppOptions) {
     beforeAll(async () => {
-      serverProcessManager = new ProcessManager();
-      processManagers.push(serverProcessManager);
-      const appTerminal = await startApplication(
-        serverProcessManager,
-        'atomic-server-valid'
+      await loginWithApiKey(
+        process.env.PLATFORM_API_KEY!,
+        process.env.ORG_ID!,
+        process.env.PLATFORM_ENV!
       );
-      await waitForAppRunning(appTerminal);
-    }, 5 * 60e3);
+      const processManager = new ProcessManager();
+      processManagers.push(processManager);
+      browser = await getNewBrowser();
+      await buildApplication(processManager, options);
+      await processManager.killAllProcesses();
+    }, 15 * 60e3);
 
     beforeEach(async () => {
-      consoleInterceptor = new BrowserConsoleInterceptor(page, projectName);
-      await consoleInterceptor.startSession();
-
-      page.on('request', (request: HTTPRequest) => {
-        interceptedRequests.push(request);
-      });
+      jest.resetModules();
+      process.env = {...oldEnv};
+      page = await openNewPage(browser, page);
     });
 
     afterEach(async () => {
-      page.removeAllListeners('request');
-      interceptedRequests = [];
-      await consoleInterceptor.endSession();
+      await captureScreenshots(browser);
     });
 
     afterAll(async () => {
-      await serverProcessManager.killAllProcesses();
-    }, 5 * 30e3);
+      process.env = oldEnv;
+      await browser.close();
+      await Promise.all(
+        processManagers.map((manager) => manager.killAllProcesses())
+      );
+    });
+  }
 
-    it('should not contain console errors nor warnings', async () => {
-      await page.goto(searchPageEndpoint, {
-        waitUntil: 'networkidle2',
+  function runTests() {
+    describe('validating files', () => {
+      const createdFilesPaths = [
+        'package.json',
+        'package-lock.json',
+        '.gitignore',
+        '.env',
+        '.env.example',
+        'README.md',
+        'start-netlify.mjs',
+        'netlify.toml',
+        'tsconfig.json',
+        'stencil.config.ts',
+        'lambda',
+        'src/index.ts',
+        'src/html.d.ts',
+        'src/components.d.ts',
+        'src/style/index.css',
+        'src/pages/index.html',
+        'src/components/results-manager/results-manager.tsx',
+        'src/components/results-manager/template-1.html',
+        'src/components/sample-component/sample-component.tsx',
+        'src/components/sample-component/sample-component.css',
+        'src/components/sample-result-component/sample-result-component.tsx',
+        'src/components/sample-result-component/sample-result-component.css',
+      ];
+
+      test.each(createdFilesPaths)(
+        'should create the %s file or directory',
+        (path) => expect(projectFileExist(path)).toBe(true)
+      );
+
+      const deletedFilesPaths = [
+        'scripts/clean-up.js',
+        'scripts/setup-lamdba.js',
+        'scripts/utils.js',
+      ];
+
+      test.each(deletedFilesPaths)(
+        'should delete the %s file or directory',
+        (path) => expect(projectFileExist(path)).toBe(false)
+      );
+    });
+
+    describe.skip('when the project is configured correctly', () => {
+      let serverProcessManager: ProcessManager;
+      let interceptedRequests: HTTPRequest[] = [];
+      let consoleInterceptor: BrowserConsoleInterceptor;
+
+      beforeAll(async () => {
+        serverProcessManager = new ProcessManager();
+        processManagers.push(serverProcessManager);
+        const appTerminal = await startApplication(
+          serverProcessManager,
+          'atomic-server-valid'
+        );
+        await waitForAppRunning(appTerminal);
+      }, 5 * 60e3);
+
+      beforeEach(async () => {
+        consoleInterceptor = new BrowserConsoleInterceptor(page, projectName);
+        await consoleInterceptor.startSession();
+
+        page.on('request', (request: HTTPRequest) => {
+          interceptedRequests.push(request);
+        });
       });
 
-      expect(consoleInterceptor.interceptedMessages).toEqual([]);
-    }, 60e3);
-
-    it('should contain a search page section', async () => {
-      await page.goto(searchPageEndpoint, {
-        waitUntil: 'networkidle2',
+      afterEach(async () => {
+        page.removeAllListeners('request');
+        interceptedRequests = [];
+        await consoleInterceptor.endSession();
       });
 
-      expect(await page.$(searchInterfaceSelector)).not.toBeNull();
-    }, 60e3);
+      afterAll(async () => {
+        await serverProcessManager.killAllProcesses();
+      }, 5 * 30e3);
 
-    it('should retrieve the search token on the page load', async () => {
-      const tokenResponseListener = page.waitForResponse(tokenServerEndpoint);
-      page.goto(searchPageEndpoint);
-      await page.waitForSelector(searchInterfaceSelector);
+      it('should not contain console errors nor warnings', async () => {
+        await page.goto(searchPageEndpoint, {
+          waitUntil: 'networkidle2',
+        });
 
-      expect(
-        JSON.parse(await (await tokenResponseListener).text())
-      ).toMatchObject({
-        token: expect.stringMatching(jwtTokenPattern),
-      });
-    }, 60e3);
+        expect(consoleInterceptor.interceptedMessages).toEqual([]);
+      }, 60e3);
 
-    it('should send a search query when the page is loaded', async () => {
-      await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-      await page.waitForSelector(searchInterfaceSelector);
+      it('should contain a search page section', async () => {
+        await page.goto(searchPageEndpoint, {
+          waitUntil: 'networkidle2',
+        });
 
-      expect(interceptedRequests.some(isSearchRequestOrResponse)).toBeTruthy();
-    }, 60e3);
+        expect(await page.$(searchInterfaceSelector)).not.toBeNull();
+      }, 60e3);
+
+      it('should retrieve the search token on the page load', async () => {
+        const tokenResponseListener = page.waitForResponse(tokenServerEndpoint);
+        page.goto(searchPageEndpoint);
+        await page.waitForSelector(searchInterfaceSelector);
+
+        expect(
+          JSON.parse(await (await tokenResponseListener).text())
+        ).toMatchObject({
+          token: expect.stringMatching(jwtTokenPattern),
+        });
+      }, 60e3);
+
+      it('should send a search query when the page is loaded', async () => {
+        await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
+        await page.waitForSelector(searchInterfaceSelector);
+
+        expect(
+          interceptedRequests.some(isSearchRequestOrResponse)
+        ).toBeTruthy();
+      }, 60e3);
+    });
+
+    describe.skip('when the default Stencil port is busy', () => {
+      let dummyServer: DummyServer;
+      let serverProcessManager: ProcessManager;
+
+      beforeAll(async () => {
+        serverProcessManager = new ProcessManager();
+        processManagers.push(serverProcessManager);
+
+        dummyServer = new DummyServer(3333);
+
+        const appTerminal = await startApplication(
+          serverProcessManager,
+          'stencil-port-test'
+        );
+        await waitForAppRunning(appTerminal);
+      }, 2 * 60e3);
+
+      afterAll(async () => {
+        await dummyServer.close();
+        await serverProcessManager.killAllProcesses();
+      }, 30e3);
+
+      it('Netlify should still load the Stencil app properly', async () => {
+        await page.goto(searchPageEndpoint, {
+          waitUntil: 'networkidle2',
+        });
+
+        expect(await page.$(searchInterfaceSelector)).not.toBeNull();
+      }, 60e3);
+    });
+  }
+
+  describe.skip('when using the default page config (pageId not specified)', () => {
+    setupTests({});
+    runTests();
   });
 
-  describe('when the default Stencil port is busy', () => {
-    let dummyServer: DummyServer;
-    let serverProcessManager: ProcessManager;
-
-    beforeAll(async () => {
-      serverProcessManager = new ProcessManager();
-      processManagers.push(serverProcessManager);
-
-      dummyServer = new DummyServer(3333);
-
-      const appTerminal = await startApplication(
-        serverProcessManager,
-        'stencil-port-test'
-      );
-      await waitForAppRunning(appTerminal);
-    }, 2 * 60e3);
-
-    afterAll(async () => {
-      await dummyServer.close();
-      await serverProcessManager.killAllProcesses();
-    }, 30e3);
-
-    it('Netlify should still load the Stencil app properly', async () => {
-      await page.goto(searchPageEndpoint, {
-        waitUntil: 'networkidle2',
-      });
-
-      expect(await page.$(searchInterfaceSelector)).not.toBeNull();
-    }, 60e3);
+  describe('when using an existing pageId (--pageId flag specified)', () => {
+    // TODO: CDX-969 update search page id from new stg org.
+    setupTests({pageId: '85fe78b4-2e10-4ed9-a0b7-664f5d23887d'});
+    runTests();
   });
 });
