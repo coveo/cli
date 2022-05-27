@@ -9,6 +9,7 @@ import {
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,
+  viewSearchPagesPrivilege,
 } from '../../../lib/decorators/preconditions/platformPrivilege';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {spawnProcess} from '../../../lib/utils/process';
@@ -37,6 +38,12 @@ export default class Atomic extends Command {
       description: `The version of ${Atomic.cliPackage} to use.`,
       default: getPackageVersion(Atomic.cliPackage) || 'latest',
     }),
+    pageId: Flags.string({
+      char: 'p',
+      description: 'The hosted search page ID.',
+      helpValue: '7944ff4a-9943-4999-a3f6-3e81a7f6fb0a',
+      required: false,
+    }),
   };
 
   @Trackable({
@@ -47,7 +54,11 @@ export default class Atomic extends Command {
     IsAuthenticated(),
     IsNpxInstalled(),
     IsNodeVersionInRange(Atomic.requiredNodeVersion),
-    HasNecessaryCoveoPrivileges(createApiKeyPrivilege, impersonatePrivilege)
+    HasNecessaryCoveoPrivileges(
+      createApiKeyPrivilege,
+      impersonatePrivilege,
+      viewSearchPagesPrivilege
+    )
   )
   public async run() {
     await this.createProject();
@@ -62,7 +73,17 @@ export default class Atomic extends Command {
     const {flags, args} = await this.parse(Atomic);
     const cfg = this.configuration.get();
     const authenticatedClient = new AuthenticatedClient();
-    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
+    const apiKey = await authenticatedClient.createImpersonateApiKey(
+      args.name,
+      [
+        {
+          targetDomain: 'SEARCH_PAGES',
+          targetId: '*',
+          owner: 'SEARCH_API',
+          type: 'VIEW',
+        },
+      ]
+    );
     const username = await authenticatedClient.getUsername();
     const cliArgs = [
       `${Atomic.cliPackage}@${flags.version}`,
@@ -77,6 +98,10 @@ export default class Atomic extends Command {
       '--user',
       username,
     ];
+
+    if (flags.pageId) {
+      cliArgs.push('--page-id', flags.pageId);
+    }
 
     return spawnProcess(appendCmdIfWindows`npx`, cliArgs);
   }
