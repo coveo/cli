@@ -254,7 +254,6 @@ describe('#tryTransferFromOrganization', () => {
         expect(mockedVaultImport).toBeCalledTimes(1);
         expect(mockedVaultImport).toBeCalledWith(
           'someSnapshotId',
-          '',
           'someOriginOrg',
           VaultFetchStrategy.onlyMissing
         );
