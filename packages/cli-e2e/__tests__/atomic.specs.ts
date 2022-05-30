@@ -92,7 +92,23 @@ describe('ui:create:atomic', () => {
     return existsSync(join(getProjectPath(projectName), ...path.split('/')));
   }
 
-  function setupTests(options: BuildAppOptions) {
+  describe.each([
+    {
+      describeName: 'when using the default page config (pageId not specified)',
+      buildAppOptions: {},
+    },
+    {
+      describeName: 'when using an existing pageId (--pageId flag specified)',
+      buildAppOptions: {pageId: '85fe78b4-2e10-4ed9-a0b7-664f5d23887d'},
+    },
+    /*
+      {
+        describeName:
+          'when using an existing pageId (using the list prompt of available pages)',
+        buildAppOptions: {promptAnswer: `\033[B${EOL}`},
+      },
+      */
+  ])('$describeName', ({buildAppOptions}) => {
     beforeAll(async () => {
       await loginWithApiKey(
         process.env.PLATFORM_API_KEY!,
@@ -102,7 +118,7 @@ describe('ui:create:atomic', () => {
       const processManager = new ProcessManager();
       processManagers.push(processManager);
       browser = await getNewBrowser();
-      await buildApplication(processManager, options);
+      await buildApplication(processManager, buildAppOptions);
       await processManager.killAllProcesses();
     }, 15 * 60e3);
 
@@ -123,9 +139,7 @@ describe('ui:create:atomic', () => {
         processManagers.map((manager) => manager.killAllProcesses())
       );
     });
-  }
 
-  function runTests() {
     describe('validating files', () => {
       const createdFilesPaths = [
         'package.json',
@@ -271,22 +285,5 @@ describe('ui:create:atomic', () => {
         expect(await page.$(searchInterfaceSelector)).not.toBeNull();
       }, 60e3);
     });
-  }
-
-  describe('when using the default page config (pageId not specified)', () => {
-    setupTests({});
-    runTests();
-  });
-
-  describe('when using an existing pageId (--pageId flag specified)', () => {
-    // TODO: CDX-969 update search page id from new stg org.
-    setupTests({pageId: '85fe78b4-2e10-4ed9-a0b7-664f5d23887d'});
-    runTests();
-  });
-
-  describe.skip('when using an existing pageId (using the list prompt of available pages)', () => {
-    // TODO: CDX-969 make sure stg org has at least 1 "new" hosted search page.
-    setupTests({promptAnswer: `\033[B${EOL}`});
-    runTests();
   });
 });
