@@ -175,6 +175,32 @@ describe('org:search:dump', () => {
 
   test
     .do(() => {
+      mockReturnNumberOfResults(0);
+    })
+    .stdout()
+    .stderr()
+    .command([
+      'org:search:dump',
+      '-s',
+      'the_source',
+      '-x',
+      'rowid',
+      '-x',
+      'sysrowid',
+      '-x',
+      'foo',
+    ])
+    .it('should not exclude rowId fields', () =>
+      expect(mockSearch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          numberOfResults: 1000,
+          fieldsToExclude: ['foo'],
+        })
+      )
+    );
+
+  test
+    .do(() => {
       mockReturnNumberOfResults(1234);
       mockReturnNumberOfResults(234);
     })

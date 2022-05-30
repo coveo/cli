@@ -31,6 +31,7 @@ interface FetchParameters {
 }
 
 export default class Dump extends Command {
+  private static mandatoryFields = ['rowid', 'sysrowid'];
   public static description =
     'Dump the content of one or more sources in CSV format.';
 
@@ -86,6 +87,9 @@ export default class Dump extends Command {
     const client = await new AuthenticatedClient().getClient();
     const organizationId = (await new Config(this.config.configDir).get())
       .organization;
+    const fieldsToExclude =
+      flags.fieldsToExclude &&
+      this.ensureMandatoryFields(flags.fieldsToExclude);
 
     const allResults = await this.fetchResults({
       client,
@@ -93,7 +97,7 @@ export default class Dump extends Command {
       sources: flags.source,
       pipeline: flags.pipeline,
       additionalFilter: flags.additionalFilter,
-      fieldsToExclude: flags.fieldsToExclude,
+      fieldsToExclude,
     });
 
     if (allResults.length === 0) {
@@ -108,6 +112,10 @@ export default class Dump extends Command {
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
     throw err;
+  }
+
+  private ensureMandatoryFields(fields: string[]) {
+    return fields.filter((field) => !Dump.mandatoryFields.includes(field));
   }
 
   private async writeChunks(allResults: SearchResult[]) {
