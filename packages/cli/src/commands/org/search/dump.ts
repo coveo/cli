@@ -121,11 +121,11 @@ export default class Dump extends Command {
     while (allResults.length) {
       const chunk = allResults.splice(0, flags.chunkSize);
       const data = chunk.map((r) => r.raw);
-      const fieldsToRender = without(
+      const fields = without(
         Object.keys(chunk[0].raw),
-        flags.fieldsToExclude
+        flags.fieldsToExclude || []
       );
-      const parser = new Parser({fields: fieldsToRender});
+      const parser = new Parser({fields});
       await writeFile(
         `${flags.destination}/${flags.name}${
           currentChunk > 0 ? `_${currentChunk + 1}` : ''
