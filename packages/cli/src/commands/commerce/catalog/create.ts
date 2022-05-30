@@ -129,7 +129,8 @@ export default class CatalogCreate extends Command {
         No ${bold('objecttype')} metadata detected while parsing documents.
         The ${bold(
           'objecttype'
-        )} metadata is crucial, as it will be used to identify the item as a product in the index. Ensure this metadata is set on all your items.`
+        )} metadata is crucial, as it will be used to identify the item as a product in the index. Ensure this metadata is set on all your items.
+        See https://docs.coveo.com/en/m53g7119 for more information.`
       );
     }
 
