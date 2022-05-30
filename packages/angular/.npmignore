@@ -1,2 +1,4 @@
 # Ignores TypeScript files, but keeps definitions.
 !*.d.ts
+# Do not ignore dist.
+!dist

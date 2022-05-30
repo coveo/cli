@@ -37,9 +37,7 @@ jobs:
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
-      - name: Install locked NPM version.
-        # TODO: Remove later, when `npm 8.5.4` is built in.
-        run: npm i -g npm@^8.5.4
+
       - name: Install Coveo CLI
         run: npm i -g @coveo/cli@latest
       - run: |
@@ -119,9 +117,7 @@ jobs:
           cache: 'pip'
       - name: Install Mitmproxy through pip
         run: pip install -r packages/cli-e2e/mitmproxy/requirements.txt
-      - name: Install locked NPM version.
-        # TODO: Remove later, when `npm 8.5.4` is built in.
-        run: npm i -g npm@^8.5.4
+
       - name: Install Coveo CLI
         run: npm i -g @coveo/cli@latest
       - name: Decrypt config
@@ -182,9 +178,7 @@ jobs:
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
-      - name: Install locked NPM version.
-        # TODO: Remove later, when `npm 8.5.4` is built in.
-        run: npm i -g npm@^8.5.4
+
       - run: npm ci
       - name: Decrypt config
         run: echo ${{needs.e2e-setup-login.outputs.cliConfigJson}} | base64 --decode | gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.E2E_TOKEN_PASSPHRASE }}" --output decrypted
