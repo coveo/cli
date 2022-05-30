@@ -68,7 +68,6 @@ export async function tryTransferFromOrganization({
     CliUx.ux.action.start('Transfering vault entries');
     await platformClient.vault.import(
       snapshot.id,
-      '', // TODO: after CDX-992 is shipped, remove that.
       originOrgId,
       VaultFetchStrategy.onlyMissing
     );

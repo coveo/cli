@@ -3,6 +3,6 @@ CHANGELOG.md
 
 package-lock.json
 lib
+template
 
-template/.gitignore.hbs
-template/package.json.hbs
+*.hbs
