@@ -163,7 +163,7 @@ describe('ui:create:atomic', () => {
       expect(stderr).toContain(message);
     });
 
-    describe.skip('validating files', () => {
+    describe('validating files', () => {
       const createdFilesPaths = [
         'package.json',
         'package-lock.json',
@@ -206,7 +206,7 @@ describe('ui:create:atomic', () => {
       );
     });
 
-    describe.skip('when the project is configured correctly', () => {
+    describe('when the project is configured correctly', () => {
       let serverProcessManager: ProcessManager;
       let interceptedRequests: HTTPRequest[] = [];
       let consoleInterceptor: BrowserConsoleInterceptor;
@@ -278,7 +278,7 @@ describe('ui:create:atomic', () => {
       }, 60e3);
     });
 
-    describe.skip('when the default Stencil port is busy', () => {
+    describe('when the default Stencil port is busy', () => {
       let dummyServer: DummyServer;
       let serverProcessManager: ProcessManager;
 
