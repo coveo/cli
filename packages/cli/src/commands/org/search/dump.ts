@@ -11,6 +11,7 @@ import {Parser} from 'json2csv';
 // eslint-disable-next-line node/no-extraneous-import
 import {SingleBar} from 'cli-progress';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {bold} from 'chalk';
 
 interface SearchResult {
   raw: {rowid: string};
@@ -115,7 +116,15 @@ export default class Dump extends Command {
   }
 
   private ensureMandatoryFields(fields: string[]) {
-    return fields.filter((field) => !Dump.mandatoryFields.includes(field));
+    return fields.filter((field) => {
+      const includeMandatoryField = Dump.mandatoryFields.includes(field);
+      if (includeMandatoryField) {
+        CliUx.ux.warn(
+          `Cannot exclude required field ${bold(field)} from the data dump`
+        );
+      }
+      return !includeMandatoryField;
+    });
   }
 
   private async writeChunks(allResults: SearchResult[]) {
