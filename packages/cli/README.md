@@ -22,7 +22,7 @@ $ npm install -g @coveo/cli
 $ coveo COMMAND
 running command...
 $ coveo (-v|--version|version)
-@coveo/cli/1.27.1 linux-x64 node-v16.14.2
+@coveo/cli/1.28.1 linux-x64 node-v16.15.0
 $ coveo --help [COMMAND]
 USAGE
   $ coveo COMMAND
@@ -49,6 +49,9 @@ USAGE
 - [`coveo org:resources:pull`](#coveo-orgresourcespull)
 - [`coveo org:resources:push`](#coveo-orgresourcespush)
 - [`coveo org:search:dump`](#coveo-orgsearchdump)
+- [`coveo source:catalog:add SOURCEID`](#coveo-sourcecatalogadd-sourceid)
+- [`coveo source:catalog:new NAME`](#coveo-sourcecatalognew-name)
+- [`coveo source:list`](#coveo-sourcelist)
 - [`coveo source:push:add SOURCEID`](#coveo-sourcepushadd-sourceid)
 - [`coveo source:push:delete SOURCEID`](#coveo-sourcepushdelete-sourceid)
 - [`coveo source:push:list`](#coveo-sourcepushlist)
@@ -82,7 +85,7 @@ EXAMPLE
   $ coveo auth:login
 ```
 
-_See code: [src/commands/auth/login.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/auth/login.ts)_
+_See code: [src/commands/auth/login.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/auth/login.ts)_
 
 ## `coveo auth:token`
 
@@ -106,7 +109,7 @@ EXAMPLE
   $ coveo auth:token
 ```
 
-_See code: [src/commands/auth/token.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/auth/token.ts)_
+_See code: [src/commands/auth/token.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/auth/token.ts)_
 
 ## `coveo config:get [KEY]`
 
@@ -125,7 +128,7 @@ EXAMPLES
   $ coveo config:get accessToken
 ```
 
-_See code: [src/commands/config/get.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/config/get.ts)_
+_See code: [src/commands/config/get.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/config/get.ts)_
 
 ## `coveo config:set`
 
@@ -145,7 +148,7 @@ OPTIONS
   -r, --region=US|EU|AU                The Coveo Platform region to log in to. See <https://docs.coveo.com/en/2976>.
 ```
 
-_See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/config/set.ts)_
+_See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/config/set.ts)_
 
 ## `coveo help [COMMAND]`
 
@@ -179,7 +182,7 @@ OPTIONS
   -s, --[no-]setDefaultOrganization  Set the created organization as the default one
 ```
 
-_See code: [src/commands/org/create.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/org/create.ts)_
+_See code: [src/commands/org/create.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/org/create.ts)_
 
 ## `coveo org:list`
 
@@ -200,7 +203,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/org/list.ts)_
+_See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/org/list.ts)_
 
 ## `coveo org:resources:list`
 
@@ -211,27 +214,27 @@ USAGE
   $ coveo org:resources:list
 
 OPTIONS
-  -t, --target=destinationorganizationg7dg3gd  The unique identifier of the organization containing the snapshots. If
-                                               not specified, the organization you are connected to will be used.
+  -o, --organization=targetorganizationg7dg3gd  The unique identifier of the organization containing the snapshots. If
+                                                not specified, the organization you are connected to will be used.
 
-  -x, --extended                               show extra columns
+  -x, --extended                                show extra columns
 
-  --columns=columns                            only show provided columns (comma-separated)
+  --columns=columns                             only show provided columns (comma-separated)
 
-  --csv                                        output is csv format [alias: --output=csv]
+  --csv                                         output is csv format [alias: --output=csv]
 
-  --filter=filter                              filter property by partial string matching, ex: name=foo
+  --filter=filter                               filter property by partial string matching, ex: name=foo
 
-  --no-header                                  hide table header from output
+  --no-header                                   hide table header from output
 
-  --no-truncate                                do not truncate output to fit screen
+  --no-truncate                                 do not truncate output to fit screen
 
-  --output=csv|json|yaml                       output in a more machine friendly format
+  --output=csv|json|yaml                        output in a more machine friendly format
 
-  --sort=sort                                  property to sort by (prepend '-' for descending)
+  --sort=sort                                   property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/org/resources/list.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/org/resources/list.ts)_
+_See code: [src/commands/org/resources/list.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/org/resources/list.ts)_
 
 ## `coveo org:resources:model:create`
 
@@ -242,7 +245,7 @@ USAGE
   $ coveo org:resources:model:create
 ```
 
-_See code: [src/commands/org/resources/model/create.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/org/resources/model/create.ts)_
+_See code: [src/commands/org/resources/model/create.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/org/resources/model/create.ts)_
 
 ## `coveo org:resources:monitor SNAPSHOTID`
 
@@ -256,15 +259,15 @@ ARGUMENTS
   SNAPSHOTID  The unique identifier of the target snapshot.
 
 OPTIONS
-  -t, --target=destinationorganizationg7dg3gd  The unique identifier of the organization containing the snapshot. If not
-                                               specified, the organization you are connected to will be used.
+  -o, --organization=targetorganizationg7dg3gd  The unique identifier of the organization containing the snapshot. If
+                                                not specified, the organization you are connected to will be used.
 
-  -w, --wait=seconds                           [default: 60] The maximum number of seconds to wait before the commands
-                                               exits with a timeout error. A value of zero means that the command will
-                                               wait indefinitely.
+  -w, --wait=seconds                            [default: 60] The maximum number of seconds to wait before the commands
+                                                exits with a timeout error. A value of zero means that the command will
+                                                wait indefinitely.
 ```
 
-_See code: [src/commands/org/resources/monitor.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/org/resources/monitor.ts)_
+_See code: [src/commands/org/resources/monitor.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/org/resources/monitor.ts)_
 
 ## `coveo org:resources:preview`
 
@@ -275,29 +278,29 @@ USAGE
   $ coveo org:resources:preview
 
 OPTIONS
-  -d, --showMissingResources                   Preview resources deletion when enabled
+  -d, --showMissingResources                    Preview resources deletion when enabled
 
-  -p, --previewLevel=(light|detailed)          [default: detailed] The verbosity of the preview. The `light` preview is
-                                               faster to generate but only contains a limited amount of information, as
-                                               opposed to the `detailed` preview that takes more time to generate, but
-                                               returns a diff representation of all the changes to apply.
+  -o, --organization=targetorganizationg7dg3gd  The unique identifier of the organization where to preview the changes
+                                                If not specified, the organization you are connected to will be used.
 
-  -s, --snapshotId=snapshotId                  The unique identifier of the snapshot to preview. If not specified, a new
-                                               snapshot will be created from your local project. You can list available
-                                               snapshots in your organization with org:resources:list
+  -p, --previewLevel=(light|detailed)           [default: detailed] The verbosity of the preview. The `light` preview is
+                                                faster to generate but only contains a limited amount of information, as
+                                                opposed to the `detailed` preview that takes more time to generate, but
+                                                returns a diff representation of all the changes to apply.
 
-  -t, --target=destinationorganizationg7dg3gd  The unique identifier of the organization where to send the changes. If
-                                               not specified, the organization you are connected to will be used.
+  -s, --snapshotId=snapshotId                   The unique identifier of the snapshot to preview. If not specified, a
+                                                new snapshot will be created from your local project. You can list
+                                                available snapshots in your organization with org:resources:list
 
-  -w, --wait=seconds                           [default: 60] The maximum number of seconds to wait before the commands
-                                               exits with a timeout error. A value of zero means that the command will
-                                               wait indefinitely.
+  -w, --wait=seconds                            [default: 60] The maximum number of seconds to wait before the commands
+                                                exits with a timeout error. A value of zero means that the command will
+                                                wait indefinitely.
 
-  -y, --sync                                   Apply synchronization when there is a 100% match between organization and
-                                               snapshot resources.
+  -y, --sync                                    Apply synchronization when there is a 100% match between organization
+                                                and snapshot resources.
 ```
 
-_See code: [src/commands/org/resources/preview.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/org/resources/preview.ts)_
+_See code: [src/commands/org/resources/preview.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/org/resources/preview.ts)_
 
 ## `coveo org:resources:pull`
 
@@ -308,33 +311,34 @@ USAGE
   $ coveo org:resources:pull
 
 OPTIONS
-  -g, --[no-]git                          Whether to create a git repository when creating a new project.
+  -f, --overwrite                               Overwrite resources directory if it exists.
+  -g, --[no-]git                                Whether to create a git repository when creating a new project.
 
-  -m, --model=path/to/snapshot.json       The path to a snapshot pull model. This flag is useful when you want to
-                                          include only specific resource items in your snapshot (e.g., a subset of
-                                          sources). Use the "org:resources:model:create" command to create a new
-                                          Snapshot Pull Model
+  -m, --model=path/to/snapshot.json             The path to a snapshot pull model. This flag is useful when you want to
+                                                include only specific resource items in your snapshot (e.g., a subset of
+                                                sources). Use the "org:resources:model:create" command to create a new
+                                                Snapshot Pull Model
 
-  -o, --overwrite                         Overwrite resources directory if it exists.
+  -o, --organization=targetorganizationg7dg3gd  The unique identifier of the organization from which to pull the
+                                                resources If not specified, the organization you are connected to will
+                                                be used.
 
-  -r, --resourceTypes=type1 type2         [default: EXTENSION,FEATURED_RESULT,FIELD,FILTER,MAPPING,ML_MODEL,ML_MODEL_ASS
-                                          OCIATION,QUERY_PARAMETER,QUERY_PIPELINE,QUERY_PIPELINE_CONDITION,RANKING_EXPRE
-                                          SSION,RANKING_WEIGHT,SEARCH_PAGE,SECURITY_PROVIDER,SOURCE,STOP_WORD,SUBSCRIPTI
-                                          ON,THESAURUS,TRIGGER] The resources types to pull from the organization.
+  -r, --resourceTypes=type1 type2               [default: EXTENSION,FEATURED_RESULT,FIELD,FILTER,MAPPING,ML_MODEL,ML_MOD
+                                                EL_ASSOCIATION,QUERY_PARAMETER,QUERY_PIPELINE,QUERY_PIPELINE_CONDITION,R
+                                                ANKING_EXPRESSION,RANKING_WEIGHT,SEARCH_PAGE,SECURITY_PROVIDER,SOURCE,ST
+                                                OP_WORD,SUBSCRIPTION,THESAURUS,TRIGGER] The resources types to pull from
+                                                the organization.
 
-  -s, --snapshotId=snapshotId             The unique identifier of the snapshot to pull. If not specified, a new
-                                          snapshot will be created. You can list available snapshot in your organization
-                                          with org:resources:list
+  -s, --snapshotId=snapshotId                   The unique identifier of the snapshot to pull. If not specified, a new
+                                                snapshot will be created. You can list available snapshot in your
+                                                organization with org:resources:list
 
-  -t, --target=targetorganizationg7dg3gd  The unique identifier of the organization from which to pull the resources. If
-                                          not specified, the organization you are connected to will be used.
-
-  -w, --wait=seconds                      [default: 60] The maximum number of seconds to wait before the commands exits
-                                          with a timeout error. A value of zero means that the command will wait
-                                          indefinitely.
+  -w, --wait=seconds                            [default: 60] The maximum number of seconds to wait before the commands
+                                                exits with a timeout error. A value of zero means that the command will
+                                                wait indefinitely.
 ```
 
-_See code: [src/commands/org/resources/pull.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/org/resources/pull.ts)_
+_See code: [src/commands/org/resources/pull.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/org/resources/pull.ts)_
 
 ## `coveo org:resources:push`
 
@@ -345,27 +349,27 @@ USAGE
   $ coveo org:resources:push
 
 OPTIONS
-  -d, --deleteMissingResources                 Delete missing resources when enabled
+  -d, --deleteMissingResources                  Delete missing resources when enabled
 
-  -p, --previewLevel=(light|detailed)          [default: detailed] The verbosity of the preview. The `light` preview is
-                                               faster to generate but only contains a limited amount of information, as
-                                               opposed to the `detailed` preview that takes more time to generate, but
-                                               returns a diff representation of all the changes to apply.
+  -o, --organization=targetorganizationg7dg3gd  The unique identifier of the organization where to send the changes If
+                                                not specified, the organization you are connected to will be used.
 
-  -s, --skipPreview                            Do not preview changes before applying them to the organization
+  -p, --previewLevel=(light|detailed)           [default: detailed] The verbosity of the preview. The `light` preview is
+                                                faster to generate but only contains a limited amount of information, as
+                                                opposed to the `detailed` preview that takes more time to generate, but
+                                                returns a diff representation of all the changes to apply.
 
-  -t, --target=destinationorganizationg7dg3gd  The unique identifier of the organization where to send the changes. If
-                                               not specified, the organization you are connected to will be used.
+  -s, --skipPreview                             Do not preview changes before applying them to the organization
 
-  -w, --wait=seconds                           [default: 60] The maximum number of seconds to wait before the commands
-                                               exits with a timeout error. A value of zero means that the command will
-                                               wait indefinitely.
+  -w, --wait=seconds                            [default: 60] The maximum number of seconds to wait before the commands
+                                                exits with a timeout error. A value of zero means that the command will
+                                                wait indefinitely.
 
-  -y, --sync                                   Apply synchronization when there is a 100% match between organization and
-                                               snapshot resources.
+  -y, --sync                                    Apply synchronization when there is a 100% match between organization
+                                                and snapshot resources.
 ```
 
-_See code: [src/commands/org/resources/push.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/org/resources/push.ts)_
+_See code: [src/commands/org/resources/push.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/org/resources/push.ts)_
 
 ## `coveo org:search:dump`
 
@@ -398,37 +402,117 @@ OPTIONS
                                            included.
 ```
 
-_See code: [src/commands/org/search/dump.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/org/search/dump.ts)_
+_See code: [src/commands/org/search/dump.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/org/search/dump.ts)_
+
+## `coveo source:catalog:add SOURCEID`
+
+Index a JSON document into a Coveo Catalog source. See https://docs.coveo.com/en/2956 for more information.
+
+```
+USAGE
+  $ coveo source:catalog:add SOURCEID
+
+ARGUMENTS
+  SOURCEID  The identifier of the Catalog source on which to perform the add operation. See `source:list` to obtain the
+            identifier.
+
+OPTIONS
+  -c, --maxConcurrent=maxConcurrent
+      [default: 10] The maximum number of requests to send concurrently. Increasing this value increases the speed at
+      which documents are indexed to the Coveo platform. However, if you run into memory or throttling issues, consider
+      reducing this value.
+
+  -f, --files=myfile.json
+      Combinaison of JSON files and folders (containing JSON files) to push. Can be repeated.
+
+  -m, --[no-]createMissingFields
+      Analyse documents to detect and automatically create missing fields in the destination organization. When enabled,
+      an error will be thrown if a field is used to store data of inconsistent type across documents.
+
+  --fullUpload
+      Controls the way your items are added to your catalog source.
+
+      Setting this option to false will trigger a document update (Default operation). Useful to perform incremental
+      updates for smaller adjustments to your catalog that do not require pushing the entire catalog. A document update
+      must only be performed after a full catalog upload.
+      See https://docs.coveo.com/en/l62e0540
+
+      Setting this option to true will trigger a full catalog upload. This process acts as a full rebuild of your catalog
+      source. Therefore, previous items that are not included in the new payload will be deleted.
+      See https://docs.coveo.com/en/lb4a0344
+
+  --skipFullUploadCheck
+      Do not check whether a full catalog upload was triggered on the target source.
+```
+
+_See code: [src/commands/source/catalog/add.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/source/catalog/add.ts)_
+
+## `coveo source:catalog:new NAME`
+
+Create a new catalog source in a Coveo organization
+
+```
+USAGE
+  $ coveo source:catalog:new NAME
+
+ARGUMENTS
+  NAME  The name of the source to create.
+
+OPTIONS
+  -v, --sourceVisibility=(PRIVATE|SECURED|SHARED)  [default: SECURED] Controls the content security option that should
+                                                   be applied to the items in a source. See
+                                                   https://docs.coveo.com/en/1779/index-content/content-security
+```
+
+_See code: [src/commands/source/catalog/new.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/source/catalog/new.ts)_
+
+## `coveo source:list`
+
+List all available push sources in your Coveo organization
+
+```
+USAGE
+  $ coveo source:list
+
+OPTIONS
+  -x, --extended          show extra columns
+  --columns=columns       only show provided columns (comma-separated)
+  --csv                   output is csv format [alias: --output=csv]
+  --filter=filter         filter property by partial string matching, ex: name=foo
+  --no-header             hide table header from output
+  --no-truncate           do not truncate output to fit screen
+  --output=csv|json|yaml  output in a more machine friendly format
+  --sort=sort             property to sort by (prepend '-' for descending)
+```
+
+_See code: [src/commands/source/list.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/source/list.ts)_
 
 ## `coveo source:push:add SOURCEID`
 
-Push a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-files-with-Coveo-CLI for more information.
+Index a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-files-with-Coveo-CLI for more information.
 
 ```
 USAGE
   $ coveo source:push:add SOURCEID
 
 ARGUMENTS
-  SOURCEID  The identifier of the source on which to perform the add operation. See source:push:list to obtain the
+  SOURCEID  The identifier of the source on which to perform the add operation. See source:list to obtain the
             identifier.
 
 OPTIONS
-  -c, --maxConcurrent=maxConcurrent                  [default: 10] The maximum number of requests to send concurrently.
-                                                     Increasing this value increases the speed at which documents are
-                                                     pushed to the Coveo platform. However, if you run into memory or
-                                                     throttling issues, consider reducing this value.
+  -c, --maxConcurrent=maxConcurrent  [default: 10] The maximum number of requests to send concurrently. Increasing this
+                                     value increases the speed at which documents are indexed to the Coveo platform.
+                                     However, if you run into memory or throttling issues, consider reducing this value.
 
-  -d, --folder=./my_folder_with_multiple_json_files  One or multiple folder containing json files. Can be repeated
+  -f, --files=myfile.json            Combinaison of JSON files and folders (containing JSON files) to push. Can be
+                                     repeated.
 
-  -f, --file=myfile.json                             One or multiple file to push. Can be repeated.
-
-  -m, --[no-]createMissingFields                     Analyse documents to detect and automatically create missing fields
-                                                     in the destination organization. When enabled, an error will be
-                                                     thrown if a field is used to store data of inconsistent type across
-                                                     documents.
+  -m, --[no-]createMissingFields     Analyse documents to detect and automatically create missing fields in the
+                                     destination organization. When enabled, an error will be thrown if a field is used
+                                     to store data of inconsistent type across documents.
 ```
 
-_See code: [src/commands/source/push/add.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/source/push/add.ts)_
+_See code: [src/commands/source/push/add.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/source/push/add.ts)_
 
 ## `coveo source:push:delete SOURCEID`
 
@@ -456,11 +540,11 @@ OPTIONS
       `source:push:batch` command instead.
 ```
 
-_See code: [src/commands/source/push/delete.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/source/push/delete.ts)_
+_See code: [src/commands/source/push/delete.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/source/push/delete.ts)_
 
 ## `coveo source:push:list`
 
-List all available push sources in your Coveo organization
+[35m[Deprecated][39m List all available push sources in your Coveo organization
 
 ```
 USAGE
@@ -477,7 +561,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/source/push/list.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/source/push/list.ts)_
+_See code: [src/commands/source/push/list.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/source/push/list.ts)_
 
 ## `coveo source:push:new NAME`
 
@@ -496,7 +580,7 @@ OPTIONS
                                                    https://docs.coveo.com/en/1779/index-content/content-security
 ```
 
-_See code: [src/commands/source/push/new.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/source/push/new.ts)_
+_See code: [src/commands/source/push/new.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/source/push/new.ts)_
 
 ## `coveo ui:create:angular NAME`
 
@@ -511,10 +595,10 @@ ARGUMENTS
 
 OPTIONS
   -d, --defaults         Whether to automatically select the default value for all prompts that have a default value.
-  -v, --version=version  [default: 1.27.1] The version of @coveo/angular to use.
+  -v, --version=version  [default: 1.28.0] The version of @coveo/angular to use.
 ```
 
-_See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/ui/create/angular.ts)_
+_See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/ui/create/angular.ts)_
 
 ## `coveo ui:create:atomic NAME`
 
@@ -528,13 +612,14 @@ ARGUMENTS
   NAME  The name of the application to create.
 
 OPTIONS
-  -v, --version=version  [default: 1.27.1] The version of @coveo/create-atomic to use.
+  -v, --version=version  [default: 1.28.0] The version of @coveo/create-atomic to use.
+  -p, --pageId=id The hosted search page ID, e.g. "7944ff4a-9943-4999-a3f6-3e81a7f6fb0a".
 
 EXAMPLE
   $ coveo ui:create:atomic myapp
 ```
 
-_See code: [src/commands/ui/create/atomic.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/ui/create/atomic.ts)_
+_See code: [src/commands/ui/create/atomic.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/ui/create/atomic.ts)_
 
 ## `coveo ui:create:react NAME`
 
@@ -548,14 +633,14 @@ ARGUMENTS
   NAME  The name of the application to create.
 
 OPTIONS
-  -v, --version=version  [default: 1.27.1] Version of @coveo/cra-template to use.
+  -v, --version=version  [default: 1.28.0] Version of @coveo/cra-template to use.
 
 EXAMPLES
   $ coveo ui:create:react myapp
   $ coveo ui:create:react --help
 ```
 
-_See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/ui/create/react.ts)_
+_See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/ui/create/react.ts)_
 
 ## `coveo ui:create:vue NAME`
 
@@ -574,14 +659,14 @@ OPTIONS
                          For more information about Vue CLI presets, see
                          https://cli.vuejs.org/guide/plugins-and-presets.html#presets.
 
-  -v, --version=version  [default: 1.27.1] The version of @coveo/vue-cli-plugin-typescript to use.
+  -v, --version=version  [default: 1.28.1] The version of @coveo/vue-cli-plugin-typescript to use.
 
 EXAMPLES
   $ coveo ui:create:vue --preset path/to/my/preset.json
   $ coveo ui:create:vue --help
 ```
 
-_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v1.27.1/packages/cli/src/commands/ui/create/vue.ts)_
+_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/v1.28.1/packages/cli/src/commands/ui/create/vue.ts)_
 
 ## `coveo update [CHANNEL]`
 
