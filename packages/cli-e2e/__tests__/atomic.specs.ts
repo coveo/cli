@@ -14,6 +14,7 @@ import {existsSync} from 'fs-extra';
 import {join} from 'path';
 
 interface BuildAppOptions {
+  id: string;
   pageId?: string;
   promptAnswer?: string;
 }
@@ -39,12 +40,19 @@ describe('ui:create:atomic', () => {
     processManager: ProcessManager,
     options: BuildAppOptions
   ) => {
+    let stderr = '';
+    const stderrListener = (chunk: string) => {
+      stderr += chunk;
+    };
+
     const buildTerminal = await setupUIProject(
       processManager,
       'ui:create:atomic',
-      projectName,
+      `${projectName}-${options.id}`,
       {flags: options.pageId ? ['--pageId', options.pageId] : undefined}
     );
+
+    buildTerminal.orchestrator.process.stderr.on('data', stderrListener);
 
     if (!options.pageId) {
       await buildTerminal
@@ -68,6 +76,8 @@ describe('ui:create:atomic', () => {
       .on('stderr')
       .do(answerPrompt(`y${EOL}`))
       .until(buildTerminalExitPromise);
+
+    return {stderr};
   };
 
   const startApplication = async (
@@ -95,20 +105,25 @@ describe('ui:create:atomic', () => {
   describe.each([
     {
       describeName: 'when using the default page config (pageId not specified)',
-      buildAppOptions: {},
+      buildAppOptions: {id: 'without-page-id'},
     },
     {
+      id: 'with-page-id',
       describeName: 'when using an existing pageId (--pageId flag specified)',
-      buildAppOptions: {pageId: '85fe78b4-2e10-4ed9-a0b7-664f5d23887d'},
-    },
-    /*
-      {
-        describeName:
-          'when using an existing pageId (using the list prompt of available pages)',
-        buildAppOptions: {promptAnswer: `\033[B${EOL}`},
+      buildAppOptions: {
+        id: 'without-page-id',
+        pageId: '85fe78b4-2e10-4ed9-a0b7-664f5d23887d',
       },
-      */
+    },
+    {
+      id: 'with-page-id-prompt',
+      describeName:
+        'when using an existing pageId (using the list prompt of available pages)',
+      buildAppOptions: {id: 'without-page-id', promptAnswer: `\x1B[B ${EOL}`},
+    },
   ])('$describeName', ({buildAppOptions}) => {
+    let stderr: string;
+
     beforeAll(async () => {
       await loginWithApiKey(
         process.env.PLATFORM_API_KEY!,
@@ -118,7 +133,7 @@ describe('ui:create:atomic', () => {
       const processManager = new ProcessManager();
       processManagers.push(processManager);
       browser = await getNewBrowser();
-      await buildApplication(processManager, buildAppOptions);
+      stderr = (await buildApplication(processManager, buildAppOptions)).stderr;
       await processManager.killAllProcesses();
     }, 15 * 60e3);
 
@@ -140,7 +155,15 @@ describe('ui:create:atomic', () => {
       );
     });
 
-    describe('validating files', () => {
+    it('should use the right configuration', () => {
+      const message =
+        buildAppOptions.promptAnswer || buildAppOptions.pageId
+          ? 'Hosted search page named'
+          : 'Using the default search page template.';
+      expect(stderr).toContain(message);
+    });
+
+    describe.skip('validating files', () => {
       const createdFilesPaths = [
         'package.json',
         'package-lock.json',
@@ -183,7 +206,7 @@ describe('ui:create:atomic', () => {
       );
     });
 
-    describe('when the project is configured correctly', () => {
+    describe.skip('when the project is configured correctly', () => {
       let serverProcessManager: ProcessManager;
       let interceptedRequests: HTTPRequest[] = [];
       let consoleInterceptor: BrowserConsoleInterceptor;
@@ -255,7 +278,7 @@ describe('ui:create:atomic', () => {
       }, 60e3);
     });
 
-    describe('when the default Stencil port is busy', () => {
+    describe.skip('when the default Stencil port is busy', () => {
       let dummyServer: DummyServer;
       let serverProcessManager: ProcessManager;
 
