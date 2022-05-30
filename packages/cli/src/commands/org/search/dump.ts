@@ -11,6 +11,7 @@ import {Parser} from 'json2csv';
 // eslint-disable-next-line node/no-extraneous-import
 import {SingleBar} from 'cli-progress';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {without} from '../../../lib/utils/list';
 
 interface SearchResult {
   raw: {rowid: string};
@@ -88,7 +89,8 @@ export default class Dump extends Command {
     const organizationId = (await new Config(this.config.configDir).get())
       .organization;
     const fieldsToExclude =
-      flags.fieldsToExclude && this.excludeFields(flags.fieldsToExclude);
+      flags.fieldsToExclude &&
+      without(flags.fieldsToExclude, Dump.mandatoryFields);
 
     const allResults = await this.fetchResults({
       client,
@@ -113,20 +115,13 @@ export default class Dump extends Command {
     throw err;
   }
 
-  private excludeFields(
-    fields: string[],
-    fieldsToExclude: string[] = Dump.mandatoryFields
-  ) {
-    return fields.filter((field) => !fieldsToExclude.includes(field));
-  }
-
   private async writeChunks(allResults: SearchResult[]) {
     const {flags} = await this.parse(Dump);
     let currentChunk = 0;
     while (allResults.length) {
       const chunk = allResults.splice(0, flags.chunkSize);
       const data = chunk.map((r) => r.raw);
-      const fieldsToRender = this.excludeFields(
+      const fieldsToRender = without(
         Object.keys(chunk[0].raw),
         flags.fieldsToExclude
       );
