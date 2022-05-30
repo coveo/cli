@@ -11,7 +11,6 @@ import {Parser} from 'json2csv';
 // eslint-disable-next-line node/no-extraneous-import
 import {SingleBar} from 'cli-progress';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
-import {bold} from 'chalk';
 
 interface SearchResult {
   raw: {rowid: string};
@@ -89,8 +88,7 @@ export default class Dump extends Command {
     const organizationId = (await new Config(this.config.configDir).get())
       .organization;
     const fieldsToExclude =
-      flags.fieldsToExclude &&
-      this.ensureMandatoryFields(flags.fieldsToExclude);
+      flags.fieldsToExclude && this.excludeFields(flags.fieldsToExclude);
 
     const allResults = await this.fetchResults({
       client,
@@ -115,16 +113,11 @@ export default class Dump extends Command {
     throw err;
   }
 
-  private ensureMandatoryFields(fields: string[]) {
-    return fields.filter((field) => {
-      const includeMandatoryField = Dump.mandatoryFields.includes(field);
-      if (includeMandatoryField) {
-        CliUx.ux.warn(
-          `Cannot exclude required field ${bold(field)} from the data dump`
-        );
-      }
-      return !includeMandatoryField;
-    });
+  private excludeFields(
+    fields: string[],
+    fieldsToExclude: string[] = Dump.mandatoryFields
+  ) {
+    return fields.filter((field) => !fieldsToExclude.includes(field));
   }
 
   private async writeChunks(allResults: SearchResult[]) {
@@ -133,7 +126,11 @@ export default class Dump extends Command {
     while (allResults.length) {
       const chunk = allResults.splice(0, flags.chunkSize);
       const data = chunk.map((r) => r.raw);
-      const parser = new Parser({fields: Object.keys(chunk[0].raw)});
+      const fieldsToRender = this.excludeFields(
+        Object.keys(chunk[0].raw),
+        flags.fieldsToExclude
+      );
+      const parser = new Parser({fields: fieldsToRender});
       await writeFile(
         `${flags.destination}/${flags.name}${
           currentChunk > 0 ? `_${currentChunk + 1}` : ''
