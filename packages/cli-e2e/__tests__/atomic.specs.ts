@@ -101,14 +101,17 @@ describe('ui:create:atomic', () => {
     {
       describeName: 'when using an existing pageId (--pageId flag specified)',
       buildAppOptions: {
-        id: 'without-page-id',
+        id: 'with-page-id',
         pageId: '85fe78b4-2e10-4ed9-a0b7-664f5d23887d',
       },
     },
     {
       describeName:
         'when using an existing pageId (using the list prompt of available pages)',
-      buildAppOptions: {id: 'without-page-id', promptAnswer: `\x1B[B ${EOL}`},
+      buildAppOptions: {
+        id: 'with-page-id-prompt',
+        promptAnswer: `\x1B[B ${EOL}`,
+      },
     },
   ])('$describeName', ({buildAppOptions}) => {
     beforeAll(async () => {
