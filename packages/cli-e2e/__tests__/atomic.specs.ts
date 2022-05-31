@@ -31,8 +31,9 @@ describe('ui:create:atomic', () => {
       .do()
       .once();
 
-  const getProjectName = (id: string) =>
-    `${process.env.TEST_RUN_ID}-atomic-project-${id}`;
+  // TODO: add id back
+  const getProjectName = (_id: string) =>
+    `${process.env.TEST_RUN_ID}-atomic-project`;
 
   const buildApplication = async (
     processManager: ProcessManager,
