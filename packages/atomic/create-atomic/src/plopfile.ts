@@ -29,11 +29,13 @@ export default async function (plop: NodePlopAPI) {
       return _platformClient;
     }
 
-    return createPlatformClient(
+    _platformClient = createPlatformClient(
       answers['platform-url'],
       answers['org-id'],
       answers['api-key']
     );
+
+    return _platformClient;
   }
 
   plop.setHelper('inc', (value) => parseInt(value) + 1);
