@@ -99,7 +99,6 @@ describe('ui:create:atomic', () => {
       buildAppOptions: {id: 'without-page-id'},
     },
     {
-      id: 'with-page-id',
       describeName: 'when using an existing pageId (--pageId flag specified)',
       buildAppOptions: {
         id: 'without-page-id',
@@ -107,7 +106,6 @@ describe('ui:create:atomic', () => {
       },
     },
     {
-      id: 'with-page-id-prompt',
       describeName:
         'when using an existing pageId (using the list prompt of available pages)',
       buildAppOptions: {id: 'without-page-id', promptAnswer: `\x1B[B ${EOL}`},
