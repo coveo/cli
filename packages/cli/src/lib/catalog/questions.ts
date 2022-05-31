@@ -1,14 +1,8 @@
-// const shouldMapStandardFields = await CliUx.ux.confirm(
-//   'Would you like to map standard fields to your catalog?'
-// );
-// const unmapped = getUnmappedFieldMappings(fieldNames);
-// const hasUnmappedFieldsMappings = Object.keys(unmapped).length > 0;
-// if (hasUnmappedFieldsMappings && shouldMapStandardFields) {
-//   model.fieldsMapping = {
-//     ...model.fieldsMapping,
-//     ...getStandardFieldMappings(fieldNames),
-//   };
-// }
+import {filter} from 'fuzzy';
+import {bold} from 'chalk';
+import inquirer from 'inquirer';
+import inquirerPrompt from 'inquirer-autocomplete-prompt';
+import {Plurable, pluralizeIfNeeded} from '../utils/string';
 
 // Catalog Id field step
 // - Select the value attributed to your Product object type.
@@ -35,41 +29,58 @@ export interface CatalogStructure {
   availabilities: boolean;
 }
 
-// export const defaultCatalogStructure: CatalogStructure = {
-//   products: true,
-//   variants: false,
-//   availabilities: false,
-// };
+export const defaultCatalogStructure: CatalogStructure = {
+  products: true,
+  variants: false,
+  availabilities: false,
+};
 
-export function selectCatalogStructure(
-  objectTypes: string[]
-): CatalogStructure {
-  const catalogStructure = prompt({
-    message: 'Select your catalog data structure',
-    type: 'checkbox',
+export async function selectCatalogStructure(
+  objectTypeValues: string[]
+): Promise<CatalogStructure> {
+  if (objectTypeValues.length === 1) {
+    return defaultCatalogStructure;
+  }
+
+  const typePluralized = pluralizeIfNeeded(
+    ['type', 'types'],
+    objectTypeValues.length - 1
+  );
+  const answer = await inquirer.prompt({
+    message: `Select the object ${typePluralized} your catalog should include`,
+    name: 'objectTypes',
+    type: objectTypeValues.length === 2 ? 'list' : 'checkbox',
     choices: [
-      {name: 'products', value: 'Products', checked: true},
-      {name: 'variants', value: 'Variants'},
-      {name: 'availabilities', value: 'Availabilities'},
+      {name: 'Variants', value: 'variants'},
+      {name: 'Availabilities', value: 'availabilities'},
     ],
-    validate: (input: string, ans: Answers) => {
-      console.log('*********************');
-      console.log(objectTypes.length);
-      console.log(input);
-      console.log('*********************');
-      return 'you have selected more data structure than blabla objecttype blabla in your data';
-    },
   });
-  // Select the object types your catalog should include
-  throw 'TODO:';
+  const objectTypeArray = [answer.objectTypes].flatMap((o) => o);
+  return {
+    ...defaultCatalogStructure,
+    variants: objectTypeArray.includes('variants'),
+    availabilities: objectTypeArray.includes('availabilities'),
+  };
 }
 
-export function selectObjectTypeField(
+export async function selectObjectTypeField(
   objectType: 'product' | 'variant' | 'availability', // TODO: find a type
   fields: string[]
-): string {
-  throw 'TODO:';
+): Promise<string> {
+  const answer = await inquirer.prompt({
+    message: `Select the value attributed to your ${bold(
+      objectType
+    )} object type.`,
+    name: 'fieldName',
+    type: 'autocomplete' as any,
+    source: (_answersSoFar: string, input: string) => {
+      const results = filter(input, fields);
+      return results.map((v) => v.string || v);
+    },
+  } as any);
+  return answer.fieldName;
 }
+
 export function selectIdField(
   objectType: 'product' | 'variant' | 'availability', // TODO: find a type
   fields: string[]
@@ -88,3 +99,21 @@ export function selectStandardFieldMapping(
   //   choices: fields,
   // });
 }
+
+async function main() {
+  inquirer.registerPrompt('autocomplete', inquirerPrompt);
+  const a = await selectObjectTypeField('product', [
+    'allo',
+    'allodsa',
+    'fgallodfd',
+    'fgsdghdfdgh',
+    'fgsdghdfdghdgh',
+    'fgsdghdf',
+    'vbsdfgqw',
+  ]);
+  console.log('*********************');
+  console.log(a);
+  console.log('*********************');
+}
+
+main();
