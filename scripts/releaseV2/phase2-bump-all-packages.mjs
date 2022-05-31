@@ -10,7 +10,7 @@ import {
 import {spawnSync} from 'child_process';
 import {readFileSync} from 'fs';
 import angularChangelogConvention from 'conventional-changelog-angular';
-import {waitForPackages} from './utils/wait-for-published-packages';
+import {waitForPackage} from './utils/wait-for-published-packages';
 import {dirname, resolve, join} from 'path';
 import {fileURLToPath} from 'url';
 import retry from 'async-retry';
@@ -76,12 +76,20 @@ async function updateWorkspaceDependencies(version) {
     readFileSync('package.json', {encoding: 'utf-8'})
   );
   const packageName = packageJson.name.replace('@coveo/', '');
-  const dependencies = topology.graph.dependencies[packageName]
+  const topologicalDependencies = topology.graph.dependencies[packageName]
     .filter((dependency) => dependency.source == packageName)
     .map((dependency) => `@coveo/${dependency.target}`);
-  await waitForPackages(dependencies);
-  for (const dependency of dependencies) {
-    await updateDependency(packageJson, dependency, version);
+  const npmDependencies = [
+    'dependencies',
+    'devDependencies',
+    'peerDependencies',
+  ].reduce((acc, cur) => acc.concat(Object.keys(packageJson[cur] ?? [])));
+
+  for (const dependency of topologicalDependencies) {
+    if (dependency in npmDependencies) {
+      await waitForPackage(dependency);
+      await updateDependency(packageJson, dependency, version);
+    }
   }
 }
 
