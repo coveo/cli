@@ -103,6 +103,11 @@ jobs:
         run: |
           echo "${{ secrets.E2E_TOKEN_PASSPHRASE }}" | gpg -a --batch --passphrase-fd 0 --symmetric --cipher-algo AES256 --output encodedConfig $CLI_CONFIG_PATH
           echo "::set-output name=cliConfigJson::$(base64 -w 0 encodedConfig)"
+      - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
+        if: always()
+        with:
+          name: e2e-login-publish-artifacts
+          path: ./packages/cli-e2e/artifacts
   e2e-setup-verdaccio:
     strategy:
       matrix:
