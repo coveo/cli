@@ -20,11 +20,6 @@ interface BuildAppOptions {
 }
 
 describe('ui:create:atomic', () => {
-  let browser: Browser;
-  const processManagers: ProcessManager[] = [];
-  let page: Page;
-  const oldEnv = process.env;
-  const projectName = `${process.env.TEST_RUN_ID}-atomic-project`;
   const searchPageEndpoint = 'http://localhost:8888';
   const tokenServerEndpoint = 'http://localhost:8888/.netlify/functions/token';
   const searchInterfaceSelector = 'atomic-search-interface';
@@ -35,6 +30,9 @@ describe('ui:create:atomic', () => {
       .on('stdout')
       .do()
       .once();
+
+  const getProjectName = (id: string) =>
+    `${process.env.TEST_RUN_ID}-atomic-project-${id}`;
 
   const buildApplication = async (
     processManager: ProcessManager,
@@ -48,7 +46,7 @@ describe('ui:create:atomic', () => {
     const buildTerminal = await setupUIProject(
       processManager,
       'ui:create:atomic',
-      `${projectName}-${options.id}`,
+      getProjectName(options.id),
       {flags: options.pageId ? ['--pageId', options.pageId] : undefined}
     );
 
@@ -82,6 +80,7 @@ describe('ui:create:atomic', () => {
 
   const startApplication = async (
     processManager: ProcessManager,
+    options: BuildAppOptions,
     debugName = 'atomic-server'
   ) => {
     const args = [...npm(), 'run', 'start'];
@@ -90,17 +89,13 @@ describe('ui:create:atomic', () => {
       args.shift()!,
       args,
       {
-        cwd: getProjectPath(projectName),
+        cwd: getProjectPath(getProjectName(options.id)),
       },
       processManager,
-      debugName
+      `${debugName}-${options.id}`
     );
     return serverTerminal;
   };
-
-  function projectFileExist(path: string) {
-    return existsSync(join(getProjectPath(projectName), ...path.split('/')));
-  }
 
   describe.each([
     {
@@ -123,7 +118,20 @@ describe('ui:create:atomic', () => {
       },
     },
   ])('$describeName', ({buildAppOptions}) => {
+    const oldEnv = process.env;
+    const processManagers: ProcessManager[] = [];
     let stderr: string;
+    let browser: Browser;
+    let page: Page;
+
+    function projectFileExist(path: string) {
+      return existsSync(
+        join(
+          getProjectPath(getProjectName(buildAppOptions.id)),
+          ...path.split('/')
+        )
+      );
+    }
 
     beforeAll(async () => {
       await loginWithApiKey(
@@ -217,13 +225,17 @@ describe('ui:create:atomic', () => {
         processManagers.push(serverProcessManager);
         const appTerminal = await startApplication(
           serverProcessManager,
+          buildAppOptions,
           'atomic-server-valid'
         );
         await waitForAppRunning(appTerminal);
       }, 5 * 60e3);
 
       beforeEach(async () => {
-        consoleInterceptor = new BrowserConsoleInterceptor(page, projectName);
+        consoleInterceptor = new BrowserConsoleInterceptor(
+          page,
+          getProjectName(buildAppOptions.id)
+        );
         await consoleInterceptor.startSession();
 
         page.on('request', (request: HTTPRequest) => {
@@ -291,6 +303,7 @@ describe('ui:create:atomic', () => {
 
         const appTerminal = await startApplication(
           serverProcessManager,
+          buildAppOptions,
           'stencil-port-test'
         );
         await waitForAppRunning(appTerminal);
