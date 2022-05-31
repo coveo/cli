@@ -25,7 +25,7 @@ jobs:
           node-version: 16
           cache: 'npm'
       - name: Install locked NPM version.
-        # TODO: Remove later, when `npm 8.5.4` is built in.
+        # TODO: CDX-1010 | Remove in CDX-1010.
         run: npm i -g npm@8.10.0
       - name: Setup repo
         run: npm ci
@@ -55,7 +55,7 @@ jobs:
           node-version: ${{matrix.node}}
           cache: 'npm'
       - name: Install locked NPM version.
-        # TODO: Remove later, when `npm 8.5.4` is built in.
+        # TODO: CDX-1010 | Remove in CDX-1010.
         run: npm i -g npm@8.10.0
       - name: Setup repo
         run: npm ci
@@ -86,7 +86,7 @@ jobs:
           node-version: ${{matrix.node}}
           cache: 'npm'
       - name: Install locked NPM version.
-        # TODO: Remove later, when `npm 8.5.4` is built in.
+        # TODO: CDX-1010 | Remove in CDX-1010.
         run: npm i -g npm@8.10.0
       - run: |
           npm ci
@@ -126,7 +126,7 @@ jobs:
           path: packages\cli-e2e\verdaccio
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
       - name: Install locked NPM version.
-        # TODO: Remove later, when `npm 8.5.4` is built in.
+        # TODO: CDX-1010 | Remove in CDX-1010.
         run: npm i -g npm@8.10.0
       - run: npm ci
       - name: Build
@@ -193,7 +193,7 @@ jobs:
       - name: Install Mitmproxy through pip
         run: pip install -r packages/cli-e2e/mitmproxy/requirements.txt
       - name: Install locked NPM version.
-        # TODO: Remove later, when `npm 8.5.4` is built in.
+        # TODO: CDX-1010 | Remove in CDX-1010.
         run: npm i -g npm@8.10.0
       - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # tag=v3
         if: ${{matrix.os == 'ubuntu-latest'}}
@@ -256,7 +256,7 @@ jobs:
           node-version: ${{matrix.node}}
           cache: 'npm'
       - name: Install locked NPM version.
-        # TODO: Remove later, when `npm 8.5.4` is built in.
+        # TODO: CDX-1010 | Remove in CDX-1010.
         run: npm i -g npm@8.10.0
       - run: npm ci
       - name: Decrypt config
