@@ -113,8 +113,6 @@ describe('ui:create:atomic', () => {
       buildAppOptions: {id: 'without-page-id', promptAnswer: `\x1B[B ${EOL}`},
     },
   ])('$describeName', ({buildAppOptions}) => {
-    let stderr: string;
-
     beforeAll(async () => {
       await loginWithApiKey(
         process.env.PLATFORM_API_KEY!,
