@@ -11,6 +11,7 @@ import {Parser} from 'json2csv';
 // eslint-disable-next-line node/no-extraneous-import
 import {SingleBar} from 'cli-progress';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {without} from '../../../lib/utils/list';
 
 interface SearchResult {
   raw: {rowid: string};
@@ -31,6 +32,7 @@ interface FetchParameters {
 }
 
 export default class Dump extends Command {
+  private static mandatoryFields = ['rowid', 'sysrowid'];
   public static description =
     'Dump the content of one or more sources in CSV format.';
 
@@ -86,6 +88,9 @@ export default class Dump extends Command {
     const client = await new AuthenticatedClient().getClient();
     const organizationId = (await new Config(this.config.configDir).get())
       .organization;
+    const fieldsToExclude =
+      flags.fieldsToExclude &&
+      without(flags.fieldsToExclude, Dump.mandatoryFields);
 
     const allResults = await this.fetchResults({
       client,
@@ -93,7 +98,7 @@ export default class Dump extends Command {
       sources: flags.source,
       pipeline: flags.pipeline,
       additionalFilter: flags.additionalFilter,
-      fieldsToExclude: flags.fieldsToExclude,
+      fieldsToExclude,
     });
 
     if (allResults.length === 0) {
@@ -116,7 +121,11 @@ export default class Dump extends Command {
     while (allResults.length) {
       const chunk = allResults.splice(0, flags.chunkSize);
       const data = chunk.map((r) => r.raw);
-      const parser = new Parser({fields: Object.keys(chunk[0].raw)});
+      const fields = without(
+        Object.keys(chunk[0].raw),
+        flags.fieldsToExclude || []
+      );
+      const parser = new Parser({fields});
       await writeFile(
         `${flags.destination}/${flags.name}${
           currentChunk > 0 ? `_${currentChunk + 1}` : ''
