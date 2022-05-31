@@ -68,7 +68,7 @@ jobs:
       cliConfigJson: ${{ steps.setup.outputs.cliConfigJson}}
     env:
       # Platform environment to log into for the e2e tests.
-      PLATFORM_ENV: 'qa'
+      PLATFORM_ENV: 'stg'
       # Username used to log into the organization whose ID is stored in the ORG_ID variable
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       # Password used to log into the organization whose ID is stored in the ORG_ID variable
@@ -159,7 +159,7 @@ jobs:
           ]
     env:
       # Platform environment to log into for the e2e tests.
-      PLATFORM_ENV: 'qa'
+      PLATFORM_ENV: 'stg'
       # Username used to log into the organization whose ID is stored in the ORG_ID variable
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       # Password used to log into the organization whose ID is stored in the ORG_ID variable
@@ -237,7 +237,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # Platform environment to log into for the e2e tests.
-      PLATFORM_ENV: 'qa'
+      PLATFORM_ENV: 'stg'
       # Username used to log into the organization whose ID is stored in the ORG_ID variable
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       # Password used to log into the organization whose ID is stored in the ORG_ID variable

@@ -79,8 +79,8 @@ describe('OAuth', () => {
       );
     });
 
-    fancyIt()('in qa', async () => {
-      const opts = {environment: PlatformEnvironment.QA};
+    fancyIt()('in stg', async () => {
+      const opts = {environment: PlatformEnvironment.Stg};
       await new OAuth(opts).getToken();
       expect(mockedOauthClientServer).toHaveBeenCalledWith(
         defaultClientConfig,
@@ -98,7 +98,7 @@ describe('OAuth', () => {
     });
 
     fancyIt()('in hipaa', async () => {
-      const opts = {environment: PlatformEnvironment.QA};
+      const opts = {environment: PlatformEnvironment.Stg};
       await new OAuth(opts).getToken();
       expect(mockedOauthClientServer).toHaveBeenCalledWith(
         defaultClientConfig,
