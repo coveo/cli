@@ -86,7 +86,7 @@ async function updateWorkspaceDependencies(version) {
   ].reduce((acc, cur) => acc.concat(Object.keys(packageJson[cur] ?? [])));
 
   for (const dependency of topologicalDependencies) {
-    if (dependency in npmDependencies) {
+    if (npmDependencies.includes(dependency)) {
       await waitForPackage(dependency);
       await updateDependency(packageJson, dependency, version);
     }
