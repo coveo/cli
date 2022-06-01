@@ -24,6 +24,8 @@ import {Configuration} from '../../../lib/config/config';
 import {catalogConfigurationUrl} from '../../../lib/platform/url';
 import {withSourceVisibility} from '../../../lib/flags/sourceCommonFlags';
 import {getDocumentFieldsAndObjectTypeValues} from '../../../lib/catalog/parse';
+import dedent from 'ts-dedent';
+import {without} from '../../../lib/utils/list';
 
 type PartialCatalogConfigurationModel = Pick<
   CreateCatalogConfigurationModel,
@@ -105,8 +107,13 @@ export default class CatalogCreate extends Command {
     client: PlatformClient
   ): Promise<PartialCatalogConfigurationModel> {
     try {
-      return this.generateCatalogConfigurationAutomatically(client);
-    } catch (error) {}
+      return await this.generateCatalogConfigurationAutomatically(client);
+    } catch (error) {
+      CliUx.ux.warn(
+        dedent`Unable to automatically generate catalog configuration from data.
+        Please answer the following questions`
+      );
+    }
     return this.generateCatalogConfigurationInteractively(client);
   }
 
@@ -120,28 +127,59 @@ export default class CatalogCreate extends Command {
     client: PlatformClient
   ) {
     const {flags} = await this.parse(CatalogCreate);
-    const {fields, objectTypeValues} =
-      await getDocumentFieldsAndObjectTypeValues(client, flags.dataFiles);
-    const {variants, availabilities} = selectCatalogStructure(objectTypeValues);
+    let {fields, objectTypeValues} = await getDocumentFieldsAndObjectTypeValues(
+      client,
+      flags.dataFiles
+    );
+    const {variants, availabilities} = await selectCatalogStructure(
+      objectTypeValues
+    );
+    const productObjectType = await selectObjectTypeField(
+      'product',
+      objectTypeValues
+    );
+    const productIdField = await selectIdField(
+      `Select your Product ${variants ? 'ID' : 'SKU'} field`,
+      fields
+    );
+    objectTypeValues = without(objectTypeValues, [productObjectType]);
     const model: PartialCatalogConfigurationModel = {
       product: {
-        objectType: selectObjectTypeField('product', objectTypeValues),
-        idField: selectIdField('product', fields),
+        objectType: productObjectType,
+        idField: productIdField,
       },
     };
 
     if (variants) {
+      const variantObjectType = await selectObjectTypeField(
+        'variant',
+        objectTypeValues
+      );
+      const variantIdField = await selectIdField(
+        'Select your Product SKU field',
+        fields
+      );
+      objectTypeValues = without(objectTypeValues, [variantObjectType]);
       model.variant = {
-        objectType: selectObjectTypeField('variant', objectTypeValues), // TODO: minus the previous one
-        idField: selectIdField('variant', fields),
+        objectType: variantObjectType,
+        idField: variantIdField,
       };
     }
 
     if (availabilities) {
       model.availability = {
-        objectType: selectObjectTypeField('availability', objectTypeValues), // TODO: minus the previous one
-        idField: selectIdField('availability', fields),
-        availableSkusField: selectIdField('availability', fields),
+        objectType: await selectObjectTypeField(
+          'availability',
+          objectTypeValues
+        ),
+        idField: await selectIdField(
+          'Select your Availability ID field',
+          fields
+        ),
+        availableSkusField: await selectIdField(
+          'Select your Available SKUs field',
+          fields
+        ),
       };
     }
 

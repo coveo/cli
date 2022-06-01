@@ -1,27 +1,11 @@
-import {filter, FilterResult} from 'fuzzy';
+/// <reference path='../../typings/inquirer/inquirer-autocomplete-prompt.d.ts'/>
+import {filter} from 'fuzzy';
 import {bold} from 'chalk';
 import inquirer from 'inquirer';
 import autocompletePrompt from 'inquirer-autocomplete-prompt';
-import {Plurable, pluralizeIfNeeded} from '../utils/string';
+import {pluralizeIfNeeded} from '../utils/string';
 
-// Catalog Id field step
-// - Select the value attributed to your Product object type.
-// - Select your Product ID field (if no variant is selected, ask "select your product SKU field")
-// - The product ID is used to link the product to its variant. The field must appear on both types of objects. (if no variant is selected, ask "The SKU is used to identify each sellable unit.")
-// Prompt for product Id field and obejct type
-
-// if (catalogStructure.variant) {
-// - Select the value attributed to your Variant object type.
-// - Select your Product SKU field
-// - The SKU is used to identify each sellable unit.
-//   // Prompt for variant Id field and obejct type
-// }
-
-// if (catalogStructure.availabilities) {
-//   // Prompt for availabilities Id field and obejct type
-// }
-
-// TODO: CDX-978: prompt user for source ids. If the there are no sources in the org, create them
+inquirer.registerPrompt('autocomplete', autocompletePrompt);
 
 export interface CatalogStructure {
   products: boolean;
@@ -36,24 +20,30 @@ export const defaultCatalogStructure: CatalogStructure = {
 };
 
 export async function selectCatalogStructure(
-  objectTypeValues: string[]
+  availableObjectTypes: string[]
 ): Promise<CatalogStructure> {
-  if (objectTypeValues.length === 1) {
+  if (availableObjectTypes.length === 1) {
     return defaultCatalogStructure;
   }
 
   const typePluralized = pluralizeIfNeeded(
     ['type', 'types'],
-    objectTypeValues.length - 1
+    availableObjectTypes.length - 1
   );
   const answer = await inquirer.prompt({
-    message: `Select the object ${typePluralized} your catalog should include`,
+    message: `Select the additional object ${typePluralized} your catalog should include`,
     name: 'objectTypes',
-    type: objectTypeValues.length === 2 ? 'list' : 'checkbox',
+    type: 'checkbox',
     choices: [
       {name: 'Variants', value: 'variants'},
       {name: 'Availabilities', value: 'availabilities'},
     ],
+    validate: (selectedObjectTypes: string[]) => {
+      if (selectedObjectTypes.length > availableObjectTypes.length - 1) {
+        return 'Cannot select more objecttype values than what is avaialble in your documents';
+      }
+      return true;
+    },
   });
   const objectTypeArray = [answer.objectTypes].flatMap((o) => o);
   return {
@@ -64,7 +54,7 @@ export async function selectCatalogStructure(
 }
 
 export async function selectObjectTypeField(
-  objectType: 'product' | 'variant' | 'availability', // TODO: find a type
+  objectType: 'product' | 'variant' | 'availability',
   fields: string[]
 ): Promise<string> {
   const answer = await inquirer.prompt({
@@ -78,8 +68,6 @@ export async function selectObjectTypeField(
       return results.map((v) => v.string || v);
     },
   });
-  // Dirty mutation of the array parameter to prevent proposing already selected option in future questions
-  // fields = fields.filter((f) => f !== answer.fieldName);
   return answer.fieldName;
 }
 
@@ -98,21 +86,3 @@ export async function selectIdField(
   });
   return answer.fieldName;
 }
-
-async function main() {
-  inquirer.registerPrompt('autocomplete', autocompletePrompt);
-  const a = await selectObjectTypeField('product', [
-    'allo',
-    'allodsa',
-    'fgallodfd',
-    'fgsdghdfdgh',
-    'fgsdghdfdghdgh',
-    'fgsdghdf',
-    'vbsdfgqw',
-  ]);
-  console.log('*********************');
-  console.log(a);
-  console.log('*********************');
-}
-
-main();
