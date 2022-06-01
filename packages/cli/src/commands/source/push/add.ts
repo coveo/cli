@@ -68,7 +68,6 @@ export default class SourcePushAdd extends Command {
     const {accessToken, organization, environment, region} =
       await new AuthenticatedClient().cfg.get();
     const source = new PushSource(accessToken!, organization, {
-      //@ts-ignore
       environment,
       region,
     });
