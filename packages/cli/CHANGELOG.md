@@ -1,3 +1,36 @@
+# 1.29.0 (2022-05-31)
+
+### Bug Fixes
+
+- **dump:** handle rowid fields in org:search:dump ([#806](https://github.com/coveo/cli/issues/806)) ([927333d](https://github.com/coveo/cli/commits/927333de5a1998f02f9ebd62df0a8f78e56de81f))
+
+### Features
+
+- **create-atomic:** allow Coveo atomic to start from an existing Platform Search page ([#728](https://github.com/coveo/cli/issues/728)) ([340fe4a](https://github.com/coveo/cli/commits/340fe4af779ff87730f3a9964272f7a50561ee39))
+
+## 1.28.1 (2022-05-24)
+
+# 1.28.0 (2022-05-24)
+
+### Bug Fixes
+
+- add precondition check on source creation ([#762](https://github.com/coveo/cli/issues/762)) ([a782aa6](https://github.com/coveo/cli/commits/a782aa695fd810d869752515ed4551555fc7a90f))
+- **deps:** update all dependencies j:cdx-227 ([#790](https://github.com/coveo/cli/issues/790)) ([2843a12](https://github.com/coveo/cli/commits/2843a125bd27f19eaac4dba7171d55a1e2d250cd))
+- **precond:** use new flag name ([#780](https://github.com/coveo/cli/issues/780)) ([8e63899](https://github.com/coveo/cli/commits/8e63899ac48803b588a4ba37643cfaf64b697c31))
+- **snapshot:** reporter considers fixable reports for onSuccess callback ([#779](https://github.com/coveo/cli/issues/779)) ([b8f1784](https://github.com/coveo/cli/commits/b8f178428705887dd9398da367449176d79816ba))
+- **vault:** ensure prompt is readable ([#792](https://github.com/coveo/cli/issues/792)) ([894dba0](https://github.com/coveo/cli/commits/894dba09caf58643452e9969806639395568f2d2))
+
+### Features
+
+- allow user to fill in their missing vault entries ([#778](https://github.com/coveo/cli/issues/778)) ([ac27867](https://github.com/coveo/cli/commits/ac27867f4e441485bbb5c1888435dd75da29e1d4))
+- introduce the files flag ([#783](https://github.com/coveo/cli/issues/783)) ([c2e472c](https://github.com/coveo/cli/commits/c2e472ce4992ee9b81e1a609b13abbbb225bbd1e))
+- list catalog and sources ([#750](https://github.com/coveo/cli/issues/750)) ([3903a5c](https://github.com/coveo/cli/commits/3903a5c48e6c8c95b3bc0892566a969b55208b8a))
+- **snapshot:** add manifest file on pull ([#777](https://github.com/coveo/cli/issues/777)) ([af3c783](https://github.com/coveo/cli/commits/af3c783243d78a60521b357bd7a76336bf8527fa))
+- **snapshot:** add snapshot type labels ([#793](https://github.com/coveo/cli/issues/793)) ([485fab9](https://github.com/coveo/cli/commits/485fab9f2f69f88d3e92c799341cac9a7f188708))
+- **snapshot:** add vault error handling ([#766](https://github.com/coveo/cli/issues/766)) ([9de943e](https://github.com/coveo/cli/commits/9de943e37b2c0491acb00a0620a77eb80231d68f))
+- support stream API ([#749](https://github.com/coveo/cli/issues/749)) ([0539af7](https://github.com/coveo/cli/commits/0539af78205445bc9e0060bfe4123697bafa192c))
+- **vault:** offer transfer from origin org to dest org ([#785](https://github.com/coveo/cli/issues/785)) ([cdde892](https://github.com/coveo/cli/commits/cdde892c39f099fa99ad113ccae4f37988165252))
+
 ## 1.27.1 (2022-04-20)
 
 ### Bug Fixes

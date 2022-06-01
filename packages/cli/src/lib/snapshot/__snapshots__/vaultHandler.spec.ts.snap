@@ -19,3 +19,16 @@ Fill all required vault entries to proceed.",
   ],
 }
 `;
+
+exports[`VaultHandler when the vault entries are valid #createEntries should prompt instructions for the user 1`] = `
+Array [
+  "",
+  Object {
+    "prompt": "
+[7mPress any key to continue. Press q to abort[27m
+",
+    "required": false,
+    "type": "single",
+  },
+]
+`;

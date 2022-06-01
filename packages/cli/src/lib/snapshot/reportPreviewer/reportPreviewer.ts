@@ -12,6 +12,7 @@ import dedent from 'ts-dedent';
 import {recordable} from '../../utils/record';
 import {ResourceSnapshotType} from '@coveord/platform-client';
 import {Plurable, pluralizeIfNeeded} from '../../utils/string';
+import {labels} from '../snapshotConstant';
 
 export class ReportViewer {
   private static errorPlurable: Plurable = ['error', 'errors'];
@@ -131,6 +132,9 @@ export class ReportViewer {
   }
 
   private prettyPrintResourceName(resourceName: string): string {
+    if (labels[resourceName]) {
+      return labels[resourceName];
+    }
     const capitalized =
       resourceName.charAt(0) + resourceName.slice(1).toLowerCase() + 's';
     return capitalized.replace(/_/g, ' ');

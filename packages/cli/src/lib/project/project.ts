@@ -14,6 +14,9 @@ import extract from 'extract-zip';
 import {DotFolder, DotFolderConfig} from './dotFolder';
 import {readJsonSync, writeJsonSync, WriteOptions} from 'fs-extra';
 
+interface ResourceManifest {
+  orgId?: string;
+}
 export class Project {
   public static readonly resourceFolderName = 'resources';
   public static readonly jsonFormat: WriteOptions = {spaces: '\t'};
@@ -113,6 +116,10 @@ export class Project {
     } catch (e: unknown) {
       // noop
     }
+  }
+
+  public getResourceManifest(): ResourceManifest | null {
+    return readJsonSync(this.resourceManifestPath, {throws: false});
   }
 
   public get pathToProject() {
