@@ -32,7 +32,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@coveo/create-atomic-template": "1.29.0",
     "@coveord/platform-client": "30.8.1",
     "abortcontroller-polyfill": "1.7.3",
     "detect-indent": "7.0.0",
