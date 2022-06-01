@@ -41,8 +41,7 @@ export default class CatalogCreate extends Command {
     }),
     availabilityFiles: Flags.string({
       multiple: true,
-      char: 'A',
-      dependsOn: ['withavailabilites'],
+      char: 'a',
       helpValue: 'availabilities.json',
       description:
         'Combinaison of JSON files and folders (containing JSON files) to push. Can be repeated.',
