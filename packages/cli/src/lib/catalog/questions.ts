@@ -1,7 +1,7 @@
-import {filter} from 'fuzzy';
+import {filter, FilterResult} from 'fuzzy';
 import {bold} from 'chalk';
 import inquirer from 'inquirer';
-import inquirerPrompt from 'inquirer-autocomplete-prompt';
+import autocompletePrompt from 'inquirer-autocomplete-prompt';
 import {Plurable, pluralizeIfNeeded} from '../utils/string';
 
 // Catalog Id field step
@@ -72,36 +72,35 @@ export async function selectObjectTypeField(
       objectType
     )} object type.`,
     name: 'fieldName',
-    type: 'autocomplete' as any,
+    type: 'autocomplete',
     source: (_answersSoFar: string, input: string) => {
       const results = filter(input, fields);
       return results.map((v) => v.string || v);
     },
-  } as any);
+  });
+  // Dirty mutation of the array parameter to prevent proposing already selected option in future questions
+  // fields = fields.filter((f) => f !== answer.fieldName);
   return answer.fieldName;
 }
 
-export function selectIdField(
-  objectType: 'product' | 'variant' | 'availability', // TODO: find a type
+export async function selectIdField(
+  message: string,
   fields: string[]
-): string {
-  throw 'TODO:';
-}
-
-export function selectStandardFieldMapping(
-  standardFieldName: string,
-  fields: string[]
-): string {
-  throw 'TODO:';
-  // prompt({
-  //   message: `Choose a metadata to associate to the standard field ${bold(u)}`,
-  //   type: 'list',
-  //   choices: fields,
-  // });
+): Promise<string> {
+  const answer = await inquirer.prompt({
+    message,
+    name: 'fieldName',
+    type: 'autocomplete',
+    source: (_answersSoFar: string, input: string) => {
+      const results = filter(input, fields);
+      return results.map((v) => v.string || v);
+    },
+  });
+  return answer.fieldName;
 }
 
 async function main() {
-  inquirer.registerPrompt('autocomplete', inquirerPrompt);
+  inquirer.registerPrompt('autocomplete', autocompletePrompt);
   const a = await selectObjectTypeField('product', [
     'allo',
     'allodsa',
