@@ -7,9 +7,9 @@
       "slack_channels": ["#searchuibuilds"]
     },
     "environments_order": {
-      "sequential": ["dev", "qa", "prd"]
+      "sequential": ["dev", "stg", "prd"]
     },
-    "qa": {
+    "stg": {
       "start_environment_automatically": true
     },
     "prd": {
