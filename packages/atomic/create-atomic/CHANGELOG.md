@@ -1,3 +1,11 @@
+# 1.29.0 (2022-05-31)
+
+### Features
+
+- **create-atomic:** allow Coveo atomic to start from an existing Platform Search page ([#728](https://github.com/coveo/cli/issues/728)) ([340fe4a](https://github.com/coveo/cli/commits/340fe4af779ff87730f3a9964272f7a50561ee39))
+
+# 1.28.0 (2022-05-24)
+
 ## 1.27.1 (2022-04-20)
 
 ### Bug Fixes

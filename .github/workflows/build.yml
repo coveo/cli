@@ -20,13 +20,13 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.eol lf
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
+      - uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # tag=v3
         with:
           node-version: 16
           cache: 'npm'
       - name: Install locked NPM version.
         # TODO: Remove later, when `npm 8.5.4` is built in.
-        run: npm i -g npm@^8.5.4
+        run: npm i -g npm@8.10.0
       - name: Setup repo
         run: npm ci
       - name: Check linting
@@ -50,13 +50,13 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.eol lf
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
+      - uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # tag=v3
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
       - name: Install locked NPM version.
         # TODO: Remove later, when `npm 8.5.4` is built in.
-        run: npm i -g npm@^8.5.4
+        run: npm i -g npm@8.10.0
       - name: Setup repo
         run: npm ci
       - name: Tests
@@ -68,7 +68,7 @@ jobs:
       cliConfigJson: ${{ steps.setup.outputs.cliConfigJson}}
     env:
       # Platform environment to log into for the e2e tests.
-      PLATFORM_ENV: 'qa'
+      PLATFORM_ENV: 'stg'
       # Username used to log into the organization whose ID is stored in the ORG_ID variable
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       # Password used to log into the organization whose ID is stored in the ORG_ID variable
@@ -81,13 +81,13 @@ jobs:
       TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
+      - uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # tag=v3
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
       - name: Install locked NPM version.
         # TODO: Remove later, when `npm 8.5.4` is built in.
-        run: npm i -g npm@^8.5.4
+        run: npm i -g npm@8.10.0
       - run: |
           npm ci
           Xvfb :1 -screen 0 1024x768x16 & sleep 1
@@ -103,6 +103,11 @@ jobs:
         run: |
           echo "${{ secrets.E2E_TOKEN_PASSPHRASE }}" | gpg -a --batch --passphrase-fd 0 --symmetric --cipher-algo AES256 --output encodedConfig $CLI_CONFIG_PATH
           echo "::set-output name=cliConfigJson::$(base64 -w 0 encodedConfig)"
+      - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
+        if: always()
+        with:
+          name: e2e-login-publish-artifacts
+          path: ./packages/cli-e2e/artifacts
   e2e-setup-verdaccio:
     strategy:
       matrix:
@@ -111,7 +116,7 @@ jobs:
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
+      - uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # tag=v3
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
@@ -127,13 +132,13 @@ jobs:
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
       - name: Install locked NPM version.
         # TODO: Remove later, when `npm 8.5.4` is built in.
-        run: npm i -g npm@^8.5.4
+        run: npm i -g npm@8.10.0
       - run: npm ci
       - name: Build
         run: npm run build
       - name: Setup E2E tests
         run: node -r ts-node/register/transpile-only packages/cli-e2e/setup/ci-verdaccio.ts
-      - uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535 # tag=v3
+      - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
         if: always()
         with:
           name: ${{matrix.os}}-verdaccio-publish-artifacts
@@ -159,7 +164,7 @@ jobs:
           ]
     env:
       # Platform environment to log into for the e2e tests.
-      PLATFORM_ENV: 'qa'
+      PLATFORM_ENV: 'stg'
       # Username used to log into the organization whose ID is stored in the ORG_ID variable
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       # Password used to log into the organization whose ID is stored in the ORG_ID variable
@@ -183,7 +188,7 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.eol lf
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
+      - uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # tag=v3
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
@@ -194,7 +199,7 @@ jobs:
         run: pip install -r packages/cli-e2e/mitmproxy/requirements.txt
       - name: Install locked NPM version.
         # TODO: Remove later, when `npm 8.5.4` is built in.
-        run: npm i -g npm@^8.5.4
+        run: npm i -g npm@8.10.0
       - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # tag=v3
         if: ${{matrix.os == 'ubuntu-latest'}}
         with:
@@ -225,7 +230,7 @@ jobs:
           DISPLAY: ':1'
         working-directory: packages/cli-e2e
         run: npm run jest:ci -- ${{matrix.spec}}
-      - uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535 # tag=v3
+      - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
         if: always()
         with:
           name: ${{matrix.os}}-${{matrix.spec}}-test-artifacts
@@ -237,7 +242,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # Platform environment to log into for the e2e tests.
-      PLATFORM_ENV: 'qa'
+      PLATFORM_ENV: 'stg'
       # Username used to log into the organization whose ID is stored in the ORG_ID variable
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       # Password used to log into the organization whose ID is stored in the ORG_ID variable
@@ -251,13 +256,13 @@ jobs:
       CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
+      - uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # tag=v3
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
       - name: Install locked NPM version.
         # TODO: Remove later, when `npm 8.5.4` is built in.
-        run: npm i -g npm@^8.5.4
+        run: npm i -g npm@8.10.0
       - run: npm ci
       - name: Decrypt config
         run: echo ${{needs.e2e-setup-login.outputs.cliConfigJson}} | base64 --decode | gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.E2E_TOKEN_PASSPHRASE }}" --output decrypted

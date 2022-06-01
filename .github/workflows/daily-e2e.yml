@@ -15,7 +15,7 @@ jobs:
       cliConfigJson: ${{ steps.setup.outputs.cliConfigJson}}
     env:
       # Platform environment to log into for the e2e tests.
-      PLATFORM_ENV: 'qa'
+      PLATFORM_ENV: 'stg'
       # Username used to log into the organization whose ID is stored in the ORG_ID variable
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       # Password used to log into the organization whose ID is stored in the ORG_ID variable
@@ -33,7 +33,7 @@ jobs:
           fetch-depth: 0
       - name: Checkout last tag
         run: git checkout $(git describe --abbrev=0 --tags)
-      - uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
+      - uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # tag=v3
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
@@ -79,7 +79,7 @@ jobs:
           ]
     env:
       # Platform environment to log into for the e2e tests.
-      PLATFORM_ENV: 'qa'
+      PLATFORM_ENV: 'stg'
       # Username used to log into the organization whose ID is stored in the ORG_ID variable
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       # Password used to log into the organization whose ID is stored in the ORG_ID variable
@@ -110,7 +110,7 @@ jobs:
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
       - name: Checkout last tag
         run: git checkout $(git describe --abbrev=0 --tags)
-      - uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
+      - uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # tag=v3
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
@@ -144,7 +144,7 @@ jobs:
           DISPLAY: ':1'
         working-directory: packages/cli-e2e
         run: npm run jest:ci -- ${{matrix.spec}}
-      - uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535 # tag=v3
+      - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
         if: always()
         with:
           name: ${{matrix.os}}-${{matrix.spec}}-test-artifacts
@@ -157,7 +157,7 @@ jobs:
     timeout-minutes: 30
     env:
       # Platform environment to log into for the e2e tests.
-      PLATFORM_ENV: 'qa'
+      PLATFORM_ENV: 'stg'
       # Username used to log into the organization whose ID is stored in the ORG_ID variable
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       # Password used to log into the organization whose ID is stored in the ORG_ID variable
@@ -178,7 +178,7 @@ jobs:
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
       - name: Checkout last tag
         run: git checkout $(git describe --abbrev=0 --tags)
-      - uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
+      - uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # tag=v3
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'

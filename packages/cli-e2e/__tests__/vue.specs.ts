@@ -194,8 +194,8 @@ describe('ui:create:vue', () => {
       await undoCommit(serverProcessManager, projectPath, projectName);
       await serverProcessManager.killAllProcesses();
     }, 5 * 60e3);
-
-    it('should not contain console errors nor warnings', async () => {
+    // TODO CDX-1017: Remove skip
+    it.skip('should not contain console errors nor warnings', async () => {
       await page.goto(searchPageEndpoint(), {
         waitUntil: 'networkidle2',
       });
