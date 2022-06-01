@@ -174,7 +174,8 @@ describe('ui:create:react', () => {
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
-    it(
+    // TODO CDX-1017: Remove skip
+    it.skip(
       'should not contain console errors nor warnings',
       async () => {
         await page.goto(searchPageEndpoint(), {

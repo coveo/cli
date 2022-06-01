@@ -25,7 +25,7 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
   const commits = getCommits(PATH, lastTag)[0];
   const newVersion = getReleaseVersion();
 
-  await updateWorkspaceDependencies();
+  await updateWorkspaceDependencies(newVersion);
   npmBumpVersion(newVersion, PATH);
 
   if (isPrivatePackage()) {
@@ -51,11 +51,14 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
   const packageJson = JSON.parse(
     readFileSync('package.json', {encoding: 'utf-8'})
   );
-  await retry(() => {
-    if (!isVersionPublished(packageJson.name, newVersion)) {
-      throw 'Version not available';
-    }
-  });
+  await retry(
+    () => {
+      if (!isVersionPublished(packageJson.name, newVersion)) {
+        throw 'Version not available';
+      }
+    },
+    {retries: 30}
+  );
 })();
 
 function getReleaseVersion() {
@@ -65,7 +68,7 @@ function getReleaseVersion() {
 }
 
 // TODO [PRE_NX]: Clean  this mess.
-async function updateWorkspaceDependencies() {
+async function updateWorkspaceDependencies(version) {
   const topology = JSON.parse(
     readFileSync(join(rootFolder, 'topology.json'), {encoding: 'utf-8'})
   );
@@ -77,12 +80,12 @@ async function updateWorkspaceDependencies() {
     .filter((dependency) => dependency.source == packageName)
     .map((dependency) => `@coveo/${dependency.target}`);
   await waitForPackages(dependencies);
-  dependencies.forEach((dependency) =>
-    updateDependency(packageJson, dependency)
-  );
+  for (const dependency of dependencies) {
+    await updateDependency(packageJson, dependency, version);
+  }
 }
 
-function updateDependency(packageJson, dependency) {
+async function updateDependency(packageJson, dependency, version) {
   const npmInstallFlags = [];
   if (Object.hasOwn(packageJson.dependencies ?? {}, dependency)) {
     ('-P');
@@ -93,15 +96,23 @@ function updateDependency(packageJson, dependency) {
   if (Object.hasOwn(packageJson.optionalDependencies ?? {}, dependency)) {
     ('-O');
   }
-  spawnSync(appendCmdIfWindows`npm`, [
-    'install',
-    `${dependency}@latest`,
-    '-E',
-    ...npmInstallFlags,
-  ]);
+  await retry(
+    () => {
+      const installChildProcess = spawnSync(appendCmdIfWindows`npm`, [
+        'install',
+        `${dependency}@${version}`,
+        '-E',
+        ...npmInstallFlags,
+      ]);
+      if (installChildProcess.error) {
+        throw installChildProcess.error;
+      }
+    },
+    {retries: 30}
+  );
 }
 
-async function isVersionPublished(packageName, version) {
+function isVersionPublished(packageName, version) {
   return (
     spawnSync(
       appendCmdIfWindows`npm`,

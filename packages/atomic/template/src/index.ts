@@ -7,7 +7,7 @@ async function renewAccessToken() {
 async function main() {
   await customElements.whenDefined('atomic-search-interface');
   const searchInterface: HTMLAtomicSearchInterfaceElement =
-    document.querySelector('#search')!;
+    document.querySelector('atomic-search-interface')!;
 
   const platformUrl = process.env.PLATFORM_URL!;
   const organizationId = process.env.ORGANIZATION_ID!;

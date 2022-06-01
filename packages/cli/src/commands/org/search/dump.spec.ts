@@ -1,22 +1,32 @@
 jest.mock('@coveord/platform-client');
 jest.mock('fs-extra');
+jest.mock('json2csv');
 jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/config/config');
 jest.mock('../../../hooks/analytics/analytics');
 jest.mock('../../../hooks/prerun/prerun');
 
 import {test} from '@oclif/test';
+import {Parser} from 'json2csv';
 import {Config} from '../../../lib/config/config';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockedConfig = jest.mocked(Config);
 const mockSearch = jest.fn();
+const mockedParser = jest.mocked(Parser);
 
 mockedAuthenticatedClient.mockImplementation(
   () =>
     ({
       getClient: () => Promise.resolve({search: {query: mockSearch}}),
     } as unknown as AuthenticatedClient)
+);
+
+mockedParser.mockImplementation(
+  () =>
+    ({
+      parse: jest.fn(),
+    } as unknown as Parser<unknown>)
 );
 
 mockedConfig.mockImplementation(
@@ -171,6 +181,58 @@ describe('org:search:dump', () => {
           numberOfResults: 1000,
         })
       )
+    );
+
+  test
+    .do(() => {
+      mockReturnNumberOfResults(0);
+    })
+    .stdout()
+    .stderr()
+    .command([
+      'org:search:dump',
+      '-s',
+      'the_source',
+      '-x',
+      'rowid',
+      '-x',
+      'sysrowid',
+      '-x',
+      'foo',
+    ])
+    .it('should not exclude rowId fields', () =>
+      expect(mockSearch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          numberOfResults: 1000,
+          fieldsToExclude: ['foo'],
+        })
+      )
+    );
+
+  test
+    .do(() => {
+      mockReturnNumberOfResults(10);
+    })
+    .stdout()
+    .stderr()
+    .command(['org:search:dump', '-s', 'the_source'])
+    .it('should include rowid field in output', () =>
+      expect(mockedParser).toHaveBeenCalledWith({
+        fields: expect.arrayContaining(['rowid']),
+      })
+    );
+
+  test
+    .do(() => {
+      mockReturnNumberOfResults(10);
+    })
+    .stdout()
+    .stderr()
+    .command(['org:search:dump', '-s', 'the_source', '-x', 'rowid'])
+    .it('should exclude rowid field from output', () =>
+      expect(mockedParser).toHaveBeenCalledWith({
+        fields: expect.not.arrayContaining(['rowid']),
+      })
     );
 
   test

@@ -31,20 +31,6 @@ export default class CatalogCreate extends Command {
   )} Create a commerce catalog interactively`;
 
   public static flags = {
-    // TODO: find an alternative to skip all the prompts without having too many flags.
-    withVariants: Flags.boolean({
-      char: 'v',
-      default: false,
-      helpGroup: 'Catalog structure',
-      description: 'Whether your catalog contains product variants',
-    }),
-    withAvailabilites: Flags.boolean({
-      char: 'a',
-      default: false,
-      helpGroup: 'Catalog structure',
-      description:
-        'Whether your catalog contains product location and/or availabilities',
-    }),
     dataFiles: Flags.string({
       multiple: true,
       char: 'f',
