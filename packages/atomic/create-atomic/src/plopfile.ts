@@ -17,12 +17,12 @@ interface PlopData {
   'platform-url': string;
   'org-id': string;
   'api-key': string;
+  page: IManifest;
 }
 
 export default async function (plop: NodePlopAPI) {
   const currentPath = process.cwd();
   let _platformClient: PlatformClient;
-  let pageManifest: IManifest;
 
   function initPlatformClient(answers: PlopData) {
     if (_platformClient) {
@@ -103,11 +103,10 @@ export default async function (plop: NodePlopAPI) {
         },
         validate: async (input, answers: PlopData) => {
           try {
-            pageManifest = await fetchPageManifest(
+            return !!(await fetchPageManifest(
               initPlatformClient(answers),
               input
-            );
-            return true;
+            ));
           } catch (error) {
             return `The search page with the id "${input}" does not exist.`;
           }
@@ -116,22 +115,17 @@ export default async function (plop: NodePlopAPI) {
     ],
     actions: function () {
       return [
-        async function downloadPromptPage(data) {
+        async function download(data) {
           const answers = data as PlopData;
-          if (!pageManifest && answers['page-id']) {
-            pageManifest = await fetchPageManifest(
+          if (answers['page-id']) {
+            answers.page = await fetchPageManifest(
               initPlatformClient(answers),
               answers['page-id']
             );
-          }
-          return '';
-        },
-        function templateInfo() {
-          if (pageManifest) {
-            return `Hosted search page named "${pageManifest.config.title}" has been downloaded`;
+            return `Hosted search page named "${answers.page.config.title}" has been downloaded`;
           }
 
-          pageManifest = defaultPageManifest;
+          answers.page = defaultPageManifest;
           return 'Using the default search page template.';
         },
         {
@@ -165,8 +159,8 @@ export default async function (plop: NodePlopAPI) {
           ],
         },
         function generateTemplates(data) {
-          const {project} = data as PlopData;
-          pageManifest.results.templates.forEach((resultTemplate, index) => {
+          const {project, page} = data as PlopData;
+          page.results.templates.forEach((resultTemplate, index) => {
             const filePath = join(
               currentPath,
               project,
@@ -181,7 +175,7 @@ export default async function (plop: NodePlopAPI) {
             );
           });
 
-          return `${pageManifest.results.templates.length} result template(s) generated`;
+          return `${page.results.templates.length} result template(s) generated`;
         },
         function installPackagesPrompt() {
           return 'Installing packages...';
