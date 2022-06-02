@@ -15,7 +15,6 @@ import {
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {
-  CatalogStructure,
   selectCatalogStructure,
   selectIdField,
   selectObjectTypeField,
@@ -44,8 +43,9 @@ export default class CatalogCreate extends Command {
       char: 'f',
       required: true,
       helpValue: 'products.json availabilities.json',
+      // TODO: support folders as well.
       description:
-        'Combinaison of JSON files and folders (containing JSON files) to push. Can be repeated.',
+        'Combinaison of JSON files (containing JSON files) to push. Can be repeated.',
     }),
   };
 
@@ -55,6 +55,7 @@ export default class CatalogCreate extends Command {
     {
       name: 'name',
       description:
+        // TODO: check for catalog name uniqueness before doing destructive changes
         "The catalog name must be unique. Editing an existing catalog's name will cause all search interfaces referencing it to cease working.",
       required: true,
     },
@@ -120,7 +121,7 @@ export default class CatalogCreate extends Command {
   private async generateCatalogConfigurationAutomatically(
     _client: PlatformClient
   ): Promise<PartialCatalogConfigurationModel> {
-    throw 'TODO:';
+    throw 'TODO: try to automatically generate catalog config by simply parsing the data';
   }
 
   private async generateCatalogConfigurationInteractively(
@@ -191,18 +192,12 @@ export default class CatalogCreate extends Command {
     catalogConfigurationId: string,
     configuration: Configuration
   ) {
-    const shouldMapStandardFields = await CliUx.ux.confirm(
-      'Would you like to map standard fields to your catalog?'
-    );
-    if (!shouldMapStandardFields) {
-      return;
-    }
+    // TODO: try to automap standard fields with similar name
     const url = catalogConfigurationUrl(
       sourceId,
       catalogConfigurationId,
       configuration
     );
-
     CliUx.ux.log(`To map standard fields visit ${url}`);
   }
 
@@ -212,7 +207,6 @@ export default class CatalogCreate extends Command {
    * This would prevent going forward with a broken/invalid catalog.
    */
   private async ensureCatalogValidity() {
-    // TODO: Throw warning whenever duplicate SKUs are detected
     return;
   }
 

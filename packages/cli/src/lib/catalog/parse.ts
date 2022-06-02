@@ -28,7 +28,7 @@ export async function getDocumentFieldsAndObjectTypeValues(
     docBuilders.push(
       ...parseAndGetDocumentBuilderFromJSONDocument(filePath, {
         callback,
-        fieldNameTransformer: BuiltInTransformers.toLowerCase,
+        fieldNameTransformer: BuiltInTransformers.toSnakeCase,
       })
     );
   }
