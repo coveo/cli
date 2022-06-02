@@ -54,7 +54,7 @@ describe('platformUrl helper', () => {
   fancyIt()('should #castEnvironmentToPlatformClient correctly', () => {
     [
       {env: 'dev', platformClient: Environment.dev},
-      {env: 'qa', platformClient: Environment.staging},
+      {env: 'stg', platformClient: Environment.stg},
       {env: 'prod', platformClient: Environment.prod},
       {env: 'hipaa', platformClient: Environment.hipaa},
       {env: 'something_random', platformClient: Environment.prod},
