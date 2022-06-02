@@ -120,7 +120,7 @@ export default class CatalogCreate extends Command {
   private async makeFieldsFacetable(client: PlatformClient, fields: string[]) {
     const batch: FieldModel[] = fields.map((field) => ({
       name: field,
-      facet: true,
+      multiValueFacet: true,
       useCacheForNestedQuery: true,
     }));
     return client.field.updateFields(batch);
