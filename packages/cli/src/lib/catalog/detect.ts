@@ -30,9 +30,10 @@ function getCatalogFieldStructure(filePaths: PathLike[]): CatalogFieldStruture {
       const [firstMapValue] = maps.values();
       return get1ChannelCatalogFieldStructure(firstMapValue);
     case 2:
+      // TODO: support products x availabilities configuration
       return get2ChannelsCatalogFieldStructure(maps);
     case 3:
-      // TODO: similar to 2 channel catalog structure but need to create a matrix for availabilities and compare with variant matrix
+      // TODO: support products x variants x availabilities configuration
       throw new Error('Not implemented yet');
 
     default:
@@ -48,8 +49,8 @@ function convertToCatalogModel(
   const {product, variant, availability} = structure;
   if (
     !catalogChannelHasSingleMatch(product) ||
-    !catalogChannelHasSingleMatch(variant) ||
-    !catalogChannelHasSingleMatch(availability)
+    (variant && !catalogChannelHasSingleMatch(variant)) ||
+    (availability && !catalogChannelHasSingleMatch(availability))
   ) {
     throw new Error('Multiple field matches');
   } else {
@@ -95,48 +96,36 @@ function get1ChannelCatalogFieldStructure(
 
 /**
  * Returns the configuration for a dual channel catalog.
- * The catalog can have the following configuration:
+ * The catalog can have the following configurations:
+ *
  * - Products x Variants
- * - Products x Availabilities
+ * - Products x Availabilities // TODO: this is not supported yet
  */
 function get2ChannelsCatalogFieldStructure(
   maps: Map<MetadataValue, MetadataValueMap>
 ) {
-  const uniqueMetadataKeys: string[][] = [];
-  maps.forEach((map) => {
-    uniqueMetadataKeys.push(findUniqueMetadataKeysInMap(map));
-  });
-  let objectTypes = Array.from(maps.keys());
-  let catalogIdFields = findCatalogIdFields(maps.values(), uniqueMetadataKeys);
-
-  if (catalogIdFields.productIdFields.length === 0) {
-    // Change the product / variant order and try again
-    objectTypes = objectTypes.reverse();
-    catalogIdFields = findCatalogIdFields(
-      maps.values(),
-      uniqueMetadataKeys.reverse()
-    );
-  }
+  let {parent, child} = getParentChildIdFields(maps);
+  // FIXME: child can either be the variant or the availabilities
 
   return {
     product: {
-      possibleIdFields: catalogIdFields.productIdFields,
-      objectType: objectTypes[0],
+      possibleIdFields: parent.idFields,
+      objectType: parent.objectType,
     },
     variant: {
-      possibleIdFields: catalogIdFields.variantIdFields,
-      objectType: objectTypes[1],
+      possibleIdFields: child.idFields,
+      objectType: child.objectType,
     },
   };
 }
 
 /**
  * Generates a {@link MetadataValueMap} for each distinct objectype value found in the JSON files.
- * Each {@link MetadataValueMap} is then added to a parent map where the key/value association respects the following rule:
+ * Each {@link MetadataValueMap} is then added to another map where the key / value association respects the following rule:
  * Object key value / MetadataValueMap
  *
  * @param {PathLike[]} filePaths
- * @return {*}  {Map<MetadataValue, MetadataValueMap>} the parent map
+ * @return {*} A 2 levels deep map
  */
 function getMaps(filePaths: PathLike[]): Map<MetadataValue, MetadataValueMap> {
   const objectTypeMap: Map<MetadataValue, MetadataValueMap> = new Map();
@@ -163,32 +152,51 @@ function getMaps(filePaths: PathLike[]): Map<MetadataValue, MetadataValueMap> {
 }
 
 /**
- * TODO: explain what are maps and uniqueKeys matrix...as well as what this function does
+ * Determine the relation between the 2 maps passed in parameter.
+ * The parent map will represent the product set and the child, variant (or availabilities).
  *
- * @param {IterableIterator<MetadataValueMap>} maps
- * @param {string[][]} uniqueMetadataKeys
+ * This is where we figure out which metadata key is used as a bridge between the parent and child∂.
+ *
+ * @param {Map<MetadataValue, MetadataValueMap>} maps Map of maps. Essentially, the parent and child maps.
  * @return {*}
  */
-function findCatalogIdFields(
-  maps: IterableIterator<MetadataValueMap>,
-  uniqueMetadataKeys: string[][]
-) {
-  // TODO: can be optimized
-  const [mapA, mapB] = maps;
-  const [uniqueObjectTypeAMetadataKeys, uniqueObjectTypeBMetadataKeys] =
-    uniqueMetadataKeys;
+function getParentChildIdFields(maps: Map<MetadataValue, MetadataValueMap>) {
+  let objectTypes = Array.from(maps.keys());
+  const [mapA, mapB] = Array.from(maps.values());
+  const [parentIdCandidates, childIdCandidates]: string[][] = [[], []];
+  const uniqueMetadataKeyMatrix: string[][] = [];
+  maps.forEach((map) => {
+    uniqueMetadataKeyMatrix.push(findUniqueMetadataKeysInMap(map));
+  });
 
-  const productIdCandidates: string[] = [];
-  for (const metdataKey of uniqueObjectTypeAMetadataKeys) {
-    const objectTypeASet = new Set(mapA.get(metdataKey));
-    const objectTypeBSet = new Set(mapB.get(metdataKey));
-    if (setAreEqual(objectTypeASet, objectTypeBSet)) {
-      productIdCandidates.push(metdataKey);
+  for (const uniqueMetadataKeys of uniqueMetadataKeyMatrix) {
+    for (const metdataKey of uniqueMetadataKeys) {
+      const objectTypeASet = new Set(mapA.get(metdataKey));
+      const objectTypeBSet = new Set(mapB.get(metdataKey));
+      if (setAreEqual(objectTypeASet, objectTypeBSet)) {
+        parentIdCandidates.push(metdataKey);
+      }
+    }
+    if (parentIdCandidates.length > 0) {
+      // Stop since we found our parent.
+      // Otherwise, continue to loop since the second element from the array is the parent
+      const childIndex =
+        1 - uniqueMetadataKeyMatrix.indexOf(uniqueMetadataKeys);
+      childIdCandidates.push(...uniqueMetadataKeyMatrix[childIndex]);
+      objectTypes = objectTypes.reverse();
+      break;
     }
   }
+
   return {
-    productIdFields: productIdCandidates,
-    variantIdFields: uniqueObjectTypeBMetadataKeys,
+    parent: {
+      idFields: parentIdCandidates,
+      objectType: objectTypes[0],
+    },
+    child: {
+      idFields: childIdCandidates,
+      objectType: objectTypes[1],
+    },
   };
 }
 
@@ -205,9 +213,9 @@ function findUniqueMetadataKeysInMap(map: MetadataValueMap): string[] {
 }
 
 function catalogChannelHasSingleMatch(
-  channel?: CatalogFieldStrutureValue
+  channel: CatalogFieldStrutureValue
 ): channel is CatalogFieldStrutureValue {
-  if (!Array.isArray(channel)) {
+  if (!Array.isArray(channel.possibleIdFields)) {
     return false;
   }
   return channel.possibleIdFields.length === 1;
