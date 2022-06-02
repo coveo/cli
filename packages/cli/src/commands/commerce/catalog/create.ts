@@ -1,4 +1,4 @@
-import {bold} from 'chalk';
+import {bold, red, green} from 'chalk';
 import {
   CatalogConfigurationModel,
   PlatformClient,
@@ -83,6 +83,7 @@ export default class CatalogCreate extends Command {
       client,
       catalogConfigurationModel
     );
+    CliUx.ux.action.start('Creating catalog');
     const {id: catalogConfigurationId} = await this.createCatalogConfiguration(
       client,
       catalogConfigurationModel
@@ -109,9 +110,14 @@ export default class CatalogCreate extends Command {
     throw err;
   }
 
+  protected async finally(err: Error | undefined) {
+    CliUx.ux.action.stop(err ? red.bold('!') : green('✔'));
+  }
+
   private async generateCatalogConfiguration(): Promise<PartialCatalogConfigurationModel> {
     const {flags} = await this.parse(CatalogCreate);
     try {
+      CliUx.ux.action.start('Generating catalog configuration from data');
       return getCatalogPartialConfiguration(flags.dataFiles);
     } catch (error) {
       CliUx.ux.warn(
@@ -223,12 +229,14 @@ export default class CatalogCreate extends Command {
     let productSourceId = undefined;
     let catalogSourceId = undefined;
     const {args, flags} = await this.parse(CatalogCreate);
+    CliUx.ux.action.start('Creating product source');
     productSourceId = await this.createCatalogSource(client, {
       name: `${args.name}`,
       sourceVisibility: flags.sourceVisibility,
     });
 
     if (catalogConfigurationModel.availability) {
+      CliUx.ux.action.start('Creating availability source');
       catalogSourceId = await this.createCatalogSource(client, {
         name: `${args.name} Availabilities`,
         sourceVisibility: flags.sourceVisibility,
