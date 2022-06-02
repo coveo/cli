@@ -1,6 +1,5 @@
 import {bold} from 'chalk';
 import {
-  CreateCatalogConfigurationModel,
   CatalogConfigurationModel,
   PlatformClient,
   SourceType,

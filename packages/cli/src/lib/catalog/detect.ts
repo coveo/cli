@@ -7,20 +7,13 @@ import {
 import {PathLike} from 'fs';
 import {containsDuplicates} from '../utils/list';
 import {setAreEqual} from '../utils/set';
-import {PartialCatalogConfigurationModel} from './interfaces';
-
-type MapValue = string | number | null;
-type MetadataValueMap = Map<string, MapValue[]>;
-
-interface CatalogFieldStrutureValue {
-  possibleIdFields: string[];
-  objectType: MetadataValue;
-}
-interface CatalogFieldStruture {
-  product: CatalogFieldStrutureValue;
-  variant?: CatalogFieldStrutureValue;
-  // TODO: implement availabilities
-}
+import {
+  CatalogFieldStruture,
+  CatalogFieldStrutureValue,
+  MapValue,
+  MetadataValueMap,
+  PartialCatalogConfigurationModel,
+} from './interfaces';
 
 export async function getCatalogPartialConfiguration(
   filePaths: PathLike[]
@@ -45,7 +38,8 @@ async function getCatalogFieldStructure(
       throw new Error('Not implemented yet');
 
     default:
-      // Human intervention needed as the complexity significantly increases with the number of object distincts types
+      // Human intervention needed as the complexity significantly increases with the number of object distincts types.
+      // If we reach this condition, it probably means the documents have not been given the correct object type
       throw new Error('Unable to compute catalog configuration');
   }
 }
@@ -53,11 +47,11 @@ async function getCatalogFieldStructure(
 function convertToCatalogModel(
   structure: CatalogFieldStruture
 ): PartialCatalogConfigurationModel {
-  const {product, variant} = structure;
+  const {product, variant, availabilities} = structure;
   if (
     !catalogChannelHasSingleMatch(product) ||
-    !catalogChannelHasSingleMatch(variant)
-    // TODO: should also check availabilities
+    !catalogChannelHasSingleMatch(variant) ||
+    !catalogChannelHasSingleMatch(availabilities)
   ) {
     throw new Error('Multiple field matches');
   } else {
@@ -70,6 +64,7 @@ function convertToCatalogModel(
         idField: variant.possibleIdFields[0],
         objectType: variant.objectType.toString(),
       },
+      availability: undefined,
     };
   }
 }
