@@ -12,7 +12,9 @@ export interface CatalogFieldStrutureValue {
 export interface CatalogFieldStruture {
   product: CatalogFieldStrutureValue;
   variant?: CatalogFieldStrutureValue;
-  availabilities?: CatalogFieldStrutureValue;
+  availability?: CatalogFieldStrutureValue & {
+    availableSkusField: MetadataValue;
+  };
 }
 
 export type PartialCatalogConfigurationModel = Pick<

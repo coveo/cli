@@ -47,11 +47,11 @@ async function getCatalogFieldStructure(
 function convertToCatalogModel(
   structure: CatalogFieldStruture
 ): PartialCatalogConfigurationModel {
-  const {product, variant, availabilities} = structure;
+  const {product, variant, availability} = structure;
   if (
     !catalogChannelHasSingleMatch(product) ||
     !catalogChannelHasSingleMatch(variant) ||
-    !catalogChannelHasSingleMatch(availabilities)
+    !catalogChannelHasSingleMatch(availability)
   ) {
     throw new Error('Multiple field matches');
   } else {
@@ -60,11 +60,19 @@ function convertToCatalogModel(
         idField: product.possibleIdFields[0],
         objectType: product.objectType.toString(),
       },
-      variant: {
-        idField: variant.possibleIdFields[0],
-        objectType: variant.objectType.toString(),
-      },
-      availability: undefined,
+      ...(variant && {
+        variant: {
+          idField: variant.possibleIdFields[0],
+          objectType: variant.objectType.toString(),
+        },
+      }),
+      ...(availability && {
+        availability: {
+          idField: availability.possibleIdFields[0],
+          objectType: availability.objectType.toString(),
+          availableSkusField: availability.availableSkusField.toString(),
+        },
+      }),
     };
   }
 }
