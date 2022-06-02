@@ -106,7 +106,7 @@ describe('ui:create:atomic', () => {
       describeName: 'when using an existing pageId (--pageId flag specified)',
       buildAppOptions: {
         id: 'with-page-id',
-        pageId: '85fe78b4-2e10-4ed9-a0b7-664f5d23887d',
+        pageId: 'fffaafcc-6863-46cb-aca3-97522fcc0f5d',
       },
     },
     {
