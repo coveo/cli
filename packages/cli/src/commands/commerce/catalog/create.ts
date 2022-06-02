@@ -115,7 +115,7 @@ export default class CatalogCreate extends Command {
         Please answer the following questions`
       );
     }
-    return this.generateCatalogConfigurationInteractively(client);
+    return this.generateCatalogConfigurationInteractively();
   }
 
   private async generateCatalogConfigurationAutomatically(
@@ -124,12 +124,9 @@ export default class CatalogCreate extends Command {
     throw 'TODO: try to automatically generate catalog config by simply parsing the data';
   }
 
-  private async generateCatalogConfigurationInteractively(
-    client: PlatformClient
-  ) {
+  private async generateCatalogConfigurationInteractively() {
     const {flags} = await this.parse(CatalogCreate);
     let {fields, objectTypeValues} = await getDocumentFieldsAndObjectTypeValues(
-      client,
       flags.dataFiles
     );
     const {variants, availabilities} = await selectCatalogStructure(
