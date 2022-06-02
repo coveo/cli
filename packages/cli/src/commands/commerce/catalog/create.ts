@@ -103,6 +103,7 @@ export default class CatalogCreate extends Command {
       catalogConfigurationId,
       configuration
     );
+    // TODO: CDX-1022: make id fields facetable
     if (flags.output) {
       CliUx.ux.styledJSON(catalog);
     }
@@ -130,7 +131,7 @@ export default class CatalogCreate extends Command {
   private async generateCatalogConfigurationAutomatically(
     _client: PlatformClient
   ): Promise<PartialCatalogConfigurationModel> {
-    throw 'TODO: try to automatically generate catalog config by simply parsing the data';
+    throw 'TODO: CDX-1023: try to automatically generate catalog config by simply parsing the data';
   }
 
   private async generateCatalogConfigurationInteractively() {
@@ -233,14 +234,12 @@ export default class CatalogCreate extends Command {
     let productSourceId = undefined;
     let catalogSourceId = undefined;
     const {args, flags} = await this.parse(CatalogCreate);
-    // TODO: do not create source if already provided in the option
     productSourceId = await this.createCatalogSource(client, {
       name: `${args.name}`,
       sourceVisibility: flags.sourceVisibility,
     });
 
     if (catalogConfigurationModel.availability) {
-      // TODO: do not create source if already provided in the option
       catalogSourceId = await this.createCatalogSource(client, {
         name: `${args.name} Availabilities`,
         sourceVisibility: flags.sourceVisibility,
