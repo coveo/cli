@@ -95,13 +95,12 @@ export default class CatalogCreate extends Command {
       productSourceId,
       catalogSourceId
     );
+    await this.updateCatalogIdFields(client, catalogConfigurationModel);
     await this.mapStandardFields(
       productSourceId,
       catalogConfigurationId,
       configuration
     );
-
-    await this.makeFieldsFacetable(client, ['TODO:']);
 
     if (flags.output) {
       CliUx.ux.styledJSON(catalog);
@@ -117,7 +116,14 @@ export default class CatalogCreate extends Command {
     CliUx.ux.action.stop(err ? red.bold('!') : green('✔'));
   }
 
-  private async makeFieldsFacetable(client: PlatformClient, fields: string[]) {
+  private async updateCatalogIdFields(
+    client: PlatformClient,
+    catalogConfigurationModel: PartialCatalogConfigurationModel
+  ) {
+    const fields: string[] = [];
+    for (const {idField} of Object.values(catalogConfigurationModel)) {
+      fields.push(idField);
+    }
     const batch: FieldModel[] = fields.map((field) => ({
       name: field,
       multiValueFacet: true,
