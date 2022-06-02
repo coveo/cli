@@ -14,6 +14,12 @@ interface ParsedDocumentsRawFields {
   objectTypeValues: string[];
 }
 
+/**
+ * Parses the JSON files to extract fields required for catalog configuration questions
+ * It returns the list of all fieldNames across the documents as well as the different object type values.
+ *
+ * @param {PathLike[]} filePaths the path to the JSON documents
+ */
 export async function getDocumentFieldsAndObjectTypeValues(
   filePaths: PathLike[]
 ): Promise<ParsedDocumentsRawFields> {

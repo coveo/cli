@@ -38,6 +38,11 @@ export default class CatalogCreate extends Command {
 
   public static flags = {
     ...withSourceVisibility(),
+    output: Flags.boolean({
+      char: 'o',
+      default: false,
+      description: 'Whether to output Catalog configuration',
+    }),
     dataFiles: Flags.string({
       multiple: true,
       char: 'f',
@@ -68,6 +73,7 @@ export default class CatalogCreate extends Command {
     // TODO: Add edit catalog privilege. https://docs.coveo.com/en/2956/coveo-for-commerce/index-commerce-catalog-content-with-the-stream-api#required-privileges
   )
   public async run() {
+    const {flags} = await this.parse(CatalogCreate);
     const authenticatedClient = new AuthenticatedClient();
     const client = await authenticatedClient.getClient();
     const configuration = authenticatedClient.cfg.get();
@@ -86,7 +92,7 @@ export default class CatalogCreate extends Command {
       client,
       catalogConfigurationModel
     );
-    await this.createCatalog(
+    const catalog = await this.createCatalog(
       client,
       catalogConfigurationId,
       productSourceId,
@@ -97,6 +103,9 @@ export default class CatalogCreate extends Command {
       catalogConfigurationId,
       configuration
     );
+    if (flags.output) {
+      CliUx.ux.styledJSON(catalog);
+    }
   }
 
   @Trackable()
@@ -224,12 +233,14 @@ export default class CatalogCreate extends Command {
     let productSourceId = undefined;
     let catalogSourceId = undefined;
     const {args, flags} = await this.parse(CatalogCreate);
+    // TODO: do not create source if already provided in the option
     productSourceId = await this.createCatalogSource(client, {
       name: `${args.name}`,
       sourceVisibility: flags.sourceVisibility,
     });
 
     if (catalogConfigurationModel.availability) {
+      // TODO: do not create source if already provided in the option
       catalogSourceId = await this.createCatalogSource(client, {
         name: `${args.name} Availabilities`,
         sourceVisibility: flags.sourceVisibility,
@@ -267,6 +278,7 @@ export default class CatalogCreate extends Command {
       name: args.name,
       sourceId,
       availabilitySourceId,
+      description: 'Created by the Coveo CLI',
     });
   }
 }
