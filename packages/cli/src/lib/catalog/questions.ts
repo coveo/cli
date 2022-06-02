@@ -71,7 +71,7 @@ export async function selectObjectTypeField(
   return answer.fieldName;
 }
 
-export async function selectIdField(
+export async function selectField(
   message: string,
   fields: string[]
 ): Promise<string> {

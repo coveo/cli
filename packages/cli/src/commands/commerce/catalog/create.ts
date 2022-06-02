@@ -16,7 +16,7 @@ import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {
   selectCatalogStructure,
-  selectIdField,
+  selectField,
   selectObjectTypeField,
 } from '../../../lib/catalog/questions';
 import {Configuration} from '../../../lib/config/config';
@@ -136,7 +136,7 @@ export default class CatalogCreate extends Command {
       'product',
       objectTypeValues
     );
-    const productIdField = await selectIdField(
+    const productIdField = await selectField(
       `Select your Product ${variants ? 'ID' : 'SKU'} field`,
       fields
     );
@@ -153,7 +153,7 @@ export default class CatalogCreate extends Command {
         'variant',
         objectTypeValues
       );
-      const variantIdField = await selectIdField(
+      const variantIdField = await selectField(
         'Select your Product SKU field',
         fields
       );
@@ -170,11 +170,8 @@ export default class CatalogCreate extends Command {
           'availability',
           objectTypeValues
         ),
-        idField: await selectIdField(
-          'Select your Availability ID field',
-          fields
-        ),
-        availableSkusField: await selectIdField(
+        idField: await selectField('Select your Availability ID field', fields),
+        availableSkusField: await selectField(
           'Select your Available SKUs field',
           fields
         ),
