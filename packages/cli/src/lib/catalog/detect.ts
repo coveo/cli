@@ -15,17 +15,15 @@ import {
   PartialCatalogConfigurationModel,
 } from './interfaces';
 
-export async function getCatalogPartialConfiguration(
+export function getCatalogPartialConfiguration(
   filePaths: PathLike[]
-): Promise<PartialCatalogConfigurationModel> {
-  const structure = await getCatalogFieldStructure(filePaths);
+): PartialCatalogConfigurationModel {
+  const structure = getCatalogFieldStructure(filePaths);
   return convertToCatalogModel(structure);
 }
 
-async function getCatalogFieldStructure(
-  filePaths: PathLike[]
-): Promise<CatalogFieldStruture> {
-  const maps = await getMaps(filePaths);
+function getCatalogFieldStructure(filePaths: PathLike[]): CatalogFieldStruture {
+  const maps = getMaps(filePaths);
 
   switch (maps.size) {
     case 1:
@@ -77,9 +75,13 @@ function convertToCatalogModel(
   }
 }
 
-async function get1ChannelCatalogFieldStructure(
+/**
+ * Returns the configuration for a single channel catalog
+ * The catalog contains products only
+ */
+function get1ChannelCatalogFieldStructure(
   map: MetadataValueMap
-): Promise<CatalogFieldStruture> {
+): CatalogFieldStruture {
   const possibleIdFields: string[] = findUniqueMetadataKeysInMap(map);
   const [objectType] = map.keys();
 
@@ -91,7 +93,13 @@ async function get1ChannelCatalogFieldStructure(
   };
 }
 
-async function get2ChannelsCatalogFieldStructure(
+/**
+ * Returns the configuration for a dual channel catalog.
+ * The catalog can have the following configuration:
+ * - Products x Variants
+ * - Products x Availabilities
+ */
+function get2ChannelsCatalogFieldStructure(
   maps: Map<MetadataValue, MetadataValueMap>
 ) {
   const uniqueMetadataKeys: string[][] = [];
@@ -122,41 +130,17 @@ async function get2ChannelsCatalogFieldStructure(
   };
 }
 
-function sanitizeMetadataValue(value: MetadataValue): MapValue {
-  switch (typeof value) {
-    case 'number':
-      return value;
-    case 'string':
-      return value;
-    default:
-      // If metadata value is not a string or a number, there is "almost" 0 chance it can be used as an id Field.
-      // That being said, we replace that field by null so it can take less space in memory
-      return null;
-  }
-}
-
-function addToMap(map: MetadataValueMap, metadata: Metadata) {
-  for (const [key, value] of Object.entries(metadata)) {
-    let mapValue = map.get(key);
-    if (mapValue === undefined) {
-      mapValue = [];
-    }
-    mapValue.push(sanitizeMetadataValue(value));
-    map.set(key, mapValue);
-  }
-}
-
 /**
- * TODO: what are these maps
+ * Generates a {@link MetadataValueMap} for each distinct objectype value found in the JSON files.
+ * Each {@link MetadataValueMap} is then added to a parent map where the key/value association respects the following rule:
+ * Object key value / MetadataValueMap
  *
  * @param {PathLike[]} filePaths
- * @return {*}  {Promise<Map<MetadataValue, MetadataValueMap>>}
+ * @return {*}  {Map<MetadataValue, MetadataValueMap>} the parent map
  */
-async function getMaps(
-  filePaths: PathLike[]
-): Promise<Map<MetadataValue, MetadataValueMap>> {
+function getMaps(filePaths: PathLike[]): Map<MetadataValue, MetadataValueMap> {
   const objectTypeMap: Map<MetadataValue, MetadataValueMap> = new Map();
-  const mapBuilderCallback = async (docBuilder: DocumentBuilder) => {
+  const mapBuilderCallback = (docBuilder: DocumentBuilder) => {
     const {metadata} = docBuilder.build();
     if (metadata?.objecttype === undefined) {
       return;
@@ -227,4 +211,28 @@ function catalogChannelHasSingleMatch(
     return false;
   }
   return channel.possibleIdFields.length === 1;
+}
+
+function sanitizeMetadataValue(value: MetadataValue): MapValue {
+  switch (typeof value) {
+    case 'number':
+      return value;
+    case 'string':
+      return value;
+    default:
+      // If metadata value is not a string or a number, there is "almost" 0 chance it can be used as an id Field.
+      // That being said, we replace that field by null so it can take less space in memory
+      return null;
+  }
+}
+
+function addToMap(map: MetadataValueMap, metadata: Metadata) {
+  for (const [key, value] of Object.entries(metadata)) {
+    let mapValue = map.get(key);
+    if (mapValue === undefined) {
+      mapValue = [];
+    }
+    mapValue.push(sanitizeMetadataValue(value));
+    map.set(key, mapValue);
+  }
 }
