@@ -4,6 +4,7 @@ import {
   PlatformClient,
   SourceType,
   CreateSourceModel,
+  FieldModel,
 } from '@coveord/platform-client';
 import {CliUx, Command, Flags} from '@oclif/core';
 import {
@@ -99,7 +100,9 @@ export default class CatalogCreate extends Command {
       catalogConfigurationId,
       configuration
     );
-    // TODO: CDX-1022: make id fields facetable
+
+    await this.makeFieldsFacetable(client, ['TODO:']);
+
     if (flags.output) {
       CliUx.ux.styledJSON(catalog);
     }
@@ -112,6 +115,15 @@ export default class CatalogCreate extends Command {
 
   protected async finally(err: Error | undefined) {
     CliUx.ux.action.stop(err ? red.bold('!') : green('✔'));
+  }
+
+  private async makeFieldsFacetable(client: PlatformClient, fields: string[]) {
+    const batch: FieldModel[] = fields.map((field) => ({
+      name: field,
+      facet: true,
+      useCacheForNestedQuery: true,
+    }));
+    return client.field.updateFields(batch);
   }
 
   private async generateCatalogConfiguration(): Promise<PartialCatalogConfigurationModel> {
