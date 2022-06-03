@@ -1,3 +1,11 @@
+## v1.29.1 (2022-06-03)
+
+### Bug Fixes
+
+- **atomic:** remove create-atomic-template from the dependencies ([#809](https://github.com/coveo/cli/issues/809)) ([dccc5b1](https://github.com/coveo/cli/commits/dccc5b1e6a6463de35b537b7549218bb6095337c))
+- **cli:** replace qa by stg ([#811](https://github.com/coveo/cli/issues/811)) ([7a47f9b](https://github.com/coveo/cli/commits/7a47f9b035b4902b5e8fc4234b8eb223bc6cecd4))
+- **create-atomic:** download prompt selected hosted page ([#810](https://github.com/coveo/cli/issues/810)) ([f525ffb](https://github.com/coveo/cli/commits/f525ffb3d502a7a1080481f64b403d60ae4c1933))
+
 # v1.29.0 (2022-05-31)
 
 ### Bug Fixes

@@ -1,7 +1,7 @@
 {
   "name": "@coveo/create-atomic-template",
   "description": "{{titleCase project}} project",
-  "version": "1.29.0",
+  "version": "1.29.1",
   "private": true,
   "scripts": {
     "release:phase2": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase2-bump-all-packages.mjs",

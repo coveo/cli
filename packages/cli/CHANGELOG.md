@@ -1,3 +1,9 @@
+## 1.29.1 (2022-06-03)
+
+### Bug Fixes
+
+- **cli:** replace qa by stg ([#811](https://github.com/coveo/cli/issues/811)) ([7a47f9b](https://github.com/coveo/cli/commits/7a47f9b035b4902b5e8fc4234b8eb223bc6cecd4))
+
 # 1.29.0 (2022-05-31)
 
 ### Bug Fixes

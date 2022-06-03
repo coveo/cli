@@ -1,3 +1,10 @@
+## 1.29.1 (2022-06-03)
+
+### Bug Fixes
+
+- **cli:** replace qa by stg ([#811](https://github.com/coveo/cli/issues/811)) ([7a47f9b](https://github.com/coveo/cli/commits/7a47f9b035b4902b5e8fc4234b8eb223bc6cecd4))
+- **create-atomic:** download prompt selected hosted page ([#810](https://github.com/coveo/cli/issues/810)) ([f525ffb](https://github.com/coveo/cli/commits/f525ffb3d502a7a1080481f64b403d60ae4c1933))
+
 # 1.29.0 (2022-05-31)
 
 ### Features
