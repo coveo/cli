@@ -77,6 +77,7 @@ export default class CatalogCreate extends Command {
     const authenticatedClient = new AuthenticatedClient();
     const client = await authenticatedClient.getClient();
     const configuration = authenticatedClient.cfg.get();
+    this.newTask('Extracting fields and object types from data');
     const fieldsAndObjectTypes = await getDocumentFieldsAndObjectTypeValues(
       client,
       flags.dataFiles
@@ -84,15 +85,13 @@ export default class CatalogCreate extends Command {
     const catalogConfigurationModel = await this.generateCatalogConfiguration(
       fieldsAndObjectTypes
     );
-
     await this.ensureCatalogValidity();
-
     // Destructive changes starting from here
     const {productSourceId, catalogSourceId} = await this.createSources(
       client,
       catalogConfigurationModel
     );
-    CliUx.ux.action.start('Creating catalog');
+    this.newTask('Creating catalog');
     const {id: catalogConfigurationId} = await this.createCatalogConfiguration(
       client,
       catalogConfigurationModel
@@ -103,10 +102,11 @@ export default class CatalogCreate extends Command {
       productSourceId,
       catalogSourceId
     );
-
-    CliUx.ux.action.start('Updating Catalog fields');
+    this.newTask('Creating missing fields');
     await this.createMissingFields(client, fieldsAndObjectTypes.fields);
+    this.newTask('Updating Catalog fields');
     await this.updateCatalogIdFields(client, catalogConfigurationModel);
+    this.stopCurrentTask();
     await this.mapStandardFields(
       productSourceId,
       catalogConfigurationId,
@@ -124,7 +124,7 @@ export default class CatalogCreate extends Command {
   }
 
   protected async finally(err: Error | undefined) {
-    CliUx.ux.action.stop(err ? red.bold('!') : green('✔'));
+    this.stopCurrentTask(err);
   }
 
   // TODO: There is already a similar method in the push api client that can be publicly exposed
@@ -167,10 +167,10 @@ export default class CatalogCreate extends Command {
   ): Promise<PartialCatalogConfigurationModel> {
     const {flags} = await this.parse(CatalogCreate);
     try {
-      CliUx.ux.action.start('Generating catalog configuration from data');
+      this.newTask('Generating catalog configuration from data');
       return getCatalogPartialConfiguration(flags.dataFiles);
     } catch (error) {
-      CliUx.ux.action.stop('failed');
+      CliUx.ux.action.stop(red.bold('!'));
       CliUx.ux.warn(
         dedent`Unable to automatically generate catalog configuration from data.
         Please answer the following questions`
@@ -284,14 +284,14 @@ export default class CatalogCreate extends Command {
     let productSourceId = undefined;
     let catalogSourceId = undefined;
     const {args, flags} = await this.parse(CatalogCreate);
-    CliUx.ux.action.start('Creating product source');
+    this.newTask('Creating product source');
     productSourceId = await this.createCatalogSource(client, {
       name: `${args.name}`,
       sourceVisibility: flags.sourceVisibility,
     });
 
     if (catalogConfigurationModel.availability) {
-      CliUx.ux.action.start('Creating availability source');
+      this.newTask('Creating availability source');
       catalogSourceId = await this.createCatalogSource(client, {
         name: `${args.name} Availabilities`,
         sourceVisibility: flags.sourceVisibility,
@@ -331,5 +331,18 @@ export default class CatalogCreate extends Command {
       availabilitySourceId,
       description: 'Created by the Coveo CLI',
     });
+  }
+
+  private newTask(task: string) {
+    if (CliUx.ux.action.running) {
+      CliUx.ux.action.stop(green('✔'));
+    }
+    CliUx.ux.action.start(task);
+  }
+
+  private stopCurrentTask(err?: Error) {
+    if (CliUx.ux.action.running) {
+      CliUx.ux.action.stop(err ? red.bold('!') : green('✔'));
+    }
   }
 }
