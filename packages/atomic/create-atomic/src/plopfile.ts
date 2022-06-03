@@ -22,20 +22,20 @@ interface PlopData {
 
 export default async function (plop: NodePlopAPI) {
   const currentPath = process.cwd();
-  let _platformClient: PlatformClient;
+  let platformClientInstance: PlatformClient;
 
   function initPlatformClient(answers: PlopData) {
-    if (_platformClient) {
-      return _platformClient;
+    if (platformClientInstance) {
+      return platformClientInstance;
     }
 
-    _platformClient = createPlatformClient(
+    platformClientInstance = createPlatformClient(
       answers['platform-url'],
       answers['org-id'],
       answers['api-key']
     );
 
-    return _platformClient;
+    return platformClientInstance;
   }
 
   plop.setHelper('inc', (value) => parseInt(value) + 1);
