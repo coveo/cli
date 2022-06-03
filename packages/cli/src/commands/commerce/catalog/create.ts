@@ -1,11 +1,10 @@
 import {bold} from 'chalk';
-import type {
-  FieldModel,
+import {
   CreateCatalogConfigurationModel,
   CatalogConfigurationModel,
-  CatalogFieldsMapping,
-  New,
   PlatformClient,
+  SourceType,
+  CreateSourceModel,
 } from '@coveord/platform-client';
 import {CliUx, Command, Flags} from '@oclif/core';
 import {
@@ -16,35 +15,42 @@ import {
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {
-  BuiltInTransformers,
-  DocumentBuilder,
-  FieldAnalyser,
-  MetadataValue,
-  parseAndGetDocumentBuilderFromJSONDocument,
-} from '@coveo/push-api-client';
-import {PathLike} from 'fs';
+  selectCatalogStructure,
+  selectField,
+  selectObjectTypeField,
+} from '../../../lib/catalog/questions';
+import {Configuration} from '../../../lib/config/config';
+import {catalogConfigurationUrl} from '../../../lib/platform/url';
+import {withSourceVisibility} from '../../../lib/flags/sourceCommonFlags';
+import {getDocumentFieldsAndObjectTypeValues} from '../../../lib/catalog/parse';
 import dedent from 'ts-dedent';
+import {without} from '../../../lib/utils/list';
+
+type PartialCatalogConfigurationModel = Pick<
+  CreateCatalogConfigurationModel,
+  'product' | 'variant' | 'availability'
+>;
 
 export default class CatalogCreate extends Command {
   public static description = `${bold.bgYellow(
     '(alpha)'
-  )} Create a commerce catalog interactively`;
+  )} Create a commerce catalog interactively along with necessary sources`;
 
   public static flags = {
+    ...withSourceVisibility(),
+    output: Flags.boolean({
+      char: 'o',
+      default: false,
+      description: 'Whether to output Catalog configuration',
+    }),
     dataFiles: Flags.string({
       multiple: true,
       char: 'f',
       required: true,
-      helpValue: 'products.json',
+      helpValue: 'products.json availabilities.json',
+      // TODO: support folders as well.
       description:
-        'Combinaison of JSON files and folders (containing JSON files) to push. Can be repeated.',
-    }),
-    availabilityFiles: Flags.string({
-      multiple: true,
-      char: 'a',
-      helpValue: 'availabilities.json',
-      description:
-        'Combinaison of JSON files and folders (containing JSON files) to push. Can be repeated.',
+        'Combinaison of JSON files (containing JSON files) to push. Can be repeated.',
     }),
   };
 
@@ -54,6 +60,7 @@ export default class CatalogCreate extends Command {
     {
       name: 'name',
       description:
+        // TODO: check for catalog name uniqueness before doing destructive changes
         "The catalog name must be unique. Editing an existing catalog's name will cause all search interfaces referencing it to cease working.",
       required: true,
     },
@@ -66,16 +73,40 @@ export default class CatalogCreate extends Command {
     // TODO: Add edit catalog privilege. https://docs.coveo.com/en/2956/coveo-for-commerce/index-commerce-catalog-content-with-the-stream-api#required-privileges
   )
   public async run() {
-    this.printWarningMessage();
-    const client = await new AuthenticatedClient().getClient();
-    const {fields, objectTypes} = await this.parseDocuments(client);
+    const {flags} = await this.parse(CatalogCreate);
+    const authenticatedClient = new AuthenticatedClient();
+    const client = await authenticatedClient.getClient();
+    const configuration = authenticatedClient.cfg.get();
+    const catalogConfigurationModel = await this.generateCatalogConfiguration(
+      client
+    );
 
-    await this.promptQuestions(fields, objectTypes);
     await this.ensureCatalogValidity();
 
     // Destructive changes starting from here
-    const configuration = await this.createCatalogConfiguration(client);
-    await this.createCatalog(client, configuration);
+    const {productSourceId, catalogSourceId} = await this.createSources(
+      client,
+      catalogConfigurationModel
+    );
+    const {id: catalogConfigurationId} = await this.createCatalogConfiguration(
+      client,
+      catalogConfigurationModel
+    );
+    const catalog = await this.createCatalog(
+      client,
+      catalogConfigurationId,
+      productSourceId,
+      catalogSourceId
+    );
+    await this.mapStandardFields(
+      productSourceId,
+      catalogConfigurationId,
+      configuration
+    );
+    // TODO: CDX-1022: make id fields facetable
+    if (flags.output) {
+      CliUx.ux.styledJSON(catalog);
+    }
   }
 
   @Trackable()
@@ -83,57 +114,95 @@ export default class CatalogCreate extends Command {
     throw err;
   }
 
-  private async parseDocuments(client: PlatformClient) {
-    const {flags} = await this.parse(CatalogCreate);
-    const analyser = new FieldAnalyser(client);
-    const docBuilders: DocumentBuilder[] = [];
-    const objectTypeValues: Set<MetadataValue> = new Set();
-    const callback = async (docBuilder: DocumentBuilder, docPath: PathLike) => {
-      const {metadata, uri} = docBuilder.build();
-      if (metadata?.objecttype === undefined) {
-        CliUx.ux.warn(
-          `missing ${bold('objecttype')} metadata on item ${uri} (${docPath})`
-        );
-      } else {
-        objectTypeValues.add(metadata.objecttype);
-      }
-    };
-
-    for (const filePath of flags.dataFiles.values()) {
-      docBuilders.push(
-        ...parseAndGetDocumentBuilderFromJSONDocument(filePath, {
-          callback,
-          fieldNameTransformer: BuiltInTransformers.toLowerCase,
-        })
+  private async generateCatalogConfiguration(
+    client: PlatformClient
+  ): Promise<PartialCatalogConfigurationModel> {
+    try {
+      return await this.generateCatalogConfigurationAutomatically(client);
+    } catch (error) {
+      CliUx.ux.warn(
+        dedent`Unable to automatically generate catalog configuration from data.
+        Please answer the following questions`
       );
     }
-
-    if (objectTypeValues.size === 0) {
-      CliUx.ux.error(
-        dedent`
-        No ${bold('objecttype')} metadata detected while parsing documents.
-        The ${bold(
-          'objecttype'
-        )} metadata is crucial, as it will be used to identify the item as a product in the index. Ensure this metadata is set on all your items.
-        See https://docs.coveo.com/en/m53g7119 for more information.`
-      );
-    }
-
-    await analyser.add(docBuilders);
-    return {
-      objectTypes: Array.from(objectTypeValues.values()),
-      fields: analyser.report().fields,
-    };
+    return this.generateCatalogConfigurationInteractively();
   }
 
-  private async promptQuestions(
-    _fields: FieldModel[],
-    _objectTypes: MetadataValue[]
+  private async generateCatalogConfigurationAutomatically(
+    _client: PlatformClient
+  ): Promise<PartialCatalogConfigurationModel> {
+    throw 'TODO: CDX-1023: try to automatically generate catalog config by simply parsing the data';
+  }
+
+  private async generateCatalogConfigurationInteractively() {
+    const {flags} = await this.parse(CatalogCreate);
+    let {fields, objectTypeValues} = await getDocumentFieldsAndObjectTypeValues(
+      flags.dataFiles
+    );
+    const {variants, availabilities} = await selectCatalogStructure(
+      objectTypeValues
+    );
+    const productObjectType = await selectObjectTypeField(
+      'product',
+      objectTypeValues
+    );
+    const productIdField = await selectField(
+      `Select your Product ${variants ? 'ID' : 'SKU'} field`,
+      fields
+    );
+    objectTypeValues = without(objectTypeValues, [productObjectType]);
+    const model: PartialCatalogConfigurationModel = {
+      product: {
+        objectType: productObjectType,
+        idField: productIdField,
+      },
+    };
+
+    if (variants) {
+      const variantObjectType = await selectObjectTypeField(
+        'variant',
+        objectTypeValues
+      );
+      const variantIdField = await selectField(
+        'Select your Product SKU field',
+        fields
+      );
+      objectTypeValues = without(objectTypeValues, [variantObjectType]);
+      model.variant = {
+        objectType: variantObjectType,
+        idField: variantIdField,
+      };
+    }
+
+    if (availabilities) {
+      model.availability = {
+        objectType: await selectObjectTypeField(
+          'availability',
+          objectTypeValues
+        ),
+        idField: await selectField('Select your Availability ID field', fields),
+        availableSkusField: await selectField(
+          'Select your Available SKUs field',
+          fields
+        ),
+      };
+    }
+
+    return model;
+  }
+
+  private async mapStandardFields(
+    sourceId: string,
+    catalogConfigurationId: string,
+    configuration: Configuration
   ) {
-    // TODO: CDX-978: prompt user what objecttype value should define products (and possibly variants and availabilities).
-    // TODO: CDX-978: prompt user what fields should be used as catalog ids. This steps should leverage the metadata keys found in the previous step
-    // TODO: CDX-978: prompt user for standard field mappings. Only if the CLI is not able to resolve them in the first place
-    // TODO: CDX-978: prompt user for source ids. If the there are no sources in the org, create them
+    // TODO: try to automap standard fields with similar name
+    const url = catalogConfigurationUrl(
+      sourceId,
+      catalogConfigurationId,
+      configuration
+    );
+    CliUx.ux.log(`To map standard fields visit ${url}`);
   }
 
   /**
@@ -142,53 +211,73 @@ export default class CatalogCreate extends Command {
    * This would prevent going forward with a broken/invalid catalog.
    */
   private async ensureCatalogValidity() {
-    // TODO: Throw warning whenever duplicate SKUs are detected
     return;
   }
 
-  private async createCatalogConfiguration(client: PlatformClient) {
-    const model = await this.getCatalogConfigurationModel();
-    return client.catalogConfiguration.create(model);
+  private async createCatalogConfiguration(
+    client: PlatformClient,
+    model: PartialCatalogConfigurationModel
+  ): Promise<CatalogConfigurationModel> {
+    const {args} = await this.parse(CatalogCreate);
+    return client.catalogConfiguration.create({
+      ...model,
+      name: `${args.name}-configuration`,
+      // Field mappings can later be defined in the Admin UI.
+      fieldsMapping: {},
+    });
   }
 
-  private async getCatalogConfigurationModel(): Promise<
-    New<CreateCatalogConfigurationModel>
-  > {
-    const {args} = await this.parse(CatalogCreate);
-    const model: New<CreateCatalogConfigurationModel> = {
-      fieldsMapping: this.getFieldMappings(),
-      name: `${args.name}-configuration`,
-      ...this.getHierarchyModel(),
+  private async createSources(
+    client: PlatformClient,
+    catalogConfigurationModel: PartialCatalogConfigurationModel
+  ) {
+    let productSourceId = undefined;
+    let catalogSourceId = undefined;
+    const {args, flags} = await this.parse(CatalogCreate);
+    productSourceId = await this.createCatalogSource(client, {
+      name: `${args.name}`,
+      sourceVisibility: flags.sourceVisibility,
+    });
+
+    if (catalogConfigurationModel.availability) {
+      catalogSourceId = await this.createCatalogSource(client, {
+        name: `${args.name} Availabilities`,
+        sourceVisibility: flags.sourceVisibility,
+      });
+    }
+
+    return {
+      productSourceId,
+      catalogSourceId,
     };
-    return model;
+  }
+
+  private async createCatalogSource(
+    client: PlatformClient,
+    overwriteModel?: CreateSourceModel
+  ) {
+    const {id} = await client.source.create({
+      sourceType: SourceType.CATALOG,
+      pushEnabled: true,
+      streamEnabled: true,
+      ...overwriteModel,
+    });
+    return id;
   }
 
   private async createCatalog(
     client: PlatformClient,
-    catalogConfiguration: CatalogConfigurationModel
+    catalogConfigurationId: string,
+    sourceId: string,
+    availabilitySourceId?: string
   ) {
     const {args} = await this.parse(CatalogCreate);
     return client.catalog.create({
-      catalogConfigurationId: catalogConfiguration.id,
+      catalogConfigurationId,
       name: args.name,
+      sourceId,
+      availabilitySourceId,
+      description: 'Created by the Coveo CLI',
     });
-  }
-
-  private printWarningMessage() {
-    CliUx.ux.warn(
-      'The `commerce:catalog:create` command is currently in alpha, use at your own risk'
-    );
-  }
-
-  private getFieldMappings(): CatalogFieldsMapping {
-    throw 'TODO:';
-  }
-
-  private getHierarchyModel(): Pick<
-    CreateCatalogConfigurationModel,
-    'product' | 'variant' | 'availability'
-  > {
-    // read variant and availability flags
-    throw 'TODO:';
   }
 }

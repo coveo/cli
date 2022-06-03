@@ -25,3 +25,12 @@ export function createSnapshotUrl(
   const url = platformUrl(options);
   return `${url}/admin/#${targetOrgId}/organization/resource-snapshots/create-snapshot`;
 }
+
+export function catalogConfigurationUrl(
+  targetOrgId: string,
+  catalogConfigurationId: string,
+  options: Partial<PlatformUrlOptions>
+) {
+  const url = platformUrl(options);
+  return `${url}/admin/#${targetOrgId}/commerce/configurations/edit/${catalogConfigurationId}`;
+}
