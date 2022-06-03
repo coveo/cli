@@ -89,7 +89,7 @@ async function updateWorkspaceDependencies(version) {
       updateDependency(packageJson, dependency, version);
     }
   }
-  writeFileSync('package.json', packageJson);
+  writeFileSync('package.json', JSON.stringify(packageJson));
 }
 
 function updateDependency(packageJson, dependency, version) {
