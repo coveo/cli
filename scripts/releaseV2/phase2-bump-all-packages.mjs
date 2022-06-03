@@ -86,13 +86,13 @@ async function updateWorkspaceDependencies(version) {
 
   for (const dependency of topologicalDependencies) {
     if (npmDependencies.includes(dependency)) {
-      await updateDependency(packageJson, dependency, version);
+      updateDependency(packageJson, dependency, version);
     }
   }
   writeFileSync('package.json', packageJson);
 }
 
-async function updateDependency(packageJson, dependency, version) {
+function updateDependency(packageJson, dependency, version) {
   for (const dependencyType of [
     'dependencies',
     'devDependencies',
