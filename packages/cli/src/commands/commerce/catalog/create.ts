@@ -85,7 +85,9 @@ export default class CatalogCreate extends Command {
     const catalogConfigurationModel = await this.generateCatalogConfiguration(
       fieldsAndObjectTypes
     );
+
     await this.ensureCatalogValidity();
+
     // Destructive changes starting from here
     const {productSourceId, catalogSourceId} = await this.createSources(
       client,
@@ -102,6 +104,7 @@ export default class CatalogCreate extends Command {
       productSourceId,
       catalogSourceId
     );
+
     this.newTask('Creating missing fields');
     await this.createMissingFields(client, fieldsAndObjectTypes.fields);
     this.newTask('Updating Catalog fields');
