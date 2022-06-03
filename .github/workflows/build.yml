@@ -25,7 +25,7 @@ jobs:
           node-version: 16
           cache: 'npm'
       - name: Install locked NPM version.
-        # TODO: Remove later, when `npm 8.5.4` is built in.
+        # TODO: CDX-1010 | Remove in CDX-1010.
         run: npm i -g npm@8.10.0
       - name: Setup repo
         run: npm ci
@@ -55,7 +55,7 @@ jobs:
           node-version: ${{matrix.node}}
           cache: 'npm'
       - name: Install locked NPM version.
-        # TODO: Remove later, when `npm 8.5.4` is built in.
+        # TODO: CDX-1010 | Remove in CDX-1010.
         run: npm i -g npm@8.10.0
       - name: Setup repo
         run: npm ci
@@ -68,7 +68,7 @@ jobs:
       cliConfigJson: ${{ steps.setup.outputs.cliConfigJson}}
     env:
       # Platform environment to log into for the e2e tests.
-      PLATFORM_ENV: 'qa'
+      PLATFORM_ENV: 'stg'
       # Username used to log into the organization whose ID is stored in the ORG_ID variable
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       # Password used to log into the organization whose ID is stored in the ORG_ID variable
@@ -86,7 +86,7 @@ jobs:
           node-version: ${{matrix.node}}
           cache: 'npm'
       - name: Install locked NPM version.
-        # TODO: Remove later, when `npm 8.5.4` is built in.
+        # TODO: CDX-1010 | Remove in CDX-1010.
         run: npm i -g npm@8.10.0
       - run: |
           npm ci
@@ -103,6 +103,11 @@ jobs:
         run: |
           echo "${{ secrets.E2E_TOKEN_PASSPHRASE }}" | gpg -a --batch --passphrase-fd 0 --symmetric --cipher-algo AES256 --output encodedConfig $CLI_CONFIG_PATH
           echo "::set-output name=cliConfigJson::$(base64 -w 0 encodedConfig)"
+      - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
+        if: always()
+        with:
+          name: e2e-login-publish-artifacts
+          path: ./packages/cli-e2e/artifacts
   e2e-setup-verdaccio:
     strategy:
       matrix:
@@ -126,7 +131,7 @@ jobs:
           path: packages\cli-e2e\verdaccio
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
       - name: Install locked NPM version.
-        # TODO: Remove later, when `npm 8.5.4` is built in.
+        # TODO: CDX-1010 | Remove in CDX-1010.
         run: npm i -g npm@8.10.0
       - run: npm ci
       - name: Build
@@ -157,9 +162,13 @@ jobs:
             'react.specs.ts',
             'vue.specs.ts',
           ]
+        # TODO: fix auth spec with windows
+        exclude:
+          - os: windows-latest
+            spec: auth.specs.ci.ts
     env:
       # Platform environment to log into for the e2e tests.
-      PLATFORM_ENV: 'qa'
+      PLATFORM_ENV: 'stg'
       # Username used to log into the organization whose ID is stored in the ORG_ID variable
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       # Password used to log into the organization whose ID is stored in the ORG_ID variable
@@ -193,7 +202,7 @@ jobs:
       - name: Install Mitmproxy through pip
         run: pip install -r packages/cli-e2e/mitmproxy/requirements.txt
       - name: Install locked NPM version.
-        # TODO: Remove later, when `npm 8.5.4` is built in.
+        # TODO: CDX-1010 | Remove in CDX-1010.
         run: npm i -g npm@8.10.0
       - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # tag=v3
         if: ${{matrix.os == 'ubuntu-latest'}}
@@ -237,7 +246,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # Platform environment to log into for the e2e tests.
-      PLATFORM_ENV: 'qa'
+      PLATFORM_ENV: 'stg'
       # Username used to log into the organization whose ID is stored in the ORG_ID variable
       PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
       # Password used to log into the organization whose ID is stored in the ORG_ID variable
@@ -256,7 +265,7 @@ jobs:
           node-version: ${{matrix.node}}
           cache: 'npm'
       - name: Install locked NPM version.
-        # TODO: Remove later, when `npm 8.5.4` is built in.
+        # TODO: CDX-1010 | Remove in CDX-1010.
         run: npm i -g npm@8.10.0
       - run: npm ci
       - name: Decrypt config

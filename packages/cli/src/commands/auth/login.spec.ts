@@ -75,7 +75,7 @@ describe('auth:login', () => {
     .catch(/Expected --region=foo/)
     .it('reject invalid region', async () => {});
 
-  ['dev', 'qa', 'prod', 'hipaa'].forEach((environment) => {
+  ['dev', 'stg', 'prod', 'hipaa'].forEach((environment) => {
     test
       .stdout()
       .stderr()
@@ -106,9 +106,9 @@ describe('auth:login', () => {
   test
     .stdout()
     .stderr()
-    .command(['auth:login', '-e', 'qa', '-o', 'foo'])
+    .command(['auth:login', '-e', 'stg', '-o', 'foo'])
     .it('passed the -e=dev flag to oauth as an environment', () => {
-      expect(mockedOAuth.mock.calls[0][0]?.environment).toBe('qa');
+      expect(mockedOAuth.mock.calls[0][0]?.environment).toBe('stg');
     });
 
   describe('retrieves token from oauth service', () => {

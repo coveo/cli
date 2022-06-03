@@ -1,3 +1,13 @@
+# v1.29.0 (2022-05-31)
+
+### Bug Fixes
+
+- **dump:** handle rowid fields in org:search:dump ([#806](https://github.com/coveo/cli/issues/806)) ([927333d](https://github.com/coveo/cli/commits/927333de5a1998f02f9ebd62df0a8f78e56de81f))
+
+### Features
+
+- **create-atomic:** allow Coveo atomic to start from an existing Platform Search page ([#728](https://github.com/coveo/cli/issues/728)) ([340fe4a](https://github.com/coveo/cli/commits/340fe4af779ff87730f3a9964272f7a50561ee39))
+
 ## v1.28.1 (2022-05-24)
 
 # v1.28.0 (2022-05-24)
