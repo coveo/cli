@@ -32,7 +32,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@coveo/search-token-lambda": "1.29.1",
     "@coveord/platform-client": "30.8.1",
     "abortcontroller-polyfill": "1.7.3",
     "detect-indent": "7.0.0",

@@ -183,12 +183,12 @@ export default async function (plop: NodePlopAPI) {
         function installPackages(data) {
           return new Promise((resolve, reject) => {
             const {project} = data as PlopData;
-            const process = spawn(getPackageManager(), ['install'], {
-              stdio: 'ignore',
+            const installProcess = spawn(getPackageManager(), ['install'], {
+              stdio: 'inherit',
               cwd: join(currentPath, project),
             });
 
-            process.on('close', (code) => {
+            installProcess.on('close', (code) => {
               if (code === 0) {
                 resolve('Installation complete');
               } else {
