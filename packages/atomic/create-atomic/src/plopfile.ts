@@ -22,17 +22,20 @@ interface PlopData {
 
 export default async function (plop: NodePlopAPI) {
   const currentPath = process.cwd();
-  let platformClient: PlatformClient;
+  let platformClientInstance: PlatformClient;
+
   function initPlatformClient(answers: PlopData) {
-    if (platformClient) {
-      return;
+    if (platformClientInstance) {
+      return platformClientInstance;
     }
 
-    platformClient = createPlatformClient(
+    platformClientInstance = createPlatformClient(
       answers['platform-url'],
       answers['org-id'],
       answers['api-key']
     );
+
+    return platformClientInstance;
   }
 
   plop.setHelper('inc', (value) => parseInt(value) + 1);
@@ -92,19 +95,18 @@ export default async function (plop: NodePlopAPI) {
         message:
           'Use an existing hosted search page as a template, or start from scratch?',
         choices: async function (answers: PlopData) {
-          initPlatformClient(answers);
           return [
             {value: undefined, name: 'Start from scratch'},
             {type: 'separator'},
-            ...(await listSearchPagesOptions(platformClient)),
+            ...(await listSearchPagesOptions(initPlatformClient(answers))),
           ];
         },
         validate: async (input, answers: PlopData) => {
           try {
-            initPlatformClient(answers);
-            answers.page = await fetchPageManifest(platformClient, input);
-
-            return true;
+            return !!(await fetchPageManifest(
+              initPlatformClient(answers),
+              input
+            ));
           } catch (error) {
             return `The search page with the id "${input}" does not exist.`;
           }
@@ -113,13 +115,17 @@ export default async function (plop: NodePlopAPI) {
     ],
     actions: function () {
       return [
-        function pageInfo(data) {
-          const plopData = data as PlopData;
-          if (plopData.page) {
-            return `Hosted search page "${plopData.page.config.title} has been downloaded`;
+        async function download(data) {
+          const answers = data as PlopData;
+          if (answers['page-id']) {
+            answers.page = await fetchPageManifest(
+              initPlatformClient(answers),
+              answers['page-id']
+            );
+            return `Hosted search page named "${answers.page.config.title}" has been downloaded`;
           }
 
-          plopData.page = defaultPageManifest;
+          answers.page = defaultPageManifest;
           return 'Using the default search page template.';
         },
         {
@@ -153,7 +159,7 @@ export default async function (plop: NodePlopAPI) {
           ],
         },
         function generateTemplates(data) {
-          const {page, project} = data as PlopData;
+          const {project, page} = data as PlopData;
           page.results.templates.forEach((resultTemplate, index) => {
             const filePath = join(
               currentPath,
