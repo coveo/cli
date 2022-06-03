@@ -1,18 +1,16 @@
 import {bold} from 'chalk';
+import {PlatformClient, FieldModel, FieldTypes} from '@coveord/platform-client';
 import {
   BuiltInTransformers,
   DocumentBuilder,
+  FieldAnalyser,
   Metadata,
   parseAndGetDocumentBuilderFromJSONDocument,
 } from '@coveo/push-api-client';
 import {CliUx} from '@oclif/core';
 import {PathLike} from 'fs';
 import dedent from 'ts-dedent';
-
-interface ParsedDocumentsRawFields {
-  fields: string[];
-  objectTypeValues: string[];
-}
+import {DocumentParseResult} from './interfaces';
 
 /**
  * Parses the JSON files to extract fields required for catalog configuration questions
@@ -21,20 +19,25 @@ interface ParsedDocumentsRawFields {
  * @param {PathLike[]} filePaths the path to the JSON documents
  */
 export async function getDocumentFieldsAndObjectTypeValues(
+  client: PlatformClient,
   filePaths: PathLike[]
-): Promise<ParsedDocumentsRawFields> {
+): Promise<DocumentParseResult> {
   const fieldNameSet: Set<string> = new Set();
   const objectTypeValueSet: Set<string> = new Set();
+  const analyser = new FieldAnalyser(client);
+  const docBuilders: DocumentBuilder[] = [];
   const callback = async (docBuilder: DocumentBuilder, docPath: PathLike) => {
     addObjectTypeToSet(objectTypeValueSet, docBuilder, docPath);
     addFieldNameToSet(fieldNameSet, docBuilder);
   };
 
   for (const filePath of filePaths) {
-    parseAndGetDocumentBuilderFromJSONDocument(filePath, {
-      callback,
-      fieldNameTransformer: BuiltInTransformers.toSnakeCase,
-    });
+    docBuilders.push(
+      ...parseAndGetDocumentBuilderFromJSONDocument(filePath, {
+        callback,
+        fieldNameTransformer: BuiltInTransformers.toSnakeCase,
+      })
+    );
   }
 
   if (objectTypeValueSet.size === 0) {
@@ -47,9 +50,12 @@ export async function getDocumentFieldsAndObjectTypeValues(
     );
   }
 
+  // TODO: For better performances (less memory consumption), the doc builder should be added in the callback. But the callback needs to be an async function, which is not the case at the moment
+  await analyser.add(docBuilders);
+
   return {
+    fields: analyser.report().fields,
     objectTypeValues: getValuesFromSet(objectTypeValueSet),
-    fields: getValuesFromSet(fieldNameSet),
   };
 }
 

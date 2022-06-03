@@ -25,8 +25,10 @@ import {withSourceVisibility} from '../../../lib/flags/sourceCommonFlags';
 import {getDocumentFieldsAndObjectTypeValues} from '../../../lib/catalog/parse';
 import dedent from 'ts-dedent';
 import {without} from '../../../lib/utils/list';
-import {PathLike} from 'fs';
-import {PartialCatalogConfigurationModel} from '../../../lib/catalog/interfaces';
+import {
+  DocumentParseResult,
+  PartialCatalogConfigurationModel,
+} from '../../../lib/catalog/interfaces';
 import {getCatalogPartialConfiguration} from '../../../lib/catalog/detect';
 
 export default class CatalogCreate extends Command {
@@ -75,7 +77,13 @@ export default class CatalogCreate extends Command {
     const authenticatedClient = new AuthenticatedClient();
     const client = await authenticatedClient.getClient();
     const configuration = authenticatedClient.cfg.get();
-    const catalogConfigurationModel = await this.generateCatalogConfiguration();
+    const fieldsAndObjectTypes = await getDocumentFieldsAndObjectTypeValues(
+      client,
+      flags.dataFiles
+    );
+    const catalogConfigurationModel = await this.generateCatalogConfiguration(
+      fieldsAndObjectTypes
+    );
 
     await this.ensureCatalogValidity();
 
@@ -95,6 +103,9 @@ export default class CatalogCreate extends Command {
       productSourceId,
       catalogSourceId
     );
+
+    CliUx.ux.action.start('Updating Catalog fields');
+    await this.createMissingFields(client, fieldsAndObjectTypes.fields);
     await this.updateCatalogIdFields(client, catalogConfigurationModel);
     await this.mapStandardFields(
       productSourceId,
@@ -116,41 +127,64 @@ export default class CatalogCreate extends Command {
     CliUx.ux.action.stop(err ? red.bold('!') : green('✔'));
   }
 
+  // TODO: There is already a similar method in the push api client that can be publicly exposed
+  private async createMissingFields(
+    client: PlatformClient,
+    fields: FieldModel[],
+    fieldBatch = 500
+  ) {
+    for (let i = 0; i < fields.length; i += fieldBatch) {
+      const batch = fields.slice(i, fieldBatch + i);
+      await client.field.createFields(batch);
+    }
+  }
+
   private async updateCatalogIdFields(
     client: PlatformClient,
     catalogConfigurationModel: PartialCatalogConfigurationModel
   ) {
     const fields: string[] = [];
+    // Get Id fields from catalog configuration
     for (const {idField} of Object.values(catalogConfigurationModel)) {
       fields.push(idField);
     }
-    const batch: FieldModel[] = fields.map((field) => ({
-      name: field,
+    // Fetch Id field model from organization to get the type
+    let fieldModels: FieldModel[] = await Promise.all(
+      fields.map((field) => client.field.get(field))
+    );
+    // Update field models with necessary parameters
+    fieldModels = fieldModels.map((field) => ({
+      ...field,
       multiValueFacet: true,
       useCacheForNestedQuery: true,
     }));
-    return client.field.updateFields(batch);
+    // Push updated fields to organization
+    return client.field.updateFields(fieldModels);
   }
 
-  private async generateCatalogConfiguration(): Promise<PartialCatalogConfigurationModel> {
+  private async generateCatalogConfiguration(
+    fieldsAndObjectTypes: DocumentParseResult
+  ): Promise<PartialCatalogConfigurationModel> {
     const {flags} = await this.parse(CatalogCreate);
     try {
       CliUx.ux.action.start('Generating catalog configuration from data');
       return getCatalogPartialConfiguration(flags.dataFiles);
     } catch (error) {
+      CliUx.ux.action.stop('failed');
       CliUx.ux.warn(
         dedent`Unable to automatically generate catalog configuration from data.
         Please answer the following questions`
       );
     }
-    return this.generateCatalogConfigurationInteractively(flags.dataFiles);
+    return this.generateCatalogConfigurationInteractively(fieldsAndObjectTypes);
   }
 
   private async generateCatalogConfigurationInteractively(
-    dataFiles: PathLike[]
+    fieldsAndObjectTypes: DocumentParseResult
   ): Promise<PartialCatalogConfigurationModel> {
-    let {fields, objectTypeValues} = await getDocumentFieldsAndObjectTypeValues(
-      dataFiles
+    let {objectTypeValues} = fieldsAndObjectTypes;
+    const fieldnames: string[] = fieldsAndObjectTypes.fields.map(
+      (field) => `${field.name}`
     );
     const {variants, availabilities} = await selectCatalogStructure(
       objectTypeValues
@@ -161,7 +195,7 @@ export default class CatalogCreate extends Command {
     );
     const productIdField = await selectField(
       `Select your Product ${variants ? 'ID' : 'SKU'} field`,
-      fields
+      fieldnames
     );
     objectTypeValues = without(objectTypeValues, [productObjectType]);
     const model: PartialCatalogConfigurationModel = {
@@ -178,7 +212,7 @@ export default class CatalogCreate extends Command {
       );
       const variantIdField = await selectField(
         'Select your Product SKU field',
-        fields
+        fieldnames
       );
       objectTypeValues = without(objectTypeValues, [variantObjectType]);
       model.variant = {
@@ -193,10 +227,13 @@ export default class CatalogCreate extends Command {
           'availability',
           objectTypeValues
         ),
-        idField: await selectField('Select your Availability ID field', fields),
+        idField: await selectField(
+          'Select your Availability ID field',
+          fieldnames
+        ),
         availableSkusField: await selectField(
           'Select your Available SKUs field',
-          fields
+          fieldnames
         ),
       };
     }

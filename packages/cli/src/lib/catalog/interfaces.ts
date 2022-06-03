@@ -1,5 +1,8 @@
-import {MetadataValue} from '@coveo/push-api-client';
-import {CreateCatalogConfigurationModel} from '@coveord/platform-client';
+import type {MetadataValue} from '@coveo/push-api-client';
+import type {
+  FieldModel,
+  CreateCatalogConfigurationModel,
+} from '@coveord/platform-client';
 
 export type MetadataKey = string;
 export type MapValue = string | number | null;
@@ -26,3 +29,8 @@ export type PartialCatalogConfigurationModel = Pick<
   CreateCatalogConfigurationModel,
   'product' | 'variant' | 'availability'
 >;
+
+export interface DocumentParseResult {
+  fields: FieldModel[];
+  objectTypeValues: string[];
+}
