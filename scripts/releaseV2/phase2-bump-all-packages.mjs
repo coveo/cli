@@ -82,7 +82,7 @@ async function updateWorkspaceDependencies(version) {
     'dependencies',
     'devDependencies',
     'peerDependencies',
-  ].reduce((acc, cur) => acc.concat(Object.keys(packageJson[cur] ?? [])));
+  ].reduce((acc, cur) => acc.concat(Object.keys(packageJson[cur] ?? [])), []);
 
   for (const dependency of topologicalDependencies) {
     if (npmDependencies.includes(dependency)) {
