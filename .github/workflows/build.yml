@@ -209,11 +209,13 @@ jobs:
         with:
           path: packages/cli-e2e/verdaccio
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
+          restore-keys: verdaccio-${{matrix.os}}-${{ github.sha }}
       - uses: actions/cache@30f413bfed0a2bc738fdfd409e5a9e96b24545fd # tag=v3
         if: ${{matrix.os == 'windows-latest'}}
         with:
           path: packages\cli-e2e\verdaccio
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
+          restore-keys: verdaccio-${{matrix.os}}-${{ github.sha }}
       - name: Decrypt config
         working-directory: packages/cli-e2e
         run: echo ${{needs.e2e-setup-login.outputs.cliConfigJson}} | base64 --decode | gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.E2E_TOKEN_PASSPHRASE }}" --output decrypted
