@@ -74,6 +74,12 @@ export default class CommerceRecipe extends Command {
 
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
+    // TODO: CDX-1008: temporary fix until we actually ensure that oclif prints all errors (not only instanceof Error objects)
+    if (err && !(err instanceof Error)) {
+      const logger = typeof err === 'string' ? CliUx.ux.error : console.error;
+      logger('Recipe step failed');
+      logger(err);
+    }
     throw err;
   }
 
@@ -94,7 +100,7 @@ export default class CommerceRecipe extends Command {
     const snapshotPath = join(
       CommerceRecipe.tempFolder,
       Project.resourceFolderName,
-      'ALL.json' // The name here does not matter
+      'ALL.json' // The name of the snapshot file does not matter
     );
 
     writeJsonSync(snapshotPath, JSON.parse(snapshot), {spaces: 2});
@@ -105,7 +111,6 @@ export default class CommerceRecipe extends Command {
   }
 
   private cleanTempFolder() {
-    // TODO: not sure it needs a try catch
     rmdirSync(CommerceRecipe.tempFolder);
   }
 
@@ -120,10 +125,6 @@ export default class CommerceRecipe extends Command {
     argv?: string[]
   ): CommandRunReturn<T> {
     this.logHeader(name);
-    try {
-      return command.run(argv);
-    } catch {
-      // TODO: not sure how to handle that
-    }
+    return command.run(argv);
   }
 }
