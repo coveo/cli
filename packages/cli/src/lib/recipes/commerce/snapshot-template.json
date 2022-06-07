@@ -8,10 +8,10 @@
         "model": {
           "childrenCount": 0,
           "condition": {},
-          "definition": "filter cq `@objectType==Product`",
+          "definition": "filter cq `@objectType=={{objecttype}}`",
           "description": "",
           "detailed": {
-            "expressions": ["@objectType==Product"]
+            "expressions": ["@objectType=={{objecttype}}"]
           },
           "feature": "filter",
           "parent": {},
@@ -21,16 +21,16 @@
         "parents": {
           "queryPipelineId": "{{ QUERY_PIPELINE.Recommendations_h11Con }}"
         },
-        "resourceName": "filter_cq_`@objectType==Product`_1hTdbu"
+        "resourceName": "filter_cq_`@objectType=={{objecttype}}`_1hTdbu"
       },
       {
         "model": {
           "childrenCount": 0,
           "condition": {},
-          "definition": "filter cq `@objectType==Product`",
+          "definition": "filter cq `@objectType=={{objecttype}}`",
           "description": "",
           "detailed": {
-            "expressions": ["@objectType==Product"]
+            "expressions": ["@objectType=={{objecttype}}"]
           },
           "feature": "filter",
           "parent": {},
@@ -40,7 +40,7 @@
         "parents": {
           "queryPipelineId": "{{ QUERY_PIPELINE.PDP_a9yZwh }}"
         },
-        "resourceName": "filter_cq_`@objectType==Product`_hr7BNg"
+        "resourceName": "filter_cq_`@objectType=={{objecttype}}`_hr7BNg"
       }
     ],
     "ML_MODEL": [

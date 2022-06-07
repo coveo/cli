@@ -5,14 +5,9 @@ import {
   SourceType,
   CreateSourceModel,
   FieldModel,
+  CreateCatalogModel,
 } from '@coveord/platform-client';
 import {CliUx, Command, Flags} from '@oclif/core';
-import {
-  HasNecessaryCoveoPrivileges,
-  IsAuthenticated,
-  Preconditions,
-} from '../../../lib/decorators/preconditions';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {
   selectCatalogStructure,
@@ -36,13 +31,10 @@ export default class CatalogCreate extends Command {
     '(alpha)'
   )} Create a commerce catalog interactively along with necessary sources`;
 
+  public static enableJsonFlag = true;
+
   public static flags = {
     ...withSourceVisibility(),
-    output: Flags.boolean({
-      char: 'o',
-      default: false,
-      description: 'Whether to output Catalog configuration',
-    }),
     dataFiles: Flags.string({
       multiple: true,
       char: 'f',
@@ -66,13 +58,9 @@ export default class CatalogCreate extends Command {
     },
   ];
 
-  @Trackable()
-  @Preconditions(
-    IsAuthenticated(),
-    HasNecessaryCoveoPrivileges()
-    // TODO: Add edit catalog privilege. https://docs.coveo.com/en/2956/coveo-for-commerce/index-commerce-catalog-content-with-the-stream-api#required-privileges
-  )
-  public async run() {
+  // Preconditions were removed because of the clashe with the enableJsonFlag option.
+  // Ideally, the preconditions should also support the run method with non-void return
+  public async run(): Promise<CreateCatalogModel> {
     const {flags} = await this.parse(CatalogCreate);
     const authenticatedClient = new AuthenticatedClient();
     const client = await authenticatedClient.getClient();
@@ -105,10 +93,12 @@ export default class CatalogCreate extends Command {
       catalogSourceId
     );
 
-    this.newTask('Creating missing fields');
-    await this.createMissingFields(client, fieldsAndObjectTypes.fields);
-    this.newTask('Updating Catalog fields');
-    await this.updateCatalogIdFields(client, catalogConfigurationModel);
+    this.newTask('Configuring Catalog fields');
+    await this.ensureCatalogFields(
+      client,
+      catalogConfigurationModel,
+      fieldsAndObjectTypes.fields
+    );
     this.stopCurrentTask();
     await this.mapStandardFields(
       productSourceId,
@@ -116,12 +106,9 @@ export default class CatalogCreate extends Command {
       configuration
     );
 
-    if (flags.output) {
-      CliUx.ux.styledJSON(catalog);
-    }
+    return catalog;
   }
 
-  @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
     throw err;
   }
@@ -130,39 +117,80 @@ export default class CatalogCreate extends Command {
     this.stopCurrentTask(err);
   }
 
+  private async filterOutExistingFields(
+    client: PlatformClient,
+    fields: FieldModel[]
+  ): Promise<FieldModel[]> {
+    const allFields = await this.listAllFieldsFromOrg(client);
+    return allFields;
+  }
+
   // TODO: There is already a similar method in the push api client that can be publicly exposed
   private async createMissingFields(
     client: PlatformClient,
     fields: FieldModel[],
     fieldBatch = 500
   ) {
+    if (fields.length === 0) {
+      return;
+    }
     for (let i = 0; i < fields.length; i += fieldBatch) {
       const batch = fields.slice(i, fieldBatch + i);
       await client.field.createFields(batch);
     }
   }
 
-  private async updateCatalogIdFields(
+  // TODO: There is already a similar method in the push api client that can be publicly exposed
+  private async listAllFieldsFromOrg(
     client: PlatformClient,
-    catalogConfigurationModel: PartialCatalogConfigurationModel
-  ) {
-    const fields: string[] = [];
-    // Get Id fields from catalog configuration
-    for (const {idField} of Object.values(catalogConfigurationModel)) {
-      fields.push(idField);
+    page = 0,
+    fields: FieldModel[] = []
+  ): Promise<FieldModel[]> {
+    const list = await client.field.list({
+      page,
+      perPage: 1000,
+    });
+
+    fields.push(...list.items);
+
+    if (page < list.totalPages - 1) {
+      return this.listAllFieldsFromOrg(client, page + 1, fields);
     }
-    // Fetch Id field model from organization to get the type
-    let fieldModels: FieldModel[] = await Promise.all(
-      fields.map((field) => client.field.get(field))
-    );
-    // Update field models with necessary parameters
-    fieldModels = fieldModels.map((field) => ({
+
+    return fields;
+  }
+
+  private async ensureCatalogFields(
+    client: PlatformClient,
+    catalogConfigurationModel: PartialCatalogConfigurationModel,
+    missingFields: FieldModel[]
+  ) {
+    const fieldsToCreate: FieldModel[] = [];
+    const fieldsToUpdate: FieldModel[] = [];
+    const updateField = (field: FieldModel) => ({
       ...field,
       multiValueFacet: true,
+      multiValueFacetTokenizers: ';',
       useCacheForNestedQuery: true,
-    }));
-    // Push updated fields to organization
-    return client.field.updateFields(fieldModels);
+    });
+
+    // Get Id fields from catalog configuration
+    for (const {idField} of Object.values(catalogConfigurationModel)) {
+      const missing = missingFields.find((field) => field.name === idField);
+      if (missing) {
+        fieldsToCreate.push(updateField(missing));
+      } else {
+        const existing = await client.field.get(idField);
+        fieldsToUpdate.push(updateField(existing));
+      }
+    }
+
+    if (fieldsToCreate.length > 0) {
+      await client.field.createFields(fieldsToCreate);
+    }
+    if (fieldsToUpdate.length > 0) {
+      await client.field.updateFields(fieldsToUpdate);
+    }
   }
 
   private async generateCatalogConfiguration(

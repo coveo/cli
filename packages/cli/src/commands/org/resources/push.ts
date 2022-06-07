@@ -60,6 +60,11 @@ export default class Push extends Command {
       default: false,
       required: false,
     }),
+    projectPath: Flags.string({
+      hidden: true,
+      description: 'Project path',
+      default: cwd(),
+    }),
   };
 
   @Trackable()
@@ -77,7 +82,7 @@ export default class Push extends Command {
     const options = await this.getOptions();
     const {reporter, snapshot, project} = await dryRun(
       target,
-      this.projectPath,
+      flags.projectPath,
       cfg,
       options
     );
@@ -94,11 +99,11 @@ export default class Push extends Command {
       )
       .setReportHandler(
         SnapshotReportStatus.MISSING_VAULT_ENTRIES,
-        getMissingVaultEntriesReportHandler(snapshot, cfg, this.projectPath)
+        getMissingVaultEntriesReportHandler(snapshot, cfg, flags.projectPath)
       )
       .setReportHandler(
         SnapshotReportStatus.ERROR,
-        getErrorReportHandler(snapshot, cfg, this.projectPath)
+        getErrorReportHandler(snapshot, cfg, flags.projectPath)
       )
       .handleReport();
     await this.cleanup(snapshot, project);
@@ -106,7 +111,8 @@ export default class Push extends Command {
 
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
-    cleanupProject(this.projectPath);
+    const {flags} = await this.parse(Push);
+    cleanupProject(flags.projectPath);
     handleSnapshotError(err);
   }
 
@@ -157,7 +163,7 @@ export default class Push extends Command {
     );
     await reporter
       .setReportHandler(SnapshotReportStatus.ERROR, async () => {
-        await handleReportWithErrors(snapshot, cfg, this.projectPath);
+        await handleReportWithErrors(snapshot, cfg, flags.projectPath);
         CliUx.ux.action.stop(red.bold('!'));
       })
       .setReportHandler(SnapshotReportStatus.SUCCESS, () => {
@@ -177,9 +183,5 @@ export default class Push extends Command {
 
   private get configuration() {
     return new Config(this.config.configDir);
-  }
-
-  private get projectPath() {
-    return cwd();
   }
 }
