@@ -188,23 +188,21 @@ export default async function (plop: NodePlopAPI) {
               cwd: join(currentPath, project),
             });
 
-            let out = '';
+            let output = '';
             installProcess.stdout.on('data', (chunk) => {
-              out += chunk.toString();
+              output += chunk.toString();
             });
-
-            let err = '';
             installProcess.stderr.on('data', (chunk) => {
-              err += chunk.toString();
+              output += chunk.toString();
             });
 
             installProcess.on('close', (code, signal) => {
               if (code === 0) {
                 resolve('Installation complete');
               } else {
-                reject(
-                  `Installation exited with code:${code} signal:${signal} stdout:${out} stderr:${err}`
-                );
+                const codeMsg = `Installation exited with code "${code}"`;
+                const signalMsg = signal ? ` & signal:${signal} ` : '';
+                reject(`${codeMsg}${signalMsg} ${output}`);
               }
             });
           });
