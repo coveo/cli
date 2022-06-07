@@ -184,15 +184,25 @@ export default async function (plop: NodePlopAPI) {
           return new Promise((resolve, reject) => {
             const {project} = data as PlopData;
             const installProcess = spawn(getPackageManager(), ['install'], {
-              stdio: 'inherit',
+              stdio: ['ignore', 'pipe', 'pipe'],
               cwd: join(currentPath, project),
             });
 
-            installProcess.on('close', (code) => {
+            let output = '';
+            installProcess.stdout.on('data', (chunk) => {
+              output += chunk.toString();
+            });
+            installProcess.stderr.on('data', (chunk) => {
+              output += chunk.toString();
+            });
+
+            installProcess.on('close', (code, signal) => {
               if (code === 0) {
                 resolve('Installation complete');
               } else {
-                reject(`Installation exited with ${code}`);
+                const codeMsg = `Installation exited with code "${code}"`;
+                const signalMsg = signal ? ` & signal:${signal} ` : '';
+                reject(`${codeMsg}${signalMsg} ${output}`);
               }
             });
           });
