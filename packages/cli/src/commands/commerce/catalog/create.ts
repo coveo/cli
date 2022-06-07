@@ -104,9 +104,13 @@ export default class CatalogCreate extends Command {
       catalogSourceId
     );
 
-    CliUx.ux.action.start('Updating Catalog fields');
-    await this.createMissingFields(client, fieldsAndObjectTypes.fields);
-    await this.updateCatalogIdFields(client, catalogConfigurationModel);
+    CliUx.ux.action.start('Configuring Catalog fields');
+    await this.ensureCatalogFields(
+      client,
+      catalogConfigurationModel,
+      fieldsAndObjectTypes.fields
+    );
+
     await this.mapStandardFields(
       productSourceId,
       catalogConfigurationId,
@@ -127,39 +131,37 @@ export default class CatalogCreate extends Command {
     CliUx.ux.action.stop(err ? red.bold('!') : green('✔'));
   }
 
-  // TODO: There is already a similar method in the push api client that can be publicly exposed
-  private async createMissingFields(
+  private async ensureCatalogFields(
     client: PlatformClient,
-    fields: FieldModel[],
-    fieldBatch = 500
+    catalogConfigurationModel: PartialCatalogConfigurationModel,
+    missingFields: FieldModel[]
   ) {
-    for (let i = 0; i < fields.length; i += fieldBatch) {
-      const batch = fields.slice(i, fieldBatch + i);
-      await client.field.createFields(batch);
-    }
-  }
-
-  private async updateCatalogIdFields(
-    client: PlatformClient,
-    catalogConfigurationModel: PartialCatalogConfigurationModel
-  ) {
-    const fields: string[] = [];
-    // Get Id fields from catalog configuration
-    for (const {idField} of Object.values(catalogConfigurationModel)) {
-      fields.push(idField);
-    }
-    // Fetch Id field model from organization to get the type
-    let fieldModels: FieldModel[] = await Promise.all(
-      fields.map((field) => client.field.get(field))
-    );
-    // Update field models with necessary parameters
-    fieldModels = fieldModels.map((field) => ({
+    const fieldsToCreate: FieldModel[] = [];
+    const fieldsToUpdate: FieldModel[] = [];
+    const updateField = (field: FieldModel) => ({
       ...field,
       multiValueFacet: true,
+      multiValueFacetTokenizers: ';',
       useCacheForNestedQuery: true,
-    }));
-    // Push updated fields to organization
-    return client.field.updateFields(fieldModels);
+    });
+
+    // Get Id fields from catalog configuration
+    for (const {idField} of Object.values(catalogConfigurationModel)) {
+      const missing = missingFields.find((field) => field.name === idField);
+      if (missing) {
+        fieldsToCreate.push(updateField(missing));
+      } else {
+        const existing = await client.field.get(idField);
+        fieldsToUpdate.push(updateField(existing));
+      }
+    }
+
+    if (fieldsToCreate.length > 0) {
+      await client.field.createFields(fieldsToCreate);
+    }
+    if (fieldsToUpdate.length > 0) {
+      await client.field.updateFields(fieldsToUpdate);
+    }
   }
 
   private async generateCatalogConfiguration(
