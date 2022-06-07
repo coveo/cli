@@ -138,7 +138,7 @@ export default class CatalogCreate extends Command {
   ) {
     const fieldsToCreate: FieldModel[] = [];
     const fieldsToUpdate: FieldModel[] = [];
-    const updateField = (field: FieldModel) => ({
+    const parametrizeField = (field: FieldModel) => ({
       ...field,
       multiValueFacet: true,
       multiValueFacetTokenizers: ';',
@@ -147,12 +147,14 @@ export default class CatalogCreate extends Command {
 
     // Get Id fields from catalog configuration
     for (const {idField} of Object.values(catalogConfigurationModel)) {
+      // Check if the field is missing from the organization
       const missing = missingFields.find((field) => field.name === idField);
       if (missing) {
-        fieldsToCreate.push(updateField(missing));
+        fieldsToCreate.push(parametrizeField(missing));
       } else {
+        // Otherwise, fetch it from the organization
         const existing = await client.field.get(idField);
-        fieldsToUpdate.push(updateField(existing));
+        fieldsToUpdate.push(parametrizeField(existing));
       }
     }
 
