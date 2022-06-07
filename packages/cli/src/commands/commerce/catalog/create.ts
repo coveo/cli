@@ -105,11 +105,14 @@ export default class CatalogCreate extends Command {
       catalogSourceId
     );
 
-    this.newTask('Creating missing fields');
-    await this.createMissingFields(client, fieldsAndObjectTypes.fields);
-    this.newTask('Updating Catalog fields');
-    await this.updateCatalogIdFields(client, catalogConfigurationModel);
+    this.newTask('Configuring Catalog fields');
+    await this.ensureCatalogFields(
+      client,
+      catalogConfigurationModel,
+      fieldsAndObjectTypes.fields
+    );
     this.stopCurrentTask();
+
     await this.mapStandardFields(
       productSourceId,
       catalogConfigurationId,
@@ -130,39 +133,39 @@ export default class CatalogCreate extends Command {
     this.stopCurrentTask(err);
   }
 
-  // TODO: There is already a similar method in the push api client that can be publicly exposed
-  private async createMissingFields(
+  private async ensureCatalogFields(
     client: PlatformClient,
-    fields: FieldModel[],
-    fieldBatch = 500
+    catalogConfigurationModel: PartialCatalogConfigurationModel,
+    missingFields: FieldModel[]
   ) {
-    for (let i = 0; i < fields.length; i += fieldBatch) {
-      const batch = fields.slice(i, fieldBatch + i);
-      await client.field.createFields(batch);
-    }
-  }
-
-  private async updateCatalogIdFields(
-    client: PlatformClient,
-    catalogConfigurationModel: PartialCatalogConfigurationModel
-  ) {
-    const fields: string[] = [];
-    // Get Id fields from catalog configuration
-    for (const {idField} of Object.values(catalogConfigurationModel)) {
-      fields.push(idField);
-    }
-    // Fetch Id field model from organization to get the type
-    let fieldModels: FieldModel[] = await Promise.all(
-      fields.map((field) => client.field.get(field))
-    );
-    // Update field models with necessary parameters
-    fieldModels = fieldModels.map((field) => ({
+    const fieldsToCreate: FieldModel[] = [];
+    const fieldsToUpdate: FieldModel[] = [];
+    const parametrizeField = (field: FieldModel) => ({
       ...field,
       multiValueFacet: true,
+      multiValueFacetTokenizers: ';',
       useCacheForNestedQuery: true,
-    }));
-    // Push updated fields to organization
-    return client.field.updateFields(fieldModels);
+    });
+
+    // Get Id fields from catalog configuration
+    for (const {idField} of Object.values(catalogConfigurationModel)) {
+      // Check if the field is missing from the organization
+      const missing = missingFields.find((field) => field.name === idField);
+      if (missing) {
+        fieldsToCreate.push(parametrizeField(missing));
+      } else {
+        // Otherwise, fetch it from the organization
+        const existing = await client.field.get(idField);
+        fieldsToUpdate.push(parametrizeField(existing));
+      }
+    }
+
+    if (fieldsToCreate.length > 0) {
+      await client.field.createFields(fieldsToCreate);
+    }
+    if (fieldsToUpdate.length > 0) {
+      await client.field.updateFields(fieldsToUpdate);
+    }
   }
 
   private async generateCatalogConfiguration(
@@ -173,7 +176,7 @@ export default class CatalogCreate extends Command {
       this.newTask('Generating catalog configuration from data');
       return getCatalogPartialConfiguration(flags.dataFiles);
     } catch (error) {
-      CliUx.ux.action.stop(red.bold('!'));
+      this.stopCurrentTask(error);
       CliUx.ux.warn(
         dedent`Unable to automatically generate catalog configuration from data.
         Please answer the following questions`
@@ -343,7 +346,7 @@ export default class CatalogCreate extends Command {
     CliUx.ux.action.start(task);
   }
 
-  private stopCurrentTask(err?: Error) {
+  private stopCurrentTask(err?: unknown) {
     if (CliUx.ux.action.running) {
       CliUx.ux.action.stop(err ? red.bold('!') : green('✔'));
     }
