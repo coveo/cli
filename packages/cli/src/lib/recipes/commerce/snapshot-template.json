@@ -376,9 +376,9 @@
         "model": {
           "childrenCount": 0,
           "condition": {},
-          "definition": "override query commerce.catalogId:\"Omni-Channel\"",
+          "definition": "override query commerce.catalogId:\"{{catalogId}}\"",
           "detailed": {
-            "commerce.catalogId": "Omni-Channel"
+            "commerce.catalogId": "{{catalogId}}"
           },
           "feature": "queryParamOverride",
           "parent": {},
@@ -388,7 +388,7 @@
         "parents": {
           "queryPipelineId": "{{ QUERY_PIPELINE.Search_ZVZujz }}"
         },
-        "resourceName": "override_query_commerce.catalogId:Omni-Channel_U1Gkmx"
+        "resourceName": "override_query_commerce.catalogId:{{catalogId}}_U1Gkmx"
       },
       {
         "model": {

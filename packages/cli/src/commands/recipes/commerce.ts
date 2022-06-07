@@ -41,19 +41,19 @@ export default class CommerceRecipe extends Command {
   public async run() {
     const {flags, args} = await this.parse(CommerceRecipe);
     this.ensureTempFolder();
-    const {sourceId, product} = await this.newStep(
-      'Catalog creation',
-      CatalogCreate,
-      [
-        args.name,
-        '--json',
-        '--sourceVisibility',
-        flags.sourceVisibility,
-        '--dataFiles',
-        ...flags.dataFiles,
-      ]
-    );
-    this.storeParametrizedSnapshotLocally(product?.objectType!); // FIXME: update the return type of the catalogCreate command to make object type non-optional
+    const {
+      sourceId,
+      product,
+      id: catalogId,
+    } = await this.newStep('Catalog creation', CatalogCreate, [
+      args.name,
+      '--json',
+      '--sourceVisibility',
+      flags.sourceVisibility,
+      '--dataFiles',
+      ...flags.dataFiles,
+    ]);
+    this.storeParametrizedSnapshotLocally(product?.objectType!, catalogId); // FIXME: update the return type of the catalogCreate command to make object type non-optional
     await this.newStep('Organization setup', Push, [
       '--sync',
       '--skipPreview',
@@ -66,6 +66,7 @@ export default class CommerceRecipe extends Command {
       sourceId!,
       '--createMissingFields',
       '--fullUpload',
+      '--skipFullUploadCheck',
       '--files',
       ...flags.dataFiles,
     ]);
@@ -91,12 +92,15 @@ export default class CommerceRecipe extends Command {
     }
   }
 
-  private storeParametrizedSnapshotLocally(objectType: string) {
+  private storeParametrizedSnapshotLocally(
+    objectType: string,
+    catalogId: string
+  ) {
     const objectTypeReplacementRegex = new RegExp('{{objecttype}}', 'gm');
-    const snapshot = JSON.stringify(SnapshotTemplate).replace(
-      objectTypeReplacementRegex,
-      objectType
-    );
+    const catalogIdReplacementRegex = new RegExp('{{catalogId}}', 'gm');
+    const snapshot = JSON.stringify(SnapshotTemplate)
+      .replace(objectTypeReplacementRegex, objectType)
+      .replace(catalogIdReplacementRegex, catalogId);
     const snapshotPath = join(
       CommerceRecipe.tempFolder,
       Project.resourceFolderName,
