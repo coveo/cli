@@ -44,15 +44,16 @@ export default class CommerceRecipe extends Command {
     const {sourceId, product} = await this.newStep(
       'Catalog creation',
       CatalogCreate,
-      [args.name, '--json', '--dataFiles', ...flags.dataFiles]
+      [
+        args.name,
+        '--json',
+        '--sourceVisibility',
+        flags.sourceVisibility,
+        '--dataFiles',
+        ...flags.dataFiles,
+      ]
     );
-    await this.newStep('Indexation', SourceCatalogAdd, [
-      sourceId!,
-      '-f',
-      ...flags.dataFiles,
-    ]);
     this.storeParametrizedSnapshotLocally(product?.objectType!); // FIXME: update the return type of the catalogCreate command to make object type non-optional
-    this.storeParametrizedSnapshotLocally('TEST'); // FIXME: update the return type of the catalogCreate command to make object type non-optional
     await this.newStep('Organization setup', Push, [
       '--sync',
       '--skipPreview',
@@ -60,6 +61,13 @@ export default class CommerceRecipe extends Command {
       CommerceRecipe.tempFolder,
       '--wait',
       '600',
+    ]);
+    await this.newStep('Indexation', SourceCatalogAdd, [
+      sourceId!,
+      '--createMissingFields',
+      '--fullUpload',
+      '--files',
+      ...flags.dataFiles,
     ]);
     await this.newStep('Search page generation', Atomic, [args.name]);
   }
@@ -118,8 +126,4 @@ export default class CommerceRecipe extends Command {
       // TODO: not sure how to handle that
     }
   }
-
-  // private get catalogConfigFilePath() {
-  //   return join(CommerceRecipe.tempFolder, 'catalog-config.json');
-  // }
 }
