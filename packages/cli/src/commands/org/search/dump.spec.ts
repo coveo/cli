@@ -36,7 +36,10 @@ mockedConfig.mockImplementation(
     } as unknown as Config)
 );
 
-const mockReturnNumberOfResults = (numberOfResults: number) => {
+const mockReturnNumberOfResults = (
+  numberOfResults: number,
+  additionalRaw: Record<string, unknown> = {}
+) => {
   if (numberOfResults === 0) {
     mockSearch.mockReturnValueOnce({totalCount: 0, results: []});
   } else {
@@ -46,6 +49,7 @@ const mockReturnNumberOfResults = (numberOfResults: number) => {
         raw: {
           a_field: 'a_value',
           rowid: i,
+          ...additionalRaw,
         },
       })),
     });
@@ -251,4 +255,21 @@ describe('org:search:dump', () => {
         })
       );
     });
+
+  test
+    .do(() => {
+      mockReturnNumberOfResults(1234);
+      mockReturnNumberOfResults(1, {someField: 'ohaye'});
+    })
+    .stdout()
+    .stderr()
+    .command(['org:search:dump', '-s', 'the_source'])
+    .it(
+      'should use all fields for the header of the CSV, even if the fields is not used on the first result',
+      () => {
+        expect(mockedParser).toHaveBeenCalledWith({
+          fields: expect.arrayContaining(['someField']),
+        });
+      }
+    );
 });
