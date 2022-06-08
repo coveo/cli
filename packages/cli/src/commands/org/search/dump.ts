@@ -207,9 +207,7 @@ export default class Dump extends Command {
       progress.increment(response.results.length);
 
       lastResultsLength = response.results.length;
-      await this.aggregateResults(
-        response.results.map((result: {raw: any}) => result.raw)
-      );
+      await this.aggregateResults(response.results.map((result) => result.raw));
       if (lastResultsLength < this.numberOfResultPerQuery) {
         break;
       }
