@@ -1,20 +1,26 @@
 import {Command, Flags, CliUx} from '@oclif/core';
+import {readJSONSync, writeFile, writeJSONSync} from 'fs-extra';
+import {Parser} from 'json2csv';
+import {SingleBar} from 'cli-progress';
+import PlatformClient from '@coveord/platform-client';
+import {dirSync} from 'tmp';
+
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {
   Preconditions,
   IsAuthenticated,
 } from '../../../lib/decorators/preconditions';
 import {Config} from '../../../lib/config/config';
-import PlatformClient from '@coveord/platform-client';
-import {writeFile} from 'fs-extra';
-import {Parser} from 'json2csv';
-// eslint-disable-next-line node/no-extraneous-import
-import {SingleBar} from 'cli-progress';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {without} from '../../../lib/utils/list';
+import {join} from 'path';
 
+interface RawResult {
+  rowid: string;
+  [key: string]: unknown;
+}
 interface SearchResult {
-  raw: {rowid: string};
+  raw: RawResult;
 }
 interface SearchResponse {
   indexToken: string;
@@ -81,18 +87,25 @@ export default class Dump extends Command {
     }),
   };
 
+  private aggregatedResults: RawResult[] = [];
+  private aggregatedFieldsWithDupes: string[] = [];
+  private temporaryDumpDirectory = dirSync();
+  private internalDumpFileIdx = 0;
+
+  private get dumpFileIndex() {
+    return this.internalDumpFileIdx++;
+  }
+
   @Trackable({eventName: 'source content dump'})
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = await this.parse(Dump);
     const client = await new AuthenticatedClient().getClient();
-    const organizationId = (await new Config(this.config.configDir).get())
-      .organization;
+    const organizationId = new Config(this.config.configDir).get().organization;
     const fieldsToExclude =
       flags.fieldsToExclude &&
       without(flags.fieldsToExclude, Dump.mandatoryFields);
-
-    const allResults = await this.fetchResults({
+    const hasResults = await this.fetchResults({
       client,
       organizationId,
       sources: flags.source,
@@ -101,12 +114,12 @@ export default class Dump extends Command {
       fieldsToExclude,
     });
 
-    if (allResults.length === 0) {
+    if (hasResults) {
+      await this.convertRawChunksToCSVs();
+    } else {
       this.log(
         'No results found. Ensure that the specified sources, query pipeline, and additional filter are valid.'
       );
-    } else {
-      await this.writeChunks(allResults);
     }
   }
 
@@ -115,24 +128,27 @@ export default class Dump extends Command {
     throw err;
   }
 
-  private async writeChunks(allResults: SearchResult[]) {
+  private async convertRawChunksToCSVs() {
     const {flags} = await this.parse(Dump);
-    let currentChunk = 0;
-    while (allResults.length) {
-      const chunk = allResults.splice(0, flags.chunkSize);
-      const data = chunk.map((r) => r.raw);
-      const fields = without(
-        Object.keys(chunk[0].raw),
-        flags.fieldsToExclude || []
+    const fields = Array.from(new Set(this.aggregatedFieldsWithDupes));
+    for (
+      let currentDumpFileIndex = this.internalDumpFileIdx - 1;
+      currentDumpFileIndex >= 0;
+      currentDumpFileIndex--
+    ) {
+      const data = readJSONSync(
+        this.getDumpFilePathFromIndex(currentDumpFileIndex)
       );
       const parser = new Parser({fields});
       await writeFile(
-        `${flags.destination}/${flags.name}${
-          currentChunk > 0 ? `_${currentChunk + 1}` : ''
-        }.csv`,
+        join(
+          flags.destination,
+          `${flags.name}${
+            this.internalDumpFileIdx === 1 ? '' : currentDumpFileIndex
+          }.csv`
+        ),
         parser.parse(data)
       );
-      currentChunk++;
     }
   }
 
@@ -148,58 +164,92 @@ export default class Dump extends Command {
 
   private async fetchResults(
     params: FetchParameters,
-    progress = this.progressBar,
     indexToken = '',
     rowId = ''
-  ): Promise<SearchResult[]> {
-    const isFirstQuery = indexToken === '';
+  ): Promise<boolean> {
+    const progress = this.progressBar;
+    this.log(
+      `Fetching all results from organization ${
+        params.organizationId
+      } from source(s) ${params.sources.join(',')}...`
+    );
+    if (params.additionalFilter) {
+      this.log(`Applying additional filter ${params.additionalFilter}`);
+    }
+    progress.start(1000, 0);
+    let lastResultsLength;
 
-    if (isFirstQuery) {
-      this.log(
-        `Fetching all results from organization ${
-          params.organizationId
-        } from source(s) ${params.sources.join(',')}...`
-      );
-      if (params.additionalFilter) {
-        this.log(`Applying additional filter ${params.additionalFilter}`);
+    do {
+      const isFirstQuery = indexToken === '';
+
+      const response = (await params.client.search.query({
+        aq: this.getFilter(params, rowId),
+        debug: true,
+        organizationId: params.organizationId,
+        numberOfResults: 1000,
+        sortCriteria: '@rowid ascending',
+        ...(params.fieldsToExclude && {
+          fieldsToExclude: params.fieldsToExclude,
+        }),
+        ...(params.pipeline && {pipeline: params.pipeline}),
+        ...(indexToken !== '' && {indexToken: indexToken}),
+      })) as SearchResponse;
+      if (isFirstQuery) {
+        progress.setTotal(response.totalCount);
       }
-      progress.start(1000, 0);
-    }
 
-    const response = (await params.client.search.query({
-      aq: this.getFilter(params, rowId),
-      debug: true,
-      organizationId: params.organizationId,
-      numberOfResults: 1000,
-      sortCriteria: '@rowid ascending',
-      ...(params.fieldsToExclude && {fieldsToExclude: params.fieldsToExclude}),
-      ...(params.pipeline && {pipeline: params.pipeline}),
-      ...(indexToken !== '' && {indexToken: indexToken}),
-    })) as SearchResponse;
-    if (isFirstQuery) {
-      progress.setTotal(response.totalCount);
-    }
+      progress.increment(response.results.length);
 
-    progress.increment(response.results.length);
-
-    const lastRetrievedIndexToken = response.indexToken;
-    if (response.results.length === 1000) {
-      const lastRowID = response.results[999].raw.rowid;
-      const nextPage = await this.fetchResults(
-        params,
-        progress,
-        lastRetrievedIndexToken,
-        lastRowID
-      );
-      return response.results.concat(nextPage);
+      lastResultsLength = response.results.length;
+      indexToken = response.indexToken;
+      rowId = response.results[lastResultsLength - 1].raw.rowid;
+      await this.aggregateResults(response.results.map((result) => result.raw));
+    } while (lastResultsLength === 1000);
+    if (this.aggregatedResults.length > 0) {
+      this.dumpAggregatedResults();
     }
     progress.stop();
-    return response.results;
+    return progress.getTotal() > 0;
   }
 
   private get progressBar() {
     return CliUx.ux.progress({
       format: 'Progress | {bar} | ETA: {eta}s | {value}/{total} results',
     }) as SingleBar;
+  }
+
+  private async aggregateResults(newResults: RawResult[]) {
+    const maxAggregatedResults = (await this.parse(Dump)).flags.chunkSize;
+    const amountOfNewResultsToExtract =
+      maxAggregatedResults - this.aggregatedResults.length;
+    this.aggregatedResults.push(
+      ...newResults.splice(
+        0,
+        Math.min(amountOfNewResultsToExtract, newResults.length)
+      )
+    );
+    if (newResults.length > 0) {
+      this.dumpAggregatedResults();
+      await this.aggregateResults(newResults);
+    }
+  }
+
+  private getDumpFilePathFromIndex(index: number) {
+    return join(this.temporaryDumpDirectory.name, `dump${index}`);
+  }
+
+  private dumpAggregatedResults() {
+    this.extractFieldsFromAggregatedResults();
+    writeJSONSync(
+      this.getDumpFilePathFromIndex(this.dumpFileIndex),
+      this.aggregatedResults
+    );
+    this.aggregatedResults = [];
+  }
+
+  private extractFieldsFromAggregatedResults() {
+    this.aggregatedFieldsWithDupes.push(
+      ...this.aggregatedResults.flatMap(Object.keys)
+    );
   }
 }
