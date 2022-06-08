@@ -38,7 +38,9 @@ interface FetchParameters {
 }
 
 export default class Dump extends Command {
+  private static readonly numberOfResultPerQuery = 1000;
   private static mandatoryFields = ['rowid', 'sysrowid'];
+
   public static description =
     'Dump the content of one or more sources in CSV format.';
 
@@ -176,7 +178,7 @@ export default class Dump extends Command {
     if (params.additionalFilter) {
       this.log(`Applying additional filter ${params.additionalFilter}`);
     }
-    progress.start(1000, 0);
+    progress.start(Dump.numberOfResultPerQuery, 0);
     let lastResultsLength;
 
     do {
@@ -186,7 +188,7 @@ export default class Dump extends Command {
         aq: this.getFilter(params, rowId),
         debug: true,
         organizationId: params.organizationId,
-        numberOfResults: 1000,
+        numberOfResults: Dump.numberOfResultPerQuery,
         sortCriteria: '@rowid ascending',
         ...(params.fieldsToExclude && {
           fieldsToExclude: params.fieldsToExclude,
@@ -201,10 +203,13 @@ export default class Dump extends Command {
       progress.increment(response.results.length);
 
       lastResultsLength = response.results.length;
+      if (lastResultsLength < Dump.numberOfResultPerQuery) {
+        break;
+      }
       indexToken = response.indexToken;
       rowId = response.results[lastResultsLength - 1].raw.rowid;
       await this.aggregateResults(response.results.map((result) => result.raw));
-    } while (lastResultsLength === 1000);
+    } while (true);
     if (this.aggregatedResults.length > 0) {
       this.dumpAggregatedResults();
     }
