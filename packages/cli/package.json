@@ -31,6 +31,7 @@
     "node-machine-id": "^1.1.12",
     "open": "^8.4.0",
     "semver": "^7.3.4",
+    "tmp": "^0.2.1",
     "ts-dedent": "^2.1.1",
     "tslib": "^2"
   },
@@ -51,6 +52,7 @@
     "@types/json2csv": "5.0.3",
     "@types/node": "17.0.38",
     "@types/semver": "7.3.9",
+    "@types/tmp": "^0.2.3",
     "chai": "4.3.6",
     "eslint": "8.16.0",
     "fancy-test": "2.0.0",

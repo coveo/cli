@@ -217,7 +217,7 @@ export default class Dump extends Command {
       }
       indexToken = response.indexToken;
       rowId = response.results[lastResultsLength - 1].raw.rowid;
-    } while (true);
+    } while (lastResultsLength < Dump.numberOfResultPerQuery);
     if (this.aggregatedResults.length > 0) {
       this.dumpAggregatedResults();
     }
