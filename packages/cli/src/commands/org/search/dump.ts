@@ -132,7 +132,7 @@ export default class Dump extends Command {
 
   private async convertRawChunksToCSVs() {
     const {flags} = await this.parse(Dump);
-    const fields = Array.from(new Set(this.aggregatedFieldsWithDupes));
+    const fields = this.getFieldsToExport(flags);
     for (
       let currentDumpFileIndex = this.internalDumpFileIdx - 1;
       currentDumpFileIndex >= 0;
@@ -152,6 +152,14 @@ export default class Dump extends Command {
         parser.parse(data)
       );
     }
+  }
+
+  private getFieldsToExport({fieldsToExclude}: {fieldsToExclude: string[]}) {
+    const fieldSet = new Set(this.aggregatedFieldsWithDupes);
+    for (const fieldToExclude of fieldsToExclude ?? []) {
+      fieldSet.delete(fieldToExclude);
+    }
+    return Array.from(fieldSet);
   }
 
   private getFilter(params: FetchParameters, rowId = '') {
@@ -203,12 +211,12 @@ export default class Dump extends Command {
       progress.increment(response.results.length);
 
       lastResultsLength = response.results.length;
+      await this.aggregateResults(response.results.map((result) => result.raw));
       if (lastResultsLength < Dump.numberOfResultPerQuery) {
         break;
       }
       indexToken = response.indexToken;
       rowId = response.results[lastResultsLength - 1].raw.rowid;
-      await this.aggregateResults(response.results.map((result) => result.raw));
     } while (true);
     if (this.aggregatedResults.length > 0) {
       this.dumpAggregatedResults();
