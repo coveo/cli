@@ -44,8 +44,11 @@ export default class Dump extends Command {
   private static readonly DefaultNumberOfResultPerQuery = 1000;
   private static mandatoryFields = ['rowid', 'sysrowid'];
 
-  public static description =
-    'Dump the content of one or more sources in CSV format.';
+  public static description = dedent`
+      Dump the content of one or more sources in CSV format.
+    
+      Note: DictionnaryFields/Values are experimentally supported. In case of failure, you should exclude them using the \`-x\` flag.
+    `;
 
   public static flags = {
     source: Flags.string({
