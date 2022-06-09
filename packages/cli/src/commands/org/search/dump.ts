@@ -100,6 +100,7 @@ export default class Dump extends Command {
   private temporaryDumpDirectory = dirSync();
   private numberOfResultPerQuery = Dump.DefaultNumberOfResultPerQuery;
   private internalDumpFileIdx = 0;
+  private progressBar?: SingleBar;
 
   private static readonly ResponseExceededMaximumSizeType =
     'ResponseExceededMaximumSizeException';
@@ -137,6 +138,7 @@ export default class Dump extends Command {
 
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
+    this.progressBar?.stop();
     throw err;
   }
 
@@ -187,7 +189,7 @@ export default class Dump extends Command {
     indexToken = '',
     rowId = ''
   ): Promise<boolean> {
-    const progress = this.progressBar;
+    this.progressBar = this.getProgressBar();
     this.log(
       `Fetching all results from organization ${
         params.organizationId
@@ -196,7 +198,7 @@ export default class Dump extends Command {
     if (params.additionalFilter) {
       this.log(`Applying additional filter ${params.additionalFilter}`);
     }
-    progress.start(Dump.DefaultNumberOfResultPerQuery, 0);
+    this.progressBar.start(Dump.DefaultNumberOfResultPerQuery, 0);
     let lastResultsLength;
 
     do {
@@ -204,10 +206,10 @@ export default class Dump extends Command {
 
       const response = await this.doQuery(params, rowId, indexToken);
       if (isFirstQuery) {
-        progress.setTotal(response.totalCount);
+        this.progressBar.setTotal(response.totalCount);
       }
 
-      progress.increment(response.results.length);
+      this.progressBar.increment(response.results.length);
 
       lastResultsLength = response.results.length;
       await this.aggregateResults(response.results.map((result) => result.raw));
@@ -220,8 +222,8 @@ export default class Dump extends Command {
     if (this.aggregatedResults.length > 0) {
       this.dumpAggregatedResults();
     }
-    progress.stop();
-    return progress.getTotal() > 0;
+    this.progressBar.stop();
+    return this.progressBar.getTotal() > 0;
   }
 
   private async doQuery(
@@ -271,7 +273,7 @@ export default class Dump extends Command {
     );
   }
 
-  private get progressBar() {
+  private getProgressBar() {
     return CliUx.ux.progress({
       format: 'Progress | {bar} | ETA: {eta}s | {value}/{total} results',
     }) as SingleBar;
