@@ -16,7 +16,7 @@
       "start_environment_automatically": true
     },
     "aws_regions": {
-      "sequential": ["us-east-1"]
+      "sequential": ["FIRST_MAIN_REGION"]
     }
   },
   "ordered_phases": [

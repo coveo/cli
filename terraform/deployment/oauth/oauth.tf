@@ -1,11 +1,7 @@
 provider "coveo" {
   env    = var.env
   region = var.region
-}
-
-resource "random_password" "client_secret" {
-  length  = 32
-  special = true
+  provider_credentials_region = var.region
 }
 
 resource coveo_oauth2_client "oauth2_cli_client" {
