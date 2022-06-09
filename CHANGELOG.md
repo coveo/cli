@@ -1,3 +1,15 @@
+# v1.30.0 (2022-06-09)
+
+### Bug Fixes
+
+- **dump:** csv header should have all fields associated with the source ([#828](https://github.com/coveo/cli/issues/828)) ([8f6449f](https://github.com/coveo/cli/commits/8f6449f0c8ffa830e542f3a5b33e3ba67684175e))
+
+### Features
+
+- **atomic:** create impersonate key inside create-atomic instead ([#827](https://github.com/coveo/cli/issues/827)) ([9178ab1](https://github.com/coveo/cli/commits/9178ab136ed7886bdf711312e8415bef30a2fa2d))
+- **create-atomic:** display npm install error details to user ([#821](https://github.com/coveo/cli/issues/821)) ([0870918](https://github.com/coveo/cli/commits/0870918aa32c080bb66f19b84a20c74660b3406e))
+- **dump:** add automatic request size backoff ([#829](https://github.com/coveo/cli/issues/829)) ([334f277](https://github.com/coveo/cli/commits/334f277535c5f314bd8b3d3f50c7cd99ce4250ae))
+
 ## v1.29.4 (2022-06-07)
 
 ## v1.29.3 (2022-06-06)

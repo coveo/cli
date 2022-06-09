@@ -1,3 +1,10 @@
+# 1.30.0 (2022-06-09)
+
+### Features
+
+- **atomic:** create impersonate key inside create-atomic instead ([#827](https://github.com/coveo/cli/issues/827)) ([9178ab1](https://github.com/coveo/cli/commits/9178ab136ed7886bdf711312e8415bef30a2fa2d))
+- **create-atomic:** display npm install error details to user ([#821](https://github.com/coveo/cli/issues/821)) ([0870918](https://github.com/coveo/cli/commits/0870918aa32c080bb66f19b84a20c74660b3406e))
+
 ## 1.29.2 (2022-06-03)
 
 ## 1.29.1 (2022-06-03)
