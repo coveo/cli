@@ -7,16 +7,16 @@
       "slack_channels": ["#searchuibuilds"]
     },
     "environments_order": {
-      "sequential": ["dev", "qa", "prd"]
+      "sequential": ["dev", "stg", "prd"]
     },
-    "qa": {
+    "stg": {
       "start_environment_automatically": true
     },
     "prd": {
       "start_environment_automatically": true
     },
     "aws_regions": {
-      "sequential": ["us-east-1"]
+      "sequential": ["FIRST_MAIN_REGION"]
     }
   },
   "ordered_phases": [

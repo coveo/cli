@@ -23,7 +23,7 @@ describe('url', () => {
     fancyIt()('should build the URL properly', () => {
       expect(
         snapshotUrl('some-org', 'some-snapshot', {
-          environment: PlatformEnvironment.QA,
+          environment: PlatformEnvironment.Stg,
           region: Region.AU,
         })
       ).toBe(
@@ -31,7 +31,7 @@ describe('url', () => {
       );
 
       expect(platformUrl).toBeCalledWith({
-        environment: PlatformEnvironment.QA,
+        environment: PlatformEnvironment.Stg,
         region: Region.AU,
       });
     });
@@ -41,7 +41,7 @@ describe('url', () => {
     fancyIt()('should build the URL properly', () => {
       expect(
         snapshotSynchronizationUrl('some-org', 'some-snapshot', {
-          environment: PlatformEnvironment.QA,
+          environment: PlatformEnvironment.Stg,
           region: Region.AU,
         })
       ).toBe(
@@ -49,7 +49,7 @@ describe('url', () => {
       );
 
       expect(platformUrl).toBeCalledWith({
-        environment: PlatformEnvironment.QA,
+        environment: PlatformEnvironment.Stg,
         region: Region.AU,
       });
     });
@@ -59,7 +59,7 @@ describe('url', () => {
     fancyIt()('should build the URL properly', () => {
       expect(
         createSnapshotUrl('some-org', {
-          environment: PlatformEnvironment.QA,
+          environment: PlatformEnvironment.Stg,
           region: Region.AU,
         })
       ).toBe(
@@ -67,7 +67,7 @@ describe('url', () => {
       );
 
       expect(platformUrl).toBeCalledWith({
-        environment: PlatformEnvironment.QA,
+        environment: PlatformEnvironment.Stg,
         region: Region.AU,
       });
     });

@@ -33,7 +33,7 @@ jobs:
           mkdir -p sarifs
           npx snyk code test    --dev --all-projects --exclude="project.json,npm-shim" --sarif > ./sarifs/snyk-code.sarif
       - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@0e9acb6e5cd338179ea69a99146ca55f796799e0 # tag=v1
+        uses: github/codeql-action/upload-sarif@a6611b86918424d4588efe7d6dbe18fe52d42518 # tag=v1
         with:
           sarif_file: ./sarifs
       - name: Check Code Scanning alerts
@@ -55,8 +55,8 @@ jobs:
         with:
           node-version: '16'
           registry-url: 'https://registry.npmjs.org'
-      # TODO: Remove later, when `npm 8.5.4` is built in.
-      - run: npm i -g npm@^8.5.4
+      # TODO: CDX-1010 | Remove in CDX-1010.
+      - run: npm i -g npm@8.10.0
       - name: Install dependencies
         run: npm ci
       - name: Setup credentials

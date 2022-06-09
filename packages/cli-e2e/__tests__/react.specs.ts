@@ -174,7 +174,8 @@ describe('ui:create:react', () => {
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
-    it(
+    // TODO CDX-1017: Remove skip
+    it.skip(
       'should not contain console errors nor warnings',
       async () => {
         await page.goto(searchPageEndpoint(), {
@@ -186,14 +187,18 @@ describe('ui:create:react', () => {
       5 * 60e3
     );
 
-    it('should contain a search page section', async () => {
-      await page.goto(searchPageEndpoint(), {
-        waitUntil: 'networkidle2',
-      });
-      await page.waitForSelector(searchboxSelector);
+    it(
+      'should contain a search page section',
+      async () => {
+        await page.goto(searchPageEndpoint(), {
+          waitUntil: 'networkidle2',
+        });
+        await page.waitForSelector(searchboxSelector);
 
-      expect(await page.$('div.App')).not.toBeNull();
-    });
+        expect(await page.$('div.App')).not.toBeNull();
+      },
+      5 * 60e3
+    );
 
     it('should retrieve the search token on the page load', async () => {
       const tokenResponseListener = page.waitForResponse(tokenServerEndpoint());

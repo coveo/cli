@@ -8,9 +8,8 @@ import {
   writeChangelog,
 } from '@coveo/semantic-monorepo-tools';
 import {spawnSync} from 'child_process';
-import {readFileSync} from 'fs';
+import {readFileSync, writeFileSync} from 'fs';
 import angularChangelogConvention from 'conventional-changelog-angular';
-import {waitForPackages} from './utils/wait-for-published-packages';
 import {dirname, resolve, join} from 'path';
 import {fileURLToPath} from 'url';
 import retry from 'async-retry';
@@ -76,40 +75,33 @@ async function updateWorkspaceDependencies(version) {
     readFileSync('package.json', {encoding: 'utf-8'})
   );
   const packageName = packageJson.name.replace('@coveo/', '');
-  const dependencies = topology.graph.dependencies[packageName]
+  const topologicalDependencies = topology.graph.dependencies[packageName]
     .filter((dependency) => dependency.source == packageName)
     .map((dependency) => `@coveo/${dependency.target}`);
-  await waitForPackages(dependencies);
-  for (const dependency of dependencies) {
-    await updateDependency(packageJson, dependency, version);
+  const npmDependencies = [
+    'dependencies',
+    'devDependencies',
+    'peerDependencies',
+  ].reduce((acc, cur) => acc.concat(Object.keys(packageJson[cur] ?? [])), []);
+
+  for (const dependency of topologicalDependencies) {
+    if (npmDependencies.includes(dependency)) {
+      updateDependency(packageJson, dependency, version);
+    }
   }
+  writeFileSync('package.json', JSON.stringify(packageJson));
 }
 
-async function updateDependency(packageJson, dependency, version) {
-  const npmInstallFlags = [];
-  if (Object.hasOwn(packageJson.dependencies ?? {}, dependency)) {
-    ('-P');
+function updateDependency(packageJson, dependency, version) {
+  for (const dependencyType of [
+    'dependencies',
+    'devDependencies',
+    'optionalDependencies',
+  ]) {
+    if (packageJson?.[dependencyType]?.[dependency]) {
+      packageJson[dependencyType][dependency] = version;
+    }
   }
-  if (Object.hasOwn(packageJson.devDependencies ?? {}, dependency)) {
-    ('-D');
-  }
-  if (Object.hasOwn(packageJson.optionalDependencies ?? {}, dependency)) {
-    ('-O');
-  }
-  await retry(
-    () => {
-      const installChildProcess = spawnSync(appendCmdIfWindows`npm`, [
-        'install',
-        `${dependency}@${version}`,
-        '-E',
-        ...npmInstallFlags,
-      ]);
-      if (installChildProcess.error) {
-        throw installChildProcess.error;
-      }
-    },
-    {retries: 30}
-  );
 }
 
 function isVersionPublished(packageName, version) {

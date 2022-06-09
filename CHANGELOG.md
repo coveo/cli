@@ -1,3 +1,39 @@
+# v1.30.0 (2022-06-09)
+
+### Bug Fixes
+
+- **dump:** csv header should have all fields associated with the source ([#828](https://github.com/coveo/cli/issues/828)) ([8f6449f](https://github.com/coveo/cli/commits/8f6449f0c8ffa830e542f3a5b33e3ba67684175e))
+
+### Features
+
+- **atomic:** create impersonate key inside create-atomic instead ([#827](https://github.com/coveo/cli/issues/827)) ([9178ab1](https://github.com/coveo/cli/commits/9178ab136ed7886bdf711312e8415bef30a2fa2d))
+- **create-atomic:** display npm install error details to user ([#821](https://github.com/coveo/cli/issues/821)) ([0870918](https://github.com/coveo/cli/commits/0870918aa32c080bb66f19b84a20c74660b3406e))
+- **dump:** add automatic request size backoff ([#829](https://github.com/coveo/cli/issues/829)) ([334f277](https://github.com/coveo/cli/commits/334f277535c5f314bd8b3d3f50c7cd99ce4250ae))
+
+## v1.29.4 (2022-06-07)
+
+## v1.29.3 (2022-06-06)
+
+## v1.29.2 (2022-06-03)
+
+## v1.29.1 (2022-06-03)
+
+### Bug Fixes
+
+- **atomic:** remove create-atomic-template from the dependencies ([#809](https://github.com/coveo/cli/issues/809)) ([dccc5b1](https://github.com/coveo/cli/commits/dccc5b1e6a6463de35b537b7549218bb6095337c))
+- **cli:** replace qa by stg ([#811](https://github.com/coveo/cli/issues/811)) ([7a47f9b](https://github.com/coveo/cli/commits/7a47f9b035b4902b5e8fc4234b8eb223bc6cecd4))
+- **create-atomic:** download prompt selected hosted page ([#810](https://github.com/coveo/cli/issues/810)) ([f525ffb](https://github.com/coveo/cli/commits/f525ffb3d502a7a1080481f64b403d60ae4c1933))
+
+# v1.29.0 (2022-05-31)
+
+### Bug Fixes
+
+- **dump:** handle rowid fields in org:search:dump ([#806](https://github.com/coveo/cli/issues/806)) ([927333d](https://github.com/coveo/cli/commits/927333de5a1998f02f9ebd62df0a8f78e56de81f))
+
+### Features
+
+- **create-atomic:** allow Coveo atomic to start from an existing Platform Search page ([#728](https://github.com/coveo/cli/issues/728)) ([340fe4a](https://github.com/coveo/cli/commits/340fe4af779ff87730f3a9964272f7a50561ee39))
+
 ## v1.28.1 (2022-05-24)
 
 # v1.28.0 (2022-05-24)
