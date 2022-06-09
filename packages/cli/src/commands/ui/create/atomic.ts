@@ -73,17 +73,7 @@ export default class Atomic extends Command {
     const {flags, args} = await this.parse(Atomic);
     const cfg = this.configuration.get();
     const authenticatedClient = new AuthenticatedClient();
-    const apiKey = await authenticatedClient.createImpersonateApiKey(
-      args.name,
-      [
-        {
-          targetDomain: 'SEARCH_PAGES',
-          targetId: '*',
-          owner: 'SEARCH_API',
-          type: 'VIEW',
-        },
-      ]
-    );
+
     const username = await authenticatedClient.getUsername();
     const cliArgs = [
       `${Atomic.cliPackage}@${flags.version}`,
@@ -92,7 +82,7 @@ export default class Atomic extends Command {
       '--org-id',
       cfg.organization,
       '--api-key',
-      apiKey.value!,
+      cfg.accessToken,
       '--platform-url',
       platformUrl({environment: cfg.environment}),
       '--user',

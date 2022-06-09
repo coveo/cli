@@ -15,7 +15,7 @@ import {test} from '@oclif/test';
 import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
-import {Config} from '../../../lib/config/config';
+import {Config, Configuration} from '../../../lib/config/config';
 import {
   IsNpxInstalled,
   IsNodeVersionInRange,
@@ -35,7 +35,6 @@ describe('ui:create:atomic', () => {
   const mockedIsNodeVersionInRange = jest.mocked(IsNodeVersionInRange, true);
   const createAtomicPackage = '@coveo/create-atomic';
   const mockedApiKeyPrivilege = jest.mocked(HasNecessaryCoveoPrivileges, true);
-  const mockedCreateImpersonateApiKey = jest.fn();
   const preconditionStatus = {
     node: true,
     npx: true,
@@ -57,18 +56,20 @@ describe('ui:create:atomic', () => {
   };
 
   const doMockConfiguration = () => {
-    mockedConfig.mockImplementation(configurationMock());
+    mockedConfig.mockImplementation(
+      configurationMock({
+        accessToken: 'foo',
+        environment: 'dev',
+        organization: 'my-org',
+      } as Configuration)
+    );
   };
 
   const doMockAuthenticatedClient = () => {
-    mockedCreateImpersonateApiKey.mockImplementation((_name: string) =>
-      Promise.resolve({value: 'foo'})
-    );
-
     mockedAuthenticatedClient.mockImplementation(
       () =>
         ({
-          createImpersonateApiKey: mockedCreateImpersonateApiKey,
+          createImpersonateApiKey: jest.fn(),
           getUsername: () => Promise.resolve('bob@coveo.com'),
           getClient: () =>
             Promise.resolve(
