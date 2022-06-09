@@ -14,6 +14,9 @@ import {Config} from '../../../lib/config/config';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {without} from '../../../lib/utils/list';
 import {join} from 'path';
+import dedent from 'ts-dedent';
+
+type ResponseExceededMaximumSizeError = {message: string; type: string};
 
 interface RawResult {
   rowid: string;
@@ -38,11 +41,14 @@ interface FetchParameters {
 }
 
 export default class Dump extends Command {
-  private static readonly numberOfResultPerQuery = 1000;
+  private static readonly DefaultNumberOfResultPerQuery = 1000;
   private static mandatoryFields = ['rowid', 'sysrowid'];
 
-  public static description =
-    'Dump the content of one or more sources in CSV format.';
+  public static description = dedent`
+      Dump the content of one or more sources in CSV format.
+    
+      Note: DictionnaryFields/Values are experimentally supported. In case of failure, you should exclude them using the \`-x\` flag.
+    `;
 
   public static flags = {
     source: Flags.string({
@@ -92,7 +98,12 @@ export default class Dump extends Command {
   private aggregatedResults: RawResult[] = [];
   private aggregatedFieldsWithDupes: string[] = [];
   private temporaryDumpDirectory = dirSync();
+  private numberOfResultPerQuery = Dump.DefaultNumberOfResultPerQuery;
   private internalDumpFileIdx = 0;
+  private progressBar?: SingleBar;
+
+  private static readonly ResponseExceededMaximumSizeType =
+    'ResponseExceededMaximumSizeException';
 
   private get dumpFileIndex() {
     return this.internalDumpFileIdx++;
@@ -127,6 +138,7 @@ export default class Dump extends Command {
 
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
+    this.progressBar?.stop();
     throw err;
   }
 
@@ -177,7 +189,7 @@ export default class Dump extends Command {
     indexToken = '',
     rowId = ''
   ): Promise<boolean> {
-    const progress = this.progressBar;
+    this.progressBar = this.getProgressBar();
     this.log(
       `Fetching all results from organization ${
         params.organizationId
@@ -186,46 +198,82 @@ export default class Dump extends Command {
     if (params.additionalFilter) {
       this.log(`Applying additional filter ${params.additionalFilter}`);
     }
-    progress.start(Dump.numberOfResultPerQuery, 0);
+    this.progressBar.start(Dump.DefaultNumberOfResultPerQuery, 0);
     let lastResultsLength;
 
     do {
       const isFirstQuery = indexToken === '';
 
-      const response = (await params.client.search.query({
-        aq: this.getFilter(params, rowId),
-        debug: true,
-        organizationId: params.organizationId,
-        numberOfResults: Dump.numberOfResultPerQuery,
-        sortCriteria: '@rowid ascending',
-        ...(params.fieldsToExclude && {
-          fieldsToExclude: params.fieldsToExclude,
-        }),
-        ...(params.pipeline && {pipeline: params.pipeline}),
-        ...(indexToken !== '' && {indexToken: indexToken}),
-      })) as SearchResponse;
+      const response = await this.doQuery(params, rowId, indexToken);
       if (isFirstQuery) {
-        progress.setTotal(response.totalCount);
+        this.progressBar.setTotal(response.totalCount);
       }
 
-      progress.increment(response.results.length);
+      this.progressBar.increment(response.results.length);
 
       lastResultsLength = response.results.length;
       await this.aggregateResults(response.results.map((result) => result.raw));
-      if (lastResultsLength < Dump.numberOfResultPerQuery) {
+      if (lastResultsLength < this.numberOfResultPerQuery) {
         break;
       }
       indexToken = response.indexToken;
       rowId = response.results[lastResultsLength - 1].raw.rowid;
-    } while (lastResultsLength >= Dump.numberOfResultPerQuery);
+    } while (lastResultsLength >= this.numberOfResultPerQuery);
     if (this.aggregatedResults.length > 0) {
       this.dumpAggregatedResults();
     }
-    progress.stop();
-    return progress.getTotal() > 0;
+    this.progressBar.stop();
+    return this.progressBar.getTotal() > 0;
   }
 
-  private get progressBar() {
+  private async doQuery(
+    params: FetchParameters,
+    rowId?: string,
+    indexToken?: string
+  ): Promise<SearchResponse> {
+    while (this.numberOfResultPerQuery !== 0) {
+      try {
+        const results = (await params.client.search.query({
+          aq: this.getFilter(params, rowId),
+          debug: true,
+          organizationId: params.organizationId,
+          numberOfResults: this.numberOfResultPerQuery,
+          sortCriteria: '@rowid ascending',
+          ...(params.fieldsToExclude && {
+            fieldsToExclude: params.fieldsToExclude,
+          }),
+          ...(params.pipeline && {pipeline: params.pipeline}),
+          ...(indexToken !== '' && {indexToken: indexToken}),
+        })) as SearchResponse;
+        return results;
+      } catch (error) {
+        if (this.isResponseExceededMaximumSizeError(error)) {
+          this.numberOfResultPerQuery = Math.floor(
+            this.numberOfResultPerQuery / 2
+          );
+        } else {
+          throw error;
+        }
+      }
+    }
+    this.error(
+      dedent`
+      Response exceeds the maximum size of 31457280 bytes.
+      Cannot query a single result, please exclude some/more fields
+      `
+    );
+  }
+
+  private isResponseExceededMaximumSizeError(
+    error: unknown
+  ): error is ResponseExceededMaximumSizeError {
+    return (
+      (error as ResponseExceededMaximumSizeError)?.type ===
+      Dump.ResponseExceededMaximumSizeType
+    );
+  }
+
+  private getProgressBar() {
     return CliUx.ux.progress({
       format: 'Progress | {bar} | ETA: {eta}s | {value}/{total} results',
     }) as SingleBar;

@@ -12,13 +12,13 @@ import {Config} from '../../../lib/config/config';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockedConfig = jest.mocked(Config);
-const mockSearch = jest.fn();
+const mockedSearch = jest.fn();
 const mockedParser = jest.mocked(Parser);
 
 mockedAuthenticatedClient.mockImplementation(
   () =>
     ({
-      getClient: () => Promise.resolve({search: {query: mockSearch}}),
+      getClient: () => Promise.resolve({search: {query: mockedSearch}}),
     } as unknown as AuthenticatedClient)
 );
 
@@ -36,29 +36,45 @@ mockedConfig.mockImplementation(
     } as unknown as Config)
 );
 
+const mockFailedSearch = (err: Object, always: boolean) => {
+  const implementation = () => Promise.reject(err);
+
+  if (always) {
+    mockedSearch.mockImplementation(implementation);
+  } else {
+    mockedSearch.mockImplementationOnce(implementation);
+  }
+};
+
 const mockReturnNumberOfResults = (
   numberOfResults: number,
   additionalRaw: Record<string, unknown> = {}
 ) => {
   if (numberOfResults === 0) {
-    mockSearch.mockReturnValueOnce({totalCount: 0, results: []});
+    mockedSearch.mockImplementationOnce(() =>
+      Promise.resolve({totalCount: 0, results: []})
+    );
   } else {
-    mockSearch.mockReturnValueOnce({
-      totalCount: numberOfResults,
-      results: [...Array(Math.min(1000, numberOfResults)).keys()].map((i) => ({
-        raw: {
-          a_field: 'a_value',
-          rowid: i,
-          ...additionalRaw,
-        },
-      })),
-    });
+    mockedSearch.mockImplementationOnce(() =>
+      Promise.resolve({
+        totalCount: numberOfResults,
+        results: [...Array(Math.min(1000, numberOfResults)).keys()].map(
+          (i) => ({
+            raw: {
+              a_field: 'a_value',
+              rowid: i,
+              ...additionalRaw,
+            },
+          })
+        ),
+      })
+    );
   }
 };
 
 describe('org:search:dump', () => {
   beforeEach(() => {
-    mockSearch.mockReset();
+    mockedSearch.mockReset();
   });
 
   test
@@ -69,7 +85,7 @@ describe('org:search:dump', () => {
     .stderr()
     .command(['org:search:dump', '-s', 'the_source'])
     .it('should pass the source as a search filter', () =>
-      expect(mockSearch).toHaveBeenCalledWith(
+      expect(mockedSearch).toHaveBeenCalledWith(
         expect.objectContaining({
           aq: expect.stringContaining('@source=="the_source"'),
         })
@@ -84,7 +100,7 @@ describe('org:search:dump', () => {
     .stderr()
     .command(['org:search:dump', '-s', 'the_source_1', '-s', 'the_source_2'])
     .it('should pass multiple sources as a search filter', () =>
-      expect(mockSearch).toHaveBeenCalledWith(
+      expect(mockedSearch).toHaveBeenCalledWith(
         expect.objectContaining({
           aq: expect.stringContaining(
             '( @source=="the_source_1" ) OR ( @source=="the_source_2" )'
@@ -101,7 +117,7 @@ describe('org:search:dump', () => {
     .stderr()
     .command(['org:search:dump', '-s', 'the_source_1', '-p', 'mypipeline'])
     .it('should pass pipeline as a search parameter', () =>
-      expect(mockSearch).toHaveBeenCalledWith(
+      expect(mockedSearch).toHaveBeenCalledWith(
         expect.objectContaining({
           pipeline: 'mypipeline',
         })
@@ -124,7 +140,7 @@ describe('org:search:dump', () => {
       'bar',
     ])
     .it('should pass fieldsToExclude as a search parameter', () =>
-      expect(mockSearch).toHaveBeenCalledWith(
+      expect(mockedSearch).toHaveBeenCalledWith(
         expect.objectContaining({
           fieldsToExclude: ['foo', 'bar'],
         })
@@ -139,7 +155,7 @@ describe('org:search:dump', () => {
     .stderr()
     .command(['org:search:dump', '-s', 'the_source', '-f', 'my-filter'])
     .it('should pass additional filter as a search filter', () =>
-      expect(mockSearch).toHaveBeenCalledWith(
+      expect(mockedSearch).toHaveBeenCalledWith(
         expect.objectContaining({
           aq: expect.stringContaining('my-filter'),
         })
@@ -154,7 +170,7 @@ describe('org:search:dump', () => {
     .stderr()
     .command(['org:search:dump', '-s', 'the_source'])
     .it('should do only one query when no results are returned', () =>
-      expect(mockSearch).toHaveBeenCalledTimes(1)
+      expect(mockedSearch).toHaveBeenCalledTimes(1)
     );
 
   test
@@ -165,7 +181,7 @@ describe('org:search:dump', () => {
     .stderr()
     .command(['org:search:dump', '-s', 'the_source'])
     .it('should sort by rowid', () =>
-      expect(mockSearch).toHaveBeenCalledWith(
+      expect(mockedSearch).toHaveBeenCalledWith(
         expect.objectContaining({
           sortCriteria: '@rowid ascending',
         })
@@ -180,7 +196,7 @@ describe('org:search:dump', () => {
     .stderr()
     .command(['org:search:dump', '-s', 'the_source'])
     .it('should request 1000 results', () =>
-      expect(mockSearch).toHaveBeenCalledWith(
+      expect(mockedSearch).toHaveBeenCalledWith(
         expect.objectContaining({
           numberOfResults: 1000,
         })
@@ -205,7 +221,7 @@ describe('org:search:dump', () => {
       'foo',
     ])
     .it('should not exclude rowId fields', () =>
-      expect(mockSearch).toHaveBeenCalledWith(
+      expect(mockedSearch).toHaveBeenCalledWith(
         expect.objectContaining({
           numberOfResults: 1000,
           fieldsToExclude: ['foo'],
@@ -248,8 +264,8 @@ describe('org:search:dump', () => {
     .stderr()
     .command(['org:search:dump', '-s', 'the_source'])
     .it('should perform subsequent query with rowid filter', () => {
-      expect(mockSearch).toHaveBeenCalledTimes(2);
-      expect(mockSearch).toHaveBeenCalledWith(
+      expect(mockedSearch).toHaveBeenCalledTimes(2);
+      expect(mockedSearch).toHaveBeenCalledWith(
         expect.objectContaining({
           aq: expect.stringContaining('@rowid>999'),
         })
@@ -271,5 +287,81 @@ describe('org:search:dump', () => {
           fields: expect.arrayContaining(['someField']),
         });
       }
+    );
+
+  test
+    .do(() => {
+      mockFailedSearch({type: 'ResponseExceededMaximumSizeException'}, false);
+      mockReturnNumberOfResults(20);
+    })
+    .stdout()
+    .stderr()
+    .command(['org:search:dump', '-s', 'the_source'])
+    .it(
+      'should query less results if the API returns a ResponseExceededMaximumSizeException',
+      () => {
+        expect(mockedSearch).toHaveBeenNthCalledWith(
+          1,
+          expect.objectContaining({
+            numberOfResults: 1000,
+          })
+        );
+        expect(mockedSearch).toHaveBeenNthCalledWith(
+          2,
+          expect.objectContaining({
+            numberOfResults: 500,
+          })
+        );
+      }
+    );
+
+  test
+    .do(() => {
+      mockFailedSearch({type: 'ResponseExceededMaximumSizeException'}, false);
+      mockReturnNumberOfResults(20);
+    })
+    .stdout()
+    .stderr()
+    .command(['org:search:dump', '-s', 'the_source'])
+    .it(
+      'should query less results if the API returns a ResponseExceededMaximumSizeException',
+      () => {
+        expect(mockedSearch).toHaveBeenNthCalledWith(
+          1,
+          expect.objectContaining({
+            numberOfResults: 1000,
+          })
+        );
+        expect(mockedSearch).toHaveBeenNthCalledWith(
+          2,
+          expect.objectContaining({
+            numberOfResults: 500,
+          })
+        );
+      }
+    );
+
+  test
+    .do(() => {
+      mockFailedSearch({type: 'ResponseExceededMaximumSizeException'}, true);
+    })
+    .stdout()
+    .stderr()
+    .command(['org:search:dump', '-s', 'the_source'])
+    .catch(/Cannot query a single result, please exclude some\/more fields/)
+    .it(
+      'should throw a well formated error if even a single result is too much'
+    );
+
+  test
+    .do(() => {
+      mockFailedSearch(new Error('someError'), false);
+    })
+    .stdout()
+    .stderr()
+    .command(['org:search:dump', '-s', 'the_source'])
+    .catch('someError')
+    .it(
+      'should bubble up the error if another error than `ResponseExceededMaximumSizeException` is thrown'
     );
 });
