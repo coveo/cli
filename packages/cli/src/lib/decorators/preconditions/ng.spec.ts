@@ -1,7 +1,7 @@
 jest.mock('../../utils/process');
 jest.mock('../../utils/misc');
+jest.mock('../../utils/os');
 
-import {dedent} from 'ts-dedent';
 import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from './testsUtils/utils';
 
@@ -10,11 +10,16 @@ import {Command, CliUx} from '@oclif/core';
 import {appendCmdIfWindows} from '../../utils/os';
 import {getPackageVersion} from '../../utils/misc';
 import {fancyIt} from '../../../__test__/it';
-import {PreconditionError} from '../../errors/preconditionError';
 
 describe('IsNgInstalled', () => {
   const mockedSpawnProcessOutput = jest.mocked(spawnProcessOutput);
   const mockedGetPackageVersion = jest.mocked(getPackageVersion);
+  const mockedAppendCmdIfWindows = jest.mocked(appendCmdIfWindows);
+
+  const mockAppendCmdIfWindows = () => {
+    mockedAppendCmdIfWindows.mockImplementationOnce((input) => `${input}`);
+  };
+
   const mockConfirm = () => {
     Object.defineProperty(CliUx.ux, 'confirm', {value: jest.fn()});
   };
@@ -22,6 +27,7 @@ describe('IsNgInstalled', () => {
 
   beforeAll(() => {
     mockConfirm();
+    mockAppendCmdIfWindows();
   });
 
   beforeEach(() => {
@@ -34,12 +40,9 @@ describe('IsNgInstalled', () => {
     fancyIt()('should throw', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNgVersionInRange('foo')(fakeCommand)).rejects.toThrow(
-        new PreconditionError(dedent`
-        Required version invalid: "foo".
-        Please report this error to Coveo: https://github.com/coveo/cli/issues/new
-      `)
-      );
+      await expect(
+        IsNgVersionInRange('foo')(fakeCommand)
+      ).rejects.toThrowErrorMatchingSnapshot();
     });
   });
 
@@ -54,14 +57,9 @@ describe('IsNgInstalled', () => {
 
     fancyIt()('should throw', async () => {
       const fakeCommand = getFakeCommand();
-      await expect(IsNgVersionInRange('>=0.0.1')(fakeCommand)).rejects.toThrow(
-        dedent`foo requires Angular-CLI to run.
-
-        You can install the Angular-CLI by running npm i -g @angular/cli
-
-        Please visit https://angular.io/guide/setup-local#install-the-angular-cli for more detailed installation information.
-       `
-      );
+      await expect(
+        IsNgVersionInRange('>=0.0.1')(fakeCommand)
+      ).rejects.toThrowErrorMatchingSnapshot();
     });
   });
 
@@ -75,17 +73,9 @@ describe('IsNgInstalled', () => {
     });
 
     fancyIt()('should return false and warn', async () => {
-      await expect(IsNgVersionInRange('>=0.0.1')(fakeCommand)).rejects.toThrow(
-        dedent`
-        foo requires a valid Angular-CLI installation to run.
-        An unknown error happened while running ${appendCmdIfWindows`ng`} --version.
-        some random error oh no
-
-        You can install the Angular-CLI by running npm i -g @angular/cli
-
-        Please visit https://angular.io/guide/setup-local#install-the-angular-cli for more detailed installation information.
-       `
-      );
+      await expect(
+        IsNgVersionInRange('>=0.0.1')(fakeCommand)
+      ).rejects.toThrowErrorMatchingSnapshot();
     });
   });
 
@@ -101,16 +91,9 @@ describe('IsNgInstalled', () => {
     fancyIt()('should throw', async () => {
       const fakeCommand = getFakeCommand();
 
-      await expect(IsNgVersionInRange('>=1.0.0')(fakeCommand)).rejects.toThrow(
-        dedent`
-        foo needs a Angular-CLI version in this range: ">=1.0.0"
-        Version detected: 0.9.0
-        
-        You can install the Angular-CLI by running npm i -g @angular/cli
-        
-        Please visit https://angular.io/guide/setup-local#install-the-angular-cli for more detailed installation information.
-        `
-      );
+      await expect(
+        IsNgVersionInRange('>=1.0.0')(fakeCommand)
+      ).rejects.toThrowErrorMatchingSnapshot();
     });
   });
 
