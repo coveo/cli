@@ -229,38 +229,37 @@ export default class Dump extends Command {
     rowId?: string,
     indexToken?: string
   ): Promise<SearchResponse> {
-    try {
-      if (this.numberOfResultPerQuery === 0) {
-        this.error(
-          dedent`
-          Response exceeds the maximum size of 31457280 bytes.
-          Cannot query a single result, please exclude some/more fields
-          `
-        );
-      }
-      const results = (await params.client.search.query({
-        aq: this.getFilter(params, rowId),
-        debug: true,
-        organizationId: params.organizationId,
-        numberOfResults: this.numberOfResultPerQuery,
-        sortCriteria: '@rowid ascending',
-        ...(params.fieldsToExclude && {
-          fieldsToExclude: params.fieldsToExclude,
-        }),
-        ...(params.pipeline && {pipeline: params.pipeline}),
-        ...(indexToken !== '' && {indexToken: indexToken}),
-      })) as SearchResponse;
-      return results;
-    } catch (error) {
-      if (this.isResponseExceededMaximumSizeError(error)) {
-        this.numberOfResultPerQuery = Math.floor(
-          this.numberOfResultPerQuery / 2
-        );
-        return await this.doQuery(params, rowId, indexToken);
-      } else {
-        throw error;
+    while (this.numberOfResultPerQuery !== 0) {
+      try {
+        const results = (await params.client.search.query({
+          aq: this.getFilter(params, rowId),
+          debug: true,
+          organizationId: params.organizationId,
+          numberOfResults: this.numberOfResultPerQuery,
+          sortCriteria: '@rowid ascending',
+          ...(params.fieldsToExclude && {
+            fieldsToExclude: params.fieldsToExclude,
+          }),
+          ...(params.pipeline && {pipeline: params.pipeline}),
+          ...(indexToken !== '' && {indexToken: indexToken}),
+        })) as SearchResponse;
+        return results;
+      } catch (error) {
+        if (this.isResponseExceededMaximumSizeError(error)) {
+          this.numberOfResultPerQuery = Math.floor(
+            this.numberOfResultPerQuery / 2
+          );
+        } else {
+          throw error;
+        }
       }
     }
+    this.error(
+      dedent`
+      Response exceeds the maximum size of 31457280 bytes.
+      Cannot query a single result, please exclude some/more fields
+      `
+    );
   }
 
   private isResponseExceededMaximumSizeError(
