@@ -1,11 +1,6 @@
-import {
-  BatchUpdateDocumentsFromFiles,
-  BuiltInTransformers,
-  PushSource,
-  UploadBatchCallbackData,
-} from '@coveo/push-api-client';
+import {PushSource, UploadBatchCallbackData} from '@coveo/push-api-client';
 import {Command, CliUx, Flags} from '@oclif/core';
-import {green, red} from 'chalk';
+import {green} from 'chalk';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
@@ -18,13 +13,11 @@ import {
 } from '../../../lib/decorators/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {
-  withNormalizeInvalidFields,
   withCreateMissingFields,
   withFiles,
   withMaxConcurrent,
 } from '../../../lib/flags/sourceCommonFlags';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {formatErrorMessage} from '../../../lib/push/addCommon';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
 import {getFileNames} from '../../../lib/utils/file';
 
@@ -49,7 +42,6 @@ export default class SourcePushAdd extends Command {
     ...withFiles(),
     ...withMaxConcurrent(),
     ...withCreateMissingFields(),
-    ...withNormalizeInvalidFields(),
   };
 
   public static args = [
@@ -73,49 +65,36 @@ export default class SourcePushAdd extends Command {
   public async run() {
     await this.showDeprecatedFlagWarning();
     const {args, flags} = await this.parse(SourcePushAdd);
-    const source = await this.getSource();
+    const {accessToken, organization, environment, region} =
+      await new AuthenticatedClient().cfg.get();
+    const source = new PushSource(accessToken!, organization, {
+      environment,
+      region,
+    });
 
     CliUx.ux.action.start('Processing files');
 
     const fileNames = await getFileNames(flags);
-    const options: BatchUpdateDocumentsFromFiles = {
+    const options = {
       maxConcurrent: flags.maxConcurrent,
       createFields: flags.createMissingFields,
-      fieldNameTransformer: flags.normalizeInvalidFields
-        ? BuiltInTransformers.toLowerCase
-        : BuiltInTransformers.identity,
     };
-
     await source.setSourceStatus(args.sourceId, 'REFRESH');
+
     await source
       .batchUpdateDocumentsFromFiles(args.sourceId, fileNames, options)
       .onBatchUpload((data) => this.successMessageOnAdd(data))
       .onBatchError((data) => this.errorMessageOnAdd(data))
       .batch();
 
+    await source.setSourceStatus(args.sourceId, 'IDLE');
+
     CliUx.ux.action.stop(green('✔'));
   }
 
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
-    formatErrorMessage(err);
-    CliUx.ux.action.stop(red.bold('!'));
     throw err;
-  }
-
-  public async finally() {
-    const {args} = await this.parse(SourcePushAdd);
-    const source = await this.getSource();
-    await source.setSourceStatus(args.sourceId, 'IDLE');
-  }
-
-  public async getSource() {
-    const {accessToken, organization, environment, region} =
-      await new AuthenticatedClient().cfg.get();
-    return new PushSource(accessToken!, organization, {
-      environment,
-      region,
-    });
   }
 
   private successMessageOnAdd({batch, files, res}: UploadBatchCallbackData) {
