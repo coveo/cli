@@ -101,6 +101,11 @@ export default class SourcePushAdd extends Command {
     throw err;
   }
 
+  public async finally() {
+    const {args} = await this.parse(SourcePushAdd);
+    const source = await this.getSource();
+  }
+
   public async getSource() {
     const {accessToken, organization, environment, region} =
       await new AuthenticatedClient().cfg.get();
