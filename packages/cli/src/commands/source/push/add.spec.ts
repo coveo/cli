@@ -4,17 +4,17 @@ jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/config/globalConfig');
 jest.mock('@coveo/push-api-client');
 
-import stripAnsi from 'strip-ansi';
+// import stripAnsi from 'strip-ansi';
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {DocumentBuilder, PushSource} from '@coveo/push-api-client';
 import {cwd} from 'process';
 import {join} from 'path';
-import {APIError} from '../../../lib/errors/APIError';
+// import {APIError} from '../../../lib/errors/APIError';
 import globalConfig from '../../../lib/config/globalConfig';
 import {Interfaces} from '@oclif/core';
 import {
-  BatchUploadDocumentsError,
+  // BatchUploadDocumentsError,
   BatchUploadDocumentsSuccess,
 } from '../../../__stub__/batchUploadDocumentsFromFilesReturn';
 const mockedGlobalConfig = jest.mocked(globalConfig);
@@ -23,6 +23,7 @@ const mockedSource = jest.mocked(PushSource);
 const mockedDocumentBuilder = jest.mocked(DocumentBuilder);
 const mockedMarshal = jest.fn();
 const mockEvaluate = jest.fn();
+jest.useFakeTimers();
 
 describe('source:push:add', () => {
   beforeAll(() => {
@@ -39,17 +40,17 @@ describe('source:push:add', () => {
     mockEvaluate.mockResolvedValue({approved: true});
   };
 
-  const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
-    mockEvaluate.mockResolvedValue({approved: false});
-  };
+  // const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
+  //   mockEvaluate.mockResolvedValue({approved: false});
+  // };
 
   const doMockSuccessBatchUpload = () => {
     mockBatchUpdate.mockReturnValue(new BatchUploadDocumentsSuccess());
   };
 
-  const doMockErrorBatchUpload = () => {
-    mockBatchUpdate.mockReturnValue(new BatchUploadDocumentsError());
-  };
+  // const doMockErrorBatchUpload = () => {
+  //   mockBatchUpdate.mockReturnValue(new BatchUploadDocumentsError());
+  // };
 
   beforeAll(() => {
     mockedGlobalConfig.get.mockReturnValue({
@@ -285,53 +286,53 @@ describe('source:push:add', () => {
       });
   });
 
-  describe.skip('when the batch upload fails', () => {
-    beforeAll(() => {
-      doMockErrorBatchUpload();
-      mockUserHavingAllRequiredPlatformPrivileges();
-    });
+  // describe.skip('when the batch upload fails', () => {
+  //   beforeAll(() => {
+  //     doMockErrorBatchUpload();
+  //     mockUserHavingAllRequiredPlatformPrivileges();
+  //   });
 
-    afterAll(() => {
-      mockBatchUpdate.mockReset();
-      mockEvaluate.mockReset();
-    });
+  //   afterAll(() => {
+  //     mockBatchUpdate.mockReset();
+  //     mockEvaluate.mockReset();
+  //   });
 
-    test
-      .stdout()
-      .stderr()
-      .command([
-        'source:push:add',
-        'mysource',
-        '-d',
-        join(pathToStub, 'jsondocuments'),
-      ])
-      .catch((error) => {
-        expect(error).toBeInstanceOf(APIError);
-        const message = stripAnsi(error.message);
-        expect(message).toContain(
-          'this is a bad request and you should feel bad'
-        );
-        expect(message).toContain('Status code: 412');
-        expect(message).toContain('Error code: BAD_REQUEST');
-      })
-      .it('returns an information message on add failure from the API');
-  });
+  //   test
+  //     .stdout()
+  //     .stderr()
+  //     .command([
+  //       'source:push:add',
+  //       'mysource',
+  //       '-d',
+  //       join(pathToStub, 'jsondocuments'),
+  //     ])
+  //     .catch((error) => {
+  //       expect(error).toBeInstanceOf(APIError);
+  //       const message = stripAnsi(error.message);
+  //       expect(message).toContain(
+  //         'this is a bad request and you should feel bad'
+  //       );
+  //       expect(message).toContain('Status code: 412');
+  //       expect(message).toContain('Error code: BAD_REQUEST');
+  //     })
+  //     .it('returns an information message on add failure from the API');
+  // });
 
-  describe.skip('when Platform privilege preconditions are not respected', () => {
-    beforeEach(() => {
-      mockUserNotHavingAllRequiredPlatformPrivileges();
-    });
+  // describe.skip('when Platform privilege preconditions are not respected', () => {
+  //   beforeEach(() => {
+  //     mockUserNotHavingAllRequiredPlatformPrivileges();
+  //   });
 
-    afterAll(() => {
-      mockBatchUpdate.mockReset();
-      mockEvaluate.mockReset();
-    });
+  //   afterAll(() => {
+  //     mockBatchUpdate.mockReset();
+  //     mockEvaluate.mockReset();
+  //   });
 
-    test
-      .stdout()
-      .stderr()
-      .command(['source:push:add', 'some-org', '-f', 'some-file'])
-      .catch(/You are not authorized to create or update fields/)
-      .it('should return a precondition error');
-  });
+  //   test
+  //     .stdout()
+  //     .stderr()
+  //     .command(['source:push:add', 'some-org', '-f', 'some-file'])
+  //     .catch(/You are not authorized to create or update fields/)
+  //     .it('should return a precondition error');
+  // });
 });
