@@ -92,7 +92,7 @@ export default class SourcePushAdd extends Command {
       .onBatchUpload((data) => this.successMessageOnAdd(data))
       .onBatchError((data) => this.errorMessageOnAdd(data))
       .batch();
-    await source.setSourceStatus(args.sourceId, 'IDLE');
+
     CliUx.ux.action.stop(green('✔'));
   }
 
@@ -102,8 +102,16 @@ export default class SourcePushAdd extends Command {
   }
 
   public async finally() {
-    const {args} = await this.parse(SourcePushAdd);
-    const source = await this.getSource();
+    try {
+      const {args} = await this.parse(SourcePushAdd);
+      const source = await this.getSource();
+      const a = await source.setSourceStatus(args.sourceId, 'IDLE');
+    } catch (error) {
+      process.stdout.write('*********************\n');
+      process.stdout.write(`${error}\n`);
+      process.stdout.write('*********************\n');
+      throw error;
+    }
   }
 
   public async getSource() {
