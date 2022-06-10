@@ -285,7 +285,7 @@ describe('source:push:add', () => {
       });
   });
 
-  describe('when the batch upload fails', () => {
+  describe.skip('when the batch upload fails', () => {
     beforeAll(() => {
       doMockErrorBatchUpload();
       mockUserHavingAllRequiredPlatformPrivileges();
@@ -317,7 +317,7 @@ describe('source:push:add', () => {
       .it('returns an information message on add failure from the API');
   });
 
-  describe('when Platform privilege preconditions are not respected', () => {
+  describe.skip('when Platform privilege preconditions are not respected', () => {
     beforeEach(() => {
       mockUserNotHavingAllRequiredPlatformPrivileges();
     });
