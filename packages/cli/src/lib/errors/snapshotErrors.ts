@@ -130,7 +130,7 @@ export class SnapshotGenericError
     super(SeverityLevel.Error);
     const report = snapshot.latestReport;
     const urlBuilder = new SnapshotUrlBuilder(cfg);
-    const snapshotUrl = urlBuilder.getSnapshotPage(snapshot);
+    const snapshotUrl = urlBuilder.getSnapshotApplyPage(snapshot);
 
     this.message = dedent`Invalid snapshot - ${report.resultCode}.
       You can also use this link to view the snapshot in the Coveo Admin Console
