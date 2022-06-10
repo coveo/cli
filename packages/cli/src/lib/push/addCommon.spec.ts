@@ -4,8 +4,7 @@ import {fancyIt} from '../../__test__/it';
 import {formatCliLog} from '../../__test__/jestSnapshotUtils';
 import {formatErrorMessage} from './addCommon';
 
-// TODO: THIS IS JUST TO UNDERSTAND WHY GITHUB ACTIONS FAIL
-describe.skip('addCommon', () => {
+describe('addCommon', () => {
   const fixableFields: [string, string][] = ['0Invalid-Field', 'poster-A'].map(
     (field) => [field, BuiltInTransformers.identity(field)]
   );
