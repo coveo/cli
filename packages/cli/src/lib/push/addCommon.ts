@@ -13,15 +13,23 @@ interface PrintableUnsupportedField {
 }
 
 export const formatErrorMessage = (err: unknown) => {
-  const {UnsupportedFieldError} = errors;
-  if (err instanceof UnsupportedFieldError) {
-    const normalizations = getNormalizations(err.unsupportedFields);
-    const {fixables, unfixables} = colorizeFields(normalizations);
-    const isFixable = unfixables.length === 0;
+  try {
+    const {UnsupportedFieldError} = errors;
+    if (err instanceof UnsupportedFieldError) {
+      const normalizations = getNormalizations(err.unsupportedFields);
+      const {fixables, unfixables} = colorizeFields(normalizations);
+      const isFixable = unfixables.length === 0;
 
-    printInvalidFieldTable(fixables);
-    printInvalidFieldTable(unfixables);
-    err.message = getFormattedMessage(isFixable);
+      printInvalidFieldTable(fixables);
+      printInvalidFieldTable(unfixables);
+      err.message = getFormattedMessage(isFixable);
+    }
+  } catch (error) {
+    process.stdout.write('********** formatErrorMessage ***********\n');
+    process.stdout.write(`${error}\n`);
+    process.stdout.write('*********************\n');
+
+    throw error;
   }
 };
 
