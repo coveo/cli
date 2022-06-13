@@ -116,7 +116,6 @@ export default class CatalogCreate extends Command {
       catalogConfigurationId,
       configuration
     );
-
     if (flags.output) {
       CliUx.ux.styledJSON(catalog);
     }
