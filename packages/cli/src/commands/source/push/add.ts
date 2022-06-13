@@ -103,10 +103,11 @@ export default class SourcePushAdd extends Command {
     throw err;
   }
 
-  public async finally() {
+  protected async finally(_?: Error) {
     const {args} = await this.parse(SourcePushAdd);
     const source = await this.getSource();
     await source.setSourceStatus(args.sourceId, 'IDLE');
+    await super.finally(_);
   }
 
   public async getSource() {
