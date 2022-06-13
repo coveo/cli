@@ -1,3 +1,5 @@
+// Otherwise npm run lint fails
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import inquirer from 'inquirer';
 
 declare module 'inquirer' {
