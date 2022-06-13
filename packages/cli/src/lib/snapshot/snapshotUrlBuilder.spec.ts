@@ -52,8 +52,8 @@ describe('SnapshotUrlBuilder', () => {
   });
 
   fancyIt()('#createSnapshotPage should return the snapshot URL', () => {
-    expect(snapshotUrlBuilder.getSnapshotPage(snapshot)).toEqual(
-      'https://platform.cloud.coveo.com/admin/#foo/organization/resource-snapshots/my-snapshot'
+    expect(snapshotUrlBuilder.getSnapshotApplyPage(snapshot)).toEqual(
+      'https://platform.cloud.coveo.com/admin/#foo/organization/resource-snapshots/my-snapshot/apply'
     );
   });
 
