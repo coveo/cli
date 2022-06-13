@@ -53,7 +53,7 @@ export default class CommerceRecipe extends Command {
       '--dataFiles',
       ...flags.dataFiles,
     ]);
-    this.storeParametrizedSnapshotLocally(product?.objectType!, catalogId); // FIXME: update the return type of the catalogCreate command to make object type non-optional
+    this.storeParametrizedSnapshotLocally(product.objectType, catalogId);
     await this.newStep('Organization setup', Push, [
       '--sync',
       '--skipPreview',
@@ -63,7 +63,7 @@ export default class CommerceRecipe extends Command {
       '600',
     ]);
     await this.newStep('Indexation', SourceCatalogAdd, [
-      sourceId!,
+      sourceId,
       '--createMissingFields',
       '--fullUpload',
       '--skipFullUploadCheck',

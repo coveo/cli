@@ -5,7 +5,6 @@ import {
   SourceType,
   CreateSourceModel,
   FieldModel,
-  CreateCatalogModel,
 } from '@coveord/platform-client';
 import {CliUx, Command, Flags} from '@oclif/core';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
@@ -60,7 +59,7 @@ export default class CatalogCreate extends Command {
 
   // Preconditions were removed because of the clashe with the enableJsonFlag option.
   // Ideally, the preconditions should also support the run method with non-void return
-  public async run(): Promise<CreateCatalogModel> {
+  public async run(): Promise<CatalogConfigurationModel & {sourceId: string}> {
     const {flags} = await this.parse(CatalogCreate);
     const authenticatedClient = new AuthenticatedClient();
     const client = await authenticatedClient.getClient();
@@ -77,21 +76,16 @@ export default class CatalogCreate extends Command {
     await this.ensureCatalogValidity();
 
     // Destructive changes starting from here
-    const {productSourceId, catalogSourceId} = await this.createSources(
+    const sourceId = await this.createSources(
       client,
       catalogConfigurationModel
     );
     this.newTask('Creating catalog');
-    const {id: catalogConfigurationId} = await this.createCatalogConfiguration(
+    const catalogConfig = await this.createCatalogConfiguration(
       client,
       catalogConfigurationModel
     );
-    const catalog = await this.createCatalog(
-      client,
-      catalogConfigurationId,
-      productSourceId,
-      catalogSourceId
-    );
+    await this.createCatalog(client, catalogConfig.id, sourceId);
 
     this.newTask('Configuring Catalog fields');
     await this.ensureCatalogFields(
@@ -101,13 +95,9 @@ export default class CatalogCreate extends Command {
     );
     this.stopCurrentTask();
 
-    await this.mapStandardFields(
-      productSourceId,
-      catalogConfigurationId,
-      configuration
-    );
+    await this.mapStandardFields(sourceId, catalogConfig.id, configuration);
 
-    return catalog;
+    return {...catalogConfig, sourceId};
   }
 
   public async catch(err?: Error & {exitCode?: number}) {
@@ -175,7 +165,7 @@ export default class CatalogCreate extends Command {
   ): Promise<PartialCatalogConfigurationModel> {
     let {objectTypeValues} = fieldsAndObjectTypes;
     const fieldnames: string[] = fieldsAndObjectTypes.fields.map(
-      (field) => `${field.name}`
+      (field: FieldModel) => `${field.name}`
     );
     const {variants, availabilities} = await selectCatalogStructure(
       objectTypeValues
@@ -272,27 +262,18 @@ export default class CatalogCreate extends Command {
     client: PlatformClient,
     catalogConfigurationModel: PartialCatalogConfigurationModel
   ) {
-    let productSourceId = undefined;
-    let catalogSourceId = undefined;
     const {args, flags} = await this.parse(CatalogCreate);
     this.newTask('Creating product source');
-    productSourceId = await this.createCatalogSource(client, {
+    const productSourceId = await this.createCatalogSource(client, {
       name: `${args.name}`,
       sourceVisibility: flags.sourceVisibility,
     });
 
     if (catalogConfigurationModel.availability) {
-      this.newTask('Creating availability source');
-      catalogSourceId = await this.createCatalogSource(client, {
-        name: `${args.name} Availabilities`,
-        sourceVisibility: flags.sourceVisibility,
-      });
+      CliUx.ux.warn('Skipping availabilities source creation');
     }
 
-    return {
-      productSourceId,
-      catalogSourceId,
-    };
+    return productSourceId;
   }
 
   private async createCatalogSource(
