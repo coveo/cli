@@ -249,18 +249,18 @@ describe('source:push:add', () => {
         }
       );
 
-    // test
-    //   .stdout()
-    //   .stderr()
-    //   .command([
-    //     'source:push:add',
-    //     'mysource',
-    //     '-d',
-    //     join(pathToStub, 'jsondocuments'),
-    //   ])
-    //   .it('should show deprecated flag warning', (ctx) => {
-    //     expect(ctx.stdout).toContain('Use the `files` flag instead');
-    //   });
+    test
+      .stdout()
+      .stderr()
+      .command([
+        'source:push:add',
+        'mysource',
+        '-d',
+        join(pathToStub, 'jsondocuments'),
+      ])
+      .it('should show deprecated flag warning', (ctx) => {
+        expect(ctx.stdout).toContain('Use the `files` flag instead');
+      });
 
     // test
     //   .stdout()
