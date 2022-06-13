@@ -1,6 +1,5 @@
-import {bold} from 'chalk';
+import {bold, red, green} from 'chalk';
 import {
-  CreateCatalogConfigurationModel,
   CatalogConfigurationModel,
   PlatformClient,
   SourceType,
@@ -25,11 +24,9 @@ import {withSourceVisibility} from '../../../lib/flags/sourceCommonFlags';
 import {getDocumentFieldsAndObjectTypeValues} from '../../../lib/catalog/parse';
 import dedent from 'ts-dedent';
 import {without} from '../../../lib/utils/list';
-
-type PartialCatalogConfigurationModel = Pick<
-  CreateCatalogConfigurationModel,
-  'product' | 'variant' | 'availability'
->;
+import {PathLike} from 'fs';
+import {PartialCatalogConfigurationModel} from '../../../lib/catalog/interfaces';
+import {getCatalogPartialConfiguration} from '../../../lib/catalog/detect';
 
 export default class CatalogCreate extends Command {
   public static description = `${bold.bgYellow(
@@ -77,9 +74,7 @@ export default class CatalogCreate extends Command {
     const authenticatedClient = new AuthenticatedClient();
     const client = await authenticatedClient.getClient();
     const configuration = authenticatedClient.cfg.get();
-    const catalogConfigurationModel = await this.generateCatalogConfiguration(
-      client
-    );
+    const catalogConfigurationModel = await this.generateCatalogConfiguration();
 
     await this.ensureCatalogValidity();
 
@@ -88,6 +83,7 @@ export default class CatalogCreate extends Command {
       client,
       catalogConfigurationModel
     );
+    CliUx.ux.action.start('Creating catalog');
     const {id: catalogConfigurationId} = await this.createCatalogConfiguration(
       client,
       catalogConfigurationModel
@@ -114,30 +110,29 @@ export default class CatalogCreate extends Command {
     throw err;
   }
 
-  private async generateCatalogConfiguration(
-    client: PlatformClient
-  ): Promise<PartialCatalogConfigurationModel> {
+  protected async finally(err: Error | undefined) {
+    CliUx.ux.action.stop(err ? red.bold('!') : green('✔'));
+  }
+
+  private async generateCatalogConfiguration(): Promise<PartialCatalogConfigurationModel> {
+    const {flags} = await this.parse(CatalogCreate);
     try {
-      return await this.generateCatalogConfigurationAutomatically(client);
+      CliUx.ux.action.start('Generating catalog configuration from data');
+      return getCatalogPartialConfiguration(flags.dataFiles);
     } catch (error) {
       CliUx.ux.warn(
         dedent`Unable to automatically generate catalog configuration from data.
         Please answer the following questions`
       );
     }
-    return this.generateCatalogConfigurationInteractively();
+    return this.generateCatalogConfigurationInteractively(flags.dataFiles);
   }
 
-  private async generateCatalogConfigurationAutomatically(
-    _client: PlatformClient
+  private async generateCatalogConfigurationInteractively(
+    dataFiles: PathLike[]
   ): Promise<PartialCatalogConfigurationModel> {
-    throw 'TODO: CDX-1023: try to automatically generate catalog config by simply parsing the data';
-  }
-
-  private async generateCatalogConfigurationInteractively() {
-    const {flags} = await this.parse(CatalogCreate);
     let {fields, objectTypeValues} = await getDocumentFieldsAndObjectTypeValues(
-      flags.dataFiles
+      dataFiles
     );
     const {variants, availabilities} = await selectCatalogStructure(
       objectTypeValues
@@ -234,12 +229,14 @@ export default class CatalogCreate extends Command {
     let productSourceId = undefined;
     let catalogSourceId = undefined;
     const {args, flags} = await this.parse(CatalogCreate);
+    CliUx.ux.action.start('Creating product source');
     productSourceId = await this.createCatalogSource(client, {
       name: `${args.name}`,
       sourceVisibility: flags.sourceVisibility,
     });
 
     if (catalogConfigurationModel.availability) {
+      CliUx.ux.action.start('Creating availability source');
       catalogSourceId = await this.createCatalogSource(client, {
         name: `${args.name} Availabilities`,
         sourceVisibility: flags.sourceVisibility,
