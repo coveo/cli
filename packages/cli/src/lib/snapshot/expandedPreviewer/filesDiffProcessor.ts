@@ -38,7 +38,9 @@ export function recursiveDirectoryDiff(
   });
 
   if (deleteMissingResources) {
-    currentFilePaths.forEach((filePath) => rmSync(join(currentDir, filePath)));
+    currentFilePaths.forEach((filePath) =>
+      rmSync(join(currentDir, filePath), {force: true})
+    );
   }
 }
 
