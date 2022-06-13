@@ -145,14 +145,11 @@ export default class CatalogCreate extends Command {
       useCacheForNestedQuery: true,
     });
 
-    // Get Id fields from catalog configuration
     for (const {idField} of Object.values(catalogConfigurationModel)) {
-      // Check if the field is missing from the organization
       const missing = missingFields.find((field) => field.name === idField);
       if (missing) {
         fieldsToCreate.push(parametrizeField(missing));
       } else {
-        // Otherwise, fetch it from the organization
         const existing = await client.field.get(idField);
         fieldsToUpdate.push(parametrizeField(existing));
       }
