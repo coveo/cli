@@ -1,5 +1,5 @@
 import {bold} from 'chalk';
-import {PlatformClient, FieldModel, FieldTypes} from '@coveord/platform-client';
+import {PlatformClient} from '@coveord/platform-client';
 import {
   BuiltInTransformers,
   DocumentBuilder,
