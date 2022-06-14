@@ -1,14 +1,12 @@
-import nodeFetch from "node-fetch";
-// @ts-ignore
-import { abortableFetch } from 'abortcontroller-polyfill/dist/cjs-ponyfill';
-const { hackedFetch } = abortableFetch(nodeFetch);
-Object.assign(global, {fetch: hackedFetch});
+import fetch, {FormData} from 'node-fetch';
 
-import PlatformClient, {PrivilegeModel} from '@coveord/platform-client';
-import {Config, Configuration} from '../config/config';
-import {castEnvironmentToPlatformClient} from './environment';
+Object.assign(global, {fetch, FormData});
+
+import {PlatformClient} from '@coveord/platform-client';
+import {Config, Configuration} from '../config/config.js';
+import {castEnvironmentToPlatformClient} from './environment.js';
 import HttpsProxyAgent from 'https-proxy-agent';
-import globalConfig from '../config/globalConfig';
+import globalConfig from '../config/globalConfig.js';
 export class AuthenticatedClient {
   public cfg: Config;
   public constructor() {
@@ -16,7 +14,7 @@ export class AuthenticatedClient {
   }
 
   public async isLoggedIn() {
-    const {accessToken} = await this.cfg.get();
+    const {accessToken} = this.cfg.get();
     return accessToken !== undefined;
   }
 
@@ -31,7 +29,7 @@ export class AuthenticatedClient {
   }
 
   public async getClient(overrideConfig?: Partial<Configuration>) {
-    const configFromDisk = await this.cfg.get();
+    const configFromDisk = this.cfg.get();
     const resolvedConfig = {...configFromDisk, ...overrideConfig};
     const globalRequestSettings: Record<string, unknown> = {};
     const proxyServer =

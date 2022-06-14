@@ -1,6 +1,6 @@
-import globalConfig from '../../lib/config/globalConfig';
-import {flush} from '../analytics/analytics';
-import {buildEvent} from '../analytics/eventUtils';
+import globalConfig from '../../lib/config/globalConfig.js';
+import {flush} from '../analytics/analytics.js';
+import {buildEvent} from '../analytics/eventUtils.js';
 
 export const exitSignals = ['SIGINT', 'SIGTERM', 'SIGQUIT', 'SIGHUP'] as const;
 

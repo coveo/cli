@@ -3,19 +3,19 @@ import {Command, CliUx} from '@oclif/core';
 import {
   IsAuthenticated,
   Preconditions,
-} from '../../../lib/decorators/preconditions';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import dedent from 'ts-dedent';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
-import {magenta} from 'chalk';
-import SourceList from '../list';
+} from '../../../lib/decorators/preconditions/index.js';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient.js';
+import {dedent} from 'ts-dedent';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable.js';
+import chalk from 'chalk';
+import SourceList from '../list.js';
 
 /**
  * @TODO: CDX-917: Remove file.
  * @deprecated
  **/
 export default class SourcePushList extends Command {
-  public static description = `${magenta(
+  public static description = `${chalk.magenta(
     '[Deprecated]'
   )} List all available push sources in your Coveo organization`;
 
@@ -26,7 +26,7 @@ export default class SourcePushList extends Command {
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
-    CliUx.ux.warn(`${magenta('deprecated')} Use ${SourceList.id} instead`);
+    CliUx.ux.warn(`${chalk.magenta('deprecated')} Use ${SourceList.id} instead`);
     const {flags} = await this.parse(SourcePushList);
     const authenticatedClient = new AuthenticatedClient();
     const org = (await authenticatedClient.cfg.get()).organization;

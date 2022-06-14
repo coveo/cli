@@ -1,12 +1,12 @@
 jest.mock('../../platform/authenticatedClient');
 
-import {fancyIt} from '../../../__test__/it';
-import {PreconditionError} from '../../errors/preconditionError';
+import {fancyIt} from '../../../__test__/it.js';
+import {PreconditionError} from '../../errors/preconditionError.js';
 import {
   AuthenticationStatus,
   getAuthenticationStatus,
-} from '../../platform/authenticatedClient';
-import {IsAuthenticated} from './authenticated';
+} from '../../platform/authenticatedClient.js';
+import {IsAuthenticated} from './authenticated.js';
 
 describe('authenticated', () => {
   const mockedAuthenticatedClient = jest.mocked(getAuthenticationStatus);

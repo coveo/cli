@@ -1,24 +1,26 @@
 import {Command, Flags} from '@oclif/core';
 import {resolve} from 'path';
-import {Config} from '../../../lib/config/config';
+import {Config} from '../../../lib/config/config.js';
 import {
   Preconditions,
   IsAuthenticated,
   IsNodeVersionInRange,
   HasNecessaryCoveoPrivileges,
   IsNpxInstalled,
-} from '../../../lib/decorators/preconditions';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {platformUrl} from '../../../lib/platform/environment';
-import {spawnProcess} from '../../../lib/utils/process';
-import {getPackageVersion} from '../../../lib/utils/misc';
-import {appendCmdIfWindows} from '../../../lib/utils/os';
+} from '../../../lib/decorators/preconditions/index.js';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient.js';
+import {platformUrl} from '../../../lib/platform/environment.js';
+import {spawnProcess} from '../../../lib/utils/process.js';
+import {getPackageVersion} from '../../../lib/utils/misc.js';
+import {appendCmdIfWindows} from '../../../lib/utils/os.js';
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,
-} from '../../../lib/decorators/preconditions/platformPrivilege';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
-import { readJSONSync } from 'fs-extra';
+} from '../../../lib/decorators/preconditions/platformPrivilege.js';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable.js';
+
+import fsExtra from 'fs-extra';
+const { readJSONSync } = fsExtra;
 
 export default class Vue extends Command {
   public static templateName = '@coveo/vue-cli-plugin-typescript';

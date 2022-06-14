@@ -1,10 +1,10 @@
 import type {ChildProcess} from 'child_process';
 
 import {Region} from '@coveord/platform-client';
-import {fancyIt} from '../../__test__/it';
-import {PlatformEnvironment, platformUrl} from '../platform/environment';
-import {OAuth} from './oauth';
-import {OAuthClientServer} from './oauthClientServer';
+import {fancyIt} from '../../__test__/it.js';
+import {PlatformEnvironment, platformUrl} from '../platform/environment.js';
+import {OAuth} from './oauth.js';
+import {OAuthClientServer} from './oauthClientServer.js';
 import open from 'open';
 
 jest.mock('./oauthClientServer');

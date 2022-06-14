@@ -1,12 +1,12 @@
 import {VaultFetchStrategy, VaultEntryModel} from '@coveord/platform-client';
 import {CliUx} from '@oclif/core';
-import {bold, green, red} from 'chalk';
-import dedent from 'ts-dedent';
-import {SnapshotMissingVaultEntriesFromOriginError} from '../../errors/vaultErrors';
-import {AuthenticatedClient} from '../../platform/authenticatedClient';
-import {Project} from '../../project/project';
-import type {VaultEntryAttributes} from '../snapshotReporter';
-import type {VaultTransferFunctionsParam} from './interfaces';
+import chalk from 'chalk';
+import {dedent} from 'ts-dedent';
+import {SnapshotMissingVaultEntriesFromOriginError} from '../../errors/vaultErrors.js';
+import {AuthenticatedClient} from '../../platform/authenticatedClient.js';
+import {Project} from '../../project/project.js';
+import type {VaultEntryAttributes} from '../snapshotReporter.js';
+import type {VaultTransferFunctionsParam} from './interfaces.js';
 
 export async function tryTransferFromOrganization({
   reporter,
@@ -23,9 +23,9 @@ export async function tryTransferFromOrganization({
   }
 
   const shouldTransfer = await CliUx.ux.confirm(
-    `\nWould you like to try transfering the vault entries from ${bold.cyan(
+    `\nWould you like to try transfering the vault entries from ${chalk.bold.cyan(
       originOrgId
-    )} to the destination organization ${bold.cyan(snapshot.targetId)}? (y/n)`
+    )} to the destination organization ${chalk.bold.cyan(snapshot.targetId)}? (y/n)`
   );
   if (!shouldTransfer) {
     return false;
@@ -34,10 +34,10 @@ export async function tryTransferFromOrganization({
   const authenticatedClient = new AuthenticatedClient();
   if (!(await authenticatedClient.getUserHasAccessToOrg(originOrgId))) {
     CliUx.ux.warn(dedent`
-        We mapped this snapshot to ${bold.cyan(originOrgId)}.
-        If you want to transfer the vault entries from ${bold.cyan(
+        We mapped this snapshot to ${chalk.bold.cyan(originOrgId)}.
+        If you want to transfer the vault entries from ${chalk.bold.cyan(
           originOrgId
-        )} to ${bold.cyan(snapshot.targetId)},
+        )} to ${chalk.bold.cyan(snapshot.targetId)},
         authenticate with an account that has access to both organizations and then try again.
       `);
     return false;
@@ -71,10 +71,10 @@ export async function tryTransferFromOrganization({
       originOrgId,
       VaultFetchStrategy.onlyMissing
     );
-    CliUx.ux.action.stop(green('✔'));
+    CliUx.ux.action.stop(chalk.green('✔'));
     return true;
   } catch (error) {
-    CliUx.ux.action.stop(red.bold('!'));
+    CliUx.ux.action.stop(chalk.red.bold('!'));
     CliUx.ux.warn('Error encountered while transfering vault entries`');
     CliUx.ux.warn(typeof error === 'string' ? error : JSON.stringify(error));
     return false;

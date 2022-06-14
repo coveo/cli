@@ -3,19 +3,19 @@ jest.mock('../../config/config');
 jest.mock('../../config/globalConfig');
 
 import {Interfaces} from '@oclif/core';
-import {fancyIt} from '../../../__test__/it';
-import {Config} from '../../config/config';
-import globalConfig from '../../config/globalConfig';
-import {AuthenticatedClient} from '../../platform/authenticatedClient';
-import {HasNecessaryCoveoPrivileges} from './apiKeyPrivilege';
+import {fancyIt} from '../../../__test__/it.js';
+import {Config} from '../../config/config.js';
+import globalConfig from '../../config/globalConfig.js';
+import {AuthenticatedClient} from '../../platform/authenticatedClient.js';
+import {HasNecessaryCoveoPrivileges} from './apiKeyPrivilege.js';
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,
   PlatformPrivilege,
   writeLinkPrivilege,
   writeSnapshotPrivilege,
-} from './platformPrivilege';
-import {getFakeCommand} from './testsUtils/utils';
+} from './platformPrivilege.js';
+import {getFakeCommand} from './testsUtils/utils.js';
 
 const mockConfig = jest.mocked(Config);
 const mockedGlobalConfig = jest.mocked(globalConfig);

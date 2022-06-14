@@ -1,10 +1,10 @@
 import {ResourceSnapshotsSynchronizationReportModel} from '@coveord/platform-client';
-import {SnapshotSynchronizationReporter} from './synchronizationReporter';
+import {SnapshotSynchronizationReporter} from './synchronizationReporter.js';
 import {
   getSuccessfulSynchronizationReport,
   getUnsuccessfulSynchronizationReport,
-} from '../../../__stub__/resourceSnapshotsSynchronizationReportModel';
-import {fancyIt} from '../../../__test__/it';
+} from '../../../__stub__/resourceSnapshotsSynchronizationReportModel.js';
+import {fancyIt} from '../../../__test__/it.js';
 
 describe('SynchronizationReporter', () => {
   describe('if the report contains a successful synchronization', () => {

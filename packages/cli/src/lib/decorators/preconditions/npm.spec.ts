@@ -1,12 +1,12 @@
 jest.mock('../../utils/process');
 
 import {dedent} from 'ts-dedent';
-import {spawnProcessOutput} from '../../utils/process';
-import {getFakeCommand} from './testsUtils/utils';
+import {spawnProcessOutput} from '../../utils/process.js';
+import {getFakeCommand} from './testsUtils/utils.js';
 
-import {IsNpmVersionInRange} from './npm';
-import {appendCmdIfWindows} from '../../utils/os';
-import {fancyIt} from '../../../__test__/it';
+import {IsNpmVersionInRange} from './npm.js';
+import {appendCmdIfWindows} from '../../utils/os.js';
+import {fancyIt} from '../../../__test__/it.js';
 
 describe('IsNpmVersionInRange', () => {
   const mockedSpawnProcessOutput = jest.mocked(spawnProcessOutput);

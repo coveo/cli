@@ -2,12 +2,12 @@ import {Command} from '@oclif/core';
 import {
   IsAuthenticated,
   Preconditions,
-} from '../../../../lib/decorators/preconditions';
-import {Trackable} from '../../../../lib/decorators/preconditions/trackable';
+} from '../../../../lib/decorators/preconditions/index.js';
+import {Trackable} from '../../../../lib/decorators/preconditions/trackable.js';
 import open from 'open';
-import {AuthenticatedClient} from '../../../../lib/platform/authenticatedClient';
-import {createSnapshotUrl} from '../../../../lib/platform/url';
-import dedent from 'ts-dedent';
+import {AuthenticatedClient} from '../../../../lib/platform/authenticatedClient.js';
+import {createSnapshotUrl} from '../../../../lib/platform/url.js';
+import {dedent} from 'ts-dedent';
 
 export default class Create extends Command {
   public static description = '(beta) Create a Snapshot Pull Model';

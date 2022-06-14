@@ -1,21 +1,21 @@
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
 import {Command, CliUx} from '@oclif/core';
-import {Config} from '../../../lib/config/config';
+import {Config} from '../../../lib/config/config.js';
 import {
   IsAuthenticated,
   Preconditions,
-} from '../../../lib/decorators/preconditions';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
-import {organization, wait} from '../../../lib/flags/snapshotCommonFlags';
-import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
-import {ReportViewerStyles} from '../../../lib/snapshot/reportPreviewer/reportPreviewerStyles';
-import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
+} from '../../../lib/decorators/preconditions/index.js';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable.js';
+import {organization, wait} from '../../../lib/flags/snapshotCommonFlags.js';
+import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels.js';
+import {ReportViewerStyles} from '../../../lib/snapshot/reportPreviewer/reportPreviewerStyles.js';
+import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot.js';
 import {
   getTargetOrg,
   handleSnapshotError,
-} from '../../../lib/snapshot/snapshotCommon';
-import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
-import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+} from '../../../lib/snapshot/snapshotCommon.js';
+import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory.js';
+import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter.js';
 
 export default class Monitor extends Command {
   public static description = '(beta) Monitor a Snapshot operation';

@@ -9,20 +9,20 @@ jest.mock('../../../lib/snapshot/snapshotFacade');
 
 import {CliUx} from '@oclif/core';
 import {test} from '@oclif/test';
-import {Project} from '../../../lib/project/project';
+import {Project} from '../../../lib/project/project.js';
 import {join, normalize} from 'path';
-import {Config} from '../../../lib/config/config';
-import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
-import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+import {Config} from '../../../lib/config/config.js';
+import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory.js';
+import {Snapshot} from '../../../lib/snapshot/snapshot.js';
+import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter.js';
 import {ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {
   getErrorReport,
   getMissingVaultEntryReport,
   getSuccessReport,
-} from '../../../__stub__/resourceSnapshotsReportModel';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {SnapshotFacade} from '../../../lib/snapshot/snapshotFacade';
+} from '../../../__stub__/resourceSnapshotsReportModel.js';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient.js';
+import {SnapshotFacade} from '../../../lib/snapshot/snapshotFacade.js';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
 const mockedConfig = jest.mocked(Config);

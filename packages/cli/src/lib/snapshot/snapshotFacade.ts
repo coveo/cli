@@ -1,14 +1,14 @@
-import {green} from 'chalk';
+import chalk from 'chalk';
 import {CliUx} from '@oclif/core';
-import {Configuration} from '../config/config';
-import {ProcessAbort} from '../errors/processError';
+import {Configuration} from '../config/config.js';
+import {ProcessAbort} from '../errors/processError.js';
 import {
   SnapshotSynchronizationAmbiguousMatchesError,
   SnapshotSynchronizationUnknownError,
-} from '../errors/snapshotErrors';
-import {confirmWithAnalytics} from '../utils/cli';
-import {Snapshot, WaitUntilDoneOptions} from './snapshot';
-import {SynchronizationPlan} from './synchronization/synchronizationPlan';
+} from '../errors/snapshotErrors.js';
+import {confirmWithAnalytics} from '../utils/cli.js';
+import {Snapshot, WaitUntilDoneOptions} from './snapshot.js';
+import {SynchronizationPlan} from './synchronization/synchronizationPlan.js';
 
 export class SnapshotFacade {
   public constructor(
@@ -49,7 +49,7 @@ export class SnapshotFacade {
       );
     }
 
-    CliUx.ux.action.stop(green('✔'));
+    CliUx.ux.action.stop(chalk.green('✔'));
     return plan;
   }
 
@@ -65,6 +65,6 @@ export class SnapshotFacade {
       throw new SnapshotSynchronizationUnknownError(this.snapshot, this.cfg);
     }
 
-    CliUx.ux.action.stop(green('✔'));
+    CliUx.ux.action.stop(chalk.green('✔'));
   }
 }

@@ -1,11 +1,11 @@
 import type {Command} from '@oclif/core';
 import {dedent} from 'ts-dedent';
-import {spawnProcessOutput, SpawnProcessOutput} from '../../utils/process';
-import {satisfies, validRange} from 'semver';
+import {spawnProcessOutput, SpawnProcessOutput} from '../../utils/process.js';
+import semver from 'semver';
 import {
   PreconditionError,
   PreconditionErrorCategory,
-} from '../../errors/preconditionError';
+} from '../../errors/preconditionError.js';
 
 export interface BinPreconditionsOptions {
   params?: Array<string>;
@@ -33,7 +33,7 @@ export function getBinVersionPrecondition(
   };
   return function (versionRange: string) {
     return async function (target: Command) {
-      if (!validRange(versionRange)) {
+      if (!semver.validRange(versionRange)) {
         const message = dedent`
           Required version invalid: "${versionRange}".
           Please report this error to Coveo: https://github.com/coveo/cli/issues/new
@@ -51,7 +51,7 @@ export function getBinVersionPrecondition(
       await checkIfBinIsInstalled(target, binaryName, appliedOptions, output);
       const version = versionExtractor(output.stdout);
 
-      if (!satisfies(version, versionRange)) {
+      if (!semver.satisfies(version, versionRange)) {
         const message = dedent`
           ${target.id} needs a ${
           appliedOptions.prettyName

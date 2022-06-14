@@ -1,37 +1,37 @@
 import {ResourceSnapshotType} from '@coveord/platform-client';
 import {Flags, Command, CliUx} from '@oclif/core';
-import {blueBright, bold} from 'chalk';
-import {readJsonSync} from 'fs-extra';
+import chalk from 'chalk';
+import fsExtra from 'fs-extra';
 import {cwd} from 'process';
-import dedent from 'ts-dedent';
-import {Config} from '../../../lib/config/config';
+import {dedent} from 'ts-dedent';
+import {Config} from '../../../lib/config/config.js';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
-} from '../../../lib/decorators/preconditions';
-import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
-import {writeSnapshotPrivilege} from '../../../lib/decorators/preconditions/platformPrivilege';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
-import {SnapshotOperationTimeoutError} from '../../../lib/errors';
-import {ProcessAbort} from '../../../lib/errors/processError';
-import {organization, wait} from '../../../lib/flags/snapshotCommonFlags';
-import {Project} from '../../../lib/project/project';
+} from '../../../lib/decorators/preconditions/index.js';
+import {IsGitInstalled} from '../../../lib/decorators/preconditions/git.js';
+import {writeSnapshotPrivilege} from '../../../lib/decorators/preconditions/platformPrivilege.js';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable.js';
+import {SnapshotOperationTimeoutError} from '../../../lib/errors/index.js';
+import {ProcessAbort} from '../../../lib/errors/processError.js';
+import {organization, wait} from '../../../lib/flags/snapshotCommonFlags.js';
+import {Project} from '../../../lib/project/project.js';
 import type {
   SnapshotPullModel,
   SnapshotPullModelResources,
-} from '../../../lib/snapshot/pullModel/interfaces';
-import {buildResourcesToExport} from '../../../lib/snapshot/pullModel/validation/model';
-import {validateSnapshotPullModel} from '../../../lib/snapshot/pullModel/validation/validate';
-import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
+} from '../../../lib/snapshot/pullModel/interfaces.js';
+import {buildResourcesToExport} from '../../../lib/snapshot/pullModel/validation/model.js';
+import {validateSnapshotPullModel} from '../../../lib/snapshot/pullModel/validation/validate.js';
+import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot.js';
 import {
   getTargetOrg,
   handleSnapshotError,
   cleanupProject,
-} from '../../../lib/snapshot/snapshotCommon';
-import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
-import {confirmWithAnalytics} from '../../../lib/utils/cli';
-import {spawnProcess} from '../../../lib/utils/process';
+} from '../../../lib/snapshot/snapshotCommon.js';
+import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory.js';
+import {confirmWithAnalytics} from '../../../lib/utils/cli.js';
+import {spawnProcess} from '../../../lib/utils/process.js';
 
 export default class Pull extends Command {
   public static description = '(beta) Pull resources from an organization';
@@ -71,7 +71,7 @@ export default class Pull extends Command {
     }),
     model: Flags.build<SnapshotPullModel>({
       parse: async (input: string): Promise<SnapshotPullModel> => {
-        const model = readJsonSync(input);
+        const model = fsExtra.readJsonSync(input);
         validateSnapshotPullModel(model);
         return model;
       },
@@ -125,7 +125,7 @@ export default class Pull extends Command {
 
           Once the snapshot is created, you can pull it with the following command:
 
-            ${blueBright`coveo org:resources:pull -t ${target} -s ${snapshot.id}`}
+            ${chalk.blueBright`coveo org:resources:pull -t ${target} -s ${snapshot.id}`}
 
             `
       );
@@ -174,7 +174,7 @@ export default class Pull extends Command {
       );
     }
     const resourcesToExport = await this.getResourceSnapshotTypesToExport();
-    CliUx.ux.action.start(`Creating Snapshot from ${bold.cyan(target)}`);
+    CliUx.ux.action.start(`Creating Snapshot from ${chalk.bold.cyan(target)}`);
     const waitOption = await this.getWaitOption();
     return SnapshotFactory.createFromOrg(resourcesToExport, target, waitOption);
   }
@@ -193,9 +193,9 @@ export default class Pull extends Command {
     if (flags.model) {
       const cfg = this.configuration.get();
       if (cfg.organization !== flags.model.orgId) {
-        const question = dedent`You are currently connected to the ${bold.cyan(
+        const question = dedent`You are currently connected to the ${chalk.bold.cyan(
           cfg.organization
-        )} organization, but are about to pull resources from the ${bold.cyan(
+        )} organization, but are about to pull resources from the ${chalk.bold.cyan(
           flags.model.orgId
         )} organization.
             Do you wish to continue? (y/n)`;

@@ -1,11 +1,11 @@
 import {Command, CliUx} from '@oclif/core';
-import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '../../lib/platform/authenticatedClient.js';
 import {
   Preconditions,
   IsAuthenticated,
-} from '../../lib/decorators/preconditions/';
-import {Trackable} from '../../lib/decorators/preconditions/trackable';
-import {recordable} from '../../lib/utils/record';
+} from '../../lib/decorators/preconditions/index.js';
+import {Trackable} from '../../lib/decorators/preconditions/trackable.js';
+import {recordable} from '../../lib/utils/record.js';
 
 export default class List extends Command {
   public static description = 'List Coveo organizations.';

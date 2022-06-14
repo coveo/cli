@@ -1,11 +1,11 @@
 import {
   PreconditionError,
   PreconditionErrorCategory,
-} from '../../errors/preconditionError';
+} from '../../errors/preconditionError.js';
 import {
   AuthenticationStatus,
   getAuthenticationStatus,
-} from '../../platform/authenticatedClient';
+} from '../../platform/authenticatedClient.js';
 
 export function IsAuthenticated() {
   return async function () {

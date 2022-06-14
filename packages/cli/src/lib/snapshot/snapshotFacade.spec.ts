@@ -2,16 +2,16 @@ jest.mock('../utils/cli.ts');
 jest.mock('./snapshot');
 
 import {CliUx} from '@oclif/core';
-import {fancyIt} from '../../__test__/it';
-import {Configuration} from '../config/config';
-import {ProcessAbort} from '../errors/processError';
+import {fancyIt} from '../../__test__/it.js';
+import {Configuration} from '../config/config.js';
+import {ProcessAbort} from '../errors/processError.js';
 import {
   SnapshotSynchronizationAmbiguousMatchesError,
   SnapshotSynchronizationUnknownError,
-} from '../errors/snapshotErrors';
-import {confirmWithAnalytics} from '../utils/cli';
-import {Snapshot} from './snapshot';
-import {SnapshotFacade} from './snapshotFacade';
+} from '../errors/snapshotErrors.js';
+import {confirmWithAnalytics} from '../utils/cli.js';
+import {Snapshot} from './snapshot.js';
+import {SnapshotFacade} from './snapshotFacade.js';
 
 const mockedConfirm = jest.mocked(confirmWithAnalytics);
 const mockedApplySynchronizationPlan = jest.fn();

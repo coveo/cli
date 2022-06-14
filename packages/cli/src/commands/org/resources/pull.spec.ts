@@ -8,19 +8,19 @@ jest.mock('../../../lib/project/project');
 jest.mock('../../../lib/utils/process');
 
 import {join} from 'path';
-import {Config} from '../../../lib/config/config';
+import {Config} from '../../../lib/config/config.js';
 import {ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {test} from '@oclif/test';
-import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel';
-import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
-import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
-import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel.js';
+import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel.js';
+import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory.js';
+import {Snapshot} from '../../../lib/snapshot/snapshot.js';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient.js';
 import {Command, CliUx} from '@oclif/core';
-import {IsGitInstalled} from '../../../lib/decorators/preconditions';
-import {PreconditionError} from '../../../lib/errors/preconditionError';
+import {IsGitInstalled} from '../../../lib/decorators/preconditions/index.js';
+import {PreconditionError} from '../../../lib/errors/preconditionError.js';
 import {cwd} from 'process';
-import {Project} from '../../../lib/project/project';
+import {Project} from '../../../lib/project/project.js';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
 const mockedProject = jest.mocked(Project, true);

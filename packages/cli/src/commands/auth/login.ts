@@ -1,11 +1,11 @@
 import {Command, Flags} from '@oclif/core';
-import {Config} from '../../lib/config/config';
-import {OAuth} from '../../lib/oauth/oauth';
-import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
-import {PlatformEnvironment} from '../../lib/platform/environment';
+import {Config} from '../../lib/config/config.js';
+import {OAuth} from '../../lib/oauth/oauth.js';
+import {AuthenticatedClient} from '../../lib/platform/authenticatedClient.js';
+import {PlatformEnvironment} from '../../lib/platform/environment.js';
 import {Region} from '@coveord/platform-client';
-import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
-import {Trackable} from '../../lib/decorators/preconditions/trackable';
+import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags.js';
+import {Trackable} from '../../lib/decorators/preconditions/trackable.js';
 
 export default class Login extends Command {
   private configuration!: Config;

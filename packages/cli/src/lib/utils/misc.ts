@@ -1,9 +1,10 @@
 import {resolve} from 'path';
-import {coerce} from 'semver';
-import { readJsonSync } from "fs-extra";
+import semver from 'semver';
+import fsExtra from 'fs-extra';
+const {readJsonSync} = fsExtra;
 export function getPackageVersion(packageName: string) {
   const pathToPackageJson = resolve(
-    __dirname,
+    import.meta.url,
     ...new Array(3).fill('..'),
     'package.json'
   );
@@ -12,7 +13,8 @@ export function getPackageVersion(packageName: string) {
     pkg.dependencies[packageName] ||
     pkg.devDependencies[packageName] ||
     pkg.peerDependencies[packageName];
-  const defaultVersion = coerce(dep?.toString())?.version;
+  const defaultVersion = semver.coerce(dep?.toString())?.version;
 
   return defaultVersion;
 }
+ 

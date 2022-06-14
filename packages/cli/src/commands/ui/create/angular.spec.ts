@@ -12,19 +12,19 @@ jest.mock('../../../lib/utils/misc');
 jest.mock('@coveord/platform-client');
 
 import {test} from '@oclif/test';
-import {spawnProcess} from '../../../lib/utils/process';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import PlatformClient from '@coveord/platform-client';
-import {Config} from '../../../lib/config/config';
+import {spawnProcess} from '../../../lib/utils/process.js';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient.js';
+import {PlatformClient} from '@coveord/platform-client';
+import {Config} from '../../../lib/config/config.js';
 import {
   IsNpmVersionInRange,
   IsNodeVersionInRange,
   HasNecessaryCoveoPrivileges,
-} from '../../../lib/decorators/preconditions/';
-import {getPackageVersion} from '../../../lib/utils/misc';
-import {IsNgVersionInRange} from '../../../lib/decorators/preconditions/ng';
-import {configurationMock} from '../../../__stub__/configuration';
-import {mockPreconditions} from '../../../__test__/preconditionUtils';
+} from '../../../lib/decorators/preconditions/index.js';
+import {getPackageVersion} from '../../../lib/utils/misc.js';
+import {IsNgVersionInRange} from '../../../lib/decorators/preconditions/ng.js';
+import {configurationMock} from '../../../__stub__/configuration.js';
+import {mockPreconditions} from '../../../__test__/preconditionUtils.js';
 
 describe('ui:create:angular', () => {
   const mockedConfig = jest.mocked(Config);

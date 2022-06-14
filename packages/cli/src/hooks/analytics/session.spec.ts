@@ -2,9 +2,9 @@ jest.mock('../../lib/config/config');
 jest.mock('../../lib/config/globalConfig');
 
 import type {Interfaces} from '@oclif/core';
-import {Config} from '../../lib/config/config';
-import globalConfig from '../../lib/config/globalConfig';
-import check from './session';
+import {Config} from '../../lib/config/config.js';
+import globalConfig from '../../lib/config/globalConfig.js';
+import check from './session.js';
 
 describe('session', () => {
   const mockedGlobalConfig = jest.mocked(globalConfig);

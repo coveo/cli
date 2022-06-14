@@ -3,7 +3,7 @@ jest.mock('../analytics/analytics');
 jest.mock('../../lib/config/config');
 
 import {test} from '@oclif/test';
-import analytics from '../analytics/analytics';
+import analytics from '../analytics/analytics.js';
 
 describe('hooks:command_not_found', () => {
   const mockedAnalytics = jest.mocked(analytics);

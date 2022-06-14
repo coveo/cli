@@ -1,4 +1,4 @@
-import {PrintableError, SeverityLevel} from './printableError';
+import {PrintableError, SeverityLevel} from './printableError.js';
 
 export enum PreconditionErrorCategory {
   MissingBin = 'Missing Bin',

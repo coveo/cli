@@ -1,5 +1,5 @@
 import {ValidationError} from 'jsonschema';
-import {CLIBaseError} from '../../../errors/CLIBaseError';
+import {CLIBaseError} from '../../../errors/CLIBaseError.js';
 
 abstract class BaseSPMError extends CLIBaseError {
   public name = 'Snapshot Pull Model Error';

@@ -1,14 +1,14 @@
 import {Region} from '@coveord/platform-client';
-import {fancyIt} from '../../__test__/it';
+import {fancyIt} from '../../__test__/it.js';
 
 jest.mock('./environment');
-import {PlatformEnvironment, platformUrl} from './environment';
+import {PlatformEnvironment, platformUrl} from './environment.js';
 import {
   createSnapshotUrl,
   snapshotApplyUrl,
   snapshotSynchronizationUrl,
   snapshotUrl,
-} from './url';
+} from './url.js';
 
 describe('url', () => {
   const mockedPlatformUrl = jest.mocked(platformUrl);

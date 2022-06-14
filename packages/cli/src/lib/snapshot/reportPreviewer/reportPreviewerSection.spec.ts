@@ -1,11 +1,11 @@
 import stripAnsi from 'strip-ansi';
-import dedent from 'ts-dedent';
-import {fancyIt} from '../../../__test__/it';
+import {dedent} from 'ts-dedent';
+import {fancyIt} from '../../../__test__/it.js';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
-} from './reportPreviewerDataModels';
-import {ReportViewerSection} from './reportPreviewerSection';
+} from './reportPreviewerDataModels.js';
+import {ReportViewerSection} from './reportPreviewerSection.js';
 
 describe('ReportViewerSection', () => {
   const resourceWithChanges: ReportViewerResourceReportModel = {

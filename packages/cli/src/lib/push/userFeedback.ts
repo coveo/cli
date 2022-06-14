@@ -1,13 +1,13 @@
 import {Command} from '@oclif/core';
-import {green} from 'chalk';
+import chalk from 'chalk';
 import {validate} from 'jsonschema';
-import dedent from 'ts-dedent';
+import {dedent} from 'ts-dedent';
 import {
   APIError,
   AxiosErrorFromAPI,
   AxiosErrorFromAPISchema,
-} from '../errors/APIError';
-import {UnknownError} from '../errors/unknownError';
+} from '../errors/APIError.js';
+import {UnknownError} from '../errors/unknownError.js';
 
 export interface AxiosResponse {
   status: number;
@@ -23,7 +23,7 @@ export const successMessage = (
       ${tagLine}
       `);
   if (res) {
-    message += `Status code: ${green(res.status, res.statusText)}
+    message += `Status code: ${chalk.green(res.status, res.statusText)}
     `;
   }
   cmd.log(message);

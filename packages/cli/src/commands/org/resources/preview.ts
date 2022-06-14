@@ -1,30 +1,30 @@
 import {Command, Flags} from '@oclif/core';
-import {blueBright} from 'chalk';
+import chalk from 'chalk';
 import {cwd} from 'process';
-import dedent from 'ts-dedent';
-import {Config} from '../../../lib/config/config';
+import {dedent} from 'ts-dedent';
+import {Config} from '../../../lib/config/config.js';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
-} from '../../../lib/decorators/preconditions';
-import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
+} from '../../../lib/decorators/preconditions/index.js';
+import {IsGitInstalled} from '../../../lib/decorators/preconditions/git.js';
 import {
   writeLinkPrivilege,
   writeSnapshotPrivilege,
-} from '../../../lib/decorators/preconditions/platformPrivilege';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
-import {SnapshotOperationTimeoutError} from '../../../lib/errors';
+} from '../../../lib/decorators/preconditions/platformPrivilege.js';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable.js';
+import {SnapshotOperationTimeoutError} from '../../../lib/errors/index.js';
 import {
   PreviewLevelValue,
   previewLevel,
   sync,
   wait,
   organization,
-} from '../../../lib/flags/snapshotCommonFlags';
-import {Project} from '../../../lib/project/project';
-import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
-import {Snapshot} from '../../../lib/snapshot/snapshot';
+} from '../../../lib/flags/snapshotCommonFlags.js';
+import {Project} from '../../../lib/project/project.js';
+import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels.js';
+import {Snapshot} from '../../../lib/snapshot/snapshot.js';
 import {
   dryRun,
   getTargetOrg,
@@ -33,7 +33,7 @@ import {
   cleanupProject,
   getMissingVaultEntriesReportHandler,
   getErrorReportHandler,
-} from '../../../lib/snapshot/snapshotCommon';
+} from '../../../lib/snapshot/snapshotCommon.js';
 export default class Preview extends Command {
   public static description = '(beta) Preview resource updates';
 
@@ -124,7 +124,7 @@ export default class Preview extends Command {
 
           Once the snapshot is created, you can preview it with the following command:
 
-            ${blueBright`coveo org:resources:preview -t ${target} -s ${snapshot.id}`}
+            ${chalk.blueBright`coveo org:resources:preview -t ${target} -s ${snapshot.id}`}
 
             `
       );

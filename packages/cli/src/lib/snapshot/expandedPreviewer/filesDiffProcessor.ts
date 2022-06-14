@@ -1,8 +1,9 @@
 import type {ResourceSnapshotType} from '@coveord/platform-client';
 import {readdirSync, rmSync} from 'fs';
-import {readJsonSync, writeJsonSync, WriteOptions} from 'fs-extra';
+import fsExtra, { WriteOptions } from 'fs-extra';
+const {readJsonSync, writeJsonSync} = fsExtra;
 import {join} from 'path';
-import {Project} from '../../project/project';
+import {Project} from '../../project/project.js';
 
 type ResourcesJSON = Object & {resourceName: string};
 

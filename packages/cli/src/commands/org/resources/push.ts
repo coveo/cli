@@ -3,10 +3,10 @@ import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
-} from '../../../lib/decorators/preconditions';
-import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {red, green, bold} from 'chalk';
-import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+} from '../../../lib/decorators/preconditions/index.js';
+import {Snapshot} from '../../../lib/snapshot/snapshot.js';
+import chalk from 'chalk';
+import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter.js';
 import {
   dryRun,
   getTargetOrg,
@@ -16,24 +16,24 @@ import {
   DryRunOptions,
   getMissingVaultEntriesReportHandler,
   getErrorReportHandler,
-} from '../../../lib/snapshot/snapshotCommon';
-import {Config} from '../../../lib/config/config';
+} from '../../../lib/snapshot/snapshotCommon.js';
+import {Config} from '../../../lib/config/config.js';
 import {cwd} from 'process';
-import {Project} from '../../../lib/project/project';
+import {Project} from '../../../lib/project/project.js';
 import {
   PreviewLevelValue,
   previewLevel,
   sync,
   wait,
   organization,
-} from '../../../lib/flags/snapshotCommonFlags';
+} from '../../../lib/flags/snapshotCommonFlags.js';
 import {
   writeLinkPrivilege,
   writeSnapshotPrivilege,
-} from '../../../lib/decorators/preconditions/platformPrivilege';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
-import {confirmWithAnalytics} from '../../../lib/utils/cli';
-import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
+} from '../../../lib/decorators/preconditions/platformPrivilege.js';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable.js';
+import {confirmWithAnalytics} from '../../../lib/utils/cli.js';
+import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels.js';
 
 export default class Push extends Command {
   public static description =
@@ -140,7 +140,7 @@ export default class Push extends Command {
   private async askForConfirmation(): Promise<boolean> {
     const {flags} = await this.parse(Push);
     const target = await getTargetOrg(this.configuration, flags.organization);
-    const question = `\nWould you like to apply the snapshot to the organization ${bold.cyan(
+    const question = `\nWould you like to apply the snapshot to the organization ${chalk.bold.cyan(
       target
     )}? (y/n)`;
     return confirmWithAnalytics(question, 'snapshot apply');
@@ -158,10 +158,10 @@ export default class Push extends Command {
     await reporter
       .setReportHandler(SnapshotReportStatus.ERROR, async () => {
         await handleReportWithErrors(snapshot, cfg, this.projectPath);
-        CliUx.ux.action.stop(red.bold('!'));
+        CliUx.ux.action.stop(chalk.red.bold('!'));
       })
       .setReportHandler(SnapshotReportStatus.SUCCESS, () => {
-        CliUx.ux.action.stop(green('✔'));
+        CliUx.ux.action.stop(chalk.green('✔'));
       })
       .handleReport();
   }

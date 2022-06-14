@@ -67,6 +67,9 @@
     "*.{ts,tsx,mjs,js,jsx,json,html,vue,scss,css,md,yml}": "prettier --write",
     "**/*.ts": "eslint --fix"
   },
+  "overrides": {
+    "form-data":"4.0.0"
+  },
   "engines": {
     "node": ">=16",
     "npm": ">=8.5.4"

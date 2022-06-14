@@ -5,14 +5,14 @@ jest.mock('./config');
 jest.mock('./configSchemaVersion', () => ({
   CurrentSchemaVersion,
 }));
-import {IncompatibleConfigurationError} from './configErrors';
-import {coerce, gt, lt, SemVer} from 'semver';
-import dedent from 'ts-dedent';
-import {fancyIt} from '../../__test__/it';
+import {IncompatibleConfigurationError} from './configErrors.js';
+import semver from 'semver';
+import {dedent} from 'ts-dedent';
+import {fancyIt} from '../../__test__/it.js';
 
-const mockedCoerce = jest.mocked(coerce);
-const mockedLt = jest.mocked(lt);
-const mockedGt = jest.mocked(gt);
+const mockedCoerce = jest.mocked(semver.coerce);
+const mockedLt = jest.mocked(semver.lt);
+const mockedGt = jest.mocked(semver.gt);
 describe('configErrors', () => {
   afterEach(() => {
     jest.resetAllMocks();
@@ -58,7 +58,7 @@ describe('configErrors', () => {
     });
 
     describe('when the version is greater than the supported version', () => {
-      const mockedSemverInstance = new SemVer('1.0.0');
+      const mockedSemverInstance = new semver.SemVer('1.0.0');
       beforeEach(() => {
         mockedCoerce.mockReturnValue(mockedSemverInstance);
         mockedGt.mockReturnValueOnce(true);
@@ -79,7 +79,7 @@ describe('configErrors', () => {
     });
 
     describe('when the version is lesser than the supported version', () => {
-      const mockedSemverInstance = new SemVer('1.0.0');
+      const mockedSemverInstance = new semver.SemVer('1.0.0');
       beforeEach(() => {
         mockedCoerce.mockReturnValue(mockedSemverInstance);
         mockedGt.mockReturnValueOnce(false);
@@ -101,7 +101,7 @@ describe('configErrors', () => {
     });
 
     describe('when the coerced version is not null, nor greater or lesser than the supported version', () => {
-      const mockedSemverInstance = new SemVer('1.0.0');
+      const mockedSemverInstance = new semver.SemVer('1.0.0');
       beforeEach(() => {
         mockedCoerce.mockReturnValue(mockedSemverInstance);
         mockedGt.mockReturnValueOnce(false);

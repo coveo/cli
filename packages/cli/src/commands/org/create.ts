@@ -1,14 +1,14 @@
 import {Command, Flags, CliUx} from '@oclif/core';
-import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '../../lib/platform/authenticatedClient.js';
 import {
   Preconditions,
   IsAuthenticated,
-} from '../../lib/decorators/preconditions/';
+} from '../../lib/decorators/preconditions/index.js';
 import {OrganizationCreationOrigin} from '@coveord/platform-client';
-import {Config} from '../../lib/config/config';
-import {bold} from 'chalk';
-import dedent from 'ts-dedent';
-import {Trackable} from '../../lib/decorators/preconditions/trackable';
+import {Config} from '../../lib/config/config.js';
+import chalk from 'chalk';
+import {dedent} from 'ts-dedent';
+import {Trackable} from '../../lib/decorators/preconditions/trackable.js';
 
 export default class Create extends Command {
   public static description = 'Create a new test Coveo organization.';
@@ -57,11 +57,11 @@ export default class Create extends Command {
 
   private async generateEndMessageFromOrgId(orgId: string) {
     const {flags} = await this.parse(Create);
-    const color1 = bold.cyan;
-    let color2 = bold.magenta;
+    const color1 = chalk.bold.cyan;
+    let color2 = chalk.bold.magenta;
     if (flags.setDefaultOrganization) {
       this.configuration.set('organization', orgId);
-      color2 = bold.cyan;
+      color2 = chalk.bold.cyan;
     }
 
     const cfg = this.configuration.get();

@@ -1,7 +1,7 @@
 import {Command} from '@oclif/core';
-import {Config} from '../../lib/config/config';
-import {ConfigRenderer} from '../../lib/config/configRenderer';
-import {Trackable} from '../../lib/decorators/preconditions/trackable';
+import {Config} from '../../lib/config/config.js';
+import {ConfigRenderer} from '../../lib/config/configRenderer.js';
+import {Trackable} from '../../lib/decorators/preconditions/trackable.js';
 
 export default class Get extends Command {
   public static description = 'Display the current configuration.';

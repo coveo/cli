@@ -5,28 +5,28 @@ import {
   UploadBatchCallbackData,
 } from '@coveo/push-api-client';
 import {Command, CliUx, Flags} from '@oclif/core';
-import {green, red} from 'chalk';
+import chalk from 'chalk';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
-} from '../../../lib/decorators/preconditions';
+} from '../../../lib/decorators/preconditions/index.js';
 import {
   readOrganizationPrivilege,
   writeFieldsPrivilege,
   writeSourceContentPrivilege,
-} from '../../../lib/decorators/preconditions/platformPrivilege';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+} from '../../../lib/decorators/preconditions/platformPrivilege.js';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable.js';
 import {
   withNormalizeInvalidFields,
   withCreateMissingFields,
   withFiles,
   withMaxConcurrent,
-} from '../../../lib/flags/sourceCommonFlags';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {formatErrorMessage} from '../../../lib/push/addCommon';
-import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
-import {getFileNames} from '../../../lib/utils/file';
+} from '../../../lib/flags/sourceCommonFlags.js';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient.js';
+import {formatErrorMessage} from '../../../lib/push/addCommon.js';
+import {errorMessage, successMessage} from '../../../lib/push/userFeedback.js';
+import {getFileNames} from '../../../lib/utils/file.js';
 
 export default class SourcePushAdd extends Command {
   public static description =
@@ -93,13 +93,13 @@ export default class SourcePushAdd extends Command {
       .onBatchError((data) => this.errorMessageOnAdd(data))
       .batch();
 
-    CliUx.ux.action.stop(green('✔'));
+    CliUx.ux.action.stop(chalk.green('✔'));
   }
 
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
     formatErrorMessage(err);
-    CliUx.ux.action.stop(red.bold('!'));
+    CliUx.ux.action.stop(chalk.red.bold('!'));
     throw err;
   }
 
@@ -131,9 +131,9 @@ export default class SourcePushAdd extends Command {
 
     return successMessage(
       this,
-      `Success: ${green(numAdded)} document${
+      `Success: ${chalk.green(numAdded)} document${
         numAdded > 1 ? 's' : ''
-      } accepted by the Push API from ${green(fileNames)}.`,
+      } accepted by the Push API from ${chalk.green(fileNames)}.`,
       res
     );
   }

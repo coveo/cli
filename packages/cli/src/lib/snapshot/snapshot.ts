@@ -9,20 +9,21 @@ import {
   ResourceSnapshotsSynchronizationReportModel,
 } from '@coveord/platform-client';
 import retry from 'async-retry';
-import {ReportViewer} from './reportPreviewer/reportPreviewer';
-import {ensureFileSync, writeJsonSync} from 'fs-extra';
+import {ReportViewer} from './reportPreviewer/reportPreviewer.js';
+import fsExtra from 'fs-extra';
+const {ensureFileSync, writeJsonSync} = fsExtra;
 import {join} from 'path';
-import {SnapshotReporter} from './snapshotReporter';
-import {SnapshotOperationTimeoutError} from '../errors';
-import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer';
-import {Project} from '../project/project';
-import {SynchronizationPlan} from './synchronization/synchronizationPlan';
-import {SnapshotSynchronizationReporter} from './synchronization/synchronizationReporter';
+import {SnapshotReporter} from './snapshotReporter.js';
+import {SnapshotOperationTimeoutError} from '../errors/index.js';
+import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer.js';
+import {Project} from '../project/project.js';
+import {SynchronizationPlan} from './synchronization/synchronizationPlan.js';
+import {SnapshotSynchronizationReporter} from './synchronization/synchronizationReporter.js';
 import {
   SnapshotNoReportFoundError,
   SnapshotNoSynchronizationReportFoundError,
-} from '../errors/snapshotErrors';
-import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
+} from '../errors/snapshotErrors.js';
+import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels.js';
 
 export type SnapshotReport =
   | ResourceSnapshotsReportModel

@@ -1,6 +1,6 @@
-import {fancyIt} from '../../../__test__/it';
-import {getFakeCommand} from './testsUtils/utils';
-import {Trackable} from './trackable';
+import {fancyIt} from '../../../__test__/it.js';
+import {getFakeCommand} from './testsUtils/utils.js';
+import {Trackable} from './trackable.js';
 
 describe('trackable', () => {
   const mockedAnalyticHook = jest.fn();

@@ -1,6 +1,6 @@
 import {Hook} from '@oclif/core';
-import {CLIError} from '@oclif/core/lib/errors';
-import {buildEvent} from '../analytics/eventUtils';
+// import {CLIError} from '@oclif/core/lib/errors';
+import {buildEvent} from '../analytics/eventUtils.js';
 
 const hook: Hook<'command_not_found'> = async function (options) {
   await this.config.runHook('analytics', {
@@ -10,7 +10,7 @@ const hook: Hook<'command_not_found'> = async function (options) {
     }),
   });
 
-  throw new CLIError(`command ${options.id} not found`);
+  // throw new CLIError(`command ${options.id} not found`);
 };
 
 export default hook;

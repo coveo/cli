@@ -5,23 +5,24 @@ jest.mock('@oclif/core', () => ({
 jest.mock('./configErrors');
 jest.mock('fs-extra');
 jest.mock('semver');
-import {satisfies} from 'semver';
-import {
+import semver from 'semver';
+import fsExtra from 'fs-extra';
+const {
   pathExistsSync,
   createFileSync,
   writeJSONSync,
   readJSONSync,
-} from 'fs-extra';
+} = fsExtra;
 import {join} from 'path';
-import dedent from 'ts-dedent';
-import {defaultConfiguration} from '../../__stub__/configuration';
-import {PlatformEnvironment} from '../platform/environment';
-import {Config} from './config';
-import {IncompatibleConfigurationError} from './configErrors';
-import {fancyIt} from '../../__test__/it';
-import {CurrentSchemaVersion} from './configSchemaVersion';
+import {dedent} from 'ts-dedent';
+import {defaultConfiguration} from '../../__stub__/configuration.js';
+import {PlatformEnvironment} from '../platform/environment.js';
+import {Config} from './config.js';
+import {IncompatibleConfigurationError} from './configErrors.js';
+import {fancyIt} from '../../__test__/it.js';
+import {CurrentSchemaVersion} from './configSchemaVersion.js';
 
-const mockedSemverSatisifies = jest.mocked(satisfies);
+const mockedSemverSatisifies = jest.mocked(semver.satisfies);
 const mockedPathExists = jest.mocked(pathExistsSync);
 const mockedCreateFile = jest.mocked(createFileSync);
 const mockedWriteJSON = jest.mocked(writeJSONSync);

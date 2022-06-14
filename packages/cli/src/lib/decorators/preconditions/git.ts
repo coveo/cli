@@ -1,4 +1,4 @@
-import {getBinInstalledPrecondition} from './binPreconditionsFactory';
+import {getBinInstalledPrecondition} from './binPreconditionsFactory.js';
 
 export const IsGitInstalled = getBinInstalledPrecondition('git', {
   prettyName: 'Git',

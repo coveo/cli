@@ -1,11 +1,7 @@
 
 import {ResourceSnapshotType} from '@coveord/platform-client';
-import { readJSONSync } from 'fs-extra';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import {SnapshotPullModelResources} from '../interfaces';
-
-const pullModelSchema = readJSONSync(join(dirname(fileURLToPath(import.meta.url)),'./model.schema.json'))
+import {SnapshotPullModelResources} from '../interfaces.js';
+import pullModelSchema from "./model.schema.json" assert {type: 'json'};
 
 export function getSnapshotModel() {
 

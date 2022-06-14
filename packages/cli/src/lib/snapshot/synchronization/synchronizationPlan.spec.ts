@@ -2,9 +2,9 @@ import {ResourceSnapshotsSynchronizationPlanModel} from '@coveord/platform-clien
 import {
   getAmbiguousPlan,
   getUnambiguousPlan,
-} from '../../../__stub__/resourceSnapshotsSynchronizationPlanModel';
-import {fancyIt} from '../../../__test__/it';
-import {SynchronizationPlan} from './synchronizationPlan';
+} from '../../../__stub__/resourceSnapshotsSynchronizationPlanModel.js';
+import {fancyIt} from '../../../__test__/it.js';
+import {SynchronizationPlan} from './synchronizationPlan.js';
 
 describe('SynchronizationPlan', () => {
   describe('if the synchronization plan contains ambiguous matches', () => {

@@ -1,7 +1,7 @@
-import dedent from 'ts-dedent';
-import {Plurable, pluralizeIfNeeded} from '../utils/string';
-import {PrintableError, SeverityLevel} from './printableError';
-import {CLIBaseError} from './CLIBaseError';
+import {dedent} from 'ts-dedent';
+import {Plurable, pluralizeIfNeeded} from '../utils/string.js';
+import {PrintableError, SeverityLevel} from './printableError.js';
+import {CLIBaseError} from './CLIBaseError.js';
 
 export class InvalidVaultEntryError extends PrintableError {
   public name = 'Invalid Vault Entries';

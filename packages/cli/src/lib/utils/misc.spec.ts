@@ -1,5 +1,5 @@
-import {fancyIt} from '../../__test__/it';
-import {getPackageVersion} from './misc';
+import {fancyIt} from '../../__test__/it.js';
+import {getPackageVersion} from './misc.js';
 
 describe('#getPackageVersion', () => {
   const filledPackageJson = {

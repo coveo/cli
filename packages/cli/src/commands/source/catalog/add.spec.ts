@@ -6,17 +6,17 @@ jest.mock('@coveo/push-api-client');
 
 import stripAnsi from 'strip-ansi';
 import {test} from '@oclif/test';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient.js';
 import {CatalogSource, DocumentBuilder} from '@coveo/push-api-client';
 import {cwd} from 'process';
 import {join} from 'path';
-import {APIError} from '../../../lib/errors/APIError';
+import {APIError} from '../../../lib/errors/APIError.js';
 import {Interfaces} from '@oclif/core';
-import globalConfig from '../../../lib/config/globalConfig';
+import globalConfig from '../../../lib/config/globalConfig.js';
 import {
   BatchUploadDocumentsError,
   BatchUploadDocumentsSuccess,
-} from '../../../__stub__/batchUploadDocumentsFromFilesReturn';
+} from '../../../__stub__/batchUploadDocumentsFromFilesReturn.js';
 const mockedGlobalConfig = jest.mocked(globalConfig);
 const mockedClient = jest.mocked(AuthenticatedClient);
 const mockedSource = jest.mocked(CatalogSource);

@@ -1,18 +1,18 @@
 import {Command, Flags} from '@oclif/core';
 import {PushSource} from '@coveo/push-api-client';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient.js';
 import {
   IsAuthenticated,
   Preconditions,
-} from '../../../lib/decorators/preconditions';
-import dedent from 'ts-dedent';
-import {green, red} from 'chalk';
+} from '../../../lib/decorators/preconditions/index.js';
+import {dedent} from 'ts-dedent';
+import chalk from 'chalk';
 import {
   AxiosResponse,
   errorMessage,
   successMessage,
-} from '../../../lib/push/userFeedback';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+} from '../../../lib/push/userFeedback.js';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable.js';
 
 export default class SourcePushDelete extends Command {
   public static description =
@@ -123,7 +123,7 @@ export default class SourcePushDelete extends Command {
   private errorMessageOnDeletion(toDelete: string, e: unknown) {
     return errorMessage(
       this,
-      `Error while trying to delete document: ${red(toDelete)}.`,
+      `Error while trying to delete document: ${chalk.red(toDelete)}.`,
       e
     );
   }
@@ -131,7 +131,7 @@ export default class SourcePushDelete extends Command {
   private successMessageOnDeletion(toDelete: string, res: AxiosResponse) {
     return successMessage(
       this,
-      `The delete request for document: ${green(
+      `The delete request for document: ${chalk.green(
         toDelete
       )} was accepted by the Push API.`,
       res

@@ -5,11 +5,11 @@ jest.mock('./snapshot');
 import {ResourceSnapshotType} from '@coveord/platform-client';
 import {readFileSync} from 'fs';
 import {join} from 'path';
-import {fancyIt} from '../../__test__/it';
-import {AuthenticatedClient} from '../platform/authenticatedClient';
-import {SnapshotPullModelResources} from './pullModel/interfaces';
-import {Snapshot} from './snapshot';
-import {SnapshotFactory} from './snapshotFactory';
+import {fancyIt} from '../../__test__/it.js';
+import {AuthenticatedClient} from '../platform/authenticatedClient.js';
+import {SnapshotPullModelResources} from './pullModel/interfaces.js';
+import {Snapshot} from './snapshot.js';
+import {SnapshotFactory} from './snapshotFactory.js';
 
 const mockedReadFileSync = jest.mocked(readFileSync);
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient, true);

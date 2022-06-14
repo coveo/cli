@@ -1,7 +1,7 @@
 import {EventEmitter} from 'events';
 import {ChildProcess} from 'child_process';
-import {spawnProcess} from './process';
-import {fancyIt} from '../../__test__/it';
+import {spawnProcess} from './process.js';
+import {fancyIt} from '../../__test__/it.js';
 
 jest.mock('child_process', () => ({
   spawn: jest

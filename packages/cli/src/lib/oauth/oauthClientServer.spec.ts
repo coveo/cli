@@ -2,7 +2,7 @@ jest.mock('axios');
 jest.mock('http');
 
 import {Region} from '@coveord/platform-client';
-import axios from 'axios';
+import {Axios} from 'axios';
 import {
   createServer,
   IncomingMessage,
@@ -11,16 +11,19 @@ import {
   ServerResponse,
 } from 'http';
 import {URLSearchParams} from 'url';
-import {fancyIt} from '../../__test__/it';
-import {PlatformEnvironment, platformUrl} from '../platform/environment';
-import {InvalidStateError} from './authorizationError';
-import {OAuthClientServer} from './oauthClientServer';
-import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
+import {fancyIt} from '../../__test__/it.js';
+import {PlatformEnvironment, platformUrl} from '../platform/environment.js';
+import {InvalidStateError} from './authorizationError.js';
+import {OAuthClientServer} from './oauthClientServer.js';
+import {
+  AuthorizationServiceConfiguration,
+  ClientConfig,
+} from './oauthConfig.js';
 
 type createServerInitialOverload = jest.MaybeMocked<{
   (requestListener?: RequestListener | undefined): Server;
 }>;
-const mockedAxios = jest.mocked(axios, true);
+const mockedAxios = jest.mocked(Axios, true);
 const mockedCreateServer = jest.mocked(
   createServer
 ) as unknown as createServerInitialOverload;
@@ -28,7 +31,9 @@ const mockedServerListen = jest.fn();
 const mockedServerClose = jest.fn();
 const mockedAxiosPost = jest.fn();
 
-mockedAxios.post.mockImplementation(mockedAxiosPost);
+mockedAxios.mockImplementation(
+  () => ({post: mockedAxiosPost} as unknown as Axios)
+);
 
 mockedCreateServer.mockImplementation((listener?: RequestListener) => {
   const req = {

@@ -9,23 +9,23 @@ jest.mock('../../../lib/project/project');
 jest.mock('../../../lib/snapshot/snapshotFacade');
 
 import {test} from '@oclif/test';
-import {Project} from '../../../lib/project/project';
+import {Project} from '../../../lib/project/project.js';
 import {join, normalize} from 'path';
 import {cwd} from 'process';
-import {Config} from '../../../lib/config/config';
-import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
-import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+import {Config} from '../../../lib/config/config.js';
+import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory.js';
+import {Snapshot} from '../../../lib/snapshot/snapshot.js';
+import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter.js';
 import {ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {
   getErrorReport,
   getMissingVaultEntryReport,
   getSuccessReport,
-} from '../../../__stub__/resourceSnapshotsReportModel';
+} from '../../../__stub__/resourceSnapshotsReportModel.js';
 import {CliUx, Command} from '@oclif/core';
-import {IsGitInstalled} from '../../../lib/decorators/preconditions';
-import {SnapshotFacade} from '../../../lib/snapshot/snapshotFacade';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {IsGitInstalled} from '../../../lib/decorators/preconditions/index.js';
+import {SnapshotFacade} from '../../../lib/snapshot/snapshotFacade.js';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient.js';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
 const mockedConfig = jest.mocked(Config);

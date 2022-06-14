@@ -5,14 +5,14 @@ jest.mock('../../../../lib/platform/authenticatedClient');
 jest.mock('open');
 
 import {Region} from '@coveord/platform-client';
-import test from '@oclif/test';
+import {test} from '@oclif/test';
 import open from 'open';
-import {AuthenticatedClient} from '../../../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '../../../../lib/platform/authenticatedClient.js';
 import {
   DEFAULT_ENVIRONMENT,
   DEFAULT_REGION,
   PlatformEnvironment,
-} from '../../../../lib/platform/environment';
+} from '../../../../lib/platform/environment.js';
 
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockedConfig = jest.fn();

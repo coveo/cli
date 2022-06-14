@@ -1,15 +1,15 @@
 import {Command, CliUx} from '@oclif/core';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
-import {Config} from '../../../lib/config/config';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient.js';
+import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon.js';
+import {Config} from '../../../lib/config/config.js';
 import {
   IsAuthenticated,
   Preconditions,
-} from '../../../lib/decorators/preconditions';
-import dedent from 'ts-dedent';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
-import {recordable} from '../../../lib/utils/record';
-import {organization} from '../../../lib/flags/snapshotCommonFlags';
+} from '../../../lib/decorators/preconditions/index.js';
+import {dedent} from 'ts-dedent';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable.js';
+import {recordable} from '../../../lib/utils/record.js';
+import {organization} from '../../../lib/flags/snapshotCommonFlags.js';
 
 export default class List extends Command {
   public static description =

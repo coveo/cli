@@ -4,39 +4,38 @@ import {
   BuiltInTransformers,
 } from '@coveo/push-api-client';
 import {Command, Flags, CliUx} from '@oclif/core';
-import {green, red} from 'chalk';
+import chalk from 'chalk';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
-} from '../../../lib/decorators/preconditions';
+} from '../../../lib/decorators/preconditions/index.js';
 import {
   readOrganizationPrivilege,
   writeFieldsPrivilege,
   writeSourceContentPrivilege,
-} from '../../../lib/decorators/preconditions/platformPrivilege';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+} from '../../../lib/decorators/preconditions/platformPrivilege.js';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable.js';
 import {
   withFiles,
   withCreateMissingFields,
   withMaxConcurrent,
   withNormalizeInvalidFields,
-} from '../../../lib/flags/sourceCommonFlags';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
-import {getFileNames} from '../../../lib/utils/file';
-import {bold} from 'chalk';
-import dedent from 'ts-dedent';
-import {formatErrorMessage} from '../../../lib/push/addCommon';
+} from '../../../lib/flags/sourceCommonFlags.js';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient.js';
+import {errorMessage, successMessage} from '../../../lib/push/userFeedback.js';
+import {getFileNames} from '../../../lib/utils/file.js';
+import {dedent} from 'ts-dedent';
+import {formatErrorMessage} from '../../../lib/push/addCommon.js';
 
 const fullUploadDescription = `Controls the way your items are added to your catalog source.
 
-Setting this option to ${bold(
+Setting this option to ${chalk.bold(
   'false'
 )} will trigger a document update (Default operation). Useful to perform incremental updates for smaller adjustments to your catalog that do not require pushing the entire catalog. A document update must only be performed after a full catalog upload.
 See https://docs.coveo.com/en/l62e0540
 
-Setting this option to ${bold(
+Setting this option to ${chalk.bold(
   'true'
 )} will trigger a full catalog upload. This process acts as a full rebuild of your catalog source. Therefore, previous items that are not included in the new payload will be deleted.
 See https://docs.coveo.com/en/lb4a0344
@@ -120,13 +119,13 @@ export default class SourceCatalogAdd extends Command {
       .onBatchError((data) => this.errorMessageOnAdd(data))
       .batch();
 
-    CliUx.ux.action.stop(green('✔'));
+    CliUx.ux.action.stop(chalk.green('✔'));
   }
 
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
     formatErrorMessage(err);
-    CliUx.ux.action.stop(red.bold('!'));
+    CliUx.ux.action.stop(chalk.red.bold('!'));
     throw err;
   }
 
@@ -150,9 +149,9 @@ export default class SourceCatalogAdd extends Command {
 
     return successMessage(
       this,
-      `Success: ${green(numAdded)} document${
+      `Success: ${chalk.green(numAdded)} document${
         numAdded > 1 ? 's' : ''
-      } accepted by the API from ${green(fileNames)}.`,
+      } accepted by the API from ${chalk.green(fileNames)}.`,
       res
     );
   }

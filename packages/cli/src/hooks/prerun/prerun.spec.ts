@@ -2,9 +2,9 @@ jest.mock('../../lib/config/config');
 jest.mock('../../lib/config/globalConfig');
 
 import {Interfaces, CliUx} from '@oclif/core';
-import {Config} from '../../lib/config/config';
+import {Config} from '../../lib/config/config.js';
 import {test} from '@oclif/test';
-import globalConfig from '../../lib/config/globalConfig';
+import globalConfig from '../../lib/config/globalConfig.js';
 const mockedGlobalConfig = jest.mocked(globalConfig);
 const mockConfig = jest.mocked(Config);
 

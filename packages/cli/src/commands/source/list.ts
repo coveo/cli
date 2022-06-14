@@ -3,10 +3,10 @@ import {Command, CliUx} from '@oclif/core';
 import {
   IsAuthenticated,
   Preconditions,
-} from '../../lib/decorators/preconditions';
-import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
-import dedent from 'ts-dedent';
-import {Trackable} from '../../lib/decorators/preconditions/trackable';
+} from '../../lib/decorators/preconditions/index.js';
+import {AuthenticatedClient} from '../../lib/platform/authenticatedClient.js';
+import {dedent} from 'ts-dedent';
+import {Trackable} from '../../lib/decorators/preconditions/trackable.js';
 
 export default class SourceList extends Command {
   public static description =

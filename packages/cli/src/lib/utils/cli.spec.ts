@@ -2,9 +2,9 @@ jest.mock('../../hooks/analytics/analytics');
 jest.mock('../config/globalConfig');
 
 import {Interfaces, CliUx} from '@oclif/core';
-import {fancyIt} from '../../__test__/it';
-import globalConfig from '../config/globalConfig';
-import {confirmWithAnalytics} from './cli';
+import {fancyIt} from '../../__test__/it.js';
+import globalConfig from '../config/globalConfig.js';
+import {confirmWithAnalytics} from './cli.js';
 
 const mockedGlobalConfig = jest.mocked(globalConfig);
 const mockedAnalyticHook = jest.fn();

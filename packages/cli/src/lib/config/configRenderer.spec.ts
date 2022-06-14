@@ -1,8 +1,8 @@
 jest.mock('../../lib/config/config');
 
-import {BaseConfiguration, Config} from './config';
-import {fancyIt} from '../../__test__/it';
-import {ConfigRenderer} from './configRenderer';
+import {BaseConfiguration, Config} from './config.js';
+import {fancyIt} from '../../__test__/it.js';
+import {ConfigRenderer} from './configRenderer.js';
 
 describe('configRenderer', () => {
   const userFacingConfigKeys: (keyof BaseConfiguration)[] = [

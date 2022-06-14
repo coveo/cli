@@ -5,16 +5,16 @@ jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/snapshot/snapshotReporter');
 jest.mock('../../../lib/snapshot/snapshotFactory');
 
-import {Config} from '../../../lib/config/config';
+import {Config} from '../../../lib/config/config.js';
 import {ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {test} from '@oclif/test';
-import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel';
-import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
-import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
-import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
-import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
-import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {formatCliLog} from '../../../__test__/jestSnapshotUtils';
+import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel.js';
+import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel.js';
+import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter.js';
+import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels.js';
+import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory.js';
+import {Snapshot} from '../../../lib/snapshot/snapshot.js';
+import {formatCliLog} from '../../../__test__/jestSnapshotUtils.js';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
 const mockedConfig = jest.mocked(Config);

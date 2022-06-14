@@ -7,7 +7,7 @@ import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
   SnapshotReportStatus,
-} from './reportPreviewer/reportPreviewerDataModels';
+} from './reportPreviewer/reportPreviewerDataModels.js';
 
 type ResourceEntries = [string, ResourceSnapshotsReportOperationModel];
 

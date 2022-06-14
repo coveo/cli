@@ -1,10 +1,10 @@
 import {Environment, Region} from '@coveord/platform-client';
-import {fancyIt} from '../../__test__/it';
+import {fancyIt} from '../../__test__/it.js';
 import {
   castEnvironmentToPlatformClient,
   PlatformEnvironment,
   platformUrl,
-} from './environment';
+} from './environment.js';
 
 describe('platformUrl helper', () => {
   fancyIt()('should return https://platform.cloud.coveo.com by default', () => {

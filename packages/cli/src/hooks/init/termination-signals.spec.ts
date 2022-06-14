@@ -2,10 +2,10 @@ jest.mock('../analytics/analytics');
 jest.mock('../../lib/config/globalConfig');
 
 import type {Interfaces} from '@oclif/core';
-import globalConfig from '../../lib/config/globalConfig';
-import {fancyIt} from '../../__test__/it';
-import {flush} from '../analytics/analytics';
-import {handleTerminationSignals, exitSignals} from './termination-signals';
+import globalConfig from '../../lib/config/globalConfig.js';
+import {fancyIt} from '../../__test__/it.js';
+import {flush} from '../analytics/analytics.js';
+import {handleTerminationSignals, exitSignals} from './termination-signals.js';
 
 type supportedExitSignals = typeof exitSignals[number];
 

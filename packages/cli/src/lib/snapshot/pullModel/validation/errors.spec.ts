@@ -1,7 +1,7 @@
 import type {ValidationError} from 'jsonschema';
-import dedent from 'ts-dedent';
-import {fancyIt} from '../../../../__test__/it';
-import {InvalidSPMError, UnknownSPMValidationError} from './errors';
+import {dedent} from 'ts-dedent';
+import {fancyIt} from '../../../../__test__/it.js';
+import {InvalidSPMError, UnknownSPMValidationError} from './errors.js';
 
 describe('SnapshotPullModelErrors', () => {
   describe('UnknownSPMValidationError', () => {

@@ -3,9 +3,9 @@ jest.mock('./errors');
 const trueErrors = jest.requireActual('./errors');
 
 import {validate, ValidatorResult} from 'jsonschema';
-import {validateSnapshotPullModel} from './validate';
-import {InvalidSPMError, UnknownSPMValidationError} from './errors';
-import {fancyIt} from '../../../../__test__/it';
+import {validateSnapshotPullModel} from './validate.js';
+import {InvalidSPMError, UnknownSPMValidationError} from './errors.js';
+import {fancyIt} from '../../../../__test__/it.js';
 
 describe('validate', () => {
   const getFakeValidationError = () => ({

@@ -1,5 +1,5 @@
 import {CliUx} from '@oclif/core';
-import {BaseConfiguration, Config} from './config';
+import {BaseConfiguration, Config} from './config.js';
 
 export class ConfigRenderer {
   public static render(

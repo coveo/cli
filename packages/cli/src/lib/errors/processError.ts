@@ -1,4 +1,4 @@
-import {PrintableError, SeverityLevel} from './printableError';
+import {PrintableError, SeverityLevel} from './printableError.js';
 
 export class ProcessAbort extends PrintableError {
   public name = 'Operation Aborted';

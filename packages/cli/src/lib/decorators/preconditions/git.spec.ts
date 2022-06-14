@@ -1,12 +1,12 @@
 jest.mock('../../utils/process');
 
 import {dedent} from 'ts-dedent';
-import {spawnProcessOutput} from '../../utils/process';
-import {getFakeCommand} from './testsUtils/utils';
+import {spawnProcessOutput} from '../../utils/process.js';
+import {getFakeCommand} from './testsUtils/utils.js';
 
-import {IsGitInstalled} from './git';
-import {fancyIt} from '../../../__test__/it';
-import {PreconditionError} from '../../errors/preconditionError';
+import {IsGitInstalled} from './git.js';
+import {fancyIt} from '../../../__test__/it.js';
+import {PreconditionError} from '../../errors/preconditionError.js';
 
 describe('IsGitInstalled', () => {
   const mockedSpawnProcessOutput = jest.mocked(spawnProcessOutput);

@@ -1,6 +1,6 @@
 import {Command} from '@oclif/core';
-import {PreconditionFunction} from '../lib/decorators/preconditions';
-import {PreconditionError} from '../lib/errors/preconditionError';
+import {PreconditionFunction} from '../lib/decorators/preconditions/index.js';
+import {PreconditionError} from '../lib/errors/preconditionError.js';
 
 const thrower = (reason: string) => {
   throw new PreconditionError(`${reason} Precondition Error`);

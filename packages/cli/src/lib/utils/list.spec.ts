@@ -1,4 +1,4 @@
-import {without} from './list';
+import {without} from './list.js';
 
 describe('listUtils', () => {
   describe('#without', () => {

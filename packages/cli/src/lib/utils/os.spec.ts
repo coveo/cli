@@ -1,5 +1,5 @@
-import {fancyIt} from '../../__test__/it';
-import {appendCmdIfWindows} from './os';
+import {fancyIt} from '../../__test__/it.js';
+import {appendCmdIfWindows} from './os.js';
 
 describe('appendCmdIfWindows', () => {
   let originalProcess: PropertyDescriptor | undefined;

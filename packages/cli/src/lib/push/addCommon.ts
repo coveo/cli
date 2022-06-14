@@ -1,9 +1,9 @@
 import {CliUx} from '@oclif/core';
-import {red, dim, green} from 'chalk';
+import chalk from 'chalk';
 import {BuiltInTransformers, errors} from '@coveo/push-api-client';
-import {withNormalizeInvalidFields} from '../flags/sourceCommonFlags';
-import {pluralizeIfNeeded} from '../utils/string';
-import dedent from 'ts-dedent';
+import {withNormalizeInvalidFields} from '../flags/sourceCommonFlags.js';
+import {pluralizeIfNeeded} from '../utils/string.js';
+import {dedent} from 'ts-dedent';
 
 const allowedCharRegExp = new RegExp('^[a-z]+[a-z0-9_]*$');
 interface PrintableUnsupportedField {
@@ -40,13 +40,13 @@ const colorizeFields = (fields: PrintableUnsupportedField[]) => {
   const unfixables: PrintableUnsupportedField[] = [];
   for (const field of fields) {
     if (field.valid) {
-      const normalized = green(field.normalized);
+      const normalized = chalk.green(field.normalized);
       fixables.push({...field, normalized});
     } else {
       const normalized =
         field.normalized === ''
-          ? dim('(empty field name)')
-          : red(field.normalized);
+          ? chalk.dim('(empty field name)')
+          : chalk.red(field.normalized);
       unfixables.push({...field, normalized});
     }
   }

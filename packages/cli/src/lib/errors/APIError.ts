@@ -1,6 +1,6 @@
-import {red} from 'chalk';
-import dedent from 'ts-dedent';
-import {PrintableError, SeverityLevel} from './printableError';
+import chalk from 'chalk';
+import {dedent} from 'ts-dedent';
+import {PrintableError, SeverityLevel} from './printableError.js';
 
 export interface APIErrorResponse {
   message: string;
@@ -67,8 +67,8 @@ export class APIError extends PrintableError {
     this.message = dedent`
     ${tagLine}
     ${status ? `Status code: ${status}\n` : ''}
-    Error code: ${red(errorCode)}
-    Message: ${red(message)}
+    Error code: ${chalk.red(errorCode)}
+    Message: ${chalk.red(message)}
     `;
   }
 

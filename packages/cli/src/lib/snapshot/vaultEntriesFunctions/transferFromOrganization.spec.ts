@@ -6,16 +6,16 @@ jest.mock('@oclif/core/lib/cli-ux/prompt');
 jest.mock('@oclif/core/lib/errors/index');
 jest.mock('../../errors/vaultErrors');
 
-import PlatformClient, {VaultFetchStrategy} from '@coveord/platform-client';
-import {confirm} from '@oclif/core/lib/cli-ux/prompt';
-import {warn} from '@oclif/core/lib/errors/index';
-import {Configuration} from '../../config/config';
-import {SnapshotMissingVaultEntriesFromOriginError} from '../../errors/vaultErrors';
-import {AuthenticatedClient} from '../../platform/authenticatedClient';
-import {Project} from '../../project/project';
-import {Snapshot} from '../snapshot';
-import {SnapshotReporter} from '../snapshotReporter';
-import {tryTransferFromOrganization} from './transferFromOrganization';
+import {PlatformClient,VaultFetchStrategy} from '@coveord/platform-client';
+import {confirm} from '@oclif/core/lib/cli-ux/prompt.js';
+import {warn} from '@oclif/core/lib/errors/index.js';
+import {Configuration} from '../../config/config.js';
+import {SnapshotMissingVaultEntriesFromOriginError} from '../../errors/vaultErrors.js';
+import {AuthenticatedClient} from '../../platform/authenticatedClient.js';
+import {Project} from '../../project/project.js';
+import {Snapshot} from '../snapshot.js';
+import {SnapshotReporter} from '../snapshotReporter.js';
+import {tryTransferFromOrganization} from './transferFromOrganization.js';
 
 describe('#tryTransferFromOrganization', () => {
   const mockedProject = jest.mocked(Project);

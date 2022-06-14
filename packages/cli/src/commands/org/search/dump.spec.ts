@@ -8,8 +8,8 @@ jest.mock('../../../hooks/prerun/prerun');
 
 import {test} from '@oclif/test';
 import {Parser} from 'json2csv';
-import {Config} from '../../../lib/config/config';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {Config} from '../../../lib/config/config.js';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient.js';
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockedConfig = jest.mocked(Config);
 const mockedSearch = jest.fn();

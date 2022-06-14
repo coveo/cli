@@ -4,13 +4,13 @@ import {
   getMissingVaultEntryReport,
   getReportWithoutChanges,
   getSuccessReport,
-} from '../../__stub__/resourceSnapshotsReportModel';
-import {fancyIt} from '../../__test__/it';
+} from '../../__stub__/resourceSnapshotsReportModel.js';
+import {fancyIt} from '../../__test__/it.js';
 import {
   ReportViewerResourceReportModel,
   SnapshotReportStatus,
-} from './reportPreviewer/reportPreviewerDataModels';
-import {SnapshotReporter} from './snapshotReporter';
+} from './reportPreviewer/reportPreviewerDataModels.js';
+import {SnapshotReporter} from './snapshotReporter.js';
 
 function getFakeHandler() {
   const fakeHandler = jest.fn();

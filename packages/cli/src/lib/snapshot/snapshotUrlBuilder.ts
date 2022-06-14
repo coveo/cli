@@ -1,7 +1,7 @@
-import {Configuration} from '../config/config';
-import {Snapshot} from './snapshot';
-import {snapshotSynchronizationUrl, snapshotApplyUrl} from '../platform/url';
-import {PlatformUrlOptions} from '../platform/environment';
+import {Configuration} from '../config/config.js';
+import {Snapshot} from './snapshot.js';
+import {snapshotSynchronizationUrl, snapshotApplyUrl} from '../platform/url.js';
+import {PlatformUrlOptions} from '../platform/environment.js';
 
 export class SnapshotUrlBuilder {
   public constructor(private config: Configuration) {}

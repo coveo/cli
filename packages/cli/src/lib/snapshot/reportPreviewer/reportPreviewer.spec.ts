@@ -1,16 +1,16 @@
 import {test} from '@oclif/test';
 
 import {ResourceSnapshotsReportType} from '@coveord/platform-client';
-import {ReportViewer} from './reportPreviewer';
-import dedent from 'ts-dedent';
-import {SnapshotReporter} from '../snapshotReporter';
+import {ReportViewer} from './reportPreviewer.js';
+import {dedent} from 'ts-dedent';
+import {SnapshotReporter} from '../snapshotReporter.js';
 import {
   getErrorReport,
   getMissingVaultEntryReport,
   getReportWithNoProcessedResources,
   getSuccessReport,
-} from '../../../__stub__/resourceSnapshotsReportModel';
-import {formatCliLog} from '../../../__test__/jestSnapshotUtils';
+} from '../../../__stub__/resourceSnapshotsReportModel.js';
+import {formatCliLog} from '../../../__test__/jestSnapshotUtils.js';
 
 describe('ReportViewer', () => {
   describe('when the report contains errors', () => {

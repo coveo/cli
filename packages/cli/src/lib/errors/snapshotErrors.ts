@@ -1,10 +1,10 @@
-import {blueBright} from 'chalk';
+import chalk from 'chalk';
 import {CliUx} from '@oclif/core';
-import dedent from 'ts-dedent';
-import {Configuration} from '../config/config';
-import {Snapshot} from '../snapshot/snapshot';
-import {SnapshotUrlBuilder} from '../snapshot/snapshotUrlBuilder';
-import {PrintableError, SeverityLevel} from './printableError';
+import {dedent} from 'ts-dedent';
+import {Configuration} from '../config/config.js';
+import {Snapshot} from '../snapshot/snapshot.js';
+import {SnapshotUrlBuilder} from '../snapshot/snapshotUrlBuilder.js';
+import {PrintableError, SeverityLevel} from './printableError.js';
 
 interface DetailedReportable extends PrintableError {
   snapshot: Snapshot;
@@ -42,7 +42,7 @@ export class SnapshotOperationTimeoutError
     } operation is taking a long time to complete.
     Run the following command to monitor the operation:
 
-      ${blueBright`coveo org:resources:monitor ${snapshot.id} -t ${snapshot.targetId}`}`;
+      ${chalk.blueBright`coveo org:resources:monitor ${snapshot.id} -t ${snapshot.targetId}`}`;
   }
 }
 

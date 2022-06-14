@@ -1,15 +1,15 @@
 jest.mock('../platform/authenticatedClient');
 
 import {Region, ResourceSnapshotsReportType} from '@coveord/platform-client';
-import {getDummySnapshotModel} from '../../__stub__/resourceSnapshotsModel';
-import {getSuccessReport} from '../../__stub__/resourceSnapshotsReportModel';
-import {Configuration} from '../config/config';
-import {Snapshot} from './snapshot';
-import {SnapshotUrlBuilder} from './snapshotUrlBuilder';
-import {AuthenticatedClient} from '../platform/authenticatedClient';
-import {PlatformEnvironment} from '../platform/environment';
-import {fancyIt} from '../../__test__/it';
-import {CurrentSchemaVersion} from '../config/configSchemaVersion';
+import {getDummySnapshotModel} from '../../__stub__/resourceSnapshotsModel.js';
+import {getSuccessReport} from '../../__stub__/resourceSnapshotsReportModel.js';
+import {Configuration} from '../config/config.js';
+import {Snapshot} from './snapshot.js';
+import {SnapshotUrlBuilder} from './snapshotUrlBuilder.js';
+import {AuthenticatedClient} from '../platform/authenticatedClient.js';
+import {PlatformEnvironment} from '../platform/environment.js';
+import {fancyIt} from '../../__test__/it.js';
+import {CurrentSchemaVersion} from '../config/configSchemaVersion.js';
 
 const createSnapshot = async () => {
   const snapshotID = 'my-snapshot';

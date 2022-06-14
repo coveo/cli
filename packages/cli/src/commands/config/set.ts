@@ -1,16 +1,16 @@
 import {Command, Flags} from '@oclif/core';
-import {Config} from '../../lib/config/config';
-import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {Config} from '../../lib/config/config.js';
+import {AuthenticatedClient} from '../../lib/platform/authenticatedClient.js';
 import {
   IsAuthenticated,
   Preconditions,
-} from '../../lib/decorators/preconditions';
-import {PlatformEnvironment} from '../../lib/platform/environment';
-import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
+} from '../../lib/decorators/preconditions/index.js';
+import {PlatformEnvironment} from '../../lib/platform/environment.js';
+import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags.js';
 import {Region} from '@coveord/platform-client';
-import {Trackable} from '../../lib/decorators/preconditions/trackable';
-import {InvalidCommandError} from '../../lib/errors/InvalidCommandError';
-import {ConfigRenderer} from '../../lib/config/configRenderer';
+import {Trackable} from '../../lib/decorators/preconditions/trackable.js';
+import {InvalidCommandError} from '../../lib/errors/InvalidCommandError.js';
+import {ConfigRenderer} from '../../lib/config/configRenderer.js';
 
 export default class Set extends Command {
   public static description = 'Modify the current configuration.';

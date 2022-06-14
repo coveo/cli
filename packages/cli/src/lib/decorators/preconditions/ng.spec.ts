@@ -2,15 +2,15 @@ jest.mock('../../utils/process');
 jest.mock('../../utils/misc');
 
 import {dedent} from 'ts-dedent';
-import {spawnProcessOutput} from '../../utils/process';
-import {getFakeCommand} from './testsUtils/utils';
+import {spawnProcessOutput} from '../../utils/process.js';
+import {getFakeCommand} from './testsUtils/utils.js';
 
-import {IsNgVersionInRange} from './ng';
+import {IsNgVersionInRange} from './ng.js';
 import {Command, CliUx} from '@oclif/core';
-import {appendCmdIfWindows} from '../../utils/os';
-import {getPackageVersion} from '../../utils/misc';
-import {fancyIt} from '../../../__test__/it';
-import {PreconditionError} from '../../errors/preconditionError';
+import {appendCmdIfWindows} from '../../utils/os.js';
+import {getPackageVersion} from '../../utils/misc.js';
+import {fancyIt} from '../../../__test__/it.js';
+import {PreconditionError} from '../../errors/preconditionError.js';
 
 describe('IsNgInstalled', () => {
   const mockedSpawnProcessOutput = jest.mocked(spawnProcessOutput);

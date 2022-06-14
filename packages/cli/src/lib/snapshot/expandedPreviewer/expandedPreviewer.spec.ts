@@ -11,16 +11,16 @@ import {
 import {Dirent, existsSync, mkdirSync, readdirSync, rmSync} from 'fs';
 import {join} from 'path';
 
-import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
-import {ExpandedPreviewer} from './expandedPreviewer';
-import {Project} from '../../project/project';
-import {SnapshotFactory} from '../snapshotFactory';
-import {Snapshot} from '../snapshot';
-import {spawnProcess, spawnProcessOutput} from '../../utils/process';
-import {recursiveDirectoryDiff} from './filesDiffProcessor';
-import {getDirectory} from '../../../__test__/fsUtils';
+import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel.js';
+import {ExpandedPreviewer} from './expandedPreviewer.js';
+import {Project} from '../../project/project.js';
+import {SnapshotFactory} from '../snapshotFactory.js';
+import {Snapshot} from '../snapshot.js';
+import {spawnProcess, spawnProcessOutput} from '../../utils/process.js';
+import {recursiveDirectoryDiff} from './filesDiffProcessor.js';
+import {getDirectory} from '../../../__test__/fsUtils.js';
 import {resolve} from 'path';
-import {fancyIt} from '../../../__test__/it';
+import {fancyIt} from '../../../__test__/it.js';
 import {stderr, stdout} from 'stdout-stderr';
 
 describe('ExpandedPreviewer', () => {

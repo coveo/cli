@@ -3,7 +3,7 @@
     "experimentalDecorators": true,
     "declaration": true,
     "moduleResolution": "Node16",
-    "module": "Node16",
+    "module": "NodeNext",
     "lib": ["ESNext"],
     "outDir": "lib",
     "rootDir": "src",
@@ -12,6 +12,8 @@
     "noEmitOnError": false,
     "skipLibCheck": true,
     "types": ["node", "jest"],
+    "resolveJsonModule": true,
   },
+  "ts-node": {"esm":true},
   "include": ["src/**/*", "src/typings/**/*.d.ts"]
 }

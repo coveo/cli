@@ -1,18 +1,18 @@
 import {CliUx} from '@oclif/core';
-import {red, italic, green, yellow, ChalkFunction} from 'chalk';
-import {ReportViewerSection} from './reportPreviewerSection';
-import {ReportViewerStyles} from './reportPreviewerStyles';
-import {SnapshotReporter} from '../snapshotReporter';
+import chalk, { ChalkInstance } from 'chalk';
+import {ReportViewerSection} from './reportPreviewerSection.js';
+import {ReportViewerStyles} from './reportPreviewerStyles.js';
+import {SnapshotReporter} from '../snapshotReporter.js';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
   SnapshotReportStatus,
-} from './reportPreviewerDataModels';
-import dedent from 'ts-dedent';
-import {recordable} from '../../utils/record';
+} from './reportPreviewerDataModels.js';
+import {dedent} from 'ts-dedent';
+import {recordable} from '../../utils/record.js';
 import {ResourceSnapshotType} from '@coveord/platform-client';
-import {Plurable, pluralizeIfNeeded} from '../../utils/string';
-import {labels} from '../snapshotConstant';
+import {Plurable, pluralizeIfNeeded} from '../../utils/string.js';
+import {labels} from '../snapshotConstant.js';
 
 export class ReportViewer {
   private static errorPlurable: Plurable = ['error', 'errors'];
@@ -65,14 +65,14 @@ export class ReportViewer {
       ReportViewer.printAbridgedMessages(
         entries,
         ReportViewer.entryPlurable,
-        yellow
+        chalk.yellow
       );
     return function (this: SnapshotReporter) {
       const entries = Array.from(this.missingVaultEntries).map(
         ({vaultEntryId}) => vaultEntryId
       );
       CliUx.ux.log(
-        yellow(
+        chalk.yellow(
           `Missing vault ${pluralizeIfNeeded(
             ReportViewer.entryPlurable,
             entries.length
@@ -87,7 +87,7 @@ export class ReportViewer {
     this: SnapshotReporter
   ) => void | Promise<void> {
     return function (this: SnapshotReporter) {
-      CliUx.ux.log(dedent`${green('No resources to change')}.
+      CliUx.ux.log(dedent`${chalk.green('No resources to change')}.
 
       The target organization already matches the configuration.`);
       return;
@@ -168,14 +168,14 @@ export class ReportViewer {
     ReportViewer.printAbridgedMessages(
       Array.from(errorOfThisResourceType),
       ReportViewer.errorPlurable,
-      red
+      chalk.red
     );
   }
 
   private static printAbridgedMessages(
     messages: string[],
     plurable: Plurable,
-    chalker: ChalkFunction
+    chalker: ChalkInstance
   ) {
     let remainingErrorsToPrint = ReportViewer.maximumNumberOfErrorsToPrint;
     for (let j = 0; j < messages.length && remainingErrorsToPrint > 0; j++) {
@@ -187,7 +187,7 @@ export class ReportViewer {
       messages.length - ReportViewer.maximumNumberOfErrorsToPrint;
     if (unprintedMessages > 0) {
       CliUx.ux.log(
-        italic(
+        chalk.italic(
           `  (${unprintedMessages} more ${pluralizeIfNeeded(
             plurable,
             unprintedMessages

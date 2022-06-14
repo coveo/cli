@@ -1,22 +1,22 @@
 import {Command, Flags} from '@oclif/core';
-import {Config} from '../../../lib/config/config';
-import {platformUrl} from '../../../lib/platform/environment';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {spawnProcess, spawnProcessOutput} from '../../../lib/utils/process';
-import {getPackageVersion} from '../../../lib/utils/misc';
-import {appendCmdIfWindows} from '../../../lib/utils/os';
+import {Config} from '../../../lib/config/config.js';
+import {platformUrl} from '../../../lib/platform/environment.js';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient.js';
+import {spawnProcess, spawnProcessOutput} from '../../../lib/utils/process.js';
+import {getPackageVersion} from '../../../lib/utils/misc.js';
+import {appendCmdIfWindows} from '../../../lib/utils/os.js';
 import {
   Preconditions,
   IsAuthenticated,
   IsNodeVersionInRange,
   IsNpxInstalled,
   HasNecessaryCoveoPrivileges,
-} from '../../../lib/decorators/preconditions';
+} from '../../../lib/decorators/preconditions/index.js';
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,
-} from '../../../lib/decorators/preconditions/platformPrivilege';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+} from '../../../lib/decorators/preconditions/platformPrivilege.js';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable.js';
 
 type ReactProcessEnv = {
   orgId: string;

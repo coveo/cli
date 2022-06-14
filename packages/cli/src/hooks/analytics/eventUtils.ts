@@ -4,9 +4,9 @@ import {
   APIError,
   APIErrorResponse,
   APIErrorSchema,
-} from '../../lib/errors/APIError';
-import {CLIBaseError} from '../../lib/errors/CLIBaseError';
-import {UnknownError} from '../../lib/errors/unknownError';
+} from '../../lib/errors/APIError.js';
+import {CLIBaseError} from '../../lib/errors/CLIBaseError.js';
+import {UnknownError} from '../../lib/errors/unknownError.js';
 
 export function buildEvent(
   eventName: string,

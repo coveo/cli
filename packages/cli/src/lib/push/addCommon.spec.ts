@@ -1,8 +1,8 @@
 import {stdout} from 'stdout-stderr';
 import {BuiltInTransformers, errors} from '@coveo/push-api-client';
-import {fancyIt} from '../../__test__/it';
-import {formatCliLog} from '../../__test__/jestSnapshotUtils';
-import {formatErrorMessage} from './addCommon';
+import {fancyIt} from '../../__test__/it.js';
+import {formatCliLog} from '../../__test__/jestSnapshotUtils.js';
+import {formatErrorMessage} from './addCommon.js';
 
 describe('addCommon', () => {
   const fixableFields: [string, string][] = ['0Invalid-Field', 'poster-A'].map(

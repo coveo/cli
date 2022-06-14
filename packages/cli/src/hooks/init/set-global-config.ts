@@ -1,6 +1,6 @@
-import {handleTerminationSignals} from './termination-signals';
+import {handleTerminationSignals} from './termination-signals.js';
 import {Hook} from '@oclif/core';
-import globalConfig from '../../lib/config/globalConfig';
+import globalConfig from '../../lib/config/globalConfig.js';
 
 const hook: Hook<'init'> = async function (opts) {
   handleTerminationSignals();

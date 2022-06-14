@@ -4,9 +4,9 @@ import {
   ResourceSnapshotSupportedFileTypes,
 } from '@coveord/platform-client';
 import {readFileSync} from 'fs';
-import {AuthenticatedClient} from '../platform/authenticatedClient';
-import {SnapshotPullModelResources} from './pullModel/interfaces';
-import {Snapshot, WaitUntilDoneOptions} from './snapshot';
+import {AuthenticatedClient} from '../platform/authenticatedClient.js';
+import {SnapshotPullModelResources} from './pullModel/interfaces.js';
+import {Snapshot, WaitUntilDoneOptions} from './snapshot.js';
 
 export class SnapshotFactory {
   public static async createFromZip(

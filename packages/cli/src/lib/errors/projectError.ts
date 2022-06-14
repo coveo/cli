@@ -1,4 +1,4 @@
-import {CLIBaseError} from './CLIBaseError';
+import {CLIBaseError} from './CLIBaseError.js';
 
 export class InvalidProjectError extends CLIBaseError {
   public name = 'Invalid Project Error';

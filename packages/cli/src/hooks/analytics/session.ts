@@ -1,5 +1,5 @@
-import {Config} from '../../lib/config/config';
-import globalConfig from '../../lib/config/globalConfig';
+import {Config} from '../../lib/config/config.js';
+import globalConfig from '../../lib/config/globalConfig.js';
 
 interface SessionOptions {
   /**

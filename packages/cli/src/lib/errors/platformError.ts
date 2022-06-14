@@ -1,5 +1,5 @@
-import {PlatformPrivilege} from '../decorators/preconditions/platformPrivilege';
-import {PrintableError, SeverityLevel} from './printableError';
+import {PlatformPrivilege} from '../decorators/preconditions/platformPrivilege.js';
+import {PrintableError, SeverityLevel} from './printableError.js';
 
 export class MissingPrivilegeError extends PrintableError {
   public constructor(

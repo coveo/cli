@@ -4,9 +4,9 @@ jest.mock('../../../hooks/prerun/prerun');
 jest.mock('../../../lib/platform/authenticatedClient');
 
 import {test} from '@oclif/test';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient.js';
 import {SourceType, SourceVisibility} from '@coveord/platform-client';
-import {Config} from '../../../lib/config/config';
+import {Config} from '../../../lib/config/config.js';
 
 const mockedConfig = jest.mocked(Config);
 const mockedConfigGet = jest.fn();

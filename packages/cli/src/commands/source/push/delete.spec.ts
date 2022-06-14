@@ -5,12 +5,12 @@ jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('@coveo/push-api-client');
 
 import {test} from '@oclif/test';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient.js';
 import {PushSource} from '@coveo/push-api-client';
 import {
   doMockAxiosError,
   doMockAxiosSuccess,
-} from '../../../lib/push/testUtils';
+} from '../../../lib/push/testUtils.js';
 const mockedClient = jest.mocked(AuthenticatedClient);
 const mockedSource = jest.mocked(PushSource);
 

@@ -1,4 +1,4 @@
-import {getBinVersionPrecondition} from './binPreconditionsFactory';
+import {getBinVersionPrecondition} from './binPreconditionsFactory.js';
 
 export const IsNodeVersionInRange = getBinVersionPrecondition('node', {
   prettyName: 'Node.js',

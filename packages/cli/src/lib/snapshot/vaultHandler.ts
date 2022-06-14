@@ -4,22 +4,23 @@ import {
   VaultVisibilityType,
 } from '@coveord/platform-client';
 import {CliUx} from '@oclif/core';
-import {readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
+import fsExtra from 'fs-extra';
+const {readJsonSync, rmSync, writeJsonSync} = fsExtra;
 import open from 'open';
 import {join} from 'path';
 import {cwd} from 'process';
-import {green, inverse} from 'chalk';
+import chalk from 'chalk';
 import {
   InvalidVaultEntryError,
   InvalidVaultFileError,
   MissingVaultEntryValueError,
-} from '../errors/vaultErrors';
-import {AuthenticatedClient} from '../platform/authenticatedClient';
-import {Snapshot} from './snapshot';
-import {VaultEntryAttributes} from './snapshotReporter';
-import {Plurable, pluralizeIfNeeded} from '../utils/string';
-import {ProcessAbort} from '../../lib/errors/processError';
-import dedent from 'ts-dedent';
+} from '../errors/vaultErrors.js';
+import {AuthenticatedClient} from '../platform/authenticatedClient.js';
+import {Snapshot} from './snapshot.js';
+import {VaultEntryAttributes} from './snapshotReporter.js';
+import {Plurable, pluralizeIfNeeded} from '../utils/string.js';
+import {ProcessAbort} from '../../lib/errors/processError.js';
+import {dedent} from 'ts-dedent';
 
 export class VaultHandler {
   private static readonly defaultEntryValue = '';
@@ -45,7 +46,7 @@ export class VaultHandler {
       const key = await CliUx.ux.prompt('', {
         type: 'single',
         required: false,
-        prompt: `\n${inverse('Press any key to continue. Press q to abort')}\n`,
+        prompt: `\n${chalk.inverse('Press any key to continue. Press q to abort')}\n`,
       });
       if (key === 'q') {
         throw new ProcessAbort();
@@ -74,7 +75,7 @@ export class VaultHandler {
       await Promise.all(
         vaultEntryModels.map((entry) => client.vault.create(entry))
       );
-      CliUx.ux.action.stop(green('✔'));
+      CliUx.ux.action.stop(chalk.green('✔'));
     }
   }
 

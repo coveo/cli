@@ -12,19 +12,20 @@ import {
   readdirSync,
   rmSync,
 } from 'fs';
-import {
+import fsExtra from 'fs-extra';
+const {
   writeJSONSync,
   readJsonSync,
   pathExistsSync,
   ensureDirSync,
-} from 'fs-extra';
-import {Project} from './project';
+} = fsExtra;
+import {Project} from './project.js';
 import {join, resolve} from 'path';
 import archiver, {Archiver} from 'archiver';
 import extract from 'extract-zip';
 import {EventEmitter, Writable} from 'stream';
-import {getDirectory, getFile} from '../../__test__/fsUtils';
-import {fancyIt} from '../../__test__/it';
+import {getDirectory, getFile} from '../../__test__/fsUtils.js';
+import {fancyIt} from '../../__test__/it.js';
 
 const mockedRmSync = jest.mocked(rmSync);
 const mockedExistSync = jest.mocked(existsSync);

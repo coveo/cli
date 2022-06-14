@@ -1,4 +1,4 @@
-import {platformUrl, PlatformUrlOptions} from './environment';
+import {platformUrl, PlatformUrlOptions} from './environment.js';
 
 export function snapshotUrl(
   targetOrgId: string,

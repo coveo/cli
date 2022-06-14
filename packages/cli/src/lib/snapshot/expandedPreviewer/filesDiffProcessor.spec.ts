@@ -2,11 +2,12 @@ jest.mock('fs');
 jest.mock('fs-extra');
 
 import {readdirSync, rmSync} from 'fs';
-import {readJSONSync, writeJSONSync} from 'fs-extra';
-import {getDirectory, getFile} from '../../../__test__/fsUtils';
-import {recursiveDirectoryDiff} from './filesDiffProcessor';
+import fsExtra from 'fs-extra';
+const {readJSONSync, writeJSONSync} = fsExtra;
+import {getDirectory, getFile} from '../../../__test__/fsUtils.js';
+import {recursiveDirectoryDiff} from './filesDiffProcessor.js';
 import {join} from 'path';
-import {fancyIt} from '../../../__test__/it';
+import {fancyIt} from '../../../__test__/it.js';
 
 const mockedReadDir = jest.mocked(readdirSync);
 const mockedRm = jest.mocked(rmSync);

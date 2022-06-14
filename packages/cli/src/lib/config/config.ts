@@ -1,21 +1,22 @@
 import {Region} from '@coveord/platform-client';
 import {CliUx} from '@oclif/core';
-import {
+import fsExtra from 'fs-extra';
+const {
   pathExistsSync,
   createFileSync,
   writeJSONSync,
   readJSONSync,
-} from 'fs-extra';
+} = fsExtra;
 import {join} from 'path';
-import {satisfies} from 'semver';
-import dedent from 'ts-dedent';
+import semver from 'semver';
+import {dedent} from 'ts-dedent';
 import {
   DEFAULT_ENVIRONMENT,
   DEFAULT_REGION,
   PlatformEnvironment,
-} from '../platform/environment';
-import {IncompatibleConfigurationError} from './configErrors';
-import {CurrentSchemaVersion} from './configSchemaVersion';
+} from '../platform/environment.js';
+import {IncompatibleConfigurationError} from './configErrors.js';
+import {CurrentSchemaVersion} from './configSchemaVersion.js';
 
 export interface BaseConfiguration {
   version: string;
@@ -88,7 +89,7 @@ export class Config {
   }
 
   private isSettingVersionInRange(content: Configuration) {
-    return satisfies(content.version, `^${CurrentSchemaVersion}`);
+    return semver.satisfies(content.version, `^${CurrentSchemaVersion}`);
   }
 
   public replace(config: Configuration) {

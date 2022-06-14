@@ -1,8 +1,9 @@
-import axios, {AxiosRequestConfig} from 'axios';
+import axiosModule, {AxiosRequestConfig} from 'axios';
+const axios = axiosModule.default
 import {createServer, IncomingMessage, Server, ServerResponse} from 'http';
 import {URL, URLSearchParams} from 'url';
-import {AuthorizationError, InvalidStateError} from './authorizationError';
-import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
+import {AuthorizationError, InvalidStateError} from './authorizationError.js';
+import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig.js';
 
 interface AccessTokenResponse {
   access_token: string;

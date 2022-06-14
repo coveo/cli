@@ -1,4 +1,4 @@
-import {CLIBaseError} from './CLIBaseError';
+import {CLIBaseError} from './CLIBaseError.js';
 
 export class InvalidCommandError extends CLIBaseError {
   public name = 'Invalid Command Error';

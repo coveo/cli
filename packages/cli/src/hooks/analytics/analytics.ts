@@ -4,10 +4,10 @@ import {
   AuthenticatedClient,
   AuthenticationStatus,
   getAuthenticationStatus,
-} from '../../lib/platform/authenticatedClient';
-import {amplitudeClient} from './amplitudeClient';
-import {Identifier} from './identifier';
-import check from './session';
+} from '../../lib/platform/authenticatedClient.js';
+import {amplitudeClient} from './amplitudeClient.js';
+import {Identifier} from './identifier.js';
+import check from './session.js';
 
 export interface AnalyticsHook {
   event: Event;

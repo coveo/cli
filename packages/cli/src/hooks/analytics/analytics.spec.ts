@@ -6,18 +6,18 @@ jest.mock('@coveord/platform-client');
 jest.mock('./session');
 jest.mock('../../lib/config/globalConfig');
 
-import {Configuration, Config} from '../../lib/config/config';
+import {Configuration, Config} from '../../lib/config/config.js';
 import {
   AuthenticatedClient,
   AuthenticationStatus,
   getAuthenticationStatus,
-} from '../../lib/platform/authenticatedClient';
-import hook, {AnalyticsHook} from './analytics';
+} from '../../lib/platform/authenticatedClient.js';
+import hook, {AnalyticsHook} from './analytics.js';
 import {Interfaces} from '@oclif/core';
 import {PlatformClient} from '@coveord/platform-client';
-import {configurationMock} from '../../__stub__/configuration';
-import {fancyIt} from '../../__test__/it';
-import globalConfig from '../../lib/config/globalConfig';
+import {configurationMock} from '../../__stub__/configuration.js';
+import {fancyIt} from '../../__test__/it.js';
+import globalConfig from '../../lib/config/globalConfig.js';
 const mockedGlobalConfig = jest.mocked(globalConfig);
 const mockedConfig = jest.mocked(Config);
 const mockedPlatformClient = jest.mocked(PlatformClient);

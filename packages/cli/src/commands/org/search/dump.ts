@@ -1,20 +1,21 @@
 import {Command, Flags, CliUx} from '@oclif/core';
-import {readJSONSync, writeFile, writeJSONSync} from 'fs-extra';
+import fsExtra from 'fs-extra';
+const {readJSONSync, writeFile, writeJSONSync} = fsExtra;
 import {Parser} from 'json2csv';
 import {SingleBar} from 'cli-progress';
-import PlatformClient from '@coveord/platform-client';
+import {PlatformClient} from '@coveord/platform-client';
 import {dirSync} from 'tmp';
 
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient.js';
 import {
   Preconditions,
   IsAuthenticated,
-} from '../../../lib/decorators/preconditions';
-import {Config} from '../../../lib/config/config';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
-import {without} from '../../../lib/utils/list';
+} from '../../../lib/decorators/preconditions/index.js';
+import {Config} from '../../../lib/config/config.js';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable.js';
+import {without} from '../../../lib/utils/list.js';
 import {join} from 'path';
-import dedent from 'ts-dedent';
+import {dedent} from 'ts-dedent';
 
 type ResponseExceededMaximumSizeError = {message: string; type: string};
 

@@ -5,19 +5,19 @@ import {
   HasNecessaryCoveoPrivileges,
   IsNpxInstalled,
   IsNodeVersionInRange,
-} from '../../../lib/decorators/preconditions/';
+} from '../../../lib/decorators/preconditions/index.js';
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,
   viewSearchPagesPrivilege,
-} from '../../../lib/decorators/preconditions/platformPrivilege';
-import {appendCmdIfWindows} from '../../../lib/utils/os';
-import {spawnProcess} from '../../../lib/utils/process';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
-import {Config} from '../../../lib/config/config';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {platformUrl} from '../../../lib/platform/environment';
-import {getPackageVersion} from '../../../lib/utils/misc';
+} from '../../../lib/decorators/preconditions/platformPrivilege.js';
+import {appendCmdIfWindows} from '../../../lib/utils/os.js';
+import {spawnProcess} from '../../../lib/utils/process.js';
+import {Trackable} from '../../../lib/decorators/preconditions/trackable.js';
+import {Config} from '../../../lib/config/config.js';
+import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient.js';
+import {platformUrl} from '../../../lib/platform/environment.js';
+import {getPackageVersion} from '../../../lib/utils/misc.js';
 
 export default class Atomic extends Command {
   public static cliPackage = '@coveo/create-atomic';

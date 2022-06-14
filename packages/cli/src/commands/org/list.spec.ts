@@ -4,7 +4,7 @@ jest.mock('../../hooks/prerun/prerun');
 jest.mock('../../lib/platform/authenticatedClient');
 
 import {test} from '@oclif/test';
-import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '../../lib/platform/authenticatedClient.js';
 import {OrganizationModel} from '@coveord/platform-client';
 
 const mockedClient = jest.mocked(AuthenticatedClient);

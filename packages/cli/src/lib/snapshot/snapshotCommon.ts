@@ -1,21 +1,21 @@
 import {CliUx} from '@oclif/core';
-import {Project} from '../project/project';
-import {SnapshotFactory} from './snapshotFactory';
-import {Snapshot, WaitUntilDoneOptions} from './snapshot';
-import {red, green} from 'chalk';
+import {Project} from '../project/project.js';
+import {SnapshotFactory} from './snapshotFactory.js';
+import {Snapshot, WaitUntilDoneOptions} from './snapshot.js';
+import chalk from 'chalk';
 import {normalize} from 'path';
-import {Config, Configuration} from '../config/config';
-import {SnapshotGenericError} from '../errors/snapshotErrors';
-import {SnapshotFacade} from './snapshotFacade';
-import {PrintableError} from '../errors/printableError';
-import {SnapshotReporter} from './snapshotReporter';
-import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
+import {Config, Configuration} from '../config/config.js';
+import {SnapshotGenericError} from '../errors/snapshotErrors.js';
+import {SnapshotFacade} from './snapshotFacade.js';
+import {PrintableError} from '../errors/printableError.js';
+import {SnapshotReporter} from './snapshotReporter.js';
+import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels.js';
 import {
   VaultTransferFunctionsParam,
   tryTransferFromOrganization,
   throwSnapshotMissingVaultEntriesError,
   tryCreateMissingVaultEntries,
-} from './vaultEntriesFunctions';
+} from './vaultEntriesFunctions/index.js';
 
 export interface DryRunOptions {
   sync?: boolean;
@@ -51,11 +51,11 @@ async function internalDryRun(
 
   await reporter
     .setReportHandler(SnapshotReportStatus.SUCCESS, () => {
-      CliUx.ux.action.stop(green('✔'));
+      CliUx.ux.action.stop(chalk.green('✔'));
     })
     .setReportHandler(SnapshotReportStatus.ERROR, async () => {
       if (!options.shouldAutoSync) {
-        CliUx.ux.action.stop(red.bold('!'));
+        CliUx.ux.action.stop(chalk.red.bold('!'));
         return;
       }
       CliUx.ux.warn('Unsynchronized resource detected');
@@ -143,7 +143,7 @@ export function getMissingVaultEntriesReportHandler(
 }
 
 export function handleSnapshotError(err?: Error & {exitCode?: number}) {
-  let message = red.bold('!');
+  let message = chalk.red.bold('!');
   if (CliUx.ux.action.running && typeof err?.name === 'string') {
     message += ` ${err?.name}`;
   }

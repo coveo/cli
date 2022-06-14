@@ -1,13 +1,13 @@
 jest.mock('../../utils/process');
 
 import {dedent} from 'ts-dedent';
-import {spawnProcessOutput} from '../../utils/process';
-import {getFakeCommand} from './testsUtils/utils';
+import {spawnProcessOutput} from '../../utils/process.js';
+import {getFakeCommand} from './testsUtils/utils.js';
 
-import {IsNpxInstalled} from './npx';
-import {appendCmdIfWindows} from '../../utils/os';
-import {fancyIt} from '../../../__test__/it';
-import {PreconditionError} from '../../errors/preconditionError';
+import {IsNpxInstalled} from './npx.js';
+import {appendCmdIfWindows} from '../../utils/os.js';
+import {fancyIt} from '../../../__test__/it.js';
+import {PreconditionError} from '../../errors/preconditionError.js';
 
 describe('IsNpxInstalled', () => {
   const mockedSpawnProcessOutput = jest.mocked(spawnProcessOutput);

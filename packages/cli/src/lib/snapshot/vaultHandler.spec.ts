@@ -3,13 +3,14 @@ jest.mock('fs-extra');
 jest.mock('../../lib/platform/authenticatedClient');
 
 import {ResourceSnapshotType} from '@coveord/platform-client';
-import {VaultEntryAttributes} from './snapshotReporter';
-import {VaultHandler} from './vaultHandler';
-import {AuthenticatedClient} from '../platform/authenticatedClient';
-import {readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
+import {VaultEntryAttributes} from './snapshotReporter.js';
+import {VaultHandler} from './vaultHandler.js';
+import {AuthenticatedClient} from '../platform/authenticatedClient.js';
+import fsExtra from 'fs-extra';
+const {readJsonSync, rmSync, writeJsonSync} = fsExtra;
 import open from 'open';
 import {CliUx} from '@oclif/core';
-import {ProcessAbort} from '../errors/processError';
+import {ProcessAbort} from '../errors/processError.js';
 
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockedCreate = jest.fn();

@@ -1,16 +1,17 @@
-import PlatformClient, {
+import {
+  PlatformClient,
   PrivilegeEvaluatorModel,
   PrivilegeModel,
 } from '@coveord/platform-client';
 import {Command} from '@oclif/core';
-import {Config} from '../../config/config';
-import globalConfig from '../../config/globalConfig';
+import {Config} from '../../config/config.js';
+import globalConfig from '../../config/globalConfig.js';
 import {
   PreconditionError,
   PreconditionErrorCategory,
-} from '../../errors/preconditionError';
-import {AuthenticatedClient} from '../../platform/authenticatedClient';
-import {PlatformPrivilege} from './platformPrivilege';
+} from '../../errors/preconditionError.js';
+import {AuthenticatedClient} from '../../platform/authenticatedClient.js';
+import {PlatformPrivilege} from './platformPrivilege.js';
 
 export function HasNecessaryCoveoPrivileges(
   ...privileges: PlatformPrivilege[]

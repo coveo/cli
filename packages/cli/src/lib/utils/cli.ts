@@ -1,6 +1,6 @@
 import {CliUx} from '@oclif/core';
-import {buildEvent} from '../../hooks/analytics/eventUtils';
-import globalConfig from '../config/globalConfig';
+import {buildEvent} from '../../hooks/analytics/eventUtils.js';
+import globalConfig from '../config/globalConfig.js';
 
 /**
  *

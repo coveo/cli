@@ -5,16 +5,16 @@ import {
 import {existsSync, mkdirSync, readdirSync, rmSync} from 'fs';
 import {join, relative, resolve} from 'path';
 import {CliUx} from '@oclif/core';
-import {Project} from '../../project/project';
-import {spawnProcess, spawnProcessOutput} from '../../utils/process';
-import {SnapshotFactory} from '../snapshotFactory';
-import dedent from 'ts-dedent';
+import {Project} from '../../project/project.js';
+import {spawnProcess, spawnProcessOutput} from '../../utils/process.js';
+import {SnapshotFactory} from '../snapshotFactory.js';
+import {dedent} from 'ts-dedent';
 import {Dirent} from 'fs';
-import {recursiveDirectoryDiff} from './filesDiffProcessor';
-import {DotFolder} from '../../project/dotFolder';
+import {recursiveDirectoryDiff} from './filesDiffProcessor.js';
+import {DotFolder} from '../../project/dotFolder.js';
 import {cwd} from 'process';
-import {green} from 'chalk';
-import {buildResourcesToExport} from '../pullModel/validation/model';
+import chalk from 'chalk';
+import {buildResourcesToExport} from '../pullModel/validation/model.js';
 
 export class ExpandedPreviewer {
   private static readonly previewDirectoryName = 'preview';
@@ -63,7 +63,7 @@ export class ExpandedPreviewer {
 
     with the associated commit hash: ${commitHash.stdout}
     `);
-    CliUx.ux.action.stop(green('✔'));
+    CliUx.ux.action.stop(chalk.green('✔'));
   }
 
   private deleteOldestPreviews() {

@@ -7,17 +7,17 @@ jest.mock('../../lib/config/globalConfig');
 
 import os from 'os';
 import {Identify} from '@amplitude/identify';
-import {Config, Configuration} from '../../lib/config/config';
-import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
-import {Identifier} from './identifier';
-import PlatformClient from '@coveord/platform-client';
+import {Config, Configuration} from '../../lib/config/config.js';
+import {AuthenticatedClient} from '../../lib/platform/authenticatedClient.js';
+import {Identifier} from './identifier.js';
+import {PlatformClient} from '@coveord/platform-client';
 import {
   configurationMock,
   defaultConfiguration,
-} from '../../__stub__/configuration';
+} from '../../__stub__/configuration.js';
 import type {Interfaces} from '@oclif/core';
 import type {NodeClient} from '@amplitude/node';
-import globalConfig from '../../lib/config/globalConfig';
+import globalConfig from '../../lib/config/globalConfig.js';
 
 describe('identifier', () => {
   const mockedGlobalConfig = jest.mocked(globalConfig);

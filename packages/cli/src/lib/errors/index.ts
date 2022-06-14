@@ -1,2 +1,2 @@
-export {InvalidProjectError} from './projectError';
-export {SnapshotOperationTimeoutError} from './snapshotErrors';
+export {InvalidProjectError} from './projectError.js';
+export {SnapshotOperationTimeoutError} from './snapshotErrors.js';

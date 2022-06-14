@@ -5,7 +5,7 @@ jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
 
 import {test} from '@oclif/test';
-import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '../../lib/platform/authenticatedClient.js';
 import {
   SourceModel,
   SourceStatusType,

@@ -5,14 +5,14 @@ import {
   SnapshotExportContentFormat,
 } from '@coveord/platform-client';
 import {stdout, stderr} from 'stdout-stderr';
-import {getDummySnapshotModel} from '../../__stub__/resourceSnapshotsModel';
+import {getDummySnapshotModel} from '../../__stub__/resourceSnapshotsModel.js';
 import {
   getErrorReport,
   getPendingReport,
   getSuccessReport,
-} from '../../__stub__/resourceSnapshotsReportModel';
+} from '../../__stub__/resourceSnapshotsReportModel.js';
 
-import {Snapshot} from './snapshot';
+import {Snapshot} from './snapshot.js';
 
 //#region Mocks
 jest.mock('../platform/authenticatedClient');
@@ -23,17 +23,18 @@ jest.mock('./reportPreviewer/reportPreviewer');
 jest.mock('../project/project');
 jest.mock('./expandedPreviewer/expandedPreviewer');
 
-import {AuthenticatedClient} from '../platform/authenticatedClient';
-import {ensureFileSync, writeJSONSync} from 'fs-extra';
+import {AuthenticatedClient} from '../platform/authenticatedClient.js';
+import fsExtra from 'fs-extra';
+const {ensureFileSync, writeJSONSync} = fsExtra;
 import retry from 'async-retry';
-import {SnapshotReporter} from './snapshotReporter';
-import {ReportViewer} from './reportPreviewer/reportPreviewer';
-import {Project} from '../project/project';
-import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer';
+import {SnapshotReporter} from './snapshotReporter.js';
+import {ReportViewer} from './reportPreviewer/reportPreviewer.js';
+import {Project} from '../project/project.js';
+import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer.js';
 import {join} from 'path';
-import {SnapshotOperationTimeoutError} from '../errors';
-import {fancyIt} from '../../__test__/it';
-import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
+import {SnapshotOperationTimeoutError} from '../errors/index.js';
+import {fancyIt} from '../../__test__/it.js';
+import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels.js';
 import fancy from 'fancy-test';
 
 const mockedRetry = jest.mocked(retry);

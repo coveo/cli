@@ -6,16 +6,16 @@ import {
   AuthenticatedClient,
   AuthenticationStatus,
   getAuthenticationStatus,
-} from './authenticatedClient';
+} from './authenticatedClient.js';
 
-import {Config} from '../config/config';
-import PlatformClient from '@coveord/platform-client';
+import {Config} from '../config/config.js';
+import {PlatformClient} from '@coveord/platform-client';
 import {
   castEnvironmentToPlatformClient,
   PlatformEnvironment,
-} from './environment';
-import {fancyIt} from '../../__test__/it';
-import globalConfig from '../config/globalConfig';
+} from './environment.js';
+import {fancyIt} from '../../__test__/it.js';
+import globalConfig from '../config/globalConfig.js';
 const mockConfig = jest.mocked(Config);
 const mockPlatformClient = jest.mocked(PlatformClient);
 

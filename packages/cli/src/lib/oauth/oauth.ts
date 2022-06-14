@@ -4,11 +4,11 @@ import {
   DEFAULT_REGION,
   PlatformEnvironment,
   platformUrl,
-} from '../platform/environment';
+} from '../platform/environment.js';
 import {Region} from '@coveord/platform-client';
 import {randomBytes} from 'crypto';
-import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
-import {OAuthClientServer} from './oauthClientServer';
+import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig.js';
+import {OAuthClientServer} from './oauthClientServer.js';
 import {URL} from 'url';
 
 export interface OAuthOptions {

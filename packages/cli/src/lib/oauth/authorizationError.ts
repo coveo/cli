@@ -1,6 +1,6 @@
-import dedent from 'ts-dedent';
+import {dedent} from 'ts-dedent';
 import type {URL} from 'url';
-import {CLIBaseError} from '../errors/CLIBaseError';
+import {CLIBaseError} from '../errors/CLIBaseError.js';
 
 export class AuthorizationError extends CLIBaseError {
   public name = 'Authorization Error';

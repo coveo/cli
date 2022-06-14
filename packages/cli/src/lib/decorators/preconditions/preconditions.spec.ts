@@ -1,7 +1,7 @@
-import {fancyIt} from '../../../__test__/it';
-import {PreconditionError} from '../../errors/preconditionError';
-import {Preconditions} from './preconditions';
-import {getFakeCommand} from './testsUtils/utils';
+import {fancyIt} from '../../../__test__/it.js';
+import {PreconditionError} from '../../errors/preconditionError.js';
+import {Preconditions} from './preconditions.js';
+import {getFakeCommand} from './testsUtils/utils.js';
 
 describe('preconditions', () => {
   const preconditions = new Array<jest.Mock<Promise<void>>>(5);
