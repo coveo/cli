@@ -1,4 +1,4 @@
-import {bold, red, green} from 'chalk';
+import {bold} from 'chalk';
 import {
   CatalogConfigurationModel,
   PlatformClient,
@@ -24,6 +24,7 @@ import {
   PartialCatalogConfigurationModel,
 } from '../../../lib/catalog/interfaces';
 import {getCatalogPartialConfiguration} from '../../../lib/catalog/detect';
+import {newTask, stopCurrentTask} from '../../../lib/utils/spinner';
 
 export default class CatalogCreate extends Command {
   public static description = `${bold.bgYellow(
@@ -34,6 +35,14 @@ export default class CatalogCreate extends Command {
 
   public static flags = {
     ...withSourceVisibility(),
+    // TODO: or it can be the opposite (ie. --interactive)
+    automatic: Flags.boolean({
+      char: 'a',
+      allowNo: true,
+      default: true,
+      description:
+        'Try to automatically generate a catalog configuration from the data files. If the automatic generation fails, interactive mode will be launched',
+    }),
     dataFiles: Flags.string({
       multiple: true,
       char: 'f',
@@ -64,7 +73,7 @@ export default class CatalogCreate extends Command {
     const authenticatedClient = new AuthenticatedClient();
     const client = await authenticatedClient.getClient();
     const configuration = authenticatedClient.cfg.get();
-    this.newTask('Extracting fields and object types from data');
+    newTask('Extracting fields and object types from data');
     const fieldsAndObjectTypes = await getDocumentFieldsAndObjectTypeValues(
       client,
       flags.dataFiles
@@ -80,20 +89,20 @@ export default class CatalogCreate extends Command {
       client,
       catalogConfigurationModel
     );
-    this.newTask('Creating catalog');
+    newTask('Creating catalog');
     const catalogConfig = await this.createCatalogConfiguration(
       client,
       catalogConfigurationModel
     );
     await this.createCatalog(client, catalogConfig.id, sourceId);
 
-    this.newTask('Configuring Catalog fields');
+    newTask('Configuring Catalog fields');
     await this.ensureCatalogFields(
       client,
       catalogConfigurationModel,
       fieldsAndObjectTypes.fields
     );
-    this.stopCurrentTask();
+    stopCurrentTask();
 
     await this.mapStandardFields(sourceId, catalogConfig.id, configuration);
 
@@ -105,7 +114,7 @@ export default class CatalogCreate extends Command {
   }
 
   protected async finally(err: Error | undefined) {
-    this.stopCurrentTask(err);
+    stopCurrentTask(err);
   }
 
   private async ensureCatalogFields(
@@ -144,14 +153,22 @@ export default class CatalogCreate extends Command {
     fieldsAndObjectTypes: DocumentParseResult
   ): Promise<PartialCatalogConfigurationModel> {
     const {flags} = await this.parse(CatalogCreate);
+    if (!flags.automatic) {
+      // TODO: remove code duplication
+      return this.generateCatalogConfigurationInteractively(
+        fieldsAndObjectTypes
+      );
+    }
     try {
-      this.newTask('Generating catalog configuration from data');
+      newTask(
+        'Trying to automatically generate catalog configuration from data'
+      );
       return getCatalogPartialConfiguration(flags.dataFiles);
     } catch (error) {
-      this.stopCurrentTask(error);
+      stopCurrentTask(error);
       CliUx.ux.warn(
         dedent`Unable to automatically generate catalog configuration from data.
-        Please answer the following questions`
+        Switching to interactive mode.`
       );
     }
     return this.generateCatalogConfigurationInteractively(fieldsAndObjectTypes);
@@ -260,7 +277,7 @@ export default class CatalogCreate extends Command {
     catalogConfigurationModel: PartialCatalogConfigurationModel
   ) {
     const {args, flags} = await this.parse(CatalogCreate);
-    this.newTask('Creating product source');
+    newTask('Creating product source');
     const productSourceId = await this.createCatalogSource(client, {
       name: `${args.name}`,
       sourceVisibility: flags.sourceVisibility,
@@ -300,18 +317,5 @@ export default class CatalogCreate extends Command {
       availabilitySourceId,
       description: 'Created by the Coveo CLI',
     });
-  }
-
-  private newTask(task: string) {
-    if (CliUx.ux.action.running) {
-      CliUx.ux.action.stop(green('✔'));
-    }
-    CliUx.ux.action.start(task);
-  }
-
-  private stopCurrentTask(err?: unknown) {
-    if (CliUx.ux.action.running) {
-      CliUx.ux.action.stop(err ? red.bold('!') : green('✔'));
-    }
   }
 }
