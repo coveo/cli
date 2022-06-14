@@ -73,9 +73,6 @@ export default class Push extends Command {
     HasNecessaryCoveoPrivileges(writeSnapshotPrivilege, writeLinkPrivilege)
   )
   public async run() {
-    this.warn(
-      'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
-    );
     const {flags} = await this.parse(Push);
     const target = await getTargetOrg(this.configuration, flags.organization);
     const cfg = this.configuration.get();
