@@ -8,13 +8,14 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '../../lib/decorators/preconditions';
-import {rmdirSync, ensureDirSync, writeJsonSync} from 'fs-extra';
+import {ensureDirSync, writeJsonSync} from 'fs-extra';
 import SourceCatalogAdd from '../source/catalog/add';
 import Push from '../org/resources/push';
 import Atomic from '../ui/create/atomic';
 import {join} from 'path';
 import {Project} from '../../lib/project/project';
 import {cwd} from 'process';
+import {rmSync} from 'fs';
 
 type CommandRunReturn<T extends typeof Command> = Promise<
   ReturnType<InstanceType<T>['run']>
@@ -41,19 +42,19 @@ export default class CommerceRecipe extends Command {
   public async run() {
     const {flags, args} = await this.parse(CommerceRecipe);
     this.ensureTempFolder();
-    const {
-      sourceId,
-      product,
-      id: catalogId,
-    } = await this.newStep('Catalog creation', CatalogCreate, [
-      args.name,
-      '--json',
-      '--sourceVisibility',
-      flags.sourceVisibility,
-      '--dataFiles',
-      ...flags.dataFiles,
-    ]);
-    this.storeParametrizedSnapshotLocally(product.objectType, catalogId);
+    const {sourceId, product} = await this.newStep(
+      'Catalog creation',
+      CatalogCreate,
+      [
+        args.name,
+        '--json',
+        '--sourceVisibility',
+        flags.sourceVisibility,
+        '--dataFiles',
+        ...flags.dataFiles,
+      ]
+    );
+    this.storeParametrizedSnapshotLocally(product.objectType, args.name);
     await this.newStep('Organization setup', Push, [
       '--sync',
       '--skipPreview',
@@ -84,9 +85,10 @@ export default class CommerceRecipe extends Command {
     throw err;
   }
 
-  public async finally() {
+  public async finally(_?: Error) {
     try {
       this.cleanTempFolder();
+      super.finally(_);
     } catch (error) {
       // noop
     }
@@ -115,7 +117,7 @@ export default class CommerceRecipe extends Command {
   }
 
   private cleanTempFolder() {
-    rmdirSync(CommerceRecipe.tempFolder);
+    rmSync(CommerceRecipe.tempFolder, {force: true, recursive: true});
   }
 
   private logHeader(name: string) {
