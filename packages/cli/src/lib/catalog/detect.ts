@@ -153,14 +153,17 @@ function getMaps(filePaths: PathLike[]): Map<MetadataValue, MetadataValueMap> {
 
 /**
  * Determine the relation between the 2 maps passed in parameter.
- * The parent map will represent the product set and the child, variant (or availabilities).
+ * The parent map will represent the product set while the child map will represent variants (or availabilities).
  *
- * This is where we figure out which metadata key is used as a bridge between the parent and child∂.
+ * This is where we figure out which metadata key is used as a bridge between the parent and child maps.
  *
  * @param {Map<MetadataValue, MetadataValueMap>} maps Map of maps. Essentially, the parent and child maps.
  * @return {*}
  */
 function getParentChildIdFields(maps: Map<MetadataValue, MetadataValueMap>) {
+  // FIXME: clean that mess . make the code clearer
+  let parentObjectType: MetadataValue | null = null;
+  let childObjectType: MetadataValue | null = null;
   let objectTypes = Array.from(maps.keys());
   const [mapA, mapB] = Array.from(maps.values());
   const [parentIdCandidates, childIdCandidates]: string[][] = [[], []];
@@ -180,22 +183,28 @@ function getParentChildIdFields(maps: Map<MetadataValue, MetadataValueMap>) {
     if (parentIdCandidates.length > 0) {
       // Stop since we found our parent.
       // Otherwise, continue to loop since the second element from the array is the parent
-      const childIndex =
-        1 - uniqueMetadataKeyMatrix.indexOf(uniqueMetadataKeys);
+      const parentIndex = uniqueMetadataKeyMatrix.indexOf(uniqueMetadataKeys);
+      const childIndex = 1 - parentIndex;
       childIdCandidates.push(...uniqueMetadataKeyMatrix[childIndex]);
-      objectTypes = objectTypes.reverse();
+      parentObjectType = objectTypes[parentIndex];
+      childObjectType = objectTypes[childIndex];
+
       break;
     }
+  }
+
+  if (parentObjectType === null || childObjectType === null) {
+    throw 'Unable to detect object types on parent and child';
   }
 
   return {
     parent: {
       idFields: parentIdCandidates,
-      objectType: objectTypes[0],
+      objectType: parentObjectType,
     },
     child: {
       idFields: childIdCandidates,
-      objectType: objectTypes[1],
+      objectType: childObjectType,
     },
   };
 }
