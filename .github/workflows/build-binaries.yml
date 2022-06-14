@@ -38,7 +38,7 @@ jobs:
       - name: Setup
         run: npm i
       - name: Get tag
-        run: node ./scripts/get-tag.js # ToDo (PRE_NX): replace by some jq magic
+        run: node ./scripts/get-tag.cjs # ToDo (PRE_NX): replace by some jq magic
       - name: Get commit short hash
         run: node ./scripts/get-commit-short-hash.mjs
       - name: Build
