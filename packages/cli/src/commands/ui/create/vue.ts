@@ -18,6 +18,7 @@ import {
   impersonatePrivilege,
 } from '../../../lib/decorators/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import { readJSONSync } from 'fs-extra';
 
 export default class Vue extends Command {
   public static templateName = '@coveo/vue-cli-plugin-typescript';
@@ -78,7 +79,7 @@ export default class Vue extends Command {
 
     if (flags.preset) {
       try {
-        preset = require(resolve(process.cwd(), flags.preset));
+        preset = readJSONSync(resolve(process.cwd(), flags.preset));
       } catch (error) {
         this.error('Unable to load custom preset. Using default preset.');
       }

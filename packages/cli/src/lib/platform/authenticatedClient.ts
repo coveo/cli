@@ -1,5 +1,8 @@
-require('isomorphic-fetch');
-require('abortcontroller-polyfill');
+import nodeFetch from "node-fetch";
+// @ts-ignore
+import { abortableFetch } from 'abortcontroller-polyfill/dist/cjs-ponyfill';
+const { hackedFetch } = abortableFetch(nodeFetch);
+Object.assign(global, {fetch: hackedFetch});
 
 import PlatformClient, {PrivilegeModel} from '@coveord/platform-client';
 import {Config, Configuration} from '../config/config';
