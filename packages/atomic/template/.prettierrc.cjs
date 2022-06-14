@@ -1,4 +1,4 @@
-const base = require('../../../.prettierrc');
+const base = require('../../../.prettierrc.cjs');
 
 module.exports = {
   ...base,

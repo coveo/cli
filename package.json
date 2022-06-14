@@ -68,7 +68,7 @@
     "**/*.ts": "eslint --fix"
   },
   "overrides": {
-    "form-data":"4.0.0"
+    "form-data": "4.0.0"
   },
   "engines": {
     "node": ">=16",
@@ -85,7 +85,7 @@
     "npm:publish:template": "nx run-many --target=npm:publish:template --all",
     "npm:publish:template:local": "nx run-many --target=npm:publish:template:local --all",
     "prepare": "husky install",
-    "commit-msg": "node ./hooks/commit-msg.js",
+    "commit-msg": "node ./hooks/commit-msg.cjs",
     "pre-commit": "lint-staged",
     "postinstall": "patch-package && nx run-many --target=postinstall --all",
     "release": "npm run nx:graph && npm run release:phase1 && npm run release:phase2 && npm run release:phase3",

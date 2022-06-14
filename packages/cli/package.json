@@ -175,13 +175,13 @@
     }
   },
   "overrides": {
-    "form-data":"4.0.0"
+    "form-data": "4.0.0"
   },
   "repository": "coveo/cli",
   "scripts": {
     "build": "rimraf lib && tsc -p tsconfig.json",
     "test": "jest --colors",
-    "lint": "prettier --config ../../.prettierrc.js --check . && eslint .",
+    "lint": "prettier --config ../../.prettierrc.cjs --check . && eslint .",
     "release:phase2": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase2-bump-all-packages.mjs",
     "postpack": "rimraf oclif.manifest.json",
     "prepublishOnly": "rimraf lib && npm run build && oclif manifest && oclif readme"

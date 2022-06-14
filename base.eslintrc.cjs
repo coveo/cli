@@ -1,4 +1,5 @@
-{
+module.exports= {
+
   "ignorePatterns": ["node_modules"],
   "env": {
     "jest": true

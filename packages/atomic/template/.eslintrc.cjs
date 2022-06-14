@@ -1,5 +1,5 @@
-{
-  "extends": "../../../base.eslintrc",
+module.exports= {
+  "extends": "../../../base.eslintrc.cjs'",
   "overrides": [
     {
       "files": "stencil.config.ts",
