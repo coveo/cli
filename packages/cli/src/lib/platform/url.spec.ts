@@ -5,6 +5,7 @@ jest.mock('./environment');
 import {PlatformEnvironment, platformUrl} from './environment';
 import {
   createSnapshotUrl,
+  snapshotApplyUrl,
   snapshotSynchronizationUrl,
   snapshotUrl,
 } from './url';
@@ -37,7 +38,25 @@ describe('url', () => {
     });
   });
 
-  describe('#snapshotSyncrhonizationUrl', () => {
+  describe('#snapshotApplyUrl', () => {
+    fancyIt()('should build the URL properly', () => {
+      expect(
+        snapshotApplyUrl('some-org', 'some-snapshot', {
+          environment: PlatformEnvironment.Stg,
+          region: Region.AU,
+        })
+      ).toBe(
+        'https://foo.test/admin/#some-org/organization/resource-snapshots/some-snapshot/apply'
+      );
+
+      expect(platformUrl).toBeCalledWith({
+        environment: PlatformEnvironment.Stg,
+        region: Region.AU,
+      });
+    });
+  });
+
+  describe('#snapshotSynchronizationUrl', () => {
     fancyIt()('should build the URL properly', () => {
       expect(
         snapshotSynchronizationUrl('some-org', 'some-snapshot', {

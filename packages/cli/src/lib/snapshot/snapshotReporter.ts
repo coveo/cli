@@ -18,6 +18,15 @@ type SnapshotReporterHandlers = {
   [K in SnapshotReportStatus]: SnapshotReporterHandler | NoopHandler;
 };
 
+// #region TODO CDX-1039: Put that in PlatformClient when in prod
+type ResourceSnapshotsReportOperationResult = {
+  resultCode: string;
+  message: string;
+};
+
+const MissingVaultEntryResultCode = 'INVALID_PLACEHOLDER';
+//#endregion
+
 export type VaultEntryAttributes = {
   vaultEntryId: string;
   resourceName: string;
@@ -156,14 +165,20 @@ export class SnapshotReporter {
     )) {
       for (const [resourceName, errors] of Object.entries(resource)) {
         for (const err of errors) {
-          this.parseResourceOperationResult(err, resourceName, resourceType);
+          this.parseResourceOperationResult(
+            // TODO CDX-1038: Clean that.
+            err as unknown as string | ResourceSnapshotsReportOperationResult,
+            resourceName,
+            resourceType
+          );
         }
       }
     }
   }
 
   private parseResourceOperationResult(
-    err: string,
+    // TODO CDX-1038: Clean that.
+    err: string | ResourceSnapshotsReportOperationResult,
     resourceName: string,
     resourceType: string
   ) {
@@ -180,23 +195,39 @@ export class SnapshotReporter {
     }
   }
 
-  private addResourceInError(resourceType: ResourceSnapshotType, err: string) {
+  private addResourceInError(
+    resourceType: ResourceSnapshotType,
+    // TODO CDX-1038: Clean that.
+    err: string | ResourceSnapshotsReportOperationResult
+  ) {
     this.resourceInErrorCount++;
     let errorSet = this.resourceInError.get(resourceType);
     if (!errorSet) {
       errorSet = new Set();
       this.resourceInError.set(resourceType, errorSet);
     }
-    errorSet.add(err);
+    // TODO CDX-1038: Clean that.
+    errorSet.add(typeof err === 'string' ? err : err.message);
   }
 
-  private static missingVaultMatcher =
+  private static missingVaultEntryMatcher =
     /^The vault entry referenced by \{\{ VAULT\.(?<entryName>.*) \}\} could not be found in the vault\.$/;
 
-  private static tryGetMissingVaultEntryName(err: string): string | undefined {
-    // TODO: CDX-939: Define contract with backend for report and upcoming contract.
-    // Current 'contract' 😅:
-    const match = err.match(SnapshotReporter.missingVaultMatcher);
+  // TODO CDX-1038: Clean that.
+  private static tryGetMissingVaultEntryName(
+    err: string | ResourceSnapshotsReportOperationResult
+  ): string | undefined {
+    let message: string = '';
+    if (typeof err !== 'string') {
+      if (err.resultCode === MissingVaultEntryResultCode) {
+        message = err.message;
+      } else {
+        return undefined;
+      }
+    } else {
+      message = err;
+    }
+    const match = message.match(SnapshotReporter.missingVaultEntryMatcher);
     return match?.groups?.['entryName'];
   }
 

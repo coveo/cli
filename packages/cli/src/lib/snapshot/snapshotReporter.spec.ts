@@ -1,5 +1,4 @@
 import {ResourceSnapshotsReportType} from '@coveord/platform-client';
-import exp from 'constants';
 import {
   getErrorReport,
   getMissingVaultEntryReport,
