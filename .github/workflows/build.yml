@@ -38,7 +38,7 @@ jobs:
       fail-fast: true
       matrix:
         os: ['ubuntu-latest', 'windows-latest']
-        node: [16]
+        node: [14, 16, 18]
     steps:
       - name: Setup runner
         if: ${{matrix.os == 'ubuntu-latest'}}
@@ -151,7 +151,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ['ubuntu-latest', 'windows-latest']
-        node: [16]
+        node: [14, 16, 18]
         spec:
           [
             'angular.specs.ts',
@@ -178,7 +178,7 @@ jobs:
       # ID of the organization to log into for the e2e tests
       ORG_ID: ${{ secrets.ORG_ID }}
       # ID of the test run to identify resources to teardown.
-      TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
+      TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g-${{ matrix.node}}'
       COVEO_DISABLE_AUTOUPDATE: true
       CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
@@ -239,7 +239,7 @@ jobs:
       - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
         if: always()
         with:
-          name: ${{matrix.os}}-${{matrix.spec}}-test-artifacts
+          name: ${{matrix.os}}-${{ matrix.node}}-${{matrix.spec}}-test-artifacts
           path: ./packages/cli-e2e/artifacts
   e2e-teardown:
     name: End-to-end teardown
