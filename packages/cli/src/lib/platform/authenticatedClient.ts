@@ -1,7 +1,12 @@
-require('isomorphic-fetch');
-require('abortcontroller-polyfill');
+import {FormData} from 'formdata-node';
+if (global.hasOwnProperty('fetch')) {
+  Object.assign(global, {FormData});
+} else {
+  require('isomorphic-fetch');
+  require('abortcontroller-polyfill');
+}
 
-import PlatformClient, {PrivilegeModel} from '@coveord/platform-client';
+import PlatformClient from '@coveord/platform-client';
 import {Config, Configuration} from '../config/config';
 import {castEnvironmentToPlatformClient} from './environment';
 import HttpsProxyAgent from 'https-proxy-agent';
