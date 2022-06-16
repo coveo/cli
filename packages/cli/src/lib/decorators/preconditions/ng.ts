@@ -10,6 +10,7 @@ export const IsNgVersionInRange = getBinVersionPrecondition(
     howToInstallBinText:
       'You can install the Angular-CLI by running npm i -g @angular/cli',
     installLink: 'https://angular.io/guide/setup-local#install-the-angular-cli',
+    params: ['version'],
   },
   (stdout: string) =>
     stdout.match(angularCliVersionMatcher)?.groups?.['version'] ?? ''
