@@ -11,6 +11,8 @@ import {
 import {CoveoSchema} from '../schema';
 
 describe('search-token-server', () => {
+  const projectName = 'foo';
+
   const workspaceOptions: WorkspaceOptions = {
     name: 'workspace',
     newProjectRoot: 'projects',
@@ -21,11 +23,12 @@ describe('search-token-server', () => {
     orgId: 'fake-org-id',
     apiKey: 'my-fake-api-key',
     name: 'MyTestProject',
+    project: projectName,
     user: 'alicesmith@example.com',
   };
 
   const appOptions: ApplicationOptions = {
-    name: 'foo',
+    name: projectName,
     inlineStyle: false,
     inlineTemplate: false,
     routing: false,
