@@ -134,7 +134,7 @@ export default class Pull extends Command {
   }
 
   private async shouldDeleteSnapshot() {
-    return !Boolean((await this.parse(Pull)).flags.snapshotId);
+    return !(await this.parse(Pull)).flags.snapshotId;
   }
 
   @Trackable()
@@ -180,16 +180,16 @@ export default class Pull extends Command {
     const question = PullCommandStrings.projectOverwriteQuestion(
       Project.resourceFolderName
     );
-    return await confirmWithAnalytics(question, 'project overwrite');
+    return confirmWithAnalytics(question, 'project overwrite');
   }
 
   private async getSnapshot() {
     const flags = await this.getFlags();
     const target = await this.getTargetOrg();
     if (flags.snapshotId) {
-      return await this.getExistingSnapshot(flags.snapshotId, target);
+      return this.getExistingSnapshot(flags.snapshotId, target);
     } else {
-      return await this.createAndGetNewSnapshot(target);
+      return this.createAndGetNewSnapshot(target);
     }
   }
 
@@ -231,7 +231,7 @@ export default class Pull extends Command {
   ): Promise<SnapshotPullModelResources> {
     const cfg = this.configuration.get();
     if (
-      model.orgId &&
+      this.isModelWithOrgId(model) &&
       model.orgId === cfg.organization &&
       !(await this.askUserToContinueWithMismatchedOrgIds(cfg, model))
     ) {
@@ -240,13 +240,19 @@ export default class Pull extends Command {
     return model.resourcesToExport;
   }
 
+  private isModelWithOrgId(
+    model: SnapshotPullModel
+  ): model is SnapshotPullModel & Required<Pick<SnapshotPullModel, 'orgId'>> {
+    return Boolean(model.orgId);
+  }
+
   private askUserToContinueWithMismatchedOrgIds(
     cfg: Configuration,
-    model: SnapshotPullModel
+    model: SnapshotPullModel & Required<Pick<SnapshotPullModel, 'orgId'>>
   ) {
     const question = PullCommandStrings.resourcePullQuestion(
       cfg.organization,
-      model?.orgId!
+      model.orgId
     );
     return confirmWithAnalytics(question, 'resource pull');
   }
