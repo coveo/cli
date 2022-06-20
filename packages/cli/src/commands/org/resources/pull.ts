@@ -38,7 +38,7 @@ const PullCommandStrings = {
   projectOverwriteQuestion: (
     resourceFolderName: string
   ) => dedent`There is already a Coveo project with resources in it.
-  This command will overwrite the ${resourceFolderName} folder content, do you want to proceed? (y/n)`,
+  This command will delete the project in ${resourceFolderName} folder and start a new one, do you want to proceed? (y/n)`,
   resourcePullQuestion: (
     currentOrgId: string,
     pullOrgId: string
