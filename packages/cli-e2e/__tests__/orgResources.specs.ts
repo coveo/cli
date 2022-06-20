@@ -18,7 +18,7 @@ import {
   writeJsonSync,
   copySync,
 } from 'fs-extra';
-import PlatformClient, {FieldTypes} from '@coveord/platform-client';
+import PlatformClient from '@coveord/platform-client';
 import {getPlatformClient} from '../utils/platform';
 import {getTestOrg} from '../utils/testOrgSetup';
 import {readdirSync} from 'fs';
