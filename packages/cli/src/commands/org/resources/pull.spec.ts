@@ -87,6 +87,12 @@ const doMockSnapshotFactory = async () => {
       download: mockedDownloadSnapshot,
     } as unknown as Snapshot)
   );
+  mockedSnapshotFactory.createFromExistingSnapshot.mockReturnValue(
+    Promise.resolve({
+      delete: mockedDeleteSnapshot,
+      download: mockedDownloadSnapshot,
+    } as unknown as Snapshot)
+  );
 };
 
 describe('org:resources:pull', () => {
@@ -164,6 +170,14 @@ describe('org:resources:pull', () => {
     .command(['org:resources:pull'])
     .it('should delete the snapshot', () => {
       expect(mockedDeleteSnapshot).toHaveBeenCalled();
+    });
+
+  test
+    .stdout()
+    .stderr()
+    .command(['org:resources:pull', '-s', 'someSnapshotId'])
+    .it('should not delete the snapshot', () => {
+      expect(mockedDeleteSnapshot).not.toHaveBeenCalled();
     });
 
   test
