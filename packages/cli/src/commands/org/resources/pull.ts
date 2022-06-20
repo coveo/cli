@@ -5,7 +5,7 @@ import {readJsonSync} from 'fs-extra';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
 import {formatOrgId} from '../../../lib/commonFormaters';
-import {Config, Configuration} from '../../../lib/config/config';
+import {Config} from '../../../lib/config/config';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
