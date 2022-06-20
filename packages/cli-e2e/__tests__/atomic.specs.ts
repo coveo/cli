@@ -39,10 +39,6 @@ describe('ui:create:atomic', () => {
     options: BuildAppOptions
   ) => {
     let output = '';
-    const stderrListener = (chunk: string) => {
-      output += chunk;
-    };
-
     const buildTerminal = await setupUIProject(
       processManager,
       'ui:create:atomic',
@@ -50,8 +46,12 @@ describe('ui:create:atomic', () => {
       {flags: options.pageId ? ['--pageId', options.pageId] : undefined}
     );
 
-    buildTerminal.orchestrator.process.stderr.on('data', stderrListener);
-    buildTerminal.orchestrator.process.stdout.on('data', stderrListener);
+    buildTerminal.orchestrator.process.stderr.on('data', (chunk: string) => {
+      output += chunk;
+    });
+    buildTerminal.orchestrator.process.stdout.on('data', (chunk: string) => {
+      output += chunk;
+    });
 
     if (!options.pageId) {
       await buildTerminal
@@ -120,7 +120,7 @@ describe('ui:create:atomic', () => {
   ])('$describeName', ({buildAppOptions}) => {
     const oldEnv = process.env;
     const processManagers: ProcessManager[] = [];
-    let stderr: string;
+    let buildLog: string;
     let browser: Browser;
     let page: Page;
 
@@ -142,7 +142,8 @@ describe('ui:create:atomic', () => {
       const processManager = new ProcessManager();
       processManagers.push(processManager);
       browser = await getNewBrowser();
-      stderr = (await buildApplication(processManager, buildAppOptions)).output;
+      buildLog = (await buildApplication(processManager, buildAppOptions))
+        .output;
       await processManager.killAllProcesses();
     }, 15 * 60e3);
 
@@ -169,7 +170,7 @@ describe('ui:create:atomic', () => {
         buildAppOptions.promptAnswer || buildAppOptions.pageId
           ? 'Hosted search page named'
           : 'Using the default search page template.';
-      expect(stderr).toContain(message);
+      expect(buildLog).toContain(message);
     });
 
     describe('validating files', () => {
