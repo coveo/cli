@@ -67,29 +67,6 @@
       },
       {
         "model": {
-          "commandLineParameters": [
-            "--conf",
-            "coveo.drill.automaticSelection.fields.0.field=ec_category",
-            "--conf",
-            "coveo.drill.automaticSelection.fields.0.strategy=taxonomy_coverage",
-            "--conf",
-            "coveo.drill.indexContent.documentGroupId=1639593647500"
-          ],
-          "commonFilter": "",
-          "engineId": "facetsense",
-          "exportOffset": "PT0S",
-          "exportPeriod": "P3M",
-          "intervalTime": 1,
-          "intervalUnit": "WEEK",
-          "modelActivenessState": "ACTIVE",
-          "modelDisplayName": "DNE",
-          "searchEventFilter": ""
-        },
-        "parents": {},
-        "resourceName": "DNE_qnlZNJ"
-      },
-      {
-        "model": {
           "commandLineParameters": [],
           "commonFilter": "",
           "customEventFilter": "",
@@ -143,38 +120,6 @@
           "queryPipelineId": "{{ QUERY_PIPELINE.Search_ZVZujz }}"
         },
         "resourceName": "ART_1Ax5E4"
-      },
-      {
-        "model": {
-          "cacheMaximumAge": "PT10S",
-          "customQueryParameters": {
-            "facetAutoSelect": {
-              "isEnabled": false
-            },
-            "facetOrdering": {
-              "isEnabled": true
-            },
-            "facetValueOrdering": {
-              "isEnabled": true
-            },
-            "rankingBoost": {
-              "isEnabled": true
-            }
-          },
-          "enableWordCompletion": false,
-          "exclusive": false,
-          "intelligentTermDetection": false,
-          "matchAdvancedExpression": false,
-          "matchBasicExpression": false,
-          "maxRecommendations": 0,
-          "modelId": "{{ ML_MODEL.DNE_qnlZNJ }}",
-          "rankingModifier": 75,
-          "useAdvancedConfiguration": false
-        },
-        "parents": {
-          "queryPipelineId": "{{ QUERY_PIPELINE.Search_ZVZujz }}"
-        },
-        "resourceName": "DNE_DFEe35"
       },
       {
         "model": {
