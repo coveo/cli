@@ -39,15 +39,6 @@ const PullCommandStrings = {
     resourceFolderName: string
   ) => dedent`There is already a Coveo project with resources in it.
   This command will delete the project in ${resourceFolderName} folder and start a new one, do you want to proceed? (y/n)`,
-  resourcePullQuestion: (
-    currentOrgId: string,
-    pullOrgId: string
-  ) => dedent`You are currently connected to the ${formatOrgId(
-    currentOrgId
-  )} organization, but are about to pull resources from the ${formatOrgId(
-    pullOrgId
-  )} organization.
-      Do you wish to continue? (y/n)`,
   howToPullAfterTimeout: (targetOrgId: string, snapshotId: string) => dedent`
 
       Once the snapshot is created, you can pull it with the following command:
@@ -127,9 +118,11 @@ export default class Pull extends Command {
     CliUx.ux.action.start('Updating project with Snapshot');
     await this.refreshProject(project, snapshot);
     project.writeResourcesManifest(targetOrganization);
+
     if (await this.shouldDeleteSnapshot()) {
       await snapshot.delete();
     }
+
     CliUx.ux.action.stop('Project updated');
   }
 
@@ -166,14 +159,20 @@ export default class Pull extends Command {
   }
 
   private async ensureProjectReset(project: Project) {
-    const flags = await this.getFlags();
-    if (!flags.overwrite && project.contains(Project.resourceFolderName)) {
-      if (!(await this.askUserShouldWeOverwrite())) {
-        throw new ProcessAbort();
-      }
+    if (await this.shouldAbortProjectReset(project)) {
+      throw new ProcessAbort();
     }
 
     project.reset();
+  }
+
+  private async shouldAbortProjectReset(project: Project) {
+    const flags = await this.getFlags();
+    return (
+      !flags.overwrite &&
+      project.contains(Project.resourceFolderName) &&
+      !(await this.askUserShouldWeOverwrite())
+    );
   }
 
   private async askUserShouldWeOverwrite() {
@@ -186,11 +185,9 @@ export default class Pull extends Command {
   private async getSnapshot() {
     const flags = await this.getFlags();
     const target = await this.getTargetOrg();
-    if (flags.snapshotId) {
-      return this.getExistingSnapshot(flags.snapshotId, target);
-    } else {
-      return this.createAndGetNewSnapshot(target);
-    }
+    return flags.snapshotId
+      ? this.getExistingSnapshot(flags.snapshotId, target)
+      : this.createAndGetNewSnapshot(target);
   }
 
   private async createAndGetNewSnapshot(target: string) {
@@ -222,39 +219,8 @@ export default class Pull extends Command {
   private async getResourceSnapshotTypesToExport(): Promise<SnapshotPullModelResources> {
     const flags = await this.getFlags();
     return flags.model
-      ? this.getResourceSnapshotTypesToExportFromModel(flags.model)
+      ? flags.model.resourcesToExport
       : buildResourcesToExport(flags.resourceTypes);
-  }
-
-  private async getResourceSnapshotTypesToExportFromModel(
-    model: SnapshotPullModel
-  ): Promise<SnapshotPullModelResources> {
-    const cfg = this.configuration.get();
-    if (
-      this.isModelWithOrgId(model) &&
-      model.orgId === cfg.organization &&
-      !(await this.askUserToContinueWithMismatchedOrgIds(cfg, model))
-    ) {
-      throw new ProcessAbort();
-    }
-    return model.resourcesToExport;
-  }
-
-  private isModelWithOrgId(
-    model: SnapshotPullModel
-  ): model is SnapshotPullModel & Required<Pick<SnapshotPullModel, 'orgId'>> {
-    return Boolean(model.orgId);
-  }
-
-  private askUserToContinueWithMismatchedOrgIds(
-    cfg: Configuration,
-    model: SnapshotPullModel & Required<Pick<SnapshotPullModel, 'orgId'>>
-  ) {
-    const question = PullCommandStrings.resourcePullQuestion(
-      cfg.organization,
-      model.orgId
-    );
-    return confirmWithAnalytics(question, 'resource pull');
   }
 
   private async getTargetOrg() {
