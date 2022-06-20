@@ -31,7 +31,6 @@ const mockedGetResourceManifest = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
 const mockedSaveDetailedReport = jest.fn();
 const mockedAreResourcesInError = jest.fn();
-const mockedFacadeSynchronize = jest.fn();
 const mockedApplySnapshot = jest.fn();
 const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();

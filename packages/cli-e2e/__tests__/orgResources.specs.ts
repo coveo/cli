@@ -44,28 +44,6 @@ describe('org:resources', () => {
     return new Terminal('node', args, {cwd}, procManager, debugName);
   };
 
-  const createFieldWithoutUsingSnapshot = async (client: PlatformClient) => {
-    await client.field.create({
-      description: '',
-      facet: false,
-      includeInQuery: true,
-      includeInResults: true,
-      mergeWithLexicon: false,
-      multiValueFacet: false,
-      multiValueFacetTokenizers: ';',
-      name: 'firstfield',
-      ranking: false,
-      sort: false,
-      stemming: false,
-      system: false,
-      type: FieldTypes.STRING,
-      useCacheForComputedFacet: false,
-      useCacheForNestedQuery: false,
-      useCacheForNumericQuery: false,
-      useCacheForSort: false,
-    });
-  };
-
   const previewChange = (
     targetOrg: string,
     procManager: ProcessManager,
