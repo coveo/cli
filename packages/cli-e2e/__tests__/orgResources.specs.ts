@@ -204,53 +204,6 @@ describe('org:resources', () => {
         defaultTimeout
       );
     });
-
-    // TODO CDX-753: Create new unsynchronized state for E2E tests.
-    describe.skip('when resources are not synchronized', () => {
-      let stdout: string;
-      let stderr: string;
-
-      const stdoutListener = (chunk: string) => {
-        stdout += chunk;
-      };
-      const stderrListener = (chunk: string) => {
-        stderr += chunk;
-      };
-
-      beforeAll(async () => {
-        stdout = stderr = '';
-        await createFieldWithoutUsingSnapshot(platformClient);
-      });
-
-      it(
-        'should throw a synchronization warning on a field',
-        async () => {
-          const previewTerminal = previewChange(
-            testOrgId,
-            processManager,
-            'org-config-preview-unsync'
-          );
-
-          const process = previewTerminal.orchestrator.process;
-          process.stdout.on('data', stdoutListener);
-          process.stderr.on('data', stderrListener);
-
-          const previewTerminalExitPromise = previewTerminal
-            .when('exit')
-            .on('process')
-            .do((proc) => {
-              proc.stdout.off('data', stdoutListener);
-              proc.stderr.off('data', stderrListener);
-            })
-            .once();
-
-          await previewTerminalExitPromise;
-          expect(stdout).toMatch(/Previewing snapshot changes/);
-          expect(stderr).toMatch(/Checking for automatic synchronization/);
-        },
-        defaultTimeout
-      );
-    });
   });
 
   describe('org:resources:push', () => {

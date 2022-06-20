@@ -102,7 +102,7 @@ export class SnapshotSynchronizationUnknownError
   public constructor(public snapshot: Snapshot, public cfg: Configuration) {
     super(SeverityLevel.Error);
     this.message = dedent`
-      The snapshot synchronization has unexpectedly failed.`;
+      The snapshot synchronization has failed.`;
 
     trySavingDetailedReport(this);
   }

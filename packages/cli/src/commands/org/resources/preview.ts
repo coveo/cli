@@ -75,7 +75,6 @@ export default class Preview extends Command {
     const {reporter, snapshot, project} = await dryRun(
       target,
       this.projectPath,
-      cfg,
       options
     );
 

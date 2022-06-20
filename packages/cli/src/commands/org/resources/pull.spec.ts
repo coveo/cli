@@ -35,13 +35,11 @@ const mockEvaluate = jest.fn();
 const pathToStub = join(cwd(), 'src', '__stub__');
 
 const doMockConfig = () => {
-  mockedConfigGet.mockReturnValue(
-    Promise.resolve({
-      region: 'us',
-      organization: 'default-org',
-      environment: 'prod',
-    })
-  );
+  mockedConfigGet.mockReturnValue({
+    region: 'us',
+    organization: 'default-org',
+    environment: 'prod',
+  });
 
   mockedConfig.prototype.get = mockedConfigGet;
 };
