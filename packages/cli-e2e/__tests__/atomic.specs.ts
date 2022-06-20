@@ -38,9 +38,9 @@ describe('ui:create:atomic', () => {
     processManager: ProcessManager,
     options: BuildAppOptions
   ) => {
-    let stderr = '';
+    let output = '';
     const stderrListener = (chunk: string) => {
-      stderr += chunk;
+      output += chunk;
     };
 
     const buildTerminal = await setupUIProject(
@@ -51,6 +51,7 @@ describe('ui:create:atomic', () => {
     );
 
     buildTerminal.orchestrator.process.stderr.on('data', stderrListener);
+    buildTerminal.orchestrator.process.stdout.on('data', stderrListener);
 
     if (!options.pageId) {
       await buildTerminal
@@ -75,7 +76,7 @@ describe('ui:create:atomic', () => {
       .do(answerPrompt(`y${EOL}`))
       .until(buildTerminalExitPromise);
 
-    return {stderr};
+    return {output};
   };
 
   const startApplication = async (
@@ -85,7 +86,7 @@ describe('ui:create:atomic', () => {
   ) => {
     const args = [...npm(), 'run', 'start'];
 
-    const serverTerminal = new Terminal(
+    return new Terminal(
       args.shift()!,
       args,
       {
@@ -94,7 +95,6 @@ describe('ui:create:atomic', () => {
       processManager,
       `${debugName}-${options.id}`
     );
-    return serverTerminal;
   };
 
   describe.each([
@@ -142,7 +142,7 @@ describe('ui:create:atomic', () => {
       const processManager = new ProcessManager();
       processManagers.push(processManager);
       browser = await getNewBrowser();
-      stderr = (await buildApplication(processManager, buildAppOptions)).stderr;
+      stderr = (await buildApplication(processManager, buildAppOptions)).output;
       await processManager.killAllProcesses();
     }, 15 * 60e3);
 
