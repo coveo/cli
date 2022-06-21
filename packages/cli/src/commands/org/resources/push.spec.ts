@@ -280,7 +280,7 @@ describe('org:resources:push', () => {
       .stdout()
       .stderr()
       .stub(CliUx.ux, 'confirm', () => async () => true)
-      .command(['org:resources:push', '-d'])
+      .command(['org:resources:push', '--deleteMissingResources'])
       .it('should apply missing resoucres', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledWith(true, {wait: 60});
       });
