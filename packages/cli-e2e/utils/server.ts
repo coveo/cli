@@ -1,5 +1,4 @@
-import {IncomingMessage, createServer, ServerResponse} from 'http';
-import {Server} from 'http';
+import {IncomingMessage, createServer, ServerResponse, Server} from 'http';
 import waitOn from 'wait-on';
 
 export class DummyServer {
@@ -12,7 +11,7 @@ export class DummyServer {
   }
 
   public async start() {
-    await waitOn({resources: [`tcp:${this.port}`]});
+    await waitOn({resources: [`tcp:${this.port}`], reverse: true});
     this.server.listen(this.port);
   }
 
