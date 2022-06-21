@@ -91,7 +91,7 @@ export default class Monitor extends Command {
   private async getSnapshot(): Promise<Snapshot> {
     const {args, flags} = await this.parse(Monitor);
     const snapshotId = args.snapshotId;
-    const target = await getTargetOrg(this.configuration, flags.organization);
+    const target = getTargetOrg(this.configuration, flags.organization);
 
     return SnapshotFactory.createFromExistingSnapshot(snapshotId, target);
   }
