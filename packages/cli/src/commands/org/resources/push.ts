@@ -48,7 +48,6 @@ export default class Push extends Command {
       'The unique identifier of the organization where to send the changes'
     ),
     deleteMissingResources: Flags.boolean({
-      char: 'd',
       description: 'Delete missing resources when enabled',
       default: false,
       required: false,
