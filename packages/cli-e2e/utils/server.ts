@@ -1,13 +1,19 @@
 import {IncomingMessage, createServer, ServerResponse} from 'http';
 import {Server} from 'http';
+import waitOn from 'wait-on';
 
 export class DummyServer {
   private server: Server;
 
-  public constructor(port: number) {
+  public constructor(private port: number) {
     this.server = createServer((req: IncomingMessage, res: ServerResponse) => {
       res.end(`port ${port} taken`);
-    }).listen(port);
+    });
+  }
+
+  public async start() {
+    await waitOn({resources: [`tcp:${this.port}`]});
+    this.server.listen(this.port);
   }
 
   public async close() {
