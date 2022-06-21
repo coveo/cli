@@ -38,13 +38,11 @@ const doMockAuthenticatedClient = () => {
 };
 
 const doMockConfig = () => {
-  mockedConfigGet.mockReturnValue(
-    Promise.resolve({
-      region: 'us',
-      organization: 'default-org',
-      environment: 'prod',
-    })
-  );
+  mockedConfigGet.mockReturnValue({
+    region: 'us',
+    organization: 'default-org',
+    environment: 'prod',
+  });
 
   mockedConfig.prototype.get = mockedConfigGet;
 };
