@@ -120,4 +120,16 @@ describe('config:set', () => {
     .it('should display the config', () => {
       expect(mockSet).toHaveBeenCalledTimes(1);
     });
+
+  test
+    .stdout()
+    .stderr()
+    .do(() => {
+      mockGetHasAccessToOrg.mockReturnValueOnce(Promise.resolve(true));
+    })
+    .command(['config:set', '-o', 'the_org', '-r', 'AU'])
+    .it('should set the organization at the end', () => {
+      expect(mockSet).toHaveBeenNthCalledWith(1, 'region', 'AU');
+      expect(mockSet).toHaveBeenLastCalledWith('organization', 'the_org');
+    });
 });

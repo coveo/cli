@@ -42,12 +42,12 @@ export default class Set extends Command {
     if (flags.environment) {
       cfg.set('environment', flags.environment as PlatformEnvironment);
     }
+    if (flags.region) {
+      cfg.set('region', flags.region as Region);
+    }
     if (flags.organization) {
       await this.verifyOrganization(flags.organization);
       cfg.set('organization', flags.organization);
-    }
-    if (flags.region) {
-      cfg.set('region', flags.region as Region);
     }
     if (flags.analytics) {
       cfg.set('analyticsEnabled', flags.analytics === 'y');
