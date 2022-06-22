@@ -408,6 +408,7 @@ describe('ui:create:vue', () => {
         new DummyServer(usedClientPort),
         new DummyServer(usedServerPort)
       );
+      await Promise.all(dummyServers.map((server) => server.start()));
 
       const appTerminal = await startApplication(
         serverProcessManager,
