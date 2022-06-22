@@ -66,7 +66,7 @@ export default class CatalogCreate extends Command {
     },
   ];
 
-  // Preconditions were removed because of the clashe with the enableJsonFlag option.
+  // Preconditions were removed because they do do not the enableJsonFlag option.
   // Ideally, the preconditions should also support the run method with non-void return
   public async run(): Promise<CatalogConfigurationModel & {sourceId: string}> {
     const {flags} = await this.parse(CatalogCreate);
@@ -153,17 +153,13 @@ export default class CatalogCreate extends Command {
     fieldsAndObjectTypes: DocumentParseResult
   ): Promise<PartialCatalogConfigurationModel> {
     const {flags} = await this.parse(CatalogCreate);
-    if (!flags.automatic) {
-      // TODO: remove code duplication
-      return this.generateCatalogConfigurationInteractively(
-        fieldsAndObjectTypes
-      );
-    }
     try {
-      newTask(
-        'Trying to automatically generate catalog configuration from data'
-      );
-      return getCatalogPartialConfiguration(flags.dataFiles);
+      if (flags.automatic) {
+        newTask(
+          'Trying to automatically generate catalog configuration from data'
+        );
+        return getCatalogPartialConfiguration(flags.dataFiles);
+      }
     } catch (error) {
       stopCurrentTask(error);
       CliUx.ux.warn(
