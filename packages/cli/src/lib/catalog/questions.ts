@@ -1,4 +1,5 @@
 /// <reference path='../../typings/inquirer/inquirer-autocomplete-prompt.d.ts'/>
+import {FieldModel} from '@coveord/platform-client';
 import {filter} from 'fuzzy';
 import {bold} from 'chalk';
 import inquirer from 'inquirer';
@@ -85,4 +86,18 @@ export async function selectField(
     },
   });
   return answer.fieldName;
+}
+
+export async function selectFieldModel(
+  message: string,
+  fields: FieldModel[]
+): Promise<FieldModel> {
+  let fieldNames: string[] = [];
+  fields.forEach((field) => {
+    if (field.name) {
+      fieldNames.push(field.name);
+    }
+  });
+  const selectedFieldName = await selectField(message, fieldNames);
+  return fields.find((field) => field.name === selectedFieldName)!;
 }
