@@ -35,13 +35,12 @@ export default class CatalogCreate extends Command {
 
   public static flags = {
     ...withSourceVisibility(),
-    // TODO: or it can be the opposite (ie. --interactive)
-    automatic: Flags.boolean({
-      char: 'a',
+    interactive: Flags.boolean({
+      char: 'i',
       allowNo: true,
-      default: true,
+      default: false,
       description:
-        'Try to automatically generate a catalog configuration from the data files. If the automatic generation fails, interactive mode will be launched',
+        'Whether to create the catalog configuration interactively. If set to false, the CLI will try to automatically generate a catalog configuration from the data files. If the automatic generation fails, interactive mode will be launched',
     }),
     dataFiles: Flags.string({
       multiple: true,
@@ -153,19 +152,19 @@ export default class CatalogCreate extends Command {
     fieldsAndObjectTypes: DocumentParseResult
   ): Promise<PartialCatalogConfigurationModel> {
     const {flags} = await this.parse(CatalogCreate);
-    try {
-      if (flags.automatic) {
+    if (!flags.interactive) {
+      try {
         newTask(
           'Trying to automatically generate catalog configuration from data'
         );
         return getCatalogPartialConfiguration(flags.dataFiles);
+      } catch (error) {
+        stopCurrentTask(error);
+        CliUx.ux.warn(
+          dedent`Unable to automatically generate catalog configuration from data.
+          Switching to interactive mode.`
+        );
       }
-    } catch (error) {
-      stopCurrentTask(error);
-      CliUx.ux.warn(
-        dedent`Unable to automatically generate catalog configuration from data.
-        Switching to interactive mode.`
-      );
     }
     return this.generateCatalogConfigurationInteractively(fieldsAndObjectTypes);
   }
