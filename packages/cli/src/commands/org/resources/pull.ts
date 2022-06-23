@@ -4,7 +4,7 @@ import {blueBright} from 'chalk';
 import {readJsonSync} from 'fs-extra';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
-import {formatOrgId} from '../../../lib/commonFormaters';
+import {formatOrgId} from '../../../lib/commonPromptUtils/formater';
 import {Config} from '../../../lib/config/config';
 import {
   HasNecessaryCoveoPrivileges,

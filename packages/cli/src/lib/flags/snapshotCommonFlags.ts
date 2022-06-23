@@ -17,6 +17,7 @@ export const wait = () => ({
   }),
 });
 
+// TODO: CDX-935 use the -y flag and update its description
 export const sync = () => ({
   sync: Flags.boolean({
     char: 'y',

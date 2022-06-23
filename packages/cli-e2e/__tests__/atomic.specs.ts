@@ -301,6 +301,7 @@ describe('ui:create:atomic', () => {
         processManagers.push(serverProcessManager);
 
         dummyServer = new DummyServer(3333);
+        await dummyServer.start();
 
         const appTerminal = await startApplication(
           serverProcessManager,

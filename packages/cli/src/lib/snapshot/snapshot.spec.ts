@@ -34,7 +34,6 @@ import {join} from 'path';
 import {SnapshotOperationTimeoutError} from '../errors';
 import {fancyIt} from '../../__test__/it';
 import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
-import fancy from 'fancy-test';
 
 const mockedRetry = jest.mocked(retry);
 const mockedExpandedPreviewer = jest.mocked(ExpandedPreviewer, true);
@@ -51,8 +50,6 @@ const mockedExportSnapshot = jest.fn();
 const mockedApplySnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
-const mockedCreateSynchronizationPlan = jest.fn();
-const mockedApplySynchronizationPlan = jest.fn();
 const mockedGetSynchronizationPlan = jest.fn();
 //#endregion Mocks
 
@@ -89,8 +86,6 @@ describe('Snapshot', () => {
           get: mockedGetSnapshot,
           export: mockedExportSnapshot,
           apply: mockedApplySnapshot,
-          createSynchronizationPlan: mockedCreateSynchronizationPlan,
-          applySynchronizationPlan: mockedApplySynchronizationPlan,
           getSynchronizationPlan: mockedGetSynchronizationPlan,
         },
       })
