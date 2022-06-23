@@ -6,8 +6,6 @@ jest.mock('../../lib/platform/authenticatedClient');
 import {Config} from '../../lib/config/config';
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
-import {Region} from '@coveord/platform-client';
-import {PlatformEnvironment} from '../../lib/platform/environment';
 const mockedConfig = jest.mocked(Config);
 const mockedClient = jest.mocked(AuthenticatedClient);
 
@@ -38,43 +36,43 @@ describe('config:set', () => {
     .catch(/Command should contain at least 1 flag/)
     .it('should not allows to call set without any flags');
 
-  Object.values(PlatformEnvironment).forEach((environment) => {
-    test
-      .stdout()
-      .stderr()
-      .command(['config:set', '-e', environment])
-      .it(`allows to modify environment ${environment}`, () => {
-        expect(mockSet).toHaveBeenCalledWith('environment', environment);
-      });
-  });
+  // Object.values(PlatformEnvironment).forEach((environment) => {
+  //   test
+  //     .stdout()
+  //     .stderr()
+  //     .command(['config:set', '-e', environment])
+  //     .it(`allows to modify environment ${environment}`, () => {
+  //       expect(mockSet).toHaveBeenCalledWith('environment', environment);
+  //     });
+  // });
 
-  test
-    .stdout()
-    .stderr()
-    .command(['config:set', '-e', 'foo'])
-    .catch(/Expected --environment=foo/)
-    .it('fails when trying to set an invalid environment', () => {
-      expect(mockSet).not.toHaveBeenCalled();
-    });
+  // test
+  //   .stdout()
+  //   .stderr()
+  //   .command(['config:set', '-e', 'foo'])
+  //   .catch(/Expected --environment=foo/)
+  //   .it('fails when trying to set an invalid environment', () => {
+  //     expect(mockSet).not.toHaveBeenCalled();
+  //   });
 
-  Object.keys(Region).forEach((region) => {
-    test
-      .stdout()
-      .stderr()
-      .command(['config:set', '-r', region])
-      .it(`allows to modify region ${region}`, () => {
-        expect(mockSet).toHaveBeenCalledWith('region', region);
-      });
-  });
+  // Object.keys(Region).forEach((region) => {
+  //   test
+  //     .stdout()
+  //     .stderr()
+  //     .command(['config:set', '-r', region])
+  //     .it(`allows to modify region ${region}`, () => {
+  //       expect(mockSet).toHaveBeenCalledWith('region', region);
+  //     });
+  // });
 
-  test
-    .stdout()
-    .stderr()
-    .command(['config:set', '-r', 'foo'])
-    .catch(/Expected --region=foo/)
-    .it('fails when trying to set an invalid region', () => {
-      expect(mockSet).not.toHaveBeenCalled();
-    });
+  // test
+  //   .stdout()
+  //   .stderr()
+  //   .command(['config:set', '-r', 'foo'])
+  //   .catch(/Expected --region=foo/)
+  //   .it('fails when trying to set an invalid region', () => {
+  //     expect(mockSet).not.toHaveBeenCalled();
+  //   });
 
   test
     .stdout()
@@ -119,17 +117,5 @@ describe('config:set', () => {
     .command(['config:set', '-a', 'y'])
     .it('should display the config', () => {
       expect(mockSet).toHaveBeenCalledTimes(1);
-    });
-
-  test
-    .stdout()
-    .stderr()
-    .do(() => {
-      mockGetHasAccessToOrg.mockReturnValueOnce(Promise.resolve(true));
-    })
-    .command(['config:set', '-o', 'the_org', '-r', 'AU'])
-    .it('should set the organization at the end', () => {
-      expect(mockSet).toHaveBeenNthCalledWith(1, 'region', 'AU');
-      expect(mockSet).toHaveBeenLastCalledWith('organization', 'the_org');
     });
 });
