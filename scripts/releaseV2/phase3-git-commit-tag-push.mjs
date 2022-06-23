@@ -20,8 +20,8 @@ import {dedent} from 'ts-dedent';
   const PATH = '.';
   const versionPrefix = 'v';
   const convention = await angularChangelogConvention;
-  const lastTag = getLastTag(versionPrefix)[0];
-  const commits = getCommits(PATH, lastTag)[0];
+  const lastTag = await getLastTag(versionPrefix);
+  const commits = await getCommits(PATH, lastTag);
   const releaseVersion = getCurrentVersion(PATH);
   const versionTag = `${versionPrefix}${releaseVersion}`;
   let changelog = '';
@@ -40,7 +40,7 @@ import {dedent} from 'ts-dedent';
     await writeChangelog(PATH, changelog);
   }
 
-  gitCommit(
+  await gitCommit(
     dedent`
     [version bump] chore(release): Release ${versionTag} [skip ci]
 
@@ -54,9 +54,9 @@ import {dedent} from 'ts-dedent';
     `,
     PATH
   );
-  gitTag(versionTag);
-  gitPush();
-  gitPushTags();
+  await gitTag(versionTag);
+  await gitPush();
+  await gitPushTags();
 
   const octokit = new Octokit({auth: process.env.GITHUB_CREDENTIALS});
   const [, ...bodyArray] = changelog.split('\n');
