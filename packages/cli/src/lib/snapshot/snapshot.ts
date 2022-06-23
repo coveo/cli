@@ -108,7 +108,13 @@ export class Snapshot {
     deleteMissingResources = false,
     options: WaitUntilDoneOptions = {}
   ) {
-    await this.snapshotClient.apply(this.id, {deleteMissingResources});
+    await this.snapshotClient.apply(
+      this.id,
+      deleteMissingResources
+        ? //@ts-ignore
+          {deleteMissingResources, deletionScope: 'ONLY_TYPES_FROM_SNAPSHOT'}
+        : {deleteMissingResources}
+    );
 
     await this.waitUntilDone({
       operationToWaitFor: ResourceSnapshotsReportType.Apply,
