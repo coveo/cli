@@ -2,6 +2,7 @@ import {ResourceSnapshotType} from '@coveord/platform-client';
 import {Flags, Command, CliUx} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {readJsonSync} from 'fs-extra';
+import {resolve} from 'path';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
 import {formatOrgId} from '../../../lib/commonPromptUtils/formater';
@@ -86,7 +87,7 @@ export default class Pull extends Command {
     }),
     model: Flags.build<SnapshotPullModel>({
       parse: async (input: string): Promise<SnapshotPullModel> => {
-        const model = readJsonSync(input);
+        const model = readJsonSync(resolve(input));
         validateSnapshotPullModel(model);
         return model;
       },
