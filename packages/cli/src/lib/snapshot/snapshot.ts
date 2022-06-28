@@ -7,6 +7,7 @@ import {
   ResourceSnapshotsReportType,
   SnapshotExportContentFormat,
   ResourceSnapshotsSynchronizationReportModel,
+  ApplyOptionsDeletionScope,
 } from '@coveord/platform-client';
 import retry from 'async-retry';
 import {ReportViewer} from './reportPreviewer/reportPreviewer';
@@ -111,8 +112,10 @@ export class Snapshot {
     await this.snapshotClient.apply(
       this.id,
       deleteMissingResources
-        ? //@ts-ignore
-          {deleteMissingResources, deletionScope: 'ONLY_TYPES_FROM_SNAPSHOT'}
+        ? {
+            deleteMissingResources,
+            deletionScope: ApplyOptionsDeletionScope.OnlyTypesFromSnapshot,
+          }
         : {deleteMissingResources}
     );
 
