@@ -8,6 +8,7 @@ import {
 import {Trackable} from '../../lib/decorators/preconditions/trackable';
 import {InvalidCommandError} from '../../lib/errors/InvalidCommandError';
 import {ConfigRenderer} from '../../lib/config/configRenderer';
+import {PlatformEnvironment, Region} from '@coveo/push-api-client';
 
 export default class Set extends Command {
   public static description = 'Modify the current configuration.';
@@ -38,11 +39,6 @@ export default class Set extends Command {
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = await this.parse(Set);
-    if (flags.environment || flags.region) {
-      CliUx.ux.error(
-        'To connect to a different region or environment, use the `auth:login` command'
-      );
-    }
     if (Object.entries(flags).length === 0) {
       throw new InvalidCommandError('Command should contain at least 1 flag');
     }
@@ -50,6 +46,12 @@ export default class Set extends Command {
     if (flags.organization) {
       await this.verifyOrganization(flags.organization);
       cfg.set('organization', flags.organization);
+    }
+    if (flags.environment) {
+      cfg.set('environment', flags.environment as PlatformEnvironment);
+    }
+    if (flags.region) {
+      cfg.set('region', flags.region as Region);
     }
     if (flags.analytics) {
       cfg.set('analyticsEnabled', flags.analytics === 'y');
