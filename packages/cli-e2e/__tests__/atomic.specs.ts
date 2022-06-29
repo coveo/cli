@@ -12,11 +12,13 @@ import {DummyServer} from '../utils/server';
 import {loginWithApiKey} from '../utils/login';
 import {existsSync} from 'fs-extra';
 import {join} from 'path';
+import {hashElement} from 'folder-hash';
 
 interface BuildAppOptions {
   id: string;
   pageId?: string;
   promptAnswer?: string;
+  skipInstall?: boolean;
 }
 
 describe('ui:create:atomic', () => {
@@ -63,7 +65,7 @@ describe('ui:create:atomic', () => {
     const buildTerminalExitPromise = Promise.race([
       buildTerminal.when('exit').on('process').do().once(),
       buildTerminal
-        .when(/Happy hacking!/)
+        .when(options.skipInstall ? /Installing packages/ : /Happy hacking!/)
         .on('stdout')
         .do()
         .once(),
@@ -85,7 +87,7 @@ describe('ui:create:atomic', () => {
   ) => {
     const args = [...npm(), 'run', 'start'];
 
-    const serverTerminal = new Terminal(
+    return new Terminal(
       args.shift()!,
       args,
       {
@@ -94,44 +96,23 @@ describe('ui:create:atomic', () => {
       processManager,
       `${debugName}-${options.id}`
     );
-    return serverTerminal;
   };
 
-  describe.each([
-    {
-      describeName: 'when using the default page config (pageId not specified)',
-      buildAppOptions: {id: 'without-page-id'},
-    },
-    {
-      describeName: 'when using an existing pageId (--pageId flag specified)',
-      buildAppOptions: {
-        id: 'with-page-id',
-        pageId: 'fffaafcc-6863-46cb-aca3-97522fcc0f5d',
-      },
-    },
-    {
-      describeName:
-        'when using an existing pageId (using the list prompt of available pages)',
-      buildAppOptions: {
-        id: 'with-page-id-prompt',
-        promptAnswer: `\x1B[B ${EOL}`,
-      },
-    },
-  ])('$describeName', ({buildAppOptions}) => {
+  const projectFileExist = (path: string, id: string) =>
+    existsSync(join(getProjectPath(getProjectName(id)), ...path.split('/')));
+
+  describe('when using an existing pageId (--pageId flag specified', () => {
+    const buildAppOptions: BuildAppOptions = {
+      id: 'with-page-id',
+      pageId: 'fffaafcc-6863-46cb-aca3-97522fcc0f5d',
+      skipInstall: false,
+    };
+
     const oldEnv = process.env;
     const processManagers: ProcessManager[] = [];
     let stderr: string;
     let browser: Browser;
     let page: Page;
-
-    function projectFileExist(path: string) {
-      return existsSync(
-        join(
-          getProjectPath(getProjectName(buildAppOptions.id)),
-          ...path.split('/')
-        )
-      );
-    }
 
     beforeAll(async () => {
       await loginWithApiKey(
@@ -200,7 +181,7 @@ describe('ui:create:atomic', () => {
 
       test.each(createdFilesPaths)(
         'should create the %s file or directory',
-        (path) => expect(projectFileExist(path)).toBe(true)
+        (path) => expect(projectFileExist(path, buildAppOptions.id)).toBe(true)
       );
 
       const deletedFilesPaths = [
@@ -211,7 +192,7 @@ describe('ui:create:atomic', () => {
 
       test.each(deletedFilesPaths)(
         'should delete the %s file or directory',
-        (path) => expect(projectFileExist(path)).toBe(false)
+        (path) => expect(projectFileExist(path, buildAppOptions.id)).toBe(false)
       );
     });
 
@@ -322,6 +303,95 @@ describe('ui:create:atomic', () => {
 
         expect(await page.$(searchInterfaceSelector)).not.toBeNull();
       }, 60e3);
+    });
+  });
+
+  describe.each([
+    {
+      describeName: 'when using the default page config (pageId not specified)',
+      buildAppOptions: {id: 'without-page-id', skipInstall: true},
+    },
+    {
+      describeName: 'when using an existing pageId (--pageId flag specified)',
+      buildAppOptions: {
+        id: 'with-page-id',
+        pageId: 'fffaafcc-6863-46cb-aca3-97522fcc0f5d',
+        skipInstall: true,
+      },
+    },
+    {
+      describeName:
+        'when using an existing pageId (using the list prompt of available pages)',
+      buildAppOptions: {
+        id: 'with-page-id-prompt',
+        promptAnswer: `\x1B[B ${EOL}`,
+      },
+    },
+  ])('$describeName', ({buildAppOptions}) => {
+    const oldEnv = process.env;
+    const processManagers: ProcessManager[] = [];
+    let stderr: string;
+    let browser: Browser;
+
+    beforeAll(async () => {
+      await loginWithApiKey(
+        process.env.PLATFORM_API_KEY!,
+        process.env.ORG_ID!,
+        process.env.PLATFORM_ENV!
+      );
+      const processManager = new ProcessManager();
+      processManagers.push(processManager);
+      browser = await getNewBrowser();
+      stderr = (await buildApplication(processManager, buildAppOptions)).stderr;
+      await processManager.killAllProcesses();
+    }, 15 * 60e3);
+
+    beforeEach(async () => {
+      jest.resetModules();
+      process.env = {...oldEnv};
+    });
+
+    afterAll(async () => {
+      process.env = oldEnv;
+      await Promise.all(
+        processManagers.map((manager) => manager.killAllProcesses())
+      );
+    }, 5 * 30e3);
+
+    it('should use the right configuration', () => {
+      const message =
+        buildAppOptions.promptAnswer || buildAppOptions.pageId
+          ? 'Hosted search page named'
+          : 'Using the default search page template.';
+      expect(stderr).toContain(message);
+    });
+
+    it('the project has been generated properly', async () => {
+      expect(
+        (
+          await hashElement(
+            join(getProjectPath(getProjectName(buildAppOptions.id))),
+            {
+              folders: {
+                exclude: ['**node_modules', 'dist', 'www', '.netlify'],
+                ignoreRootName: true,
+                ignoreBasename: true,
+              },
+              files: {
+                include: ['*'],
+                exclude: [
+                  '**.env',
+                  '**package-lock.json',
+                  '**package.json',
+                  'stencil.config.ts',
+                ],
+                ignoreRootName: true,
+                ignoreBasename: true,
+              },
+            }
+          )
+        ).hash
+      ).toMatchSnapshot();
     });
   });
 });

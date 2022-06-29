@@ -38,6 +38,7 @@
   "devDependencies": {
     "@actions/core": "1.9.0",
     "@types/async-retry": "1.4.4",
+    "@types/folder-hash": "^4.0.1",
     "@types/fs-extra": "9.0.13",
     "@types/is-running": "2.1.0",
     "@types/jest": "27.5.2",
@@ -47,6 +48,7 @@
     "chrome-launcher": "0.15.1",
     "eslint": "8.20.0",
     "fkill": "7.2.1",
+    "folder-hash": "^4.0.2",
     "is-running": "2.1.0",
     "open": "8.4.0",
     "tmp": "0.2.1",
