@@ -1,4 +1,4 @@
-import {ResourceSnapshotType} from '@coveord/platform-client';
+import type {ResourceSnapshotType} from '@coveord/platform-client';
 import {Flags, Command, CliUx} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {readJsonSync} from 'fs-extra';
@@ -31,6 +31,7 @@ import {
   handleSnapshotError,
   cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
+import {allowedResourceType} from '../../../lib/snapshot/snapshotConstant';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
@@ -82,8 +83,8 @@ export default class Pull extends Command {
       helpValue: 'type1 type2',
       description: 'The resources types to pull from the organization.',
       multiple: true,
-      options: Object.values(ResourceSnapshotType),
-      default: Object.values(ResourceSnapshotType),
+      options: allowedResourceType,
+      default: allowedResourceType,
     }),
     model: Flags.build<SnapshotPullModel>({
       parse: async (input: string): Promise<SnapshotPullModel> => {
