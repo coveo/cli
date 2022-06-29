@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli",
-  "version": "1.30.0",
+  "version": "1.31.0",
   "author": "Coveo",
   "description": "Coveo CLI",
   "engines": {
@@ -38,10 +38,10 @@
   "devDependencies": {
     "@amplitude/types": "1.10.0",
     "@babel/core": "7.18.6",
-    "@coveo/angular": "1.30.0",
-    "@coveo/cra-template": "1.30.0",
-    "@coveo/create-atomic": "1.30.0",
-    "@coveo/vue-cli-plugin-typescript": "1.30.0",
+    "@coveo/angular": "1.31.0",
+    "@coveo/cra-template": "1.31.0",
+    "@coveo/create-atomic": "1.31.0",
+    "@coveo/vue-cli-plugin-typescript": "1.31.0",
     "@oclif/test": "2.1.0",
     "@types/archiver": "5.3.1",
     "@types/async-retry": "1.4.4",

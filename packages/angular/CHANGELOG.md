@@ -1,3 +1,9 @@
+# 1.31.0 (2022-06-29)
+
+### Features
+
+- **angular:** update to angular 14 ([#830](https://github.com/coveo/cli/issues/830)) ([9866d07](https://github.com/coveo/cli/commits/9866d075238b45dee9ac8cfd58df21abdbc93e7b))
+
 ## 1.29.3 (2022-06-06)
 
 ## 1.29.2 (2022-06-03)

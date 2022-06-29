@@ -1,3 +1,9 @@
+# 1.31.0 (2022-06-29)
+
+### Features
+
+- **snapshot:** add `deletionScope` on `/apply` ([#849](https://github.com/coveo/cli/issues/849)) ([7b7fcb2](https://github.com/coveo/cli/commits/7b7fcb2ed1d0fc73d0ee7500c91aed85fbfd0dc6))
+
 ## 1.29.1 (2022-06-03)
 
 # 1.29.0 (2022-05-31)
