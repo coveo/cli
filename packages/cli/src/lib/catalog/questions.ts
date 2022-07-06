@@ -8,6 +8,9 @@ import {pluralizeIfNeeded} from '../utils/string';
 
 inquirer.registerPrompt('autocomplete', autocompletePrompt);
 
+export type FieldModelWithName = Required<Pick<FieldModel, 'name'>> &
+  FieldModel;
+
 export interface CatalogStructure {
   products: boolean;
   variants: boolean;
@@ -91,7 +94,7 @@ export async function selectField(
 export async function selectFieldModel(
   message: string,
   fields: FieldModel[]
-): Promise<FieldModel> {
+): Promise<FieldModelWithName> {
   let fieldNames: string[] = [];
   fields.forEach((field) => {
     if (field.name) {
@@ -99,5 +102,8 @@ export async function selectFieldModel(
     }
   });
   const selectedFieldName = await selectField(message, fieldNames);
-  return fields.find((field) => field.name === selectedFieldName)!;
+  const field = fields.find(
+    (field): field is FieldModelWithName => field.name === selectedFieldName
+  )!;
+  return field;
 }
