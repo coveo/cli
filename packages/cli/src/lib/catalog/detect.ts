@@ -4,7 +4,11 @@ import {
   MetadataValue,
   parseAndGetDocumentBuilderFromJSONDocument,
 } from '@coveo/push-api-client';
+import {CliUx} from '@oclif/core';
+import {SingleBar} from 'cli-progress';
 import {PathLike} from 'fs';
+import {NonUniqueCatalogIdFieldError} from '../errors/CatalogError';
+import {getAllJsonFilesFromEntries} from '../utils/file';
 import {containsDuplicates} from '../utils/list';
 import {setAreEqual} from '../utils/set';
 import {
@@ -16,9 +20,10 @@ import {
 } from './interfaces';
 
 export function getCatalogPartialConfiguration(
-  filePaths: PathLike[]
+  filesOrDirectories: string[]
 ): PartialCatalogConfigurationModel {
-  const structure = getCatalogFieldStructure(filePaths);
+  const files = getAllJsonFilesFromEntries(filesOrDirectories);
+  const structure = getCatalogFieldStructure(files);
   return convertToCatalogModel(structure);
 }
 
@@ -27,8 +32,7 @@ function getCatalogFieldStructure(filePaths: PathLike[]): CatalogFieldStruture {
 
   switch (maps.size) {
     case 1:
-      const [firstMapValue] = maps.values();
-      return get1ChannelCatalogFieldStructure(firstMapValue);
+      return get1ChannelCatalogFieldStructure(maps);
     case 2:
       // TODO: support products x availabilities configuration
       return get2ChannelsCatalogFieldStructure(maps);
@@ -52,7 +56,7 @@ function convertToCatalogModel(
     (variant && !catalogChannelHasSingleMatch(variant)) ||
     (availability && !catalogChannelHasSingleMatch(availability))
   ) {
-    throw new Error('Multiple field matches');
+    throw new NonUniqueCatalogIdFieldError();
   } else {
     return {
       product: {
@@ -81,10 +85,12 @@ function convertToCatalogModel(
  * The catalog contains products only
  */
 function get1ChannelCatalogFieldStructure(
-  map: MetadataValueMap
+  maps: Map<MetadataValue, MetadataValueMap>
 ): CatalogFieldStruture {
-  const possibleIdFields: string[] = findUniqueMetadataKeysInMap(map);
-  const [objectType] = map.keys();
+  const [metadataValueMap] = maps.values();
+  const [objectType] = maps.keys();
+  const possibleIdFields: string[] =
+    findUniqueMetadataKeysInMap(metadataValueMap);
 
   return {
     product: {
@@ -128,6 +134,7 @@ function get2ChannelsCatalogFieldStructure(
  * @return {*} A 2 levels deep map
  */
 function getMaps(filePaths: PathLike[]): Map<MetadataValue, MetadataValueMap> {
+  const progress = progressBar();
   const objectTypeMap: Map<MetadataValue, MetadataValueMap> = new Map();
   const mapBuilderCallback = (docBuilder: DocumentBuilder) => {
     const {metadata} = docBuilder.build();
@@ -142,11 +149,14 @@ function getMaps(filePaths: PathLike[]): Map<MetadataValue, MetadataValueMap> {
     addToMap(metadataValueMap, metadata);
   };
 
+  progress.start(filePaths.length, 0);
   for (const filePath of filePaths) {
+    progress.increment();
     parseAndGetDocumentBuilderFromJSONDocument(filePath, {
       callback: mapBuilderCallback,
     });
   }
+  progress.stop();
 
   return objectTypeMap;
 }
@@ -252,4 +262,11 @@ function addToMap(map: MetadataValueMap, metadata: Metadata) {
     mapValue.push(sanitizeMetadataValue(value));
     map.set(key, mapValue);
   }
+}
+
+function progressBar() {
+  const progress = CliUx.ux.progress({
+    format: 'Progress | {bar} | ETA: {eta}s | {value}/{total} files to parse',
+  }) as SingleBar;
+  return progress;
 }
