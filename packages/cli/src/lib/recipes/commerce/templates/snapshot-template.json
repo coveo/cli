@@ -1,0 +1,526 @@
+{
+  "metadata": {
+    "schemaVersion": "v1"
+  },
+  "resources": {
+    "FILTER": [
+      {
+        "model": {
+          "childrenCount": 0,
+          "condition": {},
+          "definition": "filter cq `@objectType=={{objecttype}}`",
+          "description": "",
+          "detailed": {
+            "expressions": ["@objectType=={{objecttype}}"]
+          },
+          "feature": "filter",
+          "parent": {},
+          "position": 1,
+          "ready": false
+        },
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.Recommendations_h11Con }}"
+        },
+        "resourceName": "filter_cq_`@objectType=={{objecttype}}`_1hTdbu"
+      },
+      {
+        "model": {
+          "childrenCount": 0,
+          "condition": {},
+          "definition": "filter cq `@objectType=={{objecttype}}`",
+          "description": "",
+          "detailed": {
+            "expressions": ["@objectType=={{objecttype}}"]
+          },
+          "feature": "filter",
+          "parent": {},
+          "position": 1,
+          "ready": false
+        },
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.PDP_a9yZwh }}"
+        },
+        "resourceName": "filter_cq_`@objectType=={{objecttype}}`_hr7BNg"
+      }
+    ],
+    "ML_MODEL": [
+      {
+        "model": {
+          "commandLineParameters": [
+            "--conf",
+            "coveo.drill.filterOutEmptyQueries=false"
+          ],
+          "commonFilter": "",
+          "customEventFilter": "",
+          "engineId": "topclicks",
+          "exportOffset": "PT0S",
+          "exportPeriod": "P3M",
+          "intervalTime": 1,
+          "intervalUnit": "DAY",
+          "modelActivenessState": "ACTIVE",
+          "modelDisplayName": "ART",
+          "searchEventFilter": "(originLevel1=~'MainSearch' OR originLevel1=~'Listing')",
+          "viewEventFilter": ""
+        },
+        "parents": {},
+        "resourceName": "ART_OZqnzo"
+      },
+      {
+        "model": {
+          "commandLineParameters": [],
+          "commonFilter": "",
+          "customEventFilter": "",
+          "engineId": "ecommerce",
+          "exportOffset": "PT0S",
+          "exportPeriod": "P3M",
+          "intervalTime": 1,
+          "intervalUnit": "DAY",
+          "modelActivenessState": "ACTIVE",
+          "modelDisplayName": "ProductRecommendations",
+          "searchEventFilter": "",
+          "viewEventFilter": ""
+        },
+        "parents": {},
+        "resourceName": "ProductRecommendations_ioV4So"
+      },
+      {
+        "model": {
+          "commandLineParameters": [],
+          "commonFilter": "",
+          "customEventFilter": "",
+          "engineId": "querysuggest",
+          "exportOffset": "PT0S",
+          "exportPeriod": "P3M",
+          "intervalTime": 1,
+          "intervalUnit": "DAY",
+          "modelActivenessState": "ACTIVE",
+          "modelDisplayName": "QuerySuggest",
+          "searchEventFilter": "",
+          "viewEventFilter": ""
+        },
+        "parents": {},
+        "resourceName": "QuerySuggest_Z8b3z5"
+      }
+    ],
+    "ML_MODEL_ASSOCIATION": [
+      {
+        "model": {
+          "cacheMaximumAge": "PT10S",
+          "enableWordCompletion": false,
+          "exclusive": false,
+          "intelligentTermDetection": false,
+          "matchAdvancedExpression": true,
+          "matchBasicExpression": true,
+          "maxRecommendations": 25,
+          "modelId": "{{ ML_MODEL.ART_OZqnzo }}",
+          "rankingModifier": 250,
+          "useAdvancedConfiguration": true
+        },
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.Search_ZVZujz }}"
+        },
+        "resourceName": "ART_1Ax5E4"
+      },
+      {
+        "model": {
+          "cacheMaximumAge": "PT10S",
+          "condition": "{{ QUERY_PIPELINE_CONDITION.when_recommendation_is_popularBought_la83xO }}",
+          "customQueryParameters": {
+            "submodel": "popularBought"
+          },
+          "enableWordCompletion": false,
+          "exclusive": true,
+          "intelligentTermDetection": false,
+          "matchAdvancedExpression": false,
+          "matchBasicExpression": false,
+          "maxRecommendations": 10,
+          "modelId": "{{ ML_MODEL.ProductRecommendations_ioV4So }}",
+          "rankingModifier": 1000,
+          "useAdvancedConfiguration": false
+        },
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.Recommendations_h11Con }}"
+        },
+        "resourceName": "ProductRecommendations_5jFILt"
+      },
+      {
+        "model": {
+          "cacheMaximumAge": "PT10S",
+          "condition": "{{ QUERY_PIPELINE_CONDITION.when_recommendation_is_frequentViewed_EGAjFZ }}",
+          "customQueryParameters": {
+            "submodel": "frequentViewed"
+          },
+          "enableWordCompletion": false,
+          "exclusive": true,
+          "intelligentTermDetection": false,
+          "matchAdvancedExpression": false,
+          "matchBasicExpression": false,
+          "maxRecommendations": 10,
+          "modelId": "{{ ML_MODEL.ProductRecommendations_ioV4So }}",
+          "rankingModifier": 1000,
+          "useAdvancedConfiguration": false
+        },
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.Recommendations_h11Con }}"
+        },
+        "resourceName": "ProductRecommendations_Ct46PA"
+      },
+      {
+        "model": {
+          "cacheMaximumAge": "PT10S",
+          "condition": "{{ QUERY_PIPELINE_CONDITION.when_recommendation_is_user_opzcaV }}",
+          "customQueryParameters": {
+            "submodel": "user"
+          },
+          "enableWordCompletion": false,
+          "exclusive": true,
+          "intelligentTermDetection": false,
+          "matchAdvancedExpression": false,
+          "matchBasicExpression": false,
+          "maxRecommendations": 10,
+          "modelId": "{{ ML_MODEL.ProductRecommendations_ioV4So }}",
+          "rankingModifier": 1000,
+          "useAdvancedConfiguration": false
+        },
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.Recommendations_h11Con }}"
+        },
+        "resourceName": "ProductRecommendations_Jmk16G"
+      },
+      {
+        "model": {
+          "cacheMaximumAge": "PT10S",
+          "condition": "{{ QUERY_PIPELINE_CONDITION.when_recommendation_is_cart_KbMXUr }}",
+          "customQueryParameters": {
+            "submodel": "cart"
+          },
+          "enableWordCompletion": false,
+          "exclusive": true,
+          "intelligentTermDetection": false,
+          "matchAdvancedExpression": false,
+          "matchBasicExpression": false,
+          "maxRecommendations": 10,
+          "modelId": "{{ ML_MODEL.ProductRecommendations_ioV4So }}",
+          "rankingModifier": 1000,
+          "useAdvancedConfiguration": false
+        },
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.Recommendations_h11Con }}"
+        },
+        "resourceName": "ProductRecommendations_aTbeVh"
+      },
+      {
+        "model": {
+          "cacheMaximumAge": "PT10S",
+          "condition": "{{ QUERY_PIPELINE_CONDITION.when_recommendation_is_frequentBought_OoK8ls }}",
+          "customQueryParameters": {
+            "submodel": "frequentBought"
+          },
+          "enableWordCompletion": false,
+          "exclusive": true,
+          "intelligentTermDetection": false,
+          "matchAdvancedExpression": false,
+          "matchBasicExpression": false,
+          "maxRecommendations": 10,
+          "modelId": "{{ ML_MODEL.ProductRecommendations_ioV4So }}",
+          "rankingModifier": 1000,
+          "useAdvancedConfiguration": false
+        },
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.Recommendations_h11Con }}"
+        },
+        "resourceName": "ProductRecommendations_brFZpe"
+      },
+      {
+        "model": {
+          "cacheMaximumAge": "PT10S",
+          "condition": "{{ QUERY_PIPELINE_CONDITION.when_recommendation_is_popularViewed_XmXp27 }}",
+          "customQueryParameters": {
+            "submodel": "popularViewed"
+          },
+          "enableWordCompletion": false,
+          "exclusive": true,
+          "intelligentTermDetection": false,
+          "matchAdvancedExpression": false,
+          "matchBasicExpression": false,
+          "maxRecommendations": 10,
+          "modelId": "{{ ML_MODEL.ProductRecommendations_ioV4So }}",
+          "rankingModifier": 1000,
+          "useAdvancedConfiguration": false
+        },
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.Recommendations_h11Con }}"
+        },
+        "resourceName": "ProductRecommendations_upoJp8"
+      },
+      {
+        "model": {
+          "cacheMaximumAge": "PT10S",
+          "condition": "{{ QUERY_PIPELINE_CONDITION.when_recommendation_is_frequentViewedDifferentCategory_kzEfFJ }}",
+          "customQueryParameters": {
+            "strategy": "frequentViewedDifferentCategory"
+          },
+          "enableWordCompletion": false,
+          "exclusive": true,
+          "intelligentTermDetection": false,
+          "matchAdvancedExpression": false,
+          "matchBasicExpression": false,
+          "maxRecommendations": 0,
+          "modelId": "{{ ML_MODEL.ProductRecommendations_ioV4So }}",
+          "rankingModifier": 1000,
+          "useAdvancedConfiguration": true
+        },
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.Recommendations_h11Con }}"
+        },
+        "resourceName": "Product_Recommendation_TQ6ail"
+      },
+      {
+        "model": {
+          "cacheMaximumAge": "PT10S",
+          "condition": "{{ QUERY_PIPELINE_CONDITION.when_recommendation_is_frequentViewedSameCategory_Yx0xOQ }}",
+          "customQueryParameters": {
+            "strategy": "frequentViewedSameCategory"
+          },
+          "enableWordCompletion": false,
+          "exclusive": true,
+          "intelligentTermDetection": false,
+          "matchAdvancedExpression": false,
+          "matchBasicExpression": false,
+          "maxRecommendations": 0,
+          "modelId": "{{ ML_MODEL.ProductRecommendations_ioV4So }}",
+          "rankingModifier": 1000,
+          "useAdvancedConfiguration": true
+        },
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.Recommendations_h11Con }}"
+        },
+        "resourceName": "Product_Recommendation_yCYkhl"
+      },
+      {
+        "model": {
+          "cacheMaximumAge": "PT10S",
+          "enableWordCompletion": false,
+          "exclusive": false,
+          "intelligentTermDetection": false,
+          "matchAdvancedExpression": false,
+          "matchBasicExpression": false,
+          "maxRecommendations": 10,
+          "modelId": "{{ ML_MODEL.QuerySuggest_Z8b3z5 }}",
+          "rankingModifier": 0,
+          "useAdvancedConfiguration": false
+        },
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.Search_ZVZujz }}"
+        },
+        "resourceName": "QuerySuggest_C477ur"
+      }
+    ],
+    "QUERY_PARAMETER": [
+      {
+        "model": {
+          "childrenCount": 0,
+          "condition": {},
+          "definition": "override query commerce.catalogId:\"{{catalogId}}\"",
+          "detailed": {
+            "commerce.catalogId": "{{catalogId}}"
+          },
+          "feature": "queryParamOverride",
+          "parent": {},
+          "position": 1,
+          "ready": false
+        },
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.Search_ZVZujz }}"
+        },
+        "resourceName": "override_query_commerce.catalogId:{{catalogId}}_U1Gkmx"
+      },
+      {
+        "model": {
+          "childrenCount": 0,
+          "condition": {},
+          "definition": "override query debug:true",
+          "description": "",
+          "detailed": {
+            "debug": true
+          },
+          "feature": "queryParamOverride",
+          "parent": {},
+          "position": 2,
+          "ready": false
+        },
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.Recommendations_h11Con }}"
+        },
+        "resourceName": "override_query_debug:true_wbcKRc"
+      },
+      {
+        "model": {
+          "childrenCount": 0,
+          "condition": {},
+          "definition": "override query filterFieldRange:20",
+          "detailed": {
+            "filterFieldRange": 20
+          },
+          "feature": "queryParamOverride",
+          "parent": {},
+          "position": 3,
+          "ready": false
+        },
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.Search_ZVZujz }}"
+        },
+        "resourceName": "override_query_filterFieldRange:20_wvV1vP"
+      },
+      {
+        "model": {
+          "childrenCount": 0,
+          "condition": {},
+          "definition": "override query filterFieldRange:20",
+          "description": "",
+          "detailed": {
+            "filterFieldRange": 20
+          },
+          "feature": "queryParamOverride",
+          "parent": {},
+          "position": 2,
+          "ready": false
+        },
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.PDP_a9yZwh }}"
+        },
+        "resourceName": "override_query_filterFieldRange:20_NDVOut"
+      },
+      {
+        "model": {
+          "childrenCount": 0,
+          "condition": {},
+          "definition": "override query maximumAge:0",
+          "description": "",
+          "detailed": {
+            "maximumAge": 0
+          },
+          "feature": "queryParamOverride",
+          "parent": {},
+          "position": 9,
+          "ready": false
+        },
+        "parents": {
+          "queryPipelineId": "{{ QUERY_PIPELINE.Search_ZVZujz }}"
+        },
+        "resourceName": "override_query_maximumAge:0_XWhmn0"
+      }
+    ],
+    "QUERY_PIPELINE": [
+      {
+        "model": {
+          "condition": {},
+          "description": "Empty Pipeline for PDP",
+          "isDefault": false,
+          "name": "PDP",
+          "splitTestEnabled": false
+        },
+        "parents": {},
+        "resourceName": "PDP_a9yZwh"
+      },
+      {
+        "model": {
+          "condition": {
+            "definition": "when $recommendation isPopulated",
+            "detailed": {
+              "condition": {
+                "left": {
+                  "object": "recommendation"
+                },
+                "operator": "isPopulated"
+              }
+            },
+            "id": "{{ QUERY_PIPELINE_CONDITION.when_recommendation_isPopulated_IhAIQt }}"
+          },
+          "description": "Home, PDP and Cart Recommendations",
+          "isDefault": false,
+          "name": "Recommendations",
+          "splitTestEnabled": false
+        },
+        "parents": {},
+        "resourceName": "Recommendations_h11Con"
+      },
+      {
+        "model": {
+          "condition": {},
+          "description": "Main Search and Listing Pipeline",
+          "isDefault": true,
+          "name": "Search",
+          "splitTestEnabled": false
+        },
+        "parents": {},
+        "resourceName": "Search_ZVZujz"
+      }
+    ],
+    "QUERY_PIPELINE_CONDITION": [
+      {
+        "model": {
+          "definition": "when $recommendation isPopulated"
+        },
+        "parents": {},
+        "resourceName": "when_recommendation_isPopulated_IhAIQt"
+      },
+      {
+        "model": {
+          "definition": "when $recommendation is \"cart\""
+        },
+        "parents": {},
+        "resourceName": "when_recommendation_is_cart_KbMXUr"
+      },
+      {
+        "model": {
+          "definition": "when $recommendation is \"frequentBought\""
+        },
+        "parents": {},
+        "resourceName": "when_recommendation_is_frequentBought_OoK8ls"
+      },
+      {
+        "model": {
+          "definition": "when $recommendation is \"frequentViewedDifferentCategory\""
+        },
+        "parents": {},
+        "resourceName": "when_recommendation_is_frequentViewedDifferentCategory_kzEfFJ"
+      },
+      {
+        "model": {
+          "definition": "when $recommendation is \"frequentViewedSameCategory\""
+        },
+        "parents": {},
+        "resourceName": "when_recommendation_is_frequentViewedSameCategory_Yx0xOQ"
+      },
+      {
+        "model": {
+          "definition": "when $recommendation is \"frequentViewed\""
+        },
+        "parents": {},
+        "resourceName": "when_recommendation_is_frequentViewed_EGAjFZ"
+      },
+      {
+        "model": {
+          "definition": "when $recommendation is \"popularBought\""
+        },
+        "parents": {},
+        "resourceName": "when_recommendation_is_popularBought_la83xO"
+      },
+      {
+        "model": {
+          "definition": "when $recommendation is \"popularViewed\""
+        },
+        "parents": {},
+        "resourceName": "when_recommendation_is_popularViewed_XmXp27"
+      },
+      {
+        "model": {
+          "definition": "when $recommendation is \"user\""
+        },
+        "parents": {},
+        "resourceName": "when_recommendation_is_user_opzcaV"
+      }
+    ]
+  }
+}

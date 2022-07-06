@@ -32,11 +32,11 @@ function isErrorFromAPI(arg: unknown): arg is APIErrorResponse {
   }
 }
 
-export function buildError(arg: unknown) {
+export function buildError(arg: unknown, tagline?: string) {
   const isCLIBaseError = arg instanceof CLIBaseError;
 
   if (isErrorFromAPI(arg)) {
-    return new APIError(arg);
+    return new APIError(arg, tagline);
   } else if (isCLIBaseError) {
     return arg;
   } else {

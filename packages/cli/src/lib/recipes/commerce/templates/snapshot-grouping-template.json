@@ -358,9 +358,9 @@
         "model": {
           "childrenCount": 0,
           "condition": {},
-          "definition": "override query filterField:\"{{groupingIdField}}\"",
+          "definition": "override query filterField:\"{{groupingId}}\"",
           "detailed": {
-            "filterField": "{{groupingIdField}}"
+            "filterField": "{{groupingId}}"
           },
           "feature": "queryParamOverride",
           "parent": {},
@@ -370,16 +370,16 @@
         "parents": {
           "queryPipelineId": "{{ QUERY_PIPELINE.Search_ZVZujz }}"
         },
-        "resourceName": "override_query_filterField:{{groupingIdField}}_F4ktfB"
+        "resourceName": "override_query_filterField:{{groupingId}}_F4ktfB"
       },
       {
         "model": {
           "childrenCount": 0,
           "condition": {},
-          "definition": "override query filterField:\"{{groupingIdField}}\"",
+          "definition": "override query filterField:\"{{groupingId}}\"",
           "description": "",
           "detailed": {
-            "filterField": "{{groupingIdField}}"
+            "filterField": "{{groupingId}}"
           },
           "feature": "queryParamOverride",
           "parent": {},
@@ -389,7 +389,7 @@
         "parents": {
           "queryPipelineId": "{{ QUERY_PIPELINE.PDP_a9yZwh }}"
         },
-        "resourceName": "override_query_filterField:{{groupingIdField}}_NKAkZw"
+        "resourceName": "override_query_filterField:{{groupingId}}_NKAkZw"
       },
       {
         "model": {

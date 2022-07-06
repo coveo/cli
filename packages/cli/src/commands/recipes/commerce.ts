@@ -1,7 +1,7 @@
+import {CatalogConfigurationModel} from '@coveord/platform-client';
 import {bold} from 'chalk';
 import {CliUx, Command} from '@oclif/core';
 import {Trackable} from '../../lib/decorators/preconditions/trackable';
-import SnapshotTemplate from '../../lib/recipes/commerce/snapshot-template.json';
 import CatalogCreate from '../commerce/catalog/create';
 import {
   HasNecessaryCoveoPrivileges,
@@ -21,6 +21,11 @@ import {selectFieldModel} from '../../lib/catalog/questions';
 import {getDocumentFieldsAndObjectTypeValues} from '../../lib/catalog/parse';
 import {listAllFieldsFromOrg} from '../../lib/utils/field';
 import {buildError} from '../../hooks/analytics/eventUtils';
+import dedent from 'ts-dedent';
+import {
+  SnapshotTemplate,
+  SnashotVariations,
+} from '../../lib/recipes/commerce/templateLoader';
 
 type CommandRunReturn<T extends typeof Command> = Promise<
   ReturnType<InstanceType<T>['run']>
@@ -45,28 +50,20 @@ export default class CommerceRecipe extends Command {
     //   TODO:
   )
   public async run() {
-    // FIXME: Should find a cleaner way to run processes and store variables at the beginning of the recipe so they can be used by multiple steps
     const {flags, args} = await this.parse(CommerceRecipe);
     this.ensureTempFolder();
     const fields = await this.getFields();
-    const {sourceId, product} = await this.newStep(
-      'Catalog creation',
-      CatalogCreate,
-      [
-        args.name,
-        '--json',
-        '--sourceVisibility',
-        flags.sourceVisibility,
-        '--dataFiles',
-        ...flags.dataFiles,
-      ]
-    );
-    const groupingIdField = await this.additionalCommerceFeatures(fields); // Should return a different snapshot template based on the user choices
-    this.storeParametrizedSnapshotLocally(
-      product.objectType,
+    const catalog = await this.newStep('Catalog creation', CatalogCreate, [
       args.name,
-      groupingIdField!
-    );
+      '--json',
+      '--sourceVisibility',
+      flags.sourceVisibility,
+      '--dataFiles',
+      ...flags.dataFiles,
+    ]);
+
+    this.logHeader('Additional Commerce Features');
+    await this.generateSnapshot(fields, catalog);
 
     await this.newStep('Organization setup', Push, [
       '--sync',
@@ -76,8 +73,9 @@ export default class CommerceRecipe extends Command {
       '--wait',
       '600',
     ]);
+
     await this.newStep('Indexation', SourceCatalogAdd, [
-      sourceId,
+      catalog.sourceId,
       '--createMissingFields',
       '--fullUpload',
       '--skipFullUploadCheck',
@@ -101,25 +99,30 @@ export default class CommerceRecipe extends Command {
     }
   }
 
-  private storeParametrizedSnapshotLocally(
-    objectType: string,
-    catalogId: string,
-    groupingId: string
+  private async generateSnapshot(
+    fields: FieldModel[],
+    catalog: CatalogConfigurationModel
   ) {
-    const objectTypeReplacementRegex = new RegExp('{{objecttype}}', 'gm');
-    const catalogIdReplacementRegex = new RegExp('{{catalogId}}', 'gm');
-    const groupingIdReplacementRegex = new RegExp('{{groupingIdField}}', 'gm');
-    const snapshot = JSON.stringify(SnapshotTemplate)
-      .replace(objectTypeReplacementRegex, objectType)
-      .replace(catalogIdReplacementRegex, catalogId)
-      .replace(groupingIdReplacementRegex, groupingId);
+    const variations = await this.selectSnapshotVariations(fields, catalog);
+    const template = new SnapshotTemplate(variations);
     const snapshotPath = join(
       CommerceRecipe.tempFolder,
       Project.resourceFolderName,
       'ALL.json' // The name of the snapshot file does not matter
     );
+    template.write(snapshotPath);
+  }
 
-    writeJsonSync(snapshotPath, JSON.parse(snapshot), {spaces: 2});
+  private async selectSnapshotVariations(
+    fields: FieldModel[],
+    catalog: CatalogConfigurationModel
+  ): Promise<SnashotVariations> {
+    const {args} = await this.parse(CommerceRecipe);
+    return {
+      catalogId: args.name,
+      objectType: catalog.product.objectType,
+      groupingId: await this.setupProductGrouping(fields),
+    };
   }
 
   private async getFields(): Promise<FieldModel[]> {
@@ -134,13 +137,6 @@ export default class CommerceRecipe extends Command {
     );
     const fieldSet = new Set([...detectedFieldsInData, ...existingFieldsInOrg]);
     return Array.from(fieldSet);
-  }
-
-  private async additionalCommerceFeatures(fields: FieldModel[]) {
-    this.logHeader('Additional Commerce Features');
-    // FIXME: here we would need to make the snapshot paratrizable depending on the user's choices
-    const field = await this.setupProductGrouping(fields);
-    return field;
   }
 
   private async setupProductGrouping(
@@ -158,7 +154,11 @@ export default class CommerceRecipe extends Command {
     );
 
     if (fieldModel.type !== FieldTypes.STRING) {
-      throw 'TODO: handle case where field is not of string type';
+      const message = dedent`The selected field is not a string.
+      Skipping Product grouping feature configuration.
+      This will be better handled in a future iteration`;
+      CliUx.ux.error(message, {exit: false});
+      return;
     }
 
     if (fieldModel.name && fieldModel.facet === false) {
