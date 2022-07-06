@@ -11,17 +11,19 @@ import {CliUx} from '@oclif/core';
 import {PathLike} from 'fs';
 import dedent from 'ts-dedent';
 import {DocumentParseResult} from './interfaces';
+import {getAllJsonFilesFromEntries} from '../utils/file';
 
 /**
  * Parses the JSON files to extract fields required for catalog configuration questions
  * It returns the list of all fieldNames across the documents as well as the different object type values.
  *
- * @param {PathLike[]} filePaths the path to the JSON documents
+ * @param {string[]} filesOrDirectories the path to the JSON documents
  */
 export async function getDocumentFieldsAndObjectTypeValues(
   client: PlatformClient,
-  filePaths: PathLike[]
+  filesOrDirectories: string[]
 ): Promise<DocumentParseResult> {
+  const files = getAllJsonFilesFromEntries(filesOrDirectories);
   const fieldNameSet: Set<string> = new Set();
   const objectTypeValueSet: Set<string> = new Set();
   const analyser = new FieldAnalyser(client);
@@ -31,7 +33,7 @@ export async function getDocumentFieldsAndObjectTypeValues(
     addFieldNameToSet(fieldNameSet, docBuilder);
   };
 
-  for (const filePath of filePaths) {
+  for (const filePath of files) {
     docBuilders.push(
       ...parseAndGetDocumentBuilderFromJSONDocument(filePath, {
         callback,
