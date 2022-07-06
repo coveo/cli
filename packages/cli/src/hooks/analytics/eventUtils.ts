@@ -40,7 +40,7 @@ export function buildError(arg: unknown, tagline?: string) {
   } else if (isCLIBaseError) {
     return arg;
   } else {
-    return new UnknownError();
+    return new UnknownError(arg);
   }
 }
 

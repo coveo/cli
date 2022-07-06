@@ -1,24 +1,28 @@
-import {writeJsonSync} from 'fs-extra';
+import {readFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
 
-const SnashotVariationPlaceholder = {
-  objectType: '{{objectType}}',
-  catalogId: '{{catalogId}}',
-  groupingId: '{{groupingId}}',
-};
+const SnashotVariationPlaceholder = [
+  'objectType',
+  'catalogId',
+  'groupingId',
+] as const;
 
-export type SnashotVariations = Partial<typeof SnashotVariationPlaceholder>;
+type Placeholder = typeof SnashotVariationPlaceholder[number];
+
+export type SnashotVariations = Partial<Record<Placeholder, string>>;
 
 export class SnapshotTemplate {
-  private templatePath = join(__dirname, 'templates');
+  private basePath = join(__dirname, 'templates');
   private template: string;
   public constructor(private variations: SnashotVariations) {
-    this.template = join(
-      this.templatePath,
+    const templatePath = join(
+      this.basePath,
       this.variations.groupingId
         ? 'snapshot-grouping-template.json'
         : 'snapshot-template.json'
     );
+
+    this.template = readFileSync(templatePath).toString();
   }
 
   public write(snapshotPath: string) {
@@ -26,14 +30,11 @@ export class SnapshotTemplate {
   }
 
   private get snapshot(): {} {
-    for (const placeholder of Object.keys(SnashotVariationPlaceholder)) {
-      const replacementString =
-        this.variations[
-          placeholder as keyof typeof SnashotVariationPlaceholder
-        ];
+    for (const placeholder of SnashotVariationPlaceholder) {
+      const replacementString = this.variations[placeholder];
       if (replacementString) {
         this.template = this.template.replace(
-          new RegExp(placeholder, 'gm'),
+          new RegExp(`{{${placeholder}}}`, 'gmi'),
           replacementString
         );
       }

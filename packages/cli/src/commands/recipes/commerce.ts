@@ -1,4 +1,5 @@
 import {CatalogConfigurationModel} from '@coveord/platform-client';
+import {BuiltInTransformers} from '@coveo/push-api-client';
 import {bold} from 'chalk';
 import {CliUx, Command} from '@oclif/core';
 import {Trackable} from '../../lib/decorators/preconditions/trackable';
@@ -8,13 +9,12 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '../../lib/decorators/preconditions';
-import {ensureDirSync, writeJsonSync} from 'fs-extra';
+import {ensureDirSync, rmSync} from 'fs-extra';
 import SourceCatalogAdd from '../source/catalog/add';
 import Push from '../org/resources/push';
 import {join} from 'path';
 import {Project} from '../../lib/project/project';
 import {cwd} from 'process';
-import {rmSync} from 'fs';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {FieldModel, FieldTypes} from '@coveord/platform-client';
 import {selectFieldModel} from '../../lib/catalog/questions';
@@ -50,11 +50,11 @@ export default class CommerceRecipe extends Command {
     //   TODO:
   )
   public async run() {
-    const {flags, args} = await this.parse(CommerceRecipe);
+    const {flags} = await this.parse(CommerceRecipe);
     this.ensureTempFolder();
     const fields = await this.getFields();
     const catalog = await this.newStep('Catalog creation', CatalogCreate, [
-      args.name,
+      await this.getSanitizedName(),
       '--json',
       '--sourceVisibility',
       flags.sourceVisibility,
@@ -117,9 +117,8 @@ export default class CommerceRecipe extends Command {
     fields: FieldModel[],
     catalog: CatalogConfigurationModel
   ): Promise<SnashotVariations> {
-    const {args} = await this.parse(CommerceRecipe);
     return {
-      catalogId: args.name,
+      catalogId: await this.getSanitizedName(),
       objectType: catalog.product.objectType,
       groupingId: await this.setupProductGrouping(fields),
     };
@@ -198,5 +197,10 @@ export default class CommerceRecipe extends Command {
   private get client() {
     const authenticatedClient = new AuthenticatedClient();
     return authenticatedClient.getClient();
+  }
+
+  private async getSanitizedName() {
+    const {args} = await this.parse(CommerceRecipe);
+    return BuiltInTransformers.toLowerCase(args.name);
   }
 }
