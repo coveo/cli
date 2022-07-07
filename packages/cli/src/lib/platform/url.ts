@@ -1,3 +1,4 @@
+import {Configuration} from '../config/config';
 import {platformUrl, PlatformUrlOptions} from './environment';
 
 export function snapshotUrl(
@@ -27,10 +28,9 @@ export function createSnapshotUrl(
 }
 
 export function catalogConfigurationUrl(
-  targetOrgId: string,
   catalogConfigurationId: string,
-  options: Partial<PlatformUrlOptions>
+  options: Configuration
 ) {
   const url = platformUrl(options);
-  return `${url}/admin/#${targetOrgId}/commerce/configurations/edit/${catalogConfigurationId}`;
+  return `${url}/admin/#${options.organization}/commerce/configurations/edit/${catalogConfigurationId}`;
 }

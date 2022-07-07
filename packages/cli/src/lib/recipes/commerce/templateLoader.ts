@@ -1,5 +1,6 @@
-import {readFileSync, writeJsonSync} from 'fs-extra';
-import {join} from 'path';
+import {writeJsonSync} from 'fs-extra';
+import snapshotTemplate from './templates/snapshot-template.json';
+import snapshotGroupingTemplate from './templates/snapshot-grouping-template.json';
 
 const SnashotVariationPlaceholder = [
   'objectType',
@@ -12,17 +13,11 @@ type Placeholder = typeof SnashotVariationPlaceholder[number];
 export type SnashotVariations = Partial<Record<Placeholder, string>>;
 
 export class SnapshotTemplate {
-  private basePath = join(__dirname, 'templates');
   private template: string;
   public constructor(private variations: SnashotVariations) {
-    const templatePath = join(
-      this.basePath,
-      this.variations.groupingId
-        ? 'snapshot-grouping-template.json'
-        : 'snapshot-template.json'
-    );
-
-    this.template = readFileSync(templatePath).toString();
+    this.template = this.variations.groupingId
+      ? JSON.stringify(snapshotGroupingTemplate)
+      : JSON.stringify(snapshotTemplate);
   }
 
   public write(snapshotPath: string) {
