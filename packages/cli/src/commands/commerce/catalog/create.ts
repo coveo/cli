@@ -105,7 +105,7 @@ export default class CatalogCreate extends Command {
     );
     stopCurrentTask();
 
-    await this.mapStandardFields(sourceId, catalogConfig.id, configuration);
+    await this.mapStandardFields(catalogConfig.id, configuration);
 
     return {...catalogConfig, ...fieldsAndObjectTypes, sourceId};
   }
@@ -125,8 +125,9 @@ export default class CatalogCreate extends Command {
   ) {
     const fieldsToCreate: FieldModel[] = [];
     const fieldsToUpdate: FieldModel[] = [];
-    const parametrizeField = (field: FieldModel) => ({
+    const parametrizeField = (field: FieldModel): FieldModel => ({
       ...field,
+      type: FieldTypes.STRING,
       multiValueFacet: true,
       multiValueFacetTokenizers: ';',
       useCacheForNestedQuery: true,
@@ -234,16 +235,11 @@ export default class CatalogCreate extends Command {
   }
 
   private async mapStandardFields(
-    sourceId: string,
     catalogConfigurationId: string,
     configuration: Configuration
   ) {
     // TODO: try to automap standard fields with similar name
-    const url = catalogConfigurationUrl(
-      sourceId,
-      catalogConfigurationId,
-      configuration
-    );
+    const url = catalogConfigurationUrl(catalogConfigurationId, configuration);
     CliUx.ux.log(`To map standard fields visit ${url}`);
   }
 
