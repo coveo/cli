@@ -12,6 +12,7 @@ import {PathLike} from 'fs';
 import dedent from 'ts-dedent';
 import {DocumentParseResult} from './interfaces';
 import {getAllJsonFilesFromEntries} from '../utils/file';
+import {progressBar} from '../utils/spinner';
 
 /**
  * Parses the JSON files to extract fields required for catalog configuration questions
@@ -28,12 +29,16 @@ export async function getDocumentFieldsAndObjectTypeValues(
   const objectTypeValueSet: Set<string> = new Set();
   const analyser = new FieldAnalyser(client);
   const docBuilders: DocumentBuilder[] = [];
+  const progress = progressBar();
+
   const callback = async (docBuilder: DocumentBuilder, docPath: PathLike) => {
     addObjectTypeToSet(objectTypeValueSet, docBuilder, docPath);
     addFieldNameToSet(fieldNameSet, docBuilder);
   };
 
+  progress.start(files.length, 0);
   for (const filePath of files) {
+    progress.increment();
     docBuilders.push(
       ...parseAndGetDocumentBuilderFromJSONDocument(filePath, {
         callback,
@@ -41,6 +46,7 @@ export async function getDocumentFieldsAndObjectTypeValues(
       })
     );
   }
+  progress.stop();
 
   if (objectTypeValueSet.size === 0) {
     CliUx.ux.error(

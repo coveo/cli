@@ -18,7 +18,6 @@ import {cwd} from 'process';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {FieldModel, FieldTypes} from '@coveord/platform-client';
 import {selectFieldModel} from '../../lib/catalog/questions';
-import {getDocumentFieldsAndObjectTypeValues} from '../../lib/catalog/parse';
 import {listAllFieldsFromOrg} from '../../lib/utils/field';
 import {buildError} from '../../hooks/analytics/eventUtils';
 import dedent from 'ts-dedent';
@@ -52,16 +51,14 @@ export default class CommerceRecipe extends Command {
   public async run() {
     const {flags} = await this.parse(CommerceRecipe);
     this.ensureTempFolder();
-    const fields = await this.getFields();
     const catalog = await this.newStep('Catalog creation', CatalogCreate, [
       await this.getSanitizedName(),
-      '--json',
       '--sourceVisibility',
       flags.sourceVisibility,
       '--dataFiles',
       ...flags.dataFiles,
     ]);
-
+    const fields = await this.getAllFields(catalog.fields);
     this.logHeader('Additional Commerce Features');
     await this.generateSnapshot(fields, catalog);
 
@@ -124,13 +121,10 @@ export default class CommerceRecipe extends Command {
     };
   }
 
-  private async getFields(): Promise<FieldModel[]> {
-    const {flags} = await this.parse(CommerceRecipe);
+  private async getAllFields(
+    detectedFieldsInData: FieldModel[]
+  ): Promise<FieldModel[]> {
     const client = await this.client;
-    // FIXME: Find a way to prevent duplication of this part which is already being done in the catalog creation piece
-    // This costs another document parse that can be prevented
-    const {fields: detectedFieldsInData} =
-      await getDocumentFieldsAndObjectTypeValues(client, flags.dataFiles);
     const existingFieldsInOrg: FieldModel[] = await listAllFieldsFromOrg(
       client
     );

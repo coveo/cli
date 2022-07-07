@@ -4,10 +4,9 @@ import {
   MetadataValue,
   parseAndGetDocumentBuilderFromJSONDocument,
 } from '@coveo/push-api-client';
-import {CliUx} from '@oclif/core';
-import {SingleBar} from 'cli-progress';
 import {PathLike} from 'fs';
-import {NonUniqueCatalogIdFieldError} from '../errors/CatalogError';
+import {NonUniqueCatalogIdFieldError} from '../errors/catalogError';
+import {progressBar} from '../utils/spinner';
 import {getAllJsonFilesFromEntries} from '../utils/file';
 import {containsDuplicates} from '../utils/list';
 import {setAreEqual} from '../utils/set';
@@ -149,6 +148,7 @@ function getMaps(filePaths: PathLike[]): Map<MetadataValue, MetadataValueMap> {
     addToMap(metadataValueMap, metadata);
   };
 
+  // TODO: should parse the json document only once at the begining to prevent multiple parses
   progress.start(filePaths.length, 0);
   for (const filePath of filePaths) {
     progress.increment();
@@ -262,11 +262,4 @@ function addToMap(map: MetadataValueMap, metadata: Metadata) {
     mapValue.push(sanitizeMetadataValue(value));
     map.set(key, mapValue);
   }
-}
-
-function progressBar() {
-  const progress = CliUx.ux.progress({
-    format: 'Progress | {bar} | ETA: {eta}s | {value}/{total} files to parse',
-  }) as SingleBar;
-  return progress;
 }

@@ -1,5 +1,6 @@
 import {bold} from 'chalk';
 import {
+  FieldTypes,
   CatalogConfigurationModel,
   PlatformClient,
   SourceType,
@@ -47,7 +48,6 @@ export default class CatalogCreate extends Command {
       char: 'f',
       required: true,
       helpValue: 'products.json availabilities.json',
-      // TODO: support folders as well.
       description:
         'Combinaison of JSON files (containing JSON files) to push. Can be repeated.',
     }),
@@ -67,7 +67,9 @@ export default class CatalogCreate extends Command {
 
   // Preconditions were removed because they do do not the enableJsonFlag option.
   // Ideally, the preconditions should also support the run method with non-void return
-  public async run(): Promise<CatalogConfigurationModel & {sourceId: string}> {
+  public async run(): Promise<
+    CatalogConfigurationModel & DocumentParseResult & {sourceId: string}
+  > {
     const {flags} = await this.parse(CatalogCreate);
     const authenticatedClient = new AuthenticatedClient();
     const client = await authenticatedClient.getClient();
@@ -105,7 +107,7 @@ export default class CatalogCreate extends Command {
 
     await this.mapStandardFields(sourceId, catalogConfig.id, configuration);
 
-    return {...catalogConfig, sourceId};
+    return {...catalogConfig, ...fieldsAndObjectTypes, sourceId};
   }
 
   public async catch(err?: Error & {exitCode?: number}) {
