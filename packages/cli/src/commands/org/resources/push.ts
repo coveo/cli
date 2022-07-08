@@ -72,7 +72,8 @@ export default class Push extends Command {
       options
     );
 
-    if (flags.previewLevel !== PreviewLevelValue.Skip) {
+    const shouldSkip = await this.shouldSkipPreview();
+    if (!shouldSkip) {
       const display = await this.shouldDisplayExpandedPreview();
       const {deleteMissingResources} = await this.getOptions();
       await snapshot.preview(project, deleteMissingResources, display);
