@@ -8,6 +8,7 @@ import {
   SnapshotExportContentFormat,
   ResourceSnapshotsSynchronizationReportModel,
   ApplyOptionsDeletionScope,
+  SnapshotDiffModel,
 } from '@coveord/platform-client';
 import retry from 'async-retry';
 import {ReportViewer} from './reportPreviewer/reportPreviewer';
@@ -21,11 +22,13 @@ import {
   SnapshotNoReportFoundError,
   SnapshotNoSynchronizationReportFoundError,
 } from '../errors/snapshotErrors';
-import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
+import {DiffViewer} from './diffViewer/diffViewer';
+import {PrintableError} from '../errors/printableError';
 
 export type SnapshotReport =
   | ResourceSnapshotsReportModel
-  | ResourceSnapshotsSynchronizationReportModel;
+  | ResourceSnapshotsSynchronizationReportModel
+  | SnapshotDiffModel;
 
 export interface WaitUntilDoneOptions {
   /**
@@ -37,10 +40,6 @@ export interface WaitUntilDoneOptions {
    * The interval between 2 consecutive polls.
    */
   waitInterval?: number; // in seconds
-  /**
-   * Callback to execute every time a request is being made to retrieve the snapshot data
-   */
-  onRetryCb?: (report: ResourceSnapshotsReportModel) => void;
 }
 
 export interface WaitUntilOperationDone extends WaitUntilDoneOptions {
@@ -54,7 +53,6 @@ export class Snapshot {
   public static defaultWaitOptions: Required<WaitUntilDoneOptions> = {
     waitInterval: 1,
     wait: 60,
-    onRetryCb: (_report: ResourceSnapshotsReportModel) => {},
   };
 
   private static ongoingReportStatuses = [
@@ -83,27 +81,27 @@ export class Snapshot {
     return new SnapshotReporter(this.latestReport);
   }
 
-  public async preview(
-    projectToPreview: Project,
-    deleteMissingResources = false,
-    expandedPreview = true
-  ) {
+  public async preview() {
     const reporter = new SnapshotReporter(this.latestReport);
-    await this.displayLightPreview(reporter);
-    if (!expandedPreview) {
-      return;
-    }
-    const onSuccess = () =>
-      this.generateExpandedPreview(projectToPreview, deleteMissingResources);
-    await reporter
-      .setReportHandler(
-        SnapshotReportStatus.SUCCESS,
-        async function (this: SnapshotReporter) {
-          await onSuccess();
-        }
-      )
-      .handleReport();
+    const viewer = new ReportViewer(reporter);
+    await viewer.display();
   }
+
+  // public async diff(projectToPreview: Project) {
+  //   // const reporter = new SnapshotReporter(this.latestDiffReport);
+  //   // const viewer = new ReportViewer(reporter);
+  //   const diffModel = await this.snapshotClient.diff(
+  //     this.id,
+  //     this.getLatestReport.id
+  //   );
+  //   await this.waitUntilDone({
+  //     operationToWaitFor: ResourceSnapshotsReportType.DryRun,
+  //     ...options,
+  //   });
+
+  //   const previewer = new DiffViewer(diffModel, projectToPreview);
+  //   await previewer.diff();
+  // }
 
   public async apply(
     deleteMissingResources = false,
@@ -137,13 +135,6 @@ export class Snapshot {
     });
   }
 
-  public areResourcesInError() {
-    return (
-      this.latestReport.resultCode ===
-      ResourceSnapshotsReportResultCode.ResourcesInError
-    );
-  }
-
   public saveDetailedReport(projectPath: string) {
     const pathToReport = join(
       projectPath,
@@ -156,19 +147,31 @@ export class Snapshot {
   }
 
   public get latestReport() {
-    const reports = this.model.reports;
-    if (!Array.isArray(reports) || reports.length === 0) {
-      throw new SnapshotNoReportFoundError(this);
-    }
-    return this.sortReportsByDate(reports)[0];
+    return this.getLatestReport<ResourceSnapshotsReportModel>('reports');
   }
 
   public get latestSynchronizationReport() {
-    const reports = this.model.synchronizationReports;
-    if (!this.hasBegunSynchronization(reports)) {
-      throw new SnapshotNoSynchronizationReportFoundError(this);
-    }
-    return this.sortReportsByDate(reports)[0];
+    return this.getLatestReport<ResourceSnapshotsSynchronizationReportModel>(
+      'synchronizationReports'
+    );
+  }
+
+  public get latestDiffReport() {
+    return this.getLatestReport<SnapshotDiffModel>('diffGenerationReports');
+  }
+
+  private getLatestReport<T extends {updatedDate: number}>(
+    reportType: keyof Pick<
+      ResourceSnapshotsModel,
+      'reports' | 'synchronizationReports' | 'diffGenerationReports'
+    >
+  ): T {
+    const reports: SnapshotReport[] = [];
+    return this.sortReportsByDate<T>(reports)[0];
+  }
+
+  private sortReportsByDate<T extends {updatedDate: number}>(report: T[]): T[] {
+    return report.sort((a, b) => b.updatedDate - a.updatedDate);
   }
 
   public get id() {
@@ -183,33 +186,11 @@ export class Snapshot {
     return this.client.resourceSnapshot;
   }
 
-  private sortReportsByDate<T extends SnapshotReport>(report: T[]): T[] {
-    return report.sort((a, b) => b.updatedDate - a.updatedDate);
-  }
-
   private hasBegunSynchronization(
     _synchronizationReports?: ResourceSnapshotsSynchronizationReportModel[]
   ): _synchronizationReports is ResourceSnapshotsSynchronizationReportModel[] {
     const reports = this.model.synchronizationReports || [];
     return reports.length > 0;
-  }
-
-  private async displayLightPreview(reporter: SnapshotReporter) {
-    const viewer = new ReportViewer(reporter);
-    await viewer.display();
-  }
-
-  private async generateExpandedPreview(
-    projectToPreview: Project,
-    shouldDelete: boolean
-  ) {
-    const previewer = new ExpandedPreviewer(
-      this.latestReport,
-      this.targetId,
-      projectToPreview,
-      shouldDelete
-    );
-    await previewer.preview();
   }
 
   private async refreshSnapshotData() {
@@ -223,7 +204,7 @@ export class Snapshot {
     const toMilliseconds = (seconds: number) => seconds * 1e3;
 
     return retry(
-      this.waitUntilDoneRetryFunction(opts.onRetryCb, opts.operationToWaitFor),
+      this.waitUntilDoneRetryFunction(opts.operationToWaitFor),
       // Setting the retry mechanism to follow a time-based logic instead of specifying the  number of attempts.
       {
         retries: Math.ceil(opts.wait / opts.waitInterval),
@@ -251,6 +232,7 @@ export class Snapshot {
   private isGoingThroughOperation(
     operation: ResourceSnapshotsReportType
   ): boolean {
+    // TODO: CDX-949: Use the actual operation progress state from the API
     if (this.latestReport.type === operation) {
       return true;
     }
@@ -261,19 +243,17 @@ export class Snapshot {
   }
 
   private waitUntilDoneRetryFunction(
-    onRetryCb: (report: ResourceSnapshotsReportModel) => void,
     operationToWaitFor?: ResourceSnapshotsReportType
   ): () => Promise<void> {
     return (async () => {
       await this.refreshSnapshotData();
 
+      // TODO: CDX-949: Check the report.progressValue instead of running some assumptions
       const isUnsettled = this.isUnsettled();
       const isSynchronizing = this.isSynchronizing();
       const isUnexpectedOperation = operationToWaitFor
         ? !this.isGoingThroughOperation(operationToWaitFor)
         : false;
-
-      onRetryCb(this.latestReport);
 
       if (isUnsettled || isSynchronizing || isUnexpectedOperation) {
         throw new SnapshotOperationTimeoutError(this);
