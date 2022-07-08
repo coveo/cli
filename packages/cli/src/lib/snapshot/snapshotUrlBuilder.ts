@@ -12,12 +12,6 @@ export class SnapshotUrlBuilder {
     return snapshotApplyUrl(targetOrgId, snapshotId, options);
   }
 
-  public getSynchronizationPage(snapshot: Snapshot) {
-    const {options, targetOrgId, snapshotId} =
-      this.getSnapshotUrlOptions(snapshot);
-    return snapshotSynchronizationUrl(targetOrgId, snapshotId, options);
-  }
-
   private getSnapshotUrlOptions(snapshot: Snapshot) {
     const platformUrlOptions: PlatformUrlOptions = {
       environment: this.config.environment,
