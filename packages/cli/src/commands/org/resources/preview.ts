@@ -21,6 +21,7 @@ import {
   sync,
   wait,
   organization,
+  snapshotId,
 } from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
@@ -44,16 +45,11 @@ export default class Preview extends Command {
     ...organization(
       'The unique identifier of the organization where to preview the changes'
     ),
+    ...snapshotId(),
     showMissingResources: Flags.boolean({
       char: 'd',
       description: 'Preview resources deletion when enabled',
       default: false,
-      required: false,
-    }),
-    snapshotId: Flags.string({
-      char: 's',
-      description:
-        'The unique identifier of the snapshot to preview. If not specified, a new snapshot will be created from your local project. You can list available snapshots in your organization with org:resources:list',
       required: false,
     }),
   };

@@ -17,7 +17,11 @@ import {writeSnapshotPrivilege} from '../../../lib/decorators/preconditions/plat
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {ProcessAbort} from '../../../lib/errors/processError';
-import {organization, wait} from '../../../lib/flags/snapshotCommonFlags';
+import {
+  organization,
+  snapshotId,
+  wait,
+} from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
 import type {
   SnapshotPullModel,
@@ -58,12 +62,7 @@ export default class Pull extends Command {
     ...organization(
       'The unique identifier of the organization from which to pull the resources'
     ),
-    snapshotId: Flags.string({
-      char: 's',
-      exclusive: ['resourceTypes'],
-      description:
-        'The unique identifier of the snapshot to pull. If not specified, a new snapshot will be created. You can list available snapshot in your organization with org:resources:list',
-    }),
+    ...snapshotId(),
     git: Flags.boolean({
       char: 'g',
       description:
