@@ -160,7 +160,7 @@ export class Snapshot {
     return this.getLatestReport<SnapshotDiffModel>('diffGenerationReports');
   }
 
-  private getLatestReport<T extends {updatedDate: number}>(
+  private getLatestReport<T extends SnapshotReport>(
     reportType: keyof Pick<
       ResourceSnapshotsModel,
       'reports' | 'synchronizationReports' | 'diffGenerationReports'
