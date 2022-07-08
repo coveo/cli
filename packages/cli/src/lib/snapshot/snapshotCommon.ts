@@ -17,7 +17,7 @@ import {
 } from './vaultEntriesFunctions';
 
 export interface DryRunOptions {
-  sync?: boolean;
+  sync?: boolean; // TODO: CDX-1005 remove sync flag
   deleteMissingResources?: boolean;
   snapshotId?: string;
   waitUntilDone?: WaitUntilDoneOptions;

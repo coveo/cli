@@ -2,6 +2,7 @@ import {Flags} from '@oclif/core';
 import {Snapshot} from '../snapshot/snapshot';
 
 export enum PreviewLevelValue {
+  // TODO: CDX-1004: add a "None" value and remove the skipPreview flag
   Light = 'light',
   Detailed = 'detailed',
 }
@@ -17,7 +18,6 @@ export const wait = () => ({
   }),
 });
 
-// TODO: CDX-935 use the -y flag and update its description
 export const sync = () => ({
   sync: Flags.boolean({
     char: 'y',
@@ -35,7 +35,7 @@ export const previewLevel = () => ({
       'The verbosity of the preview. The `light` preview is faster to generate but only contains a limited amount of information, as opposed to the `detailed` preview that takes more time to generate, but returns a diff representation of all the changes to apply.',
     options: Object.values(PreviewLevelValue),
     default: PreviewLevelValue.Detailed,
-    exclusive: ['skipPreview'],
+    exclusive: ['skipPreview'], // TODO: CDX-1004: remove skipPreview
   }),
 });
 
@@ -45,5 +45,14 @@ export const organization = (description: string) => ({
     helpValue: 'targetorganizationg7dg3gd',
     required: false,
     description: `${description} If not specified, the organization you are connected to will be used.`,
+  }),
+});
+
+export const snapshotId = () => ({
+  snapshotId: Flags.string({
+    char: 's',
+    exclusive: ['resourceTypes'],
+    description:
+      'The unique identifier of the snapshot to pull. If not specified, a new snapshot will be created. You can list available snapshot in your organization with org:resources:list',
   }),
 });

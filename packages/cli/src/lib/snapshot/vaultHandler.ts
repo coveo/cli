@@ -78,19 +78,6 @@ export class VaultHandler {
     }
   }
 
-  public async transferable(
-    entries: VaultEntryAttributes[],
-    sourceOrganizationId: string
-  ): Promise<boolean> {
-    // TODO: get vault entries from source org
-    // TODO: return true if the missing entries are present in source org. Return false otherwise
-    throw 'TODO: CDX-935';
-  }
-
-  public async transfer(snapshot: Snapshot, sourceOrganizationId: string) {
-    throw 'TODO: CDX-935';
-  }
-
   private prepareFile(entries: VaultEntryAttributes[]) {
     const data: Record<string, unknown> = {};
     for (const {vaultEntryId} of entries) {

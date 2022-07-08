@@ -41,8 +41,7 @@ export default class Push extends Command {
 
   public static flags = {
     ...wait(),
-    ...sync(),
-    // TODO: CDX-935 use the -y flag and update its description
+    ...sync(), // TODO: CDX-1005 remove sync flag
     ...previewLevel(),
     ...organization(
       'The unique identifier of the organization where to send the changes'
@@ -52,6 +51,11 @@ export default class Push extends Command {
       default: false,
       required: false,
     }),
+    // TODO: CDX-1004: remove skipPreview flag
+    // Reasons:
+    //  * Skip logic can be taken care by the preview level (adding a None level)
+    //  * The flag char is already been used by another command and can create confusion
+    //  * Less flags, the better
     skipPreview: Flags.boolean({
       char: 's',
       description:
