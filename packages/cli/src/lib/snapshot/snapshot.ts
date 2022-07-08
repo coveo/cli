@@ -166,7 +166,10 @@ export class Snapshot {
       'reports' | 'synchronizationReports' | 'diffGenerationReports'
     >
   ): T {
-    const reports: SnapshotReport[] = [];
+    const reports = this.model[reportType];
+    if (!Array.isArray(reports) || reports.length === 0) {
+      throw new SnapshotNoReportFoundError(this);
+    }
     return this.sortReportsByDate<T>(reports)[0];
   }
 
