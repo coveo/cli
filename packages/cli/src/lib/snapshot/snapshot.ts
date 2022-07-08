@@ -49,6 +49,11 @@ export interface WaitUntilOperationDone extends WaitUntilDoneOptions {
   operationToWaitFor?: ResourceSnapshotsReportType;
 }
 
+type FooBar = keyof Pick<
+  ResourceSnapshotsModel,
+  'reports' | 'synchronizationReports' | 'diffGenerationReports'
+>;
+
 export class Snapshot {
   public static defaultWaitOptions: Required<WaitUntilDoneOptions> = {
     waitInterval: 1,
@@ -147,33 +152,31 @@ export class Snapshot {
   }
 
   public get latestReport() {
-    return this.getLatestReport<ResourceSnapshotsReportModel>('reports');
+    return this.getLatestReport('reports');
   }
 
   public get latestSynchronizationReport() {
-    return this.getLatestReport<ResourceSnapshotsSynchronizationReportModel>(
-      'synchronizationReports'
-    );
+    return this.getLatestReport('synchronizationReports');
   }
 
   public get latestDiffReport() {
-    return this.getLatestReport<SnapshotDiffModel>('diffGenerationReports');
+    return this.getLatestReport('diffGenerationReports');
   }
 
-  private getLatestReport<T extends SnapshotReport>(
-    reportType: keyof Pick<
-      ResourceSnapshotsModel,
-      'reports' | 'synchronizationReports' | 'diffGenerationReports'
-    >
-  ): T {
+  private getLatestReport<
+    TheKey extends FooBar = FooBar,
+    ReportType extends SnapshotReport = Required<ResourceSnapshotsModel>[TheKey][0]
+  >(reportType: TheKey): ReportType {
     const reports = this.model[reportType];
     if (!Array.isArray(reports) || reports.length === 0) {
       throw new SnapshotNoReportFoundError(this);
     }
-    return this.sortReportsByDate<T>(reports)[0];
+    return this.sortReportsByDate(reports)[0];
   }
 
-  private sortReportsByDate<T extends {updatedDate: number}>(report: T[]): T[] {
+  private sortReportsByDate<ReportType extends SnapshotReport>(
+    report: ReportType[]
+  ): ReportType[] {
     return report.sort((a, b) => b.updatedDate - a.updatedDate);
   }
 
