@@ -18,7 +18,6 @@ import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {
   PreviewLevelValue,
   previewLevel,
-  sync,
   wait,
   organization,
   snapshotId,
@@ -40,7 +39,6 @@ export default class Preview extends Command {
 
   public static flags = {
     ...wait(),
-    ...sync(),
     ...previewLevel(),
     ...organization(
       'The unique identifier of the organization where to preview the changes'
@@ -131,7 +129,6 @@ export default class Preview extends Command {
     return {
       deleteMissingResources: flags.showMissingResources,
       waitUntilDone: {wait: flags.wait},
-      sync: flags.sync,
     };
   }
 
