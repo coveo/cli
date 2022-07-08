@@ -15,9 +15,9 @@ export type SnashotVariations = Partial<Record<Placeholder, string>>;
 export class SnapshotTemplate {
   private template: string;
   public constructor(private variations: SnashotVariations) {
-    this.template = this.variations.groupingId
-      ? JSON.stringify(snapshotGroupingTemplate)
-      : JSON.stringify(snapshotTemplate);
+    this.template = JSON.stringify(
+      this.variations.groupingId ? snapshotGroupingTemplate : snapshotTemplate
+    );
   }
 
   public write(snapshotPath: string) {
