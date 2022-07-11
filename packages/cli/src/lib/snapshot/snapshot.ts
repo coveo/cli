@@ -52,6 +52,11 @@ export interface WaitUntilOperationDone extends WaitUntilDoneOptions {
   operationToWaitFor?: ResourceSnapshotsReportType;
 }
 
+type FooBar = keyof Pick<
+  ResourceSnapshotsModel,
+  'reports' | 'synchronizationReports' | 'diffGenerationReports'
+>;
+
 export class Snapshot {
   public static defaultWaitOptions: Required<WaitUntilDoneOptions> = {
     waitInterval: 1,
