@@ -2,7 +2,7 @@ import {Flags} from '@oclif/core';
 import {Snapshot} from '../snapshot/snapshot';
 
 export enum PreviewLevelValue {
-  Skip = 'skip',
+  None = 'none',
   Light = 'light',
   Detailed = 'detailed',
 }

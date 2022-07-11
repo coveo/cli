@@ -103,7 +103,7 @@ export default class Push extends Command {
 
   private async shouldSkipPreview() {
     const {flags} = await this.parse(Push);
-    return flags.previewLevel === PreviewLevelValue.Skip;
+    return flags.previewLevel === PreviewLevelValue.None;
   }
 
   private async shouldDisplayExpandedPreview() {
