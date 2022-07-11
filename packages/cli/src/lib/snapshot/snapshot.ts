@@ -9,6 +9,7 @@ import {
   ResourceSnapshotsSynchronizationReportModel,
   ApplyOptionsDeletionScope,
   SnapshotDiffModel,
+  ReportType,
 } from '@coveord/platform-client';
 import retry from 'async-retry';
 import {ReportViewer} from './reportPreviewer/reportPreviewer';
@@ -25,10 +26,12 @@ import {
 import {DiffViewer} from './diffViewer/diffViewer';
 import {PrintableError} from '../errors/printableError';
 
-export type SnapshotReport =
-  | ResourceSnapshotsReportModel
-  | ResourceSnapshotsSynchronizationReportModel
-  | SnapshotDiffModel;
+export type SnapshotReport = ResourceSnapshotsReportModel | SnapshotDiffModel;
+
+type SnapshotReportTypes = keyof Pick<
+  ResourceSnapshotsModel,
+  'reports' | 'diffGenerationReports'
+>;
 
 export interface WaitUntilDoneOptions {
   /**
@@ -87,21 +90,15 @@ export class Snapshot {
     await viewer.display();
   }
 
-  // public async diff(projectToPreview: Project) {
-  //   // const reporter = new SnapshotReporter(this.latestDiffReport);
-  //   // const viewer = new ReportViewer(reporter);
-  //   const diffModel = await this.snapshotClient.diff(
-  //     this.id,
-  //     this.getLatestReport.id
-  //   );
-  //   await this.waitUntilDone({
-  //     operationToWaitFor: ResourceSnapshotsReportType.DryRun,
-  //     ...options,
-  //   });
+  public async diff(projectPath: Project) {
+    // const reporter = new SnapshotReporter(this.latestDiffReport);
+    // const viewer = new ReportViewer(reporter);
+    await this.snapshotClient.diff(this.id, this.latestReport.id); // TODO: This line is superfluous.... in case the diff was not triggered...
+    await this.waitUntilDiffDone();
 
-  //   const previewer = new DiffViewer(diffModel, projectToPreview);
-  //   await previewer.diff();
-  // }
+    const previewer = new DiffViewer(this.latestDiffReport, projectPath);
+    await previewer.diff();
+  }
 
   public async apply(
     deleteMissingResources = false,
@@ -147,33 +144,35 @@ export class Snapshot {
   }
 
   public get latestReport() {
-    return this.getLatestReport<ResourceSnapshotsReportModel>('reports');
-  }
-
-  public get latestSynchronizationReport() {
-    return this.getLatestReport<ResourceSnapshotsSynchronizationReportModel>(
-      'synchronizationReports'
-    );
+    return this.getLatestReport('reports');
   }
 
   public get latestDiffReport() {
-    return this.getLatestReport<SnapshotDiffModel>('diffGenerationReports');
+    return this.getLatestReport('diffGenerationReports');
   }
 
-  private getLatestReport<T extends SnapshotReport>(
-    reportType: keyof Pick<
-      ResourceSnapshotsModel,
-      'reports' | 'synchronizationReports' | 'diffGenerationReports'
-    >
-  ): T {
+  public waitUntilDone(options: WaitUntilOperationDone = {}) {
+    return this.wait(this.latestReport, options);
+  }
+
+  public waitUntilDiffDone(options: WaitUntilOperationDone = {}) {
+    return this.wait(this.latestDiffReport, options);
+  }
+
+  private getLatestReport<
+    ModelKey extends SnapshotReportTypes = SnapshotReportTypes,
+    ReportType extends SnapshotReport = Required<ResourceSnapshotsModel>[ModelKey][0]
+  >(reportType: ModelKey): ReportType {
     const reports = this.model[reportType];
     if (!Array.isArray(reports) || reports.length === 0) {
       throw new SnapshotNoReportFoundError(this);
     }
-    return this.sortReportsByDate<T>(reports)[0];
+    return this.sortReportsByDate(reports)[0];
   }
 
-  private sortReportsByDate<T extends {updatedDate: number}>(report: T[]): T[] {
+  private sortReportsByDate<ReportType extends SnapshotReport>(
+    report: ReportType[]
+  ): ReportType[] {
     return report.sort((a, b) => b.updatedDate - a.updatedDate);
   }
 
@@ -189,25 +188,18 @@ export class Snapshot {
     return this.client.resourceSnapshot;
   }
 
-  private hasBegunSynchronization(
-    _synchronizationReports?: ResourceSnapshotsSynchronizationReportModel[]
-  ): _synchronizationReports is ResourceSnapshotsSynchronizationReportModel[] {
-    const reports = this.model.synchronizationReports || [];
-    return reports.length > 0;
-  }
-
   private async refreshSnapshotData() {
     this.model = await this.snapshotClient.get(this.model.id, {
       includeReports: true,
     });
   }
 
-  public waitUntilDone(options: WaitUntilOperationDone = {}) {
+  private wait(report: SnapshotReport, options: WaitUntilOperationDone) {
     const opts = {...Snapshot.defaultWaitOptions, ...options};
     const toMilliseconds = (seconds: number) => seconds * 1e3;
 
     return retry(
-      this.waitUntilDoneRetryFunction(opts.operationToWaitFor),
+      this.waitUntilDoneRetryFunction(report, opts.operationToWaitFor),
       // Setting the retry mechanism to follow a time-based logic instead of specifying the  number of attempts.
       {
         retries: Math.ceil(opts.wait / opts.waitInterval),
@@ -219,33 +211,23 @@ export class Snapshot {
     );
   }
 
-  private isSynchronizing() {
-    if (this.hasBegunSynchronization()) {
-      return Snapshot.ongoingReportStatuses?.includes(
-        this.latestSynchronizationReport.status
-      );
-    }
-    return false;
-  }
-
   private isUnsettled() {
     return Snapshot.ongoingReportStatuses.includes(this.latestReport.status);
   }
 
   private isGoingThroughOperation(
+    report: SnapshotReport,
     operation: ResourceSnapshotsReportType
   ): boolean {
     // TODO: CDX-949: Use the actual operation progress state from the API
-    if (this.latestReport.type === operation) {
+    if ('type' in report && report.type === operation) {
       return true;
-    }
-    if (this.hasBegunSynchronization()) {
-      return this.latestSynchronizationReport.type === operation;
     }
     return false;
   }
 
   private waitUntilDoneRetryFunction(
+    report: SnapshotReport,
     operationToWaitFor?: ResourceSnapshotsReportType
   ): () => Promise<void> {
     return (async () => {
@@ -253,12 +235,11 @@ export class Snapshot {
 
       // TODO: CDX-949: Check the report.progressValue instead of running some assumptions
       const isUnsettled = this.isUnsettled();
-      const isSynchronizing = this.isSynchronizing();
       const isUnexpectedOperation = operationToWaitFor
-        ? !this.isGoingThroughOperation(operationToWaitFor)
+        ? !this.isGoingThroughOperation(report, operationToWaitFor)
         : false;
 
-      if (isUnsettled || isSynchronizing || isUnexpectedOperation) {
+      if (isUnsettled || isUnexpectedOperation) {
         throw new SnapshotOperationTimeoutError(this);
       }
     }).bind(this);
