@@ -18,16 +18,6 @@ export const wait = () => ({
   }),
 });
 
-export const sync = () => ({
-  sync: Flags.boolean({
-    char: 'y',
-    default: false,
-    required: false,
-    description:
-      'Apply synchronization when there is a 100% match between organization and snapshot resources.',
-  }),
-});
-
 export const previewLevel = () => ({
   previewLevel: Flags.enum({
     char: 'p',
