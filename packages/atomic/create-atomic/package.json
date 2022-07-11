@@ -32,7 +32,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@coveord/platform-client": "33.4.0",
+    "@coveord/platform-client": "33.5.1",
     "abortcontroller-polyfill": "1.7.3",
     "detect-indent": "7.0.0",
     "https-proxy-agent": "5.0.1",
