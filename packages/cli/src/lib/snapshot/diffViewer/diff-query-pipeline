@@ -1,0 +1,77 @@
+--- query_pipelines
++++ query_pipelines
+@@ -1,10 +1,74 @@
+ [ {
+   "model" : {
+     "condition" : { },
++    "description" : "Empty Pipeline for PDP",
++    "isDefault" : false,
++    "name" : "PDP",
++    "splitTestEnabled" : false
++  },
++  "parents" : { },
++  "resourceName" : "PDP_a9yZwh"
++}, {
++  "model" : {
++    "condition" : {
++      "definition" : "when $recommendation isPopulated",
++      "detailed" : {
++        "condition" : {
++          "left" : {
++            "object" : "recommendation"
++          },
++          "operator" : "isPopulated"
++        }
++      },
++      "id" : "{{ QUERY_PIPELINE_CONDITION.when_recommendation_isPopulated_IhAIQt }}"
++    },
++    "description" : "Home, PDP and Cart Recommendations",
++    "isDefault" : false,
++    "name" : "Recommendations",
++    "splitTestEnabled" : false
++  },
++  "parents" : { },
++  "resourceName" : "Recommendations_h11Con"
++}, {
++  "model" : {
++    "condition" : {
++      "definition" : "when $context [website] is \"something\"",
++      "detailed" : {
++        "condition" : {
++          "left" : {
++            "key" : "website",
++            "object" : "context"
++          },
++          "operator" : "is",
++          "right" : "something"
++        }
++      },
++      "id" : "{{ QUERY_PIPELINE_CONDITION.when_context_[website]_is_something_XGpGFN }}"
++    },
++    "description" : "Main Search and Listing Pipeline",
+     "isDefault" : true,
++    "name" : "Search",
++    "splitTestEnabled" : false
++  },
++  "parents" : { },
++  "resourceName" : "Search_ZVZujz"
++}, {
++  "model" : {
++    "condition" : { },
++    "isDefault" : false,
+     "name" : "default",
+     "splitTestEnabled" : false
+   },
+   "parents" : { },
+   "resourceName" : "default_9VUFVB"
++}, {
++  "model" : {
++    "condition" : { },
++    "description" : "",
++    "isDefault" : false,
++    "name" : "test",
++    "splitTestEnabled" : false
++  },
++  "parents" : { },
++  "resourceName" : "test_4K9W1E"
+ } ]
