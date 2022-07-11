@@ -121,6 +121,7 @@ export default class CommerceRecipe extends Command {
     };
   }
 
+  // TODO: The plaform client should also return all the fields from the org
   private async getAllFields(
     detectedFieldsInData: FieldModel[]
   ): Promise<FieldModel[]> {
@@ -128,7 +129,13 @@ export default class CommerceRecipe extends Command {
     const existingFieldsInOrg: FieldModel[] = await listAllFieldsFromOrg(
       client
     );
-    const fieldSet = new Set([...detectedFieldsInData, ...existingFieldsInOrg]);
+    const fieldSet = new Set(detectedFieldsInData);
+    for (const field of existingFieldsInOrg) {
+      if (detectedFieldsInData.some((f) => f.name === field.name)) {
+        continue;
+      }
+      fieldSet.add(field);
+    }
     return Array.from(fieldSet);
   }
 
