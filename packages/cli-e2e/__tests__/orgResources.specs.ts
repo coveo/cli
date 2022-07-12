@@ -69,7 +69,7 @@ describe('org:resources', () => {
       process.env.CLI_EXEC_PATH!,
       'org:resources:push',
       '--previewLevel',
-      'skip',
+      'none',
       `-o=${targetOrg}`,
       '--wait=0',
     ];
