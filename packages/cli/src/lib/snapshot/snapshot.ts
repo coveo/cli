@@ -16,7 +16,7 @@ import {SnapshotReporter} from './snapshotReporter';
 import {SnapshotOperationTimeoutError} from '../errors';
 import {Project} from '../project/project';
 import {SnapshotNoReportFoundError} from '../errors/snapshotErrors';
-import {DiffViewer} from './diffViewer/diffViewer';
+import {SnapshotDiffReporter} from './diffReporter/diffReporter';
 
 export type SnapshotReport = ResourceSnapshotsReportModel | SnapshotDiffModel;
 
@@ -88,7 +88,8 @@ export class Snapshot {
     await this.snapshotClient.diff(this.id, this.latestReport.id); // TODO: This line is superfluous.... in case the diff was not triggered...
     await this.waitUntilDiffDone();
 
-    const viewer = new DiffViewer(this.latestDiffReport, project);
+    const viewer = new SnapshotDiffReporter(this.latestDiffReport, project);
+    //  viewer.saveToDisk(project)
     await viewer.display();
   }
 

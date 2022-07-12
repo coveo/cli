@@ -16,7 +16,6 @@ import {
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {
-  PreviewLevelValue,
   previewLevel,
   wait,
   organization,
