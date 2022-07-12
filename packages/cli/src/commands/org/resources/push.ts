@@ -49,18 +49,6 @@ export default class Push extends Command {
       default: false,
       required: false,
     }),
-    // TODO: CDX-1004: remove skipPreview flag
-    // Reasons:
-    //  * Skip logic can be taken care by the preview level (adding a None level)
-    //  * The flag char is already been used by another command and can create confusion
-    //  * Less flags, the better
-    skipPreview: Flags.boolean({
-      char: 's',
-      description:
-        'Do not preview changes before applying them to the organization',
-      default: false,
-      required: false,
-    }),
   };
 
   @Trackable()
@@ -82,7 +70,8 @@ export default class Push extends Command {
       options
     );
 
-    if (!flags.skipPreview) {
+    const shouldSkip = await this.shouldSkipPreview();
+    if (!shouldSkip) {
       const display = await this.shouldDisplayExpandedPreview();
       const {deleteMissingResources} = await this.getOptions();
       await snapshot.preview(project, deleteMissingResources, display);
@@ -110,6 +99,11 @@ export default class Push extends Command {
     handleSnapshotError(err);
   }
 
+  private async shouldSkipPreview() {
+    const {flags} = await this.parse(Push);
+    return flags.previewLevel === PreviewLevelValue.None;
+  }
+
   private async shouldDisplayExpandedPreview() {
     const {flags} = await this.parse(Push);
     return flags.previewLevel === PreviewLevelValue.Detailed;
@@ -129,8 +123,8 @@ export default class Push extends Command {
   }
 
   private async successReportWithChangesHandler(snapshot: Snapshot) {
-    const {flags} = await this.parse(Push);
-    const canBeApplied = flags.skipPreview || (await this.askForConfirmation());
+    const canBeApplied =
+      (await this.shouldSkipPreview()) || (await this.askForConfirmation());
 
     if (canBeApplied) {
       await this.applySnapshot(snapshot);

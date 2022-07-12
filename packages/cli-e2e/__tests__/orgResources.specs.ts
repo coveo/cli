@@ -68,7 +68,8 @@ describe('org:resources', () => {
     const args: string[] = [
       process.env.CLI_EXEC_PATH!,
       'org:resources:push',
-      '--skipPreview',
+      '--previewLevel',
+      'none',
       `-o=${targetOrg}`,
       '--wait=0',
     ];

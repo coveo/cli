@@ -321,7 +321,7 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .command(['org:resources:push', '--skipPreview'])
+      .command(['org:resources:push', '--previewLevel', 'none'])
       .it('should apply snapshot without confrimation', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledTimes(1);
       });
