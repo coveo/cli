@@ -14,7 +14,7 @@ index 8903363..db27b9e 100644
          };
          const arches = _.uniq(buildConfig.targets
 diff --git a/node_modules/oclif/lib/tarballs/build.js b/node_modules/oclif/lib/tarballs/build.js
-index 78959c0..3f8e776 100644
+index ffbbd21..60c02ae 100644
 --- a/node_modules/oclif/lib/tarballs/build.js
 +++ b/node_modules/oclif/lib/tarballs/build.js
 @@ -48,16 +48,16 @@ async function build(c, options = {}) {
@@ -39,47 +39,3 @@ index 78959c0..3f8e776 100644
              }
              await qq.cp(lockpath, '.');
              await qq.x('npm install --production');
-diff --git a/node_modules/oclif/lib/tarballs/node.js b/node_modules/oclif/lib/tarballs/node.js
-index 11a2f52..daba645 100644
---- a/node_modules/oclif/lib/tarballs/node.js
-+++ b/node_modules/oclif/lib/tarballs/node.js
-@@ -2,9 +2,21 @@
- Object.defineProperty(exports, "__esModule", { value: true });
- exports.fetchNodeBinary = void 0;
- const core_1 = require("@oclif/core");
-+const { ReadStream } = require("fs");
- const path = require("path");
- const qq = require("qqjs");
- const log_1 = require("../log");
-+async function checkFileSum(fileBasedir,filePath,sumFilePath) {
-+    if(process.platform === 'win32') {
-+        const computedSum = (await qq.x(`certUtil -hashfile ${filePath} SHA256`, {cwd: fileBasedir, stdio:'pipe'})).stdout.split('\n')[1].trim();
-+        const checkSum = (await qq.x(`findstr ${path.basename(filePath)} ${sumFilePath}`,{cwd: fileBasedir, stdio:'pipe'})).stdout.split(' ')[0].trim();
-+        if(computedSum !==checkSum) {
-+            throw new Error(`${filePath} checksum fail!`)
-+        }
-+    } else {
-+        await qq.x(`grep ${path.basename(filePath)} ${sumFilePath} | shasum -a 256 -c -`, {cwd: fileBasedir})
-+    }
-+}
- async function checkFor7Zip() {
-     try {
-         await qq.x('7z', { stdio: [0, null, 2] });
-@@ -41,7 +53,7 @@ async function fetchNodeBinary({ nodeVersion, output, platform, arch, tmp }) {
-         const basedir = path.dirname(tarball);
-         await qq.mkdirp(basedir);
-         await qq.download(url, tarball);
--        await qq.x(`grep "${path.basename(tarball)}" "${shasums}" | shasum -a 256 -c -`, { cwd: basedir });
-+        await checkFileSum(basedir, tarball, shasums)
-     };
-     const extract = async () => {
-         (0, log_1.log)(`extracting ${nodeBase}`);
-@@ -51,7 +63,7 @@ async function fetchNodeBinary({ nodeVersion, output, platform, arch, tmp }) {
-         await qq.mkdirp(path.dirname(cache));
-         if (platform === 'win32') {
-             qq.pushd(nodeTmp);
--            await qq.x(`7z x -bd -y "${tarball}" > /dev/null`);
-+            await qq.x(`7z x -bd -y ${tarball} > ${process.platform=== 'win32' ? 'NUL' : '/dev/null'}`);
-             await qq.mv([nodeBase, 'node.exe'], cache);
-             qq.popd();
-         }
