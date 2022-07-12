@@ -17,6 +17,7 @@ import {SnapshotOperationTimeoutError} from '../errors';
 import {Project} from '../project/project';
 import {SnapshotNoReportFoundError} from '../errors/snapshotErrors';
 import {SnapshotDiffReporter} from './diffReporter/diffReporter';
+import {CliUx} from '@oclif/core';
 
 export type SnapshotReport = ResourceSnapshotsReportModel | SnapshotDiffModel;
 
@@ -35,6 +36,10 @@ export interface WaitUntilDoneOptions {
    * The interval between 2 consecutive polls.
    */
   waitInterval?: number; // in seconds
+  /**
+   * Callback to execute every time a request is being made to retrieve the snapshot data
+   */
+  onRetryCb?: (report: ResourceSnapshotsReportModel) => void;
 }
 
 export interface WaitUntilOperationDone extends WaitUntilDoneOptions {
@@ -48,6 +53,7 @@ export class Snapshot {
   public static defaultWaitOptions: Required<WaitUntilDoneOptions> = {
     waitInterval: 1,
     wait: 60,
+    onRetryCb: (_report: ResourceSnapshotsReportModel) => {},
   };
 
   private static ongoingReportStatuses = [
@@ -83,7 +89,8 @@ export class Snapshot {
   }
 
   public async diff(project: Project) {
-    const numberOfLinesMax = 0;
+    const numberOfLinesMax = 0; // To always get a downloadable file
+    CliUx.ux.action.start('Getting snapshot diff');
     await this.snapshotClient.diff(
       this.id,
       this.latestReport.id,
@@ -147,11 +154,11 @@ export class Snapshot {
   }
 
   public waitUntilDone(options: WaitUntilOperationDone = {}) {
-    return this.wait(this.latestReport, options);
+    return this.wait('reports', options);
   }
 
   public waitUntilDiffDone(options: WaitUntilOperationDone = {}) {
-    return this.wait(this.latestDiffReport, options);
+    return this.wait('diffGenerationReports', options);
   }
 
   private getLatestReport<
@@ -189,12 +196,15 @@ export class Snapshot {
     });
   }
 
-  private wait(report: SnapshotReport, options: WaitUntilOperationDone) {
+  private wait(
+    reportType: SnapshotReportTypes,
+    options: WaitUntilOperationDone
+  ) {
     const opts = {...Snapshot.defaultWaitOptions, ...options};
     const toMilliseconds = (seconds: number) => seconds * 1e3;
 
     return retry(
-      this.waitUntilDoneRetryFunction(report, opts.operationToWaitFor),
+      this.waitUntilDoneRetryFunction(reportType, opts.operationToWaitFor),
       // Setting the retry mechanism to follow a time-based logic instead of specifying the  number of attempts.
       {
         retries: Math.ceil(opts.wait / opts.waitInterval),
@@ -206,15 +216,16 @@ export class Snapshot {
     );
   }
 
-  private isUnsettled() {
-    return Snapshot.ongoingReportStatuses.includes(this.latestReport.status);
+  private isUnsettled(report: SnapshotReport) {
+    return Snapshot.ongoingReportStatuses.includes(report.status);
   }
 
   private isGoingThroughOperation(
-    report: SnapshotReport,
+    reportType: SnapshotReportTypes,
     operation: ResourceSnapshotsReportType
   ): boolean {
     // TODO: CDX-949: Use the actual operation progress state from the API
+    const report = this.getLatestReport(reportType);
     if ('type' in report && report.type === operation) {
       return true;
     }
@@ -222,17 +233,18 @@ export class Snapshot {
   }
 
   private waitUntilDoneRetryFunction(
-    report: SnapshotReport,
+    reportType: SnapshotReportTypes,
     operationToWaitFor?: ResourceSnapshotsReportType
   ): () => Promise<void> {
     return (async () => {
       await this.refreshSnapshotData();
-
-      // TODO: CDX-949: Check the report.progressValue instead of running some assumptions
-      const isUnsettled = this.isUnsettled();
+      const report = this.getLatestReport(reportType);
+      const isUnsettled = this.isUnsettled(report);
       const isUnexpectedOperation = operationToWaitFor
-        ? !this.isGoingThroughOperation(report, operationToWaitFor)
+        ? !this.isGoingThroughOperation(reportType, operationToWaitFor)
         : false;
+
+      // opts.onRetryCb; // TODO:
 
       if (isUnsettled || isUnexpectedOperation) {
         throw new SnapshotOperationTimeoutError(this);
