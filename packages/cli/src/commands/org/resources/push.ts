@@ -23,7 +23,6 @@ import {Project} from '../../../lib/project/project';
 import {
   PreviewLevelValue,
   previewLevel,
-  sync,
   wait,
   organization,
 } from '../../../lib/flags/snapshotCommonFlags';
@@ -41,7 +40,6 @@ export default class Push extends Command {
 
   public static flags = {
     ...wait(),
-    ...sync(), // TODO: CDX-1005 remove sync flag
     ...previewLevel(),
     ...organization(
       'The unique identifier of the organization where to send the changes'
@@ -103,7 +101,7 @@ export default class Push extends Command {
 
   private async shouldSkipPreview() {
     const {flags} = await this.parse(Push);
-    return flags.previewLevel === PreviewLevelValue.Skip;
+    return flags.previewLevel === PreviewLevelValue.None;
   }
 
   private async shouldDisplayExpandedPreview() {
@@ -167,7 +165,6 @@ export default class Push extends Command {
     return {
       deleteMissingResources: flags.deleteMissingResources,
       waitUntilDone: {wait: flags.wait},
-      sync: flags.sync,
     };
   }
 

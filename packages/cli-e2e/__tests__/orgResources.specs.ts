@@ -53,7 +53,6 @@ describe('org:resources', () => {
       process.env.CLI_EXEC_PATH!,
       'org:resources:preview',
       `-o=${targetOrg}`,
-      '--sync',
       '--wait=0',
       '-p=light',
     ];
@@ -70,7 +69,7 @@ describe('org:resources', () => {
       process.env.CLI_EXEC_PATH!,
       'org:resources:push',
       '--previewLevel',
-      'skip',
+      'none',
       `-o=${targetOrg}`,
       '--wait=0',
     ];

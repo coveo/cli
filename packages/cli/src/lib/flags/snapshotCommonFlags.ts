@@ -2,7 +2,7 @@ import {Flags} from '@oclif/core';
 import {Snapshot} from '../snapshot/snapshot';
 
 export enum PreviewLevelValue {
-  Skip = 'skip',
+  None = 'none',
   Light = 'light',
   Detailed = 'detailed',
 }
@@ -15,16 +15,6 @@ export const wait = () => ({
     required: false,
     description:
       'The maximum number of seconds to wait before the commands exits with a timeout error. A value of zero means that the command will wait indefinitely.',
-  }),
-});
-
-export const sync = () => ({
-  sync: Flags.boolean({
-    char: 'y',
-    default: false,
-    required: false,
-    description:
-      'Apply synchronization when there is a 100% match between organization and snapshot resources.',
   }),
 });
 
