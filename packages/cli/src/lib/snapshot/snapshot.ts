@@ -83,14 +83,16 @@ export class Snapshot {
   }
 
   public async diff(project: Project) {
-    // const reporter = new SnapshotReporter(this.latestDiffReport);
-    // const viewer = new ReportViewer(reporter);
-    await this.snapshotClient.diff(this.id, this.latestReport.id); // TODO: This line is superfluous.... in case the diff was not triggered...
+    const numberOfLinesMax = 0;
+    await this.snapshotClient.diff(
+      this.id,
+      this.latestReport.id,
+      numberOfLinesMax
+    );
     await this.waitUntilDiffDone();
 
     const viewer = new SnapshotDiffReporter(this.latestDiffReport, project);
-    //  viewer.saveToDisk(project)
-    await viewer.display();
+    await viewer.preview();
   }
 
   public async apply(
