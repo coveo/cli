@@ -33,6 +33,7 @@ import {
   cleanupProject,
   getMissingVaultEntriesReportHandler,
   getErrorReportHandler,
+  preview,
 } from '../../../lib/snapshot/snapshotCommon';
 export default class Preview extends Command {
   public static description = '(beta) Preview resource updates';
@@ -72,8 +73,7 @@ export default class Preview extends Command {
       options
     );
 
-    const diff = await this.shouldDisplayDiff();
-    await snapshot.preview(project, diff);
+    await preview(snapshot, project, flags.previewLevel);
     await reporter
       .setReportHandler(
         SnapshotReportStatus.MISSING_VAULT_ENTRIES,
@@ -82,12 +82,6 @@ export default class Preview extends Command {
       .setReportHandler(
         SnapshotReportStatus.ERROR,
         getErrorReportHandler(snapshot, cfg, this.projectPath)
-      )
-      .setReportHandler(
-        SnapshotReportStatus.SUCCESS,
-        async function (this: SnapshotReporter) {
-          await onSuccess();
-        }
       )
       .handleReport();
     await this.cleanup(snapshot, project);
@@ -98,11 +92,6 @@ export default class Preview extends Command {
     cleanupProject(this.projectPath);
     handleSnapshotError(err);
     await this.displayAdditionalErrorMessage(err);
-  }
-
-  private async shouldDisplayDiff() {
-    const {flags} = await this.parse(Preview);
-    return flags.previewLevel === PreviewLevelValue.Detailed;
   }
 
   private async cleanup(snapshot: Snapshot, project: Project) {

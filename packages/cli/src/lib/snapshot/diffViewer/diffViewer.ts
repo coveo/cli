@@ -1,40 +1,56 @@
-import {html, parse} from 'diff2html';
 import {SnapshotDiffModel} from '@coveord/platform-client';
+
+import {html, parse} from 'diff2html';
 import {readFileSync} from 'fs-extra';
 import {EOL} from 'os';
+import {Project} from '../../project/project';
 
 export class DiffViewer {
+  private static readonly previewDirectoryName = 'preview';
   // public constructor(private model: SnapshotDiffModel, projectPath: string) {}
-  public constructor() {}
+  public constructor(
+    private readonly report: SnapshotDiffModel,
+    private readonly projectToPreview: Project
+  ) {}
 
-  public diff() {
-    // if files.length === 0 return
-    // if (!this.hasChanges) return;
-    // TODO: save into project
-    // TODO: open in browser
-    const pipeliens = readFileSync('./diff-query-pipeline').toString();
-    const fields = readFileSync('./diff-field').toString();
-    const diffPipelineJson = parse([pipeliens, fields].join(EOL));
-    const diffFieldJson = parse(fields);
-    const diffHtml = html(diffPipelineJson, {
-      drawFileList: true,
-      // fileListStartVisible: false,
-      // fileContentToggle: false,
-      // matching: 'lines',
-      // outputFormat: 'side-by-side',
-      // synchronisedScroll: true,
-      // highlight: true,
+  // private static get previewDirectory() {
+  //   return join(
+  //     DotFolder.hiddenFolderName,
+  //     ExpandedPreviewer.previewDirectoryName
+  //   );
+  // }
 
-      // renderNothingWhenEmpty: false,
-    });
+  // public async preview() {
+  //   if (existsSync(ExpandedPreviewer.previewDirectory)) {
+  //     this.deleteOldestPreviews();
+  //   }
+  //   const previewLocalSlug = `${this.orgId}-${Date.now()}`;
+  //   const dirPath = join(ExpandedPreviewer.previewDirectory, previewLocalSlug);
 
-    return diffHtml;
+  //   mkdirSync(dirPath, {
+  //     recursive: true,
+  //   });
+  //   const project = new Project(resolve(dirPath));
+  //   CliUx.ux.action.start('Generating preview details');
+  //   await this.initPreviewDirectory(dirPath, project);
+  //   await this.applySnapshotToPreview(dirPath);
+  //   const commitHash = await this.getCommitHash(dirPath);
+
+  //   CliUx.ux.info(dedent`
+
+  //   A Git repository representing the modification has been created here:
+  //   ${dirPath}
+
+  //   with the associated commit hash: ${commitHash.stdout}
+  //   `);
+  //   CliUx.ux.action.stop(green('✔'));
+  // }
+
+  public display() {
+    throw 'TODO:';
   }
 
-  // private get hasChanges() {
-  //   return Object.keys(this.model.files).length >= 0;
-  // }
+  private get hasChanges() {
+    return Object.keys(this.report.files).length >= 0;
+  }
 }
-
-const viewer = new DiffViewer();
-console.log(viewer.diff());

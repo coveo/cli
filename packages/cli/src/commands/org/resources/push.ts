@@ -16,6 +16,7 @@ import {
   DryRunOptions,
   getMissingVaultEntriesReportHandler,
   getErrorReportHandler,
+  preview,
 } from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '../../../lib/config/config';
 import {cwd} from 'process';
@@ -70,12 +71,7 @@ export default class Push extends Command {
       options
     );
 
-    const shouldSkip = await this.shouldSkipPreview();
-    if (!shouldSkip) {
-      const display = await this.shouldDisplayExpandedPreview();
-      const {deleteMissingResources} = await this.getOptions();
-      await snapshot.preview(project, deleteMissingResources, display);
-    }
+    await preview(snapshot, project, flags.previewLevel);
     await reporter
       .setReportHandler(
         SnapshotReportStatus.SUCCESS,
@@ -102,11 +98,6 @@ export default class Push extends Command {
   private async shouldSkipPreview() {
     const {flags} = await this.parse(Push);
     return flags.previewLevel === PreviewLevelValue.None;
-  }
-
-  private async shouldDisplayExpandedPreview() {
-    const {flags} = await this.parse(Push);
-    return flags.previewLevel === PreviewLevelValue.Detailed;
   }
 
   private async cleanup(snapshot: Snapshot, project: Project) {

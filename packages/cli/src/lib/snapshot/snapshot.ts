@@ -1,15 +1,12 @@
 import {
   ResourceSnapshotsModel,
   ResourceSnapshotsReportModel,
-  ResourceSnapshotsReportResultCode,
   ResourceSnapshotsReportStatus,
   PlatformClient,
   ResourceSnapshotsReportType,
   SnapshotExportContentFormat,
-  ResourceSnapshotsSynchronizationReportModel,
   ApplyOptionsDeletionScope,
   SnapshotDiffModel,
-  ReportType,
 } from '@coveord/platform-client';
 import retry from 'async-retry';
 import {ReportViewer} from './reportPreviewer/reportPreviewer';
@@ -17,14 +14,9 @@ import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
 import {SnapshotReporter} from './snapshotReporter';
 import {SnapshotOperationTimeoutError} from '../errors';
-import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer';
 import {Project} from '../project/project';
-import {
-  SnapshotNoReportFoundError,
-  SnapshotNoSynchronizationReportFoundError,
-} from '../errors/snapshotErrors';
+import {SnapshotNoReportFoundError} from '../errors/snapshotErrors';
 import {DiffViewer} from './diffViewer/diffViewer';
-import {PrintableError} from '../errors/printableError';
 
 export type SnapshotReport = ResourceSnapshotsReportModel | SnapshotDiffModel;
 
@@ -51,11 +43,6 @@ export interface WaitUntilOperationDone extends WaitUntilDoneOptions {
    */
   operationToWaitFor?: ResourceSnapshotsReportType;
 }
-
-type FooBar = keyof Pick<
-  ResourceSnapshotsModel,
-  'reports' | 'synchronizationReports' | 'diffGenerationReports'
->;
 
 export class Snapshot {
   public static defaultWaitOptions: Required<WaitUntilDoneOptions> = {
@@ -95,14 +82,14 @@ export class Snapshot {
     await viewer.display();
   }
 
-  public async diff(projectPath: Project) {
+  public async diff(project: Project) {
     // const reporter = new SnapshotReporter(this.latestDiffReport);
     // const viewer = new ReportViewer(reporter);
     await this.snapshotClient.diff(this.id, this.latestReport.id); // TODO: This line is superfluous.... in case the diff was not triggered...
     await this.waitUntilDiffDone();
 
-    const previewer = new DiffViewer(this.latestDiffReport, projectPath);
-    await previewer.diff();
+    const viewer = new DiffViewer(this.latestDiffReport, project);
+    await viewer.display();
   }
 
   public async apply(

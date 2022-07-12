@@ -15,6 +15,7 @@ import {
   throwSnapshotMissingVaultEntriesError,
   tryCreateMissingVaultEntries,
 } from './vaultEntriesFunctions';
+import {PreviewLevelValue} from '../flags/snapshotCommonFlags';
 
 export interface DryRunOptions {
   deleteMissingResources?: boolean;
@@ -59,6 +60,26 @@ export function getTargetOrg(config: Config, target?: string) {
   }
   const cfg = config.get();
   return cfg.organization;
+}
+
+export async function preview(
+  snapshot: Snapshot,
+  project: Project,
+  previewLevel: PreviewLevelValue
+) {
+  switch (previewLevel) {
+    case PreviewLevelValue.None:
+      break;
+
+    case PreviewLevelValue.Light:
+      await snapshot.preview();
+      break;
+
+    case PreviewLevelValue.Detailed:
+      await snapshot.preview();
+      await snapshot.diff(project);
+      break;
+  }
 }
 
 export function cleanupProject(projectPath: string) {
