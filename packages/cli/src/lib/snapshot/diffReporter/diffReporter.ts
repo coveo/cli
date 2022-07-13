@@ -2,22 +2,27 @@ import {SnapshotDiffModel} from '@coveord/platform-client';
 import {CliUx} from '@oclif/core';
 import axios from 'axios';
 import {green} from 'chalk';
-import {writeFileSync} from 'fs';
-import {mkdirSync, Dirent, existsSync, readdirSync, rmSync} from 'fs-extra';
+import {
+  mkdirSync,
+  existsSync,
+  readdirSync,
+  writeFileSync,
+  Dirent,
+  rmSync,
+} from 'fs-extra';
 import {join} from 'path';
-import {Project} from '../../project/project';
 
 export class SnapshotDiffReporter {
   private static readonly previewDirectoryName = 'preview';
   private static previewHistorySize = 1;
-  // public constructor(private model: SnapshotDiffModel, projectPath: string) {}
+
   public constructor(
     private readonly report: SnapshotDiffModel,
-    private readonly projectToPreview: Project
+    private readonly projectPath: string
   ) {}
 
-  private static get previewDirectory() {
-    return join(SnapshotDiffReporter.previewDirectoryName);
+  private get previewDirectory() {
+    return join(this.projectPath, SnapshotDiffReporter.previewDirectoryName);
   }
 
   public async preview() {
@@ -26,13 +31,10 @@ export class SnapshotDiffReporter {
       return;
     }
 
-    if (existsSync(SnapshotDiffReporter.previewDirectory)) {
+    if (existsSync(this.previewDirectory)) {
       this.deleteOldestPreviews();
     }
-    const dirPath = join(
-      SnapshotDiffReporter.previewDirectory,
-      this.report.snapshotId
-    );
+    const dirPath = join(this.previewDirectory, this.report.snapshotId);
 
     mkdirSync(dirPath, {
       recursive: true,
@@ -40,21 +42,24 @@ export class SnapshotDiffReporter {
 
     for (const [resourceName, diffModel] of Object.entries(this.report.files)) {
       const diffFilePath = join(dirPath, `${resourceName}.patch`);
-      await this.downloadDiff(diffFilePath, diffModel.url);
+      await this.downloadDiff(diffModel.url, diffFilePath);
     }
     CliUx.ux.action.stop(green('✔'));
   }
 
-  private async downloadDiff(downloadPath: string, url: string) {
-    const {data} = await axios.get(url, {method: 'GET', responseType: 'blob'});
-    writeFileSync(downloadPath, data);
+  private async downloadDiff(diffUrl: string, outputFile: string) {
+    const {data} = await axios.get(diffUrl, {
+      method: 'GET',
+      responseType: 'blob',
+    });
+    writeFileSync(outputFile, data);
   }
 
   private deleteOldestPreviews() {
     const getFilePath = (fileDirent: Dirent) =>
-      join(SnapshotDiffReporter.previewDirectory, fileDirent.name);
+      join(this.previewDirectory, fileDirent.name);
 
-    const allFiles = readdirSync(SnapshotDiffReporter.previewDirectory, {
+    const allFiles = readdirSync(this.previewDirectory, {
       withFileTypes: true,
     });
     const dirs = allFiles.filter((potentialDir) => potentialDir.isDirectory());
