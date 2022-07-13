@@ -39,7 +39,7 @@ export interface WaitUntilDoneOptions {
   /**
    * Callback to execute every time a request is being made to retrieve the snapshot data
    */
-  onRetryCb?: (report: ResourceSnapshotsReportModel) => void;
+  onRetryCb?: (report: SnapshotReport) => void;
 }
 
 export interface WaitUntilOperationDone extends WaitUntilDoneOptions {
@@ -53,7 +53,7 @@ export class Snapshot {
   public static defaultWaitOptions: Required<WaitUntilDoneOptions> = {
     waitInterval: 1,
     wait: 60,
-    onRetryCb: (_report: ResourceSnapshotsReportModel) => {},
+    onRetryCb: (_report: SnapshotReport) => {},
   };
 
   private static ongoingReportStatuses = [
@@ -204,7 +204,7 @@ export class Snapshot {
     const toMilliseconds = (seconds: number) => seconds * 1e3;
 
     return retry(
-      this.waitUntilDoneRetryFunction(reportType, opts.operationToWaitFor),
+      this.waitUntilDoneRetryFunction(reportType, opts),
       // Setting the retry mechanism to follow a time-based logic instead of specifying the  number of attempts.
       {
         retries: Math.ceil(opts.wait / opts.waitInterval),
@@ -234,17 +234,17 @@ export class Snapshot {
 
   private waitUntilDoneRetryFunction(
     reportType: SnapshotReportTypes,
-    operationToWaitFor?: ResourceSnapshotsReportType
+    options: WaitUntilOperationDone
   ): () => Promise<void> {
     return (async () => {
       await this.refreshSnapshotData();
       const report = this.getLatestReport(reportType);
       const isUnsettled = this.isUnsettled(report);
-      const isUnexpectedOperation = operationToWaitFor
-        ? !this.isGoingThroughOperation(reportType, operationToWaitFor)
+      const isUnexpectedOperation = options.operationToWaitFor
+        ? !this.isGoingThroughOperation(reportType, options.operationToWaitFor)
         : false;
 
-      // opts.onRetryCb; // TODO:
+      options.onRetryCb && options.onRetryCb(report);
 
       if (isUnsettled || isUnexpectedOperation) {
         throw new SnapshotOperationTimeoutError(this);
