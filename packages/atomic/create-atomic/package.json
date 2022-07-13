@@ -1,7 +1,7 @@
 {
   "name": "@coveo/create-atomic",
   "description": "Coveo Atomic Generator",
-  "version": "1.31.0",
+  "version": "1.32.0",
   "files": [
     "/lib",
     "/template",
