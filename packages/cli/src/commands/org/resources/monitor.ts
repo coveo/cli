@@ -9,7 +9,11 @@ import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {organization, wait} from '../../../lib/flags/snapshotCommonFlags';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 import {ReportViewerStyles} from '../../../lib/snapshot/reportPreviewer/reportPreviewerStyles';
-import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
+import {
+  Snapshot,
+  SnapshotReport,
+  WaitUntilDoneOptions,
+} from '../../../lib/snapshot/snapshot';
 import {
   getTargetOrg,
   handleSnapshotError,
@@ -83,9 +87,8 @@ export default class Monitor extends Command {
     CliUx.ux.action.start(header);
   }
 
-  private refresh(report: ResourceSnapshotsReportModel) {
-    const reporter = new SnapshotReporter(report);
-    CliUx.ux.action.status = reporter.status;
+  private refresh(report: SnapshotReport) {
+    CliUx.ux.action.status = report.status;
   }
 
   private async getSnapshot(): Promise<Snapshot> {
@@ -101,7 +104,7 @@ export default class Monitor extends Command {
     return {
       wait: flags.wait,
       // TODO: revisit with a progress bar once the response contains the remaining resources to process
-      onRetryCb: (report: ResourceSnapshotsReportModel) => this.refresh(report),
+      onRetryCb: (report: SnapshotReport) => this.refresh(report),
     };
   }
 
