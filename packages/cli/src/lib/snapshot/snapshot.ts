@@ -183,12 +183,6 @@ export class Snapshot {
     return this.sortReportsByDate(reports)[0];
   }
 
-  private sortReportsByDate<ReportType extends SnapshotReport>(
-    report: ReportType[]
-  ): ReportType[] {
-    return report.sort((a, b) => b.updatedDate - a.updatedDate);
-  }
-
   public get id() {
     return this.model.id;
   }
@@ -199,6 +193,12 @@ export class Snapshot {
 
   private get snapshotClient() {
     return this.client.resourceSnapshot;
+  }
+
+  private sortReportsByDate<ReportType extends SnapshotReport>(
+    report: ReportType[]
+  ): ReportType[] {
+    return report.sort((a, b) => b.updatedDate - a.updatedDate);
   }
 
   private async refreshSnapshotData() {
