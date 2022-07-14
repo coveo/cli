@@ -27,7 +27,7 @@ export class SnapshotDiffReporter {
 
   public async preview() {
     if (!this.hasChanges) {
-      CliUx.ux.action.start('No diff to view');
+      CliUx.ux.action.stop('No diff to preview');
       return;
     }
 
@@ -45,6 +45,7 @@ export class SnapshotDiffReporter {
       await this.downloadDiff(diffModel.url, diffFilePath);
     }
     CliUx.ux.action.stop(green('✔'));
+    CliUx.ux.log(`Diff files saved in ${dirPath}`);
   }
 
   private async downloadDiff(diffUrl: string, outputFile: string) {
