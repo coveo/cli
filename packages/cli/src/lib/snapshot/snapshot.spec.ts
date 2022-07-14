@@ -50,7 +50,6 @@ const mockedExportSnapshot = jest.fn();
 const mockedApplySnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
-const mockedGetSynchronizationPlan = jest.fn();
 //#endregion Mocks
 
 describe('Snapshot', () => {
@@ -86,7 +85,6 @@ describe('Snapshot', () => {
           get: mockedGetSnapshot,
           export: mockedExportSnapshot,
           apply: mockedApplySnapshot,
-          getSynchronizationPlan: mockedGetSynchronizationPlan,
         },
       })
     );
