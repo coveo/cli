@@ -93,8 +93,14 @@ export default class Preview extends Command {
     await this.displayAdditionalErrorMessage(err);
   }
 
+  private async shouldDeleteSnapshot() {
+    return !(await this.parse(Preview)).flags.snapshotId;
+  }
+
   private async cleanup(snapshot: Snapshot, project: Project) {
-    await snapshot.delete();
+    if (await this.shouldDeleteSnapshot()) {
+      await snapshot.delete();
+    }
     project.deleteTemporaryZipFile();
   }
 
@@ -110,7 +116,7 @@ export default class Preview extends Command {
 
           Once the snapshot is created, you can preview it with the following command:
 
-            ${blueBright`coveo org:resources:preview -t ${target} -s ${snapshot.id}`}
+            ${blueBright`coveo org:resources:preview -o ${target} -s ${snapshot.id}`}
 
             `
       );
@@ -122,6 +128,7 @@ export default class Preview extends Command {
     return {
       deleteMissingResources: flags.showMissingResources,
       waitUntilDone: {wait: flags.wait},
+      ...(flags.snapshotId && {snapshotId: flags.snapshotId}),
     };
   }
 
