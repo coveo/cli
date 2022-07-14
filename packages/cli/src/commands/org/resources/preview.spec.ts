@@ -83,18 +83,21 @@ const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
 };
 
 const mockSnapshotFactory = async () => {
+  const dummySnapshot = {
+    validate: mockedValidateSnapshot,
+    preview: mockedPreviewSnapshot,
+    delete: mockedDeleteSnapshot,
+    saveDetailedReport: mockedSaveDetailedReport,
+    areResourcesInError: mockedAreResourcesInError,
+    latestReport: mockedLastReport,
+    id: 'banana-snapshot',
+    targetId: 'potato-org',
+  } as unknown as Snapshot;
   mockedSnapshotFactory.createFromZip.mockReturnValue(
-    Promise.resolve({
-      validate: mockedValidateSnapshot,
-      preview: mockedPreviewSnapshot,
-      delete: mockedDeleteSnapshot,
-      saveDetailedReport: mockedSaveDetailedReport,
-      areResourcesInError: mockedAreResourcesInError,
-      latestReport: mockedLastReport,
-      diff: mockedDiff,
-      id: 'banana-snapshot',
-      targetId: 'potato-org',
-    } as unknown as Snapshot)
+    Promise.resolve(dummySnapshot)
+  );
+  mockedSnapshotFactory.createFromExistingSnapshot.mockReturnValue(
+    Promise.resolve(dummySnapshot)
   );
 };
 
@@ -208,6 +211,20 @@ describe('org:resources:preview', () => {
     test
       .stdout()
       .stderr()
+      .command(['org:resources:preview', '-s', 'some-snapshot-id'])
+      .it('should work with specified snapshot id', () => {
+        expect(
+          mockedSnapshotFactory.createFromExistingSnapshot
+        ).toHaveBeenCalledWith(
+          'some-snapshot-id',
+          'foo',
+          expect.objectContaining({})
+        );
+      });
+
+    test
+      .stdout()
+      .stderr()
       .command(['org:resources:preview'])
       .it('should set a 60 seconds wait', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
@@ -278,9 +295,9 @@ describe('org:resources:preview', () => {
     test
       .stdout()
       .stderr()
-      .command(['org:resources:preview'])
-      .it('should delete the snapshot', () => {
-        expect(mockedDeleteSnapshot).toHaveBeenCalledTimes(1);
+      .command(['org:resources:preview', '-s', 'some-snapshot-id'])
+      .it('should no delete the snapshot', () => {
+        expect(mockedDeleteSnapshot).not.toHaveBeenCalled();
       });
 
     test

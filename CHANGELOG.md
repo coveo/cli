@@ -1,3 +1,16 @@
+## v1.32.1 (2022-07-13)
+
+# v1.32.0 (2022-07-13)
+
+### Bug Fixes
+
+- **deps:** update all dependencies j:cdx-227 ([#854](https://github.com/coveo/cli/issues/854)) ([cd042cc](https://github.com/coveo/cli/commits/cd042cc9d08898a9cad39c644a99fa0dd64ba77a))
+
+### Features
+
+- remove skipPreview flag ([#860](https://github.com/coveo/cli/issues/860)) ([579fcba](https://github.com/coveo/cli/commits/579fcba4a2127cfdc8213fcc976453f4642e7940))
+- remove sync flag ([#859](https://github.com/coveo/cli/issues/859)) ([352306d](https://github.com/coveo/cli/commits/352306dae8417ae5ffb56f73f0cea3f0a7a8e650))
+
 # v1.31.0 (2022-06-29)
 
 ### Bug Fixes
