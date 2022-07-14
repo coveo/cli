@@ -6,10 +6,11 @@ import {
 } from '@coveord/platform-client';
 
 export const getReportWithChanges = (
-  snapshotId: string
+  snapshotId: string,
+  reportId = 'some-report-id'
 ): SnapshotDiffModel => ({
-  id: 'some-report-id',
-  relativeReportId: 'some-report-id',
+  id: reportId,
+  relativeReportId: reportId,
   snapshotId,
   updatedDate: 1622555847000,
   status: ResourceSnapshotsReportStatus.Completed,

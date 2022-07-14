@@ -14,9 +14,11 @@ import {CurrentSchemaVersion} from '../config/configSchemaVersion';
 const createSnapshot = async () => {
   const snapshotID = 'my-snapshot';
   return new Snapshot(
-    getDummySnapshotModel('foo', snapshotID, [
-      getSuccessReport(snapshotID, ResourceSnapshotsReportType.Apply),
-    ]),
+    getDummySnapshotModel('foo', snapshotID, {
+      reports: [
+        getSuccessReport(snapshotID, ResourceSnapshotsReportType.Apply),
+      ],
+    }),
     await new AuthenticatedClient().getClient()
   );
 };

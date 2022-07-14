@@ -6,14 +6,18 @@ import {
 export const getDummySnapshotModel = (
   orgId: string,
   snapshotId: string,
-  reports: ResourceSnapshotsReportModel[] = []
+  {
+    reports = [],
+    diffGenerationReports = [],
+  }: Partial<ResourceSnapshotsModel> = {}
 ): ResourceSnapshotsModel => ({
   id: snapshotId,
   createdBy: 'user@coveo.com',
   createdDate: 1622555047116,
   targetId: orgId,
   developerNote: 'hello',
-  reports: reports,
+  reports,
+  diffGenerationReports,
   synchronizationReports: [],
   contentSummary: {EXTENSION: 1, FIELD: 11},
 });

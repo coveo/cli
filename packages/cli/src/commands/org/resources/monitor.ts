@@ -87,8 +87,9 @@ export default class Monitor extends Command {
     CliUx.ux.action.start(header);
   }
 
+  // TODO: CDX-949: remove and replace with progress bar
   private refresh(report: SnapshotReport) {
-    CliUx.ux.action.status = report.status;
+    CliUx.ux.action.status = SnapshotReporter.prettify(report.status);
   }
 
   private async getSnapshot(): Promise<Snapshot> {
@@ -103,7 +104,7 @@ export default class Monitor extends Command {
     const {flags} = await this.parse(Monitor);
     return {
       wait: flags.wait,
-      // TODO: revisit with a progress bar once the response contains the remaining resources to process
+      // TODO: CDX-949: revisit with a progress bar once the response contains the remaining resources to process
       onRetryCb: (report: SnapshotReport) => this.refresh(report),
     };
   }

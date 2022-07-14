@@ -246,21 +246,22 @@ export class SnapshotReporter {
   }
 
   public get type() {
-    const type = this.prettify(this.report.type);
+    const type = SnapshotReporter.prettify(this.report.type);
     return type;
   }
 
   public get status() {
-    const status = this.prettify(this.report.status);
+    const status = SnapshotReporter.prettify(this.report.status);
     return status;
   }
 
   public get resultCode() {
-    const status = this.prettify(this.report.resultCode);
+    const status = SnapshotReporter.prettify(this.report.resultCode);
     return status;
   }
 
-  private prettify(str: string): string {
+  // TODO: CDX-949: revert to private method once progressbar is added
+  public static prettify(str: string): string {
     const capitalized = (word: string) =>
       word.charAt(0) + word.slice(1).toLowerCase();
 

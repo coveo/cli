@@ -37,6 +37,7 @@ const mockedAreResourcesInError = jest.fn();
 const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
 const mockedLastReport = jest.fn();
+const mockedDiff = jest.fn();
 const mockedIsGitInstalled = jest.mocked(IsGitInstalled, true);
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockEvaluate = jest.fn();
@@ -90,6 +91,7 @@ const mockSnapshotFactory = async () => {
       saveDetailedReport: mockedSaveDetailedReport,
       areResourcesInError: mockedAreResourcesInError,
       latestReport: mockedLastReport,
+      diff: mockedDiff,
       id: 'banana-snapshot',
       targetId: 'potato-org',
     } as unknown as Snapshot)
@@ -285,12 +287,8 @@ describe('org:resources:preview', () => {
       .stdout()
       .stderr()
       .command(['org:resources:preview'])
-      .it('should display expanded preview', () => {
-        expect(mockedPreviewSnapshot).toHaveBeenCalledWith(
-          expect.anything(),
-          expect.anything(),
-          true
-        );
+      .it('should fetch the snapshot diff', () => {
+        expect(mockedDiff).toHaveBeenCalled();
       });
 
     test
@@ -298,11 +296,7 @@ describe('org:resources:preview', () => {
       .stderr()
       .command(['org:resources:preview', '--previewLevel', 'light'])
       .it('should only display light preview', () => {
-        expect(mockedPreviewSnapshot).toHaveBeenCalledWith(
-          expect.anything(),
-          expect.anything(),
-          false
-        );
+        expect(mockedDiff).not.toHaveBeenCalled();
       });
   });
   //#region TODO: CDX-948, setup phase needs to be rewrite and assertions 'split up' (e.g. the error ain't trigger directly by the function, therefore should not be handled)

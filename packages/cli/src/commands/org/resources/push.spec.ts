@@ -35,6 +35,7 @@ const mockedApplySnapshot = jest.fn();
 const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
 const mockedLastReport = jest.fn();
+const mockedDiff = jest.fn();
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockEvaluate = jest.fn();
 
@@ -71,6 +72,7 @@ const mockSnapshotFactory = async () => {
       saveDetailedReport: mockedSaveDetailedReport,
       areResourcesInError: mockedAreResourcesInError,
       latestReport: mockedLastReport,
+      diff: mockedDiff,
       id: 'banana-snapshot',
       targetId: 'potato-org',
     } as unknown as Snapshot)
@@ -192,8 +194,17 @@ describe('org:resources:push', () => {
       .stderr()
       .stub(CliUx.ux, 'confirm', () => async () => true)
       .command(['org:resources:push'])
-      .it('should preview the snapshot', () => {
+      .it('should return the light preview', () => {
         expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
+      });
+
+    test
+      .stdout()
+      .stderr()
+      .stub(CliUx.ux, 'confirm', () => async () => true)
+      .command(['org:resources:push'])
+      .it('should run a snapshot diff', () => {
+        expect(mockedDiff).toHaveBeenCalledTimes(1);
       });
 
     test
@@ -332,11 +343,7 @@ describe('org:resources:push', () => {
       .stub(CliUx.ux, 'confirm', () => async () => true)
       .command(['org:resources:push', '--previewLevel', 'light'])
       .it('should only display light preview', () => {
-        expect(mockedPreviewSnapshot).toHaveBeenCalledWith(
-          expect.anything(),
-          expect.anything(),
-          false
-        );
+        expect(mockedPreviewSnapshot).toHaveBeenCalled();
       });
 
     test
@@ -345,11 +352,7 @@ describe('org:resources:push', () => {
       .stub(CliUx.ux, 'confirm', () => async () => true)
       .command(['org:resources:push', '--previewLevel', 'detailed'])
       .it('should display light and expanded preview', () => {
-        expect(mockedPreviewSnapshot).toHaveBeenCalledWith(
-          expect.anything(),
-          expect.anything(),
-          true
-        );
+        expect(mockedPreviewSnapshot).toHaveBeenCalled();
       });
   });
 

@@ -100,9 +100,11 @@ describe('org:resources:pull', () => {
     mockAuthenticatedClient();
 
     mockedGetSnapshot.mockResolvedValue(
-      getDummySnapshotModel('default-org', 'my-snapshot', [
-        getSuccessReport('my-snapshot', ResourceSnapshotsReportType.Apply),
-      ])
+      getDummySnapshotModel('default-org', 'my-snapshot', {
+        reports: [
+          getSuccessReport('my-snapshot', ResourceSnapshotsReportType.Apply),
+        ],
+      })
     );
   });
 

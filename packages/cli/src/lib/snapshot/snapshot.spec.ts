@@ -2,6 +2,7 @@ import {
   ResourceSnapshotsModel,
   ResourceSnapshotsReportModel,
   ResourceSnapshotsReportType,
+  SnapshotDiffModel,
   SnapshotExportContentFormat,
 } from '@coveord/platform-client';
 import {stdout, stderr} from 'stdout-stderr';
@@ -21,7 +22,7 @@ jest.mock('async-retry');
 jest.mock('./snapshotReporter');
 jest.mock('./reportPreviewer/reportPreviewer');
 jest.mock('../project/project');
-jest.mock('./expandedPreviewer/expandedPreviewer');
+jest.mock('./diffReporter/diffReporter');
 
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {ensureFileSync, writeJSONSync} from 'fs-extra';
@@ -34,6 +35,7 @@ import {join} from 'path';
 import {SnapshotOperationTimeoutError} from '../errors';
 import {fancyIt} from '../../__test__/it';
 import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
+import {getReportWithChanges} from '../../__stub__/resourceSnapshotDiffModel';
 
 const mockedRetry = jest.mocked(retry);
 const mockedSnapshotDiffReporter = jest.mocked(SnapshotDiffReporter, true);
@@ -48,6 +50,7 @@ const mockedDeleteSnapshot = jest.fn();
 const mockedGetSnapshot = jest.fn();
 const mockedExportSnapshot = jest.fn();
 const mockedApplySnapshot = jest.fn();
+const mockedDiffSnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
 const mockedGetSynchronizationPlan = jest.fn();
@@ -86,6 +89,7 @@ describe('Snapshot', () => {
           get: mockedGetSnapshot,
           export: mockedExportSnapshot,
           apply: mockedApplySnapshot,
+          diff: mockedDiffSnapshot,
           getSynchronizationPlan: mockedGetSynchronizationPlan,
         },
       })
@@ -130,15 +134,12 @@ describe('Snapshot', () => {
   //#endregion
 
   const getSnapshot = async (
-    reports?: ResourceSnapshotsReportModel | ResourceSnapshotsReportModel[]
+    modelOverwrite?: Partial<ResourceSnapshotsModel>
   ): Promise<[Snapshot, ResourceSnapshotsModel]> => {
-    if (reports && !Array.isArray(reports)) {
-      reports = [reports];
-    }
     const initialSnapshotState = getDummySnapshotModel(
       targetOrgId,
       snapshotId,
-      reports
+      modelOverwrite
     );
     return [
       new Snapshot(
@@ -163,7 +164,8 @@ describe('Snapshot', () => {
 
     beforeEach(async () => {
       mockedDryRunReport = getSuccessDryRunReport(snapshotId);
-      [snapshot] = await getSnapshot(mockedDryRunReport);
+      const a = await getSnapshot({reports: [mockedDryRunReport]});
+      snapshot = a[0];
       mockedWaitUntilDone = doMockWaitUntilDone();
     });
 
@@ -219,7 +221,7 @@ describe('Snapshot', () => {
     beforeEach(async () => {
       doMockSnapshotReporter(SnapshotReportStatus.SUCCESS);
       someReport = getSuccessDryRunReport(snapshotId);
-      [snapshot] = await getSnapshot(someReport);
+      [snapshot] = await getSnapshot({reports: [someReport]});
     });
 
     fancyIt()('should display the the light preview', async () => {
@@ -231,40 +233,22 @@ describe('Snapshot', () => {
       );
     });
 
-    describe('when the latest report is succesful', () => {
-      beforeEach(() => {
-        doMockSnapshotReporter(SnapshotReportStatus.SUCCESS);
-      });
+    // TODO:
+    // describe('when the latest report is succesful', () => {
+    //   beforeEach(() => {
+    //     doMockSnapshotReporter(SnapshotReportStatus.SUCCESS);
+    //   });
 
-      it.each([
-        [undefined, false],
-        [true, true],
-        [false, false],
-      ])(
-        'should generate the expanded preview',
-        async (previewParam, expandedPreviewerParam) => {
-          stderr.start();
-          stdout.start();
+    //   it('should call the SnapshotDiffReporter', async () => {
+    //     const someProject = new Project('some/project/path');
+    //     await snapshot.diff(someProject);
 
-          const someProject = new Project('');
-
-          await snapshot.preview();
-
-          expect(mockedSnapshotDiffReporter).toBeCalledWith(
-            someReport,
-            targetOrgId,
-            someProject,
-            expandedPreviewerParam
-          );
-          expect(
-            mockedSnapshotDiffReporter.mock.instances[0].preview
-          ).toHaveBeenCalled();
-
-          stderr.stop();
-          stdout.stop();
-        }
-      );
-    });
+    //     expect(mockedSnapshotDiffReporter).toBeCalledWith(
+    //       someReport,
+    //       'some/project/path'
+    //     );
+    //   });
+    // });
 
     describe('when the latest report is not succesful', () => {
       beforeEach(() => {
@@ -284,7 +268,7 @@ describe('Snapshot', () => {
 
     beforeEach(async () => {
       mockedApplyRunReport = getSuccessApplyReport(snapshotId);
-      [snapshot] = await getSnapshot(mockedApplyRunReport);
+      [snapshot] = await getSnapshot({reports: [mockedApplyRunReport]});
       mockedWaitUntilDone = doMockWaitUntilDone();
     });
 
@@ -376,10 +360,39 @@ describe('Snapshot', () => {
     });
   });
 
+  describe('#diff', () => {
+    let someReport: ResourceSnapshotsReportModel;
+    let someDiffReport: SnapshotDiffModel;
+
+    beforeEach(async () => {
+      doMockSnapshotReporter(SnapshotReportStatus.SUCCESS);
+      someReport = getSuccessDryRunReport(snapshotId);
+      someDiffReport = getReportWithChanges(someReport.id);
+      [snapshot] = await getSnapshot({
+        reports: [someReport],
+        diffGenerationReports: [someDiffReport],
+      });
+    });
+
+    fancyIt()('should get the snapshot diff', async () => {
+      const fakeResponse = Promise.resolve();
+      const someProject = new Project('');
+      mockedDiffSnapshot.mockReturnValueOnce(fakeResponse);
+
+      await snapshot.diff(someProject);
+
+      expect(mockedDiffSnapshot).toHaveBeenCalledWith(
+        snapshotId,
+        someReport.id,
+        0
+      );
+    });
+  });
+
   describe('#areResourcesInError', () => {
     let latestReport: ResourceSnapshotsReportModel;
     beforeEach(async () => {
-      [snapshot] = await getSnapshot(latestReport);
+      [snapshot] = await getSnapshot({reports: [latestReport]});
     });
 
     describe('when the latestReport resultCode is ResourcesInError', () => {
@@ -407,7 +420,7 @@ describe('Snapshot', () => {
     let someReport: ResourceSnapshotsReportModel;
     beforeEach(async () => {
       someReport = getSuccessApplyReport(snapshotId);
-      [snapshot] = await getSnapshot(someReport);
+      [snapshot] = await getSnapshot({reports: [someReport]});
     });
 
     fancyIt()(
@@ -442,7 +455,7 @@ describe('Snapshot', () => {
 
     beforeEach(async () => {
       someReport = getSuccessApplyReport(snapshotId);
-      [snapshot, initialModel] = await getSnapshot(someReport);
+      [snapshot, initialModel] = await getSnapshot({reports: [someReport]});
     });
 
     fancyIt()(
@@ -591,10 +604,14 @@ describe('Snapshot', () => {
     });
   });
 
+  describe('[get]-latestDiffReport', () => {
+    // TODO:
+  });
+
   describe('[get]-latestReport', () => {
     describe.each([undefined, []])('when there is no reports', (reports) => {
       beforeEach(async () => {
-        [snapshot] = await getSnapshot(reports);
+        [snapshot] = await getSnapshot({reports});
       });
 
       fancyIt()('should throw an Error', () => {
@@ -616,7 +633,7 @@ describe('Snapshot', () => {
         ];
         reports[1].updatedDate++;
         mostRecentReport = reports[1];
-        [snapshot] = await getSnapshot(reports);
+        [snapshot] = await getSnapshot({reports});
       });
 
       fancyIt()('should return the most recent one', () => {

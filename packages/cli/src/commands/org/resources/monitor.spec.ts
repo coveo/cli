@@ -23,6 +23,7 @@ const mockedGetSnapshot = jest.fn();
 const mockedWaitUntilDone = jest.fn();
 const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
+const mockedDiffSnapshot = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
 const mockedSaveDetailedReport = jest.fn();
 const mockedAreResourcesInError = jest.fn();
@@ -35,6 +36,7 @@ const mockSnapshotFactory = () => {
     Promise.resolve({
       validate: mockedValidateSnapshot,
       preview: mockedPreviewSnapshot,
+      diff: mockedDiffSnapshot,
       delete: mockedDeleteSnapshot,
       saveDetailedReport: mockedSaveDetailedReport,
       areResourcesInError: mockedAreResourcesInError,
@@ -90,9 +92,11 @@ describe('org:resources:monitor', () => {
     mockSnapshotFactory();
     doMockSnapshotReporter(SnapshotReportStatus.SUCCESS);
     mockedGetSnapshot.mockResolvedValue(
-      getDummySnapshotModel('default-org', 'my-snapshot', [
-        getSuccessReport('my-snapshot', ResourceSnapshotsReportType.Apply),
-      ])
+      getDummySnapshotModel('default-org', 'my-snapshot', {
+        reports: [
+          getSuccessReport('my-snapshot', ResourceSnapshotsReportType.Apply),
+        ],
+      })
     );
   });
 
