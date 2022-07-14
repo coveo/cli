@@ -90,6 +90,7 @@ const mockSnapshotFactory = async () => {
     saveDetailedReport: mockedSaveDetailedReport,
     areResourcesInError: mockedAreResourcesInError,
     latestReport: mockedLastReport,
+    diff: mockedDiff,
     id: 'banana-snapshot',
     targetId: 'potato-org',
   } as unknown as Snapshot;
