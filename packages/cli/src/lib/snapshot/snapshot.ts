@@ -1,6 +1,7 @@
 import {
   ResourceSnapshotsModel,
   ResourceSnapshotsReportModel,
+  ResourceSnapshotsReportResultCode,
   ResourceSnapshotsReportStatus,
   PlatformClient,
   ResourceSnapshotsReportType,
@@ -98,7 +99,10 @@ export class Snapshot {
     );
     await this.waitUntilDiffDone();
 
-    const viewer = new SnapshotDiffReporter(this.latestDiffReport, project);
+    const viewer = new SnapshotDiffReporter(
+      this.latestDiffReport,
+      project.pathToProject
+    );
     await viewer.preview();
   }
 
@@ -132,6 +136,13 @@ export class Snapshot {
     return this.client.resourceSnapshot.export(this.id, {
       contentFormat: SnapshotExportContentFormat.SplitPerType,
     });
+  }
+
+  public areResourcesInError() {
+    return (
+      this.latestReport.resultCode ===
+      ResourceSnapshotsReportResultCode.ResourcesInError
+    );
   }
 
   public saveDetailedReport(projectPath: string) {

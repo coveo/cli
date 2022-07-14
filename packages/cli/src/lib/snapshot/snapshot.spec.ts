@@ -29,14 +29,14 @@ import retry from 'async-retry';
 import {SnapshotReporter} from './snapshotReporter';
 import {ReportViewer} from './reportPreviewer/reportPreviewer';
 import {Project} from '../project/project';
-import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer';
+import {SnapshotDiffReporter} from './diffReporter/diffReporter';
 import {join} from 'path';
 import {SnapshotOperationTimeoutError} from '../errors';
 import {fancyIt} from '../../__test__/it';
 import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
 
 const mockedRetry = jest.mocked(retry);
-const mockedExpandedPreviewer = jest.mocked(ExpandedPreviewer, true);
+const mockedSnapshotDiffReporter = jest.mocked(SnapshotDiffReporter, true);
 const mockedSnapshotReporter = jest.mocked(SnapshotReporter, true);
 const mockedReportViewer = jest.mocked(ReportViewer, true);
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient, true);
@@ -223,7 +223,7 @@ describe('Snapshot', () => {
     });
 
     fancyIt()('should display the the light preview', async () => {
-      await snapshot.preview(new Project(''));
+      await snapshot.preview();
 
       expect(mockedSnapshotReporter).toHaveBeenCalledWith(someReport);
       expect(mockedReportViewer).toHaveBeenCalledWith(
@@ -248,16 +248,16 @@ describe('Snapshot', () => {
 
           const someProject = new Project('');
 
-          await snapshot.preview(someProject, previewParam);
+          await snapshot.preview();
 
-          expect(mockedExpandedPreviewer).toBeCalledWith(
+          expect(mockedSnapshotDiffReporter).toBeCalledWith(
             someReport,
             targetOrgId,
             someProject,
             expandedPreviewerParam
           );
           expect(
-            mockedExpandedPreviewer.mock.instances[0].preview
+            mockedSnapshotDiffReporter.mock.instances[0].preview
           ).toHaveBeenCalled();
 
           stderr.stop();
@@ -272,9 +272,8 @@ describe('Snapshot', () => {
       });
 
       fancyIt()('should not generate the expanded preview', async () => {
-        await snapshot.preview(new Project(''));
-
-        expect(mockedExpandedPreviewer).not.toBeCalled();
+        await snapshot.preview();
+        expect(mockedSnapshotDiffReporter).not.toBeCalled();
       });
     });
   });
