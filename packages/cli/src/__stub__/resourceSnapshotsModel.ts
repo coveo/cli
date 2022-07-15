@@ -1,7 +1,4 @@
-import {
-  ResourceSnapshotsModel,
-  ResourceSnapshotsReportModel,
-} from '@coveord/platform-client';
+import {ResourceSnapshotsModel} from '@coveord/platform-client';
 
 export const getDummySnapshotModel = (
   orgId: string,
