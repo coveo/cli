@@ -21,7 +21,6 @@ jest.mock('fs-extra');
 jest.mock('async-retry');
 jest.mock('./snapshotReporter');
 jest.mock('./reportPreviewer/reportPreviewer');
-jest.mock('../project/project');
 jest.mock('./diffReporter/diffReporter');
 
 import {AuthenticatedClient} from '../platform/authenticatedClient';
@@ -231,22 +230,30 @@ describe('Snapshot', () => {
       );
     });
 
-    // TODO:
-    // describe('when the latest report is succesful', () => {
-    //   beforeEach(() => {
-    //     doMockSnapshotReporter(SnapshotReportStatus.SUCCESS);
-    //   });
+    describe('when the latest report is successful', () => {
+      let someReport: ResourceSnapshotsReportModel;
+      let someDiffReport: SnapshotDiffModel;
 
-    //   it('should call the SnapshotDiffReporter', async () => {
-    //     const someProject = new Project('some/project/path');
-    //     await snapshot.diff(someProject);
+      beforeEach(async () => {
+        doMockSnapshotReporter(SnapshotReportStatus.SUCCESS);
+        someReport = getSuccessDryRunReport(snapshotId);
+        someDiffReport = getReportWithChanges(someReport.id);
+        [snapshot] = await getSnapshot({
+          reports: [someReport],
+          diffGenerationReports: [someDiffReport],
+        });
+      });
 
-    //     expect(mockedSnapshotDiffReporter).toBeCalledWith(
-    //       someReport,
-    //       'some/project/path'
-    //     );
-    //   });
-    // });
+      it('should call the SnapshotDiffReporter', async () => {
+        const someProject = new Project('some/project/path');
+        await snapshot.diff(someProject);
+
+        expect(mockedSnapshotDiffReporter).toBeCalledWith(
+          someDiffReport,
+          'some/project/path'
+        );
+      });
+    });
 
     describe('when the latest report is not succesful', () => {
       beforeEach(() => {
