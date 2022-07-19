@@ -84,5 +84,5 @@ async function trackError(
 }
 
 function getEventName(target: Command) {
-  return target.id!.replace(/:/g, ' ');
+  return `${target.id}`.replace(/:/g, ' ');
 }
