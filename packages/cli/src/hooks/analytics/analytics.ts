@@ -7,7 +7,6 @@ import {
 } from '../../lib/platform/authenticatedClient';
 import {amplitudeClient} from './amplitudeClient';
 import {Identifier} from './identifier';
-import check from './session';
 
 export interface AnalyticsHook {
   event: Event;
@@ -34,7 +33,6 @@ const hook = async function (options: AnalyticsHook) {
   await augmentEvent(options.event, platformIdentifier);
   amplitudeClient.logEvent({
     device_id: deviceId,
-    session_id: check(),
     ...(userId && {user_id: userId}),
     ...options.event,
   });

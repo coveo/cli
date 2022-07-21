@@ -3,7 +3,6 @@ jest.mock('@amplitude/node');
 jest.mock('../../lib/config/config');
 jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
-jest.mock('./session');
 jest.mock('../../lib/config/globalConfig');
 
 import {Configuration, Config} from '../../lib/config/config';
