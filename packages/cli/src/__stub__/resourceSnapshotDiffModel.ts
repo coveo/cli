@@ -2,7 +2,6 @@ import {
   ResourceSnapshotType,
   ResourceSnapshotsReportStatus,
   SnapshotDiffModel,
-  SnapshotDiffFileModel,
 } from '@coveord/platform-client';
 
 export const getReportWithChanges = (
@@ -25,7 +24,7 @@ export const getReportWithChanges = (
       numberOfLines: 1234, // we don't care about these
       urlExpiration: 1234, // we don't care about these
     },
-  } as Record<ResourceSnapshotType, SnapshotDiffFileModel>, // TODO: remove once CDX-1076 is merged
+  },
 });
 
 export const getReportWithoutChanges = (
@@ -36,7 +35,7 @@ export const getReportWithoutChanges = (
   snapshotId,
   updatedDate: 1622555847000,
   status: ResourceSnapshotsReportStatus.Completed,
-  files: {} as Record<ResourceSnapshotType, SnapshotDiffFileModel>, // TODO: remove once CDX-1076 is merged,
+  files: {},
 });
 
 export const getPendingReport = (snapshotId: string): SnapshotDiffModel => ({
@@ -45,5 +44,5 @@ export const getPendingReport = (snapshotId: string): SnapshotDiffModel => ({
   snapshotId,
   updatedDate: 1622555847000,
   status: ResourceSnapshotsReportStatus.Pending,
-  files: {} as Record<ResourceSnapshotType, SnapshotDiffFileModel>, // TODO: remove once CDX-1076 is merged,
+  files: {},
 });
