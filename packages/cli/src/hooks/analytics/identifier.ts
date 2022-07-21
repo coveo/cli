@@ -8,6 +8,7 @@ import {camelToSnakeCase} from '../../lib/utils/string';
 import type {NodeClient} from '@amplitude/node';
 import globalConfig from '../../lib/config/globalConfig';
 import {Configuration} from '../../lib/config/config';
+
 export class Identifier {
   private authenticatedClient: AuthenticatedClient;
 
@@ -38,11 +39,17 @@ export class Identifier {
       const identifyEvent = {
         ...identifier.identifyUser(userId, deviceId),
         ...this.getAmplitudeBaseEventProperties(),
+        ...this.getOrganizationIdentifier(),
       };
       amplitudeClient.logEvent(identifyEvent);
     };
 
     return {userId, deviceId, identify};
+  }
+
+  private getOrganizationIdentifier() {
+    const {environment, region, organization} = this.configuration;
+    return {environment, region, organization};
   }
 
   private hash(word: string) {
@@ -68,9 +75,11 @@ export class Identifier {
 
   private async getUserInfo(platformClient: PlatformClient) {
     const {email} = await platformClient.user.get();
+    const isInternalUser = email.match(/@coveo\.com$/) !== null;
+
     return {
-      userId: this.hash(email),
-      isInternalUser: email.match(/@coveo\.com$/) !== null,
+      userId: isInternalUser ? email : this.hash(email),
+      isInternalUser,
     };
   }
 
