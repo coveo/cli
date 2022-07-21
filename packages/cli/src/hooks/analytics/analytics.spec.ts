@@ -165,10 +165,34 @@ describe('analytics_hook', () => {
       );
     });
 
-    fancyIt()('should not identify event with (un-hashed) email', async () => {
-      const userIdCheck = expect.stringMatching(/^(?!bob@.*?\.com).*/);
-      expect(mockedLogEvent).toHaveBeenCalledWith(
-        expect.objectContaining({user_id: userIdCheck})
+    describe('when the user is a coveo employee', () => {
+      fancyIt()('should identify event with (un-hashed) email', async () => {
+        const userIdCheck = expect.stringMatching('bob@coveo.com');
+        expect(mockedLogEvent).toHaveBeenCalledWith(
+          expect.objectContaining({user_id: userIdCheck})
+        );
+      });
+    });
+
+    describe('when the user is not a coveo employee', () => {
+      beforeEach(async () => {
+        mockedUserGet.mockResolvedValueOnce({
+          email: 'bob@acme.com',
+          username: 'bob@acme.com',
+          displayName: 'bob',
+        });
+        mockedLogEvent.mockReset();
+        await hook(getAnalyticsHook({identify: true}));
+      });
+
+      fancyIt()(
+        'should not identify event with (un-hashed) email',
+        async () => {
+          const userIdCheck = expect.not.stringMatching('bob@coveo.com');
+          expect(mockedLogEvent).toHaveBeenCalledWith(
+            expect.objectContaining({user_id: userIdCheck})
+          );
+        }
       );
     });
 
