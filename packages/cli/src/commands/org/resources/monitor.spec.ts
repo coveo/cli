@@ -1,6 +1,6 @@
 jest.mock('../../../lib/config/config');
 jest.mock('../../../hooks/analytics/analytics');
-jest.mock('../../../hooks/prerun/prerun');
+
 jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/snapshot/snapshotReporter');
 jest.mock('../../../lib/snapshot/snapshotFactory');

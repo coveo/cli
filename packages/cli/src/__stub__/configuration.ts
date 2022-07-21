@@ -6,7 +6,8 @@ export const defaultConfiguration = {
   environment: PlatformEnvironment.Dev,
   organization: 'my-org',
   region: Region.US,
-  analyticsEnabled: true,
+  accessToken: 'some-api-key-or-token',
+  anonymous: false,
 } as Configuration;
 
 export const configurationMock: (

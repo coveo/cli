@@ -27,11 +27,6 @@ export default class Set extends Command {
         'The identifier of the organization inside which to perform operations. See <https://docs.coveo.com/en/1562/#organization-id-and-other-information>.',
       helpValue: 'myOrgID',
     }),
-    analytics: Flags.string({
-      char: 'a',
-      options: ['y', 'n'],
-      description: 'Whether to enable analytics and telemetry tracking.',
-    }),
   };
 
   @Trackable()
@@ -50,9 +45,6 @@ export default class Set extends Command {
     if (flags.organization) {
       await this.verifyOrganization(flags.organization);
       cfg.set('organization', flags.organization);
-    }
-    if (flags.analytics) {
-      cfg.set('analyticsEnabled', flags.analytics === 'y');
     }
 
     ConfigRenderer.render(cfg);

@@ -167,14 +167,12 @@ describe('identifier', () => {
       identity = await new Identifier().getIdentity();
     });
 
-    it('should set the user ID to null', async () => {
-      expect(identity.userId).toBeNull();
+    it('should set the user ID', async () => {
+      expect(identity.userId).not.toBeNull();
     });
   });
 
   describe('when logging for every user type', () => {
-    let identity: Awaited<ReturnType<Identifier['getIdentity']>>;
-
     beforeEach(async () => {
       identity = await new Identifier().getIdentity();
       identity.identify(getDummyAmplitudeClient());

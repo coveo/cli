@@ -5,7 +5,7 @@ jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
 jest.mock('../../lib/config/globalConfig');
 
-import {Configuration, Config} from '../../lib/config/config';
+import {Config} from '../../lib/config/config';
 import {
   AuthenticatedClient,
   AuthenticationStatus,
@@ -67,6 +67,7 @@ describe('analytics_hook', () => {
           },
           organization: {
             get: jest.fn().mockResolvedValue({type: 'Production'}),
+            list: jest.fn().mockResolvedValue([{id: 'someorgid'}]),
           },
         } as unknown as PlatformClient)
     );
@@ -188,21 +189,6 @@ describe('analytics_hook', () => {
         user_id: nonEmptyString,
       })
     );
-  });
-
-  fancyIt()('should not send any analytics if disabled', async () => {
-    mockedConfig.mockImplementation(
-      () =>
-        ({
-          get: () =>
-            ({
-              analyticsEnabled: false,
-            } as Configuration),
-        } as Config)
-    );
-
-    await hook(getAnalyticsHook({}));
-    expect(mockedLogEvent).not.toHaveBeenCalled();
   });
 
   fancyIt()('should send analytics regardless of the license', async () => {
