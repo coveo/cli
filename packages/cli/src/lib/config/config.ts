@@ -22,7 +22,6 @@ export interface BaseConfiguration {
   region: Region;
   environment: PlatformEnvironment;
   organization: string;
-  analyticsEnabled: boolean | undefined;
   accessToken: string | undefined;
   anonymous?: boolean | undefined;
 }
@@ -37,7 +36,6 @@ export class Config {
     'environment',
     'organization',
     'region',
-    'analyticsEnabled',
   ];
   public constructor(private configDir: string) {}
 
@@ -135,7 +133,6 @@ export const DefaultConfig: Configuration = {
   environment: DEFAULT_ENVIRONMENT,
   region: DEFAULT_REGION,
   organization: '',
-  analyticsEnabled: undefined,
   accessToken: undefined,
   anonymous: undefined,
 };

@@ -21,10 +21,6 @@ const hook = async function (options: AnalyticsHook) {
   }
   const platformIdentifier = await platformInfoIdentifier();
 
-  if (!platformIdentifier.analyticsEnabled) {
-    return;
-  }
-
   const {userId, deviceId, identify} = await new Identifier().getIdentity();
   if (options.identify) {
     identify(amplitudeClient);
