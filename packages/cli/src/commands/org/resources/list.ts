@@ -29,7 +29,7 @@ export default class List extends Command {
       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
     );
     const {flags} = await this.parse(List);
-    const org = await getTargetOrg(this.configuration, flags.organization);
+    const org = getTargetOrg(this.configuration, flags.organization);
     const platformClient = await new AuthenticatedClient().getClient({
       organization: org,
     });

@@ -7,6 +7,7 @@ import {
   ResourceSnapshotsReportType,
   SnapshotExportContentFormat,
   ResourceSnapshotsSynchronizationReportModel,
+  ApplyOptionsDeletionScope,
 } from '@coveord/platform-client';
 import retry from 'async-retry';
 import {ReportViewer} from './reportPreviewer/reportPreviewer';
@@ -16,8 +17,6 @@ import {SnapshotReporter} from './snapshotReporter';
 import {SnapshotOperationTimeoutError} from '../errors';
 import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer';
 import {Project} from '../project/project';
-import {SynchronizationPlan} from './synchronization/synchronizationPlan';
-import {SnapshotSynchronizationReporter} from './synchronization/synchronizationReporter';
 import {
   SnapshotNoReportFoundError,
   SnapshotNoSynchronizationReportFoundError,
@@ -110,7 +109,15 @@ export class Snapshot {
     deleteMissingResources = false,
     options: WaitUntilDoneOptions = {}
   ) {
-    await this.snapshotClient.apply(this.id, {deleteMissingResources});
+    await this.snapshotClient.apply(
+      this.id,
+      deleteMissingResources
+        ? {
+            deleteMissingResources,
+            deletionScope: ApplyOptionsDeletionScope.OnlyTypesFromSnapshot,
+          }
+        : {deleteMissingResources}
+    );
 
     await this.waitUntilDone({
       operationToWaitFor: ResourceSnapshotsReportType.Apply,
@@ -128,38 +135,6 @@ export class Snapshot {
     return this.client.resourceSnapshot.export(this.id, {
       contentFormat: SnapshotExportContentFormat.SplitPerType,
     });
-  }
-
-  public async createSynchronizationPlan(options: WaitUntilDoneOptions = {}) {
-    const plan = await this.snapshotClient.createSynchronizationPlan(this.id);
-
-    await this.waitUntilDone({
-      operationToWaitFor: ResourceSnapshotsReportType.CreateSynchronizationPlan,
-      ...options,
-    });
-
-    const upToDatePlan = await this.snapshotClient.getSynchronizationPlan(
-      this.id,
-      plan.id
-    );
-
-    return new SynchronizationPlan(upToDatePlan);
-  }
-
-  public async applySynchronizationPlan(
-    planId: string,
-    options: WaitUntilDoneOptions = {}
-  ) {
-    await this.snapshotClient.applySynchronizationPlan(this.id, planId);
-
-    await this.waitUntilDone({
-      operationToWaitFor: ResourceSnapshotsReportType.ApplySynchronizationPlan,
-      ...options,
-    });
-
-    return new SnapshotSynchronizationReporter(
-      this.latestSynchronizationReport
-    );
   }
 
   public areResourcesInError() {
@@ -230,7 +205,7 @@ export class Snapshot {
   ) {
     const previewer = new ExpandedPreviewer(
       this.latestReport,
-      this.targetId!,
+      this.targetId,
       projectToPreview,
       shouldDelete
     );

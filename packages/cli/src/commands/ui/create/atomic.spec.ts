@@ -6,7 +6,7 @@ jest.mock('../../../lib/utils/process');
 jest.mock('../../../lib/oauth/oauth');
 jest.mock('../../../lib/config/config');
 jest.mock('../../../hooks/analytics/analytics');
-jest.mock('../../../hooks/prerun/prerun');
+
 jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
 jest.mock('@coveord/platform-client');

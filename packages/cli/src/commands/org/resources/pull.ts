@@ -1,9 +1,11 @@
-import {ResourceSnapshotType} from '@coveord/platform-client';
+import type {ResourceSnapshotType} from '@coveord/platform-client';
 import {Flags, Command, CliUx} from '@oclif/core';
-import {blueBright, bold} from 'chalk';
+import {blueBright} from 'chalk';
 import {readJsonSync} from 'fs-extra';
+import {resolve} from 'path';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
+import {formatOrgId} from '../../../lib/commonPromptUtils/formater';
 import {Config} from '../../../lib/config/config';
 import {
   HasNecessaryCoveoPrivileges,
@@ -15,7 +17,11 @@ import {writeSnapshotPrivilege} from '../../../lib/decorators/preconditions/plat
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {ProcessAbort} from '../../../lib/errors/processError';
-import {organization, wait} from '../../../lib/flags/snapshotCommonFlags';
+import {
+  organization,
+  snapshotId,
+  wait,
+} from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
 import type {
   SnapshotPullModel,
@@ -29,9 +35,24 @@ import {
   handleSnapshotError,
   cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
+import {allowedResourceType} from '../../../lib/snapshot/snapshotConstant';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
+
+const PullCommandStrings = {
+  projectOverwriteQuestion: (
+    resourceFolderName: string
+  ) => dedent`There is already a Coveo project with resources in it.
+  This command will delete the project in ${resourceFolderName} folder and start a new one, do you want to proceed? (y/n)`,
+  howToPullAfterTimeout: (targetOrgId: string, snapshotId: string) => dedent`
+
+      Once the snapshot is created, you can pull it with the following command:
+
+        ${blueBright`coveo org:resources:pull -o ${targetOrgId} -s ${snapshotId}`}
+
+        `,
+};
 
 export default class Pull extends Command {
   public static description = '(beta) Pull resources from an organization';
@@ -41,12 +62,7 @@ export default class Pull extends Command {
     ...organization(
       'The unique identifier of the organization from which to pull the resources'
     ),
-    snapshotId: Flags.string({
-      char: 's',
-      exclusive: ['resourceTypes'],
-      description:
-        'The unique identifier of the snapshot to pull. If not specified, a new snapshot will be created. You can list available snapshot in your organization with org:resources:list',
-    }),
+    ...snapshotId(),
     git: Flags.boolean({
       char: 'g',
       description:
@@ -66,12 +82,12 @@ export default class Pull extends Command {
       helpValue: 'type1 type2',
       description: 'The resources types to pull from the organization.',
       multiple: true,
-      options: Object.values(ResourceSnapshotType),
-      default: Object.values(ResourceSnapshotType),
+      options: allowedResourceType,
+      default: allowedResourceType,
     }),
     model: Flags.build<SnapshotPullModel>({
       parse: async (input: string): Promise<SnapshotPullModel> => {
-        const model = readJsonSync(input);
+        const model = readJsonSync(resolve(input));
         validateSnapshotPullModel(model);
         return model;
       },
@@ -103,8 +119,16 @@ export default class Pull extends Command {
     CliUx.ux.action.start('Updating project with Snapshot');
     await this.refreshProject(project, snapshot);
     project.writeResourcesManifest(targetOrganization);
-    await snapshot.delete();
+
+    if (await this.shouldDeleteSnapshot()) {
+      await snapshot.delete();
+    }
+
     CliUx.ux.action.stop('Project updated');
+  }
+
+  private async shouldDeleteSnapshot() {
+    return !(await this.parse(Pull)).flags.snapshotId;
   }
 
   @Trackable()
@@ -120,15 +144,7 @@ export default class Pull extends Command {
     if (err instanceof SnapshotOperationTimeoutError) {
       const snapshot = err.snapshot;
       const target = await this.getTargetOrg();
-      this.log(
-        dedent`
-
-          Once the snapshot is created, you can pull it with the following command:
-
-            ${blueBright`coveo org:resources:pull -t ${target} -s ${snapshot.id}`}
-
-            `
-      );
+      this.log(PullCommandStrings.howToPullAfterTimeout(target, snapshot.id));
     }
   }
 
@@ -144,39 +160,52 @@ export default class Pull extends Command {
   }
 
   private async ensureProjectReset(project: Project) {
-    const flags = await this.getFlags();
-    if (!flags.overwrite && project.contains(Project.resourceFolderName)) {
-      const question = dedent`There is already a Coveo project with resources in it.
-        This command will overwrite the ${Project.resourceFolderName} folder content, do you want to proceed? (y/n)`;
-
-      const overwrite = await confirmWithAnalytics(
-        question,
-        'project overwrite'
-      );
-      if (!overwrite) {
-        throw new ProcessAbort();
-      }
+    if (await this.shouldAbortProjectReset(project)) {
+      throw new ProcessAbort();
     }
 
     project.reset();
   }
 
+  private async shouldAbortProjectReset(project: Project) {
+    const flags = await this.getFlags();
+    return (
+      !flags.overwrite &&
+      project.contains(Project.resourceFolderName) &&
+      !(await this.askUserShouldWeOverwrite())
+    );
+  }
+
+  private async askUserShouldWeOverwrite() {
+    const question = PullCommandStrings.projectOverwriteQuestion(
+      Project.resourceFolderName
+    );
+    return confirmWithAnalytics(question, 'project overwrite');
+  }
+
   private async getSnapshot() {
     const flags = await this.getFlags();
     const target = await this.getTargetOrg();
-    if (flags.snapshotId) {
-      CliUx.ux.action.start('Retrieving Snapshot');
-      const waitOption = await this.getWaitOption();
-      return SnapshotFactory.createFromExistingSnapshot(
-        flags.snapshotId,
-        target,
-        waitOption
-      );
-    }
+    return flags.snapshotId
+      ? this.getExistingSnapshot(flags.snapshotId, target)
+      : this.createAndGetNewSnapshot(target);
+  }
+
+  private async createAndGetNewSnapshot(target: string) {
     const resourcesToExport = await this.getResourceSnapshotTypesToExport();
-    CliUx.ux.action.start(`Creating Snapshot from ${bold.cyan(target)}`);
+    CliUx.ux.action.start(`Creating Snapshot from ${formatOrgId(target)}`);
     const waitOption = await this.getWaitOption();
     return SnapshotFactory.createFromOrg(resourcesToExport, target, waitOption);
+  }
+
+  private async getExistingSnapshot(snapshotId: string, target: string) {
+    CliUx.ux.action.start('Retrieving Snapshot');
+    const waitOption = await this.getWaitOption();
+    return SnapshotFactory.createFromExistingSnapshot(
+      snapshotId,
+      target,
+      waitOption
+    );
   }
 
   private async getWaitOption(): Promise<WaitUntilDoneOptions> {
@@ -190,25 +219,9 @@ export default class Pull extends Command {
 
   private async getResourceSnapshotTypesToExport(): Promise<SnapshotPullModelResources> {
     const flags = await this.getFlags();
-    if (flags.model) {
-      const cfg = this.configuration.get();
-      if (cfg.organization !== flags.model.orgId) {
-        const question = dedent`You are currently connected to the ${bold.cyan(
-          cfg.organization
-        )} organization, but are about to pull resources from the ${bold.cyan(
-          flags.model.orgId
-        )} organization.
-            Do you wish to continue? (y/n)`;
-        const pull = await confirmWithAnalytics(question, 'resource pull');
-        if (!pull) {
-          throw new ProcessAbort();
-        }
-      }
-
-      return flags.model.resourcesToExport;
-    } else {
-      return buildResourcesToExport(flags.resourceTypes);
-    }
+    return flags.model
+      ? flags.model.resourcesToExport
+      : buildResourcesToExport(flags.resourceTypes);
   }
 
   private async getTargetOrg() {

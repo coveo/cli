@@ -1,3 +1,15 @@
+# 1.32.0 (2022-07-13)
+
+### Bug Fixes
+
+- **deps:** update all dependencies j:cdx-227 ([#854](https://github.com/coveo/cli/issues/854)) ([cd042cc](https://github.com/coveo/cli/commits/cd042cc9d08898a9cad39c644a99fa0dd64ba77a))
+
+# 1.31.0 (2022-06-29)
+
+### Features
+
+- **snapshot:** add `deletionScope` on `/apply` ([#849](https://github.com/coveo/cli/issues/849)) ([7b7fcb2](https://github.com/coveo/cli/commits/7b7fcb2ed1d0fc73d0ee7500c91aed85fbfd0dc6))
+
 # 1.30.0 (2022-06-09)
 
 ### Features

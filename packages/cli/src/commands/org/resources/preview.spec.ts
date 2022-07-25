@@ -1,12 +1,11 @@
 jest.mock('../../../lib/decorators/preconditions/git');
 jest.mock('../../../lib/config/config');
 jest.mock('../../../hooks/analytics/analytics');
-jest.mock('../../../hooks/prerun/prerun');
+
 jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/snapshot/snapshot');
 jest.mock('../../../lib/snapshot/snapshotFactory');
 jest.mock('../../../lib/project/project');
-jest.mock('../../../lib/snapshot/snapshotFacade');
 
 import {test} from '@oclif/test';
 import {Project} from '../../../lib/project/project';
@@ -24,7 +23,6 @@ import {
 } from '../../../__stub__/resourceSnapshotsReportModel';
 import {CliUx, Command} from '@oclif/core';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions';
-import {SnapshotFacade} from '../../../lib/snapshot/snapshotFacade';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
@@ -39,11 +37,7 @@ const mockedAreResourcesInError = jest.fn();
 const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
 const mockedLastReport = jest.fn();
-const mockedCreateSynchronizationPlan = jest.fn();
-const mockedApplySynchronizationPlan = jest.fn();
-const mockedTryAutomaticSynchronization = jest.fn();
 const mockedIsGitInstalled = jest.mocked(IsGitInstalled, true);
-const mockedSnapshotFacade = jest.mocked(SnapshotFacade, true);
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockEvaluate = jest.fn();
 
@@ -88,19 +82,21 @@ const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
 };
 
 const mockSnapshotFactory = async () => {
+  const dummySnapshot = {
+    validate: mockedValidateSnapshot,
+    preview: mockedPreviewSnapshot,
+    delete: mockedDeleteSnapshot,
+    saveDetailedReport: mockedSaveDetailedReport,
+    areResourcesInError: mockedAreResourcesInError,
+    latestReport: mockedLastReport,
+    id: 'banana-snapshot',
+    targetId: 'potato-org',
+  } as unknown as Snapshot;
   mockedSnapshotFactory.createFromZip.mockReturnValue(
-    Promise.resolve({
-      validate: mockedValidateSnapshot,
-      preview: mockedPreviewSnapshot,
-      delete: mockedDeleteSnapshot,
-      saveDetailedReport: mockedSaveDetailedReport,
-      areResourcesInError: mockedAreResourcesInError,
-      latestReport: mockedLastReport,
-      createSynchronizationPlan: mockedCreateSynchronizationPlan,
-      applySynchronizationPlan: mockedApplySynchronizationPlan,
-      id: 'banana-snapshot',
-      targetId: 'potato-org',
-    } as unknown as Snapshot)
+    Promise.resolve(dummySnapshot)
+  );
+  mockedSnapshotFactory.createFromExistingSnapshot.mockReturnValue(
+    Promise.resolve(dummySnapshot)
   );
 };
 
@@ -137,15 +133,6 @@ const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries =
     );
     await mockSnapshotFactory();
   };
-
-const mockSnapshotFacade = () => {
-  mockedSnapshotFacade.mockImplementation(
-    () =>
-      ({
-        tryAutomaticSynchronization: mockedTryAutomaticSynchronization,
-      } as unknown as SnapshotFacade)
-  );
-};
 
 describe('org:resources:preview', () => {
   const doMockPreconditions = function () {
@@ -223,6 +210,20 @@ describe('org:resources:preview', () => {
     test
       .stdout()
       .stderr()
+      .command(['org:resources:preview', '-s', 'some-snapshot-id'])
+      .it('should work with specified snapshot id', () => {
+        expect(
+          mockedSnapshotFactory.createFromExistingSnapshot
+        ).toHaveBeenCalledWith(
+          'some-snapshot-id',
+          'foo',
+          expect.objectContaining({})
+        );
+      });
+
+    test
+      .stdout()
+      .stderr()
       .command(['org:resources:preview'])
       .it('should set a 60 seconds wait', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
@@ -293,9 +294,9 @@ describe('org:resources:preview', () => {
     test
       .stdout()
       .stderr()
-      .command(['org:resources:preview'])
-      .it('should delete the snapshot', () => {
-        expect(mockedDeleteSnapshot).toHaveBeenCalledTimes(1);
+      .command(['org:resources:preview', '-s', 'some-snapshot-id'])
+      .it('should no delete the snapshot', () => {
+        expect(mockedDeleteSnapshot).not.toHaveBeenCalled();
       });
 
     test
@@ -356,42 +357,6 @@ describe('org:resources:preview', () => {
         );
       })
       .it('should print an URL to the snapshot page');
-  });
-
-  describe('when the snapshot is not in sync with the target org', () => {
-    beforeAll(async () => {
-      await mockSnapshotFactoryReturningInvalidSnapshot();
-      mockSnapshotFacade();
-    });
-
-    beforeEach(() => {
-      mockedAreResourcesInError.mockReturnValueOnce(true);
-      mockedSaveDetailedReport.mockReturnValueOnce(join('saved', 'snapshot'));
-    });
-
-    afterAll(() => {
-      mockedSnapshotFactory.mockReset();
-    });
-
-    test
-      .stdout()
-      .stderr()
-      .command(['org:resources:preview'])
-      .catch(() => {
-        expect(mockedTryAutomaticSynchronization).toHaveBeenCalledWith(true);
-      })
-      .it('should have detected and tried to resolves the conflicts');
-
-    test
-      .stdout()
-      .stderr()
-      .command(['org:resources:preview', '--sync'])
-      .catch(() => {
-        expect(mockedTryAutomaticSynchronization).toHaveBeenCalledWith(false);
-      })
-      .it(
-        'should try to apply synchronization plan without asking for confirmation'
-      );
   });
 
   describe('when the report contains resources with missing vault entries', () => {

@@ -16,7 +16,7 @@ jobs:
       GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # tag=v3
+      - uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a # tag=v3
         with:
           node-version: '16'
       - name: Install dependencies
@@ -33,7 +33,7 @@ jobs:
           mkdir -p sarifs
           npx snyk code test    --dev --all-projects --exclude="project.json,npm-shim" --sarif > ./sarifs/snyk-code.sarif
       - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@a6611b86918424d4588efe7d6dbe18fe52d42518 # tag=v1
+        uses: github/codeql-action/upload-sarif@e41f8baf4a726fae01b76b1337c600136468896e # tag=v1
         with:
           sarif_file: ./sarifs
       - name: Check Code Scanning alerts
@@ -51,7 +51,7 @@ jobs:
           fetch-depth: 0
       # pulls all tags (needed for computing the next version)
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*``
-      - uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # tag=v3
+      - uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a # tag=v3
         with:
           node-version: '16'
           registry-url: 'https://registry.npmjs.org'

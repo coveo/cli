@@ -18,7 +18,7 @@ import {
   writeJsonSync,
   copySync,
 } from 'fs-extra';
-import PlatformClient, {FieldTypes} from '@coveord/platform-client';
+import PlatformClient from '@coveord/platform-client';
 import {getPlatformClient} from '../utils/platform';
 import {getTestOrg} from '../utils/testOrgSetup';
 import {readdirSync} from 'fs';
@@ -44,28 +44,6 @@ describe('org:resources', () => {
     return new Terminal('node', args, {cwd}, procManager, debugName);
   };
 
-  const createFieldWithoutUsingSnapshot = async (client: PlatformClient) => {
-    await client.field.create({
-      description: '',
-      facet: false,
-      includeInQuery: true,
-      includeInResults: true,
-      mergeWithLexicon: false,
-      multiValueFacet: false,
-      multiValueFacetTokenizers: ';',
-      name: 'firstfield',
-      ranking: false,
-      sort: false,
-      stemming: false,
-      system: false,
-      type: FieldTypes.STRING,
-      useCacheForComputedFacet: false,
-      useCacheForNestedQuery: false,
-      useCacheForNumericQuery: false,
-      useCacheForSort: false,
-    });
-  };
-
   const previewChange = (
     targetOrg: string,
     procManager: ProcessManager,
@@ -75,7 +53,6 @@ describe('org:resources', () => {
       process.env.CLI_EXEC_PATH!,
       'org:resources:preview',
       `-o=${targetOrg}`,
-      '--sync',
       '--wait=0',
       '-p=light',
     ];
@@ -91,7 +68,8 @@ describe('org:resources', () => {
     const args: string[] = [
       process.env.CLI_EXEC_PATH!,
       'org:resources:push',
-      '--skipPreview',
+      '--previewLevel',
+      'none',
       `-o=${targetOrg}`,
       '--wait=0',
     ];
@@ -200,53 +178,6 @@ describe('org:resources', () => {
 
           await previewTerminalExitPromise;
           expect(stdout).toMatch(regex);
-        },
-        defaultTimeout
-      );
-    });
-
-    // TODO CDX-753: Create new unsynchronized state for E2E tests.
-    describe.skip('when resources are not synchronized', () => {
-      let stdout: string;
-      let stderr: string;
-
-      const stdoutListener = (chunk: string) => {
-        stdout += chunk;
-      };
-      const stderrListener = (chunk: string) => {
-        stderr += chunk;
-      };
-
-      beforeAll(async () => {
-        stdout = stderr = '';
-        await createFieldWithoutUsingSnapshot(platformClient);
-      });
-
-      it(
-        'should throw a synchronization warning on a field',
-        async () => {
-          const previewTerminal = previewChange(
-            testOrgId,
-            processManager,
-            'org-config-preview-unsync'
-          );
-
-          const process = previewTerminal.orchestrator.process;
-          process.stdout.on('data', stdoutListener);
-          process.stderr.on('data', stderrListener);
-
-          const previewTerminalExitPromise = previewTerminal
-            .when('exit')
-            .on('process')
-            .do((proc) => {
-              proc.stdout.off('data', stdoutListener);
-              proc.stderr.off('data', stderrListener);
-            })
-            .once();
-
-          await previewTerminalExitPromise;
-          expect(stdout).toMatch(/Previewing snapshot changes/);
-          expect(stderr).toMatch(/Checking for automatic synchronization/);
         },
         defaultTimeout
       );

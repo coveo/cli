@@ -1,10 +1,11 @@
 import pullModelSchema from './model.schema.json';
-import {ResourceSnapshotType} from '@coveord/platform-client';
+import type {ResourceSnapshotType} from '@coveord/platform-client';
 import {SnapshotPullModelResources} from '../interfaces';
+import {allowedResourceType} from '../../snapshotConstant';
 
 export function getSnapshotModel() {
   const properties: Record<string, {}> = {};
-  Object.values(ResourceSnapshotType).forEach((resource) => {
+  allowedResourceType.forEach((resource) => {
     properties[resource] = {
       // TODO: CDX-741: remove null from supported types
       type: ['array', 'null'],

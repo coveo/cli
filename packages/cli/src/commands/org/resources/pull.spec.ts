@@ -1,7 +1,7 @@
 jest.mock('../../../lib/decorators/preconditions/git');
 jest.mock('../../../lib/config/config');
 jest.mock('../../../hooks/analytics/analytics');
-jest.mock('../../../hooks/prerun/prerun');
+
 jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/snapshot/snapshotFactory');
 jest.mock('../../../lib/project/project');
@@ -35,13 +35,11 @@ const mockEvaluate = jest.fn();
 const pathToStub = join(cwd(), 'src', '__stub__');
 
 const doMockConfig = () => {
-  mockedConfigGet.mockReturnValue(
-    Promise.resolve({
-      region: 'us',
-      organization: 'default-org',
-      environment: 'prod',
-    })
-  );
+  mockedConfigGet.mockReturnValue({
+    region: 'us',
+    organization: 'default-org',
+    environment: 'prod',
+  });
 
   mockedConfig.prototype.get = mockedConfigGet;
 };
@@ -82,6 +80,12 @@ const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
 
 const doMockSnapshotFactory = async () => {
   mockedSnapshotFactory.createFromOrg.mockReturnValue(
+    Promise.resolve({
+      delete: mockedDeleteSnapshot,
+      download: mockedDownloadSnapshot,
+    } as unknown as Snapshot)
+  );
+  mockedSnapshotFactory.createFromExistingSnapshot.mockReturnValue(
     Promise.resolve({
       delete: mockedDeleteSnapshot,
       download: mockedDownloadSnapshot,
@@ -164,6 +168,14 @@ describe('org:resources:pull', () => {
     .command(['org:resources:pull'])
     .it('should delete the snapshot', () => {
       expect(mockedDeleteSnapshot).toHaveBeenCalled();
+    });
+
+  test
+    .stdout()
+    .stderr()
+    .command(['org:resources:pull', '-s', 'someSnapshotId'])
+    .it('should not delete the snapshot', () => {
+      expect(mockedDeleteSnapshot).not.toHaveBeenCalled();
     });
 
   test

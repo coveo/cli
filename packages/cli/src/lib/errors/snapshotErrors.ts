@@ -1,5 +1,4 @@
 import {blueBright} from 'chalk';
-import {CliUx} from '@oclif/core';
 import dedent from 'ts-dedent';
 import {Configuration} from '../config/config';
 import {Snapshot} from '../snapshot/snapshot';
@@ -17,17 +16,6 @@ function trySavingDetailedReport(error: DetailedReportable) {
     error.message += dedent`\n\n
           Detailed report saved at ${reportPath}`;
   }
-}
-
-function printMessageWithSynchronizationPlanUrl(
-  message: string,
-  snapshot: Snapshot,
-  cfg: Configuration
-) {
-  const urlBuilder = new SnapshotUrlBuilder(cfg);
-  const synchronizationPlanUrl = urlBuilder.getSynchronizationPage(snapshot);
-  CliUx.ux.log(dedent`${message}
-  ${synchronizationPlanUrl}`);
 }
 
 export class SnapshotOperationTimeoutError
@@ -71,52 +59,6 @@ export class SnapshotNoSynchronizationReportFoundError
   }
 }
 
-export class SnapshotSynchronizationAmbiguousMatchesError
-  extends PrintableError
-  implements DetailedReportable
-{
-  public name = 'Snapshot Ambiguous Synchronization Matches';
-  public constructor(public snapshot: Snapshot, public cfg: Configuration) {
-    super(SeverityLevel.Info);
-    this.message = dedent`
-      The snapshot contains unsynchronized resources that cannot be resolved automatically.`;
-
-    trySavingDetailedReport(this);
-  }
-
-  public print() {
-    super.print();
-    printMessageWithSynchronizationPlanUrl(
-      'Click on the URL below to manually resolve your snapshot conflicts.',
-      this.snapshot,
-      this.cfg
-    );
-  }
-}
-
-export class SnapshotSynchronizationUnknownError
-  extends PrintableError
-  implements DetailedReportable
-{
-  public name = 'Snapshot Synchronization Unknown Error';
-  public constructor(public snapshot: Snapshot, public cfg: Configuration) {
-    super(SeverityLevel.Error);
-    this.message = dedent`
-      The snapshot synchronization has unexpectedly failed.`;
-
-    trySavingDetailedReport(this);
-  }
-
-  public print() {
-    super.print();
-    printMessageWithSynchronizationPlanUrl(
-      'Click on the URL below for more information.',
-      this.snapshot,
-      this.cfg
-    );
-  }
-}
-
 export class SnapshotGenericError
   extends PrintableError
   implements DetailedReportable
@@ -130,7 +72,7 @@ export class SnapshotGenericError
     super(SeverityLevel.Error);
     const report = snapshot.latestReport;
     const urlBuilder = new SnapshotUrlBuilder(cfg);
-    const snapshotUrl = urlBuilder.getSnapshotPage(snapshot);
+    const snapshotUrl = urlBuilder.getSnapshotApplyPage(snapshot);
 
     this.message = dedent`Invalid snapshot - ${report.resultCode}.
       You can also use this link to view the snapshot in the Coveo Admin Console

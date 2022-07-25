@@ -10,7 +10,7 @@ import {
 } from './reportPreviewerDataModels';
 import dedent from 'ts-dedent';
 import {recordable} from '../../utils/record';
-import {ResourceSnapshotType} from '@coveord/platform-client';
+import type {ResourceSnapshotType} from '@coveord/platform-client';
 import {Plurable, pluralizeIfNeeded} from '../../utils/string';
 import {labels} from '../snapshotConstant';
 

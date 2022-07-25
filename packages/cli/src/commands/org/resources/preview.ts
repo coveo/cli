@@ -18,9 +18,9 @@ import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {
   PreviewLevelValue,
   previewLevel,
-  sync,
   wait,
   organization,
+  snapshotId,
 } from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
@@ -39,21 +39,15 @@ export default class Preview extends Command {
 
   public static flags = {
     ...wait(),
-    ...sync(),
     ...previewLevel(),
     ...organization(
       'The unique identifier of the organization where to preview the changes'
     ),
+    ...snapshotId(),
     showMissingResources: Flags.boolean({
       char: 'd',
       description: 'Preview resources deletion when enabled',
       default: false,
-      required: false,
-    }),
-    snapshotId: Flags.string({
-      char: 's',
-      description:
-        'The unique identifier of the snapshot to preview. If not specified, a new snapshot will be created from your local project. You can list available snapshots in your organization with org:resources:list',
       required: false,
     }),
   };
@@ -75,7 +69,6 @@ export default class Preview extends Command {
     const {reporter, snapshot, project} = await dryRun(
       target,
       this.projectPath,
-      cfg,
       options
     );
 
@@ -107,8 +100,13 @@ export default class Preview extends Command {
     return flags.previewLevel === PreviewLevelValue.Detailed;
   }
 
+  private async shouldDeleteSnapshot() {
+    return !(await this.parse(Preview)).flags.snapshotId;
+  }
   private async cleanup(snapshot: Snapshot, project: Project) {
-    await snapshot.delete();
+    if (await this.shouldDeleteSnapshot()) {
+      await snapshot.delete();
+    }
     project.deleteTemporaryZipFile();
   }
 
@@ -124,7 +122,7 @@ export default class Preview extends Command {
 
           Once the snapshot is created, you can preview it with the following command:
 
-            ${blueBright`coveo org:resources:preview -t ${target} -s ${snapshot.id}`}
+            ${blueBright`coveo org:resources:preview -o ${target} -s ${snapshot.id}`}
 
             `
       );
@@ -136,7 +134,7 @@ export default class Preview extends Command {
     return {
       deleteMissingResources: flags.showMissingResources,
       waitUntilDone: {wait: flags.wait},
-      sync: flags.sync,
+      ...(flags.snapshotId && {snapshotId: flags.snapshotId}),
     };
   }
 

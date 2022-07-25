@@ -27,7 +27,6 @@ const getUSProdConfig = (): Configuration => ({
   environment: PlatformEnvironment.Prod,
   organization: 'does not matter',
   accessToken: 'xxx',
-  analyticsEnabled: undefined,
 });
 
 const getEUDevConfig = (): Configuration => ({
@@ -36,7 +35,6 @@ const getEUDevConfig = (): Configuration => ({
   environment: PlatformEnvironment.Dev,
   organization: 'does not matter',
   accessToken: 'xxx',
-  analyticsEnabled: undefined,
 });
 
 describe('SnapshotUrlBuilder', () => {
@@ -52,8 +50,8 @@ describe('SnapshotUrlBuilder', () => {
   });
 
   fancyIt()('#createSnapshotPage should return the snapshot URL', () => {
-    expect(snapshotUrlBuilder.getSnapshotPage(snapshot)).toEqual(
-      'https://platform.cloud.coveo.com/admin/#foo/organization/resource-snapshots/my-snapshot'
+    expect(snapshotUrlBuilder.getSnapshotApplyPage(snapshot)).toEqual(
+      'https://platform.cloud.coveo.com/admin/#foo/organization/resource-snapshots/my-snapshot/apply'
     );
   });
 
