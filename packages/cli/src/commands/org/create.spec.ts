@@ -1,6 +1,6 @@
 jest.mock('../../lib/config/config');
 jest.mock('../../hooks/analytics/analytics');
-jest.mock('../../hooks/prerun/prerun');
+
 jest.mock('../../lib/platform/authenticatedClient');
 
 import {test} from '@oclif/test';

@@ -129,16 +129,16 @@ describe('identifier', () => {
       expect(mockSetIdentity).not.toHaveBeenCalledWith('region', 'us');
     });
 
-    it('should set the user ID', async () => {
-      expect(identity.userId).not.toBeNull();
+    it('should set the user ID (unhashed)', async () => {
+      expect(identity.userId).toBe('bob@coveo.com');
     });
 
     it('should set is_internal_user to true', async () => {
       expect(mockSetIdentity).toHaveBeenCalledWith('is_internal_user', true);
     });
 
-    it('should not identify event with (un-hashed) email', async () => {
-      expect(identity.userId).not.toMatch(/^bob@.*?\.com$/);
+    it('should identify event with (un-hashed) email', async () => {
+      expect(identity.userId).toBe('bob@coveo.com');
     });
 
     it('should always identify events with a device ID', async () => {
@@ -152,8 +152,9 @@ describe('identifier', () => {
       identity = await new Identifier().getIdentity();
     });
 
-    it('should set the user ID', async () => {
+    it('should set the user ID (hashed)', async () => {
       expect(identity.userId).not.toBeNull();
+      expect(identity.userId).not.toBe('bob@acme.com');
     });
 
     it('should set is_internal_user to false', async () => {
@@ -167,14 +168,12 @@ describe('identifier', () => {
       identity = await new Identifier().getIdentity();
     });
 
-    it('should set the user ID to null', async () => {
-      expect(identity.userId).toBeNull();
+    it('should set the user ID', async () => {
+      expect(identity.userId).not.toBeNull();
     });
   });
 
   describe('when logging for every user type', () => {
-    let identity: Awaited<ReturnType<Identifier['getIdentity']>>;
-
     beforeEach(async () => {
       identity = await new Identifier().getIdentity();
       identity.identify(getDummyAmplitudeClient());
