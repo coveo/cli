@@ -1,3 +1,17 @@
+# 1.33.0 (2022-07-26)
+
+### Bug Fixes
+
+- correctly support `--snapshotId` flag ([#866](https://github.com/coveo/cli/issues/866)) ([ec9344f](https://github.com/coveo/cli/commits/ec9344f7e9949eac9939518823baf5fa9e537e96))
+- remove synchronization logic from CLI ([#867](https://github.com/coveo/cli/issues/867)) ([eae032a](https://github.com/coveo/cli/commits/eae032a68a8be5a75147b0c962228b048ea0b158))
+
+### Features
+
+- **analytics:** add org identifiers + unhash employee emails ([#871](https://github.com/coveo/cli/issues/871)) ([bbb6310](https://github.com/coveo/cli/commits/bbb6310b124005aefd2d6aabdd5d841974dfd452))
+- **analytics:** always track ([#870](https://github.com/coveo/cli/issues/870)) ([da4bd10](https://github.com/coveo/cli/commits/da4bd102c7875222300c3fa01565bacac91dd392))
+- **analytics:** remove persistent analytics identifers ([#869](https://github.com/coveo/cli/issues/869)) ([236cf0f](https://github.com/coveo/cli/commits/236cf0f9052c466b16dd80f263d5761dc9b7d9ec))
+- **cli:** remove beta tag for snapshot ([#873](https://github.com/coveo/cli/issues/873)) ([ffcf833](https://github.com/coveo/cli/commits/ffcf833d5ba363ba5def98f06c67d1cf34cb1810))
+
 # 1.32.0 (2022-07-13)
 
 ### Bug Fixes
