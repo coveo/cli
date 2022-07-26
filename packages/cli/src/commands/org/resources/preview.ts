@@ -97,6 +97,9 @@ export default class Preview extends Command {
     return !(await this.parse(Preview)).flags.snapshotId;
   }
 
+  private async shouldDeleteSnapshot() {
+    return !(await this.parse(Preview)).flags.snapshotId;
+  }
   private async cleanup(snapshot: Snapshot, project: Project) {
     if (await this.shouldDeleteSnapshot()) {
       await snapshot.delete();

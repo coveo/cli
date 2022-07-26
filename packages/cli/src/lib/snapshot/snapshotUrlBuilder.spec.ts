@@ -29,7 +29,6 @@ const getUSProdConfig = (): Configuration => ({
   environment: PlatformEnvironment.Prod,
   organization: 'does not matter',
   accessToken: 'xxx',
-  analyticsEnabled: undefined,
 });
 
 const getEUDevConfig = (): Configuration => ({
@@ -38,7 +37,6 @@ const getEUDevConfig = (): Configuration => ({
   environment: PlatformEnvironment.Dev,
   organization: 'does not matter',
   accessToken: 'xxx',
-  analyticsEnabled: undefined,
 });
 
 describe('SnapshotUrlBuilder', () => {

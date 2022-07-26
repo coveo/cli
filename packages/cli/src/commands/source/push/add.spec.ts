@@ -1,5 +1,5 @@
 jest.mock('../../../hooks/analytics/analytics');
-jest.mock('../../../hooks/prerun/prerun');
+
 jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/config/globalConfig');
 jest.mock('@coveo/push-api-client');

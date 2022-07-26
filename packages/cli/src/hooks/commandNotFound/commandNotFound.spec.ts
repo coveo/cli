@@ -1,4 +1,3 @@
-jest.mock('../prerun/prerun');
 jest.mock('../analytics/analytics');
 jest.mock('../../lib/config/config');
 
