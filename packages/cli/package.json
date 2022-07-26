@@ -128,10 +128,10 @@
         "description": "manage Coveo organizations"
       },
       "org:resources": {
-        "description": "(beta) manage your organization resources"
+        "description": "manage your organization resources"
       },
       "org:resources:model": {
-        "description": "(beta) manage your Snapshot Pull Model"
+        "description": "manage your Snapshot Pull Model"
       },
       "org:search": {
         "description": "perform queries against a coveo index"
