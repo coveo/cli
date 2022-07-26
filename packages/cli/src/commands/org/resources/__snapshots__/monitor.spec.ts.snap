@@ -1,27 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`org:resources:monitor when the operation conclude with no changes should output the same thing 1`] = `
-"  console.error
-     ›   Warning: The org:resources commands are currently in public beta, please 
-     ›   report any issue to github.com/coveo/cli/issues
-
-      39 |   @Preconditions(IsAuthenticated())
-      40 |   public async run() {
-    > 41 |     this.warn(
-         |          ^
-      42 |       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
-      43 |     );
-      44 |     await this.printHeader();
-
-      at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:61:13)
-      at Monitor.warn (../../../node_modules/@oclif/core/lib/command.js:93:20)
-      at Monitor.apply (commands/org/resources/monitor.ts:41:10)
-      at Monitor.descriptor.value (lib/decorators/preconditions/preconditions.ts:19:32)
-      at Monitor.trackCommand (lib/decorators/preconditions/trackable.ts:63:3)
-      at Monitor.descriptor.value (lib/decorators/preconditions/trackable.ts:46:9)
-      at Monitor._run (../../../node_modules/@oclif/core/lib/command.js:74:22)
-
-
+"
 "
 `;
 
@@ -32,27 +12,7 @@ Operation undefined..."
 `;
 
 exports[`org:resources:monitor when the operation fails should output the same thing 1`] = `
-"  console.error
-     ›   Warning: The org:resources commands are currently in public beta, please 
-     ›   report any issue to github.com/coveo/cli/issues
-
-      39 |   @Preconditions(IsAuthenticated())
-      40 |   public async run() {
-    > 41 |     this.warn(
-         |          ^
-      42 |       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
-      43 |     );
-      44 |     await this.printHeader();
-
-      at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:61:13)
-      at Monitor.warn (../../../node_modules/@oclif/core/lib/command.js:93:20)
-      at Monitor.apply (commands/org/resources/monitor.ts:41:10)
-      at Monitor.descriptor.value (lib/decorators/preconditions/preconditions.ts:19:32)
-      at Monitor.trackCommand (lib/decorators/preconditions/trackable.ts:63:3)
-      at Monitor.descriptor.value (lib/decorators/preconditions/trackable.ts:46:9)
-      at Monitor._run (../../../node_modules/@oclif/core/lib/command.js:74:22)
-
-
+"
 undefined
 "
 `;
@@ -64,27 +24,7 @@ Operation undefined..."
 `;
 
 exports[`org:resources:monitor when the operation succeed should output the same thing 1`] = `
-"  console.error
-     ›   Warning: The org:resources commands are currently in public beta, please 
-     ›   report any issue to github.com/coveo/cli/issues
-
-      39 |   @Preconditions(IsAuthenticated())
-      40 |   public async run() {
-    > 41 |     this.warn(
-         |          ^
-      42 |       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
-      43 |     );
-      44 |     await this.printHeader();
-
-      at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:61:13)
-      at Monitor.warn (../../../node_modules/@oclif/core/lib/command.js:93:20)
-      at Monitor.apply (commands/org/resources/monitor.ts:41:10)
-      at Monitor.descriptor.value (lib/decorators/preconditions/preconditions.ts:19:32)
-      at Monitor.trackCommand (lib/decorators/preconditions/trackable.ts:63:3)
-      at Monitor.descriptor.value (lib/decorators/preconditions/trackable.ts:46:9)
-      at Monitor._run (../../../node_modules/@oclif/core/lib/command.js:74:22)
-
-
+"
 "
 `;
 
@@ -95,27 +35,7 @@ Operation undefined..."
 `;
 
 exports[`org:resources:monitor when the operations conclude with missing vault entries should output the same thing 1`] = `
-"  console.error
-     ›   Warning: The org:resources commands are currently in public beta, please 
-     ›   report any issue to github.com/coveo/cli/issues
-
-      39 |   @Preconditions(IsAuthenticated())
-      40 |   public async run() {
-    > 41 |     this.warn(
-         |          ^
-      42 |       'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
-      43 |     );
-      44 |     await this.printHeader();
-
-      at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:61:13)
-      at Monitor.warn (../../../node_modules/@oclif/core/lib/command.js:93:20)
-      at Monitor.apply (commands/org/resources/monitor.ts:41:10)
-      at Monitor.descriptor.value (lib/decorators/preconditions/preconditions.ts:19:32)
-      at Monitor.trackCommand (lib/decorators/preconditions/trackable.ts:63:3)
-      at Monitor.descriptor.value (lib/decorators/preconditions/trackable.ts:46:9)
-      at Monitor._run (../../../node_modules/@oclif/core/lib/command.js:74:22)
-
-
+"
 "
 `;
 
