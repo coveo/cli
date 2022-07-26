@@ -22,10 +22,7 @@ import {CliUx} from '@oclif/core';
 
 export type SnapshotReport = ResourceSnapshotsReportModel | SnapshotDiffModel;
 
-type SnapshotReportTypes = keyof Pick<
-  ResourceSnapshotsModel,
-  'reports' | 'diffGenerationReports'
->;
+type SnapshotReportTypes = 'reports' | 'diffGenerationReports';
 
 export interface WaitUntilDoneOptions {
   /**

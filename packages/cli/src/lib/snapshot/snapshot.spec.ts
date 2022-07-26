@@ -161,8 +161,7 @@ describe('Snapshot', () => {
 
     beforeEach(async () => {
       mockedDryRunReport = getSuccessDryRunReport(snapshotId);
-      const a = await getSnapshot({reports: [mockedDryRunReport]});
-      snapshot = a[0];
+      snapshot = (await getSnapshot({reports: [mockedDryRunReport]}))[0];
       mockedWaitUntilDone = doMockWaitUntilDone();
     });
 
