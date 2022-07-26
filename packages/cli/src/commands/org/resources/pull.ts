@@ -55,7 +55,7 @@ const PullCommandStrings = {
 };
 
 export default class Pull extends Command {
-  public static description = '(beta) Pull resources from an organization';
+  public static description = 'Pull resources from an organization';
 
   public static flags = {
     ...wait(),
@@ -107,9 +107,6 @@ export default class Pull extends Command {
     HasNecessaryCoveoPrivileges(writeSnapshotPrivilege)
   )
   public async run() {
-    this.warn(
-      'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
-    );
     const targetOrganization = await this.getTargetOrg();
     const project = new Project(this.projectPath, targetOrganization);
     await this.ensureProjectReset(project);

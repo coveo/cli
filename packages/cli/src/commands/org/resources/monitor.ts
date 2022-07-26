@@ -18,7 +18,7 @@ import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 
 export default class Monitor extends Command {
-  public static description = '(beta) Monitor a Snapshot operation';
+  public static description = 'Monitor a Snapshot operation';
 
   public static flags = {
     ...wait(),
@@ -38,9 +38,6 @@ export default class Monitor extends Command {
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
-    this.warn(
-      'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
-    );
     await this.printHeader();
 
     const snapshot = await this.getSnapshot();

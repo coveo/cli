@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`IsNgInstalled when an unknown error happens while checking for ng should return false and warn 1`] = `
+"foo requires a valid Angular-CLI installation to run.
+An unknown error happened while running undefined version.
+some random error oh no
+
+You can install the Angular-CLI by running npm i -g @angular/cli
+
+Please visit https://angular.io/guide/setup-local#install-the-angular-cli for more detailed installation information."
+`;
+
+exports[`IsNgInstalled when ng is not installed should throw 1`] = `
+"foo requires Angular-CLI to run.
+
+You can install the Angular-CLI by running npm i -g @angular/cli
+
+Please visit https://angular.io/guide/setup-local#install-the-angular-cli for more detailed installation information."
+`;
+
+exports[`IsNgInstalled when the installed version of ng is lower than the required one should throw 1`] = `
+"foo needs a Angular-CLI version in this range: \\">=1.0.0\\"
+Version detected: 0.9.0
+
+You can install the Angular-CLI by running npm i -g @angular/cli
+
+Please visit https://angular.io/guide/setup-local#install-the-angular-cli for more detailed installation information."
+`;
+
+exports[`IsNgInstalled when the requiredVersion is not a semver valid string should throw 1`] = `
+"Required version invalid: \\"foo\\".
+Please report this error to Coveo: https://github.com/coveo/cli/issues/new"
+`;
