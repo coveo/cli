@@ -609,10 +609,6 @@ describe('Snapshot', () => {
     });
   });
 
-  describe('[get]-latestDiffReport', () => {
-    // TODO:
-  });
-
   describe('[get]-latestReport', () => {
     describe.each([undefined, []])('when there is no reports', (reports) => {
       beforeEach(async () => {
