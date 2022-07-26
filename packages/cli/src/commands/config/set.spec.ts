@@ -1,6 +1,6 @@
 jest.mock('../../lib/config/config');
 jest.mock('../../hooks/analytics/analytics');
-jest.mock('../../hooks/prerun/prerun');
+
 jest.mock('../../lib/platform/authenticatedClient');
 
 import {Config} from '../../lib/config/config';
@@ -64,20 +64,4 @@ describe('config:set', () => {
         expect(mockSet).not.toHaveBeenCalled();
       }
     );
-
-  test
-    .stdout()
-    .stderr()
-    .command(['config:set', '-a', 'y'])
-    .it('allows to modify the analytics configuration', () => {
-      expect(mockSet).toHaveBeenCalledWith('analyticsEnabled', true);
-    });
-
-  test
-    .stdout()
-    .stderr()
-    .command(['config:set', '-a', 'y'])
-    .it('should display the config', () => {
-      expect(mockSet).toHaveBeenCalledTimes(1);
-    });
 });

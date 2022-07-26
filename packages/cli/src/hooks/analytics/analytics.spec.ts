@@ -3,10 +3,9 @@ jest.mock('@amplitude/node');
 jest.mock('../../lib/config/config');
 jest.mock('../../lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
-jest.mock('./session');
 jest.mock('../../lib/config/globalConfig');
 
-import {Configuration, Config} from '../../lib/config/config';
+import {Config} from '../../lib/config/config';
 import {
   AuthenticatedClient,
   AuthenticationStatus,
@@ -68,6 +67,7 @@ describe('analytics_hook', () => {
           },
           organization: {
             get: jest.fn().mockResolvedValue({type: 'Production'}),
+            list: jest.fn().mockResolvedValue([{id: 'someorgid'}]),
           },
         } as unknown as PlatformClient)
     );
@@ -165,10 +165,34 @@ describe('analytics_hook', () => {
       );
     });
 
-    fancyIt()('should not identify event with (un-hashed) email', async () => {
-      const userIdCheck = expect.stringMatching(/^(?!bob@.*?\.com).*/);
-      expect(mockedLogEvent).toHaveBeenCalledWith(
-        expect.objectContaining({user_id: userIdCheck})
+    describe('when the user is a coveo employee', () => {
+      fancyIt()('should identify event with (un-hashed) email', async () => {
+        const userIdCheck = expect.stringMatching('bob@coveo.com');
+        expect(mockedLogEvent).toHaveBeenCalledWith(
+          expect.objectContaining({user_id: userIdCheck})
+        );
+      });
+    });
+
+    describe('when the user is not a coveo employee', () => {
+      beforeEach(async () => {
+        mockedUserGet.mockResolvedValueOnce({
+          email: 'bob@acme.com',
+          username: 'bob@acme.com',
+          displayName: 'bob',
+        });
+        mockedLogEvent.mockReset();
+        await hook(getAnalyticsHook({identify: true}));
+      });
+
+      fancyIt()(
+        'should not identify event with (un-hashed) email',
+        async () => {
+          const userIdCheck = expect.not.stringMatching('bob@coveo.com');
+          expect(mockedLogEvent).toHaveBeenCalledWith(
+            expect.objectContaining({user_id: userIdCheck})
+          );
+        }
       );
     });
 
@@ -189,21 +213,6 @@ describe('analytics_hook', () => {
         user_id: nonEmptyString,
       })
     );
-  });
-
-  fancyIt()('should not send any analytics if disabled', async () => {
-    mockedConfig.mockImplementation(
-      () =>
-        ({
-          get: () =>
-            ({
-              analyticsEnabled: false,
-            } as Configuration),
-        } as Config)
-    );
-
-    await hook(getAnalyticsHook({}));
-    expect(mockedLogEvent).not.toHaveBeenCalled();
   });
 
   fancyIt()('should send analytics regardless of the license', async () => {
