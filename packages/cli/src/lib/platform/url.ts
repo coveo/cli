@@ -18,15 +18,6 @@ export function snapshotApplyUrl(
   return `${url}/apply`;
 }
 
-export function snapshotSynchronizationUrl(
-  targetOrgId: string,
-  snapshotId: string,
-  options: Partial<PlatformUrlOptions>
-) {
-  const url = snapshotUrl(targetOrgId, snapshotId, options);
-  return `${url}/synchronization`;
-}
-
 export function createSnapshotUrl(
   targetOrgId: string,
   options: Partial<PlatformUrlOptions>

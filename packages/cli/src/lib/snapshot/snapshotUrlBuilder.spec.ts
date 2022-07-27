@@ -54,24 +54,4 @@ describe('SnapshotUrlBuilder', () => {
       'https://platform.cloud.coveo.com/admin/#foo/organization/resource-snapshots/my-snapshot/apply'
     );
   });
-
-  fancyIt()(
-    '#getSynchronizationPage should return the URL to the synchronization page',
-    () => {
-      snapshotUrlBuilder = new SnapshotUrlBuilder(getUSProdConfig());
-      expect(snapshotUrlBuilder.getSynchronizationPage(snapshot)).toEqual(
-        'https://platform.cloud.coveo.com/admin/#foo/organization/resource-snapshots/my-snapshot/synchronization'
-      );
-    }
-  );
-
-  fancyIt()(
-    '#getSynchronizationPage should return the URL to the synchronization page for Dev',
-    () => {
-      snapshotUrlBuilder = new SnapshotUrlBuilder(getEUDevConfig());
-      expect(snapshotUrlBuilder.getSynchronizationPage(snapshot)).toEqual(
-        'https://platformdev-eu.cloud.coveo.com/admin/#foo/organization/resource-snapshots/my-snapshot/synchronization'
-      );
-    }
-  );
 });

@@ -1,6 +1,6 @@
 import {Configuration} from '../config/config';
 import {Snapshot} from './snapshot';
-import {snapshotSynchronizationUrl, snapshotApplyUrl} from '../platform/url';
+import {snapshotApplyUrl} from '../platform/url';
 import {PlatformUrlOptions} from '../platform/environment';
 
 export class SnapshotUrlBuilder {
@@ -10,12 +10,6 @@ export class SnapshotUrlBuilder {
     const {options, targetOrgId, snapshotId} =
       this.getSnapshotUrlOptions(snapshot);
     return snapshotApplyUrl(targetOrgId, snapshotId, options);
-  }
-
-  public getSynchronizationPage(snapshot: Snapshot) {
-    const {options, targetOrgId, snapshotId} =
-      this.getSnapshotUrlOptions(snapshot);
-    return snapshotSynchronizationUrl(targetOrgId, snapshotId, options);
   }
 
   private getSnapshotUrlOptions(snapshot: Snapshot) {
