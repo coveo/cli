@@ -7,6 +7,8 @@ import PlatformClient from '@coveord/platform-client';
 import {camelToSnakeCase} from '../../lib/utils/string';
 import type {NodeClient} from '@amplitude/node';
 import globalConfig from '../../lib/config/globalConfig';
+import {Configuration} from '../../lib/config/config';
+
 export class Identifier {
   private authenticatedClient: AuthenticatedClient;
 
@@ -19,7 +21,9 @@ export class Identifier {
     await platformClient.initialize();
 
     const identifier = new Identify();
-    const {userId, isInternalUser} = await this.getUserInfo(platformClient);
+    const {userId, isInternalUser} = await this.getAnalyticsInfo(
+      platformClient
+    );
     const deviceId = await machineId();
     const identity = {
       ...this.getShellInfo(),
@@ -35,6 +39,7 @@ export class Identifier {
       const identifyEvent = {
         ...identifier.identifyUser(userId, deviceId),
         ...this.getAmplitudeBaseEventProperties(),
+        ...this.getOrganizationIdentifier(),
       };
       amplitudeClient.logEvent(identifyEvent);
     };
@@ -42,16 +47,39 @@ export class Identifier {
     return {userId, deviceId, identify};
   }
 
-  private async hash(word: string) {
+  private getOrganizationIdentifier() {
+    const {environment, region, organization} = this.configuration;
+    return {environment, region, organization};
+  }
+
+  private hash(word: string) {
     const hash = createHash('sha256').update(word);
     return hash.digest('hex').toString();
   }
 
+  private async getAnalyticsInfo(platformClient: PlatformClient) {
+    return this.configuration.anonymous
+      ? this.getApiKeyInfo()
+      : this.getUserInfo(platformClient);
+  }
+
+  private async getApiKeyInfo() {
+    const identifier = this.configuration.accessToken
+      ?.split('-')
+      .pop() as string;
+    return {
+      userId: this.hash(identifier),
+      isInternalUser: false,
+    };
+  }
+
   private async getUserInfo(platformClient: PlatformClient) {
     const {email} = await platformClient.user.get();
+    const isInternalUser = email.match(/@coveo\.com$/) !== null;
+
     return {
-      userId: this.configuration.anonymous ? null : await this.hash(email),
-      isInternalUser: email.match(/@coveo\.com$/) !== null,
+      userId: isInternalUser ? email : this.hash(email),
+      isInternalUser,
     };
   }
 
@@ -89,7 +117,7 @@ export class Identifier {
     };
   }
 
-  private get configuration() {
+  private get configuration(): Configuration {
     return this.authenticatedClient.cfg.get();
   }
 }

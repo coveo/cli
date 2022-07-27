@@ -9,13 +9,13 @@ export function snapshotUrl(
   return `${url}/admin/#${targetOrgId}/organization/resource-snapshots/${snapshotId}`;
 }
 
-export function snapshotSynchronizationUrl(
+export function snapshotApplyUrl(
   targetOrgId: string,
   snapshotId: string,
   options: Partial<PlatformUrlOptions>
 ) {
   const url = snapshotUrl(targetOrgId, snapshotId, options);
-  return `${url}/synchronization`;
+  return `${url}/apply`;
 }
 
 export function createSnapshotUrl(

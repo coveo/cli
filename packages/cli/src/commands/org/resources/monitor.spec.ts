@@ -1,6 +1,6 @@
 jest.mock('../../../lib/config/config');
 jest.mock('../../../hooks/analytics/analytics');
-jest.mock('../../../hooks/prerun/prerun');
+
 jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/snapshot/snapshotReporter');
 jest.mock('../../../lib/snapshot/snapshotFactory');
@@ -27,8 +27,6 @@ const mockedDeleteSnapshot = jest.fn();
 const mockedSaveDetailedReport = jest.fn();
 const mockedAreResourcesInError = jest.fn();
 const mockedLatestReport = jest.fn();
-const mockedCreateSynchronizationPlan = jest.fn();
-const mockedApplySynchronizationPlan = jest.fn();
 
 const mockedSnapshotReporter = jest.mocked(SnapshotReporter, true);
 
@@ -42,8 +40,6 @@ const mockSnapshotFactory = () => {
       areResourcesInError: mockedAreResourcesInError,
       latestReport: mockedLatestReport,
       waitUntilDone: mockedWaitUntilDone,
-      createSynchronizationPlan: mockedCreateSynchronizationPlan,
-      applySynchronizationPlan: mockedApplySynchronizationPlan,
       id: 'banana-snapshot',
       targetId: 'potato-org',
     } as unknown as Snapshot)
@@ -51,13 +47,11 @@ const mockSnapshotFactory = () => {
 };
 
 const doMockConfig = () => {
-  mockedConfigGet.mockReturnValue(
-    Promise.resolve({
-      region: 'us',
-      organization: 'default-org',
-      environment: 'prod',
-    })
-  );
+  mockedConfigGet.mockReturnValue({
+    region: 'us',
+    organization: 'default-org',
+    environment: 'prod',
+  });
 
   mockedConfig.mockImplementation(
     () =>
@@ -103,6 +97,8 @@ describe('org:resources:monitor', () => {
   });
 
   test
+    .stdout()
+    .stderr()
     .command(['org:resources:monitor'])
     .catch(/Missing 1 required arg/)
     .it('requires snapshotId name argument');

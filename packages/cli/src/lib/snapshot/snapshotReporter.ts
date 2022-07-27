@@ -1,6 +1,7 @@
 import {
   ResourceSnapshotsReportModel,
   ResourceSnapshotsReportOperationModel,
+  ResourceSnapshotsReportOperationResult,
   ResourceSnapshotType,
 } from '@coveord/platform-client';
 import {
@@ -17,6 +18,9 @@ type SnapshotReporterHandler = (this: SnapshotReporter) => void | Promise<void>;
 type SnapshotReporterHandlers = {
   [K in SnapshotReportStatus]: SnapshotReporterHandler | NoopHandler;
 };
+
+const MissingVaultEntryResultCode = 'INVALID_PLACEHOLDER';
+//#endregion
 
 export type VaultEntryAttributes = {
   vaultEntryId: string;
@@ -163,7 +167,7 @@ export class SnapshotReporter {
   }
 
   private parseResourceOperationResult(
-    err: string,
+    err: ResourceSnapshotsReportOperationResult,
     resourceName: string,
     resourceType: string
   ) {
@@ -180,23 +184,36 @@ export class SnapshotReporter {
     }
   }
 
-  private addResourceInError(resourceType: ResourceSnapshotType, err: string) {
+  private addResourceInError(
+    resourceType: ResourceSnapshotType,
+    err: ResourceSnapshotsReportOperationResult
+  ) {
     this.resourceInErrorCount++;
     let errorSet = this.resourceInError.get(resourceType);
     if (!errorSet) {
       errorSet = new Set();
       this.resourceInError.set(resourceType, errorSet);
     }
-    errorSet.add(err);
+    errorSet.add(`${err.resultCode}: ${err.message}`);
   }
 
-  private static missingVaultMatcher =
+  private static missingVaultEntryMatcher =
     /^The vault entry referenced by \{\{ VAULT\.(?<entryName>.*) \}\} could not be found in the vault\.$/;
 
-  private static tryGetMissingVaultEntryName(err: string): string | undefined {
-    // TODO: CDX-939: Define contract with backend for report and upcoming contract.
-    // Current 'contract' 😅:
-    const match = err.match(SnapshotReporter.missingVaultMatcher);
+  private static tryGetMissingVaultEntryName(
+    err: ResourceSnapshotsReportOperationResult
+  ): string | undefined {
+    let message: string = '';
+    if (typeof err !== 'string') {
+      if (err.resultCode === MissingVaultEntryResultCode) {
+        message = err.message;
+      } else {
+        return undefined;
+      }
+    } else {
+      message = err;
+    }
+    const match = message.match(SnapshotReporter.missingVaultEntryMatcher);
     return match?.groups?.['entryName'];
   }
 

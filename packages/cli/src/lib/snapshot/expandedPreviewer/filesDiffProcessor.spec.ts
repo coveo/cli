@@ -65,7 +65,8 @@ describe('#recursiveDirectoryDiff', () => {
         recursiveDirectoryDiff('currentDir', 'nextDir', true);
 
         expect(mockedRm).toHaveBeenCalledWith(
-          join('currentDir', 'someFile.json')
+          join('currentDir', 'someFile.json'),
+          {force: true}
         );
       }
     );

@@ -23,7 +23,6 @@ import {Project} from '../../../lib/project/project';
 import {
   PreviewLevelValue,
   previewLevel,
-  sync,
   wait,
   organization,
 } from '../../../lib/flags/snapshotCommonFlags';
@@ -37,26 +36,16 @@ import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/report
 
 export default class Push extends Command {
   public static description =
-    '(beta) Preview, validate and deploy your changes to the destination org';
+    'Preview, validate and deploy your changes to the destination org';
 
   public static flags = {
     ...wait(),
-    ...sync(),
-    // TODO: CDX-935 use the -y flag and update its description
     ...previewLevel(),
     ...organization(
       'The unique identifier of the organization where to send the changes'
     ),
     deleteMissingResources: Flags.boolean({
-      char: 'd',
       description: 'Delete missing resources when enabled',
-      default: false,
-      required: false,
-    }),
-    skipPreview: Flags.boolean({
-      char: 's',
-      description:
-        'Do not preview changes before applying them to the organization',
       default: false,
       required: false,
     }),
@@ -68,21 +57,18 @@ export default class Push extends Command {
     HasNecessaryCoveoPrivileges(writeSnapshotPrivilege, writeLinkPrivilege)
   )
   public async run() {
-    this.warn(
-      'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
-    );
     const {flags} = await this.parse(Push);
-    const target = await getTargetOrg(this.configuration, flags.organization);
+    const target = getTargetOrg(this.configuration, flags.organization);
     const cfg = this.configuration.get();
     const options = await this.getOptions();
     const {reporter, snapshot, project} = await dryRun(
       target,
       this.projectPath,
-      cfg,
       options
     );
 
-    if (!flags.skipPreview) {
+    const shouldSkip = await this.shouldSkipPreview();
+    if (!shouldSkip) {
       const display = await this.shouldDisplayExpandedPreview();
       const {deleteMissingResources} = await this.getOptions();
       await snapshot.preview(project, deleteMissingResources, display);
@@ -110,6 +96,11 @@ export default class Push extends Command {
     handleSnapshotError(err);
   }
 
+  private async shouldSkipPreview() {
+    const {flags} = await this.parse(Push);
+    return flags.previewLevel === PreviewLevelValue.None;
+  }
+
   private async shouldDisplayExpandedPreview() {
     const {flags} = await this.parse(Push);
     return flags.previewLevel === PreviewLevelValue.Detailed;
@@ -129,8 +120,8 @@ export default class Push extends Command {
   }
 
   private async successReportWithChangesHandler(snapshot: Snapshot) {
-    const {flags} = await this.parse(Push);
-    const canBeApplied = flags.skipPreview || (await this.askForConfirmation());
+    const canBeApplied =
+      (await this.shouldSkipPreview()) || (await this.askForConfirmation());
 
     if (canBeApplied) {
       await this.applySnapshot(snapshot);
@@ -139,7 +130,7 @@ export default class Push extends Command {
 
   private async askForConfirmation(): Promise<boolean> {
     const {flags} = await this.parse(Push);
-    const target = await getTargetOrg(this.configuration, flags.organization);
+    const target = getTargetOrg(this.configuration, flags.organization);
     const question = `\nWould you like to apply the snapshot to the organization ${bold.cyan(
       target
     )}? (y/n)`;
@@ -171,7 +162,6 @@ export default class Push extends Command {
     return {
       deleteMissingResources: flags.deleteMissingResources,
       waitUntilDone: {wait: flags.wait},
-      sync: flags.sync,
     };
   }
 

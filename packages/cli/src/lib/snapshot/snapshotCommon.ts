@@ -6,7 +6,6 @@ import {red, green} from 'chalk';
 import {normalize} from 'path';
 import {Config, Configuration} from '../config/config';
 import {SnapshotGenericError} from '../errors/snapshotErrors';
-import {SnapshotFacade} from './snapshotFacade';
 import {PrintableError} from '../errors/printableError';
 import {SnapshotReporter} from './snapshotReporter';
 import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
@@ -18,32 +17,12 @@ import {
 } from './vaultEntriesFunctions';
 
 export interface DryRunOptions {
-  sync?: boolean;
   deleteMissingResources?: boolean;
   snapshotId?: string;
   waitUntilDone?: WaitUntilDoneOptions;
-  shouldAutoSync?: boolean;
 }
 
-const defaultDryRunOptions: DryRunOptions = {
-  shouldAutoSync: true,
-};
-
-async function tryAutomaticSynchronization(
-  snapshot: Snapshot,
-  cfg: Configuration,
-  options: DryRunOptions
-) {
-  const facade = new SnapshotFacade(snapshot, cfg, options.waitUntilDone);
-  await facade.tryAutomaticSynchronization(!options.sync);
-}
-
-async function internalDryRun(
-  project: Project,
-  snapshot: Snapshot,
-  cfg: Configuration,
-  options: DryRunOptions
-) {
+async function internalDryRun(snapshot: Snapshot, options: DryRunOptions) {
   let reporter = await snapshot.validate(
     options.deleteMissingResources,
     options.waitUntilDone
@@ -54,18 +33,7 @@ async function internalDryRun(
       CliUx.ux.action.stop(green('✔'));
     })
     .setReportHandler(SnapshotReportStatus.ERROR, async () => {
-      if (!options.shouldAutoSync) {
-        CliUx.ux.action.stop(red.bold('!'));
-        return;
-      }
-      CliUx.ux.warn('Unsynchronized resource detected');
-      await tryAutomaticSynchronization(snapshot, cfg, options);
-
-      CliUx.ux.action.start('Validating synchronized snapshot');
-      reporter = await internalDryRun(project, snapshot, cfg, {
-        ...options,
-        shouldAutoSync: false,
-      });
+      CliUx.ux.action.stop(red.bold('!'));
     })
     .handleReport();
   return reporter;
@@ -74,24 +42,22 @@ async function internalDryRun(
 export async function dryRun(
   targetOrg: string,
   projectPath: string,
-  cfg: Configuration,
   options: DryRunOptions = {}
 ) {
-  options = {...defaultDryRunOptions, ...options};
   const project = new Project(normalize(projectPath), targetOrg);
   const snapshot = await getSnapshotForDryRun(project, targetOrg, options);
 
   CliUx.ux.action.start('Validating snapshot');
-  let reporter = await internalDryRun(project, snapshot, cfg, options);
+  let reporter = await internalDryRun(snapshot, options);
 
   return {reporter, snapshot, project};
 }
 
-export async function getTargetOrg(config: Config, target?: string) {
+export function getTargetOrg(config: Config, target?: string) {
   if (target) {
     return target;
   }
-  const cfg = await config.get();
+  const cfg = config.get();
   return cfg.organization;
 }
 

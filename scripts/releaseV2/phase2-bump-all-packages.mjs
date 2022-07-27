@@ -20,12 +20,12 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
   const PATH = '.';
   const versionPrefix = 'v';
   const convention = await angularChangelogConvention;
-  const lastTag = getLastTag(versionPrefix)[0];
-  const commits = getCommits(PATH, lastTag)[0];
+  const lastTag = await getLastTag(versionPrefix);
+  const commits = await getCommits(PATH, lastTag);
   const newVersion = getReleaseVersion();
 
   await updateWorkspaceDependencies(newVersion);
-  npmBumpVersion(newVersion, PATH);
+  await npmBumpVersion(newVersion, PATH);
 
   if (isPrivatePackage()) {
     return;
@@ -46,14 +46,14 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
     await writeChangelog(PATH, changelog);
   }
 
-  npmPublish();
+  await npmPublish();
   const packageJson = JSON.parse(
     readFileSync('package.json', {encoding: 'utf-8'})
   );
   await retry(
     () => {
       if (!isVersionPublished(packageJson.name, newVersion)) {
-        throw 'Version not available';
+        throw new Error('Version not available');
       }
     },
     {retries: 30}

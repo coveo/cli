@@ -1,3 +1,13 @@
+# 1.33.0 (2022-07-26)
+
+# 1.32.0 (2022-07-13)
+
+### Bug Fixes
+
+- **deps:** update all dependencies j:cdx-227 ([#854](https://github.com/coveo/cli/issues/854)) ([cd042cc](https://github.com/coveo/cli/commits/cd042cc9d08898a9cad39c644a99fa0dd64ba77a))
+
+# 1.31.0 (2022-06-29)
+
 # 1.29.0 (2022-05-31)
 
 ## 1.28.1 (2022-05-24)

@@ -1,6 +1,10 @@
-import {UploadBatchCallbackData, CatalogSource} from '@coveo/push-api-client';
+import {
+  UploadBatchCallbackData,
+  CatalogSource,
+  BuiltInTransformers,
+} from '@coveo/push-api-client';
 import {Command, Flags, CliUx} from '@oclif/core';
-import {green} from 'chalk';
+import {green, red} from 'chalk';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
@@ -16,12 +20,14 @@ import {
   withFiles,
   withCreateMissingFields,
   withMaxConcurrent,
+  withNormalizeInvalidFields,
 } from '../../../lib/flags/sourceCommonFlags';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
 import {getFileNames} from '../../../lib/utils/file';
 import {bold} from 'chalk';
 import dedent from 'ts-dedent';
+import {formatErrorMessage} from '../../../lib/push/addCommon';
 
 const fullUploadDescription = `Controls the way your items are added to your catalog source.
 
@@ -43,6 +49,7 @@ export default class SourceCatalogAdd extends Command {
     ...withFiles(),
     ...withMaxConcurrent(),
     ...withCreateMissingFields(),
+    ...withNormalizeInvalidFields(),
     fullUpload: Flags.boolean({
       default: false,
       description: fullUploadDescription,
@@ -99,6 +106,9 @@ export default class SourceCatalogAdd extends Command {
     const options = {
       maxConcurrent: flags.maxConcurrent,
       createFields: flags.createMissingFields,
+      fieldNameTransformer: flags.normalizeInvalidFields
+        ? BuiltInTransformers.toLowerCase
+        : BuiltInTransformers.identity,
     };
 
     const batchOperation = flags.fullUpload
@@ -115,6 +125,8 @@ export default class SourceCatalogAdd extends Command {
 
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
+    formatErrorMessage(err);
+    CliUx.ux.action.stop(red.bold('!'));
     throw err;
   }
 

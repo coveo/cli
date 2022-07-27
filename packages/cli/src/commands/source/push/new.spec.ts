@@ -1,6 +1,6 @@
 jest.mock('../../../lib/config/config');
 jest.mock('../../../hooks/analytics/analytics');
-jest.mock('../../../hooks/prerun/prerun');
+
 jest.mock('../../../lib/platform/authenticatedClient');
 
 import {test} from '@oclif/test';
@@ -38,13 +38,11 @@ const doMockAuthenticatedClient = () => {
 };
 
 const doMockConfig = () => {
-  mockedConfigGet.mockReturnValue(
-    Promise.resolve({
-      region: 'us',
-      organization: 'default-org',
-      environment: 'prod',
-    })
-  );
+  mockedConfigGet.mockReturnValue({
+    region: 'us',
+    organization: 'default-org',
+    environment: 'prod',
+  });
 
   mockedConfig.prototype.get = mockedConfigGet;
 };

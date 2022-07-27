@@ -56,10 +56,7 @@ export class AuthenticatedClient {
     return orgs.some((o) => o.id === org);
   }
 
-  public async createImpersonateApiKey(
-    name: string,
-    additionnalPrivileges: PrivilegeModel[] = []
-  ) {
+  public async createImpersonateApiKey(name: string) {
     const platformClient = await this.getClient();
     return await platformClient.apiKey.create({
       displayName: `cli-${name}`,
@@ -67,7 +64,6 @@ export class AuthenticatedClient {
       enabled: true,
       privileges: [
         {targetDomain: 'IMPERSONATE', targetId: '*', owner: 'SEARCH_API'},
-        ...additionnalPrivileges,
       ],
     });
   }

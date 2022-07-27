@@ -1,11 +1,10 @@
 jest.mock('../../../lib/config/config');
 jest.mock('../../../hooks/analytics/analytics');
-jest.mock('../../../hooks/prerun/prerun');
+
 jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/snapshot/snapshot');
 jest.mock('../../../lib/snapshot/snapshotFactory');
 jest.mock('../../../lib/project/project');
-jest.mock('../../../lib/snapshot/snapshotFacade');
 
 import {CliUx} from '@oclif/core';
 import {test} from '@oclif/test';
@@ -22,7 +21,6 @@ import {
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {SnapshotFacade} from '../../../lib/snapshot/snapshotFacade';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
 const mockedConfig = jest.mocked(Config);
@@ -33,8 +31,6 @@ const mockedGetResourceManifest = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
 const mockedSaveDetailedReport = jest.fn();
 const mockedAreResourcesInError = jest.fn();
-const mockedTryAutomaticSynchronization = jest.fn();
-const mockedSnapshotFacade = jest.mocked(SnapshotFacade, true);
 const mockedApplySnapshot = jest.fn();
 const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
@@ -55,24 +51,13 @@ const mockProject = () => {
 };
 
 const mockConfig = () => {
-  mockedConfigGet.mockReturnValue(
-    Promise.resolve({
-      region: 'us',
-      organization: 'foo',
-      environment: 'prod',
-    })
-  );
+  mockedConfigGet.mockReturnValue({
+    region: 'us',
+    organization: 'foo',
+    environment: 'prod',
+  });
 
   mockedConfig.prototype.get = mockedConfigGet;
-};
-
-const mockSnapshotFacade = () => {
-  mockedSnapshotFacade.mockImplementation(
-    () =>
-      ({
-        tryAutomaticSynchronization: mockedTryAutomaticSynchronization,
-      } as unknown as SnapshotFacade)
-  );
 };
 
 const mockSnapshotFactory = async () => {
@@ -145,7 +130,6 @@ const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
     Promise.resolve(new SnapshotReporter(errorReportApply))
   );
   await mockSnapshotFactory();
-  mockSnapshotFacade();
 };
 
 const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries =
@@ -296,7 +280,7 @@ describe('org:resources:push', () => {
       .stdout()
       .stderr()
       .stub(CliUx.ux, 'confirm', () => async () => true)
-      .command(['org:resources:push', '-d'])
+      .command(['org:resources:push', '--deleteMissingResources'])
       .it('should apply missing resoucres', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledWith(true, {wait: 60});
       });
@@ -337,7 +321,7 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .command(['org:resources:push', '--skipPreview'])
+      .command(['org:resources:push', '--previewLevel', 'none'])
       .it('should apply snapshot without confrimation', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledTimes(1);
       });

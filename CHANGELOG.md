@@ -1,3 +1,63 @@
+# v1.33.0 (2022-07-26)
+
+### Bug Fixes
+
+- correctly support `--snapshotId` flag ([#866](https://github.com/coveo/cli/issues/866)) ([ec9344f](https://github.com/coveo/cli/commits/ec9344f7e9949eac9939518823baf5fa9e537e96))
+- remove synchronization logic from CLI ([#867](https://github.com/coveo/cli/issues/867)) ([eae032a](https://github.com/coveo/cli/commits/eae032a68a8be5a75147b0c962228b048ea0b158))
+
+### Features
+
+- **analytics:** add org identifiers + unhash employee emails ([#871](https://github.com/coveo/cli/issues/871)) ([bbb6310](https://github.com/coveo/cli/commits/bbb6310b124005aefd2d6aabdd5d841974dfd452))
+- **analytics:** always track ([#870](https://github.com/coveo/cli/issues/870)) ([da4bd10](https://github.com/coveo/cli/commits/da4bd102c7875222300c3fa01565bacac91dd392))
+- **analytics:** remove persistent analytics identifers ([#869](https://github.com/coveo/cli/issues/869)) ([236cf0f](https://github.com/coveo/cli/commits/236cf0f9052c466b16dd80f263d5761dc9b7d9ec))
+- **cli:** remove beta tag for snapshot ([#873](https://github.com/coveo/cli/issues/873)) ([ffcf833](https://github.com/coveo/cli/commits/ffcf833d5ba363ba5def98f06c67d1cf34cb1810))
+
+## v1.32.1 (2022-07-13)
+
+# v1.32.0 (2022-07-13)
+
+### Bug Fixes
+
+- **deps:** update all dependencies j:cdx-227 ([#854](https://github.com/coveo/cli/issues/854)) ([cd042cc](https://github.com/coveo/cli/commits/cd042cc9d08898a9cad39c644a99fa0dd64ba77a))
+
+### Features
+
+- remove skipPreview flag ([#860](https://github.com/coveo/cli/issues/860)) ([579fcba](https://github.com/coveo/cli/commits/579fcba4a2127cfdc8213fcc976453f4642e7940))
+- remove sync flag ([#859](https://github.com/coveo/cli/issues/859)) ([352306d](https://github.com/coveo/cli/commits/352306dae8417ae5ffb56f73f0cea3f0a7a8e650))
+
+# v1.31.0 (2022-06-29)
+
+### Bug Fixes
+
+- **e2e:** dummyServer waitOn port to be free ([#844](https://github.com/coveo/cli/issues/844)) ([0db4282](https://github.com/coveo/cli/commits/0db428262ad3377aab78b7f95f72a1b23a206c4d))
+- **snapshot:** do not delete snapshot when provided with the flag ([#840](https://github.com/coveo/cli/issues/840)) ([4ca2807](https://github.com/coveo/cli/commits/4ca28071e2e1b0c9afc813e7d246b92e55f3384e))
+- **snapshot:** ignore error if file is already unexisting ([#833](https://github.com/coveo/cli/issues/833)) ([e2711f3](https://github.com/coveo/cli/commits/e2711f39f952127863071e169fe70287616dbc9e))
+- **snapshot:** use `/apply` URL for error ([#832](https://github.com/coveo/cli/issues/832)) ([28394c2](https://github.com/coveo/cli/commits/28394c2bd96a64296efb66097263f7308566f5cd))
+- verify org with appropriate region and env ([#848](https://github.com/coveo/cli/issues/848)) ([8cbfded](https://github.com/coveo/cli/commits/8cbfded119d34486068525658f2242e4dd613589))
+
+### Features
+
+- **angular:** update to angular 14 ([#830](https://github.com/coveo/cli/issues/830)) ([9866d07](https://github.com/coveo/cli/commits/9866d075238b45dee9ac8cfd58df21abdbc93e7b))
+- **cli:** restrict Node versions ([#837](https://github.com/coveo/cli/issues/837)) ([0cae6ec](https://github.com/coveo/cli/commits/0cae6ece32eadf2ae1c56324c68033b7f973d401))
+- handle invalid field names ([#786](https://github.com/coveo/cli/issues/786)) ([0516e16](https://github.com/coveo/cli/commits/0516e164466549b78cc70c3cb3fb32530b7e3437))
+- **snapshot:** add `deletionScope` on `/apply` ([#849](https://github.com/coveo/cli/issues/849)) ([7b7fcb2](https://github.com/coveo/cli/commits/7b7fcb2ed1d0fc73d0ee7500c91aed85fbfd0dc6))
+- **snapshot:** remove -d from push ([#843](https://github.com/coveo/cli/issues/843)) ([5fd6209](https://github.com/coveo/cli/commits/5fd62091933c610cc55f1d810ee22827e3a16fc5))
+- **snapshot:** remove ml resources ([#847](https://github.com/coveo/cli/issues/847)) ([7584ac4](https://github.com/coveo/cli/commits/7584ac406399d37d1bc739e86142a6d9223d55e9))
+- **snapshot:** remove sync from CLI ([#842](https://github.com/coveo/cli/issues/842)) ([45b3c32](https://github.com/coveo/cli/commits/45b3c32c8e4118963f25f43f6e3a1a6aca3aff01))
+- **snapshot:** support new snapshot report contract ([#834](https://github.com/coveo/cli/issues/834)) ([9e38506](https://github.com/coveo/cli/commits/9e385068de50ef893ae0a79c4039ff660367bf35))
+
+# v1.30.0 (2022-06-09)
+
+### Bug Fixes
+
+- **dump:** csv header should have all fields associated with the source ([#828](https://github.com/coveo/cli/issues/828)) ([8f6449f](https://github.com/coveo/cli/commits/8f6449f0c8ffa830e542f3a5b33e3ba67684175e))
+
+### Features
+
+- **atomic:** create impersonate key inside create-atomic instead ([#827](https://github.com/coveo/cli/issues/827)) ([9178ab1](https://github.com/coveo/cli/commits/9178ab136ed7886bdf711312e8415bef30a2fa2d))
+- **create-atomic:** display npm install error details to user ([#821](https://github.com/coveo/cli/issues/821)) ([0870918](https://github.com/coveo/cli/commits/0870918aa32c080bb66f19b84a20c74660b3406e))
+- **dump:** add automatic request size backoff ([#829](https://github.com/coveo/cli/issues/829)) ([334f277](https://github.com/coveo/cli/commits/334f277535c5f314bd8b3d3f50c7cd99ce4250ae))
+
 ## v1.29.4 (2022-06-07)
 
 ## v1.29.3 (2022-06-06)

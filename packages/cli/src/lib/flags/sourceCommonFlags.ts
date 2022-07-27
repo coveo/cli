@@ -31,6 +31,16 @@ export const withCreateMissingFields = () => ({
   }),
 });
 
+export const withNormalizeInvalidFields = () => ({
+  normalizeInvalidFields: Flags.boolean({
+    char: 'n',
+    allowNo: true,
+    default: false,
+    description:
+      'Whether to normalize invalid fields detected from the documents. If set to `false`, an error will be thrown when invalid fields are detected.',
+  }),
+});
+
 export const withSourceVisibility = () => ({
   sourceVisibility: Flags.enum({
     options: [
