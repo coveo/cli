@@ -215,7 +215,7 @@ export function getCleanEnv(): Record<string, any> {
     'INIT_CWD',
   ];
   const pathSep = process.platform === 'win32' ? ';' : ':';
-  const pathName = process.platform === 'win32' ? 'Path' : 'PATH';
+  const pathName = 'PATH';
   const path = env[pathName].split(pathSep);
   const filteredPath = path.filter(
     (pathElement: string) => !isParent(env['GITHUB_WORKSPACE'], pathElement)
