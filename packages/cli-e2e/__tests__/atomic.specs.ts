@@ -115,6 +115,7 @@ describe('ui:create:atomic', () => {
     let page: Page;
 
     beforeAll(async () => {
+      console.time(`when using an existing pageId beforeall`);
       await loginWithApiKey(
         process.env.PLATFORM_API_KEY!,
         process.env.ORG_ID!,
@@ -125,6 +126,7 @@ describe('ui:create:atomic', () => {
       browser = await getNewBrowser();
       stderr = (await buildApplication(processManager, buildAppOptions)).stderr;
       await processManager.killAllProcesses();
+      console.timeEnd(`when using an existing pageId beforeall`);
     }, 15 * 60e3);
 
     beforeEach(async () => {
@@ -327,13 +329,13 @@ describe('ui:create:atomic', () => {
         promptAnswer: `\x1B[B ${EOL}`,
       },
     },
-  ])('$describeName', ({buildAppOptions}) => {
+  ])('$describeName', ({buildAppOptions, describeName}) => {
     const oldEnv = process.env;
     const processManagers: ProcessManager[] = [];
     let stderr: string;
-    let browser: Browser;
 
     beforeAll(async () => {
+      console.time(`${describeName} beforeall`);
       await loginWithApiKey(
         process.env.PLATFORM_API_KEY!,
         process.env.ORG_ID!,
@@ -341,9 +343,9 @@ describe('ui:create:atomic', () => {
       );
       const processManager = new ProcessManager();
       processManagers.push(processManager);
-      browser = await getNewBrowser();
       stderr = (await buildApplication(processManager, buildAppOptions)).stderr;
       await processManager.killAllProcesses();
+      console.timeEnd(`${describeName} beforeall`);
     }, 15 * 60e3);
 
     beforeEach(async () => {
