@@ -66,7 +66,7 @@ describe('ui:create:atomic', () => {
       buildTerminal.when('exit').on('process').do().once(),
       buildTerminal
         .when(options.skipInstall ? /Installing packages/ : /Happy hacking!/)
-        .on('stdout')
+        .on('stderr')
         .do()
         .once(),
     ]);
