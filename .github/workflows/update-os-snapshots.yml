@@ -101,7 +101,7 @@ jobs:
         # TODO: fix auth spec with windows
         exclude:
           - os: windows-latest
-            spec: atomic.specs.ubuntu.ts
+            spec: atomic.specs.linux.ts
           - os: ubuntu-latest
             spec: atomic.specs.windows.ts
     env:
@@ -173,7 +173,7 @@ jobs:
         env:
           DISPLAY: ':1'
         working-directory: packages/cli-e2e
-        run: npm run jest:ci -- -u ${{matrix.spec}}"
+        run: npm run jest:ci -- -u ${{matrix.spec}}
       - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
         if: always()
         with:
