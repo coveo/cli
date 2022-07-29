@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ui:create:atomic when using an existing pageId (--pageId flag specified) the project has been generated properly 1`] = `"Zk6XNqj3BcZYPyGjbuUKld/SeDw="`;
+exports[`ui:create:atomic when using an existing pageId (--pageId flag specified) the project has been generated properly 1`] = `"IJWurroLqNgHlJ+vRrTkCWN90PE="`;
 
-exports[`ui:create:atomic when using an existing pageId (using the list prompt of available pages) the project has been generated properly 1`] = `"mkG6GUVAlQdE8hBpmlgtlXrAFIo="`;
+exports[`ui:create:atomic when using an existing pageId (using the list prompt of available pages) the project has been generated properly 1`] = `"lLmzOE8jnLy9tlqkvdsezrt59Bg="`;
 
-exports[`ui:create:atomic when using the default page config (pageId not specified) the project has been generated properly 1`] = `"guzCklUrHIWHLwiz2CwagB/q4Wk="`;
+exports[`ui:create:atomic when using the default page config (pageId not specified) the project has been generated properly 1`] = `"sn2gTjJKawQlRhhawGZwb4hZyLw="`;

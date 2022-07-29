@@ -11,8 +11,9 @@ import {EOL} from 'os';
 import {DummyServer} from '../utils/server';
 import {loginWithApiKey} from '../utils/login';
 import {existsSync} from 'fs-extra';
-import {join} from 'path';
+import {join, resolve} from 'path';
 import {hashElement} from 'folder-hash';
+import {renameSync, rmSync} from 'fs';
 
 interface BuildAppOptions {
   id: string;
@@ -327,13 +328,14 @@ describe('ui:create:atomic', () => {
       buildAppOptions: {
         id: 'with-page-id-prompt',
         promptAnswer: `\x1B[B ${EOL}`,
+        skipInstall: true,
       },
     },
   ])('$describeName', ({buildAppOptions, describeName}) => {
     const oldEnv = process.env;
     const processManagers: ProcessManager[] = [];
     let stderr: string;
-
+    let normalizedProjectDir = '';
     beforeAll(async () => {
       console.time(`${describeName} beforeall`);
       await loginWithApiKey(
@@ -345,6 +347,12 @@ describe('ui:create:atomic', () => {
       processManagers.push(processManager);
       stderr = (await buildApplication(processManager, buildAppOptions)).stderr;
       await processManager.killAllProcesses();
+      const originalProjectDir = resolve(
+        join(getProjectPath(getProjectName(buildAppOptions.id)))
+      );
+      normalizedProjectDir = join(originalProjectDir, '..', 'normalizedDir');
+      rmSync(normalizedProjectDir, {recursive: true, force: true});
+      renameSync(originalProjectDir, normalizedProjectDir);
       console.timeEnd(`${describeName} beforeall`);
     }, 15 * 60e3);
 
@@ -369,29 +377,28 @@ describe('ui:create:atomic', () => {
     });
 
     it('the project has been generated properly', async () => {
+      console.log(normalizedProjectDir);
       expect(
         (
-          await hashElement(
-            join(getProjectPath(getProjectName(buildAppOptions.id))),
-            {
-              folders: {
-                exclude: ['**node_modules', 'dist', 'www', '.netlify'],
-                ignoreRootName: true,
-                ignoreBasename: true,
-              },
-              files: {
-                include: ['*'],
-                exclude: [
-                  '**.env',
-                  '**package-lock.json',
-                  '**package.json',
-                  'stencil.config.ts',
-                ],
-                ignoreRootName: true,
-                ignoreBasename: true,
-              },
-            }
-          )
+          await hashElement(normalizedProjectDir, {
+            folders: {
+              exclude: ['**node_modules', 'dist', 'www', '.netlify'],
+              ignoreRootName: true,
+              ignoreBasename: true,
+            },
+            files: {
+              include: ['*'],
+              exclude: [
+                '**.env',
+                '**package-lock.json',
+                '**package.json',
+                'stencil.config.ts',
+                '**index.html',
+              ],
+              ignoreRootName: true,
+              ignoreBasename: true,
+            },
+          })
         ).hash
       ).toMatchSnapshot();
     });
