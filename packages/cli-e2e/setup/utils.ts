@@ -237,23 +237,3 @@ const appendCmdIfWindows = (cmd: TemplateStringsArray) =>
 function isParent(parent: string, potentialChild: string) {
   return resolve(potentialChild).startsWith(resolve(parent));
 }
-
-export function setupOsSpecificTests() {
-  const testOsSpecificIdentifier = '.specs.os.';
-  const testDir = join(__dirname, '..', '__tests_');
-  const tests = readdirSync(testDir, {withFileTypes: true});
-  for (const test of tests) {
-    if (test.isFile() && test.name.includes(testOsSpecificIdentifier)) {
-      copySync(
-        join(testDir, test.name),
-        join(
-          testDir,
-          test.name.replace(
-            testOsSpecificIdentifier,
-            `.specs.${process.platform === 'win32' ? 'windows' : 'linux'}.`
-          )
-        )
-      );
-    }
-  }
-}

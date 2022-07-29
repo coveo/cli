@@ -25,7 +25,8 @@
     "test:bash": "node ./entrypoints/entry.js --bash",
     "jest": "jest --verbose --runInBand --detectOpenHandles --forceExit",
     "jest:ci": "jest --verbose --runInBand --detectOpenHandles --forceExit",
-    "prejest": "rimraf artifacts ui-projects verdaccio/verdaccio",
+    "prejest": "rimraf artifacts ui-projects verdaccio/verdaccio && npm run copy-os-specs",
+    "copy-os-specs": "node ./setup/copyOsSpecs.js",
     "jest:debug": "node --inspect-brk ../../node_modules/jest/bin/jest.js --runInBand",
     "verdaccio": "verdaccio --config ./verdaccio/config.yaml"
   },

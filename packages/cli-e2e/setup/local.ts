@@ -13,7 +13,6 @@ import {
   startVerdaccio,
   publishPackages,
   shimNpm,
-  setupOsSpecificTests,
 } from './utils';
 import {join} from 'path';
 
@@ -21,7 +20,6 @@ export default async function () {
   shimNpm();
   useCIConfigIfEnvIncomplete();
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
-  setupOsSpecificTests();
   setProcessEnv();
 
   createUiProjectDirectory();

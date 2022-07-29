@@ -9,13 +9,11 @@ import {
   restoreCliConfig,
   shimNpm,
   installCli,
-  setupOsSpecificTests,
 } from './utils';
 
 export default async function () {
   shimNpm();
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
-  setupOsSpecificTests();
   // runId must start and finish with letters to satisfies Angular.
   setProcessEnv();
   if (process.env.E2E_USE_NPM_REGISTRY) {
