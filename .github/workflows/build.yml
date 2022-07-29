@@ -62,7 +62,6 @@ jobs:
       - name: Tests
         run: npm run test
   e2e-setup-login:
-    if: ${{ github.ref != 'refs/heads/main' }}
     name: End-to-end login
     runs-on: 'ubuntu-latest'
     outputs:
@@ -110,7 +109,6 @@ jobs:
           name: e2e-login-publish-artifacts
           path: ./packages/cli-e2e/artifacts
   e2e-setup-verdaccio:
-    if: ${{ github.ref != 'refs/heads/main' }}
     strategy:
       matrix:
         os: ['ubuntu-latest', 'windows-latest']
@@ -146,7 +144,6 @@ jobs:
           name: ${{matrix.os}}-verdaccio-publish-artifacts
           path: ./packages/cli-e2e/artifacts
   e2e:
-    if: ${{ github.ref != 'refs/heads/main' }}
     name: End-to-end tests
     runs-on: ${{matrix.os}}
     needs: [e2e-setup-login, e2e-setup-verdaccio]
@@ -155,13 +152,25 @@ jobs:
       matrix:
         os: ['ubuntu-latest', 'windows-latest']
         node: [16]
-        spec: ['atomic.specs.linux.ts', 'atomic.specs.windows.ts']
+        spec:
+          [
+            'angular.specs.ts',
+            'atomic.specs.windows.ts',
+            'atomic.specs.linux.ts',
+            'auth.specs.ci.ts',
+            'orgList.specs.ts',
+            'orgResources.specs.ts',
+            'react.specs.ts',
+            'vue.specs.ts',
+          ]
         # TODO: fix auth spec with windows
         exclude:
           - os: windows-latest
-            spec: atomic.specs.linux.ts
+            spec: auth.specs.ci.ts
+          - os: windows-latest
+            spec: 'atomic.specs.linux.ts'
           - os: ubuntu-latest
-            spec: atomic.specs.windows.ts
+            spec: 'atomic.specs.windows.ts'
     env:
       # Platform environment to log into for the e2e tests.
       PLATFORM_ENV: 'stg'
@@ -225,18 +234,18 @@ jobs:
       - name: Tests
         if: ${{matrix.os == 'windows-latest'}}
         working-directory: packages/cli-e2e
-        run: npm run jest:ci -- -u ${{matrix.spec}}
+        run: npm run jest:ci -- ${{matrix.spec}}
       - name: Tests
         if: ${{matrix.os == 'ubuntu-latest'}}
         env:
           DISPLAY: ':1'
         working-directory: packages/cli-e2e
-        run: npm run jest:ci -- -u ${{matrix.spec}}
+        run: npm run jest:ci -- ${{matrix.spec}}
       - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
         if: always()
         with:
-          name: ${{matrix.os}}-snap-artifact
-          path: ./packages/cli-e2e/**/*.snap
+          name: ${{matrix.os}}-${{matrix.spec}}-test-artifacts
+          path: ./packages/cli-e2e/artifacts
   e2e-teardown:
     name: End-to-end teardown
     if: ${{ always() }}
@@ -280,21 +289,6 @@ jobs:
       - name: Delete test API key
         if: always()
         run: node ./scripts/cleaning/delete-api-keys.js
-      - uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3
-        with:
-          name: windows-latest-snap-artifact
-          path: ./packages/cli-e2e/
-      - uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3
-        with:
-          name: ubuntu-latest-snap-artifact
-          path: ./packages/cli-e2e/
-      - name: Commit artifacts
-        run: |
-          git config --global user.email action@github.com
-          git config --global user.name GitHub Action
-          git add ./packages/cli-e2e/**/*.snap
-          git commit -m "update e2e snapshots" --no-verify
-          git push
   e2e-report:
     name: End-to-end status reporter
     if: ${{ always() }}
