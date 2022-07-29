@@ -379,27 +379,25 @@ describe('ui:create:atomic', () => {
     it('the project has been generated properly', async () => {
       console.log(normalizedProjectDir);
       expect(
-        (
-          await hashElement(normalizedProjectDir, {
-            folders: {
-              exclude: ['**node_modules', 'dist', 'www', '.netlify'],
-              ignoreRootName: true,
-              ignoreBasename: true,
-            },
-            files: {
-              include: ['*'],
-              exclude: [
-                '**.env',
-                '**package-lock.json',
-                '**package.json',
-                'stencil.config.ts',
-                '**index.html',
-              ],
-              ignoreRootName: true,
-              ignoreBasename: true,
-            },
-          })
-        ).hash
+        await hashElement(normalizedProjectDir, {
+          folders: {
+            exclude: ['**node_modules', 'dist', 'www', '.netlify'],
+            ignoreRootName: true,
+            ignoreBasename: true,
+          },
+          files: {
+            include: ['*'],
+            exclude: [
+              '**.env',
+              '**package-lock.json',
+              '**package.json',
+              'stencil.config.ts',
+              '**index.html',
+            ],
+            ignoreRootName: true,
+            ignoreBasename: true,
+          },
+        })
       ).toMatchSnapshot();
     });
   });
