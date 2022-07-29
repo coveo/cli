@@ -293,7 +293,7 @@ jobs:
           git config --global user.email action@github.com
           git config --global user.name GitHub Action
           git add ./packages/cli-e2e/**/*.snap
-          git commit -m "update e2e snapshots"
+          git commit -m "update e2e snapshots" --no-verify
           git push
   e2e-report:
     name: End-to-end status reporter
