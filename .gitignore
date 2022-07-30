@@ -31,7 +31,3 @@ packages/create-atomic/template/package.json.hbs
 
 # Prevent secret leakage.
 .npmrc
-
-# Ignore copied specs
-packages/cli-e2e/__tests__/*.specs.linux.ts
-packages/cli-e2e/__tests__/*.specs.windows.ts
