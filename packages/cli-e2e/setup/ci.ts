@@ -1,4 +1,4 @@
-import {cpSync, mkdirSync} from 'fs';
+import {mkdirSync} from 'fs';
 import {SCREENSHOTS_PATH} from '../utils/browser';
 import {ProcessManager} from '../utils/processManager';
 

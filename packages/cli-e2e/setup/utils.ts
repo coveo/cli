@@ -14,7 +14,6 @@ import {join, resolve} from 'path';
 import {npm, npmCachePathEnvVar, npmPathEnvVar} from '../utils/npm';
 import {dirname} from 'path';
 import {spawnSync} from 'child_process';
-import {readdirSync} from 'fs';
 
 async function clearChromeBrowsingData(browser: Browser) {
   const pages = await browser.pages();

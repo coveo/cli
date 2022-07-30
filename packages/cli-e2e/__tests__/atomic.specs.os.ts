@@ -116,7 +116,7 @@ describe('ui:create:atomic', () => {
     let page: Page;
 
     beforeAll(async () => {
-      console.time(`when using an existing pageId beforeall`);
+      console.time('when using an existing pageId beforeall');
       await loginWithApiKey(
         process.env.PLATFORM_API_KEY!,
         process.env.ORG_ID!,
@@ -127,7 +127,7 @@ describe('ui:create:atomic', () => {
       browser = await getNewBrowser();
       stderr = (await buildApplication(processManager, buildAppOptions)).stderr;
       await processManager.killAllProcesses();
-      console.timeEnd(`when using an existing pageId beforeall`);
+      console.timeEnd('when using an existing pageId beforeall');
     }, 15 * 60e3);
 
     beforeEach(async () => {
