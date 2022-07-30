@@ -14,6 +14,7 @@ import {existsSync} from 'fs-extra';
 import {join, resolve} from 'path';
 import {hashElement} from 'folder-hash';
 import {renameSync, rmSync} from 'fs';
+import retry from 'async-retry';
 
 interface BuildAppOptions {
   id: string;
@@ -336,6 +337,7 @@ describe('ui:create:atomic', () => {
     const processManagers: ProcessManager[] = [];
     let stderr: string;
     let normalizedProjectDir = '';
+
     beforeAll(async () => {
       console.time(`${describeName} beforeall`);
       await loginWithApiKey(
@@ -352,7 +354,9 @@ describe('ui:create:atomic', () => {
       );
       normalizedProjectDir = join(originalProjectDir, '..', 'normalizedDir');
       rmSync(normalizedProjectDir, {recursive: true, force: true});
-      renameSync(originalProjectDir, normalizedProjectDir);
+      await retry(() => {
+        renameSync(originalProjectDir, normalizedProjectDir);
+      });
       console.timeEnd(`${describeName} beforeall`);
     }, 15 * 60e3);
 
