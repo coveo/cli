@@ -228,9 +228,11 @@ jobs:
       - uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3
         with:
           name: windows-latest-snap-artifact
+          path: ./packages/cli-e2e
       - uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3
         with:
           name: ubuntu-latest-snap-artifact
+          path: ./packages/cli-e2e
       - name: Commit artifacts
         run: |
           git config user.name github-actions
