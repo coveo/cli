@@ -7,16 +7,15 @@ function setupOsSpecificTests() {
   const tests = readdirSync(testDir, {withFileTypes: true});
   for (const test of tests) {
     if (test.isFile() && test.name.includes(testOsSpecificIdentifier)) {
-      copyFileSync(
-        join(testDir, test.name),
-        join(
-          testDir,
-          test.name.replace(
-            testOsSpecificIdentifier,
-            `.specs.${process.platform === 'win32' ? 'windows' : 'linux'}.`
+      for (const os of ['windows', 'linux']) {
+        copyFileSync(
+          join(testDir, test.name),
+          join(
+            testDir,
+            test.name.replace(testOsSpecificIdentifier, `.specs.${os}.`)
           )
-        )
-      );
+        );
+      }
     }
   }
 }
