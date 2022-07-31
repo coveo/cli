@@ -1,5 +1,8 @@
 name: Refresh E2E Snapshots
 on:
+  push:
+    branches:
+      - 'CDX-1061'
   workflow_dispatch:
 
 jobs:
