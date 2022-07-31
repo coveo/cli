@@ -3,6 +3,130 @@
 exports[`ui:create:atomic when using an existing pageId (--pageId flag specified) the project has been generated properly 1`] = `
 HashedFolder {
   "children": Array [
+    HashedFile {
+      "hash": "RH58BiYWbvwHsjuAvGykfQPEhA0=",
+      "name": "netlify.toml",
+    },
+    HashedFile {
+      "hash": "m26Xd243QA3Fk5x2SgccyEeSA98=",
+      "name": "README.md",
+    },
+    HashedFolder {
+      "children": Array [
+        HashedFile {
+          "hash": "FzT+9wG12uZWQ02Ky+9GlJ7ZQac=",
+          "name": "clean-up.js",
+        },
+        HashedFile {
+          "hash": "vnhGxkzoTdtAVgjkDKUI+9ukM3A=",
+          "name": "setup-lambda.js",
+        },
+        HashedFile {
+          "hash": "SPggJ4gGqtRc5+8WHpeKd/gQcf0=",
+          "name": "utils.js",
+        },
+      ],
+      "hash": "Hu9uzGkFTjrQ1vznChJEpe9iPm8=",
+      "name": "scripts",
+    },
+    HashedFolder {
+      "children": Array [
+        HashedFolder {
+          "children": Array [
+            HashedFolder {
+              "children": Array [
+                HashedFile {
+                  "hash": "ErdFGgbxq+C0LOYeQvVh59O3JYA=",
+                  "name": "results-manager.tsx",
+                },
+                HashedFile {
+                  "hash": "/m87zRv/MiIstEldgz3NO4atbZM=",
+                  "name": "template-1.html",
+                },
+              ],
+              "hash": "L2wiyeP//J6E0Gbs5Yu1GFfxF1U=",
+              "name": "results-manager",
+            },
+            HashedFolder {
+              "children": Array [
+                HashedFile {
+                  "hash": "XemX7AoOihA4SgQsvWtcStjeiGo=",
+                  "name": "sample-component.css",
+                },
+                HashedFile {
+                  "hash": "YTj99Fegnant/k2ql9TPe2YMIKI=",
+                  "name": "sample-component.tsx",
+                },
+              ],
+              "hash": "q1Hnmgypio/LCK0csDi0uwZUZBg=",
+              "name": "sample-component",
+            },
+            HashedFolder {
+              "children": Array [
+                HashedFile {
+                  "hash": "0kZk+nhPZP6DNXEt1ds/y13pPn4=",
+                  "name": "sample-result-component.css",
+                },
+                HashedFile {
+                  "hash": "WTNvX4aKbAWuOwDGCn8De81zB24=",
+                  "name": "sample-result-component.tsx",
+                },
+              ],
+              "hash": "CUouJ7KRaYkS35p9RQ6d7HwrEwQ=",
+              "name": "sample-result-component",
+            },
+          ],
+          "hash": "IzpnK5rbJT7d4vrimnemc+St5pI=",
+          "name": "components",
+        },
+        HashedFile {
+          "hash": "zOAUK2vUx2PHWaGj0Rg/i3tFp7Q=",
+          "name": "components.d.ts",
+        },
+        HashedFile {
+          "hash": "YVuwXfIZfjfeVyLQ6cMy3kUqC3A=",
+          "name": "html.d.ts",
+        },
+        HashedFile {
+          "hash": "VYQYwWUyFPlPYQDod3YJsXVOEiQ=",
+          "name": "index.ts",
+        },
+        HashedFolder {
+          "children": Array [],
+          "hash": "2jmj7l5rSw0yVb/vlWAYkK/YBwk=",
+          "name": "pages",
+        },
+        HashedFolder {
+          "children": Array [
+            HashedFile {
+              "hash": "ygdkeGA2hXdvtcqJyetblv/fdrw=",
+              "name": "index.css",
+            },
+          ],
+          "hash": "lRdUDVao1PTEjkh/JyuWMC0NvKk=",
+          "name": "style",
+        },
+      ],
+      "hash": "BsaZYMD1wDqcmu1eKmK0uFjxpKk=",
+      "name": "src",
+    },
+    HashedFile {
+      "hash": "ywoeezM4STAa4UnGoyLoO8aoa9w=",
+      "name": "start-netlify.mjs",
+    },
+    HashedFile {
+      "hash": "XiXrxQ8C2vt88gPhq3hGtPIJ5Yg=",
+      "name": "tsconfig.json",
+    },
+  ],
+  "hash": "+zbzwjlLY/cf/m3G0LvRqrK/NSQ=",
+  "name": "normalizedDir",
+}
+`;
+
+exports[`ui:create:atomic when using an existing pageId (pageId not specified) the project has been generated properly 1`] = `
+HashedFolder {
+  "children": Array [
     HashedFolder {
       "children": Array [
         HashedFile {
@@ -129,7 +253,7 @@ HashedFolder {
           "name": "components",
         },
         HashedFile {
-          "hash": "B8YfCYuao2stXw64J6gW1TONNVg=",
+          "hash": "2/Ssowtzkh/hx4e9vrMi11FFp1Q=",
           "name": "components.d.ts",
         },
         HashedFile {
@@ -156,7 +280,7 @@ HashedFolder {
           "name": "style",
         },
       ],
-      "hash": "MyBnsgmKg3qrQRu4sQZ7FfT7jgQ=",
+      "hash": "fTp/vtQ1keqpa0vWOA+VJlSEaFk=",
       "name": "src",
     },
     HashedFile {
@@ -168,7 +292,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "IJWurroLqNgHlJ+vRrTkCWN90PE=",
+  "hash": "EqZ2vxdC4+HqoJB89387OQJQ0Fk=",
   "name": "normalizedDir",
 }
 `;
