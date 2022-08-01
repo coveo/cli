@@ -178,10 +178,15 @@ jobs:
         working-directory: packages/cli-e2e
         run: npm run jest:ci -- -u ${{matrix.spec}}
       - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
-        if: always()
+        if: ${{matrix.os == 'windows-latest'}}
         with:
           name: ${{matrix.os}}-snap-artifact
-          path: ./packages/cli-e2e/**/*.snap
+          path: ./packages/cli-e2e/**/*.windows.ts.snap
+      - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        with:
+          name: ${{matrix.os}}-snap-artifact
+          path: ./packages/cli-e2e/**/*.linux.ts.snap
   e2e-teardown:
     name: End-to-end teardown
     if: ${{ always() }}
