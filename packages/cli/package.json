@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli",
-  "version": "1.32.1",
+  "version": "1.33.0",
   "author": "Coveo",
   "description": "Coveo CLI",
   "engines": {
@@ -37,11 +37,11 @@
   },
   "devDependencies": {
     "@amplitude/types": "1.10.0",
-    "@babel/core": "7.18.6",
-    "@coveo/angular": "1.32.1",
-    "@coveo/cra-template": "1.32.1",
-    "@coveo/create-atomic": "1.32.1",
-    "@coveo/vue-cli-plugin-typescript": "1.32.1",
+    "@babel/core": "7.18.9",
+    "@coveo/angular": "1.33.0",
+    "@coveo/cra-template": "1.33.0",
+    "@coveo/create-atomic": "1.33.0",
+    "@coveo/vue-cli-plugin-typescript": "1.33.0",
     "@oclif/test": "2.1.0",
     "@types/archiver": "5.3.1",
     "@types/async-retry": "1.4.4",
@@ -54,17 +54,17 @@
     "@types/semver": "7.3.10",
     "@types/tmp": "0.2.3",
     "chai": "4.3.6",
-    "eslint": "8.19.0",
+    "eslint": "8.20.0",
     "fancy-test": "2.0.0",
     "jest": "27.5.1",
     "mock-stdin": "1.0.0",
-    "oclif": "3.1.0",
+    "oclif": "3.1.1",
     "prettier": "2.7.1",
     "rimraf": "3.0.2",
     "stdout-stderr": "0.1.13",
     "strip-ansi": "6.0.1",
     "ts-jest": "27.1.5",
-    "ts-node": "10.8.2",
+    "ts-node": "10.9.1",
     "typescript": "4.7.4"
   },
   "peerDependencies": {
@@ -128,10 +128,10 @@
         "description": "manage Coveo organizations"
       },
       "org:resources": {
-        "description": "(beta) manage your organization resources"
+        "description": "manage your organization resources"
       },
       "org:resources:model": {
-        "description": "(beta) manage your Snapshot Pull Model"
+        "description": "manage your Snapshot Pull Model"
       },
       "org:search": {
         "description": "perform queries against a coveo index"

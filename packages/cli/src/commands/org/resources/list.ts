@@ -12,8 +12,7 @@ import {recordable} from '../../../lib/utils/record';
 import {organization} from '../../../lib/flags/snapshotCommonFlags';
 
 export default class List extends Command {
-  public static description =
-    '(beta) List available snapshots from an organization';
+  public static description = 'List available snapshots from an organization';
 
   public static flags = {
     ...CliUx.ux.table.flags(),
@@ -25,9 +24,6 @@ export default class List extends Command {
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
-    this.warn(
-      'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
-    );
     const {flags} = await this.parse(List);
     const org = getTargetOrg(this.configuration, flags.organization);
     const platformClient = await new AuthenticatedClient().getClient({
