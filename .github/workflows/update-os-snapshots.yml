@@ -236,10 +236,8 @@ jobs:
       - name: Check for Jest Snapshots changes
         run: echo "::set-output name=exitCode::$(git diff --quiet ./packages/cli-e2e/**/*.snap ; echo $?)"
         id: has-changes
-      - name: FooBar
-        run: echo "${{ steps.has-changes.outputs.exitCode }}"
       - name: Commit artifacts
-        if: ${{ steps.has-changes.outputs.exitCode == 1}}
+        if: ${{ steps.has-changes.outputs.exitCode == '1'}}
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
