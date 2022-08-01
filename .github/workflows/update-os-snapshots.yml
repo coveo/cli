@@ -233,6 +233,8 @@ jobs:
         with:
           name: ubuntu-latest-snap-artifact
           path: ./packages/cli-e2e
+      - run: git diff ./packages/cli-e2e/**/*.snap
+        continue-on-error: true
       - name: Check for Jest Snapshots changes
         run: echo "::set-output name=exitCode::$(git diff --quiet ./packages/cli-e2e/**/*.snap ; echo $?)"
         id: has-changes
