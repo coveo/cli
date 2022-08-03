@@ -109,8 +109,8 @@ jobs:
           fetch-depth: 0
       # pulls all tags (needed for computing the next version)
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-      - name: Checkout last tag
-        run: git checkout $(git describe --abbrev=0 --tags)
+      # - name: Checkout last tag
+      #   run: git checkout $(git describe --abbrev=0 --tags)
       - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
         with:
           node-version: ${{matrix.node}}
@@ -177,8 +177,8 @@ jobs:
           fetch-depth: 0
       # pulls all tags (needed for computing the next version)
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-      - name: Checkout last tag
-        run: git checkout $(git describe --abbrev=0 --tags)
+      # - name: Checkout last tag
+      #   run: git checkout $(git describe --abbrev=0 --tags)
       - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
         with:
           node-version: ${{matrix.node}}
