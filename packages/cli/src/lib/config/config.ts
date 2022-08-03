@@ -22,18 +22,7 @@ export interface BaseConfiguration {
   region: Region;
   environment: PlatformEnvironment;
   organization: string;
-  analyticsEnabled: boolean | undefined;
   accessToken: string | undefined;
-  /**
-   * The Amplitude Session ID; that ID is the session's start time in milliseconds since epoch.
-   * For more information on how Amplitude tracks sessions, visit https://help.amplitude.com/hc/en-us/articles/115002323627-Tracking-sessions-in-Amplitude
-   */
-  amplitudeSessionID?: number | undefined;
-  /**
-   * The time in milliseconds of the last analytics event that was fired.
-   * This value is used for the session ID computation
-   */
-  lastEventLoggedTime?: number | undefined;
   anonymous?: boolean | undefined;
 }
 
@@ -47,7 +36,6 @@ export class Config {
     'environment',
     'organization',
     'region',
-    'analyticsEnabled',
   ];
   public constructor(private configDir: string) {}
 
@@ -145,7 +133,6 @@ export const DefaultConfig: Configuration = {
   environment: DEFAULT_ENVIRONMENT,
   region: DEFAULT_REGION,
   organization: '',
-  analyticsEnabled: undefined,
   accessToken: undefined,
   anonymous: undefined,
 };

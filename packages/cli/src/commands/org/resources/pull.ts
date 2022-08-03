@@ -1,7 +1,8 @@
-import {ResourceSnapshotType} from '@coveord/platform-client';
+import type {ResourceSnapshotType} from '@coveord/platform-client';
 import {Flags, Command, CliUx} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {readJsonSync} from 'fs-extra';
+import {resolve} from 'path';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
 import {formatOrgId} from '../../../lib/commonPromptUtils/formater';
@@ -16,7 +17,11 @@ import {writeSnapshotPrivilege} from '../../../lib/decorators/preconditions/plat
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {ProcessAbort} from '../../../lib/errors/processError';
-import {organization, wait} from '../../../lib/flags/snapshotCommonFlags';
+import {
+  organization,
+  snapshotId,
+  wait,
+} from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
 import type {
   SnapshotPullModel,
@@ -30,6 +35,7 @@ import {
   handleSnapshotError,
   cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
+import {allowedResourceType} from '../../../lib/snapshot/snapshotConstant';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
@@ -49,19 +55,14 @@ const PullCommandStrings = {
 };
 
 export default class Pull extends Command {
-  public static description = '(beta) Pull resources from an organization';
+  public static description = 'Pull resources from an organization';
 
   public static flags = {
     ...wait(),
     ...organization(
       'The unique identifier of the organization from which to pull the resources'
     ),
-    snapshotId: Flags.string({
-      char: 's',
-      exclusive: ['resourceTypes'],
-      description:
-        'The unique identifier of the snapshot to pull. If not specified, a new snapshot will be created. You can list available snapshot in your organization with org:resources:list',
-    }),
+    ...snapshotId(),
     git: Flags.boolean({
       char: 'g',
       description:
@@ -81,12 +82,12 @@ export default class Pull extends Command {
       helpValue: 'type1 type2',
       description: 'The resources types to pull from the organization.',
       multiple: true,
-      options: Object.values(ResourceSnapshotType),
-      default: Object.values(ResourceSnapshotType),
+      options: allowedResourceType,
+      default: allowedResourceType,
     }),
     model: Flags.build<SnapshotPullModel>({
       parse: async (input: string): Promise<SnapshotPullModel> => {
-        const model = readJsonSync(input);
+        const model = readJsonSync(resolve(input));
         validateSnapshotPullModel(model);
         return model;
       },
@@ -106,9 +107,6 @@ export default class Pull extends Command {
     HasNecessaryCoveoPrivileges(writeSnapshotPrivilege)
   )
   public async run() {
-    this.warn(
-      'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
-    );
     const targetOrganization = await this.getTargetOrg();
     const project = new Project(this.projectPath, targetOrganization);
     await this.ensureProjectReset(project);

@@ -1,6 +1,7 @@
 import {
   ResourceSnapshotsReportModel,
   ResourceSnapshotsReportOperationModel,
+  ResourceSnapshotsReportOperationResult,
   ResourceSnapshotType,
 } from '@coveord/platform-client';
 import {
@@ -16,12 +17,6 @@ type SnapshotReporterHandler = (this: SnapshotReporter) => void | Promise<void>;
 
 type SnapshotReporterHandlers = {
   [K in SnapshotReportStatus]: SnapshotReporterHandler | NoopHandler;
-};
-
-// #region TODO CDX-1039: Put that in PlatformClient when in prod
-type ResourceSnapshotsReportOperationResult = {
-  resultCode: string;
-  message: string;
 };
 
 const MissingVaultEntryResultCode = 'INVALID_PLACEHOLDER';
@@ -165,20 +160,14 @@ export class SnapshotReporter {
     )) {
       for (const [resourceName, errors] of Object.entries(resource)) {
         for (const err of errors) {
-          this.parseResourceOperationResult(
-            // TODO CDX-1038: Clean that.
-            err as unknown as string | ResourceSnapshotsReportOperationResult,
-            resourceName,
-            resourceType
-          );
+          this.parseResourceOperationResult(err, resourceName, resourceType);
         }
       }
     }
   }
 
   private parseResourceOperationResult(
-    // TODO CDX-1038: Clean that.
-    err: string | ResourceSnapshotsReportOperationResult,
+    err: ResourceSnapshotsReportOperationResult,
     resourceName: string,
     resourceType: string
   ) {
@@ -197,8 +186,7 @@ export class SnapshotReporter {
 
   private addResourceInError(
     resourceType: ResourceSnapshotType,
-    // TODO CDX-1038: Clean that.
-    err: string | ResourceSnapshotsReportOperationResult
+    err: ResourceSnapshotsReportOperationResult
   ) {
     this.resourceInErrorCount++;
     let errorSet = this.resourceInError.get(resourceType);
@@ -206,16 +194,14 @@ export class SnapshotReporter {
       errorSet = new Set();
       this.resourceInError.set(resourceType, errorSet);
     }
-    // TODO CDX-1038: Clean that.
-    errorSet.add(typeof err === 'string' ? err : err.message);
+    errorSet.add(`${err.resultCode}: ${err.message}`);
   }
 
   private static missingVaultEntryMatcher =
     /^The vault entry referenced by \{\{ VAULT\.(?<entryName>.*) \}\} could not be found in the vault\.$/;
 
-  // TODO CDX-1038: Clean that.
   private static tryGetMissingVaultEntryName(
-    err: string | ResourceSnapshotsReportOperationResult
+    err: ResourceSnapshotsReportOperationResult
   ): string | undefined {
     let message: string = '';
     if (typeof err !== 'string') {

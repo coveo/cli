@@ -10,14 +10,11 @@ import {createSnapshotUrl} from '../../../../lib/platform/url';
 import dedent from 'ts-dedent';
 
 export default class Create extends Command {
-  public static description = '(beta) Create a Snapshot Pull Model';
+  public static description = 'Create a Snapshot Pull Model';
 
   @Trackable({eventName: 'org resources pull - new model'})
   @Preconditions(IsAuthenticated())
   public async run() {
-    this.warn(
-      'The org:resources commands are currently in public beta, please report any issue to github.com/coveo/cli/issues'
-    );
     await this.openPlatform();
     this
       .log(dedent`Make sure to save the resulting snapshot pull model, so you can later run

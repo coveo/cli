@@ -4,7 +4,6 @@ jest.mock('json2csv');
 jest.mock('../../../lib/platform/authenticatedClient');
 jest.mock('../../../lib/config/config');
 jest.mock('../../../hooks/analytics/analytics');
-jest.mock('../../../hooks/prerun/prerun');
 
 import {test} from '@oclif/test';
 import {Parser} from 'json2csv';

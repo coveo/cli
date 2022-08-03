@@ -6,7 +6,7 @@ import {
   PlatformClient,
   ResourceSnapshotsReportType,
   SnapshotExportContentFormat,
-  ResourceSnapshotsSynchronizationReportModel,
+  ApplyOptionsDeletionScope,
 } from '@coveord/platform-client';
 import retry from 'async-retry';
 import {ReportViewer} from './reportPreviewer/reportPreviewer';
@@ -16,15 +16,10 @@ import {SnapshotReporter} from './snapshotReporter';
 import {SnapshotOperationTimeoutError} from '../errors';
 import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer';
 import {Project} from '../project/project';
-import {
-  SnapshotNoReportFoundError,
-  SnapshotNoSynchronizationReportFoundError,
-} from '../errors/snapshotErrors';
+import {SnapshotNoReportFoundError} from '../errors/snapshotErrors';
 import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
 
-export type SnapshotReport =
-  | ResourceSnapshotsReportModel
-  | ResourceSnapshotsSynchronizationReportModel;
+export type SnapshotReport = ResourceSnapshotsReportModel;
 
 export interface WaitUntilDoneOptions {
   /**
@@ -108,7 +103,15 @@ export class Snapshot {
     deleteMissingResources = false,
     options: WaitUntilDoneOptions = {}
   ) {
-    await this.snapshotClient.apply(this.id, {deleteMissingResources});
+    await this.snapshotClient.apply(
+      this.id,
+      deleteMissingResources
+        ? {
+            deleteMissingResources,
+            deletionScope: ApplyOptionsDeletionScope.OnlyTypesFromSnapshot,
+          }
+        : {deleteMissingResources}
+    );
 
     await this.waitUntilDone({
       operationToWaitFor: ResourceSnapshotsReportType.Apply,
@@ -154,14 +157,6 @@ export class Snapshot {
     return this.sortReportsByDate(reports)[0];
   }
 
-  public get latestSynchronizationReport() {
-    const reports = this.model.synchronizationReports;
-    if (!this.hasBegunSynchronization(reports)) {
-      throw new SnapshotNoSynchronizationReportFoundError(this);
-    }
-    return this.sortReportsByDate(reports)[0];
-  }
-
   public get id() {
     return this.model.id;
   }
@@ -176,13 +171,6 @@ export class Snapshot {
 
   private sortReportsByDate<T extends SnapshotReport>(report: T[]): T[] {
     return report.sort((a, b) => b.updatedDate - a.updatedDate);
-  }
-
-  private hasBegunSynchronization(
-    _synchronizationReports?: ResourceSnapshotsSynchronizationReportModel[]
-  ): _synchronizationReports is ResourceSnapshotsSynchronizationReportModel[] {
-    const reports = this.model.synchronizationReports || [];
-    return reports.length > 0;
   }
 
   private async displayLightPreview(reporter: SnapshotReporter) {
@@ -226,15 +214,6 @@ export class Snapshot {
     );
   }
 
-  private isSynchronizing() {
-    if (this.hasBegunSynchronization()) {
-      return Snapshot.ongoingReportStatuses?.includes(
-        this.latestSynchronizationReport.status
-      );
-    }
-    return false;
-  }
-
   private isUnsettled() {
     return Snapshot.ongoingReportStatuses.includes(this.latestReport.status);
   }
@@ -244,9 +223,6 @@ export class Snapshot {
   ): boolean {
     if (this.latestReport.type === operation) {
       return true;
-    }
-    if (this.hasBegunSynchronization()) {
-      return this.latestSynchronizationReport.type === operation;
     }
     return false;
   }
@@ -259,14 +235,13 @@ export class Snapshot {
       await this.refreshSnapshotData();
 
       const isUnsettled = this.isUnsettled();
-      const isSynchronizing = this.isSynchronizing();
       const isUnexpectedOperation = operationToWaitFor
         ? !this.isGoingThroughOperation(operationToWaitFor)
         : false;
 
       onRetryCb(this.latestReport);
 
-      if (isUnsettled || isSynchronizing || isUnexpectedOperation) {
+      if (isUnsettled || isUnexpectedOperation) {
         throw new SnapshotOperationTimeoutError(this);
       }
     }).bind(this);

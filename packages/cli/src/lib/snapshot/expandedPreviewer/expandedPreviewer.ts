@@ -1,4 +1,4 @@
-import {
+import type {
   ResourceSnapshotsReportModel,
   ResourceSnapshotType,
 } from '@coveord/platform-client';

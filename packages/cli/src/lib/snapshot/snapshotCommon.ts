@@ -17,16 +17,10 @@ import {
 } from './vaultEntriesFunctions';
 
 export interface DryRunOptions {
-  sync?: boolean;
   deleteMissingResources?: boolean;
   snapshotId?: string;
   waitUntilDone?: WaitUntilDoneOptions;
-  shouldAutoSync?: boolean;
 }
-
-const defaultDryRunOptions: DryRunOptions = {
-  shouldAutoSync: true,
-};
 
 async function internalDryRun(snapshot: Snapshot, options: DryRunOptions) {
   let reporter = await snapshot.validate(
@@ -50,7 +44,6 @@ export async function dryRun(
   projectPath: string,
   options: DryRunOptions = {}
 ) {
-  options = {...defaultDryRunOptions, ...options};
   const project = new Project(normalize(projectPath), targetOrg);
   const snapshot = await getSnapshotForDryRun(project, targetOrg, options);
 

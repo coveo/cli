@@ -53,7 +53,6 @@ describe('org:resources', () => {
       process.env.CLI_EXEC_PATH!,
       'org:resources:preview',
       `-o=${targetOrg}`,
-      '--sync',
       '--wait=0',
       '-p=light',
     ];
@@ -69,7 +68,8 @@ describe('org:resources', () => {
     const args: string[] = [
       process.env.CLI_EXEC_PATH!,
       'org:resources:push',
-      '--skipPreview',
+      '--previewLevel',
+      'none',
       `-o=${targetOrg}`,
       '--wait=0',
     ];
@@ -140,48 +140,43 @@ describe('org:resources', () => {
   });
 
   describe('org:resources:preview', () => {
-    describe('when resources are synchronized', () => {
-      let stdout = '';
-      const stdoutListener = (chunk: string) => {
-        stdout += chunk;
-      };
+    let stdout = '';
+    const stdoutListener = (chunk: string) => {
+      stdout += chunk;
+    };
 
-      it(
-        'should preview the snapshot',
-        async () => {
-          const previewTerminal = previewChange(
-            testOrgId,
-            processManager,
-            'org-config-preview-sync'
-          );
+    it(
+      'should preview the snapshot',
+      async () => {
+        const previewTerminal = previewChange(
+          testOrgId,
+          processManager,
+          'org-config-preview-sync'
+        );
 
-          const expectedOutput = [
-            'Extensions',
-            '\\+   1 to create',
-            'Fields',
-            '\\+   2 to create',
-          ].join('\\s*');
-          const regex = new RegExp(expectedOutput, 'gm');
+        const expectedOutput = [
+          'Extensions',
+          '\\+   1 to create',
+          'Fields',
+          '\\+   2 to create',
+        ].join('\\s*');
+        const regex = new RegExp(expectedOutput, 'gm');
 
-          previewTerminal.orchestrator.process.stdout.on(
-            'data',
-            stdoutListener
-          );
+        previewTerminal.orchestrator.process.stdout.on('data', stdoutListener);
 
-          const previewTerminalExitPromise = previewTerminal
-            .when('exit')
-            .on('process')
-            .do((proc) => {
-              proc.stdout.off('data', stdoutListener);
-            })
-            .once();
+        const previewTerminalExitPromise = previewTerminal
+          .when('exit')
+          .on('process')
+          .do((proc) => {
+            proc.stdout.off('data', stdoutListener);
+          })
+          .once();
 
-          await previewTerminalExitPromise;
-          expect(stdout).toMatch(regex);
-        },
-        defaultTimeout
-      );
-    });
+        await previewTerminalExitPromise;
+        expect(stdout).toMatch(regex);
+      },
+      defaultTimeout
+    );
   });
 
   describe('org:resources:push', () => {

@@ -50,7 +50,6 @@ const mockedExportSnapshot = jest.fn();
 const mockedApplySnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
-const mockedGetSynchronizationPlan = jest.fn();
 //#endregion Mocks
 
 describe('Snapshot', () => {
@@ -86,7 +85,6 @@ describe('Snapshot', () => {
           get: mockedGetSnapshot,
           export: mockedExportSnapshot,
           apply: mockedApplySnapshot,
-          getSynchronizationPlan: mockedGetSynchronizationPlan,
         },
       })
     );
@@ -290,9 +288,15 @@ describe('Snapshot', () => {
     });
 
     it.each([
-      [undefined, false],
-      [true, true],
-      [false, false],
+      [undefined, {deleteMissingResources: false}],
+      [
+        true,
+        {
+          deleteMissingResources: true,
+          deletionScope: 'ONLY_TYPES_FROM_SNAPSHOT',
+        },
+      ],
+      [false, {deleteMissingResources: false}],
     ])(
       'should request to apply the snapshot to the platform',
       async (validateParam, snapshotClientParam) => {
@@ -301,9 +305,10 @@ describe('Snapshot', () => {
 
         await snapshot.apply(validateParam);
 
-        expect(mockedApplySnapshot).toHaveBeenCalledWith(snapshotId, {
-          deleteMissingResources: snapshotClientParam,
-        });
+        expect(mockedApplySnapshot).toHaveBeenCalledWith(
+          snapshotId,
+          snapshotClientParam
+        );
 
         stderr.stop();
         stdout.stop();
