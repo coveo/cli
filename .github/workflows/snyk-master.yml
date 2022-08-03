@@ -6,7 +6,11 @@ on:
     branches:
       - master
   pull_request:
-
+  workflow_run:
+    workflows:
+      - Create release
+    types:
+      - completed
 jobs:
   snyk:
     runs-on: ubuntu-latest
