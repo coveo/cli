@@ -1,67 +1,10 @@
-name: CI
+name: Refresh E2E Snapshots
 on:
-  push:
-    branches:
-      - master
-  pull_request:
+  workflow_dispatch:
 
 jobs:
-  lint:
-    name: Lint
-    runs-on: 'ubuntu-latest'
-    steps:
-      - name: Setup runner
-        if: ${{matrix.os == 'ubuntu-latest'}}
-        # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
-        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-      - name: Setup runner
-        if: ${{matrix.os == 'windows-latest'}}
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.eol lf
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
-        with:
-          node-version: 16
-          cache: 'npm'
-      - name: Install locked NPM version.
-        # TODO: CDX-1010 | Remove in CDX-1010.
-        run: npm i -g npm@8.10.0
-      - name: Setup repo
-        run: npm ci
-      - name: Check linting
-        run: npm run lint
-  unit-tests:
-    name: Unit Tests
-    runs-on: ${{matrix.os}}
-    strategy:
-      fail-fast: true
-      matrix:
-        os: ['ubuntu-latest', 'windows-latest']
-        node: [16]
-    steps:
-      - name: Setup runner
-        if: ${{matrix.os == 'ubuntu-latest'}}
-        # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
-        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-      - name: Setup runner
-        if: ${{matrix.os == 'windows-latest'}}
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.eol lf
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
-        with:
-          node-version: ${{matrix.node}}
-          cache: 'npm'
-      - name: Install locked NPM version.
-        # TODO: CDX-1010 | Remove in CDX-1010.
-        run: npm i -g npm@8.10.0
-      - name: Setup repo
-        run: npm ci
-      - name: Tests
-        run: npm run test
   e2e-setup-login:
+    if: ${{ github.ref != 'refs/heads/main' }}
     name: End-to-end login
     runs-on: 'ubuntu-latest'
     outputs:
@@ -88,8 +31,11 @@ jobs:
       - name: Install locked NPM version.
         # TODO: CDX-1010 | Remove in CDX-1010.
         run: npm i -g npm@8.10.0
-      - run: |
-          npm ci
+      - name: Install dependencies
+        run: npm ci
+      # `coveo auth:login` is always opening the default browser of the user, this ensure that the default browser is Chrome and that it'll be able to open by setting a X Display as the default Display
+      - name: Prepare Google Chrome
+        run: |
           Xvfb :1 -screen 0 1024x768x16 & sleep 1
           xdg-settings set default-web-browser google-chrome.desktop
       - name: Build
@@ -109,6 +55,7 @@ jobs:
           name: e2e-login-publish-artifacts
           path: ./packages/cli-e2e/artifacts
   e2e-setup-verdaccio:
+    if: ${{ github.ref != 'refs/heads/main' }}
     strategy:
       matrix:
         os: ['ubuntu-latest', 'windows-latest']
@@ -144,6 +91,7 @@ jobs:
           name: ${{matrix.os}}-verdaccio-publish-artifacts
           path: ./packages/cli-e2e/artifacts
   e2e:
+    if: ${{ github.ref != 'refs/heads/main' }}
     name: End-to-end tests
     runs-on: ${{matrix.os}}
     needs: [e2e-setup-login, e2e-setup-verdaccio]
@@ -152,25 +100,13 @@ jobs:
       matrix:
         os: ['ubuntu-latest', 'windows-latest']
         node: [16]
-        spec:
-          [
-            'angular.specs.ts',
-            'atomic.specs.windows.ts',
-            'atomic.specs.linux.ts',
-            'auth.specs.ci.ts',
-            'orgList.specs.ts',
-            'orgResources.specs.ts',
-            'react.specs.ts',
-            'vue.specs.ts',
-          ]
+        spec: ['atomic.specs.linux.ts', 'atomic.specs.windows.ts']
         # TODO: fix auth spec with windows
         exclude:
           - os: windows-latest
-            spec: auth.specs.ci.ts
-          - os: windows-latest
-            spec: 'atomic.specs.linux.ts'
+            spec: atomic.specs.linux.ts
           - os: ubuntu-latest
-            spec: 'atomic.specs.windows.ts'
+            spec: atomic.specs.windows.ts
     env:
       # Platform environment to log into for the e2e tests.
       PLATFORM_ENV: 'stg'
@@ -234,18 +170,23 @@ jobs:
       - name: Tests
         if: ${{matrix.os == 'windows-latest'}}
         working-directory: packages/cli-e2e
-        run: npm run jest:ci -- ${{matrix.spec}}
+        run: npm run jest:ci -- -u ${{matrix.spec}}
       - name: Tests
         if: ${{matrix.os == 'ubuntu-latest'}}
         env:
           DISPLAY: ':1'
         working-directory: packages/cli-e2e
-        run: npm run jest:ci -- ${{matrix.spec}}
+        run: npm run jest:ci -- -u ${{matrix.spec}}
       - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
-        if: always()
+        if: ${{matrix.os == 'windows-latest'}}
         with:
-          name: ${{matrix.os}}-${{matrix.spec}}-test-artifacts
-          path: ./packages/cli-e2e/artifacts
+          name: ${{matrix.os}}-snap-artifact
+          path: ./packages/cli-e2e/**/*.windows.ts.snap
+      - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        with:
+          name: ${{matrix.os}}-snap-artifact
+          path: ./packages/cli-e2e/**/*.linux.ts.snap
   e2e-teardown:
     name: End-to-end teardown
     if: ${{ always() }}
@@ -289,12 +230,24 @@ jobs:
       - name: Delete test API key
         if: always()
         run: node ./scripts/cleaning/delete-api-keys.js
-  e2e-report:
-    name: End-to-end status reporter
-    if: ${{ always() }}
-    needs: e2e
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check e2e matrix status
-        if: ${{ needs.e2e.result != 'success' }}
-        run: exit 1
+      - uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3
+        with:
+          name: windows-latest-snap-artifact
+          path: ./packages/cli-e2e
+      - uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3
+        with:
+          name: ubuntu-latest-snap-artifact
+          path: ./packages/cli-e2e
+      - run: git diff ./packages/cli-e2e/**/*.snap
+        continue-on-error: true
+      - name: Check for Jest Snapshots changes
+        run: echo "::set-output name=exitCode::$(git diff --quiet ./packages/cli-e2e/**/*.snap ; echo $?)"
+        id: has-changes
+      - name: Commit artifacts
+        if: ${{ steps.has-changes.outputs.exitCode == '1'}}
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add ./packages/cli-e2e/**/*.snap
+          git commit -m "update e2e snapshots" --no-verify
+          git push
