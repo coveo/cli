@@ -32,8 +32,8 @@ jobs:
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      - name: Checkout last tag
-        run: git checkout $(git describe --abbrev=0 --tags)
+      # - name: Checkout last tag
+      #   run: git checkout $(git describe --abbrev=0 --tags)
       - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
         with:
           node-version: ${{matrix.node}}
