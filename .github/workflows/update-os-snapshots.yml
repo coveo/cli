@@ -31,8 +31,11 @@ jobs:
       - name: Install locked NPM version.
         # TODO: CDX-1010 | Remove in CDX-1010.
         run: npm i -g npm@8.10.0
-      - run: |
-          npm ci
+      - name: Install dependencies
+        run: npm ci
+      # `coveo auth:login` is always opening the default browser of the user, this ensure that the default browser is Chrome and that it'll be able to open by setting a X Display as the default Display
+      - name: Prepare Google Chrome
+        run: |
           Xvfb :1 -screen 0 1024x768x16 & sleep 1
           xdg-settings set default-web-browser google-chrome.desktop
       - name: Build
