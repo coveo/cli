@@ -94,7 +94,7 @@ describe('ui:create:atomic', () => {
       .do(answerPrompt(`y${EOL}`))
       .until(buildTerminalExitPromise);
 
-    return {stderr: output};
+    return {output};
   };
 
   const startApplication = async (
@@ -176,7 +176,7 @@ describe('ui:create:atomic', () => {
           browser = await getNewBrowser();
         }
         stderr = (await buildApplication(processManager, buildAppOptions))
-          .stderr;
+          .output;
         await processManager.killAllProcesses();
         await normalizeProjectDirectory(buildAppOptions);
       }, 15 * 60e3);
