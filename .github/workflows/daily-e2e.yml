@@ -219,4 +219,3 @@ jobs:
       - name: Check e2e matrix status
         if: ${{ needs.e2e.result != 'success' }}
         run: curl --request POST --url ${{ secrets.SLACK_WEBHOOK }}
-        run: echo "ohno"
