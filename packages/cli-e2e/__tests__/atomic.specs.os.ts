@@ -226,6 +226,7 @@ describe('ui:create:atomic', () => {
               exclude: [
                 '**.env',
                 '**package-lock.json',
+                '**CHANGELOG.md',
                 '**package.json',
                 'stencil.config.ts',
                 '**index.html',

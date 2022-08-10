@@ -129,10 +129,6 @@ HashedFolder {
   "children": Array [
     HashedFolder {
       "children": Array [
-        HashedFile {
-          "hash": "3KebBc8twzYx6xaPNu6xQYnDarA=",
-          "name": "CHANGELOG.md",
-        },
         HashedFolder {
           "children": Array [
             HashedFolder {
@@ -186,7 +182,7 @@ HashedFolder {
           "name": "tsconfig.json",
         },
       ],
-      "hash": "soNswTxxtAg+QMHcHPYdJ6ehLgA=",
+      "hash": "776V3GqWzlsyynghk8UZd8AYrGs=",
       "name": "lambda",
     },
     HashedFile {
@@ -292,7 +288,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "++88oOdClcszy6bt68Cjj3vjnKU=",
+  "hash": "ixXmbFO4LWb8Y74mgS2HgT0OpII=",
   "name": "normalizedDir",
 }
 `;
