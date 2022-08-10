@@ -1,3 +1,9 @@
+# 1.34.0 (2022-08-10)
+
+### Features
+
+- **create-atomic:** replace variables for continious deployment ([#879](https://github.com/coveo/cli/issues/879)) ([df7c7bf](https://github.com/coveo/cli/commits/df7c7bfb8d9953d3479afeb62d4d8073057a5cab))
+
 # 1.33.0 (2022-07-26)
 
 # 1.32.0 (2022-07-13)
