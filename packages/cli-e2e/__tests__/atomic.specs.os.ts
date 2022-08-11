@@ -7,7 +7,7 @@ import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {npm} from '../utils/npm';
 import {jwtTokenPattern} from '../utils/matcher';
-import {EOL} from 'os';
+import {EOL, homedir} from 'os';
 import {DummyServer} from '../utils/server';
 import {loginWithApiKey} from '../utils/login';
 import {join, resolve} from 'path';
@@ -124,11 +124,13 @@ describe('ui:create:atomic', () => {
         skipInstall: false,
       },
       skipBrowser: false,
+      logPath: false,
     },
     {
       describeName: 'when using the default page config (pageId not specified)',
       buildAppOptions: {id: 'without-page-id', skipInstall: true},
       skipBrowser: true,
+      logPath: true,
     },
     {
       describeName: 'when using an existing pageId (--pageId flag specified)',
@@ -138,6 +140,7 @@ describe('ui:create:atomic', () => {
         skipInstall: true,
       },
       skipBrowser: true,
+      logPath: false,
     },
     {
       describeName:
@@ -148,15 +151,18 @@ describe('ui:create:atomic', () => {
         skipInstall: true,
       },
       skipBrowser: true,
+      logPath: false,
     },
   ])(
     '$describeName',
     ({
       buildAppOptions,
       skipBrowser,
+      logPath,
     }: {
       buildAppOptions: BuildAppOptions;
       skipBrowser: boolean;
+      logPath: boolean;
     }) => {
       const oldEnv = process.env;
       const processManagers: ProcessManager[] = [];
@@ -203,6 +209,14 @@ describe('ui:create:atomic', () => {
         await Promise.all(
           processManagers.map((manager) => manager.killAllProcesses())
         );
+        if (logPath) {
+          await retry(() => {
+            renameSync(
+              normalizedProjectDir,
+              join(homedir(), process.env.PRESERVED_DIR!)
+            );
+          });
+        }
       }, 5 * 30e3);
 
       it('should use the right configuration', () => {

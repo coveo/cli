@@ -2,6 +2,7 @@ name: Daily test
 on:
   schedule:
     - cron: '0 23 * * 1-5'
+  push:
 
 env:
   E2E_USE_NPM_REGISTRY: true
@@ -28,11 +29,6 @@ jobs:
       TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}-dailyg'
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-        with:
-          # pulls all commits (needed for computing the next version)
-          fetch-depth: 0
-      - name: Checkout last tag
-        run: git checkout $(git describe --abbrev=0 --tags)
       - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
         with:
           node-version: ${{matrix.node}}
@@ -61,7 +57,7 @@ jobs:
     name: End-to-end tests
     runs-on: ${{matrix.os}}
     needs: [e2e-setup-login]
-    timeout-minutes: 60
+    # timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -112,14 +108,6 @@ jobs:
           git config --global core.eol lf
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
         with:
-          # pulls all commits (needed for computing the next version)
-          fetch-depth: 0
-      # pulls all tags (needed for computing the next version)
-      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-      - name: Checkout last tag
-        run: git checkout $(git describe --abbrev=0 --tags)
-      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
-        with:
           node-version: ${{matrix.node}}
           cache: 'npm'
       - uses: actions/setup-python@98f2ad02fd48d057ee3b4d4f66525b231c3e52b6 # tag=v3
@@ -146,10 +134,13 @@ jobs:
         if: ${{matrix.os == 'windows-latest'}}
         working-directory: packages/cli-e2e
         run: npm run jest:ci -- ${{matrix.spec}}
+        env:
+          PRESERVED_DIR: 'preservedDir'
       - name: Tests
         if: ${{matrix.os == 'ubuntu-latest'}}
         env:
           DISPLAY: ':1'
+          PRESERVED_DIR: 'preservedDir'
         working-directory: packages/cli-e2e
         run: npm run jest:ci -- ${{matrix.spec}}
       - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
@@ -157,6 +148,13 @@ jobs:
         with:
           name: ${{matrix.os}}-${{matrix.spec}}-test-artifacts
           path: ./packages/cli-e2e/artifacts
+      - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
+        if: always()
+        with:
+          name: debug-daily-${{matrix.spec}}
+          path: |
+            ~/preservedDir
+            !/**/node_modules/**
   e2e-teardown:
     name: End-to-end teardown
     if: ${{ always() }}
@@ -179,13 +177,6 @@ jobs:
       CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-        with:
-          # pulls all commits (needed for computing the next version)
-          fetch-depth: 0
-      # pulls all tags (needed for computing the next version)
-      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-      - name: Checkout last tag
-        run: git checkout $(git describe --abbrev=0 --tags)
       - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
         with:
           node-version: ${{matrix.node}}
@@ -218,4 +209,5 @@ jobs:
     steps:
       - name: Check e2e matrix status
         if: ${{ needs.e2e.result != 'success' }}
-        run: curl --request POST --url ${{ secrets.SLACK_WEBHOOK }}
+        # run: curl --request POST --url ${{ secrets.SLACK_WEBHOOK }}
+        run: echo boop
