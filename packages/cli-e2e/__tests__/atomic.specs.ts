@@ -79,20 +79,27 @@ describe('ui:create:atomic', () => {
         .once();
     }
 
+    const streams = ['stdout', 'stderr'] as const;
     const buildTerminalExitPromise = Promise.race([
       buildTerminal.when('exit').on('process').do().once(),
-      buildTerminal
-        .when(options.skipInstall ? /Installing packages/ : /Happy hacking!/)
-        .on('stderr')
-        .do()
-        .once(),
+      ...streams.map((stream) =>
+        buildTerminal
+          .when(options.skipInstall ? /Installing packages/ : /Happy hacking!/)
+          .on(stream)
+          .do()
+          .once()
+      ),
     ]);
 
-    await buildTerminal
-      .when(/\(y\)/)
-      .on('stderr')
-      .do(answerPrompt(`y${EOL}`))
-      .until(buildTerminalExitPromise);
+    await Promise.allSettled(
+      streams.map((stream) =>
+        buildTerminal
+          .when(/\(y\)/)
+          .on(stream)
+          .do(answerPrompt(`y${EOL}`))
+          .until(buildTerminalExitPromise)
+      )
+    );
 
     return {output};
   };

@@ -70,8 +70,7 @@ jobs:
         spec:
           [
             'angular.specs.ts',
-            'atomic.specs.windows.ts',
-            'atomic.specs.linux.ts',
+            'atomic.specs.ts',
             'auth.specs.ci.ts',
             'orgList.specs.ts',
             'orgResources.specs.ts',
@@ -81,10 +80,6 @@ jobs:
         exclude:
           - os: windows-latest
             spec: auth.specs.ci.ts
-          - os: windows-latest
-            spec: 'atomic.specs.linux.ts'
-          - os: ubuntu-latest
-            spec: 'atomic.specs.windows.ts'
     env:
       # Platform environment to log into for the e2e tests.
       PLATFORM_ENV: 'stg'
