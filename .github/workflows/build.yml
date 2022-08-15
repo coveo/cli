@@ -115,17 +115,22 @@ jobs:
     name: End-to-end publish packages
     runs-on: ${{matrix.os}}
     steps:
+      - name: Setup runner
+        if: ${{matrix.os == 'windows-latest'}}
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
       - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
-      - uses: actions/cache@0865c47f36e68161719c5b124609996bb5c40129 # tag=v3
+      - uses: actions/cache@a7c34adf76222e77931dedbf4a45b2e4648ced19 # tag=v3
         if: ${{matrix.os == 'ubuntu-latest'}}
         with:
           path: packages/cli-e2e/verdaccio
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-      - uses: actions/cache@0865c47f36e68161719c5b124609996bb5c40129 # tag=v3
+      - uses: actions/cache@a7c34adf76222e77931dedbf4a45b2e4648ced19 # tag=v3
         if: ${{matrix.os == 'windows-latest'}}
         with:
           path: packages\cli-e2e\verdaccio
@@ -155,8 +160,7 @@ jobs:
         spec:
           [
             'angular.specs.ts',
-            'atomic.specs.windows.ts',
-            'atomic.specs.linux.ts',
+            'atomic.specs.ts',
             'auth.specs.ci.ts',
             'orgList.specs.ts',
             'orgResources.specs.ts',
@@ -167,10 +171,6 @@ jobs:
         exclude:
           - os: windows-latest
             spec: auth.specs.ci.ts
-          - os: windows-latest
-            spec: 'atomic.specs.linux.ts'
-          - os: ubuntu-latest
-            spec: 'atomic.specs.windows.ts'
     env:
       # Platform environment to log into for the e2e tests.
       PLATFORM_ENV: 'stg'
@@ -209,13 +209,13 @@ jobs:
       - name: Install locked NPM version.
         # TODO: CDX-1010 | Remove in CDX-1010.
         run: npm i -g npm@8.10.0
-      - uses: actions/cache@0865c47f36e68161719c5b124609996bb5c40129 # tag=v3
+      - uses: actions/cache@a7c34adf76222e77931dedbf4a45b2e4648ced19 # tag=v3
         if: ${{matrix.os == 'ubuntu-latest'}}
         with:
           path: packages/cli-e2e/verdaccio
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
           restore-keys: verdaccio-${{matrix.os}}-${{ github.sha }}
-      - uses: actions/cache@0865c47f36e68161719c5b124609996bb5c40129 # tag=v3
+      - uses: actions/cache@a7c34adf76222e77931dedbf4a45b2e4648ced19 # tag=v3
         if: ${{matrix.os == 'windows-latest'}}
         with:
           path: packages\cli-e2e\verdaccio

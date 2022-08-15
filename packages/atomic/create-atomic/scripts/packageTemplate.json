@@ -14,9 +14,9 @@
     "start": "node start-netlify.mjs",
     "build": "stencil build",
     "dev:live": "npm run site:link && node start-netlify.mjs --live",
-    "site:init": "netlify init",
-    "site:link": "netlify link",
-    "site:deploy": "npm run site:link && npm run build && netlify env:import .env && netlify deploy --prod --open",
+    "site:variables": "netlify env:import .env",
+    "site:init": "netlify init && npm run site:variables",
+    "site:deploy": "npm run site:link && npm run build && npm run site:variables && netlify deploy --prod --open",
     "postinstall": "npm run setup-lambda && npm run setup-cleanup && prettier --write . --loglevel warn"
   }
 }

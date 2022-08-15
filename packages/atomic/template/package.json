@@ -1,7 +1,7 @@
 {
   "name": "@coveo/create-atomic-template",
   "description": "{{titleCase project}} project",
-  "version": "1.33.1",
+  "version": "1.34.1",
   "private": true,
   "scripts": {
     "release:phase2": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase2-bump-all-packages.mjs",
@@ -9,14 +9,15 @@
   },
   "dependencies": {
     "@coveo/atomic": "1.86.0",
-    "@coveo/search-token-lambda": "1.33.1",
-    "@stencil/core": "2.17.1"
+    "@coveo/search-token-lambda": "1.34.1",
+    "@stencil/core": "2.17.3"
   },
   "devDependencies": {
+    "@rollup/plugin-replace": "4.0.0",
     "fkill": "8.0.1",
     "get-port": "6.1.2",
     "gts": "3.1.0",
-    "netlify-cli": "10.12.1",
+    "netlify-cli": "10.17.4",
     "prettier": "2.7.1",
     "rollup-plugin-dotenv": "0.3.0",
     "rollup-plugin-html": "0.2.1"

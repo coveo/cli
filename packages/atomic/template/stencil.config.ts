@@ -1,6 +1,7 @@
 import {Config} from '@stencil/core';
 import dotenvPlugin from 'rollup-plugin-dotenv';
 import html from 'rollup-plugin-html';
+import replace from '@rollup/plugin-replace';
 
 // https://stenciljs.com/docs/config
 
@@ -31,7 +32,13 @@ export const config: Config = {
   devServer: {
     port: parseInt(process.env.STENCIL_PORT) || 3333,
   },
-  plugins: [dotenvPlugin()],
+  plugins: [
+    replace({
+      'process.env.PLATFORM_URL': `'${process.env.PLATFORM_URL}'`,
+      'process.env.ORGANIZATION_ID': `'${process.env.ORGANIZATION_ID}'`,
+    }),
+    dotenvPlugin(),
+  ],
   rollupPlugins: {
     before: [
       html({
