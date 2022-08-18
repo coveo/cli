@@ -99,7 +99,7 @@
     "coveo": "./bin/run"
   },
   "oclif": {
-    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/cli/<%- commandPath %>",
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/cli/core/<%- commandPath %>",
     "description": "Coveo CLI",
     "commands": "./lib/commands",
     "bin": "coveo",
@@ -173,8 +173,8 @@
   "scripts": {
     "build": "rimraf lib && tsc -p tsconfig.json",
     "test": "jest --colors",
-    "lint": "prettier --config ../../.prettierrc.js --check . && eslint .",
-    "release:phase2": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase2-bump-all-packages.mjs",
+    "lint": "prettier --config ../../../.prettierrc.js --check . && eslint .",
+    "release:phase2": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase2-bump-all-packages.mjs",
     "postpack": "rimraf oclif.manifest.json",
     "prepublishOnly": "rimraf lib && npm run build && oclif manifest && oclif readme"
   },

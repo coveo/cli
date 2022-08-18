@@ -92,7 +92,8 @@
   },
   "workspaces": [
     "packages/*",
-    "packages/atomic/*"
+    "packages/atomic/*",
+    "packages/cli/*"
   ],
   "dependencies": {
     "jest-config": "27.5.1"
