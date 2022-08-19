@@ -219,9 +219,6 @@ export default class Dump extends Command {
       indexToken = response.indexToken;
       rowId = response.results[lastResultsLength - 1].raw.rowid;
     } while (lastResultsLength >= this.numberOfResultPerQuery);
-    if (this.aggregatedResults.length > 0) {
-      this.dumpAggregatedResults();
-    }
     this.progressBar.stop();
     return this.progressBar.getTotal() > 0;
   }
@@ -279,19 +276,18 @@ export default class Dump extends Command {
     }) as SingleBar;
   }
 
-  private async aggregateResults(newResults: RawResult[]) {
+  private async aggregateResults(results: RawResult[]) {
     const maxAggregatedResults = (await this.parse(Dump)).flags.chunkSize;
-    const amountOfNewResultsToExtract =
-      maxAggregatedResults - this.aggregatedResults.length;
-    this.aggregatedResults.push(
-      ...newResults.splice(
-        0,
-        Math.min(amountOfNewResultsToExtract, newResults.length)
-      )
-    );
-    if (newResults.length > 0) {
+    while (results.length > 0) {
+      const amountOfNewResultsToExtract =
+        maxAggregatedResults - this.aggregatedResults.length;
+      this.aggregatedResults.push(
+        ...results.splice(
+          0,
+          Math.min(amountOfNewResultsToExtract, results.length)
+        )
+      );
       this.dumpAggregatedResults();
-      await this.aggregateResults(newResults);
     }
   }
 
