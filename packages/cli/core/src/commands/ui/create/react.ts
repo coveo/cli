@@ -1,22 +1,24 @@
 import {Command, Flags} from '@oclif/core';
-import {Config} from '../../../lib/config/config';
-import {platformUrl} from '../../../lib/platform/environment';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {Config} from '@coveo/cli-commons/lib/config/config';
+import {platformUrl} from '@coveo/cli-commons/lib/platform/environment';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 import {spawnProcess, spawnProcessOutput} from '../../../lib/utils/process';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {
   Preconditions,
   IsAuthenticated,
-  IsNodeVersionInRange,
-  IsNpxInstalled,
   HasNecessaryCoveoPrivileges,
-} from '../../../lib/decorators/preconditions';
+} from '@coveo/cli-commons/lib/preconditions';
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,
-} from '../../../lib/decorators/preconditions/platformPrivilege';
+} from '@coveo/cli-commons/lib/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {
+  IsNodeVersionInRange,
+  IsNpxInstalled,
+} from '../../../lib/decorators/preconditions';
 
 type ReactProcessEnv = {
   orgId: string;

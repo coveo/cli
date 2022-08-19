@@ -9,12 +9,12 @@ import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
-} from '../../../lib/decorators/preconditions';
+} from '@coveo/cli-commons/lib/preconditions';
 import {
   readOrganizationPrivilege,
   writeFieldsPrivilege,
   writeSourceContentPrivilege,
-} from '../../../lib/decorators/preconditions/platformPrivilege';
+} from '@coveo/cli-commons/lib/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {
   withFiles,
@@ -22,7 +22,7 @@ import {
   withMaxConcurrent,
   withNormalizeInvalidFields,
 } from '../../../lib/flags/sourceCommonFlags';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
 import {getFileNames} from '../../../lib/utils/file';
 import {bold} from 'chalk';

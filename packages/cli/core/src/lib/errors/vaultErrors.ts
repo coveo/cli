@@ -1,7 +1,10 @@
 import dedent from 'ts-dedent';
 import {Plurable, pluralizeIfNeeded} from '../utils/string';
-import {PrintableError, SeverityLevel} from './printableError';
-import {CLIBaseError} from './CLIBaseError';
+import {
+  PrintableError,
+  SeverityLevel,
+} from '@coveo/cli-commons/lib/errors/printableError';
+import {CLIBaseError} from '@coveo/cli-commons/lib/errors/cliBaseError';
 
 export class InvalidVaultEntryError extends PrintableError {
   public name = 'Invalid Vault Entries';

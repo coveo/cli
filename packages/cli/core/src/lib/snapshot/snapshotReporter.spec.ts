@@ -5,7 +5,7 @@ import {
   getReportWithoutChanges,
   getSuccessReport,
 } from '../../__stub__/resourceSnapshotsReportModel';
-import {fancyIt} from '../../__test__/it';
+import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
 import {
   ReportViewerResourceReportModel,
   SnapshotReportStatus,

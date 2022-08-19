@@ -14,7 +14,7 @@ import {
   InvalidVaultFileError,
   MissingVaultEntryValueError,
 } from '../errors/vaultErrors';
-import {AuthenticatedClient} from '../platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 import {Snapshot} from './snapshot';
 import {VaultEntryAttributes} from './snapshotReporter';
 import {Plurable, pluralizeIfNeeded} from '../utils/string';

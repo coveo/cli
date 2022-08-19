@@ -1,26 +1,26 @@
 jest.mock('../../../lib/decorators/preconditions/git');
-jest.mock('../../../lib/config/config');
+jest.mock('@coveo/cli-commons/lib/config/config');
 jest.mock('../../../hooks/analytics/analytics');
 
-jest.mock('../../../lib/platform/authenticatedClient');
+jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
 jest.mock('../../../lib/snapshot/snapshotFactory');
 jest.mock('../../../lib/project/project');
 jest.mock('../../../lib/utils/process');
 
 import {join} from 'path';
-import {Config} from '../../../lib/config/config';
+import {Config} from '@coveo/cli-commons/lib/config/config';
 import {ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {test} from '@oclif/test';
 import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel';
 import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 import {Command, CliUx} from '@oclif/core';
-import {IsGitInstalled} from '../../../lib/decorators/preconditions';
-import {PreconditionError} from '../../../lib/errors/preconditionError';
+import {PreconditionError} from '@coveo/cli-commons/lib/errors/preconditionError';
 import {cwd} from 'process';
 import {Project} from '../../../lib/project/project';
+import {IsGitInstalled} from '../../../lib/decorators/preconditions';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
 const mockedProject = jest.mocked(Project, true);

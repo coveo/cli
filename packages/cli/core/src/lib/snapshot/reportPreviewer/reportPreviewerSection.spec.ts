@@ -1,6 +1,6 @@
+import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
 import stripAnsi from 'strip-ansi';
 import dedent from 'ts-dedent';
-import {fancyIt} from '../../../__test__/it';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,

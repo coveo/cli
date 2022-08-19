@@ -1,7 +1,7 @@
-import {Configuration} from '../config/config';
+import {Configuration} from '@coveo/cli-commons/lib/config/config';
 import {Snapshot} from './snapshot';
-import {snapshotApplyUrl} from '../platform/url';
-import {PlatformUrlOptions} from '../platform/environment';
+import {snapshotApplyUrl} from '@coveo/cli-commons/lib/platform/url';
+import {PlatformUrlOptions} from '@coveo/cli-commons/lib/platform/environment';
 
 export class SnapshotUrlBuilder {
   public constructor(private config: Configuration) {}

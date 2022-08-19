@@ -1,4 +1,7 @@
-import {PrintableError, SeverityLevel} from './printableError';
+import {
+  PrintableError,
+  SeverityLevel,
+} from '@coveo/cli-commons/lib/errors/printableError';
 
 export class ProcessAbort extends PrintableError {
   public name = 'Operation Aborted';

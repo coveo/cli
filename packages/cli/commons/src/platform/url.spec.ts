@@ -1,5 +1,5 @@
 import {Region} from '@coveord/platform-client';
-import {fancyIt} from '../../__test__/it';
+import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
 
 jest.mock('./environment');
 import {PlatformEnvironment, platformUrl} from './environment';

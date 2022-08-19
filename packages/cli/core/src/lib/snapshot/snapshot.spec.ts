@@ -15,7 +15,7 @@ import {
 import {Snapshot} from './snapshot';
 
 //#region Mocks
-jest.mock('../platform/authenticatedClient');
+jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
 jest.mock('fs-extra');
 jest.mock('async-retry');
 jest.mock('./snapshotReporter');
@@ -23,7 +23,7 @@ jest.mock('./reportPreviewer/reportPreviewer');
 jest.mock('../project/project');
 jest.mock('./expandedPreviewer/expandedPreviewer');
 
-import {AuthenticatedClient} from '../platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 import {ensureFileSync, writeJSONSync} from 'fs-extra';
 import retry from 'async-retry';
 import {SnapshotReporter} from './snapshotReporter';
@@ -32,7 +32,7 @@ import {Project} from '../project/project';
 import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer';
 import {join} from 'path';
 import {SnapshotOperationTimeoutError} from '../errors';
-import {fancyIt} from '../../__test__/it';
+import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
 import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
 
 const mockedRetry = jest.mocked(retry);

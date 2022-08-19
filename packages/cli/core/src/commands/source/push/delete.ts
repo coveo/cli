@@ -1,10 +1,10 @@
 import {Command, Flags} from '@oclif/core';
 import {PushSource} from '@coveo/push-api-client';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 import {
   IsAuthenticated,
   Preconditions,
-} from '../../../lib/decorators/preconditions';
+} from '@coveo/cli-commons/lib/preconditions';
 import dedent from 'ts-dedent';
 import {green, red} from 'chalk';
 import {

@@ -1,6 +1,6 @@
 import {coerce, gt, lt} from 'semver';
 import dedent from 'ts-dedent';
-import {CLIBaseError} from '../errors/CLIBaseError';
+import {CLIBaseError} from '../errors/cliBaseError';
 import {CurrentSchemaVersion} from './configSchemaVersion';
 
 export class IncompatibleConfigurationError extends CLIBaseError {

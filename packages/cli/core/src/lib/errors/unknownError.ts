@@ -1,4 +1,7 @@
-import {PrintableError, SeverityLevel} from './printableError';
+import {
+  PrintableError,
+  SeverityLevel,
+} from '@coveo/cli-commons/lib/errors/printableError';
 
 export class UnknownError extends PrintableError {
   public name = 'Unknown CLI Error';

@@ -1,4 +1,4 @@
-const base = require('@coveo/cli-commons/.prettierrc');
+const base = require('@coveo/cli-commons-dev/.prettierrc');
 
 module.exports = {
   ...base,

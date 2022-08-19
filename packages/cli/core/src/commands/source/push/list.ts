@@ -3,8 +3,8 @@ import {Command, CliUx} from '@oclif/core';
 import {
   IsAuthenticated,
   Preconditions,
-} from '../../../lib/decorators/preconditions';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+} from '@coveo/cli-commons/lib/preconditions';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 import dedent from 'ts-dedent';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {magenta} from 'chalk';
