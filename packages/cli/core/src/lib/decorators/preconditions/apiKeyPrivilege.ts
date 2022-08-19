@@ -19,9 +19,9 @@ export function HasNecessaryCoveoPrivileges(
     this: Command,
     command: Command
   ): Promise<void | never> {
-    const {flags} = hasGetFlagMethod(this)
+    const {flags}: {flags: {organization?: string}} = hasGetFlagMethod(this)
       ? {flags: await this.getFlags()}
-      : await this.parse(command.ctor);
+      : await this.parse<{organization?: string}, unknown, {}>(command.ctor);
     const authenticatedClient = new AuthenticatedClient();
     const client = await authenticatedClient.getClient();
     const {organization: target, anonymous} = await getConfiguration();
@@ -63,8 +63,8 @@ async function getConfiguration() {
   return config.get();
 }
 
-function hasGetFlagMethod(
-  candidate: any
-): candidate is Command & {getFlags: () => Promise<unknown>} {
+function hasGetFlagMethod(candidate: any): candidate is Command & {
+  getFlags: () => Promise<{organization?: string | undefined}>;
+} {
   return Boolean(candidate?.getFlags);
 }

@@ -218,7 +218,7 @@ export default class Pull extends Command {
     const flags = await this.getFlags();
     return flags.model
       ? flags.model.resourcesToExport
-      : buildResourcesToExport(flags.resourceTypes);
+      : buildResourcesToExport(flags.resourceTypes!);
   }
 
   private async getTargetOrg() {

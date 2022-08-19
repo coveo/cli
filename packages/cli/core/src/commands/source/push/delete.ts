@@ -83,7 +83,7 @@ export default class SourcePushDelete extends Command {
 
   private async isNumberOfDeletionTooLarge() {
     const {flags} = await this.parse(SourcePushDelete);
-    return flags.delete.length > 20;
+    return flags.delete!.length > 20;
   }
 
   private async doDeletionOlderThan(source: PushSource) {
@@ -105,7 +105,7 @@ export default class SourcePushDelete extends Command {
   private async doDeletionDocumentURI(source: PushSource) {
     const {flags, args} = await this.parse(SourcePushDelete);
     return Promise.all(
-      flags.delete.map(async (toDelete: string) => {
+      flags.delete!.map(async (toDelete: string) => {
         try {
           const res = await source.deleteDocument(
             args.sourceId,
