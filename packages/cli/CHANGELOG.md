@@ -1,3 +1,9 @@
+## 1.34.3 (2022-08-19)
+
+### Bug Fixes
+
+- **dump:** remove recursion ([#893](https://github.com/coveo/cli/issues/893)) ([2038be8](https://github.com/coveo/cli/commits/2038be81b4d47d6b1d0fab954e9511f1a6e98329))
+
 ## 1.34.2 (2022-08-17)
 
 ## 1.34.1 (2022-08-12)
