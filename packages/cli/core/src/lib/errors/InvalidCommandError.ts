@@ -1,4 +1,4 @@
-import {CLIBaseError} from './CLIBaseError';
+import {CLIBaseError} from '@coveo/cli-commons/lib/errors/cliBaseError';
 
 export class InvalidCommandError extends CLIBaseError {
   public name = 'Invalid Command Error';

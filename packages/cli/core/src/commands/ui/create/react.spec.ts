@@ -1,26 +1,26 @@
 jest.mock('child_process');
 jest.mock('../../../lib/decorators/preconditions/npx');
 jest.mock('../../../lib/decorators/preconditions/node');
-jest.mock('../../../lib/decorators/preconditions/apiKeyPrivilege');
+jest.mock('@coveo/cli-commons/lib/preconditions/apiKeyPrivilege');
 jest.mock('../../../lib/utils/process');
 jest.mock('../../../lib/oauth/oauth');
-jest.mock('../../../lib/config/config');
+jest.mock('@coveo/cli-commons/lib/config/config');
 jest.mock('../../../hooks/analytics/analytics');
 
-jest.mock('../../../lib/platform/authenticatedClient');
+jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
 jest.mock('@coveord/platform-client');
 
 import {test} from '@oclif/test';
 import {spawnProcess, spawnProcessOutput} from '../../../lib/utils/process';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
-import {Config} from '../../../lib/config/config';
+import {Config} from '@coveo/cli-commons/lib/config/config';
 import {
   IsNpxInstalled,
   IsNodeVersionInRange,
-  HasNecessaryCoveoPrivileges,
 } from '../../../lib/decorators/preconditions/';
+import {HasNecessaryCoveoPrivileges} from '@coveo/cli-commons/lib/preconditions';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {configurationMock} from '../../../__stub__/configuration';
 import {mockPreconditions} from '../../../__test__/preconditionUtils';

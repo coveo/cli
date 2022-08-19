@@ -5,7 +5,7 @@ import {
   APIErrorResponse,
   APIErrorSchema,
 } from '../../lib/errors/APIError';
-import {CLIBaseError} from '../../lib/errors/CLIBaseError';
+import {CLIBaseError} from '@coveo/cli-commons/lib/errors/cliBaseError';
 import {UnknownError} from '../../lib/errors/unknownError';
 
 export function buildEvent(

@@ -1,9 +1,9 @@
 jest.mock('../analytics/analytics');
-jest.mock('../../lib/config/globalConfig');
+jest.mock('@coveo/cli-commons/lib/config/globalConfig');
 
 import type {Interfaces} from '@oclif/core';
-import globalConfig from '../../lib/config/globalConfig';
-import {fancyIt} from '../../__test__/it';
+import globalConfig from '@coveo/cli-commons/lib/config/globalConfig';
+import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
 import {flush} from '../analytics/analytics';
 import {handleTerminationSignals, exitSignals} from './termination-signals';
 

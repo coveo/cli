@@ -5,7 +5,7 @@ import {satisfies, validRange} from 'semver';
 import {
   PreconditionError,
   PreconditionErrorCategory,
-} from '../../errors/preconditionError';
+} from '@coveo/cli-commons/lib/errors/preconditionError';
 
 export interface BinPreconditionsOptions {
   params?: Array<string>;

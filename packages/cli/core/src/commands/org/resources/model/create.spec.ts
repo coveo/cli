@@ -1,17 +1,17 @@
-jest.mock('../../../../lib/config/config');
+jest.mock('@coveo/cli-commons/lib/config/config');
 jest.mock('../../../../hooks/analytics/analytics');
-jest.mock('../../../../lib/platform/authenticatedClient');
+jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
 jest.mock('open');
 
 import {Region} from '@coveord/platform-client';
 import test from '@oclif/test';
 import open from 'open';
-import {AuthenticatedClient} from '../../../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 import {
   DEFAULT_ENVIRONMENT,
   DEFAULT_REGION,
   PlatformEnvironment,
-} from '../../../../lib/platform/environment';
+} from '@coveo/cli-commons/lib/platform/environment';
 
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockedConfig = jest.fn();

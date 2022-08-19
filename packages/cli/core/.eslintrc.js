@@ -1,4 +1,4 @@
-const base = require('@coveo/cli-commons/.eslintrc');
+const base = require('@coveo/cli-commons-dev/.eslintrc');
 
 module.exports = {
   ...base,

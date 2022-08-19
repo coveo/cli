@@ -1,9 +1,9 @@
 jest.mock('../../hooks/analytics/analytics');
-jest.mock('../config/globalConfig');
+jest.mock('@coveo/cli-commons/lib/config/globalConfig');
 
 import {Interfaces, CliUx} from '@oclif/core';
-import {fancyIt} from '../../__test__/it';
-import globalConfig from '../config/globalConfig';
+import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
+import globalConfig from '@coveo/cli-commons/lib/config/globalConfig';
 import {confirmWithAnalytics} from './cli';
 
 const mockedGlobalConfig = jest.mocked(globalConfig);

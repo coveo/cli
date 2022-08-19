@@ -1,5 +1,5 @@
 import {CliUx} from '@oclif/core';
-import {CLIBaseError} from './CLIBaseError';
+import {CLIBaseError} from './cliBaseError';
 
 export enum SeverityLevel {
   Info = 'info',

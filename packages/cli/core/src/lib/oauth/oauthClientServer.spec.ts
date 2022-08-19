@@ -11,8 +11,11 @@ import {
   ServerResponse,
 } from 'http';
 import {URLSearchParams} from 'url';
-import {fancyIt} from '../../__test__/it';
-import {PlatformEnvironment, platformUrl} from '../platform/environment';
+import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
+import {
+  PlatformEnvironment,
+  platformUrl,
+} from '@coveo/cli-commons/lib/platform/environment';
 import {InvalidStateError} from './authorizationError';
 import {OAuthClientServer} from './oauthClientServer';
 import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';

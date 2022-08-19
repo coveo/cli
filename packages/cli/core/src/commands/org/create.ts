@@ -1,11 +1,11 @@
 import {Command, Flags, CliUx} from '@oclif/core';
-import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 import {
   Preconditions,
   IsAuthenticated,
-} from '../../lib/decorators/preconditions/';
+} from '@coveo/cli-commons/lib/preconditions/';
 import {OrganizationCreationOrigin} from '@coveord/platform-client';
-import {Config} from '../../lib/config/config';
+import {Config} from '@coveo/cli-commons/lib/config/config';
 import {bold} from 'chalk';
 import dedent from 'ts-dedent';
 import {Trackable} from '../../lib/decorators/preconditions/trackable';

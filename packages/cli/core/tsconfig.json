@@ -1,5 +1,5 @@
 {
-  "extends": "@coveo/cli-commons/tsconfig.json",
+  "extends": "@coveo/cli-commons-dev/tsconfig.json",
   "compilerOptions": {
     "outDir": "lib",
     "rootDir": "src",

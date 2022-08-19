@@ -9,7 +9,7 @@ export enum PreconditionErrorCategory {
 }
 
 export interface PreconditionErrorOptions {
-  category?: PreconditionErrorCategory;
+  category?: PreconditionErrorCategory | string;
   level?: SeverityLevel;
 }
 

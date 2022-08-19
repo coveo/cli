@@ -1,11 +1,11 @@
-jest.mock('../../lib/config/config');
+jest.mock('@coveo/cli-commons/lib/config/config');
 jest.mock('../../hooks/analytics/analytics');
 
-jest.mock('../../lib/platform/authenticatedClient');
+jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
 
 import {test} from '@oclif/test';
-import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 import {
   SourceModel,
   SourceStatusType,

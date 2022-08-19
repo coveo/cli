@@ -1,14 +1,14 @@
 jest.mock('@coveord/platform-client');
 jest.mock('fs-extra');
 jest.mock('json2csv');
-jest.mock('../../../lib/platform/authenticatedClient');
-jest.mock('../../../lib/config/config');
+jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
+jest.mock('@coveo/cli-commons/lib/config/config');
 jest.mock('../../../hooks/analytics/analytics');
 
 import {test} from '@oclif/test';
 import {Parser} from 'json2csv';
-import {Config} from '../../../lib/config/config';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {Config} from '@coveo/cli-commons/lib/config/config';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockedConfig = jest.mocked(Config);
 const mockedSearch = jest.fn();

@@ -1,7 +1,7 @@
-jest.mock('../../lib/config/config');
+jest.mock('@coveo/cli-commons/lib/config/config');
 jest.mock('../../hooks/analytics/analytics');
 
-import {Config} from '../../lib/config/config';
+import {Config} from '@coveo/cli-commons/lib/config/config';
 import {test} from '@oclif/test';
 const mockedConfig = jest.mocked(Config);
 

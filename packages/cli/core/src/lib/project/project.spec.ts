@@ -24,7 +24,7 @@ import archiver, {Archiver} from 'archiver';
 import extract from 'extract-zip';
 import {EventEmitter, Writable} from 'stream';
 import {getDirectory, getFile} from '../../__test__/fsUtils';
-import {fancyIt} from '../../__test__/it';
+import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
 
 const mockedRmSync = jest.mocked(rmSync);
 const mockedExistSync = jest.mocked(existsSync);

@@ -1,4 +1,4 @@
-import globalConfig from '../../lib/config/globalConfig';
+import globalConfig from '@coveo/cli-commons/lib/config/globalConfig';
 import {flush} from '../analytics/analytics';
 import {buildEvent} from '../analytics/eventUtils';
 

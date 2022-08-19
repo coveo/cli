@@ -1,5 +1,5 @@
 import {ValidationError} from 'jsonschema';
-import {CLIBaseError} from '../../../errors/CLIBaseError';
+import {CLIBaseError} from '@coveo/cli-commons/lib/errors/cliBaseError';
 
 abstract class BaseSPMError extends CLIBaseError {
   public name = 'Snapshot Pull Model Error';
