@@ -3,7 +3,7 @@ jest.mock('../../config/config');
 jest.mock('../../config/globalConfig');
 
 import {Interfaces} from '@oclif/core';
-import {fancyIt} from '../../../__test__/it';
+import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
 import {Config} from '../../config/config';
 import globalConfig from '../../config/globalConfig';
 import {AuthenticatedClient} from '../../platform/authenticatedClient';

@@ -6,7 +6,7 @@ import {readJSONSync, writeJSONSync} from 'fs-extra';
 import {getDirectory, getFile} from '../../../__test__/fsUtils';
 import {recursiveDirectoryDiff} from './filesDiffProcessor';
 import {join} from 'path';
-import {fancyIt} from '../../../__test__/it';
+import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
 
 const mockedReadDir = jest.mocked(readdirSync);
 const mockedRm = jest.mocked(rmSync);

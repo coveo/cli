@@ -1,6 +1,6 @@
 jest.mock('../../platform/authenticatedClient');
 
-import {fancyIt} from '../../../__test__/it';
+import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
 import {PreconditionError} from '../../errors/preconditionError';
 import {
   AuthenticationStatus,

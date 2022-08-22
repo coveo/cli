@@ -6,7 +6,7 @@ import {getFakeCommand} from './testsUtils/utils';
 
 import {IsNpxInstalled} from './npx';
 import {appendCmdIfWindows} from '../../utils/os';
-import {fancyIt} from '../../../__test__/it';
+import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
 import {PreconditionError} from '@coveo/cli-commons/lib/errors/preconditionError';
 
 describe('IsNpxInstalled', () => {
