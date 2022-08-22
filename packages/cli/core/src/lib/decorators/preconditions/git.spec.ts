@@ -5,7 +5,7 @@ import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from './testsUtils/utils';
 
 import {IsGitInstalled} from './git';
-import {fancyIt} from '../../../__test__/it';
+import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
 import {PreconditionError} from '@coveo/cli-commons/lib/errors/preconditionError';
 
 describe('IsGitInstalled', () => {

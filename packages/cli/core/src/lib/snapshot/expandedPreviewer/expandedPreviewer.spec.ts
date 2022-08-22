@@ -20,7 +20,7 @@ import {spawnProcess, spawnProcessOutput} from '../../utils/process';
 import {recursiveDirectoryDiff} from './filesDiffProcessor';
 import {getDirectory} from '../../../__test__/fsUtils';
 import {resolve} from 'path';
-import {fancyIt} from '../../../__test__/it';
+import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
 import {stderr, stdout} from 'stdout-stderr';
 
 describe('ExpandedPreviewer', () => {

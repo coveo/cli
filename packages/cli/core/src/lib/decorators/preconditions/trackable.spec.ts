@@ -1,4 +1,4 @@
-import {fancyIt} from '../../../__test__/it';
+import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
 import {getFakeCommand} from './testsUtils/utils';
 import {Trackable} from './trackable';
 
