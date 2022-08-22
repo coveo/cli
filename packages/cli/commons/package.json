@@ -1,6 +1,9 @@
 {
   "name": "@coveo/cli-commons",
   "version": "1.34.3",
+  "files": [
+    "lib/**"
+  ],
   "devDependencies": {
     "@coveo/cli-commons-dev": "1.34.3",
     "@types/jest": "^28.1.7",
