@@ -76,7 +76,7 @@ export function setProcessEnv() {
 }
 
 export function setCliExecPath() {
-  process.env.CLI_EXEC_PATH = resolve(__dirname, '../../cli/core//bin/dev');
+  process.env.CLI_EXEC_PATH = resolve(__dirname, '../../cli/core/bin/dev');
 }
 
 export async function publishPackages() {
