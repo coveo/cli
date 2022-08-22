@@ -44,7 +44,7 @@
     "@coveo/vue-cli-plugin-typescript": "1.34.3",
     "@oclif/test": "2.1.1",
     "@types/archiver": "5.3.1",
-    "@types/async-retry": "1.4.4",
+    "@types/async-retry": "1.4.5",
     "@types/cli-progress": "3.11.0",
     "@types/fs-extra": "9.0.13",
     "@types/inquirer": "8.2.3",
