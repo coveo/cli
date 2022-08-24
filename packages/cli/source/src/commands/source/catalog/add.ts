@@ -4,7 +4,7 @@ import {
   BuiltInTransformers,
 } from '@coveo/push-api-client';
 import {Command, Flags, CliUx} from '@oclif/core';
-import {green, red} from 'chalk';
+import {green, red, bold} from 'chalk';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
@@ -15,19 +15,18 @@ import {
   writeFieldsPrivilege,
   writeSourceContentPrivilege,
 } from '@coveo/cli-commons/lib/preconditions/platformPrivilege';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
 import {
   withFiles,
   withCreateMissingFields,
   withMaxConcurrent,
   withNormalizeInvalidFields,
-} from '../../../lib/flags/sourceCommonFlags';
+} from '../../../lib/commonFlags';
 import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
-import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
-import {getFileNames} from '../../../lib/utils/file';
-import {bold} from 'chalk';
+import {errorMessage, successMessage} from '../../../lib/userFeedback';
+import {getFileNames} from '../../../lib/getFileNames';
 import dedent from 'ts-dedent';
-import {formatErrorMessage} from '../../../lib/push/addCommon';
+import {formatErrorMessage} from '../../../lib/addCommon';
 
 const fullUploadDescription = `Controls the way your items are added to your catalog source.
 
@@ -96,7 +95,7 @@ export default class SourceCatalogAdd extends Command {
     CliUx.ux.action.start('Processing files');
 
     const {accessToken, organization, environment, region} =
-      await new AuthenticatedClient().cfg.get();
+      new AuthenticatedClient().cfg.get();
     const source = new CatalogSource(accessToken!, organization, {
       environment,
       region,

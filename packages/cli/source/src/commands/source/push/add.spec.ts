@@ -1,4 +1,4 @@
-jest.mock('../../../hooks/analytics/analytics');
+jest.mock('@coveo/cli-commons/lib/preconditions/trackable');
 
 jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
 jest.mock('@coveo/cli-commons/lib/config/globalConfig');
@@ -10,13 +10,13 @@ import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticated
 import {DocumentBuilder, PushSource} from '@coveo/push-api-client';
 import {cwd} from 'process';
 import {join} from 'path';
-import {APIError} from '../../../lib/errors/APIError';
+import {APIError} from '@coveo/cli-commons/lib/errors/apiError';
 import globalConfig from '@coveo/cli-commons/lib/config/globalConfig';
 import {Interfaces} from '@oclif/core';
 import {
   BatchUploadDocumentsError,
   BatchUploadDocumentsSuccess,
-} from '../../../__stub__/batchUploadDocumentsFromFilesReturn';
+} from '../../../lib/testsUtils/batchUploadDocumentsFromFilesReturn';
 const mockedGlobalConfig = jest.mocked(globalConfig);
 const mockedClient = jest.mocked(AuthenticatedClient);
 const mockedSource = jest.mocked(PushSource);
@@ -87,13 +87,12 @@ describe('source:push:add', () => {
             },
           }),
         cfg: {
-          get: () =>
-            Promise.resolve({
-              accessToken: 'the_token',
-              organization: 'the_org',
-              region: 'au',
-              environment: 'prod',
-            }),
+          get: () => ({
+            accessToken: 'the_token',
+            organization: 'the_org',
+            region: 'au',
+            environment: 'prod',
+          }),
         },
       } as unknown as AuthenticatedClient)
   );

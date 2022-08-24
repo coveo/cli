@@ -6,7 +6,7 @@ import {
 } from '@coveo/cli-commons/lib/preconditions';
 import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 import dedent from 'ts-dedent';
-import {Trackable} from '../../lib/decorators/preconditions/trackable';
+import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
 
 export default class SourceList extends Command {
   public static description =
@@ -21,7 +21,7 @@ export default class SourceList extends Command {
   public async run() {
     const {flags} = await this.parse(SourceList);
     const authenticatedClient = new AuthenticatedClient();
-    const org = (await authenticatedClient.cfg.get()).organization;
+    const org = authenticatedClient.cfg.get().organization;
     const platformClient = await authenticatedClient.getClient();
 
     const sources = await platformClient.source.list({

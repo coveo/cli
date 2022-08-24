@@ -1,5 +1,5 @@
 import {DocumentBuilder} from '@coveo/push-api-client';
-import {doMockAxiosError, doMockAxiosSuccess} from '../lib/push/testUtils';
+import {doMockAxiosError, doMockAxiosSuccess} from './axiosMocks';
 
 export class BatchUploadDocumentsSuccess {
   public onBatchUpload(callback: Function) {

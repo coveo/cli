@@ -1,11 +1,11 @@
 import {CliUx} from '@oclif/core';
 import {red, dim, green} from 'chalk';
 import {BuiltInTransformers, errors} from '@coveo/push-api-client';
-import {withNormalizeInvalidFields} from '../flags/sourceCommonFlags';
-import {pluralizeIfNeeded} from '../utils/string';
+import {withNormalizeInvalidFields} from './commonFlags';
+import {pluralizeIfNeeded} from '@coveo/cli-commons/lib/utils/string';
 import dedent from 'ts-dedent';
 
-const allowedCharRegExp = new RegExp('^[a-z]+[a-z0-9_]*$');
+const allowedCharRegExp = /^[a-z]+[a-z0-9_]*$/;
 interface PrintableUnsupportedField {
   original: string;
   normalized: string;

@@ -1,0 +1,77 @@
+{
+  "name": "@coveo/plugin-cli-source",
+  "version": "1.34.3",
+  "description": "Manage Coveo Sources with the Coveo CLI",
+  "author": "Coveo",
+  "bin": {
+    "coveo": "./bin/run"
+  },
+  "homepage": "https://github.com/coveo/cli",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "repository": "coveo/cli",
+  "files": [
+    "/bin",
+    "/lib",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json"
+  ],
+  "dependencies": {
+    "@coveo/cli-commons": "1.34.3",
+    "@oclif/core": "^1.13.10",
+    "@oclif/plugin-help": "^5",
+    "@oclif/plugin-plugins": "^2.0.1"
+  },
+  "devDependencies": {
+    "@coveo/cli-commons-dev": "1.34.3",
+    "@oclif/test": "^2",
+    "@types/jest": "27.5.2",
+    "@types/node": "16.11.53",
+    "eslint": "8.22.0",
+    "jest": "27.5.1",
+    "oclif": "^3",
+    "ts-jest": "27.1.5",
+    "ts-node": "^10.2.1",
+    "tslib": "^2.3.1",
+    "typescript": "^4.4.3"
+  },
+  "oclif": {
+    "bin": "coveo",
+    "dirname": "coveo",
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/cli/source/<%- commandPath %>",
+    "description": "Coveo CLI - Source Plugin",
+    "commands": "./lib/commands",
+    "plugins": [
+      "@oclif/plugin-help",
+      "@oclif/plugin-plugins"
+    ],
+    "topicSeparator": ":",
+    "topics": {
+      "source": {
+        "description": "manage Coveo sources"
+      },
+      "source:push": {
+        "description": "manage Coveo Push API sources"
+      },
+      "source:catalog": {
+        "description": "manage Coveo Catalog sources"
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "jest --colors",
+    "lint": "prettier --config .prettierrc.js --check . && eslint .",
+    "release:phase2": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase2-bump-all-packages.mjs",
+    "postpack": "rimraf oclif.manifest.json",
+    "prepublishOnly": "rimraf lib && npm run build && oclif manifest && oclif readme"
+  },
+  "engines": {
+    "node": ">=14.15.1 <18"
+  },
+  "bugs": "https://github.com/coveo/cli/issues",
+  "keywords": [
+    "oclif"
+  ],
+  "types": "lib/index.d.ts"
+}

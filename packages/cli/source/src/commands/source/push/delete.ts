@@ -11,8 +11,8 @@ import {
   AxiosResponse,
   errorMessage,
   successMessage,
-} from '../../../lib/push/userFeedback';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+} from '../../../lib/userFeedback';
+import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
 
 export default class SourcePushDelete extends Command {
   public static description =

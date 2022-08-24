@@ -8,13 +8,13 @@ import {
   Preconditions,
 } from '@coveo/cli-commons/lib/preconditions';
 import {writeSourceContentPrivilege} from '@coveo/cli-commons/lib/preconditions/platformPrivilege';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
-import {withSourceVisibility} from '../../../lib/flags/sourceCommonFlags';
 import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
+import {withSourceVisibility} from '../../../lib/commonFlags';
+import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
 
-export default class SourcePushNew extends Command {
+export default class SourceCatalogNew extends Command {
   public static description =
-    'Create a new push source in a Coveo organization';
+    'Create a new catalog source in a Coveo organization';
 
   public static flags = {
     ...withSourceVisibility(),
@@ -34,13 +34,14 @@ export default class SourcePushNew extends Command {
     HasNecessaryCoveoPrivileges(writeSourceContentPrivilege)
   )
   public async run() {
-    const {flags, args} = await this.parse(SourcePushNew);
+    const {flags, args} = await this.parse(SourceCatalogNew);
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();
 
     const res = await platformClient.source.create({
-      sourceType: SourceType.PUSH,
+      sourceType: SourceType.CATALOG,
       pushEnabled: true,
+      streamEnabled: true,
       name: args.name,
       sourceVisibility: flags.sourceVisibility,
     });

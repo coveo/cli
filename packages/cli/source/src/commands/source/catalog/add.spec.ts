@@ -1,7 +1,9 @@
-jest.mock('../../../hooks/analytics/analytics');
+jest.mock('@coveo/cli-commons/lib/analytics/amplitudeClient');
 
 jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
+jest.mock('@coveo/cli-commons/lib/config/config');
 jest.mock('@coveo/cli-commons/lib/config/globalConfig');
+jest.mock('@coveo/cli-commons/lib/preconditions/trackable');
 jest.mock('@coveo/push-api-client');
 
 import stripAnsi from 'strip-ansi';
@@ -10,13 +12,15 @@ import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticated
 import {CatalogSource, DocumentBuilder} from '@coveo/push-api-client';
 import {cwd} from 'process';
 import {join} from 'path';
-import {APIError} from '../../../lib/errors/APIError';
+import {APIError} from '@coveo/cli-commons/lib/errors/apiError';
 import {Interfaces} from '@oclif/core';
 import globalConfig from '@coveo/cli-commons/lib/config/globalConfig';
+import {Config} from '@coveo/cli-commons/lib/config/config';
+
 import {
   BatchUploadDocumentsError,
   BatchUploadDocumentsSuccess,
-} from '../../../__stub__/batchUploadDocumentsFromFilesReturn';
+} from '../../../lib/testsUtils/batchUploadDocumentsFromFilesReturn';
 const mockedGlobalConfig = jest.mocked(globalConfig);
 const mockedClient = jest.mocked(AuthenticatedClient);
 const mockedSource = jest.mocked(CatalogSource);
@@ -27,6 +31,8 @@ const mockSourceGet = jest.fn();
 const mockSetSourceStatus = jest.fn();
 const mockBatchUpdate = jest.fn();
 const mockBatchStream = jest.fn();
+const mockedConfigGet = jest.fn();
+const mockedConfig = jest.mocked(Config, true);
 
 describe('source:catalog:add', () => {
   const pathToStub = join(cwd(), 'src', '__stub__');
@@ -87,13 +93,12 @@ describe('source:catalog:add', () => {
               },
             }),
           cfg: {
-            get: () =>
-              Promise.resolve({
-                accessToken: 'the_token',
-                organization: 'the_org',
-                region: 'au',
-                environment: 'prod',
-              }),
+            get: () => ({
+              accessToken: 'the_token',
+              organization: 'the_org',
+              region: 'au',
+              environment: 'prod',
+            }),
           },
         } as unknown as AuthenticatedClient)
     );
@@ -110,14 +115,31 @@ describe('source:catalog:add', () => {
     );
   };
 
+  const doMockConfig = () => {
+    mockedGlobalConfig.get.mockReturnValue({
+      configDir: 'the_config_dir',
+      version: '1.2.3',
+      platform: 'darwin',
+    } as Interfaces.Config);
+    mockedConfigGet.mockReturnValue({
+      region: 'us',
+      organization: 'default-org',
+      environment: 'prod',
+    });
+
+    mockedConfig.mockImplementation(
+      () =>
+        ({
+          get: mockedConfigGet,
+        } as unknown as Config)
+    );
+  };
+
   beforeAll(() => {
+    doMockConfig();
     doMockDocumentBuilder();
     doMockAuthenticatedClient();
     doMockSource();
-
-    mockedGlobalConfig.get.mockReturnValue({
-      configDir: 'the_config_dir',
-    } as Interfaces.Config);
   });
 
   beforeEach(() => {

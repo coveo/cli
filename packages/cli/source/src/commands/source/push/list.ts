@@ -6,7 +6,7 @@ import {
 } from '@coveo/cli-commons/lib/preconditions';
 import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 import dedent from 'ts-dedent';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
 import {magenta} from 'chalk';
 import SourceList from '../list';
 

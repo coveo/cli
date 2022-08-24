@@ -1,5 +1,5 @@
 jest.mock('@coveo/cli-commons/lib/config/config');
-jest.mock('../../../hooks/analytics/analytics');
+jest.mock('@coveo/cli-commons/lib/preconditions/trackable');
 
 jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');

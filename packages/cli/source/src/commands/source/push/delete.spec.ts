@@ -1,5 +1,5 @@
 jest.mock('@coveo/cli-commons/lib/config/config');
-jest.mock('../../../hooks/analytics/analytics');
+jest.mock('@coveo/cli-commons/lib/preconditions/trackable');
 
 jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
 jest.mock('@coveo/push-api-client');
@@ -10,7 +10,7 @@ import {PushSource} from '@coveo/push-api-client';
 import {
   doMockAxiosError,
   doMockAxiosSuccess,
-} from '../../../lib/push/testUtils';
+} from '../../../lib/testsUtils/axiosMocks';
 const mockedClient = jest.mocked(AuthenticatedClient);
 const mockedSource = jest.mocked(PushSource);
 

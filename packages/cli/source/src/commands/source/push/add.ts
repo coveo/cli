@@ -16,17 +16,17 @@ import {
   writeFieldsPrivilege,
   writeSourceContentPrivilege,
 } from '@coveo/cli-commons/lib/preconditions/platformPrivilege';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
 import {
   withNormalizeInvalidFields,
   withCreateMissingFields,
   withFiles,
   withMaxConcurrent,
-} from '../../../lib/flags/sourceCommonFlags';
+} from '../../../lib/commonFlags';
 import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
-import {formatErrorMessage} from '../../../lib/push/addCommon';
-import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
-import {getFileNames} from '../../../lib/utils/file';
+import {formatErrorMessage} from '../../../lib/addCommon';
+import {errorMessage, successMessage} from '../../../lib/userFeedback';
+import {getFileNames} from '../../../lib/getFileNames';
 
 export default class SourcePushAdd extends Command {
   public static description =
@@ -112,7 +112,7 @@ export default class SourcePushAdd extends Command {
 
   public async getSource() {
     const {accessToken, organization, environment, region} =
-      await new AuthenticatedClient().cfg.get();
+      new AuthenticatedClient().cfg.get();
     return new PushSource(accessToken!, organization, {
       environment,
       region,
