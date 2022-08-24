@@ -5,6 +5,6 @@
     "rootDir": "src",
     "types": ["node", "jest"]
   },
-  "include": ["src/**/*", "src/typings/**/*.d.ts"],
+  "include": ["src/**/*"],
   "exclude": ["**/*.spec.ts"]
 }
