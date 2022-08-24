@@ -18,22 +18,22 @@
   ],
   "dependencies": {
     "@coveo/cli-commons": "1.34.3",
-    "@oclif/core": "^1.13.10",
-    "@oclif/plugin-help": "^5",
-    "@oclif/plugin-plugins": "^2.0.1"
+    "@oclif/core": "1.14.2",
+    "@oclif/plugin-help": "5.1.12",
+    "@oclif/plugin-plugins": "2.1.0"
   },
   "devDependencies": {
     "@coveo/cli-commons-dev": "1.34.3",
-    "@oclif/test": "^2",
+    "@oclif/test": "2.1.1",
     "@types/jest": "27.5.2",
     "@types/node": "16.11.53",
     "eslint": "8.22.0",
     "jest": "27.5.1",
-    "oclif": "^3",
+    "oclif": "3.1.2",
     "ts-jest": "27.1.5",
-    "ts-node": "^10.2.1",
-    "tslib": "^2.3.1",
-    "typescript": "^4.4.3"
+    "ts-node": "10.9.1",
+    "tslib": "2.4.0",
+    "typescript": "4.7.4"
   },
   "oclif": {
     "bin": "coveo",
