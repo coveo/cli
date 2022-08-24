@@ -6,7 +6,7 @@ import {
   APIError,
   AxiosErrorFromAPI,
   AxiosErrorFromAPISchema,
-} from '@coveo/cli-commons/lib/errors/APIError';
+} from '@coveo/cli-commons/lib/errors/apiError';
 import {UnknownError} from '@coveo/cli-commons/lib/errors/unknownError';
 
 export interface AxiosResponse {
