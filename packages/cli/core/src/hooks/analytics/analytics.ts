@@ -34,10 +34,6 @@ const hook = async function (options: AnalyticsHook) {
   });
 };
 
-export const flush = async () => {
-  await amplitudeClient.flush();
-};
-
 const augmentEvent = async (
   event: Event,
   identifier: Awaited<ReturnType<typeof platformInfoIdentifier>>

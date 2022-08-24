@@ -1,6 +1,6 @@
 import type {Command} from '@oclif/core';
-import {flush} from '../../../hooks/analytics/analytics';
-import {buildError, buildEvent} from '../../../hooks/analytics/eventUtils';
+import {flush} from '../analytics/amplitudeClient';
+import {buildError, buildEvent} from '../analytics/eventUtils';
 
 export interface TrackableOptions {
   /**

@@ -1,6 +1,6 @@
 jest.mock('../../../lib/decorators/preconditions/git');
 jest.mock('@coveo/cli-commons/lib/config/config');
-jest.mock('../../../hooks/analytics/analytics');
+jest.mock('@coveo/cli-commons/lib/preconditions/trackable');
 
 jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
 jest.mock('../../../lib/snapshot/snapshotFactory');
@@ -41,7 +41,12 @@ const doMockConfig = () => {
     environment: 'prod',
   });
 
-  mockedConfig.prototype.get = mockedConfigGet;
+  mockedConfig.mockImplementation(
+    () =>
+      ({
+        get: mockedConfigGet,
+      } as unknown as Config)
+  );
 };
 
 const doMockPreconditions = () => {

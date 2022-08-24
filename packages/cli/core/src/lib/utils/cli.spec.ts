@@ -1,4 +1,4 @@
-jest.mock('../../hooks/analytics/analytics');
+jest.mock('@coveo/cli-commons/lib/preconditions/trackable');
 jest.mock('@coveo/cli-commons/lib/config/globalConfig');
 
 import {Interfaces, CliUx} from '@oclif/core';

@@ -1,5 +1,5 @@
 jest.mock('@coveo/cli-commons/lib/config/config');
-jest.mock('../../../hooks/analytics/analytics');
+jest.mock('@coveo/cli-commons/lib/preconditions/trackable');
 
 jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
 jest.mock('../../../lib/snapshot/snapshot');
@@ -50,14 +50,19 @@ const mockProject = () => {
   );
 };
 
-const mockConfig = () => {
+const doMockConfig = () => {
   mockedConfigGet.mockReturnValue({
     region: 'us',
-    organization: 'foo',
+    organization: 'default-org',
     environment: 'prod',
   });
 
-  mockedConfig.prototype.get = mockedConfigGet;
+  mockedConfig.mockImplementation(
+    () =>
+      ({
+        get: mockedConfigGet,
+      } as unknown as Config)
+  );
 };
 
 const mockSnapshotFactory = async () => {
@@ -153,7 +158,7 @@ const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries =
 
 describe('org:resources:push', () => {
   beforeAll(() => {
-    mockConfig();
+    doMockConfig();
     mockProject();
     mockAuthenticatedClient();
   });
@@ -222,7 +227,7 @@ describe('org:resources:push', () => {
       .it('should work with default connected org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
-          'foo',
+          'default-org',
           expect.objectContaining({})
         );
       });
@@ -249,7 +254,7 @@ describe('org:resources:push', () => {
       .it('should set a 60 seconds wait', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
-          'foo',
+          'default-org',
           {wait: 60}
         );
       });
@@ -262,7 +267,7 @@ describe('org:resources:push', () => {
       .it('should set a 99 seconds wait', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
-          'foo',
+          'default-org',
           {wait: 99}
         );
       });

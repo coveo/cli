@@ -8,7 +8,7 @@ import {OrganizationCreationOrigin} from '@coveord/platform-client';
 import {Config} from '@coveo/cli-commons/lib/config/config';
 import {bold} from 'chalk';
 import dedent from 'ts-dedent';
-import {Trackable} from '../../lib/decorators/preconditions/trackable';
+import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
 
 export default class Create extends Command {
   public static description = 'Create a new test Coveo organization.';

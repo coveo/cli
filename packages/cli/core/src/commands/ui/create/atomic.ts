@@ -15,7 +15,7 @@ import {
 } from '@coveo/cli-commons/lib/preconditions/platformPrivilege';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {spawnProcess} from '../../../lib/utils/process';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
 import {Config} from '@coveo/cli-commons/lib/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 import {platformUrl} from '@coveo/cli-commons/lib/platform/environment';

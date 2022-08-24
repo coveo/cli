@@ -5,7 +5,7 @@ import {
   IsAuthenticated,
 } from '@coveo/cli-commons/lib/preconditions/';
 
-import {Trackable} from '../../lib/decorators/preconditions/trackable';
+import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
 import {recordable} from '../../lib/utils/record';
 
 export default class List extends Command {

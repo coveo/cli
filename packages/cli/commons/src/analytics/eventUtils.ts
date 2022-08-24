@@ -1,12 +1,8 @@
 import type {Event} from '@amplitude/types';
 import {validate} from 'jsonschema';
-import {
-  APIError,
-  APIErrorResponse,
-  APIErrorSchema,
-} from '../../lib/errors/APIError';
-import {CLIBaseError} from '@coveo/cli-commons/lib/errors/cliBaseError';
-import {UnknownError} from '../../lib/errors/unknownError';
+import {APIError, APIErrorResponse, APIErrorSchema} from '../errors/apiError';
+import {CLIBaseError} from '../errors/cliBaseError';
+import {UnknownError} from '../errors/unknownError';
 
 export function buildEvent(
   eventName: string,

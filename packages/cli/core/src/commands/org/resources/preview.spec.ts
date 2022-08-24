@@ -1,6 +1,6 @@
 jest.mock('../../../lib/decorators/preconditions/git');
 jest.mock('@coveo/cli-commons/lib/config/config');
-jest.mock('../../../hooks/analytics/analytics');
+jest.mock('@coveo/cli-commons/lib/preconditions/trackable');
 
 jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
 jest.mock('../../../lib/snapshot/snapshot');
@@ -54,14 +54,19 @@ const mockProject = () => {
   );
 };
 
-const mockConfig = () => {
+const doMockConfig = () => {
   mockedConfigGet.mockReturnValue({
     region: 'us',
-    organization: 'foo',
+    organization: 'default-org',
     environment: 'prod',
   });
 
-  mockedConfig.prototype.get = mockedConfigGet;
+  mockedConfig.mockImplementation(
+    () =>
+      ({
+        get: mockedConfigGet,
+      } as unknown as Config)
+  );
 };
 
 const mockAuthenticatedClient = () => {
@@ -142,7 +147,7 @@ describe('org:resources:preview', () => {
   };
 
   beforeAll(() => {
-    mockConfig();
+    doMockConfig();
     mockProject();
     mockAuthenticatedClient();
   });
@@ -181,7 +186,7 @@ describe('org:resources:preview', () => {
       .stderr()
       .command(['org:resources:preview'])
       .it('should use cwd as project', () => {
-        expect(mockedProject).toHaveBeenCalledWith(cwd(), 'foo');
+        expect(mockedProject).toHaveBeenCalledWith(cwd(), 'default-org');
       });
 
     test
@@ -191,7 +196,7 @@ describe('org:resources:preview', () => {
       .it('should work with default connected org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
-          'foo',
+          'default-org',
           expect.objectContaining({})
         );
       });
@@ -217,7 +222,7 @@ describe('org:resources:preview', () => {
           mockedSnapshotFactory.createFromExistingSnapshot
         ).toHaveBeenCalledWith(
           'some-snapshot-id',
-          'foo',
+          'default-org',
           expect.objectContaining({})
         );
       });
@@ -229,7 +234,7 @@ describe('org:resources:preview', () => {
       .it('should set a 60 seconds wait', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
-          'foo',
+          'default-org',
           {wait: 60}
         );
       });
@@ -241,7 +246,7 @@ describe('org:resources:preview', () => {
       .it('should set a 312 seconds wait', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
-          'foo',
+          'default-org',
           {wait: 312}
         );
       });

@@ -3,7 +3,7 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '@coveo/cli-commons/lib/preconditions';
-import {Trackable} from '../../../../lib/decorators/preconditions/trackable';
+import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
 import open from 'open';
 import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 import {createSnapshotUrl} from '@coveo/cli-commons/lib/platform/url';

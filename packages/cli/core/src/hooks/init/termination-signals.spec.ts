@@ -1,10 +1,10 @@
-jest.mock('../analytics/analytics');
+jest.mock('@coveo/cli-commons/lib/analytics/amplitudeClient');
 jest.mock('@coveo/cli-commons/lib/config/globalConfig');
 
 import type {Interfaces} from '@oclif/core';
 import globalConfig from '@coveo/cli-commons/lib/config/globalConfig';
 import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
-import {flush} from '../analytics/analytics';
+import {flush} from '@coveo/cli-commons/lib/analytics/amplitudeClient';
 import {handleTerminationSignals, exitSignals} from './termination-signals';
 
 type supportedExitSignals = typeof exitSignals[number];

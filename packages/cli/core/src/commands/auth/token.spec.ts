@@ -1,6 +1,6 @@
 jest.mock('../../lib/oauth/oauth');
 jest.mock('@coveo/cli-commons/lib/config/config');
-jest.mock('../../hooks/analytics/analytics');
+jest.mock('@coveo/cli-commons/lib/preconditions/trackable');
 jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
 import {Region} from '@coveord/platform-client';

@@ -19,7 +19,7 @@ import {
   createApiKeyPrivilege,
   impersonatePrivilege,
 } from '@coveo/cli-commons/lib/preconditions/platformPrivilege';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
 
 export default class Angular extends Command {
   public static templateName = '@coveo/angular';

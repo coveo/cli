@@ -11,7 +11,7 @@ import {
   IsAuthenticated,
 } from '@coveo/cli-commons/lib/preconditions';
 import {Config} from '@coveo/cli-commons/lib/config/config';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
 import {without} from '../../../lib/utils/list';
 import {join} from 'path';
 import dedent from 'ts-dedent';

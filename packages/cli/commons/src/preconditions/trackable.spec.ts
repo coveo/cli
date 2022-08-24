@@ -1,5 +1,5 @@
 import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
-import {getFakeCommand} from './testsUtils/utils';
+import {getFakeCommand} from '@coveo/cli-commons-dev/lib/testUtils/utils';
 import {Trackable} from './trackable';
 
 describe('trackable', () => {

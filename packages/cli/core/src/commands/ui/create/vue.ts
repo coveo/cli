@@ -15,7 +15,7 @@ import {
   createApiKeyPrivilege,
   impersonatePrivilege,
 } from '@coveo/cli-commons/lib/preconditions/platformPrivilege';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
 import {
   IsNodeVersionInRange,
   IsNpxInstalled,

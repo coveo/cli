@@ -5,7 +5,7 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '@coveo/cli-commons/lib/preconditions';
-import {Trackable} from '../../lib/decorators/preconditions/trackable';
+import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
 import {InvalidCommandError} from '../../lib/errors/InvalidCommandError';
 import {ConfigRenderer} from '@coveo/cli-commons/lib/config/configRenderer';
 

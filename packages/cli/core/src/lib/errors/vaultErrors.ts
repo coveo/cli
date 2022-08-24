@@ -1,5 +1,5 @@
 import dedent from 'ts-dedent';
-import {Plurable, pluralizeIfNeeded} from '../utils/string';
+import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/lib/utils/string';
 import {
   PrintableError,
   SeverityLevel,

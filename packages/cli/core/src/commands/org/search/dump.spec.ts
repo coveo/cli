@@ -3,7 +3,7 @@ jest.mock('fs-extra');
 jest.mock('json2csv');
 jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
 jest.mock('@coveo/cli-commons/lib/config/config');
-jest.mock('../../../hooks/analytics/analytics');
+jest.mock('@coveo/cli-commons/lib/preconditions/trackable');
 
 import {test} from '@oclif/test';
 import {Parser} from 'json2csv';

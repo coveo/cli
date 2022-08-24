@@ -4,7 +4,7 @@ import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticated
 import {PlatformEnvironment} from '@coveo/cli-commons/lib/platform/environment';
 import {Region} from '@coveord/platform-client';
 import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
-import {Trackable} from '../../lib/decorators/preconditions/trackable';
+import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
 
 export default class Token extends Command {
   private configuration!: Config;
