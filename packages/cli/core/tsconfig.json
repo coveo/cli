@@ -5,5 +5,11 @@
     "rootDir": "src",
     "types": ["node", "jest"]
   },
-  "include": ["src/**/*", "src/typings/**/*.d.ts"]
+  "include": [
+    "src/**/*",
+    "src/typings/**/*.d.ts",
+    "../source/src/lib/sourceCommonFlags.ts",
+    "../source/src/lib/file.ts"
+  ],
+  "exclude": ["**/*.spec.ts"]
 }
