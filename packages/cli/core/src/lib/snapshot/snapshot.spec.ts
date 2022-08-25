@@ -15,7 +15,7 @@ import {
 import {Snapshot} from './snapshot';
 
 //#region Mocks
-jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
+jest.mock('@coveo/cli-commons/src/platform/authenticatedClient');
 jest.mock('fs-extra');
 jest.mock('async-retry');
 jest.mock('./snapshotReporter');
@@ -23,7 +23,7 @@ jest.mock('./reportPreviewer/reportPreviewer');
 jest.mock('../project/project');
 jest.mock('./expandedPreviewer/expandedPreviewer');
 
-import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
 import {ensureFileSync, writeJSONSync} from 'fs-extra';
 import retry from 'async-retry';
 import {SnapshotReporter} from './snapshotReporter';

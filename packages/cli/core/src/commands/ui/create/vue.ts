@@ -1,21 +1,21 @@
 import {Command, Flags} from '@oclif/core';
 import {resolve} from 'path';
-import {Config} from '@coveo/cli-commons/lib/config/config';
+import {Config} from '@coveo/cli-commons/src/config/config';
 import {
   Preconditions,
   IsAuthenticated,
   HasNecessaryCoveoPrivileges,
-} from '@coveo/cli-commons/lib/preconditions';
-import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
-import {platformUrl} from '@coveo/cli-commons/lib/platform/environment';
+} from '@coveo/cli-commons/src/preconditions';
+import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
+import {platformUrl} from '@coveo/cli-commons/src/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,
-} from '@coveo/cli-commons/lib/preconditions/platformPrivilege';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+} from '@coveo/cli-commons/src/preconditions/platformPrivilege';
+import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
 import {
   IsNodeVersionInRange,
   IsNpxInstalled,

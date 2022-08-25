@@ -17,7 +17,7 @@
     "@coveord/platform-client": "34.7.0",
     "@nrwl/cli": "latest",
     "@nrwl/workspace": "latest",
-    "@types/node": "17.0.45",
+    "@types/node": "16.11.53",
     "@typescript-eslint/eslint-plugin": "5.33.1",
     "@typescript-eslint/parser": "5.33.1",
     "abortcontroller-polyfill": "1.7.3",

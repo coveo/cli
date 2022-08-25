@@ -1,7 +1,6 @@
-import globalConfig from '@coveo/cli-commons/lib/config/globalConfig';
-import {flush} from '../analytics/analytics';
-import {buildEvent} from '../analytics/eventUtils';
-
+import globalConfig from '@coveo/cli-commons/src/config/globalConfig';
+import {flush} from '@coveo/cli-commons/src/analytics/amplitudeClient';
+import {buildEvent} from '@coveo/cli-commons/src/analytics/eventUtils';
 export const exitSignals = ['SIGINT', 'SIGTERM', 'SIGQUIT', 'SIGHUP'] as const;
 
 export function handleTerminationSignals() {

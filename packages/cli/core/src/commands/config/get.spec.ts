@@ -1,9 +1,9 @@
-jest.mock('@coveo/cli-commons/lib/config/config');
-jest.mock('../../hooks/analytics/analytics');
+jest.mock('@coveo/cli-commons/src/config/config');
+jest.mock('@coveo/cli-commons/src/preconditions/trackable');
 
-import {Config} from '@coveo/cli-commons/lib/config/config';
+import {Config} from '@coveo/cli-commons/src/config/config';
 import {test} from '@oclif/test';
-const mockedConfig = jest.mocked(Config);
+const mockedConfig = jest.mocked(Config, true);
 
 describe('config:get', () => {
   const mockGet = jest.fn();

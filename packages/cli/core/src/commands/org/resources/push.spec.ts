@@ -1,7 +1,7 @@
-jest.mock('@coveo/cli-commons/lib/config/config');
-jest.mock('../../../hooks/analytics/analytics');
+jest.mock('@coveo/cli-commons/src/config/config');
+jest.mock('@coveo/cli-commons/src/preconditions/trackable');
 
-jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
+jest.mock('@coveo/cli-commons/src/platform/authenticatedClient');
 jest.mock('../../../lib/snapshot/snapshot');
 jest.mock('../../../lib/snapshot/snapshotFactory');
 jest.mock('../../../lib/project/project');
@@ -10,7 +10,7 @@ import {CliUx} from '@oclif/core';
 import {test} from '@oclif/test';
 import {Project} from '../../../lib/project/project';
 import {join, normalize} from 'path';
-import {Config} from '@coveo/cli-commons/lib/config/config';
+import {Config} from '@coveo/cli-commons/src/config/config';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
@@ -20,7 +20,7 @@ import {
   getMissingVaultEntryReport,
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
-import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
 const mockedConfig = jest.mocked(Config);
@@ -50,14 +50,19 @@ const mockProject = () => {
   );
 };
 
-const mockConfig = () => {
+const doMockConfig = () => {
   mockedConfigGet.mockReturnValue({
     region: 'us',
-    organization: 'foo',
+    organization: 'default-org',
     environment: 'prod',
   });
 
-  mockedConfig.prototype.get = mockedConfigGet;
+  mockedConfig.mockImplementation(
+    () =>
+      ({
+        get: mockedConfigGet,
+      } as unknown as Config)
+  );
 };
 
 const mockSnapshotFactory = async () => {
@@ -153,7 +158,7 @@ const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries =
 
 describe('org:resources:push', () => {
   beforeAll(() => {
-    mockConfig();
+    doMockConfig();
     mockProject();
     mockAuthenticatedClient();
   });
@@ -222,7 +227,7 @@ describe('org:resources:push', () => {
       .it('should work with default connected org', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
-          'foo',
+          'default-org',
           expect.objectContaining({})
         );
       });
@@ -249,7 +254,7 @@ describe('org:resources:push', () => {
       .it('should set a 60 seconds wait', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
-          'foo',
+          'default-org',
           {wait: 60}
         );
       });
@@ -262,7 +267,7 @@ describe('org:resources:push', () => {
       .it('should set a 99 seconds wait', () => {
         expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
-          'foo',
+          'default-org',
           {wait: 99}
         );
       });

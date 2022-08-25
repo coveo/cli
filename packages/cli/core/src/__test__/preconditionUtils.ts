@@ -1,6 +1,6 @@
 import {Command} from '@oclif/core';
-import {PreconditionFunction} from '@coveo/cli-commons/lib/preconditions';
-import {PreconditionError} from '@coveo/cli-commons/lib/errors/preconditionError';
+import {PreconditionFunction} from '@coveo/cli-commons/src/preconditions';
+import {PreconditionError} from '@coveo/cli-commons/src/errors/preconditionError';
 
 const thrower = (reason: string) => {
   throw new PreconditionError(`${reason} Precondition Error`);

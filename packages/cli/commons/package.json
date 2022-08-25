@@ -6,13 +6,15 @@
   ],
   "devDependencies": {
     "@coveo/cli-commons-dev": "1.34.3",
-    "@types/jest": "^28.1.7",
+    "@types/jest": "27.5.2",
     "typescript": "4.7.4"
   },
   "dependencies": {
+    "@amplitude/node": "1.10.0",
     "@coveord/platform-client": "34.7.0",
     "@oclif/core": "1.14.2",
     "abortcontroller-polyfill": "1.7.3",
+    "chalk": "4.1.2",
     "fs-extra": "10.1.0",
     "https-proxy-agent": "5.0.1",
     "isomorphic-fetch": "3.0.0",
@@ -20,7 +22,7 @@
     "ts-dedent": "2.2.0"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.json",
     "prepublish": "npm run build",
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873"
   }
