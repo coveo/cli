@@ -10,20 +10,20 @@ import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
-} from '@coveo/cli-commons/lib/preconditions';
+} from '@coveo/cli-commons/src/preconditions';
 import {
   readOrganizationPrivilege,
   writeFieldsPrivilege,
   writeSourceContentPrivilege,
-} from '@coveo/cli-commons/lib/preconditions/platformPrivilege';
-import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
+} from '@coveo/cli-commons/src/preconditions/platformPrivilege';
+import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
 import {
   withNormalizeInvalidFields,
   withCreateMissingFields,
   withFiles,
   withMaxConcurrent,
 } from '../../../lib/commonFlags';
-import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
 import {formatErrorMessage} from '../../../lib/addCommon';
 import {errorMessage, successMessage} from '../../../lib/userFeedback';
 import {getFileNames} from '../../../lib/getFileNames';

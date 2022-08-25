@@ -6,7 +6,7 @@ import {getFakeCommand} from './testsUtils/utils';
 
 import {IsGitInstalled} from './git';
 import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
-import {PreconditionError} from '@coveo/cli-commons/lib/errors/preconditionError';
+import {PreconditionError} from '@coveo/cli-commons/src/errors/preconditionError';
 
 describe('IsGitInstalled', () => {
   const mockedSpawnProcessOutput = jest.mocked(spawnProcessOutput);

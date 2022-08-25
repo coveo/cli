@@ -14,10 +14,10 @@ import {
   InvalidVaultFileError,
   MissingVaultEntryValueError,
 } from '../errors/vaultErrors';
-import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
 import {Snapshot} from './snapshot';
 import {VaultEntryAttributes} from './snapshotReporter';
-import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/lib/utils/string';
+import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/src/utils/string';
 import {ProcessAbort} from '../../lib/errors/processError';
 import dedent from 'ts-dedent';
 

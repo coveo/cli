@@ -2,18 +2,18 @@ import {Command, Flags} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
-import {Config} from '@coveo/cli-commons/lib/config/config';
+import {Config} from '@coveo/cli-commons/src/config/config';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
-} from '@coveo/cli-commons/lib/preconditions';
+} from '@coveo/cli-commons/src/preconditions';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
 import {
   writeLinkPrivilege,
   writeSnapshotPrivilege,
-} from '@coveo/cli-commons/lib/preconditions/platformPrivilege';
-import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
+} from '@coveo/cli-commons/src/preconditions/platformPrivilege';
+import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {
   PreviewLevelValue,

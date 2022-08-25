@@ -1,14 +1,14 @@
-jest.mock('@coveo/cli-commons/lib/config/config');
-jest.mock('@coveo/cli-commons/lib/config/globalConfig');
-jest.mock('@coveo/cli-commons/lib/preconditions/trackable');
+jest.mock('@coveo/cli-commons/src/config/config');
+jest.mock('@coveo/cli-commons/src/config/globalConfig');
+jest.mock('@coveo/cli-commons/src/preconditions/trackable');
 
-jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
+jest.mock('@coveo/cli-commons/src/platform/authenticatedClient');
 
 import {test} from '@oclif/test';
-import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
 import {SourceType, SourceVisibility} from '@coveord/platform-client';
-import {Config} from '@coveo/cli-commons/lib/config/config';
-import globalConfig from '@coveo/cli-commons/lib/config/globalConfig';
+import {Config} from '@coveo/cli-commons/src/config/config';
+import globalConfig from '@coveo/cli-commons/src/config/globalConfig';
 import type {Interfaces} from '@oclif/core';
 
 const mockedGlobalConfig = jest.mocked(globalConfig);

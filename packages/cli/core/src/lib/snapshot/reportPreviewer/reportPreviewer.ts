@@ -11,7 +11,7 @@ import {
 import dedent from 'ts-dedent';
 import {recordable} from '../../utils/record';
 import type {ResourceSnapshotType} from '@coveord/platform-client';
-import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/lib/utils/string';
+import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/src/utils/string';
 import {labels} from '../snapshotConstant';
 
 export class ReportViewer {

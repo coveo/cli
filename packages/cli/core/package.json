@@ -41,6 +41,7 @@
     "@amplitude/types": "1.10.0",
     "@babel/core": "7.18.10",
     "@coveo/angular": "1.34.3",
+    "@coveo/cli-plugin-source": "1.34.3",
     "@coveo/cli-commons-dev": "1.34.3",
     "@coveo/cra-template": "1.34.3",
     "@coveo/create-atomic": "1.34.3",
@@ -110,7 +111,8 @@
       "@oclif/plugin-help",
       "@oclif/plugin-update",
       "@oclif/plugin-version",
-      "@oclif/plugin-plugins"
+      "@oclif/plugin-plugins",
+      "@coveo/cli-plugin-source"
     ],
     "oclif": {
       "additionalHelpFlags": [

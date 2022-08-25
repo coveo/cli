@@ -3,10 +3,10 @@ import {Command, CliUx} from '@oclif/core';
 import {
   IsAuthenticated,
   Preconditions,
-} from '@coveo/cli-commons/lib/preconditions';
-import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
+} from '@coveo/cli-commons/src/preconditions';
+import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
 import dedent from 'ts-dedent';
-import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
+import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
 
 export default class SourceList extends Command {
   public static description =

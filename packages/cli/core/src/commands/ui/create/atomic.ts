@@ -7,18 +7,18 @@ import {
   Preconditions,
   IsAuthenticated,
   HasNecessaryCoveoPrivileges,
-} from '@coveo/cli-commons/lib/preconditions';
+} from '@coveo/cli-commons/src/preconditions';
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,
   viewSearchPagesPrivilege,
-} from '@coveo/cli-commons/lib/preconditions/platformPrivilege';
+} from '@coveo/cli-commons/src/preconditions/platformPrivilege';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {spawnProcess} from '../../../lib/utils/process';
-import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
-import {Config} from '@coveo/cli-commons/lib/config/config';
-import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
-import {platformUrl} from '@coveo/cli-commons/lib/platform/environment';
+import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
+import {Config} from '@coveo/cli-commons/src/config/config';
+import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
+import {platformUrl} from '@coveo/cli-commons/src/platform/environment';
 import {getPackageVersion} from '../../../lib/utils/misc';
 
 export default class Atomic extends Command {

@@ -1,13 +1,13 @@
 import {CliUx, Command, Flags} from '@oclif/core';
-import {Config} from '@coveo/cli-commons/lib/config/config';
-import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
+import {Config} from '@coveo/cli-commons/src/config/config';
+import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
 import {
   IsAuthenticated,
   Preconditions,
-} from '@coveo/cli-commons/lib/preconditions';
-import {Trackable} from '@coveo/cli-commons/lib/preconditions/trackable';
+} from '@coveo/cli-commons/src/preconditions';
+import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
 import {InvalidCommandError} from '../../lib/errors/InvalidCommandError';
-import {ConfigRenderer} from '@coveo/cli-commons/lib/config/configRenderer';
+import {ConfigRenderer} from '@coveo/cli-commons/src/config/configRenderer';
 
 export default class Set extends Command {
   public static description = 'Modify the current configuration.';

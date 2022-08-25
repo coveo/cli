@@ -1,6 +1,6 @@
 import {Region} from '@coveord/platform-client';
-import type {Config, Configuration} from '@coveo/cli-commons/lib/config/config';
-import {PlatformEnvironment} from '@coveo/cli-commons/lib/platform/environment';
+import type {Config, Configuration} from '@coveo/cli-commons/src/config/config';
+import {PlatformEnvironment} from '@coveo/cli-commons/src/platform/environment';
 
 export const defaultConfiguration = {
   environment: PlatformEnvironment.Dev,
