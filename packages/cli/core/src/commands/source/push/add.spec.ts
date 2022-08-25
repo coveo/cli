@@ -1,17 +1,17 @@
 jest.mock('../../../hooks/analytics/analytics');
 
-jest.mock('../../../lib/platform/authenticatedClient');
-jest.mock('../../../lib/config/globalConfig');
+jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
+jest.mock('@coveo/cli-commons/lib/config/globalConfig');
 jest.mock('@coveo/push-api-client');
 
 import stripAnsi from 'strip-ansi';
 import {test} from '@oclif/test';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 import {DocumentBuilder, PushSource} from '@coveo/push-api-client';
 import {cwd} from 'process';
 import {join} from 'path';
 import {APIError} from '../../../lib/errors/APIError';
-import globalConfig from '../../../lib/config/globalConfig';
+import globalConfig from '@coveo/cli-commons/lib/config/globalConfig';
 import {Interfaces} from '@oclif/core';
 import {
   BatchUploadDocumentsError,

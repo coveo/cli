@@ -1,6 +1,6 @@
 import {stdout} from 'stdout-stderr';
 import {BuiltInTransformers, errors} from '@coveo/push-api-client';
-import {fancyIt} from '../../__test__/it';
+import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
 import {formatCliLog} from '../../__test__/jestSnapshotUtils';
 import {formatErrorMessage} from './addCommon';
 

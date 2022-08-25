@@ -1,11 +1,11 @@
 jest.mock('open');
 jest.mock('fs-extra');
-jest.mock('../../lib/platform/authenticatedClient');
+jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
 
 import {ResourceSnapshotType} from '@coveord/platform-client';
 import {VaultEntryAttributes} from './snapshotReporter';
 import {VaultHandler} from './vaultHandler';
-import {AuthenticatedClient} from '../platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 import {readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
 import open from 'open';
 import {CliUx} from '@oclif/core';

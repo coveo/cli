@@ -1,23 +1,25 @@
 import {Command, Flags} from '@oclif/core';
 import {resolve} from 'path';
-import {Config} from '../../../lib/config/config';
+import {Config} from '@coveo/cli-commons/lib/config/config';
 import {
   Preconditions,
   IsAuthenticated,
-  IsNodeVersionInRange,
   HasNecessaryCoveoPrivileges,
-  IsNpxInstalled,
-} from '../../../lib/decorators/preconditions';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {platformUrl} from '../../../lib/platform/environment';
+} from '@coveo/cli-commons/lib/preconditions';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
+import {platformUrl} from '@coveo/cli-commons/lib/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,
-} from '../../../lib/decorators/preconditions/platformPrivilege';
+} from '@coveo/cli-commons/lib/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {
+  IsNodeVersionInRange,
+  IsNpxInstalled,
+} from '../../../lib/decorators/preconditions';
 
 export default class Vue extends Command {
   public static templateName = '@coveo/vue-cli-plugin-typescript';

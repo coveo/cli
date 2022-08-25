@@ -2,11 +2,11 @@ import {Command} from '@oclif/core';
 import {
   IsAuthenticated,
   Preconditions,
-} from '../../../../lib/decorators/preconditions';
+} from '@coveo/cli-commons/lib/preconditions';
 import {Trackable} from '../../../../lib/decorators/preconditions/trackable';
 import open from 'open';
-import {AuthenticatedClient} from '../../../../lib/platform/authenticatedClient';
-import {createSnapshotUrl} from '../../../../lib/platform/url';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
+import {createSnapshotUrl} from '@coveo/cli-commons/lib/platform/url';
 import dedent from 'ts-dedent';
 
 export default class Create extends Command {

@@ -1,6 +1,6 @@
 import dedent from 'ts-dedent';
 import type {URL} from 'url';
-import {CLIBaseError} from '../errors/CLIBaseError';
+import {CLIBaseError} from '@coveo/cli-commons/lib/errors/cliBaseError';
 
 export class AuthorizationError extends CLIBaseError {
   public name = 'Authorization Error';

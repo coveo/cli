@@ -10,8 +10,8 @@
     "@amplitude/identify": "^1.9.0",
     "@amplitude/node": "^1.9.0",
     "@coveo/push-api-client": "^2.4.4",
-    "@coveord/platform-client": "33.8.1",
-    "@oclif/core": "^1.3.3",
+    "@coveord/platform-client": "34.7.0",
+    "@oclif/core": "1.14.2",
     "@oclif/plugin-help": "^5",
     "@oclif/plugin-plugins": "^2.1.0",
     "@oclif/plugin-update": "^3.0.0",
@@ -40,6 +40,8 @@
     "@amplitude/types": "1.10.0",
     "@babel/core": "7.18.10",
     "@coveo/angular": "1.34.3",
+    "@coveo/cli-commons": "1.34.3",
+    "@coveo/cli-commons-dev": "1.34.3",
     "@coveo/cra-template": "1.34.3",
     "@coveo/create-atomic": "1.34.3",
     "@coveo/vue-cli-plugin-typescript": "1.34.3",
@@ -177,7 +179,7 @@
   "scripts": {
     "build": "rimraf lib && tsc -p tsconfig.json",
     "test": "jest --colors",
-    "lint": "prettier --config ../../../.prettierrc.js --check . && eslint .",
+    "lint": "prettier --config .prettierrc.js --check . && eslint .",
     "release:phase2": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase2-bump-all-packages.mjs",
     "postpack": "rimraf oclif.manifest.json",
     "prepublishOnly": "rimraf lib && npm run build && oclif manifest && oclif readme"

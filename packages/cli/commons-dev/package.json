@@ -1,0 +1,23 @@
+{
+  "name": "@coveo/cli-commons-dev",
+  "version": "1.34.3",
+  "files": [
+    "lib/**",
+    ".eslintrc.js",
+    ".prettierrc.js",
+    "tsconfig.json"
+  ],
+  "dependencies": {
+    "fancy-test": "2.0.0",
+    "tslib": "2.4.0"
+  },
+  "devDependencies": {
+    "@types/jest": "28.1.7",
+    "typescript": "4.7.4"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepublish": "npm run build",
+    "npm:publish:template": "npm publish --access public --registry http://localhost:4873"
+  }
+}

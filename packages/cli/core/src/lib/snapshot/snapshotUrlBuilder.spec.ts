@@ -1,15 +1,15 @@
-jest.mock('../platform/authenticatedClient');
+jest.mock('@coveo/cli-commons/lib/platform/authenticatedClient');
 
 import {Region, ResourceSnapshotsReportType} from '@coveord/platform-client';
 import {getDummySnapshotModel} from '../../__stub__/resourceSnapshotsModel';
 import {getSuccessReport} from '../../__stub__/resourceSnapshotsReportModel';
-import {Configuration} from '../config/config';
+import {Configuration} from '@coveo/cli-commons/lib/config/config';
 import {Snapshot} from './snapshot';
 import {SnapshotUrlBuilder} from './snapshotUrlBuilder';
-import {AuthenticatedClient} from '../platform/authenticatedClient';
-import {PlatformEnvironment} from '../platform/environment';
-import {fancyIt} from '../../__test__/it';
-import {CurrentSchemaVersion} from '../config/configSchemaVersion';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
+import {PlatformEnvironment} from '@coveo/cli-commons/lib/platform/environment';
+import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
+import {CurrentSchemaVersion} from '@coveo/cli-commons/lib/config/configSchemaVersion';
 
 const createSnapshot = async () => {
   const snapshotID = 'my-snapshot';

@@ -5,12 +5,12 @@ import {SingleBar} from 'cli-progress';
 import PlatformClient from '@coveord/platform-client';
 import {dirSync} from 'tmp';
 
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 import {
   Preconditions,
   IsAuthenticated,
-} from '../../../lib/decorators/preconditions';
-import {Config} from '../../../lib/config/config';
+} from '@coveo/cli-commons/lib/preconditions';
+import {Config} from '@coveo/cli-commons/lib/config/config';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {without} from '../../../lib/utils/list';
 import {join} from 'path';
@@ -144,7 +144,7 @@ export default class Dump extends Command {
 
   private async convertRawChunksToCSVs() {
     const {flags} = await this.parse(Dump);
-    const fields = this.getFieldsToExport(flags);
+    const fields = this.getFieldsToExport(flags.fieldsToExclude!);
     for (
       let currentDumpFileIndex = this.internalDumpFileIdx - 1;
       currentDumpFileIndex >= 0;
@@ -166,7 +166,7 @@ export default class Dump extends Command {
     }
   }
 
-  private getFieldsToExport({fieldsToExclude}: {fieldsToExclude: string[]}) {
+  private getFieldsToExport(fieldsToExclude: string[]) {
     const fieldSet = new Set(this.aggregatedFieldsWithDupes);
     for (const fieldToExclude of fieldsToExclude ?? []) {
       fieldSet.delete(fieldToExclude);

@@ -1,15 +1,7 @@
 import {PrintableError, SeverityLevel} from './printableError';
 
-export enum PreconditionErrorCategory {
-  MissingBin = 'Missing Bin',
-  InvalidBinInstallation = 'Invalid Bin installation',
-  InvalidBinVersionRange = 'Invalid Bin Range',
-  MissingPlatformPrivilege = 'Missing Platform Privilege',
-  Authentication = 'Authentication',
-}
-
 export interface PreconditionErrorOptions {
-  category?: PreconditionErrorCategory;
+  category?: string;
   level?: SeverityLevel;
 }
 

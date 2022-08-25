@@ -1,9 +1,12 @@
 import {blueBright} from 'chalk';
 import dedent from 'ts-dedent';
-import {Configuration} from '../config/config';
+import {Configuration} from '@coveo/cli-commons/lib/config/config';
 import {Snapshot} from '../snapshot/snapshot';
 import {SnapshotUrlBuilder} from '../snapshot/snapshotUrlBuilder';
-import {PrintableError, SeverityLevel} from './printableError';
+import {
+  PrintableError,
+  SeverityLevel,
+} from '@coveo/cli-commons/lib/errors/printableError';
 
 interface DetailedReportable extends PrintableError {
   snapshot: Snapshot;

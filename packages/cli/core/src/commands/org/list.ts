@@ -1,9 +1,10 @@
 import {Command, CliUx} from '@oclif/core';
-import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 import {
   Preconditions,
   IsAuthenticated,
-} from '../../lib/decorators/preconditions/';
+} from '@coveo/cli-commons/lib/preconditions/';
+
 import {Trackable} from '../../lib/decorators/preconditions/trackable';
 import {recordable} from '../../lib/utils/record';
 

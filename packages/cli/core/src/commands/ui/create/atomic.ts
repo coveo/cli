@@ -1,22 +1,24 @@
 import {Command, Flags} from '@oclif/core';
 import {
-  Preconditions,
-  IsAuthenticated,
-  HasNecessaryCoveoPrivileges,
   IsNpxInstalled,
   IsNodeVersionInRange,
 } from '../../../lib/decorators/preconditions/';
 import {
+  Preconditions,
+  IsAuthenticated,
+  HasNecessaryCoveoPrivileges,
+} from '@coveo/cli-commons/lib/preconditions';
+import {
   createApiKeyPrivilege,
   impersonatePrivilege,
   viewSearchPagesPrivilege,
-} from '../../../lib/decorators/preconditions/platformPrivilege';
+} from '@coveo/cli-commons/lib/preconditions/platformPrivilege';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {spawnProcess} from '../../../lib/utils/process';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
-import {Config} from '../../../lib/config/config';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
-import {platformUrl} from '../../../lib/platform/environment';
+import {Config} from '@coveo/cli-commons/lib/config/config';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
+import {platformUrl} from '@coveo/cli-commons/lib/platform/environment';
 import {getPackageVersion} from '../../../lib/utils/misc';
 
 export default class Atomic extends Command {

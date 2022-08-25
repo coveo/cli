@@ -1,6 +1,6 @@
 import {Command} from '@oclif/core';
-import {Config} from '../../lib/config/config';
-import {ConfigRenderer} from '../../lib/config/configRenderer';
+import {Config} from '@coveo/cli-commons/lib/config/config';
+import {ConfigRenderer} from '@coveo/cli-commons/lib/config/configRenderer';
 import {Trackable} from '../../lib/decorators/preconditions/trackable';
 
 export default class Get extends Command {

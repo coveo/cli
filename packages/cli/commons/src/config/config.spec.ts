@@ -14,11 +14,11 @@ import {
 } from 'fs-extra';
 import {join} from 'path';
 import dedent from 'ts-dedent';
-import {defaultConfiguration} from '../../__stub__/configuration';
+import {defaultConfiguration} from '@coveo/cli-commons-dev/lib/testUtils/stub/configuration';
 import {PlatformEnvironment} from '../platform/environment';
 import {Config} from './config';
 import {IncompatibleConfigurationError} from './configErrors';
-import {fancyIt} from '../../__test__/it';
+import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
 import {CurrentSchemaVersion} from './configSchemaVersion';
 
 const mockedSemverSatisifies = jest.mocked(satisfies);

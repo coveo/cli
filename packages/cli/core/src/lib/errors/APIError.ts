@@ -1,6 +1,9 @@
 import {red} from 'chalk';
 import dedent from 'ts-dedent';
-import {PrintableError, SeverityLevel} from './printableError';
+import {
+  PrintableError,
+  SeverityLevel,
+} from '@coveo/cli-commons/lib/errors/printableError';
 
 export interface APIErrorResponse {
   message: string;

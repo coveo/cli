@@ -3,14 +3,13 @@ import PlatformClient, {
   PrivilegeModel,
 } from '@coveord/platform-client';
 import {Command} from '@oclif/core';
-import {Config} from '../../config/config';
-import globalConfig from '../../config/globalConfig';
-import {
-  PreconditionError,
-  PreconditionErrorCategory,
-} from '../../errors/preconditionError';
-import {AuthenticatedClient} from '../../platform/authenticatedClient';
+import {Config} from '../config/config';
+import globalConfig from '../config/globalConfig';
+import {PreconditionError} from '../errors/preconditionError';
+import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {PlatformPrivilege} from './platformPrivilege';
+
+const PRECONDITION_ERROR_CATEGORY = 'Missing Platform Privilege';
 
 export function HasNecessaryCoveoPrivileges(
   ...privileges: PlatformPrivilege[]
@@ -19,9 +18,9 @@ export function HasNecessaryCoveoPrivileges(
     this: Command,
     command: Command
   ): Promise<void | never> {
-    const {flags} = hasGetFlagMethod(this)
+    const {flags}: {flags: {organization?: string}} = hasGetFlagMethod(this)
       ? {flags: await this.getFlags()}
-      : await this.parse(command.ctor);
+      : await this.parse<{organization?: string}, unknown, {}>(command.ctor);
     const authenticatedClient = new AuthenticatedClient();
     const client = await authenticatedClient.getClient();
     const {organization: target, anonymous} = await getConfiguration();
@@ -34,7 +33,7 @@ export function HasNecessaryCoveoPrivileges(
             Boolean(anonymous)
           );
           throw new PreconditionError(message, {
-            category: PreconditionErrorCategory.MissingPlatformPrivilege,
+            category: PRECONDITION_ERROR_CATEGORY,
           });
         }
       })
@@ -63,8 +62,8 @@ async function getConfiguration() {
   return config.get();
 }
 
-function hasGetFlagMethod(
-  candidate: any
-): candidate is Command & {getFlags: () => Promise<unknown>} {
+function hasGetFlagMethod(candidate: any): candidate is Command & {
+  getFlags: () => Promise<{organization?: string | undefined}>;
+} {
   return Boolean(candidate?.getFlags);
 }

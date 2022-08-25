@@ -6,11 +6,11 @@ import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
-} from '../../../lib/decorators/preconditions';
-import {writeSourceContentPrivilege} from '../../../lib/decorators/preconditions/platformPrivilege';
+} from '@coveo/cli-commons/lib/preconditions';
+import {writeSourceContentPrivilege} from '@coveo/cli-commons/lib/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {withSourceVisibility} from '../../../lib/flags/sourceCommonFlags';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/lib/platform/authenticatedClient';
 
 export default class SourceCataloghNew extends Command {
   public static description =

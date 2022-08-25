@@ -2,10 +2,13 @@ import type {Command} from '@oclif/core';
 import {dedent} from 'ts-dedent';
 import {spawnProcessOutput, SpawnProcessOutput} from '../../utils/process';
 import {satisfies, validRange} from 'semver';
-import {
-  PreconditionError,
-  PreconditionErrorCategory,
-} from '../../errors/preconditionError';
+import {PreconditionError} from '@coveo/cli-commons/lib/errors/preconditionError';
+
+export enum PreconditionErrorCategoryBin {
+  MissingBin = 'Missing Bin',
+  InvalidBinInstallation = 'Invalid Bin installation',
+  InvalidBinVersionRange = 'Invalid Bin Range',
+}
 
 export interface BinPreconditionsOptions {
   params?: Array<string>;
@@ -39,7 +42,7 @@ export function getBinVersionPrecondition(
           Please report this error to Coveo: https://github.com/coveo/cli/issues/new
         `;
         throw new PreconditionError(message, {
-          category: PreconditionErrorCategory.InvalidBinVersionRange,
+          category: PreconditionErrorCategoryBin.InvalidBinVersionRange,
         });
       }
 
@@ -61,7 +64,7 @@ export function getBinVersionPrecondition(
           ${warnHowToInstallBin(appliedOptions)}
         `;
         throw new PreconditionError(message, {
-          category: PreconditionErrorCategory.InvalidBinVersionRange,
+          category: PreconditionErrorCategoryBin.InvalidBinVersionRange,
         });
       }
     };
@@ -101,7 +104,7 @@ async function checkIfBinIsInstalled(
 
     ${warnHowToInstallBin(options)}`;
     throw new PreconditionError(warningMessage, {
-      category: PreconditionErrorCategory.MissingBin,
+      category: PreconditionErrorCategoryBin.MissingBin,
     });
   }
 
@@ -116,7 +119,7 @@ async function checkIfBinIsInstalled(
       ${warnHowToInstallBin(options)}
     `;
     throw new PreconditionError(message, {
-      category: PreconditionErrorCategory.InvalidBinInstallation,
+      category: PreconditionErrorCategoryBin.InvalidBinInstallation,
     });
   }
 }
