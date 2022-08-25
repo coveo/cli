@@ -13,6 +13,7 @@
         {
           "concurrent": ["prd", "hip"]
         }
+      ]
     },
     "stg": {
       "start_environment_automatically": true
