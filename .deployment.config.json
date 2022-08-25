@@ -7,7 +7,12 @@
       "slack_channels": ["#searchuibuilds"]
     },
     "environments_order": {
-      "sequential": ["dev", "stg", "prd", "hip"]
+      "sequential": [
+        "dev",
+        "stg",
+        {
+          "concurrent": ["prd", "hip"]
+        }
     },
     "stg": {
       "start_environment_automatically": true
