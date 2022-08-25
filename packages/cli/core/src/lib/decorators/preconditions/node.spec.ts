@@ -6,7 +6,7 @@ import {getFakeCommand} from './testsUtils/utils';
 
 import {IsNodeVersionInRange} from './node';
 import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
-import {PreconditionError} from '@coveo/cli-commons/lib/errors/preconditionError';
+import {PreconditionError} from '@coveo/cli-commons/src/errors/preconditionError';
 
 describe('IsNodeVersionInRange', () => {
   const mockedSpawnProcessOutput = jest.mocked(spawnProcessOutput);

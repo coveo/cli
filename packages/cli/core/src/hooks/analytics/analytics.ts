@@ -4,7 +4,7 @@ import {
   AuthenticatedClient,
   AuthenticationStatus,
   getAuthenticationStatus,
-} from '@coveo/cli-commons/lib/platform/authenticatedClient';
+} from '@coveo/cli-commons/src/platform/authenticatedClient';
 import {amplitudeClient} from './amplitudeClient';
 import {Identifier} from './identifier';
 
@@ -32,10 +32,6 @@ const hook = async function (options: AnalyticsHook) {
     ...(userId && {user_id: userId}),
     ...options.event,
   });
-};
-
-export const flush = async () => {
-  await amplitudeClient.flush();
 };
 
 const augmentEvent = async (

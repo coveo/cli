@@ -1,11 +1,11 @@
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
 import {Command, CliUx} from '@oclif/core';
-import {Config} from '@coveo/cli-commons/lib/config/config';
+import {Config} from '@coveo/cli-commons/src/config/config';
 import {
   IsAuthenticated,
   Preconditions,
-} from '@coveo/cli-commons/lib/preconditions';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+} from '@coveo/cli-commons/src/preconditions';
+import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
 import {organization, wait} from '../../../lib/flags/snapshotCommonFlags';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 import {ReportViewerStyles} from '../../../lib/snapshot/reportPreviewer/reportPreviewerStyles';

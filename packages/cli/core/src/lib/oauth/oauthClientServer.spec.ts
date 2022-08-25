@@ -15,7 +15,7 @@ import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
 import {
   PlatformEnvironment,
   platformUrl,
-} from '@coveo/cli-commons/lib/platform/environment';
+} from '@coveo/cli-commons/src/platform/environment';
 import {InvalidStateError} from './authorizationError';
 import {OAuthClientServer} from './oauthClientServer';
 import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';

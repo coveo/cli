@@ -6,15 +6,15 @@ import {resolve} from 'path';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
 import {formatOrgId} from '../../../lib/commonPromptUtils/formater';
-import {Config} from '@coveo/cli-commons/lib/config/config';
+import {Config} from '@coveo/cli-commons/src/config/config';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
-} from '@coveo/cli-commons/lib/preconditions';
+} from '@coveo/cli-commons/src/preconditions';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
-import {writeSnapshotPrivilege} from '@coveo/cli-commons/lib/preconditions/platformPrivilege';
-import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {writeSnapshotPrivilege} from '@coveo/cli-commons/src/preconditions/platformPrivilege';
+import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {ProcessAbort} from '../../../lib/errors/processError';
 import {

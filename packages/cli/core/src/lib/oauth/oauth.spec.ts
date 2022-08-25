@@ -5,7 +5,7 @@ import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
 import {
   PlatformEnvironment,
   platformUrl,
-} from '@coveo/cli-commons/lib/platform/environment';
+} from '@coveo/cli-commons/src/platform/environment';
 import {OAuth} from './oauth';
 import {OAuthClientServer} from './oauthClientServer';
 import open from 'open';
