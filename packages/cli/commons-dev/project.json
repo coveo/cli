@@ -1,0 +1,5 @@
+{
+  "root": "packages/cli/commons-dev",
+  "sourceRoot": "packages/cli/commons-dev/src",
+  "projectType": "library"
+}
