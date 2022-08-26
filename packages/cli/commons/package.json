@@ -2,7 +2,7 @@
   "name": "@coveo/cli-commons",
   "version": "1.34.3",
   "files": [
-    "lib/**"
+    "src/**"
   ],
   "devDependencies": {
     "@coveo/cli-commons-dev": "1.34.3",
