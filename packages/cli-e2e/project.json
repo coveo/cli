@@ -1,4 +1,5 @@
 {
+  "name": "cli-e2e",
   "root": "packages/cli-e2e",
   "sourceRoot": "packages/cli-e2e/__tests__",
   "projectType": "application",

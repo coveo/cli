@@ -170,10 +170,6 @@ HashedFolder {
           "name": "netlify.toml",
         },
         HashedFile {
-          "hash": "d8TOW+/DAo+OmRZ7QVZWBJ4bwOU=",
-          "name": "project.json",
-        },
-        HashedFile {
           "hash": "JcgnYZDTiQ6EqMwKIuEh9x+kLlA=",
           "name": "README.md",
         },
@@ -182,7 +178,7 @@ HashedFolder {
           "name": "tsconfig.json",
         },
       ],
-      "hash": "+KwGXoBYHN/h/8rjUzPoPaNNiLY=",
+      "hash": "vvxKj9TenjTR0gAWR+Bx+laE1ng=",
       "name": "lambda",
     },
     HashedFile {
@@ -288,7 +284,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "Ye4gCEMn55uL92TxegipjNWGqe8=",
+  "hash": "K8MoYu0Ryu554hMRnrfhryv4D8U=",
   "name": "normalizedDir",
 }
 `;
