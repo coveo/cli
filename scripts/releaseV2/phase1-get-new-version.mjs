@@ -11,8 +11,8 @@ import angularChangelogConvention from 'conventional-changelog-angular';
 // Get all commits since last release bump the root package.json version.
 (async () => {
   let newVersion = process.env.VERSION;
+  const PATH = '.';
   if (!newVersion) {
-    const PATH = '.';
     const versionPrefix = 'v';
     const convention = await angularChangelogConvention;
     const lastTag = await getLastTag(versionPrefix);
