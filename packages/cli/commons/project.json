@@ -1,4 +1,5 @@
 {
+  "name": "cli-commons",
   "root": "packages/cli/commons",
   "sourceRoot": "packages/cli/commons/src",
   "projectType": "library"
