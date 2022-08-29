@@ -87,4 +87,4 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           VERSION: ${{ inputs.version }}
-          DEBUG: ${{ inputs.debug && 'true' || '' }}
+          DEBUG: ${{ inputs.debug && '*' || '' }}
