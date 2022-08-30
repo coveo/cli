@@ -1,5 +1,6 @@
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
-import {Command, CliUx} from '@oclif/core';
+import {CliCommand} from '../../../cliCommand';
+import {CliUx} from '@oclif/core';
 import {Config} from '../../../lib/config/config';
 import {
   IsAuthenticated,
@@ -14,7 +15,7 @@ import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 
-export default class Monitor extends Command {
+export default class Monitor extends CliCommand {
   public static description = 'Monitor a Snapshot operation';
 
   public static flags = {
@@ -41,9 +42,6 @@ export default class Monitor extends Command {
 
     await this.monitorSnapshot(snapshot);
   }
-
-  // @Trackable()
-  // public async catch(err?: Error & {exitCode?: number}) {}
 
   private async monitorSnapshot(snapshot: Snapshot) {
     const startReporter = new SnapshotReporter(snapshot.latestReport);

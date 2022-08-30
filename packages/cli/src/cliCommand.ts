@@ -3,12 +3,13 @@ import {CLIBaseError, SeverityLevel} from './lib/errors/CLIBaseError';
 import {Trackable} from './lib/decorators/preconditions/trackable';
 import {stopSpinner} from './lib/utils/ux';
 import {wrapError} from './lib/errors/wrapError';
+import {noop} from './lib/utils/misc';
 
 export abstract class CliCommand extends Command {
-  abstract run(): PromiseLike<any>;
+  public abstract run(): PromiseLike<any>;
 
   @Trackable()
-  protected async catch(err?: any) {
+  protected async catch(err?: any): Promise<CLIBaseError> {
     // Let oclif handle exit signal errors.
     if (err.code === 'EEXIT') {
       return super.catch(err);
@@ -20,15 +21,18 @@ export abstract class CliCommand extends Command {
     // Convert all other errors to CLIBaseErrors for consistency
     const error = wrapError(err);
 
-    return this.isFatalError(error)
+    this.isFatalError(error)
       ? this.handleFatalError(error)
       : this.handleNonFatalError(error);
+    return error;
   }
 
   protected async finally(err: Error | undefined) {
     try {
       stopSpinner(err);
-    } catch {}
+    } catch {
+      noop();
+    }
 
     return super.finally(err);
   }
@@ -44,6 +48,6 @@ export abstract class CliCommand extends Command {
 
   private handleFatalError(error: CLIBaseError) {
     // Let oclif handle errors
-    return super.catch(error);
+    super.catch(error);
   }
 }

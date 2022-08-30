@@ -1,4 +1,5 @@
-import {Command, Flags} from '@oclif/core';
+import {CliCommand} from '../../../cliCommand';
+import {Flags} from '@oclif/core';
 import {Config} from '../../../lib/config/config';
 import {platformUrl} from '../../../lib/platform/environment';
 import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
@@ -25,7 +26,7 @@ type ReactProcessEnv = {
   platformUrl: string;
 };
 
-export default class React extends Command {
+export default class React extends CliCommand {
   public static templateName = '@coveo/cra-template';
   public static cliPackage = 'create-react-app@latest';
 
@@ -73,11 +74,6 @@ export default class React extends Command {
     const {args} = await this.parse(React);
     await this.createProject(args.name);
     await this.setupEnvironmentVariables(args.name);
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 
   private async setupEnvironmentVariables(name: string) {

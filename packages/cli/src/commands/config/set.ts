@@ -1,4 +1,5 @@
-import {CliUx, Command, Flags} from '@oclif/core';
+import {CliCommand} from '../../cliCommand';
+import {CliUx, Flags} from '@oclif/core';
 import {Config} from '../../lib/config/config';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {
@@ -9,7 +10,7 @@ import {Trackable} from '../../lib/decorators/preconditions/trackable';
 import {InvalidCommandError} from '../../lib/errors/InvalidCommandError';
 import {ConfigRenderer} from '../../lib/config/configRenderer';
 
-export default class Set extends Command {
+export default class Set extends CliCommand {
   public static description = 'Modify the current configuration.';
 
   public static flags = {
@@ -48,11 +49,6 @@ export default class Set extends Command {
     }
 
     ConfigRenderer.render(cfg);
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 
   private async verifyOrganization(org: string) {

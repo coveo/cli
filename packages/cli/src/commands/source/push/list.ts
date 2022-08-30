@@ -1,5 +1,6 @@
+import {CliCommand} from '../../../cliCommand';
 import {FilterHostType, SourceModel} from '@coveord/platform-client';
-import {Command, CliUx} from '@oclif/core';
+import {CliUx} from '@oclif/core';
 import {
   IsAuthenticated,
   Preconditions,
@@ -14,7 +15,7 @@ import SourceList from '../list';
  * @TODO: CDX-917: Remove file.
  * @deprecated
  **/
-export default class SourcePushList extends Command {
+export default class SourcePushList extends CliCommand {
   public static description = `${magenta(
     '[Deprecated]'
   )} List all available push sources in your Coveo organization`;
@@ -62,11 +63,6 @@ export default class SourcePushList extends Command {
       },
       {...flags}
     );
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 
   private flattenSourceModels(sourceModels: SourceModel[]) {

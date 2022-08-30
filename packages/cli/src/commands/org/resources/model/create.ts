@@ -1,4 +1,3 @@
-import {Command} from '@oclif/core';
 import {
   IsAuthenticated,
   Preconditions,
@@ -8,8 +7,9 @@ import open from 'open';
 import {AuthenticatedClient} from '../../../../lib/platform/authenticatedClient';
 import {createSnapshotUrl} from '../../../../lib/platform/url';
 import dedent from 'ts-dedent';
+import {CliCommand} from '../../../../cliCommand';
 
-export default class Create extends Command {
+export default class Create extends CliCommand {
   public static description = 'Create a Snapshot Pull Model';
 
   @Trackable({eventName: 'org resources pull - new model'})
@@ -32,10 +32,5 @@ export default class Create extends Command {
       environment: cfg.environment,
       region: cfg.region,
     });
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 }

@@ -1,5 +1,6 @@
+import {CliCommand} from '../../cliCommand';
 import {FilterHostType, SourceModel} from '@coveord/platform-client';
-import {Command, CliUx} from '@oclif/core';
+import {CliUx} from '@oclif/core';
 import {
   IsAuthenticated,
   Preconditions,
@@ -8,7 +9,7 @@ import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import dedent from 'ts-dedent';
 import {Trackable} from '../../lib/decorators/preconditions/trackable';
 
-export default class SourceList extends Command {
+export default class SourceList extends CliCommand {
   public static description =
     'List all available push sources in your Coveo organization';
 
@@ -59,11 +60,6 @@ export default class SourceList extends Command {
       },
       {...flags}
     );
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 
   private flattenSourceModels(sourceModels: SourceModel[]) {

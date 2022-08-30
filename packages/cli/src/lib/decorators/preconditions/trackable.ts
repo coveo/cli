@@ -1,6 +1,7 @@
+// import {Command} from '../../../cliCommand';
 import {Command} from '@oclif/core';
 import {flush} from '../../../hooks/analytics/analytics';
-import {buildError, buildEvent} from '../../../hooks/analytics/eventUtils';
+import {buildEvent} from '../../../hooks/analytics/eventUtils';
 import {CLIBaseError} from '../../errors/CLIBaseError';
 
 export interface TrackableOptions {
@@ -24,15 +25,28 @@ export interface TrackableOptions {
   overrideEventProperties?: Record<string, unknown>;
 }
 
-type CommandReturn = Awaited<ReturnType<Command['run']>> | CLIBaseError;
-export function Trackable<T = CommandReturn>({
+type CommandReturn = any;
+/**
+ *
+ * TODO: explain what it does
+ *
+ * @param {TrackableOptions} [{
+ *   eventName,
+ *   overrideEventProperties,
+ * }={}]
+ *
+ * @description
+ * Make sure to return `return super.catch(err);` if you overwrite the catch methode from the base command
+ *
+ */
+export function Trackable({
   eventName,
   overrideEventProperties,
 }: TrackableOptions = {}) {
   return function (
     _target: Command,
     _propertyKey: string,
-    descriptor: TypedPropertyDescriptor<() => Promise<T>>
+    descriptor: TypedPropertyDescriptor<() => Promise<any>>
   ) {
     const originalCommand = descriptor.value!;
     descriptor.value = async function (this: Command, ...cmdArgs: unknown[]) {
@@ -44,7 +58,7 @@ export function Trackable<T = CommandReturn>({
 
       if (cmdArgs.length > 0) {
         // TODO: not sure we should return here
-        await trackError.call(this, properties, originalCommand, cmdArgs);
+        return trackError.call(this, properties, originalCommand, cmdArgs);
       } else {
         return trackCommand.call(this, name, properties, originalCommand);
       }
@@ -75,17 +89,18 @@ async function trackCommand(
 async function trackError(
   this: Command,
   properties: Record<string, unknown>,
-  originalCatchCommand: (...args: unknown[]) => CommandReturn,
+  originalCatchCommand: (...args: unknown[]) => Promise<CLIBaseError>,
   args: unknown[]
-) {
-  for (const arg of args) {
-    await this.config.runHook('analytics', {
-      event: buildEvent('received error', properties, buildError(arg)),
-    });
-  }
+): Promise<CLIBaseError> {
+  const error = await originalCatchCommand.apply(this, args);
+
+  await this.config.runHook('analytics', {
+    event: buildEvent('received error', properties, error),
+  });
 
   await flush();
-  return originalCatchCommand.apply(this, args);
+
+  return error;
 }
 
 function getEventName(target: Command): string {

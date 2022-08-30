@@ -1,5 +1,5 @@
 import type {ResourceSnapshotType} from '@coveord/platform-client';
-import {Flags, Command, CliUx} from '@oclif/core';
+import {Flags, CliUx} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {readJsonSync} from 'fs-extra';
 import {resolve} from 'path';

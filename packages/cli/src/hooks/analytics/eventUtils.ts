@@ -1,17 +1,10 @@
 import type {Event} from '@amplitude/types';
-import {validate} from 'jsonschema';
-import {
-  APIError,
-  APIErrorResponse,
-  APIErrorSchema,
-} from '../../lib/errors/APIError';
 import {CLIBaseError} from '../../lib/errors/CLIBaseError';
-import {UnknownError} from '../../lib/errors/unknownError';
 
 export function buildEvent(
   eventName: string,
   properties: Record<string, unknown>,
-  err?: Error
+  err?: CLIBaseError
 ): Event {
   const analyticsData = {
     event_type: eventName,
@@ -22,27 +15,6 @@ export function buildEvent(
   };
 
   return analyticsData;
-}
-
-function isErrorFromAPI(arg: unknown): arg is APIErrorResponse {
-  try {
-    return validate(arg, APIErrorSchema).valid;
-  } catch (error) {
-    return false;
-  }
-}
-
-// TODO: use CLIBaseError.wrap
-export function buildError(arg: unknown) {
-  const isCLIBaseError = arg instanceof CLIBaseError;
-  if (isErrorFromAPI(arg)) {
-    console.log('-- FROM ANALYTICS HOOK');
-    return new APIError(arg);
-  } else if (isCLIBaseError) {
-    return arg;
-  } else {
-    return new UnknownError();
-  }
 }
 
 function errorIdentifier(err?: Error) {

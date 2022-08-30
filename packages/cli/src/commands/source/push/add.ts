@@ -4,8 +4,9 @@ import {
   PushSource,
   UploadBatchCallbackData,
 } from '@coveo/push-api-client';
-import {Command, CliUx, Flags} from '@oclif/core';
-import {green, red} from 'chalk';
+import {CliCommand} from '../../../cliCommand';
+import {CliUx, Flags} from '@oclif/core';
+import {green} from 'chalk';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
@@ -28,7 +29,7 @@ import {formatErrorMessage} from '../../../lib/push/addCommon';
 import {errorMessage, successMessage} from '../../../lib/push/userFeedback';
 import {getFileNames} from '../../../lib/utils/file';
 
-export default class SourcePushAdd extends Command {
+export default class SourcePushAdd extends CliCommand {
   public static description =
     'Index a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-files-with-Coveo-CLI for more information.';
 
@@ -96,12 +97,10 @@ export default class SourcePushAdd extends Command {
     CliUx.ux.action.stop(green('✔'));
   }
 
-  // @Trackable()
-  // public async catch(err?: Error & {exitCode?: number}) {
-  //   formatErrorMessage(err);
-  //   throw err;
-  //   // super.catch(err);
-  // }
+  public async catch(err?: Error & {exitCode?: number}) {
+    formatErrorMessage(err);
+    return super.catch(err);
+  }
 
   protected async finally(_?: Error) {
     const {args} = await this.parse(SourcePushAdd);

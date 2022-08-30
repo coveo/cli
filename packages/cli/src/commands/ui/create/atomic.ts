@@ -1,4 +1,5 @@
-import {Command, Flags} from '@oclif/core';
+import {CliCommand} from '../../../cliCommand';
+import {Flags} from '@oclif/core';
 import {
   Preconditions,
   IsAuthenticated,
@@ -19,7 +20,7 @@ import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
 import {platformUrl} from '../../../lib/platform/environment';
 import {getPackageVersion} from '../../../lib/utils/misc';
 
-export default class Atomic extends Command {
+export default class Atomic extends CliCommand {
   public static cliPackage = '@coveo/create-atomic';
   public static requiredNodeVersion = '>=14.0.0 <17.0.0'; // https://github.com/netlify/cli/issues/3617
   public static description =
@@ -62,11 +63,6 @@ export default class Atomic extends Command {
   )
   public async run() {
     await this.createProject();
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 
   private async createProject() {

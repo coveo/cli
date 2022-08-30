@@ -1,4 +1,5 @@
-import {Command, Flags} from '@oclif/core';
+import {CliCommand} from '../../../cliCommand';
+import {Flags} from '@oclif/core';
 import {platformUrl} from '../../../lib/platform/environment';
 import {Config} from '../../../lib/config/config';
 import {spawnProcess} from '../../../lib/utils/process';
@@ -19,7 +20,7 @@ import {
 } from '../../../lib/decorators/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 
-export default class Angular extends Command {
+export default class Angular extends CliCommand {
   public static templateName = '@coveo/angular';
   /**
    * Requirements Based on https://angular.io/guide/setup-local
@@ -113,11 +114,6 @@ export default class Angular extends Command {
 
   private runAngularCliCommand(args: string[], options = {}) {
     return spawnProcess(appendCmdIfWindows`ng`, args, options);
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 
   private get configuration() {

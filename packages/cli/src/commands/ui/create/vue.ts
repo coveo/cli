@@ -1,4 +1,5 @@
-import {Command, Flags} from '@oclif/core';
+import {CliCommand} from '../../../cliCommand';
+import {Flags} from '@oclif/core';
 import {resolve} from 'path';
 import {Config} from '../../../lib/config/config';
 import {
@@ -18,9 +19,8 @@ import {
   impersonatePrivilege,
 } from '../../../lib/decorators/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
-import {CliCommand} from '../../../cliCommand';
 
-export default class Vue extends Command {
+export default class Vue extends CliCommand {
   public static templateName = '@coveo/vue-cli-plugin-typescript';
   public static cliPackage = '@vue/cli';
 
@@ -88,11 +88,6 @@ export default class Vue extends Command {
     await this.invokePlugin(args.name);
     this.displayFeedbackAfterSuccess(args.name);
   }
-
-  // @Trackable()
-  // public async catch(err?: Error & {exitCode?: number}) {
-  //   throw err;
-  // }
 
   private async invokePlugin(applicationName: string) {
     const {flags, args} = await this.parse(Vue);

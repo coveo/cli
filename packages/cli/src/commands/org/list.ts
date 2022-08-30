@@ -1,4 +1,5 @@
-import {Command, CliUx} from '@oclif/core';
+import {CliCommand} from '../../cliCommand';
+import {CliUx} from '@oclif/core';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {
   Preconditions,
@@ -7,7 +8,7 @@ import {
 import {Trackable} from '../../lib/decorators/preconditions/trackable';
 import {recordable} from '../../lib/utils/record';
 
-export default class List extends Command {
+export default class List extends CliCommand {
   public static description = 'List Coveo organizations.';
 
   public static flags = {
@@ -44,10 +45,5 @@ export default class List extends Command {
         {...flags}
       );
     }
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 }

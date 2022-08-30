@@ -16,3 +16,5 @@ export function getPackageVersion(packageName: string) {
 
   return defaultVersion;
 }
+
+export function noop() {}

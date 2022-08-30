@@ -1,4 +1,5 @@
-import {Command, Flags} from '@oclif/core';
+import {CliCommand} from '../../../cliCommand';
+import {Flags} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
@@ -33,7 +34,7 @@ import {
   getMissingVaultEntriesReportHandler,
   getErrorReportHandler,
 } from '../../../lib/snapshot/snapshotCommon';
-export default class Preview extends Command {
+export default class Preview extends CliCommand {
   public static description = 'Preview resource updates';
 
   public static flags = {
@@ -84,15 +85,11 @@ export default class Preview extends Command {
     await this.cleanup(snapshot, project);
   }
 
-  // @Trackable()
-  // public async catch(err?: Error & {exitCode?: number}) {
-  //   throw err;
-  // }
-
-  // public async finally(err?: Error) {
-  //   cleanupProject(this.projectPath);
-  //   super.finally(err);
-  // }
+  public async catch(err?: Error & {exitCode?: number}) {
+    cleanupProject(this.projectPath);
+    await this.supplementErrorMessage(err);
+    return super.catch(err);
+  }
 
   private async shouldDisplayExpandedPreview() {
     const {flags} = await this.parse(Preview);
@@ -107,6 +104,23 @@ export default class Preview extends Command {
       await snapshot.delete();
     }
     project.deleteTemporaryZipFile();
+  }
+
+  private async supplementErrorMessage(err?: Error & {exitCode?: number}) {
+    if (err instanceof SnapshotOperationTimeoutError) {
+      const {flags} = await this.parse(Preview);
+      const snapshot = err.snapshot;
+      const target = await getTargetOrg(this.configuration, flags.organization);
+      this.log(
+        dedent`
+
+          Once the snapshot is created, you can preview it with the following command:
+
+            ${blueBright`coveo org:resources:preview -o ${target} -s ${snapshot.id}`}
+
+            `
+      );
+    }
   }
 
   private async getOptions(): Promise<DryRunOptions> {

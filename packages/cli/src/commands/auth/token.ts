@@ -1,4 +1,5 @@
-import {Command, Flags} from '@oclif/core';
+import {CliCommand} from '../../cliCommand';
+import {Flags} from '@oclif/core';
 import {Config} from '../../lib/config/config';
 import {AuthenticatedClient} from '../../lib/platform/authenticatedClient';
 import {PlatformEnvironment} from '../../lib/platform/environment';
@@ -6,7 +7,7 @@ import {Region} from '@coveord/platform-client';
 import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
 import {Trackable} from '../../lib/decorators/preconditions/trackable';
 
-export default class Token extends Command {
+export default class Token extends CliCommand {
   private configuration!: Config;
   public static description =
     'Log in to the Coveo Platform using an access token.';
@@ -32,11 +33,6 @@ export default class Token extends Command {
     await this.saveRegionAndEnvironment();
     await this.fetchAndSaveOrgId();
     await this.feedbackOnSuccessfulLogin();
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 
   private async feedbackOnSuccessfulLogin() {

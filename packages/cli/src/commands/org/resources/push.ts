@@ -1,4 +1,5 @@
-import {Flags, Command, CliUx} from '@oclif/core';
+import {CliCommand} from '../../../cliCommand';
+import {Flags, CliUx} from '@oclif/core';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
@@ -33,7 +34,7 @@ import {Trackable} from '../../../lib/decorators/preconditions/trackable';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 
-export default class Push extends Command {
+export default class Push extends CliCommand {
   public static description =
     'Preview, validate and deploy your changes to the destination org';
 
@@ -89,11 +90,10 @@ export default class Push extends Command {
     await this.cleanup(snapshot, project);
   }
 
-  // @Trackable()
-  // public async catch(err?: Error & {exitCode?: number}) {
-  //   cleanupProject(this.projectPath);
-  //   throw err;
-  // }
+  public async catch(err?: Error & {exitCode?: number}) {
+    cleanupProject(this.projectPath);
+    return super.catch(err);
+  }
 
   private async shouldSkipPreview() {
     const {flags} = await this.parse(Push);
