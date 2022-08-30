@@ -6,6 +6,7 @@ import {
   APIError,
   AxiosErrorFromAPI,
   AxiosErrorFromAPISchema,
+  isAxiosError,
 } from '../errors/APIError';
 import {UnknownError} from '../errors/unknownError';
 
@@ -29,13 +30,15 @@ export const successMessage = (
   cmd.log(message);
 };
 
+// TODO: not sure how to handle that. This is code duplication. Error should be handlded by base class
 export const errorMessage = (
   cmd: Command,
   tagLine: string,
   e: unknown,
   options = {exit: false}
 ) => {
-  const error = isErrorFromAPI(e)
+  console.log('-- FROM USER FEEDBACK');
+  const error = isAxiosError(e)
     ? new APIError(e, tagLine)
     : new UnknownError(e);
 
@@ -45,7 +48,3 @@ export const errorMessage = (
     cmd.warn(error.message);
   }
 };
-
-function isErrorFromAPI(error: unknown): error is AxiosErrorFromAPI {
-  return validate(error, AxiosErrorFromAPISchema).valid;
-}

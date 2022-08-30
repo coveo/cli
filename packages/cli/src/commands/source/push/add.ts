@@ -96,12 +96,12 @@ export default class SourcePushAdd extends Command {
     CliUx.ux.action.stop(green('✔'));
   }
 
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    formatErrorMessage(err);
-    CliUx.ux.action.stop(red.bold('!'));
-    throw err;
-  }
+  // @Trackable()
+  // public async catch(err?: Error & {exitCode?: number}) {
+  //   formatErrorMessage(err);
+  //   throw err;
+  //   // super.catch(err);
+  // }
 
   protected async finally(_?: Error) {
     const {args} = await this.parse(SourcePushAdd);

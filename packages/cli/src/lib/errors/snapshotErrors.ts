@@ -3,9 +3,9 @@ import dedent from 'ts-dedent';
 import {Configuration} from '../config/config';
 import {Snapshot} from '../snapshot/snapshot';
 import {SnapshotUrlBuilder} from '../snapshot/snapshotUrlBuilder';
-import {PrintableError, SeverityLevel} from './printableError';
+import {CLIBaseError, SeverityLevel} from './CLIBaseError';
 
-interface DetailedReportable extends PrintableError {
+interface DetailedReportable extends CLIBaseError {
   snapshot: Snapshot;
   projectPath?: string;
 }
@@ -19,12 +19,12 @@ function trySavingDetailedReport(error: DetailedReportable) {
 }
 
 export class SnapshotOperationTimeoutError
-  extends PrintableError
+  extends CLIBaseError
   implements DetailedReportable
 {
   public name = 'Snapshot Operation Timeout Error';
   public constructor(public snapshot: Snapshot) {
-    super(SeverityLevel.Info);
+    super({level: SeverityLevel.Info});
     this.message = dedent`${
       snapshot.latestReport.type
     } operation is taking a long time to complete.
@@ -35,19 +35,19 @@ export class SnapshotOperationTimeoutError
 }
 
 export class SnapshotNoReportFoundError
-  extends PrintableError
+  extends CLIBaseError
   implements DetailedReportable
 {
   public name = 'No Report Found Error';
   public constructor(public snapshot: Snapshot) {
-    super(SeverityLevel.Error);
+    super({level: SeverityLevel.Error});
     this.message = dedent`
     No detailed report found for the snapshot ${this.snapshot.id}`;
   }
 }
 
 export class SnapshotGenericError
-  extends PrintableError
+  extends CLIBaseError
   implements DetailedReportable
 {
   public name = 'Snapshot Error';
@@ -56,7 +56,7 @@ export class SnapshotGenericError
     public cfg: Configuration,
     public projectPath?: string
   ) {
-    super(SeverityLevel.Error);
+    super({level: SeverityLevel.Error});
     const report = snapshot.latestReport;
     const urlBuilder = new SnapshotUrlBuilder(cfg);
     const snapshotUrl = urlBuilder.getSnapshotApplyPage(snapshot);
@@ -69,7 +69,7 @@ export class SnapshotGenericError
   }
 }
 export class SnapshotMissingVaultEntriesError
-  extends PrintableError
+  extends CLIBaseError
   implements DetailedReportable
 {
   public name = 'Snapshot Missing Vault Entries';
@@ -78,7 +78,7 @@ export class SnapshotMissingVaultEntriesError
     public cfg: Configuration,
     public projectPath?: string
   ) {
-    super(SeverityLevel.Error);
+    super({level: SeverityLevel.Error});
     this.message = dedent`Your destination organization is missing vault entries needed by the snapshot ${snapshot.id}.
       Ensure that all vault entries are present on the organization ${snapshot.targetId} and try again.
       Visit https://docs.coveo.com/en/m3a90243 for more info on how to create vault entries.`;

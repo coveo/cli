@@ -1,6 +1,7 @@
 import {red} from 'chalk';
+import {validate} from 'jsonschema';
 import dedent from 'ts-dedent';
-import {PrintableError, SeverityLevel} from './printableError';
+import {CLIBaseError} from './CLIBaseError';
 
 export interface APIErrorResponse {
   message: string;
@@ -45,30 +46,32 @@ export const AxiosErrorFromAPISchema = {
   },
 };
 
-export class APIError extends PrintableError {
+export class APIError extends CLIBaseError {
   public constructor(
     error: APIErrorResponse | AxiosErrorFromAPI,
     tagLine?: string
   ) {
-    super(SeverityLevel.Error);
-    let errorCode: string;
-    let message: string;
+    super();
     let status: number | undefined;
+    const {errorCode, message, requestID} = this.isFromAxios(error)
+      ? error.response.data
+      : error;
+
     if (this.isFromAxios(error)) {
-      errorCode = error.response.data.errorCode;
-      message = error.response.data.message;
       status = error.response.status;
-    } else {
-      errorCode = error.errorCode;
-      message = error.message;
     }
 
-    this.name = `APIError - ${errorCode}`;
-    this.message = dedent`
-    ${tagLine}
-    ${status ? `Status code: ${status}\n` : ''}
+    this.name = 'APIError';
+    if (tagLine) {
+      this.message = `${tagLine}\n`;
+    }
+    if (status) {
+      this.message += `Status code: ${status}\n`;
+    }
+    this.message += dedent`
     Error code: ${red(errorCode)}
     Message: ${red(message)}
+    Request ID: ${red(requestID)}
     `;
   }
 
@@ -77,4 +80,16 @@ export class APIError extends PrintableError {
   ): error is AxiosErrorFromAPI {
     return 'response' in error;
   }
+}
+
+export function isErrorFromAPI(arg: unknown): arg is APIErrorResponse {
+  try {
+    return validate(arg, APIErrorSchema).valid;
+  } catch (error) {
+    return false;
+  }
+}
+
+export function isAxiosError(error: unknown): error is AxiosErrorFromAPI {
+  return validate(error, AxiosErrorFromAPISchema).valid;
 }

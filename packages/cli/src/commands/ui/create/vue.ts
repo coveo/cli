@@ -18,6 +18,7 @@ import {
   impersonatePrivilege,
 } from '../../../lib/decorators/preconditions/platformPrivilege';
 import {Trackable} from '../../../lib/decorators/preconditions/trackable';
+import {CliCommand} from '../../../cliCommand';
 
 export default class Vue extends Command {
   public static templateName = '@coveo/vue-cli-plugin-typescript';
@@ -88,10 +89,10 @@ export default class Vue extends Command {
     this.displayFeedbackAfterSuccess(args.name);
   }
 
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
-  }
+  // @Trackable()
+  // public async catch(err?: Error & {exitCode?: number}) {
+  //   throw err;
+  // }
 
   private async invokePlugin(applicationName: string) {
     const {flags, args} = await this.parse(Vue);

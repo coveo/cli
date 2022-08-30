@@ -1,9 +1,9 @@
-import {PrintableError, SeverityLevel} from './printableError';
+import {CLIBaseError, SeverityLevel} from './CLIBaseError';
 
-export class UnknownError extends PrintableError {
+export class UnknownError extends CLIBaseError {
   public name = 'Unknown CLI Error';
   public constructor(e?: unknown) {
-    super(SeverityLevel.Error);
+    super({level: SeverityLevel.Error});
     const error = typeof e === 'string' ? new Error(e) : e;
     if (error && error instanceof Error) {
       this.message = error.message;

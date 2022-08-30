@@ -28,7 +28,6 @@ import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {
   dryRun,
   getTargetOrg,
-  handleSnapshotError,
   DryRunOptions,
   cleanupProject,
   getMissingVaultEntriesReportHandler,
@@ -85,12 +84,15 @@ export default class Preview extends Command {
     await this.cleanup(snapshot, project);
   }
 
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    cleanupProject(this.projectPath);
-    handleSnapshotError(err);
-    await this.displayAdditionalErrorMessage(err);
-  }
+  // @Trackable()
+  // public async catch(err?: Error & {exitCode?: number}) {
+  //   throw err;
+  // }
+
+  // public async finally(err?: Error) {
+  //   cleanupProject(this.projectPath);
+  //   super.finally(err);
+  // }
 
   private async shouldDisplayExpandedPreview() {
     const {flags} = await this.parse(Preview);
@@ -105,25 +107,6 @@ export default class Preview extends Command {
       await snapshot.delete();
     }
     project.deleteTemporaryZipFile();
-  }
-
-  private async displayAdditionalErrorMessage(
-    err?: Error & {exitCode?: number}
-  ) {
-    if (err instanceof SnapshotOperationTimeoutError) {
-      const {flags} = await this.parse(Preview);
-      const snapshot = err.snapshot;
-      const target = await getTargetOrg(this.configuration, flags.organization);
-      this.log(
-        dedent`
-
-          Once the snapshot is created, you can preview it with the following command:
-
-            ${blueBright`coveo org:resources:preview -o ${target} -s ${snapshot.id}`}
-
-            `
-      );
-    }
   }
 
   private async getOptions(): Promise<DryRunOptions> {

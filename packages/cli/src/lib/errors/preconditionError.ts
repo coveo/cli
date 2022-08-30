@@ -1,4 +1,4 @@
-import {PrintableError, SeverityLevel} from './printableError';
+import {CLIBaseError, SeverityLevel} from './CLIBaseError';
 
 export enum PreconditionErrorCategory {
   MissingBin = 'Missing Bin',
@@ -13,15 +13,12 @@ export interface PreconditionErrorOptions {
   level?: SeverityLevel;
 }
 
-export class PreconditionError extends PrintableError {
-  public constructor(
-    public message: string,
-    public options?: PreconditionErrorOptions
-  ) {
-    super(options?.level || SeverityLevel.Error);
+export class PreconditionError extends CLIBaseError {
+  public constructor(message: string, options?: PreconditionErrorOptions) {
+    super({message, ...options});
     this.name = 'Precondition Error';
-    if (this.options?.category) {
-      this.name += ` - ${this.options?.category}`;
+    if (options?.category) {
+      this.name += ` - ${options?.category}`;
     }
   }
 }

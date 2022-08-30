@@ -32,10 +32,11 @@ function isErrorFromAPI(arg: unknown): arg is APIErrorResponse {
   }
 }
 
+// TODO: use CLIBaseError.wrap
 export function buildError(arg: unknown) {
   const isCLIBaseError = arg instanceof CLIBaseError;
-
   if (isErrorFromAPI(arg)) {
+    console.log('-- FROM ANALYTICS HOOK');
     return new APIError(arg);
   } else if (isCLIBaseError) {
     return arg;

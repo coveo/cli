@@ -1,6 +1,7 @@
-import type {Command} from '@oclif/core';
+import {Command} from '@oclif/core';
 import {flush} from '../../../hooks/analytics/analytics';
 import {buildError, buildEvent} from '../../../hooks/analytics/eventUtils';
+import {CLIBaseError} from '../../errors/CLIBaseError';
 
 export interface TrackableOptions {
   /**
@@ -23,14 +24,15 @@ export interface TrackableOptions {
   overrideEventProperties?: Record<string, unknown>;
 }
 
-export function Trackable({
+type CommandReturn = Awaited<ReturnType<Command['run']>> | CLIBaseError;
+export function Trackable<T = CommandReturn>({
   eventName,
   overrideEventProperties,
 }: TrackableOptions = {}) {
   return function (
     _target: Command,
     _propertyKey: string,
-    descriptor: TypedPropertyDescriptor<() => Promise<void>>
+    descriptor: TypedPropertyDescriptor<() => Promise<T>>
   ) {
     const originalCommand = descriptor.value!;
     descriptor.value = async function (this: Command, ...cmdArgs: unknown[]) {
@@ -41,9 +43,10 @@ export function Trackable({
       };
 
       if (cmdArgs.length > 0) {
+        // TODO: not sure we should return here
         await trackError.call(this, properties, originalCommand, cmdArgs);
       } else {
-        await trackCommand.call(this, name, properties, originalCommand);
+        return trackCommand.call(this, name, properties, originalCommand);
       }
     };
   };
@@ -53,24 +56,26 @@ async function trackCommand(
   this: Command,
   eventName: string,
   properties: Record<string, unknown>,
-  originalRunCommand: () => Promise<void>
+  originalRunCommand: CommandReturn
 ) {
   await this.config.runHook('analytics', {
     event: buildEvent(`started ${eventName}`, properties),
     identify: true,
   });
 
-  await originalRunCommand.apply(this);
+  const commandResult: CommandReturn = await originalRunCommand.apply(this);
 
   await this.config.runHook('analytics', {
     event: buildEvent(`completed ${eventName}`, properties),
   });
+
+  return commandResult;
 }
 
 async function trackError(
   this: Command,
   properties: Record<string, unknown>,
-  originalCatchCommand: (...args: unknown[]) => Promise<void>,
+  originalCatchCommand: (...args: unknown[]) => CommandReturn,
   args: unknown[]
 ) {
   for (const arg of args) {
@@ -80,9 +85,9 @@ async function trackError(
   }
 
   await flush();
-  await originalCatchCommand.apply(this, args);
+  return originalCatchCommand.apply(this, args);
 }
 
-function getEventName(target: Command) {
-  return target.id!.replace(/:/g, ' ');
+function getEventName(target: Command): string {
+  return target.id?.replace(/:/g, ' ') || '';
 }

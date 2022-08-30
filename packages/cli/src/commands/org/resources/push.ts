@@ -11,7 +11,6 @@ import {
   dryRun,
   getTargetOrg,
   handleReportWithErrors,
-  handleSnapshotError,
   cleanupProject,
   DryRunOptions,
   getMissingVaultEntriesReportHandler,
@@ -90,11 +89,11 @@ export default class Push extends Command {
     await this.cleanup(snapshot, project);
   }
 
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    cleanupProject(this.projectPath);
-    handleSnapshotError(err);
-  }
+  // @Trackable()
+  // public async catch(err?: Error & {exitCode?: number}) {
+  //   cleanupProject(this.projectPath);
+  //   throw err;
+  // }
 
   private async shouldSkipPreview() {
     const {flags} = await this.parse(Push);
