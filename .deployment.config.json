@@ -7,12 +7,21 @@
       "slack_channels": ["#searchuibuilds"]
     },
     "environments_order": {
-      "sequential": ["dev", "stg", "prd"]
+      "sequential": [
+        "dev",
+        "stg",
+        {
+          "concurrent": ["prd", "hip"]
+        }
+      ]
     },
     "stg": {
       "start_environment_automatically": true
     },
     "prd": {
+      "start_environment_automatically": true
+    },
+    "hip": {
       "start_environment_automatically": true
     },
     "aws_regions": {
@@ -30,6 +39,9 @@
         "bucket": "{terraform.infra.infra.bucket_binaries}",
         "directory": "proda/StaticCDN/cli",
         "source": "./artifacts",
+        "hip": {
+          "disabled": true
+        },
         "parameters": {
           "acl": "public-read"
         }

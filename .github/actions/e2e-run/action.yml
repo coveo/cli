@@ -46,7 +46,9 @@ runs:
       shell: bash
       working-directory: packages/cli-e2e
       run: echo ${{inputs.cliConfigJson}} | base64 --decode | gpg --quiet --batch --yes --decrypt --passphrase="${{ env.E2E_TOKEN_PASSPHRASE }}" --output decrypted
-    - run: npm ci
+    - run: |
+        npm ci
+        npm run build
       shell: bash
     - name: End-to-end Setup
       shell: bash

@@ -86,7 +86,7 @@ npm i
 To run the local version of the CLI
 
 ```sh
-./packages/cli/bin/run
+./packages/cli/core/bin/dev
 ```
 
 To build all projects for production, run:
