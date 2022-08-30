@@ -24,7 +24,6 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "prepublishOnly": "npm run build",
-    "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
     "release:phase2": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase2-bump-all-packages.mjs"
   },
   "publishConfig": {
