@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli-plugin-source",
-  "version": "1.35.8",
+  "version": "1.35.9",
   "description": "Manage Coveo Sources with the Coveo CLI",
   "author": "Coveo",
   "homepage": "https://github.com/coveo/cli",
@@ -14,7 +14,7 @@
     "/oclif.manifest.json"
   ],
   "dependencies": {
-    "@coveo/cli-commons": "1.35.8",
+    "@coveo/cli-commons": "1.35.9",
     "@coveo/push-api-client": "2.5.8",
     "@coveord/platform-client": "34.7.0",
     "@oclif/core": "1.14.2",
@@ -25,7 +25,7 @@
     "ts-dedent": "2.2.0"
   },
   "devDependencies": {
-    "@coveo/cli-commons-dev": "1.35.8",
+    "@coveo/cli-commons-dev": "1.35.9",
     "@oclif/test": "2.1.1",
     "@types/jest": "27.5.2",
     "@types/node": "16.11.53",

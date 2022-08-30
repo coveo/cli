@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli-commons-dev",
-  "version": "1.35.8",
+  "version": "1.35.9",
   "files": [
     "lib/**",
     ".eslintrc.js",

@@ -1,3 +1,9 @@
+## 1.35.9 (2022-08-30)
+
+### Bug Fixes
+
+- **cli:** fix source plugin import ([#907](https://github.com/coveo/cli/issues/907)) ([d5b93a3](https://github.com/coveo/cli/commits/d5b93a3ce24910118da9f5d12eaa1e6c77e9d75e))
+
 ## 1.35.8 (2022-08-29)
 
 ### Features
