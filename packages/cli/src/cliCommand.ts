@@ -24,6 +24,7 @@ export abstract class CliCommand extends Command {
     this.isFatalError(error)
       ? this.handleFatalError(error)
       : this.handleNonFatalError(error);
+
     return error;
   }
 
@@ -44,10 +45,11 @@ export abstract class CliCommand extends Command {
   private handleNonFatalError(error: CLIBaseError) {
     CliUx.ux.log();
     CliUx.ux[error.severityLevel]('\n' + error.message);
+    return error;
   }
 
   private handleFatalError(error: CLIBaseError) {
     // Let oclif handle errors
-    super.catch(error);
+    throw error;
   }
 }

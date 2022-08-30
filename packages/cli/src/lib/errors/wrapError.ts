@@ -11,6 +11,10 @@ export function wrapError(err: unknown): CLIBaseError {
     return err;
   }
 
+  if (err instanceof Error) {
+    return new CLIBaseError(err);
+  }
+
   if (isAxiosError(err) || isErrorFromAPI(err)) {
     return new APIError(err);
   }

@@ -7,6 +7,7 @@ export enum SeverityLevel {
 export interface CLIBaseErrorInterface {
   message?: string;
   level?: SeverityLevel;
+  cause?: Error;
 }
 
 export class CLIBaseError extends Error {
@@ -19,7 +20,7 @@ export class CLIBaseError extends Error {
   public name = 'CLI Error';
 
   public constructor(options?: CLIBaseErrorInterface) {
-    super(options?.message);
+    super(options?.message, options?.cause);
     this.options = {...CLIBaseError.defaultOptions, ...options};
   }
 
