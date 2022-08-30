@@ -147,7 +147,10 @@ export function shimNpm() {
   process.env[npmCachePathEnvVar] = join(npmDir, 'cache');
   copySync(join(__dirname, '..', 'npm-shim'), npmDir);
   const npmCiArgs = [appendCmdIfWindows`npm`, 'ci'];
-  spawnSync(npmCiArgs.shift()!, npmCiArgs, {cwd: npmDir});
+  spawnSync(npmCiArgs.shift()!, npmCiArgs, {
+    cwd: npmDir,
+    env: {...process.env, npm_config_registry: 'https://registry.npmjs.org'},
+  });
   process.env[npmPathEnvVar] = resolve(
     npmDir,
     'node_modules',
