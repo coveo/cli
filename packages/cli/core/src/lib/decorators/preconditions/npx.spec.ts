@@ -6,8 +6,8 @@ import {getFakeCommand} from './testsUtils/utils';
 
 import {IsNpxInstalled} from './npx';
 import {appendCmdIfWindows} from '../../utils/os';
-import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
-import {PreconditionError} from '@coveo/cli-commons/src/errors/preconditionError';
+import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
+import {PreconditionError} from '@coveo/cli-commons/errors/preconditionError';
 
 describe('IsNpxInstalled', () => {
   const mockedSpawnProcessOutput = jest.mocked(spawnProcessOutput);

@@ -1,7 +1,7 @@
-jest.mock('../../lib/config/config');
+jest.mock('./config');
 
 import {BaseConfiguration, Config} from './config';
-import {fancyIt} from '../../__test__/it';
+import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {ConfigRenderer} from './configRenderer';
 
 describe('configRenderer', () => {

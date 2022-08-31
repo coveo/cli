@@ -1,12 +1,12 @@
-jest.mock('@coveo/cli-commons/src/config/config');
-jest.mock('@coveo/cli-commons/src/preconditions/trackable');
+jest.mock('@coveo/cli-commons/config/config');
+jest.mock('@coveo/cli-commons/preconditions/trackable');
 
-jest.mock('@coveo/cli-commons/src/platform/authenticatedClient');
+jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 
 import {test} from '@oclif/test';
-import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {OrganizationCreationOrigin} from '@coveord/platform-client';
-import {Config} from '@coveo/cli-commons/src/config/config';
+import {Config} from '@coveo/cli-commons/config/config';
 
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient, true);
 const mockedConfig = jest.mocked(Config, true);

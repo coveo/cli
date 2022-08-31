@@ -5,13 +5,10 @@ import {SingleBar} from 'cli-progress';
 import PlatformClient from '@coveord/platform-client';
 import {dirSync} from 'tmp';
 
-import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
-import {
-  Preconditions,
-  IsAuthenticated,
-} from '@coveo/cli-commons/src/preconditions';
-import {Config} from '@coveo/cli-commons/src/config/config';
-import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
+import {Preconditions, IsAuthenticated} from '@coveo/cli-commons/preconditions';
+import {Config} from '@coveo/cli-commons/config/config';
+import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {without} from '../../../lib/utils/list';
 import {join} from 'path';
 import dedent from 'ts-dedent';

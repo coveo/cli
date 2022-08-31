@@ -1,4 +1,4 @@
-import {CLIBaseError} from '@coveo/cli-commons/src/errors/cliBaseError';
+import {CLIBaseError} from '@coveo/cli-commons/errors/cliBaseError';
 
 export class InvalidProjectError extends CLIBaseError {
   public name = 'Invalid Project Error';

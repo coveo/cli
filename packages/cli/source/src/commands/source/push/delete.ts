@@ -1,10 +1,7 @@
 import {Command, Flags} from '@oclif/core';
 import {PushSource} from '@coveo/push-api-client';
-import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
-import {
-  IsAuthenticated,
-  Preconditions,
-} from '@coveo/cli-commons/src/preconditions';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
+import {IsAuthenticated, Preconditions} from '@coveo/cli-commons/preconditions';
 import dedent from 'ts-dedent';
 import {green, red} from 'chalk';
 import {
@@ -12,7 +9,7 @@ import {
   errorMessage,
   successMessage,
 } from '../../../lib/userFeedback';
-import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
+import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 
 export default class SourcePushDelete extends Command {
   public static description =

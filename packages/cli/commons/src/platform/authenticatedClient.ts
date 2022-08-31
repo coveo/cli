@@ -1,7 +1,7 @@
 require('isomorphic-fetch');
 require('abortcontroller-polyfill');
 
-import PlatformClient, {PrivilegeModel} from '@coveord/platform-client';
+import PlatformClient from '@coveord/platform-client';
 import {Config, Configuration} from '../config/config';
 import {castEnvironmentToPlatformClient} from './environment';
 import HttpsProxyAgent from 'https-proxy-agent';

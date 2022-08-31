@@ -6,7 +6,7 @@ import {getFakeCommand} from './testsUtils/utils';
 
 import {IsNpmVersionInRange} from './npm';
 import {appendCmdIfWindows} from '../../utils/os';
-import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
+import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 
 describe('IsNpmVersionInRange', () => {
   const mockedSpawnProcessOutput = jest.mocked(spawnProcessOutput);

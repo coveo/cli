@@ -1,6 +1,6 @@
 import {handleTerminationSignals} from './termination-signals';
 import {Hook} from '@oclif/core';
-import globalConfig from '@coveo/cli-commons/src/config/globalConfig';
+import globalConfig from '@coveo/cli-commons/config/globalConfig';
 
 const hook: Hook<'init'> = async function (opts) {
   handleTerminationSignals();

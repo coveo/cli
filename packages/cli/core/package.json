@@ -170,7 +170,7 @@
   },
   "repository": "coveo/cli",
   "scripts": {
-    "build": "rimraf lib && tsc -p tsconfig.json",
+    "build": "rimraf lib && tsc -p tsconfig.build.json",
     "test": "jest --colors",
     "lint": "prettier --check . && eslint .",
     "release:phase2": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase2-bump-all-packages.mjs",

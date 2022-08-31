@@ -1,7 +1,7 @@
 import {CliUx} from '@oclif/core';
 
-import globalConfig from '@coveo/cli-commons/src/config/globalConfig';
-import {buildEvent} from '@coveo/cli-commons/src/analytics/eventUtils';
+import globalConfig from '@coveo/cli-commons/config/globalConfig';
+import {buildEvent} from '@coveo/cli-commons/analytics/eventUtils';
 
 /**
  *

@@ -2,7 +2,7 @@ import {CliUx} from '@oclif/core';
 import {red, dim, green} from 'chalk';
 import {BuiltInTransformers, errors} from '@coveo/push-api-client';
 import {withNormalizeInvalidFields} from './commonFlags';
-import {pluralizeIfNeeded} from '@coveo/cli-commons/src/utils/string';
+import {pluralizeIfNeeded} from '@coveo/cli-commons/utils/string';
 import dedent from 'ts-dedent';
 
 const allowedCharRegExp = /^[a-z]+[a-z0-9_]*$/;

@@ -3,7 +3,7 @@ import {CliUx} from '@oclif/core';
 import {bold, green, red} from 'chalk';
 import dedent from 'ts-dedent';
 import {SnapshotMissingVaultEntriesFromOriginError} from '../../errors/vaultErrors';
-import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {Project} from '../../project/project';
 import type {VaultEntryAttributes} from '../snapshotReporter';
 import type {VaultTransferFunctionsParam} from './interfaces';

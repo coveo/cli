@@ -1,4 +1,4 @@
-import type {Configuration} from '@coveo/cli-commons/src/config/config';
+import type {Configuration} from '@coveo/cli-commons/config/config';
 import type {Snapshot} from '../snapshot';
 import type {SnapshotReporter} from '../snapshotReporter';
 

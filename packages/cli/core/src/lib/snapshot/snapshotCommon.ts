@@ -4,9 +4,9 @@ import {SnapshotFactory} from './snapshotFactory';
 import {Snapshot, WaitUntilDoneOptions} from './snapshot';
 import {red, green} from 'chalk';
 import {normalize} from 'path';
-import {Config, Configuration} from '@coveo/cli-commons/src/config/config';
+import {Config, Configuration} from '@coveo/cli-commons/config/config';
 import {SnapshotGenericError} from '../errors/snapshotErrors';
-import {PrintableError} from '@coveo/cli-commons/src/errors/printableError';
+import {PrintableError} from '@coveo/cli-commons/errors/printableError';
 import {SnapshotReporter} from './snapshotReporter';
 import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
 import {

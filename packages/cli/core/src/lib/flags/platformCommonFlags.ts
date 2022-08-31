@@ -4,7 +4,7 @@ import {
   DEFAULT_ENVIRONMENT,
   DEFAULT_REGION,
   PlatformEnvironment,
-} from '@coveo/cli-commons/src/platform/environment';
+} from '@coveo/cli-commons/platform/environment';
 
 export const withRegion = (withDefault = true) => ({
   region: Flags.string({
