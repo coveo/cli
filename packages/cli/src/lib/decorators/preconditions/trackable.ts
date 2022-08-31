@@ -1,8 +1,8 @@
-// import {Command} from '../../../cliCommand';
 import {Command} from '@oclif/core';
 import {flush} from '../../../hooks/analytics/analytics';
 import {buildEvent} from '../../../hooks/analytics/eventUtils';
 import {CLIBaseError} from '../../errors/CLIBaseError';
+import {wrapError} from '../../errors/wrapError';
 
 export interface TrackableOptions {
   /**
@@ -57,7 +57,6 @@ export function Trackable({
       };
 
       if (cmdArgs.length > 0) {
-        // TODO: not sure we should return here
         return trackError.call(this, properties, originalCommand, cmdArgs);
       } else {
         return trackCommand.call(this, name, properties, originalCommand);
@@ -92,17 +91,23 @@ async function trackError(
   originalCatchCommand: (...args: unknown[]) => Promise<CLIBaseError>,
   args: unknown[]
 ): Promise<CLIBaseError> {
-  const error = await originalCatchCommand.apply(this, args);
-
-  await this.config.runHook('analytics', {
-    event: buildEvent('received error', properties, error),
-  });
+  for (const arg of args) {
+    await this.config.runHook('analytics', {
+      event: buildEvent('received error', properties, wrapError(arg)),
+    });
+  }
 
   await flush();
-
-  return error;
+  return originalCatchCommand.apply(this, args);
 }
 
 function getEventName(target: Command): string {
   return target.id?.replace(/:/g, ' ') || '';
 }
+
+// TODO: verify that errors are being tracked
+// TODO: verify that errors are being tracked
+// TODO: verify that errors are being tracked
+// TODO: verify that errors are being tracked
+// TODO: verify that errors are being tracked
+// TODO: verify that errors are being tracked

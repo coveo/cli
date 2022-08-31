@@ -24,13 +24,15 @@ export class SnapshotOperationTimeoutError
 {
   public name = 'Snapshot Operation Timeout Error';
   public constructor(public snapshot: Snapshot) {
-    super({level: SeverityLevel.Info});
-    this.message = dedent`${
-      snapshot.latestReport.type
-    } operation is taking a long time to complete.
+    super(
+      dedent`${
+        snapshot.latestReport.type
+      } operation is taking a long time to complete.
     Run the following command to monitor the operation:
 
-      ${blueBright`coveo org:resources:monitor ${snapshot.id} -t ${snapshot.targetId}`}`;
+      ${blueBright`coveo org:resources:monitor ${snapshot.id} -t ${snapshot.targetId}`}`,
+      {level: SeverityLevel.Info}
+    );
   }
 }
 
@@ -40,7 +42,7 @@ export class SnapshotNoReportFoundError
 {
   public name = 'No Report Found Error';
   public constructor(public snapshot: Snapshot) {
-    super({level: SeverityLevel.Error});
+    super();
     this.message = dedent`
     No detailed report found for the snapshot ${this.snapshot.id}`;
   }
@@ -56,7 +58,7 @@ export class SnapshotGenericError
     public cfg: Configuration,
     public projectPath?: string
   ) {
-    super({level: SeverityLevel.Error});
+    super();
     const report = snapshot.latestReport;
     const urlBuilder = new SnapshotUrlBuilder(cfg);
     const snapshotUrl = urlBuilder.getSnapshotApplyPage(snapshot);
@@ -78,7 +80,7 @@ export class SnapshotMissingVaultEntriesError
     public cfg: Configuration,
     public projectPath?: string
   ) {
-    super({level: SeverityLevel.Error});
+    super();
     this.message = dedent`Your destination organization is missing vault entries needed by the snapshot ${snapshot.id}.
       Ensure that all vault entries are present on the organization ${snapshot.targetId} and try again.
       Visit https://docs.coveo.com/en/m3a90243 for more info on how to create vault entries.`;
