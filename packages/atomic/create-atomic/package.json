@@ -45,6 +45,7 @@
     "typescript": "4.7.4"
   },
   "devDependencies": {
+    "@coveo/create-atomic-template": "^1.35.9",
     "fs-extra": "10.1.0"
   }
 }
