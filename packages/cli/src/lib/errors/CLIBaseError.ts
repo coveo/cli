@@ -1,3 +1,4 @@
+import {CLIError} from '@oclif/core/lib/errors';
 import {Chalk, red, yellow} from 'chalk';
 
 export enum SeverityLevel {
@@ -16,10 +17,14 @@ export class CLIBaseError extends Error {
   public name = 'CLI Error';
 
   public constructor(
-    public error?: string | Error,
+    private error?: string | Error | CLIError,
     private options?: CLIBaseErrorInterface
   ) {
     super(error instanceof Error ? error.message : error, options);
+  }
+
+  public get oclif() {
+    return this.error instanceof CLIError ? this.error.oclif : {};
   }
 
   public get severityLevel(): SeverityLevel {

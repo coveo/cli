@@ -2,7 +2,7 @@ import {CliUx, Command} from '@oclif/core';
 import {CLIBaseError, SeverityLevel} from './lib/errors/CLIBaseError';
 import {Trackable} from './lib/decorators/preconditions/trackable';
 import {stopSpinner} from './lib/utils/ux';
-import {prettyPrintError, wrapError} from './lib/errors/wrapError';
+import {wrapError} from './lib/errors/wrapError';
 import {noop} from './lib/utils/misc';
 
 export abstract class CliCommand extends Command {
@@ -15,7 +15,6 @@ export abstract class CliCommand extends Command {
 
     // Convert all other errors to CLIBaseErrors for consistency
     let error = wrapError(err);
-    error = prettyPrintError(error);
 
     return this.isFatalError(error)
       ? this.handleFatalError(error)

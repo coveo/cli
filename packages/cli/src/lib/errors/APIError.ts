@@ -1,6 +1,5 @@
 import {red} from 'chalk';
 import {validate} from 'jsonschema';
-import dedent from 'ts-dedent';
 import {CLIBaseError} from './CLIBaseError';
 
 export interface APIErrorResponse {
@@ -53,6 +52,7 @@ export class APIError extends CLIBaseError {
   ) {
     super();
     let status: number | undefined;
+    let messageParts = [''];
     const {errorCode, message, requestID} = this.isFromAxios(error)
       ? error.response.data
       : error;
@@ -63,16 +63,17 @@ export class APIError extends CLIBaseError {
 
     this.name = 'APIError';
     if (tagLine) {
-      this.message = `${tagLine}\n`;
+      messageParts.push(tagLine);
     }
     if (status) {
-      this.message += `Status code: ${status}\n`;
+      messageParts.push(`Status code: ${status}`);
     }
-    this.message += dedent`
-    Error code: ${red(errorCode)}
-    Message: ${red(message)}
-    Request ID: ${red(requestID)}
-    `;
+    this.message = [
+      ...messageParts,
+      `Error code: ${red(errorCode)}`,
+      `Message: ${red(message)}`,
+      `Request ID: ${red(requestID)}`,
+    ].join('\n');
   }
 
   private isFromAxios(
