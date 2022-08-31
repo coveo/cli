@@ -1,0 +1,8 @@
+{
+  "extends": "@coveo/cli-commons-dev/tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["**/*.spec.ts"]
+}

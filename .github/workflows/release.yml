@@ -6,6 +6,11 @@ on:
         description: '⚠ be sure of yourself ⚠'
         required: false
         default: ''
+      debug:
+        description: 'Add DEBUG=* to the env if true'
+        type: boolean
+        default: false
+        required: false
 
 jobs:
   snyk:
@@ -81,3 +86,5 @@ jobs:
         run: npm run release
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          VERSION: ${{ inputs.version }}
+          DEBUG: ${{ inputs.debug && '*' || '' }}

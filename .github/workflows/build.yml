@@ -71,6 +71,8 @@ jobs:
         run: npm i -g npm@8.10.0
       - name: Setup repo
         run: npm ci
+      - name: Build
+        run: npm run build
       - name: Tests
         run: npm run test
   e2e-setup-login:

@@ -1,3 +1,20 @@
+## v1.35.9 (2022-08-30)
+
+### Bug Fixes
+
+- **cli:** fix source plugin import ([#907](https://github.com/coveo/cli/issues/907)) ([d5b93a3](https://github.com/coveo/cli/commits/d5b93a3ce24910118da9f5d12eaa1e6c77e9d75e))
+
+## v1.35.8 (2022-08-29)
+
+### Bug Fixes
+
+- deploy in hipaa ([#900](https://github.com/coveo/cli/issues/900)) ([8d93952](https://github.com/coveo/cli/commits/8d93952c2f10f4b589aea100c6f20350375a14bf))
+
+### Features
+
+- add plugin support ([#892](https://github.com/coveo/cli/issues/892)) ([05ac35e](https://github.com/coveo/cli/commits/05ac35e345a722c6d1102891508ebeacdbe6f9bd))
+- **cli:** extract source into a plugin ([#899](https://github.com/coveo/cli/issues/899)) ([1797049](https://github.com/coveo/cli/commits/17970490e7844315373827f44ef8dd80f4c0181a))
+
 ## v1.34.3 (2022-08-19)
 
 ### Bug Fixes
