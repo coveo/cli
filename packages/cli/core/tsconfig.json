@@ -2,7 +2,6 @@
   "extends": "@coveo/cli-commons-dev/tsconfig.json",
   "compilerOptions": {
     "outDir": "lib",
-    "rootDir": "src",
     "types": ["node", "jest"],
     "paths": {
       "@coveo/cli-commons/*": ["../commons/src/*"],
