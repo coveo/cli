@@ -1,6 +1,9 @@
 {
   "name": "@coveo/cli-commons-dev",
-  "version": "1.35.8",
+  "version": "1.35.9",
+  "author": "Coveo",
+  "description": "Common utils for @coveo/cli plugins development",
+  "license": "Apache-2.0",
   "files": [
     "lib/**",
     ".eslintrc.js",
