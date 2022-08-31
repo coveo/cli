@@ -4,7 +4,7 @@ import {
   PushSource,
   UploadBatchCallbackData,
 } from '@coveo/push-api-client';
-import {CliCommand} from '../../../cliCommand';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 import {CliUx, Flags} from '@oclif/core';
 import {green} from 'chalk';
 import {
@@ -29,7 +29,7 @@ import {formatErrorMessage} from '../../../lib/addCommon';
 import {errorMessage, successMessage} from '../../../lib/userFeedback';
 import {getFileNames} from '../../../lib/getFileNames';
 
-export default class SourcePushAdd extends CliCommand {
+export default class SourcePushAdd extends CLICommand {
   public static description =
     'Index a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-files-with-Coveo-CLI for more information.';
 

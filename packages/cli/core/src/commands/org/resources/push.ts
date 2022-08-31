@@ -1,4 +1,4 @@
-import {CliCommand} from '../../../cliCommand';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 import {Flags, CliUx} from '@oclif/core';
 import {
   HasNecessaryCoveoPrivileges,
@@ -34,7 +34,7 @@ import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 
-export default class Push extends CliCommand {
+export default class Push extends CLICommand {
   public static description =
     'Preview, validate and deploy your changes to the destination org';
 

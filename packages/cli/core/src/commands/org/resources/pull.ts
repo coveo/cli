@@ -5,7 +5,6 @@ import {readJsonSync} from 'fs-extra';
 import {resolve} from 'path';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
-import {CliCommand} from '../../../cliCommand';
 import {formatOrgId} from '../../../lib/commonPromptUtils/formater';
 import {Config} from '@coveo/cli-commons/src/config/config';
 import {
@@ -39,6 +38,7 @@ import {allowedResourceType} from '../../../lib/snapshot/snapshotConstant';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 
 const PullCommandStrings = {
   projectOverwriteQuestion: (
@@ -54,7 +54,7 @@ const PullCommandStrings = {
         `,
 };
 
-export default class Pull extends CliCommand {
+export default class Pull extends CLICommand {
   public static description = 'Pull resources from an organization';
 
   public static flags = {

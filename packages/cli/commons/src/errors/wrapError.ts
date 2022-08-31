@@ -1,5 +1,9 @@
-import {APIError, isAxiosError, isErrorFromAPI} from './APIError';
-import {CLIBaseError} from './CLIBaseError';
+import {
+  APIError,
+  isAxiosError,
+  isErrorFromAPI,
+} from '@coveo/cli-commons/src/errors/apiError';
+import {CLIBaseError} from '@coveo/cli-commons/src/errors/cliBaseError';
 import {UnknownError} from './unknownError';
 
 export function wrapError(err: unknown): CLIBaseError {

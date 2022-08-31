@@ -1,6 +1,6 @@
 import {red} from 'chalk';
 import {validate} from 'jsonschema';
-import {CLIBaseError} from './CLIBaseError';
+import {CLIBaseError} from '@coveo/cli-commons/src/errors/cliBaseError';
 
 export interface APIErrorResponse {
   message: string;

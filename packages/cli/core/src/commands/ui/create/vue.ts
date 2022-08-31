@@ -1,4 +1,4 @@
-import {CliCommand} from '../../../cliCommand';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 import {Flags} from '@oclif/core';
 import {resolve} from 'path';
 import {Config} from '@coveo/cli-commons/src/config/config';
@@ -22,7 +22,7 @@ import {
   IsNpxInstalled,
 } from '../../../lib/decorators/preconditions';
 
-export default class Vue extends CliCommand {
+export default class Vue extends CLICommand {
   public static templateName = '@coveo/vue-cli-plugin-typescript';
   public static cliPackage = '@vue/cli';
 

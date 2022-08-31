@@ -1,7 +1,7 @@
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
-import {CliCommand} from '../../../cliCommand';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 import {CliUx} from '@oclif/core';
-import {Config} from '../../../lib/config/config';
+import {Config} from '@coveo/cli-commons/src/config/config';
 import {
   IsAuthenticated,
   Preconditions,
@@ -15,7 +15,7 @@ import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 
-export default class Monitor extends CliCommand {
+export default class Monitor extends CLICommand {
   public static description = 'Monitor a Snapshot operation';
 
   public static flags = {

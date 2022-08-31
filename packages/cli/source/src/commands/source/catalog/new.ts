@@ -1,5 +1,5 @@
 import {SourceType} from '@coveord/platform-client';
-import {Command} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 import {green} from 'chalk';
 import dedent from 'ts-dedent';
 import {
@@ -12,7 +12,7 @@ import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticated
 import {withSourceVisibility} from '../../../lib/commonFlags';
 import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
 
-export default class SourceCataloghNew extends CliCommand {
+export default class SourceCatalogNew extends CLICommand {
   public static description =
     'Create a new catalog source in a Coveo organization';
 

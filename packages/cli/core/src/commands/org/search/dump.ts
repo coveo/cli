@@ -1,4 +1,4 @@
-import {CliCommand} from '../../../cliCommand';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 import {Flags, CliUx} from '@oclif/core';
 import {readJSONSync, writeFile, writeJSONSync} from 'fs-extra';
 import {Parser} from 'json2csv';
@@ -41,7 +41,7 @@ interface FetchParameters {
   pipeline: string | undefined;
 }
 
-export default class Dump extends CliCommand {
+export default class Dump extends CLICommand {
   private static readonly DefaultNumberOfResultPerQuery = 1000;
   private static mandatoryFields = ['rowid', 'sysrowid'];
 

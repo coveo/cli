@@ -1,4 +1,5 @@
-import {Command, Flags} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
+import {Flags} from '@oclif/core';
 import {Config} from '@coveo/cli-commons/src/config/config';
 import {OAuth} from '../../lib/oauth/oauth';
 import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
@@ -7,7 +8,7 @@ import {Region} from '@coveord/platform-client';
 import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
 import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
 
-export default class Login extends CliCommand {
+export default class Login extends CLICommand {
   private configuration!: Config;
   public static description =
     'Log in to the Coveo Platform using the OAuth2 flow.';

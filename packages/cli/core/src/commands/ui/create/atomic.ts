@@ -1,4 +1,4 @@
-import {CliCommand} from '../../../cliCommand';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 import {Flags} from '@oclif/core';
 import {
   IsNpxInstalled,
@@ -22,7 +22,7 @@ import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticated
 import {platformUrl} from '@coveo/cli-commons/src/platform/environment';
 import {getPackageVersion} from '../../../lib/utils/misc';
 
-export default class Atomic extends CliCommand {
+export default class Atomic extends CLICommand {
   public static cliPackage = '@coveo/create-atomic';
   public static requiredNodeVersion = '>=14.0.0 <17.0.0'; // https://github.com/netlify/cli/issues/3617
   public static description =

@@ -3,9 +3,9 @@ import {
   CatalogSource,
   BuiltInTransformers,
 } from '@coveo/push-api-client';
-import {CliCommand} from '../../../cliCommand';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 import {Flags, CliUx} from '@oclif/core';
-import {green} from 'chalk';
+import {green, bold} from 'chalk';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
@@ -41,7 +41,7 @@ Setting this option to ${bold(
 )} will trigger a full catalog upload. This process acts as a full rebuild of your catalog source. Therefore, previous items that are not included in the new payload will be deleted.
 See https://docs.coveo.com/en/lb4a0344
   `;
-export default class SourceCatalogAdd extends CliCommand {
+export default class SourceCatalogAdd extends CLICommand {
   public static description =
     'Index a JSON document into a Coveo Catalog source. See https://docs.coveo.com/en/2956 for more information.';
 

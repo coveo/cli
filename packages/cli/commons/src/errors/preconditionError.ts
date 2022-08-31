@@ -1,4 +1,7 @@
-import {CLIBaseError, SeverityLevel} from './CLIBaseError';
+import {
+  CLIBaseError,
+  SeverityLevel,
+} from '@coveo/cli-commons/src/errors/cliBaseError';
 
 export interface PreconditionErrorOptions {
   category?: string;

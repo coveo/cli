@@ -1,8 +1,8 @@
-import {CliCommand} from '../../../cliCommand';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 import {Flags} from '@oclif/core';
-import {Config} from '../../../lib/config/config';
-import {platformUrl} from '../../../lib/platform/environment';
-import {AuthenticatedClient} from '../../../lib/platform/authenticatedClient';
+import {Config} from '@coveo/cli-commons/src/config/config';
+import {platformUrl} from '@coveo/cli-commons/src/platform/environment';
+import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
 import {spawnProcess, spawnProcessOutput} from '../../../lib/utils/process';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
@@ -28,7 +28,7 @@ type ReactProcessEnv = {
   platformUrl: string;
 };
 
-export default class React extends CliCommand {
+export default class React extends CLICommand {
   public static templateName = '@coveo/cra-template';
   public static cliPackage = 'create-react-app@latest';
 

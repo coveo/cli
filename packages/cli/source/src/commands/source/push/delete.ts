@@ -1,4 +1,4 @@
-import {CliCommand} from '../../../cliCommand';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 import {Flags} from '@oclif/core';
 import {PushSource} from '@coveo/push-api-client';
 import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
@@ -15,7 +15,7 @@ import {
 } from '../../../lib/userFeedback';
 import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
 
-export default class SourcePushDelete extends CliCommand {
+export default class SourcePushDelete extends CLICommand {
   public static description =
     'Delete one or multiple items in a given Push source. See <https://docs.coveo.com/en/171> and <https://docs.coveo.com/en/131>';
 

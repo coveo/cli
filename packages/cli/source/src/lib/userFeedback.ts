@@ -1,6 +1,5 @@
 import {Command} from '@oclif/core';
 import {green} from 'chalk';
-import {validate} from 'jsonschema';
 import dedent from 'ts-dedent';
 import {APIError, isAxiosError} from '@coveo/cli-commons/src/errors/apiError';
 import {UnknownError} from '@coveo/cli-commons/src/errors/unknownError';

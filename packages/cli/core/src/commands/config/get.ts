@@ -1,9 +1,9 @@
-import {Command} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 import {Config} from '@coveo/cli-commons/src/config/config';
 import {ConfigRenderer} from '@coveo/cli-commons/src/config/configRenderer';
 import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
 
-export default class Get extends CliCommand {
+export default class Get extends CLICommand {
   public static description = 'Display the current configuration.';
 
   public static args = [

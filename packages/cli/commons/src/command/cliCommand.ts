@@ -1,10 +1,10 @@
 import {CliUx, Command} from '@oclif/core';
 import {CLIBaseError, SeverityLevel} from '../errors/cliBaseError';
-import {stopSpinner} from './lib/utils/ux';
+import {stopSpinner} from '../utils/ux';
 import {wrapError} from '../errors/wrapError';
 import {Trackable} from '../preconditions/trackable';
 
-export abstract class CliCommand extends Command {
+export abstract class CLICommand extends Command {
   public abstract run(): PromiseLike<any>;
 
   @Trackable()

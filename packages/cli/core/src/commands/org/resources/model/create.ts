@@ -1,3 +1,4 @@
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 import {
   IsAuthenticated,
   Preconditions,
@@ -7,9 +8,8 @@ import open from 'open';
 import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
 import {createSnapshotUrl} from '@coveo/cli-commons/src/platform/url';
 import dedent from 'ts-dedent';
-import {CliCommand} from '../../../../cliCommand';
 
-export default class Create extends CliCommand {
+export default class Create extends CLICommand {
   public static description = 'Create a Snapshot Pull Model';
 
   @Trackable({eventName: 'org resources pull - new model'})

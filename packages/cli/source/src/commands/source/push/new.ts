@@ -1,5 +1,5 @@
 import {SourceType} from '@coveord/platform-client';
-import {CliCommand} from '../../../cliCommand';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 import {green} from 'chalk';
 import dedent from 'ts-dedent';
 import {
@@ -12,7 +12,7 @@ import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
 import {withSourceVisibility} from '../../../lib/commonFlags';
 import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
 
-export default class SourcePushNew extends CliCommand {
+export default class SourcePushNew extends CLICommand {
   public static description =
     'Create a new push source in a Coveo organization';
 

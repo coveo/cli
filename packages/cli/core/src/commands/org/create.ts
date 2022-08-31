@@ -1,4 +1,5 @@
-import {Command, Flags, CliUx} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
+import {Flags, CliUx} from '@oclif/core';
 import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
 import {
   Preconditions,
@@ -10,7 +11,7 @@ import {bold} from 'chalk';
 import dedent from 'ts-dedent';
 import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
 
-export default class Create extends CliCommand {
+export default class Create extends CLICommand {
   public static description = 'Create a new test Coveo organization.';
 
   public static flags = {

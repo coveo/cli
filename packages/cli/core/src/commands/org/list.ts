@@ -1,4 +1,5 @@
-import {Command, CliUx} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
+import {CliUx} from '@oclif/core';
 import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
 import {
   Preconditions,
@@ -8,7 +9,7 @@ import {
 import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
 import {recordable} from '../../lib/utils/record';
 
-export default class List extends CliCommand {
+export default class List extends CLICommand {
   public static description = 'List Coveo organizations.';
 
   public static flags = {

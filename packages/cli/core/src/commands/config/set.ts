@@ -1,4 +1,5 @@
-import {CliUx, Command, Flags} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
+import {CliUx, Flags} from '@oclif/core';
 import {Config} from '@coveo/cli-commons/src/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
 import {
@@ -9,7 +10,7 @@ import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
 import {InvalidCommandError} from '../../lib/errors/InvalidCommandError';
 import {ConfigRenderer} from '@coveo/cli-commons/src/config/configRenderer';
 
-export default class Set extends CliCommand {
+export default class Set extends CLICommand {
   public static description = 'Modify the current configuration.';
 
   public static flags = {

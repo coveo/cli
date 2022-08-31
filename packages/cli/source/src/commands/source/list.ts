@@ -1,4 +1,4 @@
-import {CliCommand} from '../../cliCommand';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 import {FilterHostType, SourceModel} from '@coveord/platform-client';
 import {CliUx} from '@oclif/core';
 import {
@@ -9,7 +9,7 @@ import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticated
 import dedent from 'ts-dedent';
 import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
 
-export default class SourceList extends CliCommand {
+export default class SourceList extends CLICommand {
   public static description =
     'List all available push sources in your Coveo organization';
 

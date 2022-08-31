@@ -1,14 +1,12 @@
-import {CLIBaseError, SeverityLevel} from './CLIBaseError';
+import {CLIBaseError} from '@coveo/cli-commons/src/errors/cliBaseError';
 
 export class UnknownError extends CLIBaseError {
   public name = 'Unknown CLI Error';
   public constructor(e?: unknown) {
-    super();
-    const error = typeof e === 'string' ? new Error(e) : e;
-    if (error && error instanceof Error) {
-      this.message = error.message;
-      // this.stack = error.stack; // TODO: address this issue
-      this.name = `Unknown CLI Error - ${error.name}`;
-    }
+    super(
+      e instanceof Error
+        ? {...e, name: `${UnknownError.name} - ${e.name}`}
+        : undefined
+    );
   }
 }

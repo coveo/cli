@@ -1,4 +1,4 @@
-import {CliCommand} from '../../../cliCommand';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 import {Flags} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {cwd} from 'process';
@@ -34,7 +34,7 @@ import {
   getMissingVaultEntriesReportHandler,
   getErrorReportHandler,
 } from '../../../lib/snapshot/snapshotCommon';
-export default class Preview extends CliCommand {
+export default class Preview extends CLICommand {
   public static description = 'Preview resource updates';
 
   public static flags = {

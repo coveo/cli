@@ -1,4 +1,4 @@
-import {CliCommand} from '../../../cliCommand';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 import {FilterHostType, SourceModel} from '@coveord/platform-client';
 import {CliUx} from '@oclif/core';
 import {
@@ -15,7 +15,7 @@ import SourceList from '../list';
  * @TODO: CDX-917: Remove file.
  * @deprecated
  **/
-export default class SourcePushList extends CliCommand {
+export default class SourcePushList extends CLICommand {
   public static description = `${magenta(
     '[Deprecated]'
   )} List all available push sources in your Coveo organization`;

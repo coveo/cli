@@ -1,7 +1,7 @@
-import {CliCommand} from '../../../cliCommand';
+import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 import {Flags} from '@oclif/core';
-import {platformUrl} from '../../../lib/platform/environment';
-import {Config} from '../../../lib/config/config';
+import {platformUrl} from '@coveo/cli-commons/src/platform/environment';
+import {Config} from '@coveo/cli-commons/src/config/config';
 import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
 import {getPackageVersion} from '../../../lib/utils/misc';
@@ -22,7 +22,7 @@ import {
 } from '@coveo/cli-commons/src/preconditions/platformPrivilege';
 import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
 
-export default class Angular extends CliCommand {
+export default class Angular extends CLICommand {
   public static templateName = '@coveo/angular';
   /**
    * Requirements Based on https://angular.io/guide/setup-local
