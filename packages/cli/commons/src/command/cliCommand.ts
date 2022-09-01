@@ -2,7 +2,7 @@ import {CliUx, Command} from '@oclif/core';
 import {CLIBaseError, SeverityLevel} from '../errors/cliBaseError';
 import {stopSpinner} from '../utils/ux';
 import {wrapError} from '../errors/wrapError';
-import {Trackable} from 'src/preconditions/trackable';
+import {Trackable} from '../preconditions/trackable';
 
 /**
  * A base command to standadize error handling, analytic tracking and logging.
@@ -10,7 +10,6 @@ import {Trackable} from 'src/preconditions/trackable';
  * @class CLICommand
  * @extends {Command}
  */
-Trackable();
 export abstract class CLICommand extends Command {
   public abstract run(): PromiseLike<any>;
 
@@ -20,6 +19,7 @@ export abstract class CLICommand extends Command {
    * @param {*} [err]
    * @see [Oclif Error Handling](https://oclif.io/docs/error_handling)
    */
+  @Trackable()
   protected async catch(err?: any): Promise<CLIBaseError | never> {
     // Debug raw error
     this.debug(err);
