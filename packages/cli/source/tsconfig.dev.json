@@ -1,7 +1,13 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "rootDir": "src"
+    "outDir": "lib",
+    "rootDir": "src",
+    "types": ["node", "jest"],
+    "paths": {
+      "@coveo/cli-commons/*": ["../commons/src/*"],
+      "@coveo/cli-commons-dev/*": ["../commons-dev/src/*"]
+    }
   },
-  "include": ["src/**/*", "src/typings/**/*.d.ts"]
+  "include": ["src/**/*"]
 }
