@@ -4,9 +4,21 @@ import {stopSpinner} from '../utils/ux';
 import {wrapError} from '../errors/wrapError';
 import {Trackable} from '../preconditions/trackable';
 
+/**
+ * A base command to standadize error handling, analytic tracking and logging.
+ *
+ * @class CLICommand
+ * @extends {Command}
+ */
 export abstract class CLICommand extends Command {
   public abstract run(): PromiseLike<any>;
 
+  /**
+   * If you extend or overwrite the catch method in your command class, make sure it returns `return super.catch(err)`
+   *
+   * @param {*} [err]
+   * @see [Oclif Error Handling](https://oclif.io/docs/error_handling)
+   */
   @Trackable()
   protected async catch(err?: any): Promise<CLIBaseError | never> {
     // Debug raw error
