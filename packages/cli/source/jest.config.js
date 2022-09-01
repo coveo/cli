@@ -2,6 +2,7 @@ const {defaults} = require('jest-config');
 const {pathsToModuleNameMapper} = require('ts-jest');
 const {compilerOptions} = require('./tsconfig.json');
 
+process.env.TS_NODE_PROJECT = require.resolve('./tsconfig.dev.json');
 module.exports = {
   rootDir: '.',
   preset: 'ts-jest',

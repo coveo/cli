@@ -115,6 +115,10 @@ describe('ui:create:atomic', () => {
     .do(() => {
       preconditionStatus.apiKey = false;
     })
+    .env({
+      TS_NODE_PROJECT:
+        '/Users/lbompart/Repos/cli/packages/cli/core/tsconfig.dev.json',
+    })
     .command(['ui:create:atomic', 'myapp'])
     .catch(/apiKey Precondition Error/)
     .it(
