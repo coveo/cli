@@ -1,12 +1,11 @@
 import {
-  PrintableError,
+  CLIBaseError,
   SeverityLevel,
-} from '@coveo/cli-commons/errors/printableError';
+} from '@coveo/cli-commons/errors/cliBaseError';
 
-export class ProcessAbort extends PrintableError {
+export class ProcessAbort extends CLIBaseError {
   public name = 'Operation Aborted';
   public constructor(message = 'Operation aborted') {
-    super(SeverityLevel.Info);
-    this.message = message;
+    super(message, {level: SeverityLevel.Info});
   }
 }

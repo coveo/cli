@@ -28,7 +28,6 @@ import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {
   dryRun,
   getTargetOrg,
-  handleSnapshotError,
   DryRunOptions,
   cleanupProject,
   getMissingVaultEntriesReportHandler,
@@ -88,7 +87,6 @@ export default class Preview extends Command {
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
     cleanupProject(this.projectPath);
-    handleSnapshotError(err);
     await this.displayAdditionalErrorMessage(err);
   }
 

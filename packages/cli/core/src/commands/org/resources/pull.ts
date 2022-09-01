@@ -32,7 +32,6 @@ import {validateSnapshotPullModel} from '../../../lib/snapshot/pullModel/validat
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {
   getTargetOrg,
-  handleSnapshotError,
   cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
 import {allowedResourceType} from '../../../lib/snapshot/snapshotConstant';
@@ -131,7 +130,6 @@ export default class Pull extends Command {
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
     cleanupProject(this.projectPath);
-    handleSnapshotError(err);
     await this.displayAdditionalErrorMessage(err);
   }
 

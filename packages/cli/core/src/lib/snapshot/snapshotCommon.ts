@@ -6,7 +6,6 @@ import {red, green} from 'chalk';
 import {normalize} from 'path';
 import {Config, Configuration} from '@coveo/cli-commons/config/config';
 import {SnapshotGenericError} from '../errors/snapshotErrors';
-import {PrintableError} from '@coveo/cli-commons/errors/printableError';
 import {SnapshotReporter} from './snapshotReporter';
 import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
 import {
@@ -106,20 +105,6 @@ export function getMissingVaultEntriesReportHandler(
       }
     }
   };
-}
-
-export function handleSnapshotError(err?: Error & {exitCode?: number}) {
-  let message = red.bold('!');
-  if (CliUx.ux.action.running && typeof err?.name === 'string') {
-    message += ` ${err?.name}`;
-  }
-  CliUx.ux.action.stop(message);
-
-  if (err instanceof PrintableError) {
-    err.print();
-  } else {
-    throw err;
-  }
 }
 
 async function createSnapshotFromProject(
