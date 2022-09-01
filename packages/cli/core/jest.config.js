@@ -5,6 +5,11 @@ const {compilerOptions} = require('./tsconfig.json');
 module.exports = {
   rootDir: '.',
   preset: 'ts-jest',
+  globals: {
+    'ts-jest': {
+      tsconfig: 'tsconfig.dev.json',
+    },
+  },
   testEnvironment: 'node',
   verbose: true,
   collectCoverage: true,
