@@ -1,14 +1,14 @@
-import {
-  APIError,
-  isAxiosError,
-  isErrorFromAPI,
-} from '@coveo/cli-commons/src/errors/apiError';
-import {CLIBaseError} from '@coveo/cli-commons/src/errors/cliBaseError';
+import {APIError, isAxiosError, isErrorFromAPI} from './apiError';
+import {CLIBaseError} from './cliBaseError';
 import {UnknownError} from './unknownError';
 
 export function wrapError(err: unknown): CLIBaseError {
   if (typeof err === 'string') {
     return new CLIBaseError(err);
+  }
+
+  if (isAxiosError(err) || isErrorFromAPI(err)) {
+    return new APIError(err);
   }
 
   if (err instanceof CLIBaseError) {
@@ -17,10 +17,6 @@ export function wrapError(err: unknown): CLIBaseError {
 
   if (err instanceof Error) {
     return new CLIBaseError(err);
-  }
-
-  if (isAxiosError(err) || isErrorFromAPI(err)) {
-    return new APIError(err);
   }
 
   return new UnknownError(err);

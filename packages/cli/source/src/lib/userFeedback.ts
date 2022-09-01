@@ -1,8 +1,7 @@
 import {Command} from '@oclif/core';
 import {green} from 'chalk';
 import dedent from 'ts-dedent';
-import {APIError, isAxiosError} from '@coveo/cli-commons/errors/apiError';
-import {UnknownError} from '@coveo/cli-commons/errors/unknownError';
+import {wrapError} from '@coveo/cli-commons/errors/wrapError';
 
 export interface AxiosResponse {
   status: number;
@@ -24,17 +23,15 @@ export const successMessage = (
   cmd.log(message);
 };
 
-// TODO: not sure how to handle that. This is code duplication. Error should be handlded by base class
 export const errorMessage = (
   cmd: Command,
   tagLine: string,
   e: unknown,
   options = {exit: false}
 ) => {
-  console.log('-- FROM USER FEEDBACK');
-  const error = isAxiosError(e)
-    ? new APIError(e, tagLine)
-    : new UnknownError(e);
+  const error = wrapError(e);
+  error.message = dedent`${tagLine}
+  ${error.message}`;
 
   if (options.exit) {
     throw error;

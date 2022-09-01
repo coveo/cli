@@ -104,10 +104,3 @@ async function trackError(
 function getEventName(target: Command): string {
   return target.id?.replace(/:/g, ' ') || '';
 }
-
-// TODO: verify that errors are being tracked
-// TODO: verify that errors are being tracked
-// TODO: verify that errors are being tracked
-// TODO: verify that errors are being tracked
-// TODO: verify that errors are being tracked
-// TODO: verify that errors are being tracked

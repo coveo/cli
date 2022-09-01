@@ -1,4 +1,4 @@
-import {CLIBaseError} from '@coveo/cli-commons/src/errors/cliBaseError';
+import {CLIBaseError} from './cliBaseError';
 
 export class UnknownError extends CLIBaseError {
   public name = 'Unknown CLI Error';
