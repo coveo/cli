@@ -92,7 +92,7 @@ describe('trackable', () => {
     fancyIt()('should properly format events', () => {
       const event = {
         event_properties: {
-          error_type: 'Unknown CLI Error',
+          error_type: 'CLI Error',
           command: 'foo:bar',
         },
       };
