@@ -8,7 +8,7 @@ jest.mock('./configSchemaVersion', () => ({
 import {IncompatibleConfigurationError} from './configErrors';
 import {coerce, gt, lt, SemVer} from 'semver';
 import dedent from 'ts-dedent';
-import {fancyIt} from '../../__test__/it';
+import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 
 const mockedCoerce = jest.mocked(coerce);
 const mockedLt = jest.mocked(lt);

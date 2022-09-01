@@ -1,12 +1,9 @@
 import {FilterHostType, SourceModel} from '@coveord/platform-client';
 import {Command, CliUx} from '@oclif/core';
-import {
-  IsAuthenticated,
-  Preconditions,
-} from '@coveo/cli-commons/src/preconditions';
-import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
+import {IsAuthenticated, Preconditions} from '@coveo/cli-commons/preconditions';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import dedent from 'ts-dedent';
-import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
+import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {magenta} from 'chalk';
 import SourceList from '../list';
 

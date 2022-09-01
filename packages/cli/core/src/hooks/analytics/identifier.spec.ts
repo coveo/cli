@@ -1,14 +1,14 @@
 jest.mock('@amplitude/node');
 jest.mock('@amplitude/identify');
 jest.mock('@coveord/platform-client');
-jest.mock('@coveo/cli-commons/src/platform/authenticatedClient');
-jest.mock('@coveo/cli-commons/src/config/config');
-jest.mock('@coveo/cli-commons/src/config/globalConfig');
+jest.mock('@coveo/cli-commons/platform/authenticatedClient');
+jest.mock('@coveo/cli-commons/config/config');
+jest.mock('@coveo/cli-commons/config/globalConfig');
 
 import os from 'os';
 import {Identify} from '@amplitude/identify';
-import {Config, Configuration} from '@coveo/cli-commons/src/config/config';
-import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
+import {Config, Configuration} from '@coveo/cli-commons/config/config';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {Identifier} from './identifier';
 import PlatformClient from '@coveord/platform-client';
 import {
@@ -17,7 +17,7 @@ import {
 } from '../../__stub__/configuration';
 import type {Interfaces} from '@oclif/core';
 import type {NodeClient} from '@amplitude/node';
-import globalConfig from '@coveo/cli-commons/src/config/globalConfig';
+import globalConfig from '@coveo/cli-commons/config/globalConfig';
 
 describe('identifier', () => {
   const mockedGlobalConfig = jest.mocked(globalConfig);

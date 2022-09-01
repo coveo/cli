@@ -10,6 +10,14 @@
     ".prettierrc.js",
     "tsconfig.json"
   ],
+  "exports": {
+    "./.eslintrc": "./.eslintrc.js",
+    "./.eslintrc.js": "./.eslintrc.js",
+    "./.prettierrc": "./.prettierrc.js",
+    "./.prettierrc.js": "./.prettierrc.js",
+    "./tsconfig.json": "./tsconfig.json",
+    "./*": "./lib/*"
+  },
   "dependencies": {
     "fancy-test": "2.0.0",
     "tslib": "2.4.0"

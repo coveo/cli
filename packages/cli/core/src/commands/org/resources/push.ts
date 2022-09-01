@@ -3,7 +3,7 @@ import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
-} from '@coveo/cli-commons/src/preconditions';
+} from '@coveo/cli-commons/preconditions';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {red, green, bold} from 'chalk';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
@@ -17,7 +17,7 @@ import {
   getMissingVaultEntriesReportHandler,
   getErrorReportHandler,
 } from '../../../lib/snapshot/snapshotCommon';
-import {Config} from '@coveo/cli-commons/src/config/config';
+import {Config} from '@coveo/cli-commons/config/config';
 import {cwd} from 'process';
 import {Project} from '../../../lib/project/project';
 import {
@@ -29,8 +29,8 @@ import {
 import {
   writeLinkPrivilege,
   writeSnapshotPrivilege,
-} from '@coveo/cli-commons/src/preconditions/platformPrivilege';
-import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
+} from '@coveo/cli-commons/preconditions/platformPrivilege';
+import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 

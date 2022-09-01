@@ -1,11 +1,11 @@
-jest.mock('../../platform/authenticatedClient');
+jest.mock('../platform/authenticatedClient');
 
-import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
-import {PreconditionError} from '../../errors/preconditionError';
+import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
+import {PreconditionError} from '../errors/preconditionError';
 import {
   AuthenticationStatus,
   getAuthenticationStatus,
-} from '../../platform/authenticatedClient';
+} from '../platform/authenticatedClient';
 import {IsAuthenticated} from './authenticated';
 
 describe('authenticated', () => {

@@ -5,7 +5,7 @@ const trueErrors = jest.requireActual('./errors');
 import {validate, ValidatorResult} from 'jsonschema';
 import {validateSnapshotPullModel} from './validate';
 import {InvalidSPMError, UnknownSPMValidationError} from './errors';
-import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
+import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 
 describe('validate', () => {
   const getFakeValidationError = () => ({

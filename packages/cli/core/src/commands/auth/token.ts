@@ -1,10 +1,10 @@
 import {Command, Flags} from '@oclif/core';
-import {Config} from '@coveo/cli-commons/src/config/config';
-import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
-import {PlatformEnvironment} from '@coveo/cli-commons/src/platform/environment';
+import {Config} from '@coveo/cli-commons/config/config';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
+import {PlatformEnvironment} from '@coveo/cli-commons/platform/environment';
 import {Region} from '@coveord/platform-client';
 import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
-import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
+import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 
 export default class Token extends Command {
   private configuration!: Config;
