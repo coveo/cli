@@ -25,19 +25,8 @@ export interface TrackableOptions {
   overrideEventProperties?: Record<string, unknown>;
 }
 
-type CommandReturn = any;
 /**
- *
- * TODO: explain what it does
- *
- * @param {TrackableOptions} [{
- *   eventName,
- *   overrideEventProperties,
- * }={}]
- *
- * @description
- * Make sure to return `return super.catch(err);` if you overwrite the catch methode from the base command
- *
+ * Use this decorator on a `run()` method from a class inheriting from {@link Command} to track the command usage.
  */
 export function Trackable({
   eventName,
@@ -46,7 +35,7 @@ export function Trackable({
   return function (
     _target: Command,
     _propertyKey: string,
-    descriptor: TypedPropertyDescriptor<() => Promise<any>>
+    descriptor: PropertyDescriptor
   ) {
     const originalCommand = descriptor.value!;
     descriptor.value = async function (this: Command, ...cmdArgs: unknown[]) {
@@ -69,14 +58,14 @@ async function trackCommand(
   this: Command,
   eventName: string,
   properties: Record<string, unknown>,
-  originalRunCommand: CommandReturn
+  originalRunCommand: any
 ) {
   await this.config.runHook('analytics', {
     event: buildEvent(`started ${eventName}`, properties),
     identify: true,
   });
 
-  const commandResult: CommandReturn = await originalRunCommand.apply(this);
+  const commandResult = await originalRunCommand.apply(this);
 
   await this.config.runHook('analytics', {
     event: buildEvent(`completed ${eventName}`, properties),
