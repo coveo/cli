@@ -1,4 +1,4 @@
-import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Config} from '@coveo/cli-commons/config/config';
 import {ConfigRenderer} from '@coveo/cli-commons/config/configRenderer';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';

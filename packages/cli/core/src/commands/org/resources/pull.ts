@@ -38,7 +38,7 @@ import {allowedResourceType} from '../../../lib/snapshot/snapshotConstant';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
-import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 
 const PullCommandStrings = {
   projectOverwriteQuestion: (

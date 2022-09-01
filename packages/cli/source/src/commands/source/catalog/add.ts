@@ -3,7 +3,7 @@ import {
   CatalogSource,
   BuiltInTransformers,
 } from '@coveo/push-api-client';
-import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Flags, CliUx} from '@oclif/core';
 import {green, bold} from 'chalk';
 import {

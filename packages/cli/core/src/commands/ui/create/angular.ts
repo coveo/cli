@@ -1,4 +1,4 @@
-import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Flags} from '@oclif/core';
 import {platformUrl} from '@coveo/cli-commons/src/platform/environment';
 import {Config} from '@coveo/cli-commons/src/config/config';

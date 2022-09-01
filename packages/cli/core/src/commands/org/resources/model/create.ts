@@ -1,4 +1,4 @@
-import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {IsAuthenticated, Preconditions} from '@coveo/cli-commons/preconditions';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import open from 'open';

@@ -1,4 +1,4 @@
-import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {FilterHostType, SourceModel} from '@coveord/platform-client';
 import {CliUx} from '@oclif/core';
 import {IsAuthenticated, Preconditions} from '@coveo/cli-commons/preconditions';

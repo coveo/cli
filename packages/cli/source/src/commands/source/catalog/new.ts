@@ -1,5 +1,5 @@
 import {SourceType} from '@coveord/platform-client';
-import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {green} from 'chalk';
 import dedent from 'ts-dedent';
 import {

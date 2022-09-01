@@ -4,7 +4,7 @@ import {
   PushSource,
   UploadBatchCallbackData,
 } from '@coveo/push-api-client';
-import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {CliUx, Flags} from '@oclif/core';
 import {green} from 'chalk';
 import {
