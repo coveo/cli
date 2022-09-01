@@ -1,6 +1,6 @@
 import dedent from 'ts-dedent';
-import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/src/utils/string';
-import {CLIBaseError} from '@coveo/cli-commons/src/errors/cliBaseError';
+import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/utils/string';
+import {CLIBaseError} from '@coveo/cli-commons/errors/cliBaseError';
 
 export class InvalidVaultEntryError extends CLIBaseError {
   public name = 'Invalid Vault Entries';

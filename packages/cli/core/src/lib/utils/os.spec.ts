@@ -1,4 +1,4 @@
-import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
+import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {appendCmdIfWindows} from './os';
 
 describe('appendCmdIfWindows', () => {

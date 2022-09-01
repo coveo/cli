@@ -9,7 +9,7 @@ import {IsNgVersionInRange} from './ng';
 import {Command, CliUx} from '@oclif/core';
 import {appendCmdIfWindows} from '../../utils/os';
 import {getPackageVersion} from '../../utils/misc';
-import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
+import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 
 describe('IsNgInstalled', () => {
   const mockedSpawnProcessOutput = jest.mocked(spawnProcessOutput);

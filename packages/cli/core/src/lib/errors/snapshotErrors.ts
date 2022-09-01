@@ -1,12 +1,12 @@
 import {blueBright} from 'chalk';
 import dedent from 'ts-dedent';
-import {Configuration} from '@coveo/cli-commons/src/config/config';
+import {Configuration} from '@coveo/cli-commons/config/config';
 import {Snapshot} from '../snapshot/snapshot';
 import {SnapshotUrlBuilder} from '../snapshot/snapshotUrlBuilder';
 import {
   CLIBaseError,
   SeverityLevel,
-} from '@coveo/cli-commons/src/errors/cliBaseError';
+} from '@coveo/cli-commons/errors/cliBaseError';
 
 interface DetailedReportable extends CLIBaseError {
   snapshot: Snapshot;

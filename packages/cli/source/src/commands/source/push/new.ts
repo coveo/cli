@@ -6,11 +6,11 @@ import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
-} from '@coveo/cli-commons/src/preconditions';
-import {writeSourceContentPrivilege} from '@coveo/cli-commons/src/preconditions/platformPrivilege';
-import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
+} from '@coveo/cli-commons/preconditions';
+import {writeSourceContentPrivilege} from '@coveo/cli-commons/preconditions/platformPrivilege';
+import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {withSourceVisibility} from '../../../lib/commonFlags';
-import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 
 export default class SourcePushNew extends CLICommand {
   public static description =

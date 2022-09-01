@@ -1,5 +1,5 @@
-import {PlatformPrivilege} from '@coveo/cli-commons/src/preconditions/platformPrivilege';
-import {CLIBaseError} from '@coveo/cli-commons/src/errors/cliBaseError';
+import {PlatformPrivilege} from '@coveo/cli-commons/preconditions/platformPrivilege';
+import {CLIBaseError} from '@coveo/cli-commons/errors/cliBaseError';
 
 export class MissingPrivilegeError extends CLIBaseError {
   public constructor(

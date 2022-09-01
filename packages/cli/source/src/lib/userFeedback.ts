@@ -1,8 +1,8 @@
 import {Command} from '@oclif/core';
 import {green} from 'chalk';
 import dedent from 'ts-dedent';
-import {APIError, isAxiosError} from '@coveo/cli-commons/src/errors/apiError';
-import {UnknownError} from '@coveo/cli-commons/src/errors/unknownError';
+import {APIError, isAxiosError} from '@coveo/cli-commons/errors/apiError';
+import {UnknownError} from '@coveo/cli-commons/errors/unknownError';
 
 export interface AxiosResponse {
   status: number;

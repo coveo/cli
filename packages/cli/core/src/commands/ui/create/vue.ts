@@ -1,22 +1,22 @@
 import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 import {Flags} from '@oclif/core';
 import {resolve} from 'path';
-import {Config} from '@coveo/cli-commons/src/config/config';
+import {Config} from '@coveo/cli-commons/config/config';
 import {
   Preconditions,
   IsAuthenticated,
   HasNecessaryCoveoPrivileges,
-} from '@coveo/cli-commons/src/preconditions';
-import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
-import {platformUrl} from '@coveo/cli-commons/src/platform/environment';
+} from '@coveo/cli-commons/preconditions';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
+import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,
-} from '@coveo/cli-commons/src/preconditions/platformPrivilege';
-import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
+} from '@coveo/cli-commons/preconditions/platformPrivilege';
+import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {
   IsNodeVersionInRange,
   IsNpxInstalled,

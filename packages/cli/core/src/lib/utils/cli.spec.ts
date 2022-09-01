@@ -1,9 +1,9 @@
-jest.mock('@coveo/cli-commons/src/preconditions/trackable');
-jest.mock('@coveo/cli-commons/src/config/globalConfig');
+jest.mock('@coveo/cli-commons/preconditions/trackable');
+jest.mock('@coveo/cli-commons/config/globalConfig');
 
 import {Interfaces, CliUx} from '@oclif/core';
-import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
-import globalConfig from '@coveo/cli-commons/src/config/globalConfig';
+import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
+import globalConfig from '@coveo/cli-commons/config/globalConfig';
 import {confirmWithAnalytics} from './cli';
 
 const mockedGlobalConfig = jest.mocked(globalConfig);

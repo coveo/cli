@@ -1,15 +1,15 @@
 import {CLICommand} from '@coveo/cli-commons/src/command/cliCommand';
 import {Flags, CliUx} from '@oclif/core';
-import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {
   Preconditions,
   IsAuthenticated,
-} from '@coveo/cli-commons/src/preconditions/';
+} from '@coveo/cli-commons/preconditions/';
 import {OrganizationCreationOrigin} from '@coveord/platform-client';
-import {Config} from '@coveo/cli-commons/src/config/config';
+import {Config} from '@coveo/cli-commons/config/config';
 import {bold} from 'chalk';
 import dedent from 'ts-dedent';
-import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
+import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 
 export default class Create extends CLICommand {
   public static description = 'Create a new test Coveo organization.';

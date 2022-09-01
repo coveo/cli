@@ -14,7 +14,7 @@ import {
   castEnvironmentToPlatformClient,
   PlatformEnvironment,
 } from './environment';
-import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
+import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import globalConfig from '../config/globalConfig';
 const mockConfig = jest.mocked(Config);
 const mockPlatformClient = jest.mocked(PlatformClient);

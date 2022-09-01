@@ -5,11 +5,16 @@
   "description": "Common utils for @coveo/cli plugins",
   "license": "Apache-2.0",
   "files": [
-    "src/**"
+    "lib/**"
   ],
+  "exports": {
+    "./*": "./lib/*"
+  },
   "devDependencies": {
     "@coveo/cli-commons-dev": "1.35.9",
     "@types/jest": "27.5.2",
+    "jest": "^27.5.1",
+    "ts-jest": "^27.1.5",
     "typescript": "4.7.4"
   },
   "dependencies": {
@@ -25,7 +30,8 @@
     "ts-dedent": "2.2.0"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "test": "jest",
+    "build": "tsc -p tsconfig.build.json",
     "prepublishOnly": "npm run build",
     "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
     "release:phase2": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase2-bump-all-packages.mjs"

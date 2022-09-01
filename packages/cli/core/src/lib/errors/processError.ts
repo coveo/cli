@@ -1,7 +1,7 @@
 import {
   CLIBaseError,
   SeverityLevel,
-} from '@coveo/cli-commons/src/errors/cliBaseError';
+} from '@coveo/cli-commons/errors/cliBaseError';
 
 export class ProcessAbort extends CLIBaseError {
   public name = 'Operation Aborted';

@@ -1,12 +1,12 @@
-jest.mock('../../platform/authenticatedClient');
-jest.mock('../../config/config');
-jest.mock('../../config/globalConfig');
+jest.mock('../platform/authenticatedClient');
+jest.mock('../config/config');
+jest.mock('../config/globalConfig');
 
 import {Interfaces} from '@oclif/core';
-import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
-import {Config} from '../../config/config';
-import globalConfig from '../../config/globalConfig';
-import {AuthenticatedClient} from '../../platform/authenticatedClient';
+import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
+import {Config} from '../config/config';
+import globalConfig from '../config/globalConfig';
+import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {HasNecessaryCoveoPrivileges} from './apiKeyPrivilege';
 import {
   createApiKeyPrivilege,
@@ -15,7 +15,7 @@ import {
   writeLinkPrivilege,
   writeSnapshotPrivilege,
 } from './platformPrivilege';
-import {getFakeCommand} from './testsUtils/utils';
+import {getFakeCommand} from '@coveo/cli-commons-dev/testUtils/utils';
 
 const mockConfig = jest.mocked(Config);
 const mockedGlobalConfig = jest.mocked(globalConfig);

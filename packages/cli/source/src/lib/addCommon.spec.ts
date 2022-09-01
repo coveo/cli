@@ -1,7 +1,7 @@
 import {stdout} from 'stdout-stderr';
 import {BuiltInTransformers, errors} from '@coveo/push-api-client';
-import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
-import {formatCliLog} from '@coveo/cli-commons-dev/lib/testUtils/jestSnapshotUtils';
+import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
+import {formatCliLog} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
 import {formatErrorMessage} from './addCommon';
 
 describe('addCommon', () => {
