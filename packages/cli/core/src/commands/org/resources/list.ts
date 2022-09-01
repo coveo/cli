@@ -1,4 +1,5 @@
-import {Command, CliUx} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
+import {CliUx} from '@oclif/core';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '@coveo/cli-commons/config/config';
@@ -8,7 +9,7 @@ import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {recordable} from '../../../lib/utils/record';
 import {organization} from '../../../lib/flags/snapshotCommonFlags';
 
-export default class List extends Command {
+export default class List extends CLICommand {
   public static description = 'List available snapshots from an organization';
 
   public static flags = {
@@ -52,10 +53,5 @@ export default class List extends Command {
 
   private get configuration() {
     return new Config(this.config.configDir);
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 }

@@ -1,5 +1,5 @@
 import {SourceType} from '@coveord/platform-client';
-import {Command} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {green} from 'chalk';
 import dedent from 'ts-dedent';
 import {
@@ -12,7 +12,7 @@ import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClie
 import {withSourceVisibility} from '../../../lib/commonFlags';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 
-export default class SourceCatalogNew extends Command {
+export default class SourceCatalogNew extends CLICommand {
   public static description =
     'Create a new catalog source in a Coveo organization';
 
@@ -54,10 +54,5 @@ export default class SourceCatalogNew extends Command {
         )
       )
     );
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 }

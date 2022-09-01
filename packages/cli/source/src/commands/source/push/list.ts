@@ -1,5 +1,6 @@
 import {FilterHostType, SourceModel} from '@coveord/platform-client';
-import {Command, CliUx} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
+import {CliUx} from '@oclif/core';
 import {IsAuthenticated, Preconditions} from '@coveo/cli-commons/preconditions';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import dedent from 'ts-dedent';
@@ -11,7 +12,7 @@ import SourceList from '../list';
  * @TODO: CDX-917: Remove file.
  * @deprecated
  **/
-export default class SourcePushList extends Command {
+export default class SourcePushList extends CLICommand {
   public static description = `${magenta(
     '[Deprecated]'
   )} List all available push sources in your Coveo organization`;
@@ -59,11 +60,6 @@ export default class SourcePushList extends Command {
       },
       {...flags}
     );
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 
   private flattenSourceModels(sourceModels: SourceModel[]) {

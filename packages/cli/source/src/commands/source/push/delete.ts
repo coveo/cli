@@ -1,4 +1,5 @@
-import {Command, Flags} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
+import {Flags} from '@oclif/core';
 import {PushSource} from '@coveo/push-api-client';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {IsAuthenticated, Preconditions} from '@coveo/cli-commons/preconditions';
@@ -11,7 +12,7 @@ import {
 } from '../../../lib/userFeedback';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 
-export default class SourcePushDelete extends Command {
+export default class SourcePushDelete extends CLICommand {
   public static description =
     'Delete one or multiple items in a given Push source. See <https://docs.coveo.com/en/171> and <https://docs.coveo.com/en/131>';
 
@@ -133,10 +134,5 @@ export default class SourcePushDelete extends Command {
       )} was accepted by the Push API.`,
       res
     );
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 }

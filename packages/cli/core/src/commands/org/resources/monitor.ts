@@ -1,5 +1,6 @@
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
-import {Command, CliUx} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
+import {CliUx} from '@oclif/core';
 import {Config} from '@coveo/cli-commons/config/config';
 import {IsAuthenticated, Preconditions} from '@coveo/cli-commons/preconditions';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
@@ -11,7 +12,7 @@ import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 
-export default class Monitor extends Command {
+export default class Monitor extends CLICommand {
   public static description = 'Monitor a Snapshot operation';
 
   public static flags = {
@@ -37,11 +38,6 @@ export default class Monitor extends Command {
     const snapshot = await this.getSnapshot();
 
     await this.monitorSnapshot(snapshot);
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 
   private async monitorSnapshot(snapshot: Snapshot) {

@@ -2,6 +2,7 @@ import {CliUx, Command} from '@oclif/core';
 import {CLIBaseError, SeverityLevel} from '../errors/cliBaseError';
 import {stopSpinner} from '../utils/ux';
 import {wrapError} from '../errors/wrapError';
+import {Trackable} from 'src/preconditions/trackable';
 
 /**
  * A base command to standadize error handling, analytic tracking and logging.
@@ -9,6 +10,7 @@ import {wrapError} from '../errors/wrapError';
  * @class CLICommand
  * @extends {Command}
  */
+Trackable();
 export abstract class CLICommand extends Command {
   public abstract run(): PromiseLike<any>;
 
