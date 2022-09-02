@@ -6,7 +6,7 @@ exports[`org:resources:monitor when the operation conclude with no changes shoul
 `;
 
 exports[`org:resources:monitor when the operation conclude with no changes should output the same thing 2`] = `
-"Monitoring snapshot my-snapshot...
+"Monitoring snapshot my-snapshot... ✔
 Operation undefined... ✔
 "
 `;
@@ -18,7 +18,7 @@ undefined
 `;
 
 exports[`org:resources:monitor when the operation fails should output the same thing 2`] = `
-"Monitoring snapshot my-snapshot...
+"Monitoring snapshot my-snapshot... ✔
 Operation undefined... ✔
 "
 `;
@@ -29,7 +29,7 @@ exports[`org:resources:monitor when the operation succeed should output the same
 `;
 
 exports[`org:resources:monitor when the operation succeed should output the same thing 2`] = `
-"Monitoring snapshot my-snapshot...
+"Monitoring snapshot my-snapshot... ✔
 Operation undefined... ✔
 "
 `;
@@ -40,7 +40,7 @@ exports[`org:resources:monitor when the operations conclude with missing vault e
 `;
 
 exports[`org:resources:monitor when the operations conclude with missing vault entries should output the same thing 2`] = `
-"Monitoring snapshot my-snapshot...
+"Monitoring snapshot my-snapshot... ✔
 Operation undefined... ✔
 "
 `;
