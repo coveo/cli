@@ -1,6 +1,7 @@
 import {VaultFetchStrategy, VaultEntryModel} from '@coveord/platform-client';
 import {CliUx} from '@oclif/core';
-import {bold, green, red} from 'chalk';
+import {bold} from 'chalk';
+import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
 import dedent from 'ts-dedent';
 import {SnapshotMissingVaultEntriesFromOriginError} from '../../errors/vaultErrors';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
@@ -65,16 +66,16 @@ export async function tryTransferFromOrganization({
   });
 
   try {
-    CliUx.ux.action.start('Transfering vault entries');
+    startSpinner('Transfering vault entries');
     await platformClient.vault.import(
       snapshot.id,
       originOrgId,
       VaultFetchStrategy.onlyMissing
     );
-    CliUx.ux.action.stop(green('✔'));
+    stopSpinner();
     return true;
   } catch (error) {
-    CliUx.ux.action.stop(red.bold('!'));
+    stopSpinner(error);
     CliUx.ux.warn('Error encountered while transfering vault entries`');
     CliUx.ux.warn(typeof error === 'string' ? error : JSON.stringify(error));
     return false;

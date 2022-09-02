@@ -6,6 +6,7 @@ import {
 } from '@coveo/push-api-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {CliUx, Flags} from '@oclif/core';
+import {startSpinner} from '@coveo/cli-commons/utils/ux';
 import {green} from 'chalk';
 import {
   HasNecessaryCoveoPrivileges,
@@ -76,7 +77,7 @@ export default class SourcePushAdd extends CLICommand {
     const {args, flags} = await this.parse(SourcePushAdd);
     const source = await this.getSource();
 
-    CliUx.ux.action.start('Processing files');
+    startSpinner('Processing files');
 
     const fileNames = await getFileNames(flags);
     const options: BatchUpdateDocumentsFromFiles = {
@@ -93,8 +94,6 @@ export default class SourcePushAdd extends CLICommand {
       .onBatchUpload((data) => this.successMessageOnAdd(data))
       .onBatchError((data) => this.errorMessageOnAdd(data))
       .batch();
-
-    CliUx.ux.action.stop(green('✔'));
   }
 
   public async catch(err?: Error & {exitCode?: number}) {

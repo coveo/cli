@@ -4,7 +4,8 @@ import {
   BuiltInTransformers,
 } from '@coveo/push-api-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags, CliUx} from '@oclif/core';
+import {Flags} from '@oclif/core';
+import {startSpinner} from '@coveo/cli-commons/utils/ux';
 import {green, bold} from 'chalk';
 import {
   HasNecessaryCoveoPrivileges,
@@ -93,7 +94,7 @@ export default class SourceCatalogAdd extends CLICommand {
         `);
     }
 
-    CliUx.ux.action.start('Processing files');
+    startSpinner('Processing files');
 
     const {accessToken, organization, environment, region} =
       new AuthenticatedClient().cfg.get();
@@ -119,8 +120,6 @@ export default class SourceCatalogAdd extends CLICommand {
       .onBatchUpload((data) => this.successMessageOnAdd(data))
       .onBatchError((data) => this.errorMessageOnAdd(data))
       .batch();
-
-    CliUx.ux.action.stop(green('✔'));
   }
 
   public async catch(err?: Error & {exitCode?: number}) {
@@ -129,7 +128,7 @@ export default class SourceCatalogAdd extends CLICommand {
   }
 
   private async sourceIsEmpty(sourceId: string): Promise<boolean> {
-    CliUx.ux.action.start('Checking source status...');
+    startSpinner('Checking source status');
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();
     const {information} = await platformClient.source.get(sourceId);
