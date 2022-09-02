@@ -28,7 +28,7 @@ export abstract class CLICommand extends Command {
     const error = wrapError(err);
 
     // Let oclif handle errors
-    return error;
+    throw error;
   }
 
   protected async finally(err: Error | undefined) {
