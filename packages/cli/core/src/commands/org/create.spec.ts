@@ -60,7 +60,7 @@ describe('org:create', () => {
     .stderr()
     .command(['org:create', 'my-test-org'])
     .it('should log the newly created org id', (ctx) => {
-      expect(ctx.stderr).toContain(
+      expect(ctx.stdout).toContain(
         'Organization mytestorg12345 successfully created.'
       );
     });
