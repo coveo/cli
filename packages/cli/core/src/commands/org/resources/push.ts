@@ -7,7 +7,7 @@ import {
   Preconditions,
 } from '@coveo/cli-commons/preconditions';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {red, green, bold} from 'chalk';
+import {bold} from 'chalk';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {
   dryRun,

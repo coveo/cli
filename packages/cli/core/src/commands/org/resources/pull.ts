@@ -1,5 +1,5 @@
 import type {ResourceSnapshotType} from '@coveord/platform-client';
-import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
+import {startSpinner} from '@coveo/cli-commons/utils/ux';
 import {Flags} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {readJsonSync} from 'fs-extra';
