@@ -61,7 +61,6 @@ export default class Monitor extends CLICommand {
   private async printHeader() {
     const {args} = await this.parse(Monitor);
     const snapshotId = args.snapshotId;
-    // TODO: CDX-1115: use logHeader util
     const header = ReportViewerStyles.header(
       `Monitoring snapshot ${snapshotId}`
     );
