@@ -1,5 +1,5 @@
 import {CLIError} from '@oclif/core/lib/errors';
-import {Chalk, red, yellow} from 'chalk';
+import {Chalk, red, yellow, cyan} from 'chalk';
 
 export enum SeverityLevel {
   Info = 'info',
@@ -41,6 +41,10 @@ export class CLIBaseError extends Error {
 
       case SeverityLevel.Warn:
         color = yellow;
+        break;
+
+      case SeverityLevel.Info:
+        color = cyan;
         break;
 
       default:
