@@ -91,8 +91,8 @@ describe('auth:login', () => {
       );
   });
 
-  Object.keys(Region)
-    .flatMap((region) => [region, region.toLowerCase()])
+  Object.entries(Region)
+    .flatMap(regionEntry=>regionEntry)
     .forEach((region) => {
       test
         .stdout()
