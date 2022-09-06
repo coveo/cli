@@ -82,7 +82,13 @@ describe('ui:create:atomic', () => {
         .do(answerPrompt(EOL))
         .once();
     } else if (options.selectWithPrompt) {
-      const expectedPageSelectedMatcher = /❯ cli-tests-do-not-delete/;
+      const osSpecificSelector = process.platform === 'win32' ? '>' : '\u276f'; //❯
+      const anotherPageSelectedMatcher = new RegExp(
+        `${osSpecificSelector} (?!${options.pageIdOrName})`
+      );
+      const expectedPageSelectedMatcher = new RegExp(
+        `${osSpecificSelector} ${options.pageIdOrName}`
+      );
       await Promise.all([
         buildTerminal
           .when(expectedPageSelectedMatcher)
@@ -90,7 +96,7 @@ describe('ui:create:atomic', () => {
           .do(answerPrompt(EOL))
           .once(),
         buildTerminal
-          .when(/Use an existing hosted search page/)
+          .when(anotherPageSelectedMatcher)
           .on('stdout')
           .do(answerPrompt('\x1B[B '))
           .until(expectedPageSelectedMatcher),
