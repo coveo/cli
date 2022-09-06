@@ -146,16 +146,16 @@ describe('ui:create:atomic', () => {
       },
       skipBrowser: true,
     },
-    {
-      describeName:
-        'when using an existing pageId (using the list prompt of available pages)',
-      buildAppOptions: {
-        id: 'with-page-id-prompt',
-        promptAnswer: `\x1B[B ${EOL}`,
-        skipInstall: true,
-      },
-      skipBrowser: true,
-    },
+    // {
+    //   describeName:
+    //     'when using an existing pageId (using the list prompt of available pages)',
+    //   buildAppOptions: {
+    //     id: 'with-page-id-prompt',
+    //     promptAnswer: `\x1B[B ${EOL}`,
+    //     skipInstall: true,
+    //   },
+    //   skipBrowser: true,
+    // },
   ])(
     '$describeName',
     ({
