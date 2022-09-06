@@ -17,8 +17,8 @@ import retry from 'async-retry';
 
 interface BuildAppOptions {
   id: string;
-  pageIdOrName?: string;
-  selectWithPrompt?: boolean;
+  pageId?: string;
+  pageName?: string;
   skipInstall?: boolean;
 }
 
@@ -51,6 +51,42 @@ describe('ui:create:atomic', () => {
   const getProjectName = (id: string) =>
     `${process.env.TEST_RUN_ID}-atomic-project-${id}`;
 
+  const getFlagsFromOptions = (options: BuildAppOptions) =>
+    options.pageId ? ['--pageId', options.pageId] : undefined;
+
+  const selectDefaultWithCli = async (buildTerminal: Terminal) => {
+    buildTerminal
+      .when(/Use an existing hosted search page/)
+      .on('stdout')
+      .do(answerPrompt(EOL))
+      .once();
+  };
+
+  const selectPageWithCli = (
+    options: BuildAppOptions,
+    buildTerminal: Terminal
+  ) => {
+    const osSpecificSelector = process.platform === 'win32' ? '>' : '\u276f'; //❯
+    const anotherPageSelectedMatcher = new RegExp(
+      `${osSpecificSelector} (?!${options.pageName})`,
+      'gm'
+    );
+    const expectedPageSelectedMatcher = new RegExp(
+      `${osSpecificSelector} ${options.pageName}`,
+      'gm'
+    );
+    buildTerminal
+      .when(anotherPageSelectedMatcher)
+      .on('stdout')
+      .do(answerPrompt('\x1B[B'))
+      .until(expectedPageSelectedMatcher);
+    buildTerminal
+      .when(expectedPageSelectedMatcher)
+      .on('stdout')
+      .do(answerPrompt(EOL))
+      .once();
+  };
+
   const buildApplication = async (
     processManager: ProcessManager,
     options: BuildAppOptions
@@ -62,9 +98,7 @@ describe('ui:create:atomic', () => {
       'ui:create:atomic',
       getProjectName(options.id),
       {
-        flags: options.pageIdOrName
-          ? ['--pageId', options.pageIdOrName]
-          : undefined,
+        flags: getFlagsFromOptions(options),
       }
     );
 
@@ -75,32 +109,10 @@ describe('ui:create:atomic', () => {
       output += chunk;
     });
 
-    if (!options.pageIdOrName) {
-      await buildTerminal
-        .when(/Use an existing hosted search page/)
-        .on('stdout')
-        .do(answerPrompt(EOL))
-        .once();
-    } else if (options.selectWithPrompt) {
-      const osSpecificSelector = process.platform === 'win32' ? '>' : '\u276f'; //❯
-      const anotherPageSelectedMatcher = new RegExp(
-        `${osSpecificSelector} (?!${options.pageIdOrName})`
-      );
-      const expectedPageSelectedMatcher = new RegExp(
-        `${osSpecificSelector} ${options.pageIdOrName}`
-      );
-      await Promise.all([
-        buildTerminal
-          .when(expectedPageSelectedMatcher)
-          .on('stdout')
-          .do(answerPrompt(EOL))
-          .once(),
-        buildTerminal
-          .when(anotherPageSelectedMatcher)
-          .on('stdout')
-          .do(answerPrompt('\x1B[B '))
-          .until(expectedPageSelectedMatcher),
-      ]);
+    if (options.pageName) {
+      selectPageWithCli(options, buildTerminal);
+    } else if (!options.pageId) {
+      selectDefaultWithCli(buildTerminal);
     }
 
     const streams = ['stdout', 'stderr'] as const;
@@ -151,9 +163,8 @@ describe('ui:create:atomic', () => {
       describeName: 'when using an existing pageId (pageId not specified)',
       buildAppOptions: {
         id: 'with-page-id',
-        pageIdOrName: 'fffaafcc-6863-46cb-aca3-97522fcc0f5d',
+        pageId: 'fffaafcc-6863-46cb-aca3-97522fcc0f5d',
         skipInstall: false,
-        selectWithPrompt: false,
       },
       skipBrowser: false,
     },
@@ -161,15 +172,13 @@ describe('ui:create:atomic', () => {
       describeName: 'when using the default page config (pageId not specified)',
       buildAppOptions: {id: 'without-page-id', skipInstall: true},
       skipBrowser: true,
-      selectWithPrompt: false,
     },
     {
       describeName: 'when using an existing pageId (--pageId flag specified)',
       buildAppOptions: {
         id: 'with-page-id',
-        pageIdOrName: 'fffaafcc-6863-46cb-aca3-97522fcc0f5d',
+        pageId: 'fffaafcc-6863-46cb-aca3-97522fcc0f5d',
         skipInstall: true,
-        selectWithPrompt: false,
       },
       skipBrowser: true,
     },
@@ -178,7 +187,7 @@ describe('ui:create:atomic', () => {
         'when using an existing pageId (using the list prompt of available pages)',
       buildAppOptions: {
         id: 'with-page-id-prompt',
-        selectWithPrompt: true,
+        pageName: 'cli-tests-do-not-delete',
         skipInstall: true,
       },
       skipBrowser: true,
@@ -240,9 +249,10 @@ describe('ui:create:atomic', () => {
       }, 5 * 30e3);
 
       it('should use the right configuration', () => {
-        const message = buildAppOptions.pageIdOrName
-          ? 'Hosted search page named'
-          : 'Using the default search page template.';
+        const message =
+          buildAppOptions.pageId || buildAppOptions.pageName
+            ? 'Hosted search page named'
+            : 'Using the default search page template.';
         expect(stderr).toContain(message);
       });
 

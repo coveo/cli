@@ -70,6 +70,9 @@ export class Do implements Promise<void> {
    */
   public until(untilCondition: Condition): Promise<void> {
     let eventListener: EventListenerObject | undefined;
+    if (untilCondition instanceof RegExp) {
+      untilCondition = new RegExp(untilCondition);
+    }
     return new Promise<void>((resolve) => {
       eventListener = this.addTerminalListener(
         untilCondition,
