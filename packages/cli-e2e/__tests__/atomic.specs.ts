@@ -19,7 +19,6 @@ interface BuildAppOptions {
   id: string;
   pageIdOrName?: string;
   selectWithPrompt?: boolean;
-  promptAnswer?: string;
   skipInstall?: boolean;
 }
 
@@ -80,8 +79,22 @@ describe('ui:create:atomic', () => {
       await buildTerminal
         .when(/Use an existing hosted search page/)
         .on('stdout')
-        .do(answerPrompt(options.promptAnswer ? options.promptAnswer : EOL))
+        .do(answerPrompt(EOL))
         .once();
+    } else if (options.selectWithPrompt) {
+      const expectedPageSelectedMatcher = /❯ cli-tests-do-not-delete/;
+      await Promise.all([
+        buildTerminal
+          .when(expectedPageSelectedMatcher)
+          .on('stdout')
+          .do(answerPrompt(EOL))
+          .once(),
+        buildTerminal
+          .when(/Use an existing hosted search page/)
+          .on('stdout')
+          .do(answerPrompt('\x1B[B '))
+          .until(expectedPageSelectedMatcher),
+      ]);
     }
 
     const streams = ['stdout', 'stderr'] as const;
@@ -159,7 +172,7 @@ describe('ui:create:atomic', () => {
         'when using an existing pageId (using the list prompt of available pages)',
       buildAppOptions: {
         id: 'with-page-id-prompt',
-        promptAnswer: `\x1B[B ${EOL}`,
+        selectWithPrompt: true,
         skipInstall: true,
       },
       skipBrowser: true,
@@ -221,10 +234,9 @@ describe('ui:create:atomic', () => {
       }, 5 * 30e3);
 
       it('should use the right configuration', () => {
-        const message =
-          buildAppOptions.promptAnswer || buildAppOptions.pageIdOrName
-            ? 'Hosted search page named'
-            : 'Using the default search page template.';
+        const message = buildAppOptions.pageIdOrName
+          ? 'Hosted search page named'
+          : 'Using the default search page template.';
         expect(stderr).toContain(message);
       });
 
