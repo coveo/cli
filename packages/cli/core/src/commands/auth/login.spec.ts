@@ -92,7 +92,7 @@ describe('auth:login', () => {
   });
 
   Object.entries(Region)
-    .flatMap(regionEntry=>regionEntry)
+    .flatMap((regionEntry) => regionEntry)
     .forEach((region) => {
       test
         .stdout()
