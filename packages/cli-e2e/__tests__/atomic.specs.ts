@@ -17,7 +17,8 @@ import retry from 'async-retry';
 
 interface BuildAppOptions {
   id: string;
-  pageId?: string;
+  pageIdOrName?: string;
+  selectWithPrompt?: boolean;
   promptAnswer?: string;
   skipInstall?: boolean;
 }
@@ -61,7 +62,11 @@ describe('ui:create:atomic', () => {
       processManager,
       'ui:create:atomic',
       getProjectName(options.id),
-      {flags: options.pageId ? ['--pageId', options.pageId] : undefined}
+      {
+        flags: options.pageIdOrName
+          ? ['--pageId', options.pageIdOrName]
+          : undefined,
+      }
     );
 
     buildTerminal.orchestrator.process.stderr.on('data', (chunk: string) => {
@@ -71,7 +76,7 @@ describe('ui:create:atomic', () => {
       output += chunk;
     });
 
-    if (!options.pageId) {
+    if (!options.pageIdOrName) {
       await buildTerminal
         .when(/Use an existing hosted search page/)
         .on('stdout')
@@ -127,8 +132,9 @@ describe('ui:create:atomic', () => {
       describeName: 'when using an existing pageId (pageId not specified)',
       buildAppOptions: {
         id: 'with-page-id',
-        pageId: 'fffaafcc-6863-46cb-aca3-97522fcc0f5d',
+        pageIdOrName: 'fffaafcc-6863-46cb-aca3-97522fcc0f5d',
         skipInstall: false,
+        selectWithPrompt: false,
       },
       skipBrowser: false,
     },
@@ -136,26 +142,28 @@ describe('ui:create:atomic', () => {
       describeName: 'when using the default page config (pageId not specified)',
       buildAppOptions: {id: 'without-page-id', skipInstall: true},
       skipBrowser: true,
+      selectWithPrompt: false,
     },
     {
       describeName: 'when using an existing pageId (--pageId flag specified)',
       buildAppOptions: {
         id: 'with-page-id',
-        pageId: 'fffaafcc-6863-46cb-aca3-97522fcc0f5d',
+        pageIdOrName: 'fffaafcc-6863-46cb-aca3-97522fcc0f5d',
+        skipInstall: true,
+        selectWithPrompt: false,
+      },
+      skipBrowser: true,
+    },
+    {
+      describeName:
+        'when using an existing pageId (using the list prompt of available pages)',
+      buildAppOptions: {
+        id: 'with-page-id-prompt',
+        promptAnswer: `\x1B[B ${EOL}`,
         skipInstall: true,
       },
       skipBrowser: true,
     },
-    // {
-    //   describeName:
-    //     'when using an existing pageId (using the list prompt of available pages)',
-    //   buildAppOptions: {
-    //     id: 'with-page-id-prompt',
-    //     promptAnswer: `\x1B[B ${EOL}`,
-    //     skipInstall: true,
-    //   },
-    //   skipBrowser: true,
-    // },
   ])(
     '$describeName',
     ({
@@ -214,7 +222,7 @@ describe('ui:create:atomic', () => {
 
       it('should use the right configuration', () => {
         const message =
-          buildAppOptions.promptAnswer || buildAppOptions.pageId
+          buildAppOptions.promptAnswer || buildAppOptions.pageIdOrName
             ? 'Hosted search page named'
             : 'Using the default search page template.';
         expect(stderr).toContain(message);
