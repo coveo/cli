@@ -91,16 +91,26 @@ describe('auth:login', () => {
       );
   });
 
-  Object.keys(Region).forEach((region) => {
-    test
-      .stdout()
-      .stderr()
-      .command(['auth:login', '-r', region, '-o', 'foo'])
-      .it(`passes the -e=${region} flag to oauth and configuration`, () => {
-        expect(mockedOAuth.mock.calls[0][0]?.region).toBe(region);
-        expect(mockConfigSet).toHaveBeenCalledWith('region', region);
-      });
-  });
+  Object.keys(Region)
+    .flatMap((region) => [region, region.toLowerCase()])
+    .forEach((region) => {
+      test
+        .stdout()
+        .stderr()
+        .command(['auth:login', '-r', region, '-o', 'foo'])
+        .it(
+          `passes the -e=${region} flag in lowercase to oauth and configuration`,
+          () => {
+            expect(mockedOAuth.mock.calls[0][0]?.region).toBe(
+              region.toLowerCase()
+            );
+            expect(mockConfigSet).toHaveBeenCalledWith(
+              'region',
+              region.toLowerCase()
+            );
+          }
+        );
+    });
 
   test
     .stdout()
