@@ -13,6 +13,7 @@ import {
   startVerdaccio,
   publishPackages,
   shimNpm,
+  scaffoldDummyPackages,
 } from './utils';
 import {join} from 'path';
 
@@ -27,5 +28,6 @@ export default async function () {
   global.processManager = new ProcessManager();
   await startVerdaccio();
   await npmLogin();
+  scaffoldDummyPackages();
   await publishPackages();
 }
