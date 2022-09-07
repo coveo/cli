@@ -4,7 +4,6 @@ import {
   Preconditions,
   IsAuthenticated,
 } from '@coveo/cli-commons/preconditions/';
-
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {recordable} from '../../lib/utils/record';
 

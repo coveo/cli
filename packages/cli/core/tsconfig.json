@@ -1,6 +1,7 @@
 {
   "extends": "@coveo/cli-commons-dev/tsconfig.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "outDir": "lib",
     "types": ["node", "jest"],
     "paths": {
