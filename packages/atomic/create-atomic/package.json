@@ -14,8 +14,6 @@
     "start": "node ./index.mjs",
     "build": "tsc -p tsconfig.json",
     "prepublishOnly": "rimraf template && npm run build && node ./scripts/preparePackageJsonTemplate.mjs",
-    "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
-    "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
     "lint": "prettier --check . && eslint .",
     "release:phase2": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase2-bump-all-packages.mjs"
   },
