@@ -16,7 +16,10 @@
     "./.prettierrc": "./.prettierrc.js",
     "./.prettierrc.js": "./.prettierrc.js",
     "./tsconfig.json": "./tsconfig.json",
-    "./*": "./lib/*"
+    "./*": {
+      "types": "./lib/*.d.ts",
+      "default": "./lib/*.js"
+    }
   },
   "dependencies": {
     "fancy-test": "2.0.0",
