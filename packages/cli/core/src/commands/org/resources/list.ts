@@ -1,13 +1,13 @@
 import {Command, CliUx} from '@oclif/core';
-import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
-import {Config} from '@coveo/cli-commons/src/config/config';
+import {Config} from '@coveo/cli-commons/config/config';
 import {
   IsAuthenticated,
   Preconditions,
-} from '@coveo/cli-commons/src/preconditions';
+} from '@coveo/cli-commons/preconditions/index';
 import dedent from 'ts-dedent';
-import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
+import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {recordable} from '../../../lib/utils/record';
 import {organization} from '../../../lib/flags/snapshotCommonFlags';
 

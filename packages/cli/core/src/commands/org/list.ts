@@ -1,11 +1,10 @@
 import {Command, CliUx} from '@oclif/core';
-import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {
   Preconditions,
   IsAuthenticated,
-} from '@coveo/cli-commons/src/preconditions/';
-
-import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
+} from '@coveo/cli-commons/preconditions/index';
+import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {recordable} from '../../lib/utils/record';
 
 export default class List extends Command {

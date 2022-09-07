@@ -2,7 +2,7 @@ import type {Command} from '@oclif/core';
 import {dedent} from 'ts-dedent';
 import {spawnProcessOutput, SpawnProcessOutput} from '../../utils/process';
 import {satisfies, validRange} from 'semver';
-import {PreconditionError} from '@coveo/cli-commons/src/errors/preconditionError';
+import {PreconditionError} from '@coveo/cli-commons/errors/preconditionError';
 
 export enum PreconditionErrorCategoryBin {
   MissingBin = 'Missing Bin',

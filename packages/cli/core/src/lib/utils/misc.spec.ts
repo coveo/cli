@@ -1,4 +1,4 @@
-import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
+import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {getPackageVersion} from './misc';
 
 describe('#getPackageVersion', () => {

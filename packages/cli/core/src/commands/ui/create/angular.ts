@@ -1,25 +1,25 @@
 import {Command, Flags} from '@oclif/core';
-import {platformUrl} from '@coveo/cli-commons/src/platform/environment';
-import {Config} from '@coveo/cli-commons/src/config/config';
+import {platformUrl} from '@coveo/cli-commons/platform/environment';
+import {Config} from '@coveo/cli-commons/config/config';
 import {spawnProcess} from '../../../lib/utils/process';
-import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {
   IsNodeVersionInRange,
   IsNpmVersionInRange,
-} from '../../../lib/decorators/preconditions/';
+} from '../../../lib/decorators/preconditions/index';
 import {
   HasNecessaryCoveoPrivileges,
   Preconditions,
   IsAuthenticated,
-} from '@coveo/cli-commons/src/preconditions';
+} from '@coveo/cli-commons/preconditions/index';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {IsNgVersionInRange} from '../../../lib/decorators/preconditions/ng';
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,
-} from '@coveo/cli-commons/src/preconditions/platformPrivilege';
-import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
+} from '@coveo/cli-commons/preconditions/platformPrivilege';
+import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 
 export default class Angular extends Command {
   public static templateName = '@coveo/angular';

@@ -1,21 +1,21 @@
-jest.mock('@coveo/cli-commons/src/analytics/amplitudeClient');
+jest.mock('@coveo/cli-commons/analytics/amplitudeClient');
 
-jest.mock('@coveo/cli-commons/src/platform/authenticatedClient');
-jest.mock('@coveo/cli-commons/src/config/config');
-jest.mock('@coveo/cli-commons/src/config/globalConfig');
-jest.mock('@coveo/cli-commons/src/preconditions/trackable');
+jest.mock('@coveo/cli-commons/platform/authenticatedClient');
+jest.mock('@coveo/cli-commons/config/config');
+jest.mock('@coveo/cli-commons/config/globalConfig');
+jest.mock('@coveo/cli-commons/preconditions/trackable');
 jest.mock('@coveo/push-api-client');
 
 import stripAnsi from 'strip-ansi';
 import {test} from '@oclif/test';
-import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {CatalogSource, DocumentBuilder} from '@coveo/push-api-client';
 import {cwd} from 'process';
 import {join} from 'path';
-import {APIError} from '@coveo/cli-commons/src/errors/apiError';
+import {APIError} from '@coveo/cli-commons/errors/apiError';
 import {Interfaces} from '@oclif/core';
-import globalConfig from '@coveo/cli-commons/src/config/globalConfig';
-import {Config} from '@coveo/cli-commons/src/config/config';
+import globalConfig from '@coveo/cli-commons/config/globalConfig';
+import {Config} from '@coveo/cli-commons/config/config';
 
 import {
   BatchUploadDocumentsError,

@@ -1,4 +1,4 @@
-import {buildEvent} from '@coveo/cli-commons/src/analytics/eventUtils';
+import {buildEvent} from '@coveo/cli-commons/analytics/eventUtils';
 import {Hook} from '@oclif/core';
 import {CLIError} from '@oclif/core/lib/errors';
 

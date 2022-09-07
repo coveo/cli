@@ -1,7 +1,7 @@
 import {EventEmitter} from 'events';
 import {ChildProcess} from 'child_process';
 import {spawnProcess} from './process';
-import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
+import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 
 jest.mock('child_process', () => ({
   spawn: jest

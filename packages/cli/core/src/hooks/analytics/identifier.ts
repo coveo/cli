@@ -2,12 +2,12 @@ import os from 'os';
 import {Identify} from '@amplitude/identify';
 import {machineId} from 'node-machine-id';
 import {createHash} from 'crypto';
-import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import PlatformClient from '@coveord/platform-client';
-import {camelToSnakeCase} from '@coveo/cli-commons/src/utils/string';
+import {camelToSnakeCase} from '@coveo/cli-commons/utils/string';
 import type {NodeClient} from '@amplitude/node';
-import globalConfig from '@coveo/cli-commons/src/config/globalConfig';
-import {Configuration} from '@coveo/cli-commons/src/config/config';
+import globalConfig from '@coveo/cli-commons/config/globalConfig';
+import {Configuration} from '@coveo/cli-commons/config/config';
 
 export class Identifier {
   private authenticatedClient: AuthenticatedClient;

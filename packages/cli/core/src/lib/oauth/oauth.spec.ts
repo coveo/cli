@@ -1,11 +1,11 @@
 import type {ChildProcess} from 'child_process';
 
 import {Region} from '@coveord/platform-client';
-import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
+import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {
   PlatformEnvironment,
   platformUrl,
-} from '@coveo/cli-commons/src/platform/environment';
+} from '@coveo/cli-commons/platform/environment';
 import {OAuth} from './oauth';
 import {OAuthClientServer} from './oauthClientServer';
 import open from 'open';

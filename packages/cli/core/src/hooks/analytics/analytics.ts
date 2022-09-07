@@ -4,7 +4,7 @@ import {
   AuthenticatedClient,
   AuthenticationStatus,
   getAuthenticationStatus,
-} from '@coveo/cli-commons/src/platform/authenticatedClient';
+} from '@coveo/cli-commons/platform/authenticatedClient';
 import {amplitudeClient} from './amplitudeClient';
 import {Identifier} from './identifier';
 

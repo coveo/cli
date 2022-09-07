@@ -1,7 +1,7 @@
-import {fancyIt} from '@coveo/cli-commons-dev/lib/testUtils/it';
-import {PreconditionError} from '../../errors/preconditionError';
+import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
+import {getFakeCommand} from '@coveo/cli-commons-dev/testUtils/utils';
+import {PreconditionError} from '../errors/preconditionError';
 import {Preconditions} from './preconditions';
-import {getFakeCommand} from './testsUtils/utils';
 
 describe('preconditions', () => {
   const preconditions = new Array<jest.Mock<Promise<void>>>(5);

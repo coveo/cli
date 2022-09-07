@@ -4,7 +4,7 @@ import {
   ResourceSnapshotSupportedFileTypes,
 } from '@coveord/platform-client';
 import {readFileSync} from 'fs';
-import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {SnapshotPullModelResources} from './pullModel/interfaces';
 import {Snapshot, WaitUntilDoneOptions} from './snapshot';
 

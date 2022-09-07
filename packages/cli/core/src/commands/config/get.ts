@@ -1,7 +1,7 @@
 import {Command} from '@oclif/core';
-import {Config} from '@coveo/cli-commons/src/config/config';
-import {ConfigRenderer} from '@coveo/cli-commons/src/config/configRenderer';
-import {Trackable} from '@coveo/cli-commons/src/preconditions/trackable';
+import {Config} from '@coveo/cli-commons/config/config';
+import {ConfigRenderer} from '@coveo/cli-commons/config/configRenderer';
+import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 
 export default class Get extends Command {
   public static description = 'Display the current configuration.';

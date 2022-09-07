@@ -10,6 +10,17 @@
     ".prettierrc.js",
     "tsconfig.json"
   ],
+  "exports": {
+    "./.eslintrc": "./.eslintrc.js",
+    "./.eslintrc.js": "./.eslintrc.js",
+    "./.prettierrc": "./.prettierrc.js",
+    "./.prettierrc.js": "./.prettierrc.js",
+    "./tsconfig.json": "./tsconfig.json",
+    "./*": {
+      "types": "./lib/*.d.ts",
+      "default": "./lib/*.js"
+    }
+  },
   "dependencies": {
     "fancy-test": "2.0.0",
     "tslib": "2.4.0"
@@ -21,7 +32,6 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "prepublish": "npm run build",
-    "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
     "release:phase2": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase2-bump-all-packages.mjs"
   },
   "publishConfig": {

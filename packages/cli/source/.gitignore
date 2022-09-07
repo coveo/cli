@@ -11,5 +11,5 @@ oclif.manifest.json
 src/**/*.js
 src/**/*.js.map
 src/**/*.d.ts
-src/coverage
 the_config_dir
+coverage

@@ -1,8 +1,8 @@
-import {PlatformPrivilege} from '@coveo/cli-commons/src/preconditions/platformPrivilege';
+import {PlatformPrivilege} from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {
   PrintableError,
   SeverityLevel,
-} from '@coveo/cli-commons/src/errors/printableError';
+} from '@coveo/cli-commons/errors/printableError';
 
 export class MissingPrivilegeError extends PrintableError {
   public constructor(

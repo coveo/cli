@@ -1,13 +1,13 @@
 jest.mock('../../lib/oauth/oauth');
-jest.mock('@coveo/cli-commons/src/config/config');
-jest.mock('@coveo/cli-commons/src/preconditions/trackable');
-jest.mock('@coveo/cli-commons/src/platform/authenticatedClient');
+jest.mock('@coveo/cli-commons/config/config');
+jest.mock('@coveo/cli-commons/preconditions/trackable');
+jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
 import {Region} from '@coveord/platform-client';
 import {test} from '@oclif/test';
-import {Config} from '@coveo/cli-commons/src/config/config';
-import {AuthenticatedClient} from '@coveo/cli-commons/src/platform/authenticatedClient';
-import {PlatformEnvironment} from '@coveo/cli-commons/src/platform/environment';
+import {Config} from '@coveo/cli-commons/config/config';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
+import {PlatformEnvironment} from '@coveo/cli-commons/platform/environment';
 const mockedConfig = jest.mocked(Config, true);
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 
@@ -80,7 +80,10 @@ describe('auth:token', () => {
       .stderr()
       .command(['auth:token', '-r', region, '-t', 'someToken'])
       .it(`writes the -r=${region} flag  and configuration`, () => {
-        expect(mockConfigSet).toHaveBeenCalledWith('region', region);
+        expect(mockConfigSet).toHaveBeenCalledWith(
+          'region',
+          region.toLowerCase()
+        );
       });
   });
 
