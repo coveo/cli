@@ -252,6 +252,7 @@ export function scaffoldDummyPackages() {
     '@coveo/cli-commons-dev',
     '@coveo/cli-commons',
     '@coveo/cli',
+    '@coveo/cli-plugin-source',
   ];
 
   for (const packageToScaffold of packagesToScaffold) {
