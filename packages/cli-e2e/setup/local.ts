@@ -14,7 +14,6 @@ import {
   publishPackages,
   shimNpm,
   scaffoldDummyPackages,
-  installCli,
 } from './utils';
 import {join} from 'path';
 
@@ -23,7 +22,6 @@ export default async function () {
   useCIConfigIfEnvIncomplete();
   mkdirSync(SCREENSHOTS_PATH, {recursive: true});
   setProcessEnv();
-  process.env.npm_config_registry = 'http://localhost:4873';
 
   createUiProjectDirectory();
   process.env['GITHUB_WORKSPACE'] = join(__dirname, '..', '..', '..');
@@ -32,5 +30,4 @@ export default async function () {
   await npmLogin();
   scaffoldDummyPackages();
   await publishPackages();
-  await installCli();
 }

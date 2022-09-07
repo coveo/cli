@@ -24,5 +24,5 @@ export default async function () {
   await installCli();
   process.stdout.write(`CLI PATH : ${process.env.CLI_EXEC_PATH}`);
   createUiProjectDirectory();
-  // restoreCliConfig();
+  restoreCliConfig();
 }
