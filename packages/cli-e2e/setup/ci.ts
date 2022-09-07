@@ -20,7 +20,6 @@ export default async function () {
   if (!(process.env.E2E_USE_NPM_REGISTRY === 'true')) {
     await startVerdaccio();
   }
-  process.env.npm_config_registry = 'http://localhost:4873';
   await installCli();
   process.stdout.write(`CLI PATH : ${process.env.CLI_EXEC_PATH}`);
   createUiProjectDirectory();
