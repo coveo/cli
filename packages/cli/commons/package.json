@@ -8,7 +8,10 @@
     "lib/**"
   ],
   "exports": {
-    "./*": "./lib/*"
+    "./*": {
+      "types": "./lib/*.d.ts",
+      "default": "./lib/*.js"
+    }
   },
   "devDependencies": {
     "@coveo/cli-commons-dev": "1.35.9",
