@@ -1,5 +1,5 @@
 import {Command} from '@oclif/core';
-import {PreconditionFunction} from '@coveo/cli-commons/preconditions';
+import {PreconditionFunction} from '@coveo/cli-commons/preconditions/index';
 import {PreconditionError} from '@coveo/cli-commons/errors/preconditionError';
 
 const thrower = (reason: string) => {

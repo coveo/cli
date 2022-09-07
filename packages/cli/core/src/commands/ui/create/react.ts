@@ -9,7 +9,7 @@ import {
   Preconditions,
   IsAuthenticated,
   HasNecessaryCoveoPrivileges,
-} from '@coveo/cli-commons/preconditions';
+} from '@coveo/cli-commons/preconditions/index';
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,
