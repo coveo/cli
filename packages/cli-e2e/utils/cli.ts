@@ -75,7 +75,7 @@ export async function setupUIProject(
     await gitInitTerminal.when('exit').on('process').do().once();
   }
 
-  const env: Record<string, any> = getCleanEnv();
+  const env: Record<string, string> = getCleanEnv();
   const buildProcess = new Terminal(
     args.shift()!,
     args,
