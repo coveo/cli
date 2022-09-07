@@ -18,7 +18,7 @@ import retry from 'async-retry';
 interface BuildAppOptions {
   id: string;
   pageId?: string;
-  promptAnswer?: string;
+  pageName?: string;
   skipInstall?: boolean;
 }
 
@@ -51,6 +51,42 @@ describe('ui:create:atomic', () => {
   const getProjectName = (id: string) =>
     `${process.env.TEST_RUN_ID}-atomic-project-${id}`;
 
+  const getFlagsFromOptions = (options: BuildAppOptions) =>
+    options.pageId ? ['--pageId', options.pageId] : undefined;
+
+  const selectDefaultWithCli = async (buildTerminal: Terminal) => {
+    buildTerminal
+      .when(/Use an existing hosted search page/)
+      .on('stdout')
+      .do(answerPrompt(EOL))
+      .once();
+  };
+
+  const selectPageWithCli = (
+    options: BuildAppOptions,
+    buildTerminal: Terminal
+  ) => {
+    const osSpecificSelector = process.platform === 'win32' ? '>' : '\u276f'; //❯
+    const anotherPageSelectedMatcher = new RegExp(
+      `${osSpecificSelector} (?!${options.pageName})`,
+      'gm'
+    );
+    const expectedPageSelectedMatcher = new RegExp(
+      `${osSpecificSelector} ${options.pageName}`,
+      'gm'
+    );
+    buildTerminal
+      .when(anotherPageSelectedMatcher)
+      .on('stdout')
+      .do(answerPrompt('\x1B[B'))
+      .until(expectedPageSelectedMatcher);
+    buildTerminal
+      .when(expectedPageSelectedMatcher)
+      .on('stdout')
+      .do(answerPrompt(EOL))
+      .once();
+  };
+
   const buildApplication = async (
     processManager: ProcessManager,
     options: BuildAppOptions
@@ -61,7 +97,9 @@ describe('ui:create:atomic', () => {
       processManager,
       'ui:create:atomic',
       getProjectName(options.id),
-      {flags: options.pageId ? ['--pageId', options.pageId] : undefined}
+      {
+        flags: getFlagsFromOptions(options),
+      }
     );
 
     buildTerminal.orchestrator.process.stderr.on('data', (chunk: string) => {
@@ -71,12 +109,10 @@ describe('ui:create:atomic', () => {
       output += chunk;
     });
 
-    if (!options.pageId) {
-      await buildTerminal
-        .when(/Use an existing hosted search page/)
-        .on('stdout')
-        .do(answerPrompt(options.promptAnswer ? options.promptAnswer : EOL))
-        .once();
+    if (options.pageName) {
+      selectPageWithCli(options, buildTerminal);
+    } else if (!options.pageId) {
+      selectDefaultWithCli(buildTerminal);
     }
 
     const streams = ['stdout', 'stderr'] as const;
@@ -146,16 +182,16 @@ describe('ui:create:atomic', () => {
       },
       skipBrowser: true,
     },
-    // {
-    //   describeName:
-    //     'when using an existing pageId (using the list prompt of available pages)',
-    //   buildAppOptions: {
-    //     id: 'with-page-id-prompt',
-    //     promptAnswer: `\x1B[B ${EOL}`,
-    //     skipInstall: true,
-    //   },
-    //   skipBrowser: true,
-    // },
+    {
+      describeName:
+        'when using an existing pageId (using the list prompt of available pages)',
+      buildAppOptions: {
+        id: 'with-page-id-prompt',
+        pageName: 'cli-tests-do-not-delete',
+        skipInstall: true,
+      },
+      skipBrowser: true,
+    },
   ])(
     '$describeName',
     ({
@@ -214,7 +250,7 @@ describe('ui:create:atomic', () => {
 
       it('should use the right configuration', () => {
         const message =
-          buildAppOptions.promptAnswer || buildAppOptions.pageId
+          buildAppOptions.pageId || buildAppOptions.pageName
             ? 'Hosted search page named'
             : 'Using the default search page template.';
         expect(stderr).toContain(message);
