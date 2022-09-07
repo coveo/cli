@@ -1,3 +1,9 @@
+## 1.35.10 (2022-09-07)
+
+### Bug Fixes
+
+- **cli:** parse region flag ([#919](https://github.com/coveo/cli/issues/919)) ([1321ed5](https://github.com/coveo/cli/commits/1321ed5c1db20f9e735097caedeb5e33c31eaf70))
+
 ## 1.35.9 (2022-08-30)
 
 ### Bug Fixes
