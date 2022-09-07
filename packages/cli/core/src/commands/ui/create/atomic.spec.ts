@@ -19,8 +19,8 @@ import {Config, Configuration} from '@coveo/cli-commons/config/config';
 import {
   IsNpxInstalled,
   IsNodeVersionInRange,
-} from '../../../lib/decorators/preconditions/';
-import {HasNecessaryCoveoPrivileges} from '@coveo/cli-commons/preconditions';
+} from '../../../lib/decorators/preconditions/index';
+import {HasNecessaryCoveoPrivileges} from '@coveo/cli-commons/preconditions/index';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {configurationMock} from '../../../__stub__/configuration';
 import {mockPreconditions} from '../../../__test__/preconditionUtils';

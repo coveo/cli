@@ -3,7 +3,7 @@ import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
-} from '@coveo/cli-commons/preconditions';
+} from '@coveo/cli-commons/preconditions/index';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {red, green, bold} from 'chalk';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';

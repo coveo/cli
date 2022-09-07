@@ -1,5 +1,8 @@
 import {Command} from '@oclif/core';
-import {IsAuthenticated, Preconditions} from '@coveo/cli-commons/preconditions';
+import {
+  IsAuthenticated,
+  Preconditions,
+} from '@coveo/cli-commons/preconditions/index';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import open from 'open';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
