@@ -14,7 +14,7 @@ index 8903363..db27b9e 100644
          };
          const arches = _.uniq(buildConfig.targets
 diff --git a/node_modules/oclif/lib/tarballs/build.js b/node_modules/oclif/lib/tarballs/build.js
-index ffbbd21..39ed82d 100644
+index ffbbd21..8003921 100644
 --- a/node_modules/oclif/lib/tarballs/build.js
 +++ b/node_modules/oclif/lib/tarballs/build.js
 @@ -48,16 +48,16 @@ async function build(c, options = {}) {
@@ -39,9 +39,12 @@ index ffbbd21..39ed82d 100644
              }
              await qq.cp(lockpath, '.');
              await qq.x('npm install --production');
-@@ -94,7 +94,7 @@ async function build(c, options = {}) {
+@@ -92,9 +92,9 @@ async function build(c, options = {}) {
+         });
+         const base = path.basename(gzLocalKey);
          (0, log_1.log)(`building target ${base}`);
-         (0, log_1.log)('copying workspace', c.workspace(), workspace);
+-        (0, log_1.log)('copying workspace', c.workspace(), workspace);
++        (0, log_1.log)('copying workspace with deref', c.workspace(), workspace);
          await qq.rm(workspace);
 -        await qq.cp(c.workspace(), workspace);
 +        await qq.cp(c.workspace(), workspace, {dereference: true});
