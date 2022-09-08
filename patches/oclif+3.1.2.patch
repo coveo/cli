@@ -14,10 +14,10 @@ index 8903363..db27b9e 100644
          };
          const arches = _.uniq(buildConfig.targets
 diff --git a/node_modules/oclif/lib/tarballs/build.js b/node_modules/oclif/lib/tarballs/build.js
-index ffbbd21..b9f7db4 100644
+index ffbbd21..1eb8f9b 100644
 --- a/node_modules/oclif/lib/tarballs/build.js
 +++ b/node_modules/oclif/lib/tarballs/build.js
-@@ -4,6 +4,7 @@ exports.build = void 0;
+@@ -4,10 +4,12 @@ exports.build = void 0;
  const findYarnWorkspaceRoot = require("find-yarn-workspace-root");
  const path = require("path");
  const qq = require("qqjs");
@@ -25,7 +25,12 @@ index ffbbd21..b9f7db4 100644
  const log_1 = require("../log");
  const bin_1 = require("./bin");
  const node_1 = require("./node");
-@@ -48,19 +49,15 @@ async function build(c, options = {}) {
+ const upload_util_1 = require("../upload-util");
++const Arborist = require('@npmcli/arborist')
+ const pack = async (from, to) => {
+     const prevCwd = qq.cwd();
+     qq.cd(path.dirname(from));
+@@ -48,10 +50,10 @@ async function build(c, options = {}) {
      };
      const addDependencies = async () => {
          qq.cd(c.workspace());
@@ -39,14 +44,13 @@ index ffbbd21..b9f7db4 100644
              await qq.x('yarn --no-progress --production --non-interactive');
          }
          else {
--            let lockpath = qq.join(c.root, 'package-lock.json');
--            if (!await qq.exists(lockpath)) {
--                lockpath = qq.join(c.root, 'npm-shrinkwrap.json');
--            }
--            await qq.cp(lockpath, '.');
--            await qq.x('npm install --production');
-+            fs.cpSync(qq.join(workspaceRoot, 'node_modules'), qq.join('.', 'node_modules'), {dereference: true, recursive: true});
-+            await qq.x('npm prune --production');
+@@ -60,6 +62,9 @@ async function build(c, options = {}) {
+                 lockpath = qq.join(c.root, 'npm-shrinkwrap.json');
+             }
+             await qq.cp(lockpath, '.');
++            const arb = new Arborist();
++            await arb.buildIdealTree();
++            await arb.reify();
+             await qq.x('npm install --production');
          }
      };
-     const pretarball = async () => {
