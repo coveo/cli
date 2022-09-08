@@ -14,7 +14,7 @@ index 8903363..db27b9e 100644
          };
          const arches = _.uniq(buildConfig.targets
 diff --git a/node_modules/oclif/lib/tarballs/build.js b/node_modules/oclif/lib/tarballs/build.js
-index ffbbd21..1eb8f9b 100644
+index ffbbd21..ebe3b9f 100644
 --- a/node_modules/oclif/lib/tarballs/build.js
 +++ b/node_modules/oclif/lib/tarballs/build.js
 @@ -4,10 +4,12 @@ exports.build = void 0;
@@ -30,7 +30,7 @@ index ffbbd21..1eb8f9b 100644
  const pack = async (from, to) => {
      const prevCwd = qq.cwd();
      qq.cd(path.dirname(from));
-@@ -48,10 +50,10 @@ async function build(c, options = {}) {
+@@ -48,18 +50,21 @@ async function build(c, options = {}) {
      };
      const addDependencies = async () => {
          qq.cd(c.workspace());
@@ -44,8 +44,11 @@ index ffbbd21..1eb8f9b 100644
              await qq.x('yarn --no-progress --production --non-interactive');
          }
          else {
-@@ -60,6 +62,9 @@ async function build(c, options = {}) {
-                 lockpath = qq.join(c.root, 'npm-shrinkwrap.json');
+-            let lockpath = qq.join(c.root, 'package-lock.json');
++            let lockpath = qq.join(workspaceRoot, 'package-lock.json');
+             if (!await qq.exists(lockpath)) {
+-                lockpath = qq.join(c.root, 'npm-shrinkwrap.json');
++                lockpath = qq.join(workspaceRoot, 'npm-shrinkwrap.json');
              }
              await qq.cp(lockpath, '.');
 +            const arb = new Arborist();
