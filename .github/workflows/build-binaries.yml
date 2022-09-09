@@ -42,7 +42,6 @@ jobs:
       - name: Get commit short hash
         run: node ./scripts/get-commit-short-hash.mjs
       - name: Build
-        working-directory: ./packages/cli/core
         run: npm run build
       - name: Create install kits
         working-directory: ./packages/cli/core
