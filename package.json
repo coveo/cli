@@ -15,6 +15,7 @@
     "@commitlint/lint": "16.2.4",
     "@coveo/semantic-monorepo-tools": "1.1.10",
     "@coveord/platform-client": "34.7.0",
+    "@npmcli/arborist": "^5.6.1",
     "@nrwl/cli": "latest",
     "@nrwl/workspace": "latest",
     "@types/node": "16.11.53",
