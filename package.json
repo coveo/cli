@@ -1,7 +1,7 @@
 {
   "name": "cli-tools",
   "private": true,
-  "version": "1.35.9",
+  "version": "1.35.12",
   "author": "Coveo",
   "bin": {
     "coveo": "./bin/run"
@@ -15,6 +15,7 @@
     "@commitlint/lint": "16.2.4",
     "@coveo/semantic-monorepo-tools": "1.1.10",
     "@coveord/platform-client": "34.7.0",
+    "@npmcli/arborist": "^5.6.1",
     "@nrwl/cli": "latest",
     "@nrwl/workspace": "latest",
     "@types/node": "16.11.53",
@@ -79,7 +80,6 @@
     "commit": "git-cz",
     "pr:report": "node ./scripts/pr-bot.js",
     "npm:publish:template": "nx run-many --target=npm:publish:template --all",
-    "npm:publish:template:local": "nx run-many --target=npm:publish:template:local --all",
     "prepare": "husky install",
     "commit-msg": "node ./hooks/commit-msg.js",
     "pre-commit": "lint-staged",

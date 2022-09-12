@@ -5,7 +5,7 @@ import {
   Preconditions,
   IsAuthenticated,
   HasNecessaryCoveoPrivileges,
-} from '@coveo/cli-commons/preconditions';
+} from '@coveo/cli-commons/preconditions/index';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';

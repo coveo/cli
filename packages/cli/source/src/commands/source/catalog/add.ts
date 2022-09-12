@@ -9,7 +9,7 @@ import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
-} from '@coveo/cli-commons/preconditions';
+} from '@coveo/cli-commons/preconditions/index';
 import {
   readOrganizationPrivilege,
   writeFieldsPrivilege,
