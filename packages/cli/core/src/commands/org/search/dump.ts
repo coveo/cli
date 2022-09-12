@@ -6,7 +6,10 @@ import PlatformClient from '@coveord/platform-client';
 import {dirSync} from 'tmp';
 
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {Preconditions, IsAuthenticated} from '@coveo/cli-commons/preconditions';
+import {
+  Preconditions,
+  IsAuthenticated,
+} from '@coveo/cli-commons/preconditions/index';
 import {Config} from '@coveo/cli-commons/config/config';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {without} from '../../../lib/utils/list';

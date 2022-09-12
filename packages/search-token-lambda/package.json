@@ -1,7 +1,7 @@
 {
   "name": "@coveo/search-token-lambda",
   "author": "Coveo",
-  "version": "1.35.9",
+  "version": "1.35.12",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -12,8 +12,6 @@
     "start": "netlify functions:serve",
     "test": "jest",
     "test:watch": "jest --watch",
-    "npm:publish:template": "npm publish --access public --tag latest --registry http://localhost:4873",
-    "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
     "release:phase2": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase2-bump-all-packages.mjs"
   },
   "dependencies": {

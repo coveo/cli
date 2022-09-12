@@ -1,6 +1,6 @@
 {
   "name": "@coveo/search-token-server",
-  "version": "1.35.9",
+  "version": "1.35.12",
   "main": "server.ts",
   "license": "Apache-2.0",
   "repository": {
@@ -25,8 +25,6 @@
   "scripts": {
     "start": "ts-node server.ts",
     "test": "jest",
-    "npm:publish:template": "npm publish --access public --tag latest --registry http://localhost:4873",
-    "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
     "release:phase2": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase2-bump-all-packages.mjs"
   },
   "devDependencies": {

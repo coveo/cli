@@ -80,7 +80,10 @@ describe('auth:token', () => {
       .stderr()
       .command(['auth:token', '-r', region, '-t', 'someToken'])
       .it(`writes the -r=${region} flag  and configuration`, () => {
-        expect(mockConfigSet).toHaveBeenCalledWith('region', region);
+        expect(mockConfigSet).toHaveBeenCalledWith(
+          'region',
+          region.toLowerCase()
+        );
       });
   });
 

@@ -26,7 +26,6 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
   await updateWorkspaceDependencies(newVersion);
   await npmBumpVersion(newVersion, PATH);
-
   if (isPrivatePackage()) {
     return;
   }
