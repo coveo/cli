@@ -9,6 +9,9 @@ import {On, OnTarget} from './on';
 export class When {
   private action: ActionWith<'condition'>;
   public constructor(action: Action, condition: Condition) {
+    if (condition instanceof RegExp) {
+      condition = new RegExp(condition);
+    }
     action.condition = condition;
     if (action.hasKeys<'condition'>('condition')) {
       this.action = action;

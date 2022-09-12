@@ -9,7 +9,8 @@ import {
 export const withRegion = (withDefault = true) => ({
   region: Flags.string({
     char: 'r',
-    options: Object.keys(Region),
+    options: Object.entries(Region).flatMap((regionEntry) => regionEntry),
+    parse: (input) => Promise.resolve(input.toLowerCase()),
     default: withDefault ? DEFAULT_REGION : undefined,
     description:
       'The Coveo Platform region to log in to. See <https://docs.coveo.com/en/2976>.',

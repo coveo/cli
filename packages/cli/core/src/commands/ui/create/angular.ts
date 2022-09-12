@@ -8,12 +8,12 @@ import {getPackageVersion} from '../../../lib/utils/misc';
 import {
   IsNodeVersionInRange,
   IsNpmVersionInRange,
-} from '../../../lib/decorators/preconditions/';
+} from '../../../lib/decorators/preconditions/index';
 import {
   HasNecessaryCoveoPrivileges,
   Preconditions,
   IsAuthenticated,
-} from '@coveo/cli-commons/preconditions';
+} from '@coveo/cli-commons/preconditions/index';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {IsNgVersionInRange} from '../../../lib/decorators/preconditions/ng';
 import {

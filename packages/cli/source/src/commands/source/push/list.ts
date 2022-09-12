@@ -1,7 +1,10 @@
 import {FilterHostType, SourceModel} from '@coveord/platform-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {CliUx} from '@oclif/core';
-import {IsAuthenticated, Preconditions} from '@coveo/cli-commons/preconditions';
+import {
+  IsAuthenticated,
+  Preconditions,
+} from '@coveo/cli-commons/preconditions/index';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import dedent from 'ts-dedent';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';

@@ -3,12 +3,12 @@ import {Flags} from '@oclif/core';
 import {
   IsNpxInstalled,
   IsNodeVersionInRange,
-} from '../../../lib/decorators/preconditions/';
+} from '../../../lib/decorators/preconditions/index';
 import {
   Preconditions,
   IsAuthenticated,
   HasNecessaryCoveoPrivileges,
-} from '@coveo/cli-commons/preconditions';
+} from '@coveo/cli-commons/preconditions/index';
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,

@@ -12,7 +12,7 @@ npm-debug.log
 reports/*.xml
 veracode
 artifacts
-
+*.tsbuildinfo
 ui-projects
 
 !.vscode/extensions.json
