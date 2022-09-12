@@ -1,6 +1,5 @@
 import {CLIError} from '@oclif/core/lib/errors';
 import {Chalk, red, yellow} from 'chalk';
-import isUnicodeSupported from 'is-unicode-supported';
 
 export enum SeverityLevel {
   Info = 'info',
@@ -54,6 +53,6 @@ export class CLIBaseError extends Error implements OClifCLIError {
         color = red;
         break;
     }
-    return color(isUnicodeSupported() ? '›' : '»');
+    return color('»');
   }
 }
