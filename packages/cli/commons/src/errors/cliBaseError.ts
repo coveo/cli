@@ -1,5 +1,6 @@
 import {CLIError} from '@oclif/core/lib/errors';
 import {Chalk, red, yellow} from 'chalk';
+import isUnicodeSupported from 'is-unicode-supported';
 
 export enum SeverityLevel {
   Info = 'info',
@@ -12,7 +13,9 @@ export interface CLIBaseErrorInterface {
   cause?: Error;
 }
 
-export class CLIBaseError extends Error {
+interface OClifCLIError extends Omit<CLIError, 'render'> {}
+
+export class CLIBaseError extends Error implements OClifCLIError {
   private static defaultSeverity: SeverityLevel = SeverityLevel.Error;
   public name = 'CLI Error';
 
@@ -25,6 +28,10 @@ export class CLIBaseError extends Error {
 
   public get oclif() {
     return this.error instanceof CLIError ? this.error.oclif : {};
+  }
+
+  public get stack(): string {
+    return super.stack || '';
   }
 
   public get severityLevel(): SeverityLevel {
@@ -47,6 +54,6 @@ export class CLIBaseError extends Error {
         color = red;
         break;
     }
-    return color(process.platform === 'win32' ? '»' : '›');
+    return color(isUnicodeSupported() ? '›' : '»');
   }
 }
