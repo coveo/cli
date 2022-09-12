@@ -1,6 +1,6 @@
 import {CLIError} from '@oclif/core/lib/errors';
 import {Chalk, red, yellow} from 'chalk';
-const isUnicodeSupported = (await import('is-unicode-supported')).default;
+import isUnicodeSupported from 'is-unicode-supported';
 export enum SeverityLevel {
   Info = 'info',
   Warn = 'warn',

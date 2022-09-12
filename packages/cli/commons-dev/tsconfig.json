@@ -6,6 +6,7 @@
     "importHelpers": true,
     "moduleResolution": "node",
     "module": "Node16",
+    "allowSyntheticDefaultImports": true,
     "lib": ["ESNext"],
     "resolveJsonModule": true,
     "strict": true,
