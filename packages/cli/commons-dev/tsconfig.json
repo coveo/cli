@@ -5,7 +5,7 @@
     "declaration": true,
     "importHelpers": true,
     "moduleResolution": "node",
-    "module": "Node16",
+    "module": "CommonJS",
     "lib": ["ESNext"],
     "resolveJsonModule": true,
     "strict": true,
