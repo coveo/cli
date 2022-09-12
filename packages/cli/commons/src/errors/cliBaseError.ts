@@ -1,6 +1,6 @@
 import {CLIError} from '@oclif/core/lib/errors';
 import {Chalk, red, yellow} from 'chalk';
-
+const isUnicodeSupported = (await import('is-unicode-supported')).default;
 export enum SeverityLevel {
   Info = 'info',
   Warn = 'warn',
@@ -12,7 +12,9 @@ export interface CLIBaseErrorInterface {
   cause?: Error;
 }
 
-export class CLIBaseError extends Error {
+interface OClifCLIError extends Omit<CLIError, 'render'> {}
+
+export class CLIBaseError extends Error implements OClifCLIError {
   private static defaultSeverity: SeverityLevel = SeverityLevel.Error;
   public name = 'CLI Error';
 
@@ -22,6 +24,15 @@ export class CLIBaseError extends Error {
   ) {
     super(error instanceof Error ? error.message : error, options);
   }
+  render(): string {
+    throw new Error('Method not implemented.');
+  }
+
+  public get stack(): string {
+    return super.stack || '';
+  }
+
+  code?: string | undefined;
 
   public get oclif() {
     return this.error instanceof CLIError ? this.error.oclif : {};
@@ -47,6 +58,6 @@ export class CLIBaseError extends Error {
         color = red;
         break;
     }
-    return color(process.platform === 'win32' ? '»' : '›');
+    return color(isUnicodeSupported() ? '»' : '›');
   }
 }
