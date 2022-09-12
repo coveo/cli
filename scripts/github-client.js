@@ -7,7 +7,7 @@ const repo = 'cli';
 
 const getPullRequestTitle = async () => {
   const pull_number = getPullRequestNumber();
-  return (await octokit.pulls.get({owner, repo, pull_number})).data.title;
+  return (await octokit.rest.pulls.get({owner, repo, pull_number})).data.title;
 };
 
 const getPullRequestNumber = () => {
@@ -46,7 +46,7 @@ const updatePullRequestComment = (comment_id, body) => {
 
 const getLatestTag = async () => {
   const tags = await octokit.rest.repos.listTags({owner, repo});
-  return tags.data[0].name;
+  return tags.data[0];
 };
 
 const createOrUpdateReleaseDescription = async (tag, body) => {
@@ -95,6 +95,16 @@ const downloadReleaseAssets = async (tag, determineAssetLocation) => {
   });
 };
 
+const getSnykCodeAlerts = () => {
+  return octokit.rest.codeScanning.listAlertsForRepo({
+    owner,
+    repo,
+    ref: 'master',
+    tool_name: 'SnykCode',
+    state: 'open',
+  });
+};
+
 module.exports = {
   getPullRequestTitle,
   getPullRequestComments,
@@ -105,4 +115,5 @@ module.exports = {
   getLatestTag,
   createOrUpdateReleaseDescription,
   downloadReleaseAssets,
+  getSnykCodeAlerts,
 };

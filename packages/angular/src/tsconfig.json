@@ -1,5 +1,5 @@
 {
-  "extends": "../../../tsconfig.json",
+  "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
     "experimentalDecorators": true,
     "baseUrl": "./",
@@ -8,10 +8,10 @@
     "outDir": "./dist",
     "rootDir": "./",
     "skipDefaultLibCheck": true,
-    "skipLibCheck": true,
+
     "strictNullChecks": true,
     "target": "es6",
-    "types": ["jasmine", "node"]
+    "types": ["jest", "node"]
   },
   "include": ["./*/files/**/*"]
 }

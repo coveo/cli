@@ -1,0 +1,6 @@
+{
+  "name": "search-token-server",
+  "root": "packages/search-token-server",
+  "sourceRoot": "packages/search-token-server/",
+  "projectType": "library"
+}

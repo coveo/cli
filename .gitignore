@@ -6,13 +6,28 @@
 *-error.log
 dist
 /lib
-/node_modules
+**/node_modules
 /tmp
 npm-debug.log
 reports/*.xml
 veracode
 artifacts
-
+*.tsbuildinfo
 ui-projects
 
 !.vscode/extensions.json
+topology.json
+
+# Only use as a rosetta table between snyk and package-lock, generated on CI from the package-lock.json
+.pnp.*
+.yarn/*
+!.yarn/releases
+yarn.lock
+
+# Snyk artifacts
+.dccache
+sarifs
+packages/create-atomic/template/package.json.hbs
+
+# Prevent secret leakage.
+.npmrc

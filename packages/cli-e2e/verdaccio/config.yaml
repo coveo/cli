@@ -1,0 +1,48 @@
+# Verdaccio configuration
+#   - Look here for information about this file:
+#       https://verdaccio.org/docs/en/configuration.html
+#   - Look here for more config file examples:
+#       https://github.com/verdaccio/verdaccio/tree/master/conf
+
+storage: ./verdaccio/storage/data
+web:
+  enable: false
+  title: Verdaccio
+
+auth:
+  htpasswd:
+    file: ./verdaccio/storage/htpasswd
+
+# a list of other known registries we can talk to
+uplinks:
+  npmjs:
+    url: https://registry.npmjs.org/
+    cache: false
+
+packages:
+  # All templates packages and the search-token-server are published and fetched from Verdaccio
+  # No uplink is allowed, so if it ain't published on Verdaccio, it'll fail.
+  '@coveo/@(angular|vue-cli-plugin-typescript|cra-template|search-token-server|create-atomic|search-token-lambda|cli-commons-dev|cli-commons|cli)':
+    access: $all
+    publish: $all
+    unpublish: $all
+
+  # For any other packages, we try verdaccio first (it does some caching)
+  # Otherwise, it tries npmjs.
+  '**':
+    access: $all
+    publish: $all
+    unpublish: $all
+    proxy: npmjs
+
+middlewares:
+  audit:
+    enabled: true
+
+# log settings
+logs:
+  - {type: stdout, format: pretty, level: trace}
+
+listen:
+  - localhost:4873 # default value
+  - '[::1]:4873' # ipv6

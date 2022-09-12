@@ -1,15 +1,9 @@
-import red from '@material-ui/core/colors/red';
-import {createTheme} from '@material-ui/core/styles';
+import {createTheme} from '@mui/material/styles';
+import {red} from '@mui/material/colors';
 
-// A custom theme for this app
 const theme = createTheme({
   palette: {
-    type: 'light',
-    text: {
-      // You can easily change the overall text color
-      // primary: '#282829',
-      // secondary: '#E5E8E8',
-    },
+    mode: 'light',
     primary: {
       main: '#2e45ba',
     },

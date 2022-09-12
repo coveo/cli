@@ -1,3 +1,9 @@
+<!-- For Coveo Employees only. Fill this section.
+
+CDX-XXX
+
+-->
+
 ## Proposed changes
 
 <!--
@@ -24,10 +30,3 @@
 <!-- Did you write functionnal tests for your feature? If not, explains why?  -->
 - [ ] Manual Tests:
 <!-- How did you test your changeset?  -->
-
-<!-- For Coveo Employees only. Fill and uncomment this section.
-
------
-CDX-XXX
-
--->

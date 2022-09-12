@@ -3,12 +3,12 @@ import type {HTTPRequest, Browser, Page} from 'puppeteer';
 
 import {
   answerPrompt,
-  getProjectPath,
   isGenericYesNoPrompt,
   setupUIProject,
+  getUIProjectPath,
 } from '../utils/cli';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
-import {isSearchRequest} from '../utils/platform';
+import {isSearchRequestOrResponse} from '../utils/platform';
 import {EOL} from 'os';
 import {ProcessManager} from '../utils/processManager';
 import {
@@ -25,16 +25,20 @@ import {parse} from 'dotenv';
 import {DummyServer} from '../utils/server';
 import {appendFileSync, readFileSync, truncateSync} from 'fs';
 import getPort from 'get-port';
-import {npm} from '../utils/windows';
+import {npm} from '../utils/npm';
 import axios from 'axios';
 import {jwtTokenPattern} from '../utils/matcher';
+import {join} from 'path';
+import {loginWithApiKey} from '../utils/login';
 
 describe('ui:create:vue', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
   let page: Page;
   const oldEnv = process.env;
-  const projectName = `${process.env.TEST_RUN_ID}-vue-project`;
+  const parentDir = 'vue';
+  const projectName = `${process.env.TEST_RUN_ID}-${parentDir}-project`;
+  const projectPath = join(getUIProjectPath(), parentDir, projectName);
   let clientPort: number;
   let serverPort: number;
 
@@ -43,7 +47,7 @@ describe('ui:create:vue', () => {
   const tokenServerEndpoint = () => `http://localhost:${serverPort}/token`;
 
   const forceApplicationPorts = (clientPort: number, serverPort: number) => {
-    const envPath = getPathToEnvFile(projectName);
+    const envPath = getPathToEnvFile(projectPath);
     const environment = parse(readFileSync(envPath, {encoding: 'utf-8'}));
 
     const updatedEnvironment = {
@@ -66,7 +70,7 @@ describe('ui:create:vue', () => {
 
   const getAllocatedPorts = () => {
     const envVariables = parse(
-      readFileSync(getPathToEnvFile(projectName), {encoding: 'utf-8'})
+      readFileSync(getPathToEnvFile(projectPath), {encoding: 'utf-8'})
     );
 
     if (!envVariables) {
@@ -80,10 +84,11 @@ describe('ui:create:vue', () => {
   };
 
   const buildApplication = async (processManager: ProcessManager) => {
-    const buildTerminal = setupUIProject(
+    const buildTerminal = await setupUIProject(
       processManager,
       'ui:create:vue',
-      projectName
+      projectName,
+      {projectDir: projectPath}
     );
 
     const buildTerminalExitPromise = Promise.race([
@@ -114,7 +119,7 @@ describe('ui:create:vue', () => {
       args.shift()!,
       args,
       {
-        cwd: getProjectPath(projectName),
+        cwd: projectPath,
       },
       processManager,
       debugName
@@ -123,6 +128,11 @@ describe('ui:create:vue', () => {
   };
 
   beforeAll(async () => {
+    await loginWithApiKey(
+      process.env.PLATFORM_API_KEY!,
+      process.env.ORG_ID!,
+      process.env.PLATFORM_ENV!
+    );
     const buildProcessManager = new ProcessManager();
     processManagers.push(buildProcessManager);
     browser = await getNewBrowser();
@@ -181,21 +191,17 @@ describe('ui:create:vue', () => {
     });
 
     afterAll(async () => {
-      await undoCommit(
-        serverProcessManager,
-        getProjectPath(projectName),
-        projectName
-      );
+      await undoCommit(serverProcessManager, projectPath, projectName);
       await serverProcessManager.killAllProcesses();
     }, 5 * 60e3);
-
-    it('should not contain console errors nor warnings', async () => {
+    // TODO CDX-1017: Remove skip
+    it.skip('should not contain console errors nor warnings', async () => {
       await page.goto(searchPageEndpoint(), {
         waitUntil: 'networkidle2',
       });
 
       expect(consoleInterceptor.interceptedMessages).toEqual([]);
-    });
+    }, 60e3);
 
     it('should contain a search page section', async () => {
       await page.goto(searchPageEndpoint(), {
@@ -204,7 +210,7 @@ describe('ui:create:vue', () => {
       await page.waitForSelector(searchboxSelector);
 
       expect(await page.$('#search-page')).not.toBeNull();
-    });
+    }, 60e3);
 
     it('should retrieve the search token on the page load', async () => {
       const tokenResponseListener = page.waitForResponse(tokenServerEndpoint());
@@ -217,14 +223,14 @@ describe('ui:create:vue', () => {
       ).toMatchObject({
         token: expect.stringMatching(jwtTokenPattern),
       });
-    });
+    }, 60e3);
 
     it('should send a search query when the page is loaded', async () => {
       await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchboxSelector);
 
-      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
-    });
+      expect(interceptedRequests.some(isSearchRequestOrResponse)).toBeTruthy();
+    }, 60e3);
 
     it('should send a search query on searchbox submit', async () => {
       await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
@@ -237,16 +243,18 @@ describe('ui:create:vue', () => {
       await page.keyboard.press('Enter');
 
       await retry(async () => {
-        expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+        expect(
+          interceptedRequests.some(isSearchRequestOrResponse)
+        ).toBeTruthy();
       });
-    });
+    }, 60e3);
 
     it('should be commited without lint-stage errors', async () => {
       const eslintErrorSpy = jest.fn();
 
       await commitProject(
         serverProcessManager,
-        getProjectPath(projectName),
+        projectPath,
         projectName,
         eslintErrorSpy
       );
@@ -293,12 +301,12 @@ describe('ui:create:vue', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      deactivateEnvironmentFile(projectName);
+      deactivateEnvironmentFile(projectPath);
     });
 
     afterAll(async () => {
       await serverProcessManager.killAllProcesses();
-      restoreEnvironmentFile(projectName);
+      restoreEnvironmentFile(projectPath);
     }, 30e3);
 
     it(
@@ -330,7 +338,7 @@ describe('ui:create:vue', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      envFileContent = flushEnvFile(projectName);
+      envFileContent = flushEnvFile(projectPath);
       const appTerminal = await startApplication(
         serverProcessManager,
         'vue-server-invalid'
@@ -340,14 +348,14 @@ describe('ui:create:vue', () => {
     }, 2 * 60e3);
 
     afterAll(async () => {
-      overwriteEnvFile(projectName, envFileContent);
+      overwriteEnvFile(projectPath, envFileContent);
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
     it('should redirect the user to an error page', async () => {
       await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
       expect(page.url()).toEqual(`${searchPageEndpoint()}/error`);
-    });
+    }, 60e3);
   });
 
   describe('when the ports are manually specified', () => {
@@ -376,11 +384,11 @@ describe('ui:create:vue', () => {
 
     it('should run the application on the specified port', async () => {
       expect(clientPort).toEqual(hardCodedClientPort);
-    });
+    }, 60e3);
 
     it('should run the token server on the specified port', async () => {
       expect(serverPort).toEqual(hardCodedServerPort);
-    });
+    }, 60e3);
   });
 
   describe('when the ports are busy', () => {
@@ -400,6 +408,7 @@ describe('ui:create:vue', () => {
         new DummyServer(usedClientPort),
         new DummyServer(usedServerPort)
       );
+      await Promise.all(dummyServers.map((server) => server.start()));
 
       const appTerminal = await startApplication(
         serverProcessManager,

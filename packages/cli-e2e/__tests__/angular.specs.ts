@@ -4,9 +4,9 @@ import type {HTTPRequest, Browser, Page} from 'puppeteer';
 
 import {
   answerPrompt,
-  getProjectPath,
   isGenericYesNoPrompt,
   setupUIProject,
+  getUIProjectPath,
 } from '../utils/cli';
 import {
   deactivateEnvironmentFile,
@@ -16,7 +16,7 @@ import {
   restoreEnvironmentFile,
 } from '../utils/file';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
-import {isSearchRequest} from '../utils/platform';
+import {isSearchRequestOrResponse} from '../utils/platform';
 import {EOL} from 'os';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
@@ -27,18 +27,23 @@ import {parse} from 'dotenv';
 import {readFileSync, writeFileSync, truncateSync, appendFileSync} from 'fs';
 import {DummyServer} from '../utils/server';
 import getPort from 'get-port';
-import {npm} from '../utils/windows';
+import {npm} from '../utils/npm';
 import axios from 'axios';
 import {jwtTokenPattern} from '../utils/matcher';
+import {loginWithApiKey} from '../utils/login';
 
+// TODO CDX-804: Enable the tests back
 describe('ui:create:angular', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
   let page: Page;
   const oldEnv = process.env;
-  const projectName = `${process.env.TEST_RUN_ID}-angular-project`;
+  const parentDir = 'angular';
+  const projectName = `${process.env.TEST_RUN_ID}-${parentDir}-project`;
+  const projectPath = join(getUIProjectPath(), parentDir, projectName);
   let clientPort: number;
   let serverPort: number;
+  const angularJsonPath = join(projectPath, 'angular.json');
 
   const searchPageEndpoint = () => `http://localhost:${clientPort}`;
 
@@ -46,7 +51,7 @@ describe('ui:create:angular', () => {
 
   const setCustomTokenEndpoint = (endpoint: string) => {
     const webAppEnvironment = resolve(
-      getProjectPath(projectName),
+      projectPath,
       'src',
       'environments',
       'environment.ts'
@@ -65,7 +70,7 @@ describe('ui:create:angular', () => {
   const resetCustomTokenEndpoint = () => setCustomTokenEndpoint('');
 
   const forceTokenServerPort = (port: number) => {
-    const pathToEnv = resolve(getProjectPath(projectName), 'server', '.env');
+    const pathToEnv = resolve(projectPath, 'server', '.env');
     const environment = parse(readFileSync(pathToEnv, {encoding: 'utf-8'}));
 
     const updatedEnvironment = {
@@ -80,7 +85,6 @@ describe('ui:create:angular', () => {
   };
 
   const forceAppPort = (port: number) => {
-    const angularJsonPath = getProjectPath(join(projectName, 'angular.json'));
     const angularJSON = JSON.parse(readFileSync(angularJsonPath, 'utf-8'));
 
     const serve = angularJSON.projects[projectName].architect.serve;
@@ -94,7 +98,7 @@ describe('ui:create:angular', () => {
 
   const getAllocatedPorts = () => {
     const envVariables = parse(
-      readFileSync(getPathToEnvFile(join(projectName, 'server')))
+      readFileSync(getPathToEnvFile(join(projectPath, 'server')))
     );
 
     if (!envVariables) {
@@ -102,7 +106,6 @@ describe('ui:create:angular', () => {
     }
 
     serverPort = parseInt(envVariables.SERVER_PORT);
-    const angularJsonPath = getProjectPath(join(projectName, 'angular.json'));
 
     const angularJSON = JSON.parse(readFileSync(angularJsonPath, 'utf-8'));
     const servePort =
@@ -113,12 +116,13 @@ describe('ui:create:angular', () => {
   };
 
   const buildApplication = async (processManager: ProcessManager) => {
-    const buildTerminal = setupUIProject(
+    const buildTerminal = await setupUIProject(
       processManager,
       'ui:create:angular',
       projectName,
       {
         flags: ['--defaults'],
+        projectDir: projectPath,
       }
     );
 
@@ -133,7 +137,7 @@ describe('ui:create:angular', () => {
 
     await buildTerminal
       .when(isGenericYesNoPrompt)
-      .on('stdout')
+      .on('stderr')
       .do(answerPrompt(`y${EOL}`))
       .until(buildTerminalExitPromise);
   };
@@ -147,7 +151,7 @@ describe('ui:create:angular', () => {
       args.shift()!,
       args,
       {
-        cwd: getProjectPath(projectName),
+        cwd: projectPath,
       },
       processManager,
       debugName
@@ -163,6 +167,11 @@ describe('ui:create:angular', () => {
       .once();
 
   beforeAll(async () => {
+    await loginWithApiKey(
+      process.env.PLATFORM_API_KEY!,
+      process.env.ORG_ID!,
+      process.env.PLATFORM_ENV!
+    );
     const buildProcessManager = new ProcessManager();
     processManagers.push(buildProcessManager);
     browser = await getNewBrowser();
@@ -221,15 +230,11 @@ describe('ui:create:angular', () => {
     });
 
     afterAll(async () => {
-      await undoCommit(
-        serverProcessManager,
-        getProjectPath(projectName),
-        projectName
-      );
+      await undoCommit(serverProcessManager, projectPath, projectName);
       await serverProcessManager.killAllProcesses();
     }, 5 * 60e3);
-
-    it(
+    // TODO CDX-1017: Remove skip
+    it.skip(
       'should not contain console errors nor warnings',
       async () => {
         await page.goto(searchPageEndpoint(), {
@@ -267,7 +272,7 @@ describe('ui:create:angular', () => {
       await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchboxSelector);
 
-      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+      expect(interceptedRequests.some(isSearchRequestOrResponse)).toBeTruthy();
     });
 
     it('should send a search query on searchbox submit', async () => {
@@ -281,7 +286,9 @@ describe('ui:create:angular', () => {
       await page.keyboard.press('Enter');
 
       await retry(async () => {
-        expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+        expect(
+          interceptedRequests.some(isSearchRequestOrResponse)
+        ).toBeTruthy();
       });
     }, 60e3);
 
@@ -290,7 +297,7 @@ describe('ui:create:angular', () => {
 
       await commitProject(
         serverProcessManager,
-        getProjectPath(projectName),
+        projectPath,
         projectName,
         eslintErrorSpy
       );
@@ -305,11 +312,11 @@ describe('ui:create:angular', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      deactivateEnvironmentFile(join(projectName, 'server'));
+      deactivateEnvironmentFile(join(projectPath, 'server'));
     });
 
     afterAll(async () => {
-      restoreEnvironmentFile(join(projectName, 'server'));
+      restoreEnvironmentFile(join(projectPath, 'server'));
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
@@ -342,7 +349,7 @@ describe('ui:create:angular', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      envFileContent = flushEnvFile(join(projectName, 'server'));
+      envFileContent = flushEnvFile(join(projectPath, 'server'));
       const appTerminal = await startApplication(
         serverProcessManager,
         'angular-server-invalid'
@@ -352,7 +359,7 @@ describe('ui:create:angular', () => {
     }, 2 * 60e3);
 
     afterAll(async () => {
-      overwriteEnvFile(join(projectName, 'server'), envFileContent);
+      overwriteEnvFile(join(projectPath, 'server'), envFileContent);
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
@@ -427,6 +434,7 @@ describe('ui:create:angular', () => {
         new DummyServer(usedClientPort),
         new DummyServer(usedServerPort)
       );
+      await Promise.all(dummyServers.map((server) => server.start()));
 
       const appTerminal = await startApplication(
         serverProcessManager,

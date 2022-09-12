@@ -6,50 +6,85 @@ on:
         description: '⚠ be sure of yourself ⚠'
         required: false
         default: ''
+      debug:
+        description: 'Add DEBUG=* to the env if true'
+        type: boolean
+        default: false
+        required: false
 
 jobs:
-  run-script:
+  snyk:
+    runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      NODE_OPTIONS: --max-old-space-size=8192
+      GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
+      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
+        with:
+          node-version: '16'
+      - name: Install dependencies
+        run: |
+          npm ci
+          yarn install --no-immutable --mode=skip-build
+      - name: Snyk Test
+        run: |
+          npx snyk monitor      --dev --yarn-workspaces --exclude="project.json,npm-shim"
+          npx snyk test         --dev --yarn-workspaces --exclude="project.json,npm-shim"
+      - name: Snyk Code
+        continue-on-error: true
+        run: |
+          mkdir -p sarifs
+          npx snyk code test    --dev --all-projects --exclude="project.json,npm-shim" --sarif > ./sarifs/snyk-code.sarif
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@d1ad3b49578d8a66828f9c8e8fbf5f9faec38f85 # tag=v1
+        with:
+          sarif_file: ./sarifs
+      - name: Check Code Scanning alerts
+        run: node ./scripts/get-code-scanning-alerts.js
+  release:
+    needs: snyk
+    environment: 'Release'
     runs-on: ubuntu-latest
     env:
       GITHUB_CREDENTIALS: ${{ secrets.CLI_RELEASE }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
         with:
-          # pulls all commits (needed for lerna to correctly version)
-          # see https://stackoverflow.com/a/60184319/9285308 & https://github.com/actions/checkout
+          # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      # pulls all tags (needed for lerna to correctly version)
-      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/* # see https://stackoverflow.com/a/60184319/9285308
-      - uses: actions/setup-node@v2
+      # pulls all tags (needed for computing the next version)
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
         with:
-          node-version: '14'
-      - run: npm run setup
+          node-version: '16'
+          registry-url: 'https://registry.npmjs.org'
+      # TODO: CDX-1010 | Remove in CDX-1010.
+      - run: npm i -g npm@8.10.0
+      - name: Install dependencies
+        run: npm ci
       - name: Setup credentials
         run: |
           git config --global user.email action@github.com
           git config --global user.name GitHub Action
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
-      - run: node_modules/.bin/lerna changed
-        if: ${{ github.event.inputs.version == ''}}
-      - name: Manually bump version
-        if: ${{ github.event.inputs.version != ''}}
-        run: node_modules/.bin/lerna publish ${{ github.event.inputs.version }} ---conventional-commits --force-publish -y --no-push --no-git-tag-version --no-git-reset --no-verify-access
-      - name: Semantically bump version
-        if: ${{ github.event.inputs.version == ''}}
-        run: node_modules/.bin/lerna publish ---conventional-commits -y --no-push --no-git-tag-version --no-git-reset --no-verify-access
-      - name: Wait for NPM cache to be updated
-        run: node ./scripts/wait-for-packages.js
-      - name: Normalize package.json and package-lock.json files
+      - name: Setup git SSH remote
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
         run: |
-          npm run npm:pkglock
-          npm run npm:cleanPackage
-      - name: Get the version
-        run: node ./scripts/get-version.js
-      - name: Commit changes, tag and push
-        run: |
-          echo -e "[Version bump] chore(release): publish v${{ env.tag }}\nlerna.json\nCHANGELOG.md\n**/CHANGELOG.md\n**/README.md" | git commit --all --file -
-          git tag "v${{ env.tag }}"
-          git push
-          git push --tags
-      - name: Create GitHub release.
-        run: npm run release:changelog
+          mkdir -p ~/.ssh
+          echo "${DEPLOY_KEY}" > ~/.ssh/id_rsa
+          chmod 400 ~/.ssh/id_rsa
+          echo "Host coveo-cli" > ~/.ssh/config
+          echo "Hostname github.com" >> ~/.ssh/config
+          echo "PreferredAuthentications publickey" >> ~/.ssh/config
+          echo -n "IdentityFile " >> ~/.ssh/config
+          echo -n ~ >> ~/.ssh/config
+          echo "/.ssh/id_rsa" >> ~/.ssh/config
+          git remote set-url origin git@coveo-cli:coveo/cli.git
+      - name: Release
+        run: npm run release
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          VERSION: ${{ inputs.version }}
+          DEBUG: ${{ inputs.debug && '*' || '' }}

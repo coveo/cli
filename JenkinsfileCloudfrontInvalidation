@@ -1,7 +1,7 @@
 node('linux && docker') {
   checkout scm
 
-  withDockerContainer(image: 'node:14', args: '-u=root') {
+  withDockerContainer(image: 'node:16', args: '-u=root') {
 
     withCredentials([
       [
@@ -10,7 +10,7 @@ node('linux && docker') {
       ]
     ]) {
       stage('Cloudfront invalidation') {
-        sh 'npm ci';
+        sh 'npm ci --ignore-scripts';
         sh 'node ./scripts/invalidate-cloudfront.js'
       }
 

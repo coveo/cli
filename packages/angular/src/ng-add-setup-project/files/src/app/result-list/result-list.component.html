@@ -1,7 +1,7 @@
 <div *ngFor="let result of results">
   <div class="mb-5">
     <div class="mb-2">
-      <a href="{{ result.clickUri }}">{{ result.title }}</a>
+      <app-result-link [result]="result"></app-result-link>
     </div>
 
     <div class="mb-1">

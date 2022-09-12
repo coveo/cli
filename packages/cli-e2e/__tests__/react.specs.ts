@@ -3,8 +3,8 @@ import retry from 'async-retry';
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
 
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
-import {getProjectPath, setupUIProject} from '../utils/cli';
-import {isSearchRequest} from '../utils/platform';
+import {setupUIProject, getUIProjectPath} from '../utils/cli';
+import {isSearchRequestOrResponse} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {
@@ -15,22 +15,26 @@ import {
   restoreEnvironmentFile,
 } from '../utils/file';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
-import {commitProject, undoCommit} from '../utils/git';
+import {isDirectoryClean} from '../utils/git';
 import {appendFileSync, readFileSync, truncateSync} from 'fs';
 import {EOL} from 'os';
 import {parse} from 'dotenv';
 import {DummyServer} from '../utils/server';
 import getPort from 'get-port';
-import {npm} from '../utils/windows';
+import {npm} from '../utils/npm';
 import axios from 'axios';
 import {jwtTokenPattern} from '../utils/matcher';
+import {join} from 'path';
+import {loginWithApiKey} from '../utils/login';
 
 describe('ui:create:react', () => {
   let browser: Browser;
   const processManagers: ProcessManager[] = [];
   let page: Page;
   const oldEnv = process.env;
+  const parentDir = 'react';
   const projectName = `${process.env.TEST_RUN_ID}-react-project`;
+  const projectPath = join(getUIProjectPath(), parentDir, projectName);
   let clientPort: number;
   let serverPort: number;
 
@@ -46,7 +50,7 @@ describe('ui:create:react', () => {
       .once();
 
   const forceApplicationPorts = (clientPort: number, serverPort: number) => {
-    const envPath = getPathToEnvFile(projectName);
+    const envPath = getPathToEnvFile(projectPath);
     const environment = parse(readFileSync(envPath, {encoding: 'utf-8'}));
 
     const updatedEnvironment = {
@@ -62,7 +66,7 @@ describe('ui:create:react', () => {
 
   const getAllocatedPorts = () => {
     const envVariables = parse(
-      readFileSync(getPathToEnvFile(projectName), {encoding: 'utf-8'})
+      readFileSync(getPathToEnvFile(projectPath), {encoding: 'utf-8'})
     );
 
     if (!envVariables) {
@@ -76,20 +80,14 @@ describe('ui:create:react', () => {
   };
 
   const buildApplication = async (processManager: ProcessManager) => {
-    const buildTerminal = setupUIProject(
+    const buildTerminal = await setupUIProject(
       processManager,
       'ui:create:react',
-      projectName
+      projectName,
+      {projectDir: projectPath}
     );
 
-    await Promise.race([
-      buildTerminal.when('exit').on('process').do().once(),
-      buildTerminal
-        .when(/Happy hacking!/)
-        .on('stdout')
-        .do()
-        .once(),
-    ]);
+    await buildTerminal.when('exit').on('process').do().once();
   };
 
   const startApplication = async (
@@ -97,12 +95,11 @@ describe('ui:create:react', () => {
     debugName = 'react-server'
   ) => {
     const args = [...npm(), 'run', 'start'];
-
     const serverTerminal = new Terminal(
       args.shift()!,
       args,
       {
-        cwd: getProjectPath(projectName),
+        cwd: projectPath,
       },
       processManager,
       debugName
@@ -111,6 +108,11 @@ describe('ui:create:react', () => {
   };
 
   beforeAll(async () => {
+    await loginWithApiKey(
+      process.env.PLATFORM_API_KEY!,
+      process.env.ORG_ID!,
+      process.env.PLATFORM_ENV!
+    );
     const buildProcessManager = new ProcessManager();
     processManagers.push(buildProcessManager);
     browser = await getNewBrowser();
@@ -151,10 +153,10 @@ describe('ui:create:react', () => {
       );
       await waitForAppRunning(appTerminal);
       [clientPort, serverPort] = getAllocatedPorts();
-    }, 2 * 60e3);
+    }, 10 * 60e3);
 
     beforeEach(async () => {
-      consoleInterceptor = new BrowserConsoleInterceptor(page, projectName);
+      consoleInterceptor = new BrowserConsoleInterceptor(page, projectPath);
       await consoleInterceptor.startSession();
 
       page.on('request', (request: HTTPRequest) => {
@@ -169,30 +171,34 @@ describe('ui:create:react', () => {
     });
 
     afterAll(async () => {
-      await undoCommit(
-        serverProcessManager,
-        getProjectPath(projectName),
-        projectName
-      );
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
-    it('should not contain console errors nor warnings', async () => {
-      await page.goto(searchPageEndpoint(), {
-        waitUntil: 'networkidle2',
-      });
+    // TODO CDX-1017: Remove skip
+    it.skip(
+      'should not contain console errors nor warnings',
+      async () => {
+        await page.goto(searchPageEndpoint(), {
+          waitUntil: 'networkidle2',
+        });
 
-      expect(consoleInterceptor.interceptedMessages).toEqual([]);
-    });
+        expect(consoleInterceptor.interceptedMessages).toEqual([]);
+      },
+      5 * 60e3
+    );
 
-    it('should contain a search page section', async () => {
-      await page.goto(searchPageEndpoint(), {
-        waitUntil: 'networkidle2',
-      });
-      await page.waitForSelector(searchboxSelector);
+    it(
+      'should contain a search page section',
+      async () => {
+        await page.goto(searchPageEndpoint(), {
+          waitUntil: 'networkidle2',
+        });
+        await page.waitForSelector(searchboxSelector);
 
-      expect(await page.$('div.App')).not.toBeNull();
-    });
+        expect(await page.$('div.App')).not.toBeNull();
+      },
+      5 * 60e3
+    );
 
     it('should retrieve the search token on the page load', async () => {
       const tokenResponseListener = page.waitForResponse(tokenServerEndpoint());
@@ -211,7 +217,7 @@ describe('ui:create:react', () => {
       await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle2'});
       await page.waitForSelector(searchboxSelector);
 
-      expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+      expect(interceptedRequests.some(isSearchRequestOrResponse)).toBeTruthy();
     });
 
     it('should send a search query on searchbox submit', async () => {
@@ -225,21 +231,22 @@ describe('ui:create:react', () => {
       await page.keyboard.press('Enter');
 
       await retry(async () => {
-        expect(interceptedRequests.some(isSearchRequest)).toBeTruthy();
+        expect(
+          interceptedRequests.some(isSearchRequestOrResponse)
+        ).toBeTruthy();
       });
     });
+    it('should have a clean working directory', async () => {
+      const gitDirtyWorkingTreeSpy = jest.fn();
 
-    it('should be commited without lint-stage errors', async () => {
-      const eslintErrorSpy = jest.fn();
-
-      commitProject(
+      await isDirectoryClean(
         serverProcessManager,
-        getProjectPath(projectName),
+        projectPath,
         projectName,
-        eslintErrorSpy
+        gitDirtyWorkingTreeSpy
       );
 
-      expect(eslintErrorSpy).not.toBeCalled();
+      expect(gitDirtyWorkingTreeSpy).not.toBeCalled();
     }, 10e3);
   });
 
@@ -249,11 +256,11 @@ describe('ui:create:react', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      deactivateEnvironmentFile(projectName);
+      deactivateEnvironmentFile(projectPath);
     });
 
     afterAll(async () => {
-      restoreEnvironmentFile(projectName);
+      restoreEnvironmentFile(projectPath);
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
@@ -275,7 +282,7 @@ describe('ui:create:react', () => {
 
         expect(missingEnvErrorSpy).toHaveBeenCalled();
       },
-      2 * 60e3
+      10 * 60e3
     );
   });
 
@@ -287,7 +294,8 @@ describe('ui:create:react', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      envFileContent = flushEnvFile(projectName);
+      envFileContent = flushEnvFile(projectPath);
+      overwriteEnvFile(projectPath, 'GENERATE_SOURCEMAP=false'); // TODO: CDX-737: fix exponential-backoff compilation warnings
       const appTerminal = await startApplication(
         serverProcessManager,
         'react-server-invalid'
@@ -297,7 +305,7 @@ describe('ui:create:react', () => {
     }, 2 * 60e3);
 
     afterAll(async () => {
-      overwriteEnvFile(projectName, envFileContent);
+      overwriteEnvFile(projectPath, envFileContent);
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
@@ -363,6 +371,7 @@ describe('ui:create:react', () => {
         new DummyServer(usedClientPort),
         new DummyServer(usedServerPort)
       );
+      await Promise.all(dummyServers.map((server) => server.start()));
 
       const appTerminal = await startApplication(
         serverProcessManager,

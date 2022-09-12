@@ -1,12 +1,7 @@
-import {closeAllPages, connectToChromeBrowser} from './utils/browser';
-import {deleteAllCliApiKeys} from './utils/cli';
-
 export default async function () {
-  const browser = await connectToChromeBrowser();
-  const pageClosePromises = await closeAllPages(browser);
-  await deleteAllCliApiKeys();
+  const cleaningPromises = [Promise.resolve()];
   if (global.processManager) {
-    await global.processManager.killAllProcesses();
+    cleaningPromises.push(global.processManager.killAllProcesses());
   }
-  return Promise.all(pageClosePromises);
+  await Promise.all(cleaningPromises);
 }

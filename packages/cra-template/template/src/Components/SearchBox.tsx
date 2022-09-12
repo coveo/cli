@@ -1,6 +1,6 @@
 import {FunctionComponent, useEffect, useState, useContext} from 'react';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 import {
   buildSearchBox,
   SearchBox as HeadlessSearchBox,
@@ -34,12 +34,7 @@ const SearchBoxRenderer: FunctionComponent<SearchBoxProps> = (props) => {
       freeSolo
       style={{width: 'auto'}}
       renderInput={(params) => (
-        <TextField
-          {...params}
-          placeholder="Search"
-          variant="outlined"
-          size="small"
-        />
+        <TextField {...params} placeholder="Search" size="small" />
       )}
     />
   );

@@ -38,11 +38,7 @@ async function getWsUrl(): Promise<string> {
 }
 
 function getChromeDefaultOptions() {
-  return [
-    '--no-first-run',
-    '--disable-dev-shm-usage',
-    '--window-size=1080,720',
-  ];
+  return ['--no-first-run', '--window-size=1080,720'];
 }
 /**
  * Return the browser instance.
@@ -54,7 +50,7 @@ export async function connectToChromeBrowser(): Promise<Browser> {
 
 export async function getNewBrowser(): Promise<Browser> {
   return await puppeteer.launch({
-    headless: false,
+    headless: true,
     args: getChromeDefaultOptions(),
   });
 }
@@ -73,7 +69,7 @@ export async function captureScreenshots(
 ): Promise<void> {
   let pageCount = 0;
   for (const page of await browser.pages()) {
-    page.url;
+    page.url();
     try {
       await page.screenshot({
         fullPage: true,
@@ -94,7 +90,7 @@ export async function captureScreenshots(
 
 /**
  * Check if an element is within the viewport or is overlapped by another element or disabled
- * For original source code https://github.com/webdriverio/webdriverio/blob/2ace7fbac3517444634c45a05b42edbbc85f3a19/packages/webdriverio/src/scripts/isElementClickable.ts
+ * For original source code https://github.com/webdriverio/webdriverio/blob/af968a2bbc2d130d8a63229a8edc4974e92e78c3/packages/webdriverio/src/scripts/isElementClickable.ts
  *
  * @param {Page} page       Puppeteer page to use
  * @param {string} selector Selector to check
@@ -115,7 +111,7 @@ export async function isElementClickable(page: Page, selector: string) {
       }
 
       // Edge before switching to Chromium
-      const isOldEdge = !!window.StyleMedia;
+      const isOldEdge = !!(window as any).StyleMedia;
       // returns true for Chrome and Firefox and false for Safari, Edge and IE
       const scrollIntoViewFullSupport = !((window as any).safari || isOldEdge);
 
@@ -194,13 +190,12 @@ export async function isElementClickable(page: Page, selector: string) {
           elementsFromPoint
         );
         elemsWithShadowRoot = elemsWithShadowRoot.filter((x: HTMLElement) => {
-          return x && x.shadowRoot && x.shadowRoot.elementFromPoint;
+          return x && x.shadowRoot && (x.shadowRoot as any).elementFromPoint;
         });
 
         // getOverlappingElements of every element with shadowRoot
         let shadowElementsFromPoint: HTMLElement[] = [];
-        for (let i = 0; i < elemsWithShadowRoot.length; ++i) {
-          const shadowElement = elemsWithShadowRoot[i];
+        for (const shadowElement of elemsWithShadowRoot) {
           shadowElementsFromPoint = shadowElementsFromPoint.concat(
             getOverlappingElements(
               elem,

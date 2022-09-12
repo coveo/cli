@@ -1,16 +1,15 @@
 {
   "name": "@coveo/angular",
-  "version": "1.13.0",
+  "version": "1.35.12",
   "description": "Coveo schematic for angular",
   "scripts": {
-    "test": "npm run build && jasmine dist/**/*_spec.js",
+    "test": "jest",
     "lint": "prettier --check . && eslint .",
     "build": "tsc -p tsconfig.json",
     "prebuild": "node ./scripts/clean.js",
     "postbuild": "node ./scripts/setup.js",
     "prepublishOnly": "npm run build",
-    "npm:bump:template": "npm --no-git-tag-version version",
-    "npm:publish:template": "npm publish --access public"
+    "release:phase2": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase2-bump-all-packages.mjs"
   },
   "keywords": [
     "schematics",
@@ -23,27 +22,29 @@
   "license": "Apache-2.0",
   "schematics": "./dist/collection.json",
   "dependencies": {
-    "@angular-devkit/core": "^12.1.1",
-    "@angular-devkit/schematics": "^12.1.1",
-    "@angular/cdk": "^12.1.1",
-    "@angular/cli": "^12.1.1",
-    "@coveo/search-token-server": "latest",
-    "@schematics/angular": "^12.1.1",
+    "@angular-devkit/core": "^14.0.1",
+    "@angular-devkit/schematics": "^14.0.1",
+    "@angular/cdk": "^14.0.1",
+    "@angular/cli": "^14.0.1",
+    "@coveo/search-token-server": "1.35.12",
+    "@schematics/angular": "^14.0.1",
+    "jest-config": "^27.4.7",
     "typescript": "^4.3.5"
   },
   "devDependencies": {
-    "@angular/core": "12.2.1",
-    "@angular/forms": "12.2.1",
-    "@angular/material": "12.2.1",
-    "@angular/router": "12.2.1",
+    "@angular/core": "^14.0.1",
+    "@angular/forms": "^14.0.1",
+    "@angular/material": "^14.0.1",
+    "@angular/platform-browser": "^14.0.1",
+    "@angular/router": "^14.0.1",
     "@coveo/headless": "latest",
-    "@types/fs-extra": "9.0.12",
-    "@types/jasmine": "3.8.2",
-    "@types/mocha": "9.0.0",
-    "@types/node": "14.17.9",
-    "fs-extra": "10.0.0",
-    "jasmine": "3.8.0",
-    "prettier": "2.3.2"
+    "@types/fs-extra": "9.0.13",
+    "@types/jest": "27.5.2",
+    "@types/node": "16.11.53",
+    "fs-extra": "10.1.0",
+    "jest": "27.5.1",
+    "prettier": "2.7.1",
+    "ts-jest": "27.1.5"
   },
   "publishConfig": {
     "access": "public"

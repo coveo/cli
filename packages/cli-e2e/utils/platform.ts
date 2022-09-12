@@ -3,23 +3,28 @@ require('abortcontroller-polyfill');
 
 import PlatformClient from '@coveord/platform-client';
 import axios from 'axios';
-import {HTTPRequest} from 'puppeteer';
-
-// TODO: CDX-98: URL should vary in function of the target environment.
-export const platformHost = 'https://platformdev.cloud.coveo.com/';
+import {HTTPRequest, HTTPResponse} from 'puppeteer';
 
 export function getPlatformClient(organizationId: string, accessToken: string) {
   return new PlatformClient({
-    host: platformHost,
+    host: process.env.PLATFORM_HOST,
     organizationId,
     accessToken,
   });
 }
 
-export function isSearchRequest(request: HTTPRequest) {
-  return request
-    .url()
-    .startsWith(`${platformHost}rest/search/v2?organizationId`);
+export function getPlatformHost(env: string) {
+  return `https://platform${env === 'prod' ? '' : env}.cloud.coveo.com`;
+}
+
+export function isSearchRequestOrResponse(
+  requestOrResponse: HTTPRequest | HTTPResponse
+) {
+  const searchUrl = new URL(
+    '/rest/search/v2?organizationId',
+    process.env.PLATFORM_HOST
+  );
+  return requestOrResponse.url().startsWith(searchUrl.href);
 }
 
 export async function createOrg(
@@ -27,13 +32,20 @@ export async function createOrg(
   accessToken: string,
   organizationTemplate = 'Developer'
 ): Promise<string> {
-  const request = await axios.post(
-    `${platformHost}rest/organizations?name=${name}&organizationTemplate=${organizationTemplate}`,
-    {},
-    authHeader(accessToken)
+  const url = new URL(
+    `/rest/organizations?name=${name}&organizationTemplate=${organizationTemplate}`,
+    process.env.PLATFORM_HOST
   );
-
-  return request.data.id;
+  try {
+    const request = await axios.post(url.href, {}, authHeader(accessToken));
+    return request.data.id;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw JSON.stringify(error.response?.data);
+    } else {
+      throw error;
+    }
+  }
 }
 
 function authHeader(accessToken: string) {

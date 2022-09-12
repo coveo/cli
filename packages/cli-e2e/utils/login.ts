@@ -1,19 +1,14 @@
 import retry from 'async-retry';
 import type {Browser, Page, Target} from 'puppeteer';
-import {
-  answerPrompt,
-  CLI_EXEC_PATH,
-  getConfigFilePath,
-  isGenericYesNoPrompt,
-} from './cli';
+import {answerPrompt, getConfigFilePath, isGenericYesNoPrompt} from './cli';
 import LoginSelectors from './loginSelectors';
 import {strictEqual} from 'assert';
 import {readJSON, writeJSON, existsSync} from 'fs-extra';
 import {Terminal} from './terminal/terminal';
 
 function isLoginPage(page: Page) {
-  // TODO: CDX-98: URL should vary in fonction of the targeted environment.
-  return page.url() === 'https://platformdev.cloud.coveo.com/login';
+  const loginUrl = new URL('/login', process.env.PLATFORM_HOST);
+  return page.url() === loginUrl.href;
 }
 
 export async function isLoggedin() {
@@ -50,8 +45,8 @@ async function staySignedIn(page: Page) {
 }
 
 async function possiblyAcceptCustomerAgreement(page: Page) {
-  // TODO: CDX-98: URL should vary in fonction of the targeted environment.
-  if (page.url().startsWith('https://platformdev.cloud.coveo.com/eula')) {
+  const customerAgreementUrl = new URL('/eula', process.env.PLATFORM_HOST);
+  if (page.url().startsWith(customerAgreementUrl.href)) {
     await page.waitForSelector(LoginSelectors.coveoCheckboxButton, {
       visible: true,
     });
@@ -64,13 +59,15 @@ async function possiblyAcceptCustomerAgreement(page: Page) {
   }
 }
 
-export function runLoginCommand(orgId: string) {
-  const args: string[] = [CLI_EXEC_PATH, 'auth:login', '-e=dev', `-o=${orgId}`];
-  if (process.platform === 'win32') {
-    args.unshift('node');
-  }
+export function runLoginCommand(orgId: string, env: string) {
+  const args: string[] = [
+    process.env.CLI_EXEC_PATH!,
+    'auth:login',
+    `-e=${env}`,
+    `-o=${orgId}`,
+  ];
   const loginTerminal = new Terminal(
-    args.shift()!,
+    'node',
     args,
     undefined,
     global.processManager!,
@@ -126,7 +123,7 @@ async function startLoginFlow(browser: Browser) {
   });
   await Promise.all([
     page.click(`${LoginSelectors.passwordView} ${LoginSelectors.SubmitInput}`),
-    page.waitForNavigation({waitUntil: 'networkidle2'}),
+    page.waitForNavigation({waitUntil: 'networkidle2', timeout: 2 * 60e3}),
   ]);
 
   await staySignedIn(page);
@@ -143,15 +140,18 @@ async function startLoginFlow(browser: Browser) {
 }
 
 export async function loginWithOffice(browser: Browser) {
-  const orgId = process.env.ORG_ID;
+  const {ORG_ID: orgId, PLATFORM_ENV: env} = process.env;
   if (!orgId) {
     throw new Error('Missing organization ID');
+  }
+  if (!env) {
+    throw new Error('Missing platform environment');
   }
   if (await isLoggedin()) {
     return;
   }
 
-  const loginProcess = runLoginCommand(orgId);
+  const loginProcess = runLoginCommand(orgId, env);
 
   await startLoginFlow(browser);
   return loginProcess;
@@ -163,5 +163,22 @@ export async function clearAccessTokenFromConfig() {
   }
   const cfg = await readJSON(getConfigFilePath());
   delete cfg.accessToken;
+  await writeJSON(getConfigFilePath(), cfg);
+}
+
+export async function loginWithApiKey(
+  apiKey: string,
+  orgId: string,
+  env: string
+) {
+  if (!existsSync(getConfigFilePath())) {
+    throw 'Missing config file';
+  }
+  const cfg = await readJSON(getConfigFilePath());
+  cfg.accessToken = apiKey;
+  cfg.organization = orgId;
+  cfg.environment = env;
+  cfg.analyticsEnabled = false;
+  cfg.anonymous = true;
   await writeJSON(getConfigFilePath(), cfg);
 }

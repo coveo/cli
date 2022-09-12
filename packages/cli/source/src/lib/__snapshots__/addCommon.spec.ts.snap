@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`addCommon should log both fixable and unfixable fields 1`] = `
+" 2 fields detected in your data can be normalized
+ Original       Normalized   
+ ────────────── ──────────── 
+ 0Invalid-Field invalidfield 
+ poster-A       postera      
+
+ 2 fields detected in your data cannot be normalized
+ Original Normalized         
+ ──────── ────────────────── 
+          (empty field name) 
+ $_(*&    (empty field name) 
+
+"
+`;
+
+exports[`addCommon should log fixable fields 1`] = `
+" 2 fields detected in your data can be normalized
+ Original       Normalized   
+ ────────────── ──────────── 
+ 0Invalid-Field invalidfield 
+ poster-A       postera      
+
+"
+`;
+
+exports[`addCommon should log unfixable fields 1`] = `
+" 2 fields detected in your data cannot be normalized
+ Original Normalized         
+ ──────── ────────────────── 
+          (empty field name) 
+ $_(*&    (empty field name) 
+
+"
+`;

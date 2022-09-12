@@ -1,5 +1,5 @@
 {
-  "extends": "../../.eslintrc",
+  "extends": "../../base.eslintrc",
   "rules": {
     "node/no-unpublished-import": ["off"]
   }

@@ -1,6 +1,9 @@
 {
   "enabled": true,
-  "extends": [":semanticPrefixFixDepsChoreOthers"],
+  "extends": [
+    ":semanticPrefixFixDepsChoreOthers",
+    "helpers:pinGitHubActionDigests"
+  ],
   "schedule": ["before 2am"],
   "vulnerabilityAlerts": {
     "commitMessageSuffix": "[SECURITY] J:CDX-227"
@@ -12,17 +15,57 @@
       "groupSlug": "all"
     },
     {
-      "matchPackageNames": ["@types/node"],
-      "allowedVersions": "14.x"
+      "matchPackagePatterns": ["^@angular/*", "^@angular-devkit/*"],
+      "rangeStrategy": "replace"
+    },
+    {
+      "matchPackageNames": ["@coveo/atomic"],
+      "allowedVersions": "1.86.0",
+      "description": "Need latest tag to be updated. TODO:CDX-1104"
     },
     {
       "matchPackageNames": ["strip-ansi"],
       "allowedVersions": "6.x"
+    },
+    {
+      "matchPackageNames": ["get-port"],
+      "allowedVersions": "5.x"
+    },
+    {
+      "matchPackageNames": ["chalk"],
+      "allowedVersions": "4.x"
+    },
+    {
+      "matchPackageNames": ["npm"],
+      "allowedVersions": "8.4.x",
+      "description": "Need NPM to be fixed https://github.com/npm/cli/issues/4404 TODO:CDX-815"
+    },
+    {
+      "matchPackageNames": ["vue"],
+      "allowedVersions": "2.x",
+      "description": "Need to support Vue3 TODO:CDX-813"
+    },
+    {
+      "matchPackageNames": ["vue-router"],
+      "allowedVersions": "3.x",
+      "description": "Need to support Vue3 TODO:CDX-813"
+    },
+    {
+      "matchPackageNames": ["fkill"],
+      "matchCurrentVersion": "7.x",
+      "allowedVersions": "7.x",
+      "description": "Need to migrate E2E to ESM (not easy)"
+    },
+    {
+      "matchPackageNames": ["jest", "babel-jest", "jest-config", "ts-jest"],
+      "matchCurrentVersion": "27.x",
+      "allowedVersions": "27.x",
+      "description": "CDX-942"
     }
   ],
   "rangeStrategy": "auto",
   "lockFileMaintenance": {
-    "enabled": false
+    "enabled": true
   },
   "commitMessageSuffix": "J:CDX-227"
 }

@@ -1,0 +1,17 @@
+name: 'package-lock.json version validator'
+
+on:
+  push:
+    branches: [master]
+    paths-ignore:
+      - 'package-lock.json'
+  pull_request:
+    branches: [master]
+    paths-ignore:
+      - 'package-lock.json'
+
+jobs:
+  lockfile-version:
+    runs-on: ubuntu-latest
+    steps:
+      - run: exit 0

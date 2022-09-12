@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsCoveo",
+  "$id": "SchematicsCoveo",
   "title": "Coveo Headless schematic",
   "type": "object",
   "properties": {
@@ -8,6 +8,9 @@
       "type": "string",
       "format": "path",
       "description": "The path to create the component.",
+      "$default": {
+        "$source": "workingDirectory"
+      },
       "visible": false
     },
     "project": {

@@ -1,8 +1,8 @@
 import {FunctionComponent, useEffect, useState, useContext} from 'react';
-import {Pagination} from '@material-ui/lab';
+import {Pagination} from '@mui/material';
 import {buildPager, Pager as HeadlessPager} from '@coveo/headless';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import EngineContext from '../common/engineContext';
 
 interface PagerProps {
@@ -32,7 +32,6 @@ const PagerRenderer: FunctionComponent<PagerProps> = (props) => {
         page={state.currentPage}
         count={state.maxPage}
         onChange={(e, page) => setPage(page)}
-        variant="outlined"
         shape="rounded"
         size="small"
       />

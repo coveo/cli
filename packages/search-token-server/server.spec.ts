@@ -15,13 +15,12 @@ jest.mock('./middlewares/searchToken', () => {
   return originalMiddleware;
 });
 
-import {mocked} from 'ts-jest/utils';
 import {agent} from 'supertest';
 import app from './app';
 import {Request, Response, NextFunction} from 'express';
 import PlatformClient, {RestUserIdType} from '@coveord/platform-client';
 
-const mockedPlatformClient = mocked(PlatformClient);
+const mockedPlatformClient = jest.mocked(PlatformClient);
 const mockedCreateToken = jest.fn();
 const mockedMiddleware = jest.fn();
 
