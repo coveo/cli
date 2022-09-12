@@ -24,10 +24,6 @@ export class CLIBaseError extends Error implements OClifCLIError {
   ) {
     super(error instanceof Error ? error.message : error, options);
   }
-  render(): string {
-    throw new Error('Method not implemented.');
-  }
-
   public get stack(): string {
     return super.stack || '';
   }
