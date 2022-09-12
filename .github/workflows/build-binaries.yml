@@ -14,13 +14,6 @@ jobs:
     environment: 'Release'
     env:
       GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
-      MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
-      MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
-      MACOS_KEYCHAIN_PWD: ${{ secrets.MACOS_KEYCHAIN_PWD }}
-      MACOS_APP_USERNAME: ${{ secrets.MACOS_APP_USERNAME }}
-      MACOS_APP_SPECIFIC_PWD: ${{ secrets.MACOS_APP_SPECIFIC_PWD }}
-      MACOS_WWDR_TEAM_ID: ${{ secrets.MACOS_WWDR_TEAM_ID }}
-      DEVELOPER_DIR: /Applications/Xcode_13.0.app/Contents/Developer
     name: Package for ${{ matrix.for }}
     runs-on: ${{ matrix.os }}
     strategy:
