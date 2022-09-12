@@ -34,6 +34,10 @@ export class CLIBaseError extends Error implements OClifCLIError {
     return this.error instanceof CLIError ? this.error.oclif : {};
   }
 
+  public get stack(): string {
+    return super.stack || '';
+  }
+
   public get severityLevel(): SeverityLevel {
     return this.options?.level || CLIBaseError.defaultSeverity;
   }
@@ -54,6 +58,6 @@ export class CLIBaseError extends Error implements OClifCLIError {
         color = red;
         break;
     }
-    return color(isUnicodeSupported() ? '»' : '›');
+    return color(isUnicodeSupported() ? '›' : '»');
   }
 }
