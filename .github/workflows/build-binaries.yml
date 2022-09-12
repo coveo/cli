@@ -55,15 +55,15 @@ jobs:
         run: |
           echo ${{ secrets.MACOS_CERTIFICATE }} | base64 --decode > certificate.p12
 
-          # Create temporary keychain
+          echo "Creating temporary keychain"
           security create-keychain -p ${{ secrets.MACOS_KEYCHAIN_PWD }} build.keychain
           security default-keychain -s build.keychain
           security unlock-keychain -p ${{ secrets.MACOS_KEYCHAIN_PWD }} build.keychain
 
-          # Add certificate to keychain
+          echo "Adding certificate to keychain"
           security import certificate.p12 -k build.keychain -P ${{ secrets.MACOS_CERTIFICATE_PWD }} -T /usr/bin/codesign -T /usr/bin/productsign
 
-          # Enable codesigning from a non user interactive shell
+          echo "Enabling codesigning from a non user interactive shell"
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k ${{ secrets.MACOS_KEYCHAIN_PWD }} build.keychain
       - name: Sign Executable (Windows)
         working-directory: ./packages/cli/core
@@ -75,25 +75,26 @@ jobs:
           Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-${{env.tag}}-${{env.commitSHA1}}-x64.exe" -PassThru | Wait-Process
           Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-${{env.tag}}-${{env.commitSHA1}}-x86.exe" -PassThru | Wait-Process
       - name: Sign Executable (macOS)
-        working-directory: ./packages/cli/dist/macos
+        working-directory: ./packages/cli/core/dist/macos
         if: ${{matrix.os == 'macos-latest'}}
         run: |
-          productsign --sign "Developer ID Installer: Coveo Solutions Inc." coveo-v${{ INPUT_VERSION }}.pkg coveo-v${{ INPUT_VERSION }}.pkg // TODO: check if I can use the same name for input and output
+          productsign --sign "Developer ID Installer: Coveo Solutions Inc." coveo-${{env.tag}}-${{env.commitSHA1}}.pkg coveo-${{env.tag}}-${{env.commitSHA1}}-signed.pkg // TODO: check if I can use the same name for input and output
       - name: Notarize Executable (macOS)
-        working-directory: ./packages/cli/dist/macos
+        working-directory: ./packages/cli/core/dist/macos
+        # TODO: run for both mac os architectures
         if: ${{matrix.os == 'macos-latest'}}
         run: |
           echo "Create keychain profile"
           xcrun notarytool store-credentials "notarytool-profile" --apple-id "${{ secrets.MACOS_APP_USERNAME }}" --team-id "${{ secrets.MACOS_WWDR_TEAM_ID }}" --password "${{ secrets.MACOS_APP_SPECIFIC_PWD }}"
 
           echo "Creating temp notarization archive"
-          ditto -c -k --keepParent "coveo-v${{ INPUT_VERSION }}.pkg" "notarization.zip" # TODO: zip both packages
+          ditto -c -k --keepParent "coveo-${{env.tag}}-${{env.commitSHA1}}.pkg" "notarization.zip"
 
           echo "Notarize app"
           xcrun notarytool submit "notarization.zip" --keychain-profile "notarytool-profile" --wait
 
           echo "Attach staple"
-          xcrun stapler staple "coveo-v${{ INPUT_VERSION }}.pkg"
+          xcrun stapler staple "coveo-${{env.tag}}-${{env.commitSHA1}}.pkg"
       - name: Upload binaries
         uses: svenstaro/upload-release-action@133984371c30d34e38222a64855679a414cb7575 # tag=2.3.0
         with:
