@@ -1,3 +1,49 @@
+## 1.35.10 (2022-09-07)
+
+## 1.35.8 (2022-08-29)
+
+# 1.34.0 (2022-08-10)
+
+### Features
+
+- **create-atomic:** replace variables for continious deployment ([#879](https://github.com/coveo/cli/issues/879)) ([df7c7bf](https://github.com/coveo/cli/commits/df7c7bfb8d9953d3479afeb62d4d8073057a5cab))
+
+# 1.33.0 (2022-07-26)
+
+# 1.32.0 (2022-07-13)
+
+### Bug Fixes
+
+- **deps:** update all dependencies j:cdx-227 ([#854](https://github.com/coveo/cli/issues/854)) ([cd042cc](https://github.com/coveo/cli/commits/cd042cc9d08898a9cad39c644a99fa0dd64ba77a))
+
+# 1.31.0 (2022-06-29)
+
+### Features
+
+- **snapshot:** add `deletionScope` on `/apply` ([#849](https://github.com/coveo/cli/issues/849)) ([7b7fcb2](https://github.com/coveo/cli/commits/7b7fcb2ed1d0fc73d0ee7500c91aed85fbfd0dc6))
+
+# 1.30.0 (2022-06-09)
+
+### Features
+
+- **atomic:** create impersonate key inside create-atomic instead ([#827](https://github.com/coveo/cli/issues/827)) ([9178ab1](https://github.com/coveo/cli/commits/9178ab136ed7886bdf711312e8415bef30a2fa2d))
+- **create-atomic:** display npm install error details to user ([#821](https://github.com/coveo/cli/issues/821)) ([0870918](https://github.com/coveo/cli/commits/0870918aa32c080bb66f19b84a20c74660b3406e))
+
+## 1.29.2 (2022-06-03)
+
+## 1.29.1 (2022-06-03)
+
+### Bug Fixes
+
+- **cli:** replace qa by stg ([#811](https://github.com/coveo/cli/issues/811)) ([7a47f9b](https://github.com/coveo/cli/commits/7a47f9b035b4902b5e8fc4234b8eb223bc6cecd4))
+- **create-atomic:** download prompt selected hosted page ([#810](https://github.com/coveo/cli/issues/810)) ([f525ffb](https://github.com/coveo/cli/commits/f525ffb3d502a7a1080481f64b403d60ae4c1933))
+
+# 1.29.0 (2022-05-31)
+
+### Features
+
+- **create-atomic:** allow Coveo atomic to start from an existing Platform Search page ([#728](https://github.com/coveo/cli/issues/728)) ([340fe4a](https://github.com/coveo/cli/commits/340fe4af779ff87730f3a9964272f7a50561ee39))
+
 # 1.28.0 (2022-05-24)
 
 ## 1.27.1 (2022-04-20)

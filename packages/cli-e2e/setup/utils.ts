@@ -10,9 +10,8 @@ import {getConfig as getCliConfig, getConfigFilePath} from '../utils/cli';
 import waitOn from 'wait-on';
 import 'dotenv/config';
 import {Terminal} from '../utils/terminal/terminal';
-import {join, resolve} from 'path';
+import {join, resolve, dirname} from 'path';
 import {npm, npmCachePathEnvVar, npmPathEnvVar} from '../utils/npm';
-import {dirname} from 'path';
 import {spawnSync} from 'child_process';
 
 async function clearChromeBrowsingData(browser: Browser) {
@@ -76,25 +75,34 @@ export function setProcessEnv() {
 }
 
 export function setCliExecPath() {
-  process.env.CLI_EXEC_PATH = resolve(__dirname, '../../cli/bin/dev');
+  process.env.CLI_EXEC_PATH = resolve(__dirname, '../../cli/core/bin/dev');
 }
 
 export async function publishPackages() {
-  const args = [...npm(), 'run', 'npm:publish:template'];
-  const publishTerminal = new Terminal(
-    args.shift()!,
-    args,
-    {cwd: resolve(join(__dirname, '..', '..', '..'))},
-    global.processManager!,
-    'npmPublish'
-  );
-  publishTerminal.orchestrator.process.stdout.on('data', (data) => {
-    console.log(data.toString());
-  });
-  publishTerminal.orchestrator.process.stderr.on('data', (data) => {
-    console.log(data.toString());
-  });
-  await publishTerminal.when('exit').on('process').do().once();
+  for (const phase of ['nx:graph', 'release:phase1', 'release:phase2']) {
+    const args = [...npm(), 'run', phase];
+    const publishTerminal = new Terminal(
+      args.shift()!,
+      args,
+      {
+        cwd: resolve(join(__dirname, '..', '..', '..')),
+        env: {
+          ...process.env,
+          npm_config_registry: 'http://localhost:4873',
+          DEBUG: '*',
+        },
+      },
+      global.processManager!,
+      'npmPublish'
+    );
+    publishTerminal.orchestrator.process.stdout.on('data', (data) => {
+      console.log(data.toString());
+    });
+    publishTerminal.orchestrator.process.stderr.on('data', (data) => {
+      console.log(data.toString());
+    });
+    await publishTerminal.when('exit').on('process').do().once();
+  }
 }
 
 export async function startVerdaccio() {
@@ -139,7 +147,10 @@ export function shimNpm() {
   process.env[npmCachePathEnvVar] = join(npmDir, 'cache');
   copySync(join(__dirname, '..', 'npm-shim'), npmDir);
   const npmCiArgs = [appendCmdIfWindows`npm`, 'ci'];
-  spawnSync(npmCiArgs.shift()!, npmCiArgs, {cwd: npmDir});
+  spawnSync(npmCiArgs.shift()!, npmCiArgs, {
+    cwd: npmDir,
+    env: {...process.env, npm_config_registry: 'https://registry.npmjs.org'},
+  });
   process.env[npmPathEnvVar] = resolve(
     npmDir,
     'node_modules',
@@ -215,7 +226,10 @@ export function getCleanEnv(): Record<string, any> {
     'INIT_CWD',
   ];
   const pathSep = process.platform === 'win32' ? ';' : ':';
-  const pathName = process.platform === 'win32' ? 'Path' : 'PATH';
+  let pathName = 'PATH';
+  if (!env[pathName]) {
+    pathName = 'Path';
+  }
   const path = env[pathName].split(pathSep);
   const filteredPath = path.filter(
     (pathElement: string) => !isParent(env['GITHUB_WORKSPACE'], pathElement)
@@ -225,6 +239,36 @@ export function getCleanEnv(): Record<string, any> {
     delete env[excludeVar];
   }
   return env;
+}
+
+export function scaffoldDummyPackages() {
+  const packagesToScaffold = [
+    '@coveo/angular',
+    '@coveo/vue-cli-plugin-typescript',
+    '@coveo/cra-template',
+    '@coveo/search-token-server',
+    '@coveo/create-atomic',
+    '@coveo/search-token-lambda',
+    '@coveo/cli-commons-dev',
+    '@coveo/cli-commons',
+    '@coveo/cli',
+  ];
+
+  for (const packageToScaffold of packagesToScaffold) {
+    spawnSync(
+      appendCmdIfWindows`npm`,
+      [
+        'publish',
+        `-w=${packageToScaffold}`,
+        '--ignore-scripts',
+        '--registry=http://localhost:4873',
+      ],
+      {
+        cwd: resolve(join(__dirname, '..', '..', '..')),
+        stdio: 'inherit',
+      }
+    );
+  }
 }
 
 const appendCmdIfWindows = (cmd: TemplateStringsArray) =>

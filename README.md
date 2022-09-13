@@ -29,6 +29,7 @@ Afterward, you can run `coveo update` at any time to update your CLI installatio
   - <https://static.cloud.coveo.com/cli/coveo-latest_amd64.deb>
   - <https://static.cloud.coveo.com/cli/coveo-latest_armel.deb>
 - Mac
+  - <https://static.cloud.coveo.com/cli/coveo-latest-arm64.pkg>
   - <https://static.cloud.coveo.com/cli/coveo-latest-x64.pkg>
 - Windows
   - <https://static.cloud.coveo.com/cli/coveo-latest-x64.exe>
@@ -85,7 +86,7 @@ npm i
 To run the local version of the CLI
 
 ```sh
-./packages/cli/bin/run
+./packages/cli/core/bin/dev
 ```
 
 To build all projects for production, run:

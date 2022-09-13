@@ -1,0 +1,45 @@
+name: E2E Login
+description: 'Login CLI for E2E'
+inputs:
+  TEST_RUN_ID:
+    description: 'Test Run ID'
+    required: true
+  PLATFORM_USER_NAME:
+    description: 'PlatformUserName'
+    required: true
+  PLATFORM_USER_PASSWORD:
+    description: 'Platform password'
+    required: true
+  PLATFORM_API_KEY:
+    description: 'Platform API Key'
+    required: true
+  ORG_ID:
+    description: 'Organization ID'
+    required: true
+outputs:
+  cliConfigJson:
+    description: 'A CLI Config, logged-in and ready to use'
+    value: ${{ steps.setup.outputs.cliConfigJson}}
+runs:
+  using: composite
+  steps:
+    - name: Prepare system
+      shell: bash
+      run: |
+        npm ci
+        Xvfb :1 -screen 0 1024x768x16 & sleep 1
+        xdg-settings set default-web-browser google-chrome.desktop
+    - name: Build
+      shell: bash
+      run: npm run build
+    - name: Setup E2E tests
+      shell: bash
+      env:
+        DISPLAY: ':1'
+      run: node -r ts-node/register/transpile-only packages/cli-e2e/setup/ci-login.ts
+    - name: Encode & Output config
+      shell: bash
+      id: setup
+      run: |
+        echo "${{ env.E2E_TOKEN_PASSPHRASE }}" | gpg -a --batch --passphrase-fd 0 --symmetric --cipher-algo AES256 --output encodedConfig $CLI_CONFIG_PATH
+        echo "::set-output name=cliConfigJson::$(base64 -w 0 encodedConfig)"

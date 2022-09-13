@@ -6,6 +6,11 @@ on:
         description: '⚠ be sure of yourself ⚠'
         required: false
         default: ''
+      debug:
+        description: 'Add DEBUG=* to the env if true'
+        type: boolean
+        default: false
+        required: false
 
 jobs:
   snyk:
@@ -16,7 +21,7 @@ jobs:
       GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # tag=v3
+      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
         with:
           node-version: '16'
       - name: Install dependencies
@@ -33,7 +38,7 @@ jobs:
           mkdir -p sarifs
           npx snyk code test    --dev --all-projects --exclude="project.json,npm-shim" --sarif > ./sarifs/snyk-code.sarif
       - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@0e9acb6e5cd338179ea69a99146ca55f796799e0 # tag=v1
+        uses: github/codeql-action/upload-sarif@d1ad3b49578d8a66828f9c8e8fbf5f9faec38f85 # tag=v1
         with:
           sarif_file: ./sarifs
       - name: Check Code Scanning alerts
@@ -50,8 +55,8 @@ jobs:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
       # pulls all tags (needed for computing the next version)
-      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*``
-      - uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # tag=v3
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
         with:
           node-version: '16'
           registry-url: 'https://registry.npmjs.org'
@@ -79,3 +84,5 @@ jobs:
         run: npm run release
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          VERSION: ${{ inputs.version }}
+          DEBUG: ${{ inputs.debug && '*' || '' }}

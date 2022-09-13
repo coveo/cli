@@ -33,15 +33,15 @@ Runs the app in the development mode and provides a shareable link for collabora
 
 ### `npm run build`
 
-Builds the app for production to the `dist` folder using [Webpack](https://webpack.js.org/).
+Builds the [Stencil](https://stenciljs.com/docs/cli) project for production.
 
 ### `npm run site:init`
 
-Configure continuous deployment for a new or existing site, launching the [Netlify CLI init command](https://cli.netlify.com/commands/init).
+Configure continuous or manual deployment for a new or existing site, launching the [Netlify CLI init command](https://cli.netlify.com/commands/init).
 
 ### `npm run site:deploy`
 
-Builds the app for production and deploys the `dist` folder to the linked Netlify site, launching the [Netlify CLI deploy command](https://cli.netlify.com/commands/deploy).
+Builds the app for production and manually deploys the `www` folder to the linked Netlify site, launching the [Netlify CLI deploy command](https://cli.netlify.com/commands/deploy).
 
 ## Learn More
 

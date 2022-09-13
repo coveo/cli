@@ -1,6 +1,6 @@
 {
   "name": "@coveo/vue-cli-plugin-typescript",
-  "version": "1.28.1",
+  "version": "1.35.12",
   "description": "Vue-cli 3 plugin for adding Coveo Headless support",
   "main": "index.js",
   "repository": {
@@ -10,18 +10,16 @@
   "license": "Apache-2.0",
   "scripts": {
     "lint": "prettier --check . && eslint .",
-    "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
-    "npm:publish:template:local": "npm publish --access public --registry http://verdaccio:4873",
     "release:phase2": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase2-bump-all-packages.mjs"
   },
   "devDependencies": {
-    "@coveo/headless": "1.66.3",
-    "@coveo/search-token-server": "1.28.1",
+    "@coveo/headless": "1.100.0",
+    "@coveo/search-token-server": "1.35.12",
     "buefy": "0.9.21",
     "dotenv": "16.0.1",
-    "vue": "2.6.14",
+    "vue": "2.7.9",
     "vue-property-decorator": "9.1.2",
-    "vue-router": "3.5.4"
+    "vue-router": "3.6.0"
   },
   "publishConfig": {
     "access": "public"

@@ -1,3 +1,26 @@
+## 1.35.10 (2022-09-07)
+
+## 1.35.8 (2022-08-29)
+
+### Features
+
+- add plugin support ([#892](https://github.com/coveo/cli/issues/892)) ([05ac35e](https://github.com/coveo/cli/commits/05ac35e345a722c6d1102891508ebeacdbe6f9bd))
+- **cli:** extract source into a plugin ([#899](https://github.com/coveo/cli/issues/899)) ([1797049](https://github.com/coveo/cli/commits/17970490e7844315373827f44ef8dd80f4c0181a))
+
+# 1.31.0 (2022-06-29)
+
+### Features
+
+- **angular:** update to angular 14 ([#830](https://github.com/coveo/cli/issues/830)) ([9866d07](https://github.com/coveo/cli/commits/9866d075238b45dee9ac8cfd58df21abdbc93e7b))
+
+## 1.29.3 (2022-06-06)
+
+## 1.29.2 (2022-06-03)
+
+## 1.29.1 (2022-06-03)
+
+# 1.29.0 (2022-05-31)
+
 # 1.28.0 (2022-05-24)
 
 ### Bug Fixes

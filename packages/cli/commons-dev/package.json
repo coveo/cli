@@ -1,0 +1,40 @@
+{
+  "name": "@coveo/cli-commons-dev",
+  "version": "1.35.12",
+  "author": "Coveo",
+  "description": "Common utils for @coveo/cli plugins development",
+  "license": "Apache-2.0",
+  "files": [
+    "lib/**",
+    ".eslintrc.js",
+    ".prettierrc.js",
+    "tsconfig.json"
+  ],
+  "exports": {
+    "./.eslintrc": "./.eslintrc.js",
+    "./.eslintrc.js": "./.eslintrc.js",
+    "./.prettierrc": "./.prettierrc.js",
+    "./.prettierrc.js": "./.prettierrc.js",
+    "./tsconfig.json": "./tsconfig.json",
+    "./*": {
+      "types": "./lib/*.d.ts",
+      "default": "./lib/*.js"
+    }
+  },
+  "dependencies": {
+    "fancy-test": "2.0.0",
+    "tslib": "2.4.0"
+  },
+  "devDependencies": {
+    "@types/jest": "27.5.2",
+    "typescript": "4.7.4"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepublish": "npm run build",
+    "release:phase2": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase2-bump-all-packages.mjs"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

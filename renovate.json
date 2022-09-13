@@ -19,6 +19,11 @@
       "rangeStrategy": "replace"
     },
     {
+      "matchPackageNames": ["@coveo/atomic"],
+      "allowedVersions": "1.86.0",
+      "description": "Need latest tag to be updated. TODO:CDX-1104"
+    },
+    {
       "matchPackageNames": ["strip-ansi"],
       "allowedVersions": "6.x"
     },
@@ -52,7 +57,7 @@
       "description": "Need to migrate E2E to ESM (not easy)"
     },
     {
-      "matchPackageNames": ["jest", "babel-jest", "jest-config"],
+      "matchPackageNames": ["jest", "babel-jest", "jest-config", "ts-jest"],
       "matchCurrentVersion": "27.x",
       "allowedVersions": "27.x",
       "description": "CDX-942"

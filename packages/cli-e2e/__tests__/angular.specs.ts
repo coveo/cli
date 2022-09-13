@@ -233,8 +233,8 @@ describe('ui:create:angular', () => {
       await undoCommit(serverProcessManager, projectPath, projectName);
       await serverProcessManager.killAllProcesses();
     }, 5 * 60e3);
-
-    it(
+    // TODO CDX-1017: Remove skip
+    it.skip(
       'should not contain console errors nor warnings',
       async () => {
         await page.goto(searchPageEndpoint(), {
@@ -434,6 +434,7 @@ describe('ui:create:angular', () => {
         new DummyServer(usedClientPort),
         new DummyServer(usedServerPort)
       );
+      await Promise.all(dummyServers.map((server) => server.start()));
 
       const appTerminal = await startApplication(
         serverProcessManager,

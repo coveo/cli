@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # tag=v3
+      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
         with:
           node-version: '16'
       - name: Setup
@@ -42,17 +42,16 @@ jobs:
       - name: Get commit short hash
         run: node ./scripts/get-commit-short-hash.mjs
       - name: Build
-        working-directory: ./packages/cli
         run: npm run build
       - name: Create install kits
-        working-directory: ./packages/cli
-        run: ../../node_modules/oclif/bin/run pack${{ matrix.pack-command }}
+        working-directory: ./packages/cli/core
+        run: ../../../node_modules/oclif/bin/run pack${{ matrix.pack-command }}
       - name: Create packages
-        working-directory: ./packages/cli
+        working-directory: ./packages/cli/core
         if: ${{matrix.os == 'ubuntu-latest'}}
-        run: ../../node_modules/oclif/bin/run pack tarballs
+        run: ../../../node_modules/oclif/bin/run pack tarballs
       - name: Sign Executable
-        working-directory: ./packages/cli
+        working-directory: ./packages/cli/core
         if: ${{matrix.os == 'windows-latest'}}
         run: |
           New-Item -Force -ItemType directory -Path tmp
@@ -61,9 +60,9 @@ jobs:
           Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-${{env.tag}}-${{env.commitSHA1}}-x64.exe" -PassThru | Wait-Process
           Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-${{env.tag}}-${{env.commitSHA1}}-x86.exe" -PassThru | Wait-Process
       - name: Upload binaries
-        uses: svenstaro/upload-release-action@483c1e56f95e88835747b1c7c60581215016cbf2 # renovate: tag=v2
+        uses: svenstaro/upload-release-action@133984371c30d34e38222a64855679a414cb7575 # tag=2.3.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./packages/cli/dist/**/*
+          file: ./packages/cli/core/dist/**/*
           file_glob: true
           tag: ${{ env.tag }}

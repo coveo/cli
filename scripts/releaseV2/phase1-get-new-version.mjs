@@ -10,15 +10,18 @@ import angularChangelogConvention from 'conventional-changelog-angular';
 
 // Get all commits since last release bump the root package.json version.
 (async () => {
+  let newVersion = process.env.VERSION;
   const PATH = '.';
-  const versionPrefix = 'v';
-  const convention = await angularChangelogConvention;
-  const lastTag = getLastTag(versionPrefix)[0];
-  const commits = getCommits(PATH, lastTag)[0];
-  const parsedCommits = parseCommits(commits, convention.parserOpts);
-  const bumpInfo = convention.recommendedBumpOpts.whatBump(parsedCommits);
-  const currentVersion = getCurrentVersion(PATH);
-  const newVersion = getNextVersion(currentVersion, bumpInfo);
+  if (!newVersion) {
+    const versionPrefix = 'v';
+    const convention = await angularChangelogConvention;
+    const lastTag = await getLastTag(versionPrefix);
+    const commits = await getCommits(PATH, lastTag);
+    const parsedCommits = parseCommits(commits, convention.parserOpts);
+    const bumpInfo = convention.recommendedBumpOpts.whatBump(parsedCommits);
+    const currentVersion = getCurrentVersion(PATH);
+    newVersion = getNextVersion(currentVersion, bumpInfo);
+  }
   console.log(`NEW VERSION ${newVersion}`);
-  npmBumpVersion(newVersion, PATH);
+  await npmBumpVersion(newVersion, PATH);
 })();

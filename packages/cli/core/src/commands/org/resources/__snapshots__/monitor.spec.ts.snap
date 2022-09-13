@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`org:resources:monitor when the operation conclude with no changes should output the same thing 1`] = `
+"
+"
+`;
+
+exports[`org:resources:monitor when the operation conclude with no changes should output the same thing 2`] = `
+"
+Monitoring snapshot my-snapshot...
+Operation undefined..."
+`;
+
+exports[`org:resources:monitor when the operation fails should output the same thing 1`] = `
+"
+undefined
+"
+`;
+
+exports[`org:resources:monitor when the operation fails should output the same thing 2`] = `
+"
+Monitoring snapshot my-snapshot...
+Operation undefined..."
+`;
+
+exports[`org:resources:monitor when the operation succeed should output the same thing 1`] = `
+"
+"
+`;
+
+exports[`org:resources:monitor when the operation succeed should output the same thing 2`] = `
+"
+Monitoring snapshot my-snapshot...
+Operation undefined..."
+`;
+
+exports[`org:resources:monitor when the operations conclude with missing vault entries should output the same thing 1`] = `
+"
+"
+`;
+
+exports[`org:resources:monitor when the operations conclude with missing vault entries should output the same thing 2`] = `
+"
+Monitoring snapshot my-snapshot...
+Operation undefined..."
+`;
