@@ -11,10 +11,6 @@ runs:
       with:
         node-version: 16
         cache: 'npm'
-    - name: Install locked NPM version.
-      shell: bash
-      # TODO: CDX-1010 | Remove in CDX-1010.
-      run: npm i -g npm@8.10.0
     - run: npm ci
       shell: bash
     - name: Decrypt config
