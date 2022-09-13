@@ -17,7 +17,7 @@ on:
 
 jobs:
   package:
-    environment: 'Release'
+    # environment: 'Release' TODO: move MACOS secrets to the right environment
     env:
       GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
       MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
@@ -47,6 +47,22 @@ jobs:
       - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
         with:
           node-version: '16'
+      - name: Setup Temporary Keychain
+        if: ${{matrix.os == 'macos-latest'}}
+        run: |
+          # TODO: put in script file
+          echo $MACOS_CERTIFICATE | base64 --decode > certificate.p12
+
+          echo "Creating temporary keychain"
+          security create-keychain -p "$MACOS_KEYCHAIN_PWD" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" build.keychain
+
+          echo "Adding certificate to keychain"
+          security import certificate.p12 -k build.keychain -P "$MACOS_CERTIFICATE_PWD" -T /usr/bin/codesign -T /usr/bin/productsign
+
+          echo "Enabling codesigning from a non user interactive shell"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$MACOS_KEYCHAIN_PWD" build.keychain
       - name: Setup
         run: npm i
       - name: Get tag
@@ -62,22 +78,6 @@ jobs:
         working-directory: ./packages/cli/core
         if: ${{matrix.os == 'ubuntu-latest'}}
         run: ../../../node_modules/oclif/bin/run pack tarballs
-      - name: Setup Temporary Keychain
-        if: ${{matrix.os == 'macos-latest'}}
-        run: |
-          # TODO: put in script file
-          echo ${{ secrets.MACOS_CERTIFICATE }} | base64 --decode > certificate.p12
-
-          echo "Creating temporary keychain"
-          security create-keychain -p ${{ secrets.MACOS_KEYCHAIN_PWD }} build.keychain
-          security default-keychain -s build.keychain
-          security unlock-keychain -p ${{ secrets.MACOS_KEYCHAIN_PWD }} build.keychain
-
-          echo "Adding certificate to keychain"
-          security import certificate.p12 -k build.keychain -P ${{ secrets.MACOS_CERTIFICATE_PWD }} -T /usr/bin/codesign -T /usr/bin/productsign
-
-          echo "Enabling codesigning from a non user interactive shell"
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k ${{ secrets.MACOS_KEYCHAIN_PWD }} build.keychain
       - name: Sign Executable (Windows)
         working-directory: ./packages/cli/core
         if: ${{matrix.os == 'windows-latest'}}
@@ -102,7 +102,7 @@ jobs:
         run: |
           # TODO: put in script file
           echo "Create keychain profile"
-          xcrun notarytool store-credentials "notarytool-profile" --apple-id "${{ secrets.MACOS_APP_USERNAME }}" --team-id "${{ secrets.MACOS_WWDR_TEAM_ID }}" --password "${{ secrets.MACOS_APP_SPECIFIC_PWD }}"
+          xcrun notarytool store-credentials "notarytool-profile" --apple-id "$MACOS_APP_USERNAME" --team-id "$MACOS_WWDR_TEAM_ID" --password "$MACOS_APP_SPECIFIC_PWD"
 
           echo "Creating temp notarization archive"
           ditto -c -k --keepParent "coveo-${{env.tag}}-${{env.commitSHA1}}-x64.pkg" "notarization.zip"
