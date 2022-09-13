@@ -1,213 +1,119 @@
-name: CI
+name: Signing test
+
+# on:
+#   release:
+#     types: [published]
+#   workflow_dispatch:
+#     inputs:
+#       version:
+#         description: 'The version where to upload the binaries'
+#         required: true
+
 on:
   push:
     branches:
       - master
   pull_request:
-env:
-  # Platform environment to log into for the e2e tests.
-  PLATFORM_ENV: 'stg'
-  # Username used to log into the organization whose ID is stored in the ORG_ID variable
-  PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
-  # Password used to log into the organization whose ID is stored in the ORG_ID variable
-  PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
-  # API key to delete all the API keys created by the e2e tests
-  PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
-  # ID of the organization to log into for the e2e tests
-  ORG_ID: ${{ secrets.ORG_ID }}
-  # Passphrase use to encode/decode cliConfig
-  E2E_TOKEN_PASSPHRASE: ${{ secrets.E2E_TOKEN_PASSPHRASE }}
+
 jobs:
-  lint:
-    name: Lint
-    runs-on: 'ubuntu-latest'
-    steps:
-      - name: Setup runner
-        if: ${{matrix.os == 'ubuntu-latest'}}
-        # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
-        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-      - name: Setup runner
-        if: ${{matrix.os == 'windows-latest'}}
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.eol lf
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
-        with:
-          node-version: 16
-          cache: 'npm'
-      - name: Install locked NPM version.
-        # TODO: CDX-1010 | Remove in CDX-1010.
-        run: npm i -g npm@8.10.0
-      - name: Setup repo
-        run: npm ci
-      - name: Check linting
-        run: npm run lint
-  unit-tests:
-    name: Unit Tests
-    runs-on: ${{matrix.os}}
-    strategy:
-      fail-fast: true
-      matrix:
-        os: ['ubuntu-latest', 'windows-latest']
-        node: [16]
-    steps:
-      - name: Setup runner
-        if: ${{matrix.os == 'ubuntu-latest'}}
-        # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
-        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-      - name: Setup runner
-        if: ${{matrix.os == 'windows-latest'}}
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.eol lf
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
-        with:
-          node-version: ${{matrix.node}}
-          cache: 'npm'
-      - name: Install locked NPM version.
-        # TODO: CDX-1010 | Remove in CDX-1010.
-        run: npm i -g npm@8.10.0
-      - name: Setup repo
-        run: npm ci
-      - name: Build
-        run: npm run build
-      - name: Tests
-        run: npm run test
-  e2e-setup-login:
-    name: End-to-end login
-    runs-on: 'ubuntu-latest'
-    outputs:
-      cliConfigJson: ${{ steps.setup.outputs.cliConfigJson}}
+  package:
+    environment: 'Release'
     env:
-      # ID of the test run to identify resources to teardown.
-      TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
-        with:
-          node-version: ${{matrix.node}}
-          cache: 'npm'
-      - name: Install locked NPM version.
-        # TODO: CDX-1010 | Remove in CDX-1010.
-        run: npm i -g npm@8.10.0
-      - uses: ./.github/actions/e2e-login
-        id: setup
-  e2e-setup-verdaccio:
-    strategy:
-      matrix:
-        os: ['ubuntu-latest', 'windows-latest']
-    name: End-to-end publish packages
-    runs-on: ${{matrix.os}}
-    steps:
-      - name: Setup runner
-        if: ${{matrix.os == 'windows-latest'}}
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.eol lf
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-        with:
-          # pulls all commits (needed for computing the next version)
-          fetch-depth: 0
-      # pulls all tags (needed for computing the next version)
-      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
-        with:
-          node-version: ${{matrix.node}}
-          cache: 'npm'
-      - uses: actions/cache@fd5de65bc895cf536527842281bea11763fefd77 # tag=v3
-        if: ${{matrix.os == 'ubuntu-latest'}}
-        with:
-          path: packages/cli-e2e/verdaccio
-          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-      - uses: actions/cache@fd5de65bc895cf536527842281bea11763fefd77 # tag=v3
-        if: ${{matrix.os == 'windows-latest'}}
-        with:
-          path: packages\cli-e2e\verdaccio
-          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-      - name: Install locked NPM version.
-        # TODO: CDX-1010 | Remove in CDX-1010.
-        run: npm i -g npm@8.10.0
-      - run: npm ci
-      - name: Build
-        run: npm run build
-      - name: Setup E2E tests
-        run: node -r ts-node/register/transpile-only packages/cli-e2e/setup/ci-verdaccio.ts
-      - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
-        if: always()
-        with:
-          name: ${{matrix.os}}-verdaccio-publish-artifacts
-          path: ./packages/cli-e2e/artifacts
-  e2e:
-    name: End-to-end tests
-    runs-on: ${{matrix.os}}
-    needs: [e2e-setup-login, e2e-setup-verdaccio]
+      MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+      MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+      MACOS_KEYCHAIN_PWD: ${{ secrets.MACOS_KEYCHAIN_PWD }}
+      MACOS_APP_USERNAME: ${{ secrets.MACOS_APP_USERNAME }}
+      MACOS_APP_SPECIFIC_PWD: ${{ secrets.MACOS_APP_SPECIFIC_PWD }}
+      MACOS_WWDR_TEAM_ID: ${{ secrets.MACOS_WWDR_TEAM_ID }}
+    name: Package for ${{ matrix.for }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-latest', 'windows-latest']
-        node: [16]
-        spec:
-          [
-            'angular.specs.ts',
-            'atomic.specs.ts',
-            'auth.specs.ci.ts',
-            'orgList.specs.ts',
-            'orgResources.specs.ts',
-            'react.specs.ts',
-            'vue.specs.ts',
-          ]
-        # TODO: fix auth spec with windows
-        exclude:
-          - os: windows-latest
-            spec: auth.specs.ci.ts
-    env:
-      # ID of the test run to identify resources to teardown.
-      TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
-      COVEO_DISABLE_AUTOUPDATE: true
-      CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
+        include:
+          - os: macos-latest
+            pack-command: ' macos'
+            for: 'macos install kit'
+          # - os: windows-latest
+          #   pack-command: ' win'
+          #   for: 'windows install kit'
+          # - os: ubuntu-latest
+          #   pack-command: ' deb'
+          #   for: 'linux install kit'
+
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/cache@fd5de65bc895cf536527842281bea11763fefd77 # tag=v3
+      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
+        with:
+          node-version: '16'
+      - name: Setup
+        run: npm i
+      - name: Get tag
+        run: node ./scripts/get-tag.js # ToDo (PRE_NX): replace by some jq magic
+      - name: Get commit short hash
+        run: node ./scripts/get-commit-short-hash.mjs
+      - name: Build
+        run: npm run build
+      - name: Create install kits
+        working-directory: ./packages/cli/core
+        run: ../../../node_modules/oclif/bin/run pack${{ matrix.pack-command }}
+      - name: Create packages
+        working-directory: ./packages/cli/core
         if: ${{matrix.os == 'ubuntu-latest'}}
-        with:
-          path: packages/cli-e2e/verdaccio
-          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-          restore-keys: verdaccio-${{matrix.os}}-${{ github.sha }}
-      - uses: actions/cache@fd5de65bc895cf536527842281bea11763fefd77 # tag=v3
+        run: ../../../node_modules/oclif/bin/run pack tarballs
+      - name: Setup Temporary Keychain
+        if: ${{matrix.os == 'macos-latest'}}
+        run: |
+          # TODO: put in script file
+          echo ${{ secrets.MACOS_CERTIFICATE }} | base64 --decode > certificate.p12
+
+          echo "Creating temporary keychain"
+          security create-keychain -p ${{ secrets.MACOS_KEYCHAIN_PWD }} build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p ${{ secrets.MACOS_KEYCHAIN_PWD }} build.keychain
+
+          echo "Adding certificate to keychain"
+          security import certificate.p12 -k build.keychain -P ${{ secrets.MACOS_CERTIFICATE_PWD }} -T /usr/bin/codesign -T /usr/bin/productsign
+
+          echo "Enabling codesigning from a non user interactive shell"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k ${{ secrets.MACOS_KEYCHAIN_PWD }} build.keychain
+      - name: Sign Executable (Windows)
+        working-directory: ./packages/cli/core
         if: ${{matrix.os == 'windows-latest'}}
+        run: |
+          New-Item -Force -ItemType directory -Path tmp
+          echo "${{ secrets.COVEO_PFX }}" > ./tmp/cert.txt
+          certutil -decode ./tmp/cert.txt ./tmp/cert.pfx
+          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-${{env.tag}}-${{env.commitSHA1}}-x64.exe" -PassThru | Wait-Process
+          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-${{env.tag}}-${{env.commitSHA1}}-x86.exe" -PassThru | Wait-Process
+      - name: Sign Executable (macOS)
+        # TODO: run for both mac os architectures
+        working-directory: ./packages/cli/core/dist/macos
+        if: ${{matrix.os == 'macos-latest'}}
+        run: |
+          ls
+          productsign --sign "Developer ID Installer: Coveo Solutions Inc." coveo-${{env.tag}}-${{env.commitSHA1}}-x64.pkg coveo-${{env.tag}}-${{env.commitSHA1}}-signed.pkg
+          // TODO: delete unsigned package
+          // TODO: rename signed package
+      - name: Notarize Executable (macOS)
+        working-directory: ./packages/cli/core/dist/macos
+        if: ${{matrix.os == 'macos-latest'}}
+        run: |
+          # TODO: put in script file
+          echo "Create keychain profile"
+          xcrun notarytool store-credentials "notarytool-profile" --apple-id "${{ secrets.MACOS_APP_USERNAME }}" --team-id "${{ secrets.MACOS_WWDR_TEAM_ID }}" --password "${{ secrets.MACOS_APP_SPECIFIC_PWD }}"
+
+          echo "Creating temp notarization archive"
+          ditto -c -k --keepParent "coveo-${{env.tag}}-${{env.commitSHA1}}-x64.pkg" "notarization.zip"
+
+          echo "Notarize app"
+          xcrun notarytool submit "notarization.zip" --keychain-profile "notarytool-profile" --wait
+
+          echo "Attach staple"
+          xcrun stapler staple "coveo-${{env.tag}}-${{env.commitSHA1}}-x64.pkg"
+      - name: Upload artifacts
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
+        if: always()
         with:
-          path: packages\cli-e2e\verdaccio
-          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-          restore-keys: verdaccio-${{matrix.os}}-${{ github.sha }}
-      - uses: ./.github/actions/e2e-run
-        with:
-          os: ${{ matrix.os }}
-          node: ${{ matrix.node }}
-          spec: ${{ matrix.spec }}
-          cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
-          npmRegistry: 'http://localhost:4873'
-  e2e-teardown:
-    name: End-to-end teardown
-    if: ${{ always() }}
-    needs: [e2e, e2e-setup-login]
-    runs-on: ubuntu-latest
-    env:
-      # ID of the test run to identify resources to teardown.
-      TEST_RUN_ID: '${{ github.sha }}-${{ github.run_attempt }}g'
-      CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: ./.github/actions/e2e-clean
-        with:
-          cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
-  e2e-report:
-    name: End-to-end status reporter
-    if: ${{ always() }}
-    needs: e2e
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check e2e matrix status
-        if: ${{ needs.e2e.result != 'success' }}
-        run: exit 1
+          name: signed-pkg
+          path: ./packages/cli/artifacts
