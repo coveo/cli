@@ -63,11 +63,6 @@ jobs:
 
           echo "Enabling codesigning from a non user interactive shell"
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$MACOS_KEYCHAIN_PWD" build.keychain
-      - uses: robinraju/release-downloader@v1.5
-        with:
-          out-file-path: ./packages/cli/core
-          latest: true
-          fileName: 'coveo-v1.35.12-10dd82a-x64.pkg'
       # - name: Setup
       #   run: npm i
       # - name: Get tag
