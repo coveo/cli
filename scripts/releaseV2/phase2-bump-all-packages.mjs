@@ -8,7 +8,7 @@ import {
   writeChangelog,
 } from '@coveo/semantic-monorepo-tools';
 import {spawnSync} from 'child_process';
-import {readFileSync, writeFileSync} from 'fs';
+import {appendFileSync, readFileSync, writeFileSync} from 'fs';
 import angularChangelogConvention from 'conventional-changelog-angular';
 import {dirname, resolve, join} from 'path';
 import {fileURLToPath} from 'url';
@@ -18,37 +18,41 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 // Run on each package, it generate the changelog, install the latest dependencies that are part of the workspace, publish the package.
 (async () => {
   const PATH = '.';
-  const versionPrefix = 'v';
+  const packageJson = JSON.parse(
+    readFileSync('package.json', {encoding: 'utf-8'})
+  );
+  const versionPrefix = packageJson.name;
   const convention = await angularChangelogConvention;
   const lastTag = await getLastTag(versionPrefix);
   const commits = await getCommits(PATH, lastTag);
-  const newVersion = getReleaseVersion();
+  if (commits.length === 0) {
+    return;
+  }
+  const parsedCommits = parseCommits(commits, convention.parserOpts);
+  const bumpInfo = convention.recommendedBumpOpts.whatBump(parsedCommits);
+  const currentVersion = getCurrentVersion(PATH);
+  const newVersion = getNextVersion(currentVersion, bumpInfo);
 
-  await updateWorkspaceDependencies(newVersion);
   await npmBumpVersion(newVersion, PATH);
+  await updateWorkspaceDependent(newVersion);
   if (isPrivatePackage()) {
     return;
   }
 
-  if (commits.length > 0) {
-    const parsedCommits = parseCommits(commits, convention.parserOpts);
-    const changelog = await generateChangelog(
-      parsedCommits,
-      newVersion,
-      {
-        host: 'https://github.com',
-        owner: 'coveo',
-        repository: 'cli',
-      },
-      convention.writerOpts
-    );
-    await writeChangelog(PATH, changelog);
-  }
+  const changelog = await generateChangelog(
+    parsedCommits,
+    newVersion,
+    {
+      host: 'https://github.com',
+      owner: 'coveo',
+      repository: 'cli',
+    },
+    convention.writerOpts
+  );
+  await writeChangelog(PATH, changelog);
 
   await npmPublish();
-  const packageJson = JSON.parse(
-    readFileSync('package.json', {encoding: 'utf-8'})
-  );
+
   await retry(
     () => {
       if (!isVersionPublished(packageJson.name, newVersion)) {
@@ -57,38 +61,51 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
     },
     {retries: 30}
   );
+  appendFileSync(
+    join(rootFolder, '.git-message'),
+    `${packageJson.name}@${newVersion}\n`
+  );
 })();
 
-function getReleaseVersion() {
-  return JSON.parse(
-    readFileSync(join(rootFolder, 'package.json'), {encoding: 'utf-8'})
-  ).version;
-}
-
-// TODO [PRE_NX]: Clean  this mess.
-async function updateWorkspaceDependencies(version) {
+async function updateWorkspaceDependent(version) {
   const topology = JSON.parse(
     readFileSync(join(rootFolder, 'topology.json'), {encoding: 'utf-8'})
   );
-  const packageJson = JSON.parse(
+  const dependencyPackageJson = JSON.parse(
     readFileSync('package.json', {encoding: 'utf-8'})
   );
-  const packageName = packageJson.name.replace('@coveo/', '');
-  const topologicalDependencies = topology.graph.dependencies[packageName]
-    .filter((dependency) => dependency.source == packageName)
-    .map((dependency) => `@coveo/${dependency.target}`);
-  const npmDependencies = [
-    'dependencies',
-    'devDependencies',
-    'peerDependencies',
-  ].reduce((acc, cur) => acc.concat(Object.keys(packageJson[cur] ?? [])), []);
-
-  for (const dependency of topologicalDependencies) {
-    if (npmDependencies.includes(dependency)) {
-      updateDependency(packageJson, dependency, version);
+  const dependencyPackageName = dependencyPackageJson.name.replace(
+    '@coveo/',
+    ''
+  );
+  const dependentPackages = [];
+  for (const [name, dependencies] of Object.entries(
+    topology.graph.dependencies
+  )) {
+    if (
+      dependencies.find(
+        (dependency) => dependency.target === dependencyPackageName
+      )
+    ) {
+      dependentPackages.push(name);
     }
   }
-  writeFileSync('package.json', JSON.stringify(packageJson));
+
+  for (const dependentPackage of dependentPackages) {
+    const dependentPackageJsonPath = join(
+      rootFolder,
+      topology.graph.nodes[dependentPackage].data.root,
+      'package.json'
+    );
+    const dependentPackageJson = JSON.parse(
+      readFileSync(dependentPackageJsonPath, {encoding: 'utf-8'})
+    );
+    updateDependency(dependentPackageJson, dependencyPackageName, version);
+    writeFileSync(
+      dependentPackageJsonPath,
+      JSON.stringify(dependentPackageJson)
+    );
+  }
 }
 
 function updateDependency(packageJson, dependency, version) {
