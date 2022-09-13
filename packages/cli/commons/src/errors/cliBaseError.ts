@@ -12,7 +12,7 @@ export interface CLIBaseErrorInterface {
   cause?: Error;
 }
 
-interface OClifCLIError extends Omit<CLIError, 'render'> {}
+interface OClifCLIError extends Omit<CLIError, 'render' | 'bang' | 'oclif'> {}
 
 export class CLIBaseError extends Error implements OClifCLIError {
   private static readonly defaultSeverity: SeverityLevel = SeverityLevel.Error;
@@ -25,10 +25,6 @@ export class CLIBaseError extends Error implements OClifCLIError {
     super(error instanceof Error ? error.message : error, options);
   }
 
-  public get oclif() {
-    return this.error instanceof CLIError ? this.error.oclif : {};
-  }
-
   public get stack(): string {
     return super.stack || '';
   }
@@ -37,7 +33,17 @@ export class CLIBaseError extends Error implements OClifCLIError {
     return this.options?.level || CLIBaseError.defaultSeverity;
   }
 
-  public get bang() {
+  /**
+   * Specific to internal oclif error handling
+   */
+  private get oclif() {
+    return this.error instanceof CLIError ? this.error.oclif : {};
+  }
+
+  /**
+   * Used by oclif to pretty print the error
+   */
+  private get bang() {
     let color: Chalk;
 
     switch (this.severityLevel) {
