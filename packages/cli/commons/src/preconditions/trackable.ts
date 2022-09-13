@@ -45,11 +45,9 @@ export function Trackable({
         command: this.id,
       };
 
-      if (cmdArgs.length > 0) {
-        return trackError.call(this, properties, originalCommand, cmdArgs);
-      } else {
-        return trackCommand.call(this, name, properties, originalCommand);
-      }
+      return cmdArgs.length > 0
+        ? trackError.call(this, properties, originalCommand, cmdArgs)
+        : trackCommand.call(this, name, properties, originalCommand);
     };
   };
 }
