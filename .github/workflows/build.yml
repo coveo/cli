@@ -19,6 +19,7 @@ jobs:
   package:
     environment: 'Release'
     env:
+      GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
       MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
       MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
       MACOS_KEYCHAIN_PWD: ${{ secrets.MACOS_KEYCHAIN_PWD }}
