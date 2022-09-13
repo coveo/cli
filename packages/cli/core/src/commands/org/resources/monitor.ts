@@ -10,10 +10,7 @@ import {organization, wait} from '../../../lib/flags/snapshotCommonFlags';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 import {ReportViewerStyles} from '../../../lib/snapshot/reportPreviewer/reportPreviewerStyles';
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
-import {
-  getTargetOrg,
-  handleSnapshotError,
-} from '../../../lib/snapshot/snapshotCommon';
+import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 
@@ -47,7 +44,7 @@ export default class Monitor extends Command {
 
   @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
-    handleSnapshotError(err);
+    throw err;
   }
 
   private async monitorSnapshot(snapshot: Snapshot) {

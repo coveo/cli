@@ -4,11 +4,11 @@ import {Configuration} from '@coveo/cli-commons/config/config';
 import {Snapshot} from '../snapshot/snapshot';
 import {SnapshotUrlBuilder} from '../snapshot/snapshotUrlBuilder';
 import {
-  PrintableError,
+  CLIBaseError,
   SeverityLevel,
-} from '@coveo/cli-commons/errors/printableError';
+} from '@coveo/cli-commons/errors/cliBaseError';
 
-interface DetailedReportable extends PrintableError {
+interface DetailedReportable extends CLIBaseError {
   snapshot: Snapshot;
   projectPath?: string;
 }
@@ -22,35 +22,37 @@ function trySavingDetailedReport(error: DetailedReportable) {
 }
 
 export class SnapshotOperationTimeoutError
-  extends PrintableError
+  extends CLIBaseError
   implements DetailedReportable
 {
   public name = 'Snapshot Operation Timeout Error';
   public constructor(public snapshot: Snapshot) {
-    super(SeverityLevel.Info);
-    this.message = dedent`${
-      snapshot.latestReport.type
-    } operation is taking a long time to complete.
+    super(
+      dedent`${
+        snapshot.latestReport.type
+      } operation is taking a long time to complete.
     Run the following command to monitor the operation:
 
-      ${blueBright`coveo org:resources:monitor ${snapshot.id} -t ${snapshot.targetId}`}`;
+      ${blueBright`coveo org:resources:monitor ${snapshot.id} -t ${snapshot.targetId}`}`,
+      {level: SeverityLevel.Info}
+    );
   }
 }
 
 export class SnapshotNoReportFoundError
-  extends PrintableError
+  extends CLIBaseError
   implements DetailedReportable
 {
   public name = 'No Report Found Error';
   public constructor(public snapshot: Snapshot) {
-    super(SeverityLevel.Error);
+    super();
     this.message = dedent`
     No detailed report found for the snapshot ${this.snapshot.id}`;
   }
 }
 
 export class SnapshotGenericError
-  extends PrintableError
+  extends CLIBaseError
   implements DetailedReportable
 {
   public name = 'Snapshot Error';
@@ -59,7 +61,7 @@ export class SnapshotGenericError
     public cfg: Configuration,
     public projectPath?: string
   ) {
-    super(SeverityLevel.Error);
+    super();
     const report = snapshot.latestReport;
     const urlBuilder = new SnapshotUrlBuilder(cfg);
     const snapshotUrl = urlBuilder.getSnapshotApplyPage(snapshot);
@@ -72,7 +74,7 @@ export class SnapshotGenericError
   }
 }
 export class SnapshotMissingVaultEntriesError
-  extends PrintableError
+  extends CLIBaseError
   implements DetailedReportable
 {
   public name = 'Snapshot Missing Vault Entries';
@@ -81,7 +83,7 @@ export class SnapshotMissingVaultEntriesError
     public cfg: Configuration,
     public projectPath?: string
   ) {
-    super(SeverityLevel.Error);
+    super();
     this.message = dedent`Your destination organization is missing vault entries needed by the snapshot ${snapshot.id}.
       Ensure that all vault entries are present on the organization ${snapshot.targetId} and try again.
       Visit https://docs.coveo.com/en/m3a90243 for more info on how to create vault entries.`;
