@@ -41,14 +41,11 @@ export class CLIBaseError extends Error implements OClifCLIError {
     let color: Chalk;
 
     switch (this.severityLevel) {
-      case SeverityLevel.Error:
-        color = red;
-        break;
-
       case SeverityLevel.Warn:
         color = yellow;
         break;
 
+      case SeverityLevel.Error:
       default:
         color = red;
         break;
