@@ -8,7 +8,7 @@
     "defaultCollection": "@nrwl/workspace"
   },
   "targetDependencies": {
-    "release:phase2": [{"target": "release:phase2", "projects": "dependencies"}]
+    "release:phase1": [{"target": "release:phase1", "projects": "dependencies"}]
   },
   "targetDefaults": {
     "build": {

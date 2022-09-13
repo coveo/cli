@@ -79,7 +79,7 @@ export function setCliExecPath() {
 }
 
 export async function publishPackages() {
-  for (const phase of ['nx:graph', 'release:phase1', 'release:phase2']) {
+  for (const phase of ['nx:graph', 'release:phase1']) {
     const args = [...npm(), 'run', phase];
     const publishTerminal = new Terminal(
       args.shift()!,
