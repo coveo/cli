@@ -4,6 +4,8 @@ import {
   getCommits,
   npmBumpVersion,
   npmPublish,
+  getCurrentVersion,
+  getNextVersion,
   generateChangelog,
   writeChangelog,
 } from '@coveo/semantic-monorepo-tools';
@@ -23,7 +25,10 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
   );
   const versionPrefix = packageJson.name;
   const convention = await angularChangelogConvention;
-  const lastTag = await getLastTag(versionPrefix);
+  // TODO: CDX-1147 Remove catch
+  const lastTag = await getLastTag(versionPrefix).catch(() =>
+    getLastTag('release-')
+  );
   const commits = await getCommits(PATH, lastTag);
   if (commits.length === 0) {
     return;
