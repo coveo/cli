@@ -1,0 +1,48 @@
+diff --git a/node_modules/@oclif/core/lib/config/ts-node.js b/node_modules/@oclif/core/lib/config/ts-node.js
+index 8678438..29327cc 100644
+--- a/node_modules/@oclif/core/lib/config/ts-node.js
++++ b/node_modules/@oclif/core/lib/config/ts-node.js
+@@ -9,7 +9,7 @@ const util_2 = require("./util");
+ // eslint-disable-next-line new-cap
+ const debug = (0, util_2.Debug)('ts-node');
+ function loadTSConfig(root) {
+-    const tsconfigPath = path.join(root, 'tsconfig.json');
++    const tsconfigPath = process.env.TS_NODE_PROJECT ||path.join(root, 'tsconfig.json');
+     let typescript;
+     try {
+         typescript = require('typescript');
+@@ -21,12 +21,17 @@ function loadTSConfig(root) {
+         catch { }
+     }
+     if (fs.existsSync(tsconfigPath) && typescript) {
+-        const tsconfig = typescript.parseConfigFileTextToJson(tsconfigPath, fs.readFileSync(tsconfigPath, 'utf8')).config;
+-        if (!tsconfig || !tsconfig.compilerOptions) {
++        const configFile = typescript.readConfigFile(tsconfigPath, typescript.sys.readFile);
++        const compilerOptions = typescript.parseJsonConfigFileContent(
++            configFile.config,
++            typescript.sys,
++            path.join(tsconfigPath,'..')
++        ).options;
++        if (!compilerOptions) {
+             throw new Error(`Could not read and parse tsconfig.json at ${tsconfigPath}, or it ` +
+                 'did not contain a "compilerOptions" section.');
+         }
+-        return tsconfig;
++        return {compilerOptions};
+     }
+ }
+ function tsPath(root, orig) {
+@@ -49,11 +54,9 @@ function tsPath(root, orig) {
+         if (!rootDirPath || !outDir)
+             return orig;
+         // rewrite path from ./lib/foo to ./src/foo
+-        const lib = path.join(root, outDir); // ./lib
+-        const src = path.join(root, rootDirPath); // ./src
+-        const relative = path.relative(lib, orig); // ./commands
++        const relative = path.relative(outDir, orig); // ./commands
+         // For hooks, it might point to a js file, not a module. Something like "./hooks/myhook.js" which doesn't need the js.
+-        const out = path.join(src, relative).replace(/\.js$/, ''); // ./src/commands
++        const out = path.join(rootDirPath, relative).replace(/\.js$/, ''); // ./src/commands
+         // this can be a directory of commands or point to a hook file
+         // if it's a directory, we check if the path exists. If so, return the path to the directory.
+         // For hooks, it might point to a module, not a file. Something like "./hooks/myhook"

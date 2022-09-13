@@ -1,7 +1,10 @@
 import {CliUx, Command, Flags} from '@oclif/core';
 import {Config} from '@coveo/cli-commons/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {IsAuthenticated, Preconditions} from '@coveo/cli-commons/preconditions';
+import {
+  IsAuthenticated,
+  Preconditions,
+} from '@coveo/cli-commons/preconditions/index';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {InvalidCommandError} from '../../lib/errors/InvalidCommandError';
 import {ConfigRenderer} from '@coveo/cli-commons/config/configRenderer';

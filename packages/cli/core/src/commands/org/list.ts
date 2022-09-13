@@ -3,8 +3,7 @@ import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClie
 import {
   Preconditions,
   IsAuthenticated,
-} from '@coveo/cli-commons/preconditions/';
-
+} from '@coveo/cli-commons/preconditions/index';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {recordable} from '../../lib/utils/record';
 

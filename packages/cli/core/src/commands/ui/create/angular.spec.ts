@@ -19,12 +19,12 @@ import {Config} from '@coveo/cli-commons/config/config';
 import {
   IsNpmVersionInRange,
   IsNodeVersionInRange,
-} from '../../../lib/decorators/preconditions/';
+} from '../../../lib/decorators/preconditions/index';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {IsNgVersionInRange} from '../../../lib/decorators/preconditions/ng';
 import {configurationMock} from '../../../__stub__/configuration';
 import {mockPreconditions} from '../../../__test__/preconditionUtils';
-import {HasNecessaryCoveoPrivileges} from '@coveo/cli-commons/preconditions';
+import {HasNecessaryCoveoPrivileges} from '@coveo/cli-commons/preconditions/index';
 
 describe('ui:create:angular', () => {
   const mockedConfig = jest.mocked(Config);

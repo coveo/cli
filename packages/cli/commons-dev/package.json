@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli-commons-dev",
-  "version": "1.35.9",
+  "version": "1.35.12",
   "author": "Coveo",
   "description": "Common utils for @coveo/cli plugins development",
   "license": "Apache-2.0",
@@ -16,7 +16,10 @@
     "./.prettierrc": "./.prettierrc.js",
     "./.prettierrc.js": "./.prettierrc.js",
     "./tsconfig.json": "./tsconfig.json",
-    "./*": "./lib/*"
+    "./*": {
+      "types": "./lib/*.d.ts",
+      "default": "./lib/*.js"
+    }
   },
   "dependencies": {
     "fancy-test": "2.0.0",
@@ -29,7 +32,6 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "prepublish": "npm run build",
-    "npm:publish:template": "npm publish --access public --registry http://localhost:4873",
     "release:phase2": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase2-bump-all-packages.mjs"
   },
   "publishConfig": {

@@ -14,10 +14,22 @@ index 8903363..db27b9e 100644
          };
          const arches = _.uniq(buildConfig.targets
 diff --git a/node_modules/oclif/lib/tarballs/build.js b/node_modules/oclif/lib/tarballs/build.js
-index ffbbd21..60c02ae 100644
+index ffbbd21..4f506cf 100644
 --- a/node_modules/oclif/lib/tarballs/build.js
 +++ b/node_modules/oclif/lib/tarballs/build.js
-@@ -48,16 +48,16 @@ async function build(c, options = {}) {
+@@ -4,9 +4,11 @@ exports.build = void 0;
+ const findYarnWorkspaceRoot = require("find-yarn-workspace-root");
+ const path = require("path");
+ const qq = require("qqjs");
++const fs = require("fs")
+ const log_1 = require("../log");
+ const bin_1 = require("./bin");
+ const node_1 = require("./node");
++const Arborist = require('@npmcli/arborist');
+ const upload_util_1 = require("../upload-util");
+ const pack = async (from, to) => {
+     const prevCwd = qq.cwd();
+@@ -48,18 +50,28 @@ async function build(c, options = {}) {
      };
      const addDependencies = async () => {
          qq.cd(c.workspace());
@@ -32,10 +44,23 @@ index ffbbd21..60c02ae 100644
          }
          else {
 -            let lockpath = qq.join(c.root, 'package-lock.json');
-+            let lockpath = qq.join(workspaceRoot, 'package-lock.json');
-             if (!await qq.exists(lockpath)) {
+-            if (!await qq.exists(lockpath)) {
 -                lockpath = qq.join(c.root, 'npm-shrinkwrap.json');
-+                lockpath = qq.join(workspaceRoot, 'npm-shrinkwrap.json');
++            let lockpath = qq.join(workspaceRoot, 'package-lock.json');
++            if (!(await qq.exists(lockpath))) {
++              lockpath = qq.join(workspaceRoot, 'npm-shrinkwrap.json');
              }
              await qq.cp(lockpath, '.');
++            const arb = new Arborist();
++            await arb.loadVirtual();
++            await arb.buildIdealTree({
++              update: {
++                names: Array.from(arb.virtualTree.fsChildren)
++                  .filter((node) => !node.dev && node !== arb.virtualTree.root)
++                  .map((node) => node.packageName),
++              }
++            });
++            await arb.reify();
              await qq.x('npm install --production');
+         }
+     };
