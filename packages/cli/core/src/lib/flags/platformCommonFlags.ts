@@ -9,7 +9,7 @@ import {
 export const withRegion = (withDefault = true) => ({
   region: Flags.string({
     char: 'r',
-    options: Object.entries(Region).flatMap(regionEntry=>regionEntry),
+    options: Object.entries(Region).flatMap((regionEntry) => regionEntry),
     parse: (input) => Promise.resolve(input.toLowerCase()),
     default: withDefault ? DEFAULT_REGION : undefined,
     description:

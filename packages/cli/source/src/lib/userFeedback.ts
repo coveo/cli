@@ -1,13 +1,7 @@
 import {Command} from '@oclif/core';
 import {green} from 'chalk';
-import {validate} from 'jsonschema';
 import dedent from 'ts-dedent';
-import {
-  APIError,
-  AxiosErrorFromAPI,
-  AxiosErrorFromAPISchema,
-} from '@coveo/cli-commons/errors/apiError';
-import {UnknownError} from '@coveo/cli-commons/errors/unknownError';
+import {wrapError} from '@coveo/cli-commons/errors/wrapError';
 
 export interface AxiosResponse {
   status: number;
@@ -35,9 +29,9 @@ export const errorMessage = (
   e: unknown,
   options = {exit: false}
 ) => {
-  const error = isErrorFromAPI(e)
-    ? new APIError(e, tagLine)
-    : new UnknownError(e);
+  const error = wrapError(e);
+  error.message = dedent`${tagLine}
+  ${error.message}`;
 
   if (options.exit) {
     throw error;
@@ -45,7 +39,3 @@ export const errorMessage = (
     cmd.warn(error.message);
   }
 };
-
-function isErrorFromAPI(error: unknown): error is AxiosErrorFromAPI {
-  return validate(error, AxiosErrorFromAPISchema).valid;
-}
