@@ -15,7 +15,7 @@ export interface CLIBaseErrorInterface {
 interface OClifCLIError extends Omit<CLIError, 'render'> {}
 
 export class CLIBaseError extends Error implements OClifCLIError {
-  private static defaultSeverity: SeverityLevel = SeverityLevel.Error;
+  private static readonly defaultSeverity: SeverityLevel = SeverityLevel.Error;
   public name = 'CLI Error';
 
   public constructor(
