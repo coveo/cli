@@ -14,6 +14,12 @@ jobs:
     environment: 'Release'
     env:
       GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
+      MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+      MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+      MACOS_KEYCHAIN_PWD: ${{ secrets.MACOS_KEYCHAIN_PWD }}
+      MACOS_APP_USERNAME: ${{ secrets.MACOS_APP_USERNAME }}
+      MACOS_APP_SPECIFIC_PWD: ${{ secrets.MACOS_APP_SPECIFIC_PWD }}
+      MACOS_WWDR_TEAM_ID: ${{ secrets.MACOS_WWDR_TEAM_ID }}
     name: Package for ${{ matrix.for }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -53,6 +59,7 @@ jobs:
       - name: Setup Temporary Keychain
         if: ${{matrix.os == 'macos-latest'}}
         run: |
+          # TODO: put in script file
           echo ${{ secrets.MACOS_CERTIFICATE }} | base64 --decode > certificate.p12
 
           echo "Creating temporary keychain"
@@ -78,12 +85,15 @@ jobs:
         working-directory: ./packages/cli/core/dist/macos
         if: ${{matrix.os == 'macos-latest'}}
         run: |
-          productsign --sign "Developer ID Installer: Coveo Solutions Inc." coveo-${{env.tag}}-${{env.commitSHA1}}.pkg coveo-${{env.tag}}-${{env.commitSHA1}}-signed.pkg // TODO: check if I can use the same name for input and output
+          productsign --sign "Developer ID Installer: Coveo Solutions Inc." coveo-${{env.tag}}-${{env.commitSHA1}}.pkg coveo-${{env.tag}}-${{env.commitSHA1}}-signed.pkg 
+          // TODO: delete unsigned package
+          // TODO: rename signed package
       - name: Notarize Executable (macOS)
         working-directory: ./packages/cli/core/dist/macos
         # TODO: run for both mac os architectures
         if: ${{matrix.os == 'macos-latest'}}
         run: |
+          # TODO: put in script file
           echo "Create keychain profile"
           xcrun notarytool store-credentials "notarytool-profile" --apple-id "${{ secrets.MACOS_APP_USERNAME }}" --team-id "${{ secrets.MACOS_WWDR_TEAM_ID }}" --password "${{ secrets.MACOS_APP_SPECIFIC_PWD }}"
 
