@@ -33,7 +33,8 @@ export abstract class CLICommand extends Command {
 
   protected async finally(err: Error | undefined) {
     try {
-      stopSpinner(err);
+      const success = !(err instanceof Error);
+      stopSpinner({success});
     } catch {}
 
     return super.finally(err);

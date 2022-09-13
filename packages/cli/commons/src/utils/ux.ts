@@ -8,9 +8,12 @@ export function starSpinner(task: string) {
   CliUx.ux.action.start(task);
 }
 
-export function stopSpinner(err?: Error) {
-  const message = err instanceof Error && err.message ? err.message : '';
-  if (CliUx.ux.action.running) {
-    CliUx.ux.action.stop(err ? red.bold('!') + ` ${message}` : green('✔'));
+export function stopSpinner(options?: {success?: boolean; message?: string}) {
+  if (!CliUx.ux.action.running) {
+    return;
   }
+  const defaultOptions = {success: true, message: ''};
+  const {success, message} = {...defaultOptions, ...options};
+  const symbol = success ? green('✔') : red.bold('!');
+  CliUx.ux.action.stop(`${symbol} ${message}`.trimEnd());
 }
