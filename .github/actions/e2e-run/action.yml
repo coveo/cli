@@ -42,10 +42,6 @@ runs:
     - name: Install Mitmproxy through pip
       shell: bash
       run: pip install -r packages/cli-e2e/mitmproxy/requirements.txt
-    - name: Install locked NPM version.
-      shell: bash
-      # TODO: CDX-1010 | Remove in CDX-1010.
-      run: npm i -g npm@8.10.0
     - name: Decrypt config
       shell: bash
       working-directory: packages/cli-e2e

@@ -36,9 +36,7 @@ jobs:
         with:
           node-version: 16
           cache: 'npm'
-      - name: Install locked NPM version.
-        # TODO: CDX-1010 | Remove in CDX-1010.
-        run: npm i -g npm@8.10.0
+
       - name: Setup repo
         run: npm ci
       - name: Check linting
@@ -66,9 +64,6 @@ jobs:
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
-      - name: Install locked NPM version.
-        # TODO: CDX-1010 | Remove in CDX-1010.
-        run: npm i -g npm@8.10.0
       - name: Setup repo
         run: npm ci
       - name: Build
@@ -89,9 +84,6 @@ jobs:
         with:
           node-version: ${{matrix.node}}
           cache: 'npm'
-      - name: Install locked NPM version.
-        # TODO: CDX-1010 | Remove in CDX-1010.
-        run: npm i -g npm@8.10.0
       - uses: ./.github/actions/e2e-login
         id: setup
   e2e-setup-verdaccio:
@@ -126,9 +118,6 @@ jobs:
         with:
           path: packages\cli-e2e\verdaccio
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-      - name: Install locked NPM version.
-        # TODO: CDX-1010 | Remove in CDX-1010.
-        run: npm i -g npm@8.10.0
       - run: npm ci
       - name: Build
         run: npm run build
