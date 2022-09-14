@@ -1,53 +1,53 @@
-import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {stderr} from 'stdout-stderr';
 import {startSpinner, stopSpinner} from './ux';
 
 describe('ux', () => {
   describe('when spinner is ended with no argument', () => {
-    beforeEach(() => {
+    it('should stop running task without error', () => {
       stderr.start();
       startSpinner('starting a process');
-    });
-
-    fancyIt()('should stop running task without error', async (ctx) => {
       stopSpinner();
       stderr.stop();
-      expect(ctx.stderr).toContain('starting a process... ✔');
+      expect(stderr.output).toContain('starting a process... ✔');
     });
 
-    fancyIt()(
-      'should print new task after ending previous task',
-      async (ctx) => {
-        startSpinner('installing stuff');
-        stopSpinner();
-        stderr.stop();
-        expect(ctx.stderr).toContain('starting a process... ✔');
-        expect(ctx.stderr).toContain('installing stuff... ✔');
-      }
-    );
+    it('should print new task after ending previous task', () => {
+      stderr.start();
+      startSpinner('starting a process');
+      startSpinner('installing stuff');
+      stopSpinner();
+      stderr.stop();
+      expect(stderr.output).toContain('starting a process... ✔');
+      expect(stderr.output).toContain('installing stuff... ✔');
+    });
   });
 
   describe('when spinner is ended with an argument', () => {
-    beforeEach(() => {
+    it('should stop running task with the error', () => {
       stderr.start();
       startSpinner('starting a process');
-    });
-
-    fancyIt()('should stop running task with the error', async (ctx) => {
       stopSpinner({success: false, message: 'AARRRGgggh 😱'});
       stderr.stop();
-      expect(ctx.stderr).toContain('starting a process... ! AARRRGgggh 😱');
+      expect(stderr.output).toContain('starting a process... ! AARRRGgggh 😱');
+    });
+
+    it('should stop running task with a success', () => {
+      stderr.start();
+      startSpinner('starting a process');
+      stopSpinner({success: true, message: 'YEAHH 😀'});
+      stderr.stop();
+      expect(stderr.output).toContain('starting a process... ✔ YEAHH 😀');
     });
   });
 
   describe('when no spinner is running', () => {
-    fancyIt()('should not print anything', async (ctx) => {
+    it('should not print anything', () => {
       stderr.start();
       stopSpinner();
       stopSpinner();
       stopSpinner();
       stderr.stop();
-      expect(ctx.stderr).toBe('');
+      expect(stderr.output).toBe('');
     });
   });
 });
