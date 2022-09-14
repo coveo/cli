@@ -1,4 +1,5 @@
-import {Command, Flags} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
+import {Flags} from '@oclif/core';
 import {Config} from '@coveo/cli-commons/config/config';
 import {OAuth} from '../../lib/oauth/oauth';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
@@ -7,7 +8,7 @@ import {Region} from '@coveord/platform-client';
 import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 
-export default class Login extends Command {
+export default class Login extends CLICommand {
   private configuration!: Config;
   public static description =
     'Log in to the Coveo Platform using the OAuth2 flow.';
@@ -33,11 +34,6 @@ export default class Login extends Command {
     await this.verifyOrganization();
     await this.persistOrganization();
     this.feedbackOnSuccessfulLogin();
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 
   private feedbackOnSuccessfulLogin() {

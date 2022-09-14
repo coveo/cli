@@ -1,19 +1,16 @@
-import {PrintableError, SeverityLevel} from './printableError';
+import {CLIBaseError, SeverityLevel} from './cliBaseError';
 
 export interface PreconditionErrorOptions {
   category?: string;
   level?: SeverityLevel;
 }
 
-export class PreconditionError extends PrintableError {
-  public constructor(
-    public message: string,
-    public options?: PreconditionErrorOptions
-  ) {
-    super(options?.level || SeverityLevel.Error);
+export class PreconditionError extends CLIBaseError {
+  public constructor(message: string, options?: PreconditionErrorOptions) {
+    super(message, options);
     this.name = 'Precondition Error';
-    if (this.options?.category) {
-      this.name += ` - ${this.options?.category}`;
+    if (options?.category) {
+      this.name += ` - ${options?.category}`;
     }
   }
 }

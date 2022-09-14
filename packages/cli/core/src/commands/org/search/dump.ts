@@ -1,4 +1,5 @@
-import {Command, Flags, CliUx} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
+import {Flags, CliUx} from '@oclif/core';
 import {readJSONSync, writeFile, writeJSONSync} from 'fs-extra';
 import {Parser} from 'json2csv';
 import {SingleBar} from 'cli-progress';
@@ -40,7 +41,7 @@ interface FetchParameters {
   pipeline: string | undefined;
 }
 
-export default class Dump extends Command {
+export default class Dump extends CLICommand {
   private static readonly DefaultNumberOfResultPerQuery = 1000;
   private static mandatoryFields = ['rowid', 'sysrowid'];
 
@@ -136,10 +137,9 @@ export default class Dump extends Command {
     }
   }
 
-  @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
     this.progressBar?.stop();
-    throw err;
+    return super.catch(err);
   }
 
   private async convertRawChunksToCSVs() {
