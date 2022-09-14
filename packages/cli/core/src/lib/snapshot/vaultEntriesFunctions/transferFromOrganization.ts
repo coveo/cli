@@ -75,7 +75,7 @@ export async function tryTransferFromOrganization({
     stopSpinner();
     return true;
   } catch (error) {
-    stopSpinner(error);
+    stopSpinner({success: false});
     CliUx.ux.warn('Error encountered while transfering vault entries`');
     CliUx.ux.warn(typeof error === 'string' ? error : JSON.stringify(error));
     return false;

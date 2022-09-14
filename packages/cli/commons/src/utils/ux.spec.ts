@@ -27,21 +27,18 @@ describe('ux', () => {
     );
   });
 
-  describe.each([new Error('AARRRGgggh 😱'), 'AARRRGgggh 😱'])(
-    'when spinner is ended with an argument',
-    (message) => {
-      beforeEach(() => {
-        stderr.start();
-        startSpinner('starting a process');
-      });
+  describe('when spinner is ended with an argument', () => {
+    beforeEach(() => {
+      stderr.start();
+      startSpinner('starting a process');
+    });
 
-      fancyIt()('should stop running task with the error', async (ctx) => {
-        stopSpinner(message);
-        stderr.stop();
-        expect(ctx.stderr).toContain('starting a process... ! AARRRGgggh 😱');
-      });
-    }
-  );
+    fancyIt()('should stop running task with the error', async (ctx) => {
+      stopSpinner({success: false, message: 'AARRRGgggh 😱'});
+      stderr.stop();
+      expect(ctx.stderr).toContain('starting a process... ! AARRRGgggh 😱');
+    });
+  });
 
   describe('when no spinner is running', () => {
     fancyIt()('should not print anything', async (ctx) => {
