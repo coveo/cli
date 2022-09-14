@@ -1,4 +1,4 @@
-name: Signing test
+name: CI
 
 # on:
 #   release:
