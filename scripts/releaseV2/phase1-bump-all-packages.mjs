@@ -107,7 +107,7 @@ async function updateWorkspaceDependent(version) {
     const dependentPackageJson = JSON.parse(
       readFileSync(dependentPackageJsonPath, {encoding: 'utf-8'})
     );
-    updateDependency(dependentPackageJson, dependencyPackageName, version);
+    updateDependency(dependentPackageJson, dependencyPackageJson.name, version);
     writeFileSync(
       dependentPackageJsonPath,
       JSON.stringify(dependentPackageJson)
