@@ -1,5 +1,5 @@
 import type {ResourceSnapshotType} from '@coveord/platform-client';
-import {Flags, Command, CliUx} from '@oclif/core';
+import {Flags, CliUx} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {readJsonSync} from 'fs-extra';
 import {resolve} from 'path';
@@ -32,13 +32,13 @@ import {validateSnapshotPullModel} from '../../../lib/snapshot/pullModel/validat
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {
   getTargetOrg,
-  handleSnapshotError,
   cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
 import {allowedResourceType} from '../../../lib/snapshot/snapshotConstant';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 
 const PullCommandStrings = {
   projectOverwriteQuestion: (
@@ -54,7 +54,7 @@ const PullCommandStrings = {
         `,
 };
 
-export default class Pull extends Command {
+export default class Pull extends CLICommand {
   public static description = 'Pull resources from an organization';
 
   public static flags = {
@@ -128,20 +128,20 @@ export default class Pull extends Command {
     return !(await this.parse(Pull)).flags.snapshotId;
   }
 
-  @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
     cleanupProject(this.projectPath);
-    handleSnapshotError(err);
-    await this.displayAdditionalErrorMessage(err);
+    await this.supplementErrorMessage(err);
+    return super.catch(err);
   }
 
-  private async displayAdditionalErrorMessage(
-    err?: Error & {exitCode?: number}
-  ) {
+  private async supplementErrorMessage(err?: Error & {exitCode?: number}) {
     if (err instanceof SnapshotOperationTimeoutError) {
       const snapshot = err.snapshot;
       const target = await this.getTargetOrg();
-      this.log(PullCommandStrings.howToPullAfterTimeout(target, snapshot.id));
+      err.message += PullCommandStrings.howToPullAfterTimeout(
+        target,
+        snapshot.id
+      );
     }
   }
 

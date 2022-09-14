@@ -17,7 +17,7 @@
     "@coveo/cli-commons": "1.35.12",
     "@coveo/push-api-client": "2.5.8",
     "@coveord/platform-client": "34.7.0",
-    "@oclif/core": "1.14.2",
+    "@oclif/core": "1.16.1",
     "@oclif/plugin-help": "5.1.12",
     "@oclif/plugin-plugins": "2.1.0",
     "chalk": "4.1.2",

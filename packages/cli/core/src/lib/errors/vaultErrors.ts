@@ -1,15 +1,11 @@
 import dedent from 'ts-dedent';
 import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/utils/string';
-import {
-  PrintableError,
-  SeverityLevel,
-} from '@coveo/cli-commons/errors/printableError';
 import {CLIBaseError} from '@coveo/cli-commons/errors/cliBaseError';
 
-export class InvalidVaultEntryError extends PrintableError {
+export class InvalidVaultEntryError extends CLIBaseError {
   public name = 'Invalid Vault Entries';
   public constructor(public organizationId: string, public vaultEntry: string) {
-    super(SeverityLevel.Error);
+    super();
     this.message = dedent`Cannot create vault entry ${vaultEntry} in your organization ${organizationId}.
     Visit https://docs.coveo.com/en/m3a90243 for more info on how to create vault entries.`;
   }

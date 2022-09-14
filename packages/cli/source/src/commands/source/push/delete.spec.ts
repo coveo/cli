@@ -60,7 +60,7 @@ describe('source:push:delete', () => {
     .stdout()
     .stderr()
     .command(['source:push:delete', 'mysource', '-x', 'foo', '-d', 'bar'])
-    .catch(/--delete= cannot also be provided when using --deleteOlderThan=/)
+    .catch(/--delete=foo cannot also be provided when using --deleteOlderThan/)
     .it(
       'throws when incompatible flags for olderThan and documentUri are passed'
     );

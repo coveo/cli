@@ -1,6 +1,8 @@
-import type {Command} from '@oclif/core';
+import {Command} from '@oclif/core';
 import {flush} from '../analytics/amplitudeClient';
-import {buildError, buildEvent} from '../analytics/eventUtils';
+import {buildEvent} from '../analytics/eventUtils';
+import {CLIBaseError} from '../errors/cliBaseError';
+import {wrapError} from '../errors/wrapError';
 
 export interface TrackableOptions {
   /**
@@ -23,6 +25,9 @@ export interface TrackableOptions {
   overrideEventProperties?: Record<string, unknown>;
 }
 
+/**
+ * Use this decorator on a `run()` method from a class inheriting from {@link Command} to track the command usage.
+ */
 export function Trackable({
   eventName,
   overrideEventProperties,
@@ -30,7 +35,7 @@ export function Trackable({
   return function (
     _target: Command,
     _propertyKey: string,
-    descriptor: TypedPropertyDescriptor<() => Promise<void>>
+    descriptor: PropertyDescriptor
   ) {
     const originalCommand = descriptor.value!;
     descriptor.value = async function (this: Command, ...cmdArgs: unknown[]) {
@@ -40,11 +45,9 @@ export function Trackable({
         command: this.id,
       };
 
-      if (cmdArgs.length > 0) {
-        await trackError.call(this, properties, originalCommand, cmdArgs);
-      } else {
-        await trackCommand.call(this, name, properties, originalCommand);
-      }
+      return cmdArgs.length > 0
+        ? trackError.call(this, properties, originalCommand, cmdArgs)
+        : trackCommand.call(this, name, properties, originalCommand);
     };
   };
 }
@@ -53,36 +56,38 @@ async function trackCommand(
   this: Command,
   eventName: string,
   properties: Record<string, unknown>,
-  originalRunCommand: () => Promise<void>
+  originalRunCommand: any
 ) {
   await this.config.runHook('analytics', {
     event: buildEvent(`started ${eventName}`, properties),
     identify: true,
   });
 
-  await originalRunCommand.apply(this);
+  const commandResult = await originalRunCommand.apply(this);
 
   await this.config.runHook('analytics', {
     event: buildEvent(`completed ${eventName}`, properties),
   });
+
+  return commandResult;
 }
 
 async function trackError(
   this: Command,
   properties: Record<string, unknown>,
-  originalCatchCommand: (...args: unknown[]) => Promise<void>,
+  originalCatchCommand: (...args: unknown[]) => Promise<CLIBaseError>,
   args: unknown[]
-) {
+): Promise<CLIBaseError> {
   for (const arg of args) {
     await this.config.runHook('analytics', {
-      event: buildEvent('received error', properties, buildError(arg)),
+      event: buildEvent('received error', properties, wrapError(arg)),
     });
   }
 
   await flush();
-  await originalCatchCommand.apply(this, args);
+  return originalCatchCommand.apply(this, args);
 }
 
-function getEventName(target: Command) {
-  return target.id!.replace(/:/g, ' ');
+function getEventName(target: Command): string {
+  return target.id?.replace(/:/g, ' ') || '';
 }

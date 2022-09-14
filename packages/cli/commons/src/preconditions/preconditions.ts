@@ -9,14 +9,14 @@ export function Preconditions(...preconditions: PreconditionFunction[]) {
   return function (
     target: Command,
     _propertyKey: string,
-    descriptor: TypedPropertyDescriptor<() => Promise<void>>
+    descriptor: PropertyDescriptor
   ) {
     const originalRunCommand = descriptor.value!;
     descriptor.value = async function (this: Command) {
       for (const precondition of preconditions) {
         await precondition.call(this, target);
       }
-      await originalRunCommand.apply(this);
+      return originalRunCommand.apply(this);
     };
   };
 }
