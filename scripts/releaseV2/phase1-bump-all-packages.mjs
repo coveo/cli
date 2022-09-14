@@ -38,7 +38,9 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
   const currentVersion = getCurrentVersion(PATH);
   const newVersion = getNextVersion(currentVersion, bumpInfo);
 
-  await npmBumpVersion(newVersion, PATH);
+  await npmBumpVersion(newVersion, PATH, {
+    workspaceUpdateStrategy: 'UpdateExact',
+  });
   await updateWorkspaceDependent(newVersion);
   if (isPrivatePackage()) {
     return;
