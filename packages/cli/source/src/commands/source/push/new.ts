@@ -6,7 +6,7 @@ import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
-} from '@coveo/cli-commons/preconditions';
+} from '@coveo/cli-commons/preconditions/index';
 import {writeSourceContentPrivilege} from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {withSourceVisibility} from '../../../lib/commonFlags';

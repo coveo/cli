@@ -8,18 +8,12 @@ export function startSpinner(task: string, status?: string) {
   CliUx.ux.action.start(task, status);
 }
 
-export function stopSpinner(err?: unknown) {
-  const defaultErrorMessage = null;
-  const isString = (e?: unknown): e is string => typeof e === 'string';
-  const isError = (e?: unknown): e is Error => e instanceof Error;
-
-  const message = isString(err)
-    ? err
-    : isError(err) && err.message
-    ? err.message
-    : defaultErrorMessage;
-
-  if (CliUx.ux.action.running) {
-    CliUx.ux.action.stop(message ? red.bold('!') + ` ${message}` : green('✔'));
+export function stopSpinner(options?: {success?: boolean; message?: string}) {
+  if (!CliUx.ux.action.running) {
+    return;
   }
+  const defaultOptions = {success: true, message: ''};
+  const {success, message} = {...defaultOptions, ...options};
+  const symbol = success ? green('✔') : red.bold('!');
+  CliUx.ux.action.stop(`${symbol} ${message}`.trimEnd());
 }

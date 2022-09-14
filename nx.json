@@ -10,6 +10,16 @@
   "targetDependencies": {
     "release:phase2": [{"target": "release:phase2", "projects": "dependencies"}]
   },
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [
+        "{projectRoot}/lib",
+        "{projectRoot}/dist",
+        "{projectRoot}/tsconfig.build.tsbuildinfo"
+      ]
+    }
+  },
   "tasksRunnerOptions": {
     "default": {
       "runner": "@nrwl/workspace/tasks-runners/default",

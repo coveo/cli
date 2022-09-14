@@ -12,8 +12,10 @@ export interface CLIBaseErrorInterface {
   cause?: Error;
 }
 
-export class CLIBaseError extends Error {
-  private static defaultSeverity: SeverityLevel = SeverityLevel.Error;
+interface OClifCLIError extends Omit<CLIError, 'render' | 'bang' | 'oclif'> {}
+
+export class CLIBaseError extends Error implements OClifCLIError {
+  private static readonly defaultSeverity: SeverityLevel = SeverityLevel.Error;
   public name = 'CLI Error';
 
   public constructor(
@@ -23,34 +25,41 @@ export class CLIBaseError extends Error {
     super(error instanceof Error ? error.message : error, options);
   }
 
-  public get oclif() {
-    return this.error instanceof CLIError ? this.error.oclif : {};
+  public get stack(): string {
+    return super.stack || '';
   }
 
   public get severityLevel(): SeverityLevel {
     return this.options?.level || CLIBaseError.defaultSeverity;
   }
 
-  public get bang() {
+  /**
+   * Specific to internal oclif error handling
+   */
+  private get oclif() {
+    return this.error instanceof CLIError ? this.error.oclif : {};
+  }
+
+  /**
+   * Used by oclif to pretty print the error
+   */
+  private get bang() {
     let color: Chalk;
 
     switch (this.severityLevel) {
-      case SeverityLevel.Error:
-        color = red;
+      case SeverityLevel.Info:
+        color = cyan;
         break;
 
       case SeverityLevel.Warn:
         color = yellow;
         break;
 
-      case SeverityLevel.Info:
-        color = cyan;
-        break;
-
+      case SeverityLevel.Error:
       default:
         color = red;
         break;
     }
-    return color(process.platform === 'win32' ? '»' : '›');
+    return color('»');
   }
 }
