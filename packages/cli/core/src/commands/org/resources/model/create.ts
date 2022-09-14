@@ -1,4 +1,4 @@
-import {Command} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {
   IsAuthenticated,
   Preconditions,
@@ -9,7 +9,7 @@ import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClie
 import {createSnapshotUrl} from '@coveo/cli-commons/platform/url';
 import dedent from 'ts-dedent';
 
-export default class Create extends Command {
+export default class Create extends CLICommand {
   public static description = 'Create a Snapshot Pull Model';
 
   @Trackable({eventName: 'org resources pull - new model'})
@@ -32,10 +32,5 @@ export default class Create extends Command {
       environment: cfg.environment,
       region: cfg.region,
     });
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 }

@@ -1,9 +1,9 @@
-import {Command} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Config} from '@coveo/cli-commons/config/config';
 import {ConfigRenderer} from '@coveo/cli-commons/config/configRenderer';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 
-export default class Get extends Command {
+export default class Get extends CLICommand {
   public static description = 'Display the current configuration.';
 
   public static args = [
@@ -26,10 +26,5 @@ export default class Get extends Command {
     const cfg = new Config(this.config.configDir);
     const keysToRender = args.key ? [args.key] : undefined;
     ConfigRenderer.render(cfg, keysToRender);
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 }

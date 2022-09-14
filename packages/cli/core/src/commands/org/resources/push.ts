@@ -1,4 +1,5 @@
-import {Flags, Command, CliUx} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
+import {Flags, CliUx} from '@oclif/core';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
@@ -33,7 +34,7 @@ import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 
-export default class Push extends Command {
+export default class Push extends CLICommand {
   public static description =
     'Preview, validate and deploy your changes to the destination org';
 
@@ -89,10 +90,9 @@ export default class Push extends Command {
     await this.cleanup(snapshot, project);
   }
 
-  @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
     cleanupProject(this.projectPath);
-    throw err;
+    return super.catch(err);
   }
 
   private async shouldSkipPreview() {

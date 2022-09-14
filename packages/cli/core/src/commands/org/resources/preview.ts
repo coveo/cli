@@ -1,4 +1,5 @@
-import {Command, Flags} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
+import {Flags} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
@@ -33,7 +34,7 @@ import {
   getMissingVaultEntriesReportHandler,
   getErrorReportHandler,
 } from '../../../lib/snapshot/snapshotCommon';
-export default class Preview extends Command {
+export default class Preview extends CLICommand {
   public static description = 'Preview resource updates';
 
   public static flags = {
@@ -84,10 +85,10 @@ export default class Preview extends Command {
     await this.cleanup(snapshot, project);
   }
 
-  @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
     cleanupProject(this.projectPath);
-    await this.displayAdditionalErrorMessage(err);
+    await this.supplementErrorMessage(err);
+    return super.catch(err);
   }
 
   private async shouldDisplayExpandedPreview() {
@@ -105,9 +106,7 @@ export default class Preview extends Command {
     project.deleteTemporaryZipFile();
   }
 
-  private async displayAdditionalErrorMessage(
-    err?: Error & {exitCode?: number}
-  ) {
+  private async supplementErrorMessage(err?: Error & {exitCode?: number}) {
     if (err instanceof SnapshotOperationTimeoutError) {
       const {flags} = await this.parse(Preview);
       const snapshot = err.snapshot;

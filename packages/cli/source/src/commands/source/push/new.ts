@@ -1,5 +1,5 @@
 import {SourceType} from '@coveord/platform-client';
-import {Command} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {green} from 'chalk';
 import dedent from 'ts-dedent';
 import {
@@ -12,7 +12,7 @@ import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {withSourceVisibility} from '../../../lib/commonFlags';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 
-export default class SourcePushNew extends Command {
+export default class SourcePushNew extends CLICommand {
   public static description =
     'Create a new push source in a Coveo organization';
 
@@ -53,10 +53,5 @@ export default class SourcePushNew extends Command {
         )
       )
     );
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 }
