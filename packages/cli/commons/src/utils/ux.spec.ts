@@ -1,53 +1,68 @@
+import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
+import {CliUx} from '@oclif/core';
 import {stderr} from 'stdout-stderr';
 import {startSpinner, stopSpinner} from './ux';
 
+const consumeFirstStderrStream = () => {
+  stderr.start();
+  CliUx.ux.action.start('test');
+  CliUx.ux.action.stop();
+  stderr.stop();
+};
+
 describe('ux', () => {
   describe('when spinner is ended with no argument', () => {
-    it('should stop running task without error', () => {
-      stderr.start();
-      startSpinner('starting a process');
-      stopSpinner();
-      stderr.stop();
-      expect(stderr.output).toContain('starting a process... ✔');
+    beforeAll(() => {
+      // FIXME: Seems like a bug in Oclif/core. It mocks process.stderr.write only after the first stream get's written
+      consumeFirstStderrStream();
     });
 
-    it('should print new task after ending previous task', () => {
-      stderr.start();
+    fancyIt()('no spinner should be running', () => {
+      expect(CliUx.ux.action.running).toBe(false);
+    });
+
+    fancyIt()('should start a spinner instance', () => {
+      startSpinner('something');
+      expect(CliUx.ux.action.running).toBe(true);
+      stopSpinner();
+      expect(CliUx.ux.action.running).toBe(false);
+    });
+
+    fancyIt()('should stop running task without error', (ctx) => {
       startSpinner('starting a process');
+      stopSpinner();
+      expect(ctx.stderr).toContain('starting a process... ✔');
+    });
+
+    fancyIt()('should print new task after ending previous task', (ctx) => {
+      startSpinner('starting the car');
       startSpinner('installing stuff');
       stopSpinner();
-      stderr.stop();
-      expect(stderr.output).toContain('starting a process... ✔');
-      expect(stderr.output).toContain('installing stuff... ✔');
+      expect(ctx.stderr).toContain('starting the car... ✔');
+      expect(ctx.stderr).toContain('installing stuff... ✔');
     });
   });
 
   describe('when spinner is ended with an argument', () => {
-    it('should stop running task with the error', () => {
-      stderr.start();
-      startSpinner('starting a process');
+    fancyIt()('should stop running task with the error', (ctx) => {
+      startSpinner('doing something');
       stopSpinner({success: false, message: 'AARRRGgggh 😱'});
-      stderr.stop();
-      expect(stderr.output).toContain('starting a process... ! AARRRGgggh 😱');
+      expect(ctx.stderr).toContain('doing something... ! AARRRGgggh 😱');
     });
 
-    it('should stop running task with a success', () => {
-      stderr.start();
-      startSpinner('starting a process');
+    fancyIt()('should stop running task with a success', (ctx) => {
+      startSpinner('playing a game');
       stopSpinner({success: true, message: 'YEAHH 😀'});
-      stderr.stop();
-      expect(stderr.output).toContain('starting a process... ✔ YEAHH 😀');
+      expect(ctx.stderr).toContain('playing a game... ✔ YEAHH 😀');
     });
   });
 
   describe('when no spinner is running', () => {
-    it('should not print anything', () => {
-      stderr.start();
+    fancyIt()('should not print anything', (ctx) => {
       stopSpinner();
       stopSpinner();
       stopSpinner();
-      stderr.stop();
-      expect(stderr.output).toBe('');
+      expect(ctx.stderr).toBe('');
     });
   });
 });
