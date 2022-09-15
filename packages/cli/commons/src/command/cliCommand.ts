@@ -31,12 +31,12 @@ export abstract class CLICommand extends Command {
     throw error;
   }
 
-  protected async finally(err: Error | undefined) {
+  protected async finally(err?: unknown) {
     try {
-      const success = !(err instanceof Error);
+      const success = err === undefined;
       stopSpinner({success});
+      const error = wrapError(err);
+      return super.finally(error);
     } catch {}
-
-    return super.finally(err);
   }
 }
