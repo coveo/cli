@@ -7,6 +7,7 @@ const hook: Hook<'init'> = function (opts) {
   globalConfig.set(opts.config);
   process.env[this.config.scopedEnvVarKey('UPDATE_INSTRUCTIONS')] =
     'Use "npm update --global @coveo/cli" to update your npm-based CLI installation.';
+  return Promise.resolve();
 };
 
 export default hook;
