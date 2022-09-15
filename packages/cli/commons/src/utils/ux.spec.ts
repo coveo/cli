@@ -1,7 +1,28 @@
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {CliUx} from '@oclif/core';
 import {stderr} from 'stdout-stderr';
+import {CLICommand} from '../command/cliCommand';
 import {startSpinner, stopSpinner} from './ux';
+
+class FakeCommandNoError extends CLICommand {
+  public async run() {
+    startSpinner('spinniboiii');
+  }
+}
+
+class FakeCommandWithNonStandardError extends CLICommand {
+  public async run() {
+    startSpinner('spinniboiii');
+    throw {random: 'object'};
+  }
+}
+
+class FakeCommandWithError extends CLICommand {
+  public async run() {
+    startSpinner('spinniboiii');
+    throw new Error('no more spinning');
+  }
+}
 
 const consumeFirstStderrStream = () => {
   stderr.start();
@@ -63,6 +84,32 @@ describe('ux', () => {
       stopSpinner();
       stopSpinner();
       expect(ctx.stderr).toBe('');
+    });
+  });
+
+  describe('when spinning within a command context', () => {
+    describe('when the command does not throw errors', () => {
+      it('it should end with a ✔', async () => {
+        stderr.start();
+        await FakeCommandNoError.run();
+        stderr.stop();
+        expect(stderr.output).toMatch('spinniboiii... ✔');
+      });
+    });
+
+    describe('when the command throws any kind of error', () => {
+      it.each([
+        {command: FakeCommandWithError},
+        {command: FakeCommandWithNonStandardError},
+      ])('it should end with a !', async ({command}) => {
+        try {
+          stderr.start();
+          await command.run();
+          stderr.stop();
+        } catch (error) {
+          expect(stderr.output).toMatch('spinniboiii... !');
+        }
+      });
     });
   });
 });
