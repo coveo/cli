@@ -116,7 +116,7 @@ describe('org:resources', () => {
 
     const pullTerminalExitPromise = pullTerminal
       // TODO: CDX-744: understand why cannot use process.on('exit')
-      .when(/✔/)
+      .when(/Updating project with Snapshot.*✔/)
       .on('stderr')
       .do()
       .once();
