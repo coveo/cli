@@ -29,7 +29,7 @@ const mockAuthenticatedClient = () => {
 };
 
 const mockConfigWithDefaultEnvironment = () => {
-  mockedConfig.mockResolvedValue({
+  mockedConfig.mockReturnValue({
     organization: 'my-org',
     environment: DEFAULT_ENVIRONMENT,
     region: DEFAULT_REGION,
@@ -37,7 +37,7 @@ const mockConfigWithDefaultEnvironment = () => {
 };
 
 const mockConfigWithNonDefaultEnvironment = () => {
-  mockedConfig.mockResolvedValue({
+  mockedConfig.mockReturnValue({
     organization: 'my-org',
     environment: PlatformEnvironment.Dev,
     region: Region.EU,

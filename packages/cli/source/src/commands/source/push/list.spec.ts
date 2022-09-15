@@ -18,27 +18,29 @@ const mockListSources = jest
   .fn()
   .mockReturnValue(Promise.resolve({totalEntries: 0, sourceModels: []}));
 
-describe('source:push:list', () => {
-  const createMockSourceModel = (id: string): SourceModel => ({
-    name: `${id}_displayName`,
-    id,
-    owner: 'bob',
-    sourceVisibility: SourceVisibility.SECURED,
-    information: {
-      sourceStatus: {type: SourceStatusType.PUSH_READY},
-      numberOfDocuments: 1234,
-    },
-  });
+const createMockSourceModel = (id: string): SourceModel => ({
+  name: `${id}_displayName`,
+  id,
+  owner: 'bob',
+  sourceVisibility: SourceVisibility.SECURED,
+  information: {
+    sourceStatus: {type: SourceStatusType.PUSH_READY},
+    numberOfDocuments: 1234,
+  },
+});
 
-  mockedAuthenticatedClient.mockImplementation(
-    () =>
-      ({
-        cfg: {
-          get: () => Promise.resolve({organization: 'foo'}),
-        },
-        getClient: () => Promise.resolve({source: {list: mockListSources}}),
-      } as unknown as AuthenticatedClient)
-  );
+describe('source:push:list', () => {
+  beforeAll(() => {
+    mockedAuthenticatedClient.mockImplementation(
+      () =>
+        ({
+          cfg: {
+            get: () => ({organization: 'foo'}),
+          },
+          getClient: () => Promise.resolve({source: {list: mockListSources}}),
+        } as unknown as AuthenticatedClient)
+    );
+  });
 
   test
     .stdout()
