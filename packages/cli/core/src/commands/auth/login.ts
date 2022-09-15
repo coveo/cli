@@ -63,8 +63,8 @@ export default class Login extends CLICommand {
   private async persistRegionAndEnvironment() {
     const {flags} = await this.parse(Login);
     const cfg = this.configuration;
-    await cfg.set('environment', flags.environment as PlatformEnvironment);
-    await cfg.set('region', flags.region as Region);
+    cfg.set('environment', flags.environment as PlatformEnvironment);
+    cfg.set('region', flags.region as Region);
   }
 
   private async persistOrganization() {
@@ -72,13 +72,13 @@ export default class Login extends CLICommand {
     const cfg = this.configuration;
 
     if (flags.organization) {
-      await cfg.set('organization', flags.organization);
+      cfg.set('organization', flags.organization);
       return;
     }
 
     const firstOrgAvailable = await this.pickFirstAvailableOrganization();
     if (firstOrgAvailable) {
-      await cfg.set('organization', firstOrgAvailable as string);
+      cfg.set('organization', firstOrgAvailable as string);
       return;
     }
 

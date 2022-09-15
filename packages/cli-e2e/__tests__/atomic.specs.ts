@@ -290,7 +290,7 @@ describe('ui:create:atomic', () => {
           beforeAll(async () => {
             serverProcessManager = new ProcessManager();
             processManagers.push(serverProcessManager);
-            const appTerminal = await startApplication(
+            const appTerminal = startApplication(
               serverProcessManager,
               buildAppOptions,
               'atomic-server-valid'
@@ -370,7 +370,7 @@ describe('ui:create:atomic', () => {
             dummyServer = new DummyServer(3333);
             await dummyServer.start();
 
-            const appTerminal = await startApplication(
+            const appTerminal = startApplication(
               serverProcessManager,
               buildAppOptions,
               'stencil-port-test'

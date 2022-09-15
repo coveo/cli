@@ -19,7 +19,7 @@ const hook = async function (options: AnalyticsHook) {
     // TODO: track event with anonymous user
     return;
   }
-  const platformIdentifier = await platformInfoIdentifier();
+  const platformIdentifier = platformInfoIdentifier();
 
   const {userId, deviceId, identify} = await new Identifier().getIdentity();
   if (options.identify) {

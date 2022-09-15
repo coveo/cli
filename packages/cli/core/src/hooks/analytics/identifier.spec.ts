@@ -111,7 +111,7 @@ describe('identifier', () => {
 
   describe('when the user is internal', () => {
     beforeEach(async () => {
-      await mockForInternalUser();
+      mockForInternalUser();
       identity = await new Identifier().getIdentity();
     });
 
@@ -148,7 +148,7 @@ describe('identifier', () => {
 
   describe('when the user is external', () => {
     beforeEach(async () => {
-      await mockForExternalUser();
+      mockForExternalUser();
       identity = await new Identifier().getIdentity();
     });
 
@@ -164,7 +164,7 @@ describe('identifier', () => {
 
   describe('when the user is anonymous', () => {
     beforeEach(async () => {
-      await mockForAnonymousUser();
+      mockForAnonymousUser();
       identity = await new Identifier().getIdentity();
     });
 

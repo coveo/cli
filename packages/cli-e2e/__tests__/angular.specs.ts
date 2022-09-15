@@ -206,7 +206,7 @@ describe('ui:create:angular', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      const appTerminal = await startApplication(
+      const appTerminal = startApplication(
         serverProcessManager,
         'angular-server-valid'
       );
@@ -325,7 +325,7 @@ describe('ui:create:angular', () => {
       async () => {
         const missingEnvErrorSpy = jest.fn();
 
-        const appTerminal = await startApplication(
+        const appTerminal = startApplication(
           serverProcessManager,
           'angular-server-missing-env'
         );
@@ -350,7 +350,7 @@ describe('ui:create:angular', () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
       envFileContent = flushEnvFile(join(projectPath, 'server'));
-      const appTerminal = await startApplication(
+      const appTerminal = startApplication(
         serverProcessManager,
         'angular-server-invalid'
       );
@@ -379,7 +379,7 @@ describe('ui:create:angular', () => {
       processManagers.push(serverProcessManager);
       setCustomTokenEndpoint(customTokenEndpoint);
 
-      const appTerminal = await startApplication(
+      const appTerminal = startApplication(
         serverProcessManager,
         'angular-server-port-test'
       );
@@ -436,7 +436,7 @@ describe('ui:create:angular', () => {
       );
       await Promise.all(dummyServers.map((server) => server.start()));
 
-      const appTerminal = await startApplication(
+      const appTerminal = startApplication(
         serverProcessManager,
         'angular-server-port-test'
       );

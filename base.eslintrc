@@ -24,6 +24,7 @@
         ],
         "@typescript-eslint/explicit-member-accessibility": "error",
         "@typescript-eslint/prefer-for-of": "error",
+        "@typescript-eslint/await-thenable": "error",
         "require-await": [
           "error"
         ]

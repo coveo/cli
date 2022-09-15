@@ -1,4 +1,4 @@
-import fs from 'fs-extra';
+import fs, {copyFileSync} from 'fs-extra';
 const {readFileSync, writeFileSync, copySync} = fs;
 import {join, resolve, dirname} from 'path';
 import detectIndent from 'detect-indent';
@@ -9,6 +9,10 @@ const atomicTemplatePath = resolve(__dirname, '..', '..', 'template');
 const bundledTemplatePath = resolve(__dirname, '..', 'template');
 
 copySync(atomicTemplatePath, bundledTemplatePath, {recursive: true});
+copyFileSync(
+  join(__dirname, '!.eslintrc'),
+  join(bundledTemplatePath, '.eslintrc')
+);
 
 const packageJson = readFileSync(
   join(bundledTemplatePath, 'package.json'),

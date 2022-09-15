@@ -74,7 +74,7 @@ export default class SourcePushAdd extends CLICommand {
   public async run() {
     await this.showDeprecatedFlagWarning();
     const {args, flags} = await this.parse(SourcePushAdd);
-    const source = await this.getSource();
+    const source = this.getSource();
 
     CliUx.ux.action.start('Processing files');
 
@@ -104,7 +104,7 @@ export default class SourcePushAdd extends CLICommand {
 
   protected async finally(_?: Error) {
     const {args} = await this.parse(SourcePushAdd);
-    const source = await this.getSource();
+    const source = this.getSource();
     await source.setSourceStatus(args.sourceId, 'IDLE');
     await super.finally(_);
   }

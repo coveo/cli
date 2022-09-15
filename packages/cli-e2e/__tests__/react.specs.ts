@@ -147,7 +147,7 @@ describe('ui:create:react', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      const appTerminal = await startApplication(
+      const appTerminal = startApplication(
         serverProcessManager,
         'react-server-valid'
       );
@@ -269,7 +269,7 @@ describe('ui:create:react', () => {
       async () => {
         const missingEnvErrorSpy = jest.fn();
 
-        const appTerminal = await startApplication(
+        const appTerminal = startApplication(
           serverProcessManager,
           'react-server-missing-env'
         );
@@ -296,7 +296,7 @@ describe('ui:create:react', () => {
       processManagers.push(serverProcessManager);
       envFileContent = flushEnvFile(projectPath);
       overwriteEnvFile(projectPath, 'GENERATE_SOURCEMAP=false'); // TODO: CDX-737: fix exponential-backoff compilation warnings
-      const appTerminal = await startApplication(
+      const appTerminal = startApplication(
         serverProcessManager,
         'react-server-invalid'
       );
@@ -333,7 +333,7 @@ describe('ui:create:react', () => {
       processManagers.push(serverProcessManager);
       forceApplicationPorts(hardCodedClientPort, hardCodedServerPort);
 
-      const appTerminal = await startApplication(
+      const appTerminal = startApplication(
         serverProcessManager,
         'react-server-port-test'
       );
@@ -373,7 +373,7 @@ describe('ui:create:react', () => {
       );
       await Promise.all(dummyServers.map((server) => server.start()));
 
-      const appTerminal = await startApplication(
+      const appTerminal = startApplication(
         serverProcessManager,
         'react-server-port-test'
       );

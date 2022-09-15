@@ -106,7 +106,7 @@ const mockSnapshotFactory = () => {
   );
 };
 
-const mockSnapshotFactoryReturningValidSnapshot = async () => {
+const mockSnapshotFactoryReturningValidSnapshot = () => {
   const successReport = getSuccessReport(
     'success-report',
     ResourceSnapshotsReportType.Apply
@@ -114,10 +114,10 @@ const mockSnapshotFactoryReturningValidSnapshot = async () => {
   mockedValidateSnapshot.mockImplementation(() =>
     Promise.resolve(new SnapshotReporter(successReport))
   );
-  await mockSnapshotFactory();
+  mockSnapshotFactory();
 };
 
-const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
+const mockSnapshotFactoryReturningInvalidSnapshot = () => {
   const errorReport = getErrorReport(
     'error-report',
     ResourceSnapshotsReportType.Apply
@@ -125,20 +125,19 @@ const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
   mockedValidateSnapshot.mockImplementation(() =>
     Promise.resolve(new SnapshotReporter(errorReport))
   );
-  await mockSnapshotFactory();
+  mockSnapshotFactory();
 };
 
-const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries =
-  async () => {
-    const missingVaultEntry = getMissingVaultEntryReport(
-      'missing-vault-entry',
-      ResourceSnapshotsReportType.Apply
-    );
-    mockedValidateSnapshot.mockImplementation(() =>
-      Promise.resolve(new SnapshotReporter(missingVaultEntry))
-    );
-    await mockSnapshotFactory();
-  };
+const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries = () => {
+  const missingVaultEntry = getMissingVaultEntryReport(
+    'missing-vault-entry',
+    ResourceSnapshotsReportType.Apply
+  );
+  mockedValidateSnapshot.mockImplementation(() =>
+    Promise.resolve(new SnapshotReporter(missingVaultEntry))
+  );
+  mockSnapshotFactory();
+};
 
 describe('org:resources:preview', () => {
   const doMockPreconditions = function () {
@@ -163,8 +162,8 @@ describe('org:resources:preview', () => {
   });
 
   describe('when the report contains no resources in error', () => {
-    beforeAll(async () => {
-      await mockSnapshotFactoryReturningValidSnapshot();
+    beforeAll(() => {
+      mockSnapshotFactoryReturningValidSnapshot();
     });
 
     afterAll(() => {
@@ -331,8 +330,8 @@ describe('org:resources:preview', () => {
   });
   //#region TODO: CDX-948, setup phase needs to be rewrite and assertions 'split up' (e.g. the error ain't trigger directly by the function, therefore should not be handled)
   describe('when the report contains resources in error', () => {
-    beforeAll(async () => {
-      await mockSnapshotFactoryReturningInvalidSnapshot();
+    beforeAll(() => {
+      mockSnapshotFactoryReturningInvalidSnapshot();
     });
 
     beforeEach(() => {
@@ -366,8 +365,8 @@ describe('org:resources:preview', () => {
   });
 
   describe('when the report contains resources with missing vault entries', () => {
-    beforeAll(async () => {
-      await mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries();
+    beforeAll(() => {
+      mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries();
     });
 
     afterAll(() => {

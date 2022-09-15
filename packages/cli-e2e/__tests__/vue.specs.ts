@@ -167,7 +167,7 @@ describe('ui:create:vue', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      const appTerminal = await startApplication(
+      const appTerminal = startApplication(
         serverProcessManager,
         'vue-server-valid'
       );
@@ -277,7 +277,7 @@ describe('ui:create:vue', () => {
     it(
       'should not have any ESLint warning or error',
       async () => {
-        const serverTerminal = await startApplication(
+        const serverTerminal = startApplication(
           serverProcessManager,
           'vue-server-eslint'
         );
@@ -314,7 +314,7 @@ describe('ui:create:vue', () => {
       async () => {
         const missingEnvErrorSpy = jest.fn();
 
-        const appTerminal = await startApplication(
+        const appTerminal = startApplication(
           serverProcessManager,
           'vue-server-missing-env'
         );
@@ -339,7 +339,7 @@ describe('ui:create:vue', () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
       envFileContent = flushEnvFile(projectPath);
-      const appTerminal = await startApplication(
+      const appTerminal = startApplication(
         serverProcessManager,
         'vue-server-invalid'
       );
@@ -370,7 +370,7 @@ describe('ui:create:vue', () => {
       processManagers.push(serverProcessManager);
       forceApplicationPorts(hardCodedClientPort, hardCodedServerPort);
 
-      const appTerminal = await startApplication(
+      const appTerminal = startApplication(
         serverProcessManager,
         'vue-server-port-test'
       );
@@ -410,7 +410,7 @@ describe('ui:create:vue', () => {
       );
       await Promise.all(dummyServers.map((server) => server.start()));
 
-      const appTerminal = await startApplication(
+      const appTerminal = startApplication(
         serverProcessManager,
         'vue-server-port-test'
       );

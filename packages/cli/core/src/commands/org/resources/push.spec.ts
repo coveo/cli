@@ -100,7 +100,7 @@ const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
   mockEvaluate.mockResolvedValue({approved: false});
 };
 
-const mockSnapshotFactoryReturningValidSnapshot = async () => {
+const mockSnapshotFactoryReturningValidSnapshot = () => {
   const successReportValidate = getSuccessReport(
     'success-report',
     ResourceSnapshotsReportType.DryRun
@@ -116,10 +116,10 @@ const mockSnapshotFactoryReturningValidSnapshot = async () => {
   mockedApplySnapshot.mockImplementation(
     () => new SnapshotReporter(successReportApply)
   );
-  await mockSnapshotFactory();
+  mockSnapshotFactory();
 };
 
-const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
+const mockSnapshotFactoryReturningInvalidSnapshot = () => {
   const errorReportValidate = getErrorReport(
     'error-report',
     ResourceSnapshotsReportType.DryRun
@@ -134,27 +134,26 @@ const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
   mockedApplySnapshot.mockImplementation(() =>
     Promise.resolve(new SnapshotReporter(errorReportApply))
   );
-  await mockSnapshotFactory();
+  mockSnapshotFactory();
 };
 
-const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries =
-  async () => {
-    const missingVaultEntriesValidate = getMissingVaultEntryReport(
-      'error-report',
-      ResourceSnapshotsReportType.DryRun
-    );
-    const missingVaultEntriesApply = getMissingVaultEntryReport(
-      'error-report',
-      ResourceSnapshotsReportType.Apply
-    );
-    mockedValidateSnapshot.mockImplementation(() =>
-      Promise.resolve(new SnapshotReporter(missingVaultEntriesValidate))
-    );
-    mockedApplySnapshot.mockImplementation(() =>
-      Promise.resolve(new SnapshotReporter(missingVaultEntriesApply))
-    );
-    await mockSnapshotFactory();
-  };
+const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries = () => {
+  const missingVaultEntriesValidate = getMissingVaultEntryReport(
+    'error-report',
+    ResourceSnapshotsReportType.DryRun
+  );
+  const missingVaultEntriesApply = getMissingVaultEntryReport(
+    'error-report',
+    ResourceSnapshotsReportType.Apply
+  );
+  mockedValidateSnapshot.mockImplementation(() =>
+    Promise.resolve(new SnapshotReporter(missingVaultEntriesValidate))
+  );
+  mockedApplySnapshot.mockImplementation(() =>
+    Promise.resolve(new SnapshotReporter(missingVaultEntriesApply))
+  );
+  mockSnapshotFactory();
+};
 
 describe('org:resources:push', () => {
   beforeAll(() => {
@@ -184,8 +183,8 @@ describe('org:resources:push', () => {
   });
   //#region TODO: CDX-948, setup phase needs to be rewrite and assertions 'split up' (e.g. the error ain't trigger directly by the function, therefore should not be handled)
   describe('when the dryRun returns a report without errors', () => {
-    beforeAll(async () => {
-      await mockSnapshotFactoryReturningValidSnapshot();
+    beforeAll(() => {
+      mockSnapshotFactoryReturningValidSnapshot();
     });
 
     afterAll(() => {
@@ -359,8 +358,8 @@ describe('org:resources:push', () => {
   });
 
   describe('when the dryRun returns a report with errors', () => {
-    beforeAll(async () => {
-      await mockSnapshotFactoryReturningInvalidSnapshot();
+    beforeAll(() => {
+      mockSnapshotFactoryReturningInvalidSnapshot();
     });
 
     test
@@ -389,8 +388,8 @@ describe('org:resources:push', () => {
   });
 
   describe('when the dryRun returns a report with missing vault entries', () => {
-    beforeAll(async () => {
-      await mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries();
+    beforeAll(() => {
+      mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries();
     });
 
     describe('when the user refuses to migrate or type in the missing vault entries', () => {
