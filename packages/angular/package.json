@@ -40,7 +40,7 @@
     "@coveo/headless": "latest",
     "@types/fs-extra": "9.0.13",
     "@types/jest": "27.5.2",
-    "@types/node": "16.11.53",
+    "@types/node": "16.11.59",
     "fs-extra": "10.1.0",
     "jest": "27.5.1",
     "prettier": "2.7.1",

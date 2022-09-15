@@ -10,16 +10,16 @@
   "dependencies": {
     "@coveo/atomic": "1.86.0",
     "@coveo/search-token-lambda": "1.35.12",
-    "@stencil/core": "2.17.3"
+    "@stencil/core": "2.18.0"
   },
   "devDependencies": {
     "@rollup/plugin-replace": "4.0.0",
     "fkill": "8.0.1",
     "get-port": "6.1.2",
-    "gts": "3.1.0",
+    "gts": "3.1.1",
     "netlify-cli": "10.18.0",
     "prettier": "2.7.1",
-    "rollup-plugin-dotenv": "0.3.0",
+    "rollup-plugin-dotenv": "0.4.0",
     "rollup-plugin-html": "0.2.1"
   }
 }
