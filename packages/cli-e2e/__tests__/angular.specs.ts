@@ -142,7 +142,7 @@ describe('ui:create:angular', () => {
       .until(buildTerminalExitPromise);
   };
 
-  const startApplication = async (
+  const startApplication = (
     processManager: ProcessManager,
     debugName = 'angular-server'
   ) => {
@@ -285,7 +285,7 @@ describe('ui:create:angular', () => {
       await page.keyboard.type('my query');
       await page.keyboard.press('Enter');
 
-      await retry(async () => {
+      await retry(() => {
         expect(
           interceptedRequests.some(isSearchRequestOrResponse)
         ).toBeTruthy();
@@ -309,7 +309,7 @@ describe('ui:create:angular', () => {
   describe('when the .env file is missing', () => {
     let serverProcessManager: ProcessManager;
 
-    beforeAll(async () => {
+    beforeAll(() => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
       deactivateEnvironmentFile(join(projectPath, 'server'));
@@ -392,13 +392,13 @@ describe('ui:create:angular', () => {
       resetCustomTokenEndpoint();
     }, 30e3);
 
-    beforeEach(async () => {
+    beforeEach(() => {
       page.on('request', (request: HTTPRequest) => {
         interceptedRequests.push(request);
       });
     });
 
-    afterEach(async () => {
+    afterEach(() => {
       page.removeAllListeners('request');
       interceptedRequests = [];
     });
@@ -406,7 +406,7 @@ describe('ui:create:angular', () => {
     it('should use the custom token endpoint', async () => {
       page.goto(searchPageEndpoint());
 
-      await retry(async () => {
+      await retry(() => {
         expect(
           interceptedRequests.some(
             (request: HTTPRequest) => request.url() === customTokenEndpoint
@@ -449,19 +449,19 @@ describe('ui:create:angular', () => {
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
-    it('should allocate a new port for the application', async () => {
+    it('should allocate a new port for the application', () => {
       expect(clientPort).not.toEqual(usedClientPort);
     });
 
-    it('should not use an undefined port for application', async () => {
+    it('should not use an undefined port for application', () => {
       expect(clientPort).not.toBeUndefined();
     });
 
-    it('should allocate a new port for the token server', async () => {
+    it('should allocate a new port for the token server', () => {
       expect(serverPort).not.toEqual(usedServerPort);
     });
 
-    it('should not use an undefined port for token server', async () => {
+    it('should not use an undefined port for token server', () => {
       expect(serverPort).not.toBeUndefined();
     });
 

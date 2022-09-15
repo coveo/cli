@@ -2,7 +2,7 @@ import {handleTerminationSignals} from './termination-signals';
 import {Hook} from '@oclif/core';
 import globalConfig from '@coveo/cli-commons/config/globalConfig';
 
-const hook: Hook<'init'> = async function (opts) {
+const hook: Hook<'init'> = function (opts) {
   handleTerminationSignals();
   globalConfig.set(opts.config);
   process.env[this.config.scopedEnvVarKey('UPDATE_INSTRUCTIONS')] =

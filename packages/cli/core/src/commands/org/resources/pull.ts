@@ -84,7 +84,7 @@ export default class Pull extends CLICommand {
       default: allowedResourceType,
     }),
     model: Flags.custom<SnapshotPullModel>({
-      parse: async (input: string): Promise<SnapshotPullModel> => {
+      parse: (input: string): Promise<SnapshotPullModel> => {
         const model = readJsonSync(resolve(input));
         validateSnapshotPullModel(model);
         return model;
@@ -171,7 +171,7 @@ export default class Pull extends CLICommand {
     );
   }
 
-  private async askUserShouldWeOverwrite() {
+  private askUserShouldWeOverwrite() {
     const question = PullCommandStrings.projectOverwriteQuestion(
       Project.resourceFolderName
     );

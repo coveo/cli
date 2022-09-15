@@ -23,7 +23,10 @@
           {"ignoreRestSiblings": true, "argsIgnorePattern": "^_"}
         ],
         "@typescript-eslint/explicit-member-accessibility": "error",
-        "@typescript-eslint/prefer-for-of": "error"
+        "@typescript-eslint/prefer-for-of": "error",
+        "require-await": [
+          "error"
+        ]
       }
     },
     {

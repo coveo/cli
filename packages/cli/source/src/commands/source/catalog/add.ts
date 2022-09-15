@@ -123,7 +123,7 @@ export default class SourceCatalogAdd extends CLICommand {
     CliUx.ux.action.stop(green('✔'));
   }
 
-  public async catch(err?: Error & {exitCode?: number}) {
+  public catch(err?: Error & {exitCode?: number}) {
     formatErrorMessage(err);
     return super.catch(err);
   }

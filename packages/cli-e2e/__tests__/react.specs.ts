@@ -90,7 +90,7 @@ describe('ui:create:react', () => {
     await buildTerminal.when('exit').on('process').do().once();
   };
 
-  const startApplication = async (
+  const startApplication = (
     processManager: ProcessManager,
     debugName = 'react-server'
   ) => {
@@ -230,7 +230,7 @@ describe('ui:create:react', () => {
       await page.keyboard.type('my query');
       await page.keyboard.press('Enter');
 
-      await retry(async () => {
+      await retry(() => {
         expect(
           interceptedRequests.some(isSearchRequestOrResponse)
         ).toBeTruthy();
@@ -253,7 +253,7 @@ describe('ui:create:react', () => {
   describe('when the .env file is missing', () => {
     let serverProcessManager: ProcessManager;
 
-    beforeAll(async () => {
+    beforeAll(() => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
       deactivateEnvironmentFile(projectPath);
@@ -345,11 +345,11 @@ describe('ui:create:react', () => {
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
-    it('should run the application on the specified port', async () => {
+    it('should run the application on the specified port', () => {
       expect(clientPort).toEqual(hardCodedClientPort);
     });
 
-    it('should run the token server on the specified port', async () => {
+    it('should run the token server on the specified port', () => {
       expect(serverPort).toEqual(hardCodedServerPort);
     });
   });
@@ -386,19 +386,19 @@ describe('ui:create:react', () => {
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
-    it('should allocate a new port for the application', async () => {
+    it('should allocate a new port for the application', () => {
       expect(clientPort).not.toEqual(usedClientPort);
     });
 
-    it('should not use an undefined port for application', async () => {
+    it('should not use an undefined port for application', () => {
       expect(clientPort).not.toBeUndefined();
     });
 
-    it('should allocate a new port for the token server', async () => {
+    it('should allocate a new port for the token server', () => {
       expect(serverPort).not.toEqual(usedServerPort);
     });
 
-    it('should not use an undefined port for token server', async () => {
+    it('should not use an undefined port for token server', () => {
       expect(serverPort).not.toBeUndefined();
     });
 

@@ -97,7 +97,7 @@ export default class SourcePushAdd extends CLICommand {
     CliUx.ux.action.stop(green('✔'));
   }
 
-  public async catch(err?: Error & {exitCode?: number}) {
+  public catch(err?: Error & {exitCode?: number}) {
     formatErrorMessage(err);
     return super.catch(err);
   }
@@ -109,7 +109,7 @@ export default class SourcePushAdd extends CLICommand {
     await super.finally(_);
   }
 
-  public async getSource() {
+  public getSource() {
     const {accessToken, organization, environment, region} =
       new AuthenticatedClient().cfg.get();
     return new PushSource(accessToken!, organization, {

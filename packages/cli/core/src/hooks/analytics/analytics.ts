@@ -52,7 +52,7 @@ const augmentEvent = async (
   };
 };
 
-const platformInfoIdentifier = async () => {
+const platformInfoIdentifier = () => {
   const authenticatedClient = new AuthenticatedClient();
   const config = authenticatedClient.cfg.get();
   return {

@@ -117,7 +117,7 @@ export default class Vue extends CLICommand {
     });
   }
 
-  private async getDefaultPreset() {
+  private getDefaultPreset() {
     return {
       useConfigFiles: true,
       plugins: {

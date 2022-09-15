@@ -20,7 +20,7 @@ interface PlopData {
   page: IManifest;
 }
 
-export default async function (plop: NodePlopAPI) {
+export default function (plop: NodePlopAPI) {
   const currentPath = process.cwd();
   let platformClientInstance: PlatformClient;
 

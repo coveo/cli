@@ -54,7 +54,7 @@ describe('ui:create:atomic', () => {
   const getFlagsFromOptions = (options: BuildAppOptions) =>
     options.pageId ? ['--pageId', options.pageId] : undefined;
 
-  const selectDefaultWithCli = async (buildTerminal: Terminal) => {
+  const selectDefaultWithCli = (buildTerminal: Terminal) => {
     buildTerminal
       .when(/Use an existing hosted search page/)
       .on('stdout')
@@ -140,7 +140,7 @@ describe('ui:create:atomic', () => {
     return {output};
   };
 
-  const startApplication = async (
+  const startApplication = (
     processManager: ProcessManager,
     options: BuildAppOptions,
     debugName = 'atomic-server'

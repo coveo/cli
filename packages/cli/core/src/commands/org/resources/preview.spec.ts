@@ -87,7 +87,7 @@ const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
   mockEvaluate.mockResolvedValue({approved: false});
 };
 
-const mockSnapshotFactory = async () => {
+const mockSnapshotFactory = () => {
   const dummySnapshot = {
     validate: mockedValidateSnapshot,
     preview: mockedPreviewSnapshot,
@@ -378,7 +378,7 @@ describe('org:resources:preview', () => {
       test
         .stdout()
         .stderr()
-        .stub(CliUx.ux, 'confirm', () => async () => false)
+        .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(false))
         .command(['org:resources:preview'])
         .catch(/Your destination organization is missing vault entries/)
         .it('should throw an error for invalid snapshots');
