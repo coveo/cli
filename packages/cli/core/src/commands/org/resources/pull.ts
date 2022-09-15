@@ -1,4 +1,7 @@
-import type {ResourceSnapshotType} from '@coveord/platform-client';
+import {
+  ResourceSnapshotType,
+  SnapshotAccessType,
+} from '@coveord/platform-client';
 import {Flags, CliUx} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {readJsonSync} from 'fs-extra';
@@ -39,6 +42,9 @@ import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
+import {isSubset} from '../../../lib/utils/list';
+import {starSpinner} from '@coveo/cli-commons/utils/ux';
 
 const PullCommandStrings = {
   projectOverwriteQuestion: (
@@ -111,15 +117,15 @@ export default class Pull extends CLICommand {
 
     const snapshot = await this.getSnapshot();
 
-    CliUx.ux.action.start('Updating project with Snapshot');
-    await this.refreshProject(project, snapshot);
-    project.writeResourcesManifest(targetOrganization);
+    // CliUx.ux.action.start('Updating project with Snapshot');
+    // await this.refreshProject(project, snapshot);
+    // project.writeResourcesManifest(targetOrganization);
 
-    if (await this.shouldDeleteSnapshot()) {
-      await snapshot.delete();
-    }
+    // if (await this.shouldDeleteSnapshot()) {
+    //   await snapshot.delete();
+    // }
 
-    CliUx.ux.action.stop('Project updated');
+    // CliUx.ux.action.stop('Project updated');
   }
 
   private async shouldDeleteSnapshot() {
@@ -188,12 +194,34 @@ export default class Pull extends CLICommand {
 
   private async createAndGetNewSnapshot(target: string) {
     const resourcesToExport = await this.getResourceSnapshotTypesToExport();
+    // TODO: move to snapshot common and use in push and monitor commands
+    const client = await new AuthenticatedClient().getClient();
+    starSpinner('Validating Permissions');
+    const allowedResources = await client.resourceSnapshot.listResourceAccess();
+    const isAllowed = isSubset(
+      Object.keys(resourcesToExport),
+      allowedResources
+    );
+    if (!isAllowed) {
+      throw 'TODO: missing resources privileges';
+    }
+
     CliUx.ux.action.start(`Creating Snapshot from ${formatOrgId(target)}`);
     const waitOption = await this.getWaitOption();
     return SnapshotFactory.createFromOrg(resourcesToExport, target, waitOption);
   }
 
   private async getExistingSnapshot(snapshotId: string, target: string) {
+    // TODO: move to snapshot common and use in push and monitor commands
+    const client = await new AuthenticatedClient().getClient();
+    starSpinner('Validating Permissions');
+    const isAllowed = await client.resourceSnapshot.validateAccess(snapshotId, {
+      snapshotAccessType: SnapshotAccessType.Read,
+    });
+    if (!isAllowed) {
+      throw 'TODO: show a mesage explaining why the user does not have access to the snapshot';
+    }
+
     CliUx.ux.action.start('Retrieving Snapshot');
     const waitOption = await this.getWaitOption();
     return SnapshotFactory.createFromExistingSnapshot(
