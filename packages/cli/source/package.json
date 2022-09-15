@@ -15,8 +15,8 @@
   ],
   "dependencies": {
     "@coveo/cli-commons": "1.35.12",
-    "@coveo/push-api-client": "2.5.8",
-    "@coveord/platform-client": "34.7.0",
+    "@coveo/push-api-client": "2.5.13",
+    "@coveord/platform-client": "34.12.0",
     "@oclif/core": "1.16.1",
     "@oclif/plugin-help": "5.1.12",
     "@oclif/plugin-plugins": "2.1.0",
@@ -28,17 +28,17 @@
     "@coveo/cli-commons-dev": "1.35.12",
     "@oclif/test": "2.1.1",
     "@types/jest": "27.5.2",
-    "@types/node": "16.11.53",
-    "eslint": "8.22.0",
+    "@types/node": "16.11.59",
+    "eslint": "8.23.1",
     "jest": "27.5.1",
-    "oclif": "3.1.2",
+    "oclif": "3.2.1",
     "stdout-stderr": "0.1.13",
     "strip-ansi": "6.0.1",
     "ts-jest": "27.1.5",
     "ts-node": "10.9.1",
     "tsconfig-paths": "4.1.0",
     "tslib": "2.4.0",
-    "typescript": "4.7.4"
+    "typescript": "4.8.3"
   },
   "oclif": {
     "bin": "coveo",
