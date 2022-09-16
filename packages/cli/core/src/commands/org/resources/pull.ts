@@ -194,34 +194,12 @@ export default class Pull extends CLICommand {
 
   private async createAndGetNewSnapshot(target: string) {
     const resourcesToExport = await this.getResourceSnapshotTypesToExport();
-    // TODO: move to snapshot common and use in push and monitor commands
-    const client = await new AuthenticatedClient().getClient();
-    starSpinner('Validating Permissions');
-    const allowedResources = await client.resourceSnapshot.listResourceAccess();
-    const isAllowed = isSubset(
-      Object.keys(resourcesToExport),
-      allowedResources
-    );
-    if (!isAllowed) {
-      throw 'TODO: missing resources privileges';
-    }
-
     CliUx.ux.action.start(`Creating Snapshot from ${formatOrgId(target)}`);
     const waitOption = await this.getWaitOption();
     return SnapshotFactory.createFromOrg(resourcesToExport, target, waitOption);
   }
 
   private async getExistingSnapshot(snapshotId: string, target: string) {
-    // TODO: move to snapshot common and use in push and monitor commands
-    const client = await new AuthenticatedClient().getClient();
-    starSpinner('Validating Permissions');
-    const isAllowed = await client.resourceSnapshot.validateAccess(snapshotId, {
-      snapshotAccessType: SnapshotAccessType.Read,
-    });
-    if (!isAllowed) {
-      throw 'TODO: show a mesage explaining why the user does not have access to the snapshot';
-    }
-
     CliUx.ux.action.start('Retrieving Snapshot');
     const waitOption = await this.getWaitOption();
     return SnapshotFactory.createFromExistingSnapshot(
