@@ -1,5 +1,5 @@
 import type {ResourceSnapshotType} from '@coveord/platform-client';
-import {startSpinner} from '@coveo/cli-commons/utils/ux';
+import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
 import {Flags} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {readJsonSync} from 'fs-extra';
@@ -76,9 +76,7 @@ export default class Pull extends CLICommand {
       description: 'Overwrite resources directory if it exists.',
       default: false,
     }),
-    resourceTypes: Flags.build<ResourceSnapshotType>({
-      parse: async (resourceType: ResourceSnapshotType) => resourceType,
-    })({
+    resourceTypes: Flags.enum<ResourceSnapshotType>({
       char: 'r',
       helpValue: 'type1 type2',
       description: 'The resources types to pull from the organization.',
@@ -86,7 +84,7 @@ export default class Pull extends CLICommand {
       options: allowedResourceType,
       default: allowedResourceType,
     }),
-    model: Flags.build<SnapshotPullModel>({
+    model: Flags.custom<SnapshotPullModel>({
       parse: async (input: string): Promise<SnapshotPullModel> => {
         const model = readJsonSync(resolve(input));
         validateSnapshotPullModel(model);
@@ -121,6 +119,7 @@ export default class Pull extends CLICommand {
     if (await this.shouldDeleteSnapshot()) {
       await snapshot.delete();
     }
+    stopSpinner({message: 'Project updated'});
   }
 
   private async shouldDeleteSnapshot() {
