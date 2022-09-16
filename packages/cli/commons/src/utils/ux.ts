@@ -1,11 +1,11 @@
 import {CliUx} from '@oclif/core';
 import {red, green} from 'chalk';
 
-export function starSpinner(task: string) {
+export function startSpinner(task: string, status?: string) {
   if (CliUx.ux.action.running) {
     CliUx.ux.action.stop(green('✔'));
   }
-  CliUx.ux.action.start(task);
+  CliUx.ux.action.start(task, status);
 }
 
 export function stopSpinner(options?: {success?: boolean; message?: string}) {

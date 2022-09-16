@@ -1,5 +1,6 @@
 import type {ResourceSnapshotType} from '@coveord/platform-client';
-import {Flags, CliUx} from '@oclif/core';
+import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
+import {Flags} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {readJsonSync} from 'fs-extra';
 import {resolve} from 'path';
@@ -111,15 +112,14 @@ export default class Pull extends CLICommand {
 
     const snapshot = await this.getSnapshot();
 
-    CliUx.ux.action.start('Updating project with Snapshot');
+    startSpinner('Updating project with Snapshot');
     await this.refreshProject(project, snapshot);
     project.writeResourcesManifest(targetOrganization);
 
     if (await this.shouldDeleteSnapshot()) {
       await snapshot.delete();
     }
-
-    CliUx.ux.action.stop('Project updated');
+    stopSpinner({message: 'Project updated'});
   }
 
   private async shouldDeleteSnapshot() {
@@ -188,13 +188,13 @@ export default class Pull extends CLICommand {
 
   private async createAndGetNewSnapshot(target: string) {
     const resourcesToExport = await this.getResourceSnapshotTypesToExport();
-    CliUx.ux.action.start(`Creating Snapshot from ${formatOrgId(target)}`);
+    startSpinner(`Creating Snapshot from ${formatOrgId(target)}`);
     const waitOption = await this.getWaitOption();
     return SnapshotFactory.createFromOrg(resourcesToExport, target, waitOption);
   }
 
   private async getExistingSnapshot(snapshotId: string, target: string) {
-    CliUx.ux.action.start('Retrieving Snapshot');
+    startSpinner('Retrieving Snapshot');
     const waitOption = await this.getWaitOption();
     return SnapshotFactory.createFromExistingSnapshot(
       snapshotId,

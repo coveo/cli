@@ -1,5 +1,6 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags, CliUx} from '@oclif/core';
+import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
+import {Flags} from '@oclif/core';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {
   Preconditions,
@@ -35,10 +36,11 @@ export default class Create extends CLICommand {
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
-    CliUx.ux.action.start('Creating organization');
+    startSpinner('Creating organization');
     const {id} = await this.createOrganization();
     const endMessage = await this.generateEndMessageFromOrgId(id);
-    CliUx.ux.action.stop(endMessage);
+    stopSpinner();
+    this.log(endMessage);
   }
 
   private async createOrganization() {
