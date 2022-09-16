@@ -83,7 +83,7 @@ const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
   mockEvaluate.mockResolvedValue({approved: false});
 };
 
-const doMockSnapshotFactory = async () => {
+const doMockSnapshotFactory = () => {
   mockedSnapshotFactory.createFromOrg.mockReturnValue(
     Promise.resolve({
       delete: mockedDeleteSnapshot,
@@ -223,7 +223,7 @@ describe('org:resources:pull', () => {
   test
     .stdout()
     .stderr()
-    .stub(CliUx.ux, 'confirm', () => async () => true)
+    .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
     .command([
       'org:resources:pull',
       '-m',
@@ -249,7 +249,7 @@ describe('org:resources:pull', () => {
   test
     .stdout()
     .stderr()
-    .stub(CliUx.ux, 'confirm', () => async () => true)
+    .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
     .command([
       'org:resources:pull',
       '-m',
@@ -276,7 +276,7 @@ describe('org:resources:pull', () => {
   test
     .stdout()
     .stderr()
-    .stub(CliUx.ux, 'confirm', () => async () => true)
+    .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
     .command([
       'org:resources:pull',
       '-m',

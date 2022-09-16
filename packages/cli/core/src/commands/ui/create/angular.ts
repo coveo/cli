@@ -74,7 +74,7 @@ export default class Angular extends CLICommand {
     this.displayFeedbackAfterSuccess(args.name);
   }
 
-  private async createProject(name: string, defaults: boolean) {
+  private createProject(name: string, defaults: boolean) {
     const cliArgs = ['new', name, '--style', 'scss', '--routing'];
 
     if (defaults) {

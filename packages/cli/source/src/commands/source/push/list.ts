@@ -30,7 +30,7 @@ export default class SourcePushList extends CLICommand {
     CliUx.ux.warn(`${magenta('deprecated')} Use ${SourceList.id} instead`);
     const {flags} = await this.parse(SourcePushList);
     const authenticatedClient = new AuthenticatedClient();
-    const org = (await authenticatedClient.cfg.get()).organization;
+    const org = authenticatedClient.cfg.get().organization;
     const platformClient = await authenticatedClient.getClient();
 
     const sources = await platformClient.source.list({

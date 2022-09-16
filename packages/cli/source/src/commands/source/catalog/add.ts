@@ -122,7 +122,7 @@ export default class SourceCatalogAdd extends CLICommand {
       .batch();
   }
 
-  public async catch(err?: Error & {exitCode?: number}) {
+  public catch(err?: Error & {exitCode?: number}) {
     formatErrorMessage(err);
     return super.catch(err);
   }

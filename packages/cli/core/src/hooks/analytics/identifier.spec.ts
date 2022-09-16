@@ -82,15 +82,15 @@ describe('identifier', () => {
     );
   };
 
-  const mockForInternalUser = async () => {
+  const mockForInternalUser = () => {
     doMockConfiguration();
     doMockPlatformClient('bob@coveo.com');
   };
-  const mockForExternalUser = async () => {
+  const mockForExternalUser = () => {
     doMockConfiguration();
     doMockPlatformClient('bob@acme.com');
   };
-  const mockForAnonymousUser = async () => {
+  const mockForAnonymousUser = () => {
     doMockConfiguration({anonymous: true});
     doMockPlatformClient();
   };
@@ -111,7 +111,7 @@ describe('identifier', () => {
 
   describe('when the user is internal', () => {
     beforeEach(async () => {
-      await mockForInternalUser();
+      mockForInternalUser();
       identity = await new Identifier().getIdentity();
     });
 
@@ -120,7 +120,7 @@ describe('identifier', () => {
       mockedPlatformClient.mockClear();
     });
 
-    it('should not set platform information', async () => {
+    it('should not set platform information', () => {
       expect(mockSetIdentity).not.toHaveBeenCalledWith(
         'organization_type',
         'Production'
@@ -129,46 +129,46 @@ describe('identifier', () => {
       expect(mockSetIdentity).not.toHaveBeenCalledWith('region', 'us');
     });
 
-    it('should set the user ID (unhashed)', async () => {
+    it('should set the user ID (unhashed)', () => {
       expect(identity.userId).toBe('bob@coveo.com');
     });
 
-    it('should set is_internal_user to true', async () => {
+    it('should set is_internal_user to true', () => {
       expect(mockSetIdentity).toHaveBeenCalledWith('is_internal_user', true);
     });
 
-    it('should identify event with (un-hashed) email', async () => {
+    it('should identify event with (un-hashed) email', () => {
       expect(identity.userId).toBe('bob@coveo.com');
     });
 
-    it('should always identify events with a device ID', async () => {
+    it('should always identify events with a device ID', () => {
       expect(identity.deviceId).toBeDefined();
     });
   });
 
   describe('when the user is external', () => {
     beforeEach(async () => {
-      await mockForExternalUser();
+      mockForExternalUser();
       identity = await new Identifier().getIdentity();
     });
 
-    it('should set the user ID (hashed)', async () => {
+    it('should set the user ID (hashed)', () => {
       expect(identity.userId).not.toBeNull();
       expect(identity.userId).not.toBe('bob@acme.com');
     });
 
-    it('should set is_internal_user to false', async () => {
+    it('should set is_internal_user to false', () => {
       expect(mockSetIdentity).toHaveBeenCalledWith('is_internal_user', false);
     });
   });
 
   describe('when the user is anonymous', () => {
     beforeEach(async () => {
-      await mockForAnonymousUser();
+      mockForAnonymousUser();
       identity = await new Identifier().getIdentity();
     });
 
-    it('should set the user ID', async () => {
+    it('should set the user ID', () => {
       expect(identity.userId).not.toBeNull();
     });
   });
@@ -179,13 +179,13 @@ describe('identifier', () => {
       identity.identify(getDummyAmplitudeClient());
     });
 
-    it('should add the CLI version to the event', async () => {
+    it('should add the CLI version to the event', () => {
       expect(mockedLogEvent).toHaveBeenCalledWith(
         expect.objectContaining({app_version: '1.2.3'})
       );
     });
 
-    it('should add the OS information to the event', async () => {
+    it('should add the OS information to the event', () => {
       expect(mockedLogEvent).toHaveBeenCalledWith(
         expect.objectContaining({
           app_version: '1.2.3',

@@ -31,7 +31,7 @@ mockedParser.mockImplementation(
 mockedConfig.mockImplementation(
   () =>
     ({
-      get: () => Promise.resolve({organization: 'the_org'}),
+      get: () => ({organization: 'the_org'}),
     } as unknown as Config)
 );
 
