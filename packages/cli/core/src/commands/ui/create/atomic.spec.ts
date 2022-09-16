@@ -27,14 +27,14 @@ import {mockPreconditions} from '../../../__test__/preconditionUtils';
 
 describe('ui:create:atomic', () => {
   const mockedConfig = jest.mocked(Config);
-  const mockedSpawnProcess = jest.mocked(spawnProcess, true);
+  const mockedSpawnProcess = jest.mocked(spawnProcess);
   const mockedPlatformClient = jest.mocked(PlatformClient);
   const mockedGetPackageVersion = jest.mocked(getPackageVersion);
   const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
-  const mockedIsNpxInstalled = jest.mocked(IsNpxInstalled, true);
-  const mockedIsNodeVersionInRange = jest.mocked(IsNodeVersionInRange, true);
+  const mockedIsNpxInstalled = jest.mocked(IsNpxInstalled);
+  const mockedIsNodeVersionInRange = jest.mocked(IsNodeVersionInRange);
   const createAtomicPackage = '@coveo/create-atomic';
-  const mockedApiKeyPrivilege = jest.mocked(HasNecessaryCoveoPrivileges, true);
+  const mockedApiKeyPrivilege = jest.mocked(HasNecessaryCoveoPrivileges);
   const preconditionStatus = {
     node: true,
     npx: true,

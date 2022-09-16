@@ -8,8 +8,8 @@ import {test} from '@oclif/test';
 import {Config} from '@coveo/cli-commons/config/config';
 import {OAuth} from '../../lib/oauth/oauth';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-const mockedOAuth = jest.mocked(OAuth, true);
-const mockedConfig = jest.mocked(Config, true);
+const mockedOAuth = jest.mocked(OAuth);
+const mockedConfig = jest.mocked(Config);
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 
 describe('auth:login', () => {

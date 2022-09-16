@@ -8,7 +8,7 @@ import {test} from '@oclif/test';
 import {Config} from '@coveo/cli-commons/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {PlatformEnvironment} from '@coveo/cli-commons/platform/environment';
-const mockedConfig = jest.mocked(Config, true);
+const mockedConfig = jest.mocked(Config);
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 
 describe('auth:token', () => {

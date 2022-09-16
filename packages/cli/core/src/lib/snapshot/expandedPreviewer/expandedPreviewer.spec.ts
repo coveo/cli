@@ -36,7 +36,7 @@ describe('ExpandedPreviewer', () => {
   const mockedSpawnProcessOutput = jest.mocked(spawnProcessOutput);
   const mockedProject = jest.mocked(Project);
   const mockedProjectRefresh = jest.fn();
-  const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
+  const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
   const mockedSnapshotDownload = jest.fn().mockReturnValue(fakeBlob);
   const mockedSnapshotDelete = jest.fn();
 
