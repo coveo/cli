@@ -14,6 +14,7 @@ import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+import {startSpinner} from '@coveo/cli-commons/utils/ux';
 
 export default class Monitor extends CLICommand {
   public static description = 'Monitor a Snapshot operation';
@@ -45,10 +46,7 @@ export default class Monitor extends CLICommand {
 
   private async monitorSnapshot(snapshot: Snapshot) {
     const startReporter = new SnapshotReporter(snapshot.latestReport);
-    CliUx.ux.action.start(
-      `Operation ${startReporter.type}`,
-      startReporter.status
-    );
+    startSpinner(`Operation ${startReporter.type}`, startReporter.status);
     const waitOption = await this.getWaitOption();
     await snapshot.waitUntilDone(waitOption);
     const finalReporter = new SnapshotReporter(snapshot.latestReport);
@@ -70,7 +68,7 @@ export default class Monitor extends CLICommand {
       `Monitoring snapshot ${snapshotId}`
     );
     CliUx.ux.log('');
-    CliUx.ux.action.start(header);
+    startSpinner(header);
   }
 
   private refresh(report: ResourceSnapshotsReportModel) {
