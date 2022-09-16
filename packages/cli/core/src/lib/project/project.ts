@@ -13,6 +13,7 @@ import {InvalidProjectError} from '../errors';
 import extract from 'extract-zip';
 import {DotFolder, DotFolderConfig} from './dotFolder';
 import {readJsonSync, writeJsonSync, WriteOptions} from 'fs-extra';
+import {ResourceSnapshotType} from '@coveord/platform-client';
 
 interface ResourceManifest {
   orgId?: string;
@@ -120,6 +121,10 @@ export class Project {
 
   public getResourceManifest(): ResourceManifest | null {
     return readJsonSync(this.resourceManifestPath, {throws: false});
+  }
+
+  public get resourcesTypes(): ResourceSnapshotType[] {
+    throw 'TODO:';
   }
 
   public get pathToProject() {

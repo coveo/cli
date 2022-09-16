@@ -1,7 +1,4 @@
-import {
-  ResourceSnapshotType,
-  SnapshotAccessType,
-} from '@coveord/platform-client';
+import {ResourceSnapshotType} from '@coveord/platform-client';
 import {Flags, CliUx} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {readJsonSync} from 'fs-extra';
@@ -42,9 +39,6 @@ import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {isSubset} from '../../../lib/utils/list';
-import {starSpinner} from '@coveo/cli-commons/utils/ux';
 
 const PullCommandStrings = {
   projectOverwriteQuestion: (
@@ -117,15 +111,15 @@ export default class Pull extends CLICommand {
 
     const snapshot = await this.getSnapshot();
 
-    // CliUx.ux.action.start('Updating project with Snapshot');
-    // await this.refreshProject(project, snapshot);
-    // project.writeResourcesManifest(targetOrganization);
+    CliUx.ux.action.start('Updating project with Snapshot');
+    await this.refreshProject(project, snapshot);
+    project.writeResourcesManifest(targetOrganization);
 
-    // if (await this.shouldDeleteSnapshot()) {
-    //   await snapshot.delete();
-    // }
+    if (await this.shouldDeleteSnapshot()) {
+      await snapshot.delete();
+    }
 
-    // CliUx.ux.action.stop('Project updated');
+    CliUx.ux.action.stop('Project updated');
   }
 
   private async shouldDeleteSnapshot() {

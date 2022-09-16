@@ -2,23 +2,24 @@ import {
   CreateFromFileOptions,
   ResourceSnapshotsReportType,
   ResourceSnapshotSupportedFileTypes,
-  SnapshotAccessType,
+  ResourceSnapshotType,
 } from '@coveord/platform-client';
 import {readFileSync} from 'fs';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {SnapshotPullModelResources} from './pullModel/interfaces';
 import {Snapshot, WaitUntilDoneOptions} from './snapshot';
-import {starSpinner} from '@coveo/cli-commons/utils/ux';
-import {isSubset} from '../utils/list';
+import {Project} from '../project/project';
+import {ensureResourceAccess, ensureSnapshotAccess} from './snapshotAccess';
 
 export class SnapshotFactory {
-  public static async createFromZip(
-    pathToZip: string,
+  public static async createSnapshotFromProject(
+    project: Project,
     targetOrg: string,
     options?: WaitUntilDoneOptions
   ): Promise<Snapshot> {
-    // TODO: figure out IF access valition is required here
     const client = await this.getClient(targetOrg);
+    await ensureResourceAccess(client, project.resourcesTypes);
+    const pathToZip = await project.compressResources();
     const file = readFileSync(pathToZip);
 
     const computedOptions: CreateFromFileOptions = {
@@ -46,17 +47,7 @@ export class SnapshotFactory {
     options?: WaitUntilDoneOptions
   ) {
     const client = await this.getClient(targetOrg);
-    ////////////////////////////////////////////////////////////
-    starSpinner('Validating snapshot access');
-    const {allowed} = await client.resourceSnapshot.validateAccess(snapshotId, {
-      snapshotAccessType: SnapshotAccessType.Read, //TODO: not sure quite right
-    });
-
-    if (!allowed) {
-      throw 'TODO: show a mesage explaining why the user does not have access to the snapshot';
-    }
-    ////////////////////////////////////////////////////////////
-
+    await ensureSnapshotAccess(client, snapshotId);
     const model = await client.resourceSnapshot.get(snapshotId, {
       includeReports: true,
     });
@@ -73,17 +64,10 @@ export class SnapshotFactory {
     options?: WaitUntilDoneOptions
   ) {
     const client = await this.getClient(targetOrg);
-    ////////////////////////////////////////////////////////////
-    starSpinner('Validating resource access');
-    const allowedResources = await client.resourceSnapshot.listResourceAccess();
-    const isAllowed = isSubset(
-      Object.keys(resourcesToExport),
-      allowedResources
-    );
-    if (!isAllowed) {
-      throw 'TODO: missing resources privileges';
-    }
-    ////////////////////////////////////////////////////////////
+    const resourceTypes = Object.keys(
+      resourcesToExport
+    ) as ResourceSnapshotType[];
+    await ensureResourceAccess(client, resourceTypes);
     const model = await client.resourceSnapshot.createFromOrganization(
       {resourcesToExport},
       {includeChildrenResources: true, developerNotes: 'Created by Coveo-CLI'}
