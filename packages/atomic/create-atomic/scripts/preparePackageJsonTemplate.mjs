@@ -1,5 +1,5 @@
-import fs, {copyFileSync} from 'fs-extra';
-const {readFileSync, writeFileSync, copySync} = fs;
+import fs from 'fs-extra';
+const {readFileSync, writeFileSync, copySync, copyFileSync} = fs;
 import {join, resolve, dirname} from 'path';
 import detectIndent from 'detect-indent';
 import {fileURLToPath} from 'url';
