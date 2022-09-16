@@ -60,7 +60,7 @@ export default class SourcePushDelete extends CLICommand {
         'You must minimally set the `delete` or the `deleteOlderThan` flag. Use `source:push:delete --help` to get more information.'
       );
     }
-    const cfg = await new AuthenticatedClient().cfg.get();
+    const cfg = new AuthenticatedClient().cfg.get();
     const source = new PushSource(cfg.accessToken!, cfg.organization);
 
     if (flags.deleteOlderThan) {

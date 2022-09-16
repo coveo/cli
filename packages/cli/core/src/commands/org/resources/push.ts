@@ -91,7 +91,7 @@ export default class Push extends CLICommand {
     await this.cleanup(snapshot, project);
   }
 
-  public async catch(err?: Error & {exitCode?: number}) {
+  public catch(err?: Error & {exitCode?: number}) {
     cleanupProject(this.projectPath);
     return super.catch(err);
   }
@@ -114,7 +114,7 @@ export default class Push extends CLICommand {
   private getSuccessReportHandler(snapshot: Snapshot) {
     const successReportWithChangesHandler = () =>
       this.successReportWithChangesHandler(snapshot);
-    return async function (this: SnapshotReporter) {
+    return function (this: SnapshotReporter) {
       return successReportWithChangesHandler();
     };
   }

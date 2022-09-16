@@ -56,7 +56,7 @@ export default class Monitor extends CLICommand {
   }
 
   private getErrorHandler() {
-    return async function (this: SnapshotReporter) {
+    return function (this: SnapshotReporter) {
       CliUx.ux.log(ReportViewerStyles.error(this.resultCode));
     };
   }

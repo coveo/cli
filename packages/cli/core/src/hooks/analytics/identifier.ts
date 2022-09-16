@@ -57,13 +57,13 @@ export class Identifier {
     return hash.digest('hex').toString();
   }
 
-  private async getAnalyticsInfo(platformClient: PlatformClient) {
+  private getAnalyticsInfo(platformClient: PlatformClient) {
     return this.configuration.anonymous
       ? this.getApiKeyInfo()
       : this.getUserInfo(platformClient);
   }
 
-  private async getApiKeyInfo() {
+  private getApiKeyInfo() {
     const identifier = this.configuration.accessToken
       ?.split('-')
       .pop() as string;

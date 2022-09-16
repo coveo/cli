@@ -47,11 +47,11 @@ describe('termination-signal', () => {
         await flushPromises();
       });
 
-      fancyIt()('should terminate the process', async () => {
+      fancyIt()('should terminate the process', () => {
         expect(mockExit).toHaveBeenCalled();
       });
 
-      fancyIt()('should send an interruption event', async () => {
+      fancyIt()('should send an interruption event', () => {
         expect(mockedAnalyticHook).toHaveBeenCalledWith('analytics', {
           event: {
             event_type: 'interrupted operation',
@@ -62,7 +62,7 @@ describe('termination-signal', () => {
         });
       });
 
-      fancyIt()('should flush analytic events', async () => {
+      fancyIt()('should flush analytic events', () => {
         expect(mockedFlush).toHaveBeenCalledTimes(1);
       });
     }

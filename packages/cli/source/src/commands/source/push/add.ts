@@ -75,7 +75,7 @@ export default class SourcePushAdd extends CLICommand {
   public async run() {
     await this.showDeprecatedFlagWarning();
     const {args, flags} = await this.parse(SourcePushAdd);
-    const source = await this.getSource();
+    const source = this.getSource();
 
     startSpinner('Processing files');
 
@@ -96,19 +96,19 @@ export default class SourcePushAdd extends CLICommand {
       .batch();
   }
 
-  public async catch(err?: Error & {exitCode?: number}) {
+  public catch(err?: Error & {exitCode?: number}) {
     formatErrorMessage(err);
     return super.catch(err);
   }
 
   protected async finally(_?: Error) {
     const {args} = await this.parse(SourcePushAdd);
-    const source = await this.getSource();
+    const source = this.getSource();
     await source.setSourceStatus(args.sourceId, 'IDLE');
     await super.finally(_);
   }
 
-  public async getSource() {
+  public getSource() {
     const {accessToken, organization, environment, region} =
       new AuthenticatedClient().cfg.get();
     return new PushSource(accessToken!, organization, {

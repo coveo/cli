@@ -90,7 +90,7 @@ describe('ui:create:react', () => {
     await buildTerminal.when('exit').on('process').do().once();
   };
 
-  const startApplication = async (
+  const startApplication = (
     processManager: ProcessManager,
     debugName = 'react-server'
   ) => {
@@ -147,7 +147,7 @@ describe('ui:create:react', () => {
     beforeAll(async () => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
-      const appTerminal = await startApplication(
+      const appTerminal = startApplication(
         serverProcessManager,
         'react-server-valid'
       );
@@ -230,7 +230,7 @@ describe('ui:create:react', () => {
       await page.keyboard.type('my query');
       await page.keyboard.press('Enter');
 
-      await retry(async () => {
+      await retry(() => {
         expect(
           interceptedRequests.some(isSearchRequestOrResponse)
         ).toBeTruthy();
@@ -253,7 +253,7 @@ describe('ui:create:react', () => {
   describe('when the .env file is missing', () => {
     let serverProcessManager: ProcessManager;
 
-    beforeAll(async () => {
+    beforeAll(() => {
       serverProcessManager = new ProcessManager();
       processManagers.push(serverProcessManager);
       deactivateEnvironmentFile(projectPath);
@@ -269,7 +269,7 @@ describe('ui:create:react', () => {
       async () => {
         const missingEnvErrorSpy = jest.fn();
 
-        const appTerminal = await startApplication(
+        const appTerminal = startApplication(
           serverProcessManager,
           'react-server-missing-env'
         );
@@ -296,7 +296,7 @@ describe('ui:create:react', () => {
       processManagers.push(serverProcessManager);
       envFileContent = flushEnvFile(projectPath);
       overwriteEnvFile(projectPath, 'GENERATE_SOURCEMAP=false'); // TODO: CDX-737: fix exponential-backoff compilation warnings
-      const appTerminal = await startApplication(
+      const appTerminal = startApplication(
         serverProcessManager,
         'react-server-invalid'
       );
@@ -333,7 +333,7 @@ describe('ui:create:react', () => {
       processManagers.push(serverProcessManager);
       forceApplicationPorts(hardCodedClientPort, hardCodedServerPort);
 
-      const appTerminal = await startApplication(
+      const appTerminal = startApplication(
         serverProcessManager,
         'react-server-port-test'
       );
@@ -345,11 +345,11 @@ describe('ui:create:react', () => {
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
-    it('should run the application on the specified port', async () => {
+    it('should run the application on the specified port', () => {
       expect(clientPort).toEqual(hardCodedClientPort);
     });
 
-    it('should run the token server on the specified port', async () => {
+    it('should run the token server on the specified port', () => {
       expect(serverPort).toEqual(hardCodedServerPort);
     });
   });
@@ -373,7 +373,7 @@ describe('ui:create:react', () => {
       );
       await Promise.all(dummyServers.map((server) => server.start()));
 
-      const appTerminal = await startApplication(
+      const appTerminal = startApplication(
         serverProcessManager,
         'react-server-port-test'
       );
@@ -386,19 +386,19 @@ describe('ui:create:react', () => {
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
-    it('should allocate a new port for the application', async () => {
+    it('should allocate a new port for the application', () => {
       expect(clientPort).not.toEqual(usedClientPort);
     });
 
-    it('should not use an undefined port for application', async () => {
+    it('should not use an undefined port for application', () => {
       expect(clientPort).not.toBeUndefined();
     });
 
-    it('should allocate a new port for the token server', async () => {
+    it('should allocate a new port for the token server', () => {
       expect(serverPort).not.toEqual(usedServerPort);
     });
 
-    it('should not use an undefined port for token server', async () => {
+    it('should not use an undefined port for token server', () => {
       expect(serverPort).not.toBeUndefined();
     });
 

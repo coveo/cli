@@ -13,7 +13,7 @@ export class AuthenticatedClient {
   }
 
   public async isLoggedIn() {
-    const {accessToken} = await this.cfg.get();
+    const {accessToken} = this.cfg.get();
     return accessToken !== undefined;
   }
 
@@ -28,7 +28,7 @@ export class AuthenticatedClient {
   }
 
   public async getClient(overrideConfig?: Partial<Configuration>) {
-    const configFromDisk = await this.cfg.get();
+    const configFromDisk = this.cfg.get();
     const resolvedConfig = {...configFromDisk, ...overrideConfig};
     const globalRequestSettings: Record<string, unknown> = {};
     const proxyServer =

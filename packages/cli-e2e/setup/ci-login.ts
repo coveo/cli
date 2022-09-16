@@ -20,10 +20,10 @@ async function main() {
   process.stdout.write(`CLI PATH : ${process.env.CLI_EXEC_PATH}`);
   global.processManager = new ProcessManager();
   await authenticateCli();
-  await outputCliConfig();
+  outputCliConfig();
   await global.processManager.killAllProcesses();
 }
-async function outputCliConfig() {
+function outputCliConfig() {
   const config = getConfig();
   setSecret(config.accessToken);
   exportVariable('CLI_CONFIG_PATH', getConfigFilePath());

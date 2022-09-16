@@ -60,7 +60,7 @@ export default class Preview extends CLICommand {
   )
   public async run() {
     const {flags} = await this.parse(Preview);
-    const target = await getTargetOrg(this.configuration, flags.organization);
+    const target = getTargetOrg(this.configuration, flags.organization);
     const cfg = this.configuration.get();
     const options = await this.getOptions();
     const {reporter, snapshot, project} = await dryRun(
@@ -110,7 +110,7 @@ export default class Preview extends CLICommand {
     if (err instanceof SnapshotOperationTimeoutError) {
       const {flags} = await this.parse(Preview);
       const snapshot = err.snapshot;
-      const target = await getTargetOrg(this.configuration, flags.organization);
+      const target = getTargetOrg(this.configuration, flags.organization);
       this.log(
         dedent`
 
