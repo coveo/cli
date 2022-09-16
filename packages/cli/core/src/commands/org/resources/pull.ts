@@ -1,5 +1,5 @@
 import type {ResourceSnapshotType} from '@coveord/platform-client';
-import {startSpinner} from '@coveo/cli-commons/utils/ux';
+import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
 import {Flags} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {readJsonSync} from 'fs-extra';
@@ -119,6 +119,7 @@ export default class Pull extends CLICommand {
     if (await this.shouldDeleteSnapshot()) {
       await snapshot.delete();
     }
+    stopSpinner({message: 'Project updated'});
   }
 
   private async shouldDeleteSnapshot() {
