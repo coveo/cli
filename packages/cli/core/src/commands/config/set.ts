@@ -1,4 +1,5 @@
-import {CliUx, Command, Flags} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
+import {CliUx, Flags} from '@oclif/core';
 import {Config} from '@coveo/cli-commons/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {
@@ -9,7 +10,7 @@ import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {InvalidCommandError} from '../../lib/errors/InvalidCommandError';
 import {ConfigRenderer} from '@coveo/cli-commons/config/configRenderer';
 
-export default class Set extends Command {
+export default class Set extends CLICommand {
   public static description = 'Modify the current configuration.';
 
   public static flags = {
@@ -48,11 +49,6 @@ export default class Set extends Command {
     }
 
     ConfigRenderer.render(cfg);
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 
   private async verifyOrganization(org: string) {

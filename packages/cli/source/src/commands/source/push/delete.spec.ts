@@ -14,39 +14,40 @@ import {
 const mockedClient = jest.mocked(AuthenticatedClient);
 const mockedSource = jest.mocked(PushSource);
 
+const mockDeleteOlderThan = jest
+  .fn()
+  .mockReturnValue(Promise.resolve(doMockAxiosSuccess(202, 'tiguidou')));
+
+const mockDeleteDocument = jest
+  .fn()
+  .mockReturnValue(Promise.resolve(doMockAxiosSuccess(202, 'right trou')));
+
 describe('source:push:delete', () => {
-  const mockDeleteOlderThan = jest
-    .fn()
-    .mockReturnValue(Promise.resolve(doMockAxiosSuccess(202, 'tiguidou')));
-
-  const mockeleteDocument = jest
-    .fn()
-    .mockReturnValue(Promise.resolve(doMockAxiosSuccess(202, 'right trou')));
-
-  mockedClient.mockImplementation(
-    () =>
-      ({
-        cfg: {
-          get: () =>
-            Promise.resolve({
+  beforeAll(() => {
+    mockedClient.mockImplementation(
+      () =>
+        ({
+          cfg: {
+            get: () => ({
               accessToken: 'the_token',
               organization: 'the_org',
             }),
-        },
-      } as unknown as AuthenticatedClient)
-  );
+          },
+        } as unknown as AuthenticatedClient)
+    );
 
-  mockedSource.mockImplementation(
-    () =>
-      ({
-        deleteDocumentsOlderThan: mockDeleteOlderThan,
-        deleteDocument: mockeleteDocument,
-      } as unknown as PushSource)
-  );
+    mockedSource.mockImplementation(
+      () =>
+        ({
+          deleteDocumentsOlderThan: mockDeleteOlderThan,
+          deleteDocument: mockDeleteDocument,
+        } as unknown as PushSource)
+    );
+  });
 
   beforeEach(() => {
     mockDeleteOlderThan.mockClear();
-    mockeleteDocument.mockClear();
+    mockDeleteDocument.mockClear();
   });
 
   test
@@ -60,7 +61,7 @@ describe('source:push:delete', () => {
     .stdout()
     .stderr()
     .command(['source:push:delete', 'mysource', '-x', 'foo', '-d', 'bar'])
-    .catch(/--delete= cannot also be provided when using --deleteOlderThan=/)
+    .catch(/--delete=foo cannot also be provided when using --deleteOlderThan/)
     .it(
       'throws when incompatible flags for olderThan and documentUri are passed'
     );
@@ -153,7 +154,7 @@ describe('source:push:delete', () => {
 
   test
     .do(() => {
-      mockeleteDocument.mockReturnValueOnce(
+      mockDeleteDocument.mockReturnValueOnce(
         doMockAxiosSuccess(999, 'this document is gone')
       );
     })
@@ -195,7 +196,7 @@ describe('source:push:delete', () => {
 
   test
     .do(() => {
-      mockeleteDocument.mockRejectedValueOnce(
+      mockDeleteDocument.mockRejectedValueOnce(
         doMockAxiosError(
           412,
           'this is a bad request and you should feel bad',
@@ -227,7 +228,7 @@ describe('source:push:delete', () => {
         'this is a bad request and you should feel bad',
         'BAD_REQUEST'
       );
-      mockeleteDocument.mockRejectedValueOnce(err).mockRejectedValueOnce(err);
+      mockDeleteDocument.mockRejectedValueOnce(err).mockRejectedValueOnce(err);
     })
     .stdout()
     .stderr()
@@ -253,7 +254,7 @@ describe('source:push:delete', () => {
 
   test
     .do(() => {
-      mockeleteDocument.mockRejectedValueOnce(
+      mockDeleteDocument.mockRejectedValueOnce(
         doMockAxiosError(
           412,
           'this is a bad request and you should feel bad',

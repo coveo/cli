@@ -2,5 +2,8 @@
   "extends": "../../base.eslintrc",
   "env": {
     "es6": true
+  },
+  "parserOptions": {
+    "project": "tsconfig.json"
   }
 }

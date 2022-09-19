@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`wrapError when the error is coming from the API should prettify error message from API 1`] = `
+"
+Error code: SOMETHING_WENT_WRONG
+Message: Some error message
+Request ID: some id"
+`;

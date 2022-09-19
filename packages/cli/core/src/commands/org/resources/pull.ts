@@ -1,5 +1,6 @@
 import type {ResourceSnapshotType} from '@coveord/platform-client';
-import {Flags, Command, CliUx} from '@oclif/core';
+import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
+import {Flags} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {readJsonSync} from 'fs-extra';
 import {resolve} from 'path';
@@ -32,13 +33,13 @@ import {validateSnapshotPullModel} from '../../../lib/snapshot/pullModel/validat
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {
   getTargetOrg,
-  handleSnapshotError,
   cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
 import {allowedResourceType} from '../../../lib/snapshot/snapshotConstant';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 
 const PullCommandStrings = {
   projectOverwriteQuestion: (
@@ -54,7 +55,7 @@ const PullCommandStrings = {
         `,
 };
 
-export default class Pull extends Command {
+export default class Pull extends CLICommand {
   public static description = 'Pull resources from an organization';
 
   public static flags = {
@@ -75,9 +76,7 @@ export default class Pull extends Command {
       description: 'Overwrite resources directory if it exists.',
       default: false,
     }),
-    resourceTypes: Flags.build<ResourceSnapshotType>({
-      parse: async (resourceType: ResourceSnapshotType) => resourceType,
-    })({
+    resourceTypes: Flags.enum<ResourceSnapshotType>({
       char: 'r',
       helpValue: 'type1 type2',
       description: 'The resources types to pull from the organization.',
@@ -85,8 +84,8 @@ export default class Pull extends Command {
       options: allowedResourceType,
       default: allowedResourceType,
     }),
-    model: Flags.build<SnapshotPullModel>({
-      parse: async (input: string): Promise<SnapshotPullModel> => {
+    model: Flags.custom<SnapshotPullModel>({
+      parse: (input: string): Promise<SnapshotPullModel> => {
         const model = readJsonSync(resolve(input));
         validateSnapshotPullModel(model);
         return model;
@@ -113,35 +112,34 @@ export default class Pull extends Command {
 
     const snapshot = await this.getSnapshot();
 
-    CliUx.ux.action.start('Updating project with Snapshot');
+    startSpinner('Updating project with Snapshot');
     await this.refreshProject(project, snapshot);
     project.writeResourcesManifest(targetOrganization);
 
     if (await this.shouldDeleteSnapshot()) {
       await snapshot.delete();
     }
-
-    CliUx.ux.action.stop('Project updated');
+    stopSpinner({message: 'Project updated'});
   }
 
   private async shouldDeleteSnapshot() {
     return !(await this.parse(Pull)).flags.snapshotId;
   }
 
-  @Trackable()
   public async catch(err?: Error & {exitCode?: number}) {
     cleanupProject(this.projectPath);
-    handleSnapshotError(err);
-    await this.displayAdditionalErrorMessage(err);
+    await this.supplementErrorMessage(err);
+    return super.catch(err);
   }
 
-  private async displayAdditionalErrorMessage(
-    err?: Error & {exitCode?: number}
-  ) {
+  private async supplementErrorMessage(err?: Error & {exitCode?: number}) {
     if (err instanceof SnapshotOperationTimeoutError) {
       const snapshot = err.snapshot;
       const target = await this.getTargetOrg();
-      this.log(PullCommandStrings.howToPullAfterTimeout(target, snapshot.id));
+      err.message += PullCommandStrings.howToPullAfterTimeout(
+        target,
+        snapshot.id
+      );
     }
   }
 
@@ -173,7 +171,7 @@ export default class Pull extends Command {
     );
   }
 
-  private async askUserShouldWeOverwrite() {
+  private askUserShouldWeOverwrite() {
     const question = PullCommandStrings.projectOverwriteQuestion(
       Project.resourceFolderName
     );
@@ -190,13 +188,13 @@ export default class Pull extends Command {
 
   private async createAndGetNewSnapshot(target: string) {
     const resourcesToExport = await this.getResourceSnapshotTypesToExport();
-    CliUx.ux.action.start(`Creating Snapshot from ${formatOrgId(target)}`);
+    startSpinner(`Creating Snapshot from ${formatOrgId(target)}`);
     const waitOption = await this.getWaitOption();
     return SnapshotFactory.createFromOrg(resourcesToExport, target, waitOption);
   }
 
   private async getExistingSnapshot(snapshotId: string, target: string) {
-    CliUx.ux.action.start('Retrieving Snapshot');
+    startSpinner('Retrieving Snapshot');
     const waitOption = await this.getWaitOption();
     return SnapshotFactory.createFromExistingSnapshot(
       snapshotId,

@@ -1,5 +1,6 @@
-import {Command, Flags, CliUx} from '@oclif/core';
-import {readJSONSync, writeFile, writeJSONSync} from 'fs-extra';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
+import {Flags, CliUx} from '@oclif/core';
+import {readJSONSync, writeFileSync, writeJSONSync} from 'fs-extra';
 import {Parser} from 'json2csv';
 import {SingleBar} from 'cli-progress';
 import PlatformClient from '@coveord/platform-client';
@@ -15,7 +16,6 @@ import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {without} from '../../../lib/utils/list';
 import {join} from 'path';
 import dedent from 'ts-dedent';
-
 type ResponseExceededMaximumSizeError = {message: string; type: string};
 
 interface RawResult {
@@ -40,7 +40,7 @@ interface FetchParameters {
   pipeline: string | undefined;
 }
 
-export default class Dump extends Command {
+export default class Dump extends CLICommand {
   private static readonly DefaultNumberOfResultPerQuery = 1000;
   private static mandatoryFields = ['rowid', 'sysrowid'];
 
@@ -136,10 +136,9 @@ export default class Dump extends Command {
     }
   }
 
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
+  public catch(err?: Error & {exitCode?: number}) {
     this.progressBar?.stop();
-    throw err;
+    return super.catch(err);
   }
 
   private async convertRawChunksToCSVs() {
@@ -154,7 +153,7 @@ export default class Dump extends Command {
         this.getDumpFilePathFromIndex(currentDumpFileIndex)
       );
       const parser = new Parser({fields});
-      await writeFile(
+      writeFileSync(
         join(
           flags.destination,
           `${flags.name}${

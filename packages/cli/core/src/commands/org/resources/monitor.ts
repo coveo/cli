@@ -1,5 +1,6 @@
 import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
-import {Command, CliUx} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
+import {CliUx} from '@oclif/core';
 import {Config} from '@coveo/cli-commons/config/config';
 import {
   IsAuthenticated,
@@ -10,14 +11,12 @@ import {organization, wait} from '../../../lib/flags/snapshotCommonFlags';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 import {ReportViewerStyles} from '../../../lib/snapshot/reportPreviewer/reportPreviewerStyles';
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
-import {
-  getTargetOrg,
-  handleSnapshotError,
-} from '../../../lib/snapshot/snapshotCommon';
+import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+import {startSpinner} from '@coveo/cli-commons/utils/ux';
 
-export default class Monitor extends Command {
+export default class Monitor extends CLICommand {
   public static description = 'Monitor a Snapshot operation';
 
   public static flags = {
@@ -45,17 +44,9 @@ export default class Monitor extends Command {
     await this.monitorSnapshot(snapshot);
   }
 
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    handleSnapshotError(err);
-  }
-
   private async monitorSnapshot(snapshot: Snapshot) {
     const startReporter = new SnapshotReporter(snapshot.latestReport);
-    CliUx.ux.action.start(
-      `Operation ${startReporter.type}`,
-      startReporter.status
-    );
+    startSpinner(`Operation ${startReporter.type}`, startReporter.status);
     const waitOption = await this.getWaitOption();
     await snapshot.waitUntilDone(waitOption);
     const finalReporter = new SnapshotReporter(snapshot.latestReport);
@@ -65,7 +56,7 @@ export default class Monitor extends Command {
   }
 
   private getErrorHandler() {
-    return async function (this: SnapshotReporter) {
+    return function (this: SnapshotReporter) {
       CliUx.ux.log(ReportViewerStyles.error(this.resultCode));
     };
   }
@@ -77,7 +68,7 @@ export default class Monitor extends Command {
       `Monitoring snapshot ${snapshotId}`
     );
     CliUx.ux.log('');
-    CliUx.ux.action.start(header);
+    startSpinner(header);
   }
 
   private refresh(report: ResourceSnapshotsReportModel) {

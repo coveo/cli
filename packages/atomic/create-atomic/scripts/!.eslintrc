@@ -1,5 +1,5 @@
 {
-  "extends": "../../../base.eslintrc",
+  "extends": "./node_modules/gts",
   "overrides": [
     {
       "files": "stencil.config.ts",
@@ -7,8 +7,5 @@
         "node/no-unpublished-import": "off"
       }
     }
-  ],
-  "parserOptions": {
-    "project": "tsconfig.donotcopy.json"
-  }
+  ]
 }

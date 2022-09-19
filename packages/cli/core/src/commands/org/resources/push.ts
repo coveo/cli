@@ -1,17 +1,18 @@
-import {Flags, Command, CliUx} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
+import {Flags} from '@oclif/core';
+import {startSpinner} from '@coveo/cli-commons/utils/ux';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
 } from '@coveo/cli-commons/preconditions/index';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {red, green, bold} from 'chalk';
+import {bold} from 'chalk';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {
   dryRun,
   getTargetOrg,
   handleReportWithErrors,
-  handleSnapshotError,
   cleanupProject,
   DryRunOptions,
   getMissingVaultEntriesReportHandler,
@@ -34,7 +35,7 @@ import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 
-export default class Push extends Command {
+export default class Push extends CLICommand {
   public static description =
     'Preview, validate and deploy your changes to the destination org';
 
@@ -90,10 +91,9 @@ export default class Push extends Command {
     await this.cleanup(snapshot, project);
   }
 
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
+  public catch(err?: Error & {exitCode?: number}) {
     cleanupProject(this.projectPath);
-    handleSnapshotError(err);
+    return super.catch(err);
   }
 
   private async shouldSkipPreview() {
@@ -114,7 +114,7 @@ export default class Push extends Command {
   private getSuccessReportHandler(snapshot: Snapshot) {
     const successReportWithChangesHandler = () =>
       this.successReportWithChangesHandler(snapshot);
-    return async function (this: SnapshotReporter) {
+    return function (this: SnapshotReporter) {
       return successReportWithChangesHandler();
     };
   }
@@ -138,7 +138,7 @@ export default class Push extends Command {
   }
 
   private async applySnapshot(snapshot: Snapshot) {
-    CliUx.ux.action.start('Applying snapshot');
+    startSpinner('Applying snapshot');
     const cfg = this.configuration.get();
     const {flags} = await this.parse(Push);
     const {waitUntilDone} = await this.getOptions();
@@ -149,10 +149,6 @@ export default class Push extends Command {
     await reporter
       .setReportHandler(SnapshotReportStatus.ERROR, async () => {
         await handleReportWithErrors(snapshot, cfg, this.projectPath);
-        CliUx.ux.action.stop(red.bold('!'));
-      })
-      .setReportHandler(SnapshotReportStatus.SUCCESS, () => {
-        CliUx.ux.action.stop(green('✔'));
       })
       .handleReport();
   }

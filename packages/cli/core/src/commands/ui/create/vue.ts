@@ -1,4 +1,5 @@
-import {Command, Flags} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
+import {Flags} from '@oclif/core';
 import {resolve} from 'path';
 import {Config} from '@coveo/cli-commons/config/config';
 import {
@@ -21,7 +22,7 @@ import {
   IsNpxInstalled,
 } from '../../../lib/decorators/preconditions';
 
-export default class Vue extends Command {
+export default class Vue extends CLICommand {
   public static templateName = '@coveo/vue-cli-plugin-typescript';
   public static cliPackage = '@vue/cli';
 
@@ -76,7 +77,7 @@ export default class Vue extends Command {
   public async run() {
     const {args, flags} = await this.parse(Vue);
 
-    let preset = await this.getDefaultPreset();
+    let preset = this.getDefaultPreset();
 
     if (flags.preset) {
       try {
@@ -88,11 +89,6 @@ export default class Vue extends Command {
     await this.createProject(args.name, preset);
     await this.invokePlugin(args.name);
     this.displayFeedbackAfterSuccess(args.name);
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
   }
 
   private async invokePlugin(applicationName: string) {
@@ -121,7 +117,7 @@ export default class Vue extends Command {
     });
   }
 
-  private async getDefaultPreset() {
+  private getDefaultPreset() {
     return {
       useConfigFiles: true,
       plugins: {

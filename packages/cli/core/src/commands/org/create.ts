@@ -1,4 +1,6 @@
-import {Command, Flags, CliUx} from '@oclif/core';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
+import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
+import {Flags} from '@oclif/core';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {
   Preconditions,
@@ -10,7 +12,7 @@ import {bold} from 'chalk';
 import dedent from 'ts-dedent';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 
-export default class Create extends Command {
+export default class Create extends CLICommand {
   public static description = 'Create a new test Coveo organization.';
 
   public static flags = {
@@ -34,15 +36,11 @@ export default class Create extends Command {
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {
-    CliUx.ux.action.start('Creating organization');
+    startSpinner('Creating organization');
     const {id} = await this.createOrganization();
     const endMessage = await this.generateEndMessageFromOrgId(id);
-    CliUx.ux.action.stop(endMessage);
-  }
-
-  @Trackable()
-  public async catch(err?: Error & {exitCode?: number}) {
-    throw err;
+    stopSpinner();
+    this.log(endMessage);
   }
 
   private async createOrganization() {
