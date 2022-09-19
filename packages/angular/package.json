@@ -9,7 +9,7 @@
     "prebuild": "node ./scripts/clean.js",
     "postbuild": "node ./scripts/setup.js",
     "prepublishOnly": "npm run build",
-    "release:phase2": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase2-bump-all-packages.mjs"
+    "release:phase1": "node --experimental-specifier-resolution=node ../../scripts/releaseV2/phase1-bump-all-packages.mjs"
   },
   "keywords": [
     "schematics",
