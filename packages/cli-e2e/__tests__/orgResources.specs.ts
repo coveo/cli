@@ -24,6 +24,11 @@ import {getTestOrg} from '../utils/testOrgSetup';
 import {readdirSync} from 'fs';
 import {cwd} from 'process';
 import {EOL} from 'os';
+import {
+  getMitmProxyEnvCerts,
+  startMitmProxy,
+  waitForMitmProxy,
+} from '../utils/mitmproxy';
 config({path: getEnvFilePath()});
 
 describe('org:resources', () => {
@@ -41,7 +46,20 @@ describe('org:resources', () => {
     cwd: string,
     debugName: string
   ) => {
-    return new Terminal('node', args, {cwd}, procManager, debugName);
+    return new Terminal(
+      'node',
+      args,
+      {
+        cwd,
+        env: {
+          ...process.env,
+          ...getMitmProxyEnvCerts(),
+          HTTPS_PROXY: 'http://localhost:8080',
+        },
+      },
+      procManager,
+      debugName
+    );
   };
 
   const previewChange = (
@@ -133,6 +151,8 @@ describe('org:resources', () => {
     copySync('snapshot-project', snapshotProjectPath);
     platformClient = getPlatformClient(testOrgId, accessToken);
     processManager = new ProcessManager();
+    startMitmProxy(processManager);
+    await waitForMitmProxy();
   }, 5 * 60e3);
 
   afterAll(async () => {
