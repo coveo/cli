@@ -9,27 +9,36 @@ import {
   gitTag,
   gitPush,
   gitPushTags,
+  npmBumpVersion,
 } from '@coveo/semantic-monorepo-tools';
 import {Octokit} from 'octokit';
 import angularChangelogConvention from 'conventional-changelog-angular';
 import {dedent} from 'ts-dedent';
+import {readFileSync} from 'fs';
 // Commit, tag and push
 (async () => {
   const REPO_OWNER = 'coveo';
   const REPO_NAME = 'cli';
   const PATH = '.';
-  const versionPrefix = 'v';
+  const versionPrefix = 'release-';
   const convention = await angularChangelogConvention;
   const lastTag = await getLastTag(versionPrefix);
   const commits = await getCommits(PATH, lastTag);
-  const releaseVersion = getCurrentVersion(PATH);
-  const versionTag = `${versionPrefix}${releaseVersion}`;
+  const packagesReleased = readFileSync('.git-message', {
+    encoding: 'utf-8',
+  }).trim();
+  const currentVersionTag = getCurrentVersion(PATH);
+  currentVersionTag.inc('prerelease');
+  const npmNewVersion = currentVersionTag.format();
+  const gitNewTag = `release-${currentVersionTag.prerelease}`;
+  await npmBumpVersion(npmNewVersion);
+
   let changelog = '';
   if (commits.length > 0) {
     const parsedCommits = parseCommits(commits, convention.parserOpts);
     changelog = await generateChangelog(
       parsedCommits,
-      versionTag,
+      gitNewTag,
       {
         host: 'https://github.com',
         owner: REPO_OWNER,
@@ -42,7 +51,9 @@ import {dedent} from 'ts-dedent';
 
   await gitCommit(
     dedent`
-    [version bump] chore(release): Release ${versionTag} [skip ci]
+    [version bump] chore(release): release ${gitNewTag} [skip ci]
+
+    ${packagesReleased}
 
     **/README.md
     **/CHANGELOG.md
@@ -54,10 +65,14 @@ import {dedent} from 'ts-dedent';
     `,
     PATH
   );
-  await gitTag(versionTag);
+  for (const tag of packagesReleased.split('\n').concat(gitNewTag)) {
+    await gitTag(tag);
+  }
   await gitPush();
   await gitPushTags();
-
+  if (!packagesReleased.includes('@coveo/cli')) {
+    return;
+  }
   const octokit = new Octokit({auth: process.env.GITHUB_CREDENTIALS});
   const [, ...bodyArray] = changelog.split('\n');
   await octokit.rest.repos.createRelease({
