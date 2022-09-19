@@ -67,8 +67,8 @@ jobs:
         run: npm i
       # - name: Get tag
       #   run: node ./scripts/get-tag.js # ToDo (PRE_NX): replace by some jq magic
-      # - name: Get commit short hash
-      #   run: node ./scripts/get-commit-short-hash.mjs
+      - name: Get commit short hash
+        run: node ./scripts/get-commit-short-hash.mjs
       - name: Build
         run: npm run build
       - name: Create install kits
@@ -86,15 +86,15 @@ jobs:
           New-Item -Force -ItemType directory -Path tmp
           echo "${{ secrets.COVEO_PFX }}" > ./tmp/cert.txt
           certutil -decode ./tmp/cert.txt ./tmp/cert.pfx
-          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-v1.35.12-4407e7f4-x64.exe" -PassThru | Wait-Process
-          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-v1.35.12-4407e7f4-x86.exe" -PassThru | Wait-Process
+          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-v1.35.12-${{env.commitSHA1}}-x64.exe" -PassThru | Wait-Process
+          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-v1.35.12-${{env.commitSHA1}}-x86.exe" -PassThru | Wait-Process
       - name: Sign Executable (macOS)
         # TODO: run for both mac os architectures
         working-directory: ./packages/cli/core/dist/macos
         if: ${{matrix.os == 'macos-latest'}}
         run: |
           ls
-          productsign --sign "Developer ID Installer: Coveo Solutions Inc." coveo-v1.35.12-4407e7f4-x64.pkg coveo-v1.35.12-4407e7f4-signed.pkg
+          productsign --sign "Developer ID Installer: Coveo Solutions Inc." coveo-v1.35.12-${{env.commitSHA1}}-x64.pkg coveo-v1.35.12-${{env.commitSHA1}}-signed.pkg
           // TODO: delete unsigned package
           // TODO: rename signed package
       - name: Notarize Executable (macOS)
@@ -106,13 +106,13 @@ jobs:
           xcrun notarytool store-credentials "notarytool-profile" --apple-id "${{ secrets.MACOS_APP_USERNAME }}" --team-id "${{ secrets.MACOS_WWDR_TEAM_ID }}" --password "${{ secrets.MACOS_APP_SPECIFIC_PWD }}"
 
           echo "Creating temp notarization archive"
-          ditto -c -k --keepParent "coveo-v1.35.12-4407e7f4-x64.pkg" "notarization.zip"
+          ditto -c -k --keepParent "coveo-v1.35.12-${{env.commitSHA1}}-x64.pkg" "notarization.zip"
 
           echo "Notarize app"
           xcrun notarytool submit "notarization.zip" --keychain-profile "notarytool-profile" --wait
 
           echo "Attach staple"
-          xcrun stapler staple "coveo-v1.35.12-4407e7f4-x64.pkg"
+          xcrun stapler staple "coveo-v1.35.12-${{env.commitSHA1}}-x64.pkg"
       - name: Upload artifacts
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
         if: always()
