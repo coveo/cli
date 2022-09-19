@@ -3,17 +3,20 @@ import PlatformClient, {
   ResourceSnapshotType,
   SnapshotAccessType,
 } from '@coveord/platform-client';
-import {isSubset} from '../utils/list';
+import {MissingResourcePrivileges} from '../errors/snapshotErrors';
+import {isSubset, without} from '../utils/list';
 
 export async function ensureResourceAccess(
   client: PlatformClient,
-  resourcesTypes: ResourceSnapshotType[]
+  resourcesTypes: ResourceSnapshotType[],
+  snapshotAccessType: SnapshotAccessType = SnapshotAccessType.Read
 ) {
   starSpinner('Validating resource access');
   const allowedResources = await client.resourceSnapshot.listResourceAccess();
-  const isAllowed = isSubset(resourcesTypes, allowedResources);
-  if (!isAllowed) {
-    throw 'TODO: missing resources privileges';
+  const allowed = isSubset(resourcesTypes, allowedResources);
+  if (!allowed) {
+    const missingResources = without(resourcesTypes, allowedResources);
+    throw new MissingResourcePrivileges(missingResources, snapshotAccessType);
   }
 }
 

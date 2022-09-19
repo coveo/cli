@@ -7,6 +7,11 @@ import {
   CLIBaseError,
   SeverityLevel,
 } from '@coveo/cli-commons/errors/cliBaseError';
+import {
+  ResourceSnapshotType,
+  SnapshotAccessType,
+} from '@coveord/platform-client';
+import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/utils/string';
 
 interface DetailedReportable extends CLIBaseError {
   snapshot: Snapshot;
@@ -73,6 +78,7 @@ export class SnapshotGenericError
     trySavingDetailedReport(this);
   }
 }
+
 export class SnapshotMissingVaultEntriesError
   extends CLIBaseError
   implements DetailedReportable
@@ -89,5 +95,31 @@ export class SnapshotMissingVaultEntriesError
       Visit https://docs.coveo.com/en/m3a90243 for more info on how to create vault entries.`;
 
     trySavingDetailedReport(this);
+  }
+}
+
+export class MissingResourcePrivileges extends CLIBaseError {
+  public name = 'Snapshot Missing Vault Entries';
+  public constructor(
+    missingResources: ResourceSnapshotType[],
+    snapshotAccessType: SnapshotAccessType
+  ) {
+    super();
+    const entryPlurable: Plurable = ['resource', 'resources'];
+    const resourcePLuralized = pluralizeIfNeeded(
+      entryPlurable,
+      missingResources.length
+    );
+    const messageParts = [
+      `You are missing ${snapshotAccessType} privileges on the following resources ${resourcePLuralized}`,
+    ];
+    for (const resource in missingResources) {
+      messageParts.push(` • ${resource}`);
+    }
+    messageParts.push(
+      dedent`
+      Visit https://docs.coveo.com/en/3357 for more info on privileges required to manage snapshots.`
+    );
+    this.message = messageParts.join('\n');
   }
 }
