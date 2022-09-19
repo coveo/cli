@@ -60,7 +60,10 @@ describe('SnapshotFactory', () => {
     const pathToZip = join('dummy', 'path');
 
     beforeEach(async () => {
-      await SnapshotFactory.createFromZip(pathToZip, 'my-target-org');
+      await SnapshotFactory.createSnapshotFromProject(
+        pathToZip,
+        'my-target-org'
+      );
     });
 
     fancyIt()(
