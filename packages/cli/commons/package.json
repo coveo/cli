@@ -22,8 +22,8 @@
   },
   "dependencies": {
     "@amplitude/node": "1.10.2",
-    "@coveord/platform-client": "34.12.0",
-    "@oclif/core": "1.16.1",
+    "@coveord/platform-client": "34.13.0",
+    "@oclif/core": "1.16.3",
     "abortcontroller-polyfill": "1.7.3",
     "chalk": "4.1.2",
     "fs-extra": "10.1.0",
