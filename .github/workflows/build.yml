@@ -61,8 +61,8 @@ jobs:
           echo "Adding certificate to keychain"
           security import certificate.p12 -k build.keychain -P "$MACOS_CERTIFICATE_PWD" -T /usr/bin/codesign -T /usr/bin/productsign
 
-          echo "Enabling codesigning from a non user interactive shell"
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$MACOS_KEYCHAIN_PWD" build.keychain
+          echo "Enabling productsign from a non user interactive shell"
+          security set-key-partition-list -S apple-tool:,apple:,codesign:,productsign: -s -k "$MACOS_KEYCHAIN_PWD" build.keychain
       - name: Setup
         run: npm i
       # - name: Get tag
