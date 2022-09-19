@@ -97,7 +97,8 @@ jobs:
         run: |
           ls
           # TODO: replace with TeamId
-          productsign --sign "Developer ID Installer: Coveo Solutions Inc." coveo-v1.35.12-${{env.commitSHA1}}-x64.pkg coveo-v1.35.12-${{env.commitSHA1}}-signed.pkg
+          # TODO: Check if keychain path is really needed
+          productsign --sign "Developer ID Installer: Coveo Solutions Inc." coveo-v1.35.12-${{env.commitSHA1}}-x64.pkg coveo-v1.35.12-${{env.commitSHA1}}-signed.pkg --keychain "/Users/runner/Library/Keychains/build.keychain-db"
           // TODO: delete unsigned package
           // TODO: rename signed package
       - name: Notarize Executable (macOS)
