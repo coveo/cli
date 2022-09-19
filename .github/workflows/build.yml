@@ -137,13 +137,12 @@ jobs:
       matrix:
         os: ['ubuntu-latest', 'windows-latest']
         node: [16]
-        spec:
-          [
+        spec: [
             'angular.specs.ts',
             'atomic.specs.ts',
             'auth.specs.ci.ts',
             'orgList.specs.ts',
-            'orgResources.specs.ts',
+            # 'orgResources.specs.ts',
             'react.specs.ts',
             'vue.specs.ts',
           ]
