@@ -15,6 +15,7 @@ import {DotFolder} from '../../project/dotFolder';
 import {cwd} from 'process';
 import {green} from 'chalk';
 import {buildResourcesToExport} from '../pullModel/validation/model';
+import {startSpinner} from '@coveo/cli-commons/utils/ux';
 
 export class ExpandedPreviewer {
   private static readonly previewDirectoryName = 'preview';
@@ -51,7 +52,7 @@ export class ExpandedPreviewer {
       recursive: true,
     });
     const project = new Project(resolve(dirPath));
-    CliUx.ux.action.start('Generating preview details');
+    startSpinner('Generating preview details');
     await this.initPreviewDirectory(dirPath, project);
     await this.applySnapshotToPreview(dirPath);
     const commitHash = await this.getCommitHash(dirPath);
@@ -63,7 +64,6 @@ export class ExpandedPreviewer {
 
     with the associated commit hash: ${commitHash.stdout}
     `);
-    CliUx.ux.action.stop(green('✔'));
   }
 
   private deleteOldestPreviews() {

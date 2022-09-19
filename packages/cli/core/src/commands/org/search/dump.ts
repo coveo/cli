@@ -1,6 +1,6 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Flags, CliUx} from '@oclif/core';
-import {readJSONSync, writeFile, writeJSONSync} from 'fs-extra';
+import {readJSONSync, writeFileSync, writeJSONSync} from 'fs-extra';
 import {Parser} from 'json2csv';
 import {SingleBar} from 'cli-progress';
 import PlatformClient from '@coveord/platform-client';
@@ -16,7 +16,6 @@ import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {without} from '../../../lib/utils/list';
 import {join} from 'path';
 import dedent from 'ts-dedent';
-
 type ResponseExceededMaximumSizeError = {message: string; type: string};
 
 interface RawResult {
@@ -137,7 +136,7 @@ export default class Dump extends CLICommand {
     }
   }
 
-  public async catch(err?: Error & {exitCode?: number}) {
+  public catch(err?: Error & {exitCode?: number}) {
     this.progressBar?.stop();
     return super.catch(err);
   }
@@ -154,7 +153,7 @@ export default class Dump extends CLICommand {
         this.getDumpFilePathFromIndex(currentDumpFileIndex)
       );
       const parser = new Parser({fields});
-      await writeFile(
+      writeFileSync(
         join(
           flags.destination,
           `${flags.name}${

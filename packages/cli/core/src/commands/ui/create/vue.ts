@@ -77,7 +77,7 @@ export default class Vue extends CLICommand {
   public async run() {
     const {args, flags} = await this.parse(Vue);
 
-    let preset = await this.getDefaultPreset();
+    let preset = this.getDefaultPreset();
 
     if (flags.preset) {
       try {
@@ -117,7 +117,7 @@ export default class Vue extends CLICommand {
     });
   }
 
-  private async getDefaultPreset() {
+  private getDefaultPreset() {
     return {
       useConfigFiles: true,
       plugins: {

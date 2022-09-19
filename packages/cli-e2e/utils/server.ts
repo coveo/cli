@@ -15,7 +15,7 @@ export class DummyServer {
     this.server.listen(this.port);
   }
 
-  public async close() {
+  public close() {
     return new Promise<void>((resolve, reject) => {
       this.server.close((err) => {
         if (err) {

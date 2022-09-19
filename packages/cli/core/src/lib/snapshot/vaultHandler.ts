@@ -8,14 +8,14 @@ import {readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
 import open from 'open';
 import {join} from 'path';
 import {cwd} from 'process';
-import {green, inverse} from 'chalk';
+import {inverse} from 'chalk';
+import {startSpinner} from '@coveo/cli-commons/utils/ux';
 import {
   InvalidVaultEntryError,
   InvalidVaultFileError,
   MissingVaultEntryValueError,
 } from '../errors/vaultErrors';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {Snapshot} from './snapshot';
 import {VaultEntryAttributes} from './snapshotReporter';
 import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/utils/string';
 import {ProcessAbort} from '../../lib/errors/processError';
@@ -65,7 +65,7 @@ export class VaultHandler {
     const client = await this.client();
     if (vaultEntryModels.length > 0) {
       const entryPlurable: Plurable = ['entry', 'entries'];
-      CliUx.ux.action.start(
+      startSpinner(
         `Creating vault ${pluralizeIfNeeded(
           entryPlurable,
           vaultEntryModels.length
@@ -74,7 +74,6 @@ export class VaultHandler {
       await Promise.all(
         vaultEntryModels.map((entry) => client.vault.create(entry))
       );
-      CliUx.ux.action.stop(green('✔'));
     }
   }
 
