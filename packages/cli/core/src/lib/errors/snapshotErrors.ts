@@ -1,4 +1,4 @@
-import {blueBright} from 'chalk';
+import {blueBright, bold} from 'chalk';
 import dedent from 'ts-dedent';
 import {Configuration} from '@coveo/cli-commons/config/config';
 import {Snapshot} from '../snapshot/snapshot';
@@ -99,7 +99,7 @@ export class SnapshotMissingVaultEntriesError
 }
 
 export class MissingResourcePrivileges extends CLIBaseError {
-  public name = 'Snapshot Missing Vault Entries';
+  public name = 'Snapshot Missing Resource Privileges';
   public constructor(
     missingResources: ResourceSnapshotType[],
     snapshotAccessType: SnapshotAccessType
@@ -110,16 +110,32 @@ export class MissingResourcePrivileges extends CLIBaseError {
       entryPlurable,
       missingResources.length
     );
-    const messageParts = [
-      `You are missing ${snapshotAccessType} privileges on the following resources ${resourcePLuralized}`,
-    ];
-    for (const resource in missingResources) {
-      messageParts.push(` • ${resource}`);
-    }
-    messageParts.push(
-      dedent`
-      Visit https://docs.coveo.com/en/3357 for more info on privileges required to manage snapshots.`
+    const title = `You are missing ${bold(
+      snapshotAccessType
+    )} privilege on the following ${resourcePLuralized}`;
+    const reference =
+      'Visit https://docs.coveo.com/en/3357 for more info on privileges required to manage snapshots.';
+    const newline = '';
+    const missingResourcesList = missingResources.map(
+      (resource) => ` • ${resource}`
     );
-    this.message = messageParts.join('\n');
+
+    this.message = [title, ...missingResourcesList, newline, reference].join(
+      '\n'
+    );
+  }
+}
+
+export class MissingSnapshotPrivilege extends CLIBaseError {
+  public name = 'Snapshot Missing Privileges';
+  public constructor(
+    snapshotId: string,
+    snapshotAccessType: SnapshotAccessType
+  ) {
+    super();
+    this.message = dedent`You do not have ${bold(
+      snapshotAccessType
+    )} privilege on the snapshot ${snapshotId}
+      Visit https://docs.coveo.com/en/3357 for more info on privileges required to manage snapshots.`;
   }
 }

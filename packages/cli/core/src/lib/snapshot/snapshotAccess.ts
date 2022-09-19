@@ -3,7 +3,10 @@ import PlatformClient, {
   ResourceSnapshotType,
   SnapshotAccessType,
 } from '@coveord/platform-client';
-import {MissingResourcePrivileges} from '../errors/snapshotErrors';
+import {
+  MissingResourcePrivileges,
+  MissingSnapshotPrivilege,
+} from '../errors/snapshotErrors';
 import {isSubset, without} from '../utils/list';
 
 export async function ensureResourceAccess(
@@ -31,6 +34,6 @@ export async function ensureSnapshotAccess(
   });
 
   if (!allowed) {
-    throw `TODO: You do not have ${snapshotAccessType} rights on the snapshot ${snapshotId}`;
+    throw new MissingSnapshotPrivilege(snapshotId, snapshotAccessType);
   }
 }
