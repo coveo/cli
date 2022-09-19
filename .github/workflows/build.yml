@@ -96,9 +96,10 @@ jobs:
           ls
           # TODO: replace with TeamId
           security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" build.keychain
-          productsign --sign "Developer ID Installer: Coveo Solutions Inc." coveo-v1.35.12-${{env.commitSHA1}}-x64.pkg coveo-v1.35.12-${{env.commitSHA1}}-signed.pkg --keychain build.keychain
-          // TODO: delete unsigned package
-          // TODO: rename signed package
+          productsign --sign $MACOS_WWDR_TEAM_ID coveo-v1.35.12-${{env.commitSHA1}}-x64.pkg coveo-v1.35.12-${{env.commitSHA1}}-signed.pkg --keychain build.keychain
+          ls
+          # TODO: delete unsigned package
+          # TODO: rename signed package
       - name: Notarize Executable (macOS)
         working-directory: ./packages/cli/core/dist/macos
         if: ${{matrix.os == 'macos-latest'}}
@@ -108,13 +109,13 @@ jobs:
           xcrun notarytool store-credentials "notarytool-profile" --apple-id "${{ secrets.MACOS_APP_USERNAME }}" --team-id "${{ secrets.MACOS_WWDR_TEAM_ID }}" --password "${{ secrets.MACOS_APP_SPECIFIC_PWD }}"
 
           echo "Creating temp notarization archive"
-          ditto -c -k --keepParent "coveo-v1.35.12-${{env.commitSHA1}}-x64.pkg" "notarization.zip"
+          ditto -c -k --keepParent "coveo-v1.35.12-${{env.commitSHA1}}-x64-signed.pkg" "notarization.zip"
 
           echo "Notarize app"
           xcrun notarytool submit "notarization.zip" --keychain-profile "notarytool-profile" --wait
 
           echo "Attach staple"
-          xcrun stapler staple "coveo-v1.35.12-${{env.commitSHA1}}-x64.pkg"
+          xcrun stapler staple "coveo-v1.35.12-${{env.commitSHA1}}-x64-signed.pkg"
       - name: Upload artifacts
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
         if: always()
