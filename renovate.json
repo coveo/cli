@@ -19,11 +19,6 @@
       "rangeStrategy": "replace"
     },
     {
-      "matchPackageNames": ["@coveo/atomic"],
-      "allowedVersions": "1.86.0",
-      "description": "Need latest tag to be updated. TODO:CDX-1104"
-    },
-    {
       "matchPackageNames": ["strip-ansi"],
       "allowedVersions": "6.x"
     },
@@ -34,11 +29,6 @@
     {
       "matchPackageNames": ["chalk"],
       "allowedVersions": "4.x"
-    },
-    {
-      "matchPackageNames": ["npm"],
-      "allowedVersions": "8.4.x",
-      "description": "Need NPM to be fixed https://github.com/npm/cli/issues/4404 TODO:CDX-815"
     },
     {
       "matchPackageNames": ["vue"],
