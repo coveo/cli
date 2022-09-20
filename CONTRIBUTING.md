@@ -19,7 +19,7 @@ The CLI folder contains three special projects:
 - `core`: The CLI Itself.
 
 This structure allows the CLI to ship as a bundle of bricks, rather than as a big chunky house.
-However, our tools don't necessarily play nicely with this structure.
+However, `oclif` doesn't necessarily play nicely with this project structure
 
 ### The TypeScript Configs
 
