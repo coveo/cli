@@ -11,7 +11,7 @@
     "@amplitude/node": "^1.9.0",
     "@coveo/cli-commons": "1.35.12",
     "@coveo/cli-plugin-source": "1.35.12",
-    "@coveo/push-api-client": "2.5.8",
+    "@coveo/push-api-client": "2.5.15",
     "@coveord/platform-client": "34.13.0",
     "@oclif/core": "1.16.3",
     "@oclif/plugin-help": "5.1.12",
