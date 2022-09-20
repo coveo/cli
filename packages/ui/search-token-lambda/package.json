@@ -6,7 +6,7 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:coveo/cli.git",
-    "directory": "packages/search-token-lambda"
+    "directory": "packages/ui/search-token-lambda"
   },
   "scripts": {
     "start": "netlify functions:serve",

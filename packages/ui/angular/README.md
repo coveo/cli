@@ -45,7 +45,7 @@ Make sure to link your local schematic to the project you want to use it in.
 
 ```
 cd my-test-app
-npm link /path/to/coveo-cli/packages/angular
+npm link /path/to/coveo-cli/packages/ui/angular
 ```
 
 > You can also use `npm pack` in your schematics project, then `npm install /path/to/artifact.tar.gz` in your Angular project.

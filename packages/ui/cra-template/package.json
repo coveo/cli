@@ -15,7 +15,7 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:coveo/cli.git",
-    "directory": "packages/cra-template"
+    "directory": "packages/ui/cra-template"
   },
   "license": "Apache-2.0",
   "engines": {
