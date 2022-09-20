@@ -91,7 +91,8 @@
   },
   "workspaces": [
     "packages/*",
-    "packages/atomic/*",
+    "packages/ui/*",
+    "packages/ui/atomic/*",
     "packages/cli/*"
   ],
   "dependencies": {
