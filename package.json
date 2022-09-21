@@ -94,8 +94,5 @@
     "packages/ui/*",
     "packages/ui/atomic/*",
     "packages/cli/*"
-  ],
-  "dependencies": {
-    "jest-config": "27.5.1"
-  }
+  ]
 }

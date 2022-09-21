@@ -22,7 +22,7 @@ import globalConfig from '@coveo/cli-commons/config/globalConfig';
 describe('identifier', () => {
   const mockedGlobalConfig = jest.mocked(globalConfig);
   const mockedConfig = jest.mocked(Config);
-  const mockedIdentify = jest.mocked(Identify, true);
+  const mockedIdentify = jest.mocked(Identify);
   const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
   const mockedPlatformClient = jest.mocked(PlatformClient);
   const mockUserGet = jest.fn();

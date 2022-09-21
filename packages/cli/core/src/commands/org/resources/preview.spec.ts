@@ -26,7 +26,7 @@ import {CliUx, Command} from '@oclif/core';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions';
 
-const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
+const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
 const mockedConfig = jest.mocked(Config);
 const mockedProject = jest.mocked(Project);
 const mockedConfigGet = jest.fn();
@@ -38,7 +38,7 @@ const mockedAreResourcesInError = jest.fn();
 const mockedValidateSnapshot = jest.fn();
 const mockedPreviewSnapshot = jest.fn();
 const mockedLastReport = jest.fn();
-const mockedIsGitInstalled = jest.mocked(IsGitInstalled, true);
+const mockedIsGitInstalled = jest.mocked(IsGitInstalled);
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockEvaluate = jest.fn();
 

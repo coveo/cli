@@ -28,14 +28,14 @@ import {HasNecessaryCoveoPrivileges} from '@coveo/cli-commons/preconditions/inde
 
 describe('ui:create:angular', () => {
   const mockedConfig = jest.mocked(Config);
-  const mockedSpawnProcess = jest.mocked(spawnProcess, true);
+  const mockedSpawnProcess = jest.mocked(spawnProcess);
   const mockedPlatformClient = jest.mocked(PlatformClient);
   const mockedGetPackageVersion = jest.mocked(getPackageVersion);
   const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
-  const mockedIsNpmVersionInRange = jest.mocked(IsNpmVersionInRange, true);
-  const mockedIsNodeVersionInRange = jest.mocked(IsNodeVersionInRange, true);
-  const mockedIsNgInstalled = jest.mocked(IsNgVersionInRange, true);
-  const mockedApiKeyPrivilege = jest.mocked(HasNecessaryCoveoPrivileges, true);
+  const mockedIsNpmVersionInRange = jest.mocked(IsNpmVersionInRange);
+  const mockedIsNodeVersionInRange = jest.mocked(IsNodeVersionInRange);
+  const mockedIsNgInstalled = jest.mocked(IsNgVersionInRange);
+  const mockedApiKeyPrivilege = jest.mocked(HasNecessaryCoveoPrivileges);
   const mockedCreateImpersonateApiKey = jest.fn();
   const preconditionStatus = {
     node: true,

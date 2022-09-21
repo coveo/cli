@@ -22,7 +22,7 @@ import {
 } from '../../../__stub__/resourceSnapshotsReportModel';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 
-const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
+const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
 const mockedConfig = jest.mocked(Config);
 const mockedProject = jest.mocked(Project);
 const mockedConfigGet = jest.fn();

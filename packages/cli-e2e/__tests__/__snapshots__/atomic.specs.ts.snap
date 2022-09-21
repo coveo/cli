@@ -2,7 +2,7 @@
 
 exports[`ui:create:atomic when using an existing pageId (--pageId flag specified) the project has been generated properly 1`] = `
 HashedFolder {
-  "children": Array [
+  "children": [
     HashedFile {
       "hash": "RH58BiYWbvwHsjuAvGykfQPEhA0=",
       "name": "netlify.toml",
@@ -12,7 +12,7 @@ HashedFolder {
       "name": "README.md",
     },
     HashedFolder {
-      "children": Array [
+      "children": [
         HashedFile {
           "hash": "FzT+9wG12uZWQ02Ky+9GlJ7ZQac=",
           "name": "clean-up.js",
@@ -30,11 +30,11 @@ HashedFolder {
       "name": "scripts",
     },
     HashedFolder {
-      "children": Array [
+      "children": [
         HashedFolder {
-          "children": Array [
+          "children": [
             HashedFolder {
-              "children": Array [
+              "children": [
                 HashedFile {
                   "hash": "ErdFGgbxq+C0LOYeQvVh59O3JYA=",
                   "name": "results-manager.tsx",
@@ -48,7 +48,7 @@ HashedFolder {
               "name": "results-manager",
             },
             HashedFolder {
-              "children": Array [
+              "children": [
                 HashedFile {
                   "hash": "XemX7AoOihA4SgQsvWtcStjeiGo=",
                   "name": "sample-component.css",
@@ -62,7 +62,7 @@ HashedFolder {
               "name": "sample-component",
             },
             HashedFolder {
-              "children": Array [
+              "children": [
                 HashedFile {
                   "hash": "0kZk+nhPZP6DNXEt1ds/y13pPn4=",
                   "name": "sample-result-component.css",
@@ -92,12 +92,12 @@ HashedFolder {
           "name": "index.ts",
         },
         HashedFolder {
-          "children": Array [],
+          "children": [],
           "hash": "2jmj7l5rSw0yVb/vlWAYkK/YBwk=",
           "name": "pages",
         },
         HashedFolder {
-          "children": Array [
+          "children": [
             HashedFile {
               "hash": "ygdkeGA2hXdvtcqJyetblv/fdrw=",
               "name": "index.css",
@@ -126,13 +126,13 @@ HashedFolder {
 
 exports[`ui:create:atomic when using an existing pageId (pageId not specified) the project has been generated properly 1`] = `
 HashedFolder {
-  "children": Array [
+  "children": [
     HashedFolder {
-      "children": Array [
+      "children": [
         HashedFolder {
-          "children": Array [
+          "children": [
             HashedFolder {
-              "children": Array [
+              "children": [
                 HashedFile {
                   "hash": "svywi4m+5JDQ38UPkngnE1Mjtdo=",
                   "name": "areEnvironmentVariablesSet.ts",
@@ -190,16 +190,16 @@ HashedFolder {
       "name": "README.md",
     },
     HashedFolder {
-      "children": Array [],
+      "children": [],
       "hash": "2jmj7l5rSw0yVb/vlWAYkK/YBwk=",
       "name": "scripts",
     },
     HashedFolder {
-      "children": Array [
+      "children": [
         HashedFolder {
-          "children": Array [
+          "children": [
             HashedFolder {
-              "children": Array [
+              "children": [
                 HashedFile {
                   "hash": "YY+tyg0Mw+JNjYdifQfLqfDUASQ=",
                   "name": "results-manager.tsx",
@@ -213,7 +213,7 @@ HashedFolder {
               "name": "results-manager",
             },
             HashedFolder {
-              "children": Array [
+              "children": [
                 HashedFile {
                   "hash": "XemX7AoOihA4SgQsvWtcStjeiGo=",
                   "name": "sample-component.css",
@@ -227,7 +227,7 @@ HashedFolder {
               "name": "sample-component",
             },
             HashedFolder {
-              "children": Array [
+              "children": [
                 HashedFile {
                   "hash": "0kZk+nhPZP6DNXEt1ds/y13pPn4=",
                   "name": "sample-result-component.css",
@@ -257,12 +257,12 @@ HashedFolder {
           "name": "index.ts",
         },
         HashedFolder {
-          "children": Array [],
+          "children": [],
           "hash": "2jmj7l5rSw0yVb/vlWAYkK/YBwk=",
           "name": "pages",
         },
         HashedFolder {
-          "children": Array [
+          "children": [
             HashedFile {
               "hash": "61GVF7l8bCVXW00H2rtInTKwoqY=",
               "name": "index.css",
@@ -291,7 +291,7 @@ HashedFolder {
 
 exports[`ui:create:atomic when using an existing pageId (using the list prompt of available pages) the project has been generated properly 1`] = `
 HashedFolder {
-  "children": Array [
+  "children": [
     HashedFile {
       "hash": "RH58BiYWbvwHsjuAvGykfQPEhA0=",
       "name": "netlify.toml",
@@ -301,7 +301,7 @@ HashedFolder {
       "name": "README.md",
     },
     HashedFolder {
-      "children": Array [
+      "children": [
         HashedFile {
           "hash": "FzT+9wG12uZWQ02Ky+9GlJ7ZQac=",
           "name": "clean-up.js",
@@ -319,11 +319,11 @@ HashedFolder {
       "name": "scripts",
     },
     HashedFolder {
-      "children": Array [
+      "children": [
         HashedFolder {
-          "children": Array [
+          "children": [
             HashedFolder {
-              "children": Array [
+              "children": [
                 HashedFile {
                   "hash": "ErdFGgbxq+C0LOYeQvVh59O3JYA=",
                   "name": "results-manager.tsx",
@@ -337,7 +337,7 @@ HashedFolder {
               "name": "results-manager",
             },
             HashedFolder {
-              "children": Array [
+              "children": [
                 HashedFile {
                   "hash": "XemX7AoOihA4SgQsvWtcStjeiGo=",
                   "name": "sample-component.css",
@@ -351,7 +351,7 @@ HashedFolder {
               "name": "sample-component",
             },
             HashedFolder {
-              "children": Array [
+              "children": [
                 HashedFile {
                   "hash": "0kZk+nhPZP6DNXEt1ds/y13pPn4=",
                   "name": "sample-result-component.css",
@@ -381,12 +381,12 @@ HashedFolder {
           "name": "index.ts",
         },
         HashedFolder {
-          "children": Array [],
+          "children": [],
           "hash": "2jmj7l5rSw0yVb/vlWAYkK/YBwk=",
           "name": "pages",
         },
         HashedFolder {
-          "children": Array [
+          "children": [
             HashedFile {
               "hash": "ygdkeGA2hXdvtcqJyetblv/fdrw=",
               "name": "index.css",
@@ -415,7 +415,7 @@ HashedFolder {
 
 exports[`ui:create:atomic when using the default page config (pageId not specified) the project has been generated properly 1`] = `
 HashedFolder {
-  "children": Array [
+  "children": [
     HashedFile {
       "hash": "RH58BiYWbvwHsjuAvGykfQPEhA0=",
       "name": "netlify.toml",
@@ -425,7 +425,7 @@ HashedFolder {
       "name": "README.md",
     },
     HashedFolder {
-      "children": Array [
+      "children": [
         HashedFile {
           "hash": "FzT+9wG12uZWQ02Ky+9GlJ7ZQac=",
           "name": "clean-up.js",
@@ -443,11 +443,11 @@ HashedFolder {
       "name": "scripts",
     },
     HashedFolder {
-      "children": Array [
+      "children": [
         HashedFolder {
-          "children": Array [
+          "children": [
             HashedFolder {
-              "children": Array [
+              "children": [
                 HashedFile {
                   "hash": "X8T+MmiPJFNu/lwXh6d29i/YhYo=",
                   "name": "results-manager.tsx",
@@ -461,7 +461,7 @@ HashedFolder {
               "name": "results-manager",
             },
             HashedFolder {
-              "children": Array [
+              "children": [
                 HashedFile {
                   "hash": "XemX7AoOihA4SgQsvWtcStjeiGo=",
                   "name": "sample-component.css",
@@ -475,7 +475,7 @@ HashedFolder {
               "name": "sample-component",
             },
             HashedFolder {
-              "children": Array [
+              "children": [
                 HashedFile {
                   "hash": "0kZk+nhPZP6DNXEt1ds/y13pPn4=",
                   "name": "sample-result-component.css",
@@ -505,12 +505,12 @@ HashedFolder {
           "name": "index.ts",
         },
         HashedFolder {
-          "children": Array [],
+          "children": [],
           "hash": "2jmj7l5rSw0yVb/vlWAYkK/YBwk=",
           "name": "pages",
         },
         HashedFolder {
-          "children": Array [
+          "children": [
             HashedFile {
               "hash": "Dp2EpyDmwkxrxWxZxv0cM41ulEs=",
               "name": "index.css",

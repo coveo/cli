@@ -12,8 +12,8 @@ import {Snapshot} from './snapshot';
 import {SnapshotFactory} from './snapshotFactory';
 
 const mockedReadFileSync = jest.mocked(readFileSync);
-const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient, true);
-const mockedSnapshot = jest.mocked(Snapshot, true);
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
+const mockedSnapshot = jest.mocked(Snapshot);
 const mockedCreateSnapshotFromBuffer = jest.fn();
 const mockedCreateFromOrganization = jest.fn();
 const mockedPushSnapshot = jest.fn();

@@ -16,7 +16,7 @@ import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {formatCliLog} from '../../../__test__/jestSnapshotUtils';
 
-const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
+const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
 const mockedConfig = jest.mocked(Config);
 const mockedConfigGet = jest.fn();
 const mockedGetSnapshot = jest.fn();
@@ -28,7 +28,7 @@ const mockedSaveDetailedReport = jest.fn();
 const mockedAreResourcesInError = jest.fn();
 const mockedLatestReport = jest.fn();
 
-const mockedSnapshotReporter = jest.mocked(SnapshotReporter, true);
+const mockedSnapshotReporter = jest.mocked(SnapshotReporter);
 
 const mockSnapshotFactory = () => {
   mockedSnapshotFactory.createFromExistingSnapshot.mockReturnValue(

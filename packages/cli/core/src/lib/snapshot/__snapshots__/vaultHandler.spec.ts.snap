@@ -2,8 +2,8 @@
 
 exports[`VaultHandler when the user does not fill all the vault entries values #createEntries should warn the user about missing vault entries 1`] = `
 [MockFunction] {
-  "calls": Array [
-    Array [
+  "calls": [
+    [
       "Missing vault entry value: 
   • sitemap_yyyyyy-configuration.json.path
   • web_xxxxxx-configuration.json.path
@@ -11,8 +11,8 @@ exports[`VaultHandler when the user does not fill all the vault entries values #
 Fill all required vault entries to proceed.",
     ],
   ],
-  "results": Array [
-    Object {
+  "results": [
+    {
       "type": "return",
       "value": undefined,
     },
@@ -21,9 +21,9 @@ Fill all required vault entries to proceed.",
 `;
 
 exports[`VaultHandler when the vault entries are valid #createEntries should prompt instructions for the user 1`] = `
-Array [
+[
   "",
-  Object {
+  {
     "prompt": "
 [7mPress any key to continue. Press q to abort[27m
 ",

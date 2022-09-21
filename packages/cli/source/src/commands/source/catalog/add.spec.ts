@@ -32,7 +32,7 @@ const mockSetSourceStatus = jest.fn();
 const mockBatchUpdate = jest.fn();
 const mockBatchStream = jest.fn();
 const mockedConfigGet = jest.fn();
-const mockedConfig = jest.mocked(Config, true);
+const mockedConfig = jest.mocked(Config);
 
 describe('source:catalog:add', () => {
   const pathToStub = join(cwd(), 'src', '__stub__');

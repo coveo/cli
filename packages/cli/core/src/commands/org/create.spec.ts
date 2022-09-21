@@ -8,8 +8,8 @@ import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClie
 import {OrganizationCreationOrigin} from '@coveord/platform-client';
 import {Config} from '@coveo/cli-commons/config/config';
 
-const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient, true);
-const mockedConfig = jest.mocked(Config, true);
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
+const mockedConfig = jest.mocked(Config);
 const mockedCreate = jest.fn();
 const mockConfigSet = jest.fn();
 const mockConfigGet = jest.fn().mockResolvedValue({
