@@ -32,9 +32,9 @@
   "dependencies": {
     "@coveord/platform-client": "34.13.0",
     "abortcontroller-polyfill": "1.7.3",
-    "detect-indent": "7.0.0",
+    "detect-indent": "7.0.1",
     "https-proxy-agent": "5.0.1",
-    "inquirer": "^8.2.0",
+    "inquirer": "^9.0.0",
     "isomorphic-fetch": "3.0.0",
     "minimist": "1.2.6",
     "node-plop": "^0.31.0",

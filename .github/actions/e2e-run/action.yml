@@ -36,7 +36,7 @@ runs:
       with:
         node-version: ${{inputs.node}}
         cache: 'npm'
-    - uses: actions/setup-python@98f2ad02fd48d057ee3b4d4f66525b231c3e52b6 # tag=v3
+    - uses: actions/setup-python@b55428b1882923874294fa556849718a1d7f2ca5 # tag=v4
       with:
         cache: 'pip'
     - name: Install Mitmproxy through pip
