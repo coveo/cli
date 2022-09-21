@@ -1,0 +1,52 @@
+{
+  "name": "@coveo/cra-template",
+  "version": "1.35.12",
+  "scripts": {
+    "lint": "prettier --check . && eslint .",
+    "release:phase1": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase1-bump-all-packages.mjs"
+  },
+  "keywords": [
+    "react",
+    "create-react-app",
+    "template",
+    "typescript"
+  ],
+  "description": "Coveo template for Create React App.",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:coveo/cli.git",
+    "directory": "packages/ui/cra-template"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=14"
+  },
+  "files": [
+    "template",
+    "template.json"
+  ],
+  "dependencies": {
+    "fs-extra": "10.1.0"
+  },
+  "devDependencies": {
+    "@coveo/headless": "latest",
+    "@coveo/search-token-server": "1.35.12",
+    "@emotion/react": "11.10.4",
+    "@emotion/styled": "11.10.4",
+    "@mui/material": "5.10.6",
+    "@testing-library/jest-dom": "5.16.5",
+    "@testing-library/react": "13.4.0",
+    "@types/jest": "29.0.3",
+    "@types/react": "18.0.20",
+    "@types/react-dom": "18.0.6",
+    "@types/react-router-dom": "5.3.3",
+    "eslint": "8.23.1",
+    "prettier": "2.7.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-router-dom": "6.4.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

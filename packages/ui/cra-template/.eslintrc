@@ -1,0 +1,9 @@
+{
+  "extends": "../../../base.eslintrc",
+  "rules": {
+    "node/no-unpublished-import": ["off"]
+  },
+  "parserOptions": {
+    "project": "../../../tsconfig.base.json"
+  }
+}

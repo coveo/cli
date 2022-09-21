@@ -1,0 +1,12 @@
+{
+  "extends": "../../../base.eslintrc",
+  "env": {
+    "es6": true
+  },
+  "rules": {
+    "node/no-unpublished-import": ["off"]
+  },
+  "parserOptions": {
+    "project": "tsconfig.json"
+  }
+}

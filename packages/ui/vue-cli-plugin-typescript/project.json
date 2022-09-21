@@ -1,0 +1,6 @@
+{
+  "name": "vue-cli-plugin-typescript",
+  "root": "packages/ui/vue-cli-plugin-typescript",
+  "sourceRoot": "packages/ui/vue-cli-plugin-typescript",
+  "projectType": "application"
+}
