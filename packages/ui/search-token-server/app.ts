@@ -1,6 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import cookieSession from 'cookie-session';
+/**
+ * Note: `csurf` is deprecated and has a known vulnerability.
+ * Check https://snyk.io/blog/explaining-the-csurf-vulnerability-csrf-attacks-on-all-versions/ for more information & alternatives.
+ */
 import csurf from 'csurf';
 import helmet from 'helmet';
 import {ensureTokenGenerated} from './middlewares/searchToken';
