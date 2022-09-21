@@ -66,13 +66,13 @@ describe('ui:create:atomic', () => {
     options: BuildAppOptions,
     buildTerminal: Terminal
   ) => {
-    const osSpecificSelector = process.platform === 'win32' ? '>' : '\u276f'; //❯
+    const selector = '\u276f'; //❯
     const anotherPageSelectedMatcher = new RegExp(
-      `${osSpecificSelector} (?!${options.pageName})`,
+      `${selector} (?!${options.pageName})`,
       'gm'
     );
     const expectedPageSelectedMatcher = new RegExp(
-      `${osSpecificSelector} ${options.pageName}`,
+      `${selector} ${options.pageName}`,
       'gm'
     );
     buildTerminal
