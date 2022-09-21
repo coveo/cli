@@ -32,6 +32,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
+        with:
+          # pulls all commits (needed for finding the @coveo/cli version to release)
+          fetch-depth: 0
       - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
         with:
           node-version: '16'
@@ -39,8 +42,6 @@ jobs:
         run: npm i
       - name: Get tags
         run: node ./scripts/get-tags.mjs
-        env:
-          DEBUG: '*'
       - name: Get commit short hash
         run: node ./scripts/get-commit-short-hash.mjs
       - name: Build
