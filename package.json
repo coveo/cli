@@ -18,7 +18,7 @@
     "@npmcli/arborist": "5.6.2",
     "@nrwl/cli": "latest",
     "@nrwl/workspace": "latest",
-    "@types/node": "18.7.18",
+    "@types/node": "16.11.59",
     "@typescript-eslint/eslint-plugin": "5.38.0",
     "@typescript-eslint/parser": "5.38.0",
     "abortcontroller-polyfill": "1.7.3",
