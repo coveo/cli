@@ -11,7 +11,7 @@ module.exports = {
   },
   projects: [
     {
-      root: './packages/vue-cli-plugin-typescript',
+      root: './packages/ui/vue-cli-plugin-typescript',
       package: './package.json',
       tsconfig: './tsconfig.json',
     },
