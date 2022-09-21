@@ -3,7 +3,7 @@
 The Coveo CLI repository is organized as a monorepo (see [monorepo.tools](https://monorepo.tools/)).
 Its packages are split into three categories:
 
-- UI: Under `packages/ui` you'll find the project 'gravitating' around the CLI that helps developers to get started with a Headless implementation.
+- UI: Under `packages/ui` you'll find the project 'gravitating' around the CLI that helps developers get started with a Headless implementation.
 - CLI: Under `packages/cli` you'll find the 'vanilla' plugin of the CLI, the CLI itself and some utils to help with the development of the CLI and its plugins.
 <!-- TODO: Remove when the E2E will finally be 'split' -->
 - E2E: A special 'package' under `packages/cli-e2e`, which contains the end-to-end tests for the CLI and its included plugins.
@@ -39,7 +39,7 @@ You'll find up to 3 typescript configs in the CLI projects:
 
 ### The package.json Files
 
-When checking `cli-commons` and `cli-commons-dev`, you'll see an `exports` field.
+When looking at `cli-commons` and `cli-commons-dev`, you'll see an `exports` field.
 This gives instructions on where to find some files to the package resolver, so that the import interface stays simple and consistent between development and production.
 
 For more info on that, see the [NodeJS documentation](https://nodejs.org/api/packages.html#subpath-exports).
