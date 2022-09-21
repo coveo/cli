@@ -39,6 +39,8 @@ jobs:
         run: npm i
       - name: Get tags
         run: node ./scripts/get-tags.mjs
+        env:
+          DEBUG: '*'
       - name: Get commit short hash
         run: node ./scripts/get-commit-short-hash.mjs
       - name: Build
