@@ -15,6 +15,9 @@ import {Octokit} from 'octokit';
 import angularChangelogConvention from 'conventional-changelog-angular';
 import {dedent} from 'ts-dedent';
 import {readFileSync} from 'fs';
+
+const CLI_PKG_NAME = '@coveo/cli';
+
 // Commit, tag and push
 (async () => {
   const REPO_OWNER = 'coveo';
@@ -70,16 +73,17 @@ import {readFileSync} from 'fs';
   }
   await gitPush();
   await gitPushTags();
-  if (!packagesReleased.includes('@coveo/cli')) {
+  if (!packagesReleased.includes(CLI_PKG_NAME)) {
     return;
   }
   const octokit = new Octokit({auth: process.env.GITHUB_CREDENTIALS});
   const [, ...bodyArray] = changelog.split('\n');
-  const cliVersion = (await getLastTag('@coveo/cli')).split('@coveo/cli@')[1];
+  const cliLatestTag = await getLastTag(CLI_PKG_NAME);
+  const cliVersion = cliLatestTag.split(`${CLI_PKG_NAME}@`)[1];
   await octokit.rest.repos.createRelease({
     owner: REPO_OWNER,
     repo: REPO_NAME,
-    tag_name: gitNewTag,
+    tag_name: cliLatestTag,
     name: `Release ${cliVersion}`,
     body: bodyArray.join('\n'),
   });
