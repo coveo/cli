@@ -75,11 +75,12 @@ import {readFileSync} from 'fs';
   }
   const octokit = new Octokit({auth: process.env.GITHUB_CREDENTIALS});
   const [, ...bodyArray] = changelog.split('\n');
+  const cliVersion = (await getLastTag('@coveo/cli')).split('@coveo/cli@')[1];
   await octokit.rest.repos.createRelease({
     owner: REPO_OWNER,
     repo: REPO_NAME,
-    tag_name: versionTag,
-    name: `Release ${versionTag}`,
+    tag_name: gitNewTag,
+    name: `Release ${cliVersion}`,
     body: bodyArray.join('\n'),
   });
 })();
