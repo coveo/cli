@@ -3,15 +3,15 @@ import {dirSync as tmpDirSync} from 'tmp';
 import {randomBytes} from 'crypto';
 import {launch as launchChrome} from 'chrome-launcher';
 import type {Browser} from 'puppeteer';
-import {captureScreenshots, connectToChromeBrowser} from '../utils/browser';
-import {clearAccessTokenFromConfig, loginWithOffice} from '../utils/login';
-import {getPlatformHost} from '../utils/platform';
-import {getConfig as getCliConfig, getConfigFilePath} from '../utils/cli';
+import {captureScreenshots, connectToChromeBrowser} from '../../utils/browser';
+import {clearAccessTokenFromConfig, loginWithOffice} from '../../utils/login';
+import {getPlatformHost} from '../../utils/platform';
+import {getConfig as getCliConfig, getConfigFilePath} from '../../utils/cli';
 import waitOn from 'wait-on';
 import 'dotenv/config';
-import {Terminal} from '../utils/terminal/terminal';
+import {Terminal} from '../../utils/terminal/terminal';
 import {join, resolve, dirname} from 'path';
-import {npm, npmCachePathEnvVar, npmPathEnvVar} from '../utils/npm';
+import {npm, npmCachePathEnvVar, npmPathEnvVar} from '../../utils/npm';
 import {spawnSync} from 'child_process';
 
 async function clearChromeBrowsingData(browser: Browser) {
@@ -76,33 +76,6 @@ export function setProcessEnv() {
 
 export function setCliExecPath() {
   process.env.CLI_EXEC_PATH = resolve(__dirname, '../../cli/core/bin/dev');
-}
-
-export async function publishPackages() {
-  for (const phase of ['nx:graph', 'release:phase1']) {
-    const args = [...npm(), 'run', phase];
-    const publishTerminal = new Terminal(
-      args.shift()!,
-      args,
-      {
-        cwd: resolve(join(__dirname, '..', '..', '..')),
-        env: {
-          ...process.env,
-          npm_config_registry: 'http://localhost:4873',
-          DEBUG: '*',
-        },
-      },
-      global.processManager!,
-      'npmPublish'
-    );
-    publishTerminal.orchestrator.process.stdout.on('data', (data) => {
-      console.log(data.toString());
-    });
-    publishTerminal.orchestrator.process.stderr.on('data', (data) => {
-      console.log(data.toString());
-    });
-    await publishTerminal.when('exit').on('process').do().once();
-  }
 }
 
 export async function startVerdaccio() {
@@ -241,37 +214,7 @@ export function getCleanEnv(): Record<string, string> {
   return env;
 }
 
-export function scaffoldDummyPackages() {
-  const packagesToScaffold = [
-    '@coveo/angular',
-    '@coveo/vue-cli-plugin-typescript',
-    '@coveo/cra-template',
-    '@coveo/search-token-server',
-    '@coveo/create-atomic',
-    '@coveo/search-token-lambda',
-    '@coveo/cli-commons-dev',
-    '@coveo/cli-commons',
-    '@coveo/cli',
-  ];
-
-  for (const packageToScaffold of packagesToScaffold) {
-    spawnSync(
-      appendCmdIfWindows`npm`,
-      [
-        'publish',
-        `-w=${packageToScaffold}`,
-        '--ignore-scripts',
-        '--registry=http://localhost:4873',
-      ],
-      {
-        cwd: resolve(join(__dirname, '..', '..', '..')),
-        stdio: 'inherit',
-      }
-    );
-  }
-}
-
-const appendCmdIfWindows = (cmd: TemplateStringsArray) =>
+export const appendCmdIfWindows = (cmd: TemplateStringsArray) =>
   `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
 
 function isParent(parent: string, potentialChild: string) {
