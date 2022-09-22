@@ -75,7 +75,7 @@ export async function uplinkMissingPackages() {
     });
     spawnSync(
       appendCmdIfWindows`npm`,
-      ['publish', tarballName, '--registry=http://localhost:4873'],
+      ['publish', tarballName, `--registry=${verdaccioRegistry}`],
       {
         cwd: tmpdir,
         stdio: 'inherit',
@@ -96,7 +96,7 @@ export function scaffoldDummyPackages() {
     );
     spawnSync(
       appendCmdIfWindows`npm`,
-      ['publish', '--registry=http://localhost:4873'],
+      ['publish', `--registry=${verdaccioRegistry}`],
       {
         cwd: tmpdir,
         stdio: 'inherit',
