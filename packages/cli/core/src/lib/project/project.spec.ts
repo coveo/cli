@@ -255,7 +255,17 @@ describe('Project', () => {
     );
 
     describe('#resourcesTypes', () => {
-      fancyIt()('should return project resource types', () => {
+      fancyIt()(
+        'should return an empty array if snapshot file when snapshot does not contain resources',
+        () => {
+          mockedReadJSONSync.mockReturnValueOnce({
+            resources: {},
+          });
+          expect(project.resourcesTypes.length).toEqual(0);
+        }
+      );
+
+      fancyIt()('should return resource types from single file', () => {
         mockedReadJSONSync.mockReturnValueOnce({
           resources: {
             EXTENSION: [],
@@ -269,6 +279,34 @@ describe('Project', () => {
           'SOURCE',
         ]);
       });
+
+      fancyIt()(
+        'should return resource types within multiple giles',
+        async () => {
+          mockedFileDepthSearch.mockReturnValueOnce(Array(3));
+          mockedReadJSONSync
+            .mockReturnValueOnce({
+              resources: {
+                FIELD: [],
+              },
+            })
+            .mockReturnValueOnce({
+              resources: {
+                EXTENSION: [],
+              },
+            })
+            .mockReturnValueOnce({
+              resources: {
+                SOURCE: [],
+              },
+            });
+          expect(project.resourcesTypes.sort()).toEqual([
+            'EXTENSION',
+            'FIELD',
+            'SOURCE',
+          ]);
+        }
+      );
     });
 
     describe('#refresh', () => {
