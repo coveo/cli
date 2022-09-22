@@ -114,18 +114,21 @@ describe('org:resources', () => {
       debugName
     );
 
-    const pullTerminalExitPromise = pullTerminal
+    const pullTerminalExitPromise = async () => {
       // TODO: CDX-744: understand why cannot use process.on('exit')
-      .when(/Project updated/)
-      .on('stderr')
-      .do()
-      .once();
+      await pullTerminal
+        .when(/Updating project with Snapshot/)
+        .on('stderr')
+        .do()
+        .once();
+      await pullTerminal.when(/✔/).on('stderr').do().once();
+    };
 
     await pullTerminal
       .when(isGenericYesNoPrompt)
       .on('stderr')
       .do(answerPrompt(`y${EOL}`))
-      .until(pullTerminalExitPromise);
+      .until(pullTerminalExitPromise());
   };
 
   beforeAll(async () => {
