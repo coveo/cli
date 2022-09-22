@@ -90,8 +90,6 @@ const getDummyPackageJson = (name: string) =>
 export function scaffoldDummyPackages() {
   const tmpdir = dirSync().name;
   for (const packageToScaffold of verdaccioedPackages) {
-    console.log(packageToScaffold);
-    console.log(getDummyPackageJson(packageToScaffold));
     writeFileSync(
       join(tmpdir, 'package.json'),
       getDummyPackageJson(packageToScaffold)
