@@ -130,7 +130,7 @@ export default class Pull extends CLICommand {
     if (await this.shouldDeleteSnapshot()) {
       await snapshot.delete();
     }
-    stopSpinner({message: 'Project updated'});
+    stopSpinner();
   }
 
   private async shouldDeleteSnapshot() {
