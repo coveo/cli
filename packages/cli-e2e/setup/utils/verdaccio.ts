@@ -84,12 +84,14 @@ export async function uplinkMissingPackages() {
   }
 }
 
-const getDummyPackageJson = (packageName: string) =>
-  JSON.stringify({packageName, version: '0.0.0'});
+const getDummyPackageJson = (name: string) =>
+  JSON.stringify({name, version: '0.0.0'});
 
 export function scaffoldDummyPackages() {
   const tmpdir = dirSync().name;
   for (const packageToScaffold of verdaccioedPackages) {
+    console.log(packageToScaffold);
+    console.log(getDummyPackageJson(packageToScaffold));
     writeFileSync(
       join(tmpdir, 'package.json'),
       getDummyPackageJson(packageToScaffold)
