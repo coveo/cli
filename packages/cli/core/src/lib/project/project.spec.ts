@@ -1,3 +1,4 @@
+jest.mock('../utils/file');
 jest.mock('@coveord/platform-client');
 jest.mock('fs');
 jest.mock('archiver');
@@ -9,7 +10,6 @@ import {
   WriteStream,
   unlinkSync,
   writeFileSync,
-  readdirSync,
   rmSync,
 } from 'fs';
 import {
@@ -23,12 +23,11 @@ import {join, resolve} from 'path';
 import archiver, {Archiver} from 'archiver';
 import extract from 'extract-zip';
 import {EventEmitter, Writable} from 'stream';
-import {getDirectory, getFile} from '../../__test__/fsUtils';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
+import {fileDepthSearch} from '../utils/file';
 
 const mockedRmSync = jest.mocked(rmSync);
 const mockedExistSync = jest.mocked(existsSync);
-const mockedReadDirSync = jest.mocked(readdirSync);
 const mockedUnlinkSync = jest.mocked(unlinkSync);
 const mockedCreateWriteStream = jest.mocked(createWriteStream);
 const mockedArchiver = jest.mocked(archiver);
@@ -40,6 +39,11 @@ const mockedCreateFileSync = jest.mocked(ensureDirSync);
 const mockedWriteJSONSync = jest.mocked(writeJSONSync);
 const mockedReadJSONSync = jest.mocked(readJsonSync);
 const mockedPathExistsSync = jest.mocked(pathExistsSync);
+const mockedFileDepthSearch = jest.mocked(fileDepthSearch);
+
+const doMockFileDepthSearch = () => {
+  mockedFileDepthSearch.mockReturnValue(['dummy/path']);
+};
 
 const doMockArchiver = () => {
   mockedArchiver.mockImplementation(
@@ -55,10 +59,6 @@ const doMockArchiver = () => {
 
 const doMockExtract = () => {
   mockedExtract.mockImplementation(() => Promise.resolve());
-};
-
-const doMockReadDirSync = () => {
-  mockedReadDirSync.mockImplementation(() => []);
 };
 
 const doMockReadJsonSync = () => {
@@ -107,9 +107,9 @@ describe('Project', () => {
     new Project(resolve('dummy/path'), orgId);
 
   beforeAll(() => {
+    doMockFileDepthSearch();
     doMockArchiver();
     doMockExtract();
-    doMockReadDirSync();
     doMockCreateWriteStream();
     doMockReadJsonSync();
   });
@@ -254,6 +254,23 @@ describe('Project', () => {
       }
     );
 
+    describe('#resourcesTypes', () => {
+      fancyIt()('should return project resource types', () => {
+        mockedReadJSONSync.mockReturnValueOnce({
+          resources: {
+            EXTENSION: [],
+            FIELD: [],
+            SOURCE: [],
+          },
+        });
+        expect(project.resourcesTypes.sort()).toEqual([
+          'EXTENSION',
+          'FIELD',
+          'SOURCE',
+        ]);
+      });
+    });
+
     describe('#refresh', () => {
       const mockedWriteFileSync = jest.mocked(writeFileSync);
 
@@ -300,29 +317,21 @@ describe('Project', () => {
         async () => {
           const project = projectCreator();
           const fakeBlob = new Blob();
+          mockedFileDepthSearch.mockReturnValueOnce([
+            resolve('dummy/path', 'resources', 'somefile.json'),
+            resolve(
+              'dummy/path',
+              'resources',
+              'someDirectory',
+              'someFileInASubDir.json'
+            ),
+          ]);
           mockedReadJSONSync
             .mockReturnValueOnce({call: 1})
             .mockReturnValueOnce({call: 2});
-          mockedReadDirSync
-            .mockImplementationOnce(() => [
-              getFile('somefile.json'),
-              getFile('somefile.notJson'),
-              getDirectory('someDirectory'),
-            ])
-            .mockImplementationOnce(() => [getFile('someFileInASubDir.json')]);
 
           await project.refresh(fakeBlob);
 
-          expect(mockedReadDirSync).toHaveBeenNthCalledWith(
-            1,
-            resolve('dummy/path', 'resources'),
-            {withFileTypes: true}
-          );
-          expect(mockedReadDirSync).toHaveBeenNthCalledWith(
-            2,
-            resolve('dummy/path', 'resources', 'someDirectory'),
-            {withFileTypes: true}
-          );
           expect(mockedReadJSONSync).toHaveBeenCalledTimes(2);
           expect(mockedReadJSONSync).toHaveBeenCalledWith(
             resolve('dummy/path', 'resources', 'somefile.json')
