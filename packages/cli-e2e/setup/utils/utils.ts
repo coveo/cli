@@ -80,7 +80,7 @@ export function setCliExecPath() {
 
 export async function startVerdaccio() {
   mkdirSync(
-    resolve(join(__dirname, '..', 'verdaccio', 'verdaccio', 'storage')),
+    resolve(join(__dirname, '..', '..', 'verdaccio', 'verdaccio', 'storage')),
     {
       recursive: true,
     }
@@ -89,7 +89,10 @@ export async function startVerdaccio() {
   const verdaccioTerminal = new Terminal(
     args.shift()!,
     args,
-    {cwd: resolve(join(__dirname, '..')), detached: process.env.CI === 'true'},
+    {
+      cwd: resolve(join(__dirname, '..', '..')),
+      detached: process.env.CI === 'true',
+    },
     global.processManager!,
     'verdaccio'
   );
@@ -118,7 +121,7 @@ export function shimNpm() {
   const tmpDir = tmpDirSync();
   const npmDir = join(tmpDir.name, 'npmShim');
   process.env[npmCachePathEnvVar] = join(npmDir, 'cache');
-  copySync(join(__dirname, '..', 'npm-shim'), npmDir);
+  copySync(join(__dirname, '..', '..', 'npm-shim'), npmDir);
   const npmCiArgs = [appendCmdIfWindows`npm`, 'ci'];
   spawnSync(npmCiArgs.shift()!, npmCiArgs, {
     cwd: npmDir,
