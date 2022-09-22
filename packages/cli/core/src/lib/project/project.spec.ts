@@ -41,18 +41,30 @@ const mockedWriteJSONSync = jest.mocked(writeJSONSync);
 const mockedReadJSONSync = jest.mocked(readJsonSync);
 const mockedPathExistsSync = jest.mocked(pathExistsSync);
 
-mockedArchiver.mockImplementation(
-  () =>
-    ({
-      on: () => {},
-      pipe: mockedPipe,
-      directory: mockedPassDirectory,
-      finalize: mockedFinalize,
-    } as unknown as Archiver)
-);
+const doMockArchiver = () => {
+  mockedArchiver.mockImplementation(
+    () =>
+      ({
+        on: () => {},
+        pipe: mockedPipe,
+        directory: mockedPassDirectory,
+        finalize: mockedFinalize,
+      } as unknown as Archiver)
+  );
+};
 
-mockedExtract.mockImplementation(() => Promise.resolve());
-mockedReadDirSync.mockImplementation(() => []);
+const doMockExtract = () => {
+  mockedExtract.mockImplementation(() => Promise.resolve());
+};
+
+const doMockReadDirSync = () => {
+  mockedReadDirSync.mockImplementation(() => []);
+};
+
+const doMockReadJsonSync = () => {
+  mockedReadJSONSync.mockReturnValue({});
+};
+
 const doMockValidProject = () => {
   mockedExistSync.mockReturnValue(true);
 };
@@ -75,7 +87,7 @@ const doMockCreateWriteStream = () => {
   });
 };
 
-function doMockArchiverAsThrower() {
+const doMockArchiverAsThrower = () => {
   let eventEmitter: EventEmitter;
   mockedArchiver.mockImplementationOnce(() => {
     eventEmitter = new EventEmitter();
@@ -86,27 +98,30 @@ function doMockArchiverAsThrower() {
     return eventEmitter as Archiver;
   });
   return (err: unknown) => eventEmitter.emit('error', err);
-}
+};
 
 describe('Project', () => {
   const pathToResources = resolve('dummy', 'path', 'resources');
   const pathToZip = resolve('dummy', 'path', 'snapshot.zip');
-
   const projectCreator = (orgId?: string) =>
     new Project(resolve('dummy/path'), orgId);
 
   beforeAll(() => {
+    doMockArchiver();
+    doMockExtract();
+    doMockReadDirSync();
     doMockCreateWriteStream();
-    mockedReadJSONSync.mockReturnValue({});
+    doMockReadJsonSync();
   });
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('if the project is invalid', () => {
-    describe('#compressResources', () => {
-      fancyIt()('should ensure resources folder exists', async () => {
+  describe('when the project is invalid', () => {
+    fancyIt()(
+      '#compressResources should ensure resources folder exists',
+      async () => {
         doMockFileDoesNotExists('resources');
         const project = projectCreator();
 
@@ -122,9 +137,12 @@ describe('Project', () => {
           2,
           resolve('dummy/path', 'resources')
         );
-      });
+      }
+    );
 
-      fancyIt()('should ensure .coveo hidden folder exists', async () => {
+    fancyIt()(
+      '#compressResources should ensure .coveo hidden folder exists',
+      async () => {
         doMockFileDoesNotExists('_');
         const project = projectCreator();
         doMockFileDoesNotExists('.coveo');
@@ -141,9 +159,12 @@ describe('Project', () => {
           3,
           resolve('dummy/path', '.coveo')
         );
-      });
+      }
+    );
 
-      fancyIt()('should not check for the manifest', async () => {
+    fancyIt()(
+      '#compressResources should not check for the manifest',
+      async () => {
         doMockFileDoesNotExists('resources');
         const project = projectCreator();
         mockedReadJSONSync.mockReturnValueOnce({orgId: 'someOrgId'});
@@ -153,59 +174,30 @@ describe('Project', () => {
         } catch (error) {}
 
         expect(mockedWriteJSONSync).not.toBeCalled();
-      });
-    });
-  });
-
-  fancyIt()('should create .coveo project if absent', () => {
-    doMockFileDoesNotExists('.coveo');
-    mockedPathExistsSync.mockReturnValueOnce(false);
-    projectCreator();
-    expect(mockedCreateFileSync).toHaveBeenCalledWith(
-      expect.stringContaining('.coveo')
-    );
-    expect(mockedWriteJSONSync).toHaveBeenCalledWith(
-      expect.stringContaining(join('.coveo/config.json')),
-      expect.objectContaining({version: 1})
+      }
     );
   });
 
-  fancyIt()(
-    'should use the provided orgId to initialize project if .coveo project is absent',
-    () => {
-      doMockFileDoesNotExists('.coveo');
-      mockedPathExistsSync.mockReturnValueOnce(false);
-      projectCreator('testorgid');
-      expect(mockedCreateFileSync).toHaveBeenCalledWith(
-        expect.stringContaining('.coveo')
-      );
-      expect(mockedWriteJSONSync).toHaveBeenCalledWith(
-        expect.stringContaining(join('.coveo/config.json')),
-        expect.objectContaining({version: 1, organization: 'testorgid'})
-      );
-    }
-  );
-
-  describe('if the project is valid', () => {
+  describe('when the project is valid', () => {
     let project: Project;
 
     beforeEach(async () => {
       doMockValidProject();
-
       project = projectCreator();
     });
 
-    describe('#compressResources', () => {
-      fancyIt()(
-        'should create a write stream the appropriate path to the zip file',
-        async () => {
-          await project.compressResources();
+    fancyIt()(
+      '#compressResources should create a write stream the appropriate path to the zip file',
+      async () => {
+        await project.compressResources();
 
-          expect(mockedCreateWriteStream).toHaveBeenCalledWith(pathToZip);
-        }
-      );
+        expect(mockedCreateWriteStream).toHaveBeenCalledWith(pathToZip);
+      }
+    );
 
-      fancyIt()('should append files from the resource directory', async () => {
+    fancyIt()(
+      '#compressResources should append files from the resource directory',
+      async () => {
         await project.compressResources();
 
         const putTheContentAtTheRootOfTheArchive = false;
@@ -213,18 +205,21 @@ describe('Project', () => {
           pathToResources,
           putTheContentAtTheRootOfTheArchive
         );
-      });
+      }
+    );
 
-      fancyIt()(
-        'should finalize when there are no more resources to zip',
-        async () => {
-          await project.compressResources();
+    fancyIt()(
+      '#compressResources should finalize when there are no more resources to zip',
+      async () => {
+        await project.compressResources();
 
-          expect(mockedFinalize).toHaveBeenCalledTimes(1);
-        }
-      );
+        expect(mockedFinalize).toHaveBeenCalledTimes(1);
+      }
+    );
 
-      fancyIt()('should restore the manifest file if it exists', async () => {
+    fancyIt()(
+      '#compressResources should restore the manifest file if it exists',
+      async () => {
         mockedReadJSONSync.mockReturnValueOnce({orgId: 'someOrgId'});
 
         await project.compressResources();
@@ -234,60 +229,20 @@ describe('Project', () => {
           join(pathToResources, 'manifest.json'),
           expect.objectContaining({orgId: 'someOrgId'})
         );
-      });
+      }
+    );
 
-      fancyIt()(
-        'should not restore the manifest file if it did not exists',
-        async () => {
-          mockedReadJSONSync.mockReturnValueOnce(null);
+    fancyIt()(
+      '#compressResources should not restore the manifest file if it did not exists',
+      async () => {
+        mockedReadJSONSync.mockReturnValueOnce(null);
 
-          await project.compressResources();
+        await project.compressResources();
 
-          expect(mockedRmSync).toBeCalledTimes(1);
-          expect(mockedWriteJSONSync).not.toBeCalled();
-        }
-      );
-
-      describe('if archiver fails', () => {
-        let callToFailArchiver: (err: unknown) => void;
-        beforeAll(() => {
-          callToFailArchiver = doMockArchiverAsThrower();
-        });
-
-        it('should rejects', async () => {
-          const compressResourcesPromise = project.compressResources();
-          const errorData = 'someError';
-
-          callToFailArchiver(errorData);
-
-          await expect(compressResourcesPromise).rejects.toThrow(errorData);
-        });
-
-        fancyIt()('should restore the manifest file if it exists', async () => {
-          mockedReadJSONSync.mockReturnValueOnce({orgId: 'someOrgId'});
-
-          await project.compressResources();
-
-          expect(mockedRmSync).toBeCalledTimes(1);
-          expect(mockedWriteJSONSync).toBeCalledWith(
-            join(pathToResources, 'manifest.json'),
-            expect.objectContaining({orgId: 'someOrgId'})
-          );
-        });
-
-        fancyIt()(
-          'should not restore the manifest file if it did not exists',
-          async () => {
-            mockedReadJSONSync.mockReturnValueOnce(null);
-
-            await project.compressResources();
-
-            expect(mockedRmSync).toBeCalledTimes(1);
-            expect(mockedWriteJSONSync).not.toBeCalled();
-          }
-        );
-      });
-    });
+        expect(mockedRmSync).toBeCalledTimes(1);
+        expect(mockedWriteJSONSync).not.toBeCalled();
+      }
+    );
 
     fancyIt()(
       '#deleteTemporaryZipFile should delete the temporary a zip file',
@@ -423,5 +378,74 @@ describe('Project', () => {
         }
       );
     });
+
+    describe('when archiver fails', () => {
+      let callToFailArchiver: (err: unknown) => void;
+      beforeAll(() => {
+        callToFailArchiver = doMockArchiverAsThrower();
+      });
+
+      it('should rejects', async () => {
+        const compressResourcesPromise = project.compressResources();
+        const errorData = 'someError';
+
+        callToFailArchiver(errorData);
+
+        await expect(compressResourcesPromise).rejects.toThrow(errorData);
+      });
+
+      fancyIt()('should restore the manifest file if it exists', async () => {
+        mockedReadJSONSync.mockReturnValueOnce({orgId: 'someOrgId'});
+
+        await project.compressResources();
+
+        expect(mockedRmSync).toBeCalledTimes(1);
+        expect(mockedWriteJSONSync).toBeCalledWith(
+          join(pathToResources, 'manifest.json'),
+          expect.objectContaining({orgId: 'someOrgId'})
+        );
+      });
+
+      fancyIt()(
+        'should not restore the manifest file if it did not exists',
+        async () => {
+          mockedReadJSONSync.mockReturnValueOnce(null);
+
+          await project.compressResources();
+
+          expect(mockedRmSync).toBeCalledTimes(1);
+          expect(mockedWriteJSONSync).not.toBeCalled();
+        }
+      );
+    });
   });
+
+  fancyIt()('should create .coveo project if absent', () => {
+    doMockFileDoesNotExists('.coveo');
+    mockedPathExistsSync.mockReturnValueOnce(false);
+    projectCreator();
+    expect(mockedCreateFileSync).toHaveBeenCalledWith(
+      expect.stringContaining('.coveo')
+    );
+    expect(mockedWriteJSONSync).toHaveBeenCalledWith(
+      expect.stringContaining(join('.coveo/config.json')),
+      expect.objectContaining({version: 1})
+    );
+  });
+
+  fancyIt()(
+    'should use the provided orgId to initialize project if .coveo project is absent',
+    () => {
+      doMockFileDoesNotExists('.coveo');
+      mockedPathExistsSync.mockReturnValueOnce(false);
+      projectCreator('testorgid');
+      expect(mockedCreateFileSync).toHaveBeenCalledWith(
+        expect.stringContaining('.coveo')
+      );
+      expect(mockedWriteJSONSync).toHaveBeenCalledWith(
+        expect.stringContaining(join('.coveo/config.json')),
+        expect.objectContaining({version: 1, organization: 'testorgid'})
+      );
+    }
+  );
 });
