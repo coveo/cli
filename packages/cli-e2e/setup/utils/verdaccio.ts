@@ -45,7 +45,15 @@ export async function publishPackages() {
     publishTerminal.orchestrator.process.stderr.on('data', (data) => {
       console.log(data.toString());
     });
-    await publishTerminal.when('exit').on('process').do().once();
+    await publishTerminal
+      .when('exit')
+      .on('process')
+      .do((process) => {
+        if (process.exitCode) {
+          throw new Error('Error while publishing packages');
+        }
+      })
+      .once();
   }
 }
 
