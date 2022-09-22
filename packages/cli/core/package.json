@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli",
-  "version": "1.35.12",
+  "version": "1.36.0",
   "author": "Coveo",
   "description": "Coveo CLI",
   "engines": {
@@ -9,8 +9,8 @@
   "dependencies": {
     "@amplitude/identify": "^1.9.0",
     "@amplitude/node": "^1.9.0",
-    "@coveo/cli-commons": "1.35.12",
-    "@coveo/cli-plugin-source": "1.35.12",
+    "@coveo/cli-commons": "1.36.0",
+    "@coveo/cli-plugin-source": "1.36.0",
     "@coveo/push-api-client": "2.5.15",
     "@coveord/platform-client": "34.13.0",
     "@oclif/core": "1.16.3",
@@ -41,11 +41,11 @@
   "devDependencies": {
     "@amplitude/types": "1.10.2",
     "@babel/core": "7.19.1",
-    "@coveo/angular": "1.35.12",
-    "@coveo/cli-commons-dev": "1.35.12",
-    "@coveo/cra-template": "1.35.12",
-    "@coveo/create-atomic": "1.35.12",
-    "@coveo/vue-cli-plugin-typescript": "1.35.12",
+    "@coveo/angular": "1.35.13",
+    "@coveo/cli-commons-dev": "1.35.13",
+    "@coveo/cra-template": "1.35.13",
+    "@coveo/create-atomic": "1.35.13",
+    "@coveo/vue-cli-plugin-typescript": "1.35.13",
     "@oclif/test": "2.1.1",
     "@types/archiver": "5.3.1",
     "@types/async-retry": "1.4.5",
