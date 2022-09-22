@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ux formatOrgId() colors the color magenta 1`] = `"[35mmyOrgId[39m"`;
