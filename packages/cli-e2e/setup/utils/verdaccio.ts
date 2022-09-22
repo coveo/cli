@@ -6,6 +6,7 @@ import {appendCmdIfWindows} from './utils';
 import {manifest as getManifest, tarball as getTarball} from 'pacote';
 import {dirSync} from 'tmp';
 import {writeFileSync} from 'node:fs';
+import retry from 'async-retry';
 
 const npmRegistry = 'https://registry.npmjs.org/';
 const verdaccioRegistry = 'http://localhost:4873';
@@ -62,6 +63,9 @@ export async function uplinkMissingPackages() {
   for (const packageToCheck of verdaccioedPackages) {
     const manifest = await getManifest(packageToCheck, {
       registry: verdaccioRegistry,
+      retry: {
+        fetchRetries: 10,
+      },
     });
     if (manifest.version !== '0.0.0') {
       continue;
