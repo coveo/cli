@@ -4,6 +4,7 @@ import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {fileDepthSearch} from './file';
 import {readdirSync} from 'fs';
 import {getFile} from '../../__test__/fsUtils';
+import {join} from 'path';
 
 const mockedReaddirSync = jest.mocked(readdirSync);
 
@@ -16,9 +17,9 @@ describe('File', () => {
         getFile('baz.json'),
       ]);
       expect(fileDepthSearch('/mock').sort()).toEqual([
-        '/mock/bar.json',
-        '/mock/baz.json',
-        '/mock/foo.json',
+        join('/mock/bar.json'),
+        join('/mock/baz.json'),
+        join('/mock/foo.json'),
       ]);
     });
   });
@@ -32,10 +33,10 @@ describe('File', () => {
         getFile('dir1/dir2/pow.json'),
       ]);
       expect(fileDepthSearch('/mock').sort()).toEqual([
-        '/mock/baz.json',
-        '/mock/dir1/bar.json',
-        '/mock/dir1/dir2/pow.json',
-        '/mock/foo.json',
+        join('/mock/baz.json'),
+        join('/mock/dir1/bar.json'),
+        join('/mock/dir1/dir2/pow.json'),
+        join('/mock/foo.json'),
       ]);
     });
   });
@@ -54,10 +55,10 @@ describe('File', () => {
       ]);
 
       expect(fileDepthSearch('/mock').sort()).toEqual([
-        '/mock/baz.json',
-        '/mock/dir1/bar.json',
-        '/mock/dir1/dir2/pow.json',
-        '/mock/foo.json',
+        join('/mock/baz.json'),
+        join('/mock/dir1/bar.json'),
+        join('/mock/dir1/dir2/pow.json'),
+        join('/mock/foo.json'),
       ]);
     });
   });
