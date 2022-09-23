@@ -11,6 +11,11 @@ import {writeSourceContentPrivilege} from '@coveo/cli-commons/preconditions/plat
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {withSourceVisibility} from '../../../lib/commonFlags';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
+import {
+  formatResourceId,
+  startSpinner,
+  stopSpinner,
+} from '@coveo/cli-commons/utils/ux';
 
 export default class SourceCatalogNew extends CLICommand {
   public static description =
@@ -38,6 +43,7 @@ export default class SourceCatalogNew extends CLICommand {
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();
 
+    startSpinner('Creating source');
     const res = await platformClient.source.create({
       sourceType: SourceType.CATALOG,
       pushEnabled: true,
@@ -45,13 +51,14 @@ export default class SourceCatalogNew extends CLICommand {
       name: args.name,
       sourceVisibility: flags.sourceVisibility,
     });
+    stopSpinner();
 
     this.log(
-      green(
-        dedent(
-          `Source ${args.name} with visibility ${flags.sourceVisibility} has been successfully created.
-        Id: ${res.id}`
-        )
+      dedent(
+        `Source ${args.name} with visibility ${
+          flags.sourceVisibility
+        } has been successfully created.
+        Id: ${formatResourceId(res.id)}`
       )
     );
   }
