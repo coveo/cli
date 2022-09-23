@@ -34,6 +34,7 @@ import {
   getMissingVaultEntriesReportHandler,
   getErrorReportHandler,
 } from '../../../lib/snapshot/snapshotCommon';
+import {formatOrgId, formatResourceId} from '@coveo/cli-commons/utils/ux';
 export default class Preview extends CLICommand {
   public static description = 'Preview resource updates';
 
@@ -115,12 +116,21 @@ export default class Preview extends CLICommand {
         dedent`
 
           Once the snapshot is created, you can preview it with the following command:
-
-            ${blueBright`coveo org:resources:preview -o ${target} -s ${snapshot.id}`}
+            
+            ${this.getPrintableSnapshotCommand(target, snapshot.id)}
 
             `
       );
     }
+  }
+
+  private getPrintableSnapshotCommand(orgId: string, snapshotId: string) {
+    return (
+      blueBright('coveo org:resources:preview -o') +
+      formatOrgId(orgId) +
+      blueBright('-s') +
+      formatResourceId(snapshotId)
+    );
   }
 
   private async getOptions(): Promise<DryRunOptions> {

@@ -14,7 +14,7 @@ import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
-import {startSpinner} from '@coveo/cli-commons/utils/ux';
+import {formatResourceId, startSpinner} from '@coveo/cli-commons/utils/ux';
 
 export default class Monitor extends CLICommand {
   public static description = 'Monitor a Snapshot operation';
@@ -65,7 +65,7 @@ export default class Monitor extends CLICommand {
     const {args} = await this.parse(Monitor);
     const snapshotId = args.snapshotId;
     const header = ReportViewerStyles.header(
-      `Monitoring snapshot ${snapshotId}`
+      `Monitoring snapshot ${formatResourceId(snapshotId)}`
     );
     CliUx.ux.log('');
     startSpinner(header);

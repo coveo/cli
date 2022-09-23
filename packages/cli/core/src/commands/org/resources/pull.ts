@@ -1,6 +1,7 @@
 import type {ResourceSnapshotType} from '@coveord/platform-client';
 import {
   formatOrgId,
+  formatResourceId,
   startSpinner,
   stopSpinner,
 } from '@coveo/cli-commons/utils/ux';
@@ -44,6 +45,15 @@ import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 
+const getPrintablePullCommand = (orgId: string, snapshotId: string) => {
+  return (
+    blueBright('coveo org:resources:pull -o ') +
+    formatOrgId(orgId) +
+    blueBright('-s ') +
+    formatResourceId(snapshotId)
+  );
+};
+
 const PullCommandStrings = {
   projectOverwriteQuestion: (
     resourceFolderName: string
@@ -53,7 +63,7 @@ const PullCommandStrings = {
 
       Once the snapshot is created, you can pull it with the following command:
 
-        ${blueBright`coveo org:resources:pull -o ${targetOrgId} -s ${snapshotId}`}
+        ${getPrintablePullCommand(targetOrgId, snapshotId)}
 
         `,
 };
@@ -219,7 +229,7 @@ export default class Pull extends CLICommand {
     const flags = await this.getFlags();
     return flags.model
       ? flags.model.resourcesToExport
-      : buildResourcesToExport(flags.resourceTypes!);
+      : buildResourcesToExport(flags.resourceTypes);
   }
 
   private async getTargetOrg() {
