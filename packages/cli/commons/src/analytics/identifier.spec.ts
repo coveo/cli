@@ -83,6 +83,10 @@ describe('identifier', () => {
     doMockConfiguration();
     doMockPlatformClient('bob@coveo.com');
   };
+  const mockForInternalTestUser = async () => {
+    doMockConfiguration();
+    doMockPlatformClient('bob@devcoveo.onmicrosoft.com');
+  };
   const mockForExternalUser = async () => {
     doMockConfiguration();
     doMockPlatformClient('bob@acme.com');
@@ -106,42 +110,56 @@ describe('identifier', () => {
     doMockAuthenticatedClient();
   });
 
-  describe('when the user is internal', () => {
-    beforeEach(async () => {
-      await mockForInternalUser();
-      identity = await new Identifier().getIdentity();
-    });
+  describe.each([
+    {
+      describeName: 'when the user is internal',
+      mockFn: mockForInternalUser,
+      email: 'bob@coveo.com',
+    },
+    {
+      describeName: 'when the user is test internal',
+      mockFn: mockForInternalTestUser,
+      email: 'bob@devcoveo.onmicrosoft.com',
+    },
+  ])(
+    '$describeName',
+    ({mockFn, email}: {mockFn: () => Promise<void>; email: string}) => {
+      beforeEach(async () => {
+        await mockFn();
+        identity = await new Identifier().getIdentity();
+      });
 
-    afterEach(() => {
-      mockUserGet.mockClear();
-      mockedPlatformClient.mockClear();
-    });
+      afterEach(() => {
+        mockUserGet.mockClear();
+        mockedPlatformClient.mockClear();
+      });
 
-    it('should not set platform information', async () => {
-      expect(mockSetIdentity).not.toHaveBeenCalledWith(
-        'organization_type',
-        'Production'
-      );
-      expect(mockSetIdentity).not.toHaveBeenCalledWith('environment', 'dev');
-      expect(mockSetIdentity).not.toHaveBeenCalledWith('region', 'us');
-    });
+      it('should not set platform information', async () => {
+        expect(mockSetIdentity).not.toHaveBeenCalledWith(
+          'organization_type',
+          'Production'
+        );
+        expect(mockSetIdentity).not.toHaveBeenCalledWith('environment', 'dev');
+        expect(mockSetIdentity).not.toHaveBeenCalledWith('region', 'us');
+      });
 
-    it('should set the user ID (unhashed)', async () => {
-      expect(identity.userId).toBe('bob@coveo.com');
-    });
+      it('should set the user ID with (unhashed) email', async () => {
+        expect(identity.userId).toBe(email);
+      });
 
-    it('should set is_internal_user to true', async () => {
-      expect(mockSetIdentity).toHaveBeenCalledWith('is_internal_user', true);
-    });
+      it('should set is_internal_user to true', async () => {
+        expect(mockSetIdentity).toHaveBeenCalledWith('is_internal_user', true);
+      });
 
-    it('should identify event with (un-hashed) email', async () => {
-      expect(identity.userId).toBe('bob@coveo.com');
-    });
+      it('should identify event with (unhashed) email', async () => {
+        expect(identity.userId).toBe(email);
+      });
 
-    it('should always identify events with a device ID', async () => {
-      expect(identity.deviceId).toBeDefined();
-    });
-  });
+      it('should always identify events with a device ID', async () => {
+        expect(identity.deviceId).toBeDefined();
+      });
+    }
+  );
 
   describe('when the user is external', () => {
     beforeEach(async () => {
