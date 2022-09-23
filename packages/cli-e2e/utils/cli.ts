@@ -5,7 +5,7 @@ import {homedir} from 'os';
 import {ProcessManager} from './processManager';
 import {readJsonSync} from 'fs-extra';
 import {Terminal} from './terminal/terminal';
-import {getCleanEnv} from '../setup/utils';
+import {getCleanEnv} from '../setup/utils/utils';
 
 export const isGenericYesNoPrompt = /\(y\/n\)[\s:]*$/i;
 
