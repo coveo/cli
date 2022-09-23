@@ -7,7 +7,7 @@ import {loginWithOffice} from './utils/login';
 import {getPlatformHost} from './utils/platform';
 import waitOn from 'wait-on';
 import {ProcessManager} from './utils/processManager';
-import {restoreCliConfig, setCliExecPath} from './setup/utils';
+import {restoreCliConfig, setCliExecPath} from './setup/utils/utils';
 (async () => {
   if (statSync('decrypted', {throwIfNoEntry: false})) {
     restoreCliConfig();
