@@ -2,7 +2,7 @@ import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {CliUx} from '@oclif/core';
 import {stderr} from 'stdout-stderr';
 import {CLICommand} from '../command/cliCommand';
-import {formatOrgId, startSpinner, stopSpinner} from './ux';
+import {formatResourceId, formatOrgId, startSpinner, stopSpinner} from './ux';
 
 class FakeCommandNoError extends CLICommand {
   public async run() {
@@ -116,8 +116,14 @@ describe('ux', () => {
   });
 
   describe('formatOrgId()', () => {
-    it('colors the color magenta', () => {
+    it('colors the orgId magenta', () => {
       expect(formatOrgId('myOrgId')).toMatchSnapshot();
+    });
+  });
+
+  describe('formatResourceId()', () => {
+    it('colors the resourceId blue', () => {
+      expect(formatResourceId('myResourceId')).toMatchSnapshot();
     });
   });
 });
