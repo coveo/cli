@@ -9,7 +9,7 @@ import {
   restoreCliConfig,
   shimNpm,
   installCli,
-} from './utils';
+} from './utils/utils';
 
 export default async function () {
   shimNpm();
