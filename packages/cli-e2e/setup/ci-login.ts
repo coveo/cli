@@ -5,7 +5,12 @@ import {ProcessManager} from '../utils/processManager';
 
 import 'dotenv/config';
 
-import {setProcessEnv, authenticateCli, shimNpm, installCli} from './utils';
+import {
+  setProcessEnv,
+  authenticateCli,
+  shimNpm,
+  installCli,
+} from './utils/utils';
 import {getConfig, getConfigFilePath} from '../utils/cli';
 import {exportVariable, setSecret} from '@actions/core';
 

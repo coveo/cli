@@ -71,6 +71,7 @@ jobs:
       - name: Tests
         run: npm run test
   e2e-setup-login:
+    timeout-minutes: 15
     name: End-to-end login
     runs-on: 'ubuntu-latest'
     outputs:
@@ -177,6 +178,7 @@ jobs:
           cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
           npmRegistry: 'http://localhost:4873'
   e2e-teardown:
+    timeout-minutes: 15
     name: End-to-end teardown
     if: ${{ always() }}
     needs: [e2e, e2e-setup-login]
