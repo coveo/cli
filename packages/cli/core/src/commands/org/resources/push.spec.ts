@@ -9,7 +9,6 @@ jest.mock('../../../lib/project/project');
 import {CliUx} from '@oclif/core';
 import {test} from '@oclif/test';
 import {Project} from '../../../lib/project/project';
-import {join, normalize} from 'path';
 import {Config} from '@coveo/cli-commons/config/config';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
@@ -38,16 +37,13 @@ const mockedLastReport = jest.fn();
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockEvaluate = jest.fn();
 
+const fakeProject = {
+  deleteTemporaryZipFile: mockedDeleteTemporaryZipFile,
+  getResourceManifest: mockedGetResourceManifest,
+} as unknown as Project;
+
 const mockProject = () => {
-  mockedProject.mockImplementation(
-    () =>
-      ({
-        compressResources: () =>
-          Promise.resolve(normalize(join('path', 'to', 'resources.zip'))),
-        deleteTemporaryZipFile: mockedDeleteTemporaryZipFile,
-        getResourceManifest: mockedGetResourceManifest,
-      } as unknown as Project)
-  );
+  mockedProject.mockImplementation(() => fakeProject);
 };
 
 const doMockConfig = () => {
@@ -170,6 +166,7 @@ describe('org:resources:push', () => {
     jest.clearAllMocks();
   });
 
+  // TODO: test with missing resource privileges
   describe('when preconditions are not respected', () => {
     test
       .do(() => {
@@ -227,7 +224,7 @@ describe('org:resources:push', () => {
         expect(
           mockedSnapshotFactory.createSnapshotFromProject
         ).toHaveBeenCalledWith(
-          normalize(join('path', 'to', 'resources.zip')),
+          fakeProject,
           'default-org',
           expect.objectContaining({})
         );
@@ -243,7 +240,7 @@ describe('org:resources:push', () => {
         expect(
           mockedSnapshotFactory.createSnapshotFromProject
         ).toHaveBeenCalledWith(
-          normalize(join('path', 'to', 'resources.zip')),
+          fakeProject,
           'myorg',
           expect.objectContaining({})
         );
@@ -257,11 +254,7 @@ describe('org:resources:push', () => {
       .it('should set a 60 seconds wait', () => {
         expect(
           mockedSnapshotFactory.createSnapshotFromProject
-        ).toHaveBeenCalledWith(
-          normalize(join('path', 'to', 'resources.zip')),
-          'default-org',
-          {wait: 60}
-        );
+        ).toHaveBeenCalledWith(fakeProject, 'default-org', {wait: 60});
       });
 
     test
@@ -272,11 +265,7 @@ describe('org:resources:push', () => {
       .it('should set a 99 seconds wait', () => {
         expect(
           mockedSnapshotFactory.createSnapshotFromProject
-        ).toHaveBeenCalledWith(
-          normalize(join('path', 'to', 'resources.zip')),
-          'default-org',
-          {wait: 99}
-        );
+        ).toHaveBeenCalledWith(fakeProject, 'default-org', {wait: 99});
       });
 
     test

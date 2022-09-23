@@ -42,16 +42,13 @@ const mockedIsGitInstalled = jest.mocked(IsGitInstalled);
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockEvaluate = jest.fn();
 
+const fakeProject = {
+  deleteTemporaryZipFile: mockedDeleteTemporaryZipFile,
+  getResourceManifest: mockedGetResourceManifest,
+} as unknown as Project;
+
 const mockProject = () => {
-  mockedProject.mockImplementation(
-    () =>
-      ({
-        compressResources: () =>
-          Promise.resolve(normalize(join('path', 'to', 'resources.zip'))),
-        deleteTemporaryZipFile: mockedDeleteTemporaryZipFile,
-        getResourceManifest: mockedGetResourceManifest,
-      } as unknown as Project)
-  );
+  mockedProject.mockImplementation(() => fakeProject);
 };
 
 const doMockConfig = () => {
@@ -153,6 +150,7 @@ describe('org:resources:preview', () => {
 
   beforeEach(() => {
     doMockPreconditions();
+    // TODO: mock when missing privileges
     mockUserHavingAllRequiredPlatformPrivileges();
   });
 
@@ -196,7 +194,7 @@ describe('org:resources:preview', () => {
         expect(
           mockedSnapshotFactory.createSnapshotFromProject
         ).toHaveBeenCalledWith(
-          normalize(join('path', 'to', 'resources.zip')),
+          fakeProject,
           'default-org',
           expect.objectContaining({})
         );
@@ -210,7 +208,7 @@ describe('org:resources:preview', () => {
         expect(
           mockedSnapshotFactory.createSnapshotFromProject
         ).toHaveBeenCalledWith(
-          normalize(join('path', 'to', 'resources.zip')),
+          fakeProject,
           'myorg',
           expect.objectContaining({})
         );
@@ -237,11 +235,7 @@ describe('org:resources:preview', () => {
       .it('should set a 60 seconds wait', () => {
         expect(
           mockedSnapshotFactory.createSnapshotFromProject
-        ).toHaveBeenCalledWith(
-          normalize(join('path', 'to', 'resources.zip')),
-          'default-org',
-          {wait: 60}
-        );
+        ).toHaveBeenCalledWith(fakeProject, 'default-org', {wait: 60});
       });
 
     test
@@ -251,11 +245,7 @@ describe('org:resources:preview', () => {
       .it('should set a 312 seconds wait', () => {
         expect(
           mockedSnapshotFactory.createSnapshotFromProject
-        ).toHaveBeenCalledWith(
-          normalize(join('path', 'to', 'resources.zip')),
-          'default-org',
-          {wait: 312}
-        );
+        ).toHaveBeenCalledWith(fakeProject, 'default-org', {wait: 312});
       });
 
     test
