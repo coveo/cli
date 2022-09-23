@@ -67,7 +67,7 @@ const doMockConfig = () => {
 
 const mockSnapshotFactory = async () => {
   mockedPreviewSnapshot.mockReturnValue(Promise.resolve(``));
-  mockedSnapshotFactory.createFromZip.mockImplementation(() =>
+  mockedSnapshotFactory.createSnapshotFromProject.mockImplementation(() =>
     Promise.resolve({
       apply: mockedApplySnapshot,
       validate: mockedValidateSnapshot,
@@ -225,7 +225,9 @@ describe('org:resources:push', () => {
       .stub(CliUx.ux, 'confirm', () => async () => true)
       .command(['org:resources:push'])
       .it('should work with default connected org', () => {
-        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
+        expect(
+          mockedSnapshotFactory.createSnapshotFromProject
+        ).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
           'default-org',
           expect.objectContaining({})
@@ -239,7 +241,9 @@ describe('org:resources:push', () => {
       .command(['org:resources:push', '-o', 'myorg'])
       .it('should work with specified target org', () => {
         expect(mockedProject).toHaveBeenCalledWith(expect.anything(), 'myorg');
-        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
+        expect(
+          mockedSnapshotFactory.createSnapshotFromProject
+        ).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
           'myorg',
           expect.objectContaining({})
@@ -252,7 +256,9 @@ describe('org:resources:push', () => {
       .stub(CliUx.ux, 'confirm', () => async () => true)
       .command(['org:resources:push'])
       .it('should set a 60 seconds wait', () => {
-        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
+        expect(
+          mockedSnapshotFactory.createSnapshotFromProject
+        ).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
           'default-org',
           {wait: 60}
@@ -265,7 +271,9 @@ describe('org:resources:push', () => {
       .stub(CliUx.ux, 'confirm', () => async () => true)
       .command(['org:resources:push', '-w', '99'])
       .it('should set a 99 seconds wait', () => {
-        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
+        expect(
+          mockedSnapshotFactory.createSnapshotFromProject
+        ).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
           'default-org',
           {wait: 99}

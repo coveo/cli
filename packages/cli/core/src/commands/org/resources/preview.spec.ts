@@ -98,7 +98,7 @@ const mockSnapshotFactory = async () => {
     id: 'banana-snapshot',
     targetId: 'potato-org',
   } as unknown as Snapshot;
-  mockedSnapshotFactory.createFromZip.mockReturnValue(
+  mockedSnapshotFactory.createSnapshotFromProject.mockReturnValue(
     Promise.resolve(dummySnapshot)
   );
   mockedSnapshotFactory.createFromExistingSnapshot.mockReturnValue(
@@ -194,7 +194,9 @@ describe('org:resources:preview', () => {
       .stderr()
       .command(['org:resources:preview'])
       .it('should work with default connected org', () => {
-        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
+        expect(
+          mockedSnapshotFactory.createSnapshotFromProject
+        ).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
           'default-org',
           expect.objectContaining({})
@@ -206,7 +208,9 @@ describe('org:resources:preview', () => {
       .stderr()
       .command(['org:resources:preview', '-o', 'myorg'])
       .it('should work with specified target org', () => {
-        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
+        expect(
+          mockedSnapshotFactory.createSnapshotFromProject
+        ).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
           'myorg',
           expect.objectContaining({})
@@ -232,7 +236,9 @@ describe('org:resources:preview', () => {
       .stderr()
       .command(['org:resources:preview'])
       .it('should set a 60 seconds wait', () => {
-        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
+        expect(
+          mockedSnapshotFactory.createSnapshotFromProject
+        ).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
           'default-org',
           {wait: 60}
@@ -244,7 +250,9 @@ describe('org:resources:preview', () => {
       .stderr()
       .command(['org:resources:preview', '-w', '312'])
       .it('should set a 312 seconds wait', () => {
-        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
+        expect(
+          mockedSnapshotFactory.createSnapshotFromProject
+        ).toHaveBeenCalledWith(
           normalize(join('path', 'to', 'resources.zip')),
           'default-org',
           {wait: 312}
