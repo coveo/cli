@@ -6,6 +6,7 @@ import {
 } from '@coveo/push-api-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {CliUx, Flags} from '@oclif/core';
+import {startSpinner} from '@coveo/cli-commons/utils/ux';
 import {green} from 'chalk';
 import {
   HasNecessaryCoveoPrivileges,
@@ -74,9 +75,9 @@ export default class SourcePushAdd extends CLICommand {
   public async run() {
     await this.showDeprecatedFlagWarning();
     const {args, flags} = await this.parse(SourcePushAdd);
-    const source = await this.getSource();
+    const source = this.getSource();
 
-    CliUx.ux.action.start('Processing files');
+    startSpinner('Processing files');
 
     const fileNames = await getFileNames(flags);
     const options: BatchUpdateDocumentsFromFiles = {
@@ -93,23 +94,21 @@ export default class SourcePushAdd extends CLICommand {
       .onBatchUpload((data) => this.successMessageOnAdd(data))
       .onBatchError((data) => this.errorMessageOnAdd(data))
       .batch();
-
-    CliUx.ux.action.stop(green('✔'));
   }
 
-  public async catch(err?: Error & {exitCode?: number}) {
+  public catch(err?: Error & {exitCode?: number}) {
     formatErrorMessage(err);
     return super.catch(err);
   }
 
   protected async finally(_?: Error) {
     const {args} = await this.parse(SourcePushAdd);
-    const source = await this.getSource();
+    const source = this.getSource();
     await source.setSourceStatus(args.sourceId, 'IDLE');
     await super.finally(_);
   }
 
-  public async getSource() {
+  public getSource() {
     const {accessToken, organization, environment, region} =
       new AuthenticatedClient().cfg.get();
     return new PushSource(accessToken!, organization, {

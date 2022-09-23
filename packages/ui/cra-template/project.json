@@ -1,0 +1,6 @@
+{
+  "name": "cra-template",
+  "root": "packages/ui/cra-template",
+  "sourceRoot": "packages/ui/cra-template/template",
+  "projectType": "application"
+}

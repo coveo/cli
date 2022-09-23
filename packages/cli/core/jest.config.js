@@ -3,14 +3,10 @@ const {pathsToModuleNameMapper} = require('ts-jest');
 const {compilerOptions} = require('./tsconfig.json');
 
 process.env.TS_NODE_PROJECT = require.resolve('./tsconfig.dev.json');
+
 module.exports = {
   rootDir: '.',
   preset: 'ts-jest',
-  globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.dev.json',
-    },
-  },
   testEnvironment: 'node',
   verbose: true,
   collectCoverage: true,

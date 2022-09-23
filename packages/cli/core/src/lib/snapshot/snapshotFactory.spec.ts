@@ -14,8 +14,8 @@ import {Project} from '../project/project';
 
 // TODO: mock project.resourceTypes
 const mockedReadFileSync = jest.mocked(readFileSync);
-const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient, true);
-const mockedSnapshot = jest.mocked(Snapshot, true);
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
+const mockedSnapshot = jest.mocked(Snapshot);
 const mockedCreateSnapshotFromBuffer = jest.fn();
 const mockedCreateFromOrganization = jest.fn();
 const mockedPushSnapshot = jest.fn();

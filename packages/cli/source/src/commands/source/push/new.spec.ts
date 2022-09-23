@@ -11,7 +11,7 @@ import globalConfig from '@coveo/cli-commons/config/globalConfig';
 import type {Interfaces} from '@oclif/core';
 
 const mockedGlobalConfig = jest.mocked(globalConfig);
-const mockedConfig = jest.mocked(Config, true);
+const mockedConfig = jest.mocked(Config);
 const mockedConfigGet = jest.fn();
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockEvaluate = jest.fn();

@@ -22,7 +22,7 @@ import {
 } from '../../../__stub__/resourceSnapshotsReportModel';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 
-const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
+const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
 const mockedConfig = jest.mocked(Config);
 const mockedProject = jest.mocked(Project);
 const mockedConfigGet = jest.fn();
@@ -100,7 +100,7 @@ const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
   mockEvaluate.mockResolvedValue({approved: false});
 };
 
-const mockSnapshotFactoryReturningValidSnapshot = async () => {
+const mockSnapshotFactoryReturningValidSnapshot = () => {
   const successReportValidate = getSuccessReport(
     'success-report',
     ResourceSnapshotsReportType.DryRun
@@ -116,10 +116,10 @@ const mockSnapshotFactoryReturningValidSnapshot = async () => {
   mockedApplySnapshot.mockImplementation(
     () => new SnapshotReporter(successReportApply)
   );
-  await mockSnapshotFactory();
+  mockSnapshotFactory();
 };
 
-const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
+const mockSnapshotFactoryReturningInvalidSnapshot = () => {
   const errorReportValidate = getErrorReport(
     'error-report',
     ResourceSnapshotsReportType.DryRun
@@ -134,27 +134,26 @@ const mockSnapshotFactoryReturningInvalidSnapshot = async () => {
   mockedApplySnapshot.mockImplementation(() =>
     Promise.resolve(new SnapshotReporter(errorReportApply))
   );
-  await mockSnapshotFactory();
+  mockSnapshotFactory();
 };
 
-const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries =
-  async () => {
-    const missingVaultEntriesValidate = getMissingVaultEntryReport(
-      'error-report',
-      ResourceSnapshotsReportType.DryRun
-    );
-    const missingVaultEntriesApply = getMissingVaultEntryReport(
-      'error-report',
-      ResourceSnapshotsReportType.Apply
-    );
-    mockedValidateSnapshot.mockImplementation(() =>
-      Promise.resolve(new SnapshotReporter(missingVaultEntriesValidate))
-    );
-    mockedApplySnapshot.mockImplementation(() =>
-      Promise.resolve(new SnapshotReporter(missingVaultEntriesApply))
-    );
-    await mockSnapshotFactory();
-  };
+const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries = () => {
+  const missingVaultEntriesValidate = getMissingVaultEntryReport(
+    'error-report',
+    ResourceSnapshotsReportType.DryRun
+  );
+  const missingVaultEntriesApply = getMissingVaultEntryReport(
+    'error-report',
+    ResourceSnapshotsReportType.Apply
+  );
+  mockedValidateSnapshot.mockImplementation(() =>
+    Promise.resolve(new SnapshotReporter(missingVaultEntriesValidate))
+  );
+  mockedApplySnapshot.mockImplementation(() =>
+    Promise.resolve(new SnapshotReporter(missingVaultEntriesApply))
+  );
+  mockSnapshotFactory();
+};
 
 describe('org:resources:push', () => {
   beforeAll(() => {
@@ -184,8 +183,8 @@ describe('org:resources:push', () => {
   });
   //#region TODO: CDX-948, setup phase needs to be rewrite and assertions 'split up' (e.g. the error ain't trigger directly by the function, therefore should not be handled)
   describe('when the dryRun returns a report without errors', () => {
-    beforeAll(async () => {
-      await mockSnapshotFactoryReturningValidSnapshot();
+    beforeAll(() => {
+      mockSnapshotFactoryReturningValidSnapshot();
     });
 
     afterAll(() => {
@@ -195,7 +194,7 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => async () => true)
+      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
       .command(['org:resources:push'])
       .it('should preview the snapshot', () => {
         expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
@@ -204,7 +203,7 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => async () => true)
+      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
       .command(['org:resources:push'])
       .it('should apply the snapshot after confirmation', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledTimes(1);
@@ -213,7 +212,7 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => async () => false)
+      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(false))
       .command(['org:resources:push'])
       .it('should not apply the snapshot if not confirmed', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledTimes(0);
@@ -222,7 +221,7 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => async () => true)
+      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
       .command(['org:resources:push'])
       .it('should work with default connected org', () => {
         expect(
@@ -237,7 +236,7 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => async () => true)
+      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
       .command(['org:resources:push', '-o', 'myorg'])
       .it('should work with specified target org', () => {
         expect(mockedProject).toHaveBeenCalledWith(expect.anything(), 'myorg');
@@ -253,7 +252,7 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => async () => true)
+      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
       .command(['org:resources:push'])
       .it('should set a 60 seconds wait', () => {
         expect(
@@ -268,7 +267,7 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => async () => true)
+      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
       .command(['org:resources:push', '-w', '99'])
       .it('should set a 99 seconds wait', () => {
         expect(
@@ -283,7 +282,7 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => async () => true)
+      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
       .command(['org:resources:push'])
       .it('#should not apply missing resources', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledWith(false, {wait: 60});
@@ -292,7 +291,7 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => async () => true)
+      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
       .command(['org:resources:push', '--deleteMissingResources'])
       .it('should apply missing resoucres', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledWith(true, {wait: 60});
@@ -301,7 +300,7 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => async () => true)
+      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
       .command(['org:resources:push'])
       .it('should delete the compressed folder', () => {
         expect(mockedDeleteTemporaryZipFile).toHaveBeenCalledTimes(1);
@@ -310,7 +309,7 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => async () => true)
+      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
       .do(() => {
         mockedValidateSnapshot.mockImplementationOnce(() => {
           throw new Error('You shall not pass');
@@ -325,7 +324,7 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => async () => true)
+      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
       .command(['org:resources:push'])
       .it('should delete the snapshot', () => {
         expect(mockedDeleteSnapshot).toHaveBeenCalledTimes(1);
@@ -342,7 +341,7 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => async () => true)
+      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
       .command(['org:resources:push', '--previewLevel', 'light'])
       .it('should only display light preview', () => {
         expect(mockedPreviewSnapshot).toHaveBeenCalledWith(
@@ -355,7 +354,7 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => async () => true)
+      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
       .command(['org:resources:push', '--previewLevel', 'detailed'])
       .it('should display light and expanded preview', () => {
         expect(mockedPreviewSnapshot).toHaveBeenCalledWith(
@@ -367,8 +366,8 @@ describe('org:resources:push', () => {
   });
 
   describe('when the dryRun returns a report with errors', () => {
-    beforeAll(async () => {
-      await mockSnapshotFactoryReturningInvalidSnapshot();
+    beforeAll(() => {
+      mockSnapshotFactoryReturningInvalidSnapshot();
     });
 
     test
@@ -397,15 +396,15 @@ describe('org:resources:push', () => {
   });
 
   describe('when the dryRun returns a report with missing vault entries', () => {
-    beforeAll(async () => {
-      await mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries();
+    beforeAll(() => {
+      mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries();
     });
 
     describe('when the user refuses to migrate or type in the missing vault entries', () => {
       test
         .stdout()
         .stderr()
-        .stub(CliUx.ux, 'confirm', () => async () => false)
+        .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(false))
         .command(['org:resources:push'])
         .catch(/Your destination organization is missing vault entries/)
         .it('should show the missingVaultEntries snapshot error');
@@ -413,7 +412,7 @@ describe('org:resources:push', () => {
       test
         .stdout()
         .stderr()
-        .stub(CliUx.ux, 'confirm', () => async () => false)
+        .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(false))
         .command(['org:resources:push'])
         .catch(() => {
           expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);

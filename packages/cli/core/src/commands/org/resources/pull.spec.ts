@@ -22,14 +22,14 @@ import {cwd} from 'process';
 import {Project} from '../../../lib/project/project';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions';
 
-const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
-const mockedProject = jest.mocked(Project, true);
+const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
+const mockedProject = jest.mocked(Project);
 const mockedConfig = jest.mocked(Config);
 const mockedConfigGet = jest.fn();
 const mockedGetSnapshot = jest.fn();
 const mockedDownloadSnapshot = jest.fn();
 const mockedDeleteSnapshot = jest.fn();
-const mockedIsGitInstalled = jest.mocked(IsGitInstalled, true);
+const mockedIsGitInstalled = jest.mocked(IsGitInstalled);
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockEvaluate = jest.fn();
 const pathToStub = join(cwd(), 'src', '__stub__');
@@ -83,7 +83,7 @@ const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
   mockEvaluate.mockResolvedValue({approved: false});
 };
 
-const doMockSnapshotFactory = async () => {
+const doMockSnapshotFactory = () => {
   mockedSnapshotFactory.createFromOrg.mockReturnValue(
     Promise.resolve({
       delete: mockedDeleteSnapshot,
@@ -223,7 +223,7 @@ describe('org:resources:pull', () => {
   test
     .stdout()
     .stderr()
-    .stub(CliUx.ux, 'confirm', () => async () => true)
+    .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
     .command([
       'org:resources:pull',
       '-m',
@@ -249,7 +249,7 @@ describe('org:resources:pull', () => {
   test
     .stdout()
     .stderr()
-    .stub(CliUx.ux, 'confirm', () => async () => true)
+    .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
     .command([
       'org:resources:pull',
       '-m',
@@ -276,7 +276,7 @@ describe('org:resources:pull', () => {
   test
     .stdout()
     .stderr()
-    .stub(CliUx.ux, 'confirm', () => async () => true)
+    .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
     .command([
       'org:resources:pull',
       '-m',

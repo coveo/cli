@@ -27,15 +27,15 @@ import {mockPreconditions} from '../../../__test__/preconditionUtils';
 
 describe('ui:create:react', () => {
   const mockedConfig = jest.mocked(Config);
-  const mockedSpawnProcess = jest.mocked(spawnProcess, true);
-  const mockedSpawnProcessOutput = jest.mocked(spawnProcessOutput, true);
+  const mockedSpawnProcess = jest.mocked(spawnProcess);
+  const mockedSpawnProcessOutput = jest.mocked(spawnProcessOutput);
   const mockedPlatformClient = jest.mocked(PlatformClient);
   const mockedGetPackageVersion = jest.mocked(getPackageVersion);
   const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
-  const mockedIsNpxInstalled = jest.mocked(IsNpxInstalled, true);
-  const mockedIsNodeVersionInRange = jest.mocked(IsNodeVersionInRange, true);
+  const mockedIsNpxInstalled = jest.mocked(IsNpxInstalled);
+  const mockedIsNodeVersionInRange = jest.mocked(IsNodeVersionInRange);
   const createReactAppPackage = 'create-react-app@latest';
-  const mockedApiKeyPrivilege = jest.mocked(HasNecessaryCoveoPrivileges, true);
+  const mockedApiKeyPrivilege = jest.mocked(HasNecessaryCoveoPrivileges);
   const mockedCreateImpersonateApiKey = jest.fn();
   const preconditionStatus = {
     node: true,

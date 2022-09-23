@@ -3,7 +3,7 @@ jest.mock('@coveo/cli-commons/preconditions/trackable');
 
 import {Config} from '@coveo/cli-commons/config/config';
 import {test} from '@oclif/test';
-const mockedConfig = jest.mocked(Config, true);
+const mockedConfig = jest.mocked(Config);
 
 describe('config:get', () => {
   const mockGet = jest.fn();

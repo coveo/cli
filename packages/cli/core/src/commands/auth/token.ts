@@ -32,10 +32,10 @@ export default class Token extends CLICommand {
     await this.saveToken();
     await this.saveRegionAndEnvironment();
     await this.fetchAndSaveOrgId();
-    await this.feedbackOnSuccessfulLogin();
+    this.feedbackOnSuccessfulLogin();
   }
 
-  private async feedbackOnSuccessfulLogin() {
+  private feedbackOnSuccessfulLogin() {
     const cfg = this.configuration.get();
     this.log(`
     Successfully logged in!

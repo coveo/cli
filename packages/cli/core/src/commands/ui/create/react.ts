@@ -117,7 +117,7 @@ export default class React extends CLICommand {
     }
   }
 
-  private async runReactCliCommand(args: string[]) {
+  private runReactCliCommand(args: string[]) {
     return spawnProcess(appendCmdIfWindows`npx`, [React.cliPackage, ...args]);
   }
 

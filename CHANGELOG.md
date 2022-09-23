@@ -1,3 +1,16 @@
+# release-1 (2022-09-21)
+
+### Bug Fixes
+
+- **deps:** update all dependencies j:cdx-227 ([#897](https://github.com/coveo/cli/issues/897)) ([c7c026e](https://github.com/coveo/cli/commits/c7c026e4ebf8ff8c4ad36352ad69d086ceabc394))
+- **deps:** update all dependencies j:cdx-227 ([#933](https://github.com/coveo/cli/issues/933)) ([31e5658](https://github.com/coveo/cli/commits/31e5658f05c8aa2f45b9c6f0da716d624eb2b9da))
+- **deps:** update all dependencies j:cdx-227 ([#940](https://github.com/coveo/cli/issues/940)) ([dbc402e](https://github.com/coveo/cli/commits/dbc402e2952cbeb55457c49a7f01b44e646b373c))
+- update ux symbol ([#931](https://github.com/coveo/cli/issues/931)) ([ff38431](https://github.com/coveo/cli/commits/ff384317bc1acbb30bf916e5d55ada2e68fa32ee))
+
+### Features
+
+- standardize CLI commands and errors ([#930](https://github.com/coveo/cli/issues/930)) ([d247ab1](https://github.com/coveo/cli/commits/d247ab1dbe541d65821971924e9161578483fedc))
+
 ## v1.35.12 (2022-09-09)
 
 ## v1.35.11 (2022-09-08)

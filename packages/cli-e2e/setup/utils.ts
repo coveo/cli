@@ -79,7 +79,7 @@ export function setCliExecPath() {
 }
 
 export async function publishPackages() {
-  for (const phase of ['nx:graph', 'release:phase1', 'release:phase2']) {
+  for (const phase of ['nx:graph', 'release:phase1']) {
     const args = [...npm(), 'run', phase];
     const publishTerminal = new Terminal(
       args.shift()!,
@@ -206,7 +206,7 @@ export const resolveBinary = (programName: string) => {
   return spawner.stdout.trim();
 };
 
-const registryEnv = process.env.E2E_USE_NPM_REGISTRY
+const registryEnv: Record<string, string> = process.env.E2E_USE_NPM_REGISTRY
   ? {}
   : {
       npm_config_registry: 'http://localhost:4873',
@@ -214,11 +214,11 @@ const registryEnv = process.env.E2E_USE_NPM_REGISTRY
       YARN_REGISTRY: 'http://localhost:4873',
     };
 
-export function getCleanEnv(): Record<string, any> {
-  const env: Record<string, any> = {
+export function getCleanEnv(): Record<string, string> {
+  const env: Record<string, string> = {
     ...process.env,
     ...registryEnv,
-    npm_config_cache: process.env[npmCachePathEnvVar],
+    npm_config_cache: process.env[npmCachePathEnvVar]!,
   };
   const excludeEnvVars = [
     'npm_config_local_prefix',

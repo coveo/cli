@@ -139,11 +139,11 @@ describe('analytics_hook', () => {
     beforeEach(async () => {
       await hook(getAnalyticsHook({}));
     });
-    fancyIt()('should only log one event', async () => {
+    fancyIt()('should only log one event', () => {
       expect(mockedLogEvent).toHaveBeenCalledTimes(1);
     });
 
-    fancyIt()('should not log any identify event', async () => {
+    fancyIt()('should not log any identify event', () => {
       expect(mockedLogEvent).toHaveReturnedWith(
         expect.not.objectContaining({event_type: '$identify'})
       );
@@ -155,18 +155,18 @@ describe('analytics_hook', () => {
       await hook(getAnalyticsHook({identify: true}));
     });
 
-    fancyIt()('should log 2 events', async () => {
+    fancyIt()('should log 2 events', () => {
       expect(mockedLogEvent).toHaveBeenCalledTimes(2);
     });
 
-    fancyIt()('should log an identify event', async () => {
+    fancyIt()('should log an identify event', () => {
       expect(mockedLogEvent).toHaveBeenCalledWith(
         expect.objectContaining({event_type: '$identify'})
       );
     });
 
     describe('when the user is a coveo employee', () => {
-      fancyIt()('should identify event with (un-hashed) email', async () => {
+      fancyIt()('should identify event with (un-hashed) email', () => {
         const userIdCheck = expect.stringMatching('bob@coveo.com');
         expect(mockedLogEvent).toHaveBeenCalledWith(
           expect.objectContaining({user_id: userIdCheck})
@@ -185,18 +185,15 @@ describe('analytics_hook', () => {
         await hook(getAnalyticsHook({identify: true}));
       });
 
-      fancyIt()(
-        'should not identify event with (un-hashed) email',
-        async () => {
-          const userIdCheck = expect.not.stringMatching('bob@coveo.com');
-          expect(mockedLogEvent).toHaveBeenCalledWith(
-            expect.objectContaining({user_id: userIdCheck})
-          );
-        }
-      );
+      fancyIt()('should not identify event with (un-hashed) email', () => {
+        const userIdCheck = expect.not.stringMatching('bob@coveo.com');
+        expect(mockedLogEvent).toHaveBeenCalledWith(
+          expect.objectContaining({user_id: userIdCheck})
+        );
+      });
     });
 
-    fancyIt()('should identify event with device ID', async () => {
+    fancyIt()('should identify event with device ID', () => {
       const deviceIdCheck = expect.stringMatching(/.*/);
       expect(mockedLogEvent).toHaveBeenCalledWith(
         expect.objectContaining({device_id: deviceIdCheck})

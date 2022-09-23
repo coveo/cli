@@ -1,0 +1,6 @@
+{
+  "name": "search-token-lambda",
+  "root": "packages/ui/search-token-lambda",
+  "sourceRoot": "packages/ui/search-token-lambda/functions",
+  "projectType": "library"
+}

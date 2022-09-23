@@ -1,0 +1,6 @@
+{
+  "name": "angular",
+  "root": "packages/ui/angular",
+  "sourceRoot": "packages/ui/angular/src",
+  "projectType": "application"
+}

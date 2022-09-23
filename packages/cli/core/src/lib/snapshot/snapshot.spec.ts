@@ -36,10 +36,10 @@ import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
 
 const mockedRetry = jest.mocked(retry);
-const mockedExpandedPreviewer = jest.mocked(ExpandedPreviewer, true);
-const mockedSnapshotReporter = jest.mocked(SnapshotReporter, true);
-const mockedReportViewer = jest.mocked(ReportViewer, true);
-const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient, true);
+const mockedExpandedPreviewer = jest.mocked(ExpandedPreviewer);
+const mockedSnapshotReporter = jest.mocked(SnapshotReporter);
+const mockedReportViewer = jest.mocked(ReportViewer);
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockedEnsureFileSync = jest.mocked(ensureFileSync);
 const mockedWriteJsonSync = jest.mocked(writeJSONSync);
 const mockedCreateSnapshotFromBuffer = jest.fn();

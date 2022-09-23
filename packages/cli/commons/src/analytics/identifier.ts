@@ -73,9 +73,13 @@ export class Identifier {
     };
   }
 
+  private isEmailInternal(email: string) {
+    return /@(?:coveo|devcoveo\.onmicrosoft)\.com$/.test(email);
+  }
+
   private async getUserInfo(platformClient: PlatformClient) {
     const {email} = await platformClient.user.get();
-    const isInternalUser = email.match(/@coveo\.com$/) !== null;
+    const isInternalUser = this.isEmailInternal(email);
 
     return {
       userId: isInternalUser ? email : this.hash(email),

@@ -27,7 +27,9 @@ yarn.lock
 # Snyk artifacts
 .dccache
 sarifs
-packages/create-atomic/template/package.json.hbs
 
 # Prevent secret leakage.
 .npmrc
+
+# Commit message file used for release
+.git-message

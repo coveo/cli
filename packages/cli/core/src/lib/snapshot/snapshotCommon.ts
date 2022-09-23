@@ -1,13 +1,11 @@
-import {CliUx} from '@oclif/core';
+import {startSpinner} from '@coveo/cli-commons/utils/ux';
 import {Project} from '../project/project';
 import {SnapshotFactory} from './snapshotFactory';
 import {Snapshot, WaitUntilDoneOptions} from './snapshot';
-import {red, green} from 'chalk';
 import {normalize} from 'path';
 import {Config, Configuration} from '@coveo/cli-commons/config/config';
 import {SnapshotGenericError} from '../errors/snapshotErrors';
 import {SnapshotReporter} from './snapshotReporter';
-import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
 import {
   VaultTransferFunctionsParam,
   tryTransferFromOrganization,
@@ -22,20 +20,10 @@ export interface DryRunOptions {
 }
 
 async function internalDryRun(snapshot: Snapshot, options: DryRunOptions) {
-  let reporter = await snapshot.validate(
+  return snapshot.validate(
     options.deleteMissingResources,
     options.waitUntilDone
   );
-
-  await reporter
-    .setReportHandler(SnapshotReportStatus.SUCCESS, () => {
-      CliUx.ux.action.stop(green('✔'));
-    })
-    .setReportHandler(SnapshotReportStatus.ERROR, async () => {
-      CliUx.ux.action.stop(red.bold('!'));
-    })
-    .handleReport();
-  return reporter;
 }
 
 export async function dryRun(
@@ -46,7 +34,7 @@ export async function dryRun(
   const project = new Project(normalize(projectPath), targetOrg);
   const snapshot = await getSnapshotForDryRun(project, targetOrg, options);
 
-  CliUx.ux.action.start('Validating snapshot');
+  startSpinner('Validating snapshot');
   let reporter = await internalDryRun(snapshot, options);
 
   return {reporter, snapshot, project};
@@ -113,14 +101,14 @@ async function getSnapshotForDryRun(
   options: DryRunOptions = {}
 ) {
   if (options.snapshotId) {
-    CliUx.ux.action.start('Retrieving Snapshot');
+    startSpinner('Retrieving Snapshot');
     return SnapshotFactory.createFromExistingSnapshot(
       options.snapshotId,
       targetOrg,
       options.waitUntilDone
     );
   }
-  CliUx.ux.action.start('Creating Snapshot');
+  startSpinner('Creating Snapshot');
   return SnapshotFactory.createSnapshotFromProject(
     project,
     targetOrg,

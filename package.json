@@ -1,7 +1,7 @@
 {
   "name": "cli-tools",
   "private": true,
-  "version": "1.35.12",
+  "version": "1.0.0-1",
   "author": "Coveo",
   "bin": {
     "coveo": "./bin/run"
@@ -11,19 +11,19 @@
   "devDependencies": {
     "@actions/core": "1.9.1",
     "@actions/github": "5.0.3",
-    "@commitlint/config-conventional": "16.2.4",
-    "@commitlint/lint": "16.2.4",
-    "@coveo/semantic-monorepo-tools": "1.3.4",
-    "@coveord/platform-client": "34.12.0",
-    "@npmcli/arborist": "5.6.1",
+    "@commitlint/config-conventional": "17.1.0",
+    "@commitlint/lint": "17.1.0",
+    "@coveo/semantic-monorepo-tools": "1.3.6",
+    "@coveord/platform-client": "34.13.0",
+    "@npmcli/arborist": "5.6.2",
     "@nrwl/cli": "latest",
     "@nrwl/workspace": "latest",
     "@types/node": "16.11.59",
-    "@typescript-eslint/eslint-plugin": "5.37.0",
-    "@typescript-eslint/parser": "5.37.0",
+    "@typescript-eslint/eslint-plugin": "5.38.0",
+    "@typescript-eslint/parser": "5.38.0",
     "abortcontroller-polyfill": "1.7.3",
     "async-retry": "1.3.3",
-    "aws-sdk": "2.1216.0",
+    "aws-sdk": "2.1221.0",
     "axios": "0.27.2",
     "chai": "4.3.6",
     "conventional-changelog-angular": "5.0.13",
@@ -36,12 +36,12 @@
     "exponential-backoff": "3.1.0",
     "fs-extra": "10.1.0",
     "gts": "3.1.1",
-    "husky": "7.0.4",
+    "husky": "8.0.1",
     "isomorphic-fetch": "3.0.0",
-    "lint-staged": "12.5.0",
+    "lint-staged": "13.0.3",
     "moment": "2.29.4",
-    "oclif": "3.2.1",
-    "octokit": "1.8.1",
+    "oclif": "3.2.2",
+    "octokit": "2.0.7",
     "patch-package": "6.4.7",
     "prettier": "2.7.1",
     "rimraf": "3.0.2",
@@ -84,18 +84,15 @@
     "commit-msg": "node ./hooks/commit-msg.js",
     "pre-commit": "lint-staged",
     "postinstall": "patch-package && nx run-many --target=postinstall --all",
-    "release": "npm run nx:graph && npm run release:phase1 && npm run release:phase2 && npm run release:phase3",
+    "release": "npm run nx:graph && npm run release:phase1 && npm run release:phase2",
     "nx:graph": "nx graph --file=topology.json",
-    "release:phase1": "node --experimental-specifier-resolution=node ./scripts/releaseV2/phase1-get-new-version.mjs",
-    "release:phase2": "nx run-many --target=release:phase2 --all --parallel=false",
-    "release:phase3": "node --experimental-specifier-resolution=node ./scripts/releaseV2/phase3-git-commit-tag-push.mjs"
+    "release:phase1": "nx run-many --target=release:phase1 --all --parallel=false",
+    "release:phase2": "node --experimental-specifier-resolution=node ./scripts/releaseV2/phase2-git-commit-tag-push.mjs"
   },
   "workspaces": [
     "packages/*",
-    "packages/atomic/*",
+    "packages/ui/*",
+    "packages/ui/atomic/*",
     "packages/cli/*"
-  ],
-  "dependencies": {
-    "jest-config": "27.5.1"
-  }
+  ]
 }

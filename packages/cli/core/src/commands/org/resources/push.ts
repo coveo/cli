@@ -1,12 +1,13 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags, CliUx} from '@oclif/core';
+import {Flags} from '@oclif/core';
+import {startSpinner} from '@coveo/cli-commons/utils/ux';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
 } from '@coveo/cli-commons/preconditions/index';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {red, green, bold} from 'chalk';
+import {bold} from 'chalk';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {
   dryRun,
@@ -90,7 +91,7 @@ export default class Push extends CLICommand {
     await this.cleanup(snapshot, project);
   }
 
-  public async catch(err?: Error & {exitCode?: number}) {
+  public catch(err?: Error & {exitCode?: number}) {
     cleanupProject(this.projectPath);
     return super.catch(err);
   }
@@ -113,7 +114,7 @@ export default class Push extends CLICommand {
   private getSuccessReportHandler(snapshot: Snapshot) {
     const successReportWithChangesHandler = () =>
       this.successReportWithChangesHandler(snapshot);
-    return async function (this: SnapshotReporter) {
+    return function (this: SnapshotReporter) {
       return successReportWithChangesHandler();
     };
   }
@@ -137,7 +138,7 @@ export default class Push extends CLICommand {
   }
 
   private async applySnapshot(snapshot: Snapshot) {
-    CliUx.ux.action.start('Applying snapshot');
+    startSpinner('Applying snapshot');
     const cfg = this.configuration.get();
     const {flags} = await this.parse(Push);
     const {waitUntilDone} = await this.getOptions();
@@ -148,10 +149,6 @@ export default class Push extends CLICommand {
     await reporter
       .setReportHandler(SnapshotReportStatus.ERROR, async () => {
         await handleReportWithErrors(snapshot, cfg, this.projectPath);
-        CliUx.ux.action.stop(red.bold('!'));
-      })
-      .setReportHandler(SnapshotReportStatus.SUCCESS, () => {
-        CliUx.ux.action.stop(green('✔'));
       })
       .handleReport();
   }

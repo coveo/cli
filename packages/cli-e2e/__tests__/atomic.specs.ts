@@ -54,7 +54,7 @@ describe('ui:create:atomic', () => {
   const getFlagsFromOptions = (options: BuildAppOptions) =>
     options.pageId ? ['--pageId', options.pageId] : undefined;
 
-  const selectDefaultWithCli = async (buildTerminal: Terminal) => {
+  const selectDefaultWithCli = (buildTerminal: Terminal) => {
     buildTerminal
       .when(/Use an existing hosted search page/)
       .on('stdout')
@@ -66,13 +66,13 @@ describe('ui:create:atomic', () => {
     options: BuildAppOptions,
     buildTerminal: Terminal
   ) => {
-    const osSpecificSelector = process.platform === 'win32' ? '>' : '\u276f'; //❯
+    const selector = '\u276f'; //❯
     const anotherPageSelectedMatcher = new RegExp(
-      `${osSpecificSelector} (?!${options.pageName})`,
+      `${selector} (?!${options.pageName})`,
       'gm'
     );
     const expectedPageSelectedMatcher = new RegExp(
-      `${osSpecificSelector} ${options.pageName}`,
+      `${selector} ${options.pageName}`,
       'gm'
     );
     buildTerminal
@@ -140,7 +140,7 @@ describe('ui:create:atomic', () => {
     return {output};
   };
 
-  const startApplication = async (
+  const startApplication = (
     processManager: ProcessManager,
     options: BuildAppOptions,
     debugName = 'atomic-server'
@@ -290,7 +290,7 @@ describe('ui:create:atomic', () => {
           beforeAll(async () => {
             serverProcessManager = new ProcessManager();
             processManagers.push(serverProcessManager);
-            const appTerminal = await startApplication(
+            const appTerminal = startApplication(
               serverProcessManager,
               buildAppOptions,
               'atomic-server-valid'
@@ -370,7 +370,7 @@ describe('ui:create:atomic', () => {
             dummyServer = new DummyServer(3333);
             await dummyServer.start();
 
-            const appTerminal = await startApplication(
+            const appTerminal = startApplication(
               serverProcessManager,
               buildAppOptions,
               'stencil-port-test'
