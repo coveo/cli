@@ -2,6 +2,7 @@ import {
   ResourceSnapshotsModel,
   ResourceSnapshotsReportModel,
   ResourceSnapshotsReportType,
+  SnapshotAccessType,
   SnapshotExportContentFormat,
 } from '@coveord/platform-client';
 import {stdout, stderr} from 'stdout-stderr';
@@ -22,6 +23,7 @@ jest.mock('./snapshotReporter');
 jest.mock('./reportPreviewer/reportPreviewer');
 jest.mock('../project/project');
 jest.mock('./expandedPreviewer/expandedPreviewer');
+jest.mock('./snapshotAccess');
 
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {ensureFileSync, writeJSONSync} from 'fs-extra';
@@ -34,6 +36,8 @@ import {join} from 'path';
 import {SnapshotOperationTimeoutError} from '../errors';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
+import {MissingSnapshotPrivilege} from '../errors/snapshotErrors';
+import {ensureSnapshotAccess} from './snapshotAccess';
 
 const mockedRetry = jest.mocked(retry);
 const mockedExpandedPreviewer = jest.mocked(ExpandedPreviewer);
@@ -50,6 +54,7 @@ const mockedExportSnapshot = jest.fn();
 const mockedApplySnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
+const mockedEnsureSnapshotAccess = jest.mocked(ensureSnapshotAccess);
 //#endregion Mocks
 
 describe('Snapshot', () => {
@@ -57,7 +62,6 @@ describe('Snapshot', () => {
   const snapshotId = 'target-org-snapshot-id';
 
   let snapshot: Snapshot;
-
   //#region MockFactories
   const getSuccessDryRunReport = (
     snapshotId: string
@@ -73,6 +77,18 @@ describe('Snapshot', () => {
     snapshotId: string
   ): ResourceSnapshotsReportModel =>
     getErrorReport(snapshotId, ResourceSnapshotsReportType.Apply);
+
+  const doMockSufficientResourceAccess = () => {
+    mockedEnsureSnapshotAccess.mockResolvedValueOnce();
+  };
+
+  const doMockedInsufficientResourceAccess = (
+    accessType = SnapshotAccessType.Read
+  ) => {
+    mockedEnsureSnapshotAccess.mockRejectedValueOnce(
+      new MissingSnapshotPrivilege(snapshotId, accessType)
+    );
+  };
 
   const doMockAuthenticatedClient = () => {
     mockedGetClient.mockImplementation(() =>
@@ -149,6 +165,7 @@ describe('Snapshot', () => {
 
   beforeEach(() => {
     doMockAuthenticatedClient();
+    doMockSufficientResourceAccess();
   });
 
   afterEach(() => {
@@ -185,6 +202,14 @@ describe('Snapshot', () => {
         stdout.stop();
       }
     );
+
+    fancyIt()('should throw is missing privileges', async () => {
+      mockedEnsureSnapshotAccess.mockReset();
+      doMockedInsufficientResourceAccess();
+      await expect(() => snapshot.validate()).rejects.toThrowError(
+        MissingSnapshotPrivilege
+      );
+    });
 
     fancyIt()('should wait for the backend-operation to complete', async () => {
       await snapshot.validate();
@@ -314,6 +339,14 @@ describe('Snapshot', () => {
         stdout.stop();
       }
     );
+
+    fancyIt()('should throw is missing privileges', async () => {
+      mockedEnsureSnapshotAccess.mockReset();
+      doMockedInsufficientResourceAccess();
+      await expect(() => snapshot.apply()).rejects.toThrowError(
+        MissingSnapshotPrivilege
+      );
+    });
 
     fancyIt()('should wait for the backend-operation to complete', async () => {
       await snapshot.apply();
