@@ -11,11 +11,14 @@ import {
   setProcessEnv,
   createUiProjectDirectory,
   startVerdaccio,
-  publishPackages,
   shimNpm,
-  scaffoldDummyPackages,
-} from './utils';
+} from './utils/utils';
 import {join} from 'path';
+import {
+  scaffoldDummyPackages,
+  publishPackages,
+  uplinkMissingPackages,
+} from './utils/verdaccio';
 
 export default async function () {
   shimNpm();
@@ -30,4 +33,5 @@ export default async function () {
   await npmLogin();
   scaffoldDummyPackages();
   await publishPackages();
+  await uplinkMissingPackages();
 }
