@@ -119,9 +119,28 @@ describe('Project', () => {
   });
 
   describe('when the project is invalid', () => {
-    fancyIt()(
-      '#compressResources should ensure resources folder exists',
-      async () => {
+    describe('#resourceTypes', () => {
+      fancyIt()('should throw', () => {
+        doMockFileDoesNotExists('resources');
+        const project = projectCreator();
+
+        expect(() => project.resourceTypes).toThrow(
+          new Error(
+            `${resolve(
+              'dummy/path'
+            )} is not a valid project: Does not contain any resources folder`
+          )
+        );
+
+        expect(mockedExistSync).toHaveBeenNthCalledWith(
+          2,
+          resolve('dummy/path', 'resources')
+        );
+      });
+    });
+
+    describe('#compressResources', () => {
+      fancyIt()('should ensure resources folder exists', async () => {
         doMockFileDoesNotExists('resources');
         const project = projectCreator();
 
@@ -137,12 +156,9 @@ describe('Project', () => {
           2,
           resolve('dummy/path', 'resources')
         );
-      }
-    );
+      });
 
-    fancyIt()(
-      '#compressResources should ensure .coveo hidden folder exists',
-      async () => {
+      fancyIt()('should ensure .coveo hidden folder exists', async () => {
         doMockFileDoesNotExists('_');
         const project = projectCreator();
         doMockFileDoesNotExists('.coveo');
@@ -159,23 +175,20 @@ describe('Project', () => {
           3,
           resolve('dummy/path', '.coveo')
         );
-      }
-    );
+      });
+    });
 
-    fancyIt()(
-      '#compressResources should not check for the manifest',
-      async () => {
-        doMockFileDoesNotExists('resources');
-        const project = projectCreator();
-        mockedReadJSONSync.mockReturnValueOnce({orgId: 'someOrgId'});
+    fancyIt()('should not check for the manifest', async () => {
+      doMockFileDoesNotExists('resources');
+      const project = projectCreator();
+      mockedReadJSONSync.mockReturnValueOnce({orgId: 'someOrgId'});
 
-        try {
-          await project.compressResources();
-        } catch (error) {}
+      try {
+        await project.compressResources();
+      } catch (error) {}
 
-        expect(mockedWriteJSONSync).not.toBeCalled();
-      }
-    );
+      expect(mockedWriteJSONSync).not.toBeCalled();
+    });
   });
 
   describe('when the project is valid', () => {
@@ -186,18 +199,17 @@ describe('Project', () => {
       project = projectCreator();
     });
 
-    fancyIt()(
-      '#compressResources should create a write stream the appropriate path to the zip file',
-      async () => {
-        await project.compressResources();
+    describe('#compressResources', () => {
+      fancyIt()(
+        'should create a write stream the appropriate path to the zip file',
+        async () => {
+          await project.compressResources();
 
-        expect(mockedCreateWriteStream).toHaveBeenCalledWith(pathToZip);
-      }
-    );
+          expect(mockedCreateWriteStream).toHaveBeenCalledWith(pathToZip);
+        }
+      );
 
-    fancyIt()(
-      '#compressResources should append files from the resource directory',
-      async () => {
+      fancyIt()('should append files from the resource directory', async () => {
         await project.compressResources();
 
         const putTheContentAtTheRootOfTheArchive = false;
@@ -205,21 +217,18 @@ describe('Project', () => {
           pathToResources,
           putTheContentAtTheRootOfTheArchive
         );
-      }
-    );
+      });
 
-    fancyIt()(
-      '#compressResources should finalize when there are no more resources to zip',
-      async () => {
-        await project.compressResources();
+      fancyIt()(
+        'should finalize when there are no more resources to zip',
+        async () => {
+          await project.compressResources();
 
-        expect(mockedFinalize).toHaveBeenCalledTimes(1);
-      }
-    );
+          expect(mockedFinalize).toHaveBeenCalledTimes(1);
+        }
+      );
 
-    fancyIt()(
-      '#compressResources should restore the manifest file if it exists',
-      async () => {
+      fancyIt()('should restore the manifest file if it exists', async () => {
         mockedReadJSONSync.mockReturnValueOnce({orgId: 'someOrgId'});
 
         await project.compressResources();
@@ -229,39 +238,38 @@ describe('Project', () => {
           join(pathToResources, 'manifest.json'),
           expect.objectContaining({orgId: 'someOrgId'})
         );
-      }
-    );
+      });
 
-    fancyIt()(
-      '#compressResources should not restore the manifest file if it did not exists',
-      async () => {
-        mockedReadJSONSync.mockReturnValueOnce(null);
+      fancyIt()(
+        'should not restore the manifest file if it did not exists',
+        async () => {
+          mockedReadJSONSync.mockReturnValueOnce(null);
 
-        await project.compressResources();
+          await project.compressResources();
 
-        expect(mockedRmSync).toBeCalledTimes(1);
-        expect(mockedWriteJSONSync).not.toBeCalled();
-      }
-    );
+          expect(mockedRmSync).toBeCalledTimes(1);
+          expect(mockedWriteJSONSync).not.toBeCalled();
+        }
+      );
+    });
 
-    fancyIt()(
-      '#deleteTemporaryZipFile should delete the temporary a zip file',
-      async () => {
+    describe('#deleteTemporaryZipFile', () => {
+      it('should delete the temporary a zip file', async () => {
         await project.compressResources();
 
         project.deleteTemporaryZipFile();
         expect(mockedUnlinkSync).toHaveBeenCalledWith(pathToZip);
-      }
-    );
+      });
+    });
 
-    describe('#resourcesTypes', () => {
+    describe('#resourceTypes', () => {
       fancyIt()(
         'should return an empty array if snapshot file when snapshot does not contain resources',
         () => {
           mockedReadJSONSync.mockReturnValueOnce({
             resources: {},
           });
-          expect(project.resourcesTypes.length).toEqual(0);
+          expect(project.resourceTypes.length).toEqual(0);
         }
       );
 
@@ -273,7 +281,7 @@ describe('Project', () => {
             SOURCE: [],
           },
         });
-        expect(project.resourcesTypes.sort()).toEqual([
+        expect(project.resourceTypes.sort()).toEqual([
           'EXTENSION',
           'FIELD',
           'SOURCE',
@@ -300,11 +308,26 @@ describe('Project', () => {
                 SOURCE: [],
               },
             });
-          expect(project.resourcesTypes.sort()).toEqual([
+          expect(project.resourceTypes.sort()).toEqual([
             'EXTENSION',
             'FIELD',
             'SOURCE',
           ]);
+        }
+      );
+
+      fancyIt()(
+        'should return an empty array for invalid JSON file',
+        async () => {
+          mockedFileDepthSearch.mockReturnValueOnce(Array(3));
+          mockedReadJSONSync.mockReturnValueOnce({
+            ingredients: {
+              CARBONATED_WATER: [],
+              NATURAL_FLAVOR: [],
+              CAFFEINE: [],
+            },
+          });
+          expect(project.resourceTypes.length).toBe(0);
         }
       );
     });
@@ -401,29 +424,23 @@ describe('Project', () => {
         }
       );
 
-      fancyIt()(
-        '#writeResourcesManifest should overwrite the existing orgId',
-        () => {
-          mockedReadJSONSync.mockReturnValueOnce({orgId: 'foobar'});
-          project.writeResourcesManifest('someOrgId');
-          expect(mockedWriteJSONSync).toBeCalledWith(
-            join(pathToResources, 'manifest.json'),
-            expect.objectContaining({orgId: 'someOrgId'})
-          );
-        }
-      );
+      fancyIt()('should overwrite the existing orgId', () => {
+        mockedReadJSONSync.mockReturnValueOnce({orgId: 'foobar'});
+        project.writeResourcesManifest('someOrgId');
+        expect(mockedWriteJSONSync).toBeCalledWith(
+          join(pathToResources, 'manifest.json'),
+          expect.objectContaining({orgId: 'someOrgId'})
+        );
+      });
 
-      fancyIt()(
-        '#writeResourcesManifest should write a new manifest if none existed',
-        () => {
-          mockedReadJSONSync.mockReturnValueOnce(null);
-          project.writeResourcesManifest('someOrgId');
-          expect(mockedWriteJSONSync).toBeCalledWith(
-            join(pathToResources, 'manifest.json'),
-            expect.objectContaining({orgId: 'someOrgId'})
-          );
-        }
-      );
+      fancyIt()('should write a new manifest if none existed', () => {
+        mockedReadJSONSync.mockReturnValueOnce(null);
+        project.writeResourcesManifest('someOrgId');
+        expect(mockedWriteJSONSync).toBeCalledWith(
+          join(pathToResources, 'manifest.json'),
+          expect.objectContaining({orgId: 'someOrgId'})
+        );
+      });
     });
 
     describe('when archiver fails', () => {
