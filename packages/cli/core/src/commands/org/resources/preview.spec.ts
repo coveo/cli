@@ -188,11 +188,6 @@ describe('org:resources:preview', () => {
       mockUserNotHavingAllRequiredResourcePrivileges();
     });
 
-    afterAll(() => {
-      // TODO:  maybe put outside
-      // mockedSnapshotFactory.mockReset();
-    });
-
     test
       .stdout()
       .stderr()
@@ -217,10 +212,6 @@ describe('org:resources:preview', () => {
   describe('when the report contains no resources in error', () => {
     beforeAll(() => {
       mockSnapshotFactoryReturningValidSnapshot();
-    });
-
-    afterAll(() => {
-      // mockedSnapshotFactory.mockReset();
     });
 
     test

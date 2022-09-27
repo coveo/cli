@@ -13,13 +13,19 @@ import {Config} from '@coveo/cli-commons/config/config';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
-import {ResourceSnapshotsReportType} from '@coveord/platform-client';
+import {
+  ResourceSnapshotsReportType,
+  ResourceSnapshotType,
+  SnapshotAccessType,
+} from '@coveord/platform-client';
 import {
   getErrorReport,
   getMissingVaultEntryReport,
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
+import {formatCliLog} from '../../../__test__/jestSnapshotUtils';
+import {MissingResourcePrivileges} from '../../../lib/errors/snapshotErrors';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
 const mockedConfig = jest.mocked(Config);
@@ -96,6 +102,15 @@ const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
   mockEvaluate.mockResolvedValue({approved: false});
 };
 
+const mockUserNotHavingAllRequiredResourcePrivileges = () => {
+  mockedSnapshotFactory.createFromOrg.mockImplementation(() => {
+    throw new MissingResourcePrivileges(
+      [ResourceSnapshotType.source, ResourceSnapshotType.mlModel],
+      SnapshotAccessType.Write
+    );
+  });
+};
+
 const mockSnapshotFactoryReturningValidSnapshot = () => {
   const successReportValidate = getSuccessReport(
     'success-report',
@@ -166,7 +181,6 @@ describe('org:resources:push', () => {
     jest.clearAllMocks();
   });
 
-  // TODO: test with missing resource privileges
   describe('when preconditions are not respected', () => {
     test
       .do(() => {
@@ -177,7 +191,20 @@ describe('org:resources:push', () => {
       .command(['org:resources:push'])
       .catch(/You are not authorized to create snapshot/)
       .it('should return an error message if privileges are missing');
+
+    test
+      .do(() => {
+        mockUserNotHavingAllRequiredResourcePrivileges();
+      })
+      .stdout()
+      .stderr()
+      .command(['org:resources:push'])
+      .catch((ctx) => {
+        expect(formatCliLog(ctx.message, true)).toMatchSnapshot();
+      })
+      .it('should return an error message if resource privileges are missing');
   });
+
   //#region TODO: CDX-948, setup phase needs to be rewrite and assertions 'split up' (e.g. the error ain't trigger directly by the function, therefore should not be handled)
   describe('when the dryRun returns a report without errors', () => {
     beforeAll(() => {
