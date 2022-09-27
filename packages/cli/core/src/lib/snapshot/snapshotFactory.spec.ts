@@ -1,8 +1,12 @@
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('fs');
 jest.mock('./snapshot');
+jest.mock('./snapshotAccess');
 
-import {ResourceSnapshotType} from '@coveord/platform-client';
+import {
+  ResourceSnapshotType,
+  SnapshotAccessType,
+} from '@coveord/platform-client';
 import {readFileSync} from 'fs';
 import {join} from 'path';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
@@ -11,8 +15,12 @@ import {SnapshotPullModelResources} from './pullModel/interfaces';
 import {Snapshot} from './snapshot';
 import {SnapshotFactory} from './snapshotFactory';
 import {Project} from '../project/project';
+import {ensureResourceAccess, ensureSnapshotAccess} from './snapshotAccess';
+import {
+  MissingResourcePrivileges,
+  MissingSnapshotPrivilege,
+} from '../errors/snapshotErrors';
 
-// TODO: mock project.resourceTypes
 const mockedReadFileSync = jest.mocked(readFileSync);
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockedSnapshot = jest.mocked(Snapshot);
@@ -22,6 +30,29 @@ const mockedPushSnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
 const mockedGetSnapshot = jest.fn();
+const mockedEnsureResourceAccess = jest.mocked(ensureResourceAccess);
+const mockedEnsureSnapshotAccess = jest.mocked(ensureSnapshotAccess);
+const mockedCompressResources = jest.fn();
+
+const doMockSufficientResourceAccess = () => {
+  mockedEnsureSnapshotAccess.mockResolvedValue();
+};
+
+const doMockedInsufficientResourceAccess = (
+  snapshotId: string,
+  accessType = SnapshotAccessType.Read
+) => {
+  const unauthorizedResources = [
+    ResourceSnapshotType.source,
+    ResourceSnapshotType.queryPipeline,
+  ];
+  mockedEnsureSnapshotAccess.mockRejectedValue(
+    new MissingSnapshotPrivilege(snapshotId, accessType)
+  );
+  mockedEnsureResourceAccess.mockRejectedValue(
+    new MissingResourcePrivileges(unauthorizedResources, accessType)
+  );
+};
 
 const doMockSnapshot = () => {
   mockedSnapshot.prototype.waitUntilDone.mockImplementation(() =>
@@ -51,21 +82,65 @@ const doMockAuthenticatedClient = () => {
   );
 };
 
-// TODO: unskip
-describe.skip('SnapshotFactory', () => {
-  beforeAll(() => {
+const doMockCompressResources = () => {
+  mockedCompressResources.mockReturnValue(join('dummy', 'path'));
+};
+
+const getFakeProject = () =>
+  ({
+    compressResources: mockedCompressResources,
+  } as unknown as Project);
+
+describe('SnapshotFactory', () => {
+  beforeEach(() => {
+    doMockSufficientResourceAccess();
+    doMockCompressResources();
     doMockAuthenticatedClient();
     doMockReadFile();
     doMockSnapshot();
   });
 
-  describe('when the snapshot is created from a ZIP', () => {
-    const projectPath = join('dummy', 'path');
-    const dummyProject = new Project(projectPath);
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
 
+  describe('when resource privileges are missing', () => {
+    beforeEach(() => {
+      doMockedInsufficientResourceAccess('snapshotId');
+    });
+
+    fancyIt()('#createSnapshotFromProject should throw', async () => {
+      await expect(() =>
+        SnapshotFactory.createSnapshotFromProject(
+          getFakeProject(),
+          'my-target-org'
+        )
+      ).rejects.toThrow(MissingResourcePrivileges);
+    });
+
+    fancyIt()('#createFromExistingSnapshot should throw', async () => {
+      await expect(() =>
+        SnapshotFactory.createFromExistingSnapshot(
+          'snapshotId',
+          'my-target-org'
+        )
+      ).rejects.toThrow(MissingSnapshotPrivilege);
+    });
+
+    fancyIt()('#createFromOrg should throw', async () => {
+      await expect(() =>
+        SnapshotFactory.createFromOrg(
+          {SOURCE: ['*'], MAPPING: ['*']},
+          'my-target-org'
+        )
+      ).rejects.toThrow(MissingResourcePrivileges);
+    });
+  });
+
+  describe('when the snapshot is created from a ZIP', () => {
     beforeEach(async () => {
       await SnapshotFactory.createSnapshotFromProject(
-        dummyProject,
+        getFakeProject(),
         'my-target-org'
       );
     });
