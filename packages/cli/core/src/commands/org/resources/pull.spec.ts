@@ -1,7 +1,6 @@
 jest.mock('../../../lib/decorators/preconditions/git');
 jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
-
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('../../../lib/snapshot/snapshotFactory');
 jest.mock('../../../lib/project/project');
@@ -9,7 +8,11 @@ jest.mock('../../../lib/utils/process');
 
 import {join} from 'path';
 import {Config} from '@coveo/cli-commons/config/config';
-import {ResourceSnapshotsReportType} from '@coveord/platform-client';
+import {
+  ResourceSnapshotsReportType,
+  ResourceSnapshotType,
+  SnapshotAccessType,
+} from '@coveord/platform-client';
 import {test} from '@oclif/test';
 import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel';
 import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
@@ -21,6 +24,11 @@ import {PreconditionError} from '@coveo/cli-commons/errors/preconditionError';
 import {cwd} from 'process';
 import {Project} from '../../../lib/project/project';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions';
+import {
+  MissingResourcePrivileges,
+  MissingSnapshotPrivilege,
+} from '../../../lib/errors/snapshotErrors';
+import {formatCliLog} from '../../../__test__/jestSnapshotUtils';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
 const mockedProject = jest.mocked(Project);
@@ -83,25 +91,36 @@ const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
   mockEvaluate.mockResolvedValue({approved: false});
 };
 
+const mockUserNotHavingAllRequiredResourcePrivileges = () => {
+  mockedSnapshotFactory.createFromOrg.mockImplementation(() => {
+    throw new MissingResourcePrivileges(
+      [ResourceSnapshotType.source, ResourceSnapshotType.mlModel],
+      SnapshotAccessType.Read
+    );
+  });
+  mockedSnapshotFactory.createFromExistingSnapshot.mockImplementation(() => {
+    throw new MissingSnapshotPrivilege(
+      'some-snapshot-id',
+      SnapshotAccessType.Read
+    );
+  });
+};
+
 const doMockSnapshotFactory = () => {
-  mockedSnapshotFactory.createFromOrg.mockReturnValue(
-    Promise.resolve({
-      delete: mockedDeleteSnapshot,
-      download: mockedDownloadSnapshot,
-    } as unknown as Snapshot)
-  );
-  mockedSnapshotFactory.createFromExistingSnapshot.mockReturnValue(
-    Promise.resolve({
-      delete: mockedDeleteSnapshot,
-      download: mockedDownloadSnapshot,
-    } as unknown as Snapshot)
-  );
+  mockedSnapshotFactory.createFromOrg.mockResolvedValue({
+    delete: mockedDeleteSnapshot,
+    download: mockedDownloadSnapshot,
+  } as unknown as Snapshot);
+
+  mockedSnapshotFactory.createFromExistingSnapshot.mockResolvedValue({
+    delete: mockedDeleteSnapshot,
+    download: mockedDownloadSnapshot,
+  } as unknown as Snapshot);
 };
 
 describe('org:resources:pull', () => {
   beforeAll(() => {
     doMockConfig();
-    doMockSnapshotFactory();
     mockAuthenticatedClient();
 
     mockedGetSnapshot.mockResolvedValue(
@@ -112,6 +131,7 @@ describe('org:resources:pull', () => {
   });
 
   beforeEach(() => {
+    doMockSnapshotFactory();
     doMockPreconditions();
     mockUserHavingAllRequiredPlatformPrivileges();
   });
@@ -120,6 +140,7 @@ describe('org:resources:pull', () => {
     mockEvaluate.mockClear();
     mockedProject.mockClear();
     mockedIsGitInstalled.mockClear();
+    mockedSnapshotFactory.mockClear();
   });
 
   test
@@ -130,7 +151,33 @@ describe('org:resources:pull', () => {
     .stderr()
     .command(['org:resources:pull'])
     .catch(/You are not authorized to create snapshot/)
-    .it('should return an error message if privileges are missing');
+    .it('should return an error message if platform privileges are missing');
+
+  test
+    .do(() => {
+      mockUserNotHavingAllRequiredResourcePrivileges();
+    })
+    .stdout()
+    .stderr()
+    .command(['org:resources:pull'])
+    .catch((ctx) => {
+      expect(formatCliLog(ctx.message, true)).toMatchSnapshot();
+    })
+    .it('should return an error message if resource privileges are missing');
+
+  test
+    .do(() => {
+      mockUserNotHavingAllRequiredResourcePrivileges();
+    })
+    .stdout()
+    .stderr()
+    .command(['org:resources:pull', '-s', 'some-snapshot-id'])
+    .catch((ctx) => {
+      expect(formatCliLog(ctx.message, true)).toMatchSnapshot();
+    })
+    .it(
+      'should return an error message if resource privileges are missing for specific snapshot'
+    );
 
   test
     .stdout()
