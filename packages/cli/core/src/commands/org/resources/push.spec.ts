@@ -67,7 +67,7 @@ const doMockConfig = () => {
   );
 };
 
-const mockSnapshotFactory = async () => {
+const mockSnapshotFactory = () => {
   mockedPreviewSnapshot.mockReturnValue(Promise.resolve(``));
   mockedSnapshotFactory.createSnapshotFromProject.mockImplementation(() =>
     Promise.resolve({
