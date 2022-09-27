@@ -115,7 +115,7 @@ export class Project {
     return readJsonSync(this.resourceManifestPath, {throws: false});
   }
 
-  public get resourcesTypes(): ResourceSnapshotType[] {
+  public get resourceTypes(): ResourceSnapshotType[] {
     this.ensureProjectCompliance();
     const resourceTypes: ResourceSnapshotType[] = [];
     const filePaths = fileDepthSearch(this.resourcePath);
