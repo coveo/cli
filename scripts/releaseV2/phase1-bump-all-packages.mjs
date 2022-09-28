@@ -16,6 +16,24 @@ import {dirname, resolve, join} from 'path';
 import {fileURLToPath} from 'url';
 import retry from 'async-retry';
 
+const hasPackageJsonChanged = (directoryPath) => {
+  const {stdout, stderr, status} = spawnSync(
+    'git',
+    ['diff', '--exit-code', 'package.json'],
+    {cwd: directoryPath, encoding: 'utf-8'}
+  );
+  switch (status) {
+    case 0:
+      return false;
+    case 1:
+      return true;
+    default:
+      console.log(stdout);
+      console.error(stderr);
+      throw new Error(`git diff exited with statusCode ${status}`);
+  }
+};
+
 const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 // Run on each package, it generate the changelog, install the latest dependencies that are part of the workspace, publish the package.
 (async () => {
@@ -30,7 +48,7 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
     getLastTag('release-')
   );
   const commits = await getCommits(PATH, lastTag);
-  if (commits.length === 0) {
+  if (commits.length === 0 && hasPackageJsonChanged(PATH)) {
     return;
   }
   const parsedCommits = parseCommits(commits, convention.parserOpts);
