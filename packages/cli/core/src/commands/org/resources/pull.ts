@@ -1,4 +1,4 @@
-import type {ResourceSnapshotType} from '@coveord/platform-client';
+import {ResourceSnapshotType} from '@coveord/platform-client';
 import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
 import {Flags} from '@oclif/core';
 import {blueBright} from 'chalk';
@@ -98,6 +98,13 @@ export default class Pull extends CLICommand {
         'The path to a snapshot pull model. This flag is useful when you want to include only specific resource items in your snapshot (e.g., a subset of sources). Use the "org:resources:model:create" command to create a new Snapshot Pull Model',
     }),
   };
+
+  public static examples = [
+    'coveo org:resources:pull',
+    'coveo org:resources:pull -o=myOrgId',
+    'coveo org:resources:pull -o=myOrgId -m=my/snapshot/pull/model.json',
+    `coveo org:resources:pull -o=myOrgId -r=${ResourceSnapshotType.queryPipeline},${ResourceSnapshotType.field},`,
+  ];
 
   @Trackable()
   @Preconditions(

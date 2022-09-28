@@ -52,6 +52,13 @@ export default class Push extends CLICommand {
     }),
   };
 
+  public static examples = [
+    'coveo org:resources:push',
+    'coveo org:resources:push -o=myOrgId',
+    'coveo org:resources:push -o=myOrgId -p=none',
+    'coveo org:resources:push -o=myOrgId --deleteMissingResources',
+  ];
+
   @Trackable()
   @Preconditions(
     IsAuthenticated(),
