@@ -7,6 +7,7 @@ import {PlatformEnvironment} from '@coveo/cli-commons/platform/environment';
 import {Region} from '@coveord/platform-client';
 import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
+import dedent from 'ts-dedent';
 
 export default class Login extends CLICommand {
   private configuration!: Config;
@@ -33,10 +34,10 @@ export default class Login extends CLICommand {
     await this.persistRegionAndEnvironment();
     await this.verifyOrganization();
     await this.persistOrganization();
-    this.feedbackOnSuccessfulLogin();
+    await this.feedbackOnSuccessfulLogin();
   }
 
-  private feedbackOnSuccessfulLogin() {
+  private async feedbackOnSuccessfulLogin() {
     const cfg = this.configuration.get();
     this.log(`
     Successfully logged in!
@@ -46,8 +47,18 @@ export default class Login extends CLICommand {
     Organization: ${cfg.organization}
     Region: ${cfg.region}
     Environment: ${cfg.environment}
-    Run auth:login --help to see the available options to log in to a different organization, region, or environment.
     `);
+    const hasOrgFlag = Boolean((await this.parse(Login)).flags.organization);
+    this.log(
+      dedent`
+    To changes organizations either:
+      * Run coveo auth:login --help to see the available options to log in to a different organization, region, or environment.
+      ${
+        hasOrgFlag
+          ? '* Run coveo config:set -o=theOtherOrg to run the next commands against theOtherOrg'
+          : ''
+      }`.trimEnd()
+    );
   }
 
   private async loginAndPersistToken() {

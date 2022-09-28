@@ -167,7 +167,7 @@ describe('auth:login', () => {
     .stderr()
     .command(['auth:login', '-o', 'foo'])
     .it('succeed when organization flag is valid', (ctx) => {
-      expect(ctx.stdout).toContain('Success');
+      expect(ctx.stdout).toMatchSnapshot();
     });
 
   test
@@ -187,8 +187,7 @@ describe('auth:login', () => {
     .it(
       'succeed when no organization flag is passed, and uses the first available org instead',
       (ctx) => {
-        expect(ctx.stdout).toContain('Success');
-        expect(ctx.stdout).toContain('the_first_org_available');
+        expect(ctx.stdout).toMatchSnapshot();
       }
     );
 });
