@@ -17,7 +17,7 @@ let branchName = childProcess
   .trim();
 const issueRegex = new RegExp(projectAcronym + '-[\\d]+', 'i');
 if (branchName === 'HEAD') {
-  return;
+  process.exit();
 } else {
   branchName = branchName.split('refs/heads/')[1];
 }
