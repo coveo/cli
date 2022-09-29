@@ -32,7 +32,7 @@ import {getFileNames} from '../../../lib/getFileNames';
 
 export default class SourcePushAdd extends CLICommand {
   public static description =
-    'Index a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-files-with-Coveo-CLI for more information.';
+    'Index a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-Files-with-the-Coveo-CLI for more information.';
 
   public static flags = {
     // TODO: CDX-856: remove file flag
