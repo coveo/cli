@@ -29,7 +29,6 @@ import {CliUx, Command} from '@oclif/core';
 
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions';
-import {formatCliLog} from '../../../__test__/jestSnapshotUtils';
 import {
   MissingResourcePrivileges,
   MissingSnapshotPrivilege,
@@ -193,7 +192,7 @@ describe('org:resources:preview', () => {
       .stderr()
       .command(['org:resources:preview'])
       .catch((ctx) => {
-        expect(formatCliLog(ctx.message, true)).toMatchSnapshot();
+        expect(ctx.message).toMatchSnapshot();
       })
       .it('should return an error message if resource privileges are missing');
 
@@ -202,7 +201,7 @@ describe('org:resources:preview', () => {
       .stderr()
       .command(['org:resources:preview', '-s', 'some-snapshot-id'])
       .catch((ctx) => {
-        expect(formatCliLog(ctx.message, true)).toMatchSnapshot();
+        expect(ctx.message).toMatchSnapshot();
       })
       .it(
         'should return an error message if resource privileges are missing for specific snapshot'

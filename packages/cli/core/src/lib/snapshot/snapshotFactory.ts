@@ -18,7 +18,7 @@ export class SnapshotFactory {
     options?: WaitUntilDoneOptions
   ): Promise<Snapshot> {
     const client = await this.getClient(targetOrg);
-    await ensureResourceAccess(client, project.resourcesTypes);
+    await ensureResourceAccess(client, project.resourceTypes);
     const pathToZip = await project.compressResources();
     const file = readFileSync(pathToZip);
 

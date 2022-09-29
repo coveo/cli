@@ -24,7 +24,6 @@ import {
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {formatCliLog} from '../../../__test__/jestSnapshotUtils';
 import {MissingResourcePrivileges} from '../../../lib/errors/snapshotErrors';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
@@ -200,7 +199,7 @@ describe('org:resources:push', () => {
       .stderr()
       .command(['org:resources:push'])
       .catch((ctx) => {
-        expect(formatCliLog(ctx.message, true)).toMatchSnapshot();
+        expect(ctx.message).toMatchSnapshot();
       })
       .it('should return an error message if resource privileges are missing');
   });

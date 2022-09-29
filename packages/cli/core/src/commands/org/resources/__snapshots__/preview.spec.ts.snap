@@ -3,6 +3,6 @@
 exports[`org:resources:preview when resources privileges are missing should return an error message if resource privileges are missing 1`] = `"Cannot read properties of undefined (reading 'validate')"`;
 
 exports[`org:resources:preview when resources privileges are missing should return an error message if resource privileges are missing for specific snapshot 1`] = `
-"You do not have READ privilege on the snapshot some-snapshot-id
+"You do not have [1mREAD[22m privilege on the snapshot some-snapshot-id
 Visit https://docs.coveo.com/en/3357 for more info on privileges required to manage snapshots."
 `;

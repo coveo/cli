@@ -28,7 +28,6 @@ import {
   MissingResourcePrivileges,
   MissingSnapshotPrivilege,
 } from '../../../lib/errors/snapshotErrors';
-import {formatCliLog} from '../../../__test__/jestSnapshotUtils';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
 const mockedProject = jest.mocked(Project);
@@ -161,7 +160,7 @@ describe('org:resources:pull', () => {
     .stderr()
     .command(['org:resources:pull'])
     .catch((ctx) => {
-      expect(formatCliLog(ctx.message, true)).toMatchSnapshot();
+      expect(ctx.message).toMatchSnapshot();
     })
     .it('should return an error message if resource privileges are missing');
 
@@ -173,7 +172,7 @@ describe('org:resources:pull', () => {
     .stderr()
     .command(['org:resources:pull', '-s', 'some-snapshot-id'])
     .catch((ctx) => {
-      expect(formatCliLog(ctx.message, true)).toMatchSnapshot();
+      expect(ctx.message).toMatchSnapshot();
     })
     .it(
       'should return an error message if resource privileges are missing for specific snapshot'

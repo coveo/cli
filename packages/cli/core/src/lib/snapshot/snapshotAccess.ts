@@ -11,14 +11,14 @@ import {isSubset, without} from '../utils/list';
 
 export async function ensureResourceAccess(
   client: PlatformClient,
-  resourcesTypes: ResourceSnapshotType[],
+  resourceTypes: ResourceSnapshotType[],
   snapshotAccessType: SnapshotAccessType = SnapshotAccessType.Read
 ) {
   startSpinner('Validating resource access');
   const allowedResources = await client.resourceSnapshot.listResourceAccess();
-  const allowed = isSubset(resourcesTypes, allowedResources);
+  const allowed = isSubset(resourceTypes, allowedResources);
   if (!allowed) {
-    const missingResources = without(resourcesTypes, allowedResources);
+    const missingResources = without(resourceTypes, allowedResources);
     throw new MissingResourcePrivileges(missingResources, snapshotAccessType);
   }
 }
