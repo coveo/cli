@@ -137,7 +137,7 @@
         "description": "manage Coveo organizations"
       },
       "org:resources": {
-        "description": "manage your organization resources ("
+        "description": "manage your organization resources"
       },
       "org:resources:model": {
         "description": "manage your Snapshot Pull Model"
