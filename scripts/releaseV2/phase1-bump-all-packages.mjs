@@ -59,24 +59,30 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
   await npmBumpVersion(newVersion, PATH, {
     workspaceUpdateStrategy: 'UpdateExact',
   });
-  await updateWorkspaceDependent(newVersion);
+  console.log('bump done, starting update');
+  updateWorkspaceDependent(newVersion);
+  console.log('update done');
+
   if (isPrivatePackage()) {
     return;
   }
-
-  const changelog = await generateChangelog(
-    parsedCommits,
-    newVersion,
-    {
-      host: 'https://github.com',
-      owner: 'coveo',
-      repository: 'cli',
-    },
-    convention.writerOpts
-  );
-  await writeChangelog(PATH, changelog);
-
+  console.log('changelog gen');
+  if (parsedCommits.length > 0) {
+    const changelog = await generateChangelog(
+      parsedCommits,
+      newVersion,
+      {
+        host: 'https://github.com',
+        owner: 'coveo',
+        repository: 'cli',
+      },
+      convention.writerOpts
+    );
+    await writeChangelog(PATH, changelog);
+  }
+  console.log('publish start');
   await npmPublish();
+  console.log('publish end');
 
   await retry(
     () => {
@@ -92,7 +98,7 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
   );
 })();
 
-async function updateWorkspaceDependent(version) {
+function updateWorkspaceDependent(version) {
   const topology = JSON.parse(
     readFileSync(join(rootFolder, 'topology.json'), {encoding: 'utf-8'})
   );
