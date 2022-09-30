@@ -32,7 +32,6 @@ describe('listUtils', () => {
       {subset: [1, 2, 3], superset: [1, 2, 3]},
       {subset: [1, 3], superset: [1, 2, 3]},
       {subset: [], superset: [1, 2, 3]},
-      {subset: [1, 2, 2, 3, 3, 3], superset: [1, 2, 3]},
       {subset: ['foo'], superset: ['foo']},
       {subset: ['foo', 'bar'], superset: ['foo', 'baz', 'bar']},
     ])('is should return true', ({subset, superset}) => {
