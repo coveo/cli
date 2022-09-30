@@ -11,7 +11,7 @@ import {InvalidCommandError} from '../../lib/errors/InvalidCommandError';
 import {ConfigRenderer} from '@coveo/cli-commons/config/configRenderer';
 
 export default class Set extends CLICommand {
-  public static description = 'Modify the current configuration.';
+  public static description = 'Modify the current Coveo CLI configuration.';
 
   public static flags = {
     environment: Flags.string({
@@ -29,6 +29,8 @@ export default class Set extends CLICommand {
       helpValue: 'myOrgID',
     }),
   };
+
+  public static examples = ['$ coveo config:set -o=myOrgId'];
 
   @Trackable()
   @Preconditions(IsAuthenticated())
