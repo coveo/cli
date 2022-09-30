@@ -3,19 +3,15 @@ import {ProcessManager} from '../utils/processManager';
 import 'dotenv/config';
 
 import {npmLogin} from '../utils/npmLogin';
-import {
-  startVerdaccio,
-  publishPackages,
-  shimNpm,
-  scaffoldDummyPackages,
-} from './utils';
+import {startVerdaccio, shimNpm} from './utils/utils';
+import {scaffoldDummyPackages, publishPackages} from './utils/verdaccio';
 
 async function main() {
   global.processManager = new ProcessManager();
   shimNpm();
   await startVerdaccio();
   await npmLogin();
-  scaffoldDummyPackages();
+  await scaffoldDummyPackages();
   await publishPackages();
   await global.processManager.killAllProcesses();
 }

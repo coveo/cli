@@ -64,8 +64,8 @@ $ coveo --version
 
 ## Getting started
 
-After you install the CLI, you'll typically want to [`login`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-authlogin) to your Coveo Organization.
-You can check out all the available commands [here](https://github.com/coveo/cli/tree/master/packages/cli).
+After you install the CLI, you'll typically want to [`login`](https://github.com/coveo/cli/tree/master/packages/cli/core#coveo-authlogin) to your Coveo Organization.
+You can check out all the available commands [here](https://github.com/coveo/cli/tree/master/packages/cli/core).
 
 <!--
   Add full examples for each use case:
