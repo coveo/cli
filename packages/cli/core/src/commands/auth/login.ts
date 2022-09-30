@@ -59,8 +59,8 @@ export default class Login extends CLICommand {
     return hasOrgFlag
       ? dedent`
         To change organization, either:
-          * ${runAuthLoginMessage}
-          * Run coveo config:set -o=theOtherOrg to run the next commands against theOtherOrg.
+          • ${runAuthLoginMessage}
+          • Run coveo config:set -o=theOtherOrg to run the next commands against theOtherOrg.
         `
       : `To change organization, ${runAuthLoginMessage.toLowerCase()}`;
   }
