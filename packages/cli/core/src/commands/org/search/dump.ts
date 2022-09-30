@@ -16,6 +16,7 @@ import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {without} from '../../../lib/utils/list';
 import {join} from 'path';
 import dedent from 'ts-dedent';
+import {formatOrgId} from '@coveo/cli-commons/utils/ux';
 type ResponseExceededMaximumSizeError = {message: string; type: string};
 
 interface RawResult {
@@ -190,9 +191,9 @@ export default class Dump extends CLICommand {
   ): Promise<boolean> {
     this.progressBar = this.getProgressBar();
     this.log(
-      `Fetching all results from organization ${
+      `Fetching all results from organization ${formatOrgId(
         params.organizationId
-      } from source(s) ${params.sources.join(',')}...`
+      )} from source(s) ${params.sources.join(',')}...`
     );
     if (params.additionalFilter) {
       this.log(`Applying additional filter ${params.additionalFilter}`);

@@ -1,13 +1,12 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Flags} from '@oclif/core';
-import {startSpinner} from '@coveo/cli-commons/utils/ux';
+import {formatOrgId, startSpinner} from '@coveo/cli-commons/utils/ux';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
 } from '@coveo/cli-commons/preconditions/index';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {bold} from 'chalk';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {
   dryRun,
@@ -138,7 +137,7 @@ export default class Push extends CLICommand {
   private async askForConfirmation(): Promise<boolean> {
     const {flags} = await this.parse(Push);
     const target = getTargetOrg(this.configuration, flags.organization);
-    const question = `\nWould you like to apply the snapshot to the organization ${bold.cyan(
+    const question = `\nWould you like to apply the snapshot to the organization ${formatOrgId(
       target
     )}? (y/n)`;
     return confirmWithAnalytics(question, 'snapshot apply');

@@ -1,12 +1,16 @@
-import {ResourceSnapshotType} from '@coveord/platform-client';
-import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
+import type {ResourceSnapshotType} from '@coveord/platform-client';
+import {
+  formatOrgId,
+  startSpinner,
+  stopSpinner,
+} from '@coveo/cli-commons/utils/ux';
+
 import {Flags} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {readJsonSync} from 'fs-extra';
 import {resolve} from 'path';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
-import {formatOrgId} from '../../../lib/commonPromptUtils/formater';
 import {Config} from '@coveo/cli-commons/config/config';
 import {
   HasNecessaryCoveoPrivileges,
