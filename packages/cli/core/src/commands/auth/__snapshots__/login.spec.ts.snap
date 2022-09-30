@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`auth:login succeed when no organization flag is passed, and uses the first available org instead 1`] = `
+exports[`auth:login succeeds when no organization flag is passed, and uses the first available org instead 1`] = `
 "
     Successfully logged in!
     Close your browser to continue.
@@ -14,7 +14,7 @@ To change organization, run coveo auth:login --help to see the available options
 "
 `;
 
-exports[`auth:login succeed when organization flag is valid 1`] = `
+exports[`auth:login succeeds when organization flag is valid 1`] = `
 "
     Successfully logged in!
     Close your browser to continue.
