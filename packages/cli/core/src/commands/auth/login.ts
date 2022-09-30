@@ -49,16 +49,20 @@ export default class Login extends CLICommand {
     Environment: ${cfg.environment}
     `);
     const hasOrgFlag = Boolean((await this.parse(Login)).flags.organization);
-    this.log(
-      dedent`
-    To changes organizations either:
-      * Run coveo auth:login --help to see the available options to log in to a different organization, region, or environment.
-      ${
-        hasOrgFlag
-          ? '* Run coveo config:set -o=theOtherOrg to run the next commands against theOtherOrg'
-          : ''
-      }`.trimEnd()
-    );
+    this.log(this.getHowToChangeOrgMessage(hasOrgFlag));
+  }
+
+  private getHowToChangeOrgMessage(hasOrgFlag: boolean) {
+    const runAuthLoginMessage =
+      'Run coveo auth:login --help to see the available options to log in to a different organization, region, or environment.';
+
+    return hasOrgFlag
+      ? dedent`
+        To change organization either:
+          * ${runAuthLoginMessage}
+          * Run coveo config:set -o=theOtherOrg to run the next commands against theOtherOrg.
+        `
+      : `To change organization, ${runAuthLoginMessage.toLowerCase()}`;
   }
 
   private async loginAndPersistToken() {
