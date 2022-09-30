@@ -13,7 +13,7 @@ import {recordable} from '../../../lib/utils/record';
 import {organization} from '../../../lib/flags/snapshotCommonFlags';
 
 export default class List extends CLICommand {
-  public static description = 'List available Snapshots from an organization';
+  public static description = 'List available Snapshots in an organization';
 
   public static flags = {
     ...CliUx.ux.table.flags(),

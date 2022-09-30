@@ -137,7 +137,7 @@
         "description": "manage Coveo organizations"
       },
       "org:resources": {
-        "description": "manage your organization resources (e.g. Query Pipelines, Fields, Source Configurations) with Coveo Snapshots"
+        "description": "manage your organization resources (e.g., Query Pipelines, Fields or Source Configurations) with Coveo Snapshots"
       },
       "org:resources:model": {
         "description": "manage your Snapshot Pull Model"

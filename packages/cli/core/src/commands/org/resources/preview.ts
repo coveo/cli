@@ -36,7 +36,7 @@ import {
 } from '../../../lib/snapshot/snapshotCommon';
 export default class Preview extends CLICommand {
   public static description =
-    'Preview the changes a `coveo org:resources:push` would do';
+    'Preview the changes that running `coveo org:resources:push` would cause';
 
   public static flags = {
     ...wait(),
