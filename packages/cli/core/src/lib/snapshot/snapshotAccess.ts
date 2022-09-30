@@ -9,7 +9,7 @@ import {
 } from '../errors/snapshotErrors';
 import {isSubset, without} from '../utils/list';
 
-export async function ensureResourceAccess(
+export async function ensureResourcesAccess(
   client: PlatformClient,
   resourceTypes: ResourceSnapshotType[],
   snapshotAccessType: SnapshotAccessType = SnapshotAccessType.Read

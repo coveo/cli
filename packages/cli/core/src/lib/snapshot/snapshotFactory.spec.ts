@@ -15,7 +15,7 @@ import {SnapshotPullModelResources} from './pullModel/interfaces';
 import {Snapshot} from './snapshot';
 import {SnapshotFactory} from './snapshotFactory';
 import {Project} from '../project/project';
-import {ensureResourceAccess, ensureSnapshotAccess} from './snapshotAccess';
+import {ensureResourcesAccess, ensureSnapshotAccess} from './snapshotAccess';
 import {
   MissingResourcePrivileges,
   MissingSnapshotPrivilege,
@@ -30,7 +30,7 @@ const mockedPushSnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
 const mockedGetSnapshot = jest.fn();
-const mockedEnsureResourceAccess = jest.mocked(ensureResourceAccess);
+const mockedensureResourcesAccess = jest.mocked(ensureResourcesAccess);
 const mockedEnsureSnapshotAccess = jest.mocked(ensureSnapshotAccess);
 const mockedCompressResources = jest.fn();
 
@@ -49,7 +49,7 @@ const doMockedInsufficientResourceAccess = (
   mockedEnsureSnapshotAccess.mockRejectedValue(
     new MissingSnapshotPrivilege(snapshotId, accessType)
   );
-  mockedEnsureResourceAccess.mockRejectedValue(
+  mockedensureResourcesAccess.mockRejectedValue(
     new MissingResourcePrivileges(unauthorizedResources, accessType)
   );
 };

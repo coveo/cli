@@ -6,7 +6,7 @@ import {
   MissingResourcePrivileges,
   MissingSnapshotPrivilege,
 } from '../errors/snapshotErrors';
-import {ensureResourceAccess, ensureSnapshotAccess} from './snapshotAccess';
+import {ensureResourcesAccess, ensureSnapshotAccess} from './snapshotAccess';
 
 const mockedPlatformClient = jest.mocked(PlatformClient);
 const mockedListResourceAccess = jest.fn();
@@ -51,14 +51,14 @@ describe('SnapshotAccess', () => {
       doMockedInsufficientResourceAccess();
     });
 
-    fancyIt()('#ensureResourceAccess should throw', async () => {
+    fancyIt()('#ensureResourcesAccess should throw', async () => {
       const unauthorizedResources: ResourceSnapshotType[] = [
         ResourceSnapshotType.source,
         ResourceSnapshotType.mlModel,
       ];
 
       await expect(() =>
-        ensureResourceAccess(fakeClient, unauthorizedResources)
+        ensureResourcesAccess(fakeClient, unauthorizedResources)
       ).rejects.toThrow(MissingResourcePrivileges);
     });
 
@@ -74,13 +74,13 @@ describe('SnapshotAccess', () => {
       doMockSufficientResourceAccess();
     });
 
-    fancyIt()('#ensureResourceAccess should not throw', async () => {
+    fancyIt()('#ensureResourcesAccess should not throw', async () => {
       const authorizedResources: ResourceSnapshotType[] = [
         ResourceSnapshotType.source,
         ResourceSnapshotType.mlModel,
       ];
       await expect(
-        ensureResourceAccess(fakeClient, authorizedResources)
+        ensureResourcesAccess(fakeClient, authorizedResources)
       ).resolves.not.toThrow();
     });
 

@@ -9,7 +9,7 @@ import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClie
 import {SnapshotPullModelResources} from './pullModel/interfaces';
 import {Snapshot, WaitUntilDoneOptions} from './snapshot';
 import {Project} from '../project/project';
-import {ensureResourceAccess, ensureSnapshotAccess} from './snapshotAccess';
+import {ensureResourcesAccess, ensureSnapshotAccess} from './snapshotAccess';
 
 export class SnapshotFactory {
   public static async createSnapshotFromProject(
@@ -18,7 +18,7 @@ export class SnapshotFactory {
     options?: WaitUntilDoneOptions
   ): Promise<Snapshot> {
     const client = await this.getClient(targetOrg);
-    await ensureResourceAccess(client, project.resourceTypes);
+    await ensureResourcesAccess(client, project.resourceTypes);
     const pathToZip = await project.compressResources();
     const file = readFileSync(pathToZip);
 
@@ -67,7 +67,7 @@ export class SnapshotFactory {
     const resourceTypes = Object.keys(
       resourcesToExport
     ) as ResourceSnapshotType[];
-    await ensureResourceAccess(client, resourceTypes);
+    await ensureResourcesAccess(client, resourceTypes);
     const model = await client.resourceSnapshot.createFromOrganization(
       {resourcesToExport},
       {includeChildrenResources: true, developerNotes: 'Created by Coveo-CLI'}
