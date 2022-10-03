@@ -12,7 +12,7 @@
     "@coveo/cli-commons": "1.36.0",
     "@coveo/cli-plugin-source": "1.36.0",
     "@coveo/push-api-client": "2.5.15",
-    "@coveord/platform-client": "34.13.0",
+    "@coveord/platform-client": "34.14.0",
     "@oclif/core": "1.16.3",
     "@oclif/plugin-help": "5.1.12",
     "@oclif/plugin-plugins": "2.1.0",
@@ -137,7 +137,7 @@
         "description": "manage Coveo organizations"
       },
       "org:resources": {
-        "description": "manage your organization resources"
+        "description": "manage your organization resources (e.g., Query Pipelines, Fields or Source Configurations) with Coveo Snapshots"
       },
       "org:resources:model": {
         "description": "manage your Snapshot Pull Model"

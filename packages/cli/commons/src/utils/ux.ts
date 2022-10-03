@@ -1,5 +1,5 @@
 import {CliUx} from '@oclif/core';
-import {red, green} from 'chalk';
+import {red, green, magenta} from 'chalk';
 
 export function startSpinner(task: string, status?: string) {
   if (CliUx.ux.action.running) {
@@ -8,12 +8,15 @@ export function startSpinner(task: string, status?: string) {
   CliUx.ux.action.start(task, status);
 }
 
-export function stopSpinner(options?: {success?: boolean; message?: string}) {
+export function stopSpinner(options?: {success?: boolean}) {
   if (!CliUx.ux.action.running) {
     return;
   }
-  const defaultOptions = {success: true, message: ''};
-  const {success, message} = {...defaultOptions, ...options};
+  const defaultOptions = {success: true};
+  const {success} = {...defaultOptions, ...options};
   const symbol = success ? green('✔') : red.bold('!');
-  CliUx.ux.action.stop(`${symbol} ${message}`.trimEnd());
+  CliUx.ux.action.stop(`${symbol}`.trimEnd());
 }
+
+export const formatOrgId = (orgId: TemplateStringsArray | string) =>
+  magenta(orgId);

@@ -4,7 +4,7 @@ import {ConfigRenderer} from '@coveo/cli-commons/config/configRenderer';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 
 export default class Get extends CLICommand {
-  public static description = 'Display the current configuration.';
+  public static description = 'Display the current Coveo CLI configuration.';
 
   public static args = [
     {

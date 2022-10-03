@@ -8,6 +8,7 @@ import {Region} from '@coveord/platform-client';
 import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import dedent from 'ts-dedent';
+import {formatOrgId} from '@coveo/cli-commons/utils/ux';
 
 export default class Login extends CLICommand {
   private configuration!: Config;
@@ -44,7 +45,7 @@ export default class Login extends CLICommand {
     Close your browser to continue.
 
     You are currently logged in:
-    Organization: ${cfg.organization}
+    Organization: ${formatOrgId(cfg.organization)}
     Region: ${cfg.region}
     Environment: ${cfg.environment}
     `);
@@ -93,7 +94,7 @@ export default class Login extends CLICommand {
 
     const firstOrgAvailable = await this.pickFirstAvailableOrganization();
     if (firstOrgAvailable) {
-      cfg.set('organization', firstOrgAvailable as string);
+      cfg.set('organization', firstOrgAvailable);
       return;
     }
 
@@ -115,7 +116,9 @@ export default class Login extends CLICommand {
       );
       if (!hasAccess) {
         this.error(
-          `You either don't have access to organization ${flags.organization}, or it doesn't exist.`
+          `You either don't have access to organization ${formatOrgId(
+            flags.organization
+          )}, or it doesn't exist.`
         );
       }
     }
