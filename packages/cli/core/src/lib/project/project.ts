@@ -1,18 +1,19 @@
 import {
   createWriteStream,
   existsSync,
-  readdirSync,
   unlinkSync,
   writeFileSync,
   rmSync,
 } from 'fs';
-import {extname, join} from 'path';
+import {join} from 'path';
 import {CliUx} from '@oclif/core';
 import archiver from 'archiver';
 import {InvalidProjectError} from '../errors';
 import extract from 'extract-zip';
 import {DotFolder, DotFolderConfig} from './dotFolder';
 import {readJsonSync, writeJsonSync, WriteOptions} from 'fs-extra';
+import {ResourceSnapshotType} from '@coveord/platform-client';
+import {fileDepthSearch} from '../utils/file';
 
 interface ResourceManifest {
   orgId?: string;
@@ -42,18 +43,10 @@ export class Project {
   }
 
   private formatResourceFiles(dirPath = this.resourcePath) {
-    const files = readdirSync(dirPath, {withFileTypes: true});
-    files.forEach((file) => {
-      const filePath = join(dirPath, file.name);
-      if (file.isDirectory()) {
-        this.formatResourceFiles(filePath);
-        return;
-      }
-      if (file.isFile() && extname(filePath) === '.json') {
-        const content = readJsonSync(filePath);
-        writeJsonSync(filePath, content, Project.jsonFormat);
-      }
-    });
+    for (const filePath of fileDepthSearch(dirPath)) {
+      const content = readJsonSync(filePath);
+      writeJsonSync(filePath, content, Project.jsonFormat);
+    }
   }
 
   public deleteTemporaryZipFile() {
@@ -120,6 +113,22 @@ export class Project {
 
   public getResourceManifest(): ResourceManifest | null {
     return readJsonSync(this.resourceManifestPath, {throws: false});
+  }
+
+  public get resourceTypes(): ResourceSnapshotType[] {
+    this.ensureProjectCompliance();
+    const resourceTypes: ResourceSnapshotType[] = [];
+    const filePaths = fileDepthSearch(this.resourcePath);
+
+    for (const filePath of filePaths) {
+      const {resources} = readJsonSync(filePath) || {};
+      if (resources) {
+        const keys = Object.keys(resources) as ResourceSnapshotType[];
+        resourceTypes.push(...keys);
+      }
+    }
+
+    return resourceTypes;
   }
 
   public get pathToProject() {
