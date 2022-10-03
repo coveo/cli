@@ -62,7 +62,7 @@
     "@babel/preset-env": "7.19.1",
     "@babel/preset-typescript": "7.18.6",
     "@coveo/cli": "1.36.0",
-    "@coveord/platform-client": "34.13.0",
+    "@coveord/platform-client": "34.14.0",
     "abortcontroller-polyfill": "1.7.3",
     "async-retry": "1.3.3",
     "axios": "0.27.2",

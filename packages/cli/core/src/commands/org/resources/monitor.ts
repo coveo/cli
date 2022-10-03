@@ -34,6 +34,10 @@ export default class Monitor extends CLICommand {
     },
   ];
 
+  public static examples = [
+    'coveo org:resources:monitor -o=myOrgId --snapshotId=mySnapshotId',
+  ];
+
   @Trackable()
   @Preconditions(IsAuthenticated())
   public async run() {

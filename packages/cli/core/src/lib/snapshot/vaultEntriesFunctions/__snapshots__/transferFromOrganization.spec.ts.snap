@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`#tryTransferFromOrganization when the user does not have access to the origin organization should warn the user about their lack of access 1`] = `
-"We mapped this snapshot to [1m[36msomeOriginOrg[39m[22m.
-If you want to transfer the vault entries from [1m[36msomeOriginOrg[39m[22m to [1m[36mundefined[39m[22m,
+"We mapped this snapshot to [35msomeOriginOrg[39m.
+If you want to transfer the vault entries from [35msomeOriginOrg[39m to [35mundefined[39m,
 authenticate with an account that has access to both organizations and then try again."
 `;

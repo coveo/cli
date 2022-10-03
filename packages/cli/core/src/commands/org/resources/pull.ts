@@ -1,12 +1,16 @@
-import type {ResourceSnapshotType} from '@coveord/platform-client';
-import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
+import {ResourceSnapshotType} from '@coveord/platform-client';
+import {
+  formatOrgId,
+  startSpinner,
+  stopSpinner,
+} from '@coveo/cli-commons/utils/ux';
+
 import {Flags} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {readJsonSync} from 'fs-extra';
 import {resolve} from 'path';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
-import {formatOrgId} from '../../../lib/commonPromptUtils/formater';
 import {Config} from '@coveo/cli-commons/config/config';
 import {
   HasNecessaryCoveoPrivileges,
@@ -99,6 +103,13 @@ export default class Pull extends CLICommand {
     }),
   };
 
+  public static examples = [
+    'coveo org:resources:pull',
+    'coveo org:resources:pull -o=myOrgId',
+    'coveo org:resources:pull -o=myOrgId -m=my/snapshot/pull/model.json',
+    `coveo org:resources:pull -o=myOrgId -r=${ResourceSnapshotType.queryPipeline},${ResourceSnapshotType.field},`,
+  ];
+
   @Trackable()
   @Preconditions(
     IsAuthenticated(),
@@ -119,7 +130,7 @@ export default class Pull extends CLICommand {
     if (await this.shouldDeleteSnapshot()) {
       await snapshot.delete();
     }
-    stopSpinner({message: 'Project updated'});
+    stopSpinner();
   }
 
   private async shouldDeleteSnapshot() {
