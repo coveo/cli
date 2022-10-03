@@ -2,7 +2,6 @@ import {
   ResourceSnapshotsModel,
   ResourceSnapshotsReportModel,
   ResourceSnapshotsReportType,
-  SnapshotAccessType,
   SnapshotExportContentFormat,
 } from '@coveord/platform-client';
 import {stdout, stderr} from 'stdout-stderr';
@@ -36,7 +35,6 @@ import {join} from 'path';
 import {SnapshotOperationTimeoutError} from '../errors';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
-import {MissingSnapshotPrivilege} from '../errors/snapshotErrors';
 import {ensureSnapshotAccess} from './snapshotAccess';
 
 const mockedRetry = jest.mocked(retry);
@@ -80,14 +78,6 @@ describe('Snapshot', () => {
 
   const doMockSufficientResourceAccess = () => {
     mockedEnsureSnapshotAccess.mockResolvedValueOnce();
-  };
-
-  const doMockedInsufficientResourceAccess = (
-    accessType = SnapshotAccessType.Read
-  ) => {
-    mockedEnsureSnapshotAccess.mockRejectedValueOnce(
-      new MissingSnapshotPrivilege(snapshotId, accessType)
-    );
   };
 
   const doMockAuthenticatedClient = () => {
@@ -203,12 +193,9 @@ describe('Snapshot', () => {
       }
     );
 
-    fancyIt()('should throw is missing privileges', async () => {
-      mockedEnsureSnapshotAccess.mockReset();
-      doMockedInsufficientResourceAccess();
-      await expect(() => snapshot.validate()).rejects.toThrowError(
-        MissingSnapshotPrivilege
-      );
+    fancyIt()('should ensure snapshot access', async () => {
+      await snapshot.validate();
+      expect(mockedEnsureSnapshotAccess).toHaveBeenCalledTimes(1);
     });
 
     fancyIt()('should wait for the backend-operation to complete', async () => {
@@ -340,12 +327,9 @@ describe('Snapshot', () => {
       }
     );
 
-    fancyIt()('should throw is missing privileges', async () => {
-      mockedEnsureSnapshotAccess.mockReset();
-      doMockedInsufficientResourceAccess();
-      await expect(() => snapshot.apply()).rejects.toThrowError(
-        MissingSnapshotPrivilege
-      );
+    fancyIt()('should ensure snapshot access', async () => {
+      await snapshot.apply();
+      expect(mockedEnsureSnapshotAccess).toHaveBeenCalledTimes(1);
     });
 
     fancyIt()('should wait for the backend-operation to complete', async () => {

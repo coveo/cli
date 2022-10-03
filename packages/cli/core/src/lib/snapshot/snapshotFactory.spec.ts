@@ -3,10 +3,7 @@ jest.mock('fs');
 jest.mock('./snapshot');
 jest.mock('./snapshotAccess');
 
-import {
-  ResourceSnapshotType,
-  SnapshotAccessType,
-} from '@coveord/platform-client';
+import {ResourceSnapshotType} from '@coveord/platform-client';
 import {readFileSync} from 'fs';
 import {join} from 'path';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
@@ -16,10 +13,6 @@ import {Snapshot} from './snapshot';
 import {SnapshotFactory} from './snapshotFactory';
 import {Project} from '../project/project';
 import {ensureResourcesAccess, ensureSnapshotAccess} from './snapshotAccess';
-import {
-  MissingResourcePrivileges,
-  MissingSnapshotPrivilege,
-} from '../errors/snapshotErrors';
 
 const mockedReadFileSync = jest.mocked(readFileSync);
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
@@ -30,28 +23,13 @@ const mockedPushSnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
 const mockedGetSnapshot = jest.fn();
-const mockedensureResourcesAccess = jest.mocked(ensureResourcesAccess);
+const mockedEnsureResourcesAccess = jest.mocked(ensureResourcesAccess);
 const mockedEnsureSnapshotAccess = jest.mocked(ensureSnapshotAccess);
 const mockedCompressResources = jest.fn();
 
 const doMockSufficientResourceAccess = () => {
   mockedEnsureSnapshotAccess.mockResolvedValue();
-};
-
-const doMockedInsufficientResourceAccess = (
-  snapshotId: string,
-  accessType = SnapshotAccessType.Read
-) => {
-  const unauthorizedResources = [
-    ResourceSnapshotType.source,
-    ResourceSnapshotType.queryPipeline,
-  ];
-  mockedEnsureSnapshotAccess.mockRejectedValue(
-    new MissingSnapshotPrivilege(snapshotId, accessType)
-  );
-  mockedensureResourcesAccess.mockRejectedValue(
-    new MissingResourcePrivileges(unauthorizedResources, accessType)
-  );
+  mockedEnsureResourcesAccess.mockResolvedValue();
 };
 
 const doMockSnapshot = () => {
@@ -104,45 +82,16 @@ describe('SnapshotFactory', () => {
     jest.resetAllMocks();
   });
 
-  describe('when resource privileges are missing', () => {
-    beforeEach(() => {
-      doMockedInsufficientResourceAccess('snapshotId');
-    });
-
-    fancyIt()('#createSnapshotFromProject should throw', async () => {
-      await expect(() =>
-        SnapshotFactory.createSnapshotFromProject(
-          getFakeProject(),
-          'my-target-org'
-        )
-      ).rejects.toThrow(MissingResourcePrivileges);
-    });
-
-    fancyIt()('#createFromExistingSnapshot should throw', async () => {
-      await expect(() =>
-        SnapshotFactory.createFromExistingSnapshot(
-          'snapshotId',
-          'my-target-org'
-        )
-      ).rejects.toThrow(MissingSnapshotPrivilege);
-    });
-
-    fancyIt()('#createFromOrg should throw', async () => {
-      await expect(() =>
-        SnapshotFactory.createFromOrg(
-          {SOURCE: ['*'], MAPPING: ['*']},
-          'my-target-org'
-        )
-      ).rejects.toThrow(MissingResourcePrivileges);
-    });
-  });
-
   describe('when the snapshot is created from a ZIP', () => {
     beforeEach(async () => {
       await SnapshotFactory.createSnapshotFromProject(
         getFakeProject(),
         'my-target-org'
       );
+    });
+
+    fancyIt()('should ensure Resources Acces', () => {
+      expect(mockedEnsureResourcesAccess).toHaveBeenCalled();
     });
 
     fancyIt()(
@@ -190,6 +139,10 @@ describe('SnapshotFactory', () => {
       await SnapshotFactory.createFromExistingSnapshot(snapshotId, targetId);
     });
 
+    fancyIt()('should ensure snapshot access', () => {
+      expect(mockedEnsureSnapshotAccess).toHaveBeenCalled();
+    });
+
     fancyIt()(
       'should create a client connected to the right organization',
       () => {
@@ -215,6 +168,10 @@ describe('SnapshotFactory', () => {
         [ResourceSnapshotType.extension]: ['*'],
       };
       await SnapshotFactory.createFromOrg(resourcesToExport, targetId);
+    });
+
+    fancyIt()('should ensure resource access', () => {
+      expect(mockedEnsureResourcesAccess).toHaveBeenCalled();
     });
 
     fancyIt()(
