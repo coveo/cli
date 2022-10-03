@@ -1,7 +1,11 @@
 import {VaultFetchStrategy, VaultEntryModel} from '@coveord/platform-client';
 import {CliUx} from '@oclif/core';
 import {bold} from 'chalk';
-import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
+import {
+  formatOrgId,
+  startSpinner,
+  stopSpinner,
+} from '@coveo/cli-commons/utils/ux';
 import dedent from 'ts-dedent';
 import {SnapshotMissingVaultEntriesFromOriginError} from '../../errors/vaultErrors';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
@@ -24,9 +28,9 @@ export async function tryTransferFromOrganization({
   }
 
   const shouldTransfer = await CliUx.ux.confirm(
-    `\nWould you like to try transfering the vault entries from ${bold.cyan(
+    `\nWould you like to try transfering the vault entries from ${formatOrgId(
       originOrgId
-    )} to the destination organization ${bold.cyan(snapshot.targetId)}? (y/n)`
+    )} to the destination organization ${formatOrgId(snapshot.targetId)}? (y/n)`
   );
   if (!shouldTransfer) {
     return false;
@@ -35,10 +39,10 @@ export async function tryTransferFromOrganization({
   const authenticatedClient = new AuthenticatedClient();
   if (!(await authenticatedClient.getUserHasAccessToOrg(originOrgId))) {
     CliUx.ux.warn(dedent`
-        We mapped this snapshot to ${bold.cyan(originOrgId)}.
-        If you want to transfer the vault entries from ${bold.cyan(
+        We mapped this snapshot to ${formatOrgId(originOrgId)}.
+        If you want to transfer the vault entries from ${formatOrgId(
           originOrgId
-        )} to ${bold.cyan(snapshot.targetId)},
+        )} to ${formatOrgId(snapshot.targetId)},
         authenticate with an account that has access to both organizations and then try again.
       `);
     return false;

@@ -64,17 +64,19 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
     return;
   }
 
-  const changelog = await generateChangelog(
-    parsedCommits,
-    newVersion,
-    {
-      host: 'https://github.com',
-      owner: 'coveo',
-      repository: 'cli',
-    },
-    convention.writerOpts
-  );
-  await writeChangelog(PATH, changelog);
+  if (parsedCommits.length > 0) {
+    const changelog = await generateChangelog(
+      parsedCommits,
+      newVersion,
+      {
+        host: 'https://github.com',
+        owner: 'coveo',
+        repository: 'cli',
+      },
+      convention.writerOpts
+    );
+    await writeChangelog(PATH, changelog);
+  }
 
   await npmPublish();
 
