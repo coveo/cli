@@ -1,4 +1,4 @@
-import type {ResourceSnapshotType} from '@coveord/platform-client';
+import {ResourceSnapshotType} from '@coveord/platform-client';
 import {
   formatOrgId,
   startSpinner,
