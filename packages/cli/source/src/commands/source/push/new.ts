@@ -33,6 +33,7 @@ export default class SourcePushNew extends CLICommand {
     IsAuthenticated(),
     HasNecessaryCoveoPrivileges(writeSourceContentPrivilege)
   )
+  //TODO: Refactor with catalog
   public async run() {
     const {flags, args} = await this.parse(SourcePushNew);
     const authenticatedClient = new AuthenticatedClient();
