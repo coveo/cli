@@ -1,16 +1,20 @@
 jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
+jest.mock('@coveo/cli-commons/preconditions/authenticated');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {OrganizationModel} from '@coveord/platform-client';
-
-const mockedClient = jest.mocked(AuthenticatedClient);
-const mockGetOrgs = jest.fn().mockReturnValue(Promise.resolve([]));
+import {IsAuthenticated} from '@coveo/cli-commons/preconditions';
+import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
 
 describe('org:list', () => {
+  const mockedClient = jest.mocked(AuthenticatedClient);
+  const mockGetOrgs = jest.fn().mockReturnValue(Promise.resolve([]));
+  const mockedIsAuthenticated = jest.mocked(IsAuthenticated);
+
   const createMockOrgDefinition = (id: string): OrganizationModel => ({
     createdDate: new Date().getTime(),
     displayName: `${id}_displayName`,
@@ -21,12 +25,23 @@ describe('org:list', () => {
     type: 'TRIAL',
   });
 
-  mockedClient.mockImplementation(
-    () =>
-      ({
-        getAllOrgsUserHasAccessTo: mockGetOrgs,
-      } as unknown as AuthenticatedClient)
-  );
+  const doMockPreconditions = function () {
+    const preconditionStatus = {
+      authentication: true,
+    };
+    const mockedPreconditions = mockPreconditions(preconditionStatus);
+    mockedIsAuthenticated.mockReturnValue(mockedPreconditions.authentication);
+  };
+
+  beforeAll(() => {
+    mockedClient.mockImplementation(
+      () =>
+        ({
+          getAllOrgsUserHasAccessTo: mockGetOrgs,
+        } as unknown as AuthenticatedClient)
+    );
+    doMockPreconditions();
+  });
 
   test
     .stdout()

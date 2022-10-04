@@ -8,6 +8,7 @@ import {
   Preconditions,
   IsAuthenticated,
   HasNecessaryCoveoPrivileges,
+  AuthenticationType,
 } from '@coveo/cli-commons/preconditions/index';
 import {
   createApiKeyPrivilege,
@@ -54,7 +55,7 @@ export default class Atomic extends CLICommand {
     overrideEventProperties: {framework: 'atomic'},
   })
   @Preconditions(
-    IsAuthenticated(),
+    IsAuthenticated([AuthenticationType.ApiKey]),
     IsNpxInstalled(),
     IsNodeVersionInRange(Atomic.requiredNodeVersion),
     HasNecessaryCoveoPrivileges(

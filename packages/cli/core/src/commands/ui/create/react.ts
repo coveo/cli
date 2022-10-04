@@ -10,6 +10,7 @@ import {
   Preconditions,
   IsAuthenticated,
   HasNecessaryCoveoPrivileges,
+  AuthenticationType,
 } from '@coveo/cli-commons/preconditions/index';
 import {
   createApiKeyPrivilege,
@@ -67,7 +68,7 @@ export default class React extends CLICommand {
     overrideEventProperties: {framework: 'react'},
   })
   @Preconditions(
-    IsAuthenticated(),
+    IsAuthenticated([AuthenticationType.ApiKey]),
     IsNodeVersionInRange(React.requiredNodeVersion),
     IsNpxInstalled(),
     HasNecessaryCoveoPrivileges(createApiKeyPrivilege, impersonatePrivilege)
