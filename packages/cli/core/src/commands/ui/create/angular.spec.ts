@@ -23,7 +23,7 @@ import {
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {IsNgVersionInRange} from '../../../lib/decorators/preconditions/ng';
 import {configurationMock} from '../../../__stub__/configuration';
-import {mockPreconditions} from '../../../__test__/preconditionUtils';
+import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
 import {HasNecessaryCoveoPrivileges} from '@coveo/cli-commons/preconditions/index';
 
 describe('ui:create:angular', () => {

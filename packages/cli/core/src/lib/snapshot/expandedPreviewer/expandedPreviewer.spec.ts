@@ -18,7 +18,7 @@ import {SnapshotFactory} from '../snapshotFactory';
 import {Snapshot} from '../snapshot';
 import {spawnProcess, spawnProcessOutput} from '../../utils/process';
 import {recursiveDirectoryDiff} from './filesDiffProcessor';
-import {getDirectory} from '../../../__test__/fsUtils';
+import {getDirectory} from '@coveo/cli-commons-dev/testUtils/fsUtils';
 import {resolve} from 'path';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {stderr, stdout} from 'stdout-stderr';
