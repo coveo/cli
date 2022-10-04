@@ -1,5 +1,6 @@
+jest.mock('@coveo/cli-commons/analytics/amplitudeClient');
 jest.mock('@coveo/cli-commons/config/config');
-jest.mock('@coveo/cli-commons/preconditions/trackable');
+jest.mock('@coveo/cli-commons/preconditions/authenticated');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('@coveord/platform-client');
@@ -11,25 +12,37 @@ import {
   SourceStatusType,
   SourceVisibility,
 } from '@coveord/platform-client';
-
-const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
-
-const mockListSources = jest
-  .fn()
-  .mockReturnValue(Promise.resolve({totalEntries: 0, sourceModels: []}));
-
-const createMockSourceModel = (id: string): SourceModel => ({
-  name: `${id}_displayName`,
-  id,
-  owner: 'bob',
-  sourceVisibility: SourceVisibility.SECURED,
-  information: {
-    sourceStatus: {type: SourceStatusType.PUSH_READY},
-    numberOfDocuments: 1234,
-  },
-});
+import {IsAuthenticated} from '@coveo/cli-commons/preconditions';
+import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
 
 describe('source:push:list', () => {
+  const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
+
+  const mockListSources = jest
+    .fn()
+    .mockReturnValue(Promise.resolve({totalEntries: 0, sourceModels: []}));
+
+  const createMockSourceModel = (id: string): SourceModel => ({
+    name: `${id}_displayName`,
+    id,
+    owner: 'bob',
+    sourceVisibility: SourceVisibility.SECURED,
+    information: {
+      sourceStatus: {type: SourceStatusType.PUSH_READY},
+      numberOfDocuments: 1234,
+    },
+  });
+
+  const mockedIsAuthenticated = jest.mocked(IsAuthenticated);
+
+  const doMockPreconditions = function () {
+    const preconditionStatus = {
+      authentication: true,
+    };
+    const mockedPreconditions = mockPreconditions(preconditionStatus);
+    mockedIsAuthenticated.mockReturnValue(mockedPreconditions.authentication);
+  };
+
   beforeAll(() => {
     mockedAuthenticatedClient.mockImplementation(
       () =>
@@ -40,6 +53,7 @@ describe('source:push:list', () => {
           getClient: () => Promise.resolve({source: {list: mockListSources}}),
         } as unknown as AuthenticatedClient)
     );
+    doMockPreconditions();
   });
 
   test

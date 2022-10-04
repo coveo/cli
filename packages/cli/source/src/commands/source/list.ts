@@ -20,6 +20,7 @@ export default class SourceList extends CLICommand {
 
   @Trackable()
   @Preconditions(IsAuthenticated())
+  //TODO: Privilege check
   public async run() {
     const {flags} = await this.parse(SourceList);
     const authenticatedClient = new AuthenticatedClient();

@@ -52,6 +52,7 @@ export default class SourcePushDelete extends CLICommand {
   ];
 
   @Trackable()
+  // TODO: Check privileges?
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = await this.parse(SourcePushDelete);
