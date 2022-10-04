@@ -6,6 +6,7 @@ jest.mock('../../../lib/utils/process');
 jest.mock('../../../lib/oauth/oauth');
 jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
+jest.mock('@coveo/cli-commons/preconditions/authenticated');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
@@ -20,7 +21,10 @@ import {
   IsNpxInstalled,
   IsNodeVersionInRange,
 } from '../../../lib/decorators/preconditions/index';
-import {HasNecessaryCoveoPrivileges} from '@coveo/cli-commons/preconditions/index';
+import {
+  HasNecessaryCoveoPrivileges,
+  IsAuthenticated,
+} from '@coveo/cli-commons/preconditions/index';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {configurationMock} from '../../../__stub__/configuration';
 import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
@@ -36,17 +40,21 @@ describe('ui:create:react', () => {
   const mockedIsNodeVersionInRange = jest.mocked(IsNodeVersionInRange);
   const createReactAppPackage = 'create-react-app@latest';
   const mockedApiKeyPrivilege = jest.mocked(HasNecessaryCoveoPrivileges);
+  const mockedIsAuthenticated = jest.mocked(IsAuthenticated);
+
   const mockedCreateImpersonateApiKey = jest.fn();
   const preconditionStatus = {
     node: true,
     npx: true,
     apiKey: true,
+    authentication: true,
   };
   const doMockPreconditions = function () {
     const mockedPreconditions = mockPreconditions(preconditionStatus);
     mockedIsNodeVersionInRange.mockReturnValue(mockedPreconditions.node);
     mockedIsNpxInstalled.mockReturnValue(mockedPreconditions.npx);
     mockedApiKeyPrivilege.mockReturnValue(mockedPreconditions.apiKey);
+    mockedIsAuthenticated.mockReturnValue(mockedPreconditions.authentication);
   };
 
   const doMockSpawnProcess = () => {
@@ -210,8 +218,8 @@ describe('ui:create:react', () => {
       mockedSpawnProcess.mockReturnValueOnce(Promise.resolve(1));
     })
     .command(['ui:create:react', 'myapp'])
-    .catch((ctx) => {
-      expect(ctx.message).toBe(
+    .catch((err) => {
+      expect(err.message).toBe(
         'create-react-app was unable to create the project. See the logs above for more information.'
       );
     })

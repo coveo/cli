@@ -1,5 +1,6 @@
 jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
+jest.mock('@coveo/cli-commons/preconditions/authenticated');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 
@@ -7,9 +8,20 @@ import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClie
 import {test} from '@oclif/test';
 import {ResourceSnapshotsModel} from '@coveord/platform-client';
 import {Config} from '@coveo/cli-commons/config/config';
+import {IsAuthenticated} from '@coveo/cli-commons/preconditions';
+import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
 
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockedConfig = jest.mocked(Config);
+const mockedIsAuthenticated = jest.mocked(IsAuthenticated);
+
+const doMockPreconditions = function () {
+  const preconditionStatus = {
+    authentication: true,
+  };
+  const mockedPreconditions = mockPreconditions(preconditionStatus);
+  mockedIsAuthenticated.mockReturnValue(mockedPreconditions.authentication);
+};
 
 const mockResourceSnapshotModel: () => ResourceSnapshotsModel = () => ({
   createdBy: 'bob',
@@ -28,21 +40,24 @@ const mockListSnapshots = jest
   .mockReturnValue(Promise.resolve([mockResourceSnapshotModel()]));
 
 describe('org:resources:list', () => {
-  mockedAuthenticatedClient.mockImplementation(
-    () =>
-      ({
-        getClient: () =>
-          Promise.resolve({resourceSnapshot: {list: mockListSnapshots}}),
-      } as unknown as AuthenticatedClient)
-  );
-  mockedConfig.mockImplementation(
-    () =>
-      ({
-        get: {
-          organization: 'foo',
-        },
-      } as unknown as Config)
-  );
+  beforeAll(() => {
+    doMockPreconditions();
+    mockedAuthenticatedClient.mockImplementation(
+      () =>
+        ({
+          getClient: () =>
+            Promise.resolve({resourceSnapshot: {list: mockListSnapshots}}),
+        } as unknown as AuthenticatedClient)
+    );
+    mockedConfig.mockImplementation(
+      () =>
+        ({
+          get: {
+            organization: 'foo',
+          },
+        } as unknown as Config)
+    );
+  });
 
   test
     .do(() => {
