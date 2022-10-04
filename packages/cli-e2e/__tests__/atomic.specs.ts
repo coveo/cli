@@ -1,6 +1,11 @@
 import type {HTTPRequest, Browser, Page} from 'puppeteer';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
-import {answerPrompt, getProjectPath, setupUIProject} from '../utils/cli';
+import {
+  answerPrompt,
+  getConfig,
+  getProjectPath,
+  setupUIProject,
+} from '../utils/cli';
 import {isSearchRequestOrResponse} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
@@ -207,6 +212,9 @@ describe('ui:create:atomic', () => {
       let page: Page;
 
       beforeAll(async () => {
+        const config = getConfig();
+        config.accessToken = 'redacted';
+        console.log(JSON.stringify(getConfig()));
         const processManager = new ProcessManager();
         processManagers.push(processManager);
         if (!skipBrowser) {
