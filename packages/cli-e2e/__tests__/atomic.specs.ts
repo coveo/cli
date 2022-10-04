@@ -9,7 +9,6 @@ import {npm} from '../utils/npm';
 import {jwtTokenPattern} from '../utils/matcher';
 import {EOL} from 'os';
 import {DummyServer} from '../utils/server';
-import {loginWithApiKey} from '../utils/login';
 import {join, resolve} from 'path';
 import {hashElement} from 'folder-hash';
 import {renameSync, rmSync} from 'fs';
@@ -208,11 +207,6 @@ describe('ui:create:atomic', () => {
       let page: Page;
 
       beforeAll(async () => {
-        await loginWithApiKey(
-          process.env.PLATFORM_API_KEY!,
-          process.env.ORG_ID!,
-          process.env.PLATFORM_ENV!
-        );
         const processManager = new ProcessManager();
         processManagers.push(processManager);
         if (!skipBrowser) {

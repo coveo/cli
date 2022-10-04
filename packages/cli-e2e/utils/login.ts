@@ -79,7 +79,7 @@ export function runLoginCommand(orgId: string, env: string) {
     .do(answerPrompt('n'))
     .once();
 
-  return loginTerminal;
+  return loginTerminal.when('exit').on('process').do().once();
 }
 
 async function startLoginFlow(browser: Browser) {
