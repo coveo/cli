@@ -1,4 +1,4 @@
-import {ResourceSnapshotType} from '@coveord/platform-client';
+import {ResourceSnapshotType} from '@coveo/platform-client';
 
 const snapshotLabelDict = {
   [ResourceSnapshotType.extension]: 'Extensions',

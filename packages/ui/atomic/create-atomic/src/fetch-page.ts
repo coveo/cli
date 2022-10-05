@@ -2,10 +2,10 @@ import {
   PlatformClient,
   IManifestResponse,
   ISearchInterfaceConfigurationResponse,
-} from '@coveord/platform-client';
+} from '@coveo/platform-client';
 
 /**
- * @coveord/platform-client's IManifestResponse with simplified configuration
+ * @coveo/platform-client's IManifestResponse with simplified configuration
  */
 export interface IManifest extends Omit<IManifestResponse, 'config'> {
   config: Pick<ISearchInterfaceConfigurationResponse, 'title'>;

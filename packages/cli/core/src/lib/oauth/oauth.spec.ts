@@ -1,6 +1,6 @@
 import type {ChildProcess} from 'child_process';
 
-import {Region} from '@coveord/platform-client';
+import {Region} from '@coveo/platform-client';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {
   PlatformEnvironment,

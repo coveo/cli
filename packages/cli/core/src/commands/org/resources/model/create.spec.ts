@@ -3,7 +3,7 @@ jest.mock('@coveo/cli-commons/preconditions/trackable');
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('open');
 
-import {Region} from '@coveord/platform-client';
+import {Region} from '@coveo/platform-client';
 import test from '@oclif/test';
 import open from 'open';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';

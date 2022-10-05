@@ -3,7 +3,7 @@ import {Flags, CliUx} from '@oclif/core';
 import {readJSONSync, writeFileSync, writeJSONSync} from 'fs-extra';
 import {Parser} from 'json2csv';
 import {SingleBar} from 'cli-progress';
-import PlatformClient from '@coveord/platform-client';
+import PlatformClient from '@coveo/platform-client';
 import {dirSync} from 'tmp';
 
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';

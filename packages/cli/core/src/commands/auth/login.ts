@@ -4,7 +4,7 @@ import {Config} from '@coveo/cli-commons/config/config';
 import {OAuth} from '../../lib/oauth/oauth';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {PlatformEnvironment} from '@coveo/cli-commons/platform/environment';
-import {Region} from '@coveord/platform-client';
+import {Region} from '@coveo/platform-client';
 import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {formatOrgId} from '@coveo/cli-commons/utils/ux';

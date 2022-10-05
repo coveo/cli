@@ -1,4 +1,4 @@
-import {FilterHostType, SourceModel} from '@coveord/platform-client';
+import {FilterHostType, SourceModel} from '@coveo/platform-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {CliUx} from '@oclif/core';
 import {

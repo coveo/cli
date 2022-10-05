@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@amplitude/node": "1.10.2",
-    "@coveord/platform-client": "34.14.0",
+    "@coveo/platform-client": "35.0.0",
     "@oclif/core": "1.16.3",
     "abortcontroller-polyfill": "1.7.3",
     "chalk": "4.1.2",

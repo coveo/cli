@@ -1,4 +1,4 @@
-import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
+import {ResourceSnapshotsReportModel} from '@coveo/platform-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {CliUx} from '@oclif/core';
 import {Config} from '@coveo/cli-commons/config/config';

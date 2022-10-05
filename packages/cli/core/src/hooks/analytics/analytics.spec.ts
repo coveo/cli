@@ -2,7 +2,7 @@ jest.mock('jsonschema');
 jest.mock('@amplitude/node');
 jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
-jest.mock('@coveord/platform-client');
+jest.mock('@coveo/platform-client');
 jest.mock('@coveo/cli-commons/config/globalConfig');
 
 import {Config} from '@coveo/cli-commons/config/config';
@@ -13,7 +13,7 @@ import {
 } from '@coveo/cli-commons/platform/authenticatedClient';
 import hook, {AnalyticsHook} from './analytics';
 import {Interfaces} from '@oclif/core';
-import {PlatformClient} from '@coveord/platform-client';
+import {PlatformClient} from '@coveo/platform-client';
 import {configurationMock} from '../../__stub__/configuration';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import globalConfig from '@coveo/cli-commons/config/globalConfig';

@@ -6,7 +6,7 @@ jest.mock('../../../lib/snapshot/snapshotReporter');
 jest.mock('../../../lib/snapshot/snapshotFactory');
 
 import {Config} from '@coveo/cli-commons/config/config';
-import {ResourceSnapshotsReportType} from '@coveord/platform-client';
+import {ResourceSnapshotsReportType} from '@coveo/platform-client';
 import {test} from '@oclif/test';
 import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel';
 import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';

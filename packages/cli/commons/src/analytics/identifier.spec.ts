@@ -1,6 +1,6 @@
 jest.mock('@amplitude/node');
 jest.mock('@amplitude/identify');
-jest.mock('@coveord/platform-client');
+jest.mock('@coveo/platform-client');
 jest.mock('../platform/authenticatedClient');
 jest.mock('../config/config');
 jest.mock('../config/globalConfig');
@@ -10,7 +10,7 @@ import {Identify} from '@amplitude/identify';
 import {Config, Configuration} from '../config/config';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {Identifier} from './identifier';
-import PlatformClient from '@coveord/platform-client';
+import PlatformClient from '@coveo/platform-client';
 import {configurationMock, defaultConfiguration} from '../config/stub';
 import type {Interfaces} from '@oclif/core';
 import type {NodeClient} from '@amplitude/node';

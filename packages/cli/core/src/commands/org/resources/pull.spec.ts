@@ -9,7 +9,7 @@ jest.mock('../../../lib/utils/process');
 
 import {join} from 'path';
 import {Config} from '@coveo/cli-commons/config/config';
-import {ResourceSnapshotsReportType} from '@coveord/platform-client';
+import {ResourceSnapshotsReportType} from '@coveo/platform-client';
 import {test} from '@oclif/test';
 import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel';
 import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';

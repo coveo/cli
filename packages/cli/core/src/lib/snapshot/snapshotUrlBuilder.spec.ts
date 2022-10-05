@@ -1,6 +1,6 @@
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 
-import {Region, ResourceSnapshotsReportType} from '@coveord/platform-client';
+import {Region, ResourceSnapshotsReportType} from '@coveo/platform-client';
 import {getDummySnapshotModel} from '../../__stub__/resourceSnapshotsModel';
 import {getSuccessReport} from '../../__stub__/resourceSnapshotsReportModel';
 import {Configuration} from '@coveo/cli-commons/config/config';

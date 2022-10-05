@@ -1,7 +1,7 @@
 import PlatformClient, {
   PrivilegeEvaluatorModel,
   PrivilegeModel,
-} from '@coveord/platform-client';
+} from '@coveo/platform-client';
 import {Command} from '@oclif/core';
 import {Config} from '../config/config';
 import globalConfig from '../config/globalConfig';

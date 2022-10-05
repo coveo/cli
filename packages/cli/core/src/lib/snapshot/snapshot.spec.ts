@@ -3,7 +3,7 @@ import {
   ResourceSnapshotsReportModel,
   ResourceSnapshotsReportType,
   SnapshotExportContentFormat,
-} from '@coveord/platform-client';
+} from '@coveo/platform-client';
 import {stdout, stderr} from 'stdout-stderr';
 import {getDummySnapshotModel} from '../../__stub__/resourceSnapshotsModel';
 import {

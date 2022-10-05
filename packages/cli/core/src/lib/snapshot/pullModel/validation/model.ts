@@ -1,5 +1,5 @@
 import pullModelSchema from './model.schema.json';
-import type {ResourceSnapshotType} from '@coveord/platform-client';
+import type {ResourceSnapshotType} from '@coveo/platform-client';
 import {SnapshotPullModelResources} from '../interfaces';
 import {allowedResourceType} from '../../snapshotConstant';
 
