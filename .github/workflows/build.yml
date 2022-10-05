@@ -130,6 +130,7 @@ jobs:
           name: ${{matrix.os}}-verdaccio-publish-artifacts
           path: ./packages/cli-e2e/artifacts
   e2e:
+    timeout-minutes: 12
     name: End-to-end tests
     runs-on: ${{matrix.os}}
     needs: [e2e-setup-login, e2e-setup-verdaccio]
