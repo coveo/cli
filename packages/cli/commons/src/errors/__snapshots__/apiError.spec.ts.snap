@@ -11,7 +11,7 @@ exports[`APIError when the error is of type APIErrorResponse it should print eve
 "
 This is a tagline
 Error code: [31mSOME_ERROR[39m
-Message: [31mmore info[39m
+Message: [31msome more info[39m
 Request ID: [31m123456qwerty[39m"
 `;
 

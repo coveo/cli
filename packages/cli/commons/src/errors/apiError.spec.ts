@@ -31,7 +31,7 @@ describe('APIError', () => {
         title: 'it should print everything',
         response: {
           errorCode: 'SOME_ERROR',
-          message: 'more info',
+          message: 'some more info',
           requestID: '123456qwerty',
         },
       },
