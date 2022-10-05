@@ -29,7 +29,8 @@ Message: [31msomething went wrong[39m"
 
 exports[`APIError when the error is of type APIErrorResponse it should print the request Id 1`] = `
 "
-This is a tagline"
+This is a tagline
+Request ID: [31m123456qwerty[39m"
 `;
 
 exports[`APIError when the error is of type AxiosErrorFromAPI it should print the status code 1`] = `
