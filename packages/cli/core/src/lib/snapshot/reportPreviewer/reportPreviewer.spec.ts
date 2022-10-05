@@ -1,6 +1,6 @@
 import {test} from '@oclif/test';
 
-import {ResourceSnapshotsReportType} from '@coveord/platform-client';
+import {ResourceSnapshotsReportType} from '@coveo/platform-client';
 import {ReportViewer} from './reportPreviewer';
 import dedent from 'ts-dedent';
 import {SnapshotReporter} from '../snapshotReporter';

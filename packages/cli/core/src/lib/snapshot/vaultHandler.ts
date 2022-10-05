@@ -2,7 +2,7 @@ import {
   VaultEntryModel,
   VaultValueType,
   VaultVisibilityType,
-} from '@coveord/platform-client';
+} from '@coveo/platform-client';
 import {CliUx} from '@oclif/core';
 import {readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
 import open from 'open';

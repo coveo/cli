@@ -1,4 +1,4 @@
-jest.mock('@coveord/platform-client');
+jest.mock('@coveo/platform-client');
 jest.mock('./middlewares/searchToken', () => {
   const originalMiddleware = jest.requireActual('./middlewares/searchToken');
   const oldMiddleware = originalMiddleware.ensureTokenGenerated;
@@ -18,7 +18,7 @@ jest.mock('./middlewares/searchToken', () => {
 import {agent} from 'supertest';
 import app from './app';
 import {Request, Response, NextFunction} from 'express';
-import PlatformClient, {RestUserIdType} from '@coveord/platform-client';
+import PlatformClient, {RestUserIdType} from '@coveo/platform-client';
 
 const mockedPlatformClient = jest.mocked(PlatformClient);
 const mockedCreateToken = jest.fn();

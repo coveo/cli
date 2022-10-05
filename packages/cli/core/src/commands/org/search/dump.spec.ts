@@ -1,4 +1,4 @@
-jest.mock('@coveord/platform-client');
+jest.mock('@coveo/platform-client');
 jest.mock('fs-extra');
 jest.mock('json2csv');
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');

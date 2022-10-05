@@ -1,4 +1,4 @@
-import {PlatformClient} from '@coveord/platform-client';
+import {PlatformClient} from '@coveo/platform-client';
 
 export async function listSearchPagesOptions(client: PlatformClient) {
   return (await client.searchInterfaces.list({perPage: 150})).items.map(

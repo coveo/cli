@@ -14,7 +14,7 @@ import {Config} from '@coveo/cli-commons/config/config';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
-import {ResourceSnapshotsReportType} from '@coveord/platform-client';
+import {ResourceSnapshotsReportType} from '@coveo/platform-client';
 import {
   getErrorReport,
   getMissingVaultEntryReport,

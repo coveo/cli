@@ -1,4 +1,4 @@
-import {ResourceSnapshotsReportType} from '@coveord/platform-client';
+import {ResourceSnapshotsReportType} from '@coveo/platform-client';
 import {
   getErrorReport,
   getMissingVaultEntryReport,

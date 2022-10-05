@@ -1,5 +1,5 @@
 jest.mock('../config/config');
-jest.mock('@coveord/platform-client');
+jest.mock('@coveo/platform-client');
 jest.mock('../config/globalConfig');
 import {Interfaces} from '@oclif/core';
 import {
@@ -9,7 +9,7 @@ import {
 } from './authenticatedClient';
 
 import {Config} from '../config/config';
-import PlatformClient from '@coveord/platform-client';
+import PlatformClient from '@coveo/platform-client';
 import {
   castEnvironmentToPlatformClient,
   PlatformEnvironment,

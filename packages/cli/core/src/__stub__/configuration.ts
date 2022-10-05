@@ -1,4 +1,4 @@
-import {Region} from '@coveord/platform-client';
+import {Region} from '@coveo/platform-client';
 import type {Config, Configuration} from '@coveo/cli-commons/config/config';
 import {PlatformEnvironment} from '@coveo/cli-commons/platform/environment';
 

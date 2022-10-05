@@ -6,7 +6,7 @@ import {
   PlatformClient,
   RestUserIdType,
   TokenModel,
-} from '@coveord/platform-client';
+} from '@coveo/platform-client';
 
 export function ensureTokenGenerated(
   req: Request,

@@ -7,7 +7,7 @@ import {
   ResourceSnapshotsReportType,
   SnapshotExportContentFormat,
   ApplyOptionsDeletionScope,
-} from '@coveord/platform-client';
+} from '@coveo/platform-client';
 import retry from 'async-retry';
 import {ReportViewer} from './reportPreviewer/reportPreviewer';
 import {ensureFileSync, writeJsonSync} from 'fs-extra';

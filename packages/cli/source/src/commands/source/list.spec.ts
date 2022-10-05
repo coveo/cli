@@ -2,7 +2,7 @@ jest.mock('@coveo/cli-commons/analytics/amplitudeClient');
 jest.mock('@coveo/cli-commons/config/config');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
-jest.mock('@coveord/platform-client');
+jest.mock('@coveo/platform-client');
 
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
@@ -10,7 +10,7 @@ import {
   SourceModel,
   SourceStatusType,
   SourceVisibility,
-} from '@coveord/platform-client';
+} from '@coveo/platform-client';
 
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 

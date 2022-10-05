@@ -1,7 +1,7 @@
 require('isomorphic-fetch');
 require('abortcontroller-polyfill');
 
-import PlatformClient from '@coveord/platform-client';
+import PlatformClient from '@coveo/platform-client';
 import axios from 'axios';
 import {HTTPRequest, HTTPResponse} from 'puppeteer';
 

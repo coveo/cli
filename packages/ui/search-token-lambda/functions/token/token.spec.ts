@@ -1,5 +1,5 @@
-jest.mock('@coveord/platform-client');
-import PlatformClient from '@coveord/platform-client';
+jest.mock('@coveo/platform-client');
+import PlatformClient from '@coveo/platform-client';
 import {handler} from './token';
 const mockedPlatformClient = jest.mocked(PlatformClient);
 const mockedCreateToken = jest.fn();

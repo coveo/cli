@@ -7,7 +7,7 @@ jest.mock('./filesDiffProcessor');
 import {
   ResourceSnapshotsReportModel,
   ResourceSnapshotsReportType,
-} from '@coveord/platform-client';
+} from '@coveo/platform-client';
 import {Dirent, existsSync, mkdirSync, readdirSync, rmSync} from 'fs';
 import {join} from 'path';
 

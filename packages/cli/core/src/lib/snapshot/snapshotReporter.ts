@@ -3,7 +3,7 @@ import {
   ResourceSnapshotsReportOperationModel,
   ResourceSnapshotsReportOperationResult,
   ResourceSnapshotType,
-} from '@coveord/platform-client';
+} from '@coveo/platform-client';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,

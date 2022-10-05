@@ -1,7 +1,7 @@
 import {
   ResourceSnapshotsModel,
   ResourceSnapshotsReportModel,
-} from '@coveord/platform-client';
+} from '@coveo/platform-client';
 
 export const getDummySnapshotModel = (
   orgId: string,

@@ -1,4 +1,4 @@
-import type {ResourceSnapshotType} from '@coveord/platform-client';
+import type {ResourceSnapshotType} from '@coveo/platform-client';
 import {readdirSync, rmSync} from 'fs';
 import {readJsonSync, writeJsonSync, WriteOptions} from 'fs-extra';
 import {join} from 'path';

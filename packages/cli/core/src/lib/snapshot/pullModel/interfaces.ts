@@ -1,4 +1,4 @@
-import {ResourceSnapshotExportConfigurationModel} from '@coveord/platform-client';
+import {ResourceSnapshotExportConfigurationModel} from '@coveo/platform-client';
 
 export type SnapshotPullModelResources =
   ResourceSnapshotExportConfigurationModel['resourcesToExport'];

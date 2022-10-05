@@ -2,7 +2,7 @@ import {
   CreateFromFileOptions,
   ResourceSnapshotsReportType,
   ResourceSnapshotSupportedFileTypes,
-} from '@coveord/platform-client';
+} from '@coveo/platform-client';
 import {readFileSync} from 'fs';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {SnapshotPullModelResources} from './pullModel/interfaces';

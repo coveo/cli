@@ -1,7 +1,7 @@
 require('isomorphic-fetch');
 require('abortcontroller-polyfill');
 
-import {PlatformClient, RestUserIdType} from '@coveord/platform-client';
+import {PlatformClient, RestUserIdType} from '@coveo/platform-client';
 
 export async function generateToken() {
   const platform: PlatformClient = new PlatformClient({

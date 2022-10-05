@@ -5,7 +5,7 @@ jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {OrganizationCreationOrigin} from '@coveord/platform-client';
+import {OrganizationCreationOrigin} from '@coveo/platform-client';
 import {Config} from '@coveo/cli-commons/config/config';
 
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);

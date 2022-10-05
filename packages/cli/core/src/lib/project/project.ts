@@ -12,7 +12,7 @@ import {InvalidProjectError} from '../errors';
 import extract from 'extract-zip';
 import {DotFolder, DotFolderConfig} from './dotFolder';
 import {readJsonSync, writeJsonSync, WriteOptions} from 'fs-extra';
-import {ResourceSnapshotType} from '@coveord/platform-client';
+import {ResourceSnapshotType} from '@coveo/platform-client';
 import {fileDepthSearch} from '../utils/file';
 
 interface ResourceManifest {

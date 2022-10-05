@@ -6,7 +6,7 @@ jest.mock('@oclif/core/lib/cli-ux/prompt');
 jest.mock('@oclif/core/lib/errors/index');
 jest.mock('../../errors/vaultErrors');
 
-import PlatformClient, {VaultFetchStrategy} from '@coveord/platform-client';
+import PlatformClient, {VaultFetchStrategy} from '@coveo/platform-client';
 import {confirm} from '@oclif/core/lib/cli-ux/prompt';
 import {warn} from '@oclif/core/lib/errors/index';
 import {Configuration} from '@coveo/cli-commons/config/config';

@@ -2,7 +2,7 @@ jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('fs');
 jest.mock('./snapshot');
 
-import {ResourceSnapshotType} from '@coveord/platform-client';
+import {ResourceSnapshotType} from '@coveo/platform-client';
 import {readFileSync} from 'fs';
 import {join} from 'path';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
