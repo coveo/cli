@@ -31,6 +31,7 @@ async function main() {
 function outputCliConfig() {
   const config = getConfig();
   setSecret(config.accessToken);
+  console.log(JSON.stringify(config));
   exportVariable('CLI_CONFIG_PATH', getConfigFilePath());
 }
 
