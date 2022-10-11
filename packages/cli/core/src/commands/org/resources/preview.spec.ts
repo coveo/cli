@@ -19,7 +19,7 @@ import {
   ResourceSnapshotsReportType,
   ResourceSnapshotType,
   SnapshotAccessType,
-} from '@coveord/platform-client';
+} from '@coveo/platform-client';
 import {
   getErrorReport,
   getMissingVaultEntryReport,

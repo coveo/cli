@@ -1,7 +1,7 @@
-jest.mock('@coveord/platform-client');
+jest.mock('@coveo/platform-client');
 
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
-import PlatformClient, {ResourceSnapshotType} from '@coveord/platform-client';
+import PlatformClient, {ResourceSnapshotType} from '@coveo/platform-client';
 import {
   MissingResourcePrivileges,
   MissingSnapshotPrivilege,

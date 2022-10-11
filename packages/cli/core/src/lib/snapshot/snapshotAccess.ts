@@ -2,7 +2,7 @@ import {startSpinner} from '@coveo/cli-commons/utils/ux';
 import PlatformClient, {
   ResourceSnapshotType,
   SnapshotAccessType,
-} from '@coveord/platform-client';
+} from '@coveo/platform-client';
 import {
   MissingResourcePrivileges,
   MissingSnapshotPrivilege,

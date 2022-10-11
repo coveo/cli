@@ -7,10 +7,7 @@ import {
   CLIBaseError,
   SeverityLevel,
 } from '@coveo/cli-commons/errors/cliBaseError';
-import {
-  ResourceSnapshotType,
-  SnapshotAccessType,
-} from '@coveord/platform-client';
+import {ResourceSnapshotType, SnapshotAccessType} from '@coveo/platform-client';
 import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/utils/string';
 
 interface DetailedReportable extends CLIBaseError {

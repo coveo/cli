@@ -12,7 +12,7 @@ import {
   ResourceSnapshotsReportType,
   ResourceSnapshotType,
   SnapshotAccessType,
-} from '@coveord/platform-client';
+} from '@coveo/platform-client';
 import {test} from '@oclif/test';
 import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel';
 import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
