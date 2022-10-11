@@ -23,7 +23,7 @@ import {
 import {HasNecessaryCoveoPrivileges} from '@coveo/cli-commons/preconditions/index';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {configurationMock} from '../../../__stub__/configuration';
-import {mockPreconditions} from '../../../__test__/preconditionUtils';
+import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
 
 describe('ui:create:atomic', () => {
   const mockedConfig = jest.mocked(Config);

@@ -3,7 +3,7 @@ jest.mock('../../utils/misc');
 jest.mock('../../utils/os');
 
 import {spawnProcessOutput} from '../../utils/process';
-import {getFakeCommand} from './testsUtils/utils';
+import {getFakeCommand} from '@coveo/cli-commons-dev/testUtils/utils';
 
 import {IsNgVersionInRange} from './ng';
 import {Command, CliUx} from '@oclif/core';
