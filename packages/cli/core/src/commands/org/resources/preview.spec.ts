@@ -358,7 +358,7 @@ describe('org:resources:preview', () => {
       .command(['org:resources:preview'])
       .catch((ctx) => {
         expect(ctx.message).toContain(
-          'https://platform.cloud.coveo.com/admin/#potato-org/organization/resource-snapshots/banana-snapshot'
+          'https://platform.cloud.coveo.com/admin/#/potato-org/organization/resource-snapshots/banana-snapshot'
         );
       })
       .it('should print an URL to the snapshot page');
