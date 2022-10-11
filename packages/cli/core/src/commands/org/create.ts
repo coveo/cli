@@ -10,7 +10,7 @@ import {
   Preconditions,
   IsAuthenticated,
 } from '@coveo/cli-commons/preconditions/index';
-import {OrganizationCreationOrigin} from '@coveord/platform-client';
+import {OrganizationCreationOrigin} from '@coveo/platform-client';
 import {Config} from '@coveo/cli-commons/config/config';
 import dedent from 'ts-dedent';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';

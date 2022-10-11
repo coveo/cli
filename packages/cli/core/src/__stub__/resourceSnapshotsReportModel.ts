@@ -3,7 +3,7 @@ import {
   ResourceSnapshotsReportResultCode,
   ResourceSnapshotsReportStatus,
   ResourceSnapshotsReportType,
-} from '@coveord/platform-client';
+} from '@coveo/platform-client';
 
 export const getReportWithNoProcessedResources = (
   snapshotId: string,

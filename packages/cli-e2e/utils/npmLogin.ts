@@ -4,30 +4,30 @@ import {Terminal} from './terminal/terminal';
 import {npm} from './npm';
 
 export const npmLogin = async () => {
-  const args = [...npm(), 'adduser', '--registry=http://localhost:4873'];
-  const npmAddUser = new Terminal(args.shift()!, args);
+  const args = [...npm(), 'login', '--registry=http://localhost:4873'];
+  const npmLogin = new Terminal(args.shift()!, args);
 
-  npmAddUser.orchestrator.process.stdout.pipe(process.stdout);
-  npmAddUser.orchestrator.process.stderr.pipe(process.stderr);
-  npmAddUser
+  npmLogin.orchestrator.process.stdout.pipe(process.stdout);
+  npmLogin.orchestrator.process.stderr.pipe(process.stderr);
+  npmLogin
     .when(/Username:/)
     .on('stdout')
     .do(answerPrompt(`notgroot${EOL}`))
     .until(/Password:/);
 
-  npmAddUser
+  npmLogin
     .when(/Password:/)
     .on('stdout')
     .do(answerPrompt(`notGrootButMoreThan10CharactersReally${EOL}`))
     .until(/Email:/);
 
-  npmAddUser
+  npmLogin
     .when(/Email:/)
     .on('stdout')
     .do(answerPrompt(`notGroot@coveo.com${EOL}`))
     .until(/Logged in as/);
 
-  await npmAddUser
+  await npmLogin
     .when(/Logged in as/)
     .on('stdout')
     .do()

@@ -1,7 +1,7 @@
 import type {
   ResourceSnapshotsReportModel,
   ResourceSnapshotType,
-} from '@coveord/platform-client';
+} from '@coveo/platform-client';
 import {existsSync, mkdirSync, readdirSync, rmSync} from 'fs';
 import {join, relative, resolve} from 'path';
 import {CliUx} from '@oclif/core';

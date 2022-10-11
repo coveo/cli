@@ -1,4 +1,4 @@
-import {VaultFetchStrategy, VaultEntryModel} from '@coveord/platform-client';
+import {VaultFetchStrategy, VaultEntryModel} from '@coveo/platform-client';
 import {CliUx} from '@oclif/core';
 import {bold} from 'chalk';
 import {

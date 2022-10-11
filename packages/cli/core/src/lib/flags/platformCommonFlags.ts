@@ -1,4 +1,4 @@
-import {Region} from '@coveord/platform-client';
+import {Region} from '@coveo/platform-client';
 import {Flags} from '@oclif/core';
 import {
   DEFAULT_ENVIRONMENT,

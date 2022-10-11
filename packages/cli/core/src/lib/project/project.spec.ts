@@ -1,5 +1,5 @@
 jest.mock('../utils/file');
-jest.mock('@coveord/platform-client');
+jest.mock('@coveo/platform-client');
 jest.mock('fs');
 jest.mock('archiver');
 jest.mock('fs-extra');

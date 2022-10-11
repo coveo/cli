@@ -9,12 +9,12 @@ jest.mock('@coveo/cli-commons/preconditions/trackable');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
-jest.mock('@coveord/platform-client');
+jest.mock('@coveo/platform-client');
 
 import {test} from '@oclif/test';
 import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import PlatformClient from '@coveord/platform-client';
+import PlatformClient from '@coveo/platform-client';
 import {Config} from '@coveo/cli-commons/config/config';
 import {
   IsNpmVersionInRange,

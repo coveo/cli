@@ -1,4 +1,4 @@
-import {Region} from '@coveord/platform-client';
+import {Region} from '@coveo/platform-client';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 
 jest.mock('./environment');

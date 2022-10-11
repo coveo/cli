@@ -3,7 +3,7 @@ import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
 } from './reportPreviewerDataModels';
-import {ResourceSnapshotsReportOperationModel} from '@coveord/platform-client';
+import {ResourceSnapshotsReportOperationModel} from '@coveo/platform-client';
 
 class ReportViewerOperationLogFactory {
   public constructor(

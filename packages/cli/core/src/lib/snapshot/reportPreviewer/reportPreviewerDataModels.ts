@@ -1,4 +1,4 @@
-import {ResourceSnapshotsReportOperationModel} from '@coveord/platform-client';
+import {ResourceSnapshotsReportOperationModel} from '@coveo/platform-client';
 
 export type ReportViewerOperationName =
   keyof ResourceSnapshotsReportOperationModel;
