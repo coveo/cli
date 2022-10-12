@@ -7,6 +7,7 @@ import {
   ResourceSnapshotsReportType,
   SnapshotExportContentFormat,
   ApplyOptionsDeletionScope,
+  SnapshotAccessType,
 } from '@coveo/platform-client';
 import retry from 'async-retry';
 import {ReportViewer} from './reportPreviewer/reportPreviewer';
@@ -18,6 +19,7 @@ import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer';
 import {Project} from '../project/project';
 import {SnapshotNoReportFoundError} from '../errors/snapshotErrors';
 import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
+import {ensureSnapshotAccess} from './snapshotAccess';
 
 export type SnapshotReport = ResourceSnapshotsReportModel;
 
@@ -65,6 +67,7 @@ export class Snapshot {
     deleteMissingResources = false,
     options: WaitUntilDoneOptions = {}
   ): Promise<SnapshotReporter> {
+    await ensureSnapshotAccess(this.client, this.id, SnapshotAccessType.Read);
     await this.snapshotClient.dryRun(this.id, {
       deleteMissingResources,
     });
@@ -103,6 +106,7 @@ export class Snapshot {
     deleteMissingResources = false,
     options: WaitUntilDoneOptions = {}
   ) {
+    await ensureSnapshotAccess(this.client, this.id, SnapshotAccessType.Write);
     await this.snapshotClient.apply(
       this.id,
       deleteMissingResources

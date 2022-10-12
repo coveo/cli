@@ -15,7 +15,11 @@ import {Config} from '@coveo/cli-commons/config/config';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
-import {ResourceSnapshotsReportType} from '@coveo/platform-client';
+import {
+  ResourceSnapshotsReportType,
+  ResourceSnapshotType,
+  SnapshotAccessType,
+} from '@coveo/platform-client';
 import {
   getErrorReport,
   getMissingVaultEntryReport,
@@ -25,6 +29,10 @@ import {CliUx, Command} from '@oclif/core';
 
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions';
+import {
+  MissingResourcePrivileges,
+  MissingSnapshotPrivilege,
+} from '../../../lib/errors/snapshotErrors';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
 const mockedConfig = jest.mocked(Config);
@@ -42,16 +50,13 @@ const mockedIsGitInstalled = jest.mocked(IsGitInstalled);
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockEvaluate = jest.fn();
 
+const fakeProject = {
+  deleteTemporaryZipFile: mockedDeleteTemporaryZipFile,
+  getResourceManifest: mockedGetResourceManifest,
+} as unknown as Project;
+
 const mockProject = () => {
-  mockedProject.mockImplementation(
-    () =>
-      ({
-        compressResources: () =>
-          Promise.resolve(normalize(join('path', 'to', 'resources.zip'))),
-        deleteTemporaryZipFile: mockedDeleteTemporaryZipFile,
-        getResourceManifest: mockedGetResourceManifest,
-      } as unknown as Project)
-  );
+  mockedProject.mockImplementation(() => fakeProject);
 };
 
 const doMockConfig = () => {
@@ -87,6 +92,21 @@ const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
   mockEvaluate.mockResolvedValue({approved: false});
 };
 
+const mockUserNotHavingAllRequiredResourcePrivileges = () => {
+  mockedSnapshotFactory.createFromOrg.mockImplementation(() => {
+    throw new MissingResourcePrivileges(
+      [ResourceSnapshotType.source, ResourceSnapshotType.mlModel],
+      SnapshotAccessType.Read
+    );
+  });
+  mockedSnapshotFactory.createFromExistingSnapshot.mockImplementation(() => {
+    throw new MissingSnapshotPrivilege(
+      'some-snapshot-id',
+      SnapshotAccessType.Read
+    );
+  });
+};
+
 const mockSnapshotFactory = () => {
   const dummySnapshot = {
     validate: mockedValidateSnapshot,
@@ -98,11 +118,11 @@ const mockSnapshotFactory = () => {
     id: 'banana-snapshot',
     targetId: 'potato-org',
   } as unknown as Snapshot;
-  mockedSnapshotFactory.createFromZip.mockReturnValue(
-    Promise.resolve(dummySnapshot)
+  mockedSnapshotFactory.createSnapshotFromProject.mockResolvedValue(
+    dummySnapshot
   );
-  mockedSnapshotFactory.createFromExistingSnapshot.mockReturnValue(
-    Promise.resolve(dummySnapshot)
+  mockedSnapshotFactory.createFromExistingSnapshot.mockResolvedValue(
+    dummySnapshot
   );
 };
 
@@ -159,15 +179,38 @@ describe('org:resources:preview', () => {
   afterEach(() => {
     mockEvaluate.mockClear();
     mockedIsGitInstalled.mockClear();
+    mockedSnapshotFactory.mockClear();
+  });
+
+  describe('when resources privileges are missing', () => {
+    beforeAll(() => {
+      mockUserNotHavingAllRequiredResourcePrivileges();
+    });
+
+    test
+      .stdout()
+      .stderr()
+      .command(['org:resources:preview'])
+      .catch((ctx) => {
+        expect(ctx.message).toMatchSnapshot();
+      })
+      .it('should return an error message if resource privileges are missing');
+
+    test
+      .stdout()
+      .stderr()
+      .command(['org:resources:preview', '-s', 'some-snapshot-id'])
+      .catch((ctx) => {
+        expect(ctx.message).toMatchSnapshot();
+      })
+      .it(
+        'should return an error message if resource privileges are missing for specific snapshot'
+      );
   });
 
   describe('when the report contains no resources in error', () => {
     beforeAll(() => {
       mockSnapshotFactoryReturningValidSnapshot();
-    });
-
-    afterAll(() => {
-      mockedSnapshotFactory.mockReset();
     });
 
     test
@@ -193,8 +236,10 @@ describe('org:resources:preview', () => {
       .stderr()
       .command(['org:resources:preview'])
       .it('should work with default connected org', () => {
-        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
-          normalize(join('path', 'to', 'resources.zip')),
+        expect(
+          mockedSnapshotFactory.createSnapshotFromProject
+        ).toHaveBeenCalledWith(
+          fakeProject,
           'default-org',
           expect.objectContaining({})
         );
@@ -205,8 +250,10 @@ describe('org:resources:preview', () => {
       .stderr()
       .command(['org:resources:preview', '-o', 'myorg'])
       .it('should work with specified target org', () => {
-        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
-          normalize(join('path', 'to', 'resources.zip')),
+        expect(
+          mockedSnapshotFactory.createSnapshotFromProject
+        ).toHaveBeenCalledWith(
+          fakeProject,
           'myorg',
           expect.objectContaining({})
         );
@@ -231,11 +278,9 @@ describe('org:resources:preview', () => {
       .stderr()
       .command(['org:resources:preview'])
       .it('should set a 60 seconds wait', () => {
-        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
-          normalize(join('path', 'to', 'resources.zip')),
-          'default-org',
-          {wait: 60}
-        );
+        expect(
+          mockedSnapshotFactory.createSnapshotFromProject
+        ).toHaveBeenCalledWith(fakeProject, 'default-org', {wait: 60});
       });
 
     test
@@ -243,11 +288,9 @@ describe('org:resources:preview', () => {
       .stderr()
       .command(['org:resources:preview', '-w', '312'])
       .it('should set a 312 seconds wait', () => {
-        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
-          normalize(join('path', 'to', 'resources.zip')),
-          'default-org',
-          {wait: 312}
-        );
+        expect(
+          mockedSnapshotFactory.createSnapshotFromProject
+        ).toHaveBeenCalledWith(fakeProject, 'default-org', {wait: 312});
       });
 
     test
@@ -358,7 +401,7 @@ describe('org:resources:preview', () => {
       .command(['org:resources:preview'])
       .catch((ctx) => {
         expect(ctx.message).toContain(
-          'https://platform.cloud.coveo.com/admin/#potato-org/organization/resource-snapshots/banana-snapshot'
+          'https://platform.cloud.coveo.com/admin/#/potato-org/organization/resource-snapshots/banana-snapshot'
         );
       })
       .it('should print an URL to the snapshot page');

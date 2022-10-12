@@ -23,7 +23,7 @@ describe('url', () => {
           region: Region.AU,
         })
       ).toBe(
-        'https://foo.test/admin/#some-org/organization/resource-snapshots/some-snapshot'
+        'https://foo.test/admin/#/some-org/organization/resource-snapshots/some-snapshot'
       );
 
       expect(platformUrl).toBeCalledWith({
@@ -41,7 +41,7 @@ describe('url', () => {
           region: Region.AU,
         })
       ).toBe(
-        'https://foo.test/admin/#some-org/organization/resource-snapshots/some-snapshot/apply'
+        'https://foo.test/admin/#/some-org/organization/resource-snapshots/some-snapshot/apply'
       );
 
       expect(platformUrl).toBeCalledWith({
@@ -59,7 +59,7 @@ describe('url', () => {
           region: Region.AU,
         })
       ).toBe(
-        'https://foo.test/admin/#some-org/organization/resource-snapshots/create-snapshot'
+        'https://foo.test/admin/#/some-org/organization/resource-snapshots/create-snapshot'
       );
 
       expect(platformUrl).toBeCalledWith({
