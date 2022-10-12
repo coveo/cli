@@ -2,7 +2,6 @@ import {test} from '@oclif/test';
 
 import {ResourceSnapshotsReportType} from '@coveo/platform-client';
 import {ReportViewer} from './reportPreviewer';
-import dedent from 'ts-dedent';
 import {SnapshotReporter} from '../snapshotReporter';
 import {
   getErrorReport,
@@ -10,7 +9,7 @@ import {
   getReportWithNoProcessedResources,
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
-import {formatCliLog} from '../../../__test__/jestSnapshotUtils';
+import {formatCliLog} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
 
 describe('ReportViewer', () => {
   describe('when the report contains errors', () => {

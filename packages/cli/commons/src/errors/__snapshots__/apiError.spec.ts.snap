@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`APIError should not print a tagline 1`] = `""`;
+
+exports[`APIError should print the tagline 1`] = `
+"
+This is a tagline"
+`;
+
+exports[`APIError when the error is of type APIErrorResponse it should print everything 1`] = `
+"
+This is a tagline
+Error code: [31mSOME_ERROR[39m
+Message: [31msome more info[39m
+Request ID: [31m123456qwerty[39m"
+`;
+
+exports[`APIError when the error is of type APIErrorResponse it should print the error code 1`] = `
+"
+This is a tagline
+Error code: [31mYOU_SHALL_NOT_GET_MODE_INFO[39m"
+`;
+
+exports[`APIError when the error is of type APIErrorResponse it should print the message 1`] = `
+"
+This is a tagline
+Message: [31msomething went wrong[39m"
+`;
+
+exports[`APIError when the error is of type APIErrorResponse it should print the request Id 1`] = `
+"
+This is a tagline
+Request ID: [31m123456qwerty[39m"
+`;
+
+exports[`APIError when the error is of type AxiosErrorFromAPI it should print the status code 1`] = `
+"
+Status code: 410
+Error code: [31mORGANIZATION_GONE[39m
+Message: [31mYour org is just gone[39m"
+`;

@@ -14,7 +14,7 @@ import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {formatCliLog} from '../../../__test__/jestSnapshotUtils';
+import {formatCliLog} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
 const mockedConfig = jest.mocked(Config);
