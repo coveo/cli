@@ -57,12 +57,12 @@ describe('org:resources:model:create', () => {
     [
       'using default configuration',
       mockConfigWithDefaultEnvironment,
-      'https://platform.cloud.coveo.com/admin/#my-org/organization/resource-snapshots/create-snapshot',
+      'https://platform.cloud.coveo.com/admin/#/my-org/organization/resource-snapshots/create-snapshot',
     ],
     [
       'using non-default configuration',
       mockConfigWithNonDefaultEnvironment,
-      'https://platformdev-eu.cloud.coveo.com/admin/#my-org/organization/resource-snapshots/create-snapshot',
+      'https://platformdev-eu.cloud.coveo.com/admin/#/my-org/organization/resource-snapshots/create-snapshot',
     ],
   ])(
     'when %s.',
