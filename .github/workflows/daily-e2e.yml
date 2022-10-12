@@ -1,9 +1,9 @@
 name: Daily test
 on:
   schedule:
-# At 03:00 GMT on every day-of-week from Tuesday through Friday.
+# At 04:00 UTC on every day-of-week from Tuesday through Friday.
     - cron: '0 04 * * 2-5'
-# At 12:00 GMT on Monday.
+# At 12:00 UTC on Monday.
     - cron: '0 12 * * 1'
 
 env:
