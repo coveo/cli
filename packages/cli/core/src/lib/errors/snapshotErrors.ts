@@ -1,4 +1,4 @@
-import {blueBright} from 'chalk';
+import {blueBright, bold} from 'chalk';
 import dedent from 'ts-dedent';
 import {Configuration} from '@coveo/cli-commons/config/config';
 import {Snapshot} from '../snapshot/snapshot';
@@ -7,6 +7,8 @@ import {
   CLIBaseError,
   SeverityLevel,
 } from '@coveo/cli-commons/errors/cliBaseError';
+import {ResourceSnapshotType, SnapshotAccessType} from '@coveo/platform-client';
+import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/utils/string';
 
 interface DetailedReportable extends CLIBaseError {
   snapshot: Snapshot;
@@ -73,6 +75,7 @@ export class SnapshotGenericError
     trySavingDetailedReport(this);
   }
 }
+
 export class SnapshotMissingVaultEntriesError
   extends CLIBaseError
   implements DetailedReportable
@@ -89,5 +92,47 @@ export class SnapshotMissingVaultEntriesError
       Visit https://docs.coveo.com/en/m3a90243 for more info on how to create vault entries.`;
 
     trySavingDetailedReport(this);
+  }
+}
+
+export class MissingResourcePrivileges extends CLIBaseError {
+  public name = 'Snapshot Missing Resource Privileges';
+  public constructor(
+    missingResources: ResourceSnapshotType[],
+    snapshotAccessType: SnapshotAccessType
+  ) {
+    super();
+    const entryPlurable: Plurable = ['resource', 'resources'];
+    const resourcePLuralized = pluralizeIfNeeded(
+      entryPlurable,
+      missingResources.length
+    );
+    const title = `You are missing ${bold(
+      snapshotAccessType
+    )} privilege on the following ${resourcePLuralized}`;
+    const reference =
+      'Visit https://docs.coveo.com/en/3357 for more info on privileges required to manage snapshots.';
+    const newline = '';
+    const missingResourcesList = missingResources.map(
+      (resource) => ` • ${resource}`
+    );
+
+    this.message = [title, ...missingResourcesList, newline, reference].join(
+      '\n'
+    );
+  }
+}
+
+export class MissingSnapshotPrivilege extends CLIBaseError {
+  public name = 'Snapshot Missing Privileges';
+  public constructor(
+    snapshotId: string,
+    snapshotAccessType: SnapshotAccessType
+  ) {
+    super();
+    this.message = dedent`You do not have ${bold(
+      snapshotAccessType
+    )} privilege on the snapshot ${snapshotId}
+      Visit https://docs.coveo.com/en/3357 for more info on privileges required to manage snapshots.`;
   }
 }
