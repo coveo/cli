@@ -10,6 +10,7 @@ import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClie
 import {
   SourceModel,
   SourceStatusType,
+  SourceType,
   SourceVisibility,
 } from '@coveo/platform-client';
 import {IsAuthenticated} from '@coveo/cli-commons/preconditions';
@@ -27,6 +28,7 @@ describe('source:push:list', () => {
     id,
     owner: 'bob',
     sourceVisibility: SourceVisibility.SECURED,
+    sourceType: SourceType.PUSH,
     information: {
       sourceStatus: {type: SourceStatusType.PUSH_READY},
       numberOfDocuments: 1234,
