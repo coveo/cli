@@ -1,3 +1,26 @@
+# release-2 (2022-10-13)
+
+### Bug Fixes
+
+- adjust crafted Admin UI url ([#975](https://github.com/coveo/cli/issues/975)) ([70fb7a4](https://github.com/coveo/cli/commits/70fb7a46f56e383c7121f080a5639b058fda5334))
+- clean API error message ([#967](https://github.com/coveo/cli/issues/967)) ([38e4faa](https://github.com/coveo/cli/commits/38e4faa4fbc6b8a7472b578ca656db4967137ba4))
+- ensure flags are applied to `org:resources:list` command ([#977](https://github.com/coveo/cli/issues/977)) ([7c011b0](https://github.com/coveo/cli/commits/7c011b0bc645023bf1c18c077c3e1a30b2f328a4))
+
+- feat(cli-commons)!: remove message opt from stopSpinner ([2ab3536](https://github.com/coveo/cli/commits/2ab3536bf7b2f0d9615c335e8120f880aefb3ef9))
+
+### Features
+
+- **cli-commons/cli-plugin-source/cli:** standardize orgId printing ([#951](https://github.com/coveo/cli/issues/951)) ([f26bfda](https://github.com/coveo/cli/commits/f26bfda01c7d4dd5d300264a5710da33e02856ff))
+- **cli:** ensure user is webauth-ed for ui cmds ([#963](https://github.com/coveo/cli/issues/963)) ([2a0840c](https://github.com/coveo/cli/commits/2a0840c912a3c965a40ebe37362624af8222c2e7))
+- **cli:** improve auth:login final feedback ([#961](https://github.com/coveo/cli/issues/961)) ([ae0c36e](https://github.com/coveo/cli/commits/ae0c36e55ef95c0ee5f64b75eb090e3a71a7808e))
+- **cli:** use only b when pull is completed ([be54937](https://github.com/coveo/cli/commits/be54937cd412b62332dedced7ff838722b0062d1))
+- handle missing domain privileges ([#953](https://github.com/coveo/cli/issues/953)) ([2ca1a80](https://github.com/coveo/cli/commits/2ca1a8014672e96e369b34a19be630f9d525b29b))
+- return resource types within project ([#952](https://github.com/coveo/cli/issues/952)) ([7b2facf](https://github.com/coveo/cli/commits/7b2facfff9df52de508a5791c080301937a79c40))
+
+### BREAKING CHANGES
+
+- Removed message from the options of stopSpinner
+
 # release-1 (2022-09-21)
 
 ### Bug Fixes

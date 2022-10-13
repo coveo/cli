@@ -1,3 +1,21 @@
+# 2.0.0 (2022-10-13)
+
+### Bug Fixes
+
+- adjust crafted Admin UI url ([#975](https://github.com/coveo/cli/issues/975)) ([70fb7a4](https://github.com/coveo/cli/commits/70fb7a46f56e383c7121f080a5639b058fda5334))
+- clean API error message ([#967](https://github.com/coveo/cli/issues/967)) ([38e4faa](https://github.com/coveo/cli/commits/38e4faa4fbc6b8a7472b578ca656db4967137ba4))
+
+- feat(cli-commons)!: remove message opt from stopSpinner ([2ab3536](https://github.com/coveo/cli/commits/2ab3536bf7b2f0d9615c335e8120f880aefb3ef9))
+
+### Features
+
+- **cli-commons/cli-plugin-source/cli:** standardize orgId printing ([#951](https://github.com/coveo/cli/issues/951)) ([f26bfda](https://github.com/coveo/cli/commits/f26bfda01c7d4dd5d300264a5710da33e02856ff))
+- **cli:** ensure user is webauth-ed for ui cmds ([#963](https://github.com/coveo/cli/issues/963)) ([2a0840c](https://github.com/coveo/cli/commits/2a0840c912a3c965a40ebe37362624af8222c2e7))
+
+### BREAKING CHANGES
+
+- Removed message from the options of stopSpinner
+
 # 1.36.0 (2022-09-21)
 
 ### Bug Fixes
