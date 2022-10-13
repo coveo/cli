@@ -13,7 +13,7 @@ const mockedConfig = jest.mocked(Config);
 
 const mockResourceSnapshotModel: () => ResourceSnapshotsModel = () => ({
   createdBy: 'bob',
-  createdDate: Date.now(),
+  createdDate: new Date(1487076708000).getTime(),
   id: 'id',
   targetId: 'targetId',
   contentSummary: {foo: 1, bar: 2},
