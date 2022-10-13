@@ -3,6 +3,7 @@ import {dedent} from 'ts-dedent';
 import {spawnProcessOutput, SpawnProcessOutput} from '../../utils/process';
 import {satisfies, validRange} from 'semver';
 import {PreconditionError} from '@coveo/cli-commons/errors/preconditionError';
+import {PreconditionFunction} from '@coveo/cli-commons/preconditions';
 
 export enum PreconditionErrorCategoryBin {
   MissingBin = 'Missing Bin',
@@ -34,7 +35,7 @@ export function getBinVersionPrecondition(
     ...options,
     prettyName: options.prettyName,
   };
-  return function (versionRange: string) {
+  return function (versionRange: string): PreconditionFunction {
     return async function (target: Command) {
       if (!validRange(versionRange)) {
         const message = dedent`

@@ -6,6 +6,7 @@ import {
   Preconditions,
   IsAuthenticated,
   HasNecessaryCoveoPrivileges,
+  AuthenticationType,
 } from '@coveo/cli-commons/preconditions/index';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
@@ -69,7 +70,7 @@ export default class Vue extends CLICommand {
     overrideEventProperties: {framework: 'vue'},
   })
   @Preconditions(
-    IsAuthenticated(),
+    IsAuthenticated([AuthenticationType.OAuth]),
     IsNodeVersionInRange(Vue.requiredNodeVersion),
     IsNpxInstalled(),
     HasNecessaryCoveoPrivileges(createApiKeyPrivilege, impersonatePrivilege)
