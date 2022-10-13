@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getFileNames() should throw with the command when no entries is provided 1`] = `"You must set the \`files\` flag. Use \`holdthedoor.bat --help\` to get more information."`;

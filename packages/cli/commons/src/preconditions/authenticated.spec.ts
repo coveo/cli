@@ -1,6 +1,7 @@
 jest.mock('../platform/authenticatedClient');
 
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
+import {getFakeCommand} from '@coveo/cli-commons-dev/testUtils/utils';
 import {PreconditionError} from '../errors/preconditionError';
 import {
   AuthenticationStatus,
@@ -10,6 +11,7 @@ import {IsAuthenticated} from './authenticated';
 
 describe('authenticated', () => {
   const mockedAuthenticatedClient = jest.mocked(getAuthenticationStatus);
+  const fakeCommand = getFakeCommand();
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -40,7 +42,9 @@ describe('authenticated', () => {
     ) => {
       fancyIt()(`warns '${expectedWarning}' and returns false`, async () => {
         mockedAuthenticatedClient.mockResolvedValue(authenticationStatus);
-        await expect(IsAuthenticated()()).rejects.toThrow(PreconditionError);
+        await expect(IsAuthenticated()(fakeCommand)).rejects.toThrow(
+          PreconditionError
+        );
       });
     }
   );
@@ -50,7 +54,7 @@ describe('authenticated', () => {
       mockedAuthenticatedClient.mockResolvedValue(
         AuthenticationStatus.LOGGED_IN
       );
-      await expect(IsAuthenticated()()).resolves.not.toThrow();
+      await expect(IsAuthenticated()(fakeCommand)).resolves.not.toThrow();
     });
   });
 });

@@ -1,3 +1,4 @@
+import {Command} from '@oclif/core';
 import {PreconditionError} from '../errors/preconditionError';
 import {
   AuthenticationStatus,
@@ -7,7 +8,7 @@ import {
 const PRECONDITION_ERROR_CATEGORY = 'Authentication';
 
 export function IsAuthenticated() {
-  return async function () {
+  return async function (_target: Command) {
     const status = await getAuthenticationStatus();
     if (status === AuthenticationStatus.LOGGED_OUT) {
       throw new PreconditionError(

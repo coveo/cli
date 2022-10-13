@@ -20,6 +20,7 @@ export default class SourceList extends CLICommand {
 
   @Trackable()
   @Preconditions(IsAuthenticated())
+  //TODO: Privilege check
   public async run() {
     const {flags} = await this.parse(SourceList);
     const authenticatedClient = new AuthenticatedClient();
@@ -35,8 +36,8 @@ export default class SourceList extends CLICommand {
         dedent(`
       There is no push nor catalog source in organization ${formatOrgId(org)}
       You can:
-      * create a push source using source:push:new
-      * create a catalog source using source:catalog:new
+        • create a push source using source:push:new
+        • create a catalog source using source:catalog:new
       `)
       );
       return;

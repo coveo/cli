@@ -86,7 +86,7 @@ export default class SourceCatalogAdd extends CLICommand {
     if (
       !flags.fullUpload &&
       !flags.skipFullUploadCheck &&
-      (await this.sourceIsEmpty(args.sourceId))
+      (await this.isSourceEmpty(args.sourceId))
     ) {
       this.error(dedent`No items detected for this source at the moment.
         As a best practice, we recommend doing a full catalog upload by appending --fullUpload to your command.
@@ -103,7 +103,7 @@ export default class SourceCatalogAdd extends CLICommand {
       region,
     });
 
-    const fileNames = await getFileNames(flags);
+    const fileNames = getFileNames(flags, SourceCatalogAdd.id);
     const options = {
       maxConcurrent: flags.maxConcurrent,
       createFields: flags.createMissingFields,
@@ -127,7 +127,7 @@ export default class SourceCatalogAdd extends CLICommand {
     return super.catch(err);
   }
 
-  private async sourceIsEmpty(sourceId: string): Promise<boolean> {
+  private async isSourceEmpty(sourceId: string): Promise<boolean> {
     startSpinner('Checking source status');
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();
@@ -136,6 +136,7 @@ export default class SourceCatalogAdd extends CLICommand {
     return information?.numberOfDocuments === 0;
   }
 
+  // TODO: Refactor with eponym method of `SourcePush`
   private successMessageOnAdd({batch, files, res}: UploadBatchCallbackData) {
     // Display the first 5 files (from the list of all files) being processed for end user feedback.
     // Don't want to clutter the output too much if the list is very long.
