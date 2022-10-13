@@ -62,17 +62,22 @@ describe('org:resources:list', () => {
     .stderr()
     .command(['org:resources:list', '-o', 'foo'])
     .it('print the available snapshot in a table', (ctx) => {
-      // headers of table
-      expect(ctx.stdout).toContain('Id');
-      expect(ctx.stdout).toContain('Created by');
-      expect(ctx.stdout).toContain('Created date');
-      expect(ctx.stdout).toContain('Target id');
-      expect(ctx.stdout).toContain('Developer note');
+      expect(ctx.stdout).toMatchSnapshot();
+    });
 
-      // values of table
-      expect(ctx.stdout).toContain('id');
-      expect(ctx.stdout).toContain('bob');
-      expect(ctx.stdout).toContain('targetId');
-      expect(ctx.stdout).toContain('some notes');
+  test
+    .stdout()
+    .stderr()
+    .command(['org:resources:list', '-o', 'foo', '--no-header'])
+    .it('print the available snapshot in a table without header', (ctx) => {
+      expect(ctx.stdout).toMatchSnapshot();
+    });
+
+  test
+    .stdout()
+    .stderr()
+    .command(['org:resources:list', '-o', 'foo', '--output=json'])
+    .it('print the available snapshot in a JSON format', (ctx) => {
+      expect(ctx.stdout).toMatchSnapshot();
     });
 });

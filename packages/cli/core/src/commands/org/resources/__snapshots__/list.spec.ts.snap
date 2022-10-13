@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`org:resources:list print the available snapshot in a JSON format 1`] = `
+"[
+  {
+    "id": "id",
+    "createdBy": "bob",
+    "createdDate": "2022-10-13T16:10:24.285Z",
+    "targetId": "targetId",
+    "developerNote": "some notes"
+  }
+]
+"
+`;
+
+exports[`org:resources:list print the available snapshot in a table 1`] = `
+" Id Created by Created date             Target id Developer note 
+ ── ────────── ──────────────────────── ───────── ────────────── 
+ id bob        2022-10-13T16:10:24.285Z targetId  some notes     
+"
+`;
+
+exports[`org:resources:list print the available snapshot in a table without header 1`] = `
+" id bob        2022-10-13T16:10:24.285Z targetId  some notes     
+"
+`;
