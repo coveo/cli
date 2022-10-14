@@ -48,7 +48,7 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
     getLastTag('release-')
   );
   const commits = await getCommits(PATH, lastTag);
-  if (commits.length === 0 && hasPackageJsonChanged(PATH)) {
+  if (commits.length === 0 && !hasPackageJsonChanged(PATH)) {
     return;
   }
   const parsedCommits = parseCommits(commits, convention.parserOpts);
