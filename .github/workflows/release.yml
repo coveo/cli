@@ -54,8 +54,6 @@ jobs:
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      # pulls all tags (needed for computing the next version)
-      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
       - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
         with:
           node-version: '16'
