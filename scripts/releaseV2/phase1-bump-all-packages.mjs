@@ -41,7 +41,7 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
   const packageJson = JSON.parse(
     readFileSync('package.json', {encoding: 'utf-8'})
   );
-  const versionPrefix = packageJson.name;
+  const versionPrefix = `${packageJson.name}@`;
   const convention = await angularChangelogConvention;
   // TODO: CDX-1147 Remove catch
   const lastTag = await getLastTag(versionPrefix).catch(() =>
