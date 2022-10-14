@@ -1,9 +1,16 @@
-const {downloadReleaseAssets, getLatestTag} = require('./github-client');
-const fs = require('fs');
-const path = require('path');
+import {downloadReleaseAssets} from './github-client';
+import {getLastTag} from '@coveo/semantic-monorepo-tools';
+import {
+  existsSync,
+  mkdirSync,
+  writeFileSync,
+  readdirSync,
+  copyFileSync,
+} from 'fs';
+import {resolve} from 'path';
 
 async function main() {
-  const tag = await getLatestTag();
+  const tag = await getLastTag('@coveo/cli@');
   // This folder structure needs to be respected in order for the CLI update plugin to
   // be able to do it's job properly.
   const topLevelDirectory = './artifacts';
@@ -26,8 +33,8 @@ async function main() {
 
   [topLevelDirectory, subDirectoryForManifest, subDirectoryForTarball].forEach(
     (dir) => {
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, {recursive: true});
+      if (!existsSync(dir)) {
+        mkdirSync(dir, {recursive: true});
       }
     }
   );
@@ -45,9 +52,9 @@ async function main() {
     }
   });
 
-  fs.writeFileSync('latest-commit', tag.commit.sha);
+  writeFileSync('latest-commit', tag.commit.sha);
 
-  fs.readdirSync(topLevelDirectory, {withFileTypes: true}).forEach((file) => {
+  readdirSync(topLevelDirectory, {withFileTypes: true}).forEach((file) => {
     const match = binariesMatcher.exec(file.name);
     if (!match) {
       return;
@@ -55,21 +62,21 @@ async function main() {
     const destName = `coveo-latest${
       /\w/.test(match.groups.longExt[0]) ? '-' : ''
     }${match.groups.longExt}`;
-    fs.copyFileSync(
-      path.resolve(topLevelDirectory, file.name),
-      path.resolve(topLevelDirectory, destName)
+    copyFileSync(
+      resolve(topLevelDirectory, file.name),
+      resolve(topLevelDirectory, destName)
     );
   });
 
-  fs.readdirSync(subDirectoryForManifest).forEach((file) => {
+  readdirSync(subDirectoryForManifest).forEach((file) => {
     const match = manifestMatcher.exec(file);
     if (!match) {
       return;
     }
     const destName = `coveo-${match.groups.targetSignature}`;
-    fs.copyFileSync(
-      path.resolve(subDirectoryForManifest, file),
-      path.resolve(subDirectoryForManifest, destName)
+    copyFileSync(
+      resolve(subDirectoryForManifest, file),
+      resolve(subDirectoryForManifest, destName)
     );
   });
 }

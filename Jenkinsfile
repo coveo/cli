@@ -12,7 +12,7 @@ node('linux && docker') {
       withCredentials([
         string(credentialsId: '	github-coveobot_token', variable: 'GITHUB_CREDENTIALS')
       ]) {
-        sh 'node ./scripts/get-release-artifact-and-commit-sha.js'
+        sh 'node ./scripts/get-release-artifact-and-commit-sha.mjs'
         releaseCommit = readFile 'latest-commit'
       }
     }
