@@ -76,6 +76,11 @@ const createOrUpdateReleaseDescription = async (tag, body) => {
   }
 };
 
+const getLastCliTag = async () => {
+  return (await octokit.rest.repos.getLatestRelease({repo, owner})).data
+    .tag_name;
+};
+
 const downloadReleaseAssets = async (tag, determineAssetLocation) => {
   const release = await octokit.rest.repos.getReleaseByTag({repo, owner, tag});
   const assets = await octokit.rest.repos.listReleaseAssets({
@@ -116,4 +121,5 @@ module.exports = {
   createOrUpdateReleaseDescription,
   downloadReleaseAssets,
   getSnykCodeAlerts,
+  getLastCliTag,
 };

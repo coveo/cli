@@ -1,5 +1,4 @@
-import {downloadReleaseAssets} from './github-client.js';
-import {getLastTag} from '@coveo/semantic-monorepo-tools';
+import {downloadReleaseAssets, getLastCliTag} from './github-client.js';
 import {
   existsSync,
   mkdirSync,
@@ -8,17 +7,23 @@ import {
   copyFileSync,
 } from 'fs';
 import {resolve} from 'path';
+import {spawnSync} from 'child_process';
 
 async function main() {
-  const tag = await getLastTag('@coveo/cli@');
+  const tag = await getLastCliTag();
+  const tagCommit = spawnSync('git', ['rev-list', '-n', 1, tag], {
+    encoding: 'utf-8',
+  })
+    .stdout.toString()
+    .trim();
   // This folder structure needs to be respected in order for the CLI update plugin to
   // be able to do it's job properly.
   const topLevelDirectory = './artifacts';
   const subDirectoryForTarball = [
     topLevelDirectory,
     'versions',
-    tag.name.substring(1),
-    tag.commit.sha.substring(0, 7),
+    tag,
+    tagCommit.substring(0, 7),
   ].join('/');
   const subDirectoryForManifest = [
     topLevelDirectory,
@@ -39,7 +44,7 @@ async function main() {
     }
   );
 
-  await downloadReleaseAssets(tag.name, (assetName) => {
+  await downloadReleaseAssets(tag, (assetName) => {
     if (assetName.match(tarballMatcher)) {
       console.info(assetName, `--> ${subDirectoryForTarball}`);
       return subDirectoryForTarball;
@@ -52,7 +57,7 @@ async function main() {
     }
   });
 
-  writeFileSync('latest-commit', tag.commit.sha);
+  writeFileSync('latest-commit', tagCommit);
 
   readdirSync(topLevelDirectory, {withFileTypes: true}).forEach((file) => {
     const match = binariesMatcher.exec(file.name);
