@@ -1,4 +1,4 @@
-import {downloadReleaseAssets} from './github-client';
+import {downloadReleaseAssets} from './github-client.js';
 import {getLastTag} from '@coveo/semantic-monorepo-tools';
 import {
   existsSync,
