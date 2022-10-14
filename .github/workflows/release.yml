@@ -80,7 +80,7 @@ jobs:
       #     echo -n ~ >> ~/.ssh/config
       #     echo "/.ssh/id_rsa" >> ~/.ssh/config
       #     git remote set-url origin git@coveo-cli:coveo/cli.git
-      - run: git branch
+      - run: git fetch --prune --unshallow --tags
       - name: Release
         run: npm run release
         env:
