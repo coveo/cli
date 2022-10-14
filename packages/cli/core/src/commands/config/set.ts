@@ -33,7 +33,7 @@ export default class Set extends CLICommand {
 
   public static examples: Example[] = [
     {
-      command: 'config:set -o=myOrgId',
+      command: 'coveo config:set --organization myOrgId',
       description: 'connect to a different organization',
     },
   ];
