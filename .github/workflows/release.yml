@@ -64,9 +64,6 @@ jobs:
         run: |
           git config --global user.email action@github.com
           git config --global user.name GitHub Action
-      # actions/checkout do a shallow clone, we need to unshallow the tags
-      - name: Get all tags
-        run: git fetch --prune --unshallow --tags
       - name: Setup git SSH remote
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
