@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli",
-  "version": "1.37.0",
+  "version": "1.37.1",
   "author": "Coveo",
   "description": "Coveo CLI",
   "engines": {
@@ -9,8 +9,8 @@
   "dependencies": {
     "@amplitude/identify": "^1.9.0",
     "@amplitude/node": "^1.9.0",
-    "@coveo/cli-commons": "2.0.0",
-    "@coveo/cli-plugin-source": "1.37.0",
+    "@coveo/cli-commons": "2.0.2",
+    "@coveo/cli-plugin-source": "1.37.2",
     "@coveo/platform-client": "35.0.0",
     "@coveo/push-api-client": "2.5.15",
     "@oclif/core": "1.16.3",
@@ -41,11 +41,11 @@
   "devDependencies": {
     "@amplitude/types": "1.10.2",
     "@babel/core": "7.19.1",
-    "@coveo/angular": "1.35.13",
-    "@coveo/cli-commons-dev": "1.35.14",
-    "@coveo/cra-template": "1.35.13",
+    "@coveo/angular": "1.35.16",
+    "@coveo/cli-commons-dev": "1.35.16",
+    "@coveo/cra-template": "1.35.16",
     "@coveo/create-atomic": "1.35.14",
-    "@coveo/vue-cli-plugin-typescript": "1.35.13",
+    "@coveo/vue-cli-plugin-typescript": "1.35.16",
     "@oclif/test": "2.1.1",
     "@types/archiver": "5.3.1",
     "@types/async-retry": "1.4.5",
@@ -171,7 +171,7 @@
   },
   "repository": "coveo/cli",
   "scripts": {
-    "build": "rimraf lib && tsc -p tsconfig.build.json",
+    "build": "rimraf lib && tsc -b tsconfig.build.json",
     "test": "jest --colors",
     "lint": "prettier --check . && eslint .",
     "release:phase1": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase1-bump-all-packages.mjs",
