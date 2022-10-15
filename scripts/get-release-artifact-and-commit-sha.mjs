@@ -1,4 +1,4 @@
-import {downloadReleaseAssets, getLastCliTag} from './github-client.js';
+import {getReleaseAssetsMetadata, getLastCliTag} from './github-client.js';
 import {
   existsSync,
   mkdirSync,
@@ -7,34 +7,41 @@ import {
   copyFileSync,
 } from 'fs';
 import {resolve} from 'path';
-import {spawnSync} from 'child_process';
+import {execSync} from 'node:child_process';
 
 async function main() {
   const tag = await getLastCliTag();
-  const tagCommit = spawnSync('git', ['rev-list', '-n', 1, tag], {
-    encoding: 'utf-8',
-  })
-    .stdout.toString()
-    .trim();
   // This folder structure needs to be respected in order for the CLI update plugin to
   // be able to do it's job properly.
   const topLevelDirectory = './artifacts';
-  const subDirectoryForTarball = [
-    topLevelDirectory,
-    'versions',
-    tag,
-    tagCommit.substring(0, 7),
-  ].join('/');
+  const getSubDirectoryForTarball = ({version, commitSHA}) =>
+    [topLevelDirectory, 'versions', version, commitSHA].join('/');
   const subDirectoryForManifest = [
     topLevelDirectory,
     'channels',
     'stable',
   ].join('/');
   const binariesMatcher =
-    /^coveo[_-]{1}(?<_version>v?\d+\.\d+\.\d+(-\d+)?)[_.-]{1}(?<_commitSHA>\w{7})[_-]{0,1}(\d+_)?(?<longExt>.*\.(exe|deb|pkg))$/;
+    /^coveo[_-]{1}(?<version>v?\d+\.\d+\.\d+(-\d+)?)[_.-]{1}(?<commitSHA>\w+)[_-]?(\d+_)?(?<longExt>.*\.(exe|deb|pkg))$/;
   const manifestMatcher =
-    /^coveo-(?<_version>v?\d+\.\d+\.\d+(-\d+)?)-(?<_commitSHA>\w{7})-(?<targetSignature>.*-buildmanifest)$/;
-  const tarballMatcher = /\.tar\.[gx]z$/;
+    /^coveo-(?<_version>v?\d+\.\d+\.\d+(-\d+)?)-(?<commitSHA>\w+)-(?<targetSignature>.*-buildmanifest)$/;
+  const tarballMatcher =
+    /^coveo-(?<_version>v?\d+\.\d+\.\d+(-\d+)?)-(?<commitSHA>\w+)-(?<targetSignature>[\w-]+).tar\.[gx]z$/;
+
+  const determineAssetLocation = (assetName) => {
+    if (assetName.match(tarballMatcher)) {
+      const match = tarballMatcher.exec(assetName);
+      const location = getSubDirectoryForTarball(match.groups);
+      console.info(assetName, `--> ${location}`);
+      return location;
+    } else if (assetName.match(manifestMatcher)) {
+      console.info(assetName, `--> ${subDirectoryForManifest}`);
+      return subDirectoryForManifest;
+    } else {
+      console.info(assetName, `--> ${topLevelDirectory}`);
+      return topLevelDirectory;
+    }
+  };
 
   [topLevelDirectory, subDirectoryForManifest, subDirectoryForTarball].forEach(
     (dir) => {
@@ -44,18 +51,16 @@ async function main() {
     }
   );
 
-  await downloadReleaseAssets(tag, (assetName) => {
-    if (assetName.match(tarballMatcher)) {
-      console.info(assetName, `--> ${subDirectoryForTarball}`);
-      return subDirectoryForTarball;
-    } else if (assetName.match(manifestMatcher)) {
-      console.info(assetName, `--> ${subDirectoryForManifest}`);
-      return subDirectoryForManifest;
-    } else {
-      console.info(assetName, `--> ${topLevelDirectory}`);
-      return topLevelDirectory;
-    }
-  });
+  const assets = await getReleaseAssetsMetadata(tag);
+  for (const asset of assets) {
+    console.info(
+      `Downloading asset ${asset.name} from ${asset.browser_download_url}.\nSize: ${asset.size} ...`
+    );
+    const directory = determineAssetLocation(asset.name);
+    execSync(
+      `curl -L ${asset.browser_download_url} --output ${directory}/${asset.name}`
+    );
+  }
 
   writeFileSync('latest-commit', tagCommit);
 

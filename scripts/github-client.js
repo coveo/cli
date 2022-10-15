@@ -1,6 +1,5 @@
 /** @type {import("@actions/github")} */
 const github = require('@actions/github');
-const {execSync} = require('child_process');
 const octokit = github.getOctokit(process.env.GITHUB_CREDENTIALS);
 const owner = 'coveo';
 const repo = 'cli';
@@ -81,22 +80,12 @@ const getLastCliTag = async () => {
     .tag_name;
 };
 
-const downloadReleaseAssets = async (tag, determineAssetLocation) => {
+const getReleaseAssetsMetadata = async (tag) => {
   const release = await octokit.rest.repos.getReleaseByTag({repo, owner, tag});
-  const assets = await octokit.rest.repos.listReleaseAssets({
+  return octokit.rest.repos.listReleaseAssets({
     owner,
     repo,
     release_id: release.data.id,
-  });
-
-  assets.data.forEach((asset) => {
-    console.info(
-      `Downloading asset ${asset.name} from ${asset.browser_download_url}.\nSize: ${asset.size} ...`
-    );
-    const directory = determineAssetLocation(asset.name);
-    execSync(
-      `curl -L ${asset.browser_download_url} --output ${directory}/${asset.name}`
-    );
   });
 };
 
@@ -119,7 +108,7 @@ module.exports = {
   getBaseBranchName,
   getLatestTag,
   createOrUpdateReleaseDescription,
-  downloadReleaseAssets,
+  getReleaseAssetsMetadata,
   getSnykCodeAlerts,
   getLastCliTag,
 };
