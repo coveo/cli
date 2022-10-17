@@ -51,10 +51,10 @@ async function main() {
     );
   }
   // https://stackoverflow.com/a/1862542
-  const tagCommitPs = spawnSync('git', ['rev-list', '-n', '1', tag], {
+  const tagCommit = spawnSync('git', ['rev-list', '-n', '1', tag], {
     encoding: 'utf-8',
-  });
-  writeFileSync('latest-commit', tagCommitPs.stdout.trim());
+  }).stdout.trim();
+  writeFileSync('latest-commit', tagCommit);
 
   readdirSync(topLevelDirectory, {withFileTypes: true}).forEach((file) => {
     const match = binariesMatcher.exec(file.name);
