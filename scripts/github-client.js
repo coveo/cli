@@ -75,18 +75,19 @@ const createOrUpdateReleaseDescription = async (tag, body) => {
   }
 };
 
-const getLastCliTag = async () => {
-  return (await octokit.rest.repos.getLatestRelease({repo, owner})).data
-    .tag_name;
-};
+const getLastCliRelease = () =>
+  octokit.rest.repos.getLatestRelease({repo, owner});
 
-const getReleaseAssetsMetadata = async (tag) => {
-  const release = await octokit.rest.repos.getReleaseByTag({repo, owner, tag});
-  return octokit.rest.repos.listReleaseAssets({
-    owner,
-    repo,
-    release_id: release.data.id,
-  });
+const getTagFromRelease = (release) => release.data.tag_name;
+
+const getAssetsMetadataFromRelease = async (release) => {
+  return (
+    await octokit.rest.repos.listReleaseAssets({
+      owner,
+      repo,
+      release_id: release.data.id,
+    })
+  ).data;
 };
 
 const getSnykCodeAlerts = () => {
@@ -108,7 +109,8 @@ module.exports = {
   getBaseBranchName,
   getLatestTag,
   createOrUpdateReleaseDescription,
-  getReleaseAssetsMetadata,
+  getAssetsMetadataFromRelease,
   getSnykCodeAlerts,
-  getLastCliTag,
+  getLastCliRelease,
+  getTagFromRelease,
 };
