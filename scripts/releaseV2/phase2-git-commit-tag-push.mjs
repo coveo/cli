@@ -16,7 +16,16 @@ import angularChangelogConvention from 'conventional-changelog-angular';
 import {dedent} from 'ts-dedent';
 import {readFileSync} from 'fs';
 
-const CLI_PKG_NAME = '@coveo/cli';
+const CLI_PKG_MATCHER = /^@coveo\/cli@(?<version>\d+\.\d+\.\d+)$/gm;
+
+const getCliChangelog = () => {
+  const changelog = readFileSync('packages/cli/core/CHANGELOG.md', {
+    encoding: 'utf-8',
+  });
+  const versionH1Matcher = /^#+ \d+\.\d+\.\d+.*$/gm;
+  const lastVersionChanges = changelog.split(versionH1Matcher)[1];
+  return lastVersionChanges.trim();
+};
 
 // Commit, tag and push
 (async () => {
@@ -73,18 +82,19 @@ const CLI_PKG_NAME = '@coveo/cli';
   }
   await gitPush();
   await gitPushTags();
-  if (!packagesReleased.includes(CLI_PKG_NAME)) {
+  const cliReleaseInfoMatch = CLI_PKG_MATCHER.exec(packagesReleased);
+  if (!cliReleaseInfoMatch) {
     return;
   }
   const octokit = new Octokit({auth: process.env.GITHUB_CREDENTIALS});
-  const [, ...bodyArray] = changelog.split('\n');
-  const cliLatestTag = await getLastTag(CLI_PKG_NAME);
-  const cliVersion = cliLatestTag.split(`${CLI_PKG_NAME}@`)[1];
+  const releaseBody = getCliChangelog();
+  const cliLatestTag = cliReleaseInfoMatch[0];
+  const cliVersion = cliReleaseInfoMatch.groups.version;
   await octokit.rest.repos.createRelease({
     owner: REPO_OWNER,
     repo: REPO_NAME,
     tag_name: cliLatestTag,
-    name: `Release ${cliVersion}`,
-    body: bodyArray.join('\n'),
+    name: `Release v${cliVersion}`,
+    body: releaseBody,
   });
 })();
