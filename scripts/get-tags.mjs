@@ -2,8 +2,7 @@ import {warning, exportVariable, setFailed} from '@actions/core';
 import {context} from '@actions/github';
 import {getLastTag} from '@coveo/semantic-monorepo-tools';
 
-const releaseTagRegExp = /refs\/tags\/(release-\d+)/;
-const releaseTagPrefix = 'release-';
+const releaseTagRegExp = /refs\/tags\/(@coveo\/cli@\d+\.\d+\.\d+)/;
 const cliTagPrefix = '@coveo/cli@';
 
 const getReleaseTag = async () => {
@@ -18,7 +17,7 @@ const getReleaseTag = async () => {
     }
   }
   warning('Tag acquisition failed, fallbacking to the latest');
-  return getLastTag(releaseTagPrefix);
+  return getLastTag(cliTagPrefix);
 };
 
 const getCliVersion = async () =>
