@@ -2,6 +2,7 @@ import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Config} from '@coveo/cli-commons/config/config';
 import {ConfigRenderer} from '@coveo/cli-commons/config/configRenderer';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
+import type {Example} from '@oclif/core/lib/interfaces';
 
 export default class Get extends CLICommand {
   public static description = 'Display the current Coveo CLI configuration.';
@@ -14,10 +15,19 @@ export default class Get extends CLICommand {
     },
   ];
 
-  public static examples = [
-    '$ coveo config:get',
-    '$ coveo config:get organization',
-    '$ coveo config:get accessToken',
+  public static examples: Example[] = [
+    {
+      command: 'coveo config:get',
+      description: 'Get all the configuration values',
+    },
+    {
+      command: 'coveo config:get organization',
+      description: 'Get the organization to which you are connected',
+    },
+    {
+      command: 'coveo config:get accessToken',
+      description: 'Get the access token given to you by the Coveo Platform',
+    },
   ];
 
   @Trackable()
