@@ -1,48 +1,35 @@
-import {downloadReleaseAssets} from './github-client';
-import {getLastTag} from '@coveo/semantic-monorepo-tools';
 import {
-  existsSync,
-  mkdirSync,
-  writeFileSync,
-  readdirSync,
-  copyFileSync,
-} from 'fs';
-import {resolve} from 'path';
+  getAssetsMetadataFromRelease,
+  getLastCliRelease,
+  getTagFromRelease,
+} from './github-client.js';
+import {mkdirSync, writeFileSync, readdirSync, copyFileSync} from 'fs';
+import {resolve, join} from 'path';
+import {execSync} from 'node:child_process';
+import {spawnSync} from 'child_process';
 
 async function main() {
-  const tag = await getLastTag('@coveo/cli@');
+  const release = await getLastCliRelease();
+  const tag = getTagFromRelease(release);
   // This folder structure needs to be respected in order for the CLI update plugin to
   // be able to do it's job properly.
   const topLevelDirectory = './artifacts';
-  const subDirectoryForTarball = [
-    topLevelDirectory,
-    'versions',
-    tag.name.substring(1),
-    tag.commit.sha.substring(0, 7),
-  ].join('/');
-  const subDirectoryForManifest = [
-    topLevelDirectory,
-    'channels',
-    'stable',
-  ].join('/');
+  const getSubDirectoryForTarball = ({version, commitSHA}) =>
+    join(topLevelDirectory, 'versions', version, commitSHA);
+  const subDirectoryForManifest = join(topLevelDirectory, 'channels', 'stable');
   const binariesMatcher =
-    /^coveo[_-]{1}(?<_version>v?\d+\.\d+\.\d+(-\d+)?)[_.-]{1}(?<_commitSHA>\w{7})[_-]{0,1}(\d+_)?(?<longExt>.*\.(exe|deb|pkg))$/;
+    /^coveo[_-]{1}(?<version>v?\d+\.\d+\.\d+(-\d+)?)[_.-]{1}(?<commitSHA>\w+)[_-]?(\d+_)?(?<longExt>.*\.(exe|deb|pkg))$/;
   const manifestMatcher =
-    /^coveo-(?<_version>v?\d+\.\d+\.\d+(-\d+)?)-(?<_commitSHA>\w{7})-(?<targetSignature>.*-buildmanifest)$/;
-  const tarballMatcher = /\.tar\.[gx]z$/;
+    /^coveo-(?<version>v?\d+\.\d+\.\d+(-\d+)?)-(?<commitSHA>\w+)-(?<targetSignature>.*-buildmanifest)$/;
+  const tarballMatcher =
+    /^coveo-v?(?<version>\d+\.\d+\.\d+(-\d+)?)-(?<commitSHA>\w+)-(?<targetSignature>[\w-]+).tar\.[gx]z$/;
 
-  [topLevelDirectory, subDirectoryForManifest, subDirectoryForTarball].forEach(
-    (dir) => {
-      if (!existsSync(dir)) {
-        mkdirSync(dir, {recursive: true});
-      }
-    }
-  );
-
-  await downloadReleaseAssets(tag.name, (assetName) => {
+  const determineAssetLocation = (assetName) => {
     if (assetName.match(tarballMatcher)) {
-      console.info(assetName, `--> ${subDirectoryForTarball}`);
-      return subDirectoryForTarball;
+      const match = tarballMatcher.exec(assetName);
+      const location = getSubDirectoryForTarball(match.groups);
+      console.info(assetName, `--> ${location}`);
+      return location;
     } else if (assetName.match(manifestMatcher)) {
       console.info(assetName, `--> ${subDirectoryForManifest}`);
       return subDirectoryForManifest;
@@ -50,9 +37,24 @@ async function main() {
       console.info(assetName, `--> ${topLevelDirectory}`);
       return topLevelDirectory;
     }
-  });
+  };
 
-  writeFileSync('latest-commit', tag.commit.sha);
+  const assets = await getAssetsMetadataFromRelease(release);
+  for (const asset of assets) {
+    console.info(
+      `Downloading asset ${asset.name} from ${asset.browser_download_url}.\nSize: ${asset.size} ...`
+    );
+    const directory = determineAssetLocation(asset.name);
+    mkdirSync(directory, {recursive: true});
+    execSync(
+      `curl -L ${asset.browser_download_url} --output ${directory}/${asset.name}`
+    );
+  }
+  // https://stackoverflow.com/a/1862542
+  const tagCommit = spawnSync('git', ['rev-list', '-n', '1', tag], {
+    encoding: 'utf-8',
+  }).stdout.trim();
+  writeFileSync('latest-commit', tagCommit);
 
   readdirSync(topLevelDirectory, {withFileTypes: true}).forEach((file) => {
     const match = binariesMatcher.exec(file.name);
