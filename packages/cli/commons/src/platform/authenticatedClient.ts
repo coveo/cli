@@ -1,12 +1,10 @@
 import {setGlobalDispatcher, ProxyAgent} from 'undici';
-import {gte} from 'semver';
 import PlatformClient from '@coveo/platform-client';
 import {Config, Configuration} from '../config/config';
 import {castEnvironmentToPlatformClient} from './environment';
 import globalConfig from '../config/globalConfig';
 
 export class AuthenticatedClient {
-  private static readonly NODE_VERSION_FOR_NATIVE_FETCH = 'v18.9.1';
   public cfg: Config;
   public constructor() {
     this.cfg = new Config(globalConfig.get().configDir);
