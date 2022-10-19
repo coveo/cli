@@ -4,7 +4,7 @@
   "author": "Coveo",
   "description": "Coveo CLI",
   "engines": {
-    "node": ">=14.15.1 <18"
+    "node": "16.x || 18.x"
   },
   "dependencies": {
     "@amplitude/identify": "^1.9.0",

@@ -68,7 +68,7 @@
     "**/*.ts": "eslint --fix"
   },
   "engines": {
-    "node": ">=16",
+    "node": ">=18",
     "npm": ">=8.5.4"
   },
   "engineStrict": true,
