@@ -36,7 +36,8 @@
     "semver": "^7.3.4",
     "tmp": "^0.2.1",
     "ts-dedent": "2.2.0",
-    "tslib": "2.4.0"
+    "tslib": "2.4.0",
+    "undici": "5.11.0"
   },
   "devDependencies": {
     "@amplitude/types": "1.10.2",
