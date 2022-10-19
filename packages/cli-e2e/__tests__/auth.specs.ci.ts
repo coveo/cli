@@ -24,6 +24,7 @@ describe('auth', () => {
         port: 9222,
         userDataDir: false,
         maxConnectionRetries: 240, //equivalent to 2 minutes with the default pollrate of 500ms
+        logLevel: 'verbose',
       });
 
       browser = await connectToChromeBrowser();

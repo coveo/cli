@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
-import {resolve} from 'path';
-
+import {resolve} from 'node:path';
+import {Agent as HttpAgent} from 'node:http';
+import {promises as dnsPromises} from 'node:dns';
+import {URL} from 'node:url';
 import puppeteer from 'puppeteer';
 import type {Browser, Page} from 'puppeteer';
 const CHROME_JSON_DEBUG_URL = 'http://localhost:9222/json/version';
@@ -32,9 +34,13 @@ export async function closeAllPages(browser: Browser) {
 
 async function getWsUrl(): Promise<string> {
   const chromeDebugInfoRaw = (
-    await axios.get<JsonVersionFile>(CHROME_JSON_DEBUG_URL)
+    await axios.get<JsonVersionFile>(CHROME_JSON_DEBUG_URL, {
+      httpAgent: new HttpAgent({family: 4}),
+    })
   ).data;
-  return chromeDebugInfoRaw.webSocketDebuggerUrl;
+  const wsUrl = new URL(chromeDebugInfoRaw.webSocketDebuggerUrl);
+  wsUrl.hostname = (await dnsPromises.resolve4(wsUrl.hostname))[0];
+  return wsUrl.toString();
 }
 
 function getChromeDefaultOptions() {
@@ -45,7 +51,10 @@ function getChromeDefaultOptions() {
  */
 export async function connectToChromeBrowser(): Promise<Browser> {
   const wsURL = await getWsUrl();
-  return puppeteer.connect({browserWSEndpoint: wsURL});
+  console.error('WS_URL:' + wsURL);
+  return puppeteer.connect({
+    browserWSEndpoint: wsURL,
+  });
 }
 
 export async function getNewBrowser(): Promise<Browser> {
