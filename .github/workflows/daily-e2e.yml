@@ -77,8 +77,6 @@ jobs:
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      # pulls all tags (needed for computing the next version)
-      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
       - name: Checkout last tag
         run: git checkout $(git describe --abbrev=0 --tags)
       - name: Install Coveo CLI
