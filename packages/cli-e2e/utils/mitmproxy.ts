@@ -11,7 +11,7 @@ export const startMitmProxy = (
   const mitmScript = join(__dirname, '..', 'mitmproxy', 'main.py');
   const serverTerminal = new Terminal(
     'python',
-    [mitmScript, '-p', '8080'],
+    [mitmScript, '-p', '8080', '--listen-host', 'localhost'],
     undefined,
     processManager,
     terminalDebugName
