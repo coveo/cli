@@ -33,7 +33,7 @@
     "url": "https://github.com/coveo/cli/issues"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=14.16.1"
   },
   "devDependencies": {
     "@actions/core": "1.9.1",
