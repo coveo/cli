@@ -1,14 +1,6 @@
 {
-  "name": "cli-e2e",
+  "name": "cli-tests",
   "root": "packages/cli-e2e",
-  "sourceRoot": "packages/cli-e2e/__tests__",
-  "projectType": "application",
-  "targets": {
-    "e2e": {
-      "executor": "@nrwl/workspace:run-script",
-      "options": {
-        "script": "test:headless"
-      }
-    }
-  }
+  "sourceRoot": "packages/cli-e2e",
+  "projectType": "application"
 }
