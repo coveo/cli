@@ -1,0 +1,16 @@
+diff --git a/node_modules/@coveo/platform-client/dist/utils/FormData.js b/node_modules/@coveo/platform-client/dist/utils/FormData.js
+index 8b0615b..a496a06 100644
+--- a/node_modules/@coveo/platform-client/dist/utils/FormData.js
++++ b/node_modules/@coveo/platform-client/dist/utils/FormData.js
+@@ -7,10 +7,8 @@ var getFormData = function () {
+         return new FormData();
+     }
+     // eslint-disable-next-line
+-    var formDataNode = require('form-data');
++    var formDataNode = require('undici').FormData;
+     var formDataNodeInstance = new formDataNode();
+-    // formData.set not available in node.
+-    formDataNodeInstance.set = formDataNodeInstance.append;
+     return formDataNodeInstance;
+ };
+ exports.getFormData = getFormData;
