@@ -107,12 +107,12 @@ export default class Pull extends CLICommand {
   public static examples: Example[] = [
     {
       command: 'coveo org:resources:pull',
-      description: 'Pull all resources from the connected organization',
+      description: 'Pull all resources from the organization in which you are authenticated',
     },
     {
       command: 'coveo org:resources:pull --organization myorgid --wait 0',
       description:
-        'Pull all resources from the organization which id is "myorgid" and do not timeout',
+        'Pull all resources from the organization whose ID is "myorgid" and do not timeout',
     },
     {
       command: 'coveo org:resources:pull --model my/snapshot/pull/model.json',
