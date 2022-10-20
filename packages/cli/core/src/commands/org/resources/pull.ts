@@ -44,6 +44,7 @@ import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
+import {Example} from '@oclif/core/lib/interfaces';
 
 const PullCommandStrings = {
   projectOverwriteQuestion: (
@@ -103,11 +104,26 @@ export default class Pull extends CLICommand {
     }),
   };
 
-  public static examples = [
-    'coveo org:resources:pull',
-    'coveo org:resources:pull -o=myOrgId',
-    'coveo org:resources:pull -o=myOrgId -m=my/snapshot/pull/model.json',
-    `coveo org:resources:pull -o=myOrgId -r=${ResourceSnapshotType.queryPipeline},${ResourceSnapshotType.field},`,
+  public static examples: Example[] = [
+    {
+      command: 'coveo org:resources:pull',
+      description: 'Pull all resources from the connected organization',
+    },
+    {
+      command: 'coveo org:resources:pull --organization myorgid --wait 0',
+      description:
+        'Pull all resources from the organization which id is "myorgid" and do not timeout',
+    },
+    {
+      command: 'coveo org:resources:pull --model my/snapshot/pull/model.json',
+      description:
+        'Pull only the resources specified in the snapshot pull model',
+    },
+    {
+      command: `coveo org:resources:pull --resourceTypes ${ResourceSnapshotType.queryPipeline} ${ResourceSnapshotType.field},`,
+      description:
+        'Pull all query pipelines and fields available in the organization',
+    },
   ];
 
   @Trackable()
