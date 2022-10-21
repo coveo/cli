@@ -20,6 +20,9 @@ jobs:
       - name: Prepare snyk
         run: |
           npm ci
+          yarn set version classic
+          yarn import
+          yarn set version berry
           yarn install --no-immutable --mode=skip-build
       - name: Snyk Monitor
         continue-on-error: true
