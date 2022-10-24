@@ -17,6 +17,7 @@ import {without} from '../../../lib/utils/list';
 import {join} from 'path';
 import dedent from 'ts-dedent';
 import {formatOrgId} from '@coveo/cli-commons/utils/ux';
+import {Example} from '@oclif/core/lib/interfaces';
 type ResponseExceededMaximumSizeError = {message: string; type: string};
 
 interface RawResult {
@@ -51,6 +52,27 @@ export default class Dump extends CLICommand {
       Note: DictionnaryFields/Values are experimentally supported. In case of failure, you should exclude them using the \`-x\` flag.
     `;
 
+  public static examples: Example[] = [
+    {
+      command:
+        'coveo org:search:dump --source "My Web Source" "My Sitemap Source"',
+      description:
+        'Get content indexed into the "My Web Source" and "My Sitemap Source" sources.',
+    },
+    {
+      command:
+        'coveo org:search:dump --source Products --pipeline Search --additionalFilter "@cat_categories==(Shorts, Jackets)"',
+      description:
+        'Get all the products coming from the "Search" pipeline that are either in the "Shorts" or "Jackets" category.',
+    },
+    {
+      command:
+        'coveo org:search:dump --fieldsToExclude ec_description ec_summary',
+      description:
+        'Get all the documents without the fields "ec_description" and "ec_summary" in them.',
+    },
+  ];
+
   public static flags = {
     source: Flags.string({
       char: 's',
@@ -63,7 +85,7 @@ export default class Dump extends CLICommand {
     pipeline: Flags.string({
       char: 'p',
       description:
-        'The name of the query pipeline through which to get content. If not specified, the default query pipeline is used.',
+        'The name of the query pipeline through which to get content. If not specified, the default query pipeline is used. See <https://docs.coveo.com/en/180>',
     }),
     fieldsToExclude: Flags.string({
       char: 'x',

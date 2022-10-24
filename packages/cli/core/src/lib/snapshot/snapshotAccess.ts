@@ -1,4 +1,3 @@
-import {startSpinner} from '@coveo/cli-commons/utils/ux';
 import PlatformClient, {
   ResourceSnapshotType,
   SnapshotAccessType,
@@ -14,7 +13,6 @@ export async function ensureResourcesAccess(
   resourceTypes: ResourceSnapshotType[],
   snapshotAccessType: SnapshotAccessType = SnapshotAccessType.Read
 ) {
-  startSpinner('Validating resource access');
   const allowedResources = await client.resourceSnapshot.listResourceAccess();
   const allowed = isSubset(resourceTypes, allowedResources);
   if (!allowed) {
@@ -28,7 +26,6 @@ export async function ensureSnapshotAccess(
   snapshotId: string,
   snapshotAccessType: SnapshotAccessType = SnapshotAccessType.Read
 ) {
-  startSpinner('Validating snapshot access');
   const {allowed} = await client.resourceSnapshot.validateAccess(snapshotId, {
     snapshotAccessType,
   });
