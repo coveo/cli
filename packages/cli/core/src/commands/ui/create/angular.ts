@@ -13,6 +13,7 @@ import {
   HasNecessaryCoveoPrivileges,
   Preconditions,
   IsAuthenticated,
+  AuthenticationType,
 } from '@coveo/cli-commons/preconditions/index';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {IsNgVersionInRange} from '../../../lib/decorators/preconditions/ng';
@@ -61,7 +62,7 @@ export default class Angular extends CLICommand {
     overrideEventProperties: {framework: 'angular'},
   })
   @Preconditions(
-    IsAuthenticated(),
+    IsAuthenticated([AuthenticationType.OAuth]),
     IsNodeVersionInRange(Angular.requiredNodeVersion),
     IsNpmVersionInRange(Angular.requiredNpmVersion),
     IsNgVersionInRange(Angular.requiredNgVersion),

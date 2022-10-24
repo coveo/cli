@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`source:push:list works when the user has access to a list of push source 1`] = `
+" Id     Name               Owner Source type Source visibility Status     Number of documents 
+ ────── ────────────────── ───── ─────────── ───────────────── ────────── ─────────────────── 
+ the_id the_id_displayName bob   PUSH        SECURED           PUSH_READY 1234                
+"
+`;
+
+exports[`source:push:list works when there is no push source configured 1`] = `
+"There is no push nor catalog source in organization foo
+You can:
+  • create a push source using source:push:new
+  • create a catalog source using source:catalog:new
+"
+`;

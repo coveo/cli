@@ -1,5 +1,5 @@
-jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
+jest.mock('@coveo/cli-commons/preconditions/authenticated');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('@coveo/push-api-client');
@@ -10,20 +10,28 @@ import {PushSource} from '@coveo/push-api-client';
 import {
   doMockAxiosError,
   doMockAxiosSuccess,
-} from '../../../lib/testsUtils/axiosMocks';
-const mockedClient = jest.mocked(AuthenticatedClient);
-const mockedSource = jest.mocked(PushSource);
-
-const mockDeleteOlderThan = jest
-  .fn()
-  .mockReturnValue(Promise.resolve(doMockAxiosSuccess(202, 'tiguidou')));
-
-const mockDeleteDocument = jest
-  .fn()
-  .mockReturnValue(Promise.resolve(doMockAxiosSuccess(202, 'right trou')));
+} from '../../../lib/__testsUtils__/axiosMocks';
+import {IsAuthenticated} from '@coveo/cli-commons/preconditions';
+import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
+import {formatCliLog} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
 
 describe('source:push:delete', () => {
-  beforeAll(() => {
+  const mockedIsAuthenticated = jest.mocked(IsAuthenticated);
+  const mockedClient = jest.mocked(AuthenticatedClient);
+  const mockedSource = jest.mocked(PushSource);
+  const mockDeleteOlderThan = jest.fn();
+
+  const mockDeleteDocument = jest.fn();
+
+  const doMockPreconditions = function () {
+    const preconditionStatus = {
+      authentication: true,
+    };
+    const mockedPreconditions = mockPreconditions(preconditionStatus);
+    mockedIsAuthenticated.mockReturnValue(mockedPreconditions.authentication);
+  };
+
+  const doMockAuthenticatedClient = () => {
     mockedClient.mockImplementation(
       () =>
         ({
@@ -35,33 +43,48 @@ describe('source:push:delete', () => {
           },
         } as unknown as AuthenticatedClient)
     );
+  };
 
+  const doMockSourceDelete = () => {
     mockedSource.mockImplementation(
       () =>
         ({
-          deleteDocumentsOlderThan: mockDeleteOlderThan,
-          deleteDocument: mockDeleteDocument,
+          deleteDocumentsOlderThan: mockDeleteOlderThan.mockReturnValue(
+            Promise.resolve(doMockAxiosSuccess(202, 'tiguidou'))
+          ),
+          deleteDocument: mockDeleteDocument.mockReturnValue(
+            Promise.resolve(doMockAxiosSuccess(202, 'right trou'))
+          ),
         } as unknown as PushSource)
     );
-  });
+  };
 
   beforeEach(() => {
-    mockDeleteOlderThan.mockClear();
-    mockDeleteDocument.mockClear();
+    doMockAuthenticatedClient();
+    doMockPreconditions();
+    doMockSourceDelete();
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   test
     .stdout()
     .stderr()
     .command(['source:push:delete', 'mysource'])
-    .catch(/ou must minimally set the `delete` or the `deleteOlderThan` flag/)
+    .catch((err) => {
+      expect(err.message).toMatchSnapshot();
+    })
     .it('throws when no flags are specified');
 
   test
     .stdout()
     .stderr()
     .command(['source:push:delete', 'mysource', '-x', 'foo', '-d', 'bar'])
-    .catch(/--delete=foo cannot also be provided when using --deleteOlderThan/)
+    .catch((err) => {
+      expect(err.message).toMatchSnapshot();
+    })
     .it(
       'throws when incompatible flags for olderThan and documentUri are passed'
     );
@@ -118,10 +141,7 @@ describe('source:push:delete', () => {
     .it(
       'returns an information message on successful deletion with older than',
       (ctx) => {
-        expect(ctx.stdout).toContain(
-          'The delete request for document: older than 12345 was accepted by the Push AP'
-        );
-        expect(ctx.stdout).toContain('Status code: 999 this document is gone');
+        expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
       }
     );
 
@@ -141,14 +161,7 @@ describe('source:push:delete', () => {
     .it(
       'returns an information message on deletion failure with older than',
       (ctx) => {
-        expect(ctx.stdout).toContain(
-          'Error while trying to delete document: older than 12345'
-        );
-        expect(ctx.stdout).toContain('Status code: 412');
-        expect(ctx.stdout).toContain('Error code: BAD_REQUEST');
-        expect(ctx.stdout).toContain(
-          'Message: this is a bad request and you should feel bad'
-        );
+        expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
       }
     );
 
@@ -164,10 +177,7 @@ describe('source:push:delete', () => {
     .it(
       'returns an information message on successful deletion with document uri',
       (ctx) => {
-        expect(ctx.stdout).toContain(
-          'The delete request for document: https://foo.com was accepted by the Push API'
-        );
-        expect(ctx.stdout).toContain('Status code: 999 this document is gone');
+        expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
       }
     );
 
@@ -185,12 +195,7 @@ describe('source:push:delete', () => {
     .it(
       'returns an information message on successful deletion with multiple document uri',
       (ctx) => {
-        expect(ctx.stdout).toContain(
-          'The delete request for document: https://foo.com was accepted by the Push API'
-        );
-        expect(ctx.stdout).toContain(
-          'The delete request for document: https://foo.com/2 was accepted by the Push API'
-        );
+        expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
       }
     );
 
@@ -210,14 +215,7 @@ describe('source:push:delete', () => {
     .it(
       'returns an information message on deletion failure with document uri',
       (ctx) => {
-        expect(ctx.stdout).toContain(
-          'Error while trying to delete document: https://foo.com'
-        );
-        expect(ctx.stdout).toContain('Status code: 412');
-        expect(ctx.stdout).toContain('Error code: BAD_REQUEST');
-        expect(ctx.stdout).toContain(
-          'Message: this is a bad request and you should feel bad'
-        );
+        expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
       }
     );
 
@@ -243,12 +241,7 @@ describe('source:push:delete', () => {
     .it(
       'returns an information message on deletion failure with multiple document uri',
       (ctx) => {
-        expect(ctx.stdout).toContain(
-          'Error while trying to delete document: https://foo.com'
-        );
-        expect(ctx.stdout).toContain(
-          'Error while trying to delete document: https://foo.com/2'
-        );
+        expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
       }
     );
 
@@ -275,12 +268,25 @@ describe('source:push:delete', () => {
     .it(
       'returns an information message on deletion and success failure with multiple document uri',
       (ctx) => {
-        expect(ctx.stdout).toContain(
-          'Error while trying to delete document: https://foo.com'
-        );
-        expect(ctx.stdout).toContain(
-          'The delete request for document: https://foo.com/2 was accepted by the Push API'
-        );
+        expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
+      }
+    );
+
+  test
+    .stdout()
+    .stderr()
+    .command([
+      'source:push:delete',
+      'mysource',
+      ...Array(21)
+        .fill(null)
+        .flatMap((_, index) => ['-x', `https://foo.com/${index}`]),
+    ])
+    .it(
+      'should warn the user when he tries to delete too many items and stop there',
+      (ctx) => {
+        expect(mockDeleteDocument).not.toBeCalled();
+        expect(formatCliLog(ctx.stderr)).toMatchSnapshot();
       }
     );
 });

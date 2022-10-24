@@ -29,7 +29,6 @@ import {npm} from '../utils/npm';
 import axios from 'axios';
 import {jwtTokenPattern} from '../utils/matcher';
 import {join} from 'path';
-import {loginWithApiKey} from '../utils/login';
 
 describe('ui:create:vue', () => {
   let browser: Browser;
@@ -128,11 +127,6 @@ describe('ui:create:vue', () => {
   };
 
   beforeAll(async () => {
-    await loginWithApiKey(
-      process.env.PLATFORM_API_KEY!,
-      process.env.ORG_ID!,
-      process.env.PLATFORM_ENV!
-    );
     const buildProcessManager = new ProcessManager();
     processManagers.push(buildProcessManager);
     browser = await getNewBrowser();

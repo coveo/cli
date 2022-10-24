@@ -79,7 +79,7 @@ export default class SourcePushAdd extends CLICommand {
 
     startSpinner('Processing files');
 
-    const fileNames = await getFileNames(flags);
+    const fileNames = getFileNames(flags, SourcePushAdd.id);
     const options: BatchUpdateDocumentsFromFiles = {
       maxConcurrent: flags.maxConcurrent,
       createFields: flags.createMissingFields,
@@ -117,6 +117,7 @@ export default class SourcePushAdd extends CLICommand {
     });
   }
 
+  // TODO: Refactor with eponym method of `SourceCatalog`
   private successMessageOnAdd({batch, files, res}: UploadBatchCallbackData) {
     // Display the first 5 files (from the list of all files) being processed for end user feedback
     // Don't want to clutter the output too much if the list is very long.

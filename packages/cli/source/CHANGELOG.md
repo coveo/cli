@@ -1,3 +1,11 @@
+## 1.37.2 (2022-10-14)
+
+# 1.37.0 (2022-10-13)
+
+### Features
+
+- **cli-commons/cli-plugin-source/cli:** standardize orgId printing ([#951](https://github.com/coveo/cli/issues/951)) ([f26bfda](https://github.com/coveo/cli/commits/f26bfda01c7d4dd5d300264a5710da33e02856ff))
+
 # 1.36.0 (2022-09-21)
 
 ### Bug Fixes

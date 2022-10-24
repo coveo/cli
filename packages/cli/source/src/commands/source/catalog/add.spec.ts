@@ -1,65 +1,63 @@
-jest.mock('@coveo/cli-commons/analytics/amplitudeClient');
+jest.mock('@coveo/cli-commons/preconditions/trackable');
+jest.mock('@coveo/cli-commons/preconditions/authenticated');
+jest.mock('@coveo/cli-commons/preconditions/apiKeyPrivilege');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
-jest.mock('@coveo/cli-commons/config/config');
-jest.mock('@coveo/cli-commons/config/globalConfig');
-jest.mock('@coveo/cli-commons/preconditions/trackable');
+
 jest.mock('@coveo/push-api-client');
 
-import stripAnsi from 'strip-ansi';
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {CatalogSource, DocumentBuilder} from '@coveo/push-api-client';
-import {cwd} from 'process';
-import {join} from 'path';
+import {CatalogSource} from '@coveo/push-api-client';
 import {APIError} from '@coveo/cli-commons/errors/apiError';
-import {Interfaces} from '@oclif/core';
-import globalConfig from '@coveo/cli-commons/config/globalConfig';
-import {Config} from '@coveo/cli-commons/config/config';
 
 import {
   BatchUploadDocumentsError,
   BatchUploadDocumentsSuccess,
-} from '../../../lib/testsUtils/batchUploadDocumentsFromFilesReturn';
-const mockedGlobalConfig = jest.mocked(globalConfig);
-const mockedClient = jest.mocked(AuthenticatedClient);
-const mockedSource = jest.mocked(CatalogSource);
-const mockedDocumentBuilder = jest.mocked(DocumentBuilder);
-const mockedMarshal = jest.fn();
-const mockEvaluate = jest.fn();
-const mockSourceGet = jest.fn();
-const mockSetSourceStatus = jest.fn();
-const mockBatchUpdate = jest.fn();
-const mockBatchStream = jest.fn();
-const mockedConfigGet = jest.fn();
-const mockedConfig = jest.mocked(Config);
+} from '../../../lib/__testsUtils__/batchUploadDocumentsFromFilesReturn';
+import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
+import {
+  IsAuthenticated,
+  HasNecessaryCoveoPrivileges,
+} from '@coveo/cli-commons/preconditions';
+import {formatCliLog} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
 
 describe('source:catalog:add', () => {
-  const pathToStub = join(cwd(), 'src', '__stub__');
+  const mockedClient = jest.mocked(AuthenticatedClient);
+  const mockedSource = jest.mocked(CatalogSource);
+  const mockSourceGet = jest.fn();
+  const mockSetSourceStatus = jest.fn();
+  const mockBatchUpdate = jest.fn();
+  const mockBatchStream = jest.fn();
+  const mockedIsAuthenticated = jest.mocked(IsAuthenticated);
+  const mockedHasNecessaryCoveoPrivileges = jest.mocked(
+    HasNecessaryCoveoPrivileges
+  );
+  const doMockPreconditions = function () {
+    const preconditionStatus = {
+      authentication: true,
+      privileges: true,
+    };
+    const mockedPreconditions = mockPreconditions(preconditionStatus);
+    mockedIsAuthenticated.mockReturnValue(mockedPreconditions.authentication);
+    mockedHasNecessaryCoveoPrivileges.mockReturnValue(
+      mockedPreconditions.privileges
+    );
+  };
 
-  const sourceContainsDocuments = () => {
+  const doMockSourceGet = (numberOfDocuments: number) => {
     mockSourceGet.mockResolvedValue({
-      information: {numberOfDocuments: 1},
+      information: {numberOfDocuments},
     });
   };
 
-  const sourceDoesNotContainDocuments = () => {
-    mockSourceGet.mockResolvedValue({
-      information: {numberOfDocuments: 0},
-    });
-  };
-
-  const mockUserHavingAllRequiredPlatformPrivileges = () => {
-    mockEvaluate.mockResolvedValue({approved: true});
-  };
-
-  const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
-    mockEvaluate.mockResolvedValue({approved: false});
-  };
-
-  const doMockSuccessUpload = () => {
-    mockBatchUpdate.mockReturnValue(new BatchUploadDocumentsSuccess());
-    mockBatchStream.mockReturnValue(new BatchUploadDocumentsSuccess());
+  const doMockSuccessUpload = (numberOfDocuments = 2) => {
+    mockBatchUpdate.mockReturnValue(
+      new BatchUploadDocumentsSuccess(numberOfDocuments)
+    );
+    mockBatchStream.mockReturnValue(
+      new BatchUploadDocumentsSuccess(numberOfDocuments)
+    );
   };
 
   const doMockErrorUpload = () => {
@@ -67,27 +65,12 @@ describe('source:catalog:add', () => {
     mockBatchStream.mockReturnValue(new BatchUploadDocumentsError());
   };
 
-  const doMockDocumentBuilder = () => {
-    mockedDocumentBuilder.mockImplementation(
-      () =>
-        ({
-          marshal: mockedMarshal,
-          withData: jest.fn(),
-          withDate: jest.fn(),
-          withFileExtension: jest.fn(),
-          withMetadataValue: jest.fn(),
-        } as unknown as DocumentBuilder)
-    );
-  };
   const doMockAuthenticatedClient = () => {
     mockedClient.mockImplementation(
       () =>
         ({
           getClient: () =>
             Promise.resolve({
-              privilegeEvaluator: {
-                evaluate: mockEvaluate,
-              },
               source: {
                 get: mockSourceGet,
               },
@@ -115,79 +98,35 @@ describe('source:catalog:add', () => {
     );
   };
 
-  const doMockConfig = () => {
-    mockedGlobalConfig.get.mockReturnValue({
-      configDir: 'the_config_dir',
-      version: '1.2.3',
-      platform: 'darwin',
-    } as Interfaces.Config);
-    mockedConfigGet.mockReturnValue({
-      region: 'us',
-      organization: 'default-org',
-      environment: 'prod',
-    });
-
-    mockedConfig.mockImplementation(
-      () =>
-        ({
-          get: mockedConfigGet,
-        } as unknown as Config)
-    );
-  };
-
-  beforeAll(() => {
-    doMockConfig();
-    doMockDocumentBuilder();
+  beforeEach(() => {
+    doMockPreconditions();
     doMockAuthenticatedClient();
     doMockSource();
+    doMockSourceGet(1);
   });
 
-  beforeEach(() => {
-    mockedMarshal.mockReturnValue(
-      JSON.stringify({
-        documentId: 'https://perdu.com',
-        title: 'hello world',
-      })
-    );
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
-  mockedSource.mockImplementation(
-    () =>
-      ({
-        batchUpdateDocumentsFromFiles: mockBatchUpdate,
-        setSourceStatus: mockSetSourceStatus,
-      } as unknown as CatalogSource)
-  );
-
-  describe('when the batch upload is successfull', () => {
-    beforeAll(() => {
-      mockUserHavingAllRequiredPlatformPrivileges();
+  describe('when the batch upload is successful', () => {
+    beforeEach(() => {
       doMockSuccessUpload();
-      sourceContainsDocuments();
-    });
-
-    afterAll(() => {
-      mockBatchUpdate.mockReset();
-      mockEvaluate.mockReset();
-      mockSourceGet.mockReset();
     });
 
     test
       .stdout()
       .stderr()
       .command(['source:catalog:add', 'mysource'])
-      .catch(/You must set the `files` flag/)
+      .catch((err) => {
+        expect(err.message).toMatchSnapshot();
+      })
       .it('throws when no flags are specified');
 
     test
       .stdout()
       .stderr()
-      .command([
-        'source:catalog:add',
-        'mysource',
-        '-f',
-        join(pathToStub, 'jsondocuments', 'batman.json'),
-      ])
+      .command(['source:catalog:add', 'mysource', '-f', 'somefile'])
       .it('should trigger a batch document update', () => {
         expect(mockBatchUpdate).toHaveBeenCalled();
         expect(mockBatchStream).not.toHaveBeenCalled();
@@ -201,7 +140,7 @@ describe('source:catalog:add', () => {
         'mysource',
         '--fullUpload',
         '-f',
-        join(pathToStub, 'jsondocuments', 'batman.json'),
+        'somefile',
       ])
       .it('should trigger a batch stream upload ', () => {
         expect(mockBatchStream).toHaveBeenCalled();
@@ -211,12 +150,7 @@ describe('source:catalog:add', () => {
     test
       .stdout()
       .stderr()
-      .command([
-        'source:catalog:add',
-        'mysource',
-        '-f',
-        join(pathToStub, 'jsondocuments', 'batman.json'),
-      ])
+      .command(['source:catalog:add', 'mysource', '-f', 'somefile'])
       .it('pass correct configuration information to push-api-client', () => {
         expect(mockedSource).toHaveBeenCalledWith('the_token', 'the_org', {
           environment: 'prod',
@@ -227,12 +161,7 @@ describe('source:catalog:add', () => {
     test
       .stdout()
       .stderr()
-      .command([
-        'source:catalog:add',
-        'mysource',
-        '-f',
-        join(pathToStub, 'jsondocuments', 'batman.json'),
-      ])
+      .command(['source:catalog:add', 'mysource', '-f', 'somefile'])
       .it('should create missing fields by default', () => {
         expect(mockBatchUpdate).toHaveBeenCalledWith(
           expect.anything(),
@@ -249,7 +178,7 @@ describe('source:catalog:add', () => {
         'mysource',
         '--no-createMissingFields',
         '-f',
-        join(pathToStub, 'jsondocuments', 'batman.json'),
+        'somefile',
       ])
       .it('should skip field creation if specified', () => {
         expect(mockBatchUpdate).toHaveBeenCalledWith(
@@ -259,50 +188,27 @@ describe('source:catalog:add', () => {
         );
       });
 
-    test
-      .stdout()
-      .stderr()
-      .command([
-        'source:catalog:add',
-        'mysource',
-        '-f',
-        join(pathToStub, 'jsondocuments', 'someJsonFile.json'),
-      ])
-      .it('should output feedback message when uploading documents', (ctx) => {
-        expect(ctx.stdout).toContain(
-          'Success: 2 documents accepted by the API from'
-        );
-        expect(ctx.stdout).toContain('Status code: 202 👌');
-      });
+    describe.each([1, 2, 3, 4, 5, 6])(
+      'when uploading %d documents',
+      (numberOfDocuments) => {
+        beforeEach(() => {
+          doMockSuccessUpload(numberOfDocuments);
+        });
+
+        test
+          .stdout()
+          .stderr()
+          .command(['source:catalog:add', 'mysource', '-f', 'somepath'])
+          .it('should print the appropriate # of documents', (ctx) => {
+            expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
+          });
+      }
+    );
 
     test
       .stdout()
       .stderr()
-      .command([
-        'source:catalog:add',
-        'mysource',
-        '-f',
-        join(pathToStub, 'jsondocuments'),
-      ])
-      .it(
-        'should output feedback message when uploading a directory',
-        (ctx) => {
-          expect(ctx.stdout).toContain(
-            'Success: 2 documents accepted by the API from'
-          );
-          expect(ctx.stdout).toContain('Status code: 202 👌');
-        }
-      );
-
-    test
-      .stdout()
-      .stderr()
-      .command([
-        'source:catalog:add',
-        'mysource',
-        '-f',
-        join(pathToStub, 'jsondocuments', 'batman.json'),
-      ])
+      .command(['source:catalog:add', 'mysource', '-f', 'somefile'])
       .it('should get source info during document update', () => {
         expect(mockSourceGet).toHaveBeenCalled();
       });
@@ -315,28 +221,23 @@ describe('source:catalog:add', () => {
         'mysource',
         '--fullUpload',
         '-f',
-        join(pathToStub, 'jsondocuments', 'batman.json'),
+        'somefile',
       ])
       .it('should not get source info during document update', () => {
         expect(mockSourceGet).not.toHaveBeenCalled();
       });
-
     describe('when the source does not contain items', () => {
-      beforeAll(() => {
-        mockSourceGet.mockReset();
-        sourceDoesNotContainDocuments();
+      beforeEach(() => {
+        doMockSourceGet(0);
       });
 
       test
         .stdout()
         .stderr()
-        .command([
-          'source:catalog:add',
-          'mysource',
-          '-f',
-          join(pathToStub, 'jsondocuments', 'batman.json'),
-        ])
-        .catch(/No items detected for this source at the moment/)
+        .command(['source:catalog:add', 'mysource', '-f', 'somefile'])
+        .catch((err) => {
+          expect(err.message).toMatchSnapshot();
+        })
         .it('should show error message during document update');
 
       test
@@ -347,70 +248,30 @@ describe('source:catalog:add', () => {
           'mysource',
           '--skipFullUploadCheck',
           '-f',
-          join(pathToStub, 'jsondocuments', 'batman.json'),
+          'somefile',
         ])
         .it(
           'should not show a error message when using the --skipFullUploadCheck flag',
           (ctx) => {
-            expect(ctx.stderr).not.toContain(
-              'please consider doing a full catalog upload'
-            );
+            expect(formatCliLog(ctx.stderr)).toMatchSnapshot();
           }
         );
     });
   });
 
   describe('when the batch upload fails', () => {
-    beforeAll(() => {
+    beforeEach(() => {
       doMockErrorUpload();
-      mockUserHavingAllRequiredPlatformPrivileges();
-      sourceContainsDocuments();
-    });
-
-    afterAll(() => {
-      mockBatchUpdate.mockReset();
-      mockEvaluate.mockReset();
-      mockSourceGet.mockReset();
     });
 
     test
       .stdout()
       .stderr()
-      .command([
-        'source:catalog:add',
-        'mysource',
-        '-f',
-        join(pathToStub, 'jsondocuments'),
-      ])
-      .catch((error) => {
-        expect(error).toBeInstanceOf(APIError);
-        const message = stripAnsi(error.message);
-        expect(message).toContain(
-          'this is a bad request and you should feel bad'
-        );
-        expect(message).toContain('Status code: 412');
-        expect(message).toContain('Error code: BAD_REQUEST');
+      .command(['source:catalog:add', 'mysource', '-f', 'somefile'])
+      .catch((err) => {
+        expect(err).toBeInstanceOf(APIError);
+        expect(err.message).toMatchSnapshot();
       })
       .it('returns an information message on add failure from the API');
-  });
-
-  describe('when Platform privilege preconditions are not respected', () => {
-    beforeEach(() => {
-      mockUserNotHavingAllRequiredPlatformPrivileges();
-      sourceContainsDocuments();
-    });
-
-    afterAll(() => {
-      mockBatchUpdate.mockReset();
-      mockEvaluate.mockReset();
-      mockSourceGet.mockReset();
-    });
-
-    test
-      .stdout()
-      .stderr()
-      .command(['source:catalog:add', 'some-org', '-f', 'some-file'])
-      .catch(/You are not authorized to create or update fields/)
-      .it('should return a precondition error');
   });
 });

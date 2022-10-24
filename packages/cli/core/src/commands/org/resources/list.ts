@@ -42,18 +42,22 @@ export default class List extends CLICommand {
       return;
     }
 
-    CliUx.ux.table(recordable(snapshots), {
-      id: {},
-      createdBy: {
-        header: 'Created by',
+    CliUx.ux.table(
+      recordable(snapshots),
+      {
+        id: {},
+        createdBy: {
+          header: 'Created by',
+        },
+        createdDate: {
+          get: (row) => row.createdDate && new Date(row.createdDate),
+          header: 'Created date',
+        },
+        targetId: {header: 'Target id'},
+        developerNote: {header: 'Developer note'},
       },
-      createdDate: {
-        get: (row) => row.createdDate && new Date(row.createdDate),
-        header: 'Created date',
-      },
-      targetId: {header: 'Target id'},
-      developerNote: {header: 'Developer note'},
-    });
+      {...flags}
+    );
   }
 
   private get configuration() {

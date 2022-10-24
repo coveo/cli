@@ -6,7 +6,7 @@ export interface FilesOrFolders {
   files?: string[];
 }
 
-export async function getFileNames(entries: FilesOrFolders) {
+export function getFileNames(entries: FilesOrFolders, commandName: string) {
   // TODO: CDX-856: only read --files flag
   const entryNames = [
     ...(entries.file ?? []),
@@ -16,7 +16,7 @@ export async function getFileNames(entries: FilesOrFolders) {
 
   if (entryNames.length === 0) {
     CliUx.ux.error(
-      'You must set the `files` flag. Use `source:push:add --help` to get more information.'
+      `You must set the \`files\` flag. Use \`${commandName} --help\` to get more information.`
     );
   }
 

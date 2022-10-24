@@ -1,4 +1,4 @@
-import {without} from './list';
+import {isSubset, without} from './list';
 
 describe('listUtils', () => {
   describe('#without', () => {
@@ -24,6 +24,27 @@ describe('listUtils', () => {
         const result = without(array, ['dummy']);
         expect(result).toEqual(['foo', 'bar', 'baz']);
       });
+    });
+  });
+
+  describe('#isSubset', () => {
+    it.each([
+      {subset: [1, 2, 3], superset: [1, 2, 3]},
+      {subset: [1, 3], superset: [1, 2, 3]},
+      {subset: [], superset: [1, 2, 3]},
+      {subset: ['foo'], superset: ['foo']},
+      {subset: ['foo', 'bar'], superset: ['foo', 'baz', 'bar']},
+    ])('is should return true', ({subset, superset}) => {
+      expect(isSubset<any>(subset, superset));
+    });
+
+    it.each([
+      {subset: [1, 2, 3, 4], superset: [1, 2, 3]},
+      {subset: [5, 3], superset: [1, 2, 3]},
+      {subset: [1, 2], superset: []},
+      {subset: ['foo', 'bar'], superset: ['foobar', 'baz']},
+    ])('is should return false', ({subset, superset}) => {
+      expect(isSubset<any>(subset, superset));
     });
   });
 });

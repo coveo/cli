@@ -95,15 +95,6 @@ export function getMissingVaultEntriesReportHandler(
   };
 }
 
-async function createSnapshotFromProject(
-  project: Project,
-  targetOrg: string,
-  options?: WaitUntilDoneOptions
-): Promise<Snapshot> {
-  const pathToZip = await project.compressResources();
-  return SnapshotFactory.createFromZip(pathToZip, targetOrg, options);
-}
-
 async function getSnapshotForDryRun(
   project: Project,
   targetOrg: string,
@@ -118,5 +109,9 @@ async function getSnapshotForDryRun(
     );
   }
   startSpinner('Creating Snapshot');
-  return createSnapshotFromProject(project, targetOrg, options.waitUntilDone);
+  return SnapshotFactory.createSnapshotFromProject(
+    project,
+    targetOrg,
+    options.waitUntilDone
+  );
 }

@@ -33,6 +33,7 @@ export default class SourceCatalogNew extends CLICommand {
     IsAuthenticated(),
     HasNecessaryCoveoPrivileges(writeSourceContentPrivilege)
   )
+  //TODO: Refactor with push
   public async run() {
     const {flags, args} = await this.parse(SourceCatalogNew);
     const authenticatedClient = new AuthenticatedClient();

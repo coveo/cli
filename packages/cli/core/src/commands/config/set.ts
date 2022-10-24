@@ -9,6 +9,7 @@ import {
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {InvalidCommandError} from '../../lib/errors/InvalidCommandError';
 import {ConfigRenderer} from '@coveo/cli-commons/config/configRenderer';
+import type {Example} from '@oclif/core/lib/interfaces';
 
 export default class Set extends CLICommand {
   public static description = 'Modify the current Coveo CLI configuration.';
@@ -30,7 +31,12 @@ export default class Set extends CLICommand {
     }),
   };
 
-  public static examples = ['$ coveo config:set -o=myOrgId'];
+  public static examples: Example[] = [
+    {
+      command: 'coveo config:set --organization myOrgId',
+      description: 'connect to a different organization',
+    },
+  ];
 
   @Trackable()
   @Preconditions(IsAuthenticated())

@@ -22,6 +22,7 @@ jest.mock('./snapshotReporter');
 jest.mock('./reportPreviewer/reportPreviewer');
 jest.mock('../project/project');
 jest.mock('./expandedPreviewer/expandedPreviewer');
+jest.mock('./snapshotAccess');
 
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {ensureFileSync, writeJSONSync} from 'fs-extra';
@@ -34,6 +35,7 @@ import {join} from 'path';
 import {SnapshotOperationTimeoutError} from '../errors';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
+import {ensureSnapshotAccess} from './snapshotAccess';
 
 const mockedRetry = jest.mocked(retry);
 const mockedExpandedPreviewer = jest.mocked(ExpandedPreviewer);
@@ -50,6 +52,7 @@ const mockedExportSnapshot = jest.fn();
 const mockedApplySnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
+const mockedEnsureSnapshotAccess = jest.mocked(ensureSnapshotAccess);
 //#endregion Mocks
 
 describe('Snapshot', () => {
@@ -57,7 +60,6 @@ describe('Snapshot', () => {
   const snapshotId = 'target-org-snapshot-id';
 
   let snapshot: Snapshot;
-
   //#region MockFactories
   const getSuccessDryRunReport = (
     snapshotId: string
@@ -73,6 +75,10 @@ describe('Snapshot', () => {
     snapshotId: string
   ): ResourceSnapshotsReportModel =>
     getErrorReport(snapshotId, ResourceSnapshotsReportType.Apply);
+
+  const doMockSufficientResourceAccess = () => {
+    mockedEnsureSnapshotAccess.mockResolvedValueOnce();
+  };
 
   const doMockAuthenticatedClient = () => {
     mockedGetClient.mockImplementation(() =>
@@ -149,6 +155,7 @@ describe('Snapshot', () => {
 
   beforeEach(() => {
     doMockAuthenticatedClient();
+    doMockSufficientResourceAccess();
   });
 
   afterEach(() => {
@@ -185,6 +192,11 @@ describe('Snapshot', () => {
         stdout.stop();
       }
     );
+
+    fancyIt()('should ensure snapshot access', async () => {
+      await snapshot.validate();
+      expect(mockedEnsureSnapshotAccess).toHaveBeenCalledTimes(1);
+    });
 
     fancyIt()('should wait for the backend-operation to complete', async () => {
       await snapshot.validate();
@@ -314,6 +326,11 @@ describe('Snapshot', () => {
         stdout.stop();
       }
     );
+
+    fancyIt()('should ensure snapshot access', async () => {
+      await snapshot.apply();
+      expect(mockedEnsureSnapshotAccess).toHaveBeenCalledTimes(1);
+    });
 
     fancyIt()('should wait for the backend-operation to complete', async () => {
       await snapshot.apply();

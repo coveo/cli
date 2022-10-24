@@ -13,6 +13,7 @@ module.exports = {
     ...defaults.coveragePathIgnorePatterns,
     '/__test__/',
     '/__stub__/',
+    '/__testsUtils__/',
   ],
   clearMocks: true,
   testTimeout: 60e3,
