@@ -1,8 +1,9 @@
-import {setGlobalDispatcher, ProxyAgent} from 'undici';
+import {setGlobalDispatcher, ProxyAgent, FormData, fetch} from 'undici';
 import PlatformClient from '@coveo/platform-client';
 import {Config, Configuration} from '../config/config';
 import {castEnvironmentToPlatformClient} from './environment';
 import globalConfig from '../config/globalConfig';
+import {lt} from 'semver';
 
 export class AuthenticatedClient {
   public cfg: Config;
@@ -33,6 +34,12 @@ export class AuthenticatedClient {
       process.env['https_proxy'] || process.env['HTTPS_PROXY'];
     if (proxyServer) {
       setGlobalDispatcher(new ProxyAgent(proxyServer));
+    }
+    if (lt(process.version, '18.0.0')) {
+      // @ts-ignore
+      global['FormData'] = FormData;
+      // @ts-ignore
+      global['fetch'] = fetch;
     }
     return new PlatformClient({
       globalRequestSettings,
