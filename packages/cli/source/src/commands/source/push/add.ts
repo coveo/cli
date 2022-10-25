@@ -2,7 +2,6 @@ import {
   BatchUpdateDocumentsFromFiles,
   BuiltInTransformers,
   PushSource,
-  UploadBatchCallbackData,
 } from '@coveo/push-api-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {CliUx, Flags} from '@oclif/core';
@@ -27,8 +26,8 @@ import {
 } from '../../../lib/commonFlags';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {formatErrorMessage} from '../../../lib/addCommon';
-import {errorMessage, successMessage} from '../../../lib/userFeedback';
 import {getFileNames} from '../../../lib/getFileNames';
+import {AddDisplay} from '../../../lib/addDisplay';
 
 export default class SourcePushAdd extends CLICommand {
   public static description =
@@ -88,12 +87,15 @@ export default class SourcePushAdd extends CLICommand {
         : BuiltInTransformers.identity,
     };
 
+    const display = new AddDisplay();
     await source.setSourceStatus(args.sourceId, 'REFRESH');
     await source
       .batchUpdateDocumentsFromFiles(args.sourceId, fileNames, options)
-      .onBatchUpload((data) => this.successMessageOnAdd(data))
-      .onBatchError((data) => this.errorMessageOnAdd(data))
+      .onBatchUpload((data) => display.successMessageOnAdd(data))
+      .onBatchError((err, data) => display.errorMessageOnAdd(err, data))
       .batch();
+
+    display.printSummary();
   }
 
   public catch(err?: Error & {exitCode?: number}) {
@@ -117,37 +119,11 @@ export default class SourcePushAdd extends CLICommand {
     });
   }
 
-  // TODO: Refactor with eponym method of `SourceCatalog`
-  private successMessageOnAdd({batch, files, res}: UploadBatchCallbackData) {
-    // Display the first 5 files (from the list of all files) being processed for end user feedback
-    // Don't want to clutter the output too much if the list is very long.
-
-    const numAdded = batch.length;
-    let fileNames = files.slice(0, 5).join(', ');
-    if (files.length > 5) {
-      fileNames += ` and ${files.length - 5} more ...`;
-    }
-
-    return successMessage(
-      this,
-      `Success: ${green(numAdded)} document${
-        numAdded > 1 ? 's' : ''
-      } accepted by the Push API from ${green(fileNames)}.`,
-      res
-    );
-  }
-
   private async showDeprecatedFlagWarning() {
     // TODO: CDX-856: no longer needed once flags are removed
     const {flags} = await this.parse(SourcePushAdd);
     if (flags.file || flags.folder) {
       CliUx.ux.warn('Use the `files` flag instead');
     }
-  }
-
-  private errorMessageOnAdd(err: unknown) {
-    return errorMessage(this, 'Error while trying to add document.', err, {
-      exit: true,
-    });
   }
 }
