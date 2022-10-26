@@ -28,7 +28,7 @@ export async function tryTransferFromOrganization({
   }
 
   const shouldTransfer = await CliUx.ux.confirm(
-    `\nWould you like to try transfering the vault entries from ${formatOrgId(
+    `\nWould you like to try transferring the vault entries from ${formatOrgId(
       originOrgId
     )} to the destination organization ${formatOrgId(snapshot.targetId)}? (y/n)`
   );
@@ -70,7 +70,7 @@ export async function tryTransferFromOrganization({
   });
 
   try {
-    startSpinner('Transfering vault entries');
+    startSpinner('transferring vault entries');
     await platformClient.vault.import(
       snapshot.id,
       originOrgId,
@@ -80,7 +80,7 @@ export async function tryTransferFromOrganization({
     return true;
   } catch (error) {
     stopSpinner({success: false});
-    CliUx.ux.warn('Error encountered while transfering vault entries`');
+    CliUx.ux.warn('Error encountered while transferring vault entries`');
     CliUx.ux.warn(typeof error === 'string' ? error : JSON.stringify(error));
     return false;
   }
