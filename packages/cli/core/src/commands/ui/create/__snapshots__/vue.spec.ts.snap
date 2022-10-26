@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ui:create:vue when a directory with the projectName exists when the directory is empty should use the dir and init the project 1`] = `
+[
+  "npm",
+  [
+    "init",
+    "@coveo/headless-vue@1.0.0",
+  ],
+  {
+    "cwd": "/foo/bar/myapp",
+  },
+]
+`;
+
+exports[`ui:create:vue when a directory with the projectName exists when the directory is empty should use the dir and init the project 2`] = `
+[
+  "npm",
+  [
+    "install",
+  ],
+  {
+    "cwd": "/foo/bar/myapp",
+  },
+]
+`;
+
+exports[`ui:create:vue when a directory with the projectName exists when the directory is empty should use the dir and init the project 3`] = `
+[
+  "/foo/bar/myapp/.env",
+  "VITE_APP_PLATFORM_URL=https://platformdev.cloud.coveo.com
+VITE_APP_ORGANIZATION_ID=my-org
+VITE_APP_API_KEY=foo
+VITE_APP_USER_EMAIL=bob@coveo.com",
+]
+`;
+
+exports[`ui:create:vue when a directory with the projectName exists when the directory is not empty should exit with an error 1`] = `"/foo/bar/myapp is a non-empty directory, use an empty directory or unused name for your project"`;
+
+exports[`ui:create:vue when a file with the projectName exists should exit with an error 1`] = `"/foo/bar/myapp already exists and is not a directory, use an unused directory name for your project"`;
+
+exports[`ui:create:vue when the projectName does not exists yet should create the dir and init the project 1`] = `
+[
+  "npm",
+  [
+    "init",
+    "@coveo/headless-vue@1.0.0",
+  ],
+  {
+    "cwd": "/foo/bar/myapp",
+  },
+]
+`;
+
+exports[`ui:create:vue when the projectName does not exists yet should create the dir and init the project 2`] = `
+[
+  "npm",
+  [
+    "install",
+  ],
+  {
+    "cwd": "/foo/bar/myapp",
+  },
+]
+`;
+
+exports[`ui:create:vue when the projectName does not exists yet should create the dir and init the project 3`] = `
+[
+  "/foo/bar/myapp/.env",
+  "VITE_APP_PLATFORM_URL=https://platformdev.cloud.coveo.com
+VITE_APP_ORGANIZATION_ID=my-org
+VITE_APP_API_KEY=foo
+VITE_APP_USER_EMAIL=bob@coveo.com",
+]
+`;
