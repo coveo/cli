@@ -93,6 +93,7 @@
     "packages/*",
     "packages/ui/*",
     "packages/ui/atomic/*",
+    "packages/ui/vue/*",
     "packages/cli/*"
   ]
 }
