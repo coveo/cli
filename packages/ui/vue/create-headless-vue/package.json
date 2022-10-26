@@ -1,0 +1,22 @@
+{
+  "name": "@coveo/create-headless-vue",
+  "description": "Initialize a Vite+Vue+Coveo Headless project",
+  "authors": "Coveo",
+  "version": "0.0.6",
+  "main": "index.js",
+  "bin": "index.js",
+  "type": "module",
+  "files": [
+    "index.js",
+    "template/*"
+  ],
+  "scripts": {
+    "prepublishOnly": "rimraf ./template && node prepublish.js"
+  },
+  "devDependencies": {
+    "rimraf": "3.0.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
