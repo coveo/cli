@@ -2,7 +2,7 @@
   "name": "@coveo/create-headless-vue",
   "description": "Initialize a Vite+Vue+Coveo Headless project",
   "authors": "Coveo",
-  "version": "0.0.6",
+  "version": "0.0.1",
   "main": "index.js",
   "bin": "index.js",
   "type": "module",

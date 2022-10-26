@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
+    "start": "npm run dev",
     "dev": "vite",
     "build": "run-p type-check build-only",
     "preview": "vite preview",
@@ -12,7 +13,6 @@
   },
   "dependencies": {
     "@coveo/headless": "1.109.0",
-    "dotenv": "^16.0.3",
     "vue": "^3.2.41",
     "vue-router": "^4.1.5",
     "vuetify": "^3.0.0-beta.14",
