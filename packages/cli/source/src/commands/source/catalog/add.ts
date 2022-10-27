@@ -1,9 +1,4 @@
-import {
-  CatalogSource,
-  BuiltInTransformers,
-  FieldAnalyser,
-  parseAndGetDocumentBuilderFromJSONDocument,
-} from '@coveo/push-api-client';
+import {CatalogSource, BuiltInTransformers} from '@coveo/push-api-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Flags} from '@oclif/core';
 import {startSpinner} from '@coveo/cli-commons/utils/ux';
@@ -72,6 +67,8 @@ export default class SourceCatalogAdd extends CLICommand {
     },
   ];
 
+  private display = new AddDisplay();
+
   @Trackable()
   @Preconditions(
     IsAuthenticated(),
@@ -113,22 +110,24 @@ export default class SourceCatalogAdd extends CLICommand {
         : BuiltInTransformers.identity,
     };
 
-    const display = new AddDisplay();
     const batchOperation = flags.fullUpload
       ? source.batchStreamDocumentsFromFiles.bind(source)
       : source.batchUpdateDocumentsFromFiles.bind(source);
 
     await batchOperation(args.sourceId, fileNames, options)
-      .onBatchUpload((data) => display.successMessageOnAdd(data))
-      .onBatchError((err, data) => display.errorMessageOnAdd(err, data))
+      .onBatchUpload((data) => this.display.successMessageOnAdd(data))
+      .onBatchError((err, data) => this.display.errorMessageOnAdd(err, data))
       .batch();
-
-    display.printSummary();
   }
 
   public catch(err?: Error & {exitCode?: number}) {
     formatErrorMessage(err);
     return super.catch(err);
+  }
+
+  protected async finally(_?: Error) {
+    this.display.printSummary();
+    await super.finally(_);
   }
 
   private async isSourceEmpty(sourceId: string): Promise<boolean> {

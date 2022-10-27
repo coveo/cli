@@ -6,7 +6,6 @@ import {
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {CliUx, Flags} from '@oclif/core';
 import {startSpinner} from '@coveo/cli-commons/utils/ux';
-import {green} from 'chalk';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
@@ -62,6 +61,8 @@ export default class SourcePushAdd extends CLICommand {
     },
   ];
 
+  private display = new AddDisplay();
+
   @Trackable()
   @Preconditions(
     IsAuthenticated(),
@@ -87,15 +88,12 @@ export default class SourcePushAdd extends CLICommand {
         : BuiltInTransformers.identity,
     };
 
-    const display = new AddDisplay();
     await source.setSourceStatus(args.sourceId, 'REFRESH');
     await source
       .batchUpdateDocumentsFromFiles(args.sourceId, fileNames, options)
-      .onBatchUpload((data) => display.successMessageOnAdd(data))
-      .onBatchError((err, data) => display.errorMessageOnAdd(err, data))
+      .onBatchUpload((data) => this.display.successMessageOnAdd(data))
+      .onBatchError((err, data) => this.display.errorMessageOnAdd(err, data))
       .batch();
-
-    display.printSummary();
   }
 
   public catch(err?: Error & {exitCode?: number}) {
@@ -107,6 +105,7 @@ export default class SourcePushAdd extends CLICommand {
     const {args} = await this.parse(SourcePushAdd);
     const source = this.getSource();
     await source.setSourceStatus(args.sourceId, 'IDLE');
+    this.display.printSummary();
     await super.finally(_);
   }
 

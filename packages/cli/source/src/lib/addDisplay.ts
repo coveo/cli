@@ -1,8 +1,7 @@
-import {green, red} from 'chalk';
+import {green, red, yellow} from 'chalk';
 import {UploadBatchCallbackData} from '@coveo/push-api-client';
 import {errorMessage, successMessage} from './userFeedback';
 import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/utils/string';
-import {ProgressBar} from './progressBar';
 import {CliUx} from '@oclif/core';
 import {UploadProgress} from '@coveo/push-api-client/dist/definitions/interfaces';
 
@@ -10,10 +9,10 @@ export interface AddSummary {
   added: number;
   failed: number;
   remaining?: number;
+  total?: number;
 }
 
 export class AddDisplay {
-  private bar = new ProgressBar();
   private summary: AddSummary = {
     added: 0,
     failed: 0,
@@ -50,9 +49,7 @@ export class AddDisplay {
     {batch, progress}: UploadBatchCallbackData
   ) {
     this.refreshSummary(0, batch.length, progress);
-    errorMessage('Error while trying to add document.', e, {
-      exit: true,
-    });
+    errorMessage('Error while trying to add document.', e, {exit: true});
   }
 
   private refreshSummary(
@@ -63,25 +60,36 @@ export class AddDisplay {
     this.summary.added += added;
     this.summary.failed += failed;
     this.summary.remaining = progress?.remainingDocumentCount;
+    this.summary.total = progress?.totalDocumentCount;
   }
 
   public printSummary() {
-    const {added, failed, remaining} = this.summary;
+    const {added, failed, remaining, total} = this.summary;
+    const pluralized = (docCount: number) =>
+      pluralizeIfNeeded(['document', 'documents'], docCount);
+
+    const formatCount = (count: number) => {
+      return `${count}${total ? ['/', total].join('') : ''}`;
+    };
+
     CliUx.ux.styledHeader('Push Summary');
 
-    const pluralized = (docCount: number) =>
-      `${docCount} ${pluralizeIfNeeded(['document', 'documents'], docCount)}`;
-
-    CliUx.ux.log(`${green(pluralized(added))} successfully sent to the API`);
+    CliUx.ux.log(
+      `${formatCount(added)} ${green(
+        pluralized(added)
+      )} successfully sent to the API`
+    );
 
     if (failed > 0) {
       CliUx.ux.log(
-        `${red(pluralized(failed))} failed to upload because of an error`
+        `${formatCount(failed)} ${red(pluralized(failed))} failed to be sent`
       );
     }
 
     if (remaining && remaining > 0) {
-      CliUx.ux.log(`${red(pluralized(remaining))} unprocessed documents`);
+      CliUx.ux.log(
+        `${formatCount(remaining)} unprocessed ${yellow(pluralized(remaining))}`
+      );
     }
   }
 }
