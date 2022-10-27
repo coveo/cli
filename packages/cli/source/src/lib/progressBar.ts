@@ -1,11 +1,11 @@
 import {MultiBar, SingleBar} from 'cli-progress';
+import {cyan} from 'chalk';
 
 export class ProgressBar {
   private bar?: SingleBar;
-  private total?: number;
   private multibar: MultiBar;
   private static container = {
-    format: ' {bar} | {value}/{total} documents',
+    format: `Upload Progress | ${cyan('{bar}')} | {value}/{total} documents`,
     hideCursor: true,
     barCompleteChar: '\u2588',
     barIncompleteChar: '\u2591',
@@ -30,7 +30,7 @@ export class ProgressBar {
   public ensureInitialization(startValue: number, total?: number) {
     if (total && !this.bar) {
       this.bar = this.multibar.create(total, startValue);
-      this.total = total;
+      this.bar.increment();
     }
     return this;
   }

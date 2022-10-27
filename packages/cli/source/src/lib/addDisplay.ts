@@ -1,7 +1,8 @@
-import {green, red, yellow} from 'chalk';
+import {green, red} from 'chalk';
 import {UploadBatchCallbackData} from '@coveo/push-api-client';
 import {errorMessage, successMessage} from './userFeedback';
 import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/utils/string';
+import {ProgressBar} from './progressBar';
 import {CliUx} from '@oclif/core';
 import {UploadProgress} from '@coveo/push-api-client/dist/definitions/interfaces';
 
@@ -13,6 +14,7 @@ export interface AddSummary {
 }
 
 export class AddDisplay {
+  private bar = new ProgressBar();
   private summary: AddSummary = {
     added: 0,
     failed: 0,
@@ -32,7 +34,7 @@ export class AddDisplay {
     }
     const numAdded = batch.length;
     const plurableDoc: Plurable = ['document', 'documents'];
-    successMessage(
+    const message = successMessage(
       `Success: ${green(numAdded)} ${pluralizeIfNeeded(
         plurableDoc,
         numAdded
@@ -41,15 +43,21 @@ export class AddDisplay {
     );
 
     this.refreshSummary(batch.length, 0, progress);
-    // TODO: CDX-712 display progress bar if progress data is available
+    this.bar
+      .ensureInitialization(numAdded, progress?.totalDocumentCount)
+      .increment(numAdded)
+      .log(message);
   }
 
   public errorMessageOnAdd(
     e: unknown,
     {batch, progress}: UploadBatchCallbackData
   ) {
-    this.refreshSummary(0, batch.length, progress);
-    errorMessage('Error while trying to add document.', e, {exit: true});
+    const numAdded = batch.length;
+    const message = errorMessage('Error while trying to add document.', e);
+    this.refreshSummary(0, numAdded, progress);
+    this.bar.increment(numAdded).log(message);
+    // TODO: find a way to bubble up the error
   }
 
   private refreshSummary(
@@ -68,28 +76,14 @@ export class AddDisplay {
     const pluralized = (docCount: number) =>
       pluralizeIfNeeded(['document', 'documents'], docCount);
 
-    const formatCount = (count: number) => {
-      return `${count}${total ? ['/', total].join('') : ''}`;
-    };
-
     CliUx.ux.styledHeader('Push Summary');
 
     CliUx.ux.log(
-      `${formatCount(added)} ${green(
-        pluralized(added)
-      )} successfully sent to the API`
+      `${added} ${green(pluralized(added))} successfully sent to the API`
     );
 
     if (failed > 0) {
-      CliUx.ux.log(
-        `${formatCount(failed)} ${red(pluralized(failed))} failed to be sent`
-      );
-    }
-
-    if (remaining && remaining > 0) {
-      CliUx.ux.log(
-        `${formatCount(remaining)} unprocessed ${yellow(pluralized(remaining))}`
-      );
+      CliUx.ux.log(`${failed} ${red(pluralized(failed))} failed to be sent`);
     }
   }
 }
