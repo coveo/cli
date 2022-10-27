@@ -1,5 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`source:catalog:add when the batch upload fails returns a summary even if an error is thrown 1`] = `
+"=== Push Summary
+
+0/10 document successfully sent to the API
+2/10 documents failed to be sent
+8/10 unprocessed documents
+"
+`;
+
 exports[`source:catalog:add when the batch upload fails returns an information message on add failure from the API 1`] = `
 "Error while trying to add document.
 
@@ -24,35 +33,53 @@ If you are still getting this message despite having already performed a full ca
 exports[`source:catalog:add when the batch upload is successful when uploading 1 documents should print the appropriate # of documents 1`] = `
 "Success: 1 document accepted by the API from filename0.Status code: 202 👌
     
+=== Push Summary
+
+1/1 document successfully sent to the API
 "
 `;
 
 exports[`source:catalog:add when the batch upload is successful when uploading 2 documents should print the appropriate # of documents 1`] = `
 "Success: 2 documents accepted by the API from filename0, filename1.Status code: 202 👌
     
+=== Push Summary
+
+2/2 documents successfully sent to the API
 "
 `;
 
 exports[`source:catalog:add when the batch upload is successful when uploading 3 documents should print the appropriate # of documents 1`] = `
 "Success: 3 documents accepted by the API from filename0, filename1, filename2.Status code: 202 👌
     
+=== Push Summary
+
+3/3 documents successfully sent to the API
 "
 `;
 
 exports[`source:catalog:add when the batch upload is successful when uploading 4 documents should print the appropriate # of documents 1`] = `
 "Success: 4 documents accepted by the API from filename0, filename1, filename2, filename3.Status code: 202 👌
     
+=== Push Summary
+
+4/4 documents successfully sent to the API
 "
 `;
 
 exports[`source:catalog:add when the batch upload is successful when uploading 5 documents should print the appropriate # of documents 1`] = `
 "Success: 5 documents accepted by the API from filename0, filename1, filename2, filename3, filename4.Status code: 202 👌
     
+=== Push Summary
+
+5/5 documents successfully sent to the API
 "
 `;
 
 exports[`source:catalog:add when the batch upload is successful when uploading 6 documents should print the appropriate # of documents 1`] = `
 "Success: 6 documents accepted by the API from filename0, filename1, filename2, filename3, filename4 and 1 more ....Status code: 202 👌
     
+=== Push Summary
+
+6/6 documents successfully sent to the API
 "
 `;
