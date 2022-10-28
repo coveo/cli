@@ -103,14 +103,7 @@ describe('source:push:add', () => {
     test
       .stdout()
       .stderr()
-      .command([
-        'source:push:add',
-        'mysource',
-        '-f',
-        'foo.json',
-        '-d',
-        'directory',
-      ])
+      .command(['source:push:add', 'mysource', '-f', 'directory', 'foo.json'])
       .it('should accept files and folder within the same command', () => {
         expect(mockBatchUpdate).toHaveBeenCalledWith(
           expect.anything(),
@@ -159,26 +152,6 @@ describe('source:push:add', () => {
           expect.objectContaining({createFields: false})
         );
       });
-
-    describe('when using the -d flag', () => {
-      test
-        .stdout()
-        .stderr()
-        .command(['source:push:add', 'mysource', '-d', 'somepath'])
-        .it(
-          'should output feedback message when uploading documents',
-          (ctx) => {
-            expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
-          }
-        );
-      test
-        .stdout()
-        .stderr()
-        .command(['source:push:add', 'mysource', '-d', 'somepath'])
-        .it('should show deprecated flag warning', (ctx) => {
-          expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
-        });
-    });
 
     describe.each([1, 2, 3, 4, 5, 6])(
       'when uploading %d documents',
