@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {CliUx, Flags} from '@oclif/core';
+import {Flags} from '@oclif/core';
 import {PushSource} from '@coveo/push-api-client';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {
@@ -123,7 +123,10 @@ export default class SourcePushDelete extends CLICommand {
   }
 
   private errorMessageOnDeletion(toDelete: string, e: unknown) {
-    errorMessage(`Error while trying to delete document: ${red(toDelete)}.`, e);
+    return errorMessage(
+      `Error while trying to delete document: ${red(toDelete)}.`,
+      e
+    );
     // TODO: if we do not exit on error, we need log the UA event somehow
   }
 

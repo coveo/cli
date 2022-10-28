@@ -1,8 +1,7 @@
-import {green, red} from 'chalk';
+import {green} from 'chalk';
 import {UploadBatchCallbackData} from '@coveo/push-api-client';
 import {errorMessage, successMessage} from './userFeedback';
 import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/utils/string';
-import {ProgressBar} from './progressBar';
 import {CliUx} from '@oclif/core';
 import {UploadProgress} from '@coveo/push-api-client/dist/definitions/interfaces';
 
@@ -14,7 +13,6 @@ export interface AddSummary {
 }
 
 export class AddDisplay {
-  private bar = new ProgressBar();
   private summary: AddSummary = {
     added: 0,
     failed: 0,
@@ -34,30 +32,25 @@ export class AddDisplay {
     }
     const numAdded = batch.length;
     const plurableDoc: Plurable = ['document', 'documents'];
-    const message = successMessage(
-      `Success: ${green(numAdded)} ${pluralizeIfNeeded(
-        plurableDoc,
-        numAdded
-      )} accepted by the API from ${green(fileNames)}.`,
-      res
-    );
+    const formattedCount = green(this.getRatioCount(numAdded));
+    const pluralizedDoc = pluralizeIfNeeded(plurableDoc, numAdded);
 
     this.refreshSummary(batch.length, 0, progress);
-    this.bar
-      .ensureInitialization(numAdded, progress?.totalDocumentCount)
-      .increment(numAdded)
-      .log(message);
+    successMessage(
+      `Success: ${formattedCount} ${pluralizedDoc} accepted by the API from ${green(
+        fileNames
+      )}.`,
+      res
+    );
   }
 
   public errorMessageOnAdd(
     e: unknown,
     {batch, progress}: UploadBatchCallbackData
   ) {
-    const numAdded = batch.length;
-    const message = errorMessage('Error while trying to add document.', e);
-    this.refreshSummary(0, numAdded, progress);
-    this.bar.increment(numAdded).log(message);
-    // TODO: find a way to bubble up the error
+    this.refreshSummary(0, batch.length, progress);
+    errorMessage('Error while trying to add document.', e);
+    // TODO: bubble up the error to amplitude
   }
 
   private refreshSummary(
@@ -71,19 +64,34 @@ export class AddDisplay {
     this.summary.total = progress?.totalDocumentCount;
   }
 
+  private getRatioCount = (count: number) => {
+    const {total} = this.summary;
+    return `${count}${total ? ['/', total].join('') : ''}`;
+  };
+
   public printSummary() {
-    const {added, failed, remaining, total} = this.summary;
+    const {added, failed, remaining} = this.summary;
     const pluralized = (docCount: number) =>
       pluralizeIfNeeded(['document', 'documents'], docCount);
 
     CliUx.ux.styledHeader('Push Summary');
 
     CliUx.ux.log(
-      `${added} ${green(pluralized(added))} successfully sent to the API`
+      `${this.getRatioCount(added)} ${pluralized(
+        added
+      )} successfully sent to the API`
     );
 
     if (failed > 0) {
-      CliUx.ux.log(`${failed} ${red(pluralized(failed))} failed to be sent`);
+      CliUx.ux.log(
+        `${this.getRatioCount(failed)} ${pluralized(failed)} failed to be sent`
+      );
+    }
+
+    if (remaining && remaining > 0) {
+      CliUx.ux.log(
+        `${this.getRatioCount(remaining)} unprocessed ${pluralized(remaining)}`
+      );
     }
   }
 }
