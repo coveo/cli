@@ -24,6 +24,7 @@ export class AddDisplay {
     res,
     progress,
   }: UploadBatchCallbackData) {
+    this.refreshSummary(batch.length, 0, progress);
     // Display the first 5 files (from the list of all files) being processed for end user feedback.
     // Don't want to clutter the output too much if the list is very long.
     let fileNames = files.slice(0, 5).join(', ');
@@ -32,15 +33,12 @@ export class AddDisplay {
     }
     const numAdded = batch.length;
     const plurableDoc: Plurable = ['document', 'documents'];
-    const formattedCount = green(this.getRatioCount(numAdded));
-    const pluralizedDoc = pluralizeIfNeeded(plurableDoc, numAdded);
-
-    this.refreshSummary(batch.length, 0, progress);
     successMessage(
-      `Success: ${formattedCount} ${pluralizedDoc} accepted by the API from ${green(
-        fileNames
-      )}.`,
-      res
+      `Success: ${green(numAdded)} ${pluralizeIfNeeded(
+        plurableDoc,
+        numAdded
+      )} accepted by the API from ${green(fileNames)}`,
+      {res, remaining: this.summary.remaining}
     );
   }
 
@@ -64,33 +62,32 @@ export class AddDisplay {
     this.summary.total = progress?.totalDocumentCount;
   }
 
-  private getRatioCount = (count: number) => {
-    const {total} = this.summary;
-    return `${count}${total ? ['/', total].join('') : ''}`;
-  };
-
   public printSummary() {
     const {added, failed, remaining} = this.summary;
+    const getRatioCount = (count: number) => {
+      const {total} = this.summary;
+      return `${count}${total ? ['/', total].join('') : ''}`;
+    };
     const pluralized = (docCount: number) =>
       pluralizeIfNeeded(['document', 'documents'], docCount);
 
     CliUx.ux.styledHeader('Push Summary');
 
     CliUx.ux.log(
-      `${this.getRatioCount(added)} ${pluralized(
+      `${getRatioCount(added)} ${pluralized(
         added
       )} successfully sent to the API`
     );
 
     if (failed > 0) {
       CliUx.ux.log(
-        `${this.getRatioCount(failed)} ${pluralized(failed)} failed to be sent`
+        `${getRatioCount(failed)} ${pluralized(failed)} failed to be sent`
       );
     }
 
     if (remaining && remaining > 0) {
       CliUx.ux.log(
-        `${this.getRatioCount(remaining)} unprocessed ${pluralized(remaining)}`
+        `${getRatioCount(remaining)} unprocessed ${pluralized(remaining)}`
       );
     }
   }
