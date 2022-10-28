@@ -123,12 +123,8 @@ export default class SourcePushDelete extends CLICommand {
   }
 
   private errorMessageOnDeletion(toDelete: string, e: unknown) {
+    errorMessage(`Error while trying to delete document: ${red(toDelete)}.`, e);
     // TODO: if we do not exit on error, we need log the UA event somehow
-    const message = errorMessage(
-      `Error while trying to delete document: ${red(toDelete)}.`,
-      e
-    );
-    CliUx.ux.warn(message);
   }
 
   private successMessageOnDeletion(toDelete: string, res: AxiosResponse) {
