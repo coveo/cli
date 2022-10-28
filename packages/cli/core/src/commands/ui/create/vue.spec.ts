@@ -36,6 +36,7 @@ import {
   Dirent,
   writeFileSync,
 } from 'node:fs';
+import {absolutePathFormater} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
 
 describe('ui:create:vue', () => {
   const mockedConfig = jest.mocked(Config);
@@ -51,7 +52,8 @@ describe('ui:create:vue', () => {
   const mockedReadDirSync = jest.mocked(readdirSync);
   const mockedMkdirSync = jest.mocked(mkdirSync);
   const mockedWriteFileSync = jest.mocked(writeFileSync);
-  const fooBarDirectoryMatcher = /(\w:)?(\\\\|\/)foo(\\\\|\/)bar(\\\\|\/)myapp/;
+  const fooBarDirectoryMatcher =
+    /(\w:)?(\\\\|\/)foo(\\\\|\/)bar(\\\\|\/)myapp/gm;
   const mockedCreateImpersonateApiKey = jest.fn();
   const preconditionStatus = {
     node: true,
@@ -178,7 +180,7 @@ describe('ui:create:vue', () => {
       .stderr()
       .command(['ui:create:vue', 'myapp'])
       .catch((err) => {
-        expect(err.message).toMatchSnapshot();
+        expect(absolutePathFormater(err.message)).toMatchSnapshot();
       })
       .it('should exit with an error', () => {
         expect(mockedSpawnProcess).not.toBeCalled();
@@ -208,7 +210,7 @@ describe('ui:create:vue', () => {
         .stderr()
         .command(['ui:create:vue', 'myapp'])
         .catch((err) => {
-          expect(err.message).toMatchSnapshot();
+          expect(absolutePathFormater(err.message)).toMatchSnapshot();
         })
         .it('should exit with an error', () => {
           expect(mockedSpawnProcess).not.toBeCalled();
