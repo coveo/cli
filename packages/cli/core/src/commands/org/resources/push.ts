@@ -33,6 +33,7 @@ import {
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
+import {Example} from '@oclif/core/lib/interfaces';
 
 export default class Push extends CLICommand {
   public static description =
@@ -51,11 +52,25 @@ export default class Push extends CLICommand {
     }),
   };
 
-  public static examples = [
-    'coveo org:resources:push',
-    'coveo org:resources:push -o=myOrgId',
-    'coveo org:resources:push -o=myOrgId -p=none',
-    'coveo org:resources:push -o=myOrgId --deleteMissingResources',
+  public static examples: Example[] = [
+    {
+      command: 'coveo org:resources:push',
+      description:
+        'Preview, validate and deploy resources to the organization in which you are authenticated',
+    },
+    {
+      command: 'coveo org:resources:push --organization myorgid',
+      description:
+        'Preview, validate and deploy resources to the organization whose ID is "myorgid"',
+    },
+    {
+      command: 'coveo org:resources:push --previewLevel none',
+      description: 'Validate and deploy resources without displaying a preview',
+    },
+    {
+      command: 'coveo org:resources:push --deleteMissingResources',
+      description: `Preview, validate and deploy resources, but also delete from the organization all the resources that are not available inside the "${Project.resourceFolderName}/" directory`,
+    },
   ];
 
   @Trackable()
