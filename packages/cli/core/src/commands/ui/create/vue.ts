@@ -1,6 +1,6 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Flags} from '@oclif/core';
-import {join, resolve} from 'node:path';
+import {join} from 'node:path';
 import {Config} from '@coveo/cli-commons/config/config';
 import {
   Preconditions,
@@ -69,7 +69,7 @@ export default class Vue extends CLICommand {
   public async run() {
     const {args, flags} = await this.parse(Vue);
 
-    const dirName = resolve(cwd(), args.name);
+    const dirName = join(cwd(), args.name);
     this.createDirectory(dirName);
     await this.initializeProject(dirName, flags.version);
     await this.installDependencies(dirName);

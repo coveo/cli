@@ -9,9 +9,13 @@ jest.mock('@coveo/cli-commons/preconditions/authenticated');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
+jest.mock('../../../lib/utils/os');
+
 jest.mock('@coveo/platform-client');
 jest.mock('node:fs');
-
+jest.mock('node:path');
+import {join} from 'node:path';
+import {join as posixJoin} from 'node:path/posix';
 import {test} from '@oclif/test';
 import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
@@ -36,7 +40,8 @@ import {
   Dirent,
   writeFileSync,
 } from 'node:fs';
-import {absolutePathFormater} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
+import {formatAbsolutePath} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
+import {appendCmdIfWindows} from '../../../lib/utils/os';
 
 describe('ui:create:vue', () => {
   const mockedConfig = jest.mocked(Config);
@@ -52,8 +57,9 @@ describe('ui:create:vue', () => {
   const mockedReadDirSync = jest.mocked(readdirSync);
   const mockedMkdirSync = jest.mocked(mkdirSync);
   const mockedWriteFileSync = jest.mocked(writeFileSync);
-  const fooBarDirectoryMatcher =
-    /(\w:)?(\\\\|\/)foo(\\\\|\/)bar(\\\\|\/)myapp/gm;
+  const mockAppendCmdIfWindows = jest.mocked(appendCmdIfWindows);
+  const mockedPathJoin = jest.mocked(join);
+  const fooBarDirectoryMatcher = /(\w:)?(\\|\/)foo(\\|\/)bar(\\|\/)myapp/gm;
   const mockedCreateImpersonateApiKey = jest.fn();
   const preconditionStatus = {
     node: true,
@@ -118,6 +124,16 @@ describe('ui:create:vue', () => {
     }));
   };
 
+  const doMockAppendCmdIfWindows = () => {
+    mockAppendCmdIfWindows.mockImplementation(
+      (input: TemplateStringsArray) => `${input}`
+    );
+  };
+
+  const doMockPathJoin = () => {
+    mockedPathJoin.mockImplementation(posixJoin);
+  };
+
   beforeEach(() => {
     doMockedGetPackageVersion();
     doMockSpawnProcess();
@@ -126,6 +142,8 @@ describe('ui:create:vue', () => {
     doMockAuthenticatedClient();
     doMockPreconditions();
     doMockNodeProcess();
+    doMockPathJoin();
+    doMockAppendCmdIfWindows();
     preconditionStatus.node = true;
     preconditionStatus.npx = true;
     preconditionStatus.apiKey = true;
@@ -180,7 +198,7 @@ describe('ui:create:vue', () => {
       .stderr()
       .command(['ui:create:vue', 'myapp'])
       .catch((err) => {
-        expect(absolutePathFormater(err.message)).toMatchSnapshot();
+        expect(formatAbsolutePath(err.message)).toMatchSnapshot();
       })
       .it('should exit with an error', () => {
         expect(mockedSpawnProcess).not.toBeCalled();
@@ -210,7 +228,7 @@ describe('ui:create:vue', () => {
         .stderr()
         .command(['ui:create:vue', 'myapp'])
         .catch((err) => {
-          expect(absolutePathFormater(err.message)).toMatchSnapshot();
+          expect(formatAbsolutePath(err.message)).toMatchSnapshot();
         })
         .it('should exit with an error', () => {
           expect(mockedSpawnProcess).not.toBeCalled();
