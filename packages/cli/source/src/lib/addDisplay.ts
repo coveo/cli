@@ -1,9 +1,10 @@
-import {green, red, yellow} from 'chalk';
+import {green} from 'chalk';
 import {UploadBatchCallbackData} from '@coveo/push-api-client';
 import {errorMessage, successMessage} from './userFeedback';
 import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/utils/string';
 import {CliUx} from '@oclif/core';
 import {UploadProgress} from '@coveo/push-api-client/dist/definitions/interfaces';
+import {logNewLine} from './addCommon';
 
 export interface AddSummary {
   added: number;
@@ -75,21 +76,21 @@ export class AddDisplay {
     CliUx.ux.styledHeader('Push Summary');
 
     CliUx.ux.log(
-      `${formatCount(added)} ${green(
-        pluralized(added)
-      )} successfully sent to the API`
+      `${formatCount(added)} ${pluralized(added)} successfully sent to the API`
     );
 
     if (failed > 0) {
       CliUx.ux.log(
-        `${formatCount(failed)} ${red(pluralized(failed))} failed to be sent`
+        `${formatCount(failed)} ${pluralized(failed)} failed to be sent`
       );
     }
 
     if (remaining && remaining > 0) {
       CliUx.ux.log(
-        `${formatCount(remaining)} unprocessed ${yellow(pluralized(remaining))}`
+        `${formatCount(remaining)} unprocessed ${pluralized(remaining)}`
       );
     }
+
+    logNewLine();
   }
 }
