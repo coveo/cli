@@ -1,19 +1,24 @@
 jest.mock('../../../lib/decorators/preconditions/npx');
 jest.mock('../../../lib/decorators/preconditions/node');
 jest.mock('@coveo/cli-commons/preconditions/apiKeyPrivilege');
-jest.mock('../../../lib/utils/process');
-jest.mock('../../../lib/oauth/oauth');
-jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
 jest.mock('@coveo/cli-commons/preconditions/authenticated');
 
+jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
+jest.mock('@coveo/platform-client');
+
+jest.mock('../../../lib/utils/process');
+jest.mock('../../../lib/oauth/oauth');
 jest.mock('../../../lib/utils/misc');
 jest.mock('../../../lib/utils/os');
 
-jest.mock('@coveo/platform-client');
 jest.mock('node:fs');
 jest.mock('node:path');
+jest.mock('node:process', () => ({
+  cwd: () => '/foo/bar',
+}));
+
 import {join} from 'node:path';
 import {join as posixJoin} from 'node:path/posix';
 import {test} from '@oclif/test';
@@ -118,12 +123,6 @@ describe('ui:create:vue', () => {
     );
   };
 
-  const doMockNodeProcess = () => {
-    jest.mock('node:process', () => ({
-      cwd: () => '/foo/bar',
-    }));
-  };
-
   const doMockAppendCmdIfWindows = () => {
     mockAppendCmdIfWindows.mockImplementation(
       (input: TemplateStringsArray) => `${input}`
@@ -141,7 +140,6 @@ describe('ui:create:vue', () => {
     doMockConfiguration();
     doMockAuthenticatedClient();
     doMockPreconditions();
-    doMockNodeProcess();
     doMockPathJoin();
     doMockAppendCmdIfWindows();
     preconditionStatus.node = true;
