@@ -135,7 +135,7 @@ export default class SourcePushDelete extends CLICommand {
       `The delete request for document: ${green(
         toDelete
       )} was accepted by the Push API.`,
-      {res}
+      res
     );
   }
 }

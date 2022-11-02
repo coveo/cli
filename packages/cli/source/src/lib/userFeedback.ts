@@ -9,37 +9,26 @@ export interface AxiosResponse {
   statusText: string;
 }
 
-export const successMessage = (
-  tagLine: string,
-  options: {res?: AxiosResponse; remaining?: number}
-) => {
-  const plurableDoc: Plurable = ['document', 'documents'];
-  const {res, remaining} = options;
-  let message = tagLine;
+export const successMessage = (tagLine: string, res?: AxiosResponse) => {
+  let message = dedent(`
+      ${tagLine}
+      `);
   if (res) {
-    message += ` | Status code: ${green(res.status, res.statusText)}`;
+    message += `Status code: ${green(res.status, res.statusText)}
+        `;
   }
-  if (remaining && remaining > 0) {
-    message += ` | ${green(remaining)} remaining ${pluralizeIfNeeded(
-      plurableDoc,
-      remaining
-    )}`;
-  }
+
+  // TODO: add the progress bar from cli-CliUx
+  // we don't care about the files
+  // but what if a batch is not accepted by the API. C<est pour ca qu'on va utiliser le multibar et seulement logger  en haut les erreurs :D NICE!!!!
   CliUx.ux.log(message);
 };
 
-export const errorMessage = (
-  tagLine: string,
-  e: unknown,
-  options = {exit: false}
-) => {
+export const errorMessage = (tagLine: string, e: unknown) => {
   const error = wrapError(e);
   error.message = dedent`${tagLine}
   ${error.message}`;
 
-  if (options.exit) {
-    throw error;
-  } else {
-    CliUx.ux.warn(error.message);
-  }
+  return error.message;
+  // TODO: update function consumer
 };

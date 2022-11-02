@@ -4,6 +4,7 @@ import {errorMessage, successMessage} from './userFeedback';
 import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/utils/string';
 import {CliUx} from '@oclif/core';
 import {UploadProgress} from '@coveo/push-api-client/dist/definitions/interfaces';
+import {ProgressBar} from './progressBar';
 
 export interface AddSummary {
   added: number;
@@ -13,6 +14,7 @@ export interface AddSummary {
 }
 
 export class AddDisplay {
+  private bar = new ProgressBar();
   private summary: AddSummary = {
     added: 0,
     failed: 0,
@@ -21,25 +23,15 @@ export class AddDisplay {
   public successMessageOnAdd({
     batch,
     files,
-    res,
     progress,
   }: UploadBatchCallbackData) {
-    this.refreshSummary(batch.length, 0, progress);
-    // Display the first 5 files (from the list of all files) being processed for end user feedback.
-    // Don't want to clutter the output too much if the list is very long.
-    let fileNames = files.slice(0, 5).join(', ');
-    if (files.length > 5) {
-      fileNames += ` and ${files.length - 5} more ...`;
-    }
     const numAdded = batch.length;
-    const plurableDoc: Plurable = ['document', 'documents'];
-    successMessage(
-      `Success: ${green(numAdded)} ${pluralizeIfNeeded(
-        plurableDoc,
-        numAdded
-      )} accepted by the API from ${green(fileNames)}`,
-      {res, remaining: this.summary.remaining}
-    );
+    // TODO: maybe add files to set
+
+    this.refreshSummary(numAdded, 0, progress);
+    this.bar
+      .ensureInitialization(numAdded, progress?.totalDocumentCount)
+      .increment(numAdded);
   }
 
   public errorMessageOnAdd(
@@ -47,7 +39,11 @@ export class AddDisplay {
     {batch, progress}: UploadBatchCallbackData
   ) {
     this.refreshSummary(0, batch.length, progress);
-    errorMessage('Error while trying to add document.', e);
+    const message = errorMessage('Error while trying to add document.', e);
+    this.bar
+      .ensureInitialization(batch.length, progress?.totalDocumentCount)
+      .increment(batch.length)
+      .log(message);
     // TODO: bubble up the error to amplitude
   }
 
@@ -90,5 +86,14 @@ export class AddDisplay {
         `${getRatioCount(remaining)} unprocessed ${pluralized(remaining)}`
       );
     }
+
+    // TODO: add files that were processed
+    // Display the first 5 files (from the list of all files) being processed for end user feedback.
+    // Don't want to clutter the output too much if the list is very long.
+    // let fileNames = files.slice(0, 5).join(', ');
+    // let fileNames = files.slice(0, 5).join(', ');
+    // if (files.length > 5) {
+    //   fileNames += ` and ${files.length - 5} more ...`;
+    // }
   }
 }
