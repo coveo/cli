@@ -124,7 +124,6 @@ export default class SourcePushDelete extends CLICommand {
 
   private errorMessageOnDeletion(toDelete: string, e: unknown) {
     return errorMessage(
-      this,
       `Error while trying to delete document: ${red(toDelete)}.`,
       e
     );
@@ -132,7 +131,6 @@ export default class SourcePushDelete extends CLICommand {
 
   private successMessageOnDeletion(toDelete: string, res: AxiosResponse) {
     return successMessage(
-      this,
       `The delete request for document: ${green(
         toDelete
       )} was accepted by the Push API.`,

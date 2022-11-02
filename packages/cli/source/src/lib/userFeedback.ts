@@ -1,18 +1,14 @@
-import {Command} from '@oclif/core';
 import {green} from 'chalk';
 import dedent from 'ts-dedent';
 import {wrapError} from '@coveo/cli-commons/errors/wrapError';
+import {CliUx} from '@oclif/core';
 
 export interface AxiosResponse {
   status: number;
   statusText: string;
 }
 
-export const successMessage = (
-  cmd: Command,
-  tagLine: string,
-  res?: AxiosResponse
-) => {
+export const successMessage = (tagLine: string, res?: AxiosResponse) => {
   let message = dedent(`
       ${tagLine}
       `);
@@ -20,11 +16,10 @@ export const successMessage = (
     message += `Status code: ${green(res.status, res.statusText)}
     `;
   }
-  cmd.log(message);
+  CliUx.ux.log(message);
 };
 
 export const errorMessage = (
-  cmd: Command,
   tagLine: string,
   e: unknown,
   options = {exit: false}
@@ -36,6 +31,6 @@ export const errorMessage = (
   if (options.exit) {
     throw error;
   } else {
-    cmd.warn(error.message);
+    CliUx.ux.warn(error.message);
   }
 };
