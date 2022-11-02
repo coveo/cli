@@ -23,6 +23,10 @@ jobs:
           node-version: '16'
           cache: 'npm'
       - run: npm ci
+      - name: Resume org
+        timeout-minutes: 30
+        if: always()
+        run: node ./scripts/cleaning/wake-org.js
       - name: Delete test API keys
         timeout-minutes: 30
         if: always()
