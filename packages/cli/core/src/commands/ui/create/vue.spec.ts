@@ -191,6 +191,7 @@ describe('ui:create:vue', () => {
         isDirectory: mockedIsDir,
       } as unknown as Stats);
     });
+
     test
       .stdout()
       .stderr()
@@ -200,12 +201,6 @@ describe('ui:create:vue', () => {
       })
       .it('should exit with an error', () => {
         expect(mockedSpawnProcess).not.toBeCalled();
-        expect(mockedStatSync).toBeCalledWith(
-          expect.stringMatching(fooBarDirectoryMatcher),
-          {
-            throwIfNoEntry: false,
-          }
-        );
       });
   });
 
@@ -217,10 +212,12 @@ describe('ui:create:vue', () => {
         isDirectory: mockedIsDir,
       } as unknown as Stats);
     });
+
     describe('when the directory is not empty', () => {
       beforeEach(() => {
         mockedReadDirSync.mockReturnValue([{} as unknown as Dirent]);
       });
+
       test
         .stdout()
         .stderr()
@@ -230,44 +227,53 @@ describe('ui:create:vue', () => {
         })
         .it('should exit with an error', () => {
           expect(mockedSpawnProcess).not.toBeCalled();
-          expect(mockedStatSync).toBeCalledWith(
-            expect.stringMatching(fooBarDirectoryMatcher),
-            {
-              throwIfNoEntry: false,
-            }
-          );
-          expect(mockedReadDirSync).toBeCalledWith(
-            expect.stringMatching(fooBarDirectoryMatcher),
-            {
-              withFileTypes: true,
-            }
-          );
         });
     });
+
     describe('when the directory is empty', () => {
       beforeEach(() => {
         mockedReadDirSync.mockReturnValue([]);
       });
+
       test
         .stdout()
         .stderr()
         .command(['ui:create:vue', 'myapp'])
-        .it('should use the dir and init the project', () => {
-          expect(mockedStatSync).toBeCalledWith(
-            expect.stringMatching(fooBarDirectoryMatcher),
-            {
-              throwIfNoEntry: false,
-            }
+        .it('should not try to create the dir', () => {
+          expect(mockedMkdirSync).not.toBeCalled();
+        });
+
+      test
+        .stdout()
+        .stderr()
+        .command(['ui:create:vue', 'myapp'])
+        .it('should scaffold the project with npm init', () => {
+          expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
+            1,
+            'npm',
+            ['init', expect.stringContaining('@coveo/headless-vue')],
+            {cwd: '/foo/bar/myapp'}
           );
-          expect(mockedReadDirSync).toBeCalledWith(
-            expect.stringMatching(fooBarDirectoryMatcher),
-            {
-              withFileTypes: true,
-            }
+        });
+
+      test
+        .stdout()
+        .stderr()
+        .command(['ui:create:vue', 'myapp'])
+        .it('should install the dependencies', () => {
+          expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
+            2,
+            'npm',
+            ['install'],
+            {cwd: '/foo/bar/myapp'}
           );
-          expect(mockedSpawnProcess).toBeCalledTimes(2);
-          expect(mockedSpawnProcess.mock.calls[0]).toMatchSnapshot();
-          expect(mockedSpawnProcess.mock.calls[1]).toMatchSnapshot();
+        });
+
+      test
+        .stdout()
+        .stderr()
+        .command(['ui:create:vue', 'myapp'])
+        .it('should write the .env file', () => {
           expect(mockedWriteFileSync).toBeCalledTimes(1);
           expect(mockedWriteFileSync.mock.calls[0]).toMatchSnapshot();
         });
@@ -278,23 +284,48 @@ describe('ui:create:vue', () => {
     beforeEach(() => {
       mockedStatSync.mockReturnValue(undefined);
     });
+
     test
       .stdout()
       .stderr()
       .command(['ui:create:vue', 'myapp'])
-      .it('should create the dir and init the project', () => {
-        expect(mockedStatSync).toBeCalledWith(
-          expect.stringMatching(fooBarDirectoryMatcher),
-          {
-            throwIfNoEntry: false,
-          }
-        );
+      .it('should create the dir', () => {
         expect(mockedMkdirSync).toBeCalledWith(
           expect.stringMatching(fooBarDirectoryMatcher)
         );
-        expect(mockedSpawnProcess).toBeCalledTimes(2);
-        expect(mockedSpawnProcess.mock.calls[0]).toMatchSnapshot();
-        expect(mockedSpawnProcess.mock.calls[1]).toMatchSnapshot();
+      });
+
+    test
+      .stdout()
+      .stderr()
+      .command(['ui:create:vue', 'myapp'])
+      .it('should scaffold the project with npm init', () => {
+        expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
+          1,
+          'npm',
+          ['init', expect.stringContaining('@coveo/headless-vue')],
+          {cwd: '/foo/bar/myapp'}
+        );
+      });
+
+    test
+      .stdout()
+      .stderr()
+      .command(['ui:create:vue', 'myapp'])
+      .it('should install the dependencies', () => {
+        expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
+          2,
+          'npm',
+          ['install'],
+          {cwd: '/foo/bar/myapp'}
+        );
+      });
+
+    test
+      .stdout()
+      .stderr()
+      .command(['ui:create:vue', 'myapp'])
+      .it('should write the .env file', () => {
         expect(mockedWriteFileSync).toBeCalledTimes(1);
         expect(mockedWriteFileSync.mock.calls[0]).toMatchSnapshot();
       });

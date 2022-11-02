@@ -1,31 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ui:create:vue when a directory with the projectName exists when the directory is empty should use the dir and init the project 1`] = `
-[
-  "npm",
-  [
-    "init",
-    "@coveo/headless-vue@1.0.0",
-  ],
-  {
-    "cwd": "/foo/bar/myapp",
-  },
-]
-`;
-
-exports[`ui:create:vue when a directory with the projectName exists when the directory is empty should use the dir and init the project 2`] = `
-[
-  "npm",
-  [
-    "install",
-  ],
-  {
-    "cwd": "/foo/bar/myapp",
-  },
-]
-`;
-
-exports[`ui:create:vue when a directory with the projectName exists when the directory is empty should use the dir and init the project 3`] = `
+exports[`ui:create:vue when a directory with the projectName exists when the directory is empty should write the .env file 1`] = `
 [
   "/foo/bar/myapp/.env",
   "VITE_APP_PLATFORM_URL=https://platformdev.cloud.coveo.com
@@ -39,32 +14,7 @@ exports[`ui:create:vue when a directory with the projectName exists when the dir
 
 exports[`ui:create:vue when a file with the projectName exists should exit with an error 1`] = `"/foo/bar/myapp already exists and is not a directory, use an unused directory name for your project"`;
 
-exports[`ui:create:vue when the projectName does not exists yet should create the dir and init the project 1`] = `
-[
-  "npm",
-  [
-    "init",
-    "@coveo/headless-vue@1.0.0",
-  ],
-  {
-    "cwd": "/foo/bar/myapp",
-  },
-]
-`;
-
-exports[`ui:create:vue when the projectName does not exists yet should create the dir and init the project 2`] = `
-[
-  "npm",
-  [
-    "install",
-  ],
-  {
-    "cwd": "/foo/bar/myapp",
-  },
-]
-`;
-
-exports[`ui:create:vue when the projectName does not exists yet should create the dir and init the project 3`] = `
+exports[`ui:create:vue when the projectName does not exists yet should write the .env file 1`] = `
 [
   "/foo/bar/myapp/.env",
   "VITE_APP_PLATFORM_URL=https://platformdev.cloud.coveo.com
