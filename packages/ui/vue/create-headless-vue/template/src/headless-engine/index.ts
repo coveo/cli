@@ -3,17 +3,11 @@ import type { SearchEngine } from "@coveo/headless";
 import { getTokenEndpoint, isEnvValid } from "./envUtils";
 import type { App } from "vue";
 import { HeadlessInjectionKey } from "@/headlessKey";
+import router from "@/router";
 export default {
   install: (app: App) => {
     if (!isEnvValid(import.meta.env)) {
-      throw new Error(`
-            You should have a valid <code>.env</code> file at the root of this \
-            project. You can use <code>.env.example</code> as starting point and \
-            make sure to replace all placeholder variables by the proper information \
-            for your organization.
-        
-            Refer to the project README file for more information.
-            `);
+      router.push("/error");
     } else {
       app.provide(HeadlessInjectionKey, getEngine());
     }

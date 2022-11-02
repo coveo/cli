@@ -12,7 +12,7 @@ const verdaccioRegistry = 'http://localhost:4873';
 
 const verdaccioedPackages = [
   '@coveo/angular',
-  '@coveo/vue-cli-plugin-typescript',
+  '@coveo/create-headless-vue',
   '@coveo/cra-template',
   '@coveo/search-token-server',
   '@coveo/create-atomic',

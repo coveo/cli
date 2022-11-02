@@ -15,8 +15,7 @@ const zValidEnvironment = z.object({
 export function isEnvValid(
   env: unknown
 ): env is z.infer<typeof zValidEnvironment> {
-  zValidEnvironment.parse(env);
-  return true;
+  return zValidEnvironment.safeParse(env).success;
 }
 
 function getEndpointToLocalServer() {
