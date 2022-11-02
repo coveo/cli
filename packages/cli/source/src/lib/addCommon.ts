@@ -86,7 +86,7 @@ const printInvalidFieldTable = (fields: {valid: boolean}[]) => {
   logNewLine();
 };
 
-const logNewLine = (lines = 1) => {
+export const logNewLine = (lines = 1) => {
   for (let i = 0; i < lines; i++) {
     CliUx.ux.log('');
   }

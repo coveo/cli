@@ -11,37 +11,61 @@ Message: [31mthis is a bad request and you should feel bad[39m"
 exports[`source:push:add when the batch upload is successful throws when no flags are specified 1`] = `"You must set the \`files\` flag. Use \`source:push:add --help\` to get more information."`;
 
 exports[`source:push:add when the batch upload is successful when uploading 1 documents should print the appropriate # of documents 1`] = `
-"Success: 1 document accepted by the Push API from filename0.Status code: 202 👌
+"Success: 1 document accepted by the API from filename0.Status code: 202 👌
     
+=== Push Summary
+
+1/1 document successfully sent to the API
+
 "
 `;
 
 exports[`source:push:add when the batch upload is successful when uploading 2 documents should print the appropriate # of documents 1`] = `
-"Success: 2 documents accepted by the Push API from filename0, filename1.Status code: 202 👌
+"Success: 2 documents accepted by the API from filename0, filename1.Status code: 202 👌
     
+=== Push Summary
+
+2/2 documents successfully sent to the API
+
 "
 `;
 
 exports[`source:push:add when the batch upload is successful when uploading 3 documents should print the appropriate # of documents 1`] = `
-"Success: 3 documents accepted by the Push API from filename0, filename1, filename2.Status code: 202 👌
+"Success: 3 documents accepted by the API from filename0, filename1, filename2.Status code: 202 👌
     
+=== Push Summary
+
+3/3 documents successfully sent to the API
+
 "
 `;
 
 exports[`source:push:add when the batch upload is successful when uploading 4 documents should print the appropriate # of documents 1`] = `
-"Success: 4 documents accepted by the Push API from filename0, filename1, filename2, filename3.Status code: 202 👌
+"Success: 4 documents accepted by the API from filename0, filename1, filename2, filename3.Status code: 202 👌
     
+=== Push Summary
+
+4/4 documents successfully sent to the API
+
 "
 `;
 
 exports[`source:push:add when the batch upload is successful when uploading 5 documents should print the appropriate # of documents 1`] = `
-"Success: 5 documents accepted by the Push API from filename0, filename1, filename2, filename3, filename4.Status code: 202 👌
+"Success: 5 documents accepted by the API from filename0, filename1, filename2, filename3, filename4.Status code: 202 👌
     
+=== Push Summary
+
+5/5 documents successfully sent to the API
+
 "
 `;
 
 exports[`source:push:add when the batch upload is successful when uploading 6 documents should print the appropriate # of documents 1`] = `
-"Success: 6 documents accepted by the Push API from filename0, filename1, filename2, filename3, filename4 and 1 more ....Status code: 202 👌
+"Success: 6 documents accepted by the API from filename0, filename1, filename2, filename3, filename4 and 1 more ....Status code: 202 👌
     
+=== Push Summary
+
+6/6 documents successfully sent to the API
+
 "
 `;

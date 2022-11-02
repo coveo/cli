@@ -273,5 +273,16 @@ describe('source:catalog:add', () => {
         expect(err.message).toMatchSnapshot();
       })
       .it('returns an information message on add failure from the API');
+
+    test
+      .stdout()
+      .stderr()
+      .command(['source:catalog:add', 'mysource', '-f', 'somefile'])
+      .catch((err) => {
+        expect(err).toBeInstanceOf(APIError);
+      })
+      .it('returns a summary even if an error is thrown', (ctx) => {
+        expect(ctx.stdout).toMatchSnapshot();
+      });
   });
 });
