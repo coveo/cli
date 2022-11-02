@@ -16,6 +16,7 @@ exports[`source:push:add when the batch upload is successful when uploading 1 do
 === Push Summary
 
 1/1 document successfully sent to the API
+
 "
 `;
 
@@ -25,6 +26,7 @@ exports[`source:push:add when the batch upload is successful when uploading 2 do
 === Push Summary
 
 2/2 documents successfully sent to the API
+
 "
 `;
 
@@ -34,6 +36,7 @@ exports[`source:push:add when the batch upload is successful when uploading 3 do
 === Push Summary
 
 3/3 documents successfully sent to the API
+
 "
 `;
 
@@ -43,6 +46,7 @@ exports[`source:push:add when the batch upload is successful when uploading 4 do
 === Push Summary
 
 4/4 documents successfully sent to the API
+
 "
 `;
 
@@ -52,6 +56,7 @@ exports[`source:push:add when the batch upload is successful when uploading 5 do
 === Push Summary
 
 5/5 documents successfully sent to the API
+
 "
 `;
 
@@ -61,5 +66,6 @@ exports[`source:push:add when the batch upload is successful when uploading 6 do
 === Push Summary
 
 6/6 documents successfully sent to the API
+
 "
 `;

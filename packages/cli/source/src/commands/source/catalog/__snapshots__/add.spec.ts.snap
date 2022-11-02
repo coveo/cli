@@ -6,6 +6,7 @@ exports[`source:catalog:add when the batch upload fails returns a summary even i
 0/10 document successfully sent to the API
 2/10 documents failed to be sent
 8/10 unprocessed documents
+
 "
 `;
 
@@ -36,6 +37,7 @@ exports[`source:catalog:add when the batch upload is successful when uploading 1
 === Push Summary
 
 1/1 document successfully sent to the API
+
 "
 `;
 
@@ -45,6 +47,7 @@ exports[`source:catalog:add when the batch upload is successful when uploading 2
 === Push Summary
 
 2/2 documents successfully sent to the API
+
 "
 `;
 
@@ -54,6 +57,7 @@ exports[`source:catalog:add when the batch upload is successful when uploading 3
 === Push Summary
 
 3/3 documents successfully sent to the API
+
 "
 `;
 
@@ -63,6 +67,7 @@ exports[`source:catalog:add when the batch upload is successful when uploading 4
 === Push Summary
 
 4/4 documents successfully sent to the API
+
 "
 `;
 
@@ -72,6 +77,7 @@ exports[`source:catalog:add when the batch upload is successful when uploading 5
 === Push Summary
 
 5/5 documents successfully sent to the API
+
 "
 `;
 
@@ -81,5 +87,6 @@ exports[`source:catalog:add when the batch upload is successful when uploading 6
 === Push Summary
 
 6/6 documents successfully sent to the API
+
 "
 `;
