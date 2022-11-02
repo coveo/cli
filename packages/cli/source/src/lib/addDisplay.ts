@@ -85,7 +85,7 @@ export class AddDisplay {
       );
     }
 
-    if (remaining > 0) {
+    if (remaining && remaining > 0) {
       CliUx.ux.log(
         `${formatCount(remaining)} unprocessed ${pluralized(remaining)}`
       );
