@@ -4,7 +4,6 @@ import {
   PushSource,
 } from '@coveo/push-api-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {CliUx, Flags} from '@oclif/core';
 import {startSpinner} from '@coveo/cli-commons/utils/ux';
 import {
   HasNecessaryCoveoPrivileges,
@@ -33,19 +32,6 @@ export default class SourcePushAdd extends CLICommand {
     'Index a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-Files-with-the-Coveo-CLI for more information.';
 
   public static flags = {
-    // TODO: CDX-856: remove file flag
-    file: Flags.string({
-      // For retro compatibility
-      multiple: true,
-      hidden: true,
-    }),
-    // TODO: CDX-856: remove folder flag
-    folder: Flags.string({
-      // For retro compatibility
-      multiple: true,
-      char: 'd',
-      hidden: true,
-    }),
     ...withFiles(),
     ...withMaxConcurrent(),
     ...withCreateMissingFields(),
@@ -73,7 +59,6 @@ export default class SourcePushAdd extends CLICommand {
     )
   )
   public async run() {
-    await this.showDeprecatedFlagWarning();
     const {args, flags} = await this.parse(SourcePushAdd);
     const source = this.getSource();
 
@@ -116,13 +101,5 @@ export default class SourcePushAdd extends CLICommand {
       environment,
       region,
     });
-  }
-
-  private async showDeprecatedFlagWarning() {
-    // TODO: CDX-856: no longer needed once flags are removed
-    const {flags} = await this.parse(SourcePushAdd);
-    if (flags.file || flags.folder) {
-      CliUx.ux.warn('Use the `files` flag instead');
-    }
   }
 }
