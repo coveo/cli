@@ -11,7 +11,7 @@
     "template/*"
   ],
   "scripts": {
-    "prepublishOnly": "rimraf ./template && node prepublish.js"
+    "release:phase1": "node --experimental-specifier-resolution=node ../../../../scripts/releaseV2/phase1-bump-all-packages.mjs"
   },
   "devDependencies": {
     "rimraf": "3.0.2"
