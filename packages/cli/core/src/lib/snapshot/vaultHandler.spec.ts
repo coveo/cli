@@ -10,6 +10,7 @@ import {readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
 import open from 'open';
 import {CliUx} from '@oclif/core';
 import {ProcessAbort} from '../errors/processError';
+import {stdout, stderr} from 'stdout-stderr';
 
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockedCreate = jest.fn();
@@ -53,11 +54,15 @@ describe('VaultHandler', () => {
   beforeAll(() => {
     doMockPrompt();
     doMockAuthenticatedClient();
+    stderr.start();
+    stdout.start();
   });
 
   afterAll(() => {
     mockedPrompt.mockReset();
     mockedReadJsonSync.mockReset();
+    stderr.stop();
+    stdout.stop();
   });
 
   describe('when the vault entries are valid', () => {
