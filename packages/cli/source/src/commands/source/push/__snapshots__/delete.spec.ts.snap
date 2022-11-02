@@ -20,7 +20,7 @@ exports[`source:push:delete returns an information message on deletion and succe
 
       at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:59:13)
       at warn (src/lib/userFeedback.ts:34:14)
-      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:12)
+      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:24)
       at errorMessageOnDeletion (src/commands/source/push/delete.ts:119:16)
           at async Promise.all (index 0)
       at SourcePushDelete.run (src/commands/source/push/delete.ts:82:7)
@@ -50,7 +50,7 @@ exports[`source:push:delete returns an information message on deletion failure w
 
       at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:59:13)
       at warn (src/lib/userFeedback.ts:34:14)
-      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:12)
+      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:24)
       at errorMessageOnDeletion (src/commands/source/push/delete.ts:119:16)
           at async Promise.all (index 0)
       at SourcePushDelete.run (src/commands/source/push/delete.ts:82:7)
@@ -80,7 +80,7 @@ exports[`source:push:delete returns an information message on deletion failure w
 
       at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:59:13)
       at warn (src/lib/userFeedback.ts:34:14)
-      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:12)
+      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:24)
       at errorMessageOnDeletion (src/commands/source/push/delete.ts:119:16)
           at async Promise.all (index 0)
       at SourcePushDelete.run (src/commands/source/push/delete.ts:82:7)
@@ -106,7 +106,7 @@ exports[`source:push:delete returns an information message on deletion failure w
 
       at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:59:13)
       at warn (src/lib/userFeedback.ts:34:14)
-      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:12)
+      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:24)
       at errorMessageOnDeletion (src/commands/source/push/delete.ts:119:16)
           at async Promise.all (index 1)
       at SourcePushDelete.run (src/commands/source/push/delete.ts:82:7)
@@ -136,7 +136,7 @@ exports[`source:push:delete returns an information message on deletion failure w
 
       at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:59:13)
       at warn (src/lib/userFeedback.ts:34:14)
-      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:12)
+      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:24)
       at SourcePushDelete.errorMessageOnDeletion [as doDeletionOlderThan] (src/commands/source/push/delete.ts:103:12)
 
 "
