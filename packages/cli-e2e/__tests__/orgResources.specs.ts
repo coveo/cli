@@ -24,6 +24,7 @@ import {getTestOrg} from '../utils/testOrgSetup';
 import {readdirSync} from 'fs';
 import {cwd} from 'process';
 import {EOL} from 'os';
+import retry from 'async-retry';
 config({path: getEnvFilePath()});
 
 describe('org:resources', () => {
@@ -210,8 +211,10 @@ describe('org:resources', () => {
     const getResourceFolderContent = (projectPath: string) =>
       readdirSync(join(projectPath, 'resources'));
 
-    beforeEach(() => {
-      rmSync(destinationPath, {recursive: true, force: true, maxRetries: 10});
+    beforeEach(async () => {
+      await retry(() => {
+        rmSync(destinationPath, {recursive: true, force: true});
+      });
       ensureDirSync(destinationPath);
     });
 
