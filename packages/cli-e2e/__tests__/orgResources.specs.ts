@@ -211,7 +211,7 @@ describe('org:resources', () => {
       readdirSync(join(projectPath, 'resources'));
 
     beforeEach(() => {
-      rmSync(destinationPath, {recursive: true, force: true});
+      rmSync(destinationPath, {recursive: true, force: true, maxRetries: 10});
       ensureDirSync(destinationPath);
     });
 
