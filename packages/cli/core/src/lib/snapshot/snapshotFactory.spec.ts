@@ -2,7 +2,7 @@ jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('fs');
 jest.mock('./snapshot');
 jest.mock('./snapshotAccess');
-
+jest.mock('node:buffer');
 import {ResourceSnapshotType} from '@coveo/platform-client';
 import {readFileSync} from 'fs';
 import {join} from 'path';
@@ -13,11 +13,13 @@ import {Snapshot} from './snapshot';
 import {SnapshotFactory} from './snapshotFactory';
 import {Project} from '../project/project';
 import {ensureResourcesAccess, ensureSnapshotAccess} from './snapshotAccess';
+import {Blob} from 'node:buffer';
 
+const mockedBlob = jest.mocked(Blob);
 const mockedReadFileSync = jest.mocked(readFileSync);
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockedSnapshot = jest.mocked(Snapshot);
-const mockedCreateSnapshotFromBuffer = jest.fn();
+const mockedCreateSnapshotFromFile = jest.fn();
 const mockedCreateFromOrganization = jest.fn();
 const mockedPushSnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
@@ -47,7 +49,7 @@ const doMockAuthenticatedClient = () => {
     Promise.resolve({
       resourceSnapshot: {
         get: mockedGetSnapshot,
-        createFromBuffer: mockedCreateSnapshotFromBuffer,
+        createFromFile: mockedCreateSnapshotFromFile,
         createFromOrganization: mockedCreateFromOrganization,
         push: mockedPushSnapshot,
         dryRun: mockedDryRunSnapshot,
@@ -106,16 +108,14 @@ describe('SnapshotFactory', () => {
     fancyIt()(
       '#createSnapshotFromProject should retrieve an authenticated client',
       () => {
-        expect(mockedCreateSnapshotFromBuffer).toHaveBeenCalledTimes(1);
+        expect(mockedCreateSnapshotFromFile).toHaveBeenCalledTimes(1);
       }
     );
-
     fancyIt()(
       '#createSnapshotFromProject should create a snapshot from Zip with appropriate parameters',
       () => {
-        expect(mockedCreateSnapshotFromBuffer).toHaveBeenCalledWith(
-          Buffer.from('hello there'),
-          'ZIP',
+        expect(mockedCreateSnapshotFromFile).toHaveBeenCalledWith(
+          mockedBlob.mock.instances[0],
           {
             developerNotes: 'cli-created-from-zip',
           }

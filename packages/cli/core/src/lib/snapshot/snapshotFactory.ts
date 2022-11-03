@@ -1,7 +1,6 @@
 import {
   CreateFromFileOptions,
   ResourceSnapshotsReportType,
-  ResourceSnapshotSupportedFileTypes,
   ResourceSnapshotType,
 } from '@coveo/platform-client';
 import {readFileSync} from 'fs';
@@ -10,7 +9,7 @@ import {SnapshotPullModelResources} from './pullModel/interfaces';
 import {Snapshot, WaitUntilDoneOptions} from './snapshot';
 import {Project} from '../project/project';
 import {ensureResourcesAccess, ensureSnapshotAccess} from './snapshotAccess';
-import {Blob} from 'buffer';
+import {Blob} from 'node:buffer';
 
 export class SnapshotFactory {
   public static async createSnapshotFromProject(
