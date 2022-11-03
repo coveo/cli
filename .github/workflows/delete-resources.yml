@@ -3,7 +3,8 @@ name: 'Delete Coveo Resources'
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * 1-5'
+    # At 05:00 UTC on every day-of-week from Tuesday through Friday.
+    - cron: '0 5 * * 2-5'
 
 jobs:
   delete-resources:
@@ -22,6 +23,10 @@ jobs:
           node-version: 18
           cache: 'npm'
       - run: npm ci
+      - name: Resume org
+        timeout-minutes: 30
+        if: always()
+        run: node ./scripts/cleaning/wake-org.js
       - name: Delete test API keys
         timeout-minutes: 30
         if: always()

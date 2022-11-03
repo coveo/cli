@@ -2,12 +2,9 @@ import {
   BatchUpdateDocumentsFromFiles,
   BuiltInTransformers,
   PushSource,
-  UploadBatchCallbackData,
 } from '@coveo/push-api-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {CliUx, Flags} from '@oclif/core';
 import {startSpinner} from '@coveo/cli-commons/utils/ux';
-import {green} from 'chalk';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
@@ -27,27 +24,14 @@ import {
 } from '../../../lib/commonFlags';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {formatErrorMessage} from '../../../lib/addCommon';
-import {errorMessage, successMessage} from '../../../lib/userFeedback';
 import {getFileNames} from '../../../lib/getFileNames';
+import {AddDisplay} from '../../../lib/addDisplay';
 
 export default class SourcePushAdd extends CLICommand {
   public static description =
     'Index a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-Files-with-the-Coveo-CLI for more information.';
 
   public static flags = {
-    // TODO: CDX-856: remove file flag
-    file: Flags.string({
-      // For retro compatibility
-      multiple: true,
-      hidden: true,
-    }),
-    // TODO: CDX-856: remove folder flag
-    folder: Flags.string({
-      // For retro compatibility
-      multiple: true,
-      char: 'd',
-      hidden: true,
-    }),
     ...withFiles(),
     ...withMaxConcurrent(),
     ...withCreateMissingFields(),
@@ -63,6 +47,8 @@ export default class SourcePushAdd extends CLICommand {
     },
   ];
 
+  private display = new AddDisplay();
+
   @Trackable()
   @Preconditions(
     IsAuthenticated(),
@@ -73,7 +59,6 @@ export default class SourcePushAdd extends CLICommand {
     )
   )
   public async run() {
-    await this.showDeprecatedFlagWarning();
     const {args, flags} = await this.parse(SourcePushAdd);
     const source = this.getSource();
 
@@ -91,8 +76,8 @@ export default class SourcePushAdd extends CLICommand {
     await source.setSourceStatus(args.sourceId, 'REFRESH');
     await source
       .batchUpdateDocumentsFromFiles(args.sourceId, fileNames, options)
-      .onBatchUpload((data) => this.successMessageOnAdd(data))
-      .onBatchError((data) => this.errorMessageOnAdd(data))
+      .onBatchUpload((data) => this.display.successMessageOnAdd(data))
+      .onBatchError((err, data) => this.display.errorMessageOnAdd(err, data))
       .batch();
   }
 
@@ -105,6 +90,7 @@ export default class SourcePushAdd extends CLICommand {
     const {args} = await this.parse(SourcePushAdd);
     const source = this.getSource();
     await source.setSourceStatus(args.sourceId, 'IDLE');
+    this.display.printSummary();
     await super.finally(_);
   }
 
@@ -114,40 +100,6 @@ export default class SourcePushAdd extends CLICommand {
     return new PushSource(accessToken!, organization, {
       environment,
       region,
-    });
-  }
-
-  // TODO: Refactor with eponym method of `SourceCatalog`
-  private successMessageOnAdd({batch, files, res}: UploadBatchCallbackData) {
-    // Display the first 5 files (from the list of all files) being processed for end user feedback
-    // Don't want to clutter the output too much if the list is very long.
-
-    const numAdded = batch.length;
-    let fileNames = files.slice(0, 5).join(', ');
-    if (files.length > 5) {
-      fileNames += ` and ${files.length - 5} more ...`;
-    }
-
-    return successMessage(
-      this,
-      `Success: ${green(numAdded)} document${
-        numAdded > 1 ? 's' : ''
-      } accepted by the Push API from ${green(fileNames)}.`,
-      res
-    );
-  }
-
-  private async showDeprecatedFlagWarning() {
-    // TODO: CDX-856: no longer needed once flags are removed
-    const {flags} = await this.parse(SourcePushAdd);
-    if (flags.file || flags.folder) {
-      CliUx.ux.warn('Use the `files` flag instead');
-    }
-  }
-
-  private errorMessageOnAdd(err: unknown) {
-    return errorMessage(this, 'Error while trying to add document.', err, {
-      exit: true,
     });
   }
 }

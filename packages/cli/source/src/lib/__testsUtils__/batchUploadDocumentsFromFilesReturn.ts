@@ -32,6 +32,10 @@ export class BatchUploadDocumentsSuccess {
       files: new Array(this.numberOfFiles)
         .fill(undefined)
         .map(this.getNewFileName.bind(this)),
+      progress: {
+        remainingDocumentCount: 0,
+        totalDocumentCount: this.numberOfFiles,
+      },
     });
     return this;
   }
@@ -42,6 +46,11 @@ export class BatchUploadDocumentsSuccess {
 }
 
 export class BatchUploadDocumentsError {
+  constructor(
+    private totalDocumentCount: number = 10,
+    private failedDocumentCount: number = 2
+  ) {}
+
   public onBatchUpload(_callback: Function) {
     return this;
   }
@@ -51,9 +60,19 @@ export class BatchUploadDocumentsError {
         412,
         'this is a bad request and you should feel bad',
         'BAD_REQUEST'
-      )
+      ),
+      {
+        batch: new Array(this.failedDocumentCount),
+        progress: {
+          remainingDocumentCount: this.remainingDocumentCount,
+          totalDocumentCount: this.totalDocumentCount,
+        },
+      }
     );
     return this;
   }
   public async batch() {}
+  private get remainingDocumentCount() {
+    return this.totalDocumentCount - this.failedDocumentCount;
+  }
 }

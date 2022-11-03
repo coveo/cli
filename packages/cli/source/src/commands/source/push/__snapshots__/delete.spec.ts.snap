@@ -10,18 +10,17 @@ exports[`source:push:delete returns an information message on deletion and succe
      ›   Error code: BAD_REQUEST
      ›   Message: this is a bad request and you should feel bad
 
-      37 |     throw error;
-      38 |   } else {
-    > 39 |     cmd.warn(error.message);
-         |         ^
-      40 |   }
-      41 | };
-      42 |
+      32 |     throw error;
+      33 |   } else {
+    > 34 |     CliUx.ux.warn(error.message);
+         |              ^
+      35 |   }
+      36 | };
+      37 |
 
       at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:59:13)
-      at SourcePushDelete.warn (../../../node_modules/@oclif/core/lib/command.js:100:20)
-      at warn (src/lib/userFeedback.ts:39:9)
-      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:12)
+      at warn (src/lib/userFeedback.ts:34:14)
+      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:24)
       at errorMessageOnDeletion (src/commands/source/push/delete.ts:119:16)
           at async Promise.all (index 0)
       at SourcePushDelete.run (src/commands/source/push/delete.ts:82:7)
@@ -41,18 +40,17 @@ exports[`source:push:delete returns an information message on deletion failure w
      ›   Error code: BAD_REQUEST
      ›   Message: this is a bad request and you should feel bad
 
-      37 |     throw error;
-      38 |   } else {
-    > 39 |     cmd.warn(error.message);
-         |         ^
-      40 |   }
-      41 | };
-      42 |
+      32 |     throw error;
+      33 |   } else {
+    > 34 |     CliUx.ux.warn(error.message);
+         |              ^
+      35 |   }
+      36 | };
+      37 |
 
       at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:59:13)
-      at SourcePushDelete.warn (../../../node_modules/@oclif/core/lib/command.js:100:20)
-      at warn (src/lib/userFeedback.ts:39:9)
-      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:12)
+      at warn (src/lib/userFeedback.ts:34:14)
+      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:24)
       at errorMessageOnDeletion (src/commands/source/push/delete.ts:119:16)
           at async Promise.all (index 0)
       at SourcePushDelete.run (src/commands/source/push/delete.ts:82:7)
@@ -72,18 +70,17 @@ exports[`source:push:delete returns an information message on deletion failure w
      ›   Error code: BAD_REQUEST
      ›   Message: this is a bad request and you should feel bad
 
-      37 |     throw error;
-      38 |   } else {
-    > 39 |     cmd.warn(error.message);
-         |         ^
-      40 |   }
-      41 | };
-      42 |
+      32 |     throw error;
+      33 |   } else {
+    > 34 |     CliUx.ux.warn(error.message);
+         |              ^
+      35 |   }
+      36 | };
+      37 |
 
       at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:59:13)
-      at SourcePushDelete.warn (../../../node_modules/@oclif/core/lib/command.js:100:20)
-      at warn (src/lib/userFeedback.ts:39:9)
-      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:12)
+      at warn (src/lib/userFeedback.ts:34:14)
+      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:24)
       at errorMessageOnDeletion (src/commands/source/push/delete.ts:119:16)
           at async Promise.all (index 0)
       at SourcePushDelete.run (src/commands/source/push/delete.ts:82:7)
@@ -99,18 +96,17 @@ exports[`source:push:delete returns an information message on deletion failure w
      ›   Error code: BAD_REQUEST
      ›   Message: this is a bad request and you should feel bad
 
-      37 |     throw error;
-      38 |   } else {
-    > 39 |     cmd.warn(error.message);
-         |         ^
-      40 |   }
-      41 | };
-      42 |
+      32 |     throw error;
+      33 |   } else {
+    > 34 |     CliUx.ux.warn(error.message);
+         |              ^
+      35 |   }
+      36 | };
+      37 |
 
       at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:59:13)
-      at SourcePushDelete.warn (../../../node_modules/@oclif/core/lib/command.js:100:20)
-      at warn (src/lib/userFeedback.ts:39:9)
-      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:12)
+      at warn (src/lib/userFeedback.ts:34:14)
+      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:24)
       at errorMessageOnDeletion (src/commands/source/push/delete.ts:119:16)
           at async Promise.all (index 1)
       at SourcePushDelete.run (src/commands/source/push/delete.ts:82:7)
@@ -130,18 +126,17 @@ exports[`source:push:delete returns an information message on deletion failure w
      ›   Error code: BAD_REQUEST
      ›   Message: this is a bad request and you should feel bad
 
-      37 |     throw error;
-      38 |   } else {
-    > 39 |     cmd.warn(error.message);
-         |         ^
-      40 |   }
-      41 | };
-      42 |
+      32 |     throw error;
+      33 |   } else {
+    > 34 |     CliUx.ux.warn(error.message);
+         |              ^
+      35 |   }
+      36 | };
+      37 |
 
       at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:59:13)
-      at SourcePushDelete.warn (../../../node_modules/@oclif/core/lib/command.js:100:20)
-      at warn (src/lib/userFeedback.ts:39:9)
-      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:12)
+      at warn (src/lib/userFeedback.ts:34:14)
+      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:24)
       at SourcePushDelete.errorMessageOnDeletion [as doDeletionOlderThan] (src/commands/source/push/delete.ts:103:12)
 
 "

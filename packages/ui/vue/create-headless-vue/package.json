@@ -1,0 +1,33 @@
+{
+  "name": "@coveo/create-headless-vue",
+  "description": "Initialize a Vite+Vue+Coveo Headless project",
+  "keywords": [
+    "coveo",
+    "headless",
+    "vue",
+    "vite",
+    "scaffold",
+    "starter"
+  ],
+  "author": "Coveo",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:coveo/cli.git",
+    "directory": "packages/ui/vue/create-headless-vue"
+  },
+  "main": "index.js",
+  "bin": "index.js",
+  "type": "module",
+  "files": [
+    "index.js",
+    "template/*"
+  ],
+  "scripts": {
+    "release:phase1": "node --experimental-specifier-resolution=node ../../../../scripts/releaseV2/phase1-bump-all-packages.mjs"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

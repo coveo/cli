@@ -15,6 +15,7 @@ import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {startSpinner} from '@coveo/cli-commons/utils/ux';
+import {Example} from '@oclif/core/lib/interfaces';
 
 export default class Monitor extends CLICommand {
   public static description = 'Monitor a Snapshot operation';
@@ -34,8 +35,13 @@ export default class Monitor extends CLICommand {
     },
   ];
 
-  public static examples = [
-    'coveo org:resources:monitor -o=myOrgId --snapshotId=mySnapshotId',
+  public static examples: Example[] = [
+    {
+      command:
+        'coveo org:resources:monitor --organization myorgid --snapshotId mysnapshotid',
+      description:
+        'Monitor the status of the "mysnapshotid" snapshot in the "myorgid" organization.',
+    },
   ];
 
   @Trackable()
