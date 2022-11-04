@@ -34,9 +34,7 @@ jobs:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
       - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
         with:
-          node-version: 18
           cache: 'npm'
-
       - name: Setup repo
         run: npm ci
       - name: Check linting
@@ -48,7 +46,6 @@ jobs:
       fail-fast: true
       matrix:
         os: ['ubuntu-latest', 'windows-latest']
-        node: [18]
     steps:
       - name: Setup runner
         if: ${{matrix.os == 'ubuntu-latest'}}
@@ -62,7 +59,6 @@ jobs:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
       - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
         with:
-          node-version: ${{matrix.node}}
           cache: 'npm'
       - name: Setup repo
         run: npm ci
@@ -83,7 +79,6 @@ jobs:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
       - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
         with:
-          node-version: ${{matrix.node}}
           cache: 'npm'
       - uses: ./.github/actions/e2e-login
         id: setup
@@ -105,7 +100,6 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
         with:
-          node-version: ${{matrix.node}}
           cache: 'npm'
       - uses: actions/cache@fd5de65bc895cf536527842281bea11763fefd77 # tag=v3
         if: ${{matrix.os == 'ubuntu-latest'}}
@@ -135,7 +129,6 @@ jobs:
       fail-fast: false
       matrix:
         os: ['ubuntu-latest', 'windows-latest']
-        node: [18]
         spec:
           [
             'angular.specs.ts',
