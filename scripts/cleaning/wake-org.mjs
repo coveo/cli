@@ -1,4 +1,4 @@
-import PlatformClient from '@coveo/platform-client';
+import {PlatformClient} from '@coveo/platform-client';
 
 (async () => {
   const client = new PlatformClient({
