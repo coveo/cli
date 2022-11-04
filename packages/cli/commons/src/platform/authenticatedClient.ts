@@ -36,10 +36,7 @@ export class AuthenticatedClient {
       setGlobalDispatcher(new ProxyAgent(proxyServer));
     }
     if (lt(process.version, '18.0.0')) {
-      // @ts-ignore
-      global['FormData'] = FormData;
-      // @ts-ignore
-      global['fetch'] = fetch;
+      Object.assign(global, {FormData, fetch});
     }
     return new PlatformClient({
       globalRequestSettings,
