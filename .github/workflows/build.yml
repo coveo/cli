@@ -193,3 +193,25 @@ jobs:
       - name: Check e2e matrix status
         if: ${{ needs.e2e.result != 'success' }}
         run: exit 1
+  prerelease:
+    timeout-minutes: 15
+    name: Pre-release
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+    needs: [e2e-report, lint, unit-tests]
+    runs-on: ubuntu-latest
+    environment: prerelease
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
+        with:
+          # pulls all commits (needed for computing the next version)
+          fetch-depth: 0
+      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
+        with:
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install dependencies
+        run: npm ci
+      - name: Release
+        run: npm run release:phase1
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          DEBUG: '*'

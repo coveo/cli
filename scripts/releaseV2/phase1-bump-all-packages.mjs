@@ -15,6 +15,7 @@ import angularChangelogConvention from 'conventional-changelog-angular';
 import {dirname, resolve, join} from 'path';
 import {fileURLToPath} from 'url';
 import retry from 'async-retry';
+import {gt} from 'semver';
 
 const hasPackageJsonChanged = (directoryPath) => {
   const {stdout, stderr, status} = spawnSync(
@@ -35,6 +36,8 @@ const hasPackageJsonChanged = (directoryPath) => {
 };
 
 const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
+const isPrerelease = process.env.IS_PRERELEASE === 'true';
+
 // Run on each package, it generate the changelog, install the latest dependencies that are part of the workspace, publish the package.
 (async () => {
   const PATH = '.';
@@ -53,8 +56,17 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
   }
   const parsedCommits = parseCommits(commits, convention.parserOpts);
   const bumpInfo = convention.recommendedBumpOpts.whatBump(parsedCommits);
-  const currentVersion = getCurrentVersion(PATH);
-  const newVersion = getNextVersion(currentVersion, bumpInfo);
+  let currentVersion = getCurrentVersion(PATH);
+  if (isPrerelease) {
+    const currentAlphaNpmVersion = await describeNpmTag(
+      packageJson.name,
+      'beta'
+    );
+    currentVersion = gt(currentAlphaNpmVersion, currentVersion)
+      ? currentAlphaNpmVersion
+      : currentVersion;
+  }
+  const newVersion = getNextVersion(currentVersion, bumpInfo, isPrerelease);
 
   await npmBumpVersion(newVersion, PATH, {
     workspaceUpdateStrategy: 'UpdateExact',
@@ -78,7 +90,7 @@ const rootFolder = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
     await writeChangelog(PATH, changelog);
   }
 
-  await npmPublish();
+  await npmPublish('.', {tag: isPrerelease ? 'beta' : 'latest'});
 
   await retry(
     () => {
