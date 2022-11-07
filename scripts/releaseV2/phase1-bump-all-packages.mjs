@@ -58,12 +58,12 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
   const bumpInfo = convention.recommendedBumpOpts.whatBump(parsedCommits);
   let currentVersion = getCurrentVersion(PATH);
   if (isPrerelease) {
-    const currentAlphaNpmVersion = await describeNpmTag(
+    const currentBetaNpmVersion = await describeNpmTag(
       packageJson.name,
       'beta'
     );
     currentVersion = gt(currentAlphaNpmVersion, currentVersion)
-      ? currentAlphaNpmVersion
+      ? currentBetaNpmVersion
       : currentVersion;
   }
   const newVersion = getNextVersion(currentVersion, bumpInfo, isPrerelease);
