@@ -16,6 +16,18 @@ describe('org:list', () => {
       const proxyProcessManager = new ProcessManager();
       processManagers.push(proxyProcessManager);
       proxyTerminal = startMitmProxy(proxyProcessManager);
+      await Promise.race([
+        proxyTerminal
+          .when(/listening/)
+          .on('stdout')
+          .do()
+          .once(),
+        proxyTerminal
+          .when(/listening/)
+          .on('stderr')
+          .do()
+          .once(),
+      ]);
       await waitForMitmProxy();
     }, 2 * 60e3);
 

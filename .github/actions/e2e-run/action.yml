@@ -34,7 +34,6 @@ runs:
         git config --global core.eol lf
     - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
       with:
-        node-version: ${{inputs.node}}
         cache: 'npm'
     - uses: actions/setup-python@b55428b1882923874294fa556849718a1d7f2ca5 # tag=v4
       with:

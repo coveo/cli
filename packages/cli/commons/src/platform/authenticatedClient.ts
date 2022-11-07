@@ -1,11 +1,10 @@
-require('isomorphic-fetch');
-require('abortcontroller-polyfill');
-
+import {setGlobalDispatcher, ProxyAgent, FormData, fetch} from 'undici';
 import PlatformClient from '@coveo/platform-client';
 import {Config, Configuration} from '../config/config';
 import {castEnvironmentToPlatformClient} from './environment';
-import HttpsProxyAgent from 'https-proxy-agent';
 import globalConfig from '../config/globalConfig';
+import {lt} from 'semver';
+
 export class AuthenticatedClient {
   public cfg: Config;
   public constructor() {
@@ -34,8 +33,10 @@ export class AuthenticatedClient {
     const proxyServer =
       process.env['https_proxy'] || process.env['HTTPS_PROXY'];
     if (proxyServer) {
-      const httpsProxyAgent = HttpsProxyAgent(proxyServer);
-      globalRequestSettings.agent = httpsProxyAgent;
+      setGlobalDispatcher(new ProxyAgent(proxyServer));
+    }
+    if (lt(process.version, '18.0.0')) {
+      Object.assign(global, {FormData, fetch});
     }
     return new PlatformClient({
       globalRequestSettings,
