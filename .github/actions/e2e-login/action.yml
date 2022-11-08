@@ -42,4 +42,4 @@ runs:
       id: setup
       run: |
         echo "${{ env.E2E_TOKEN_PASSPHRASE }}" | gpg -a --batch --passphrase-fd 0 --symmetric --cipher-algo AES256 --output encodedConfig $CLI_CONFIG_PATH
-        echo "::set-output name=cliConfigJson::$(base64 -w 0 encodedConfig)"
+        echo "cliConfigJson=$(base64 -w 0 encodedConfig)" >> $GITHUB_OUTPUT
