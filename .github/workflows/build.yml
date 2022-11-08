@@ -35,6 +35,7 @@ jobs:
       - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
         with:
           cache: 'npm'
+          node-version-file: '.nvmrc'
       - name: Setup repo
         run: npm ci
       - name: Check linting
@@ -60,6 +61,7 @@ jobs:
       - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
         with:
           cache: 'npm'
+          node-version-file: '.nvmrc'
       - name: Setup repo
         run: npm ci
       - name: Build
@@ -80,6 +82,7 @@ jobs:
       - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
         with:
           cache: 'npm'
+          node-version-file: '.nvmrc'
       - uses: ./.github/actions/e2e-login
         id: setup
   e2e-setup-verdaccio:
@@ -101,6 +104,7 @@ jobs:
       - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
         with:
           cache: 'npm'
+          node-version-file: '.nvmrc'
       - uses: actions/cache@1c73980b09e7aea7201f325a7aa3ad00beddcdda # v3
         if: ${{matrix.os == 'ubuntu-latest'}}
         with:

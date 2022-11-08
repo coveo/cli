@@ -12,5 +12,8 @@ jobs:
         with:
           fetch-depth: 0
       - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
+        with:
+          cache: 'npm'
+          node-version-file: '.nvmrc'
       - run: npm i
       - run: npm run pr:report
