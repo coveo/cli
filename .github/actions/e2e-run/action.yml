@@ -71,7 +71,7 @@ runs:
         DISPLAY: ':1'
         npm_config_registry: ${{inputs.npmRegistry}}
       working-directory: packages/cli-e2e
-      run: npm run jest:ci -- ${{inputs.spec}}
+      run: npm run jest:ci -- ${{inputs.spec}} -u
     - uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # v3
       if: always()
       with:

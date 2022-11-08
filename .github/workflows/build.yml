@@ -132,21 +132,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-latest', 'windows-latest']
-        spec:
-          [
-            'angular.specs.ts',
-            'atomic.specs.ts',
-            'auth.specs.ci.ts',
-            'orgList.specs.ts',
-            'orgResources.specs.ts',
-            'react.specs.ts',
-            'vue.specs.ts',
-          ]
-        # TODO: fix auth spec with windows
-        exclude:
-          - os: windows-latest
-            spec: auth.specs.ci.ts
+        os: ['ubuntu-latest']
+        spec: ['atomic.specs.ts']
     env:
       # ID of the test run to identify resources to teardown.
       TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
@@ -173,6 +160,11 @@ jobs:
           spec: ${{ matrix.spec }}
           cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
           npmRegistry: 'http://localhost:4873'
+      - run: |
+          git config --global user.email action@github.com
+          git config --global user.name GitHub Action
+          git add .
+          git commit -m "gimme dat snapshot cause i dont have a stable enough broadband right now kthxvm"
   e2e-teardown:
     timeout-minutes: 15
     name: End-to-end teardown
