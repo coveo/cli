@@ -13,11 +13,11 @@
     "@stencil/core": "2.19.2"
   },
   "devDependencies": {
-    "@rollup/plugin-replace": "4.0.0",
+    "@rollup/plugin-replace": "5.0.1",
     "fkill": "8.0.1",
     "get-port": "6.1.2",
     "gts": "3.1.1",
-    "netlify-cli": "11.8.3",
+    "netlify-cli": "12.1.0",
     "prettier": "2.7.1",
     "rollup-plugin-dotenv": "0.4.1",
     "rollup-plugin-html": "0.2.1"

@@ -9,7 +9,7 @@
     "directory": "packages/ui/search-token-server"
   },
   "dependencies": {
-    "@coveo/platform-client": "35.6.1",
+    "@coveo/platform-client": "37.1.0",
     "@types/express": "^4.17.11",
     "abortcontroller-polyfill": "^1.7.1",
     "cookie-session": "^2.0.0",
