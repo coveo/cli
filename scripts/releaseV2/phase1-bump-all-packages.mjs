@@ -8,6 +8,7 @@ import {
   getNextVersion,
   generateChangelog,
   writeChangelog,
+  describeNpmTag,
 } from '@coveo/semantic-monorepo-tools';
 import {spawnSync} from 'child_process';
 import {appendFileSync, readFileSync, writeFileSync} from 'fs';
@@ -62,7 +63,7 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
       packageJson.name,
       'beta'
     );
-    currentVersion = gt(currentAlphaNpmVersion, currentVersion)
+    currentVersion = gt(currentBetaNpmVersion, currentVersion)
       ? currentBetaNpmVersion
       : currentVersion;
   }
