@@ -41,9 +41,6 @@ export async function authenticateCli() {
       logLevel: 'verbose',
     });
     console.log('Chrome started');
-    console.log('Checking port 9222');
-    await waitOn({resources: ['tcp:9222']});
-    console.log('Port 9222 is open');
     console.log('Connecting to Chrome');
     browser = await connectToChromeBrowser();
     console.log('Connected to Chrome');
