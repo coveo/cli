@@ -1,5 +1,5 @@
-import getPort, {portNumbers} from 'get-port';
-import {spawn} from 'child_process';
+import getPort from 'get-port';
+import {fork} from 'child_process';
 import {createRequire} from 'module';
 import fkill from 'fkill';
 
@@ -16,15 +16,9 @@ const main = async () => {
     fkill(`:${stencilPort}`, {silent: true});
   });
 
-  spawn(
-    'node',
-    [
-      require.resolve('netlify-cli/bin/run'),
-      'dev',
-      '--targetPort',
-      stencilPort,
-      ...args,
-    ],
+  fork(
+    require.resolve('netlify-cli/bin/run.mjs'),
+    ['dev', '--targetPort', stencilPort, ...args],
     {
       stdio: 'inherit',
       env: {STENCIL_PORT: stencilPort, ...process.env},
