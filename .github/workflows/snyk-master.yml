@@ -15,8 +15,8 @@ jobs:
   snyk:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
+      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
       - name: Prepare snyk
         run: |
           npm ci
@@ -41,7 +41,7 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=8192
         run: npx snyk code test    --dev --all-projects --exclude="project.json,npm-shim" --sarif > ./sarifs/snyk-code.sarif
       - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@86f3159a697a097a813ad9bfa0002412d97690a4 # tag=v2
+        uses: github/codeql-action/upload-sarif@c3b6fce4ee2ca25bc1066aa3bf73962fda0e8898 # v2
 
         with:
           sarif_file: ./sarifs
