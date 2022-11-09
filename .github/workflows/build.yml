@@ -164,7 +164,8 @@ jobs:
           git config --global user.email action@github.com
           git config --global user.name GitHub Action
           git add .
-          git commit -m "gimme dat snapshot cause i dont have a stable enough broadband right now kthxvm"
+          git commit -m "kthxvm"
+          git push
   e2e-teardown:
     timeout-minutes: 15
     name: End-to-end teardown
