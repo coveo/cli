@@ -14,7 +14,7 @@
     "strict": true,
     "noEmitOnError": false,
     "skipLibCheck": true,
-    "types": ["jest"]
+    "types": ["jest", "node"]
   },
   "include": ["./**/*.ts", "typings/**/*.d.ts"]
 }
