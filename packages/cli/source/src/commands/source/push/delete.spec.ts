@@ -4,6 +4,8 @@ jest.mock('@coveo/cli-commons/preconditions/authenticated');
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('@coveo/push-api-client');
 
+jest.mock('../../../lib/userFeedback');
+
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {PushSource} from '@coveo/push-api-client';
@@ -14,13 +16,15 @@ import {
 import {IsAuthenticated} from '@coveo/cli-commons/preconditions';
 import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
 import {formatCliLog} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
+import {errorMessage, successMessage} from '../../../lib/userFeedback';
 
 describe('source:push:delete', () => {
   const mockedIsAuthenticated = jest.mocked(IsAuthenticated);
   const mockedClient = jest.mocked(AuthenticatedClient);
   const mockedSource = jest.mocked(PushSource);
   const mockDeleteOlderThan = jest.fn();
-
+  const mockedErrorMessage = jest.mocked(errorMessage);
+  const mockedSuccessMessage = jest.mocked(successMessage);
   const mockDeleteDocument = jest.fn();
 
   const doMockPreconditions = function () {
@@ -140,8 +144,8 @@ describe('source:push:delete', () => {
     .command(['source:push:delete', 'mysource', '-d', '12345'])
     .it(
       'returns an information message on successful deletion with older than',
-      (ctx) => {
-        expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
+      () => {
+        expect(mockedSuccessMessage.mock.lastCall).toMatchSnapshot();
       }
     );
 
@@ -160,8 +164,8 @@ describe('source:push:delete', () => {
     .command(['source:push:delete', 'mysource', '-d', '12345'])
     .it(
       'returns an information message on deletion failure with older than',
-      (ctx) => {
-        expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
+      () => {
+        expect(mockedErrorMessage.mock.lastCall).toMatchSnapshot();
       }
     );
 
@@ -176,8 +180,8 @@ describe('source:push:delete', () => {
     .command(['source:push:delete', 'mysource', '-x', 'https://foo.com'])
     .it(
       'returns an information message on successful deletion with document uri',
-      (ctx) => {
-        expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
+      () => {
+        expect(mockedSuccessMessage.mock.lastCall).toMatchSnapshot();
       }
     );
 
@@ -194,8 +198,8 @@ describe('source:push:delete', () => {
     ])
     .it(
       'returns an information message on successful deletion with multiple document uri',
-      (ctx) => {
-        expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
+      () => {
+        expect(mockedSuccessMessage.mock.lastCall).toMatchSnapshot();
       }
     );
 
@@ -214,8 +218,8 @@ describe('source:push:delete', () => {
     .command(['source:push:delete', 'mysource', '-x', 'https://foo.com'])
     .it(
       'returns an information message on deletion failure with document uri',
-      (ctx) => {
-        expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
+      () => {
+        expect(mockedErrorMessage.mock.lastCall).toMatchSnapshot();
       }
     );
 
@@ -240,8 +244,8 @@ describe('source:push:delete', () => {
     ])
     .it(
       'returns an information message on deletion failure with multiple document uri',
-      (ctx) => {
-        expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
+      () => {
+        expect(mockedErrorMessage.mock.lastCall).toMatchSnapshot();
       }
     );
 
@@ -267,8 +271,8 @@ describe('source:push:delete', () => {
     ])
     .it(
       'returns an information message on deletion and success failure with multiple document uri',
-      (ctx) => {
-        expect(formatCliLog(ctx.stdout)).toMatchSnapshot();
+      () => {
+        expect(mockedErrorMessage.mock.lastCall).toMatchSnapshot();
       }
     );
 

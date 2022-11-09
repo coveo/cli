@@ -1,165 +1,102 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`source:push:delete returns an information message on deletion and success failure with multiple document uri 1`] = `
-"The delete request for document: https://foo.com/2 was accepted by the Push API.Status code: 202 right trou
-    
-  console.error
-     ›   Warning: Error while trying to delete document: https://foo.com.
-     ›
-     ›   Status code: 412
-     ›   Error code: BAD_REQUEST
-     ›   Message: this is a bad request and you should feel bad
-
-      32 |     throw error;
-      33 |   } else {
-    > 34 |     CliUx.ux.warn(error.message);
-         |              ^
-      35 |   }
-      36 | };
-      37 |
-
-      at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:59:13)
-      at warn (src/lib/userFeedback.ts:34:14)
-      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:24)
-      at errorMessageOnDeletion (src/commands/source/push/delete.ts:119:16)
-          at async Promise.all (index 0)
-      at SourcePushDelete.run (src/commands/source/push/delete.ts:82:7)
-      at SourcePushDelete._run (../../../node_modules/@oclif/core/lib/command.js:81:22)
-      at Config.runCommand (../../../node_modules/@oclif/core/lib/config/config.js:272:25)
-      at Object.run (../../../node_modules/@oclif/test/lib/command.js:21:13)
-      at Object.run (../../../node_modules/fancy-test/lib/base.js:68:25)
-
-"
+[
+  "Error while trying to delete document: [31mhttps://foo.com[39m.",
+  {
+    "response": {
+      "data": {
+        "errorCode": "BAD_REQUEST",
+        "message": "this is a bad request and you should feel bad",
+      },
+      "status": 412,
+    },
+  },
+]
 `;
 
 exports[`source:push:delete returns an information message on deletion failure with document uri 1`] = `
-"  console.error
-     ›   Warning: Error while trying to delete document: https://foo.com.
-     ›
-     ›   Status code: 412
-     ›   Error code: BAD_REQUEST
-     ›   Message: this is a bad request and you should feel bad
-
-      32 |     throw error;
-      33 |   } else {
-    > 34 |     CliUx.ux.warn(error.message);
-         |              ^
-      35 |   }
-      36 | };
-      37 |
-
-      at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:59:13)
-      at warn (src/lib/userFeedback.ts:34:14)
-      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:24)
-      at errorMessageOnDeletion (src/commands/source/push/delete.ts:119:16)
-          at async Promise.all (index 0)
-      at SourcePushDelete.run (src/commands/source/push/delete.ts:82:7)
-      at SourcePushDelete._run (../../../node_modules/@oclif/core/lib/command.js:81:22)
-      at Config.runCommand (../../../node_modules/@oclif/core/lib/config/config.js:272:25)
-      at Object.run (../../../node_modules/@oclif/test/lib/command.js:21:13)
-      at Object.run (../../../node_modules/fancy-test/lib/base.js:68:25)
-
-"
+[
+  "Error while trying to delete document: [31mhttps://foo.com[39m.",
+  {
+    "response": {
+      "data": {
+        "errorCode": "BAD_REQUEST",
+        "message": "this is a bad request and you should feel bad",
+      },
+      "status": 412,
+    },
+  },
+]
 `;
 
 exports[`source:push:delete returns an information message on deletion failure with multiple document uri 1`] = `
-"  console.error
-     ›   Warning: Error while trying to delete document: https://foo.com.
-     ›
-     ›   Status code: 412
-     ›   Error code: BAD_REQUEST
-     ›   Message: this is a bad request and you should feel bad
-
-      32 |     throw error;
-      33 |   } else {
-    > 34 |     CliUx.ux.warn(error.message);
-         |              ^
-      35 |   }
-      36 | };
-      37 |
-
-      at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:59:13)
-      at warn (src/lib/userFeedback.ts:34:14)
-      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:24)
-      at errorMessageOnDeletion (src/commands/source/push/delete.ts:119:16)
-          at async Promise.all (index 0)
-      at SourcePushDelete.run (src/commands/source/push/delete.ts:82:7)
-      at SourcePushDelete._run (../../../node_modules/@oclif/core/lib/command.js:81:22)
-      at Config.runCommand (../../../node_modules/@oclif/core/lib/config/config.js:272:25)
-      at Object.run (../../../node_modules/@oclif/test/lib/command.js:21:13)
-      at Object.run (../../../node_modules/fancy-test/lib/base.js:68:25)
-
-  console.error
-     ›   Warning: Error while trying to delete document: https://foo.com/2.
-     ›
-     ›   Status code: 412
-     ›   Error code: BAD_REQUEST
-     ›   Message: this is a bad request and you should feel bad
-
-      32 |     throw error;
-      33 |   } else {
-    > 34 |     CliUx.ux.warn(error.message);
-         |              ^
-      35 |   }
-      36 | };
-      37 |
-
-      at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:59:13)
-      at warn (src/lib/userFeedback.ts:34:14)
-      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:24)
-      at errorMessageOnDeletion (src/commands/source/push/delete.ts:119:16)
-          at async Promise.all (index 1)
-      at SourcePushDelete.run (src/commands/source/push/delete.ts:82:7)
-      at SourcePushDelete._run (../../../node_modules/@oclif/core/lib/command.js:81:22)
-      at Config.runCommand (../../../node_modules/@oclif/core/lib/config/config.js:272:25)
-      at Object.run (../../../node_modules/@oclif/test/lib/command.js:21:13)
-      at Object.run (../../../node_modules/fancy-test/lib/base.js:68:25)
-
-"
+[
+  "Error while trying to delete document: [31mhttps://foo.com/2[39m.",
+  {
+    "response": {
+      "data": {
+        "errorCode": "BAD_REQUEST",
+        "message": "this is a bad request and you should feel bad",
+      },
+      "status": 412,
+    },
+  },
+]
 `;
 
 exports[`source:push:delete returns an information message on deletion failure with older than 1`] = `
-"  console.error
-     ›   Warning: Error while trying to delete document: older than 12345.
-     ›
-     ›   Status code: 412
-     ›   Error code: BAD_REQUEST
-     ›   Message: this is a bad request and you should feel bad
-
-      32 |     throw error;
-      33 |   } else {
-    > 34 |     CliUx.ux.warn(error.message);
-         |              ^
-      35 |   }
-      36 | };
-      37 |
-
-      at Object.warn (../../../node_modules/@oclif/core/lib/errors/index.js:59:13)
-      at warn (src/lib/userFeedback.ts:34:14)
-      at SourcePushDelete.errorMessageOnDeletion (src/commands/source/push/delete.ts:126:24)
-      at SourcePushDelete.errorMessageOnDeletion [as doDeletionOlderThan] (src/commands/source/push/delete.ts:103:12)
-
-"
+[
+  "Error while trying to delete document: [31molder than 12345[39m.",
+  {
+    "response": {
+      "data": {
+        "errorCode": "BAD_REQUEST",
+        "message": "this is a bad request and you should feel bad",
+      },
+      "status": 412,
+    },
+  },
+]
 `;
 
 exports[`source:push:delete returns an information message on successful deletion with document uri 1`] = `
-"The delete request for document: https://foo.com was accepted by the Push API.Status code: 999 this document is gone
-    
-"
+[
+  "The delete request for document: [32mhttps://foo.com[39m was accepted by the Push API.",
+  {
+    "config": {},
+    "data": {},
+    "headers": {},
+    "status": 999,
+    "statusText": "this document is gone",
+  },
+]
 `;
 
 exports[`source:push:delete returns an information message on successful deletion with multiple document uri 1`] = `
-"The delete request for document: https://foo.com was accepted by the Push API.Status code: 202 right trou
-    
-The delete request for document: https://foo.com/2 was accepted by the Push API.Status code: 202 right trou
-    
-"
+[
+  "The delete request for document: [32mhttps://foo.com/2[39m was accepted by the Push API.",
+  {
+    "config": {},
+    "data": {},
+    "headers": {},
+    "status": 202,
+    "statusText": "right trou",
+  },
+]
 `;
 
 exports[`source:push:delete returns an information message on successful deletion with older than 1`] = `
-"The delete request for document: older than 12345 was accepted by the Push API.Status code: 999 this document is gone
-    
-"
+[
+  "The delete request for document: [32molder than 12345[39m was accepted by the Push API.",
+  {
+    "config": {},
+    "data": {},
+    "headers": {},
+    "status": 999,
+    "statusText": "this document is gone",
+  },
+]
 `;
 
 exports[`source:push:delete should warn the user when he tries to delete too many items and stop there 1`] = `""`;
