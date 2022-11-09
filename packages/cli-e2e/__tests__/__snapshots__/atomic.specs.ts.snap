@@ -111,7 +111,7 @@ HashedFolder {
       "name": "src",
     },
     HashedFile {
-      "hash": "ywoeezM4STAa4UnGoyLoO8aoa9w=",
+      "hash": "HWGzlXoeCZ7RWF8C5xBCzKjJOGE=",
       "name": "start-netlify.mjs",
     },
     HashedFile {
@@ -119,7 +119,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "2kQxY3bsK3B4dFtt/8mKAdEGW+U=",
+  "hash": "+MhGVjC4iwi+JPedaRe0UCCTPCE=",
   "name": "normalizedDir",
 }
 `;
@@ -174,11 +174,11 @@ HashedFolder {
           "name": "README.md",
         },
         HashedFile {
-          "hash": "1lPgRLYWk0QH72f/9uuD8rXFFbw=",
+          "hash": "RmeGeAs5hovLIHxguToYky0yJDY=",
           "name": "tsconfig.json",
         },
       ],
-      "hash": "VSM6QNAdLl/zqq1FZRoGWtHR4o0=",
+      "hash": "9mMSnfoOrp73Wof+s40UwkqHXMo=",
       "name": "lambda",
     },
     HashedFile {
@@ -276,7 +276,7 @@ HashedFolder {
       "name": "src",
     },
     HashedFile {
-      "hash": "aJRXpglYi3QsPMT6VCkzrngytiE=",
+      "hash": "TpipPGi4VaFpdQERLhXcwVDAW8k=",
       "name": "start-netlify.mjs",
     },
     HashedFile {
@@ -284,7 +284,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "8BIGkJrIOQQa9IL+IuP0E2SL1t0=",
+  "hash": "fw6aHdU5Dj1CiTirci23q2QJLY0=",
   "name": "normalizedDir",
 }
 `;
@@ -400,7 +400,7 @@ HashedFolder {
       "name": "src",
     },
     HashedFile {
-      "hash": "ywoeezM4STAa4UnGoyLoO8aoa9w=",
+      "hash": "HWGzlXoeCZ7RWF8C5xBCzKjJOGE=",
       "name": "start-netlify.mjs",
     },
     HashedFile {
@@ -408,7 +408,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "2kQxY3bsK3B4dFtt/8mKAdEGW+U=",
+  "hash": "+MhGVjC4iwi+JPedaRe0UCCTPCE=",
   "name": "normalizedDir",
 }
 `;
@@ -524,7 +524,7 @@ HashedFolder {
       "name": "src",
     },
     HashedFile {
-      "hash": "ywoeezM4STAa4UnGoyLoO8aoa9w=",
+      "hash": "HWGzlXoeCZ7RWF8C5xBCzKjJOGE=",
       "name": "start-netlify.mjs",
     },
     HashedFile {
@@ -532,7 +532,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "6e+bqblOqSNdBa6kjxqRAqi9lcs=",
+  "hash": "tp6g+EIjZIRlGN9R6fVsJpQpZwA=",
   "name": "normalizedDir",
 }
 `;
