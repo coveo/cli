@@ -93,12 +93,14 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
     );
     await writeChangelog(PATH, changelog);
   }
-
-  await npmPublish('.', {tag: isPrerelease ? 'beta' : 'latest'});
+  const tagToPublish = isPrerelease ? 'beta' : 'latest';
+  await npmPublish('.', {tag: tagToPublish});
 
   await retry(
-    () => {
-      if (!isVersionPublished(packageJson.name, newVersion)) {
+    async () => {
+      if (
+        (await describeNpmTag(packageJson.name, tagToPublish)) === newVersion
+      ) {
         throw new Error('Version not available');
       }
     },
@@ -161,16 +163,6 @@ function updateDependency(packageJson, dependency, version) {
       packageJson[dependencyType][dependency] = version;
     }
   }
-}
-
-function isVersionPublished(packageName, version) {
-  return (
-    spawnSync(
-      appendCmdIfWindows`npm`,
-      ['show', `${packageName}@latest`, 'version'],
-      {encoding: 'utf-8'}
-    ).stdout.trim() === version
-  );
 }
 
 export const appendCmdIfWindows = (cmd) =>
