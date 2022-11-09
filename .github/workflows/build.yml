@@ -31,10 +31,11 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
+      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
         with:
           cache: 'npm'
+          node-version-file: '.nvmrc'
       - name: Setup repo
         run: npm ci
       - name: Check linting
@@ -56,10 +57,11 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
+      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
         with:
           cache: 'npm'
+          node-version-file: '.nvmrc'
       - name: Setup repo
         run: npm ci
       - name: Build
@@ -76,10 +78,11 @@ jobs:
       # ID of the test run to identify resources to teardown.
       TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
+      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
         with:
           cache: 'npm'
+          node-version-file: '.nvmrc'
       - uses: ./.github/actions/e2e-login
         id: setup
   e2e-setup-verdaccio:
@@ -94,19 +97,20 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
+      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
         with:
           cache: 'npm'
-      - uses: actions/cache@fd5de65bc895cf536527842281bea11763fefd77 # tag=v3
+          node-version-file: '.nvmrc'
+      - uses: actions/cache@1c73980b09e7aea7201f325a7aa3ad00beddcdda # v3
         if: ${{matrix.os == 'ubuntu-latest'}}
         with:
           path: packages/cli-e2e/verdaccio
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-      - uses: actions/cache@fd5de65bc895cf536527842281bea11763fefd77 # tag=v3
+      - uses: actions/cache@1c73980b09e7aea7201f325a7aa3ad00beddcdda # v3
         if: ${{matrix.os == 'windows-latest'}}
         with:
           path: packages\cli-e2e\verdaccio
@@ -116,7 +120,7 @@ jobs:
         run: npm run build
       - name: Setup E2E tests
         run: node -r ts-node/register/transpile-only packages/cli-e2e/setup/ci-verdaccio.ts
-      - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
+      - uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # v3
         if: always()
         with:
           name: ${{matrix.os}}-verdaccio-publish-artifacts
@@ -149,14 +153,14 @@ jobs:
       COVEO_DISABLE_AUTOUPDATE: true
       CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - uses: actions/cache@fd5de65bc895cf536527842281bea11763fefd77 # tag=v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
+      - uses: actions/cache@1c73980b09e7aea7201f325a7aa3ad00beddcdda # v3
         if: ${{matrix.os == 'ubuntu-latest'}}
         with:
           path: packages/cli-e2e/verdaccio
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
           restore-keys: verdaccio-${{matrix.os}}-${{ github.sha }}
-      - uses: actions/cache@fd5de65bc895cf536527842281bea11763fefd77 # tag=v3
+      - uses: actions/cache@1c73980b09e7aea7201f325a7aa3ad00beddcdda # v3
         if: ${{matrix.os == 'windows-latest'}}
         with:
           path: packages\cli-e2e\verdaccio
@@ -180,7 +184,7 @@ jobs:
       TEST_RUN_ID: '${{ github.sha }}-${{ github.run_attempt }}g'
       CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
       - uses: ./.github/actions/e2e-clean
         with:
           cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
@@ -193,3 +197,28 @@ jobs:
       - name: Check e2e matrix status
         if: ${{ needs.e2e.result != 'success' }}
         run: exit 1
+  prerelease:
+    timeout-minutes: 15
+    name: Pre-release
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+    needs: [e2e-report, lint, unit-tests]
+    runs-on: ubuntu-latest
+    environment: prerelease
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
+        with:
+          # pulls all commits (needed for computing the next version)
+          fetch-depth: 0
+      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
+        with:
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install dependencies
+        run: npm ci
+      - name: Release
+        run: |
+          npm run nx:graph
+          npm run release:phase1
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          DEBUG: '*'
+          IS_PRERELEASE: 'true'

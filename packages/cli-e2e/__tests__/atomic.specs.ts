@@ -224,7 +224,7 @@ describe('ui:create:atomic', () => {
         if (!skipBrowser) {
           page = await openNewPage(browser, page);
         }
-      });
+      }, 30e3);
 
       afterEach(async () => {
         if (!skipBrowser) {

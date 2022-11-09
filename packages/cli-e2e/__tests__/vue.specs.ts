@@ -118,7 +118,7 @@ describe('ui:create:vue', () => {
     jest.resetModules();
     process.env = {...oldEnv};
     page = await openNewPage(browser, page);
-  });
+  }, 30e3);
 
   afterEach(async () => {
     await captureScreenshots(browser);
