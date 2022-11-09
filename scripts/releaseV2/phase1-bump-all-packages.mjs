@@ -16,7 +16,7 @@ import angularChangelogConvention from 'conventional-changelog-angular';
 import {dirname, resolve, join} from 'path';
 import {fileURLToPath} from 'url';
 import retry from 'async-retry';
-import {gt} from 'semver';
+import {gt, prerelease} from 'semver';
 
 const hasPackageJsonChanged = (directoryPath) => {
   const {stdout, stderr, status} = spawnSync(
@@ -42,6 +42,7 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
 // Run on each package, it generate the changelog, install the latest dependencies that are part of the workspace, publish the package.
 (async () => {
   const PATH = '.';
+  const privatePackage = isPrivatePackage();
   const packageJson = JSON.parse(
     readFileSync('package.json', {encoding: 'utf-8'})
   );
@@ -56,9 +57,9 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
     return;
   }
   const parsedCommits = parseCommits(commits, convention.parserOpts);
-  const bumpInfo = convention.recommendedBumpOpts.whatBump(parsedCommits);
   let currentVersion = getCurrentVersion(PATH);
-  if (isPrerelease) {
+  let bumpInfo = convention.recommendedBumpOpts.whatBump(parsedCommits);
+  if (isPrerelease && !privatePackage) {
     const currentBetaNpmVersion = await describeNpmTag(
       packageJson.name,
       'beta'
@@ -66,7 +67,12 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
     currentVersion = gt(currentBetaNpmVersion, currentVersion)
       ? currentBetaNpmVersion
       : currentVersion;
+    bumpInfo =
+      prerelease(currentVersion) === null
+        ? convention.recommendedBumpOpts.whatBump(parsedCommits)
+        : {type: 'prerelease'};
   }
+
   const newVersion = getNextVersion(currentVersion, {
     ...bumpInfo,
     isPrerelease,
@@ -76,7 +82,7 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
     workspaceUpdateStrategy: 'UpdateExact',
   });
   await updateWorkspaceDependent(newVersion);
-  if (isPrivatePackage()) {
+  if (privatePackage) {
     return;
   }
 
