@@ -67,7 +67,10 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
       ? currentBetaNpmVersion
       : currentVersion;
   }
-  const newVersion = getNextVersion(currentVersion, bumpInfo, isPrerelease);
+  const newVersion = getNextVersion(currentVersion, {
+    ...bumpInfo,
+    isPrerelease,
+  });
 
   await npmBumpVersion(newVersion, PATH, {
     workspaceUpdateStrategy: 'UpdateExact',
