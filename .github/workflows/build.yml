@@ -215,7 +215,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Release
-        run: npm run release:phase1
+        run: |
+          npm run nx:graph
+          npm run release:phase1
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           DEBUG: '*'
