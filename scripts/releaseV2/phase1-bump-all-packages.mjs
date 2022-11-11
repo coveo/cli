@@ -63,7 +63,7 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
   const nextGoldVersion = getNextVersion(currentVersion, bumpInfo);
   const newVersion =
     isPrerelease && !privatePackage
-      ? getNextBetaVersion(packageJson.name, nextGoldVersion)
+      ? await getNextBetaVersion(packageJson.name, nextGoldVersion)
       : nextGoldVersion;
 
   await npmBumpVersion(newVersion, PATH, {
@@ -88,7 +88,7 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
     await writeChangelog(PATH, changelog);
   }
   const tagToPublish = isPrerelease ? 'beta' : 'latest';
-  await npmPublish('.', {tag: tagToPublish});
+  await npmPublish('.', {tag: tagToPublish, 'dry-run': true});
 
   await retry(
     async () => {
@@ -172,9 +172,9 @@ function isPrivatePackage() {
 async function getNextBetaVersion(packageName, nextGoldVersion) {
   const registryMeta = await fetchNpm(packageName);
   const versions = Object.keys(registryMeta.versions);
-  const nextGoldMatcher = new RegExp(`${nextGoldVersion}-\d+`);
+  const nextGoldMatcher = new RegExp(`${nextGoldVersion}-\\d+`);
   const matchingPreReleasedVersions = versions
-    .filter(nextGoldMatcher.test)
+    .filter((version) => nextGoldMatcher.test(version))
     .sort();
   if (matchingPreReleasedVersions.length === 0) {
     return `${nextGoldVersion}-0`;
