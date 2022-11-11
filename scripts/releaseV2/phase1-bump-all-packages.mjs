@@ -88,7 +88,7 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
     await writeChangelog(PATH, changelog);
   }
   const tagToPublish = isPrerelease ? 'beta' : 'latest';
-  await npmPublish('.', {tag: tagToPublish, 'dry-run': true});
+  await npmPublish('.', {tag: tagToPublish});
 
   await retry(
     async () => {
