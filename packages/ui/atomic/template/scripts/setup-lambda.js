@@ -1,5 +1,5 @@
 const {spawnSync} = require('child_process');
-const {copySync} = require('fs-extra');
+const {cpSync} = require('fs');
 const {sep, resolve} = require('path');
 const {getPackageManager} = require('./utils');
 
@@ -22,11 +22,12 @@ function isEnvFile(path) {
 }
 
 function copySearchTokenLambdaToRoot() {
-  copySync(
+  cpSync(
     resolve('node_modules', '@coveo', 'search-token-lambda'),
     resolve('lambda'),
     {
-      filter: (src, dest) => !isNodeModule(dest) && !isEnvFile(dest),
+      recursive: true,
+      filter: (_src, dest) => !isNodeModule(dest) && !isEnvFile(dest),
     }
   );
 }
