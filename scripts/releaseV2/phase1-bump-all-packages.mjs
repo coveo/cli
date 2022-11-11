@@ -93,7 +93,7 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
   await retry(
     async () => {
       if (
-        (await describeNpmTag(packageJson.name, tagToPublish)) === newVersion
+        (await describeNpmTag(packageJson.name, tagToPublish)) !== newVersion
       ) {
         throw new Error('Version not available');
       }
