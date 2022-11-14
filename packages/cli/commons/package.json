@@ -14,7 +14,7 @@
     }
   },
   "devDependencies": {
-    "@coveo/cli-commons-dev": "1.35.16",
+    "@coveo/cli-commons-dev": "4.0.0",
     "@types/jest": "29.2.2",
     "jest": "29.3.1",
     "ts-jest": "29.0.3",
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@amplitude/node": "1.10.2",
-    "@coveo/platform-client": "37.2.3",
+    "@coveo/platform-client": "37.3.0",
     "@oclif/core": "1.20.4",
     "abortcontroller-polyfill": "1.7.5",
     "chalk": "4.1.2",
