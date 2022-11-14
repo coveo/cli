@@ -16,7 +16,8 @@ import angularChangelogConvention from 'conventional-changelog-angular';
 import {dirname, resolve, join} from 'path';
 import {fileURLToPath} from 'url';
 import retry from 'async-retry';
-import {gt, prerelease} from 'semver';
+import {gt, inc, prerelease} from 'semver';
+import {json as fetchNpm} from 'npm-registry-fetch';
 
 const hasPackageJsonChanged = (directoryPath) => {
   const {stdout, stderr, status} = spawnSync(
@@ -59,24 +60,11 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
   const parsedCommits = parseCommits(commits, convention.parserOpts);
   let currentVersion = getCurrentVersion(PATH);
   let bumpInfo = convention.recommendedBumpOpts.whatBump(parsedCommits);
-  if (isPrerelease && !privatePackage) {
-    const currentBetaNpmVersion = await describeNpmTag(
-      packageJson.name,
-      'beta'
-    );
-    currentVersion = gt(currentBetaNpmVersion, currentVersion)
-      ? currentBetaNpmVersion
-      : currentVersion;
-    bumpInfo =
-      prerelease(currentVersion) === null
-        ? convention.recommendedBumpOpts.whatBump(parsedCommits)
-        : {type: 'prerelease'};
-  }
-
-  const newVersion = getNextVersion(currentVersion, {
-    ...bumpInfo,
-    isPrerelease,
-  });
+  const nextGoldVersion = getNextVersion(currentVersion, bumpInfo);
+  const newVersion =
+    isPrerelease && !privatePackage
+      ? await getNextBetaVersion(packageJson.name, nextGoldVersion)
+      : nextGoldVersion;
 
   await npmBumpVersion(newVersion, PATH, {
     workspaceUpdateStrategy: 'UpdateExact',
@@ -179,4 +167,17 @@ function isPrivatePackage() {
     readFileSync('package.json', {encoding: 'utf-8'})
   );
   return packageJson.private;
+}
+
+async function getNextBetaVersion(packageName, nextGoldVersion) {
+  const registryMeta = await fetchNpm(packageName);
+  const versions = Object.keys(registryMeta.versions);
+  const nextGoldMatcher = new RegExp(`${nextGoldVersion}-\\d+`);
+  const matchingPreReleasedVersions = versions
+    .filter((version) => nextGoldMatcher.test(version))
+    .sort();
+  if (matchingPreReleasedVersions.length === 0) {
+    return `${nextGoldVersion}-0`;
+  }
+  return inc(matchingPreReleasedVersions.pop(), 'prerelease');
 }

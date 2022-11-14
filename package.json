@@ -40,6 +40,7 @@
     "isomorphic-fetch": "3.0.0",
     "lint-staged": "13.0.3",
     "moment": "2.29.4",
+    "npm-registry-fetch": "^14.0.2",
     "oclif": "3.2.25",
     "octokit": "2.0.10",
     "patch-package": "6.5.0",
