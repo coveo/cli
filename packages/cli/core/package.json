@@ -43,7 +43,7 @@
     "@amplitude/types": "1.10.2",
     "@babel/core": "7.20.2",
     "@coveo/angular": "1.35.16",
-    "@coveo/cli-commons-dev": "1.35.16",
+    "@coveo/cli-commons-dev": "4.0.0",
     "@coveo/cra-template": "1.35.16",
     "@coveo/create-atomic": "1.35.14",
     "@coveo/create-headless-vue": "0.1.0",
