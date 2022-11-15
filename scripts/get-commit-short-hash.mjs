@@ -1,14 +1,21 @@
 import {exportVariable, setFailed} from '@actions/core';
-import {getSHA1fromRef} from '@coveo/semantic-monorepo-tools';
+import {readdirSync} from 'node:fs';
+import {join} from 'node:path';
+import {binariesMatcher} from './oclifArtifactMatchers.mjs';
 
-const getCommitShortHash = async () =>
-  (await getSHA1fromRef('HEAD')).substring(0, 7);
+// Should be executed at the root of the CLI workspace.
+const pathToArtifacts = join('dist', process.platform);
+const artifacts = readdirSync(pathToArtifacts, {withFileTypes: true});
+const someExe = artifacts.find(
+  (candidate) => candidate.isFile() && candidate.name.endsWith('.exe')
+);
 
-(async () => {
-  try {
-    const commitShortHash = await getCommitShortHash();
-    exportVariable('commitSHA1', commitShortHash);
-  } catch (error) {
-    setFailed(error.message);
-  }
-})();
+if (!binariesMatcher.exec(someExe.name)?.groups?.commitSHA) {
+  setFailed('Binary does not match');
+}
+console.log(binariesMatcher.exec(someExe.name).groups.commitSHA);
+exportVariable(
+  'commitSHA1',
+  binariesMatcher.exec(someExe.name).groups.commitSHA
+);
+``;

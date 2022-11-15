@@ -7,6 +7,11 @@ import {mkdirSync, writeFileSync, readdirSync, copyFileSync} from 'fs';
 import {resolve, join} from 'path';
 import {execSync} from 'node:child_process';
 import {spawnSync} from 'child_process';
+import {
+  binariesMatcher,
+  manifestMatcher,
+  tarballMatcher,
+} from './oclifArtifactMatchers.mjs';
 
 async function main() {
   const release = await getLastCliRelease();
@@ -17,12 +22,6 @@ async function main() {
   const getSubDirectoryForTarball = ({version, commitSHA}) =>
     join(topLevelDirectory, 'versions', version, commitSHA);
   const subDirectoryForManifest = join(topLevelDirectory, 'channels', 'stable');
-  const binariesMatcher =
-    /^coveo[_-]{1}(?<version>v?\d+\.\d+\.\d+(-\d+)?)[_.-]{1}(?<commitSHA>\w+)[_-]?(\d+_)?(?<longExt>.*\.(exe|deb|pkg))$/;
-  const manifestMatcher =
-    /^coveo-(?<version>v?\d+\.\d+\.\d+(-\d+)?)-(?<commitSHA>\w+)-(?<targetSignature>.*-buildmanifest)$/;
-  const tarballMatcher =
-    /^coveo-v?(?<version>\d+\.\d+\.\d+(-\d+)?)-(?<commitSHA>\w+)-(?<targetSignature>[\w-]+).tar\.[gx]z$/;
 
   const determineAssetLocation = (assetName) => {
     if (assetName.match(tarballMatcher)) {
