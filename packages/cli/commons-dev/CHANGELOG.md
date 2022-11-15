@@ -1,3 +1,17 @@
+# 5.0.0 (2022-11-15)
+
+### Bug Fixes
+
+- **deps:** update all dependencies j:cdx-227 ([#1026](https://github.com/coveo/cli/issues/1026)) ([c6ca8dd](https://github.com/coveo/cli/commits/c6ca8ddf8dde39eb69cd99da3e9d897db873e4c6))
+
+- feat(cli)!: migrate to vue3 ([eacd667](https://github.com/coveo/cli/commits/eacd6677e319d67074b15e8f02bcdb41975e8635))
+
+### BREAKING CHANGES
+
+- `ui:create:vue` command now scaffold a vue3+vite project
+
+https://coveord.atlassian.net/browse/CDX-813
+
 ## 1.35.16 (2022-10-14)
 
 ## 1.35.14 (2022-10-13)

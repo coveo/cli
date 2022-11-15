@@ -1,7 +1,7 @@
 {
   "name": "@coveo/search-token-lambda",
   "author": "Coveo",
-  "version": "1.35.14",
+  "version": "1.35.15",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",

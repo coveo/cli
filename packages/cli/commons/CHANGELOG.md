@@ -1,3 +1,15 @@
+# 2.1.0 (2022-11-15)
+
+### Bug Fixes
+
+- **deps:** update all dependencies j:cdx-227 ([#1015](https://github.com/coveo/cli/issues/1015)) ([0b6a70b](https://github.com/coveo/cli/commits/0b6a70b0c1539648ea3a24eefc8fb01b5b7173db))
+- **deps:** update all dependencies j:cdx-227 ([#1022](https://github.com/coveo/cli/issues/1022)) ([e181d70](https://github.com/coveo/cli/commits/e181d700e19445bf912b3ecd370f7eabdb777d71))
+- **deps:** update all dependencies j:cdx-227 ([#1026](https://github.com/coveo/cli/issues/1026)) ([c6ca8dd](https://github.com/coveo/cli/commits/c6ca8ddf8dde39eb69cd99da3e9d897db873e4c6))
+
+### Features
+
+- update to node 18 ([#993](https://github.com/coveo/cli/issues/993)) ([335a026](https://github.com/coveo/cli/commits/335a026e0cc0af9bdef13390e512540ebc337d22))
+
 ## 2.0.2 (2022-10-14)
 
 # 2.0.0 (2022-10-13)

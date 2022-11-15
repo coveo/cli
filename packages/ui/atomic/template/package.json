@@ -1,7 +1,7 @@
 {
   "name": "@coveo/create-atomic-template",
   "description": "{{titleCase project}} project",
-  "version": "1.35.13",
+  "version": "1.35.14",
   "private": true,
   "scripts": {
     "release:phase1": "node --experimental-specifier-resolution=node ../../../../scripts/releaseV2/phase1-bump-all-packages.mjs",
@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@coveo/atomic": "1.121.0",
-    "@coveo/search-token-lambda": "1.35.14",
+    "@coveo/search-token-lambda": "1.35.15",
     "@stencil/core": "2.19.3"
   },
   "devDependencies": {
