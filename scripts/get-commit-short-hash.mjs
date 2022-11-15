@@ -13,7 +13,6 @@ const someExe = artifacts.find(
 if (!binariesMatcher.exec(someExe.name)?.groups?.commitSHA) {
   setFailed('Binary does not match');
 }
-console.log(binariesMatcher.exec(someExe.name).groups.commitSHA);
 exportVariable(
   'commitSHA1',
   binariesMatcher.exec(someExe.name).groups.commitSHA
