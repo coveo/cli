@@ -33,7 +33,7 @@
     "@types/cors": "2.8.12",
     "@types/csurf": "1.11.2",
     "@types/helmet": "4.0.0",
-    "@types/jest": "29.2.2",
+    "@types/jest": "29.2.3",
     "@types/node": "^18.11.9",
     "@types/supertest": "2.0.12",
     "@typescript-eslint/eslint-plugin": "5.43.0",

@@ -41,7 +41,7 @@
     "@types/folder-hash": "4.0.2",
     "@types/fs-extra": "9.0.13",
     "@types/is-running": "2.1.0",
-    "@types/jest": "29.2.2",
+    "@types/jest": "29.2.3",
     "@types/node": "18.11.9",
     "@types/tmp": "0.2.3",
     "@types/wait-on": "5.3.1",
