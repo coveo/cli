@@ -17,4 +17,3 @@ exportVariable(
   'commitSHA1',
   binariesMatcher.exec(someExe.name).groups.commitSHA
 );
-``;
