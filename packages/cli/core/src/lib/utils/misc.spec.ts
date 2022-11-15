@@ -1,4 +1,3 @@
-import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {getPackageVersion} from './misc';
 
 describe('#getPackageVersion', () => {
@@ -21,14 +20,11 @@ describe('#getPackageVersion', () => {
     jest.restoreAllMocks();
   });
 
-  fancyIt()(
-    'should try to resolve to the production dependencies first',
-    () => {
-      mockPackageJson(filledPackageJson);
+  it('should try to resolve to the production dependencies first', () => {
+    mockPackageJson(filledPackageJson);
 
-      expect(getPackageVersion('myPackage')).toBe('1.0.0');
-    }
-  );
+    expect(getPackageVersion('myPackage')).toBe('1.0.0');
+  });
 
   describe('when the package is not in the production dependencies', () => {
     beforeEach(() => {
@@ -38,7 +34,7 @@ describe('#getPackageVersion', () => {
       });
     });
 
-    fancyIt()('should fallback to the dev dependencies', () => {
+    it('should fallback to the dev dependencies', () => {
       expect(getPackageVersion('myPackage')).toBe('2.0.0');
     });
   });
@@ -52,7 +48,7 @@ describe('#getPackageVersion', () => {
       });
     });
 
-    fancyIt()('should fallback to the peer dependencies', () => {
+    it('should fallback to the peer dependencies', () => {
       expect(getPackageVersion('myPackage')).toBe('3.0.0');
     });
   });
@@ -66,8 +62,22 @@ describe('#getPackageVersion', () => {
       });
     });
 
-    fancyIt()('should return undefined', () => {
-      expect(getPackageVersion('myPackage')).toBeUndefined();
+    it('should return null', () => {
+      expect(getPackageVersion('myPackage')).toBeNull();
+    });
+  });
+
+  describe('when the dependency is a prerelease', () => {
+    beforeEach(() => {
+      mockPackageJson({
+        dependencies: {myPackage: '1.0.0-1'},
+        devDependencies: {},
+        peerDependencies: {},
+      });
+    });
+
+    it('should return the full prerelease', () => {
+      expect(getPackageVersion('myPackage')).toBe('1.0.0-1');
     });
   });
 });
