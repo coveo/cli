@@ -50,6 +50,7 @@ const mockedDeleteSnapshot = jest.fn();
 const mockedGetSnapshot = jest.fn();
 const mockedExportSnapshot = jest.fn();
 const mockedApplySnapshot = jest.fn();
+const mockedAbortPendingGetRequests = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
 const mockedEnsureSnapshotAccess = jest.mocked(ensureSnapshotAccess);
@@ -83,6 +84,7 @@ describe('Snapshot', () => {
   const doMockAuthenticatedClient = () => {
     mockedGetClient.mockImplementation(() =>
       Promise.resolve({
+        abortPendingGetRequests: mockedAbortPendingGetRequests,
         resourceSnapshot: {
           createFromBuffer: mockedCreateSnapshotFromBuffer,
           push: mockedPushSnapshot,

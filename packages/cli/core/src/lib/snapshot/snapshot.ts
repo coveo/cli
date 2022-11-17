@@ -236,6 +236,7 @@ export class Snapshot {
     operationToWaitFor?: ResourceSnapshotsReportType
   ): () => Promise<void> {
     return (async () => {
+      await this.client.abortPendingGetRequests();
       await this.refreshSnapshotData();
 
       const isUnsettled = this.isUnsettled();
