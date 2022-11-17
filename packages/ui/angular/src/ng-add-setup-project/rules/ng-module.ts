@@ -1,11 +1,17 @@
-import {addImportToModule} from '@angular/cdk/schematics';
-import {createSourceFile, ScriptTarget} from 'typescript';
-import {getAppModulePath, getProjectMainFile} from '@angular/cdk/schematics';
+import {
+  addImportToModule,
+  getAppModulePath,
+  getProjectMainFile,
+} from '@angular/cdk/schematics';
 import {InsertChange} from '@schematics/angular/utility/change';
 import {ProjectDefinition} from '@angular-devkit/core/src/workspace';
 import {Rule, Tree} from '@angular-devkit/schematics';
-import {SourceFile} from 'typescript';
 import {CoveoSchema} from '../../schema';
+import {
+  createSourceFile,
+  ScriptTarget,
+  SourceFile,
+} from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
 
 export function updateNgModule(
   _options: CoveoSchema,
