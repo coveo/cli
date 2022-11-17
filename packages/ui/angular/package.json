@@ -29,7 +29,7 @@
     "@coveo/search-token-server": "1.35.15",
     "@schematics/angular": "^15.0.0",
     "jest-config": "29.3.1",
-    "typescript": "4.8.4"
+    "typescript": "4.9.3"
   },
   "devDependencies": {
     "@angular/core": "^15.0.0",
