@@ -1,6 +1,6 @@
-import {Command} from '@oclif/core';
 import {flush} from '../analytics/amplitudeClient';
 import {buildEvent} from '../analytics/eventUtils';
+import {CLICommand} from '../command/cliCommand';
 import {CLIBaseError} from '../errors/cliBaseError';
 import {wrapError} from '../errors/wrapError';
 
@@ -26,19 +26,22 @@ export interface TrackableOptions {
 }
 
 /**
- * Use this decorator on a `run()` method from a class inheriting from {@link Command} to track the command usage.
+ * Use this decorator on a `run()` method from a class inheriting from {@link CLICommand} to track the command usage.
  */
 export function Trackable({
   eventName,
   overrideEventProperties,
 }: TrackableOptions = {}) {
   return function (
-    _target: Command,
+    _target: CLICommand,
     _propertyKey: string,
     descriptor: PropertyDescriptor
   ) {
     const originalCommand = descriptor.value!;
-    descriptor.value = async function (this: Command, ...cmdArgs: unknown[]) {
+    descriptor.value = async function (
+      this: CLICommand,
+      ...cmdArgs: unknown[]
+    ) {
       const name = eventName || getEventName(this);
       const properties = {
         ...overrideEventProperties,
@@ -53,7 +56,7 @@ export function Trackable({
 }
 
 async function trackCommand(
-  this: Command,
+  this: CLICommand,
   eventName: string,
   properties: Record<string, unknown>,
   originalRunCommand: any
@@ -73,7 +76,7 @@ async function trackCommand(
 }
 
 async function trackError(
-  this: Command,
+  this: CLICommand,
   properties: Record<string, unknown>,
   originalCatchCommand: (...args: unknown[]) => Promise<CLIBaseError>,
   args: unknown[]
