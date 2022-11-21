@@ -22,6 +22,7 @@ describe('trackable', () => {
       };
       const fakeCommand = getFakeCommand({
         id: 'foo:bar',
+        identifier: 'foo:bar',
         config: mockedConfig,
         parse: jest.fn().mockReturnValue({flags, args}),
       });

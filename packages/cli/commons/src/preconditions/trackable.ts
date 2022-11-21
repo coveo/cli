@@ -91,6 +91,6 @@ async function trackError(
   return originalCatchCommand.apply(this, args);
 }
 
-function getEventName(target: Command): string {
-  return target.id?.replace(/:/g, ' ') || '';
+function getEventName(target: CLICommand): string {
+  return target.identifier?.replace(/:/g, ' ') || '';
 }

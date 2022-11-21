@@ -7,7 +7,7 @@ export const getFakeCommand = (
     warn: jest.fn(),
     log: jest.fn(),
     parse: jest.fn().mockReturnValue({flags: {}}),
-    printableName: 'foo',
+    identifier: 'foo',
     ...overrideConfig,
   };
 
