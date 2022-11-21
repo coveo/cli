@@ -2,13 +2,13 @@ jest.mock('../../utils/process');
 jest.mock('../../utils/misc');
 jest.mock('../../utils/os');
 
-import {spawnProcessOutput} from '../../utils/process';
+import {spawnProcessOutput} from '../../utils/process.js';
 import {getFakeCommand} from '@coveo/cli-commons-dev/testUtils/utils';
 
-import {IsNgVersionInRange} from './ng';
+import {IsNgVersionInRange} from './ng.js';
 import {Command, CliUx} from '@oclif/core';
-import {appendCmdIfWindows} from '../../utils/os';
-import {getPackageVersion} from '../../utils/misc';
+import {appendCmdIfWindows} from '../../utils/os.js';
+import {getPackageVersion} from '../../utils/misc.js';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 
 describe('IsNgInstalled', () => {

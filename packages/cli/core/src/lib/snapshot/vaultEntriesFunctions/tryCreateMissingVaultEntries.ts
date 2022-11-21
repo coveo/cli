@@ -1,8 +1,8 @@
 import {formatOrgId} from '@coveo/cli-commons/utils/ux';
 import {CliUx} from '@oclif/core';
 import {bold} from 'chalk';
-import {VaultHandler} from '../vaultHandler';
-import {VaultTransferFunctionsParam} from './interfaces';
+import {VaultHandler} from '../vaultHandler.js';
+import {VaultTransferFunctionsParam} from './interfaces.js';
 
 export async function tryCreateMissingVaultEntries({
   reporter,

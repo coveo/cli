@@ -17,32 +17,32 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '@coveo/cli-commons/preconditions/index';
-import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
+import {IsGitInstalled} from '../../../lib/decorators/preconditions/git.js';
 import {writeSnapshotPrivilege} from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
-import {SnapshotOperationTimeoutError} from '../../../lib/errors';
-import {ProcessAbort} from '../../../lib/errors/processError';
+import {SnapshotOperationTimeoutError} from '../../../lib/errors.js';
+import {ProcessAbort} from '../../../lib/errors/processError.js';
 import {
   organization,
   snapshotId,
   wait,
 } from '../../../lib/flags/snapshotCommonFlags';
-import {Project} from '../../../lib/project/project';
+import {Project} from '../../../lib/project/project.js';
 import type {
   SnapshotPullModel,
   SnapshotPullModelResources,
 } from '../../../lib/snapshot/pullModel/interfaces';
-import {buildResourcesToExport} from '../../../lib/snapshot/pullModel/validation/model';
-import {validateSnapshotPullModel} from '../../../lib/snapshot/pullModel/validation/validate';
-import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
+import {buildResourcesToExport} from '../../../lib/snapshot/pullModel/validation/model.js';
+import {validateSnapshotPullModel} from '../../../lib/snapshot/pullModel/validation/validate.js';
+import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot.js';
 import {
   getTargetOrg,
   cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
-import {allowedResourceType} from '../../../lib/snapshot/snapshotConstant';
-import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
-import {confirmWithAnalytics} from '../../../lib/utils/cli';
-import {spawnProcess} from '../../../lib/utils/process';
+import {allowedResourceType} from '../../../lib/snapshot/snapshotConstant.js';
+import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory.js';
+import {confirmWithAnalytics} from '../../../lib/utils/cli.js';
+import {spawnProcess} from '../../../lib/utils/process.js';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Example} from '@oclif/core/lib/interfaces';
 

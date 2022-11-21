@@ -1,4 +1,4 @@
-import {ReportViewerStyles} from './reportPreviewerStyles';
+import {ReportViewerStyles} from './reportPreviewerStyles.js';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,

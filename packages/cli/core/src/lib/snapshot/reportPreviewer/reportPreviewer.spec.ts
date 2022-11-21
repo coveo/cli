@@ -1,8 +1,8 @@
 import {test} from '@oclif/test';
 
 import {ResourceSnapshotsReportType} from '@coveo/platform-client';
-import {ReportViewer} from './reportPreviewer';
-import {SnapshotReporter} from '../snapshotReporter';
+import {ReportViewer} from './reportPreviewer.js';
+import {SnapshotReporter} from '../snapshotReporter.js';
 import {
   getErrorReport,
   getMissingVaultEntryReport,

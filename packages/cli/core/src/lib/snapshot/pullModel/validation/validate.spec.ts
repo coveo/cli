@@ -3,8 +3,8 @@ jest.mock('./errors');
 const trueErrors = jest.requireActual('./errors');
 
 import {validate, ValidatorResult} from 'jsonschema';
-import {validateSnapshotPullModel} from './validate';
-import {InvalidSPMError, UnknownSPMValidationError} from './errors';
+import {validateSnapshotPullModel} from './validate.js';
+import {InvalidSPMError, UnknownSPMValidationError} from './errors.js';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 
 describe('validate', () => {

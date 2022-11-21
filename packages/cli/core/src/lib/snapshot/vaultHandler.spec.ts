@@ -3,13 +3,13 @@ jest.mock('fs-extra');
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 
 import {ResourceSnapshotType} from '@coveo/platform-client';
-import {VaultEntryAttributes} from './snapshotReporter';
-import {VaultHandler} from './vaultHandler';
+import {VaultEntryAttributes} from './snapshotReporter.js';
+import {VaultHandler} from './vaultHandler.js';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
 import open from 'open';
 import {CliUx} from '@oclif/core';
-import {ProcessAbort} from '../errors/processError';
+import {ProcessAbort} from '../errors/processError.js';
 import {stdout, stderr} from 'stdout-stderr';
 
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);

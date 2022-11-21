@@ -10,9 +10,9 @@ import {
 } from '@coveo/cli-commons/preconditions/index';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
-import {spawnProcess} from '../../../lib/utils/process';
-import {getPackageVersion} from '../../../lib/utils/misc';
-import {appendCmdIfWindows} from '../../../lib/utils/os';
+import {spawnProcess} from '../../../lib/utils/process.js';
+import {getPackageVersion} from '../../../lib/utils/misc.js';
+import {appendCmdIfWindows} from '../../../lib/utils/os.js';
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,

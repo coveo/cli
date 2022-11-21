@@ -5,15 +5,15 @@ import type {
 import {existsSync, mkdirSync, readdirSync, rmSync} from 'node:fs';
 import {join, relative, resolve} from 'node:path';
 import {CliUx} from '@oclif/core';
-import {Project} from '../../project/project';
-import {spawnProcess, spawnProcessOutput} from '../../utils/process';
-import {SnapshotFactory} from '../snapshotFactory';
+import {Project} from '../../project/project.js';
+import {spawnProcess, spawnProcessOutput} from '../../utils/process.js';
+import {SnapshotFactory} from '../snapshotFactory.js';
 import dedent from 'ts-dedent';
 import {Dirent} from 'fs';
-import {recursiveDirectoryDiff} from './filesDiffProcessor';
-import {DotFolder} from '../../project/dotFolder';
+import {recursiveDirectoryDiff} from './filesDiffProcessor.js';
+import {DotFolder} from '../../project/dotFolder.js';
 import {cwd} from 'process';
-import {buildResourcesToExport} from '../pullModel/validation/model';
+import {buildResourcesToExport} from '../pullModel/validation/model.js';
 import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
 
 export class ExpandedPreviewer {

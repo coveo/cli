@@ -1,5 +1,5 @@
 import {Flags} from '@oclif/core';
-import {Snapshot} from '../snapshot/snapshot';
+import {Snapshot} from '../snapshot/snapshot.js';
 
 export enum PreviewLevelValue {
   None = 'none',

@@ -24,14 +24,14 @@ import {getDirectory} from '@coveo/cli-commons-dev/testUtils/fsUtils';
 
 import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
 
-import {recursiveDirectoryDiff} from './filesDiffProcessor';
+import {recursiveDirectoryDiff} from './filesDiffProcessor.js';
 
-import {ExpandedPreviewer} from './expandedPreviewer';
-import {SnapshotFactory} from '../snapshotFactory';
-import {Snapshot} from '../snapshot';
-import {Project} from '../../project/project';
-import {spawnProcess, spawnProcessOutput} from '../../utils/process';
-import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
+import {ExpandedPreviewer} from './expandedPreviewer.js';
+import {SnapshotFactory} from '../snapshotFactory.js';
+import {Snapshot} from '../snapshot.js';
+import {Project} from '../../project/project.js';
+import {spawnProcess, spawnProcessOutput} from '../../utils/process.js';
+import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel.js';
 
 describe('ExpandedPreviewer', () => {
   const Blob = jest.fn();

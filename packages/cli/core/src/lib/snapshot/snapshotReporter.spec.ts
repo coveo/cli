@@ -10,7 +10,7 @@ import {
   ReportViewerResourceReportModel,
   SnapshotReportStatus,
 } from './reportPreviewer/reportPreviewerDataModels';
-import {SnapshotReporter} from './snapshotReporter';
+import {SnapshotReporter} from './snapshotReporter.js';
 
 function getFakeHandler() {
   const fakeHandler = jest.fn();

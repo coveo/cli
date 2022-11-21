@@ -1,7 +1,7 @@
 import {validate} from 'jsonschema';
-import {SnapshotPullModel} from '../interfaces';
-import {InvalidSPMError, UnknownSPMValidationError} from './errors';
-import {getSnapshotModel} from './model';
+import {SnapshotPullModel} from '../interfaces.js';
+import {InvalidSPMError, UnknownSPMValidationError} from './errors.js';
+import {getSnapshotModel} from './model.js';
 
 export function validateSnapshotPullModel(
   templateJson: unknown,

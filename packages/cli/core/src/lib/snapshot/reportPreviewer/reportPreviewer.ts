@@ -1,18 +1,18 @@
 import {CliUx} from '@oclif/core';
 import {red, italic, green, yellow, ChalkFunction} from 'chalk';
-import {ReportViewerSection} from './reportPreviewerSection';
-import {ReportViewerStyles} from './reportPreviewerStyles';
-import {SnapshotReporter} from '../snapshotReporter';
+import {ReportViewerSection} from './reportPreviewerSection.js';
+import {ReportViewerStyles} from './reportPreviewerStyles.js';
+import {SnapshotReporter} from '../snapshotReporter.js';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
   SnapshotReportStatus,
 } from './reportPreviewerDataModels';
 import dedent from 'ts-dedent';
-import {recordable} from '../../utils/record';
+import {recordable} from '../../utils/record.js';
 import type {ResourceSnapshotType} from '@coveo/platform-client';
 import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/utils/string';
-import {labels} from '../snapshotConstant';
+import {labels} from '../snapshotConstant.js';
 
 export class ReportViewer {
   private static errorPlurable: Plurable = ['error', 'errors'];

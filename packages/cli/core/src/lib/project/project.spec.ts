@@ -18,13 +18,13 @@ import {
   pathExistsSync,
   ensureDirSync,
 } from 'fs-extra';
-import {Project} from './project';
+import {Project} from './project.js';
 import {join, resolve} from 'path';
 import archiver, {Archiver} from 'archiver';
 import extract from 'extract-zip';
 import {EventEmitter, Writable} from 'stream';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
-import {fileDepthSearch} from '../utils/file';
+import {fileDepthSearch} from '../utils/file.js';
 
 const mockedRmSync = jest.mocked(rmSync);
 const mockedExistSync = jest.mocked(existsSync);

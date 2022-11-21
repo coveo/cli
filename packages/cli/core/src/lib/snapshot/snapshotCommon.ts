@@ -1,11 +1,11 @@
 import {startSpinner} from '@coveo/cli-commons/utils/ux';
-import {Project} from '../project/project';
-import {SnapshotFactory} from './snapshotFactory';
-import {Snapshot, WaitUntilDoneOptions} from './snapshot';
+import {Project} from '../project/project.js';
+import {SnapshotFactory} from './snapshotFactory.js';
+import {Snapshot, WaitUntilDoneOptions} from './snapshot.js';
 import {normalize} from 'path';
 import {Config, Configuration} from '@coveo/cli-commons/config/config';
-import {SnapshotGenericError} from '../errors/snapshotErrors';
-import {SnapshotReporter} from './snapshotReporter';
+import {SnapshotGenericError} from '../errors/snapshotErrors.js';
+import {SnapshotReporter} from './snapshotReporter.js';
 import {
   VaultTransferFunctionsParam,
   tryTransferFromOrganization,

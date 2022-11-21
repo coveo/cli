@@ -1,7 +1,7 @@
 jest.mock('fs');
 
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
-import {fileDepthSearch} from './file';
+import {fileDepthSearch} from './file.js';
 import {readdirSync} from 'fs';
 import {getFile} from '@coveo/cli-commons-dev/testUtils/fsUtils';
 import {join} from 'path';

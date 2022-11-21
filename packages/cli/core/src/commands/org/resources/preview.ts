@@ -9,13 +9,13 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '@coveo/cli-commons/preconditions/index';
-import {IsGitInstalled} from '../../../lib/decorators/preconditions/git';
+import {IsGitInstalled} from '../../../lib/decorators/preconditions/git.js';
 import {
   writeLinkPrivilege,
   writeSnapshotPrivilege,
 } from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
-import {SnapshotOperationTimeoutError} from '../../../lib/errors';
+import {SnapshotOperationTimeoutError} from '../../../lib/errors.js';
 import {
   PreviewLevelValue,
   previewLevel,
@@ -23,9 +23,9 @@ import {
   organization,
   snapshotId,
 } from '../../../lib/flags/snapshotCommonFlags';
-import {Project} from '../../../lib/project/project';
-import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
-import {Snapshot} from '../../../lib/snapshot/snapshot';
+import {Project} from '../../../lib/project/project.js';
+import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels.js';
+import {Snapshot} from '../../../lib/snapshot/snapshot.js';
 import {
   dryRun,
   getTargetOrg,

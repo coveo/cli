@@ -1,6 +1,6 @@
 import type {Command} from '@oclif/core';
 import {dedent} from 'ts-dedent';
-import {spawnProcessOutput, SpawnProcessOutput} from '../../utils/process';
+import {spawnProcessOutput, SpawnProcessOutput} from '../../utils/process.js';
 import {satisfies, validRange} from 'semver';
 import {PreconditionError} from '@coveo/cli-commons/errors/preconditionError';
 import {PreconditionFunction} from '@coveo/cli-commons/preconditions';

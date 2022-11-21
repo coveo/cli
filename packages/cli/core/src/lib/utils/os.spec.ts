@@ -1,5 +1,5 @@
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
-import {appendCmdIfWindows} from './os';
+import {appendCmdIfWindows} from './os.js';
 
 describe('appendCmdIfWindows', () => {
   let originalProcess: PropertyDescriptor | undefined;

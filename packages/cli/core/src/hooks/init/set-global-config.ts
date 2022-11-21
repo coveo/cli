@@ -1,4 +1,4 @@
-import {handleTerminationSignals} from './termination-signals';
+import {handleTerminationSignals} from './termination-signals.js';
 import {Hook} from '@oclif/core';
 import globalConfig from '@coveo/cli-commons/config/globalConfig';
 

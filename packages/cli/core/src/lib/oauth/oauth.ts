@@ -7,8 +7,8 @@ import {
 } from '@coveo/cli-commons/platform/environment';
 import {Region} from '@coveo/platform-client';
 import {randomBytes} from 'crypto';
-import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
-import {OAuthClientServer} from './oauthClientServer';
+import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig.js';
+import {OAuthClientServer} from './oauthClientServer.js';
 import {URL} from 'url';
 
 export interface OAuthOptions {

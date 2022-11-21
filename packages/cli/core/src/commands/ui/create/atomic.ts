@@ -15,13 +15,13 @@ import {
   impersonatePrivilege,
   viewSearchPagesPrivilege,
 } from '@coveo/cli-commons/preconditions/platformPrivilege';
-import {appendCmdIfWindows} from '../../../lib/utils/os';
-import {spawnProcess} from '../../../lib/utils/process';
+import {appendCmdIfWindows} from '../../../lib/utils/os.js';
+import {spawnProcess} from '../../../lib/utils/process.js';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {Config} from '@coveo/cli-commons/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
-import {getPackageVersion} from '../../../lib/utils/misc';
+import {getPackageVersion} from '../../../lib/utils/misc.js';
 
 export default class Atomic extends CLICommand {
   public static cliPackage = '@coveo/create-atomic';

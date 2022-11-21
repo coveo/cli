@@ -13,7 +13,7 @@ jest.mock('../../../lib/utils/misc');
 jest.mock('@coveo/platform-client');
 
 import {test} from '@oclif/test';
-import {spawnProcess, spawnProcessOutput} from '../../../lib/utils/process';
+import {spawnProcess, spawnProcessOutput} from '../../../lib/utils/process.js';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import PlatformClient from '@coveo/platform-client';
 import {Config} from '@coveo/cli-commons/config/config';
@@ -25,8 +25,8 @@ import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
 } from '@coveo/cli-commons/preconditions/index';
-import {getPackageVersion} from '../../../lib/utils/misc';
-import {configurationMock} from '../../../__stub__/configuration';
+import {getPackageVersion} from '../../../lib/utils/misc.js';
+import {configurationMock} from '../../../__stub__/configuration.js';
 import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
 
 describe('ui:create:react', () => {

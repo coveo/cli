@@ -14,16 +14,16 @@ import {
   SnapshotAccessType,
 } from '@coveo/platform-client';
 import {test} from '@oclif/test';
-import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel';
-import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
-import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
-import {Snapshot} from '../../../lib/snapshot/snapshot';
+import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel.js';
+import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel.js';
+import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory.js';
+import {Snapshot} from '../../../lib/snapshot/snapshot.js';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {Command, CliUx} from '@oclif/core';
 import {PreconditionError} from '@coveo/cli-commons/errors/preconditionError';
 import {cwd} from 'process';
-import {Project} from '../../../lib/project/project';
-import {IsGitInstalled} from '../../../lib/decorators/preconditions';
+import {Project} from '../../../lib/project/project.js';
+import {IsGitInstalled} from '../../../lib/decorators/preconditions.js';
 import {
   MissingResourcePrivileges,
   MissingSnapshotPrivilege,

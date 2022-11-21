@@ -1,11 +1,11 @@
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 
 import {Region, ResourceSnapshotsReportType} from '@coveo/platform-client';
-import {getDummySnapshotModel} from '../../__stub__/resourceSnapshotsModel';
-import {getSuccessReport} from '../../__stub__/resourceSnapshotsReportModel';
+import {getDummySnapshotModel} from '../../__stub__/resourceSnapshotsModel.js';
+import {getSuccessReport} from '../../__stub__/resourceSnapshotsReportModel.js';
 import {Configuration} from '@coveo/cli-commons/config/config';
-import {Snapshot} from './snapshot';
-import {SnapshotUrlBuilder} from './snapshotUrlBuilder';
+import {Snapshot} from './snapshot.js';
+import {SnapshotUrlBuilder} from './snapshotUrlBuilder.js';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {PlatformEnvironment} from '@coveo/cli-commons/platform/environment';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';

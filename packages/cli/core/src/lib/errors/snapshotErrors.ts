@@ -1,8 +1,8 @@
 import {blueBright, bold} from 'chalk';
 import dedent from 'ts-dedent';
 import {Configuration} from '@coveo/cli-commons/config/config';
-import {Snapshot} from '../snapshot/snapshot';
-import {SnapshotUrlBuilder} from '../snapshot/snapshotUrlBuilder';
+import {Snapshot} from '../snapshot/snapshot.js';
+import {SnapshotUrlBuilder} from '../snapshot/snapshotUrlBuilder.js';
 import {
   CLIBaseError,
   SeverityLevel,

@@ -1,7 +1,7 @@
 import type {ValidationError} from 'jsonschema';
 import dedent from 'ts-dedent';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
-import {InvalidSPMError, UnknownSPMValidationError} from './errors';
+import {InvalidSPMError, UnknownSPMValidationError} from './errors.js';
 
 describe('SnapshotPullModelErrors', () => {
   describe('UnknownSPMValidationError', () => {

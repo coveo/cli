@@ -8,12 +8,12 @@ import {
 import {join} from 'path';
 import {CliUx} from '@oclif/core';
 import archiver from 'archiver';
-import {InvalidProjectError} from '../errors';
+import {InvalidProjectError} from '../errors.js';
 import extract from 'extract-zip';
-import {DotFolder, DotFolderConfig} from './dotFolder';
+import {DotFolder, DotFolderConfig} from './dotFolder.js';
 import {readJsonSync, writeJsonSync, WriteOptions} from 'fs-extra';
 import {ResourceSnapshotType} from '@coveo/platform-client';
-import {fileDepthSearch} from '../utils/file';
+import {fileDepthSearch} from '../utils/file.js';
 
 interface ResourceManifest {
   orgId?: string;

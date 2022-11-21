@@ -16,9 +16,9 @@ import {
   MissingVaultEntryValueError,
 } from '../errors/vaultErrors';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {VaultEntryAttributes} from './snapshotReporter';
+import {VaultEntryAttributes} from './snapshotReporter.js';
 import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/utils/string';
-import {ProcessAbort} from '../../lib/errors/processError';
+import {ProcessAbort} from '../../lib/errors/processError.js';
 import dedent from 'ts-dedent';
 
 export class VaultHandler {

@@ -8,11 +8,11 @@ jest.mock('../../../lib/project/project');
 
 import {CliUx} from '@oclif/core';
 import {test} from '@oclif/test';
-import {Project} from '../../../lib/project/project';
+import {Project} from '../../../lib/project/project.js';
 import {Config} from '@coveo/cli-commons/config/config';
-import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
-import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory.js';
+import {Snapshot} from '../../../lib/snapshot/snapshot.js';
+import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter.js';
 import {
   ResourceSnapshotsReportType,
   ResourceSnapshotType,
@@ -24,7 +24,7 @@ import {
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {MissingResourcePrivileges} from '../../../lib/errors/snapshotErrors';
+import {MissingResourcePrivileges} from '../../../lib/errors/snapshotErrors.js';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
 const mockedConfig = jest.mocked(Config);

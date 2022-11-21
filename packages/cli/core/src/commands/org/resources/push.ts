@@ -6,8 +6,8 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '@coveo/cli-commons/preconditions/index';
-import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+import {Snapshot} from '../../../lib/snapshot/snapshot.js';
+import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter.js';
 import {
   dryRun,
   getTargetOrg,
@@ -19,7 +19,7 @@ import {
 } from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '@coveo/cli-commons/config/config';
 import {cwd} from 'process';
-import {Project} from '../../../lib/project/project';
+import {Project} from '../../../lib/project/project.js';
 import {
   PreviewLevelValue,
   previewLevel,
@@ -31,8 +31,8 @@ import {
   writeSnapshotPrivilege,
 } from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
-import {confirmWithAnalytics} from '../../../lib/utils/cli';
-import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
+import {confirmWithAnalytics} from '../../../lib/utils/cli.js';
+import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels.js';
 import {Example} from '@oclif/core/lib/interfaces';
 
 export default class Push extends CLICommand {

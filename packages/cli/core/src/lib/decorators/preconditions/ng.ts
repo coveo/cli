@@ -1,5 +1,5 @@
-import {appendCmdIfWindows} from '../../utils/os';
-import {getBinVersionPrecondition} from './binPreconditionsFactory';
+import {appendCmdIfWindows} from '../../utils/os.js';
+import {getBinVersionPrecondition} from './binPreconditionsFactory.js';
 
 const angularCliVersionMatcher = /^Angular CLI: (?<version>\d+\.\d+\.\d+)$/m;
 

@@ -10,16 +10,16 @@ import {
   SnapshotAccessType,
 } from '@coveo/platform-client';
 import retry from 'async-retry';
-import {ReportViewer} from './reportPreviewer/reportPreviewer';
+import {ReportViewer} from './reportPreviewer/reportPreviewer.js';
 import {ensureFileSync, writeJsonSync} from 'fs-extra';
 import {join} from 'path';
-import {SnapshotReporter} from './snapshotReporter';
-import {SnapshotOperationTimeoutError} from '../errors';
-import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer';
-import {Project} from '../project/project';
-import {SnapshotNoReportFoundError} from '../errors/snapshotErrors';
-import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
-import {ensureSnapshotAccess} from './snapshotAccess';
+import {SnapshotReporter} from './snapshotReporter.js';
+import {SnapshotOperationTimeoutError} from '../errors.js';
+import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer.js';
+import {Project} from '../project/project.js';
+import {SnapshotNoReportFoundError} from '../errors/snapshotErrors.js';
+import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels.js';
+import {ensureSnapshotAccess} from './snapshotAccess.js';
 
 export type SnapshotReport = ResourceSnapshotsReportModel;
 

@@ -5,10 +5,10 @@ import {
 } from '@coveo/platform-client';
 import {readFileSync} from 'fs';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {SnapshotPullModelResources} from './pullModel/interfaces';
-import {Snapshot, WaitUntilDoneOptions} from './snapshot';
-import {Project} from '../project/project';
-import {ensureResourcesAccess, ensureSnapshotAccess} from './snapshotAccess';
+import {SnapshotPullModelResources} from './pullModel/interfaces.js';
+import {Snapshot, WaitUntilDoneOptions} from './snapshot.js';
+import {Project} from '../project/project.js';
+import {ensureResourcesAccess, ensureSnapshotAccess} from './snapshotAccess.js';
 import {Blob} from 'node:buffer';
 
 export class SnapshotFactory {

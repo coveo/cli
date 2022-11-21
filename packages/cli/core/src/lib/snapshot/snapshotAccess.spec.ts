@@ -6,7 +6,7 @@ import {
   MissingResourcePrivileges,
   MissingSnapshotPrivilege,
 } from '../errors/snapshotErrors';
-import {ensureResourcesAccess, ensureSnapshotAccess} from './snapshotAccess';
+import {ensureResourcesAccess, ensureSnapshotAccess} from './snapshotAccess.js';
 
 const mockedPlatformClient = jest.mocked(PlatformClient);
 const mockedListResourceAccess = jest.fn();

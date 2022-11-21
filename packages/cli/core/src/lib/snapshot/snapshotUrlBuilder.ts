@@ -1,5 +1,5 @@
 import {Configuration} from '@coveo/cli-commons/config/config';
-import {Snapshot} from './snapshot';
+import {Snapshot} from './snapshot.js';
 import {snapshotApplyUrl} from '@coveo/cli-commons/platform/url';
 import {PlatformUrlOptions} from '@coveo/cli-commons/platform/environment';
 

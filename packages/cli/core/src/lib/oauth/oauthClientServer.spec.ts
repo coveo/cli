@@ -16,9 +16,9 @@ import {
   PlatformEnvironment,
   platformUrl,
 } from '@coveo/cli-commons/platform/environment';
-import {InvalidStateError} from './authorizationError';
-import {OAuthClientServer} from './oauthClientServer';
-import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
+import {InvalidStateError} from './authorizationError.js';
+import {OAuthClientServer} from './oauthClientServer.js';
+import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig.js';
 
 type createServerInitialOverload = jest.MaybeMocked<{
   (requestListener?: RequestListener | undefined): Server;

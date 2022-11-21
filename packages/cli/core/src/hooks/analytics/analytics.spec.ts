@@ -11,10 +11,10 @@ import {
   AuthenticationStatus,
   getAuthenticationStatus,
 } from '@coveo/cli-commons/platform/authenticatedClient';
-import hook, {AnalyticsHook} from './analytics';
+import hook, {AnalyticsHook} from './analytics.js';
 import {Interfaces} from '@oclif/core';
 import {PlatformClient} from '@coveo/platform-client';
-import {configurationMock} from '../../__stub__/configuration';
+import {configurationMock} from '../../__stub__/configuration.js';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import globalConfig from '@coveo/cli-commons/config/globalConfig';
 const mockedGlobalConfig = jest.mocked(globalConfig);

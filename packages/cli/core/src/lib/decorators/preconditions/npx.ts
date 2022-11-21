@@ -1,5 +1,5 @@
-import {appendCmdIfWindows} from '../../utils/os';
-import {getBinInstalledPrecondition} from './binPreconditionsFactory';
+import {appendCmdIfWindows} from '../../utils/os.js';
+import {getBinInstalledPrecondition} from './binPreconditionsFactory.js';
 
 export const IsNpxInstalled = getBinInstalledPrecondition(
   appendCmdIfWindows`npx`,

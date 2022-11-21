@@ -5,7 +5,7 @@ import type {Interfaces} from '@oclif/core';
 import globalConfig from '@coveo/cli-commons/config/globalConfig';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {flush} from '@coveo/cli-commons/analytics/amplitudeClient';
-import {handleTerminationSignals, exitSignals} from './termination-signals';
+import {handleTerminationSignals, exitSignals} from './termination-signals.js';
 
 type supportedExitSignals = typeof exitSignals[number];
 

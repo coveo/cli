@@ -5,14 +5,14 @@ import {
   SnapshotExportContentFormat,
 } from '@coveo/platform-client';
 import {stdout, stderr} from 'stdout-stderr';
-import {getDummySnapshotModel} from '../../__stub__/resourceSnapshotsModel';
+import {getDummySnapshotModel} from '../../__stub__/resourceSnapshotsModel.js';
 import {
   getErrorReport,
   getPendingReport,
   getSuccessReport,
 } from '../../__stub__/resourceSnapshotsReportModel';
 
-import {Snapshot} from './snapshot';
+import {Snapshot} from './snapshot.js';
 
 //#region Mocks
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
@@ -27,15 +27,15 @@ jest.mock('./snapshotAccess');
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {ensureFileSync, writeJSONSync} from 'fs-extra';
 import retry from 'async-retry';
-import {SnapshotReporter} from './snapshotReporter';
-import {ReportViewer} from './reportPreviewer/reportPreviewer';
-import {Project} from '../project/project';
-import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer';
+import {SnapshotReporter} from './snapshotReporter.js';
+import {ReportViewer} from './reportPreviewer/reportPreviewer.js';
+import {Project} from '../project/project.js';
+import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer.js';
 import {join} from 'path';
-import {SnapshotOperationTimeoutError} from '../errors';
+import {SnapshotOperationTimeoutError} from '../errors.js';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
-import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
-import {ensureSnapshotAccess} from './snapshotAccess';
+import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels.js';
+import {ensureSnapshotAccess} from './snapshotAccess.js';
 
 const mockedRetry = jest.mocked(retry);
 const mockedExpandedPreviewer = jest.mocked(ExpandedPreviewer);

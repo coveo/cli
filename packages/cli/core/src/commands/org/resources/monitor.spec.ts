@@ -8,12 +8,12 @@ jest.mock('../../../lib/snapshot/snapshotFactory');
 import {Config} from '@coveo/cli-commons/config/config';
 import {ResourceSnapshotsReportType} from '@coveo/platform-client';
 import {test} from '@oclif/test';
-import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel';
-import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
-import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
-import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
-import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
-import {Snapshot} from '../../../lib/snapshot/snapshot';
+import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel.js';
+import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel.js';
+import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter.js';
+import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels.js';
+import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory.js';
+import {Snapshot} from '../../../lib/snapshot/snapshot.js';
 import {formatCliLog} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory);

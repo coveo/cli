@@ -3,9 +3,9 @@ import {Flags} from '@oclif/core';
 import {Config} from '@coveo/cli-commons/config/config';
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {spawnProcess, spawnProcessOutput} from '../../../lib/utils/process';
-import {getPackageVersion} from '../../../lib/utils/misc';
-import {appendCmdIfWindows} from '../../../lib/utils/os';
+import {spawnProcess, spawnProcessOutput} from '../../../lib/utils/process.js';
+import {getPackageVersion} from '../../../lib/utils/misc.js';
+import {appendCmdIfWindows} from '../../../lib/utils/os.js';
 import {
   Preconditions,
   IsAuthenticated,

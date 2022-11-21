@@ -7,7 +7,7 @@ import {
   Preconditions,
 } from '@coveo/cli-commons/preconditions/index';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
-import {InvalidCommandError} from '../../lib/errors/InvalidCommandError';
+import {InvalidCommandError} from '../../lib/errors/InvalidCommandError.js';
 import {ConfigRenderer} from '@coveo/cli-commons/config/configRenderer';
 import type {Example} from '@oclif/core/lib/interfaces';
 

@@ -7,13 +7,13 @@ import {
   Preconditions,
 } from '@coveo/cli-commons/preconditions/index';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
-import {organization, wait} from '../../../lib/flags/snapshotCommonFlags';
-import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
-import {ReportViewerStyles} from '../../../lib/snapshot/reportPreviewer/reportPreviewerStyles';
-import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
-import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
-import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
-import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+import {organization, wait} from '../../../lib/flags/snapshotCommonFlags.js';
+import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels.js';
+import {ReportViewerStyles} from '../../../lib/snapshot/reportPreviewer/reportPreviewerStyles.js';
+import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot.js';
+import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon.js';
+import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory.js';
+import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter.js';
 import {startSpinner} from '@coveo/cli-commons/utils/ux';
 import {Example} from '@oclif/core/lib/interfaces';
 

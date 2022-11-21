@@ -1,10 +1,10 @@
 jest.mock('../../utils/process');
 
 import {dedent} from 'ts-dedent';
-import {spawnProcessOutput} from '../../utils/process';
+import {spawnProcessOutput} from '../../utils/process.js';
 import {getFakeCommand} from '@coveo/cli-commons-dev/testUtils/utils';
 
-import {IsGitInstalled} from './git';
+import {IsGitInstalled} from './git.js';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {PreconditionError} from '@coveo/cli-commons/errors/preconditionError';
 

@@ -13,7 +13,7 @@ import {
 } from '@coveo/cli-commons/preconditions/index';
 import {Config} from '@coveo/cli-commons/config/config';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
-import {without} from '../../../lib/utils/list';
+import {without} from '../../../lib/utils/list.js';
 import {join} from 'path';
 import dedent from 'ts-dedent';
 import {formatOrgId} from '@coveo/cli-commons/utils/ux';

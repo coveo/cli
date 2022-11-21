@@ -5,7 +5,7 @@ import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
 } from './reportPreviewerDataModels';
-import {ReportViewerSection} from './reportPreviewerSection';
+import {ReportViewerSection} from './reportPreviewerSection.js';
 
 describe('ReportViewerSection', () => {
   const resourceWithChanges: ReportViewerResourceReportModel = {

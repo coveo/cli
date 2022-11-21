@@ -8,11 +8,11 @@ import {readFileSync} from 'fs';
 import {join} from 'path';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {SnapshotPullModelResources} from './pullModel/interfaces';
-import {Snapshot} from './snapshot';
-import {SnapshotFactory} from './snapshotFactory';
-import {Project} from '../project/project';
-import {ensureResourcesAccess, ensureSnapshotAccess} from './snapshotAccess';
+import {SnapshotPullModelResources} from './pullModel/interfaces.js';
+import {Snapshot} from './snapshot.js';
+import {SnapshotFactory} from './snapshotFactory.js';
+import {Project} from '../project/project.js';
+import {ensureResourcesAccess, ensureSnapshotAccess} from './snapshotAccess.js';
 import {Blob} from 'node:buffer';
 
 const mockedBlob = jest.mocked(Blob);

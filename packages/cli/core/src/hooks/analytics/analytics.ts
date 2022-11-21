@@ -5,8 +5,8 @@ import {
   AuthenticationStatus,
   getAuthenticationStatus,
 } from '@coveo/cli-commons/platform/authenticatedClient';
-import {amplitudeClient} from './amplitudeClient';
-import {Identifier} from './identifier';
+import {amplitudeClient} from './amplitudeClient.js';
+import {Identifier} from './identifier.js';
 
 export interface AnalyticsHook {
   event: Event;

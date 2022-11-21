@@ -1,7 +1,7 @@
-import pullModelSchema from './model.schema.json';
+import pullModelSchema from './model.schema.json.js';
 import type {ResourceSnapshotType} from '@coveo/platform-client';
-import {SnapshotPullModelResources} from '../interfaces';
-import {allowedResourceType} from '../../snapshotConstant';
+import {SnapshotPullModelResources} from '../interfaces.js';
+import {allowedResourceType} from '../../snapshotConstant.js';
 
 export function getSnapshotModel() {
   const properties: Record<string, {}> = {};

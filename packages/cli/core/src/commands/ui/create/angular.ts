@@ -2,9 +2,9 @@ import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Flags} from '@oclif/core';
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {Config} from '@coveo/cli-commons/config/config';
-import {spawnProcess} from '../../../lib/utils/process';
+import {spawnProcess} from '../../../lib/utils/process.js';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {getPackageVersion} from '../../../lib/utils/misc';
+import {getPackageVersion} from '../../../lib/utils/misc.js';
 import {
   IsNodeVersionInRange,
   IsNpmVersionInRange,
@@ -15,8 +15,8 @@ import {
   IsAuthenticated,
   AuthenticationType,
 } from '@coveo/cli-commons/preconditions/index';
-import {appendCmdIfWindows} from '../../../lib/utils/os';
-import {IsNgVersionInRange} from '../../../lib/decorators/preconditions/ng';
+import {appendCmdIfWindows} from '../../../lib/utils/os.js';
+import {IsNgVersionInRange} from '../../../lib/decorators/preconditions/ng.js';
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,

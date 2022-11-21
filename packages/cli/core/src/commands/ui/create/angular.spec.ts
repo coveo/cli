@@ -13,7 +13,7 @@ jest.mock('../../../lib/utils/misc');
 jest.mock('@coveo/platform-client');
 
 import {test} from '@oclif/test';
-import {spawnProcess} from '../../../lib/utils/process';
+import {spawnProcess} from '../../../lib/utils/process.js';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import PlatformClient from '@coveo/platform-client';
 import {Config} from '@coveo/cli-commons/config/config';
@@ -21,9 +21,9 @@ import {
   IsNpmVersionInRange,
   IsNodeVersionInRange,
 } from '../../../lib/decorators/preconditions/index';
-import {getPackageVersion} from '../../../lib/utils/misc';
-import {IsNgVersionInRange} from '../../../lib/decorators/preconditions/ng';
-import {configurationMock} from '../../../__stub__/configuration';
+import {getPackageVersion} from '../../../lib/utils/misc.js';
+import {IsNgVersionInRange} from '../../../lib/decorators/preconditions/ng.js';
+import {configurationMock} from '../../../__stub__/configuration.js';
 import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
 import {
   HasNecessaryCoveoPrivileges,

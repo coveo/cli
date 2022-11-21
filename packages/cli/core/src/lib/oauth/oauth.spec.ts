@@ -6,8 +6,8 @@ import {
   PlatformEnvironment,
   platformUrl,
 } from '@coveo/cli-commons/platform/environment';
-import {OAuth} from './oauth';
-import {OAuthClientServer} from './oauthClientServer';
+import {OAuth} from './oauth.js';
+import {OAuthClientServer} from './oauthClientServer.js';
 import open from 'open';
 
 jest.mock('./oauthClientServer');

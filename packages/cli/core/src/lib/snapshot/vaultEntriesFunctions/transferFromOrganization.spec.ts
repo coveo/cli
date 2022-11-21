@@ -10,12 +10,12 @@ import PlatformClient, {VaultFetchStrategy} from '@coveo/platform-client';
 import {confirm} from '@oclif/core/lib/cli-ux/prompt';
 import {warn} from '@oclif/core/lib/errors/index';
 import {Configuration} from '@coveo/cli-commons/config/config';
-import {SnapshotMissingVaultEntriesFromOriginError} from '../../errors/vaultErrors';
+import {SnapshotMissingVaultEntriesFromOriginError} from '../../errors/vaultErrors.js';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {Project} from '../../project/project';
-import {Snapshot} from '../snapshot';
-import {SnapshotReporter} from '../snapshotReporter';
-import {tryTransferFromOrganization} from './transferFromOrganization';
+import {Project} from '../../project/project.js';
+import {Snapshot} from '../snapshot.js';
+import {SnapshotReporter} from '../snapshotReporter.js';
+import {tryTransferFromOrganization} from './transferFromOrganization.js';
 
 describe('#tryTransferFromOrganization', () => {
   const mockedProject = jest.mocked(Project);

@@ -6,7 +6,7 @@ jest.mock('@coveo/platform-client');
 import {Region} from '@coveo/platform-client';
 import {test} from '@oclif/test';
 import {Config} from '@coveo/cli-commons/config/config';
-import {OAuth} from '../../lib/oauth/oauth';
+import {OAuth} from '../../lib/oauth/oauth.js';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 const mockedOAuth = jest.mocked(OAuth);
 const mockedConfig = jest.mocked(Config);

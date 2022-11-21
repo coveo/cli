@@ -1,7 +1,7 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {CliUx} from '@oclif/core';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
+import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon.js';
 import {Config} from '@coveo/cli-commons/config/config';
 import {
   IsAuthenticated,
@@ -9,8 +9,8 @@ import {
 } from '@coveo/cli-commons/preconditions/index';
 import dedent from 'ts-dedent';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
-import {recordable} from '../../../lib/utils/record';
-import {organization} from '../../../lib/flags/snapshotCommonFlags';
+import {recordable} from '../../../lib/utils/record.js';
+import {organization} from '../../../lib/flags/snapshotCommonFlags.js';
 
 export default class List extends CLICommand {
   public static description = 'List available Snapshots in an organization';

@@ -2,7 +2,7 @@ import type {ResourceSnapshotType} from '@coveo/platform-client';
 import {readdirSync, rmSync} from 'fs';
 import {readJsonSync, writeJsonSync, WriteOptions} from 'fs-extra';
 import {join} from 'path';
-import {Project} from '../../project/project';
+import {Project} from '../../project/project.js';
 
 type ResourcesJSON = Object & {resourceName: string};
 

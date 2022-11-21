@@ -1,11 +1,11 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Flags} from '@oclif/core';
 import {Config} from '@coveo/cli-commons/config/config';
-import {OAuth} from '../../lib/oauth/oauth';
+import {OAuth} from '../../lib/oauth/oauth.js';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {PlatformEnvironment} from '@coveo/cli-commons/platform/environment';
 import {Region} from '@coveo/platform-client';
-import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
+import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags.js';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import dedent from 'ts-dedent';
 import {formatOrgId} from '@coveo/cli-commons/utils/ux';

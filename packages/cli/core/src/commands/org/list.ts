@@ -6,7 +6,7 @@ import {
   IsAuthenticated,
 } from '@coveo/cli-commons/preconditions/index';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
-import {recordable} from '../../lib/utils/record';
+import {recordable} from '../../lib/utils/record.js';
 
 export default class List extends CLICommand {
   public static description = 'List Coveo organizations.';

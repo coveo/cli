@@ -22,7 +22,7 @@ jest.mock('node:process', () => ({
 import {join} from 'node:path';
 import {join as posixJoin} from 'node:path/posix';
 import {test} from '@oclif/test';
-import {spawnProcess} from '../../../lib/utils/process';
+import {spawnProcess} from '../../../lib/utils/process.js';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import PlatformClient from '@coveo/platform-client';
 import {Config} from '@coveo/cli-commons/config/config';
@@ -34,8 +34,8 @@ import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
 } from '@coveo/cli-commons/preconditions/index';
-import {getPackageVersion} from '../../../lib/utils/misc';
-import {configurationMock} from '../../../__stub__/configuration';
+import {getPackageVersion} from '../../../lib/utils/misc.js';
+import {configurationMock} from '../../../__stub__/configuration.js';
 import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
 import {
   Stats,
@@ -46,7 +46,7 @@ import {
   writeFileSync,
 } from 'node:fs';
 import {formatAbsolutePath} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
-import {appendCmdIfWindows} from '../../../lib/utils/os';
+import {appendCmdIfWindows} from '../../../lib/utils/os.js';
 
 describe('ui:create:vue', () => {
   const mockedConfig = jest.mocked(Config);

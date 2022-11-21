@@ -9,7 +9,7 @@ import os from 'os';
 import {Identify} from '@amplitude/identify';
 import {Config, Configuration} from '@coveo/cli-commons/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {Identifier} from './identifier';
+import {Identifier} from './identifier.js';
 import PlatformClient from '@coveo/platform-client';
 import {
   configurationMock,

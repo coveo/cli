@@ -7,11 +7,11 @@ import {
   stopSpinner,
 } from '@coveo/cli-commons/utils/ux';
 import dedent from 'ts-dedent';
-import {SnapshotMissingVaultEntriesFromOriginError} from '../../errors/vaultErrors';
+import {SnapshotMissingVaultEntriesFromOriginError} from '../../errors/vaultErrors.js';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {Project} from '../../project/project';
-import type {VaultEntryAttributes} from '../snapshotReporter';
-import type {VaultTransferFunctionsParam} from './interfaces';
+import {Project} from '../../project/project.js';
+import type {VaultEntryAttributes} from '../snapshotReporter.js';
+import type {VaultTransferFunctionsParam} from './interfaces.js';
 
 export async function tryTransferFromOrganization({
   reporter,

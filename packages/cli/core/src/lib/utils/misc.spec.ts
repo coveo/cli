@@ -1,4 +1,4 @@
-import {getPackageVersion} from './misc';
+import {getPackageVersion} from './misc.js';
 
 describe('#getPackageVersion', () => {
   const filledPackageJson = {

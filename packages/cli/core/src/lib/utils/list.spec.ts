@@ -1,4 +1,4 @@
-import {isSubset, without} from './list';
+import {isSubset, without} from './list.js';
 
 describe('listUtils', () => {
   describe('#without', () => {
