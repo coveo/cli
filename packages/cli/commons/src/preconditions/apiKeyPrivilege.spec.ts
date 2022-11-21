@@ -15,7 +15,7 @@ import {
   writeLinkPrivilege,
   writeSnapshotPrivilege,
 } from './platformPrivilege';
-import {getFakeCommand} from '@coveo/cli-commons-dev/testUtils/utils';
+import {getFakeCommand} from '../utils/getFakeCommand';
 
 const mockConfig = jest.mocked(Config);
 const mockedGlobalConfig = jest.mocked(globalConfig);
