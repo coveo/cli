@@ -57,7 +57,7 @@ export function getBinVersionPrecondition(
 
       if (!satisfies(version, versionRange)) {
         const message = dedent`
-          ${target.id} needs a ${
+          ${target.identifier} needs a ${
           appliedOptions.prettyName
         } version in this range: "${versionRange}"
           Version detected: ${version}
@@ -99,7 +99,7 @@ async function checkIfBinIsInstalled(
   output: SpawnProcessOutput
 ): Promise<void | never> {
   if (output.exitCode === 'ENOENT') {
-    const warningMessage = dedent`${target.id} requires ${
+    const warningMessage = dedent`${target.identifier} requires ${
       options.prettyName
     } to run.
 
@@ -111,7 +111,9 @@ async function checkIfBinIsInstalled(
 
   if (output.exitCode !== '0') {
     const message = dedent`
-      ${target.id} requires a valid ${options.prettyName} installation to run.
+      ${target.identifier} requires a valid ${
+      options.prettyName
+    } installation to run.
       An unknown error happened while running ${binaryName} ${options.params.join(
       ' '
     )}.
