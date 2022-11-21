@@ -31,6 +31,28 @@ USAGE
 
 <!-- usagestop -->
 
+# Configuration
+
+The Coveo CLI is based on oclif and use the following paths:
+
+- **cacheDir** - CLI cache directory
+  - macOS: `~/Library/Caches/mycli`
+  - Unix: `~/.cache/mycli`
+  - Windows: `%LOCALAPPDATA%\mycli`
+  - Can be overridden with `XDG_CACHE_HOME`
+- **configDir** - CLI config directory
+  - Unix: `~/.config/mycli`
+  - Windows: `%LOCALAPPDATA%\mycli`
+  - Can be overridden with `XDG_CONFIG_HOME`
+- **dataDir** - CLI data directory
+  - Unix: `~/.data/mycli`
+  - Windows: `%LOCALAPPDATA%\mycli`
+  - Can be overridden with `XDG_DATA_HOME`
+
+The Coveo CLI may not function if you do not have read and write access to those directories.
+
+The main config file of the Coveo CLI is stored in a JSON file in `configDir`.
+
 # Commands
 
 <!-- commands -->
