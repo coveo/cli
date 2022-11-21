@@ -1,12 +1,17 @@
 {
   "extends": "@coveo/cli-commons-dev/tsconfig.json",
   "compilerOptions": {
+    "module": "ES2020",
+    "moduleResolution": "node",
     "outDir": "lib",
     "types": ["node", "jest"],
     "paths": {
       "@coveo/cli-commons/*": ["../commons/src/*"],
       "@coveo/cli-commons-dev/*": ["../commons-dev/src/*"]
     }
+  },
+  "ts-node": {
+    "esm": true
   },
   "include": ["src/**/*", "src/typings/**/*.d.ts"]
 }

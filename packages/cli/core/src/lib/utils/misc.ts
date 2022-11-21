@@ -1,12 +1,10 @@
-import {resolve} from 'path';
+import {createRequire} from 'node:module';
+import {join} from 'node:path';
 import {valid} from 'semver';
 
 export function getPackageVersion(packageName: string) {
-  const pathToPackageJson = resolve(
-    __dirname,
-    ...new Array(3).fill('..'),
-    'package.json'
-  );
+  const require = createRequire(import.meta.url);
+  const pathToPackageJson = join(...new Array(3).fill('..'), 'package.json');
   const pkg = require(pathToPackageJson);
   const dep =
     pkg.dependencies[packageName] ||

@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "author": "Coveo",
   "description": "Coveo CLI",
+  "type": "module",
   "engines": {
     "node": "16.x || 18.x"
   },

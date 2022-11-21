@@ -168,4 +168,6 @@ describe('AuthenticatedClient', () => {
     expect(mockInitialize).toHaveBeenCalled();
     expect(userInfo).toStrictEqual('bob@coveo.com');
   });
+
+  it('#logout call platform.cloud.coveo.com/logout with the authenticati')
 });
