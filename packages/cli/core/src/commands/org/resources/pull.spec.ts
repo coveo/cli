@@ -19,7 +19,7 @@ import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {Command, CliUx} from '@oclif/core';
+import {CliUx} from '@oclif/core';
 import {PreconditionError} from '@coveo/cli-commons/errors/preconditionError';
 import {cwd} from 'process';
 import {Project} from '../../../lib/project/project';
@@ -28,6 +28,7 @@ import {
   MissingResourcePrivileges,
   MissingSnapshotPrivilege,
 } from '../../../lib/errors/snapshotErrors';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
 const mockedProject = jest.mocked(Project);
@@ -64,7 +65,7 @@ const doMockPreconditions = () => {
   const thrower = () => {
     throw new PreconditionError('Precondition error');
   };
-  const mockGit = function (_target: Command) {
+  const mockGit = function (_target: CLICommand) {
     return new Promise<void>((resolve) =>
       preconditionStatus.git ? resolve() : thrower()
     );

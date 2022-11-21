@@ -1,9 +1,9 @@
-import type {Command} from '@oclif/core';
 import {dedent} from 'ts-dedent';
 import {spawnProcessOutput, SpawnProcessOutput} from '../../utils/process';
 import {satisfies, validRange} from 'semver';
 import {PreconditionError} from '@coveo/cli-commons/errors/preconditionError';
 import {PreconditionFunction} from '@coveo/cli-commons/preconditions';
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 
 export enum PreconditionErrorCategoryBin {
   MissingBin = 'Missing Bin',
@@ -36,7 +36,7 @@ export function getBinVersionPrecondition(
     prettyName: options.prettyName,
   };
   return function (versionRange: string): PreconditionFunction {
-    return async function (target: Command) {
+    return async function (target: CLICommand) {
       if (!validRange(versionRange)) {
         const message = dedent`
           Required version invalid: "${versionRange}".
@@ -82,7 +82,7 @@ export function getBinInstalledPrecondition(
     prettyName: options.prettyName,
   };
   return function () {
-    return async function (target: Command) {
+    return async function (target: CLICommand) {
       const output = await spawnProcessOutput(
         binaryName,
         appliedOptions.params
@@ -93,7 +93,7 @@ export function getBinInstalledPrecondition(
 }
 
 async function checkIfBinIsInstalled(
-  target: Command,
+  target: CLICommand,
   binaryName: string,
   options: Required<BinPreconditionsOptions>,
   output: SpawnProcessOutput

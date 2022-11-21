@@ -2,7 +2,7 @@ jest.mock('../../utils/process');
 
 import {dedent} from 'ts-dedent';
 import {spawnProcessOutput} from '../../utils/process';
-import {getFakeCommand} from '@coveo/cli-commons-dev/testUtils/utils';
+import {getFakeCommand} from '@coveo/cli-commons/utils/getFakeCommand';
 
 import {IsNpmVersionInRange} from './npm';
 import {appendCmdIfWindows} from '../../utils/os';
