@@ -14,7 +14,7 @@ on:
 
 jobs:
   snyk:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     env:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       NODE_OPTIONS: --max-old-space-size=8192
@@ -47,7 +47,7 @@ jobs:
   release:
     needs: snyk
     environment: 'Release'
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     env:
       GITHUB_CREDENTIALS: ${{ secrets.CLI_RELEASE }}
     steps:

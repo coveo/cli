@@ -24,7 +24,7 @@ env:
 jobs:
   e2e-setup-login:
     name: End-to-end login
-    runs-on: 'ubuntu-latest'
+    runs-on: 'macos-latest'
     timeout-minutes: 30
     outputs:
       cliConfigJson: ${{ steps.setup.outputs.cliConfigJson}}
@@ -54,7 +54,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-latest', 'windows-latest']
+        os: ['macos-latest', 'windows-latest']
         node: [18]
         spec:
           [
@@ -93,7 +93,7 @@ jobs:
     name: End-to-end teardown
     if: ${{ always() }}
     needs: [e2e, e2e-setup-login]
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     env:
       # ID of the test run to identify resources to teardown.
       TEST_RUN_ID: '${{ github.sha }}-${{ github.run_attempt }}-dailyg'
@@ -115,7 +115,7 @@ jobs:
     timeout-minutes: 30
     if: ${{ always() }}
     needs: e2e
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     environment: Daily Tests
     steps:
       - name: Check e2e matrix status

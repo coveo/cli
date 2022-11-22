@@ -23,7 +23,7 @@ runs:
   steps:
     - name: Setup runner
       shell: bash
-      if: ${{inputs.os == 'ubuntu-latest'}}
+      if: ${{inputs.os == 'macos-latest'}}
       # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
       run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
     - name: Setup runner
@@ -51,7 +51,7 @@ runs:
       shell: bash
     - name: End-to-end Setup
       shell: bash
-      if: ${{inputs.os == 'ubuntu-latest'}}
+      if: ${{inputs.os == 'macos-latest'}}
       run: bash packages/cli-e2e/entrypoints/ci.sh
     - name: End-to-end Setup
       shell: powershell
@@ -66,7 +66,7 @@ runs:
         npm_config_registry: ${{inputs.npmRegistry}}
     - name: Tests
       shell: bash
-      if: ${{inputs.os == 'ubuntu-latest'}}
+      if: ${{inputs.os == 'macos-latest'}}
       env:
         DISPLAY: ':1'
         npm_config_registry: ${{inputs.npmRegistry}}

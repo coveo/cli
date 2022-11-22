@@ -4,7 +4,7 @@ on:
 
 jobs:
   run-script:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     env:
       GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
     steps:
