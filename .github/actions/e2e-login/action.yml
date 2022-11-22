@@ -28,6 +28,10 @@ runs:
       run: |
         npm ci
         sudo networksetup -setdnsservers Ethernet 9.9.9.9
+    - name: Setup browser
+      shell: bash
+      if: ${{inputs.os == 'macos-latest'}}
+      run: bash packages/cli-e2e/entrypoints/ci.sh
     - name: Build
       shell: bash
       run: npm run build
