@@ -75,6 +75,8 @@ jobs:
         with:
           cache: 'npm'
           node-version-file: '.nvmrc'
+      - name: Setup browser
+        run: bash packages/cli-e2e/entrypoints/ci.sh
       - uses: ./.github/actions/e2e-login
         id: setup
   e2e-setup-verdaccio:
