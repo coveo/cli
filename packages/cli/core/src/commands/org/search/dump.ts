@@ -1,6 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Flags, CliUx} from '@oclif/core';
-import {readJSONSync, writeFileSync, writeJSONSync} from 'fs-extra';
 import {Parser} from 'json2csv';
 import {SingleBar} from 'cli-progress';
 import PlatformClient from '@coveo/platform-client';
@@ -18,6 +17,7 @@ import {join} from 'path';
 import dedent from 'ts-dedent';
 import {formatOrgId} from '@coveo/cli-commons/utils/ux';
 import {Example} from '@oclif/core/lib/interfaces';
+import {writeFileSync, readFileSync} from 'node:fs';
 type ResponseExceededMaximumSizeError = {message: string; type: string};
 
 interface RawResult {
@@ -172,8 +172,10 @@ export default class Dump extends CLICommand {
       currentDumpFileIndex >= 0;
       currentDumpFileIndex--
     ) {
-      const data = readJSONSync(
-        this.getDumpFilePathFromIndex(currentDumpFileIndex)
+      const data = JSON.parse(
+        readFileSync(this.getDumpFilePathFromIndex(currentDumpFileIndex), {
+          encoding: 'utf-8',
+        })
       );
       const parser = new Parser({fields});
       writeFileSync(
@@ -319,9 +321,9 @@ export default class Dump extends CLICommand {
 
   private dumpAggregatedResults() {
     this.extractFieldsFromAggregatedResults();
-    writeJSONSync(
+    writeFileSync(
       this.getDumpFilePathFromIndex(this.dumpFileIndex),
-      this.aggregatedResults
+      JSON.stringify(this.aggregatedResults)
     );
     this.aggregatedResults = [];
   }

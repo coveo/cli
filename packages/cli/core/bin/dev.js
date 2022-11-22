@@ -1,29 +1,31 @@
-#!/usr/bin/env ts-node
-
-/* eslint-disable node/shebang */
-
+#!/usr/bin/env node
 import oclif from '@oclif/core';
-import path from 'node:path';
-import url from 'node:url';
-// eslint-disable-next-line node/no-unpublished-import
-import {register} from 'ts-node';
-
+import {fork} from 'node:child_process';
+import {resolve, dirname} from 'node:path';
+import {fileURLToPath} from 'node:url';
 // In dev mode -> use ts-node and dev plugins
-process.env.NODE_ENV = 'development';
-
-register({
-  project: path.join(
-    path.dirname(url.fileURLToPath(import.meta.url)),
+if (!process.env.TS_NODE_PROJECT) {
+  const fileAbsolutePath = fileURLToPath(import.meta.url);
+  process.env.NODE_OPTIONS = '--loader ts-node/esm`';
+  process.env.NODE_ENV = 'development';
+  process.env.TS_NODE_PROJECT = resolve(
+    dirname(fileAbsolutePath),
     '..',
-    'tsconfig.json'
-  ),
-});
+    'tsconfig.dev.json'
+  );
+  fork(fileAbsolutePath, {
+    env: {
+      ...process.env,
+      NODE_OPTIONS: `--loader ts-node/esm`,
+    },
+  });
+} else {
+  // In dev mode, always show stack traces
+  oclif.settings.debug = true;
 
-// In dev mode, always show stack traces
-oclif.settings.debug = true;
-
-// Start the CLI
-oclif
-  .run(process.argv.slice(2), import.meta.url)
-  .then(oclif.flush)
-  .catch(oclif.Errors.handle);
+  // Start the CLI
+  oclif
+    .run(process.argv.slice(2), import.meta.url)
+    .then(oclif.flush)
+    .catch(oclif.Errors.handle);
+}

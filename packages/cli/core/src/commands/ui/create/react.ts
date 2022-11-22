@@ -20,7 +20,7 @@ import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {
   IsNodeVersionInRange,
   IsNpxInstalled,
-} from '../../../lib/decorators/preconditions';
+} from '../../../lib/decorators/preconditions/index.js';
 
 type ReactProcessEnv = {
   orgId: string;

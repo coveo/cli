@@ -1,6 +1,5 @@
 import {VaultFetchStrategy, VaultEntryModel} from '@coveo/platform-client';
 import {CliUx} from '@oclif/core';
-import {bold} from 'chalk';
 import {
   formatOrgId,
   startSpinner,

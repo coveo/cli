@@ -2,7 +2,7 @@ import {ReportViewerStyles} from './reportPreviewerStyles.js';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
-} from './reportPreviewerDataModels';
+} from './reportPreviewerDataModels.js';
 import {ResourceSnapshotsReportOperationModel} from '@coveo/platform-client';
 
 class ReportViewerOperationLogFactory {

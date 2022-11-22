@@ -11,7 +11,7 @@ import {
   tryTransferFromOrganization,
   throwSnapshotMissingVaultEntriesError,
   tryCreateMissingVaultEntries,
-} from './vaultEntriesFunctions';
+} from './vaultEntriesFunctions/index.js';
 
 export interface DryRunOptions {
   deleteMissingResources?: boolean;

@@ -11,13 +11,17 @@ import {
 } from '@coveo/platform-client';
 import retry from 'async-retry';
 import {ReportViewer} from './reportPreviewer/reportPreviewer.js';
-import {ensureFileSync, writeJsonSync} from 'fs-extra';
+import fs from 'fs-extra';
+const {ensureFileSync, writeJsonSync} = fs;
 import {join} from 'path';
 import {SnapshotReporter} from './snapshotReporter.js';
-import {SnapshotOperationTimeoutError} from '../errors.js';
+import {
+  SnapshotOperationTimeoutError,
+  SnapshotNoReportFoundError,
+} from '../errors/snapshotErrors.js';
 import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer.js';
 import {Project} from '../project/project.js';
-import {SnapshotNoReportFoundError} from '../errors/snapshotErrors.js';
+
 import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels.js';
 import {ensureSnapshotAccess} from './snapshotAccess.js';
 

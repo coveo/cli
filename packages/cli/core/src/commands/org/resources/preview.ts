@@ -1,6 +1,6 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Flags} from '@oclif/core';
-import {blueBright} from 'chalk';
+import chalk from "chalk";
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
 import {Config} from '@coveo/cli-commons/config/config';
@@ -15,14 +15,14 @@ import {
   writeSnapshotPrivilege,
 } from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
-import {SnapshotOperationTimeoutError} from '../../../lib/errors.js';
+import {SnapshotOperationTimeoutError} from '../../../lib/errors/snapshotErrors.js';
 import {
   PreviewLevelValue,
   previewLevel,
   wait,
   organization,
   snapshotId,
-} from '../../../lib/flags/snapshotCommonFlags';
+} from '../../../lib/flags/snapshotCommonFlags.js';
 import {Project} from '../../../lib/project/project.js';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels.js';
 import {Snapshot} from '../../../lib/snapshot/snapshot.js';
@@ -33,7 +33,7 @@ import {
   cleanupProject,
   getMissingVaultEntriesReportHandler,
   getErrorReportHandler,
-} from '../../../lib/snapshot/snapshotCommon';
+} from '../../../lib/snapshot/snapshotCommon.js';
 export default class Preview extends CLICommand {
   public static description =
     'Preview the changes that running `coveo org:resources:push` would cause';
@@ -123,7 +123,7 @@ export default class Preview extends CLICommand {
 
           Once the snapshot is created, you can preview it with the following command:
 
-            ${blueBright`coveo org:resources:preview -o ${target} -s ${snapshot.id}`}
+            ${chalk.blueBright`coveo org:resources:preview -o ${target} -s ${snapshot.id}`}
 
             `
       );

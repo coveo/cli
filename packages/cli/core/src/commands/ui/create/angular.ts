@@ -8,7 +8,7 @@ import {getPackageVersion} from '../../../lib/utils/misc.js';
 import {
   IsNodeVersionInRange,
   IsNpmVersionInRange,
-} from '../../../lib/decorators/preconditions/index';
+} from '../../../lib/decorators/preconditions/index.js';
 import {
   HasNecessaryCoveoPrivileges,
   Preconditions,

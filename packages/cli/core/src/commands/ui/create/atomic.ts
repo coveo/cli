@@ -3,7 +3,7 @@ import {Flags} from '@oclif/core';
 import {
   IsNpxInstalled,
   IsNodeVersionInRange,
-} from '../../../lib/decorators/preconditions/index';
+} from '../../../lib/decorators/preconditions/index.js';
 import {
   Preconditions,
   IsAuthenticated,

@@ -8,10 +8,11 @@ import {
 import {join} from 'path';
 import {CliUx} from '@oclif/core';
 import archiver from 'archiver';
-import {InvalidProjectError} from '../errors.js';
+import {InvalidProjectError} from '../errors/projectError.js';
 import extract from 'extract-zip';
 import {DotFolder, DotFolderConfig} from './dotFolder.js';
-import {readJsonSync, writeJsonSync, WriteOptions} from 'fs-extra';
+import fs, {type WriteOptions} from 'fs-extra';
+const {readJsonSync, writeJsonSync} = fs;
 import {ResourceSnapshotType} from '@coveo/platform-client';
 import {fileDepthSearch} from '../utils/file.js';
 

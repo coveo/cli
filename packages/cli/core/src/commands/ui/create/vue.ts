@@ -21,7 +21,7 @@ import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {
   IsNodeVersionInRange,
   IsNpxInstalled,
-} from '../../../lib/decorators/preconditions';
+} from '../../../lib/decorators/preconditions/index.js';
 import {cwd} from 'node:process';
 import {mkdirSync, readdirSync, statSync, writeFileSync} from 'node:fs';
 import dedent from 'ts-dedent';

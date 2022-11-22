@@ -16,7 +16,7 @@ import {
   DryRunOptions,
   getMissingVaultEntriesReportHandler,
   getErrorReportHandler,
-} from '../../../lib/snapshot/snapshotCommon';
+} from '../../../lib/snapshot/snapshotCommon.js';
 import {Config} from '@coveo/cli-commons/config/config';
 import {cwd} from 'process';
 import {Project} from '../../../lib/project/project.js';
@@ -25,7 +25,7 @@ import {
   previewLevel,
   wait,
   organization,
-} from '../../../lib/flags/snapshotCommonFlags';
+} from '../../../lib/flags/snapshotCommonFlags.js';
 import {
   writeLinkPrivilege,
   writeSnapshotPrivilege,

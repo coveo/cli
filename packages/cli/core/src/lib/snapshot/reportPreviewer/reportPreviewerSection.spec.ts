@@ -4,7 +4,7 @@ import dedent from 'ts-dedent';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
-} from './reportPreviewerDataModels';
+} from './reportPreviewerDataModels.js';
 import {ReportViewerSection} from './reportPreviewerSection.js';
 
 describe('ReportViewerSection', () => {

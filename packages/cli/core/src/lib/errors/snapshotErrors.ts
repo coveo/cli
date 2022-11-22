@@ -1,4 +1,4 @@
-import {blueBright, bold} from 'chalk';
+import chalk from 'chalk';
 import dedent from 'ts-dedent';
 import {Configuration} from '@coveo/cli-commons/config/config';
 import {Snapshot} from '../snapshot/snapshot.js';
@@ -35,7 +35,7 @@ export class SnapshotOperationTimeoutError
       } operation is taking a long time to complete.
     Run the following command to monitor the operation:
 
-      ${blueBright`coveo org:resources:monitor ${snapshot.id} -t ${snapshot.targetId}`}`,
+      ${chalk.blueBright`coveo org:resources:monitor ${snapshot.id} -t ${snapshot.targetId}`}`,
       {level: SeverityLevel.Info}
     );
   }
@@ -107,7 +107,7 @@ export class MissingResourcePrivileges extends CLIBaseError {
       entryPlurable,
       missingResources.length
     );
-    const title = `You are missing ${bold(
+    const title = `You are missing ${chalk.bold(
       snapshotAccessType
     )} privilege on the following ${resourcePLuralized}`;
     const reference =
@@ -130,7 +130,7 @@ export class MissingSnapshotPrivilege extends CLIBaseError {
     snapshotAccessType: SnapshotAccessType
   ) {
     super();
-    this.message = dedent`You do not have ${bold(
+    this.message = dedent`You do not have ${chalk.bold(
       snapshotAccessType
     )} privilege on the snapshot ${snapshotId}
       Visit https://docs.coveo.com/en/3357 for more info on privileges required to manage snapshots.`;

@@ -4,22 +4,23 @@ import {
   VaultVisibilityType,
 } from '@coveo/platform-client';
 import {CliUx} from '@oclif/core';
-import {readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
 import open from 'open';
 import {join} from 'path';
 import {cwd} from 'process';
-import {inverse} from 'chalk';
 import {startSpinner} from '@coveo/cli-commons/utils/ux';
 import {
   InvalidVaultEntryError,
   InvalidVaultFileError,
   MissingVaultEntryValueError,
-} from '../errors/vaultErrors';
+} from '../errors/vaultErrors.js';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {VaultEntryAttributes} from './snapshotReporter.js';
 import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/utils/string';
 import {ProcessAbort} from '../../lib/errors/processError.js';
 import dedent from 'ts-dedent';
+import {rmSync} from 'node:fs';
+import {readFileSync, writeFileSync} from 'fs';
+import chalk from 'chalk';
 
 export class VaultHandler {
   private static readonly defaultEntryValue = '';
@@ -45,7 +46,7 @@ export class VaultHandler {
       const key = await CliUx.ux.prompt('', {
         type: 'single',
         required: false,
-        prompt: `\n${inverse('Press any key to continue. Press q to abort')}\n`,
+        prompt: `\n${chalk.inverse('Press any key to continue. Press q to abort')}\n`,
       });
       if (key === 'q') {
         throw new ProcessAbort();
@@ -83,7 +84,7 @@ export class VaultHandler {
       data[vaultEntryId] = VaultHandler.defaultEntryValue;
     }
 
-    writeJsonSync(this.vaultEntryFilePath, data, {spaces: 4});
+    writeFileSync(this.vaultEntryFilePath, JSON.stringify(data, undefined, 4));
   }
 
   private async openFile(print = true) {
@@ -101,7 +102,9 @@ export class VaultHandler {
     let data: Record<string, unknown>;
 
     try {
-      data = readJsonSync(this.vaultEntryFilePath);
+      data = JSON.parse(
+        readFileSync(this.vaultEntryFilePath, {encoding: 'utf-8'})
+      );
     } catch (error) {
       throw new InvalidVaultFileError(error);
     }
@@ -122,7 +125,9 @@ export class VaultHandler {
   private getVaultEntryModels(
     entries: VaultEntryAttributes[]
   ): VaultEntryModel[] {
-    const data = readJsonSync(this.vaultEntryFilePath);
+    const data = JSON.parse(
+      readFileSync(this.vaultEntryFilePath, {encoding: 'utf-8'})
+    );
     const models: VaultEntryModel[] = [];
     for (const {resourceName, resourceType, vaultEntryId} of entries) {
       const jsonPath = this.getVaultEntryJsonPath(vaultEntryId, resourceName);

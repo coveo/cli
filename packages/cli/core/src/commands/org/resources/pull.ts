@@ -6,8 +6,7 @@ import {
 } from '@coveo/cli-commons/utils/ux';
 
 import {Flags} from '@oclif/core';
-import {blueBright} from 'chalk';
-import {readJsonSync} from 'fs-extra';
+import chalk from 'chalk';
 import {resolve} from 'path';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
@@ -20,13 +19,13 @@ import {
 import {IsGitInstalled} from '../../../lib/decorators/preconditions/git.js';
 import {writeSnapshotPrivilege} from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
-import {SnapshotOperationTimeoutError} from '../../../lib/errors.js';
+import {SnapshotOperationTimeoutError} from '../../../lib/errors/snapshotErrors.js';
 import {ProcessAbort} from '../../../lib/errors/processError.js';
 import {
   organization,
   snapshotId,
   wait,
-} from '../../../lib/flags/snapshotCommonFlags';
+} from '../../../lib/flags/snapshotCommonFlags.js';
 import {Project} from '../../../lib/project/project.js';
 import type {
   SnapshotPullModel,
@@ -34,17 +33,21 @@ import type {
 } from '../../../lib/snapshot/pullModel/interfaces';
 import {buildResourcesToExport} from '../../../lib/snapshot/pullModel/validation/model.js';
 import {validateSnapshotPullModel} from '../../../lib/snapshot/pullModel/validation/validate.js';
-import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot.js';
+import {
+  Snapshot,
+  WaitUntilDoneOptions,
+} from '../../../lib/snapshot/snapshot.js';
 import {
   getTargetOrg,
   cleanupProject,
-} from '../../../lib/snapshot/snapshotCommon';
+} from '../../../lib/snapshot/snapshotCommon.js';
 import {allowedResourceType} from '../../../lib/snapshot/snapshotConstant.js';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory.js';
 import {confirmWithAnalytics} from '../../../lib/utils/cli.js';
 import {spawnProcess} from '../../../lib/utils/process.js';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Example} from '@oclif/core/lib/interfaces';
+import {readFileSync} from 'fs';
 
 const PullCommandStrings = {
   projectOverwriteQuestion: (
@@ -55,7 +58,7 @@ const PullCommandStrings = {
 
       Once the snapshot is created, you can pull it with the following command:
 
-        ${blueBright`coveo org:resources:pull -o ${targetOrgId} -s ${snapshotId}`}
+        ${chalk.blueBright`coveo org:resources:pull -o ${targetOrgId} -s ${snapshotId}`}
 
         `,
 };
@@ -91,7 +94,9 @@ export default class Pull extends CLICommand {
     }),
     model: Flags.custom<SnapshotPullModel>({
       parse: (input: string): Promise<SnapshotPullModel> => {
-        const model = readJsonSync(resolve(input));
+        const model = JSON.parse(
+          readFileSync(resolve(input), {encoding: 'utf-8'})
+        );
         validateSnapshotPullModel(model);
         return model;
       },

@@ -9,7 +9,7 @@ import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {
   ReportViewerResourceReportModel,
   SnapshotReportStatus,
-} from './reportPreviewer/reportPreviewerDataModels';
+} from './reportPreviewer/reportPreviewerDataModels.js';
 import {SnapshotReporter} from './snapshotReporter.js';
 
 function getFakeHandler() {

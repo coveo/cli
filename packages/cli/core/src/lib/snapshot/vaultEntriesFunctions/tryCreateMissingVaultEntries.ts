@@ -1,6 +1,5 @@
 import {formatOrgId} from '@coveo/cli-commons/utils/ux';
 import {CliUx} from '@oclif/core';
-import {bold} from 'chalk';
 import {VaultHandler} from '../vaultHandler.js';
 import {VaultTransferFunctionsParam} from './interfaces.js';
 

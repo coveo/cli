@@ -4,13 +4,13 @@ jest.mock('../snapshot');
 jest.mock('../snapshotReporter');
 jest.mock('@oclif/core/lib/cli-ux/prompt');
 jest.mock('@oclif/core/lib/errors/index');
-jest.mock('../../errors/vaultErrors');
+jest.mock('../../errors/vaultErrors.js');
 
 import PlatformClient, {VaultFetchStrategy} from '@coveo/platform-client';
 import {confirm} from '@oclif/core/lib/cli-ux/prompt';
 import {warn} from '@oclif/core/lib/errors/index';
 import {Configuration} from '@coveo/cli-commons/config/config';
-import {SnapshotMissingVaultEntriesFromOriginError} from '../../errors/vaultErrors.js';
+import {SnapshotMissingVaultEntriesFromOriginError} from '../../errors/vaultErrors.js.js';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {Project} from '../../project/project.js';
 import {Snapshot} from '../snapshot.js';

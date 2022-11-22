@@ -32,7 +32,7 @@ import {ReportViewer} from './reportPreviewer/reportPreviewer.js';
 import {Project} from '../project/project.js';
 import {ExpandedPreviewer} from './expandedPreviewer/expandedPreviewer.js';
 import {join} from 'path';
-import {SnapshotOperationTimeoutError} from '../errors.js';
+import {SnapshotOperationTimeoutError} from '../errors/index.js';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels.js';
 import {ensureSnapshotAccess} from './snapshotAccess.js';

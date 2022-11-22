@@ -5,7 +5,7 @@ import PlatformClient, {ResourceSnapshotType} from '@coveo/platform-client';
 import {
   MissingResourcePrivileges,
   MissingSnapshotPrivilege,
-} from '../errors/snapshotErrors';
+} from '../errors/snapshotErrors.js';
 import {ensureResourcesAccess, ensureSnapshotAccess} from './snapshotAccess.js';
 
 const mockedPlatformClient = jest.mocked(PlatformClient);

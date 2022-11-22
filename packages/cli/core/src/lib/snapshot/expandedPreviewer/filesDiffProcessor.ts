@@ -1,6 +1,7 @@
 import type {ResourceSnapshotType} from '@coveo/platform-client';
 import {readdirSync, rmSync} from 'fs';
-import {readJsonSync, writeJsonSync, WriteOptions} from 'fs-extra';
+import fs, {type WriteOptions} from 'fs-extra';
+const {readJsonSync, writeJsonSync} = fs;
 import {join} from 'path';
 import {Project} from '../../project/project.js';
 

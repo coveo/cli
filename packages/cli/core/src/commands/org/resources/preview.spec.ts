@@ -32,7 +32,7 @@ import {IsGitInstalled} from '../../../lib/decorators/preconditions.js';
 import {
   MissingResourcePrivileges,
   MissingSnapshotPrivilege,
-} from '../../../lib/errors/snapshotErrors';
+} from '../../../lib/errors/snapshotErrors.js';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
 const mockedConfig = jest.mocked(Config);

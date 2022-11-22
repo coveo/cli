@@ -1,8 +1,9 @@
 {
   "extends": "@coveo/cli-commons-dev/tsconfig.json",
   "compilerOptions": {
-    "module": "ES2020",
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "Node",
     "outDir": "lib",
     "types": ["node", "jest"],
     "paths": {

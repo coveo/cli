@@ -1,10 +1,10 @@
 // TODO: Remove, unusued
-export * from './git';
+export * from './git.js';
 // TODO: Move to `@coveo/plugin-cli-ui
-export * from './node';
+export * from './node.js';
 // TODO: Move to `@coveo/plugin-cli-ui
-export * from './npx';
+export * from './npx.js';
 // TODO: Move to `@coveo/plugin-cli-ui
-export * from './npm';
+export * from './npm.js';
 // TODO: Move to `@coveo/plugin-cli-ui
-export * from './ng';
+export * from './ng.js';

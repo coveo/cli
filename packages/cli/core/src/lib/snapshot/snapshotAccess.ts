@@ -5,7 +5,7 @@ import PlatformClient, {
 import {
   MissingResourcePrivileges,
   MissingSnapshotPrivilege,
-} from '../errors/snapshotErrors';
+} from '../errors/snapshotErrors.js';
 import {isSubset, without} from '../utils/list.js';
 
 export async function ensureResourcesAccess(
