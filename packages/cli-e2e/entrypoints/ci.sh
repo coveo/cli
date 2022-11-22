@@ -4,7 +4,7 @@ set -e
 
 echo "::group::Setup Chrome"
 brew install defaultbrowser
-osascript ./macos-yes.scpt "chrome"
+osascript packages/cli-e2e/entrypoints/macos-yes.scpt "chrome"
 sudo networksetup -setdnsservers Ethernet 9.9.9.9
 echo "::endgroup::"
 
