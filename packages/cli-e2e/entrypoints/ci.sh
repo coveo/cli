@@ -1,12 +1,10 @@
 #!/bin/bash
 set -e
 
-echo "::group::System dependencies"
-sudo apt-get update
-sudo apt-get install libssl-dev zlib1g-dev llvm libncurses5-dev libncursesw5-dev tk-dev
-echo "::endgroup::"
 
 echo "::group::Setup Chrome"
+brew install defaultbrowser
+osascript ./macos-yes.scpt "chrome"
 Xvfb :1 -screen 0 1024x768x16 & sleep 1
 xdg-settings set default-web-browser google-chrome.desktop
 echo "::endgroup::"
