@@ -1,4 +1,4 @@
-import {Command} from '@oclif/core';
+import {CLICommand} from '../command/cliCommand';
 import {PreconditionError} from '../errors/preconditionError';
 import {PreconditionFunction} from './preconditions';
 
@@ -17,7 +17,7 @@ export const mockPreconditions = <
   const keys: PreconditionKeys[] = Object.keys(preconditionStatus);
   const mockedPreconditions: Partial<PreconditionPromises> = {};
   for (const key of keys) {
-    mockedPreconditions[key] = (_target?: Command) =>
+    mockedPreconditions[key] = (_target?: CLICommand) =>
       new Promise<void>((resolve) =>
         preconditionStatus[key] ? resolve() : thrower(key)
       );
