@@ -1,4 +1,4 @@
-jest.mock('../analytics/analytics');
+jest.mock('../analytics/analytics.js');
 jest.mock('@coveo/cli-commons/config/config');
 
 import {test} from '@oclif/test';

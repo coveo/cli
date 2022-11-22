@@ -1,11 +1,11 @@
-jest.mock('../../../lib/decorators/preconditions/git');
+jest.mock('../../../lib/decorators/preconditions/git.js');
 jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
-jest.mock('../../../lib/snapshot/snapshot');
-jest.mock('../../../lib/snapshot/snapshotFactory');
-jest.mock('../../../lib/project/project');
+jest.mock('../../../lib/snapshot/snapshot.js');
+jest.mock('../../../lib/snapshot/snapshotFactory.js');
+jest.mock('../../../lib/project/project.js');
 
 import {test} from '@oclif/test';
 import {Project} from '../../../lib/project/project.js';

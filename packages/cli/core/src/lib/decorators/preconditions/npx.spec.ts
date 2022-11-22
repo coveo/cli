@@ -1,4 +1,4 @@
-jest.mock('../../utils/process');
+jest.mock('../../utils/process.js');
 
 import {dedent} from 'ts-dedent';
 import {spawnProcessOutput} from '../../utils/process.js';

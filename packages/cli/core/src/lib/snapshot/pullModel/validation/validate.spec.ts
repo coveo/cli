@@ -1,5 +1,5 @@
 jest.mock('jsonschema');
-jest.mock('./errors');
+jest.mock('./errors.js');
 const trueErrors = jest.requireActual('./errors');
 
 import {validate, ValidatorResult} from 'jsonschema';

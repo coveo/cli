@@ -2,8 +2,8 @@ jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
-jest.mock('../../../lib/snapshot/snapshotReporter');
-jest.mock('../../../lib/snapshot/snapshotFactory');
+jest.mock('../../../lib/snapshot/snapshotReporter.js');
+jest.mock('../../../lib/snapshot/snapshotFactory.js');
 
 import {Config} from '@coveo/cli-commons/config/config';
 import {ResourceSnapshotsReportType} from '@coveo/platform-client';

@@ -68,7 +68,7 @@
     "prettier": "2.7.1",
     "rimraf": "3.0.2",
     "stdout-stderr": "0.1.13",
-    "strip-ansi": "6.0.1",
+    "strip-ansi": "7.0.1",
     "ts-jest": "29.0.3",
     "ts-node": "10.9.1",
     "tsconfig-paths": "4.1.0",
@@ -174,7 +174,7 @@
   "repository": "coveo/cli",
   "scripts": {
     "build": "rimraf lib && tsc -b tsconfig.build.json",
-    "test": "jest --colors",
+    "test": "jest --verbose --colors",
     "lint": "prettier --check . && eslint .",
     "release:phase1": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase1-bump-all-packages.mjs",
     "postpack": "rimraf oclif.manifest.json",

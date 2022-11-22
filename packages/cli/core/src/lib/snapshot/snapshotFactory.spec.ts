@@ -1,7 +1,7 @@
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('fs');
-jest.mock('./snapshot');
-jest.mock('./snapshotAccess');
+jest.mock('./snapshot.js');
+jest.mock('./snapshotAccess.js');
 jest.mock('node:buffer');
 import {ResourceSnapshotType} from '@coveo/platform-client';
 import {readFileSync} from 'fs';

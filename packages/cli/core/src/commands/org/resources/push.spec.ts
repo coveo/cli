@@ -2,9 +2,9 @@ jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
-jest.mock('../../../lib/snapshot/snapshot');
-jest.mock('../../../lib/snapshot/snapshotFactory');
-jest.mock('../../../lib/project/project');
+jest.mock('../../../lib/snapshot/snapshot.js');
+jest.mock('../../../lib/snapshot/snapshotFactory.js');
+jest.mock('../../../lib/project/project.js');
 
 import {CliUx} from '@oclif/core';
 import {test} from '@oclif/test';

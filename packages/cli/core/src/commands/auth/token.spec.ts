@@ -1,4 +1,4 @@
-jest.mock('../../lib/oauth/oauth');
+jest.mock('../../lib/oauth/oauth.js');
 jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');

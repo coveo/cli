@@ -1,15 +1,15 @@
 jest.mock('child_process');
-jest.mock('../../../lib/decorators/preconditions/npx');
-jest.mock('../../../lib/decorators/preconditions/node');
+jest.mock('../../../lib/decorators/preconditions/npx.js');
+jest.mock('../../../lib/decorators/preconditions/node.js');
 jest.mock('@coveo/cli-commons/preconditions/apiKeyPrivilege');
-jest.mock('../../../lib/utils/process');
-jest.mock('../../../lib/oauth/oauth');
+jest.mock('../../../lib/utils/process.js');
+jest.mock('../../../lib/oauth/oauth.js');
 jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
 jest.mock('@coveo/cli-commons/preconditions/authenticated');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
-jest.mock('../../../lib/utils/misc');
+jest.mock('../../../lib/utils/misc.js');
 jest.mock('@coveo/platform-client');
 
 import {test} from '@oclif/test';

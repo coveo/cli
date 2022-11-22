@@ -18,11 +18,11 @@ import {Snapshot} from './snapshot.js';
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('fs-extra');
 jest.mock('async-retry');
-jest.mock('./snapshotReporter');
-jest.mock('./reportPreviewer/reportPreviewer');
-jest.mock('../project/project');
-jest.mock('./expandedPreviewer/expandedPreviewer');
-jest.mock('./snapshotAccess');
+jest.mock('./snapshotReporter.js');
+jest.mock('./reportPreviewer/reportPreviewer.js');
+jest.mock('../project/project.js');
+jest.mock('./expandedPreviewer/expandedPreviewer.js');
+jest.mock('./snapshotAccess.js');
 
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {ensureFileSync, writeJSONSync} from 'fs-extra';

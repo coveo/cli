@@ -10,7 +10,7 @@ import {OAuth} from './oauth.js';
 import {OAuthClientServer} from './oauthClientServer.js';
 import open from 'open';
 
-jest.mock('./oauthClientServer');
+jest.mock('./oauthClientServer.js');
 jest.mock('open');
 
 describe('OAuth', () => {

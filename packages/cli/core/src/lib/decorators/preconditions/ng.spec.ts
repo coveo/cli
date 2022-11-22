@@ -1,6 +1,6 @@
-jest.mock('../../utils/process');
-jest.mock('../../utils/misc');
-jest.mock('../../utils/os');
+jest.mock('../../utils/process.js');
+jest.mock('../../utils/misc.js');
+jest.mock('../../utils/os.js');
 
 import {spawnProcessOutput} from '../../utils/process.js';
 import {getFakeCommand} from '@coveo/cli-commons-dev/testUtils/utils';

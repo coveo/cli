@@ -8,10 +8,10 @@ jest.mock('@oclif/core', () => ({
   },
 }));
 
-jest.mock('./filesDiffProcessor');
-jest.mock('../snapshotFactory');
-jest.mock('../../utils/process');
-jest.mock('../../project/project');
+jest.mock('./filesDiffProcessor.js');
+jest.mock('../snapshotFactory.js');
+jest.mock('../../utils/process.js');
+jest.mock('../../project/project.js');
 
 import {Dirent, existsSync, mkdirSync, readdirSync, rmSync} from 'node:fs';
 import {join, resolve} from 'node:path';
