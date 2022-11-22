@@ -35,8 +35,7 @@ jobs:
         timeout-minutes: 30
         if: always()
         run: |
-          Xvfb :1 -screen 0 1024x768x16 & sleep 1
-          xdg-settings set default-web-browser google-chrome.desktop
+          sudo networksetup -setdnsservers Ethernet 9.9.9.9
           node -r ts-node/register/transpile-only packages/cli-e2e/cleaning.ts
           node ./scripts/cleaning/delete-orgs.js     --olderThan 1d
         env:
