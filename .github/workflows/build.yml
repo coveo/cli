@@ -23,10 +23,6 @@ jobs:
     runs-on: 'macos-latest'
     steps:
       - name: Setup runner
-        if: ${{matrix.os == 'macos-latest'}}
-        # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
-        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-      - name: Setup runner
         if: ${{matrix.os == 'windows-latest'}}
         run: |
           git config --global core.autocrlf false
@@ -48,10 +44,6 @@ jobs:
       matrix:
         os: ['macos-latest', 'windows-latest']
     steps:
-      - name: Setup runner
-        if: ${{matrix.os == 'macos-latest'}}
-        # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
-        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
       - name: Setup runner
         if: ${{matrix.os == 'windows-latest'}}
         run: |

@@ -23,11 +23,6 @@ runs:
   steps:
     - name: Setup runner
       shell: bash
-      if: ${{inputs.os == 'macos-latest'}}
-      # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
-      run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-    - name: Setup runner
-      shell: bash
       if: ${{inputs.os == 'windows-latest'}}
       run: |
         git config --global core.autocrlf false
