@@ -11,7 +11,7 @@ import {EOL} from 'os';
 import {DummyServer} from '../utils/server';
 import {join, resolve} from 'path';
 import {hashElement} from 'folder-hash';
-import {renameSync, rmSync} from 'fs';
+import {existsSync, symlinkSync, unlinkSync} from 'fs';
 import retry from 'async-retry';
 
 interface BuildAppOptions {
@@ -34,10 +34,10 @@ describe('ui:create:atomic', () => {
       join(getProjectPath(getProjectName(buildAppOptions.id)))
     );
     normalizedProjectDir = join(originalProjectDir, '..', 'normalizedDir');
-    rmSync(normalizedProjectDir, {recursive: true, force: true});
-    await retry(() => {
-      renameSync(originalProjectDir, normalizedProjectDir);
-    });
+    if (existsSync(normalizedProjectDir)) {
+      unlinkSync(normalizedProjectDir);
+    }
+    symlinkSync(originalProjectDir, normalizedProjectDir, 'junction');
   };
 
   const waitForAppRunning = (appTerminal: Terminal) =>
