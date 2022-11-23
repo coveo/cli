@@ -6,8 +6,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 function linkSearchTokenLambdaToRoot() {
   symlinkSync(
-    resolve(__dirname, 'node_modules', '@coveo', 'search-token-lambda'),
-    resolve(__dirname, 'lambda'),
+    resolve(__dirname, '..', 'node_modules', '@coveo', 'search-token-lambda'),
+    resolve(__dirname, '..', 'lambda'),
     'junction'
   );
 }
