@@ -26,11 +26,11 @@ describe('ui:create:atomic', () => {
   const tokenServerEndpoint = 'http://localhost:8888/.netlify/functions/token';
   const searchInterfaceSelector = 'atomic-search-interface';
   let normalizedProjectDir = '';
-
+  let originalProjectDir = '';
   const normalizeProjectDirectory = async (
     buildAppOptions: BuildAppOptions
   ) => {
-    const originalProjectDir = resolve(
+    originalProjectDir = resolve(
       join(getProjectPath(getProjectName(buildAppOptions.id)))
     );
     normalizedProjectDir = join(originalProjectDir, '..', 'normalizedDir');
@@ -150,7 +150,7 @@ describe('ui:create:atomic', () => {
       args.shift()!,
       args,
       {
-        cwd: normalizedProjectDir,
+        cwd: originalProjectDir,
       },
       processManager,
       `${debugName}-${options.id}`
