@@ -65,7 +65,7 @@ export function createUiProjectDirectory() {
 
 export function setProcessEnv() {
   process.env.TEST_RUN_ID =
-    process.env.TEST_RUN_ID?.replaceAll(/./g, '-') ??
+    process.env.TEST_RUN_ID?.replaceAll(/\./g, '-') ??
     `id${randomBytes(16).toString('hex')}g`;
   process.env.PLATFORM_ENV = process.env.PLATFORM_ENV?.toLowerCase() || '';
   process.env.PLATFORM_HOST = getPlatformHost(process.env.PLATFORM_ENV);
