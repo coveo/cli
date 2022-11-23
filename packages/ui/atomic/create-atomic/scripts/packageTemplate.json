@@ -9,7 +9,7 @@
   "collection": "dist/collection/collection-manifest.json",
   "collection:main": "dist/index.js",
   "scripts": {
-    "setup-lambda": "node ./scripts/setup-lambda.js",
+    "setup-lambda": "node ./scripts/setup-lambda.mjs",
     "setup-cleanup": "node ./scripts/clean-up.js",
     "start": "node start-netlify.mjs",
     "build": "stencil build",
