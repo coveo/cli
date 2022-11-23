@@ -1,9 +1,10 @@
-const {linkSync} = require('fs');
+const {symlinkSync} = require('fs');
 const {resolve} = require('path');
 function linSearchTokenLambdaToRoot() {
-  linkSync(
+  symlinkSync(
     resolve('node_modules', '@coveo', 'search-token-lambda'),
-    resolve('lambda')
+    resolve('lambda'),
+    'junction'
   );
 }
 
