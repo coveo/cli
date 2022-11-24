@@ -1,9 +1,9 @@
 import getPort from 'get-port';
-import {fork} from 'child_process';
-import {createRequire} from 'module';
+import {spawnSync} from 'child_process';
 import fkill from 'fkill';
+const appendCmdIfWindows = (cmd) =>
+  `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
 
-const require = createRequire(import.meta.url);
 const args = process.argv.slice(2);
 
 const main = async () => {
@@ -16,8 +16,8 @@ const main = async () => {
     fkill(`:${stencilPort}`, {silent: true});
   });
 
-  fork(
-    require.resolve('netlify-cli/bin/run.mjs'),
+  spawnSync(
+    appendCmdIfWindows`netlify`,
     ['dev', '--targetPort', stencilPort, ...args],
     {
       stdio: 'inherit',
