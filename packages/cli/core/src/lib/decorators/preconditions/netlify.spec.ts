@@ -5,7 +5,7 @@ jest.mock('../../utils/os');
 import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from '@coveo/cli-commons/utils/getFakeCommand';
 
-import {IsNgVersionInRange} from './ng';
+import {IsNetlifyCliVersionInRange} from './netlify';
 import {CliUx} from '@oclif/core';
 import {appendCmdIfWindows} from '../../utils/os';
 import {getPackageVersion} from '../../utils/misc';
@@ -42,12 +42,12 @@ describe('IsNgInstalled', () => {
       const fakeCommand = getFakeCommand();
 
       await expect(
-        IsNgVersionInRange('foo')(fakeCommand)
+        IsNetlifyCliVersionInRange('foo')(fakeCommand)
       ).rejects.toThrowErrorMatchingSnapshot();
     });
   });
 
-  describe('when ng is not installed', () => {
+  describe('when netlify-cli is not installed', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
         exitCode: 'ENOENT',
@@ -59,12 +59,12 @@ describe('IsNgInstalled', () => {
     fancyIt()('should throw', async () => {
       const fakeCommand = getFakeCommand();
       await expect(
-        IsNgVersionInRange('>=0.0.1')(fakeCommand)
+        IsNetlifyCliVersionInRange('>=0.0.1')(fakeCommand)
       ).rejects.toThrowErrorMatchingSnapshot();
     });
   });
 
-  describe('when an unknown error happens while checking for ng', () => {
+  describe('when an unknown error happens while checking for netlify-cli', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
         exitCode: '1',
@@ -75,17 +75,17 @@ describe('IsNgInstalled', () => {
 
     fancyIt()('should return false and warn', async () => {
       await expect(
-        IsNgVersionInRange('>=0.0.1')(fakeCommand)
+        IsNetlifyCliVersionInRange('>=0.0.1')(fakeCommand)
       ).rejects.toThrowErrorMatchingSnapshot();
     });
   });
 
-  describe('when the installed version of ng is lower than the required one', () => {
+  describe('when the installed version of netlify-cli is lower than the required one', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
         exitCode: '0',
         stderr: '',
-        stdout: 'Angular CLI: 0.9.0',
+        stdout: 'netlify-cli/0.9.0',
       });
     });
 
@@ -93,17 +93,17 @@ describe('IsNgInstalled', () => {
       const fakeCommand = getFakeCommand();
 
       await expect(
-        IsNgVersionInRange('>=1.0.0')(fakeCommand)
+        IsNetlifyCliVersionInRange('>=1.0.0')(fakeCommand)
       ).rejects.toThrowErrorMatchingSnapshot();
     });
   });
 
-  describe('when the installed version of ng is above than the required one', () => {
+  describe('when the installed version of netlify-cli is above than the required one', () => {
     beforeEach(() => {
       mockedSpawnProcessOutput.mockResolvedValue({
         exitCode: '0',
         stderr: '',
-        stdout: 'Angular CLI: 1.1.0',
+        stdout: 'netlify-cli/1.1.0',
       });
     });
 
@@ -111,7 +111,7 @@ describe('IsNgInstalled', () => {
       const fakeCommand = getFakeCommand();
 
       await expect(
-        IsNgVersionInRange('>=1.0.0')(fakeCommand)
+        IsNetlifyCliVersionInRange('>=1.0.0')(fakeCommand)
       ).resolves.not.toThrow();
     });
   });

@@ -1,4 +1,3 @@
-import {Command} from '@oclif/core';
 import {PreconditionError} from '../errors/preconditionError';
 import {
   AuthenticationStatus,
@@ -7,6 +6,7 @@ import {
 import {Config} from '../config/config';
 import globalConfig from '../config/globalConfig';
 import {PreconditionFunction} from './preconditions';
+import {CLICommand} from '../command/cliCommand';
 
 const PRECONDITION_ERROR_CATEGORY = 'Authentication';
 export enum AuthenticationType {
@@ -27,7 +27,7 @@ export function IsAuthenticated(
     AuthenticationType.OAuth,
   ]
 ): PreconditionFunction {
-  return async function (_target:Command) {
+  return async function (_target: CLICommand) {
     const status = await getAuthenticationStatus();
     if (status === AuthenticationStatus.LOGGED_OUT) {
       throw new PreconditionError(

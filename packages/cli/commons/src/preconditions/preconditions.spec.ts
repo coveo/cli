@@ -1,6 +1,6 @@
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
-import {getFakeCommand} from '@coveo/cli-commons-dev/testUtils/utils';
 import {PreconditionError} from '../errors/preconditionError';
+import {getFakeCommand} from '../utils/getFakeCommand';
 import {Preconditions} from './preconditions';
 
 describe('preconditions', () => {

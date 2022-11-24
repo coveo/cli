@@ -6,13 +6,13 @@ import {Interfaces} from '@oclif/core';
 import {Config} from '../config/config';
 import globalConfig from '../config/globalConfig';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
-import {getFakeCommand} from '@coveo/cli-commons-dev/testUtils/utils';
 import {PreconditionError} from '../errors/preconditionError';
 import {
   AuthenticationStatus,
   getAuthenticationStatus,
 } from '../platform/authenticatedClient';
 import {AuthenticationType, IsAuthenticated} from './authenticated';
+import {getFakeCommand} from '../utils/getFakeCommand';
 
 describe('authenticated', () => {
   const fakeCommand = getFakeCommand();

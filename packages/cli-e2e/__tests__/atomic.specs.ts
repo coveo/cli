@@ -11,8 +11,7 @@ import {EOL} from 'os';
 import {DummyServer} from '../utils/server';
 import {join, resolve} from 'path';
 import {hashElement} from 'folder-hash';
-import {renameSync, rmSync} from 'fs';
-import retry from 'async-retry';
+import {existsSync, symlinkSync, unlinkSync} from 'fs';
 
 interface BuildAppOptions {
   id: string;
@@ -26,18 +25,16 @@ describe('ui:create:atomic', () => {
   const tokenServerEndpoint = 'http://localhost:8888/.netlify/functions/token';
   const searchInterfaceSelector = 'atomic-search-interface';
   let normalizedProjectDir = '';
-
-  const normalizeProjectDirectory = async (
-    buildAppOptions: BuildAppOptions
-  ) => {
-    const originalProjectDir = resolve(
+  let originalProjectDir = '';
+  const normalizeProjectDirectory = (buildAppOptions: BuildAppOptions) => {
+    originalProjectDir = resolve(
       join(getProjectPath(getProjectName(buildAppOptions.id)))
     );
     normalizedProjectDir = join(originalProjectDir, '..', 'normalizedDir');
-    rmSync(normalizedProjectDir, {recursive: true, force: true});
-    await retry(() => {
-      renameSync(originalProjectDir, normalizedProjectDir);
-    });
+    if (existsSync(normalizedProjectDir)) {
+      unlinkSync(normalizedProjectDir);
+    }
+    symlinkSync(originalProjectDir, normalizedProjectDir, 'junction');
   };
 
   const waitForAppRunning = (appTerminal: Terminal) =>
@@ -150,7 +147,7 @@ describe('ui:create:atomic', () => {
       args.shift()!,
       args,
       {
-        cwd: normalizedProjectDir,
+        cwd: originalProjectDir,
       },
       processManager,
       `${debugName}-${options.id}`
@@ -215,7 +212,7 @@ describe('ui:create:atomic', () => {
         stderr = (await buildApplication(processManager, buildAppOptions))
           .output;
         await processManager.killAllProcesses();
-        await normalizeProjectDirectory(buildAppOptions);
+        normalizeProjectDirectory(buildAppOptions);
       }, 15 * 60e3);
 
       beforeEach(async () => {
