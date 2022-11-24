@@ -20,10 +20,10 @@ env:
 jobs:
   lint:
     name: Lint
-    runs-on: 'ubuntu-latest'
+    runs-on: 'ubuntu-20.04'
     steps:
       - name: Setup runner
-        if: ${{matrix.os == 'ubuntu-latest'}}
+        if: ${{matrix.os == 'ubuntu-20.04'}}
         # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
       - name: Setup runner
@@ -46,10 +46,10 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: ['ubuntu-latest', 'windows-latest']
+        os: ['ubuntu-20.04', 'windows-latest']
     steps:
       - name: Setup runner
-        if: ${{matrix.os == 'ubuntu-latest'}}
+        if: ${{matrix.os == 'ubuntu-20.04'}}
         # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
       - name: Setup runner
@@ -71,7 +71,7 @@ jobs:
   e2e-setup-login:
     timeout-minutes: 15
     name: End-to-end login
-    runs-on: 'ubuntu-latest'
+    runs-on: 'ubuntu-20.04'
     outputs:
       cliConfigJson: ${{ steps.setup.outputs.cliConfigJson}}
     env:
@@ -88,7 +88,7 @@ jobs:
   e2e-setup-verdaccio:
     strategy:
       matrix:
-        os: ['ubuntu-latest', 'windows-latest']
+        os: ['ubuntu-20.04', 'windows-latest']
     name: End-to-end publish packages
     runs-on: ${{matrix.os}}
     steps:
@@ -106,7 +106,7 @@ jobs:
           cache: 'npm'
           node-version-file: '.nvmrc'
       - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3
-        if: ${{matrix.os == 'ubuntu-latest'}}
+        if: ${{matrix.os == 'ubuntu-20.04'}}
         with:
           path: packages/cli-e2e/verdaccio
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
@@ -132,7 +132,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-latest', 'windows-latest']
+        os: ['ubuntu-20.04', 'windows-latest']
         spec:
           [
             'angular.specs.ts',
@@ -155,7 +155,7 @@ jobs:
     steps:
       - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
       - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3
-        if: ${{matrix.os == 'ubuntu-latest'}}
+        if: ${{matrix.os == 'ubuntu-20.04'}}
         with:
           path: packages/cli-e2e/verdaccio
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
@@ -178,7 +178,7 @@ jobs:
     name: End-to-end teardown
     if: ${{ always() }}
     needs: [e2e, e2e-setup-login]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       # ID of the test run to identify resources to teardown.
       TEST_RUN_ID: '${{ github.sha }}-${{ github.run_attempt }}g'
@@ -192,7 +192,7 @@ jobs:
     name: End-to-end status reporter
     if: ${{ always() }}
     needs: e2e
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Check e2e matrix status
         if: ${{ needs.e2e.result != 'success' }}
@@ -202,7 +202,7 @@ jobs:
     name: Pre-release
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     needs: [e2e-report, lint, unit-tests]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     environment: prerelease
     steps:
       - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
