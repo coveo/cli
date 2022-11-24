@@ -31,7 +31,7 @@ export default class SourcePushDelete extends CLICommand {
       char: 'x',
       multiple: true,
       description:
-        'The URIs of the items to delete. Can be repeated. If you want to delete more than one specific items, use the `source:push:batch` command instead.',
+        'The URIs of the items to delete. Can be repeated. If you want to delete more than one specific items, use the `--deleteOlderThan` flag instead.',
     }),
     deleteChildren: Flags.boolean({
       char: 'c',
@@ -73,7 +73,7 @@ export default class SourcePushDelete extends CLICommand {
       if (await this.isNumberOfDeletionTooLarge()) {
         this.warn(
           dedent(
-            'To delete large number of items, use the `source:push:batch` command instead.'
+            'To delete large number of items, use the `--deleteOlderThan` option instead.'
           )
         );
         return;
