@@ -12,7 +12,6 @@ import {DummyServer} from '../utils/server';
 import {join, resolve} from 'path';
 import {hashElement} from 'folder-hash';
 import {existsSync, symlinkSync, unlinkSync} from 'fs';
-import retry from 'async-retry';
 
 interface BuildAppOptions {
   id: string;
@@ -27,9 +26,7 @@ describe('ui:create:atomic', () => {
   const searchInterfaceSelector = 'atomic-search-interface';
   let normalizedProjectDir = '';
   let originalProjectDir = '';
-  const normalizeProjectDirectory = async (
-    buildAppOptions: BuildAppOptions
-  ) => {
+  const normalizeProjectDirectory = (buildAppOptions: BuildAppOptions) => {
     originalProjectDir = resolve(
       join(getProjectPath(getProjectName(buildAppOptions.id)))
     );
@@ -215,7 +212,7 @@ describe('ui:create:atomic', () => {
         stderr = (await buildApplication(processManager, buildAppOptions))
           .output;
         await processManager.killAllProcesses();
-        await normalizeProjectDirectory(buildAppOptions);
+        normalizeProjectDirectory(buildAppOptions);
       }, 15 * 60e3);
 
       beforeEach(async () => {

@@ -32,7 +32,7 @@ describe('ui:create:vue', () => {
   const projectName = `${process.env.TEST_RUN_ID}-${parentDir}-project`;
   const projectPath = join(getUIProjectPath(), parentDir, projectName);
 
-  const searchPageEndpoint = () => `http://localhost:5173`;
+  const searchPageEndpoint = () => 'http://localhost:5173';
 
   const waitForAppRunning = (appTerminal: Terminal) =>
     appTerminal
