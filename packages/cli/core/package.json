@@ -75,14 +75,14 @@
   },
   "peerDependencies": {
     "@angular/cli": "^15.0.0",
-    "@vue/cli": "^5.0.8",
+    "netlify-cli": "^12.0.0",
     "create-react-app": "*"
   },
   "peerDependenciesMeta": {
     "@angular/cli": {
       "optional": true
     },
-    "@vue/cli": {
+    "netlify-cli": {
       "optional": true
     },
     "create-react-app": {
