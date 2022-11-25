@@ -46,6 +46,6 @@ jobs:
         with:
           name: cleaning-artifacts
           path: ./packages/cli-e2e/artifacts
-      - name: Notify in case of failure
-        if: failure()
-        run: curl --request POST --url ${{ secrets.SLACK_WEBHOOK }}
+      # - name: Notify in case of failure
+      #   if: failure()
+      #   run: curl --request POST --url ${{ secrets.SLACK_WEBHOOK }}
