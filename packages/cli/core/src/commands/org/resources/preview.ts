@@ -1,8 +1,6 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Flags} from '@oclif/core';
-import {blueBright} from 'chalk';
 import {cwd} from 'process';
-import dedent from 'ts-dedent';
 import {Config} from '@coveo/cli-commons/config/config';
 import {
   HasNecessaryCoveoPrivileges,
@@ -15,7 +13,6 @@ import {
   writeSnapshotPrivilege,
 } from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
-import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {
   PreviewLevelValue,
   previewLevel,
@@ -92,9 +89,8 @@ export default class Preview extends CLICommand {
     await this.cleanup(snapshot, project);
   }
 
-  public async catch(err?: Error & {exitCode?: number}) {
+  public catch(err?: Error & {exitCode?: number}) {
     cleanupProject(this.projectPath);
-    await this.supplementErrorMessage(err);
     return super.catch(err);
   }
 
@@ -111,23 +107,6 @@ export default class Preview extends CLICommand {
       await snapshot.delete();
     }
     project.deleteTemporaryZipFile();
-  }
-
-  private async supplementErrorMessage(err?: Error & {exitCode?: number}) {
-    if (err instanceof SnapshotOperationTimeoutError) {
-      const {flags} = await this.parse(Preview);
-      const snapshot = err.snapshot;
-      const target = getTargetOrg(this.configuration, flags.organization);
-      this.log(
-        dedent`
-
-          Once the snapshot is created, you can preview it with the following command:
-
-            ${blueBright`coveo org:resources:preview -o ${target} -s ${snapshot.id}`}
-
-            `
-      );
-    }
   }
 
   private async getOptions(): Promise<DryRunOptions> {
