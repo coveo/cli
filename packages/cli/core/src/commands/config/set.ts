@@ -15,10 +15,12 @@ export default class Set extends CLICommand {
   public static description = 'Modify the current Coveo CLI configuration.';
 
   public static flags = {
+    // TODO CDX-1246
     environment: Flags.string({
       char: 'e',
       hidden: true,
     }),
+    // TODO CDX-1246
     region: Flags.string({
       char: 'r',
       hidden: true,
@@ -42,6 +44,7 @@ export default class Set extends CLICommand {
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = await this.parse(Set);
+    // TODO CDX-1246
     if (flags.environment || flags.region) {
       CliUx.ux.error(
         'To connect to a different region or environment, use the `auth:login` command'
