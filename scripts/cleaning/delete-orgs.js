@@ -16,7 +16,7 @@ function wasCreatedByTheCli(testRunId = '') {
   return (key) =>
     testRunId
       ? key.displayName?.startsWith(`cli-e2e-idwindows-latest-${testRunId}`) ||
-        key.displayName?.startsWith(`cli-e2e-idubuntu-20.04-${testRunId}`)
+        key.displayName?.startsWith(`cli-e2e-idubuntu-20-04-${testRunId}`)
       : key.displayName?.match(/cli-e2e.*g/);
 }
 
