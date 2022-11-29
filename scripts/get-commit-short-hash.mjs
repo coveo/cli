@@ -4,10 +4,10 @@ import {join} from 'node:path';
 import {binariesMatcher} from './oclifArtifactMatchers.mjs';
 
 const platformToDirMap = {
-  'darwin':'macos',
-  'linux': 'deb',
-  'win32': 'win32'
-}
+  darwin: 'macos',
+  linux: 'deb',
+  win32: 'win32',
+};
 
 // Should be executed at the root of the CLI workspace.
 const pathToArtifacts = join('dist', platformToDirMap[process.platform]);
