@@ -43,6 +43,8 @@ describe('source:push:delete', () => {
             get: () => ({
               accessToken: 'the_token',
               organization: 'the_org',
+              environment: 'some_env',
+              region: 'MARS',
             }),
           },
         } as unknown as AuthenticatedClient)
@@ -98,7 +100,10 @@ describe('source:push:delete', () => {
     .stderr()
     .command(['source:push:delete', 'mysource', '-d', '2000/01/01'])
     .it('pass correct configuration information to push-api-client', () => {
-      expect(mockedSource).toHaveBeenCalledWith('the_token', 'the_org');
+      expect(mockedSource).toHaveBeenCalledWith('the_token', 'the_org', {
+        environment: 'some_env',
+        region: 'MARS',
+      });
     });
 
   [
