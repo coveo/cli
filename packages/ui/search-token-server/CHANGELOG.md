@@ -1,3 +1,10 @@
+## 1.35.16 (2022-11-29)
+
+### Bug Fixes
+
+- **deps:** update all dependencies j:cdx-227 ([#1032](https://github.com/coveo/cli/issues/1032)) ([e1ccdeb](https://github.com/coveo/cli/commits/e1ccdebcd1908b750df365961187013bc025ebdf))
+- **deps:** update all dependencies j:cdx-227 ([#1036](https://github.com/coveo/cli/issues/1036)) ([1439a40](https://github.com/coveo/cli/commits/1439a406166f7342e1d91481e81de6c63a7b15f1))
+
 ## 1.35.15 (2022-11-15)
 
 ### Bug Fixes
