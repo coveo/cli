@@ -86,6 +86,7 @@ const getAssetsMetadataFromRelease = async (release) => {
       owner,
       repo,
       release_id: release.data.id,
+      per_page: 50,
     })
   ).data;
 };
