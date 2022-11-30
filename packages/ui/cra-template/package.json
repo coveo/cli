@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cra-template",
-  "version": "1.36.0",
+  "version": "1.36.1",
   "scripts": {
     "lint": "prettier --check . && eslint .",
     "release:phase1": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase1-bump-all-packages.mjs"
@@ -30,10 +30,10 @@
   },
   "devDependencies": {
     "@coveo/headless": "latest",
-    "@coveo/search-token-server": "1.35.15",
+    "@coveo/search-token-server": "1.35.16",
     "@emotion/react": "11.10.5",
     "@emotion/styled": "11.10.5",
-    "@mui/material": "5.10.15",
+    "@mui/material": "5.10.16",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "13.4.0",
     "@types/jest": "29.2.3",

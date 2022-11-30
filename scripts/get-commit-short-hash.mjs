@@ -3,11 +3,17 @@ import {readdirSync} from 'node:fs';
 import {join} from 'node:path';
 import {binariesMatcher} from './oclifArtifactMatchers.mjs';
 
+const platformToDirMap = {
+  darwin: 'macos',
+  linux: 'deb',
+  win32: 'win32',
+};
+
 // Should be executed at the root of the CLI workspace.
-const pathToArtifacts = join('dist', process.platform);
+const pathToArtifacts = join('dist', platformToDirMap[process.platform]);
 const artifacts = readdirSync(pathToArtifacts, {withFileTypes: true});
 const someExe = artifacts.find(
-  (candidate) => candidate.isFile() && candidate.name.endsWith('.exe')
+  (candidate) => candidate.isFile() && /\.(exe|deb|pkg)$/.test(candidate.name)
 );
 
 if (!binariesMatcher.exec(someExe.name)?.groups?.commitSHA) {

@@ -1,3 +1,19 @@
+# 2.1.0 (2022-11-29)
+
+### Bug Fixes
+
+- abort pending requests ([#1034](https://github.com/coveo/cli/issues/1034)) ([dba4502](https://github.com/coveo/cli/commits/dba450201295ec240dd9dfeae7f70a94fa9f959d))
+- **cli:** ensure to stop action before calling more prints ([#1030](https://github.com/coveo/cli/issues/1030)) ([7efb42d](https://github.com/coveo/cli/commits/7efb42dd9fcaee793bb977c99b49d0759f9be7bb))
+- **cli:** fix readme generation ([#1033](https://github.com/coveo/cli/issues/1033)) ([3fedfbc](https://github.com/coveo/cli/commits/3fedfbc5a0079f0d015add9fd96a8e844380158c))
+- **cli:** print properly the command name. ([d4ec642](https://github.com/coveo/cli/commits/d4ec642c698484f9ea5f7f44dd84d638a143cdde))
+- **deps:** update all dependencies j:cdx-227 ([#1032](https://github.com/coveo/cli/issues/1032)) ([e1ccdeb](https://github.com/coveo/cli/commits/e1ccdebcd1908b750df365961187013bc025ebdf))
+- **deps:** update all dependencies j:cdx-227 ([#1036](https://github.com/coveo/cli/issues/1036)) ([1439a40](https://github.com/coveo/cli/commits/1439a406166f7342e1d91481e81de6c63a7b15f1))
+- **deps:** update all dependencies to v15 j:cdx-227 (major) ([#1035](https://github.com/coveo/cli/issues/1035)) ([a99acd9](https://github.com/coveo/cli/commits/a99acd91579280f44decff15d817fbe377abae50))
+
+### Features
+
+- **atomic:** reduce disk footprint of projects ([#1044](https://github.com/coveo/cli/issues/1044)) ([985ba50](https://github.com/coveo/cli/commits/985ba50692cde3523d370051b699624639ebd928))
+
 # 2.0.0 (2022-11-15)
 
 ### Bug Fixes
