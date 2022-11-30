@@ -13,7 +13,7 @@ const platformToDirMap = {
 const pathToArtifacts = join('dist', platformToDirMap[process.platform]);
 const artifacts = readdirSync(pathToArtifacts, {withFileTypes: true});
 const someExe = artifacts.find(
-  (candidate) => candidate.isFile() && candidate.name.endsWith('.exe')
+  (candidate) => candidate.isFile() && /\.(exe|deb|pkg)$/.test(candidate.name)
 );
 
 if (!binariesMatcher.exec(someExe.name)?.groups?.commitSHA) {
