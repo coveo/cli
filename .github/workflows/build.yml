@@ -4,100 +4,15 @@ on:
     branches:
       - master
   pull_request:
-env:
-  # Platform environment to log into for the e2e tests.
-  PLATFORM_ENV: 'stg'
-  # Username used to log into the organization whose ID is stored in the ORG_ID variable
-  PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
-  # Password used to log into the organization whose ID is stored in the ORG_ID variable
-  PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
-  # API key to delete all the API keys created by the e2e tests
-  PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
-  # ID of the organization to log into for the e2e tests
-  ORG_ID: ${{ secrets.ORG_ID }}
-  # Passphrase use to encode/decode cliConfig
-  E2E_TOKEN_PASSPHRASE: ${{ secrets.E2E_TOKEN_PASSPHRASE }}
 jobs:
-  lint:
-    name: Lint
-    runs-on: 'ubuntu-latest'
-    steps:
-      - name: Setup runner
-        if: ${{matrix.os == 'ubuntu-latest'}}
-        # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
-        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-      - name: Setup runner
-        if: ${{matrix.os == 'windows-latest'}}
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.eol lf
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
-        with:
-          cache: 'npm'
-          node-version-file: '.nvmrc'
-      - name: Setup repo
-        run: npm ci
-      - name: Check linting
-        run: npm run lint
-  unit-tests:
-    name: Unit Tests
-    runs-on: ${{matrix.os}}
-    strategy:
-      fail-fast: true
-      matrix:
-        os: ['ubuntu-latest', 'windows-latest']
-    steps:
-      - name: Setup runner
-        if: ${{matrix.os == 'ubuntu-latest'}}
-        # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
-        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-      - name: Setup runner
-        if: ${{matrix.os == 'windows-latest'}}
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.eol lf
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
-        with:
-          cache: 'npm'
-          node-version-file: '.nvmrc'
-      - name: Setup repo
-        run: npm ci
-      - name: Build
-        run: npm run build
-      - name: Tests
-        run: npm run test
-  e2e-setup-login:
-    timeout-minutes: 15
-    name: End-to-end login
-    runs-on: 'ubuntu-latest'
-    outputs:
-      cliConfigJson: ${{ steps.setup.outputs.cliConfigJson}}
-    env:
-      # ID of the test run to identify resources to teardown.
-      TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
-    steps:
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
-        with:
-          cache: 'npm'
-          node-version-file: '.nvmrc'
-      - uses: ./.github/actions/e2e-login
-        id: setup
   e2e-setup-verdaccio:
     strategy:
       matrix:
-        os: ['ubuntu-latest', 'windows-latest']
+        os: ['ubuntu-latest']
     name: End-to-end publish packages
     runs-on: ${{matrix.os}}
     steps:
-      - name: Setup runner
-        if: ${{matrix.os == 'windows-latest'}}
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.eol lf
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
@@ -106,14 +21,8 @@ jobs:
           cache: 'npm'
           node-version-file: '.nvmrc'
       - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3
-        if: ${{matrix.os == 'ubuntu-latest'}}
         with:
           path: packages/cli-e2e/verdaccio
-          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-      - uses: actions/cache@58c146cc91c5b9e778e71775dfe9bf1442ad9a12 # v3
-        if: ${{matrix.os == 'windows-latest'}}
-        with:
-          path: packages\cli-e2e\verdaccio
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
       - run: npm ci
       - name: Build
@@ -125,100 +34,3 @@ jobs:
         with:
           name: ${{matrix.os}}-verdaccio-publish-artifacts
           path: ./packages/cli-e2e/artifacts
-  e2e:
-    name: End-to-end tests
-    runs-on: ${{matrix.os}}
-    needs: [e2e-setup-login, e2e-setup-verdaccio]
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ['ubuntu-latest', 'windows-latest']
-        spec:
-          [
-            'angular.specs.ts',
-            'atomic.specs.ts',
-            'auth.specs.ci.ts',
-            'orgList.specs.ts',
-            'orgResources.specs.ts',
-            'react.specs.ts',
-            'vue.specs.ts',
-          ]
-        # TODO: fix auth spec with windows
-        exclude:
-          - os: windows-latest
-            spec: auth.specs.ci.ts
-    env:
-      # ID of the test run to identify resources to teardown.
-      TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
-      COVEO_DISABLE_AUTOUPDATE: true
-      CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
-    steps:
-      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3
-      - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3
-        if: ${{matrix.os == 'ubuntu-latest'}}
-        with:
-          path: packages/cli-e2e/verdaccio
-          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-          restore-keys: verdaccio-${{matrix.os}}-${{ github.sha }}
-      - uses: actions/cache@58c146cc91c5b9e778e71775dfe9bf1442ad9a12 # v3
-        if: ${{matrix.os == 'windows-latest'}}
-        with:
-          path: packages\cli-e2e\verdaccio
-          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-          restore-keys: verdaccio-${{matrix.os}}-${{ github.sha }}
-      - uses: ./.github/actions/e2e-run
-        with:
-          os: ${{ matrix.os }}
-          node: ${{ matrix.node }}
-          spec: ${{ matrix.spec }}
-          cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
-          npmRegistry: 'http://localhost:4873'
-  e2e-teardown:
-    timeout-minutes: 15
-    name: End-to-end teardown
-    if: ${{ always() }}
-    needs: [e2e, e2e-setup-login]
-    runs-on: ubuntu-latest
-    env:
-      # ID of the test run to identify resources to teardown.
-      TEST_RUN_ID: '${{ github.sha }}-${{ github.run_attempt }}g'
-      CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
-    steps:
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
-      - uses: ./.github/actions/e2e-clean
-        with:
-          cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
-  e2e-report:
-    name: End-to-end status reporter
-    if: ${{ always() }}
-    needs: e2e
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check e2e matrix status
-        if: ${{ needs.e2e.result != 'success' }}
-        run: exit 1
-  prerelease:
-    timeout-minutes: 15
-    name: Pre-release
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-    needs: [e2e-report, lint, unit-tests]
-    runs-on: ubuntu-latest
-    environment: prerelease
-    steps:
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
-        with:
-          # pulls all commits (needed for computing the next version)
-          fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
-        with:
-          registry-url: 'https://registry.npmjs.org'
-      - name: Install dependencies
-        run: npm ci
-      - name: Release
-        run: |
-          npm run nx:graph
-          npm run release:phase1
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          DEBUG: '*'
-          IS_PRERELEASE: 'true'
