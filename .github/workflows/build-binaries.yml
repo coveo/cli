@@ -35,13 +35,12 @@ jobs:
           - os: macos-latest
             pack-command: ' macos'
             for: 'macos install kit'
-          # TODO: uncomment
-          # - os: windows-latest
-          #   pack-command: ' win'
-          #   for: 'windows install kit'
-          # - os: ubuntu-20.04
-          #   pack-command: ' deb'
-          #   for: 'linux install kit'
+          - os: windows-latest
+            pack-command: ' win'
+            for: 'windows install kit'
+          - os: ubuntu-20.04
+            pack-command: ' deb'
+            for: 'linux install kit'
 
     steps:
       - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
@@ -81,16 +80,15 @@ jobs:
       - name: Get commit hash of binaries
         run: node ../../../scripts/get-commit-short-hash.mjs
         working-directory: ./packages/cli/core
-      # TODO: uncomment
-      # - name: Sign Executable (Windows)
-      #   working-directory: ./packages/cli/core
-      #   if: ${{matrix.os == 'windows-latest'}}
-      #   run: |
-      #     New-Item -Force -ItemType directory -Path tmp
-      #     echo "${{ secrets.COVEO_PFX }}" > ./tmp/cert.txt
-      #     certutil -decode ./tmp/cert.txt ./tmp/cert.pfx
-      #     Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64.exe" -PassThru | Wait-Process
-      #     Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-${{env.cliversion}}-${{env.commitSHA1}}-x86.exe" -PassThru | Wait-Process
+      - name: Sign Executable (Windows)
+        working-directory: ./packages/cli/core
+        if: ${{matrix.os == 'windows-latest'}}
+        run: |
+          New-Item -Force -ItemType directory -Path tmp
+          echo "${{ secrets.COVEO_PFX }}" > ./tmp/cert.txt
+          certutil -decode ./tmp/cert.txt ./tmp/cert.pfx
+          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64.exe" -PassThru | Wait-Process
+          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-${{env.cliversion}}-${{env.commitSHA1}}-x86.exe" -PassThru | Wait-Process
       - name: Sign Executable (macOS)
         working-directory: ./packages/cli/core/dist/macos
         if: ${{matrix.os == 'macos-latest'}}
@@ -127,16 +125,11 @@ jobs:
           echo "Deleting unsigned packages"
           mv "coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64-signed.pkg" "coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64.pkg"
           mv "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64-signed.pkg" "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64.pkg"
-      # - name: Upload binaries
-      #   uses: svenstaro/upload-release-action@133984371c30d34e38222a64855679a414cb7575 # tag=2.3.0
-      #   with:
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #     file: ./packages/cli/core/dist/**/*
-      #     file_glob: true
-      #     tag: ${{ env.tag }}
-      - name: Upload artifacts
-        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
-        if: always()
+          rm notarization-arm64.zip notarization-x64.zip
+      - name: Upload binaries
+        uses: svenstaro/upload-release-action@133984371c30d34e38222a64855679a414cb7575 # tag=2.3.0
         with:
-          name: signed-pkg
-          path: ./packages/cli/core/dist/macos
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./packages/cli/core/dist/**/*
+          file_glob: true
+          tag: ${{ env.tag }}
