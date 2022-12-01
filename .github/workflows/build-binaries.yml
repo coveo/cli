@@ -109,6 +109,9 @@ jobs:
           # TODO: rename signed package
           # TODO: put in script file
         run: |
+          echo "Unlocking the keychain"
+          security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" build.keychain
+
           echo "Create keychain profile"
           xcrun notarytool store-credentials "notarytool-profile" --apple-id "${{ secrets.MACOS_APP_USERNAME }}" --team-id "${{ secrets.MACOS_WWDR_TEAM_ID }}" --password "${{ secrets.MACOS_APP_SPECIFIC_PWD }}"
 
@@ -135,4 +138,4 @@ jobs:
         if: always()
         with:
           name: signed-pkg
-          path: ./packages/cli/artifacts
+          path: ./packages/cli/core/dist/macos
