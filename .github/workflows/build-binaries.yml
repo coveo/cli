@@ -38,7 +38,7 @@ jobs:
           - os: windows-latest
             pack-command: ' win'
             for: 'windows install kit'
-          - os: ubuntu-20.04
+          - os: ubuntu-latest
             pack-command: ' deb'
             for: 'linux install kit'
 
@@ -75,7 +75,7 @@ jobs:
         run: ../../../node_modules/oclif/bin/run pack${{ matrix.pack-command }}
       - name: Create packages
         working-directory: ./packages/cli/core
-        if: ${{matrix.os == 'ubuntu-20.04'}}
+        if: ${{matrix.os == 'ubuntu-latest'}}
         run: ../../../node_modules/oclif/bin/run pack tarballs
       - name: Get commit hash of binaries
         run: node ../../../scripts/get-commit-short-hash.mjs
