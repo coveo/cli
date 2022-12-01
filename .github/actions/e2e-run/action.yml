@@ -23,7 +23,7 @@ runs:
   steps:
     - name: Setup runner
       shell: bash
-      if: ${{inputs.os == 'ubuntu-latest'}}
+      if: ${{inputs.os == 'ubuntu-20.04'}}
       # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
       run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
     - name: Setup runner
@@ -32,13 +32,14 @@ runs:
       run: |
         git config --global core.autocrlf false
         git config --global core.eol lf
-    - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93 # tag=v3
+    - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
       with:
-        node-version: ${{inputs.node}}
         cache: 'npm'
-    - uses: actions/setup-python@98f2ad02fd48d057ee3b4d4f66525b231c3e52b6 # tag=v3
+        node-version-file: '.nvmrc'
+    - uses: actions/setup-python@13ae5bb136fac2878aff31522b9efb785519f984 # v4
       with:
         cache: 'pip'
+        python-version: '3.10'
     - name: Install Mitmproxy through pip
       shell: bash
       run: pip install -r packages/cli-e2e/mitmproxy/requirements.txt
@@ -50,7 +51,7 @@ runs:
       shell: bash
     - name: End-to-end Setup
       shell: bash
-      if: ${{inputs.os == 'ubuntu-latest'}}
+      if: ${{inputs.os == 'ubuntu-20.04'}}
       run: bash packages/cli-e2e/entrypoints/ci.sh
     - name: End-to-end Setup
       shell: powershell
@@ -65,13 +66,13 @@ runs:
         npm_config_registry: ${{inputs.npmRegistry}}
     - name: Tests
       shell: bash
-      if: ${{inputs.os == 'ubuntu-latest'}}
+      if: ${{inputs.os == 'ubuntu-20.04'}}
       env:
         DISPLAY: ':1'
         npm_config_registry: ${{inputs.npmRegistry}}
       working-directory: packages/cli-e2e
       run: npm run jest:ci -- ${{inputs.spec}}
-    - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
+    - uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # v3
       if: always()
       with:
         name: ${{inputs.os}}-${{inputs.spec}}-test-artifacts

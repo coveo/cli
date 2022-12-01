@@ -1,4 +1,4 @@
-import {ResourceSnapshotsReportModel} from '@coveord/platform-client';
+import {ResourceSnapshotsReportModel} from '@coveo/platform-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {CliUx} from '@oclif/core';
 import {Config} from '@coveo/cli-commons/config/config';
@@ -15,6 +15,7 @@ import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {startSpinner} from '@coveo/cli-commons/utils/ux';
+import {Example} from '@oclif/core/lib/interfaces';
 
 export default class Monitor extends CLICommand {
   public static description = 'Monitor a Snapshot operation';
@@ -31,6 +32,15 @@ export default class Monitor extends CLICommand {
       name: 'snapshotId',
       description: 'The unique identifier of the target snapshot.',
       required: true,
+    },
+  ];
+
+  public static examples: Example[] = [
+    {
+      command:
+        'coveo org:resources:monitor --organization myorgid --snapshotId mysnapshotid',
+      description:
+        'Monitor the status of the "mysnapshotid" snapshot in the "myorgid" organization.',
     },
   ];
 

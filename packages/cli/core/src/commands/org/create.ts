@@ -1,14 +1,17 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
+import {
+  formatOrgId,
+  startSpinner,
+  stopSpinner,
+} from '@coveo/cli-commons/utils/ux';
 import {Flags} from '@oclif/core';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {
   Preconditions,
   IsAuthenticated,
 } from '@coveo/cli-commons/preconditions/index';
-import {OrganizationCreationOrigin} from '@coveord/platform-client';
+import {OrganizationCreationOrigin} from '@coveo/platform-client';
 import {Config} from '@coveo/cli-commons/config/config';
-import {bold} from 'chalk';
 import dedent from 'ts-dedent';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 
@@ -55,17 +58,16 @@ export default class Create extends CLICommand {
 
   private async generateEndMessageFromOrgId(orgId: string) {
     const {flags} = await this.parse(Create);
-    const color1 = bold.cyan;
-    let color2 = bold.magenta;
     if (flags.setDefaultOrganization) {
       this.configuration.set('organization', orgId);
-      color2 = bold.cyan;
     }
 
     const cfg = this.configuration.get();
-    const message = dedent`Organization ${color1(orgId)} successfully created.
+    const message = dedent`Organization ${formatOrgId(
+      orgId
+    )} successfully created.
 
-    You are currently logged into organization ${color2(
+    You are currently logged into organization ${formatOrgId(
       cfg.organization
     )} and further command will be ran against that organization by default.
 

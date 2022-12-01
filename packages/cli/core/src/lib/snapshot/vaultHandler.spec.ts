@@ -2,7 +2,7 @@ jest.mock('open');
 jest.mock('fs-extra');
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 
-import {ResourceSnapshotType} from '@coveord/platform-client';
+import {ResourceSnapshotType} from '@coveo/platform-client';
 import {VaultEntryAttributes} from './snapshotReporter';
 import {VaultHandler} from './vaultHandler';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
@@ -10,6 +10,7 @@ import {readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
 import open from 'open';
 import {CliUx} from '@oclif/core';
 import {ProcessAbort} from '../errors/processError';
+import {stdout, stderr} from 'stdout-stderr';
 
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockedCreate = jest.fn();
@@ -53,11 +54,15 @@ describe('VaultHandler', () => {
   beforeAll(() => {
     doMockPrompt();
     doMockAuthenticatedClient();
+    stderr.start();
+    stdout.start();
   });
 
   afterAll(() => {
     mockedPrompt.mockReset();
     mockedReadJsonSync.mockReset();
+    stderr.stop();
+    stdout.stop();
   });
 
   describe('when the vault entries are valid', () => {

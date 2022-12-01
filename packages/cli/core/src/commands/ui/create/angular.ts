@@ -13,6 +13,7 @@ import {
   HasNecessaryCoveoPrivileges,
   Preconditions,
   IsAuthenticated,
+  AuthenticationType,
 } from '@coveo/cli-commons/preconditions/index';
 import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {IsNgVersionInRange} from '../../../lib/decorators/preconditions/ng';
@@ -30,7 +31,7 @@ export default class Angular extends CLICommand {
    */
   public static requiredNodeVersion = '^12.14.1 || >=14.0.0';
   public static requiredNpmVersion = '^6.11.0 || ^7.5.6 || >=8.0.0';
-  public static requiredNgVersion = '^14.0.0';
+  public static requiredNgVersion = '^15.0.0';
 
   public static description =
     'Create a Coveo Headless-powered search page with the Angular web framework. See <https://docs.coveo.com/headless> and <https://angular.io/>.';
@@ -61,7 +62,7 @@ export default class Angular extends CLICommand {
     overrideEventProperties: {framework: 'angular'},
   })
   @Preconditions(
-    IsAuthenticated(),
+    IsAuthenticated([AuthenticationType.OAuth]),
     IsNodeVersionInRange(Angular.requiredNodeVersion),
     IsNpmVersionInRange(Angular.requiredNpmVersion),
     IsNgVersionInRange(Angular.requiredNgVersion),

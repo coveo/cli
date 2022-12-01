@@ -1,7 +1,7 @@
 jest.mock('axios');
 jest.mock('http');
 
-import {Region} from '@coveord/platform-client';
+import {Region} from '@coveo/platform-client';
 import axios from 'axios';
 import {
   createServer,
@@ -23,7 +23,7 @@ import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
 type createServerInitialOverload = jest.MaybeMocked<{
   (requestListener?: RequestListener | undefined): Server;
 }>;
-const mockedAxios = jest.mocked(axios, true);
+const mockedAxios = jest.mocked(axios);
 const mockedCreateServer = jest.mocked(
   createServer
 ) as unknown as createServerInitialOverload;

@@ -6,11 +6,6 @@ process.env.TS_NODE_PROJECT = require.resolve('./tsconfig.dev.json');
 module.exports = {
   rootDir: '.',
   preset: 'ts-jest',
-  globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.dev.json',
-    },
-  },
   testEnvironment: 'node',
   verbose: true,
   collectCoverage: true,
@@ -18,6 +13,7 @@ module.exports = {
     ...defaults.coveragePathIgnorePatterns,
     '/__test__/',
     '/__stub__/',
+    '/__testsUtils__/',
   ],
   clearMocks: true,
   testTimeout: 60e3,

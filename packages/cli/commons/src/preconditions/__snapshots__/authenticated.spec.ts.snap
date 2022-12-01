@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`authenticated when the user is logged in when the user is anonymous (meaning it logged in with an API Key) should throw when ApiKey is not allowed 1`] = `"This command does not support API Key authentication. Please authenticate again using coveo auth:login"`;
+
+exports[`authenticated when the user is logged in when the user is not anonymous (meaning it logged in with an API Key) should throw when OAuth is not allowed 1`] = `"This command does not support OAuth/web authentication. Please authenticate again using coveo auth:token"`;

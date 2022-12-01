@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`org:resources:pull should return an error message if resource privileges are missing 1`] = `
+"You are missing [1mREAD[22m privilege on the following resources
+ • SOURCE
+ • ML_MODEL
+
+Visit https://docs.coveo.com/en/3357 for more info on privileges required to manage snapshots."
+`;
+
+exports[`org:resources:pull should return an error message if resource privileges are missing for specific snapshot 1`] = `
+"You do not have [1mREAD[22m privilege on the snapshot some-snapshot-id
+Visit https://docs.coveo.com/en/3357 for more info on privileges required to manage snapshots."
+`;

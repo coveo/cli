@@ -6,45 +6,62 @@ jest.mock('../../../lib/utils/process');
 jest.mock('../../../lib/oauth/oauth');
 jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
-
+jest.mock('@coveo/cli-commons/preconditions/authenticated');
+jest.mock('../../../lib/decorators/preconditions/netlify');
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
-jest.mock('@coveord/platform-client');
+jest.mock('@coveo/platform-client');
 
 import {test} from '@oclif/test';
 import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import PlatformClient from '@coveord/platform-client';
+import PlatformClient from '@coveo/platform-client';
 import {Config, Configuration} from '@coveo/cli-commons/config/config';
 import {
   IsNpxInstalled,
   IsNodeVersionInRange,
 } from '../../../lib/decorators/preconditions/index';
-import {HasNecessaryCoveoPrivileges} from '@coveo/cli-commons/preconditions/index';
+import {
+  HasNecessaryCoveoPrivileges,
+  IsAuthenticated,
+} from '@coveo/cli-commons/preconditions/index';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {configurationMock} from '../../../__stub__/configuration';
-import {mockPreconditions} from '../../../__test__/preconditionUtils';
+import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
+import {IsNetlifyCliVersionInRange} from '../../../lib/decorators/preconditions/netlify';
 
 describe('ui:create:atomic', () => {
   const mockedConfig = jest.mocked(Config);
-  const mockedSpawnProcess = jest.mocked(spawnProcess, true);
+  const mockedSpawnProcess = jest.mocked(spawnProcess);
   const mockedPlatformClient = jest.mocked(PlatformClient);
   const mockedGetPackageVersion = jest.mocked(getPackageVersion);
   const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
-  const mockedIsNpxInstalled = jest.mocked(IsNpxInstalled, true);
-  const mockedIsNodeVersionInRange = jest.mocked(IsNodeVersionInRange, true);
+  const mockedIsNpxInstalled = jest.mocked(IsNpxInstalled);
+  const mockedIsNodeVersionInRange = jest.mocked(IsNodeVersionInRange);
   const createAtomicPackage = '@coveo/create-atomic';
-  const mockedApiKeyPrivilege = jest.mocked(HasNecessaryCoveoPrivileges, true);
+  const mockedApiKeyPrivilege = jest.mocked(HasNecessaryCoveoPrivileges);
+  const mockedIsAuthenticated = jest.mocked(IsAuthenticated);
+  const mockedIsNetlifyCliVersionInRange = jest.mocked(
+    IsNetlifyCliVersionInRange
+  );
+
   const preconditionStatus = {
     node: true,
     npx: true,
     apiKey: true,
+    authentication: true,
+    netlify: true,
   };
+
   const doMockPreconditions = function () {
     const mockedPreconditions = mockPreconditions(preconditionStatus);
     mockedIsNodeVersionInRange.mockReturnValue(mockedPreconditions.node);
     mockedIsNpxInstalled.mockReturnValue(mockedPreconditions.npx);
     mockedApiKeyPrivilege.mockReturnValue(mockedPreconditions.apiKey);
+    mockedIsAuthenticated.mockReturnValue(mockedPreconditions.authentication);
+    mockedIsNetlifyCliVersionInRange.mockReturnValue(
+      mockedPreconditions.netlify
+    );
   };
 
   const doMockSpawnProcess = () => {
@@ -102,6 +119,7 @@ describe('ui:create:atomic', () => {
     preconditionStatus.node = true;
     preconditionStatus.npx = true;
     preconditionStatus.apiKey = true;
+    preconditionStatus.netlify = true;
   });
 
   afterEach(() => {
@@ -129,6 +147,18 @@ describe('ui:create:atomic', () => {
     })
     .command(['ui:create:atomic', 'myapp'])
     .catch(/node Precondition Error/)
+    .it(
+      'should not execute the command if the preconditions are not respected'
+    );
+
+  test
+    .stdout()
+    .stderr()
+    .do(() => {
+      preconditionStatus.netlify = false;
+    })
+    .command(['ui:create:atomic', 'myapp'])
+    .catch(/netlify Precondition Error/)
     .it(
       'should not execute the command if the preconditions are not respected'
     );

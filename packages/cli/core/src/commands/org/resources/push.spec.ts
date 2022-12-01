@@ -9,20 +9,24 @@ jest.mock('../../../lib/project/project');
 import {CliUx} from '@oclif/core';
 import {test} from '@oclif/test';
 import {Project} from '../../../lib/project/project';
-import {join, normalize} from 'path';
 import {Config} from '@coveo/cli-commons/config/config';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
-import {ResourceSnapshotsReportType} from '@coveord/platform-client';
+import {
+  ResourceSnapshotsReportType,
+  ResourceSnapshotType,
+  SnapshotAccessType,
+} from '@coveo/platform-client';
 import {
   getErrorReport,
   getMissingVaultEntryReport,
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
+import {MissingResourcePrivileges} from '../../../lib/errors/snapshotErrors';
 
-const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
+const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
 const mockedConfig = jest.mocked(Config);
 const mockedProject = jest.mocked(Project);
 const mockedConfigGet = jest.fn();
@@ -38,16 +42,13 @@ const mockedLastReport = jest.fn();
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockEvaluate = jest.fn();
 
+const fakeProject = {
+  deleteTemporaryZipFile: mockedDeleteTemporaryZipFile,
+  getResourceManifest: mockedGetResourceManifest,
+} as unknown as Project;
+
 const mockProject = () => {
-  mockedProject.mockImplementation(
-    () =>
-      ({
-        compressResources: () =>
-          Promise.resolve(normalize(join('path', 'to', 'resources.zip'))),
-        deleteTemporaryZipFile: mockedDeleteTemporaryZipFile,
-        getResourceManifest: mockedGetResourceManifest,
-      } as unknown as Project)
-  );
+  mockedProject.mockImplementation(() => fakeProject);
 };
 
 const doMockConfig = () => {
@@ -67,7 +68,7 @@ const doMockConfig = () => {
 
 const mockSnapshotFactory = () => {
   mockedPreviewSnapshot.mockReturnValue(Promise.resolve(''));
-  mockedSnapshotFactory.createFromZip.mockImplementation(() =>
+  mockedSnapshotFactory.createSnapshotFromProject.mockImplementation(() =>
     Promise.resolve({
       apply: mockedApplySnapshot,
       validate: mockedValidateSnapshot,
@@ -98,6 +99,15 @@ const mockUserHavingAllRequiredPlatformPrivileges = () => {
 
 const mockUserNotHavingAllRequiredPlatformPrivileges = () => {
   mockEvaluate.mockResolvedValue({approved: false});
+};
+
+const mockUserNotHavingAllRequiredResourcePrivileges = () => {
+  mockedSnapshotFactory.createFromOrg.mockImplementation(() => {
+    throw new MissingResourcePrivileges(
+      [ResourceSnapshotType.source, ResourceSnapshotType.mlModel],
+      SnapshotAccessType.Write
+    );
+  });
 };
 
 const mockSnapshotFactoryReturningValidSnapshot = () => {
@@ -180,7 +190,20 @@ describe('org:resources:push', () => {
       .command(['org:resources:push'])
       .catch(/You are not authorized to create snapshot/)
       .it('should return an error message if privileges are missing');
+
+    test
+      .do(() => {
+        mockUserNotHavingAllRequiredResourcePrivileges();
+      })
+      .stdout()
+      .stderr()
+      .command(['org:resources:push'])
+      .catch((ctx) => {
+        expect(ctx.message).toMatchSnapshot();
+      })
+      .it('should return an error message if resource privileges are missing');
   });
+
   //#region TODO: CDX-948, setup phase needs to be rewrite and assertions 'split up' (e.g. the error ain't trigger directly by the function, therefore should not be handled)
   describe('when the dryRun returns a report without errors', () => {
     beforeAll(() => {
@@ -224,8 +247,10 @@ describe('org:resources:push', () => {
       .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
       .command(['org:resources:push'])
       .it('should work with default connected org', () => {
-        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
-          normalize(join('path', 'to', 'resources.zip')),
+        expect(
+          mockedSnapshotFactory.createSnapshotFromProject
+        ).toHaveBeenCalledWith(
+          fakeProject,
           'default-org',
           expect.objectContaining({})
         );
@@ -238,8 +263,10 @@ describe('org:resources:push', () => {
       .command(['org:resources:push', '-o', 'myorg'])
       .it('should work with specified target org', () => {
         expect(mockedProject).toHaveBeenCalledWith(expect.anything(), 'myorg');
-        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
-          normalize(join('path', 'to', 'resources.zip')),
+        expect(
+          mockedSnapshotFactory.createSnapshotFromProject
+        ).toHaveBeenCalledWith(
+          fakeProject,
           'myorg',
           expect.objectContaining({})
         );
@@ -251,11 +278,9 @@ describe('org:resources:push', () => {
       .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
       .command(['org:resources:push'])
       .it('should set a 60 seconds wait', () => {
-        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
-          normalize(join('path', 'to', 'resources.zip')),
-          'default-org',
-          {wait: 60}
-        );
+        expect(
+          mockedSnapshotFactory.createSnapshotFromProject
+        ).toHaveBeenCalledWith(fakeProject, 'default-org', {wait: 60});
       });
 
     test
@@ -264,11 +289,9 @@ describe('org:resources:push', () => {
       .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
       .command(['org:resources:push', '-w', '99'])
       .it('should set a 99 seconds wait', () => {
-        expect(mockedSnapshotFactory.createFromZip).toHaveBeenCalledWith(
-          normalize(join('path', 'to', 'resources.zip')),
-          'default-org',
-          {wait: 99}
-        );
+        expect(
+          mockedSnapshotFactory.createSnapshotFromProject
+        ).toHaveBeenCalledWith(fakeProject, 'default-org', {wait: 99});
       });
 
     test

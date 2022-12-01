@@ -1,13 +1,12 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Flags} from '@oclif/core';
-import {startSpinner} from '@coveo/cli-commons/utils/ux';
+import {formatOrgId, startSpinner} from '@coveo/cli-commons/utils/ux';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
 } from '@coveo/cli-commons/preconditions/index';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {bold} from 'chalk';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {
   dryRun,
@@ -34,6 +33,7 @@ import {
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
+import {Example} from '@oclif/core/lib/interfaces';
 
 export default class Push extends CLICommand {
   public static description =
@@ -51,6 +51,27 @@ export default class Push extends CLICommand {
       required: false,
     }),
   };
+
+  public static examples: Example[] = [
+    {
+      command: 'coveo org:resources:push',
+      description:
+        'Preview, validate and deploy resources to the organization in which you are authenticated',
+    },
+    {
+      command: 'coveo org:resources:push --organization myorgid',
+      description:
+        'Preview, validate and deploy resources to the organization whose ID is "myorgid"',
+    },
+    {
+      command: 'coveo org:resources:push --previewLevel none',
+      description: 'Validate and deploy resources without displaying a preview',
+    },
+    {
+      command: 'coveo org:resources:push --deleteMissingResources',
+      description: `Preview, validate and deploy resources, but also delete from the organization all the resources that are not available inside the "${Project.resourceFolderName}/" directory`,
+    },
+  ];
 
   @Trackable()
   @Preconditions(
@@ -131,7 +152,7 @@ export default class Push extends CLICommand {
   private async askForConfirmation(): Promise<boolean> {
     const {flags} = await this.parse(Push);
     const target = getTargetOrg(this.configuration, flags.organization);
-    const question = `\nWould you like to apply the snapshot to the organization ${bold.cyan(
+    const question = `\nWould you like to apply the snapshot to the organization ${formatOrgId(
       target
     )}? (y/n)`;
     return confirmWithAnalytics(question, 'snapshot apply');

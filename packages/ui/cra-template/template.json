@@ -1,0 +1,40 @@
+{
+  "package": {
+    "dependencies": {
+      "@coveo/headless": "latest",
+      "@coveo/search-token-server": "latest",
+      "@mui/material": "5.6.0",
+      "@emotion/react": "11.9.0",
+      "@emotion/styled": "11.8.1",
+      "concurrently": "^5.3.0",
+      "dotenv": "^8.2.0",
+      "get-port": "^5.1.1",
+      "typescript": "^4.1.2",
+      "react": "18.0.0",
+      "react-dom": "18.0.0",
+      "react-router-dom": "6.3.0"
+    },
+    "devDependencies": {
+      "@testing-library/jest-dom": "5.16.3",
+      "@testing-library/react": "12.1.4",
+      "@testing-library/user-event": "^13.5.0",
+      "@types/jest": "27.4.1",
+      "@types/node": "18.11.9",
+      "@types/react": "17.0.43",
+      "@types/react-dom": "17.0.14",
+      "@types/react-router-dom": "5.3.3"
+    },
+    "eslintConfig": {
+      "extends": ["react-app", "react-app/jest"]
+    },
+    "scripts": {
+      "prestart": "npm run setup-server && npm run setup-cleanup",
+      "setup-server": "node ./scripts/setup-server.js",
+      "setup-env": "node ./scripts/setup-env.js",
+      "setup-cleanup": "node ./scripts/clean-up.js",
+      "start-server": "node ./scripts/start-server.js",
+      "allocate-port": "node ./scripts/port-allocator.mjs",
+      "start": "npm run allocate-port && concurrently --raw \"npm run start-server\" \"react-scripts start\""
+    }
+  }
+}

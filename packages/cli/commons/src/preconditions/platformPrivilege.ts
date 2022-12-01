@@ -1,4 +1,4 @@
-import {PrivilegeModel} from '@coveord/platform-client';
+import {PrivilegeModel} from '@coveo/platform-client';
 
 export interface PlatformPrivilege {
   models: PrivilegeModel[];

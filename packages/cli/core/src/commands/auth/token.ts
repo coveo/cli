@@ -3,9 +3,10 @@ import {Flags} from '@oclif/core';
 import {Config} from '@coveo/cli-commons/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {PlatformEnvironment} from '@coveo/cli-commons/platform/environment';
-import {Region} from '@coveord/platform-client';
+import {Region} from '@coveo/platform-client';
 import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
+import {formatOrgId} from '@coveo/cli-commons/utils/ux';
 
 export default class Token extends CLICommand {
   private configuration!: Config;
@@ -42,7 +43,7 @@ export default class Token extends CLICommand {
     Close your browser to continue.
 
     You are currently logged in:
-    Organization: ${cfg.organization}
+    Organization: ${formatOrgId(cfg.organization)}
     Region: ${cfg.region}
     Environment: ${cfg.environment}
     Run auth:login --help to see the available options to log in to a different organization, region, or environment.

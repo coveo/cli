@@ -3,7 +3,7 @@ import {Identify} from '@amplitude/identify';
 import {machineId} from 'node-machine-id';
 import {createHash} from 'crypto';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
-import PlatformClient from '@coveord/platform-client';
+import PlatformClient from '@coveo/platform-client';
 import {camelToSnakeCase} from '../utils/string';
 import type {NodeClient} from '@amplitude/node';
 import globalConfig from '../config/globalConfig';
@@ -73,9 +73,13 @@ export class Identifier {
     };
   }
 
+  private isEmailInternal(email: string) {
+    return /@(?:coveo|devcoveo\.onmicrosoft)\.com$/.test(email);
+  }
+
   private async getUserInfo(platformClient: PlatformClient) {
     const {email} = await platformClient.user.get();
-    const isInternalUser = email.match(/@coveo\.com$/) !== null;
+    const isInternalUser = this.isEmailInternal(email);
 
     return {
       userId: isInternalUser ? email : this.hash(email),

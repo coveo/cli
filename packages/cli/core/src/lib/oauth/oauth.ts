@@ -5,7 +5,7 @@ import {
   PlatformEnvironment,
   platformUrl,
 } from '@coveo/cli-commons/platform/environment';
-import {Region} from '@coveord/platform-client';
+import {Region} from '@coveo/platform-client';
 import {randomBytes} from 'crypto';
 import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
 import {OAuthClientServer} from './oauthClientServer';

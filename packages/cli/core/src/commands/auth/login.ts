@@ -4,9 +4,11 @@ import {Config} from '@coveo/cli-commons/config/config';
 import {OAuth} from '../../lib/oauth/oauth';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {PlatformEnvironment} from '@coveo/cli-commons/platform/environment';
-import {Region} from '@coveord/platform-client';
+import {Region} from '@coveo/platform-client';
 import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
+import dedent from 'ts-dedent';
+import {formatOrgId} from '@coveo/cli-commons/utils/ux';
 
 export default class Login extends CLICommand {
   private configuration!: Config;
@@ -33,21 +35,35 @@ export default class Login extends CLICommand {
     await this.persistRegionAndEnvironment();
     await this.verifyOrganization();
     await this.persistOrganization();
-    this.feedbackOnSuccessfulLogin();
+    await this.feedbackOnSuccessfulLogin();
   }
 
-  private feedbackOnSuccessfulLogin() {
+  private async feedbackOnSuccessfulLogin() {
     const cfg = this.configuration.get();
     this.log(`
     Successfully logged in!
     Close your browser to continue.
 
     You are currently logged in:
-    Organization: ${cfg.organization}
+    Organization: ${formatOrgId(cfg.organization)}
     Region: ${cfg.region}
     Environment: ${cfg.environment}
-    Run auth:login --help to see the available options to log in to a different organization, region, or environment.
     `);
+    const hasOrgFlag = Boolean((await this.parse(Login)).flags.organization);
+    this.log(this.getHowToChangeOrgMessage(hasOrgFlag));
+  }
+
+  private getHowToChangeOrgMessage(hasOrgFlag: boolean) {
+    const runAuthLoginMessage =
+      'Run coveo auth:login --help to see the available options to log in to a different organization, region, or environment.';
+
+    return hasOrgFlag
+      ? dedent`
+        To change organization, either:
+          • ${runAuthLoginMessage}
+          • Run coveo config:set -o=theOtherOrg to run the next commands against theOtherOrg.
+        `
+      : `To change organization, ${runAuthLoginMessage.toLowerCase()}`;
   }
 
   private async loginAndPersistToken() {
@@ -78,7 +94,7 @@ export default class Login extends CLICommand {
 
     const firstOrgAvailable = await this.pickFirstAvailableOrganization();
     if (firstOrgAvailable) {
-      cfg.set('organization', firstOrgAvailable as string);
+      cfg.set('organization', firstOrgAvailable);
       return;
     }
 
@@ -100,7 +116,9 @@ export default class Login extends CLICommand {
       );
       if (!hasAccess) {
         this.error(
-          `You either don't have access to organization ${flags.organization}, or it doesn't exist.`
+          `You either don't have access to organization ${formatOrgId(
+            flags.organization
+          )}, or it doesn't exist.`
         );
       }
     }

@@ -1,9 +1,9 @@
 import type {
   ResourceSnapshotsReportModel,
   ResourceSnapshotType,
-} from '@coveord/platform-client';
-import {existsSync, mkdirSync, readdirSync, rmSync} from 'fs';
-import {join, relative, resolve} from 'path';
+} from '@coveo/platform-client';
+import {existsSync, mkdirSync, readdirSync, rmSync} from 'node:fs';
+import {join, relative, resolve} from 'node:path';
 import {CliUx} from '@oclif/core';
 import {Project} from '../../project/project';
 import {spawnProcess, spawnProcessOutput} from '../../utils/process';
@@ -13,9 +13,8 @@ import {Dirent} from 'fs';
 import {recursiveDirectoryDiff} from './filesDiffProcessor';
 import {DotFolder} from '../../project/dotFolder';
 import {cwd} from 'process';
-import {green} from 'chalk';
 import {buildResourcesToExport} from '../pullModel/validation/model';
-import {startSpinner} from '@coveo/cli-commons/utils/ux';
+import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
 
 export class ExpandedPreviewer {
   private static readonly previewDirectoryName = 'preview';
@@ -56,7 +55,7 @@ export class ExpandedPreviewer {
     await this.initPreviewDirectory(dirPath, project);
     await this.applySnapshotToPreview(dirPath);
     const commitHash = await this.getCommitHash(dirPath);
-
+    stopSpinner({success: true});
     CliUx.ux.info(dedent`
 
     A Git repository representing the modification has been created here:

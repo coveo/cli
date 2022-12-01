@@ -1,5 +1,5 @@
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
-import {getFakeCommand} from '@coveo/cli-commons-dev/testUtils/utils';
+import {getFakeCommand} from '../utils/getFakeCommand';
 import {Trackable} from './trackable';
 
 describe('trackable', () => {
@@ -22,6 +22,7 @@ describe('trackable', () => {
       };
       const fakeCommand = getFakeCommand({
         id: 'foo:bar',
+        identifier: 'foo:bar',
         config: mockedConfig,
         parse: jest.fn().mockReturnValue({flags, args}),
       });

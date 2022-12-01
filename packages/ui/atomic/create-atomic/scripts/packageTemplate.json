@@ -1,0 +1,22 @@
+{
+  "name": "{{project}}",
+  "description": "{{titleCase project}} project",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.js",
+  "types": "dist/types/index.d.ts",
+  "collection": "dist/collection/collection-manifest.json",
+  "collection:main": "dist/index.js",
+  "scripts": {
+    "setup-lambda": "node ./scripts/setup-lambda.mjs",
+    "setup-cleanup": "node ./scripts/clean-up.js",
+    "start": "node start-netlify.mjs",
+    "build": "stencil build",
+    "dev:live": "npm run site:link && node start-netlify.mjs --live",
+    "site:variables": "netlify env:import .env",
+    "site:init": "netlify init && npm run site:variables",
+    "site:deploy": "npm run site:link && npm run build && npm run site:variables && netlify deploy --prod --open",
+    "postinstall": "npm run setup-lambda && npm run setup-cleanup && prettier --write . --loglevel warn"
+  }
+}

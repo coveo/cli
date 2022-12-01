@@ -1,12 +1,8 @@
-import {
-  UploadBatchCallbackData,
-  CatalogSource,
-  BuiltInTransformers,
-} from '@coveo/push-api-client';
+import {CatalogSource, BuiltInTransformers} from '@coveo/push-api-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Flags} from '@oclif/core';
 import {startSpinner} from '@coveo/cli-commons/utils/ux';
-import {green, bold} from 'chalk';
+import {bold} from 'chalk';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
@@ -25,10 +21,10 @@ import {
   withNormalizeInvalidFields,
 } from '../../../lib/commonFlags';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {errorMessage, successMessage} from '../../../lib/userFeedback';
 import {getFileNames} from '../../../lib/getFileNames';
 import dedent from 'ts-dedent';
 import {formatErrorMessage} from '../../../lib/addCommon';
+import {AddDisplay} from '../../../lib/addDisplay';
 
 const fullUploadDescription = `Controls the way your items are added to your catalog source.
 
@@ -71,6 +67,8 @@ export default class SourceCatalogAdd extends CLICommand {
     },
   ];
 
+  private display = new AddDisplay();
+
   @Trackable()
   @Preconditions(
     IsAuthenticated(),
@@ -86,7 +84,7 @@ export default class SourceCatalogAdd extends CLICommand {
     if (
       !flags.fullUpload &&
       !flags.skipFullUploadCheck &&
-      (await this.sourceIsEmpty(args.sourceId))
+      (await this.isSourceEmpty(args.sourceId))
     ) {
       this.error(dedent`No items detected for this source at the moment.
         As a best practice, we recommend doing a full catalog upload by appending --fullUpload to your command.
@@ -103,7 +101,7 @@ export default class SourceCatalogAdd extends CLICommand {
       region,
     });
 
-    const fileNames = await getFileNames(flags);
+    const fileNames = getFileNames(flags, SourceCatalogAdd.id);
     const options = {
       maxConcurrent: flags.maxConcurrent,
       createFields: flags.createMissingFields,
@@ -117,8 +115,8 @@ export default class SourceCatalogAdd extends CLICommand {
       : source.batchUpdateDocumentsFromFiles.bind(source);
 
     await batchOperation(args.sourceId, fileNames, options)
-      .onBatchUpload((data) => this.successMessageOnAdd(data))
-      .onBatchError((data) => this.errorMessageOnAdd(data))
+      .onBatchUpload((data) => this.display.successMessageOnAdd(data))
+      .onBatchError((err, data) => this.display.errorMessageOnAdd(err, data))
       .batch();
   }
 
@@ -127,36 +125,17 @@ export default class SourceCatalogAdd extends CLICommand {
     return super.catch(err);
   }
 
-  private async sourceIsEmpty(sourceId: string): Promise<boolean> {
+  protected async finally(_?: Error) {
+    this.display.printSummary();
+    await super.finally(_);
+  }
+
+  private async isSourceEmpty(sourceId: string): Promise<boolean> {
     startSpinner('Checking source status');
     const authenticatedClient = new AuthenticatedClient();
     const platformClient = await authenticatedClient.getClient();
     const {information} = await platformClient.source.get(sourceId);
 
     return information?.numberOfDocuments === 0;
-  }
-
-  private successMessageOnAdd({batch, files, res}: UploadBatchCallbackData) {
-    // Display the first 5 files (from the list of all files) being processed for end user feedback.
-    // Don't want to clutter the output too much if the list is very long.
-    const numAdded = batch.length;
-    let fileNames = files.slice(0, 5).join(', ');
-    if (files.length > 5) {
-      fileNames += ` and ${files.length - 5} more ...`;
-    }
-
-    return successMessage(
-      this,
-      `Success: ${green(numAdded)} document${
-        numAdded > 1 ? 's' : ''
-      } accepted by the API from ${green(fileNames)}.`,
-      res
-    );
-  }
-
-  private errorMessageOnAdd(e: unknown) {
-    return errorMessage(this, 'Error while trying to add document.', e, {
-      exit: true,
-    });
   }
 }

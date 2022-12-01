@@ -6,15 +6,16 @@ jest.mock('../../../lib/utils/process');
 jest.mock('../../../lib/oauth/oauth');
 jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
+jest.mock('@coveo/cli-commons/preconditions/authenticated');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
-jest.mock('@coveord/platform-client');
+jest.mock('@coveo/platform-client');
 
 import {test} from '@oclif/test';
 import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import PlatformClient from '@coveord/platform-client';
+import PlatformClient from '@coveo/platform-client';
 import {Config} from '@coveo/cli-commons/config/config';
 import {
   IsNpmVersionInRange,
@@ -23,32 +24,40 @@ import {
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {IsNgVersionInRange} from '../../../lib/decorators/preconditions/ng';
 import {configurationMock} from '../../../__stub__/configuration';
-import {mockPreconditions} from '../../../__test__/preconditionUtils';
-import {HasNecessaryCoveoPrivileges} from '@coveo/cli-commons/preconditions/index';
+import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
+import {
+  HasNecessaryCoveoPrivileges,
+  IsAuthenticated,
+} from '@coveo/cli-commons/preconditions/index';
 
 describe('ui:create:angular', () => {
   const mockedConfig = jest.mocked(Config);
-  const mockedSpawnProcess = jest.mocked(spawnProcess, true);
+  const mockedSpawnProcess = jest.mocked(spawnProcess);
   const mockedPlatformClient = jest.mocked(PlatformClient);
   const mockedGetPackageVersion = jest.mocked(getPackageVersion);
   const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
-  const mockedIsNpmVersionInRange = jest.mocked(IsNpmVersionInRange, true);
-  const mockedIsNodeVersionInRange = jest.mocked(IsNodeVersionInRange, true);
-  const mockedIsNgInstalled = jest.mocked(IsNgVersionInRange, true);
-  const mockedApiKeyPrivilege = jest.mocked(HasNecessaryCoveoPrivileges, true);
+  const mockedIsNpmVersionInRange = jest.mocked(IsNpmVersionInRange);
+  const mockedIsNodeVersionInRange = jest.mocked(IsNodeVersionInRange);
+  const mockedIsNgInstalled = jest.mocked(IsNgVersionInRange);
+  const mockedApiKeyPrivilege = jest.mocked(HasNecessaryCoveoPrivileges);
+  const mockedIsAuthenticated = jest.mocked(IsAuthenticated);
   const mockedCreateImpersonateApiKey = jest.fn();
+
   const preconditionStatus = {
     node: true,
     npm: true,
     ng: true,
     apiKey: true,
+    authentication: true,
   };
+
   const doMockPreconditions = function () {
     const mockedPreconditions = mockPreconditions(preconditionStatus);
     mockedIsNodeVersionInRange.mockReturnValue(mockedPreconditions.node);
     mockedIsNpmVersionInRange.mockReturnValue(mockedPreconditions.npm);
     mockedIsNgInstalled.mockReturnValue(mockedPreconditions.ng);
     mockedApiKeyPrivilege.mockReturnValue(mockedPreconditions.apiKey);
+    mockedIsAuthenticated.mockReturnValue(mockedPreconditions.authentication);
   };
 
   const doMockSpawnProcess = () => {

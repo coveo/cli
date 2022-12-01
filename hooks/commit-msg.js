@@ -12,11 +12,15 @@ const urlBaseRegex = /https:\/\/coveord\.atlassian\.net\/browse/;
 const projectAcronym = 'CDX';
 
 let issueNumber;
-const branchName = childProcess
-  .execSync('git symbolic-ref --short HEAD', {encoding: 'utf8'})
+let branchName = childProcess
+  .execSync('git rev-parse --symbolic-full-name HEAD', {encoding: 'utf8'})
   .trim();
 const issueRegex = new RegExp(projectAcronym + '-[\\d]+', 'i');
-
+if (branchName === 'HEAD') {
+  process.exit();
+} else {
+  branchName = branchName.split('refs/heads/')[1];
+}
 const match = branchName.match(issueRegex);
 if (match) {
   issueNumber = match[0].toUpperCase();

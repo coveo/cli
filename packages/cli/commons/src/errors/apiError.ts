@@ -3,9 +3,9 @@ import {validate} from 'jsonschema';
 import {CLIBaseError} from './cliBaseError';
 
 export interface APIErrorResponse {
-  message: string;
-  errorCode: string;
-  requestID: string;
+  message?: string;
+  errorCode?: string;
+  requestID?: string;
 }
 
 export interface AxiosErrorFromAPI {
@@ -68,12 +68,17 @@ export class APIError extends CLIBaseError {
     if (status) {
       messageParts.push(`Status code: ${status}`);
     }
-    this.message = [
-      ...messageParts,
-      `Error code: ${red(errorCode)}`,
-      `Message: ${red(message)}`,
-      `Request ID: ${red(requestID)}`,
-    ].join('\n');
+    if (errorCode) {
+      messageParts.push(`Error code: ${red(errorCode)}`);
+    }
+    if (message) {
+      messageParts.push(`Message: ${red(message)}`);
+    }
+    if (requestID) {
+      messageParts.push(`Request ID: ${red(requestID)}`);
+    }
+
+    this.message = messageParts.join('\n');
   }
 
   private isFromAxios(

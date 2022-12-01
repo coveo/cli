@@ -1,3 +1,73 @@
+# 2.1.0 (2022-11-29)
+
+### Bug Fixes
+
+- abort pending requests ([#1034](https://github.com/coveo/cli/issues/1034)) ([dba4502](https://github.com/coveo/cli/commits/dba450201295ec240dd9dfeae7f70a94fa9f959d))
+- **cli:** ensure to stop action before calling more prints ([#1030](https://github.com/coveo/cli/issues/1030)) ([7efb42d](https://github.com/coveo/cli/commits/7efb42dd9fcaee793bb977c99b49d0759f9be7bb))
+- **cli:** fix readme generation ([#1033](https://github.com/coveo/cli/issues/1033)) ([3fedfbc](https://github.com/coveo/cli/commits/3fedfbc5a0079f0d015add9fd96a8e844380158c))
+- **cli:** print properly the command name. ([d4ec642](https://github.com/coveo/cli/commits/d4ec642c698484f9ea5f7f44dd84d638a143cdde))
+- **deps:** update all dependencies j:cdx-227 ([#1032](https://github.com/coveo/cli/issues/1032)) ([e1ccdeb](https://github.com/coveo/cli/commits/e1ccdebcd1908b750df365961187013bc025ebdf))
+- **deps:** update all dependencies j:cdx-227 ([#1036](https://github.com/coveo/cli/issues/1036)) ([1439a40](https://github.com/coveo/cli/commits/1439a406166f7342e1d91481e81de6c63a7b15f1))
+- **deps:** update all dependencies to v15 j:cdx-227 (major) ([#1035](https://github.com/coveo/cli/issues/1035)) ([a99acd9](https://github.com/coveo/cli/commits/a99acd91579280f44decff15d817fbe377abae50))
+
+### Features
+
+- **atomic:** reduce disk footprint of projects ([#1044](https://github.com/coveo/cli/issues/1044)) ([985ba50](https://github.com/coveo/cli/commits/985ba50692cde3523d370051b699624639ebd928))
+
+# 2.0.0 (2022-11-15)
+
+### Bug Fixes
+
+- **cli:** support prerelease for ui package version resolution ([#1029](https://github.com/coveo/cli/issues/1029)) ([06d4846](https://github.com/coveo/cli/commits/06d4846b3a13240b46c72adee67a340ce9275dd9))
+- **deps:** update all dependencies j:cdx-227 ([#1015](https://github.com/coveo/cli/issues/1015)) ([0b6a70b](https://github.com/coveo/cli/commits/0b6a70b0c1539648ea3a24eefc8fb01b5b7173db))
+- **deps:** update all dependencies j:cdx-227 ([#1022](https://github.com/coveo/cli/issues/1022)) ([e181d70](https://github.com/coveo/cli/commits/e181d700e19445bf912b3ecd370f7eabdb777d71))
+- **deps:** update all dependencies j:cdx-227 ([#1026](https://github.com/coveo/cli/issues/1026)) ([c6ca8dd](https://github.com/coveo/cli/commits/c6ca8ddf8dde39eb69cd99da3e9d897db873e4c6))
+
+- feat(cli)!: migrate to vue3 ([eacd667](https://github.com/coveo/cli/commits/eacd6677e319d67074b15e8f02bcdb41975e8635))
+
+### Features
+
+- add examples on `org:resources:*` commands ([#997](https://github.com/coveo/cli/issues/997)) ([67d72b9](https://github.com/coveo/cli/commits/67d72b909cd6d76b86344a0cf1299622c4743727))
+- update to node 18 ([#993](https://github.com/coveo/cli/issues/993)) ([335a026](https://github.com/coveo/cli/commits/335a026e0cc0af9bdef13390e512540ebc337d22))
+
+### BREAKING CHANGES
+
+- `ui:create:vue` command now scaffold a vue3+vite project
+
+https://coveord.atlassian.net/browse/CDX-813
+
+## 1.37.2 (2022-10-18)
+
+## 1.37.1 (2022-10-14)
+
+# 1.37.0 (2022-10-13)
+
+### Bug Fixes
+
+- adjust crafted Admin UI url ([#975](https://github.com/coveo/cli/issues/975)) ([70fb7a4](https://github.com/coveo/cli/commits/70fb7a46f56e383c7121f080a5639b058fda5334))
+- ensure flags are applied to `org:resources:list` command ([#977](https://github.com/coveo/cli/issues/977)) ([7c011b0](https://github.com/coveo/cli/commits/7c011b0bc645023bf1c18c077c3e1a30b2f328a4))
+
+### Features
+
+- **cli-commons/cli-plugin-source/cli:** standardize orgId printing ([#951](https://github.com/coveo/cli/issues/951)) ([f26bfda](https://github.com/coveo/cli/commits/f26bfda01c7d4dd5d300264a5710da33e02856ff))
+- **cli:** ensure user is webauth-ed for ui cmds ([#963](https://github.com/coveo/cli/issues/963)) ([2a0840c](https://github.com/coveo/cli/commits/2a0840c912a3c965a40ebe37362624af8222c2e7))
+- **cli:** improve auth:login final feedback ([#961](https://github.com/coveo/cli/issues/961)) ([ae0c36e](https://github.com/coveo/cli/commits/ae0c36e55ef95c0ee5f64b75eb090e3a71a7808e))
+- **cli:** use only b when pull is completed ([be54937](https://github.com/coveo/cli/commits/be54937cd412b62332dedced7ff838722b0062d1))
+- handle missing domain privileges ([#953](https://github.com/coveo/cli/issues/953)) ([2ca1a80](https://github.com/coveo/cli/commits/2ca1a8014672e96e369b34a19be630f9d525b29b))
+- return resource types within project ([#952](https://github.com/coveo/cli/issues/952)) ([7b2facf](https://github.com/coveo/cli/commits/7b2facfff9df52de508a5791c080301937a79c40))
+
+# 1.36.0 (2022-09-21)
+
+### Bug Fixes
+
+- **deps:** update all dependencies j:cdx-227 ([#897](https://github.com/coveo/cli/issues/897)) ([c7c026e](https://github.com/coveo/cli/commits/c7c026e4ebf8ff8c4ad36352ad69d086ceabc394))
+- **deps:** update all dependencies j:cdx-227 ([#933](https://github.com/coveo/cli/issues/933)) ([31e5658](https://github.com/coveo/cli/commits/31e5658f05c8aa2f45b9c6f0da716d624eb2b9da))
+- **deps:** update all dependencies j:cdx-227 ([#940](https://github.com/coveo/cli/issues/940)) ([dbc402e](https://github.com/coveo/cli/commits/dbc402e2952cbeb55457c49a7f01b44e646b373c))
+
+### Features
+
+- standardize CLI commands and errors ([#930](https://github.com/coveo/cli/issues/930)) ([d247ab1](https://github.com/coveo/cli/commits/d247ab1dbe541d65821971924e9161578483fedc))
+
 ## 1.35.10 (2022-09-07)
 
 ### Bug Fixes

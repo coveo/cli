@@ -1,6 +1,6 @@
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 
-import {Region, ResourceSnapshotsReportType} from '@coveord/platform-client';
+import {Region, ResourceSnapshotsReportType} from '@coveo/platform-client';
 import {getDummySnapshotModel} from '../../__stub__/resourceSnapshotsModel';
 import {getSuccessReport} from '../../__stub__/resourceSnapshotsReportModel';
 import {Configuration} from '@coveo/cli-commons/config/config';
@@ -51,7 +51,7 @@ describe('SnapshotUrlBuilder', () => {
 
   fancyIt()('#createSnapshotPage should return the snapshot URL', () => {
     expect(snapshotUrlBuilder.getSnapshotApplyPage(snapshot)).toEqual(
-      'https://platform.cloud.coveo.com/admin/#foo/organization/resource-snapshots/my-snapshot/apply'
+      'https://platform.cloud.coveo.com/admin/#/foo/organization/resource-snapshots/my-snapshot/apply'
     );
   });
 });

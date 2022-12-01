@@ -1,4 +1,4 @@
-import {SourceType} from '@coveord/platform-client';
+import {SourceType} from '@coveo/platform-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {green} from 'chalk';
 import dedent from 'ts-dedent';
@@ -33,6 +33,7 @@ export default class SourceCatalogNew extends CLICommand {
     IsAuthenticated(),
     HasNecessaryCoveoPrivileges(writeSourceContentPrivilege)
   )
+  //TODO: Refactor with push
   public async run() {
     const {flags, args} = await this.parse(SourceCatalogNew);
     const authenticatedClient = new AuthenticatedClient();

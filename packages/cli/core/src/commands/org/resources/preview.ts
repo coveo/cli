@@ -35,7 +35,8 @@ import {
   getErrorReportHandler,
 } from '../../../lib/snapshot/snapshotCommon';
 export default class Preview extends CLICommand {
-  public static description = 'Preview resource updates';
+  public static description =
+    'Preview the changes that running `coveo org:resources:push` would cause';
 
   public static flags = {
     ...wait(),
@@ -51,6 +52,12 @@ export default class Preview extends CLICommand {
       required: false,
     }),
   };
+
+  public static examples = [
+    'coveo org:resources:preview',
+    'coveo org:resources:preview -o=myOrgId',
+    'coveo org:resources:preview -o=myOrgId -d',
+  ];
 
   @Trackable()
   @Preconditions(

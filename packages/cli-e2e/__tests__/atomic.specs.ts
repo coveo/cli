@@ -9,11 +9,9 @@ import {npm} from '../utils/npm';
 import {jwtTokenPattern} from '../utils/matcher';
 import {EOL} from 'os';
 import {DummyServer} from '../utils/server';
-import {loginWithApiKey} from '../utils/login';
 import {join, resolve} from 'path';
 import {hashElement} from 'folder-hash';
-import {renameSync, rmSync} from 'fs';
-import retry from 'async-retry';
+import {existsSync, symlinkSync, unlinkSync} from 'fs';
 
 interface BuildAppOptions {
   id: string;
@@ -27,18 +25,16 @@ describe('ui:create:atomic', () => {
   const tokenServerEndpoint = 'http://localhost:8888/.netlify/functions/token';
   const searchInterfaceSelector = 'atomic-search-interface';
   let normalizedProjectDir = '';
-
-  const normalizeProjectDirectory = async (
-    buildAppOptions: BuildAppOptions
-  ) => {
-    const originalProjectDir = resolve(
+  let originalProjectDir = '';
+  const normalizeProjectDirectory = (buildAppOptions: BuildAppOptions) => {
+    originalProjectDir = resolve(
       join(getProjectPath(getProjectName(buildAppOptions.id)))
     );
     normalizedProjectDir = join(originalProjectDir, '..', 'normalizedDir');
-    rmSync(normalizedProjectDir, {recursive: true, force: true});
-    await retry(() => {
-      renameSync(originalProjectDir, normalizedProjectDir);
-    });
+    if (existsSync(normalizedProjectDir)) {
+      unlinkSync(normalizedProjectDir);
+    }
+    symlinkSync(originalProjectDir, normalizedProjectDir, 'junction');
   };
 
   const waitForAppRunning = (appTerminal: Terminal) =>
@@ -66,13 +62,13 @@ describe('ui:create:atomic', () => {
     options: BuildAppOptions,
     buildTerminal: Terminal
   ) => {
-    const osSpecificSelector = process.platform === 'win32' ? '>' : '\u276f'; //❯
+    const selector = '\u276f'; //❯
     const anotherPageSelectedMatcher = new RegExp(
-      `${osSpecificSelector} (?!${options.pageName})`,
+      `${selector} (?!${options.pageName})`,
       'gm'
     );
     const expectedPageSelectedMatcher = new RegExp(
-      `${osSpecificSelector} ${options.pageName}`,
+      `${selector} ${options.pageName}`,
       'gm'
     );
     buildTerminal
@@ -151,7 +147,7 @@ describe('ui:create:atomic', () => {
       args.shift()!,
       args,
       {
-        cwd: normalizedProjectDir,
+        cwd: originalProjectDir,
       },
       processManager,
       `${debugName}-${options.id}`
@@ -208,11 +204,6 @@ describe('ui:create:atomic', () => {
       let page: Page;
 
       beforeAll(async () => {
-        await loginWithApiKey(
-          process.env.PLATFORM_API_KEY!,
-          process.env.ORG_ID!,
-          process.env.PLATFORM_ENV!
-        );
         const processManager = new ProcessManager();
         processManagers.push(processManager);
         if (!skipBrowser) {
@@ -221,7 +212,7 @@ describe('ui:create:atomic', () => {
         stderr = (await buildApplication(processManager, buildAppOptions))
           .output;
         await processManager.killAllProcesses();
-        await normalizeProjectDirectory(buildAppOptions);
+        normalizeProjectDirectory(buildAppOptions);
       }, 15 * 60e3);
 
       beforeEach(async () => {
@@ -230,7 +221,7 @@ describe('ui:create:atomic', () => {
         if (!skipBrowser) {
           page = await openNewPage(browser, page);
         }
-      });
+      }, 30e3);
 
       afterEach(async () => {
         if (!skipBrowser) {
@@ -319,7 +310,7 @@ describe('ui:create:atomic', () => {
           afterAll(async () => {
             await serverProcessManager.killAllProcesses();
           }, 5 * 30e3);
-
+          //TODO: https://coveord.atlassian.net/browse/CDX-1236
           it.skip('should not contain console errors nor warnings', async () => {
             await page.goto(searchPageEndpoint, {
               waitUntil: 'networkidle2',

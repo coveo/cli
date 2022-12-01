@@ -13,7 +13,7 @@ import {recordable} from '../../../lib/utils/record';
 import {organization} from '../../../lib/flags/snapshotCommonFlags';
 
 export default class List extends CLICommand {
-  public static description = 'List available snapshots from an organization';
+  public static description = 'List available Snapshots in an organization';
 
   public static flags = {
     ...CliUx.ux.table.flags(),
@@ -21,6 +21,8 @@ export default class List extends CLICommand {
       'The unique identifier of the organization containing the snapshots.'
     ),
   };
+
+  public static examples = ['coveo org:resources:list -o=myOrgId'];
 
   @Trackable()
   @Preconditions(IsAuthenticated())
@@ -40,18 +42,22 @@ export default class List extends CLICommand {
       return;
     }
 
-    CliUx.ux.table(recordable(snapshots), {
-      id: {},
-      createdBy: {
-        header: 'Created by',
+    CliUx.ux.table(
+      recordable(snapshots),
+      {
+        id: {},
+        createdBy: {
+          header: 'Created by',
+        },
+        createdDate: {
+          get: (row) => row.createdDate && new Date(row.createdDate),
+          header: 'Created date',
+        },
+        targetId: {header: 'Target id'},
+        developerNote: {header: 'Developer note'},
       },
-      createdDate: {
-        get: (row) => row.createdDate && new Date(row.createdDate),
-        header: 'Created date',
-      },
-      targetId: {header: 'Target id'},
-      developerNote: {header: 'Developer note'},
-    });
+      {...flags}
+    );
   }
 
   private get configuration() {

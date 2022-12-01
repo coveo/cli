@@ -1,4 +1,4 @@
-import {SourceType} from '@coveord/platform-client';
+import {SourceType} from '@coveo/platform-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {green} from 'chalk';
 import dedent from 'ts-dedent';
@@ -33,6 +33,7 @@ export default class SourcePushNew extends CLICommand {
     IsAuthenticated(),
     HasNecessaryCoveoPrivileges(writeSourceContentPrivilege)
   )
+  //TODO: Code repetition with ../catalog/new.ts , refactor
   public async run() {
     const {flags, args} = await this.parse(SourcePushNew);
     const authenticatedClient = new AuthenticatedClient();

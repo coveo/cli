@@ -6,16 +6,26 @@
 
 <!-- endremovefromdocs -->
 
-## What is it?
+## What Is the Coveo CLI?
 
 The Coveo CLI is a powerful command-line interface (CLI) that interacts with the Coveo platform to facilitate development and build automation.
 Key features include the following:
 
 - Quickly create a [Coveo Headless](https://docs.coveo.com/headless)-powered search page for your Coveo organization, relying on popular frameworks like [Angular](https://angular.io), [React](https://reactjs.org/), and [Vue.js](https://vuejs.org/).
-- Create and manage Coveo [organizations](https://docs.coveo.com/en/2015)
-- Automate deployments between organizations
-- Manage Coveo [Push API](https://docs.coveo.com/en/68) sources
-- Perform [queries](https://docs.coveo.com/en/l25h0358) against a Coveo index
+- Quickly create a [Coveo Atomic](https://docs.coveo.com/atomic)-powered search page for your Coveo organization, with custom component examples and a search token provider.
+- Create and manage Coveo [organizations](https://docs.coveo.com/en/2015).
+- Automate deployments between organizations.
+- Manage Coveo [Push API](https://docs.coveo.com/en/68) sources.
+- Perform [queries](https://docs.coveo.com/en/l25h0358) against a Coveo index.
+
+## When to Use the Coveo CLI?
+
+We recommend the Coveo CLI both to newcomers who are looking for quick scaffolding options and to more seasoned Coveo developers who want to optimize their workflow. With the CLI, developers can get their frontend project started with a single command rather than by copy-pasting examples.
+The CLI also lets you automate deployments on your machine or in your CI/CD pipeline using the `org:resources` commands and/or the `source` commands.
+
+Most if not all of those operations can be done either through the Coveo Administration Console or directly using the Coveo REST APIs.
+The former, while being easy to understand and get started with, can also be a bit cumbersome and time-consuming for repetitive tasks. The CLI lets you avoid this issue by providing single commands that can accomplish the target tasks, and by allowing you to automate and chain commands together easily.
+The REST APIs are on the opposite side of the spectrum: they go straight to the point and avoid any repetition. They can however be quite hard to understand at first and require making numerous and complex requests to different APIs. The CLI can handle most of this complexity for you.
 
 ## Installation
 
@@ -64,8 +74,8 @@ $ coveo --version
 
 ## Getting started
 
-After you install the CLI, you'll typically want to [`login`](https://github.com/coveo/cli/tree/master/packages/cli#coveo-authlogin) to your Coveo Organization.
-You can check out all the available commands [here](https://github.com/coveo/cli/tree/master/packages/cli).
+After you install the CLI, you'll typically want to [`login`](https://github.com/coveo/cli/tree/master/packages/cli/core#coveo-authlogin) to your Coveo Organization.
+You can check out all the available commands [here](https://github.com/coveo/cli/tree/master/packages/cli/core).
 
 <!--
   Add full examples for each use case:

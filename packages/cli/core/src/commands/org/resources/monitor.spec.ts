@@ -6,7 +6,7 @@ jest.mock('../../../lib/snapshot/snapshotReporter');
 jest.mock('../../../lib/snapshot/snapshotFactory');
 
 import {Config} from '@coveo/cli-commons/config/config';
-import {ResourceSnapshotsReportType} from '@coveord/platform-client';
+import {ResourceSnapshotsReportType} from '@coveo/platform-client';
 import {test} from '@oclif/test';
 import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel';
 import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
@@ -14,9 +14,9 @@ import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {formatCliLog} from '../../../__test__/jestSnapshotUtils';
+import {formatCliLog} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
 
-const mockedSnapshotFactory = jest.mocked(SnapshotFactory, true);
+const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
 const mockedConfig = jest.mocked(Config);
 const mockedConfigGet = jest.fn();
 const mockedGetSnapshot = jest.fn();
@@ -28,7 +28,7 @@ const mockedSaveDetailedReport = jest.fn();
 const mockedAreResourcesInError = jest.fn();
 const mockedLatestReport = jest.fn();
 
-const mockedSnapshotReporter = jest.mocked(SnapshotReporter, true);
+const mockedSnapshotReporter = jest.mocked(SnapshotReporter);
 
 const mockSnapshotFactory = () => {
   mockedSnapshotFactory.createFromExistingSnapshot.mockReturnValue(

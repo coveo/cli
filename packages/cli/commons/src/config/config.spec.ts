@@ -26,8 +26,7 @@ const mockedPathExists = jest.mocked(pathExistsSync);
 const mockedCreateFile = jest.mocked(createFileSync);
 const mockedWriteJSON = jest.mocked(writeJSONSync);
 const mockedIncompatibleConfigurationError = jest.mocked(
-  IncompatibleConfigurationError,
-  true
+  IncompatibleConfigurationError
 );
 const mockedReadJSON = jest.mocked(readJSONSync);
 

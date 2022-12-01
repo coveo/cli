@@ -1,12 +1,16 @@
-import type {ResourceSnapshotType} from '@coveord/platform-client';
-import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
+import {ResourceSnapshotType} from '@coveo/platform-client';
+import {
+  formatOrgId,
+  startSpinner,
+  stopSpinner,
+} from '@coveo/cli-commons/utils/ux';
+
 import {Flags} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {readJsonSync} from 'fs-extra';
 import {resolve} from 'path';
 import {cwd} from 'process';
 import dedent from 'ts-dedent';
-import {formatOrgId} from '../../../lib/commonPromptUtils/formater';
 import {Config} from '@coveo/cli-commons/config/config';
 import {
   HasNecessaryCoveoPrivileges,
@@ -40,6 +44,7 @@ import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
+import {Example} from '@oclif/core/lib/interfaces';
 
 const PullCommandStrings = {
   projectOverwriteQuestion: (
@@ -99,6 +104,29 @@ export default class Pull extends CLICommand {
     }),
   };
 
+  public static examples: Example[] = [
+    {
+      command: 'coveo org:resources:pull',
+      description:
+        'Pull all resources from the organization in which you are authenticated',
+    },
+    {
+      command: 'coveo org:resources:pull --organization myorgid --wait 0',
+      description:
+        'Pull all resources from the organization whose ID is "myorgid" and do not timeout',
+    },
+    {
+      command: 'coveo org:resources:pull --model my/snapshot/pull/model.json',
+      description:
+        'Pull only the resources specified in the snapshot pull model',
+    },
+    {
+      command: `coveo org:resources:pull --resourceTypes ${ResourceSnapshotType.queryPipeline} ${ResourceSnapshotType.field},`,
+      description:
+        'Pull all query pipelines and fields available in the organization',
+    },
+  ];
+
   @Trackable()
   @Preconditions(
     IsAuthenticated(),
@@ -119,7 +147,7 @@ export default class Pull extends CLICommand {
     if (await this.shouldDeleteSnapshot()) {
       await snapshot.delete();
     }
-    stopSpinner({message: 'Project updated'});
+    stopSpinner();
   }
 
   private async shouldDeleteSnapshot() {

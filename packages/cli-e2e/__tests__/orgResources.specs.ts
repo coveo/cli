@@ -18,12 +18,13 @@ import {
   writeJsonSync,
   copySync,
 } from 'fs-extra';
-import PlatformClient from '@coveord/platform-client';
+import PlatformClient from '@coveo/platform-client';
 import {getPlatformClient} from '../utils/platform';
 import {getTestOrg} from '../utils/testOrgSetup';
 import {readdirSync} from 'fs';
 import {cwd} from 'process';
 import {EOL} from 'os';
+import retry from 'async-retry';
 config({path: getEnvFilePath()});
 
 describe('org:resources', () => {
@@ -114,18 +115,21 @@ describe('org:resources', () => {
       debugName
     );
 
-    const pullTerminalExitPromise = pullTerminal
+    const pullTerminalExitPromise = async () => {
       // TODO: CDX-744: understand why cannot use process.on('exit')
-      .when(/Project updated/)
-      .on('stderr')
-      .do()
-      .once();
+      await pullTerminal
+        .when(/Updating project with Snapshot/)
+        .on('stderr')
+        .do()
+        .once();
+      await pullTerminal.when(/✔/).on('stderr').do().once();
+    };
 
     await pullTerminal
       .when(isGenericYesNoPrompt)
       .on('stderr')
       .do(answerPrompt(`y${EOL}`))
-      .until(pullTerminalExitPromise);
+      .until(pullTerminalExitPromise());
   };
 
   beforeAll(async () => {
@@ -207,8 +211,10 @@ describe('org:resources', () => {
     const getResourceFolderContent = (projectPath: string) =>
       readdirSync(join(projectPath, 'resources'));
 
-    beforeEach(() => {
-      rmSync(destinationPath, {recursive: true, force: true});
+    beforeEach(async () => {
+      await retry(() => {
+        rmSync(destinationPath, {recursive: true, force: true});
+      });
       ensureDirSync(destinationPath);
     });
 

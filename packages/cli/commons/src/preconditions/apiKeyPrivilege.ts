@@ -1,8 +1,9 @@
 import PlatformClient, {
   PrivilegeEvaluatorModel,
   PrivilegeModel,
-} from '@coveord/platform-client';
-import {Command} from '@oclif/core';
+} from '@coveo/platform-client';
+import {FlagOutput} from '@oclif/core/lib/interfaces';
+import {CLICommand} from '../command/cliCommand';
 import {Config} from '../config/config';
 import globalConfig from '../config/globalConfig';
 import {PreconditionError} from '../errors/preconditionError';
@@ -15,12 +16,12 @@ export function HasNecessaryCoveoPrivileges(
   ...privileges: PlatformPrivilege[]
 ) {
   return async function (
-    this: Command,
-    command: Command
+    this: CLICommand,
+    command: CLICommand
   ): Promise<void | never> {
     const {flags}: {flags: {organization?: string}} = hasGetFlagMethod(this)
       ? {flags: await this.getFlags()}
-      : await this.parse<{organization?: string}, unknown, {}>(command.ctor);
+      : await this.parse<{organization?: string}, FlagOutput, {}>(command.ctor);
     const authenticatedClient = new AuthenticatedClient();
     const client = await authenticatedClient.getClient();
     const {organization: target, anonymous} = await getConfiguration();
@@ -62,7 +63,7 @@ async function getConfiguration() {
   return config.get();
 }
 
-function hasGetFlagMethod(candidate: any): candidate is Command & {
+function hasGetFlagMethod(candidate: any): candidate is CLICommand & {
   getFlags: () => Promise<{organization?: string | undefined}>;
 } {
   return Boolean(candidate?.getFlags);

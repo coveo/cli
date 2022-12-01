@@ -43,4 +43,8 @@ export abstract class CLICommand extends Command {
 
     return super.finally(error);
   }
+
+  public get identifier(): string {
+    return this.ctor.id;
+  }
 }

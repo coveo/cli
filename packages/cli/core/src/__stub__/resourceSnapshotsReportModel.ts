@@ -3,7 +3,8 @@ import {
   ResourceSnapshotsReportResultCode,
   ResourceSnapshotsReportStatus,
   ResourceSnapshotsReportType,
-} from '@coveord/platform-client';
+  SnapshotsReportStages,
+} from '@coveo/platform-client';
 
 export const getReportWithNoProcessedResources = (
   snapshotId: string,
@@ -34,6 +35,13 @@ export const getReportWithNoProcessedResources = (
     },
   },
   resourceOperationResults: {},
+  stagesToExecute: [],
+  startDate: 1,
+  currentStage: {
+    progressType: 'BINARY',
+    progressValue: 2,
+    stage: SnapshotsReportStages.VALIDATING_OPERATIONS,
+  },
 });
 
 export const getReportWithoutChanges = (
@@ -65,6 +73,13 @@ export const getReportWithoutChanges = (
     },
   },
   resourceOperationResults: {},
+  stagesToExecute: [],
+  startDate: 1,
+  currentStage: {
+    progressType: 'BINARY',
+    progressValue: 2,
+    stage: SnapshotsReportStages.VALIDATING_OPERATIONS,
+  },
 });
 
 export const getPendingReport = (
@@ -79,6 +94,13 @@ export const getPendingReport = (
   resultCode: ResourceSnapshotsReportResultCode.Success,
   resourceOperations: {},
   resourceOperationResults: {},
+  stagesToExecute: [],
+  startDate: 1,
+  currentStage: {
+    progressType: 'BINARY',
+    progressValue: 2,
+    stage: SnapshotsReportStages.VALIDATING_OPERATIONS,
+  },
 });
 
 export const getSuccessReport = (
@@ -118,6 +140,13 @@ export const getSuccessReport = (
     },
   },
   resourceOperationResults: {},
+  stagesToExecute: [],
+  startDate: 1,
+  currentStage: {
+    progressType: 'BINARY',
+    progressValue: 2,
+    stage: SnapshotsReportStages.VALIDATING_OPERATIONS,
+  },
 });
 
 export const getErrorReport = (
@@ -165,6 +194,13 @@ export const getErrorReport = (
         fdasf_4VNj5ds5: [buildOperationResultError('fdasf')],
       },
     },
+    stagesToExecute: [],
+    startDate: 1,
+    currentStage: {
+      progressType: 'BINARY',
+      progressValue: 2,
+      stage: SnapshotsReportStages.VALIDATING_OPERATIONS,
+    },
   };
 };
 
@@ -211,6 +247,13 @@ export const getMissingVaultEntryReport = (
         hjkd_4VNj5ds5: [buildInvalidPlaceholderReportOperationResult('hjkd')],
         fdasf_4VNj5ds5: [buildInvalidPlaceholderReportOperationResult('fdasf')],
       },
+    },
+    stagesToExecute: [],
+    startDate: 1,
+    currentStage: {
+      progressType: 'BINARY',
+      progressValue: 2,
+      stage: SnapshotsReportStages.VALIDATING_OPERATIONS,
     },
   };
 };

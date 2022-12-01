@@ -1,4 +1,4 @@
-import {FilterHostType, SourceModel} from '@coveord/platform-client';
+import {FilterHostType, SourceModel} from '@coveo/platform-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {CliUx} from '@oclif/core';
 import {
@@ -8,6 +8,7 @@ import {
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import dedent from 'ts-dedent';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
+import {formatOrgId} from '@coveo/cli-commons/utils/ux';
 
 export default class SourceList extends CLICommand {
   public static description =
@@ -19,6 +20,7 @@ export default class SourceList extends CLICommand {
 
   @Trackable()
   @Preconditions(IsAuthenticated())
+  //TODO: Privilege check
   public async run() {
     const {flags} = await this.parse(SourceList);
     const authenticatedClient = new AuthenticatedClient();
@@ -32,10 +34,10 @@ export default class SourceList extends CLICommand {
     if (sources.totalEntries === 0) {
       this.log(
         dedent(`
-      There is no push nor catalog source in organization ${org}
+      There is no push nor catalog source in organization ${formatOrgId(org)}
       You can:
-      * create a push source using source:push:new
-      * create a catalog source using source:catalog:new
+        • create a push source using source:push:new
+        • create a catalog source using source:catalog:new
       `)
       );
       return;

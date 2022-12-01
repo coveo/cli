@@ -1,8 +1,9 @@
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('fs');
 jest.mock('./snapshot');
-
-import {ResourceSnapshotType} from '@coveord/platform-client';
+jest.mock('./snapshotAccess');
+jest.mock('node:buffer');
+import {ResourceSnapshotType} from '@coveo/platform-client';
 import {readFileSync} from 'fs';
 import {join} from 'path';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
@@ -10,16 +11,28 @@ import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClie
 import {SnapshotPullModelResources} from './pullModel/interfaces';
 import {Snapshot} from './snapshot';
 import {SnapshotFactory} from './snapshotFactory';
+import {Project} from '../project/project';
+import {ensureResourcesAccess, ensureSnapshotAccess} from './snapshotAccess';
+import {Blob} from 'node:buffer';
 
+const mockedBlob = jest.mocked(Blob);
 const mockedReadFileSync = jest.mocked(readFileSync);
-const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient, true);
-const mockedSnapshot = jest.mocked(Snapshot, true);
-const mockedCreateSnapshotFromBuffer = jest.fn();
+const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
+const mockedSnapshot = jest.mocked(Snapshot);
+const mockedCreateSnapshotFromFile = jest.fn();
 const mockedCreateFromOrganization = jest.fn();
 const mockedPushSnapshot = jest.fn();
 const mockedDryRunSnapshot = jest.fn();
 const mockedGetClient = jest.fn();
 const mockedGetSnapshot = jest.fn();
+const mockedEnsureResourcesAccess = jest.mocked(ensureResourcesAccess);
+const mockedEnsureSnapshotAccess = jest.mocked(ensureSnapshotAccess);
+const mockedCompressResources = jest.fn();
+
+const doMockSufficientResourceAccess = () => {
+  mockedEnsureSnapshotAccess.mockResolvedValue();
+  mockedEnsureResourcesAccess.mockResolvedValue();
+};
 
 const doMockSnapshot = () => {
   mockedSnapshot.prototype.waitUntilDone.mockImplementation(() =>
@@ -36,7 +49,7 @@ const doMockAuthenticatedClient = () => {
     Promise.resolve({
       resourceSnapshot: {
         get: mockedGetSnapshot,
-        createFromBuffer: mockedCreateSnapshotFromBuffer,
+        createFromFile: mockedCreateSnapshotFromFile,
         createFromOrganization: mockedCreateFromOrganization,
         push: mockedPushSnapshot,
         dryRun: mockedDryRunSnapshot,
@@ -49,18 +62,38 @@ const doMockAuthenticatedClient = () => {
   );
 };
 
+const doMockCompressResources = () => {
+  mockedCompressResources.mockReturnValue(join('dummy', 'path'));
+};
+
+const getFakeProject = () =>
+  ({
+    compressResources: mockedCompressResources,
+  } as unknown as Project);
+
 describe('SnapshotFactory', () => {
-  beforeAll(() => {
+  beforeEach(() => {
+    doMockSufficientResourceAccess();
+    doMockCompressResources();
     doMockAuthenticatedClient();
     doMockReadFile();
     doMockSnapshot();
   });
 
-  describe('when the snapshot is created from a ZIP', () => {
-    const pathToZip = join('dummy', 'path');
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
 
+  describe('when the snapshot is created from a ZIP', () => {
     beforeEach(async () => {
-      await SnapshotFactory.createFromZip(pathToZip, 'my-target-org');
+      await SnapshotFactory.createSnapshotFromProject(
+        getFakeProject(),
+        'my-target-org'
+      );
+    });
+
+    fancyIt()('should ensure Resources Acces', () => {
+      expect(mockedEnsureResourcesAccess).toHaveBeenCalled();
     });
 
     fancyIt()(
@@ -73,18 +106,16 @@ describe('SnapshotFactory', () => {
     );
 
     fancyIt()(
-      '#createSnapshotFromZip should retrieve an authenticated client',
+      '#createSnapshotFromProject should retrieve an authenticated client',
       () => {
-        expect(mockedCreateSnapshotFromBuffer).toHaveBeenCalledTimes(1);
+        expect(mockedCreateSnapshotFromFile).toHaveBeenCalledTimes(1);
       }
     );
-
     fancyIt()(
-      '#createSnapshotFromZip should create a snapshot from Zip with appropriate parameters',
+      '#createSnapshotFromProject should create a snapshot from Zip with appropriate parameters',
       () => {
-        expect(mockedCreateSnapshotFromBuffer).toHaveBeenCalledWith(
-          Buffer.from('hello there'),
-          'ZIP',
+        expect(mockedCreateSnapshotFromFile).toHaveBeenCalledWith(
+          mockedBlob.mock.instances[0],
           {
             developerNotes: 'cli-created-from-zip',
           }
@@ -93,7 +124,7 @@ describe('SnapshotFactory', () => {
     );
 
     fancyIt()(
-      '#createSnapshotFromZip should create a readstream with the appropriate path to zip',
+      '#createSnapshotFromProject should create a readstream with the appropriate path to zip',
       () => {
         expect(mockedReadFileSync).toHaveBeenCalledWith(join('dummy', 'path'));
       }
@@ -106,6 +137,10 @@ describe('SnapshotFactory', () => {
 
     beforeEach(async () => {
       await SnapshotFactory.createFromExistingSnapshot(snapshotId, targetId);
+    });
+
+    fancyIt()('should ensure snapshot access', () => {
+      expect(mockedEnsureSnapshotAccess).toHaveBeenCalled();
     });
 
     fancyIt()(
@@ -133,6 +168,10 @@ describe('SnapshotFactory', () => {
         [ResourceSnapshotType.extension]: ['*'],
       };
       await SnapshotFactory.createFromOrg(resourcesToExport, targetId);
+    });
+
+    fancyIt()('should ensure resource access', () => {
+      expect(mockedEnsureResourcesAccess).toHaveBeenCalled();
     });
 
     fancyIt()(

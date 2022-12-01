@@ -1,4 +1,4 @@
-const {PlatformClient} = require('@coveord/platform-client');
+const {PlatformClient} = require('@coveo/platform-client');
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
 const moment = require('moment');

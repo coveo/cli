@@ -1,29 +1,35 @@
 import {
   CreateFromFileOptions,
   ResourceSnapshotsReportType,
-  ResourceSnapshotSupportedFileTypes,
-} from '@coveord/platform-client';
+  ResourceSnapshotType,
+} from '@coveo/platform-client';
 import {readFileSync} from 'fs';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {SnapshotPullModelResources} from './pullModel/interfaces';
 import {Snapshot, WaitUntilDoneOptions} from './snapshot';
+import {Project} from '../project/project';
+import {ensureResourcesAccess, ensureSnapshotAccess} from './snapshotAccess';
+import {Blob} from 'node:buffer';
 
 export class SnapshotFactory {
-  public static async createFromZip(
-    pathToZip: string,
+  public static async createSnapshotFromProject(
+    project: Project,
     targetOrg: string,
     options?: WaitUntilDoneOptions
   ): Promise<Snapshot> {
     const client = await this.getClient(targetOrg);
+    await ensureResourcesAccess(client, project.resourceTypes);
+    const pathToZip = await project.compressResources();
     const file = readFileSync(pathToZip);
-
+    const blob = new Blob([file], {
+      type: 'application/zip',
+    });
     const computedOptions: CreateFromFileOptions = {
       developerNotes: 'cli-created-from-zip',
     };
 
-    const model = await client.resourceSnapshot.createFromBuffer(
-      file,
-      ResourceSnapshotSupportedFileTypes.ZIP,
+    const model = await client.resourceSnapshot.createFromFile(
+      blob,
       computedOptions
     );
     const snapshot = new Snapshot(model, client);
@@ -42,6 +48,7 @@ export class SnapshotFactory {
     options?: WaitUntilDoneOptions
   ) {
     const client = await this.getClient(targetOrg);
+    await ensureSnapshotAccess(client, snapshotId);
     const model = await client.resourceSnapshot.get(snapshotId, {
       includeReports: true,
     });
@@ -58,6 +65,10 @@ export class SnapshotFactory {
     options?: WaitUntilDoneOptions
   ) {
     const client = await this.getClient(targetOrg);
+    const resourceTypes = Object.keys(
+      resourcesToExport
+    ) as ResourceSnapshotType[];
+    await ensureResourcesAccess(client, resourceTypes);
     const model = await client.resourceSnapshot.createFromOrganization(
       {resourcesToExport},
       {includeChildrenResources: true, developerNotes: 'Created by Coveo-CLI'}

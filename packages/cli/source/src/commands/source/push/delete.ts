@@ -31,7 +31,7 @@ export default class SourcePushDelete extends CLICommand {
       char: 'x',
       multiple: true,
       description:
-        'The URIs of the items to delete. Can be repeated. If you want to delete more than one specific items, use the `source:push:batch` command instead.',
+        'The URIs of the items to delete. Can be repeated. If you want to delete more than one specific items, use the `--deleteOlderThan` flag instead.',
     }),
     deleteChildren: Flags.boolean({
       char: 'c',
@@ -52,6 +52,7 @@ export default class SourcePushDelete extends CLICommand {
   ];
 
   @Trackable()
+  // TODO: Check privileges?
   @Preconditions(IsAuthenticated())
   public async run() {
     const {flags} = await this.parse(SourcePushDelete);
@@ -60,8 +61,12 @@ export default class SourcePushDelete extends CLICommand {
         'You must minimally set the `delete` or the `deleteOlderThan` flag. Use `source:push:delete --help` to get more information.'
       );
     }
-    const cfg = new AuthenticatedClient().cfg.get();
-    const source = new PushSource(cfg.accessToken!, cfg.organization);
+    const {accessToken, organization, environment, region} =
+      new AuthenticatedClient().cfg.get();
+    const source = new PushSource(accessToken!, organization, {
+      environment,
+      region,
+    });
 
     if (flags.deleteOlderThan) {
       this.doDeletionOlderThan(source);
@@ -72,7 +77,7 @@ export default class SourcePushDelete extends CLICommand {
       if (await this.isNumberOfDeletionTooLarge()) {
         this.warn(
           dedent(
-            'To delete large number of items, use the `source:push:batch` command instead.'
+            'To delete large number of items, use the `--deleteOlderThan` option instead.'
           )
         );
         return;
@@ -123,7 +128,6 @@ export default class SourcePushDelete extends CLICommand {
 
   private errorMessageOnDeletion(toDelete: string, e: unknown) {
     return errorMessage(
-      this,
       `Error while trying to delete document: ${red(toDelete)}.`,
       e
     );
@@ -131,7 +135,6 @@ export default class SourcePushDelete extends CLICommand {
 
   private successMessageOnDeletion(toDelete: string, res: AxiosResponse) {
     return successMessage(
-      this,
       `The delete request for document: ${green(
         toDelete
       )} was accepted by the Push API.`,

@@ -1,12 +1,17 @@
 import {platformUrl, PlatformUrlOptions} from './environment';
 
+export function adminUiUrl(options: Partial<PlatformUrlOptions>) {
+  const baseUrl = platformUrl(options);
+  return `${baseUrl}/admin/#`;
+}
+
 export function snapshotUrl(
   targetOrgId: string,
   snapshotId: string,
   options: Partial<PlatformUrlOptions>
 ) {
-  const url = platformUrl(options);
-  return `${url}/admin/#${targetOrgId}/organization/resource-snapshots/${snapshotId}`;
+  const baseUrl = adminUiUrl(options);
+  return `${baseUrl}/${targetOrgId}/organization/resource-snapshots/${snapshotId}`;
 }
 
 export function snapshotApplyUrl(
@@ -22,6 +27,6 @@ export function createSnapshotUrl(
   targetOrgId: string,
   options: Partial<PlatformUrlOptions>
 ) {
-  const url = platformUrl(options);
-  return `${url}/admin/#${targetOrgId}/organization/resource-snapshots/create-snapshot`;
+  const baseUrl = adminUiUrl(options);
+  return `${baseUrl}/${targetOrgId}/organization/resource-snapshots/create-snapshot`;
 }

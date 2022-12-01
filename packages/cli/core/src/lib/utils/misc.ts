@@ -1,5 +1,5 @@
 import {resolve} from 'path';
-import {coerce} from 'semver';
+import {valid} from 'semver';
 
 export function getPackageVersion(packageName: string) {
   const pathToPackageJson = resolve(
@@ -12,7 +12,7 @@ export function getPackageVersion(packageName: string) {
     pkg.dependencies[packageName] ||
     pkg.devDependencies[packageName] ||
     pkg.peerDependencies[packageName];
-  const defaultVersion = coerce(dep?.toString())?.version;
+  const defaultVersion = valid(dep?.toString())!;
 
   return defaultVersion;
 }

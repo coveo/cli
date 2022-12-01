@@ -1,0 +1,110 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`source:push:delete returns an information message on deletion and success failure with multiple document uri 1`] = `
+[
+  "Error while trying to delete document: [31mhttps://foo.com[39m.",
+  {
+    "response": {
+      "data": {
+        "errorCode": "BAD_REQUEST",
+        "message": "this is a bad request and you should feel bad",
+      },
+      "status": 412,
+    },
+  },
+]
+`;
+
+exports[`source:push:delete returns an information message on deletion failure with document uri 1`] = `
+[
+  "Error while trying to delete document: [31mhttps://foo.com[39m.",
+  {
+    "response": {
+      "data": {
+        "errorCode": "BAD_REQUEST",
+        "message": "this is a bad request and you should feel bad",
+      },
+      "status": 412,
+    },
+  },
+]
+`;
+
+exports[`source:push:delete returns an information message on deletion failure with multiple document uri 1`] = `
+[
+  "Error while trying to delete document: [31mhttps://foo.com/2[39m.",
+  {
+    "response": {
+      "data": {
+        "errorCode": "BAD_REQUEST",
+        "message": "this is a bad request and you should feel bad",
+      },
+      "status": 412,
+    },
+  },
+]
+`;
+
+exports[`source:push:delete returns an information message on deletion failure with older than 1`] = `
+[
+  "Error while trying to delete document: [31molder than 12345[39m.",
+  {
+    "response": {
+      "data": {
+        "errorCode": "BAD_REQUEST",
+        "message": "this is a bad request and you should feel bad",
+      },
+      "status": 412,
+    },
+  },
+]
+`;
+
+exports[`source:push:delete returns an information message on successful deletion with document uri 1`] = `
+[
+  "The delete request for document: [32mhttps://foo.com[39m was accepted by the Push API.",
+  {
+    "config": {},
+    "data": {},
+    "headers": {},
+    "status": 999,
+    "statusText": "this document is gone",
+  },
+]
+`;
+
+exports[`source:push:delete returns an information message on successful deletion with multiple document uri 1`] = `
+[
+  "The delete request for document: [32mhttps://foo.com/2[39m was accepted by the Push API.",
+  {
+    "config": {},
+    "data": {},
+    "headers": {},
+    "status": 202,
+    "statusText": "right trou",
+  },
+]
+`;
+
+exports[`source:push:delete returns an information message on successful deletion with older than 1`] = `
+[
+  "The delete request for document: [32molder than 12345[39m was accepted by the Push API.",
+  {
+    "config": {},
+    "data": {},
+    "headers": {},
+    "status": 999,
+    "statusText": "this document is gone",
+  },
+]
+`;
+
+exports[`source:push:delete should warn the user when he tries to delete too many items and stop there 1`] = `""`;
+
+exports[`source:push:delete throws when incompatible flags for olderThan and documentUri are passed 1`] = `
+"The following error occurred:
+  [2m--delete=foo cannot also be provided when using --deleteOlderThan[22m
+See more help with --help"
+`;
+
+exports[`source:push:delete throws when no flags are specified 1`] = `"You must minimally set the \`delete\` or the \`deleteOlderThan\` flag. Use \`source:push:delete --help\` to get more information."`;
