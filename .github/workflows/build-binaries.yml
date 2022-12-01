@@ -97,8 +97,13 @@ jobs:
         # TODO: run for both mac os architectures
         run: |
           ls
+          echo "Sign ARM64 package"
           security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" build.keychain
           productsign --sign $MACOS_WWDR_TEAM_ID coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64.pkg coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64-signed.pkg --keychain build.keychain
+
+          echo "Sign x64 package"
+          security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" build.keychain
+          productsign --sign $MACOS_WWDR_TEAM_ID coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64.pkg coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64-signed.pkg --keychain build.keychain
           ls
       - name: Notarize Executable (macOS)
         working-directory: ./packages/cli/core/dist/macos
@@ -116,12 +121,15 @@ jobs:
 
           echo "Creating temp notarization archive"
           ditto -c -k --keepParent "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64-signed.pkg" "notarization-arm64.zip"
+          ditto -c -k --keepParent "coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64-signed.pkg" "notarization-x64.zip"
 
           echo "Notarize app"
           xcrun notarytool submit "notarization-arm64.zip" --keychain-profile "notarytool-profile" --wait
+          xcrun notarytool submit "notarization-x64.zip" --keychain-profile "notarytool-profile" --wait
 
           echo "Attach staple"
           xcrun stapler staple "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64-signed.pkg"
+          xcrun stapler staple "coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64-signed.pkg"
       # - name: Upload binaries
       #   uses: svenstaro/upload-release-action@133984371c30d34e38222a64855679a414cb7575 # tag=2.3.0
       #   with:
