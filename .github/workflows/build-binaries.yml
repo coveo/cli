@@ -97,7 +97,7 @@ jobs:
         run: |
           ls
           security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" build.keychain
-          productsign --sign $MACOS_WWDR_TEAM_ID coveo-${{env.tag}}-${{env.commitSHA1}}.pkg coveo-${{env.tag}}-${{env.commitSHA1}}-signed.pkg --keychain build.keychain
+          productsign --sign $MACOS_WWDR_TEAM_ID coveo-v${{env.tag}}-${{env.commitSHA1}}-x64.pkg coveo-${{env.tag}}-${{env.commitSHA1}}-signed.pkg --keychain build.keychain
           ls
       - name: Notarize Executable (macOS)
         working-directory: ./packages/cli/core/dist/macos
