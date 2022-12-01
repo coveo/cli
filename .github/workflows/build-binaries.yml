@@ -81,6 +81,7 @@ jobs:
       - name: Get commit hash of binaries
         run: node ../../../scripts/get-commit-short-hash.mjs
         working-directory: ./packages/cli/core
+      # TODO: uncomment
       # - name: Sign Executable (Windows)
       #   working-directory: ./packages/cli/core
       #   if: ${{matrix.os == 'windows-latest'}}
@@ -93,43 +94,39 @@ jobs:
       - name: Sign Executable (macOS)
         working-directory: ./packages/cli/core/dist/macos
         if: ${{matrix.os == 'macos-latest'}}
-        # TODO: replace with TeamId
-        # TODO: run for both mac os architectures
         run: |
-          ls
-          echo "Sign ARM64 package"
+          echo "Signing for ARM64 architecture"
           security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" build.keychain
           productsign --sign $MACOS_WWDR_TEAM_ID coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64.pkg coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64-signed.pkg --keychain build.keychain
 
-          echo "Sign x64 package"
+          echo "Signing for X64 architecture"
           security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" build.keychain
           productsign --sign $MACOS_WWDR_TEAM_ID coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64.pkg coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64-signed.pkg --keychain build.keychain
-          ls
       - name: Notarize Executable (macOS)
         working-directory: ./packages/cli/core/dist/macos
-        if:
-          ${{matrix.os == 'macos-latest'}}
-          # TODO: delete unsigned package
-          # TODO: rename signed package
-          # TODO: put in script file
+        if: ${{matrix.os == 'macos-latest'}}
         run: |
           echo "Unlocking the keychain"
           security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" build.keychain
 
-          echo "Create keychain profile"
+          echo "Creating keychain profile"
           xcrun notarytool store-credentials "notarytool-profile" --apple-id "${{ secrets.MACOS_APP_USERNAME }}" --team-id "${{ secrets.MACOS_WWDR_TEAM_ID }}" --password "${{ secrets.MACOS_APP_SPECIFIC_PWD }}"
 
           echo "Creating temp notarization archive"
           ditto -c -k --keepParent "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64-signed.pkg" "notarization-arm64.zip"
           ditto -c -k --keepParent "coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64-signed.pkg" "notarization-x64.zip"
 
-          echo "Notarize app"
+          echo "Notarizing app"
           xcrun notarytool submit "notarization-arm64.zip" --keychain-profile "notarytool-profile" --wait
           xcrun notarytool submit "notarization-x64.zip" --keychain-profile "notarytool-profile" --wait
 
-          echo "Attach staple"
+          echo "Attaching staple"
           xcrun stapler staple "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64-signed.pkg"
           xcrun stapler staple "coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64-signed.pkg"
+
+          echo "Deleting unsigned packages"
+          mv "coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64-signed.pkg" "coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64.pkg"
+          mv "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64-signed.pkg" "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64.pkg"
       # - name: Upload binaries
       #   uses: svenstaro/upload-release-action@133984371c30d34e38222a64855679a414cb7575 # tag=2.3.0
       #   with:
