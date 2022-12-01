@@ -51,8 +51,6 @@ jobs:
       - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
       - name: Setup
         run: npm i
-      - name: Derp Setup
-        run: npm uninstall @angular/cli -w @coveo/cli
       - name: Get tags
         run: node ./scripts/get-tags.mjs
       - name: Build
