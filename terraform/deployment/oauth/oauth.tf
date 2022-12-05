@@ -11,6 +11,6 @@ resource coveo_oauth2_client "oauth2_cli_client" {
   auto_approve_scopes           = ["full"]
   scopes                        = ["full"]
   authorized_grant_types        = ["authorization_code"]
-  registered_redirect_uri       = ["http://127.0.0.1:32111"]
+  registered_redirect_uri       = ["http://127.0.0.1:32111", "http://127.0.0.1:52296"]
   access_token_validity_seconds = 86400
 }

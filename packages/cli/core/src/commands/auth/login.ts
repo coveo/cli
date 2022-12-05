@@ -12,8 +12,10 @@ import {formatOrgId} from '@coveo/cli-commons/utils/ux';
 
 export default class Login extends CLICommand {
   private configuration!: Config;
-  public static description =
-    'Log in to the Coveo Platform using the OAuth2 flow.';
+  public static description = dedent`
+    Log in to the Coveo Platform using the OAuth2 flow.
+    Note: TCP port 32111 or 52296 must be available.
+  `;
 
   public static examples = ['$ coveo auth:login'];
 
