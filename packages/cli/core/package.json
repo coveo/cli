@@ -75,14 +75,10 @@
     "typescript": "4.9.3"
   },
   "peerDependencies": {
-    "@angular/cli": "^15.0.0",
     "create-react-app": "*",
     "netlify-cli": "^12.0.0"
   },
   "peerDependenciesMeta": {
-    "@angular/cli": {
-      "optional": true
-    },
     "netlify-cli": {
       "optional": true
     },
