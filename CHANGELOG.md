@@ -1,3 +1,13 @@
+# release-7 (2022-12-06)
+
+### Bug Fixes
+
+- **angular:** project generation ([#1062](https://github.com/coveo/cli/issues/1062)) ([ecb15df](https://github.com/coveo/cli/commits/ecb15dfe96ed4fc79ddebe1a02d77b4f97e13e1f))
+
+### Features
+
+- **cli:** add fallback port for oauth ([#1063](https://github.com/coveo/cli/issues/1063)) ([f33c084](https://github.com/coveo/cli/commits/f33c0840d0ca8a8e4815ca21ed6ae5c0047a07aa)), closes [#1061](https://github.com/coveo/cli/issues/1061) [#1061](https://github.com/coveo/cli/issues/1061)
+
 # release-6 (2022-11-29)
 
 ### Bug Fixes

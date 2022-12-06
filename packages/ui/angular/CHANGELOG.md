@@ -1,3 +1,9 @@
+## 1.35.19 (2022-12-06)
+
+### Bug Fixes
+
+- **angular:** project generation ([#1062](https://github.com/coveo/cli/issues/1062)) ([ecb15df](https://github.com/coveo/cli/commits/ecb15dfe96ed4fc79ddebe1a02d77b4f97e13e1f))
+
 ## 1.35.18 (2022-11-29)
 
 ### Bug Fixes

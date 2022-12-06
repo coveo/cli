@@ -1,3 +1,9 @@
+# 2.2.0 (2022-12-06)
+
+### Features
+
+- **cli:** add fallback port for oauth ([#1063](https://github.com/coveo/cli/issues/1063)) ([f33c084](https://github.com/coveo/cli/commits/f33c0840d0ca8a8e4815ca21ed6ae5c0047a07aa)), closes [#1061](https://github.com/coveo/cli/issues/1061) [#1061](https://github.com/coveo/cli/issues/1061)
+
 # 2.1.0 (2022-11-29)
 
 ### Bug Fixes
