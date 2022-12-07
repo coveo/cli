@@ -4,6 +4,7 @@ import {satisfies, validRange} from 'semver';
 import {PreconditionError} from '@coveo/cli-commons/errors/preconditionError';
 import {PreconditionFunction} from '@coveo/cli-commons/preconditions';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
+import {lstatSync, readlinkSync, statSync} from 'fs';
 
 export enum PreconditionErrorCategoryBin {
   MissingBin = 'Missing Bin',
@@ -126,6 +127,14 @@ async function getBinPath(binaryName: string) {
     process.platform === 'win32' ? 'where.exe' : 'which',
     [binaryName]
   );
+  if (output.exitCode !== '0') {
+    return null;
+  }
 
-  return output.exitCode === '0' ? output.stdout.trim() : null;
+  let truePath = output.stdout.trim();
+  if (lstatSync(truePath).isSymbolicLink()) {
+    truePath = readlinkSync(truePath);
+  }
+
+  return truePath;
 }
