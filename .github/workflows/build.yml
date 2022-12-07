@@ -88,15 +88,10 @@ jobs:
   e2e-setup-verdaccio:
     strategy:
       matrix:
-        os: ['ubuntu-20.04', 'windows-latest']
+        os: ['ubuntu-20.04']
     name: End-to-end publish packages
     runs-on: ${{matrix.os}}
     steps:
-      - name: Setup runner
-        if: ${{matrix.os == 'windows-latest'}}
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.eol lf
       - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
         with:
           # pulls all commits (needed for computing the next version)
@@ -105,16 +100,10 @@ jobs:
         with:
           cache: 'npm'
           node-version-file: '.nvmrc'
-      - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3
-        if: ${{matrix.os == 'ubuntu-20.04'}}
+      - uses: actions/cache@4d2f35c1eb62d0810cd81a206982cdc8acc4e318 # v3
         with:
           path: packages/cli-e2e/verdaccio
-          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-      - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3
-        if: ${{matrix.os == 'windows-latest'}}
-        with:
-          path: packages\cli-e2e\verdaccio
-          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
+          key: verdaccio-${{ github.sha }}-${{github.run_attempt}}
       - run: npm ci
       - name: Build
         run: npm run build
@@ -123,7 +112,7 @@ jobs:
       - uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # v3
         if: always()
         with:
-          name: ${{matrix.os}}-verdaccio-publish-artifacts
+          name: verdaccio-publish-artifacts
           path: ./packages/cli-e2e/artifacts
   e2e:
     name: End-to-end tests
@@ -154,18 +143,10 @@ jobs:
       CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
       - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
-      - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3
-        if: ${{matrix.os == 'ubuntu-20.04'}}
+      - uses: actions/cache@4d2f35c1eb62d0810cd81a206982cdc8acc4e318 # v3
         with:
           path: packages/cli-e2e/verdaccio
-          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-          restore-keys: verdaccio-${{matrix.os}}-${{ github.sha }}
-      - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3
-        if: ${{matrix.os == 'windows-latest'}}
-        with:
-          path: packages\cli-e2e\verdaccio
-          key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-          restore-keys: verdaccio-${{matrix.os}}-${{ github.sha }}
+          key: verdaccio-${{ github.sha }}-${{github.run_attempt}}
       - uses: ./.github/actions/e2e-run
         with:
           os: ${{ matrix.os }}
