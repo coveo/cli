@@ -1,5 +1,5 @@
 import {dedent} from 'ts-dedent';
-import {spawnProcessOutput, SpawnProcessOutput} from '../../utils/process';
+import {spawnProcessOutput} from '../../utils/process';
 import {satisfies, validRange} from 'semver';
 import {PreconditionError} from '@coveo/cli-commons/errors/preconditionError';
 import {PreconditionFunction} from '@coveo/cli-commons/preconditions';
@@ -47,12 +47,28 @@ export function getBinVersionPrecondition(
         });
       }
 
+      const binPath = await getBinPath(binaryName);
+      if (binPath === null) {
+        const warningMessage = dedent`${target.identifier} requires ${
+          options.prettyName
+        } to run.
+    
+        ${warnHowToInstallBin(options)}`;
+        throw new PreconditionError(warningMessage, {
+          category: PreconditionErrorCategoryBin.MissingBin,
+        });
+      }
+      let commandName = binaryName;
+
+      if (binPath.startsWith('/snap/bin')) {
+        appliedOptions.params.unshift('run', binaryName);
+        commandName = 'snap';
+      }
+
       const output = await spawnProcessOutput(
-        binaryName,
+        commandName,
         appliedOptions.params
       );
-
-      await checkIfBinIsInstalled(target, binaryName, appliedOptions, output);
       const version = versionExtractor(output.stdout);
 
       if (!satisfies(version, versionRange)) {
@@ -76,55 +92,21 @@ export function getBinInstalledPrecondition(
   binaryName: string,
   options: BinPreconditionsOptions
 ) {
-  const appliedOptions: Required<BinPreconditionsOptions> = {
-    ...defaultOptions,
-    ...options,
-    prettyName: options.prettyName,
-  };
   return function () {
     return async function (target: CLICommand) {
-      const output = await spawnProcessOutput(
-        binaryName,
-        appliedOptions.params
-      );
-      await checkIfBinIsInstalled(target, binaryName, appliedOptions, output);
+      const binPath = await getBinPath(binaryName);
+      if (binPath === null) {
+        const warningMessage = dedent`${target.identifier} requires ${
+          options.prettyName
+        } to run.
+    
+        ${warnHowToInstallBin(options)}`;
+        throw new PreconditionError(warningMessage, {
+          category: PreconditionErrorCategoryBin.MissingBin,
+        });
+      }
     };
   };
-}
-
-async function checkIfBinIsInstalled(
-  target: CLICommand,
-  binaryName: string,
-  options: Required<BinPreconditionsOptions>,
-  output: SpawnProcessOutput
-): Promise<void | never> {
-  if (output.exitCode === 'ENOENT') {
-    const warningMessage = dedent`${target.identifier} requires ${
-      options.prettyName
-    } to run.
-
-    ${warnHowToInstallBin(options)}`;
-    throw new PreconditionError(warningMessage, {
-      category: PreconditionErrorCategoryBin.MissingBin,
-    });
-  }
-
-  if (output.exitCode !== '0') {
-    const message = dedent`
-      ${target.identifier} requires a valid ${
-      options.prettyName
-    } installation to run.
-      An unknown error happened while running ${binaryName} ${options.params.join(
-      ' '
-    )}.
-      ${output.stderr}
-
-      ${warnHowToInstallBin(options)}
-    `;
-    throw new PreconditionError(message, {
-      category: PreconditionErrorCategoryBin.InvalidBinInstallation,
-    });
-  }
 }
 
 function warnHowToInstallBin(options: BinPreconditionsOptions) {
@@ -137,4 +119,13 @@ function warnHowToInstallBin(options: BinPreconditionsOptions) {
     `Please visit ${options.installLink} for more detailed installation information.`
   );
   return howToInstallMessage.join(newParagraph);
+}
+
+async function getBinPath(binaryName: string) {
+  const output = await spawnProcessOutput(
+    process.platform === 'win32' ? 'where.exe' : 'which',
+    [binaryName]
+  );
+
+  return output.exitCode === '0' ? output.stdout.trim() : null;
 }
