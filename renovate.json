@@ -15,7 +15,13 @@
       "groupSlug": "all"
     },
     {
+      "groupName": "Oclif packages",
+      "groupSlug": "oclif",
+      "matchPackagePatterns": ["^@oclif/*", "^oclif$"]
+    },
+    {
       "matchPackagePatterns": ["^@angular/*", "^@angular-devkit/*"],
+      "groupSlug": "angular",
       "rangeStrategy": "replace"
     },
     {

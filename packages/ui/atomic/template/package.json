@@ -8,9 +8,9 @@
     "lint": "prettier --check . && eslint ."
   },
   "dependencies": {
-    "@coveo/atomic": "1.124.0",
+    "@coveo/atomic": "1.124.3",
     "@coveo/search-token-lambda": "1.36.0",
-    "@stencil/core": "2.19.3"
+    "@stencil/core": "2.20.0"
   },
   "devDependencies": {
     "@rollup/plugin-replace": "5.0.1",

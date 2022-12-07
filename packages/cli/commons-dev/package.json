@@ -22,11 +22,11 @@
     }
   },
   "dependencies": {
-    "fancy-test": "2.0.7",
+    "fancy-test": "2.0.9",
     "tslib": "2.4.1"
   },
   "devDependencies": {
-    "@types/jest": "29.2.3",
+    "@types/jest": "29.2.4",
     "typescript": "4.9.3"
   },
   "scripts": {
