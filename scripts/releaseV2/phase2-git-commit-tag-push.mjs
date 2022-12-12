@@ -14,7 +14,7 @@ import {
 import {Octokit} from 'octokit';
 import angularChangelogConvention from 'conventional-changelog-angular';
 import {dedent} from 'ts-dedent';
-import {readFileSync} from 'fs';
+import {readFileSync, writeFileSync} from 'fs';
 
 const CLI_PKG_MATCHER = /^@coveo\/cli@(?<version>\d+\.\d+\.\d+)$/gm;
 
@@ -60,7 +60,7 @@ const getCliChangelog = () => {
     );
     await writeChangelog(PATH, changelog);
   }
-
+  updateRootReadme();
   await gitCommit(
     dedent`
     [version bump] chore(release): release ${gitNewTag} [skip ci]
@@ -98,3 +98,12 @@ const getCliChangelog = () => {
     body: releaseBody,
   });
 })();
+
+function updateRootReadme() {
+  const usageRegExp = /^<!-- usage -->(.|\n)*<!-- usagestop -->$/m;
+  const cliReadme = readFileSync('packages/cli/core/README.md', 'utf-8');
+  let rootReadme = readFileSync('README.md');
+  const cliUsage = usageRegExp.exec(cliReadme);
+  rootReadme.replace(usageRegExp, cliUsage[0]);
+  writeFileSync('README.md', rootReadme);
+}
