@@ -36,9 +36,9 @@ async function main() {
   const {
     ORG_ID: testOrgId,
     TEST_RUN_ID: testRunId,
-    PLATFORM_API_KEY: accessToken,
     PLATFORM_ENV: env,
   } = process.env;
+  const accessToken = getCliConfig().accessToken;
   const platform = getClient(accessToken, env, testOrgId);
   try {
     const orgs = await platform.organization.list();
