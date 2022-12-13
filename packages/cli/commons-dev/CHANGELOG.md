@@ -1,3 +1,16 @@
+# 6.0.0 (2022-11-29)
+
+### Bug Fixes
+
+- **deps:** update all dependencies j:cdx-227 ([#1032](https://github.com/coveo/cli/issues/1032)) ([e1ccdeb](https://github.com/coveo/cli/commits/e1ccdebcd1908b750df365961187013bc025ebdf))
+
+- chore(commons-dev)!: remove getFakeCommand ([74b8e29](https://github.com/coveo/cli/commits/74b8e29f79f6fd83bdacbc9c4e01afe2ea7a1c0c))
+
+### BREAKING CHANGES
+
+- `getFakeCommand` is now part of @coveo/cli-commons
+  https://coveord.atlassian.net/browse/CDX-779
+
 # 5.0.0 (2022-11-15)
 
 ### Bug Fixes

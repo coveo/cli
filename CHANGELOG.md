@@ -1,3 +1,40 @@
+# release-7 (2022-12-06)
+
+### Bug Fixes
+
+- **angular:** project generation ([#1062](https://github.com/coveo/cli/issues/1062)) ([ecb15df](https://github.com/coveo/cli/commits/ecb15dfe96ed4fc79ddebe1a02d77b4f97e13e1f))
+
+### Features
+
+- **cli:** add fallback port for oauth ([#1063](https://github.com/coveo/cli/issues/1063)) ([f33c084](https://github.com/coveo/cli/commits/f33c0840d0ca8a8e4815ca21ed6ae5c0047a07aa)), closes [#1061](https://github.com/coveo/cli/issues/1061) [#1061](https://github.com/coveo/cli/issues/1061)
+
+# release-6 (2022-11-29)
+
+### Bug Fixes
+
+- abort pending requests ([#1034](https://github.com/coveo/cli/issues/1034)) ([dba4502](https://github.com/coveo/cli/commits/dba450201295ec240dd9dfeae7f70a94fa9f959d))
+- **cli:** ensure to stop action before calling more prints ([#1030](https://github.com/coveo/cli/issues/1030)) ([7efb42d](https://github.com/coveo/cli/commits/7efb42dd9fcaee793bb977c99b49d0759f9be7bb))
+- **cli:** fix readme generation ([#1033](https://github.com/coveo/cli/issues/1033)) ([3fedfbc](https://github.com/coveo/cli/commits/3fedfbc5a0079f0d015add9fd96a8e844380158c))
+- **cli:** fix sha acquisiton for windows signing ([#1031](https://github.com/coveo/cli/issues/1031)) ([dcc3131](https://github.com/coveo/cli/commits/dcc31317d4d8f2ad94d8744b0453262f6f93b0d3)), closes [#988](https://github.com/coveo/cli/issues/988)
+- **cli:** print properly the command name. ([d4ec642](https://github.com/coveo/cli/commits/d4ec642c698484f9ea5f7f44dd84d638a143cdde))
+- **deps:** update all dependencies j:cdx-227 ([#1032](https://github.com/coveo/cli/issues/1032)) ([e1ccdeb](https://github.com/coveo/cli/commits/e1ccdebcd1908b750df365961187013bc025ebdf))
+- **deps:** update all dependencies j:cdx-227 ([#1036](https://github.com/coveo/cli/issues/1036)) ([1439a40](https://github.com/coveo/cli/commits/1439a406166f7342e1d91481e81de6c63a7b15f1))
+- **deps:** update all dependencies to v15 j:cdx-227 (major) ([#1035](https://github.com/coveo/cli/issues/1035)) ([a99acd9](https://github.com/coveo/cli/commits/a99acd91579280f44decff15d817fbe377abae50))
+- load region and environment from config ([#1050](https://github.com/coveo/cli/issues/1050)) ([f338ca8](https://github.com/coveo/cli/commits/f338ca81c27c07754afc168da97c9de8f507b676))
+
+- chore(commons-dev)!: remove getFakeCommand ([74b8e29](https://github.com/coveo/cli/commits/74b8e29f79f6fd83bdacbc9c4e01afe2ea7a1c0c))
+
+### Features
+
+- **atomic:** reduce disk footprint of projects ([#1044](https://github.com/coveo/cli/issues/1044)) ([985ba50](https://github.com/coveo/cli/commits/985ba50692cde3523d370051b699624639ebd928))
+- **commons:** add `identifier` to `CLICommand` ([85fc0df](https://github.com/coveo/cli/commits/85fc0df5b1e22083d485e9e3b4dc24c2f383986c))
+- **commons:** add getFakeCommand ([aea76b9](https://github.com/coveo/cli/commits/aea76b9e0cd4317f0f6d28f17dc0f65f10564e64))
+
+### BREAKING CHANGES
+
+- `getFakeCommand` is now part of @coveo/cli-commons
+  https://coveord.atlassian.net/browse/CDX-779
+
 # release-5 (2022-11-15)
 
 ### Bug Fixes

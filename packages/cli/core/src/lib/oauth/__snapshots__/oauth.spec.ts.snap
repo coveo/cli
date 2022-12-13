@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OAuth should throw an OAuthBusyError if both OAuth ports are busy 1`] = `
+"TCP port 32111 and 52296 are both busy.
+The CLI needs at least of one of them to complete the login process.
+Free one of them or use \`coveo auth:token\` to authenticate."
+`;

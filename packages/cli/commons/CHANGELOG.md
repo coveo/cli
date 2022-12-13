@@ -1,3 +1,15 @@
+# 2.2.0 (2022-11-29)
+
+### Bug Fixes
+
+- **deps:** update all dependencies j:cdx-227 ([#1032](https://github.com/coveo/cli/issues/1032)) ([e1ccdeb](https://github.com/coveo/cli/commits/e1ccdebcd1908b750df365961187013bc025ebdf))
+- **deps:** update all dependencies j:cdx-227 ([#1036](https://github.com/coveo/cli/issues/1036)) ([1439a40](https://github.com/coveo/cli/commits/1439a406166f7342e1d91481e81de6c63a7b15f1))
+
+### Features
+
+- **commons:** add `identifier` to `CLICommand` ([85fc0df](https://github.com/coveo/cli/commits/85fc0df5b1e22083d485e9e3b4dc24c2f383986c))
+- **commons:** add getFakeCommand ([aea76b9](https://github.com/coveo/cli/commits/aea76b9e0cd4317f0f6d28f17dc0f65f10564e64))
+
 # 2.1.0 (2022-11-15)
 
 ### Bug Fixes

@@ -227,8 +227,8 @@ describe('ui:create:angular', () => {
       await undoCommit(serverProcessManager, projectPath, projectName);
       await serverProcessManager.killAllProcesses();
     }, 5 * 60e3);
-    // TODO CDX-1017: Remove skip
-    it.skip(
+
+    it(
       'should not contain console errors nor warnings',
       async () => {
         await page.goto(searchPageEndpoint(), {
