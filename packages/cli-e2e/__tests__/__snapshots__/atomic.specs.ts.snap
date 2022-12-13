@@ -370,11 +370,11 @@ HashedFolder {
                   "name": "results-manager.tsx",
                 },
                 HashedFile {
-                  "hash": "/m87zRv/MiIstEldgz3NO4atbZM=",
+                  "hash": "Xff4jn7lIoJUUtjDjOH+FACRciM=",
                   "name": "template-1.html",
                 },
               ],
-              "hash": "L2wiyeP//J6E0Gbs5Yu1GFfxF1U=",
+              "hash": "gcA5JEvFE0rPliUetRfIoo2EP+Q=",
               "name": "results-manager",
             },
             HashedFolder {
@@ -406,7 +406,7 @@ HashedFolder {
               "name": "sample-result-component",
             },
           ],
-          "hash": "IzpnK5rbJT7d4vrimnemc+St5pI=",
+          "hash": "sKU3WMjer0bAf7UtOHeZHkBNEmE=",
           "name": "components",
         },
         HashedFile {
@@ -437,7 +437,7 @@ HashedFolder {
           "name": "style",
         },
       ],
-      "hash": "BsaZYMD1wDqcmu1eKmK0uFjxpKk=",
+      "hash": "UGvI/Ocq3aNPnCaBRFDOYKyXFAA=",
       "name": "src",
     },
     HashedFile {
@@ -449,7 +449,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "AOiP/eQTOWv66H9p5nIJj6FgxjA=",
+  "hash": "dbqs7z5LOY5afIpuK0dN+snFmkk=",
   "name": "normalizedDir",
 }
 `;
