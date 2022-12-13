@@ -33,9 +33,13 @@ async function deleteTestOrgs(platform, cliOrgs) {
 }
 
 async function main() {
-  const {TEST_RUN_ID: testRunId, PLATFORM_ENV: env} = process.env;
+  const {
+    ORG_ID: testOrgId,
+    TEST_RUN_ID: testRunId,
+    PLATFORM_ENV: env,
+  } = process.env;
   const accessToken = getCliConfig().accessToken;
-  const platform = getClient(accessToken, env);
+  const platform = getClient(accessToken, env, testOrgId);
   try {
     const orgs = await platform.organization.list();
     const cliOrgs = orgs
