@@ -41,7 +41,7 @@
     "lint-staged": "13.1.0",
     "moment": "2.29.4",
     "npm-registry-fetch": "^14.0.2",
-    "oclif": "3.4.1",
+    "oclif": "3.4.2",
     "octokit": "2.0.10",
     "patch-package": "6.5.0",
     "prettier": "2.8.1",
