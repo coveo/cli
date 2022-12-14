@@ -9,7 +9,6 @@
   "vulnerabilityAlerts": {
     "commitMessageSuffix": "[SECURITY] J:CDX-227"
   },
-  
   "packageRules": [
     {
       "matchPackagePatterns": ["*"],
