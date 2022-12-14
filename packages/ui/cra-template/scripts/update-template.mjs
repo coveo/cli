@@ -3,7 +3,6 @@
 import {fileURLToPath} from 'node:url';
 import {dirname, join} from 'node:path';
 import {readFileSync, writeFileSync} from 'node:fs';
-import detectindent from 'detect-indent';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -11,7 +10,6 @@ const pathToTemplate = join(__dirname, '..', 'template.json');
 const pathToPackage = join(__dirname, '..', 'package.json');
 
 const template = readFileSync(pathToTemplate, 'utf-8');
-const indent = detectindent(template).indent;
 const templateJSON = JSON.parse(template);
 const packageJSON = JSON.parse(readFileSync(pathToPackage, 'utf-8'));
 for (const depType of ['dependencies', 'devDependencies']) {
@@ -25,4 +23,4 @@ for (const depType of ['dependencies', 'devDependencies']) {
   }
 }
 
-writeFileSync(pathToTemplate, JSON.stringify(templateJSON, undefined, indent));
+writeFileSync(pathToTemplate, JSON.stringify(templateJSON));

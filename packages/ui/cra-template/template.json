@@ -24,9 +24,7 @@
       "@types/react-dom": "18.0.9",
       "@types/react-router-dom": "5.3.3"
     },
-    "eslintConfig": {
-      "extends": ["react-app", "react-app/jest"]
-    },
+    "eslintConfig": {"extends": ["react-app", "react-app/jest"]},
     "scripts": {
       "prestart": "npm run setup-server && npm run setup-cleanup",
       "setup-server": "node ./scripts/setup-server.js",
