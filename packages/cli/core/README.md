@@ -1101,7 +1101,3 @@ FLAG DESCRIPTIONS
 _See code: [@oclif/plugin-version](https://github.com/oclif/plugin-version/blob/v1.1.3/src/commands/version.ts)_
 
 <!-- commandsstop -->
-
-```
-
-```
