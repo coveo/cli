@@ -33,7 +33,7 @@
     "@coveo/search-token-server": "1.35.16",
     "@emotion/react": "11.10.5",
     "@emotion/styled": "11.10.5",
-    "@mui/material": "5.10.17",
+    "@mui/material": "5.11.0",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "13.4.0",
     "@types/jest": "29.2.4",
@@ -41,10 +41,10 @@
     "@types/react-dom": "18.0.9",
     "@types/react-router-dom": "5.3.3",
     "eslint": "8.29.0",
-    "prettier": "2.8.0",
+    "prettier": "2.8.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-router-dom": "6.4.4"
+    "react-router-dom": "6.4.5"
   },
   "publishConfig": {
     "access": "public"

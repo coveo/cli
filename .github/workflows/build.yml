@@ -31,7 +31,7 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3
       - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
         with:
           cache: 'npm'
@@ -57,7 +57,7 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3
       - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
         with:
           cache: 'npm'
@@ -78,7 +78,7 @@ jobs:
       # ID of the test run to identify resources to teardown.
       TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3
       - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
         with:
           cache: 'npm'
@@ -97,7 +97,7 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
@@ -153,7 +153,7 @@ jobs:
       COVEO_DISABLE_AUTOUPDATE: true
       CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3
       - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # v3
         if: ${{matrix.os == 'ubuntu-20.04'}}
         with:
@@ -184,7 +184,7 @@ jobs:
       TEST_RUN_ID: '${{ github.sha }}-${{ github.run_attempt }}g'
       CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3
       - uses: ./.github/actions/e2e-clean
         with:
           cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
@@ -205,7 +205,7 @@ jobs:
     runs-on: ubuntu-20.04
     environment: prerelease
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
