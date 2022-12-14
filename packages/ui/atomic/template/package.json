@@ -8,7 +8,7 @@
     "lint": "prettier --check . && eslint ."
   },
   "dependencies": {
-    "@coveo/atomic": "1.124.3",
+    "@coveo/atomic": "1.126.1",
     "@coveo/search-token-lambda": "1.36.0",
     "@stencil/core": "2.20.0"
   },
@@ -17,7 +17,7 @@
     "fkill": "8.0.1",
     "get-port": "6.1.2",
     "gts": "3.1.1",
-    "prettier": "2.8.0",
+    "prettier": "2.8.1",
     "rollup-plugin-dotenv": "0.4.1",
     "rollup-plugin-html": "0.2.1"
   }
