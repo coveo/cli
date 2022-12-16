@@ -46,7 +46,7 @@ HashedFolder {
           "name": "netlify.toml",
         },
         HashedFile {
-          "hash": "JcgnYZDTiQ6EqMwKIuEh9x+kLlA=",
+          "hash": "tsB6RnquGXxlrZaz2ywGjnCeWfA=",
           "name": "README.md",
         },
         HashedFile {
@@ -95,11 +95,11 @@ HashedFolder {
                   "name": "sample-component.css",
                 },
                 HashedFile {
-                  "hash": "Hc10iNLZdetWJmslIN073kcgqIo=",
+                  "hash": "vgtDa2FVnWYn9t5C1jG63Pdz7hA=",
                   "name": "sample-component.tsx",
                 },
               ],
-              "hash": "a6roJ6GZ6LokDTmBQ+gUBFvibHw=",
+              "hash": "X9NLRdpTye/6iMyj9Y0ddiaI53Y=",
               "name": "sample-component",
             },
             HashedFolder {
@@ -109,7 +109,7 @@ HashedFolder {
                   "name": "sample-result-component.css",
                 },
                 HashedFile {
-                  "hash": "t5lGbTWEHgY4Bp2hhfFGNxq0bXU=",
+                  "hash": "uNaVrxKWu4DcnVJTCz+9hVGWQ2Q=",
                   "name": "sample-result-component.tsx",
                 },
               ],
@@ -156,7 +156,7 @@ HashedFolder {
       "name": "start-netlify.mjs",
     },
     HashedFile {
-      "hash": "XiXrxQ8C2vt88gPhq3hGtPIJ5Yg=",
+      "hash": "9nyo2P7hCKS4uXz6KBbyR2tzRtY=",
       "name": "tsconfig.json",
     },
   ],
@@ -260,11 +260,11 @@ HashedFolder {
                   "name": "sample-component.css",
                 },
                 HashedFile {
-                  "hash": "Hc10iNLZdetWJmslIN073kcgqIo=",
+                  "hash": "vgtDa2FVnWYn9t5C1jG63Pdz7hA=",
                   "name": "sample-component.tsx",
                 },
               ],
-              "hash": "a6roJ6GZ6LokDTmBQ+gUBFvibHw=",
+              "hash": "X9NLRdpTye/6iMyj9Y0ddiaI53Y=",
               "name": "sample-component",
             },
             HashedFolder {
@@ -274,7 +274,7 @@ HashedFolder {
                   "name": "sample-result-component.css",
                 },
                 HashedFile {
-                  "hash": "t5lGbTWEHgY4Bp2hhfFGNxq0bXU=",
+                  "hash": "uNaVrxKWu4DcnVJTCz+9hVGWQ2Q=",
                   "name": "sample-result-component.tsx",
                 },
               ],
@@ -321,7 +321,7 @@ HashedFolder {
       "name": "start-netlify.mjs",
     },
     HashedFile {
-      "hash": "XiXrxQ8C2vt88gPhq3hGtPIJ5Yg=",
+      "hash": "9nyo2P7hCKS4uXz6KBbyR2tzRtY=",
       "name": "tsconfig.json",
     },
   ],
@@ -437,7 +437,7 @@ HashedFolder {
           "name": "style",
         },
       ],
-      "hash": "UGvI/Ocq3aNPnCaBRFDOYKyXFAA=",
+      "hash": "tIvV8gWPMiQVRjCjzTNTfEEOoUQ=",
       "name": "src",
     },
     HashedFile {
@@ -445,11 +445,11 @@ HashedFolder {
       "name": "start-netlify.mjs",
     },
     HashedFile {
-      "hash": "XiXrxQ8C2vt88gPhq3hGtPIJ5Yg=",
+      "hash": "9nyo2P7hCKS4uXz6KBbyR2tzRtY=",
       "name": "tsconfig.json",
     },
   ],
-  "hash": "dbqs7z5LOY5afIpuK0dN+snFmkk=",
+  "hash": "hREXUcwShvwFXr8i+e0Mtt3BLnE=",
   "name": "normalizedDir",
 }
 `;
@@ -569,7 +569,7 @@ HashedFolder {
       "name": "start-netlify.mjs",
     },
     HashedFile {
-      "hash": "XiXrxQ8C2vt88gPhq3hGtPIJ5Yg=",
+      "hash": "9nyo2P7hCKS4uXz6KBbyR2tzRtY=",
       "name": "tsconfig.json",
     },
   ],
