@@ -7,7 +7,7 @@ import {
   buildSearchStatus,
   buildPager,
   Unsubscribe,
-} from '@coveo/atomic/headless';
+} from '@coveo/headless';
 
 /**
  * Sample custom Atomic component, initializing itself against a parent search interface in order to retrieve the bindings.
