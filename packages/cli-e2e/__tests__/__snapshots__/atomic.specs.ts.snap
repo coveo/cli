@@ -62,7 +62,7 @@ HashedFolder {
       "name": "netlify.toml",
     },
     HashedFile {
-      "hash": "sHQjSgNkkzGDXBmN+aw/aMx7O1g=",
+      "hash": "tsB6RnquGXxlrZaz2ywGjnCeWfA=",
       "name": "README.md",
     },
     HashedFolder {
@@ -113,11 +113,11 @@ HashedFolder {
                   "name": "sample-result-component.tsx",
                 },
               ],
-              "hash": "KiAmaY02cMdCGTIWhsuqogs7zKk=",
+              "hash": "lIIVFoYP+9d6H0rrdSp9lYPxeWw=",
               "name": "sample-result-component",
             },
           ],
-          "hash": "fzMFT63mCvo5uu2exrKKhI2gGM8=",
+          "hash": "lQPP0quh43EHXmhkaFBG33qW+1A=",
           "name": "components",
         },
         HashedFile {
@@ -227,7 +227,7 @@ HashedFolder {
       "name": "netlify.toml",
     },
     HashedFile {
-      "hash": "sHQjSgNkkzGDXBmN+aw/aMx7O1g=",
+      "hash": "tsB6RnquGXxlrZaz2ywGjnCeWfA=",
       "name": "README.md",
     },
     HashedFolder {
@@ -278,11 +278,11 @@ HashedFolder {
                   "name": "sample-result-component.tsx",
                 },
               ],
-              "hash": "KiAmaY02cMdCGTIWhsuqogs7zKk=",
+              "hash": "lIIVFoYP+9d6H0rrdSp9lYPxeWw=",
               "name": "sample-result-component",
             },
           ],
-          "hash": "fzMFT63mCvo5uu2exrKKhI2gGM8=",
+          "hash": "lQPP0quh43EHXmhkaFBG33qW+1A=",
           "name": "components",
         },
         HashedFile {
@@ -313,7 +313,7 @@ HashedFolder {
           "name": "style",
         },
       ],
-      "hash": "fTp/vtQ1keqpa0vWOA+VJlSEaFk=",
+      "hash": "UZ35HpT9JE5Y/7Sbk5K8Q2tlfQ8=",
       "name": "src",
     },
     HashedFile {
@@ -325,7 +325,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "qiQpjO78qNq7c1hobjxhbaa2vSY=",
+  "hash": "HSw9W0o0wI7BWjBbiVcl9fLkMRI=",
   "name": "normalizedDir",
 }
 `;
@@ -338,7 +338,7 @@ HashedFolder {
       "name": "netlify.toml",
     },
     HashedFile {
-      "hash": "sHQjSgNkkzGDXBmN+aw/aMx7O1g=",
+      "hash": "tsB6RnquGXxlrZaz2ywGjnCeWfA=",
       "name": "README.md",
     },
     HashedFolder {
@@ -462,7 +462,7 @@ HashedFolder {
       "name": "netlify.toml",
     },
     HashedFile {
-      "hash": "sHQjSgNkkzGDXBmN+aw/aMx7O1g=",
+      "hash": "tsB6RnquGXxlrZaz2ywGjnCeWfA=",
       "name": "README.md",
     },
     HashedFolder {
