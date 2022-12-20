@@ -35,7 +35,7 @@ export class SnapshotOperationTimeoutError
       } operation is taking a long time to complete.
     Run the following command to monitor the operation:
 
-      ${blueBright`coveo org:resources:monitor ${snapshot.id} -t ${snapshot.targetId}`}`,
+      ${blueBright`coveo org:resources:monitor ${snapshot.id} -o ${snapshot.targetId}`}`,
       {level: SeverityLevel.Info}
     );
   }
