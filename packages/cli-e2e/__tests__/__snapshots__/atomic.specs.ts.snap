@@ -62,7 +62,7 @@ HashedFolder {
       "name": "netlify.toml",
     },
     HashedFile {
-      "hash": "sHQjSgNkkzGDXBmN+aw/aMx7O1g=",
+      "hash": "tsB6RnquGXxlrZaz2ywGjnCeWfA=",
       "name": "README.md",
     },
     HashedFolder {
@@ -77,15 +77,15 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "YY+tyg0Mw+JNjYdifQfLqfDUASQ=",
+                  "hash": "yYnkMNFHBU75Q1vjLZNnBzeTT94=",
                   "name": "results-manager.tsx",
                 },
                 HashedFile {
-                  "hash": "XRPU8q6nh23adL66sq+HEqg+lCY=",
+                  "hash": "UToKXYP7QMQqwNGjWlXxvQC5n/Q=",
                   "name": "template-1.html",
                 },
               ],
-              "hash": "jh83V2cKEQIWFje8KVLl+s96OXA=",
+              "hash": "TBhnmXBlTTD0uS57sAy/ClXcfG4=",
               "name": "results-manager",
             },
             HashedFolder {
@@ -95,11 +95,11 @@ HashedFolder {
                   "name": "sample-component.css",
                 },
                 HashedFile {
-                  "hash": "Hc10iNLZdetWJmslIN073kcgqIo=",
+                  "hash": "vgtDa2FVnWYn9t5C1jG63Pdz7hA=",
                   "name": "sample-component.tsx",
                 },
               ],
-              "hash": "a6roJ6GZ6LokDTmBQ+gUBFvibHw=",
+              "hash": "X9NLRdpTye/6iMyj9Y0ddiaI53Y=",
               "name": "sample-component",
             },
             HashedFolder {
@@ -109,19 +109,19 @@ HashedFolder {
                   "name": "sample-result-component.css",
                 },
                 HashedFile {
-                  "hash": "t5lGbTWEHgY4Bp2hhfFGNxq0bXU=",
+                  "hash": "uNaVrxKWu4DcnVJTCz+9hVGWQ2Q=",
                   "name": "sample-result-component.tsx",
                 },
               ],
-              "hash": "KiAmaY02cMdCGTIWhsuqogs7zKk=",
+              "hash": "lIIVFoYP+9d6H0rrdSp9lYPxeWw=",
               "name": "sample-result-component",
             },
           ],
-          "hash": "fzMFT63mCvo5uu2exrKKhI2gGM8=",
+          "hash": "j2/Y4dEB9vQhiRQpZDP+O32d1yY=",
           "name": "components",
         },
         HashedFile {
-          "hash": "B8YfCYuao2stXw64J6gW1TONNVg=",
+          "hash": "2/Ssowtzkh/hx4e9vrMi11FFp1Q=",
           "name": "components.d.ts",
         },
         HashedFile {
@@ -148,7 +148,7 @@ HashedFolder {
           "name": "style",
         },
       ],
-      "hash": "MyBnsgmKg3qrQRu4sQZ7FfT7jgQ=",
+      "hash": "5Sva7Vq7EY46mMhGfL90ELhMWPY=",
       "name": "src",
     },
     HashedFile {
@@ -156,11 +156,11 @@ HashedFolder {
       "name": "start-netlify.mjs",
     },
     HashedFile {
-      "hash": "XiXrxQ8C2vt88gPhq3hGtPIJ5Yg=",
+      "hash": "9nyo2P7hCKS4uXz6KBbyR2tzRtY=",
       "name": "tsconfig.json",
     },
   ],
-  "hash": "3hfx19GW+7poeUXP9QQZn5h9nn0=",
+  "hash": "uP/pVsW9mwmxCLG+4xF/lAQoqlo=",
   "name": "normalizedDir",
 }
 `;
@@ -173,7 +173,7 @@ HashedFolder {
       "name": "netlify.toml",
     },
     HashedFile {
-      "hash": "sHQjSgNkkzGDXBmN+aw/aMx7O1g=",
+      "hash": "tsB6RnquGXxlrZaz2ywGjnCeWfA=",
       "name": "README.md",
     },
     HashedFolder {
@@ -201,15 +201,15 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "ErdFGgbxq+C0LOYeQvVh59O3JYA=",
+                  "hash": "825kP1s1AjeW6LxFVkzMpo89ocw=",
                   "name": "results-manager.tsx",
                 },
                 HashedFile {
-                  "hash": "Xff4jn7lIoJUUtjDjOH+FACRciM=",
+                  "hash": "o3HO4XHkT+eWGdwQs9Vd/0evcU4=",
                   "name": "template-1.html",
                 },
               ],
-              "hash": "gcA5JEvFE0rPliUetRfIoo2EP+Q=",
+              "hash": "y1rWovg+gqLwUrWSz8SCjmEanGw=",
               "name": "results-manager",
             },
             HashedFolder {
@@ -219,11 +219,11 @@ HashedFolder {
                   "name": "sample-component.css",
                 },
                 HashedFile {
-                  "hash": "YTj99Fegnant/k2ql9TPe2YMIKI=",
+                  "hash": "BmxCGos0rMicK/0OnfggnN3LfjA=",
                   "name": "sample-component.tsx",
                 },
               ],
-              "hash": "q1Hnmgypio/LCK0csDi0uwZUZBg=",
+              "hash": "xXlKrMsYuYL84uzxUsvWSINRar0=",
               "name": "sample-component",
             },
             HashedFolder {
@@ -233,15 +233,15 @@ HashedFolder {
                   "name": "sample-result-component.css",
                 },
                 HashedFile {
-                  "hash": "WTNvX4aKbAWuOwDGCn8De81zB24=",
+                  "hash": "d6KwN3ynLpzapNKcDIf8ytG9yHE=",
                   "name": "sample-result-component.tsx",
                 },
               ],
-              "hash": "CUouJ7KRaYkS35p9RQ6d7HwrEwQ=",
+              "hash": "TEbaVqLTCYBPiOLO0nll36zByWI=",
               "name": "sample-result-component",
             },
           ],
-          "hash": "sKU3WMjer0bAf7UtOHeZHkBNEmE=",
+          "hash": "PyAhS46kIM+56HBW7RpNkhTAqD0=",
           "name": "components",
         },
         HashedFile {
@@ -272,7 +272,7 @@ HashedFolder {
           "name": "style",
         },
       ],
-      "hash": "UGvI/Ocq3aNPnCaBRFDOYKyXFAA=",
+      "hash": "m5ExEuYjubG6JdFM+3txDoyIXDY=",
       "name": "src",
     },
     HashedFile {
@@ -280,11 +280,11 @@ HashedFolder {
       "name": "start-netlify.mjs",
     },
     HashedFile {
-      "hash": "XiXrxQ8C2vt88gPhq3hGtPIJ5Yg=",
+      "hash": "9nyo2P7hCKS4uXz6KBbyR2tzRtY=",
       "name": "tsconfig.json",
     },
   ],
-  "hash": "dbqs7z5LOY5afIpuK0dN+snFmkk=",
+  "hash": "yN74X4FZ/Uo/a9tcBxwM9Fpd/AY=",
   "name": "normalizedDir",
 }
 `;
@@ -297,7 +297,7 @@ HashedFolder {
       "name": "netlify.toml",
     },
     HashedFile {
-      "hash": "sHQjSgNkkzGDXBmN+aw/aMx7O1g=",
+      "hash": "tsB6RnquGXxlrZaz2ywGjnCeWfA=",
       "name": "README.md",
     },
     HashedFolder {
@@ -343,11 +343,11 @@ HashedFolder {
                   "name": "sample-component.css",
                 },
                 HashedFile {
-                  "hash": "YTj99Fegnant/k2ql9TPe2YMIKI=",
+                  "hash": "BmxCGos0rMicK/0OnfggnN3LfjA=",
                   "name": "sample-component.tsx",
                 },
               ],
-              "hash": "q1Hnmgypio/LCK0csDi0uwZUZBg=",
+              "hash": "xXlKrMsYuYL84uzxUsvWSINRar0=",
               "name": "sample-component",
             },
             HashedFolder {
@@ -357,15 +357,15 @@ HashedFolder {
                   "name": "sample-result-component.css",
                 },
                 HashedFile {
-                  "hash": "WTNvX4aKbAWuOwDGCn8De81zB24=",
+                  "hash": "d6KwN3ynLpzapNKcDIf8ytG9yHE=",
                   "name": "sample-result-component.tsx",
                 },
               ],
-              "hash": "CUouJ7KRaYkS35p9RQ6d7HwrEwQ=",
+              "hash": "TEbaVqLTCYBPiOLO0nll36zByWI=",
               "name": "sample-result-component",
             },
           ],
-          "hash": "bCmtp7oSx57hExkjNmsDKz/kH/I=",
+          "hash": "v5QsIbKPhqUjN5T705ILECqNNNg=",
           "name": "components",
         },
         HashedFile {
@@ -396,7 +396,7 @@ HashedFolder {
           "name": "style",
         },
       ],
-      "hash": "Aoo+O/XADnvB2BB2L7rxMNSElVQ=",
+      "hash": "DgwSDd7NKuEP9HKGZtLTMpgeU54=",
       "name": "src",
     },
     HashedFile {
@@ -404,11 +404,11 @@ HashedFolder {
       "name": "start-netlify.mjs",
     },
     HashedFile {
-      "hash": "XiXrxQ8C2vt88gPhq3hGtPIJ5Yg=",
+      "hash": "9nyo2P7hCKS4uXz6KBbyR2tzRtY=",
       "name": "tsconfig.json",
     },
   ],
-  "hash": "LollTEIcqbvmu3s05590vR40Erc=",
+  "hash": "1ktzW6z31O95vrmeruX0xMYNAno=",
   "name": "normalizedDir",
 }
 `;
