@@ -43,11 +43,11 @@ jobs:
             for: 'linux install kit'
 
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
         with:
           # pulls all commits (needed for finding the @coveo/cli version to release)
           fetch-depth: 0
-      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
+      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
       - name: Setup
         run: npm i
       - name: Get tags
@@ -127,7 +127,7 @@ jobs:
           mv "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64-signed.pkg" "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64.pkg"
           rm notarization-arm64.zip notarization-x64.zip
       - name: Upload binaries
-        uses: svenstaro/upload-release-action@133984371c30d34e38222a64855679a414cb7575 # tag=2.3.0
+        uses: svenstaro/upload-release-action@2728235f7dc9ff598bd86ce3c274b74f802d2208 # 2.4.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./packages/cli/core/dist/**/*

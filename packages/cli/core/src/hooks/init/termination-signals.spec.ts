@@ -7,7 +7,7 @@ import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {flush} from '@coveo/cli-commons/analytics/amplitudeClient';
 import {handleTerminationSignals, exitSignals} from './termination-signals';
 
-type supportedExitSignals = typeof exitSignals[number];
+type supportedExitSignals = (typeof exitSignals)[number];
 
 describe('termination-signal', () => {
   const mockedFlush = jest.mocked(flush);
