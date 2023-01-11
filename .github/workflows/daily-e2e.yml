@@ -32,13 +32,13 @@ jobs:
       # ID of the test run to identify resources to teardown.
       TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}-dailyg'
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
       - name: Checkout last tag
         run: git checkout $(git describe --abbrev=0 --tags)
-      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
+      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
         with:
           cache: 'npm'
           node-version-file: '.nvmrc'
@@ -75,7 +75,7 @@ jobs:
       COVEO_DISABLE_AUTOUPDATE: true
       CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
@@ -99,7 +99,7 @@ jobs:
       TEST_RUN_ID: '${{ github.sha }}-${{ github.run_attempt }}-dailyg'
       CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
