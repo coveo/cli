@@ -27,3 +27,16 @@ export class InvalidStateError extends CLIBaseError {
     Received state: ${receivedState}`;
   }
 }
+
+export class OAuthPortBusy extends CLIBaseError {
+  public name = 'OAuth ports busy';
+  public constructor() {
+    super();
+
+    this.message = dedent`
+      TCP port 32111 and 52296 are both busy.
+      The CLI needs at least of one of them to complete the login process.
+      Free one of them or use \`coveo auth:token\` to authenticate.
+    `;
+  }
+}

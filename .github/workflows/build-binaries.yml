@@ -14,6 +14,18 @@ jobs:
     environment: 'Release'
     env:
       GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
+      # Base64 of the certificat
+      MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+      # Certificat password
+      MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+      # Keychain password
+      MACOS_KEYCHAIN_PWD: ${{ secrets.MACOS_KEYCHAIN_PWD }}
+      # Apple developer email, the same used for the Apple Developer subscription
+      MACOS_APP_USERNAME: ${{ secrets.MACOS_APP_USERNAME }}
+      # App-specific password generated in apple.com for the notarization step
+      MACOS_APP_SPECIFIC_PWD: ${{ secrets.MACOS_APP_SPECIFIC_PWD }}
+      # Team ID from the Apple Developer subscription
+      MACOS_WWDR_TEAM_ID: ${{ secrets.MACOS_WWDR_TEAM_ID }}
     name: Package for ${{ matrix.for }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -31,17 +43,33 @@ jobs:
             for: 'linux install kit'
 
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
         with:
           # pulls all commits (needed for finding the @coveo/cli version to release)
           fetch-depth: 0
-      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
+      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
       - name: Setup
         run: npm i
       - name: Get tags
         run: node ./scripts/get-tags.mjs
       - name: Build
         run: npm run build
+      - name: Setup Temporary Keychain
+        if: ${{matrix.os == 'macos-latest'}}
+        run: |
+          echo "Decoding base64 certificate"
+          echo "$MACOS_CERTIFICATE" | base64 --decode > certificate.p12
+
+          echo "Creating temporary keychain"
+          security create-keychain -p "$MACOS_KEYCHAIN_PWD" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" build.keychain
+
+          echo "Adding certificate to keychain"
+          security import certificate.p12 -k build.keychain -P "$MACOS_CERTIFICATE_PWD" -T /usr/bin/codesign -T /usr/bin/productsign
+
+          echo "Enabling productsign from a non user interactive shell"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$MACOS_KEYCHAIN_PWD" build.keychain
       - name: Create install kits
         working-directory: ./packages/cli/core
         run: ../../../node_modules/oclif/bin/run pack${{ matrix.pack-command }}
@@ -52,7 +80,7 @@ jobs:
       - name: Get commit hash of binaries
         run: node ../../../scripts/get-commit-short-hash.mjs
         working-directory: ./packages/cli/core
-      - name: Sign Executable
+      - name: Sign Executable (Windows)
         working-directory: ./packages/cli/core
         if: ${{matrix.os == 'windows-latest'}}
         run: |
@@ -61,8 +89,45 @@ jobs:
           certutil -decode ./tmp/cert.txt ./tmp/cert.pfx
           Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64.exe" -PassThru | Wait-Process
           Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-${{env.cliversion}}-${{env.commitSHA1}}-x86.exe" -PassThru | Wait-Process
+      - name: Sign Executable (macOS)
+        working-directory: ./packages/cli/core/dist/macos
+        if: ${{matrix.os == 'macos-latest'}}
+        run: |
+          echo "Signing for ARM64 architecture"
+          security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" build.keychain
+          productsign --sign $MACOS_WWDR_TEAM_ID coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64.pkg coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64-signed.pkg --keychain build.keychain
+
+          echo "Signing for X64 architecture"
+          security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" build.keychain
+          productsign --sign $MACOS_WWDR_TEAM_ID coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64.pkg coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64-signed.pkg --keychain build.keychain
+      - name: Notarize Executable (macOS)
+        working-directory: ./packages/cli/core/dist/macos
+        if: ${{matrix.os == 'macos-latest'}}
+        run: |
+          echo "Unlocking the keychain"
+          security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" build.keychain
+
+          echo "Creating keychain profile"
+          xcrun notarytool store-credentials "notarytool-profile" --apple-id "${{ secrets.MACOS_APP_USERNAME }}" --team-id "${{ secrets.MACOS_WWDR_TEAM_ID }}" --password "${{ secrets.MACOS_APP_SPECIFIC_PWD }}"
+
+          echo "Creating temp notarization archive"
+          ditto -c -k --keepParent "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64-signed.pkg" "notarization-arm64.zip"
+          ditto -c -k --keepParent "coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64-signed.pkg" "notarization-x64.zip"
+
+          echo "Notarizing app"
+          xcrun notarytool submit "notarization-arm64.zip" --keychain-profile "notarytool-profile" --wait
+          xcrun notarytool submit "notarization-x64.zip" --keychain-profile "notarytool-profile" --wait
+
+          echo "Attaching staple"
+          xcrun stapler staple "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64-signed.pkg"
+          xcrun stapler staple "coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64-signed.pkg"
+
+          echo "Deleting unsigned packages"
+          mv "coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64-signed.pkg" "coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64.pkg"
+          mv "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64-signed.pkg" "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64.pkg"
+          rm notarization-arm64.zip notarization-x64.zip
       - name: Upload binaries
-        uses: svenstaro/upload-release-action@133984371c30d34e38222a64855679a414cb7575 # tag=2.3.0
+        uses: svenstaro/upload-release-action@2728235f7dc9ff598bd86ce3c274b74f802d2208 # 2.4.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./packages/cli/core/dist/**/*

@@ -1,3 +1,17 @@
+## 2.2.1 (2022-12-14)
+
+### Bug Fixes
+
+- **deps:** update all dependencies j:cdx-227 ([#1053](https://github.com/coveo/cli/issues/1053)) ([f218b3f](https://github.com/coveo/cli/commits/f218b3f2d8070890da1501622f34b757cd2ad3d9))
+- **deps:** update all dependencies j:cdx-227 ([#1066](https://github.com/coveo/cli/issues/1066)) ([12533ea](https://github.com/coveo/cli/commits/12533ea7c8182d183a7158945de742202eac0b69))
+- **deps:** update oclif packages j:cdx-227 ([#1065](https://github.com/coveo/cli/issues/1065)) ([04d1a51](https://github.com/coveo/cli/commits/04d1a517a19642a29db93d3f5b869bba91558e98))
+
+# 2.2.0 (2022-12-06)
+
+### Features
+
+- **cli:** add fallback port for oauth ([#1063](https://github.com/coveo/cli/issues/1063)) ([f33c084](https://github.com/coveo/cli/commits/f33c0840d0ca8a8e4815ca21ed6ae5c0047a07aa)), closes [#1061](https://github.com/coveo/cli/issues/1061) [#1061](https://github.com/coveo/cli/issues/1061)
+
 # 2.1.0 (2022-11-29)
 
 ### Bug Fixes

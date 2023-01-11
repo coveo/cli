@@ -20,8 +20,8 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=8192
       GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
-      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
         with:
           cache: 'npm'
           node-version-file: '.nvmrc'
@@ -39,7 +39,7 @@ jobs:
           mkdir -p sarifs
           npx snyk code test    --dev --all-projects --exclude="project.json,npm-shim" --sarif > ./sarifs/snyk-code.sarif
       - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@312e093a1892bd801f026f1090904ee8e460b9b6 # v2
+        uses: github/codeql-action/upload-sarif@959cbb7472c4d4ad70cdfe6f4976053fe48ab394 # v2
         with:
           sarif_file: ./sarifs
       - name: Check Code Scanning alerts
@@ -51,11 +51,11 @@ jobs:
     env:
       GITHUB_CREDENTIALS: ${{ secrets.CLI_RELEASE }}
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3
+      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
         with:
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'

@@ -1,3 +1,16 @@
+## 1.35.20 (2022-12-14)
+
+### Bug Fixes
+
+- **deps:** update all dependencies j:cdx-227 ([#1053](https://github.com/coveo/cli/issues/1053)) ([f218b3f](https://github.com/coveo/cli/commits/f218b3f2d8070890da1501622f34b757cd2ad3d9))
+- **deps:** update all dependencies j:cdx-227 ([#1066](https://github.com/coveo/cli/issues/1066)) ([12533ea](https://github.com/coveo/cli/commits/12533ea7c8182d183a7158945de742202eac0b69))
+
+## 1.35.19 (2022-12-06)
+
+### Bug Fixes
+
+- **angular:** project generation ([#1062](https://github.com/coveo/cli/issues/1062)) ([ecb15df](https://github.com/coveo/cli/commits/ecb15dfe96ed4fc79ddebe1a02d77b4f97e13e1f))
+
 ## 1.35.18 (2022-11-29)
 
 ### Bug Fixes

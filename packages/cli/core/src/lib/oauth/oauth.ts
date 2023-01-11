@@ -10,26 +10,28 @@ import {randomBytes} from 'crypto';
 import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
 import {OAuthClientServer} from './oauthClientServer';
 import {URL} from 'url';
+import getPort from 'get-port';
+import {OAuthPortBusy} from './authorizationError';
 
-export interface OAuthOptions {
-  port: number;
+interface OAuthOptions {
   environment: PlatformEnvironment;
   region: Region;
 }
 
 export class OAuth {
+  private static readonly AllowedPorts = [32111, 52296];
+
   private opts: OAuthOptions;
+  private _port: number | undefined = undefined;
 
   public constructor(opts?: Partial<OAuthOptions>) {
     const baseOptions: OAuthOptions = {
-      port: 32111,
       environment: DEFAULT_ENVIRONMENT,
       region: DEFAULT_REGION,
     };
 
     this.opts = {
       environment: opts?.environment || baseOptions.environment,
-      port: opts?.port || baseOptions.port,
       region: opts?.region || baseOptions.region,
     };
   }
@@ -37,31 +39,31 @@ export class OAuth {
   public async getToken() {
     const state = this.generateState(10);
     const requestHandler = new OAuthClientServer(
-      this.clientConfig,
+      await this.getClientConfig(),
       this.authServiceConfig
     );
 
     const clientServerPromise = requestHandler.startServer(
-      this.opts.port,
+      await this.getPort(),
       '127.0.0.1',
       state
     );
 
-    this.openLoginPage(state);
+    await this.openLoginPage(state);
 
     return clientServerPromise;
   }
 
-  private openLoginPage(state: string) {
-    const url = this.buildAuthorizationUrl(state);
+  private async openLoginPage(state: string) {
+    const url = await this.buildAuthorizationUrl(state);
     open(url).then((browserProcess) => {
       browserProcess.unref();
     });
   }
 
-  private buildAuthorizationUrl(state: string) {
+  private async buildAuthorizationUrl(state: string) {
     const {authorizationEndpoint} = this.authServiceConfig;
-    const {redirect_uri, client_id, scope} = this.clientConfig;
+    const {redirect_uri, client_id, scope} = await this.getClientConfig();
     const url = new URL(authorizationEndpoint);
 
     url.searchParams.append('response_type', 'code');
@@ -77,10 +79,10 @@ export class OAuth {
     return randomBytes(size).toString('hex');
   }
 
-  private get clientConfig(): ClientConfig {
+  private async getClientConfig(): Promise<ClientConfig> {
     return {
       client_id: 'cli',
-      redirect_uri: `http://127.0.0.1:${this.opts.port}`,
+      redirect_uri: `http://127.0.0.1:${await this.getPort()}`,
       scope: 'full',
     };
   }
@@ -95,5 +97,16 @@ export class OAuth {
       revocationEndpoint: `${baseURL}/logout`,
       tokenEndpoint: `${baseURL}/oauth/token`,
     };
+  }
+
+  private async getPort(): Promise<number> {
+    if (!this._port) {
+      const candidate = await getPort({port: OAuth.AllowedPorts});
+      if (!OAuth.AllowedPorts.includes(candidate)) {
+        throw new OAuthPortBusy();
+      }
+      this._port = candidate;
+    }
+    return this._port;
   }
 }
