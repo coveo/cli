@@ -156,7 +156,7 @@ describe('ui:create:atomic', () => {
 
   describe.each([
     {
-      describeName: 'when using an existing pageId (pageId not specified)',
+      describeName: 'when using an existing pageId (--pageId flag specified)',
       buildAppOptions: {
         id: 'with-page-id',
         pageId: 'fffaafcc-6863-46cb-aca3-97522fcc0f5d',
@@ -167,15 +167,6 @@ describe('ui:create:atomic', () => {
     {
       describeName: 'when using the default page config (pageId not specified)',
       buildAppOptions: {id: 'without-page-id', skipInstall: true},
-      skipBrowser: true,
-    },
-    {
-      describeName: 'when using an existing pageId (--pageId flag specified)',
-      buildAppOptions: {
-        id: 'with-page-id',
-        pageId: 'fffaafcc-6863-46cb-aca3-97522fcc0f5d',
-        skipInstall: true,
-      },
       skipBrowser: true,
     },
     {
