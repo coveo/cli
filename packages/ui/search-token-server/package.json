@@ -1,6 +1,6 @@
 {
   "name": "@coveo/search-token-server",
-  "version": "1.35.17",
+  "version": "1.35.18",
   "main": "server.ts",
   "license": "Apache-2.0",
   "repository": {
@@ -41,7 +41,7 @@
     "gts": "3.1.1",
     "jest": "29.3.1",
     "supertest": "6.3.3",
-    "ts-jest": "29.0.3"
+    "ts-jest": "29.0.4"
   },
   "publishConfig": {
     "access": "public"
