@@ -67,10 +67,21 @@ npx @coveo/cli
 
 To validate your CLI installation, use the `coveo --version` command:
 
+<!-- usage -->
+
+```sh-session
+$ npm install -g @coveo/cli
+$ coveo COMMAND
+running command...
+$ coveo (--version)
+@coveo/cli/2.2.0 linux-x64 node-v18.12.1
+$ coveo --help [COMMAND]
+USAGE
+  $ coveo COMMAND
+...
 ```
-$ coveo --version
-@coveo/cli/1.19.0 darwin-x64 node-v16.10.0
-```
+
+<!-- usagestop -->
 
 ## Getting started
 

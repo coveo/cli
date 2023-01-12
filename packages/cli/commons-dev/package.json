@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli-commons-dev",
-  "version": "6.0.1",
+  "version": "6.0.2",
   "author": "Coveo",
   "description": "Common utils for @coveo/cli plugins development",
   "license": "Apache-2.0",
@@ -22,11 +22,11 @@
     }
   },
   "dependencies": {
-    "fancy-test": "2.0.9",
+    "fancy-test": "2.0.11",
     "tslib": "2.4.1"
   },
   "devDependencies": {
-    "@types/jest": "29.2.4",
+    "@types/jest": "29.2.5",
     "typescript": "4.9.4"
   },
   "scripts": {
