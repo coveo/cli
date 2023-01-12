@@ -1,3 +1,10 @@
+## 2.2.3 (2023-01-12)
+
+### Bug Fixes
+
+- **deps:** update dependency @oclif/core to v1.24.0 j:cdx-227 ([#1082](https://github.com/coveo/cli/issues/1082)) ([41f4867](https://github.com/coveo/cli/commits/41f4867afc0ac2c49b6d87c0d698377f47575912))
+- update organization flag ([#1076](https://github.com/coveo/cli/issues/1076)) ([85552b8](https://github.com/coveo/cli/commits/85552b864a08227d90c36bac4e1cf111913d24b0)), closes [#773](https://github.com/coveo/cli/issues/773)
+
 ## 2.2.1 (2022-12-14)
 
 ### Bug Fixes

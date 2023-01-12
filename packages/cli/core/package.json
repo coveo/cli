@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "author": "Coveo",
   "description": "Coveo CLI",
   "engines": {
@@ -9,8 +9,8 @@
   "dependencies": {
     "@amplitude/identify": "^1.9.0",
     "@amplitude/node": "^1.9.0",
-    "@coveo/cli-commons": "2.2.2",
-    "@coveo/cli-plugin-source": "2.0.3",
+    "@coveo/cli-commons": "2.2.3",
+    "@coveo/cli-plugin-source": "2.0.4",
     "@coveo/platform-client": "37.13.0",
     "@coveo/push-api-client": "^2.7.7",
     "@oclif/core": "1.24.0",
@@ -43,10 +43,10 @@
   "devDependencies": {
     "@amplitude/types": "1.10.2",
     "@babel/core": "7.20.12",
-    "@coveo/angular": "1.35.21",
+    "@coveo/angular": "1.35.22",
     "@coveo/cli-commons-dev": "6.0.2",
-    "@coveo/cra-template": "1.36.3",
-    "@coveo/create-atomic": "1.36.2",
+    "@coveo/cra-template": "1.36.4",
+    "@coveo/create-atomic": "1.36.3",
     "@coveo/create-headless-vue": "1.0.3",
     "@oclif/test": "2.2.20",
     "@types/archiver": "5.3.1",

@@ -2,7 +2,7 @@
   "package": {
     "dependencies": {
       "@coveo/headless": "latest",
-      "@coveo/search-token-server": "1.35.18",
+      "@coveo/search-token-server": "1.35.19",
       "@mui/material": "5.11.4",
       "@emotion/react": "11.10.5",
       "@emotion/styled": "11.10.5",

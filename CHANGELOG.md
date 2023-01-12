@@ -1,3 +1,15 @@
+# release-9 (2023-01-12)
+
+### Bug Fixes
+
+- **deps:** update dependency @oclif/core to v1.24.0 j:cdx-227 ([#1082](https://github.com/coveo/cli/issues/1082)) ([41f4867](https://github.com/coveo/cli/commits/41f4867afc0ac2c49b6d87c0d698377f47575912))
+- **deps:** update oclif packages j:cdx-227 ([#1075](https://github.com/coveo/cli/issues/1075)) ([f36d1e8](https://github.com/coveo/cli/commits/f36d1e8213748252a12881c473f576ce8146f236))
+- update organization flag ([#1076](https://github.com/coveo/cli/issues/1076)) ([85552b8](https://github.com/coveo/cli/commits/85552b864a08227d90c36bac4e1cf111913d24b0)), closes [#773](https://github.com/coveo/cli/issues/773)
+
+### Features
+
+- migrate to Atomic V2 ([#1074](https://github.com/coveo/cli/issues/1074)) ([50c2f3a](https://github.com/coveo/cli/commits/50c2f3acdeaaf605dde3a8bb3a0c400b35de26d8))
+
 # release-8 (2022-12-14)
 
 ### Bug Fixes
