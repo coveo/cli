@@ -74,6 +74,7 @@ const getCliChangelog = () => {
     CHANGELOG.md
     package.json
     package-lock.json
+    packages/ui/cra-template/template.json
     `,
     PATH
   );
