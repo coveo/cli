@@ -102,7 +102,7 @@ const getCliChangelog = () => {
 function updateRootReadme() {
   const usageRegExp = /^<!-- usage -->(.|\n)*<!-- usagestop -->$/m;
   const cliReadme = readFileSync('packages/cli/core/README.md', 'utf-8');
-  let rootReadme = readFileSync('README.md');
+  let rootReadme = readFileSync('README.md', 'utf-8');
   const cliUsage = usageRegExp.exec(cliReadme);
   rootReadme.replace(usageRegExp, cliUsage[0]);
   writeFileSync('README.md', rootReadme);
