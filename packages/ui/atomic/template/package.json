@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@coveo/atomic": "1.126.1",
-    "@coveo/search-token-lambda": "1.36.1",
+    "@coveo/search-token-lambda": "1.36.2",
     "@stencil/core": "2.21.0"
   },
   "devDependencies": {
