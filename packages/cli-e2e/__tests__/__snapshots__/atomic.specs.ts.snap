@@ -62,7 +62,7 @@ HashedFolder {
       "name": "netlify.toml",
     },
     HashedFile {
-      "hash": "sHQjSgNkkzGDXBmN+aw/aMx7O1g=",
+      "hash": "Tl9+ts5pzf64nSy0AFYC4YrDfEU=",
       "name": "README.md",
     },
     HashedFolder {
@@ -95,11 +95,11 @@ HashedFolder {
                   "name": "sample-component.css",
                 },
                 HashedFile {
-                  "hash": "Hc10iNLZdetWJmslIN073kcgqIo=",
+                  "hash": "vgtDa2FVnWYn9t5C1jG63Pdz7hA=",
                   "name": "sample-component.tsx",
                 },
               ],
-              "hash": "a6roJ6GZ6LokDTmBQ+gUBFvibHw=",
+              "hash": "X9NLRdpTye/6iMyj9Y0ddiaI53Y=",
               "name": "sample-component",
             },
             HashedFolder {
@@ -109,15 +109,15 @@ HashedFolder {
                   "name": "sample-result-component.css",
                 },
                 HashedFile {
-                  "hash": "t5lGbTWEHgY4Bp2hhfFGNxq0bXU=",
+                  "hash": "uNaVrxKWu4DcnVJTCz+9hVGWQ2Q=",
                   "name": "sample-result-component.tsx",
                 },
               ],
-              "hash": "KiAmaY02cMdCGTIWhsuqogs7zKk=",
+              "hash": "lIIVFoYP+9d6H0rrdSp9lYPxeWw=",
               "name": "sample-result-component",
             },
           ],
-          "hash": "GINvDhy6JkDUmb96DTHjFh/Pbno=",
+          "hash": "P4L7XTrq124MhpCS0FC+QMWCH1s=",
           "name": "components",
         },
         HashedFile {
@@ -148,7 +148,7 @@ HashedFolder {
           "name": "style",
         },
       ],
-      "hash": "xfEmWBhapmmvdfWfbIL7zTYrmlE=",
+      "hash": "GHDqLhyug1yPs0slpP4pjcpTszA=",
       "name": "src",
     },
     HashedFile {
@@ -156,11 +156,11 @@ HashedFolder {
       "name": "start-netlify.mjs",
     },
     HashedFile {
-      "hash": "XiXrxQ8C2vt88gPhq3hGtPIJ5Yg=",
+      "hash": "9nyo2P7hCKS4uXz6KBbyR2tzRtY=",
       "name": "tsconfig.json",
     },
   ],
-  "hash": "oBxgPkKn9fhB+CiZRIKoNW7PYO0=",
+  "hash": "IYPZbhHV11MiatYxNfpMNg0GDQ4=",
   "name": "normalizedDir",
 }
 `;
@@ -173,7 +173,7 @@ HashedFolder {
       "name": "netlify.toml",
     },
     HashedFile {
-      "hash": "sHQjSgNkkzGDXBmN+aw/aMx7O1g=",
+      "hash": "Tl9+ts5pzf64nSy0AFYC4YrDfEU=",
       "name": "README.md",
     },
     HashedFolder {
@@ -219,11 +219,11 @@ HashedFolder {
                   "name": "sample-component.css",
                 },
                 HashedFile {
-                  "hash": "YTj99Fegnant/k2ql9TPe2YMIKI=",
+                  "hash": "BmxCGos0rMicK/0OnfggnN3LfjA=",
                   "name": "sample-component.tsx",
                 },
               ],
-              "hash": "q1Hnmgypio/LCK0csDi0uwZUZBg=",
+              "hash": "xXlKrMsYuYL84uzxUsvWSINRar0=",
               "name": "sample-component",
             },
             HashedFolder {
@@ -233,15 +233,15 @@ HashedFolder {
                   "name": "sample-result-component.css",
                 },
                 HashedFile {
-                  "hash": "WTNvX4aKbAWuOwDGCn8De81zB24=",
+                  "hash": "d6KwN3ynLpzapNKcDIf8ytG9yHE=",
                   "name": "sample-result-component.tsx",
                 },
               ],
-              "hash": "CUouJ7KRaYkS35p9RQ6d7HwrEwQ=",
+              "hash": "TEbaVqLTCYBPiOLO0nll36zByWI=",
               "name": "sample-result-component",
             },
           ],
-          "hash": "E5EvuX7RNVpuDWUwcAtnrGEer9Q=",
+          "hash": "RHBvkJnM5QZtfO3PXOmGTOmHcXg=",
           "name": "components",
         },
         HashedFile {
@@ -272,7 +272,7 @@ HashedFolder {
           "name": "style",
         },
       ],
-      "hash": "1qth3tKRzzPWAg+e5OnlCPs4n/8=",
+      "hash": "ExzuDVlgzxuZSQpSLS3jWxn/eBE=",
       "name": "src",
     },
     HashedFile {
@@ -280,11 +280,11 @@ HashedFolder {
       "name": "start-netlify.mjs",
     },
     HashedFile {
-      "hash": "XiXrxQ8C2vt88gPhq3hGtPIJ5Yg=",
+      "hash": "9nyo2P7hCKS4uXz6KBbyR2tzRtY=",
       "name": "tsconfig.json",
     },
   ],
-  "hash": "j3JNELMUV+SlhXs9pPnlO/+Gkmo=",
+  "hash": "2lWgSOnEGSStntBBD3K0O+ILOu0=",
   "name": "normalizedDir",
 }
 `;
@@ -297,7 +297,7 @@ HashedFolder {
       "name": "netlify.toml",
     },
     HashedFile {
-      "hash": "sHQjSgNkkzGDXBmN+aw/aMx7O1g=",
+      "hash": "Tl9+ts5pzf64nSy0AFYC4YrDfEU=",
       "name": "README.md",
     },
     HashedFolder {
@@ -343,11 +343,11 @@ HashedFolder {
                   "name": "sample-component.css",
                 },
                 HashedFile {
-                  "hash": "YTj99Fegnant/k2ql9TPe2YMIKI=",
+                  "hash": "BmxCGos0rMicK/0OnfggnN3LfjA=",
                   "name": "sample-component.tsx",
                 },
               ],
-              "hash": "q1Hnmgypio/LCK0csDi0uwZUZBg=",
+              "hash": "xXlKrMsYuYL84uzxUsvWSINRar0=",
               "name": "sample-component",
             },
             HashedFolder {
@@ -357,15 +357,15 @@ HashedFolder {
                   "name": "sample-result-component.css",
                 },
                 HashedFile {
-                  "hash": "WTNvX4aKbAWuOwDGCn8De81zB24=",
+                  "hash": "d6KwN3ynLpzapNKcDIf8ytG9yHE=",
                   "name": "sample-result-component.tsx",
                 },
               ],
-              "hash": "CUouJ7KRaYkS35p9RQ6d7HwrEwQ=",
+              "hash": "TEbaVqLTCYBPiOLO0nll36zByWI=",
               "name": "sample-result-component",
             },
           ],
-          "hash": "bCmtp7oSx57hExkjNmsDKz/kH/I=",
+          "hash": "v5QsIbKPhqUjN5T705ILECqNNNg=",
           "name": "components",
         },
         HashedFile {
@@ -396,7 +396,7 @@ HashedFolder {
           "name": "style",
         },
       ],
-      "hash": "Aoo+O/XADnvB2BB2L7rxMNSElVQ=",
+      "hash": "DgwSDd7NKuEP9HKGZtLTMpgeU54=",
       "name": "src",
     },
     HashedFile {
@@ -404,11 +404,11 @@ HashedFolder {
       "name": "start-netlify.mjs",
     },
     HashedFile {
-      "hash": "XiXrxQ8C2vt88gPhq3hGtPIJ5Yg=",
+      "hash": "9nyo2P7hCKS4uXz6KBbyR2tzRtY=",
       "name": "tsconfig.json",
     },
   ],
-  "hash": "LollTEIcqbvmu3s05590vR40Erc=",
+  "hash": "0dKsmCapsdkr5IYsS8f74DLVZWs=",
   "name": "normalizedDir",
 }
 `;
