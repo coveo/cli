@@ -62,7 +62,7 @@ HashedFolder {
       "name": "netlify.toml",
     },
     HashedFile {
-      "hash": "tsB6RnquGXxlrZaz2ywGjnCeWfA=",
+      "hash": "Tl9+ts5pzf64nSy0AFYC4YrDfEU=",
       "name": "README.md",
     },
     HashedFolder {
@@ -117,7 +117,7 @@ HashedFolder {
               "name": "sample-result-component",
             },
           ],
-          "hash": "GINvDhy6JkDUmb96DTHjFh/Pbno=",
+          "hash": "P4L7XTrq124MhpCS0FC+QMWCH1s=",
           "name": "components",
         },
         HashedFile {
@@ -148,7 +148,7 @@ HashedFolder {
           "name": "style",
         },
       ],
-      "hash": "xfEmWBhapmmvdfWfbIL7zTYrmlE=",
+      "hash": "GHDqLhyug1yPs0slpP4pjcpTszA=",
       "name": "src",
     },
     HashedFile {
@@ -160,7 +160,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "oBxgPkKn9fhB+CiZRIKoNW7PYO0=",
+  "hash": "IYPZbhHV11MiatYxNfpMNg0GDQ4=",
   "name": "normalizedDir",
 }
 `;
@@ -173,7 +173,7 @@ HashedFolder {
       "name": "netlify.toml",
     },
     HashedFile {
-      "hash": "tsB6RnquGXxlrZaz2ywGjnCeWfA=",
+      "hash": "Tl9+ts5pzf64nSy0AFYC4YrDfEU=",
       "name": "README.md",
     },
     HashedFolder {
@@ -241,7 +241,7 @@ HashedFolder {
               "name": "sample-result-component",
             },
           ],
-          "hash": "E5EvuX7RNVpuDWUwcAtnrGEer9Q=",
+          "hash": "RHBvkJnM5QZtfO3PXOmGTOmHcXg=",
           "name": "components",
         },
         HashedFile {
@@ -272,7 +272,7 @@ HashedFolder {
           "name": "style",
         },
       ],
-      "hash": "1qth3tKRzzPWAg+e5OnlCPs4n/8=",
+      "hash": "ExzuDVlgzxuZSQpSLS3jWxn/eBE=",
       "name": "src",
     },
     HashedFile {
@@ -284,7 +284,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "j3JNELMUV+SlhXs9pPnlO/+Gkmo=",
+  "hash": "2lWgSOnEGSStntBBD3K0O+ILOu0=",
   "name": "normalizedDir",
 }
 `;
@@ -297,7 +297,7 @@ HashedFolder {
       "name": "netlify.toml",
     },
     HashedFile {
-      "hash": "tsB6RnquGXxlrZaz2ywGjnCeWfA=",
+      "hash": "Tl9+ts5pzf64nSy0AFYC4YrDfEU=",
       "name": "README.md",
     },
     HashedFolder {
@@ -408,7 +408,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "1ktzW6z31O95vrmeruX0xMYNAno=",
+  "hash": "0dKsmCapsdkr5IYsS8f74DLVZWs=",
   "name": "normalizedDir",
 }
 `;
