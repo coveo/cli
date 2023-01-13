@@ -2,10 +2,10 @@
   "enabled": true,
   "extends": [
     ":semanticPrefixFixDepsChoreOthers",
-    "helpers:pinGitHubActionDigests"
+    "helpers:pinGitHubActionDigests",
+    "schedule:earlyMondays"
   ],
   "labels": ["dependencies"],
-  "schedule": ["before 2am"],
   "vulnerabilityAlerts": {
     "commitMessageSuffix": "[SECURITY] J:CDX-227"
   },
