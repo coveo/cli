@@ -1,21 +1,16 @@
 import { fileURLToPath, URL } from "node:url";
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
+import coveoPlugin from "./src/server";
 import vue from "@vitejs/plugin-vue";
 import vueJsx from "@vitejs/plugin-vue-jsx";
-import mix from "vite-plugin-mix";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    vue(),
-    vueJsx(),
-    mix({
-      handler: "./server/app.ts",
-    }),
-  ],
+  plugins: [coveoPlugin(loadEnv("", process.cwd())), vue(), vueJsx()],
   resolve: {
     alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
+      "@": fileURLToPath(new URL("./src/ui", import.meta.url)),
+      commons: fileURLToPath(new URL("./src/commons", import.meta.url)),
     },
   },
 });

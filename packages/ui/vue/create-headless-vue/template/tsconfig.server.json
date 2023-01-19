@@ -6,10 +6,12 @@
     "vitest.config.*",
     "cypress.config.*",
     "playwright.config.*",
-    "server/**/*"
+    "src/server/**/*"
   ],
   "compilerOptions": {
     "composite": true,
+    "module": "Node16",
+    "moduleResolution": "node",
     "types": ["node"]
   }
 }
