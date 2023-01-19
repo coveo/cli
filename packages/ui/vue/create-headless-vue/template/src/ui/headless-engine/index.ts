@@ -21,8 +21,8 @@ async function getEngine(): Promise<SearchEngine> {
   const { token } = await res.json();
   return buildSearchEngine({
     configuration: {
-      platformUrl: import.meta.env.VITE_APP_PLATFORM_URL,
-      organizationId: import.meta.env.VITE_APP_ORGANIZATION_ID,
+      platformUrl: import.meta.env.VITE_COVEO_PLATFORM_URL,
+      organizationId: import.meta.env.VITE_COVEO_ORGANIZATION_ID,
       accessToken: token,
       renewAccessToken: async () => {
         const res = await fetch(endpoint);

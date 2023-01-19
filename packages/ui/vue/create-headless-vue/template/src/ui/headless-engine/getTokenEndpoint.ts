@@ -3,5 +3,7 @@ function getEndpointToLocalServer() {
 }
 
 export default function getTokenEndpoint() {
-  return import.meta.env.VITE_APP_TOKEN_ENDPOINT || getEndpointToLocalServer();
+  return (
+    import.meta.env.VITE_COVEO_TOKEN_ENDPOINT || getEndpointToLocalServer()
+  );
 }

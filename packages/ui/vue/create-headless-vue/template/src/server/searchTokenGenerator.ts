@@ -24,17 +24,17 @@ export const generateToken =
        * You can also target a different region (e.g. https://platform-au.cloud.coveo.com)
        * See https://docs.coveo.com/en/2976/coveo-solutions/deployment-regions-and-strategies#data-residency
        */
-      host: config.VITE_APP_PLATFORM_URL,
+      host: config.VITE_COVEO_PLATFORM_URL,
       /**
        * The unique identifier of your Coveo organization.
        * To retrieve your org ID, see https://docs.coveo.com/en/148/manage-an-organization/retrieve-the-organization-id
        */
-      organizationId: config.VITE_APP_ORGANIZATION_ID,
+      organizationId: config.VITE_COVEO_ORGANIZATION_ID,
       /**
        * An API key with the impersonate privilege in the target organization.
        * See https://docs.coveo.com/en/1718/manage-an-organization/manage-api-keys#add-an-api-key
        */
-      accessToken: config.VITE_APP_API_KEY,
+      accessToken: config.SERVER_COVEO_API_KEY,
     });
     platform.search
       .createToken({
@@ -46,7 +46,7 @@ export const generateToken =
          */
         userIds: [
           {
-            name: config.VITE_APP_USER_EMAIL,
+            name: config.VITE_COVEO_USER_EMAIL,
             provider: "Email Security Provider",
             type: RestUserIdType.User,
           },

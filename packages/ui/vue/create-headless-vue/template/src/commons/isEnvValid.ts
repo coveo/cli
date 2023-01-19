@@ -1,10 +1,11 @@
 import z from "zod";
+import { isBrowser } from "browser-or-node";
 
 const zValidEnvironment = z.object({
-  VITE_APP_PLATFORM_URL: z.optional(z.string()),
-  VITE_APP_ORGANIZATION_ID: z.string(),
-  VITE_APP_API_KEY: z.string(),
-  VITE_APP_USER_EMAIL: z.string(),
+  VITE_COVEO_PLATFORM_URL: z.optional(z.string()),
+  VITE_COVEO_ORGANIZATION_ID: z.string(),
+  SERVER_COVEO_API_KEY: isBrowser ? z.undefined() : z.string(),
+  VITE_COVEO_USER_EMAIL: z.string(),
 });
 export type SearchTokenServerConfig = z.infer<typeof zValidEnvironment>;
 
