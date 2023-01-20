@@ -9,7 +9,7 @@ If you didn't use the Coveo CLI, copy `.example.env` to `.env` and fill it out w
 
 - `VITE_COVEO_PLATFORM_URL`: the URL you usually use to use the Coveo APIs, usually `https://platform.cloud.coveo.com`
 - `VITE_COVEO_ORGANIZATION_ID`: Your Coveo Organization ID. Check the doc to see [how to retrieve your organization ID](https://docs.coveo.com/en/148/manage-an-organization/retrieve-the-organization-id)
-- `PRIVATE_APP_API_KEY`: Your API Key for this Org. We recommend the 'Search' API Key preset.
+- `SERVER_COVEO_API_KEY`: Your API Key for this Org. We recommend the 'Search' API Key preset.
 - `VITE_COVEO_USER_EMAIL`: Your email address. Used for security identities and Analytics.
 
 It is a good practice to **not** include an API Key in your search pages and instead use a server to generate a [Search Token](https://docs.coveo.com/en/56/build-a-search-ui/search-token-authentication) using the API Key.
