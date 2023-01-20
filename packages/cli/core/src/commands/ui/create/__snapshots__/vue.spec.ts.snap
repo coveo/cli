@@ -3,10 +3,10 @@
 exports[`ui:create:vue when a directory with the projectName exists when the directory is empty should write the .env file 1`] = `
 [
   "/foo/bar/myapp/.env",
-  "VITE_APP_PLATFORM_URL=https://platformdev.cloud.coveo.com
-VITE_APP_ORGANIZATION_ID=my-org
-VITE_APP_API_KEY=foo
-VITE_APP_USER_EMAIL=bob@coveo.com",
+  "VITE_COVEO_PLATFORM_URL=https://platformdev.cloud.coveo.com
+VITE_COVEO_ORGANIZATION_ID=my-org
+VITE_COVEO_USER_EMAIL=bob@coveo.com
+SERVER_COVEO_API_KEY=foo",
 ]
 `;
 
@@ -17,9 +17,9 @@ exports[`ui:create:vue when a file with the projectName exists should exit with 
 exports[`ui:create:vue when the projectName does not exists yet should write the .env file 1`] = `
 [
   "/foo/bar/myapp/.env",
-  "VITE_APP_PLATFORM_URL=https://platformdev.cloud.coveo.com
-VITE_APP_ORGANIZATION_ID=my-org
-VITE_APP_API_KEY=foo
-VITE_APP_USER_EMAIL=bob@coveo.com",
+  "VITE_COVEO_PLATFORM_URL=https://platformdev.cloud.coveo.com
+VITE_COVEO_ORGANIZATION_ID=my-org
+VITE_COVEO_USER_EMAIL=bob@coveo.com
+SERVER_COVEO_API_KEY=foo",
 ]
 `;

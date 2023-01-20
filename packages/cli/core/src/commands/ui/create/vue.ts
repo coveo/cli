@@ -91,10 +91,10 @@ export default class Vue extends CLICommand {
     writeFileSync(
       join(dirName, '.env'),
       dedent`
-        VITE_APP_PLATFORM_URL=${platformUrl({environment: cfg.environment})}
-        VITE_APP_ORGANIZATION_ID=${cfg.organization}
-        VITE_APP_API_KEY=${apiKey.value!}
-        VITE_APP_USER_EMAIL=${username}
+        VITE_COVEO_PLATFORM_URL=${platformUrl({environment: cfg.environment})}
+        VITE_COVEO_ORGANIZATION_ID=${cfg.organization}
+        VITE_COVEO_USER_EMAIL=${username}
+        SERVER_COVEO_API_KEY=${apiKey.value!}
       `
     );
   }

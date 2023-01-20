@@ -1,6 +1,7 @@
 {
   "name": "@coveo/headless-vue-template",
   "private": true,
+  "type": "module",
   "version": "0.0.1",
   "scripts": {
     "start": "npm run dev",
@@ -13,37 +14,30 @@
   },
   "dependencies": {
     "@coveo/headless": "2.3.0",
+    "browser-or-node": "^2.1.1",
     "vue": "^3.2.41",
     "vue-router": "^4.1.5",
     "vuetify": "^3.0.0-beta.14",
     "zod": "^3.19.1"
   },
   "devDependencies": {
-    "@coveo/platform-client": "^37.0.0",
+    "@coveo/platform-client": "^40.2.0",
     "@rushstack/eslint-patch": "^1.1.4",
-    "@types/express": "^4.17.14",
     "@types/node": "18.11.18",
-    "@types/cors": "^2.8.12",
-    "@vitejs/plugin-vue": "^3.1.2",
-    "@vitejs/plugin-vue-jsx": "^2.0.1",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "@vitejs/plugin-vue-jsx": "^3.0.0",
     "@vue/eslint-config-prettier": "^7.0.0",
     "@vue/eslint-config-typescript": "^11.0.0",
     "@vue/tsconfig": "^0.1.3",
-    "concurrently": "^7.5.0",
-    "cors": "^2.8.5",
     "eslint": "^8.22.0",
     "eslint-plugin-vue": "^9.3.0",
-    "express": "^4.18.2",
-    "get-port": "^6.1.2",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
     "sass": "^1.55.0",
-    "ts-node": "^10.9.1",
     "typescript": "~4.9.0",
     "undici": "^5.11.0",
-    "vite": "^3.1.8",
-    "vite-plugin-mix": "^0.4.0",
-    "vite-plugin-vuetify": "^1.0.0",
+    "vite": "4.0.4",
+    "vite-plugin-vuetify": "^1.0.1",
     "vue-tsc": "^1.0.8"
   }
 }

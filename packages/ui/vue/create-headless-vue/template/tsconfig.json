@@ -1,16 +1,17 @@
 {
   "extends": "@vue/tsconfig/tsconfig.web.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+  "include": ["env.d.ts", "src/ui/**/*", "src/commons/**/*", "src/**/*.vue"],
   "compilerOptions": {
+    "composite": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/ui/*"],
+      "commons/*": ["./src/commons/*"]
     }
   },
-
   "references": [
     {
-      "path": "./tsconfig.config.json"
+      "path": "./tsconfig.server.json"
     }
   ]
 }
