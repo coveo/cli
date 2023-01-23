@@ -29,10 +29,10 @@ export class OAuthClientServer {
             if (state !== expectedState) {
               throw new InvalidStateError(state, expectedState);
             }
-            const data = this.getTokenQueryString(code);
+            const body = this.getTokenQueryString(code);
             const authRequest = await fetch(tokenEndpoint, {
               method: 'POST',
-              body: JSON.stringify(data),
+              body,
               headers: this.requestHeaders,
             });
             const {access_token: accessToken} =

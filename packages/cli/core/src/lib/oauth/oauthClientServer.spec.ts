@@ -1,8 +1,10 @@
-jest.mock('axios');
+jest.mock('fetch-undici-polyfill', () => {
+  Object.defineProperty(global, 'fetch', {value: jest.fn()});
+});
 jest.mock('http');
 
 import {Region} from '@coveo/platform-client';
-import axios from 'axios';
+import 'fetch-undici-polyfill';
 import {
   createServer,
   IncomingMessage,
@@ -23,15 +25,13 @@ import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
 type createServerInitialOverload = jest.MaybeMocked<{
   (requestListener?: RequestListener | undefined): Server;
 }>;
-const mockedAxios = jest.mocked(axios);
+const mockedFetch = global.fetch as jest.Mock;
+
 const mockedCreateServer = jest.mocked(
   createServer
 ) as unknown as createServerInitialOverload;
 const mockedServerListen = jest.fn();
 const mockedServerClose = jest.fn();
-const mockedAxiosPost = jest.fn();
-
-mockedAxios.post.mockImplementation(mockedAxiosPost);
 
 mockedCreateServer.mockImplementation((listener?: RequestListener) => {
   const req = {
@@ -68,9 +68,9 @@ describe('OAuthClientServer', () => {
       clientConfig,
       authServiceConfig(opts)
     );
-    mockedAxiosPost.mockResolvedValue({
-      data: {access_token: 'token-returned-by-the-platform'},
-    });
+    mockedFetch.mockImplementation(() => ({
+      json: () => ({access_token: 'token-returned-by-the-platform'}),
+    }));
   });
 
   describe('when authenticating without error', () => {
@@ -105,11 +105,15 @@ describe('OAuthClientServer', () => {
           code: 'TheCode',
         };
 
-        expect(mockedAxiosPost).toHaveBeenCalledWith(
+        expect(mockedFetch).toHaveBeenCalledWith(
           authServiceConfig(opts).tokenEndpoint,
-          new URLSearchParams(expectedParams),
           expect.objectContaining({
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            method: 'POST',
+            body: new URLSearchParams(expectedParams),
+            headers: {
+              Authentication: 'Basic Y2xpOmNsaQ==',
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
           })
         );
       }
