@@ -1,12 +1,8 @@
-import { generateToken } from "./searchTokenGenerator.js";
+import "fetch-undici-polyfill";
 
-import { fetch } from "undici";
+import { generateToken } from "./searchTokenGenerator.js";
 import type { ViteDevServer } from "vite";
 import isEnvValid from "../commons/isEnvValid.js";
-
-if (!Object.keys(global).includes("fetch")) {
-  Object.defineProperty(global, "fetch", { value: fetch });
-}
 
 export default (config: Record<string, string>) => {
   if (!isEnvValid(config)) {

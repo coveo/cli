@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@coveo/platform-client": "37.13.0",
-    "undici": "5.16.0"
+    "fetch-undici-polyfill": "1.1.1"
   },
   "devDependencies": {
     "@babel/core": "7.20.12",
