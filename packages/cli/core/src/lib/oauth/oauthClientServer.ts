@@ -1,9 +1,8 @@
-import axios, {AxiosRequestConfig} from 'axios';
+import 'fetch-undici-polyfill';
 import {createServer, IncomingMessage, Server, ServerResponse} from 'http';
 import {URL, URLSearchParams} from 'url';
 import {AuthorizationError, InvalidStateError} from './authorizationError';
 import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
-
 interface AccessTokenResponse {
   access_token: string;
 }
@@ -30,14 +29,14 @@ export class OAuthClientServer {
             if (state !== expectedState) {
               throw new InvalidStateError(state, expectedState);
             }
-
-            const data = this.getTokenQueryString(code);
-            const authRequest = await axios.post<AccessTokenResponse>(
-              tokenEndpoint,
-              data,
-              this.requestConfig
-            );
-            const accessToken = authRequest.data.access_token;
+            const body = this.getTokenQueryString(code);
+            const authRequest = await fetch(tokenEndpoint, {
+              method: 'POST',
+              body,
+              headers: this.requestHeaders,
+            });
+            const {access_token: accessToken} =
+              (await authRequest.json()) as AccessTokenResponse;
 
             res.end('Close your browser to continue');
             resolve({accessToken});
@@ -56,17 +55,15 @@ export class OAuthClientServer {
     return serverPromise;
   }
 
-  private get requestConfig(): AxiosRequestConfig {
+  private get requestHeaders(): Record<string, string> {
     const {client_id} = this.clientConfig;
-    const config: AxiosRequestConfig = {
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      auth: {
-        username: client_id,
-        password: client_id,
-      },
-    };
 
-    return config;
+    return {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Basic ${Buffer.from(`${client_id}:${client_id}`).toString(
+        'base64'
+      )}`,
+    };
   }
 
   private parseUrl(req: IncomingMessage) {
