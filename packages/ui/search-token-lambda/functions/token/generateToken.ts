@@ -1,8 +1,4 @@
-import {fetch} from 'undici';
-
-if (!Object.keys(global).includes('fetch')) {
-  Object.defineProperty(global, 'fetch', {value: fetch});
-}
+import 'fetch-undici-polyfill';
 
 import {PlatformClient, RestUserIdType} from '@coveo/platform-client';
 
