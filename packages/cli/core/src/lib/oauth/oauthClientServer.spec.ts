@@ -111,7 +111,7 @@ describe('OAuthClientServer', () => {
             method: 'POST',
             body: new URLSearchParams(expectedParams),
             headers: {
-              Authentication: 'Basic Y2xpOmNsaQ==',
+              Authorization: 'Basic Y2xpOmNsaQ==',
               'Content-Type': 'application/x-www-form-urlencoded',
             },
           })

@@ -60,9 +60,9 @@ export class OAuthClientServer {
 
     return {
       'Content-Type': 'application/x-www-form-urlencoded',
-      Authentication: `Basic ${Buffer.from(
-        `${client_id}:${client_id}`
-      ).toString('base64')}`,
+      Authorization: `Basic ${Buffer.from(`${client_id}:${client_id}`).toString(
+        'base64'
+      )}`,
     };
   }
 
