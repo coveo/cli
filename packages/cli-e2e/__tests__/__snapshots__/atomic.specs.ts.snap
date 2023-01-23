@@ -14,7 +14,7 @@ HashedFolder {
                   "name": "areEnvironmentVariablesSet.ts",
                 },
                 HashedFile {
-                  "hash": "qJrXPWX6cL4N+TMvhr6+n05vNwk=",
+                  "hash": "3/G6brNR4QRqiJlaY/m/fsyTzzc=",
                   "name": "generateToken.ts",
                 },
                 HashedFile {
@@ -26,11 +26,11 @@ HashedFolder {
                   "name": "token.ts",
                 },
               ],
-              "hash": "qIYVWdq8oh9lCcu0H1X5XfQchcU=",
+              "hash": "pmEnQcGTj9o9+LzhyIv1naaY/ak=",
               "name": "token",
             },
           ],
-          "hash": "sBgXQK+6u5b7XzuUi8zQquqUtaU=",
+          "hash": "AYAizlKrvz2mLJQE53WMgok4NBY=",
           "name": "functions",
         },
         HashedFile {
@@ -54,7 +54,7 @@ HashedFolder {
           "name": "tsconfig.json",
         },
       ],
-      "hash": "MVuHWG3A8rTxFYXfcqRQA/UkK7s=",
+      "hash": "H4lv26/ky0DGVWpNK4hd7vom80g=",
       "name": "lambda",
     },
     HashedFile {
@@ -160,7 +160,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "IYPZbhHV11MiatYxNfpMNg0GDQ4=",
+  "hash": "qiJ6tOeVT+G3Ixxup+ax7h1yJpo=",
   "name": "normalizedDir",
 }
 `;
