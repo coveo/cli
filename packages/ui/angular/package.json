@@ -28,7 +28,7 @@
     "@angular/cli": "^15.0.0",
     "@coveo/search-token-server": "1.35.19",
     "@schematics/angular": "^15.0.0",
-    "jest-config": "29.3.1"
+    "jest-config": "29.4.1"
   },
   "devDependencies": {
     "@angular/core": "^15.0.0",
@@ -38,10 +38,10 @@
     "@angular/router": "^15.0.0",
     "@coveo/headless": "latest",
     "@types/fs-extra": "9.0.13",
-    "@types/jest": "29.2.5",
+    "@types/jest": "29.4.0",
     "@types/node": "18.11.18",
     "fs-extra": "10.1.0",
-    "jest": "29.3.1",
+    "jest": "29.4.1",
     "prettier": "2.8.3",
     "ts-jest": "29.0.5",
     "typescript": "4.9.4"
