@@ -86,7 +86,7 @@ export default class Atomic extends CLICommand {
       '--api-key',
       cfg.accessToken,
       '--platform-url',
-      platformUrl({environment: cfg.environment}),
+      platformUrl({environment: cfg.environment, region: cfg.region}),
       '--user',
       username,
     ];
