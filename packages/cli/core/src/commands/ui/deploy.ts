@@ -10,6 +10,20 @@ import {
 import {HostedPage, New} from '@coveo/platform-client';
 import {createSearchPagesPrivilege} from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {Flags} from '@oclif/core';
+import {readFileSync} from 'fs';
+
+interface JavaScript {
+  isModule: boolean;
+  path: string;
+}
+
+interface DeployConfig {
+  dir?: string;
+  javascriptEntryFiles: JavaScript[];
+  javascriptUrls: JavaScript[];
+  cssEntryFiles: string[];
+  cssUrls: string[];
+}
 
 export default class Deploy extends CLICommand {
   public static flags = {
@@ -17,6 +31,13 @@ export default class Deploy extends CLICommand {
       char: 'p',
       description: 'The existing ID of the Hosted Page to be updated.',
       helpValue: '7944ff4a-9943-4999-a3f6-3e81a7f6fb0a',
+      required: false,
+    }),
+    config: Flags.string({
+      char: 'c',
+      description: 'The path to the deploy JSON configuration.',
+      helpValue: 'coveo.deploy.json',
+      default: 'coveo.deploy.json',
       required: false,
     }),
   };
@@ -28,21 +49,31 @@ export default class Deploy extends CLICommand {
   )
   public async run() {
     const {flags} = await this.parse(Deploy);
+    const deployConfig = this.getDeployConfig(flags.config);
+    const hostedPage = this.buildHostedPage(deployConfig);
 
-    /**
-     * TODO:
-     *  1. Read config file & parse
-     *  2. Read files defined in config
-     *  3. Build HostedPage object
-     */
     if (flags.pageId) {
-      this.updatePage(
-        {name: 'test', id: flags.pageId} as HostedPage /* TODO: update */
-      );
+      this.updatePage({...hostedPage, id: flags.pageId});
       return;
     }
 
-    return this.createPage({name: 'test'} as HostedPage /* TODO: update */);
+    return this.createPage(hostedPage);
+  }
+
+  private getDeployConfig(path: string) {
+    const jsonConfig: DeployConfig = JSON.parse(
+      readFileSync(path, {encoding: 'utf-8'})
+    );
+
+    // TODO: validate content using Bueno or similar
+
+    return jsonConfig;
+  }
+
+  private buildHostedPage(deployConfig: DeployConfig) {
+    // TODO: read file contents, build object
+
+    return {} as HostedPage; // TODO: remove
   }
 
   // TODO: set private
