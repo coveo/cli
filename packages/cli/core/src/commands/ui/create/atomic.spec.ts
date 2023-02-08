@@ -77,6 +77,18 @@ describe('ui:create:atomic', () => {
       configurationMock({
         accessToken: 'foo',
         environment: 'dev',
+        region: 'us',
+        organization: 'my-org',
+      } as Configuration)
+    );
+  };
+
+  const doMockConfigurationInEurope = () => {
+    mockedConfig.mockImplementation(
+      configurationMock({
+        accessToken: 'foo',
+        environment: 'prod',
+        region: 'eu',
         organization: 'my-org',
       } as Configuration)
     );
@@ -246,4 +258,35 @@ describe('ui:create:atomic', () => {
         ]
       );
     });
+
+  describe('when connected in another region than US', () => {
+    beforeEach(() => {
+      doMockConfigurationInEurope();
+    });
+
+    test
+      .stdout()
+      .stderr()
+      .command(['ui:create:atomic', 'myapp'])
+      .it('should start 1 spawn processes with the good template', () => {
+        expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
+        expect(mockedSpawnProcess).nthCalledWith(
+          1,
+          expect.stringContaining('npx'),
+          [
+            `${createAtomicPackage}@1.0.0`,
+            '--project',
+            'myapp',
+            '--org-id',
+            'my-org',
+            '--api-key',
+            'foo',
+            '--platform-url',
+            'https://platform-eu.cloud.coveo.com',
+            '--user',
+            'bob@coveo.com',
+          ]
+        );
+      });
+  });
 });
