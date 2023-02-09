@@ -15,7 +15,7 @@
     "release:phase1": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase1-bump-all-packages.mjs"
   },
   "dependencies": {
-    "@coveo/platform-client": "40.8.0",
+    "@coveo/platform-client": "40.9.1",
     "fetch-undici-polyfill": "1.1.2"
   },
   "devDependencies": {
