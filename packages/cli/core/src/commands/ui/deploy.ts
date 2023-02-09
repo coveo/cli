@@ -12,7 +12,7 @@ import {HostedPage, New} from '@coveo/platform-client';
 import {createSearchPagesPrivilege} from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {Flags} from '@oclif/core';
 import {readJsonSync} from 'fs-extra';
-import {DeployConfigError} from '../../lib/errors/deployError';
+import {DeployConfigError} from '../../lib/errors/deployErrors';
 
 interface FileInput {
   path: string;
@@ -90,7 +90,7 @@ export default class Deploy extends CLICommand {
     const {flags} = await this.parse(Deploy);
     const deployConfigPath = flags.config;
     const deployConfig: DeployConfig = readJsonSync(deployConfigPath);
-    this.validateDeployConfig(deployConfigPath, deployConfig);
+    this.validateDeployConfigJson(deployConfigPath, deployConfig);
     const hostedPage = this.buildHostedPage(deployConfig);
 
     if (flags.pageId) {
@@ -101,7 +101,10 @@ export default class Deploy extends CLICommand {
     return this.createPage(hostedPage);
   }
 
-  private validateDeployConfig(deployConfigPath: string, config: DeployConfig) {
+  private validateDeployConfigJson(
+    deployConfigPath: string,
+    config: DeployConfig
+  ) {
     const validation = validate(config, DeployConfigSchema);
     if (!validation.valid) {
       throw new DeployConfigError(deployConfigPath, validation.errors);
