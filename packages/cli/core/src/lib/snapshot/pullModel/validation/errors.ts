@@ -1,5 +1,6 @@
 import {ValidationError} from 'jsonschema';
 import {CLIBaseError} from '@coveo/cli-commons/errors/cliBaseError';
+import {getPrettyJsonValidationErrors} from '@coveo/cli-commons/errors/jsonError';
 
 abstract class BaseSPMError extends CLIBaseError {
   public name = 'Snapshot Pull Model Error';
@@ -23,19 +24,6 @@ export class UnknownSPMValidationError extends BaseSPMError {
 export class InvalidSPMError extends BaseSPMError {
   public name = 'Invalid Snapshot Pull Model Error';
   public constructor(shouldContactCoveo: boolean, errors: ValidationError[]) {
-    super(
-      InvalidSPMError.getPrettyValidationErrors(errors),
-      shouldContactCoveo
-    );
-  }
-  private static getPrettyValidationErrors(errors: ValidationError[]): string {
-    const stackToPrettyError = (stack: string) =>
-      ` - ${stack.replace(/^instance\./, '')}\n`;
-    return errors
-      .reduce<string>(
-        (errors, error) => (errors += stackToPrettyError(error.stack)),
-        '\n'
-      )
-      .replace(/\n$/, '');
+    super(getPrettyJsonValidationErrors(errors), shouldContactCoveo);
   }
 }

@@ -1,3 +1,4 @@
+import {validate, Schema} from 'jsonschema';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
@@ -10,7 +11,8 @@ import {
 import {HostedPage, New} from '@coveo/platform-client';
 import {createSearchPagesPrivilege} from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {Flags} from '@oclif/core';
-import {readFileSync} from 'fs';
+import {readJsonSync} from 'fs-extra';
+import {DeployConfigError} from '../../lib/errors/deployError';
 
 export interface FileInput {
   path: string;
@@ -21,14 +23,48 @@ export interface JavaScriptFileInput extends FileInput {
 }
 
 export interface DeployConfig {
-  dir?: string;
-  javascriptEntryFiles: JavaScriptFileInput[];
-  javascriptUrls: JavaScriptFileInput[];
-  cssEntryFiles: FileInput[];
-  cssUrls: FileInput[];
+  name: string;
+  dir: string;
+  htmlEntryFile: FileInput;
+  javascriptEntryFiles?: JavaScriptFileInput[];
+  javascriptUrls?: JavaScriptFileInput[];
+  cssEntryFiles?: FileInput[];
+  cssUrls?: FileInput[];
 }
 
+const FileInputSchema: Schema = {
+  type: 'object',
+  required: ['path'],
+  properties: {
+    path: {type: 'string'},
+  },
+};
+
+const JavaScriptFileInputSchema: Schema = {
+  type: 'object',
+  required: ['path', 'isModule'],
+  properties: {
+    path: {type: 'string'},
+    patisModuleh: {type: 'boolean'},
+  },
+};
+
+const DeployConfigSchema: Schema = {
+  type: 'object',
+  required: ['name', 'dir'],
+  properties: {
+    name: {type: 'string'},
+    dir: {type: 'string'},
+    htmlEntryFile: FileInputSchema,
+    javascriptEntryFiles: {type: 'array', items: JavaScriptFileInputSchema},
+    javascriptUrls: {type: 'array', items: JavaScriptFileInputSchema},
+    cssEntryFiles: {type: 'array', items: FileInputSchema},
+    cssUrls: {type: 'array', items: FileInputSchema},
+  },
+};
+
 export default class Deploy extends CLICommand {
+  public static hidden = true; /* TODO: uncomment */
   public static flags = {
     pageId: Flags.string({
       char: 'p',
@@ -52,7 +88,9 @@ export default class Deploy extends CLICommand {
   )
   public async run() {
     const {flags} = await this.parse(Deploy);
-    const deployConfig = this.getDeployConfig(flags.config);
+    const deployConfigPath = flags.config;
+    const deployConfig: DeployConfig = readJsonSync(deployConfigPath);
+    this.validateDeployConfig(deployConfigPath, deployConfig);
     const hostedPage = this.buildHostedPage(deployConfig);
 
     if (flags.pageId) {
@@ -63,24 +101,26 @@ export default class Deploy extends CLICommand {
     return this.createPage(hostedPage);
   }
 
-  private getDeployConfig(path: string) {
-    const jsonConfig: DeployConfig = JSON.parse(
-      readFileSync(path, {encoding: 'utf-8'})
-    );
-
-    // TODO: validate content using Bueno or similar
-
-    return jsonConfig;
+  private validateDeployConfig(deployConfigPath: string, config: DeployConfig) {
+    const validation = validate(config, DeployConfigSchema);
+    if (!validation.valid) {
+      throw new DeployConfigError(deployConfigPath, validation.errors);
+    }
   }
 
   private buildHostedPage(deployConfig: DeployConfig) {
-    // TODO: read file contents, build object
+    // TODO: read file contents
 
-    return {} as HostedPage; // TODO: remove
+    const hostedPage: New<HostedPage> = {
+      name: deployConfig.name,
+      html: '...',
+      // ...
+    };
+
+    return hostedPage;
   }
 
-  // TODO: set private
-  async createClient() {
+  private async createClient() {
     const authenticatedClient = new AuthenticatedClient();
     return await authenticatedClient.getClient();
   }
