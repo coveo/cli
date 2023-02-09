@@ -12,17 +12,20 @@ import {createSearchPagesPrivilege} from '@coveo/cli-commons/preconditions/platf
 import {Flags} from '@oclif/core';
 import {readFileSync} from 'fs';
 
-interface JavaScript {
-  isModule: boolean;
+export interface FileInput {
   path: string;
 }
 
-interface DeployConfig {
+export interface JavaScriptFileInput extends FileInput {
+  isModule: boolean;
+}
+
+export interface DeployConfig {
   dir?: string;
-  javascriptEntryFiles: JavaScript[];
-  javascriptUrls: JavaScript[];
-  cssEntryFiles: string[];
-  cssUrls: string[];
+  javascriptEntryFiles: JavaScriptFileInput[];
+  javascriptUrls: JavaScriptFileInput[];
+  cssEntryFiles: FileInput[];
+  cssUrls: FileInput[];
 }
 
 export default class Deploy extends CLICommand {
@@ -87,7 +90,7 @@ export default class Deploy extends CLICommand {
 
     // const client = await this.createClient();
     // const response = await client.hostedPages.create(page);
-    this.log('Creation successful.');
+    this.log('Hosted Page creation successful.');
   }
 
   private async updatePage(page: HostedPage) {
@@ -95,6 +98,6 @@ export default class Deploy extends CLICommand {
 
     // const client = await this.createClient();
     // const response = await client.hostedPages.update(page);
-    this.log('Update successful.');
+    this.log('Hosted Page update successful.');
   }
 }
