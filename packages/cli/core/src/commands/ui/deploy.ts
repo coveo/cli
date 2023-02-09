@@ -14,15 +14,15 @@ import {Flags} from '@oclif/core';
 import {readJsonSync} from 'fs-extra';
 import {DeployConfigError} from '../../lib/errors/deployError';
 
-export interface FileInput {
+interface FileInput {
   path: string;
 }
 
-export interface JavaScriptFileInput extends FileInput {
+interface JavaScriptFileInput extends FileInput {
   isModule: boolean;
 }
 
-export interface DeployConfig {
+interface DeployConfig {
   name: string;
   dir: string;
   htmlEntryFile: FileInput;
