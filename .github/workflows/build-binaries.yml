@@ -127,7 +127,7 @@ jobs:
           mv "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64-signed.pkg" "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64.pkg"
           rm notarization-arm64.zip notarization-x64.zip
       - name: Upload binaries
-        uses: svenstaro/upload-release-action@2728235f7dc9ff598bd86ce3c274b74f802d2208 # 2.4.0
+        uses: svenstaro/upload-release-action@cc92c9093e5f785e23a3d654fe2671640b851b5f # 2.4.1
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./packages/cli/core/dist/**/*
