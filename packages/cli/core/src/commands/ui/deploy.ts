@@ -11,8 +11,9 @@ import {
 import {HostedPage, New} from '@coveo/platform-client';
 import {createSearchPagesPrivilege} from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {Flags} from '@oclif/core';
-import {readJsonSync} from 'fs-extra';
+import {readJsonSync, ensureDirSync, readFileSync} from 'fs-extra';
 import {DeployConfigError} from '../../lib/errors/deployErrors';
+import {join} from 'path';
 
 interface FileInput {
   path: string;
@@ -51,7 +52,7 @@ const JavaScriptFileInputSchema: Schema = {
 
 const DeployConfigSchema: Schema = {
   type: 'object',
-  required: ['name', 'dir'],
+  required: ['name', 'dir', 'htmlEntryFile'],
   properties: {
     name: {type: 'string'},
     dir: {type: 'string'},
@@ -89,7 +90,8 @@ export default class Deploy extends CLICommand {
   public async run() {
     const {flags} = await this.parse(Deploy);
     const deployConfigPath = flags.config;
-    const deployConfig: DeployConfig = readJsonSync(deployConfigPath);
+    const deployConfig: DeployConfig =
+      readJsonSync(deployConfigPath, {throws: false}) || {};
     this.validateDeployConfigJson(deployConfigPath, deployConfig);
     const hostedPage = this.buildHostedPage(deployConfig);
 
@@ -98,7 +100,20 @@ export default class Deploy extends CLICommand {
       return;
     }
 
-    return this.createPage(hostedPage);
+    try {
+      await this.createPage(hostedPage);
+    } catch (error) {
+      /**
+       * TODO: handle Platform Client 400 error e.g.:
+       * {
+       *  statusCode: 400,
+       *  message: "A configuration named 'my page' already exist.",
+       *  type: 'DuplicateConfigurationException'
+       * }
+       */
+      console.error(error);
+      super.catch(error);
+    }
   }
 
   private validateDeployConfigJson(
@@ -111,16 +126,39 @@ export default class Deploy extends CLICommand {
     }
   }
 
-  private buildHostedPage(deployConfig: DeployConfig) {
-    // TODO: read file contents
+  private buildHostedPage({
+    dir,
+    htmlEntryFile,
+    name,
+    cssEntryFiles = [],
+    cssUrls = [],
+    javascriptEntryFiles = [],
+    javascriptUrls = [],
+  }: DeployConfig): New<HostedPage> {
+    ensureDirSync(dir);
 
-    const hostedPage: New<HostedPage> = {
-      name: deployConfig.name,
-      html: '...',
-      // ...
+    return {
+      name,
+      html: readFileSync(join(dir, htmlEntryFile.path), 'utf-8'),
+      javascript: [
+        ...javascriptEntryFiles.map(({path, isModule}) => ({
+          inlineContent: readFileSync(join(dir, path), 'utf-8'),
+          isModule,
+        })),
+        ...javascriptUrls.map(({path, isModule}) => ({
+          inlineContent: path,
+          isModule,
+        })),
+      ],
+      css: [
+        ...cssEntryFiles.map(({path}) => ({
+          inlineContent: readFileSync(join(dir, path), 'utf-8'),
+        })),
+        ...cssUrls.map(({path}) => ({
+          url: path,
+        })),
+      ],
     };
-
-    return hostedPage;
   }
 
   private async createClient() {
@@ -131,16 +169,16 @@ export default class Deploy extends CLICommand {
   private async createPage(page: New<HostedPage>) {
     this.log(`Creating new Hosted Page named "${page.name}".`);
 
-    // const client = await this.createClient();
-    // const response = await client.hostedPages.create(page);
-    this.log('Hosted Page creation successful.');
+    const client = await this.createClient();
+    const response = await client.hostedPages.create(page);
+    this.log(`Hosted Page creation successful with id "${response.id}".`);
   }
 
   private async updatePage(page: HostedPage) {
     this.log(`Updating existing Hosted Page with the id "${page.id}".`);
 
-    // const client = await this.createClient();
-    // const response = await client.hostedPages.update(page);
-    this.log('Hosted Page update successful.');
+    const client = await this.createClient();
+    const response = await client.hostedPages.update(page);
+    this.log(`Hosted Page update successful with id "${response.id}".`);
   }
 }
