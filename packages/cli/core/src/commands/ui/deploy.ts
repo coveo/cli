@@ -69,13 +69,13 @@ export default class Deploy extends CLICommand {
   public static flags = {
     pageId: Flags.string({
       char: 'p',
-      description: 'The existing ID of the Hosted Page to be updated.',
+      description: 'The existing ID of the target Hosted search page.',
       helpValue: '7944ff4a-9943-4999-a3f6-3e81a7f6fb0a',
       required: false,
     }),
     config: Flags.string({
       char: 'c',
-      description: 'The path to the deploy JSON configuration.',
+      description: 'The path to the deployment JSON configuration.',
       helpValue: 'coveo.deploy.json',
       default: 'coveo.deploy.json',
       required: false,
@@ -107,7 +107,7 @@ export default class Deploy extends CLICommand {
        * TODO: handle Platform Client 400 error e.g.:
        * {
        *  statusCode: 400,
-       *  message: "A configuration named 'my page' already exist.",
+       *  message: "A configuration with that name already exist.",
        *  type: 'DuplicateConfigurationException'
        * }
        */
@@ -146,7 +146,7 @@ export default class Deploy extends CLICommand {
           isModule,
         })),
         ...javascriptUrls.map(({path, isModule}) => ({
-          inlineContent: path,
+          url: path,
           isModule,
         })),
       ],
