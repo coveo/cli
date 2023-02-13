@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "release:phase1": "npx -p=@coveord/release npm-publish",
-    "test": "node --experimental-vm-modules --no-warnings ../../node_modules/jest/bin/jest.js"
+    "test": "node --experimental-vm-modules --no-warnings ../../../../node_modules/jest/bin/jest.js"
   },
   "keywords": [],
   "author": "",
@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@coveo/do-npm": "1.0.0",
-    "@coveo/process-helpers": "^1.0.0",
+    "@coveo/process-helpers": "1.0.0",
     "@coveo/verdaccio-starter": "1.0.0",
     "@types/folder-hash": "^4.0.2",
     "@types/jest": "^29.4.0",

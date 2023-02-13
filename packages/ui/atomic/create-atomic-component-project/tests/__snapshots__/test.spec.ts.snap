@@ -14,7 +14,7 @@ HashedFolder {
     HashedFolder {
       "children": [
         HashedFile {
-          "hash": "/MC1IvlmPW0zAgfo82n8CnBDMrA=",
+          "hash": "YVuwXfIZfjfeVyLQ6cMy3kUqC3A=",
           "name": "html.d.ts",
         },
         HashedFolder {
@@ -28,19 +28,19 @@ HashedFolder {
               "name": "index.html",
             },
             HashedFile {
-              "hash": "aQlM5fIrGFclbJyyD4kXfdFp5Ag=",
+              "hash": "ZRD3OAMjlKnlu7Yh3iQv3gCcG8c=",
               "name": "index.ts",
             },
           ],
-          "hash": "LQSYA8QkQBMoo9i4XXUPsmrojxc=",
+          "hash": "KaLKYWk10KFfD5NR/eQK0Zlk4qc=",
           "name": "pages",
         },
       ],
-      "hash": "GfYyxCc4iFeHrc/xAJFM64Yo/Ek=",
+      "hash": "k4Tz5Ow35z6eAe5vRRIeg5Q7EQM=",
       "name": "src",
     },
     HashedFile {
-      "hash": "eYzPsIw53Uu0qsOF5bwMYUM3fnQ=",
+      "hash": "BVZfiCzL+2kulE12K4HLAIl3kJ8=",
       "name": "stencil.config.ts",
     },
     HashedFile {
@@ -48,7 +48,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "Ob1S92n/ymTjHdQ7Q/0DgW5Faq4=",
+  "hash": "Terk+I2UxhPnrtQ2pNMmgU6cT3k=",
   "name": "testDirectory",
 }
 `;

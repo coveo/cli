@@ -1,6 +1,6 @@
-import {Result} from '@coveo/atomic/headless';
 import {Component, h, Element, State} from '@stencil/core';
 import {resultContext} from '@coveo/atomic';
+import {Result} from '@coveo/headless';
 
 /**
  * Sample custom Atomic result component, to be used inside an Atomic Result Template.
