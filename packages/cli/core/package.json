@@ -171,7 +171,7 @@
     "build": "rimraf lib && tsc -b tsconfig.build.json",
     "test": "jest --colors",
     "lint": "prettier --check . && eslint .",
-    "release:phase1": "node --experimental-specifier-resolution=node ../../../scripts/releaseV2/phase1-bump-all-packages.mjs",
+    "release:phase1": "npx -p=@coveord/release npm-publish",
     "postpack": "rimraf oclif.manifest.json",
     "prepublishOnly": "rimraf lib && npm run build && oclif manifest && oclif readme && node ./scripts/post-readme.mjs"
   },

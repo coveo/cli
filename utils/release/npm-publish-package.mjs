@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import {
   getLastTag,
   parseCommits,
@@ -10,13 +12,13 @@ import {
   writeChangelog,
   describeNpmTag,
 } from '@coveo/semantic-monorepo-tools';
-import {spawnSync} from 'child_process';
-import {appendFileSync, readFileSync, writeFileSync} from 'fs';
+import {spawnSync} from 'node:child_process';
+import {appendFileSync, readFileSync, writeFileSync} from 'node:fs';
 import angularChangelogConvention from 'conventional-changelog-angular';
-import {dirname, resolve, join} from 'path';
-import {fileURLToPath} from 'url';
+import {dirname, resolve, join} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import retry from 'async-retry';
-import {gt, inc, prerelease} from 'semver';
+import {inc} from 'semver';
 import {json as fetchNpm} from 'npm-registry-fetch';
 
 const hasPackageJsonChanged = (directoryPath) => {

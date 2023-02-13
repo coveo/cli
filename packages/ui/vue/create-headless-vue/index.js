@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import {dirname, resolve, join} from 'node:path';
-import {cpSync, renameSync} from 'node:fs';
+import {cpSync, renameSync, constants, existsSync} from 'node:fs';
 import {cwd} from 'node:process';
 import {fileURLToPath} from 'node:url';
 
@@ -9,4 +9,7 @@ const templateRelativeDir = 'template';
 const templateDirPath = resolve(__dirname, templateRelativeDir);
 cpSync(templateDirPath, cwd(), {recursive: true});
 // https://github.com/npm/cli/issues/5756
-renameSync(join(cwd(), '.npmignore'), join(cwd(), '.gitignore'));
+const ignorePath = join(cwd(), '.npmignore');
+if (existsSync(ignorePath, constants.W_OK)) {
+  renameSync(join(cwd(), '.npmignore'), join(cwd(), '.gitignore'));
+}
