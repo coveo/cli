@@ -9,7 +9,7 @@
     "prebuild": "node ./scripts/clean.js",
     "postbuild": "node ./scripts/setup.js",
     "prepublishOnly": "npm run build",
-    "release:phase1": "coveo-release-1"
+    "release:phase1": "npx -p=@coveord/release npm-publish"
   },
   "keywords": [
     "schematics",

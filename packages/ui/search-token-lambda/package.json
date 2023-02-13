@@ -12,7 +12,7 @@
     "start": "netlify functions:serve",
     "test": "jest",
     "test:watch": "jest --watch",
-    "release:phase1": "coveo-release-1"
+    "release:phase1": "npx -p=@coveord/release npm-publish"
   },
   "dependencies": {
     "@coveo/platform-client": "37.13.0",

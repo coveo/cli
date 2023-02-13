@@ -3,7 +3,7 @@
   "version": "1.36.4",
   "scripts": {
     "lint": "prettier --check . && eslint .",
-    "release:phase1": "coveo-release-1",
+    "release:phase1": "npx -p=@coveord/release npm-publish",
     "prepare": "node scripts/update-template.mjs && prettier --write template.json"
   },
   "keywords": [

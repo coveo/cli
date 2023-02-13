@@ -1,5 +1,5 @@
 {
-  "name": "@coveo/release",
+  "name": "@coveord/release",
   "private": true,
   "authors": "Coveo",
   "version": "1.0.0",
@@ -14,7 +14,7 @@
     "ts-dedent": "2.2.0"
   },
   "bin": {
-    "coveo-release-1": "./phase1-bump-all-packages.mjs",
-    "coveo-release-2": "./phase2-git-commit-tag-push.mjs"
+    "npm-publish": "./npm-publish-package.mjs",
+    "git-publish-all": "./git-publish-all.mjs"
   }
 }

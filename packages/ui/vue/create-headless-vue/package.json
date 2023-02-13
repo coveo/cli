@@ -26,7 +26,7 @@
     "template/.gitignore"
   ],
   "scripts": {
-    "release:phase1": "coveo-release-1"
+    "release:phase1": "npx -p=@coveord/release npm-publish"
   },
   "publishConfig": {
     "access": "public"

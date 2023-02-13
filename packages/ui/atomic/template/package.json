@@ -4,7 +4,7 @@
   "version": "1.37.0",
   "private": true,
   "scripts": {
-    "release:phase1": "coveo-release-1",
+    "release:phase1": "npx -p=@coveord/release npm-publish",
     "lint": "prettier --check . && eslint ."
   },
   "dependencies": {

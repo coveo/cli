@@ -36,7 +36,7 @@
     "test": "jest",
     "build": "tsc -b tsconfig.build.json",
     "prepublishOnly": "npm run build",
-    "release:phase1": "coveo-release-1"
+    "release:phase1": "npx -p=@coveord/release npm-publish"
   },
   "publishConfig": {
     "access": "public"
