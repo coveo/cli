@@ -14,9 +14,10 @@ describe(PACKAGE_NAME, () => {
   let tempDirectory: DirResult;
   let testDirectory: string;
   let npmConfigCache: string;
+  let verdaccioUrl: string;
 
   beforeAll(async () => {
-    verdaccioProcess = await startVerdaccio(PACKAGE_NAME);
+    ({verdaccioUrl, verdaccioProcess} = await startVerdaccio(PACKAGE_NAME));
     tempDirectory = dirSync({unsafeCleanup: true, keep: true});
     npmConfigCache = join(tempDirectory.name, 'npm-cache');
     mkdirSync(npmConfigCache);
@@ -62,7 +63,7 @@ describe(PACKAGE_NAME, () => {
       npmSync(['init', PACKAGE_NAME.replace('/create-', '/'), ...args], {
         env: {
           ...process.env,
-          npm_config_registry: 'http://localhost:4873',
+          npm_config_registry: verdaccioUrl,
           npm_config_cache: npmConfigCache,
         },
         cwd: testDirectory,
@@ -91,7 +92,7 @@ describe(PACKAGE_NAME, () => {
           cwd: testDirectory,
           env: {
             ...process.env,
-            npm_config_registry: 'http://localhost:4873',
+            npm_config_registry: verdaccioUrl,
             npm_config_cache: npmConfigCache,
           },
         }).status

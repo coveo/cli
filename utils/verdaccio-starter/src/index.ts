@@ -5,18 +5,22 @@ import {ChildProcess, fork} from 'node:child_process';
 import {writeFileSync, mkdirSync} from 'node:fs';
 import {join, dirname} from 'node:path';
 import {createRequire} from 'node:module';
-import {dirSync} from 'tmp';
+import {dirSync, tmpNameSync} from 'tmp';
 import {npmSync as npm} from '@coveo/do-npm';
-
+import getPort from 'get-port';
 const require = createRequire(import.meta.url);
 
 export async function startVerdaccio(
   packagesToProxy: string[] | string,
   includeLocalDependent = true,
   publishProxiedPackages = true
-): Promise<ChildProcess> {
+): Promise<{verdaccioProcess: ChildProcess; verdaccioUrl: string}> {
   if (typeof packagesToProxy === 'string') {
-    return startVerdaccio([packagesToProxy], includeLocalDependent);
+    return startVerdaccio(
+      [packagesToProxy],
+      includeLocalDependent,
+      publishProxiedPackages
+    );
   }
   const computedPackagesToProxy = new Set<string>();
 
@@ -28,15 +32,16 @@ export async function startVerdaccio(
       computedPackagesToProxy
     );
   }
-
+  const port = await getPort();
   const configPath = computeVerdaccioConfig(computedPackagesToProxy);
-  const verdaccioProcess = await runVerdaccio(configPath);
-
+  const verdaccioProcess = await runVerdaccio(configPath, port);
+  const verdaccioUrl = `http://localhost:${port}`;
   if (publishProxiedPackages) {
-    doPublishProxiedPackages(computedPackagesToProxy);
+    const npmrcPath = fakeNpmAuth(port);
+    doPublishProxiedPackages(computedPackagesToProxy, verdaccioUrl, npmrcPath);
   }
 
-  return verdaccioProcess;
+  return {verdaccioProcess, verdaccioUrl};
 }
 
 async function computePackagesToProxy(
@@ -62,11 +67,14 @@ async function computePackagesToProxy(
   }
 }
 
-function runVerdaccio(configPath: string): Promise<ChildProcess> {
+function runVerdaccio(
+  configPath: string,
+  verdaccioPort: number
+): Promise<ChildProcess> {
   return new Promise((resolve, reject) => {
     const childFork = fork(
       require.resolve('verdaccio/bin/verdaccio'),
-      ['--config', configPath],
+      ['--config', configPath, '--listen', verdaccioPort.toString()],
       {stdio: 'ignore'}
     );
     childFork.on('message', (msg: {verdaccio_started: boolean}) => {
@@ -93,7 +101,7 @@ async function getWorkspacePackages() {
 }
 
 function computeVerdaccioConfig(packagesToProxy: Set<string>) {
-  const tmpDir = dirSync();
+  const tmpDir = dirSync({unsafeCleanup: true});
   const storagePath = join(tmpDir.name, 'storage');
   mkdirSync(storagePath);
   const packages = getPackagesConfig(packagesToProxy);
@@ -120,11 +128,20 @@ function computeVerdaccioConfig(packagesToProxy: Set<string>) {
   return tmpFile;
 }
 
-function doPublishProxiedPackages(computedPackagesToProxy: Set<string>) {
+function doPublishProxiedPackages(
+  computedPackagesToProxy: Set<string>,
+  verdaccioUrl: string,
+  npmConfigPath: string
+) {
   for (const packageToProxy of computedPackagesToProxy) {
     const packageDirectory = dirname(require.resolve(packageToProxy));
     npm(['publish'], {
-      env: {...process.env, npm_config_registry: 'http://localhost:4873'},
+      env: {
+        ...process.env,
+        npm_config_registry: verdaccioUrl,
+        npm_config_userconfig: npmConfigPath,
+      },
+      stdio: 'ignore',
       cwd: packageDirectory,
     });
   }
@@ -135,15 +152,24 @@ function getPackagesConfig(packagesToProxy: Set<string>) {
   for (const packageToProxy of packagesToProxy.values()) {
     Object.assign(packages, {
       [packageToProxy]: {
-        access: ['$all'],
-        publish: ['$all'],
+        access: ['$all', '$anonymous'],
+        publish: ['$all', '$anonymous'],
       },
     });
   }
   packages['**'] = {
-    access: ['$all'],
-    publish: ['$all'],
+    access: ['$all', '$anonymous'],
+    publish: ['$all', '$anonymous'],
     proxy: ['npmjs'],
   };
   return packages;
+}
+
+function fakeNpmAuth(verdaccioPort: number) {
+  const tmpNpmRc = tmpNameSync();
+  writeFileSync(
+    tmpNpmRc,
+    `//localhost:${verdaccioPort}/:_authToken = OH_WOW_LOOK_A_SECRET`
+  );
+  return tmpNpmRc;
 }

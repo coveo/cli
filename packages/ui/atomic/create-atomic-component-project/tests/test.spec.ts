@@ -17,11 +17,12 @@ const PACKAGE_NAME = '@coveo/create-atomic-component-project';
 
 describe(PACKAGE_NAME, () => {
   let verdaccioProcess: ChildProcess;
+  let verdaccioUrl: string;
   let tempDirectory: DirResult;
   let testDirectory: string;
 
   beforeAll(async () => {
-    verdaccioProcess = await startVerdaccio(PACKAGE_NAME);
+    ({verdaccioUrl, verdaccioProcess} = await startVerdaccio(PACKAGE_NAME));
     tempDirectory = dirSync({unsafeCleanup: true});
     testDirectory = join(tempDirectory.name, 'testDirectory');
     mkdirSync(testDirectory);
@@ -36,7 +37,7 @@ describe(PACKAGE_NAME, () => {
     npmSync(['init', PACKAGE_NAME.replace('/create-', '/')], {
       env: {
         ...process.env,
-        npm_config_registry: 'http://localhost:4873',
+        npm_config_registry: verdaccioUrl,
         npm_config_cache: dirSync({unsafeCleanup: true}).name,
       },
       cwd: testDirectory,
@@ -61,7 +62,7 @@ describe(PACKAGE_NAME, () => {
     expect(
       npmSync(['install'], {
         cwd: testDirectory,
-        env: {...process.env, npm_config_registry: 'http://localhost:4873'},
+        env: {...process.env, npm_config_registry: verdaccioUrl},
       }).status
     ).toBe(0);
   });

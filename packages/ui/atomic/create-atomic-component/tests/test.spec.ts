@@ -13,17 +13,19 @@ describe(PACKAGE_NAME, () => {
   let verdaccioProcess: ChildProcess;
   let tempDirectory: DirResult;
   let testDirectory: string;
-  let npmConfigCache: string;
+  let npmCache: string;
+  let verdaccioUrl: string;
 
   beforeAll(async () => {
-    verdaccioProcess = await startVerdaccio(PACKAGE_NAME);
+    ({verdaccioUrl, verdaccioProcess} = await startVerdaccio(PACKAGE_NAME));
     tempDirectory = dirSync({unsafeCleanup: true, keep: true});
-    npmConfigCache = join(tempDirectory.name, 'npm-cache');
-    mkdirSync(npmConfigCache);
+    npmCache = join(tempDirectory.name, 'npm-cache');
+    mkdirSync(npmCache);
   });
 
   afterAll(async () => {
     await treeKill(verdaccioProcess.pid);
+    console.log(tempDirectory.name);
     tempDirectory.removeCallback();
   });
 
@@ -62,8 +64,8 @@ describe(PACKAGE_NAME, () => {
       npmSync(['init', PACKAGE_NAME.replace('/create-', '/'), ...args], {
         env: {
           ...process.env,
-          npm_config_registry: 'http://localhost:4873',
-          npm_config_cache: npmConfigCache,
+          npm_config_registry: verdaccioUrl,
+          npm_config_cache: npmCache,
         },
         cwd: testDirectory,
       });
@@ -91,8 +93,8 @@ describe(PACKAGE_NAME, () => {
           cwd: testDirectory,
           env: {
             ...process.env,
-            npm_config_registry: 'http://localhost:4873',
-            npm_config_cache: npmConfigCache,
+            npm_config_registry: verdaccioUrl,
+            npm_config_cache: npmCache,
           },
         }).status
       ).toBe(0);

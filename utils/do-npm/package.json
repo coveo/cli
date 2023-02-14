@@ -22,7 +22,6 @@
   "dependencies": {
     "@npmcli/arborist": "^6.2.0",
     "tmp": "^0.2.1",
-    "npm": "^9.4.0",
-    "verdaccio": "^5.20.1"
+    "npm": "^9.4.0"
   }
 }

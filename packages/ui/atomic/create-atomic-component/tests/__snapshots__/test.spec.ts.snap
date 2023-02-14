@@ -4,7 +4,7 @@ exports[`@coveo/create-atomic-component when called in an existing project shoul
 HashedFolder {
   "children": [
     HashedFile {
-      "hash": "IqedXNvQa50XbefvR1YF833+Jm0=",
+      "hash": "7O0/Vc7OEelTKxcFWqUkyF7A8Uc=",
       "name": "package.json",
     },
     HashedFile {
@@ -124,7 +124,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "lSvodcvVVbXEVMHeDFaZQjGxbvw=",
+  "hash": "lZMMtr1PKHReg9uxNvmZmwh1kJc=",
   "name": "no-args",
 }
 `;
@@ -133,7 +133,7 @@ exports[`@coveo/create-atomic-component when called with a component name withou
 HashedFolder {
   "children": [
     HashedFile {
-      "hash": "IqedXNvQa50XbefvR1YF833+Jm0=",
+      "hash": "7O0/Vc7OEelTKxcFWqUkyF7A8Uc=",
       "name": "package.json",
     },
     HashedFile {
@@ -215,7 +215,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "13trvovPHgGBR579g61lhvJgqsQ=",
+  "hash": "DgaO2ZmHnj+y/Of/eXjUa8Ld7X0=",
   "name": "invalid-arg",
 }
 `;
@@ -224,7 +224,7 @@ exports[`@coveo/create-atomic-component when called with a valid component name 
 HashedFolder {
   "children": [
     HashedFile {
-      "hash": "IqedXNvQa50XbefvR1YF833+Jm0=",
+      "hash": "7O0/Vc7OEelTKxcFWqUkyF7A8Uc=",
       "name": "package.json",
     },
     HashedFile {
@@ -306,7 +306,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "F5T8V+KWeE27o5/Bh/uGTLGp4hU=",
+  "hash": "D+HtykqmKnaZ0ZOeH09WFLqOqAs=",
   "name": "valid-arg",
 }
 `;
@@ -315,7 +315,7 @@ exports[`@coveo/create-atomic-component when called without any args should init
 HashedFolder {
   "children": [
     HashedFile {
-      "hash": "IqedXNvQa50XbefvR1YF833+Jm0=",
+      "hash": "7O0/Vc7OEelTKxcFWqUkyF7A8Uc=",
       "name": "package.json",
     },
     HashedFile {
@@ -397,7 +397,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "vNJMfoAASamwB/zmtnTBTUHIe9E=",
+  "hash": "kPthoLGShFGAaLBJFR/SeUOKgR8=",
   "name": "no-args",
 }
 `;
