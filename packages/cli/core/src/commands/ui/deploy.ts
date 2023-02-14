@@ -97,7 +97,7 @@ export default class Deploy extends CLICommand {
     {
       command: 'coveo ui:deploy -c ./configs/myconfig.json',
       description:
-        'Create a new Hosted Page according to the configuration in the file at the path "./configs/myconfig.json"',
+        'Create a new Hosted Page according to the configuration in the file located at "./configs/myconfig.json"',
     },
   ];
 
