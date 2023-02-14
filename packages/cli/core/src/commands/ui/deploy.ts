@@ -14,6 +14,8 @@ import {Flags} from '@oclif/core';
 import {readJsonSync, ensureDirSync, readFileSync} from 'fs-extra';
 import {DeployConfigError} from '../../lib/errors/deployErrors';
 import {join} from 'path';
+import {Example} from '@oclif/core/lib/interfaces';
+import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
 
 interface FileInput {
   path: string;
@@ -81,6 +83,23 @@ export default class Deploy extends CLICommand {
       required: false,
     }),
   };
+  public static examples: Example[] = [
+    {
+      command: 'coveo ui:deploy',
+      description:
+        'Create a new Hosted Page according to the configuration in the file "coveo.deploy.json"',
+    },
+    {
+      command: 'coveo ui:deploy -p 7944ff4a-9943-4999-a3f6-3e81a7f6fb0a',
+      description:
+        'Update the Hosted Page whose ID is "7944ff4a-9943-4999-a3f6-3e81a7f6fb0a" according to the configuration in the file "coveo.deploy.json"',
+    },
+    {
+      command: 'coveo ui:deploy -c ./configs/myconfig.json',
+      description:
+        'Create a new Hosted Page according to the configuration in the file at the path "./configs/myconfig.json"',
+    },
+  ];
 
   @Trackable()
   @Preconditions(
@@ -100,20 +119,7 @@ export default class Deploy extends CLICommand {
       return;
     }
 
-    try {
-      await this.createPage(hostedPage);
-    } catch (error) {
-      /**
-       * TODO: handle Platform Client 400 error e.g.:
-       * {
-       *  statusCode: 400,
-       *  message: "A configuration with that name already exist.",
-       *  type: 'DuplicateConfigurationException'
-       * }
-       */
-      console.error(error);
-      super.catch(error);
-    }
+    await this.createPage(hostedPage);
   }
 
   private validateDeployConfigJson(
@@ -167,18 +173,20 @@ export default class Deploy extends CLICommand {
   }
 
   private async createPage(page: New<HostedPage>) {
-    this.log(`Creating new Hosted Page named "${page.name}".`);
+    startSpinner(`Creating new Hosted Page named "${page.name}".`);
 
     const client = await this.createClient();
     const response = await client.hostedPages.create(page);
     this.log(`Hosted Page creation successful with id "${response.id}".`);
+    stopSpinner();
   }
 
   private async updatePage(page: HostedPage) {
-    this.log(`Updating existing Hosted Page with the id "${page.id}".`);
+    startSpinner(`Updating existing Hosted Page with the id "${page.id}".`);
 
     const client = await this.createClient();
     const response = await client.hostedPages.update(page);
     this.log(`Hosted Page update successful with id "${response.id}".`);
+    stopSpinner();
   }
 }
