@@ -1,4 +1,4 @@
-import {ValidationError} from 'jsonschema';
+import type {ValidationError} from 'jsonschema';
 
 export function getPrettyJsonValidationErrors(
   errors: ValidationError[]
