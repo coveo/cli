@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "declaration": true,
+    "declarationDir": "dist",
+    "module": "Node16",
+    "moduleResolution": "node16",
+    "target": "ESNext",
+    "sourceMap": true
+  },
+  "exclude": ["node_modules"],
+  "include": ["src"]
+}

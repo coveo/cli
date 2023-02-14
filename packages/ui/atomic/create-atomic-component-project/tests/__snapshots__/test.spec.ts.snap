@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`@coveo/create-atomic-component-project should initialize a base project 1`] = `
+HashedFolder {
+  "children": [
+    HashedFile {
+      "hash": "/EUyu6gVZlO8FrKPYi4T6pPEZOI=",
+      "name": "package.json",
+    },
+    HashedFile {
+      "hash": "t2ijBtfSMeYJbqfftNaaKO/djIo=",
+      "name": "readme.md",
+    },
+    HashedFolder {
+      "children": [
+        HashedFile {
+          "hash": "YVuwXfIZfjfeVyLQ6cMy3kUqC3A=",
+          "name": "html.d.ts",
+        },
+        HashedFolder {
+          "children": [
+            HashedFile {
+              "hash": "wRrWASx36kB/WHP3xotlHQbcLdo=",
+              "name": "index.css",
+            },
+            HashedFile {
+              "hash": "PzWUKvDClNOd5HSK8c6YTFV8/9Q=",
+              "name": "index.html",
+            },
+            HashedFile {
+              "hash": "ZRD3OAMjlKnlu7Yh3iQv3gCcG8c=",
+              "name": "index.ts",
+            },
+          ],
+          "hash": "KaLKYWk10KFfD5NR/eQK0Zlk4qc=",
+          "name": "pages",
+        },
+      ],
+      "hash": "k4Tz5Ow35z6eAe5vRRIeg5Q7EQM=",
+      "name": "src",
+    },
+    HashedFile {
+      "hash": "BVZfiCzL+2kulE12K4HLAIl3kJ8=",
+      "name": "stencil.config.ts",
+    },
+    HashedFile {
+      "hash": "yMxJnSeOFw52ObOJrKQEh86v+HM=",
+      "name": "tsconfig.json",
+    },
+  ],
+  "hash": "Uk14EzUDjeEDKM690n+x3Zd2oVI=",
+  "name": "testDirectory",
+}
+`;
