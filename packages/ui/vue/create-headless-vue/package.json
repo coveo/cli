@@ -22,10 +22,11 @@
   "type": "module",
   "files": [
     "index.js",
-    "template/*"
+    "template/*",
+    "template/.gitignore"
   ],
   "scripts": {
-    "release:phase1": "node --experimental-specifier-resolution=node ../../../../scripts/releaseV2/phase1-bump-all-packages.mjs"
+    "release:phase1": "npx -p=@coveord/release npm-publish"
   },
   "publishConfig": {
     "access": "public"

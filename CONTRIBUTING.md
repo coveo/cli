@@ -59,7 +59,7 @@ The CLI release is topological. This means that it will release first the packag
 > Thus, the packages are released in the following order:
 > `cli/commons-dev`, `cli-commons` and finally `cli/core`.
 
-To define the topology, the repo uses [`nx`](https://nx.dev/) to generate a topology graph that is then consumed by the JS script [scripts/releaseV2/phase1-bump-all-packages.mjs](./scripts/releaseV2/phase1-bump-all-packages.mjs).
+To define the topology, the repo uses [`nx`](https://nx.dev/) to generate a topology graph that is then consumed by the JS script [utils/release/phase1-bump-all-packages.mjs](./utils/release/phase1-bump-all-packages.mjs).
 
 Essentially, each package goes through the following steps one by one:
 
@@ -70,7 +70,7 @@ Essentially, each package goes through the following steps one by one:
 - Update the local dependencies of the package with its new version.
 - Write itself down in the list of packages that have been published.
 
-After all packages are released, [./scripts/releaseV2/phase2-git-commit-tag-push.mjs](./scripts/releaseV2/phase2-git-commit-tag-push.mjs) will commit all the changes. It will tag the commits with the incremental release id and tag the same commit with all the versions that have been published.
+After all packages are released, [./utils/release/phase2-git-commit-tag-push.mjs](./utils/release/phase2-git-commit-tag-push.mjs) will commit all the changes. It will tag the commits with the incremental release id and tag the same commit with all the versions that have been published.
 
 If `@coveo/cli` was released on `npm`, then a new GitHub release is created. The release will then trigger the generation of new binaries. After the binaries are created and attached, a deployment pipeline run must be triggered through Jenkins.
 
