@@ -69,7 +69,7 @@ export default class Dump extends CLICommand {
       command:
         'coveo org:search:dump --source Products --pipeline Search --additionalFilter "@cat_categories==Shorts AND @color==Black"',
       description:
-        'Get all the products coming from the "Search" pipeline that are in the "Shorts" category and has the color field "Black".',
+        'Get all the products coming from the "Search" pipeline that are in the "Shorts" category and have the color "Black".',
     },
     {
       command:
