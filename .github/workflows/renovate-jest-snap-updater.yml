@@ -1,0 +1,59 @@
+on:
+  workflow_run:
+    workflows: ['CI']
+    types: ['completed']
+    branches: ['renovate/**']
+jobs:
+  update-snap:
+    name: 'Update Jest Snap of #${{ github.event.number }}'
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-20.04
+    # If we're already doing the process, cancel the old attempt.
+    concurrency:
+      group: update-snap-${{ github.event.number }}
+      cancel-in-progress: true
+    env:
+      BRANCH_NAME: 'renovate-snap/${{github.event.number}}'
+    steps:
+      - name: Setup runner
+        if: ${{matrix.os == 'ubuntu-20.04'}}
+        # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+      - name: Setup runner
+        if: ${{matrix.os == 'windows-latest'}}
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+        with:
+          cache: 'npm'
+          node-version-file: '.nvmrc'
+      - name: Start update branch
+        run: git checkout -b $BRANCH_NAME
+      - name: Install dependencies
+        run: npm ci
+      - name: Update snapshots
+        run: npm test -- -u
+      - name: Commit-Push
+        run: |
+          git commit -am 'chore:refresh jest snap j:cdx-227'
+          git push -f
+      - name: Open PR
+        uses: actions/github-script
+        env:
+          DISPLAY_TITLE: ${{ github.event.workflow_run.display_title }}
+        with:
+          script: |
+            const jira = 'j:cdx-227';
+            const title = `${process.env.DISPLAY_TITLE.split(jira)[0]} and jest snaps ${jira}`;
+            github.rest.pulls.create({
+              title: title,
+              base: 'master',
+              head: process.env.BRANCH_NAME,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              maintainer_can_modify: true,
+            });
