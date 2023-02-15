@@ -4,6 +4,12 @@ on:
     types: ['completed']
     branches: ['renovate/**']
 jobs:
+  close-snap-pr:
+    name: 'Close Jest Snap PR'
+    if:
+    runs-on:
+    steps:
+      # Delete the branch if it exists, PR will prolly be deleted by GH automagically.
   update-snap:
     name: 'Update Jest Snap of #${{ github.event.number }}'
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
@@ -37,6 +43,8 @@ jobs:
         run: npm ci
       - name: Update snapshots
         run: npm test -- -u
+      - name: Check if branch already exists
+        run: # Check if the branch exists. Store the value. If the branch does exists do not create a PR
       - name: Commit-Push
         run: |
           git commit -am 'chore:refresh jest snap j:cdx-227'
