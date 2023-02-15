@@ -3,13 +3,16 @@ on:
     workflows: ['CI']
     types: ['completed']
     branches: ['renovate/**']
+env:
+  BRANCH_NAME: 'renovate-snap/${{github.event.number}}'
 jobs:
-  close-snap-pr:
+  close-snap:
     name: 'Close Jest Snap PR'
-    if:
-    runs-on:
+    runs-on: ubuntu-20.04
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      # Delete the branch if it exists, PR will prolly be deleted by GH automagically.
+      - name: Delete the branch
+        run: git push --delete $BRANCH_NAME
   update-snap:
     name: 'Update Jest Snap of #${{ github.event.number }}'
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
@@ -18,8 +21,6 @@ jobs:
     concurrency:
       group: update-snap-${{ github.event.number }}
       cancel-in-progress: true
-    env:
-      BRANCH_NAME: 'renovate-snap/${{github.event.number}}'
     steps:
       - name: Setup runner
         if: ${{matrix.os == 'ubuntu-20.04'}}
@@ -38,19 +39,20 @@ jobs:
           cache: 'npm'
           node-version-file: '.nvmrc'
       - name: Start update branch
-        run: git checkout -b $BRANCH_NAME
+        run: |
+          git push --delete $BRANCH_NAME
+          git checkout -b $BRANCH_NAME
       - name: Install dependencies
         run: npm ci
       - name: Update snapshots
         run: npm test -- -u
-      - name: Check if branch already exists
-        run: # Check if the branch exists. Store the value. If the branch does exists do not create a PR
       - name: Commit-Push
         run: |
           git commit -am 'chore:refresh jest snap j:cdx-227'
           git push -f
       - name: Open PR
         uses: actions/github-script
+        continue-on-error: true
         env:
           DISPLAY_TITLE: ${{ github.event.workflow_run.display_title }}
         with:
