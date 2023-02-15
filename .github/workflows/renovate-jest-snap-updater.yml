@@ -55,12 +55,14 @@ jobs:
         continue-on-error: true
         env:
           DISPLAY_TITLE: ${{ github.event.workflow_run.display_title }}
+          PR_BODY: '#${{ github.event.number }}'
         with:
           script: |
             const jira = 'j:cdx-227';
             const title = `${process.env.DISPLAY_TITLE.split(jira)[0]} and jest snaps ${jira}`;
             github.rest.pulls.create({
               title: title,
+              body: process.env.PR_BODY,
               base: 'master',
               head: process.env.BRANCH_NAME,
               owner: context.repo.owner,
