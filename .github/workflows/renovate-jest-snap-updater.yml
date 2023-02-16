@@ -1,10 +1,12 @@
+name: Update Jest Snaps after Renovate
 on:
   workflow_run:
     workflows: ['CI']
     types: ['completed']
     branches: ['renovate/**']
 env:
-  BRANCH_NAME: 'renovate-snap/${{github.event.number}}'
+  PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+  BRANCH_NAME: 'renovate-snap/${{github.event.workflow_run.pull_requests[0].number}}'
 jobs:
   close-snap:
     name: 'Close Jest Snap PR'
@@ -19,7 +21,7 @@ jobs:
     runs-on: ubuntu-20.04
     # If we're already doing the process, cancel the old attempt.
     concurrency:
-      group: update-snap-${{ github.event.number }}
+      group: update-snap-$PR_NUMBER
       cancel-in-progress: true
     steps:
       - name: Setup runner
@@ -55,7 +57,7 @@ jobs:
         continue-on-error: true
         env:
           DISPLAY_TITLE: ${{ github.event.workflow_run.display_title }}
-          PR_BODY: '#${{ github.event.number }}'
+          PR_BODY: '#$PR_NUMBER'
         with:
           script: |
             const jira = 'j:cdx-227';
