@@ -11,8 +11,6 @@ import defaultTemplate from './templates/default-template.html';
  */
 @Component({
   tag: 'results-manager',
-  // styleUrl: "./results-manager.css",
-  /* TODO: Add variables for result templates in CSS file */
   shadow: true,
 })
 export class ResultsManager {
