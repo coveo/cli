@@ -1,0 +1,66 @@
+<style>
+  .field {
+    display: inline-flex;
+    white-space: nowrap;
+    align-items: center;
+  }
+
+  .field-label {
+    font-weight: bold;
+    margin-right: 0.25rem;
+  }
+
+  .smooth-border {
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  .force-fit-content {
+    height: fit-content !important;
+  }
+</style>
+<atomic-result-section-badges>
+  <atomic-field-condition must-match-is-recommendation="true">
+    <atomic-result-badge label="Recommended"></atomic-result-badge>
+  </atomic-field-condition>
+  <atomic-field-condition must-match-is-top-result="true">
+    <atomic-result-badge label="Top Result"></atomic-result-badge>
+  </atomic-field-condition>
+</atomic-result-section-badges>
+
+<atomic-result-section-title>
+  <atomic-result-link>
+    <a slot="attributes" target="_blank"></a>
+  </atomic-result-link>
+</atomic-result-section-title>
+
+<atomic-result-section-visual class="force-fit-content">
+  <atomic-field-condition if-defined="sports_blogimage">
+    <atomic-result-image
+      field="sports_blogimage"
+      class="force-fit-content smooth-border"
+    ></atomic-result-image>
+  </atomic-field-condition>
+</atomic-result-section-visual>
+
+<atomic-result-section-excerpt style="margin-top: 0.5rem">
+  <atomic-result-text field="excerpt"></atomic-result-text>
+</atomic-result-section-excerpt>
+
+<atomic-result-section-bottom-metadata>
+  <atomic-result-fields-list>
+    <atomic-field-condition class="field" if-defined="ytviewcount">
+      <span class="field-label">
+        <atomic-text value="Views"></atomic-text>:
+      </span>
+      <atomic-result-number field="ytviewcount"></atomic-result-number>
+    </atomic-field-condition>
+
+    <span class="field">
+      <atomic-result-date
+        relative-time="true"
+        format="MMM D, YYYY"
+      ></atomic-result-date>
+    </span>
+  </atomic-result-fields-list>
+</atomic-result-section-bottom-metadata>
