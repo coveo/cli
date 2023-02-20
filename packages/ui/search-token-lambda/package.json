@@ -15,7 +15,7 @@
     "release:phase1": "npx -p=@coveord/release npm-publish"
   },
   "dependencies": {
-    "@coveo/platform-client": "40.9.1",
+    "@coveo/platform-client": "37.13.0",
     "fetch-undici-polyfill": "1.1.2"
   },
   "devDependencies": {
