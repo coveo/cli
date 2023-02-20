@@ -1,3 +1,7 @@
+:root {
+  --atomic-font-family: Lexend;
+  --atomic-font-normal: 300;
+}
 body {
   margin: 0;
 }
