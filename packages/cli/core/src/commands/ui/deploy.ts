@@ -7,7 +7,7 @@ import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
   Preconditions,
-} from '@coveo/cli-commons/preconditions';
+} from '@coveo/cli-commons/preconditions/index';
 import {HostedPage, New} from '@coveo/platform-client';
 import {createSearchPagesPrivilege} from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {Flags} from '@oclif/core';
