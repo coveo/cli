@@ -1,7 +1,6 @@
 {
   "name": "@coveo/sample-result-component",
   "version": "0.0.1",
-  "description": "@coveo/atomic result component starter",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
   "es2015": "dist/esm/index.mjs",
