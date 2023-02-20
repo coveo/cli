@@ -16,7 +16,7 @@ jobs:
       - name: Delete the branch
         run: git push origin --delete $BRANCH_NAME
   update-snap:
-    name: 'Update Jest Snap of #${{ env.PR_NUMBER }}'
+    name: 'Update Jest Snap of #${{ github.event.workflow_run.pull_requests[0].number }}'
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     runs-on: ubuntu-20.04
     # If we're already doing the process, cancel the old attempt.
