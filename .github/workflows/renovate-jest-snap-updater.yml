@@ -16,7 +16,7 @@ jobs:
       - name: Delete the branch
         run: git push origin --delete $BRANCH_NAME
   update-snap:
-    name: 'Update Jest Snap of #${{ github.event.number }}'
+    name: 'Update Jest Snap of #${{ env.PR_NUMBER }}'
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     runs-on: ubuntu-20.04
     # If we're already doing the process, cancel the old attempt.
@@ -40,10 +40,10 @@ jobs:
         with:
           cache: 'npm'
           node-version-file: '.nvmrc'
+      - name: Ensure update branch does not exists
+        run: git push origin --delete $BRANCH_NAME || true
       - name: Start update branch
-        run: |
-          git push origin --delete $BRANCH_NAME
-          git checkout -b $BRANCH_NAME
+        run: git checkout -b $BRANCH_NAME
       - name: Install dependencies
         run: npm ci
       - name: Update snapshots
