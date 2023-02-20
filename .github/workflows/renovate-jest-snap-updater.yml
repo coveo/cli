@@ -46,6 +46,8 @@ jobs:
         run: git checkout -b $BRANCH_NAME
       - name: Install dependencies
         run: npm ci
+      - name: Build
+        run: npm run build
       - name: Update snapshots
         run: npm test -- -u
       - name: Commit-Push
