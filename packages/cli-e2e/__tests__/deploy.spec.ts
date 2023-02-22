@@ -48,6 +48,7 @@ describe('ui:deploy', () => {
     testOrgId = await getTestOrg();
     copySync(deployProject, deployProjectPath);
     platformClient = getPlatformClient(testOrgId, accessToken);
+    console.log(platformClient); // TODO: remove
     processManager = new ProcessManager();
   }, defaultTimeout);
 
