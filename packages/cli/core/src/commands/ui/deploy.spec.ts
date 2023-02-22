@@ -28,6 +28,8 @@ import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditi
 import {readJSONSync, readFileSync} from 'fs-extra';
 import {DeployConfig} from './deploy';
 import {validate, ValidatorResult} from 'jsonschema';
+import {join} from 'path';
+
 const actualValidate = jest.requireActual('jsonschema').validate;
 
 type DeepPartial<T> = T extends Function
@@ -368,7 +370,7 @@ describe('ui:deploy', () => {
       .command(['ui:deploy'])
       .it('should fetch the htmlEntryFile content', () => {
         expect(mockedReadFileSync).toHaveBeenCalledWith(
-          `${validJsonConfig.dir}/${validJsonConfig.htmlEntryFile.path}`,
+          join(validJsonConfig.dir, validJsonConfig.htmlEntryFile.path),
           'utf-8'
         );
       });
@@ -384,7 +386,7 @@ describe('ui:deploy', () => {
       .it('should fetch the cssEntryFiles content', () => {
         expect(mockedReadFileSync).toHaveBeenNthCalledWith(
           2,
-          `${validJsonConfig.dir}/${validJsonConfig.cssEntryFiles![0].path}`,
+          join(validJsonConfig.dir, validJsonConfig.cssEntryFiles![0].path),
           'utf-8'
         );
       });
@@ -400,9 +402,10 @@ describe('ui:deploy', () => {
       .it('should fetch the javascriptEntryFiles content', () => {
         expect(mockedReadFileSync).toHaveBeenNthCalledWith(
           2,
-          `${validJsonConfig.dir}/${
+          join(
+            validJsonConfig.dir,
             validJsonConfig.javascriptEntryFiles![0].path
-          }`,
+          ),
           'utf-8'
         );
       });
