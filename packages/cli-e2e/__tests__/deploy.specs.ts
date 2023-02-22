@@ -21,11 +21,7 @@ describe('ui:deploy', () => {
   };
 
   const createNewTerminal = async () => {
-    const args: string[] = [
-      process.env.CLI_EXEC_PATH!,
-      'ui:deploy',
-      `-o=${testOrgId}`,
-    ];
+    const args: string[] = [process.env.CLI_EXEC_PATH!, 'ui:deploy'];
     const terminal = new Terminal(
       'node',
       args,
@@ -44,13 +40,15 @@ describe('ui:deploy', () => {
   };
 
   beforeAll(async () => {
-    stdout = '';
     testOrgId = await getTestOrg();
     copySync(deployProject, deployProjectPath);
     platformClient = getPlatformClient(testOrgId, accessToken);
-    console.log(platformClient); // TODO: remove
     processManager = new ProcessManager();
   }, defaultTimeout);
+
+  beforeEach(() => {
+    stdout = '';
+  });
 
   afterAll(async () => {
     await processManager.killAllProcesses();
@@ -60,10 +58,13 @@ describe('ui:deploy', () => {
     'happy creation path',
     async () => {
       await createNewTerminal();
-      console.log('stdout', stdout);
-      const regex = new RegExp('Hosted Page creation successful with id', 'gm');
+      const regex = /Hosted Page creation successful with id "(.+)"/g;
       expect(stdout).toMatch(regex);
-      // TODO: test /w platform client
+
+      const matches = regex.exec(stdout)!;
+      const hostedPageId = matches[1];
+      const hostedPage = await platformClient.hostedPages.get(hostedPageId);
+      expect(hostedPage).toBeTruthy();
     },
     defaultTimeout
   );
