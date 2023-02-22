@@ -25,7 +25,7 @@ interface JavaScriptFileInput extends FileInput {
   isModule: boolean;
 }
 
-interface DeployConfig {
+export interface DeployConfig {
   name: string;
   dir: string;
   htmlEntryFile: FileInput;
