@@ -1,14 +1,23 @@
+const mockedCliConfirm = jest.fn();
+const mockedCliWarn = jest.fn();
+jest.mock('@oclif/core', () => ({
+  CliUx: {ux: {warn: mockedCliWarn, confirm: mockedCliConfirm}},
+}));
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('../../project/project');
 jest.mock('../snapshot');
 jest.mock('../snapshotReporter');
-jest.mock('@oclif/core/lib/cli-ux/prompt');
 jest.mock('@oclif/core/lib/errors/index');
 jest.mock('../../errors/vaultErrors');
+jest.mock('@coveo/cli-commons/utils/ux');
 
+import {
+  formatOrgId,
+  startSpinner,
+  stopSpinner,
+} from '@coveo/cli-commons/utils/ux';
 import PlatformClient, {VaultFetchStrategy} from '@coveo/platform-client';
-import {confirm} from '@oclif/core/lib/cli-ux/prompt';
-import {warn} from '@oclif/core/lib/errors/index';
+import {CliUx} from '@oclif/core';
 import {Configuration} from '@coveo/cli-commons/config/config';
 import {SnapshotMissingVaultEntriesFromOriginError} from '../../errors/vaultErrors';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
@@ -18,12 +27,15 @@ import {SnapshotReporter} from '../snapshotReporter';
 import {tryTransferFromOrganization} from './transferFromOrganization';
 
 describe('#tryTransferFromOrganization', () => {
+  jest.mocked(startSpinner);
+  jest.mocked(stopSpinner);
+  const mockedFormatOrgId = jest.mocked(formatOrgId);
   const mockedProject = jest.mocked(Project);
   const mockedSnapshotMissingVaultEntriesFromOriginError = jest.mocked(
     SnapshotMissingVaultEntriesFromOriginError
   );
-  const mockedCliConfirm = jest.mocked(confirm);
-  const mockedCliWarn = jest.mocked(warn);
+  const mockedCliConfirm = jest.mocked(CliUx.ux.confirm);
+  const mockedCliWarn = jest.mocked(CliUx.ux.warn);
   const mockedVaultList = jest.fn();
   const mockedVaultImport = jest.fn();
   const mockedGetClient = jest.fn();
@@ -44,10 +56,16 @@ describe('#tryTransferFromOrganization', () => {
   };
 
   const doMockUserHasAccessToOriginOrg = () => {
-    mockedGetUserHasAccessToOrg.mockResolvedValue(true);
+    mockedGetUserHasAccessToOrg.mockImplementation((input: string) => {
+      console.log(input);
+      return Promise.resolve(true);
+    });
   };
 
-  beforeAll(() => {
+  beforeEach(() => {
+    mockedFormatOrgId.mockImplementation(
+      (input: TemplateStringsArray | string) => input?.toString()
+    );
     mockedAuthenticatedClient.mockImplementation(
       () =>
         ({
@@ -156,7 +174,9 @@ describe('#tryTransferFromOrganization', () => {
         projectPath: 'somePathYay',
         cfg: {} as Configuration,
       });
-
+      expect(mockedCliConfirm).toBeCalled();
+      expect(mockedAuthenticatedClient).toBeCalled();
+      expect(mockedGetUserHasAccessToOrg).toBeCalled();
       expect(mockedVaultList).toBeCalledTimes(4);
       for (let i = 0; i < fakeNumberOfPages; i++) {
         expect(mockedVaultList.mock.calls[i][0]).toMatchObject({page: i});
@@ -166,7 +186,7 @@ describe('#tryTransferFromOrganization', () => {
     describe('when the origin org does not have all the vault entries missing from the target org', () => {
       const fakeOriginVaultEntries = ['foo', 'bar'];
       const fakeMissingVaultEntriesOnTarget = ['baz', 'bar'];
-      beforeAll(() => {
+      beforeEach(() => {
         mockedVaultList.mockResolvedValue({
           totalPages: 1,
           items: fakeOriginVaultEntries.map((entryId) => ({key: entryId})),
@@ -217,7 +237,7 @@ describe('#tryTransferFromOrganization', () => {
     describe('when the origin org does have all the vault entries from the target org', () => {
       const fakeOriginVaultEntries = ['foo', 'bar', 'baz'];
       const fakeMissingVaultEntriesOnTarget = ['baz', 'bar'];
-      beforeAll(() => {
+      beforeEach(() => {
         mockedVaultList.mockResolvedValue({
           totalPages: 1,
           items: fakeOriginVaultEntries.map((entryId) => ({key: entryId})),
