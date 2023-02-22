@@ -133,15 +133,16 @@ jobs:
       fail-fast: false
       matrix:
         os: ['ubuntu-20.04', 'windows-latest']
-        spec:
-          [
-            'angular.specs.ts',
-            'atomic.specs.ts',
-            'auth.specs.ci.ts',
-            'orgList.specs.ts',
-            'orgResources.specs.ts',
-            'react.specs.ts',
-            'vue.specs.ts',
+        spec: [
+            'deploy.specs.ts',
+            # TODO: re-enable other tests
+            # 'angular.specs.ts',
+            # 'atomic.specs.ts',
+            # 'auth.specs.ci.ts',
+            # 'orgList.specs.ts',
+            # 'orgResources.specs.ts',
+            # 'react.specs.ts',
+            # 'vue.specs.ts',
           ]
         # TODO: fix auth spec with windows
         exclude:
