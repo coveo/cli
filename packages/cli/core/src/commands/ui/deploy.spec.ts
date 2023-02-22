@@ -317,7 +317,7 @@ describe('ui:deploy', () => {
 
     test
       .do(() => {
-        delete (modifiedConfig.javascriptEntryFiles![0] as any).path;
+        delete modifiedConfig.javascriptEntryFiles![0]!.path;
         mockedReadJSON.mockImplementationOnce(() => modifiedConfig);
         doActualValidate();
       })
