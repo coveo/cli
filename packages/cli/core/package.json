@@ -13,7 +13,7 @@
     "@coveo/cli-plugin-source": "2.0.4",
     "@coveo/platform-client": "40.9.3",
     "@coveo/push-api-client": "^2.7.7",
-    "@oclif/core": "1.24.0",
+    "@oclif/core": "2.3.0",
     "@oclif/plugin-help": "5.1.23",
     "@oclif/plugin-plugins": "2.1.12",
     "@oclif/plugin-update": "3.0.12",
