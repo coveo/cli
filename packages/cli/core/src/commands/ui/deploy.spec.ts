@@ -16,7 +16,7 @@ jest.mock('../../lib/utils/misc');
 import {test} from '@oclif/test';
 import {spawnProcess} from '../../lib/utils/process';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import PlatformClient from '@coveo/platform-client';
+import PlatformClient, {HostedPage, New} from '@coveo/platform-client';
 import {Config, Configuration} from '@coveo/cli-commons/config/config';
 import {
   HasNecessaryCoveoPrivileges,
@@ -25,7 +25,7 @@ import {
 import {getPackageVersion} from '../../lib/utils/misc';
 import {configurationMock} from '../../__stub__/configuration';
 import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
-import {readJSONSync} from 'fs-extra';
+import {readJSONSync, readFileSync} from 'fs-extra';
 import {DeployConfig} from './deploy';
 import {validate, ValidatorResult} from 'jsonschema';
 const actualValidate = jest.requireActual('jsonschema').validate;
@@ -75,7 +75,10 @@ describe('ui:deploy', () => {
   const mockedApiKeyPrivilege = jest.mocked(HasNecessaryCoveoPrivileges);
   const mockedIsAuthenticated = jest.mocked(IsAuthenticated);
   const mockedReadJSON = jest.mocked(readJSONSync);
+  const mockedReadFileSync = jest.mocked(readFileSync);
   const mockedValidate = jest.mocked(validate);
+  const mockHostedPageCreate = jest.fn();
+  const mockHostedPageUpdate = jest.fn();
 
   const preconditionStatus = {
     apiKey: true,
@@ -83,6 +86,8 @@ describe('ui:deploy', () => {
   };
 
   const doMockPreconditions = function () {
+    preconditionStatus.apiKey = true;
+    preconditionStatus.authentication = true;
     const mockedPreconditions = mockPreconditions(preconditionStatus);
     mockedApiKeyPrivilege.mockReturnValue(mockedPreconditions.apiKey);
     mockedIsAuthenticated.mockReturnValue(mockedPreconditions.authentication);
@@ -98,6 +103,10 @@ describe('ui:deploy', () => {
 
   const doMockedValidReadJSON = () => {
     mockedReadJSON.mockReturnValue(validJsonConfig);
+  };
+
+  const doMockedReadFileSync = () => {
+    mockedReadFileSync.mockReturnValue('somefilecontents');
   };
 
   const doMockValidate = (valid = true) =>
@@ -141,12 +150,14 @@ describe('ui:deploy', () => {
         ({
           initialize: () => Promise.resolve(),
           hostedPages: {
-            create: jest.fn().mockResolvedValue({}),
-            update: jest.fn().mockResolvedValue({}),
+            create: mockHostedPageCreate.mockResolvedValue({}),
+            update: mockHostedPageUpdate.mockResolvedValue({}),
           },
         } as unknown as PlatformClient)
     );
   };
+
+  let modifiedConfig: DeepPartial<DeployConfig>;
 
   beforeEach(() => {
     doMockedGetPackageVersion();
@@ -157,8 +168,8 @@ describe('ui:deploy', () => {
     doMockPreconditions();
     doMockValidate();
     doMockedValidReadJSON();
-    preconditionStatus.apiKey = true;
-    preconditionStatus.authentication = true;
+    doMockedReadFileSync();
+    modifiedConfig = JSON.parse(JSON.stringify(validJsonConfig));
   });
 
   afterEach(() => {
@@ -192,11 +203,6 @@ describe('ui:deploy', () => {
   });
 
   describe('validating JSON config file', () => {
-    let modifiedConfig: DeepPartial<DeployConfig>;
-    beforeEach(() => {
-      modifiedConfig = {...validJsonConfig};
-    });
-
     test
       .do(() => {
         mockedReadJSON.mockImplementationOnce(() => null);
@@ -350,10 +356,105 @@ describe('ui:deploy', () => {
       );
   });
 
-  describe.skip('fetching file contents defined in the config', () => {});
+  describe('fetching file contents defined in the config', () => {
+    test
+      .do(() => {
+        delete modifiedConfig.cssEntryFiles;
+        delete modifiedConfig.javascriptEntryFiles;
+        mockedReadJSON.mockImplementationOnce(() => modifiedConfig);
+      })
+      .stdout()
+      .stderr()
+      .command(['ui:deploy'])
+      .it('should fetch the htmlEntryFile content', () => {
+        expect(mockedReadFileSync).toHaveBeenCalledWith(
+          `${validJsonConfig.dir}/${validJsonConfig.htmlEntryFile.path}`,
+          'utf-8'
+        );
+      });
 
-  describe.skip('interacting with Platform client', () => {});
+    test
+      .do(() => {
+        delete modifiedConfig.javascriptEntryFiles;
+        mockedReadJSON.mockImplementationOnce(() => modifiedConfig);
+      })
+      .stdout()
+      .stderr()
+      .command(['ui:deploy'])
+      .it('should fetch the cssEntryFiles content', () => {
+        expect(mockedReadFileSync).toHaveBeenNthCalledWith(
+          2,
+          `${validJsonConfig.dir}/${validJsonConfig.cssEntryFiles![0].path}`,
+          'utf-8'
+        );
+      });
 
-  // should call update if id passed
-  // should call create if no id
+    test
+      .do(() => {
+        delete modifiedConfig.cssEntryFiles;
+        mockedReadJSON.mockImplementationOnce(() => modifiedConfig);
+      })
+      .stdout()
+      .stderr()
+      .command(['ui:deploy'])
+      .it('should fetch the javascriptEntryFiles content', () => {
+        expect(mockedReadFileSync).toHaveBeenNthCalledWith(
+          2,
+          `${validJsonConfig.dir}/${
+            validJsonConfig.javascriptEntryFiles![0].path
+          }`,
+          'utf-8'
+        );
+      });
+  });
+
+  describe('interacting with Platform client', () => {
+    const expectedHostedPage: New<HostedPage> = {
+      html: 'somefilecontents',
+      name: validJsonConfig.name,
+      javascript: [
+        ...validJsonConfig.javascriptEntryFiles!.map(({isModule}) => ({
+          inlineContent: 'somefilecontents',
+          isModule,
+        })),
+        ...validJsonConfig.javascriptUrls!.map(({isModule, path}) => ({
+          url: path,
+          isModule,
+        })),
+      ],
+      css: [
+        ...validJsonConfig.cssEntryFiles!.map(() => ({
+          inlineContent: 'somefilecontents',
+        })),
+        ...validJsonConfig.cssUrls!.map(({path}) => ({
+          url: path,
+        })),
+      ],
+    };
+
+    test
+      .stdout()
+      .stderr()
+      .command(['ui:deploy'])
+      .it(
+        'should call hostedPages.create when no page id argument is passed',
+        () => {
+          expect(mockHostedPageCreate).toHaveBeenCalledWith(expectedHostedPage);
+        }
+      );
+
+    test
+      .stdout()
+      .stderr()
+      .command(['ui:deploy', '-p=thisistheid'])
+      .it(
+        'should call hostedPages.update when a page id argument is passed',
+        () => {
+          expect(mockHostedPageUpdate).toHaveBeenCalledWith({
+            ...expectedHostedPage,
+            id: 'thisistheid',
+          });
+        }
+      );
+  });
 });
