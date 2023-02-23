@@ -46,8 +46,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        # TODO: re-enable windows-latest
-        os: ['ubuntu-20.04']
+        os: ['ubuntu-20.04', 'windows-latest']
     steps:
       - name: Setup runner
         if: ${{matrix.os == 'ubuntu-20.04'}}
@@ -89,8 +88,7 @@ jobs:
   e2e-setup-verdaccio:
     strategy:
       matrix:
-        # TODO: re-enable windows-latest
-        os: ['ubuntu-20.04']
+        os: ['ubuntu-20.04', 'windows-latest']
     name: End-to-end publish packages
     runs-on: ${{matrix.os}}
     steps:
@@ -134,18 +132,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # TODO: re-enable windows-latest
-        os: ['ubuntu-20.04']
-        spec: [
+        os: ['ubuntu-20.04', 'windows-latest']
+        spec:
+          [
+            'angular.specs.ts',
+            'atomic.specs.ts',
+            'auth.specs.ci.ts',
             'deploy.specs.ts',
-            # TODO: re-enable other tests
-            # 'angular.specs.ts',
-            # 'atomic.specs.ts',
-            # 'auth.specs.ci.ts',
-            # 'orgList.specs.ts',
-            # 'orgResources.specs.ts',
-            # 'react.specs.ts',
-            # 'vue.specs.ts',
+            'orgList.specs.ts',
+            'orgResources.specs.ts',
+            'react.specs.ts',
+            'vue.specs.ts',
           ]
         # TODO: fix auth spec with windows
         exclude:
