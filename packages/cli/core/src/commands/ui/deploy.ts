@@ -69,7 +69,8 @@ const DeployConfigSchema: Schema = {
 };
 
 export default class Deploy extends CLICommand {
-  public static hidden = true; /* TODO: uncomment */
+  public static description =
+    'Deploy your search application to the Coveo infrastructure.';
   public static flags = {
     pageId: Flags.string({
       char: 'p',
