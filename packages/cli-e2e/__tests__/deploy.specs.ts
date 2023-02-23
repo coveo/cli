@@ -19,6 +19,10 @@ describe('ui:deploy', () => {
   const stdoutListener = (chunk: string) => {
     stdout += chunk;
   };
+  let stderr: string;
+  const stderrListener = (chunk: string) => {
+    stderr += chunk;
+  };
 
   const createNewTerminal = async () => {
     const args: string[] = [process.env.CLI_EXEC_PATH!, 'ui:deploy'];
@@ -30,11 +34,13 @@ describe('ui:deploy', () => {
       'ui-deploy'
     );
     terminal.orchestrator.process.stdout.on('data', stdoutListener);
+    terminal.orchestrator.process.stderr.on('data', stderrListener);
     await terminal
       .when('exit')
       .on('process')
       .do((proc) => {
         proc.stdout.off('data', stdoutListener);
+        proc.stderr.off('data', stderrListener);
       })
       .once();
   };
@@ -58,12 +64,16 @@ describe('ui:deploy', () => {
     'happy creation path',
     async () => {
       await createNewTerminal();
+      console.log('stdout:', stdout);
+      console.log('stderr:', stderr);
       const regex = /Hosted Page creation successful with id "(.+)"/g;
       expect(stdout).toMatch(regex);
 
       const matches = regex.exec(stdout)!;
+      console.log('matches:', matches);
       const hostedPageId = matches[1];
       const hostedPage = await platformClient.hostedPages.get(hostedPageId);
+      console.log('hostedPage:', hostedPage);
       expect(hostedPage).toBeTruthy();
     },
     defaultTimeout
