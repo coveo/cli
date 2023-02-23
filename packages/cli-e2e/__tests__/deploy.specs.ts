@@ -6,7 +6,6 @@ import {ProcessManager} from '../utils/processManager';
 import {getConfig, getUIProjectPath} from '../utils/cli';
 import {copySync, readJsonSync, writeJsonSync} from 'fs-extra';
 import {Terminal} from '../utils/terminal/terminal';
-import {setTimeout} from 'timers/promises';
 
 describe('ui:deploy', () => {
   let platformClient: PlatformClient;
@@ -16,7 +15,7 @@ describe('ui:deploy', () => {
   const {accessToken} = getConfig();
   const deployProjectPath = join(getUIProjectPath(), deployProject);
   let processManager: ProcessManager;
-  const defaultTimeout = 10 * 60e3;
+  const defaultTimeout = 5 * 60e3;
   let stdout: string;
   const stdoutListener = (chunk: string) => {
     stdout += chunk;
@@ -53,7 +52,6 @@ describe('ui:deploy', () => {
         proc.stdout.off('data', stdoutListener);
       })
       .once();
-    await setTimeout(1000);
   };
 
   beforeAll(async () => {
