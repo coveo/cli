@@ -30,7 +30,6 @@ describe('ui:deploy', () => {
     const configPath = join(deployProjectPath, 'coveo.deploy.json');
     const config = readJsonSync(configPath);
     pageName = `${prepend}-hosted-page-${process.env.TEST_RUN_ID}`;
-    console.log('page name', pageName);
     writeJsonSync(configPath, {...config, name: pageName});
   };
 
@@ -52,12 +51,6 @@ describe('ui:deploy', () => {
     );
     terminal.orchestrator.process.stdout.on('data', stdoutListener);
     terminal.orchestrator.process.stderr.on('data', stderrListener);
-    // await terminal
-    //   .when(/Hosted Page/)
-    //   .on('stderr')
-    //   .do()
-    //   .once();
-    // await terminal.when(/✔/).on('stderr').do().once();
     await terminal
       .when('exit')
       .on('process')
@@ -81,53 +74,52 @@ describe('ui:deploy', () => {
     stderr = '';
   });
 
-  afterEach(() => {
-    console.log('stdout:', stdout);
-    console.log('stderr:', stderr);
-  });
-
   afterAll(async () => {
     await processManager.killAllProcesses();
   });
 
-  it(
-    'happy creation path',
-    async () => {
-      addPageNameToConfig('create');
-      await deploy();
-      const regex = /Hosted Page creation successful with id "(.+)"/g;
-      expect(stdout).toMatch(regex);
+  describe('happy paths', () => {
+    it(
+      'creates a new hosted page',
+      async () => {
+        addPageNameToConfig('create');
+        await deploy();
 
-      const matches = regex.exec(stdout)!;
-      console.log('matches:', matches);
-      const hostedPageId = matches[1];
-      const hostedPage = await platformClient.hostedPages.get(hostedPageId);
-      console.log('hostedPage:', hostedPage);
-      expect(hostedPage).toBeTruthy();
-    },
-    defaultTimeout
-  );
+        const regex = /Hosted Page creation successful with id "(.+)"/g;
+        expect(stdout).toMatch(regex);
+        const matches = regex.exec(stdout)!;
+        const hostedPageId = matches[1];
 
-  it(
-    'happy update path',
-    async () => {
-      addPageNameToConfig('update');
-      const {id} = await platformClient.hostedPages.create({
-        html: 'somehtml',
-        name: `new-hosted-page-${process.env.TEST_RUN_ID}`,
-      });
+        const hostedPages = await platformClient.hostedPages.list();
+        expect(hostedPages.items).toEqual(
+          expect.arrayContaining([expect.objectContaining({id: hostedPageId})])
+        );
+      },
+      defaultTimeout
+    );
 
-      await deploy(id);
-      const regex = /Hosted Page update successful with id "(.+)"/g;
-      expect(stdout).toMatch(regex);
+    it(
+      'updates an existing hosted page when the pageId flag is set',
+      async () => {
+        addPageNameToConfig('update');
+        const {id} = await platformClient.hostedPages.create({
+          html: 'somehtml',
+          name: `new-hosted-page-${process.env.TEST_RUN_ID}`,
+        });
 
-      const matches = regex.exec(stdout)!;
-      console.log('matches:', matches);
-      const hostedPageId = matches[1];
-      const hostedPage = await platformClient.hostedPages.get(hostedPageId);
-      console.log('hostedPage:', hostedPage);
-      expect(hostedPage.name).toBe(pageName);
-    },
-    defaultTimeout
-  );
+        await deploy(id);
+
+        const regex = /Hosted Page update successful with id "(.+)"/g;
+        expect(stdout).toMatch(regex);
+        const matches = regex.exec(stdout)!;
+        const hostedPageId = matches[1];
+
+        const hostedPages = await platformClient.hostedPages.list();
+        expect(hostedPages.items).toEqual(
+          expect.arrayContaining([expect.objectContaining({id: hostedPageId})])
+        );
+      },
+      defaultTimeout
+    );
+  });
 });
