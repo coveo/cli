@@ -57,7 +57,7 @@ jobs:
       - name: Update snapshots
         run: npm test -- -u
       - name: Commit-Push
-        run: 
+        run: |
           git commit -am 'chore:refresh jest snap j:cdx-227'
           git push -f
       - name: Open PR
