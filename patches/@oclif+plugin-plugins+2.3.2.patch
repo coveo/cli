@@ -1,8 +1,8 @@
 diff --git a/node_modules/@oclif/plugin-plugins/lib/plugins.js b/node_modules/@oclif/plugin-plugins/lib/plugins.js
-index 6078db1..94e1308 100644
+index a96fcd2..8933fdf 100644
 --- a/node_modules/@oclif/plugin-plugins/lib/plugins.js
 +++ b/node_modules/@oclif/plugin-plugins/lib/plugins.js
-@@ -181,9 +181,10 @@ class Plugins {
+@@ -212,9 +212,10 @@ class Plugins {
          if (name.includes('@'))
              return;
          const scope = this.config.pjson.oclif.scope;
@@ -14,7 +14,7 @@ index 6078db1..94e1308 100644
      }
      async maybeUnfriendlyName(name) {
          const unfriendly = this.unfriendlyName(name);
-@@ -196,9 +197,10 @@ class Plugins {
+@@ -227,9 +228,10 @@ class Plugins {
      }
      friendlyName(name) {
          const scope = this.config.pjson.oclif.scope;
