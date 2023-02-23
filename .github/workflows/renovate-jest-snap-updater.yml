@@ -41,6 +41,11 @@ jobs:
         with:
           cache: 'npm'
           node-version-file: '.nvmrc'
+      - name: Setup Git Config
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git config --global --add --bool push.autoSetupRemote true
       - name: Ensure update branch does not exists
         run: git push origin --delete $BRANCH_NAME || true
       - name: Start update branch
@@ -52,9 +57,7 @@ jobs:
       - name: Update snapshots
         run: npm test -- -u
       - name: Commit-Push
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+        run: 
           git commit -am 'chore:refresh jest snap j:cdx-227'
           git push -f
       - name: Open PR
