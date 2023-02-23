@@ -1069,6 +1069,7 @@ EXAMPLES
   $ coveo ui:deploy -c ./configs/myconfig.json
 ```
 
+_See configuration example: [src/commands/ui/coveo.deploy.example.json](https://github.com/coveo/cli/blob/@coveo/cli@2.2.3/packages/cli/core/src/commands/ui/coveo.deploy.example.json)_
 _See code: [src/commands/ui/deploy.ts](https://github.com/coveo/cli/blob/@coveo/cli@2.2.3/packages/cli/core/src/commands/ui/deploy.ts)_
 
 ## `coveo update [CHANNEL]`

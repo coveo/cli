@@ -1,0 +1,29 @@
+{
+  "name": "Coveo Hosted Page Example",
+  "dir": "dist",
+  "htmlEntryFile": {
+    "path": "index.html"
+  },
+  "javascriptEntryFiles": [
+    {
+      "path": "index.js",
+      "isModule": false
+    }
+  ],
+  "javascriptUrls": [
+    {
+      "path": "https://static.cloud.coveo.com/atomic/v2/atomic.esm.js",
+      "isModule": true
+    }
+  ],
+  "cssEntryFiles": [
+    {
+      "path": "css/index.css"
+    }
+  ],
+  "cssUrls": [
+    {
+      "path": "https://static.cloud.coveo.com/atomic/v2/themes/coveo.css"
+    }
+  ]
+}
