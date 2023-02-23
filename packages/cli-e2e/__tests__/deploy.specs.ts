@@ -32,7 +32,7 @@ describe('ui:deploy', () => {
     writeJsonSync(configPath, {...config, name});
   };
 
-  const createNewTerminal = async () => {
+  const deploy = async () => {
     const args: string[] = [
       process.env.CLI_EXEC_PATH!,
       'ui:deploy',
@@ -48,13 +48,19 @@ describe('ui:deploy', () => {
     terminal.orchestrator.process.stdout.on('data', stdoutListener);
     terminal.orchestrator.process.stderr.on('data', stderrListener);
     await terminal
-      .when('exit')
-      .on('process')
-      .do((proc) => {
-        proc.stdout.off('data', stdoutListener);
-        proc.stderr.off('data', stderrListener);
-      })
+      .when(/Creating new Hosted Page/)
+      .on('stderr')
+      .do()
       .once();
+    await terminal.when(/✔/).on('stderr').do().once();
+    // await terminal
+    //   .when('exit')
+    //   .on('process')
+    //   .do((proc) => {
+    //     proc.stdout.off('data', stdoutListener);
+    //     proc.stderr.off('data', stderrListener);
+    //   })
+    //   .once();
   };
 
   beforeAll(async () => {
@@ -82,7 +88,7 @@ describe('ui:deploy', () => {
   it(
     'happy creation path',
     async () => {
-      await createNewTerminal();
+      await deploy();
       const regex = /Hosted Page creation successful with id "(.+)"/g;
       expect(stdout).toMatch(regex);
 
