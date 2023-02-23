@@ -16,6 +16,8 @@ import {DeployConfigError} from '../../lib/errors/deployErrors';
 import {join} from 'path';
 import {Example} from '@oclif/core/lib/interfaces';
 import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
+import {getTargetOrg} from '../../lib/snapshot/snapshotCommon';
+import {Config} from '@coveo/cli-commons/config/config';
 
 interface FileInput {
   path: string;
@@ -175,8 +177,11 @@ export default class Deploy extends CLICommand {
   }
 
   private async createClient() {
-    const authenticatedClient = new AuthenticatedClient();
-    return await authenticatedClient.getClient();
+    const {flags} = await this.parse(Deploy);
+    const org = getTargetOrg(this.configuration, flags.organization);
+    return await new AuthenticatedClient().getClient({
+      organization: org,
+    });
   }
 
   private async createPage(page: New<HostedPage>) {
@@ -195,5 +200,9 @@ export default class Deploy extends CLICommand {
     const response = await client.hostedPages.update(page);
     this.log(`Hosted Page update successful with id "${response.id}".`);
     stopSpinner();
+  }
+
+  private get configuration() {
+    return new Config(this.config.configDir);
   }
 }
