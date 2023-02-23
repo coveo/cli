@@ -19,7 +19,7 @@ import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {CliUx} from '@oclif/core';
+import {ux as cli} from '@oclif/core';
 import {PreconditionError} from '@coveo/cli-commons/errors/preconditionError';
 import {cwd} from 'process';
 import {Project} from '../../../lib/project/project';
@@ -270,7 +270,7 @@ describe('org:resources:pull', () => {
   test
     .stdout()
     .stderr()
-    .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
+    .stub(cli, 'confirm', () => () => Promise.resolve(true))
     .command([
       'org:resources:pull',
       '-m',
@@ -296,7 +296,7 @@ describe('org:resources:pull', () => {
   test
     .stdout()
     .stderr()
-    .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
+    .stub(cli, 'confirm', () => () => Promise.resolve(true))
     .command([
       'org:resources:pull',
       '-m',
@@ -323,7 +323,7 @@ describe('org:resources:pull', () => {
   test
     .stdout()
     .stderr()
-    .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
+    .stub(cli, 'confirm', () => () => Promise.resolve(true))
     .command([
       'org:resources:pull',
       '-m',

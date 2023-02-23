@@ -3,7 +3,7 @@ import {
   VaultValueType,
   VaultVisibilityType,
 } from '@coveo/platform-client';
-import {CliUx} from '@oclif/core';
+import {ux as cli} from '@oclif/core';
 import {readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
 import open from 'open';
 import {join} from 'path';
@@ -42,7 +42,7 @@ export class VaultHandler {
   private async ensureValidityOrAbort(entries: VaultEntryAttributes[]) {
     let valid = false;
     while (!valid) {
-      const key = await CliUx.ux.prompt('', {
+      const key = await cli.prompt('', {
         type: 'single',
         required: false,
         prompt: `\n${inverse('Press any key to continue. Press q to abort')}\n`,
@@ -54,8 +54,8 @@ export class VaultHandler {
         this.ensureEntriesValidity(entries);
         valid = true;
       } catch (error) {
-        CliUx.ux.log('');
-        CliUx.ux.warn(`${error}`);
+        cli.log('');
+        cli.warn(`${error}`);
         await this.openFile(false);
       }
     }
@@ -88,7 +88,7 @@ export class VaultHandler {
 
   private async openFile(print = true) {
     if (print) {
-      CliUx.ux.log(dedent`\nOpening file ${this.vaultEntryFilePath}.
+      cli.log(dedent`\nOpening file ${this.vaultEntryFilePath}.
       Please fill out all the vault entries from the JSON file.`);
     }
     await open(this.vaultEntryFilePath);

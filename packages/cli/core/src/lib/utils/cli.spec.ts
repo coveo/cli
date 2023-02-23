@@ -10,7 +10,7 @@ const mockedGlobalConfig = jest.mocked(globalConfig);
 const mockedAnalyticHook = jest.fn();
 const mockedConfirm = jest.fn();
 const doMockConfirm = () => {
-  Object.defineProperty(CliUx.ux, 'confirm', {value: mockedConfirm});
+  Object.defineProperty(cli, 'confirm', {value: mockedConfirm});
 };
 
 describe('cli', () => {

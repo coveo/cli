@@ -1,4 +1,4 @@
-import {CliUx} from '@oclif/core';
+import {ux as cli} from '@oclif/core';
 import {red, dim, green} from 'chalk';
 import {BuiltInTransformers, errors} from '@coveo/push-api-client';
 import {withNormalizeInvalidFields} from './commonFlags';
@@ -74,12 +74,12 @@ const printInvalidFieldTable = (fields: {valid: boolean}[]) => {
   }
 
   const fixable = fields[0].valid;
-  CliUx.ux.log(
+  cli.log(
     ` ${count} ${pluralized} detected in your data can${
       fixable ? '' : 'not'
     } be normalized`
   );
-  CliUx.ux.table(fields, {
+  cli.table(fields, {
     original: {header: 'Original'},
     normalized: {header: 'Normalized'},
   });
@@ -88,7 +88,7 @@ const printInvalidFieldTable = (fields: {valid: boolean}[]) => {
 
 export const logNewLine = (lines = 1) => {
   for (let i = 0; i < lines; i++) {
-    CliUx.ux.log('');
+    cli.log('');
   }
 };
 

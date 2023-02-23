@@ -1,6 +1,6 @@
 import {CatalogSource, BuiltInTransformers} from '@coveo/push-api-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags} from '@oclif/core';
+import {Args, Flags} from '@oclif/core';
 import {startSpinner} from '@coveo/cli-commons/utils/ux';
 import {bold} from 'chalk';
 import {
@@ -58,14 +58,13 @@ export default class SourceCatalogAdd extends CLICommand {
     }),
   };
 
-  public static args = [
-    {
-      name: 'sourceId',
+  public static args = {
+    sourceId: Args.string({
       required: true,
       description:
         'The identifier of the Catalog source on which to perform the add operation. See `source:list` to obtain the identifier.',
-    },
-  ];
+    }),
+  };
 
   private display = new AddDisplay();
 

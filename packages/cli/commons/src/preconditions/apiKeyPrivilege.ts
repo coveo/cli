@@ -2,10 +2,11 @@ import PlatformClient, {
   PrivilegeEvaluatorModel,
   PrivilegeModel,
 } from '@coveo/platform-client';
-import {FlagOutput} from '@oclif/core/lib/interfaces';
+import {Command, Flags} from '@oclif/core';
 import {CLICommand} from '../command/cliCommand';
 import {Config} from '../config/config';
 import globalConfig from '../config/globalConfig';
+import {InvalidCommandError} from '../errors/invalidCommandError';
 import {PreconditionError} from '../errors/preconditionError';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {PlatformPrivilege} from './platformPrivilege';
@@ -19,13 +20,16 @@ export function HasNecessaryCoveoPrivileges(
     this: CLICommand,
     command: CLICommand
   ): Promise<void | never> {
-    const {flags}: {flags: {organization?: string}} = hasGetFlagMethod(this)
-      ? {flags: await this.getFlags()}
-      : await this.parse<{organization?: string}, FlagOutput, {}>(command.ctor);
+    const commandConstructor = command.ctor;
+    const flags = hasGetFlagMethod(this)
+      ? await this.getFlags()
+      : hasOrgFlag(commandConstructor)
+      ? (await this.parse(commandConstructor)).flags
+      : null;
     const authenticatedClient = new AuthenticatedClient();
     const client = await authenticatedClient.getClient();
     const {organization: target, anonymous} = await getConfiguration();
-    const organization = flags.organization || target;
+    const organization = flags?.organization || target;
 
     const promises = privileges.flatMap((privilege) =>
       privilege.models.map(async (model) => {
@@ -67,4 +71,16 @@ function hasGetFlagMethod(candidate: any): candidate is CLICommand & {
   getFlags: () => Promise<{organization?: string | undefined}>;
 } {
   return Boolean(candidate?.getFlags);
+}
+
+type CommandWithOrgFlag = typeof Command & {
+  flags: {
+    organization: ReturnType<(typeof Flags)['string']>;
+  };
+};
+
+function hasOrgFlag(
+  candidate: typeof Command
+): candidate is CommandWithOrgFlag {
+  return Object.hasOwn(candidate.flags, 'organization');
 }

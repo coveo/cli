@@ -1,4 +1,4 @@
-import {CliUx} from '@oclif/core';
+import {ux as cli} from '@oclif/core';
 
 export interface FilesOrFolders {
   file?: string[]; // TODO: CDX-856: remove flag
@@ -15,7 +15,7 @@ export function getFileNames(entries: FilesOrFolders, commandName: string) {
   ];
 
   if (entryNames.length === 0) {
-    CliUx.ux.error(
+    cli.error(
       `You must set the \`files\` flag. Use \`${commandName} --help\` to get more information.`
     );
   }

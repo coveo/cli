@@ -1,6 +1,6 @@
 import {ResourceSnapshotsReportModel} from '@coveo/platform-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {CliUx} from '@oclif/core';
+import {Args, ux as cli} from '@oclif/core';
 import {Config} from '@coveo/cli-commons/config/config';
 import {
   IsAuthenticated,
@@ -15,7 +15,6 @@ import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {startSpinner} from '@coveo/cli-commons/utils/ux';
-import {Example} from '@oclif/core/lib/interfaces';
 
 export default class Monitor extends CLICommand {
   public static description = 'Monitor a Snapshot operation';
@@ -27,15 +26,14 @@ export default class Monitor extends CLICommand {
     ),
   };
 
-  public static args = [
-    {
-      name: 'snapshotId',
+  public static args = {
+    snapshotId: Args.string({
       description: 'The unique identifier of the target snapshot.',
       required: true,
-    },
-  ];
+    }),
+  };
 
-  public static examples: Example[] = [
+  public static examples = [
     {
       command:
         'coveo org:resources:monitor --organization myorgid --snapshotId mysnapshotid',
@@ -67,7 +65,7 @@ export default class Monitor extends CLICommand {
 
   private getErrorHandler() {
     return function (this: SnapshotReporter) {
-      CliUx.ux.log(ReportViewerStyles.error(this.resultCode));
+      cli.log(ReportViewerStyles.error(this.resultCode));
     };
   }
 
@@ -77,13 +75,13 @@ export default class Monitor extends CLICommand {
     const header = ReportViewerStyles.header(
       `Monitoring snapshot ${snapshotId}`
     );
-    CliUx.ux.log('');
+    cli.log('');
     startSpinner(header);
   }
 
   private refresh(report: ResourceSnapshotsReportModel) {
     const reporter = new SnapshotReporter(report);
-    CliUx.ux.action.status = reporter.status;
+    cli.action.status = reporter.status;
   }
 
   private async getSnapshot(): Promise<Snapshot> {

@@ -33,7 +33,6 @@ import {
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
-import {Example} from '@oclif/core/lib/interfaces';
 
 export default class Push extends CLICommand {
   public static description =
@@ -52,7 +51,7 @@ export default class Push extends CLICommand {
     }),
   };
 
-  public static examples: Example[] = [
+  public static examples = [
     {
       command: 'coveo org:resources:push',
       description:

@@ -1,4 +1,4 @@
-import {CliUx} from '@oclif/core';
+import {ux as cli} from '@oclif/core';
 import {CLICommand} from '../command/cliCommand';
 import {formatOrgId, startSpinner, stopSpinner} from './ux';
 import {stderr} from 'stdout-stderr';
@@ -27,8 +27,8 @@ describe('ux', () => {
     // @oclif/core has an issue preventing the first stream write to be properly mocked.
     // This is a bodge.
     stderr.start();
-    CliUx.ux.action.start('test');
-    CliUx.ux.action.stop();
+    cli.action.start('test');
+    cli.action.stop();
     stderr.stop();
   });
 
@@ -43,14 +43,14 @@ describe('ux', () => {
   describe('startSpinner() & stopSpinner()', () => {
     describe('when spinner is ended with no argument', () => {
       it('no spinner should be running', () => {
-        expect(CliUx.ux.action.running).toBe(false);
+        expect(cli.action.running).toBe(false);
       });
 
       it('should start a spinner instance', () => {
         startSpinner('something');
-        expect(CliUx.ux.action.running).toBe(true);
+        expect(cli.action.running).toBe(true);
         stopSpinner();
-        expect(CliUx.ux.action.running).toBe(false);
+        expect(cli.action.running).toBe(false);
       });
 
       it('should stop running task without error', () => {

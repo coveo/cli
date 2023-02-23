@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags} from '@oclif/core';
+import {Args, Flags} from '@oclif/core';
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {Config} from '@coveo/cli-commons/config/config';
 import {spawnProcess} from '../../../lib/utils/process';
@@ -48,14 +48,12 @@ export default class Angular extends CLICommand {
         'Whether to automatically select the default value for all prompts that have a default value.',
     }),
   };
-
-  public static args = [
-    {
-      name: 'name',
+  public static args = {
+    name: Args.string({
       description: 'The name of the application to create.',
       required: true,
-    },
-  ];
+    }),
+  };
 
   @Trackable({
     eventName: 'ui create',

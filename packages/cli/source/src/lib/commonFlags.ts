@@ -42,7 +42,7 @@ export const withNormalizeInvalidFields = () => ({
 });
 
 export const withSourceVisibility = () => ({
-  sourceVisibility: Flags.enum({
+  sourceVisibility: Flags.string({
     options: [
       SourceVisibility.PRIVATE,
       SourceVisibility.SECURED,

@@ -11,7 +11,7 @@ import {Trackable} from '../preconditions/trackable';
  * @extends {Command}
  */
 export abstract class CLICommand extends Command {
-  public abstract run(): PromiseLike<any>;
+  public abstract run(): Promise<any>;
 
   /**
    * If you extend or overwrite the catch method in your command class, make sure it returns `return super.catch(err)`

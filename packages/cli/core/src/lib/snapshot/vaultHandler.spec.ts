@@ -8,7 +8,7 @@ import {VaultHandler} from './vaultHandler';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
 import open from 'open';
-import {CliUx} from '@oclif/core';
+import {ux as cli} from '@oclif/core';
 import {ProcessAbort} from '../errors/processError';
 import {stdout, stderr} from 'stdout-stderr';
 
@@ -19,10 +19,10 @@ const mockedWriteJsonSync = jest.mocked(writeJsonSync);
 const mockedReadJsonSync = jest.mocked(readJsonSync);
 const mockedRmSync = jest.mocked(rmSync);
 const mockedOpen = jest.mocked(open);
-const mockedCliUx = jest.spyOn(CliUx.ux, 'warn');
+const mockedCliUx = jest.spyOn(cli, 'warn');
 
 const doMockPrompt = () => {
-  Object.defineProperty(CliUx.ux, 'prompt', {value: mockedPrompt});
+  Object.defineProperty(cli, 'prompt', {value: mockedPrompt});
 };
 const doMockAuthenticatedClient = () => {
   mockedAuthenticatedClient.mockImplementation(

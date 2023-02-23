@@ -39,12 +39,14 @@ import {
   getTargetOrg,
   cleanupProject,
 } from '../../../lib/snapshot/snapshotCommon';
-import {allowedResourceType} from '../../../lib/snapshot/snapshotConstant';
+import {
+  AllowedResourceType,
+  allowedResourceType,
+} from '../../../lib/snapshot/snapshotConstant';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Example} from '@oclif/core/lib/interfaces';
 
 const PullCommandStrings = {
   projectOverwriteQuestion: (
@@ -81,7 +83,7 @@ export default class Pull extends CLICommand {
       description: 'Overwrite resources directory if it exists.',
       default: false,
     }),
-    resourceTypes: Flags.enum<ResourceSnapshotType>({
+    resourceTypes: Flags.string({
       char: 'r',
       helpValue: 'type1 type2',
       description: 'The resources types to pull from the organization.',
@@ -104,7 +106,7 @@ export default class Pull extends CLICommand {
     }),
   };
 
-  public static examples: Example[] = [
+  public static examples = [
     {
       command: 'coveo org:resources:pull',
       description:
@@ -244,7 +246,9 @@ export default class Pull extends CLICommand {
     const flags = await this.getFlags();
     return flags.model
       ? flags.model.resourcesToExport
-      : buildResourcesToExport(flags.resourceTypes!);
+      : buildResourcesToExport(
+          (flags.resourceTypes as ResourceSnapshotType[])!
+        );
   }
 
   private async getTargetOrg() {
