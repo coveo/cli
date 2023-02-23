@@ -14,7 +14,6 @@ import {Flags} from '@oclif/core';
 import {readJsonSync, ensureDirSync, readFileSync} from 'fs-extra';
 import {DeployConfigError} from '../../lib/errors/deployErrors';
 import {join} from 'path';
-import {Example} from '@oclif/core/lib/interfaces';
 import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
 
 interface FileInput {
@@ -83,7 +82,7 @@ export default class Deploy extends CLICommand {
       required: false,
     }),
   };
-  public static examples: Example[] = [
+  public static examples = [
     {
       command: 'coveo ui:deploy',
       description:

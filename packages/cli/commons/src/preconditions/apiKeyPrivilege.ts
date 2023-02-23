@@ -2,10 +2,11 @@ import PlatformClient, {
   PrivilegeEvaluatorModel,
   PrivilegeModel,
 } from '@coveo/platform-client';
-import {FlagOutput} from '@oclif/core/lib/interfaces';
+import {Command, Flags} from '@oclif/core';
 import {CLICommand} from '../command/cliCommand';
 import {Config} from '../config/config';
 import globalConfig from '../config/globalConfig';
+import {InvalidCommandError} from '../errors/invalidCommandError';
 import {PreconditionError} from '../errors/preconditionError';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {PlatformPrivilege} from './platformPrivilege';
@@ -21,7 +22,7 @@ export function HasNecessaryCoveoPrivileges(
   ): Promise<void | never> {
     const {flags}: {flags: {organization?: string}} = hasGetFlagMethod(this)
       ? {flags: await this.getFlags()}
-      : await this.parse<{organization?: string}, FlagOutput, {}>(command.ctor);
+      : await safeParseCommand.call(this, command);
     const authenticatedClient = new AuthenticatedClient();
     const client = await authenticatedClient.getClient();
     const {organization: target, anonymous} = await getConfiguration();
@@ -67,4 +68,23 @@ function hasGetFlagMethod(candidate: any): candidate is CLICommand & {
   getFlags: () => Promise<{organization?: string | undefined}>;
 } {
   return Boolean(candidate?.getFlags);
+}
+
+function hasOrgFlag(candidate: typeof Command): candidate is typeof Command & {
+  flags: {organization: ReturnType<(typeof Flags)['string']>};
+} {
+  return Object.hasOwn(candidate.flags, 'organization');
+}
+
+async function safeParseCommand(
+  this: CLICommand,
+  command: CLICommand
+): Promise<{flags: {organization?: string}}> {
+  const commandConstructor = command.ctor;
+  if (!hasOrgFlag(commandConstructor)) {
+    throw new InvalidCommandError(
+      `No organization flags found on ${command.id}`
+    );
+  }
+  return await this.parse(commandConstructor);
 }

@@ -4,7 +4,7 @@ import {
   startSpinner,
   stopSpinner,
 } from '@coveo/cli-commons/utils/ux';
-import {Flags} from '@oclif/core';
+import {Flags, Args} from '@oclif/core';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {
   Preconditions,
@@ -27,14 +27,13 @@ export default class Create extends CLICommand {
     }),
   };
 
-  public static args = [
-    {
-      name: 'name',
+  public static args = {
+    name: Args.string({
       helpValue: 'neworg-prod',
       description: 'The name to assign to the new organization.',
       required: true,
-    },
-  ];
+    }),
+  };
 
   @Trackable()
   @Preconditions(IsAuthenticated())

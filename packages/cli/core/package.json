@@ -150,11 +150,11 @@
       }
     },
     "hooks": {
-      "init": "./lib/hooks/init/set-global-config",
-      "analytics": "./lib/hooks/analytics/analytics",
-      "command_not_found": "./lib/hooks/commandNotFound/commandNotFound",
-      "prerun": "./lib/hooks/prerun/prerun",
-      "postrun": "./lib/hooks/postrun/postrun"
+      "init": "./lib/hooks/init/set-global-config.ts",
+      "analytics": "./lib/hooks/analytics/analytics.ts",
+      "command_not_found": "./lib/hooks/commandNotFound/commandNotFound.ts",
+      "prerun": "./lib/hooks/prerun/prerun.ts",
+      "postrun": "./lib/hooks/postrun/postrun.ts"
     },
     "macos": {
       "identifier": "com.coveo.cli"

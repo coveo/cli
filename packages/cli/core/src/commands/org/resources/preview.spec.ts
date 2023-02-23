@@ -420,7 +420,7 @@ describe('org:resources:preview', () => {
       test
         .stdout()
         .stderr()
-        .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(false))
+        .stub(cli, 'confirm', () => () => Promise.resolve(false))
         .command(['org:resources:preview'])
         .catch(/Your destination organization is missing vault entries/)
         .it('should throw an error for invalid snapshots');

@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags} from '@oclif/core';
+import {Args, Flags} from '@oclif/core';
 import {
   IsNpxInstalled,
   IsNodeVersionInRange,
@@ -31,13 +31,12 @@ export default class Atomic extends CLICommand {
   public static description =
     "Create a Coveo Headless-powered search page with Coveo's own Atomic framework. See <https://docs.coveo.com/atomic> and <https://docs.coveo.com/headless>.";
   public static examples = ['$ coveo ui:create:atomic myapp'];
-  public static args = [
-    {
-      name: 'name',
+  public static args = {
+    name: Args.string({
       description: 'The name of the application to create.',
       required: true,
-    },
-  ];
+    }),
+  };
   public static flags = {
     version: Flags.string({
       char: 'v',
@@ -84,7 +83,7 @@ export default class Atomic extends CLICommand {
       '--org-id',
       cfg.organization,
       '--api-key',
-      cfg.accessToken,
+      cfg.accessToken!,
       '--platform-url',
       platformUrl({environment: cfg.environment, region: cfg.region}),
       '--user',

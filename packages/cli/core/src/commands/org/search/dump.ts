@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags, CliUx} from '@oclif/core';
+import {Flags, ux as cli} from '@oclif/core';
 import {readJSONSync, writeFileSync, writeJSONSync} from 'fs-extra';
 import {Parser} from 'json2csv';
 import {SingleBar} from 'cli-progress';
@@ -17,7 +17,6 @@ import {without} from '../../../lib/utils/list';
 import {join} from 'path';
 import dedent from 'ts-dedent';
 import {formatOrgId} from '@coveo/cli-commons/utils/ux';
-import {Example} from '@oclif/core/lib/interfaces';
 type ResponseExceededMaximumSizeError = {message: string; type: string};
 
 interface RawResult {
@@ -52,7 +51,7 @@ export default class Dump extends CLICommand {
       Note: DictionnaryFields/Values are experimentally supported. In case of failure, you should exclude them using the \`-x\` flag.
     `;
 
-  public static examples: Example[] = [
+  public static examples = [
     {
       command:
         'coveo org:search:dump --source "My Web Source" "My Sitemap Source"',
@@ -299,7 +298,7 @@ export default class Dump extends CLICommand {
   }
 
   private getProgressBar() {
-    return CliUx.ux.progress({
+    return cli.progress({
       format: 'Progress | {bar} | ETA: {eta}s | {value}/{total} results',
     }) as SingleBar;
   }

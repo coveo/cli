@@ -17,9 +17,8 @@ export const wait = () => ({
       'The maximum number of seconds to wait before the commands exits with a timeout error. A value of zero means that the command will wait indefinitely.',
   }),
 });
-
 export const previewLevel = () => ({
-  previewLevel: Flags.enum({
+  previewLevel: Flags.string({
     char: 'p',
     description:
       'The verbosity of the preview. The `light` preview is faster to generate but only contains a limited amount of information, as opposed to the `detailed` preview that takes more time to generate, but returns a diff representation of all the changes to apply.',

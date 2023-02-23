@@ -26,9 +26,20 @@ const snapshotLabelDict = {
 export const disabledResourceType = [
   ResourceSnapshotType.mlModel,
   ResourceSnapshotType.mlModelAssociation,
-];
-export const allowedResourceType = Object.values(ResourceSnapshotType).filter(
-  (resourceType) => !disabledResourceType.includes(resourceType)
+] as const;
+
+export type AllowedResourceType = Exclude<
+  ResourceSnapshotType,
+  (typeof disabledResourceType)[keyof typeof disabledResourceType]
+>;
+
+export const allowedResourceType: ResourceSnapshotType[] = Object.values(
+  ResourceSnapshotType
+).filter(
+  (resourceType) =>
+    !(disabledResourceType as unknown as ResourceSnapshotType[]).includes(
+      resourceType
+    )
 );
 
 type ExtensibleSnapshotLabelDict = typeof snapshotLabelDict &

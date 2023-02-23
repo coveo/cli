@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags} from '@oclif/core';
+import {Args, Flags} from '@oclif/core';
 import {PushSource} from '@coveo/push-api-client';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {
@@ -42,14 +42,13 @@ export default class SourcePushDelete extends CLICommand {
     }),
   };
 
-  public static args = [
-    {
-      name: 'sourceId',
+  public static args = {
+    sourceId: Args.string({
       required: true,
       description:
         'The identifier of the Push source on which to perform the delete operation. To retrieve the list of available Push source identifiers, use the `source:push:list` command.',
-    },
-  ];
+    }),
+  };
 
   @Trackable()
   // TODO: Check privileges?
