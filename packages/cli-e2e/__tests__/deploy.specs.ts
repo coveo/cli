@@ -81,10 +81,8 @@ describe('ui:deploy', () => {
         const matches = regex.exec(stdout)!;
         const hostedPageId = matches[1];
 
-        const hostedPages = await platformClient.hostedPages.list();
-        expect(hostedPages.items).toEqual(
-          expect.arrayContaining([expect.objectContaining({id: hostedPageId})])
-        );
+        const hostedPage = await platformClient.hostedPages.get(hostedPageId);
+        expect(hostedPage).toBeTruthy();
       },
       defaultTimeout
     );
@@ -105,10 +103,8 @@ describe('ui:deploy', () => {
         const matches = regex.exec(stdout)!;
         const hostedPageId = matches[1];
 
-        const hostedPages = await platformClient.hostedPages.list();
-        expect(hostedPages.items).toEqual(
-          expect.arrayContaining([expect.objectContaining({id: hostedPageId})])
-        );
+        const hostedPage = await platformClient.hostedPages.get(hostedPageId);
+        expect(hostedPage.name).toEqual(pageName);
       },
       defaultTimeout
     );
