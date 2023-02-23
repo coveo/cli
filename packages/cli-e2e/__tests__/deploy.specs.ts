@@ -6,15 +6,17 @@ import {ProcessManager} from '../utils/processManager';
 import {getConfig, getUIProjectPath} from '../utils/cli';
 import {copySync, readJsonSync, writeJsonSync} from 'fs-extra';
 import {Terminal} from '../utils/terminal/terminal';
+import {setTimeout} from 'timers/promises';
 
 describe('ui:deploy', () => {
   let platformClient: PlatformClient;
   let testOrgId = '';
+  let pageName = '';
   const deployProject = 'deploy-project';
   const {accessToken} = getConfig();
   const deployProjectPath = join(getUIProjectPath(), deployProject);
   let processManager: ProcessManager;
-  const defaultTimeout = 5 * 60e3;
+  const defaultTimeout = 10 * 60e3;
   let stdout: string;
   const stdoutListener = (chunk: string) => {
     stdout += chunk;
@@ -27,17 +29,20 @@ describe('ui:deploy', () => {
   const addPageNameToConfig = () => {
     const configPath = join(deployProjectPath, 'coveo.deploy.json');
     const config = readJsonSync(configPath);
-    const name = `hosted-page-${process.env.TEST_RUN_ID}`;
-    console.log('page name', name);
-    writeJsonSync(configPath, {...config, name});
+    pageName = `hosted-page-${process.env.TEST_RUN_ID}`;
+    console.log('page name', pageName);
+    writeJsonSync(configPath, {...config, name: pageName});
   };
 
-  const deploy = async () => {
+  const deploy = async (id?: string) => {
     const args: string[] = [
       process.env.CLI_EXEC_PATH!,
       'ui:deploy',
       `-o=${testOrgId}`,
     ];
+    if (id) {
+      args.push(`-p=${id}`);
+    }
     const terminal = new Terminal(
       'node',
       args,
@@ -47,20 +52,21 @@ describe('ui:deploy', () => {
     );
     terminal.orchestrator.process.stdout.on('data', stdoutListener);
     terminal.orchestrator.process.stderr.on('data', stderrListener);
-    await terminal
-      .when(/Creating new Hosted Page/)
-      .on('stderr')
-      .do()
-      .once();
-    await terminal.when(/✔/).on('stderr').do().once();
     // await terminal
-    //   .when('exit')
-    //   .on('process')
-    //   .do((proc) => {
-    //     proc.stdout.off('data', stdoutListener);
-    //     proc.stderr.off('data', stderrListener);
-    //   })
+    //   .when(/Hosted Page/)
+    //   .on('stderr')
+    //   .do()
     //   .once();
+    // await terminal.when(/✔/).on('stderr').do().once();
+    await terminal
+      .when('exit')
+      .on('process')
+      .do((proc) => {
+        proc.stdout.off('data', stdoutListener);
+        proc.stderr.off('data', stderrListener);
+      })
+      .once();
+    await setTimeout(1000);
   };
 
   beforeAll(async () => {
@@ -98,6 +104,28 @@ describe('ui:deploy', () => {
       const hostedPage = await platformClient.hostedPages.get(hostedPageId);
       console.log('hostedPage:', hostedPage);
       expect(hostedPage).toBeTruthy();
+    },
+    defaultTimeout
+  );
+
+  it(
+    'happy update path',
+    async () => {
+      const {id} = await platformClient.hostedPages.create({
+        html: 'somehtml',
+        name: `new-hosted-page-${process.env.TEST_RUN_ID}`,
+      });
+
+      await deploy(id);
+      const regex = /Hosted Page update successful with id "(.+)"/g;
+      expect(stdout).toMatch(regex);
+
+      const matches = regex.exec(stdout)!;
+      console.log('matches:', matches);
+      const hostedPageId = matches[1];
+      const hostedPage = await platformClient.hostedPages.get(hostedPageId);
+      console.log('hostedPage:', hostedPage);
+      expect(hostedPage.name).toBe(pageName);
     },
     defaultTimeout
   );
