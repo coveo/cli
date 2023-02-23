@@ -4,7 +4,7 @@ import {getPlatformClient} from '../utils/platform';
 import {getTestOrg} from '../utils/testOrgSetup';
 import {ProcessManager} from '../utils/processManager';
 import {getConfig, getUIProjectPath} from '../utils/cli';
-import {copySync} from 'fs-extra';
+import {copySync, readJsonSync, writeJsonSync} from 'fs-extra';
 import {Terminal} from '../utils/terminal/terminal';
 
 describe('ui:deploy', () => {
@@ -24,8 +24,20 @@ describe('ui:deploy', () => {
     stderr += chunk;
   };
 
+  const addPageNameToConfig = () => {
+    const configPath = join(deployProjectPath, 'coveo.deploy.json');
+    const config = readJsonSync(configPath);
+    const name = `hosted-page-${process.env.TEST_RUN_ID}`;
+    console.log('page name', name);
+    writeJsonSync(configPath, {...config, name});
+  };
+
   const createNewTerminal = async () => {
-    const args: string[] = [process.env.CLI_EXEC_PATH!, 'ui:deploy'];
+    const args: string[] = [
+      process.env.CLI_EXEC_PATH!,
+      'ui:deploy',
+      `-o=${testOrgId}`,
+    ];
     const terminal = new Terminal(
       'node',
       args,
@@ -48,12 +60,19 @@ describe('ui:deploy', () => {
   beforeAll(async () => {
     testOrgId = await getTestOrg();
     copySync(deployProject, deployProjectPath);
+    addPageNameToConfig();
     platformClient = getPlatformClient(testOrgId, accessToken);
     processManager = new ProcessManager();
   }, defaultTimeout);
 
   beforeEach(() => {
     stdout = '';
+    stderr = '';
+  });
+
+  afterEach(() => {
+    console.log('stdout:', stdout);
+    console.log('stderr:', stderr);
   });
 
   afterAll(async () => {
@@ -64,8 +83,6 @@ describe('ui:deploy', () => {
     'happy creation path',
     async () => {
       await createNewTerminal();
-      console.log('stdout:', stdout);
-      console.log('stderr:', stderr);
       const regex = /Hosted Page creation successful with id "(.+)"/g;
       expect(stdout).toMatch(regex);
 

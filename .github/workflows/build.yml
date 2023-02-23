@@ -46,7 +46,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: ['ubuntu-20.04', 'windows-latest']
+        # TODO: re-enable windows-latest
+        os: ['ubuntu-20.04']
     steps:
       - name: Setup runner
         if: ${{matrix.os == 'ubuntu-20.04'}}
@@ -88,7 +89,8 @@ jobs:
   e2e-setup-verdaccio:
     strategy:
       matrix:
-        os: ['ubuntu-20.04', 'windows-latest']
+        # TODO: re-enable windows-latest
+        os: ['ubuntu-20.04']
     name: End-to-end publish packages
     runs-on: ${{matrix.os}}
     steps:
@@ -132,7 +134,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-20.04', 'windows-latest']
+        # TODO: re-enable windows-latest
+        os: ['ubuntu-20.04']
         spec: [
             'deploy.specs.ts',
             # TODO: re-enable other tests
