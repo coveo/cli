@@ -20,13 +20,16 @@ export function HasNecessaryCoveoPrivileges(
     this: CLICommand,
     command: CLICommand
   ): Promise<void | never> {
-    const {flags}: {flags: {organization?: string}} = hasGetFlagMethod(this)
-      ? {flags: await this.getFlags()}
-      : await safeParseCommand.call(this, command);
+    const commandConstructor = command.ctor;
+    const flags = hasGetFlagMethod(this)
+      ? await this.getFlags()
+      : hasOrgFlag(commandConstructor)
+      ? (await this.parse(commandConstructor)).flags
+      : null;
     const authenticatedClient = new AuthenticatedClient();
     const client = await authenticatedClient.getClient();
     const {organization: target, anonymous} = await getConfiguration();
-    const organization = flags.organization || target;
+    const organization = flags?.organization || target;
 
     const promises = privileges.flatMap((privilege) =>
       privilege.models.map(async (model) => {
@@ -70,21 +73,14 @@ function hasGetFlagMethod(candidate: any): candidate is CLICommand & {
   return Boolean(candidate?.getFlags);
 }
 
-function hasOrgFlag(candidate: typeof Command): candidate is typeof Command & {
-  flags: {organization: ReturnType<(typeof Flags)['string']>};
-} {
-  return Object.hasOwn(candidate.flags, 'organization');
-}
+type CommandWithOrgFlag = typeof Command & {
+  flags: {
+    organization: ReturnType<(typeof Flags)['string']>;
+  };
+};
 
-async function safeParseCommand(
-  this: CLICommand,
-  command: CLICommand
-): Promise<{flags: {organization?: string}}> {
-  const commandConstructor = command.ctor;
-  if (!hasOrgFlag(commandConstructor)) {
-    throw new InvalidCommandError(
-      `No organization flags found on ${command.id}`
-    );
-  }
-  return await this.parse(commandConstructor);
+function hasOrgFlag(
+  candidate: typeof Command
+): candidate is CommandWithOrgFlag {
+  return Object.hasOwn(candidate.flags, 'organization');
 }
