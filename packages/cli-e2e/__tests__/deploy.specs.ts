@@ -21,10 +21,6 @@ describe('ui:deploy', () => {
   const stdoutListener = (chunk: string) => {
     stdout += chunk;
   };
-  let stderr: string;
-  const stderrListener = (chunk: string) => {
-    stderr += chunk;
-  };
 
   const addPageNameToConfig = (prepend: string) => {
     const configPath = join(deployProjectPath, 'coveo.deploy.json');
@@ -50,13 +46,11 @@ describe('ui:deploy', () => {
       'ui-deploy'
     );
     terminal.orchestrator.process.stdout.on('data', stdoutListener);
-    terminal.orchestrator.process.stderr.on('data', stderrListener);
     await terminal
       .when('exit')
       .on('process')
       .do((proc) => {
         proc.stdout.off('data', stdoutListener);
-        proc.stderr.off('data', stderrListener);
       })
       .once();
     await setTimeout(1000);
@@ -71,7 +65,6 @@ describe('ui:deploy', () => {
 
   beforeEach(() => {
     stdout = '';
-    stderr = '';
   });
 
   afterAll(async () => {
