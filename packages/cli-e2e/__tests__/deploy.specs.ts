@@ -26,10 +26,10 @@ describe('ui:deploy', () => {
     stderr += chunk;
   };
 
-  const addPageNameToConfig = () => {
+  const addPageNameToConfig = (prepend: string) => {
     const configPath = join(deployProjectPath, 'coveo.deploy.json');
     const config = readJsonSync(configPath);
-    pageName = `hosted-page-${process.env.TEST_RUN_ID}`;
+    pageName = `${prepend}-hosted-page-${process.env.TEST_RUN_ID}`;
     console.log('page name', pageName);
     writeJsonSync(configPath, {...config, name: pageName});
   };
@@ -72,7 +72,6 @@ describe('ui:deploy', () => {
   beforeAll(async () => {
     testOrgId = await getTestOrg();
     copySync(deployProject, deployProjectPath);
-    addPageNameToConfig();
     platformClient = getPlatformClient(testOrgId, accessToken);
     processManager = new ProcessManager();
   }, defaultTimeout);
@@ -94,6 +93,7 @@ describe('ui:deploy', () => {
   it(
     'happy creation path',
     async () => {
+      addPageNameToConfig('create');
       await deploy();
       const regex = /Hosted Page creation successful with id "(.+)"/g;
       expect(stdout).toMatch(regex);
@@ -111,6 +111,7 @@ describe('ui:deploy', () => {
   it(
     'happy update path',
     async () => {
+      addPageNameToConfig('update');
       const {id} = await platformClient.hostedPages.create({
         html: 'somehtml',
         name: `new-hosted-page-${process.env.TEST_RUN_ID}`,
