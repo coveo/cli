@@ -86,7 +86,8 @@ export default class Deploy extends CLICommand {
       char: 'o',
       helpValue: 'targetorganizationg7dg3gd',
       required: false,
-      description: `The unique identifier of the organization where to deploy the hosted page. If not specified, the organization you are connected to will be used.`,
+      description:
+        'The unique identifier of the organization where to deploy the hosted page. If not specified, the organization you are connected to will be used.',
     }),
   };
   public static examples: Example[] = [
