@@ -1060,6 +1060,37 @@ FLAGS
 
 DESCRIPTION
   Deploy your search application to the Coveo infrastructure.
+Them target `config` if present, must contain the following parameters:
+
+{
+  "name": "The name of the hosted search page.",
+  "dir": "The directory of the hosted search page.",
+  "htmlEntryFile": {
+    "path": "The HTML file that ... "
+  },
+  "javascriptEntryFiles": [
+    {
+      "path": "The path to ...",
+      "isModule": "Whether ... "
+    }
+  ],
+  "javascriptUrls": [
+    {
+      "path": "The path to...",
+      "isModule": "Whether..."
+    }
+  ],
+  "cssEntryFiles": [
+    {
+      "path": "The path to..."
+    }
+  ],
+  "cssUrls": [
+    {
+      "path": "The path to..."
+    }
+  ]
+}
 
 EXAMPLES
   $ coveo ui:deploy
