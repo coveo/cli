@@ -91,6 +91,7 @@ The main config file of the Coveo CLI is stored in a JSON file in `configDir`.
 - [`coveo ui:create:atomic NAME`](#coveo-uicreateatomic-name)
 - [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
 - [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
+- [`coveo ui:deploy`](#coveo-uideploy)
 - [`coveo update [CHANNEL]`](#coveo-update-channel)
 - [`coveo version`](#coveo-version)
 
@@ -1042,6 +1043,66 @@ EXAMPLES
 ```
 
 _See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/@coveo/cli@2.2.3/packages/cli/core/src/commands/ui/create/vue.ts)_
+
+## `coveo ui:deploy`
+
+Deploy your search application to the Coveo infrastructure.
+
+```
+USAGE
+  $ coveo ui:deploy [-p <value>] [-c <value>] [-o <value>]
+
+FLAGS
+  -p, --pageId=7944ff4a-9943-4999-a3f6-3e81a7f6fb0a  The hosted page ID.
+  -c, --config=./configs/myconfig.json [default: coveo.deploy.json] The path to the configuration file.
+  -o, --organization=myOrgID  The identifier of the organization inside which to perform operations. If not specified, the CLI logs you in to
+                              the first available organization. See
+                              <https://docs.coveo.com/en/1562/#organization-id-and-other-information>.
+
+DESCRIPTION
+  Deploy your search application to the Coveo infrastructure.
+The target `config` if present, must contain the following parameters:
+
+{
+  "name": "The name of the hosted search page.",
+  "dir": "The directory of the hosted search page.",
+  "htmlEntryFile": {
+    "path": "The path to an HTML file containing the HTML markup of the hosted page."
+  },
+  "javascriptEntryFiles": [
+    {
+      "path": "The path to a bundled Javascript file.",
+      "isModule": "Whether the inline code should be treated as a JavaScript module. If this property is true, the type property will be set to `module` on the script tag."
+    }
+  ],
+  "javascriptUrls": [
+    {
+      "path": "The URL of the JavaScript source file.",
+      "isModule": "Whether the inline code should be treated as a JavaScript module. If this property is true, the type property will be set to `module` on the script tag."
+    }
+  ],
+  "cssEntryFiles": [
+    {
+      "path": "The path to a bundled CSS file."
+    }
+  ],
+  "cssUrls": [
+    {
+      "path": "The URL of the CSS stylesheet."
+    }
+  ]
+}
+
+EXAMPLES
+  $ coveo ui:deploy
+
+  $ coveo ui:deploy -p 7944ff4a-9943-4999-a3f6-3e81a7f6fb0a
+
+  $ coveo ui:deploy -c ./configs/myconfig.json
+```
+
+_See configuration example: [src/commands/ui/coveo.deploy.example.json](https://github.com/coveo/cli/blob/@coveo/cli@2.2.3/packages/cli/core/src/commands/ui/coveo.deploy.example.json)_
+_See code: [src/commands/ui/deploy.ts](https://github.com/coveo/cli/blob/@coveo/cli@2.2.3/packages/cli/core/src/commands/ui/deploy.ts)_
 
 ## `coveo update [CHANNEL]`
 
