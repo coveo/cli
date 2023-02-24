@@ -12,7 +12,7 @@
     "@coveo/cli-commons": "2.2.3",
     "@coveo/cli-plugin-source": "2.0.4",
     "@coveo/platform-client": "40.9.3",
-    "@coveo/push-api-client": "^2.7.7",
+    "@coveo/push-api-client": "^3.0.0",
     "@oclif/core": "1.24.0",
     "@oclif/plugin-help": "5.1.23",
     "@oclif/plugin-plugins": "2.1.12",
@@ -24,7 +24,7 @@
     "chalk": "4.1.2",
     "cli-progress": "^3.9.1",
     "extract-zip": "^2.0.1",
-    "fs-extra": "^10.0.0",
+    "fs-extra": "^11.0.0",
     "get-port": "5.1.1",
     "https-proxy-agent": "^5.0.0",
     "is-unicode-supported": "^1.3.0",
@@ -51,7 +51,7 @@
     "@types/archiver": "5.3.1",
     "@types/async-retry": "1.4.5",
     "@types/cli-progress": "3.11.0",
-    "@types/fs-extra": "9.0.13",
+    "@types/fs-extra": "11.0.1",
     "@types/inquirer": "9.0.3",
     "@types/jest": "29.4.0",
     "@types/json2csv": "5.0.3",
@@ -65,7 +65,7 @@
     "mock-stdin": "1.0.0",
     "oclif": "3.4.3",
     "prettier": "2.8.4",
-    "rimraf": "3.0.2",
+    "rimraf": "4.1.2",
     "stdout-stderr": "0.1.13",
     "strip-ansi": "6.0.1",
     "ts-jest": "29.0.5",
@@ -75,7 +75,7 @@
   },
   "peerDependencies": {
     "create-react-app": "*",
-    "netlify-cli": "^12.0.0"
+    "netlify-cli": "^12.0.0 || ^13.0.0"
   },
   "peerDependenciesMeta": {
     "netlify-cli": {
