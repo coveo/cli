@@ -10,7 +10,6 @@ concurrency:
   group: update-snap-${{ github.event.workflow_run.pull_requests[0].number }}
   cancel-in-progress: true
 env:
-  PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
   BRANCH_NAME: 'renovate-snap/${{github.event.workflow_run.pull_requests[0].number}}'
 jobs:
   close-snap:
@@ -65,7 +64,7 @@ jobs:
         continue-on-error: true
         env:
           DISPLAY_TITLE: ${{ github.event.workflow_run.display_title }}
-          PR_BODY: '#$PR_NUMBER'
+          PR_BODY: '#${{ github.event.workflow_run.pull_requests[0].number }}'
         with:
           script: |
             const jira = 'j:cdx-227';
