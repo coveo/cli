@@ -25,3 +25,12 @@ export const withEnvironment = (withDefault = true) => ({
     description: 'The Coveo Platform environment to log in to.',
   }),
 });
+
+export const organization = (description: string) => ({
+  organization: Flags.string({
+    char: 'o',
+    helpValue: 'targetorganizationg7dg3gd',
+    required: false,
+    description: `${description} If not specified, the organization you are connected to will be used.`,
+  }),
+});

@@ -138,6 +138,7 @@ jobs:
             'angular.specs.ts',
             'atomic.specs.ts',
             'auth.specs.ci.ts',
+            'deploy.specs.ts',
             'orgList.specs.ts',
             'orgResources.specs.ts',
             'react.specs.ts',
