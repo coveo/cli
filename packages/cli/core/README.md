@@ -1055,7 +1055,8 @@ USAGE
 FLAGS
   -p, --pageId=7944ff4a-9943-4999-a3f6-3e81a7f6fb0a  The hosted page ID.
   -c, --config=./configs/myconfig.json [default: coveo.deploy.json] The path to the configuration file.
-  -o, --organization=myOrgID  The identifier of the organization inside which to perform operations. See
+  -o, --organization=myOrgID  The identifier of the organization inside which to perform operations. If not specified, the CLI logs you in to
+                              the first available organization. See
                               <https://docs.coveo.com/en/1562/#organization-id-and-other-information>.
 
 DESCRIPTION
