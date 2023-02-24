@@ -10,7 +10,6 @@ import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {
   dryRun,
-  getTargetOrg,
   handleReportWithErrors,
   cleanupProject,
   DryRunOptions,
@@ -24,7 +23,6 @@ import {
   PreviewLevelValue,
   previewLevel,
   wait,
-  organization,
 } from '../../../lib/flags/snapshotCommonFlags';
 import {
   writeLinkPrivilege,
@@ -34,6 +32,8 @@ import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 import {Example} from '@oclif/core/lib/interfaces';
+import {getTargetOrg} from '../../../lib/utils/platform';
+import {organization} from '../../../lib/flags/platformCommonFlags';
 
 export default class Push extends CLICommand {
   public static description =

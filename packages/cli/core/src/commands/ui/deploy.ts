@@ -16,8 +16,9 @@ import {DeployConfigError} from '../../lib/errors/deployErrors';
 import {join} from 'path';
 import {Example} from '@oclif/core/lib/interfaces';
 import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
-import {getTargetOrg} from '../../lib/snapshot/snapshotCommon';
+import {getTargetOrg} from '../../lib/utils/platform';
 import {Config} from '@coveo/cli-commons/config/config';
+import {organization} from '../../lib/flags/platformCommonFlags';
 
 interface FileInput {
   path: string;
@@ -84,13 +85,9 @@ export default class Deploy extends CLICommand {
       default: 'coveo.deploy.json',
       required: false,
     }),
-    organization: Flags.string({
-      char: 'o',
-      helpValue: 'targetorganizationg7dg3gd',
-      required: false,
-      description:
-        'The unique identifier of the organization where to deploy the hosted page. If not specified, the organization you are connected to will be used.',
-    }),
+    ...organization(
+      'The unique identifier of the organization where to deploy the hosted page.'
+    ),
   };
   public static examples: Example[] = [
     {
@@ -178,9 +175,8 @@ export default class Deploy extends CLICommand {
 
   private async createClient() {
     const {flags} = await this.parse(Deploy);
-    const org = getTargetOrg(this.configuration, flags.organization);
     return await new AuthenticatedClient().getClient({
-      organization: org,
+      organization: getTargetOrg(this.configuration, flags.organization),
     });
   }
 
