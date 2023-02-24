@@ -1,7 +1,6 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {CliUx} from '@oclif/core';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {Config} from '@coveo/cli-commons/config/config';
 import {
   IsAuthenticated,
@@ -10,7 +9,8 @@ import {
 import dedent from 'ts-dedent';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {recordable} from '../../../lib/utils/record';
-import {organization} from '../../../lib/flags/snapshotCommonFlags';
+import {organization} from '../../../lib/flags/platformCommonFlags';
+import {getTargetOrg} from '../../../lib/utils/platform';
 
 export default class List extends CLICommand {
   public static description = 'List available Snapshots in an organization';
