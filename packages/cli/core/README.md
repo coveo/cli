@@ -1061,7 +1061,7 @@ FLAGS
 
 DESCRIPTION
   Deploy your search application to the Coveo infrastructure.
-Them target `config` if present, must contain the following parameters:
+The target `config` if present, must contain the following parameters:
 
 {
   "name": "The name of the hosted search page.",
@@ -1072,13 +1072,13 @@ Them target `config` if present, must contain the following parameters:
   "javascriptEntryFiles": [
     {
       "path": "The path to a bundled Javascript file.",
-      "isModule": "Whether the inline code should be treated as a JavaScript module. If this property is true, the type property will be set to module on the script tag."
+      "isModule": "Whether the inline code should be treated as a JavaScript module. If this property is true, the type property will be set to `module` on the script tag."
     }
   ],
   "javascriptUrls": [
     {
       "path": "The URL of the JavaScript source file.",
-      "isModule": "Whether the inline code should be treated as a JavaScript module. If this property is true, the type property will be set to module on the script tag."
+      "isModule": "Whether the inline code should be treated as a JavaScript module. If this property is true, the type property will be set to `module` on the script tag."
     }
   ],
   "cssEntryFiles": [
@@ -1088,7 +1088,7 @@ Them target `config` if present, must contain the following parameters:
   ],
   "cssUrls": [
     {
-      "path": "The URL of CSS stylesheet."
+      "path": "The URL of the CSS stylesheet."
     }
   ]
 }
