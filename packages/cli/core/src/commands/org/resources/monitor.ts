@@ -7,15 +7,16 @@ import {
   Preconditions,
 } from '@coveo/cli-commons/preconditions/index';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
-import {organization, wait} from '../../../lib/flags/snapshotCommonFlags';
+import {wait} from '../../../lib/flags/snapshotCommonFlags';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
 import {ReportViewerStyles} from '../../../lib/snapshot/reportPreviewer/reportPreviewerStyles';
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
-import {getTargetOrg} from '../../../lib/snapshot/snapshotCommon';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {startSpinner} from '@coveo/cli-commons/utils/ux';
 import {Example} from '@oclif/core/lib/interfaces';
+import {organization} from '../../../lib/flags/platformCommonFlags';
+import {getTargetOrg} from '../../../lib/utils/platform';
 
 export default class Monitor extends CLICommand {
   public static description = 'Monitor a Snapshot operation';
