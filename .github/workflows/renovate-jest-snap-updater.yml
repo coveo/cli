@@ -78,3 +78,9 @@ jobs:
               repo: context.repo.repo,
               maintainer_can_modify: true,
             });
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'CI',
+              ref: process.env.BRANCH_NAME,
+            });
