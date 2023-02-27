@@ -26,18 +26,32 @@ export const config: Config = {
       type: 'dist',
     },
     {
-      type: 'dist-custom-elements',
+      type: 'dist-custom-elements-bundle',
+      minify: false,
+      includeGlobalScripts: true,
+      externalRuntime: false,
+      inlineDynamicImports: false,
+      dir: 'dist/components',
     },
+    /*
+    If migrating to Stencil v3, the "dist-custom-elements-bundle" output target should be replaced by the following:
+    {
+      type: "dist-custom-elements",
+      customElementsExportBehavior: "bundle",
+      minify: false,
+      includeGlobalScripts: true,
+      generateTypeDeclarations: false,
+      externalRuntime: false,
+    },
+    */
   ],
-  devServer: {
-    port: parseInt(process.env.STENCIL_PORT) || 3333,
-  },
   plugins: [
+    dotenvPlugin(),
     replace({
       'process.env.PLATFORM_URL': `'${process.env.PLATFORM_URL}'`,
       'process.env.ORGANIZATION_ID': `'${process.env.ORGANIZATION_ID}'`,
+      'process.env.API_KEY': `'${process.env.API_KEY}'`,
     }),
-    dotenvPlugin(),
   ],
   rollupPlugins: {
     before: [

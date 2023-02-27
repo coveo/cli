@@ -19,29 +19,15 @@ In the project directory, you can run:
 
 ### `npm start`
 
-Runs the app in the development mode, launching the [Netlify CLI dev command](https://cli.netlify.com/commands/dev).
-Open [http://localhost:8888](http://localhost:8888) to view it in the browser.
-
-The page will reload if you make edits.
-
-This command will also start a serverless lambda function that will generate [Coveo search tokens](https://docs.coveo.com/en/1346/) at [http://localhost:8888/.netlify/functions/token](http://localhost:8888/.netlify/functions/token).
-_See [@coveo/search-token-lambda](https://www.npmjs.com/package/@coveo/search-token-lambda)_
-
-### `npm run dev:live`
-
-Runs the app in the development mode and provides a shareable link for collaborators, launching the [Netlify CLI dev live command](https://cli.netlify.com/commands/dev).
+Runs the app in the development mode.
 
 ### `npm run build`
 
 Builds the [Stencil](https://stenciljs.com/docs/cli) project for production.
 
-### `npm run site:init`
+### `npm run deploy`
 
-Configure continuous or manual deployment for a new or existing site, launching the [Netlify CLI init command](https://cli.netlify.com/commands/init).
-
-### `npm run site:deploy`
-
-Builds the app for production and manually deploys the `www` folder to the linked Netlify site, launching the [Netlify CLI deploy command](https://cli.netlify.com/commands/deploy).
+Builds the app for production and manually deploys the search page using the [Coveo CLI deploy command](https://docs.coveo.com/en/cli/#coveo-uideploy).
 
 ## Learn More
 
