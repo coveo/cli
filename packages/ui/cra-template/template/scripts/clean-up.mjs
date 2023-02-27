@@ -1,7 +1,7 @@
-const {spawnSync} = require('child_process');
-const {unlinkSync, readFileSync, writeFileSync} = require('fs');
-const {join} = require('path');
-const {getPackageManager} = require('./utils');
+import {spawnSync} from 'child_process';
+import {unlinkSync, readFileSync, writeFileSync} from 'fs';
+import {join} from 'path';
+import {getPackageManager} from './utils';
 const pkgJson = JSON.parse(readFileSync('package.json'));
 
 ['prestart', 'setup-env', 'setup-server', 'setup-cleanup'].forEach(

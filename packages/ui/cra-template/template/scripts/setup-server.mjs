@@ -1,7 +1,7 @@
-const {spawnSync} = require('child_process');
-const {copySync} = require('fs-extra');
-const {sep, resolve} = require('path');
-const {getPackageManager} = require('./utils');
+import {spawnSync} from 'child_process';
+import {copySync} from 'fs-extra';
+import {sep, resolve} from 'path';
+import {getPackageManager} from './utils.mjs';
 
 function installSearchTokenServerDependencies() {
   const child = spawnSync(getPackageManager(), ['install'], {

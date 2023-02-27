@@ -1,7 +1,7 @@
-const {spawn} = require('child_process');
-const {resolve, join} = require('path');
-const {config} = require('dotenv');
-const {getPackageManager} = require('./utils');
+import {spawn} from 'child_process';
+import {resolve, join} from 'path';
+import {config} from 'dotenv';
+import {getPackageManager} from './utils.mjs';
 config();
 
 function getEnvVariables() {
