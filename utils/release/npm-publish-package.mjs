@@ -18,7 +18,7 @@ import angularChangelogConvention from 'conventional-changelog-angular';
 import {dirname, resolve, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import retry from 'async-retry';
-import {inc} from 'semver';
+import {inc, compareBuild} from 'semver';
 import {json as fetchNpm} from 'npm-registry-fetch';
 
 const hasPackageJsonChanged = (directoryPath) => {
@@ -177,7 +177,7 @@ async function getNextBetaVersion(packageName, nextGoldVersion) {
   const nextGoldMatcher = new RegExp(`${nextGoldVersion}-\\d+`);
   const matchingPreReleasedVersions = versions
     .filter((version) => nextGoldMatcher.test(version))
-    .sort();
+    .sort(compareBuild);
   if (matchingPreReleasedVersions.length === 0) {
     return `${nextGoldVersion}-0`;
   }
