@@ -60,7 +60,7 @@ jobs:
           git commit -am 'chore:refresh jest snap j:cdx-227'
           git push -f
       - name: Open PR
-        uses: actions/github-script@v6
+        uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975 # v6
         continue-on-error: true
         env:
           DISPLAY_TITLE: ${{ github.event.workflow_run.display_title }}
