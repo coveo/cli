@@ -22,11 +22,7 @@ import {writeSnapshotPrivilege} from '@coveo/cli-commons/preconditions/platformP
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {SnapshotOperationTimeoutError} from '../../../lib/errors';
 import {ProcessAbort} from '../../../lib/errors/processError';
-import {
-  organization,
-  snapshotId,
-  wait,
-} from '../../../lib/flags/snapshotCommonFlags';
+import {snapshotId, wait} from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
 import type {
   SnapshotPullModel,
@@ -35,16 +31,15 @@ import type {
 import {buildResourcesToExport} from '../../../lib/snapshot/pullModel/validation/model';
 import {validateSnapshotPullModel} from '../../../lib/snapshot/pullModel/validation/validate';
 import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
-import {
-  getTargetOrg,
-  cleanupProject,
-} from '../../../lib/snapshot/snapshotCommon';
+import {cleanupProject} from '../../../lib/snapshot/snapshotCommon';
 import {allowedResourceType} from '../../../lib/snapshot/snapshotConstant';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Example} from '@oclif/core/lib/interfaces';
+import {organization} from '../../../lib/flags/platformCommonFlags';
+import {getTargetOrg} from '../../../lib/utils/platform';
 
 const PullCommandStrings = {
   projectOverwriteQuestion: (

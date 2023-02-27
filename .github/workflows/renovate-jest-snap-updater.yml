@@ -10,7 +10,6 @@ concurrency:
   group: update-snap-${{ github.event.workflow_run.pull_requests[0].number }}
   cancel-in-progress: true
 env:
-  PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
   BRANCH_NAME: 'renovate-snap/${{github.event.workflow_run.pull_requests[0].number}}'
 jobs:
   close-snap:
@@ -41,6 +40,11 @@ jobs:
         with:
           cache: 'npm'
           node-version-file: '.nvmrc'
+      - name: Setup Git Config
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git config --global --add --bool push.autoSetupRemote true
       - name: Ensure update branch does not exists
         run: git push origin --delete $BRANCH_NAME || true
       - name: Start update branch
@@ -53,8 +57,6 @@ jobs:
         run: npm test -- -u
       - name: Commit-Push
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
           git commit -am 'chore:refresh jest snap j:cdx-227'
           git push -f
       - name: Open PR
@@ -62,7 +64,7 @@ jobs:
         continue-on-error: true
         env:
           DISPLAY_TITLE: ${{ github.event.workflow_run.display_title }}
-          PR_BODY: '#$PR_NUMBER'
+          PR_BODY: '#${{ github.event.workflow_run.pull_requests[0].number }}'
         with:
           script: |
             const jira = 'j:cdx-227';
@@ -75,4 +77,10 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               maintainer_can_modify: true,
+            });
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'CI',
+              ref: process.env.BRANCH_NAME,
             });

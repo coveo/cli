@@ -26,6 +26,18 @@
       "rangeStrategy": "replace"
     },
     {
+      "matchPackagePatterns": ["^@stencil/*"],
+      "groupSlug": "stencil",
+      "description": "KIT-2312 Migrate Stencil projects to V3",
+      "allowedVersions": "2.x"
+    },
+    {
+      "matchPackagePatterns": ["netlify-cli"],
+      "groupSlug": "stencil",
+      "description": "🧊",
+      "allowedVersions": "12.x"
+    },
+    {
       "matchPackageNames": ["strip-ansi"],
       "allowedVersions": "6.x"
     },

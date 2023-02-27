@@ -3,7 +3,7 @@ import {Project} from '../project/project';
 import {SnapshotFactory} from './snapshotFactory';
 import {Snapshot, WaitUntilDoneOptions} from './snapshot';
 import {normalize} from 'path';
-import {Config, Configuration} from '@coveo/cli-commons/config/config';
+import {Configuration} from '@coveo/cli-commons/config/config';
 import {SnapshotGenericError} from '../errors/snapshotErrors';
 import {SnapshotReporter} from './snapshotReporter';
 import {
@@ -38,14 +38,6 @@ export async function dryRun(
   let reporter = await internalDryRun(snapshot, options);
 
   return {reporter, snapshot, project};
-}
-
-export function getTargetOrg(config: Config, target?: string) {
-  if (target) {
-    return target;
-  }
-  const cfg = config.get();
-  return cfg.organization;
 }
 
 export function cleanupProject(projectPath: string) {

@@ -4,6 +4,7 @@ on:
     branches:
       - master
   pull_request:
+  workflow_dispatch:
 env:
   # Platform environment to log into for the e2e tests.
   PLATFORM_ENV: 'stg'
@@ -138,6 +139,7 @@ jobs:
             'angular.specs.ts',
             'atomic.specs.ts',
             'auth.specs.ci.ts',
+            'deploy.specs.ts',
             'orgList.specs.ts',
             'orgResources.specs.ts',
             'react.specs.ts',
