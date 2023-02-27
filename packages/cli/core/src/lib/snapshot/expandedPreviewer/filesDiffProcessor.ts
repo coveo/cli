@@ -1,6 +1,6 @@
 import type {ResourceSnapshotType} from '@coveo/platform-client';
 import {readdirSync, rmSync} from 'fs';
-import {readJsonSync, writeJsonSync, WriteOptions} from 'fs-extra';
+import {readJsonSync, writeJsonSync, JsonWriteOptions} from 'fs-extra';
 import {join} from 'path';
 import {Project} from '../../project/project';
 
@@ -12,7 +12,7 @@ type SnapshotFileJSON = Object & {
 
 const firstDirOfPath =
   process.platform === 'win32' ? /^[^\\]*(?=\\)/m : /^[^/]*\//m;
-const defaultWriteOptions: WriteOptions = Project.jsonFormat;
+const defaultWriteOptions: JsonWriteOptions = Project.jsonFormat;
 
 export function recursiveDirectoryDiff(
   currentDir: string,
