@@ -1,8 +1,10 @@
 import {spawnSync} from 'node:child_process';
 import {unlinkSync, readFileSync, writeFileSync} from 'node:fs';
-import {join} from 'node:path';
+import {join, dirname} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {getPackageManager} from './utils.mjs';
 const pkgJson = JSON.parse(readFileSync('package.json'));
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 ['prestart', 'setup-env', 'setup-server', 'setup-cleanup'].forEach(
   (script) => delete pkgJson['scripts'][script]
