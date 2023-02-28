@@ -4,6 +4,10 @@ exports[`ui:create:atomic when using an existing pageId (--pageId flag specified
 HashedFolder {
   "children": [
     HashedFile {
+      "hash": "1YlrWbKI6kgpcX/5spCmIko0kgg=",
+      "name": "deployment.esbuild.mjs",
+    },
+    HashedFile {
       "hash": "+t+HILvU+0OvGuKuRvbcamfBMRw=",
       "name": "README.md",
     },
@@ -108,7 +112,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "SLxL7YOO33+ytRVTAG5XC2FZK9o=",
+  "hash": "DU0VcqNdxqNBVEbb7MLQdnNGzas=",
   "name": "normalizedDir",
 }
 `;
@@ -116,6 +120,10 @@ HashedFolder {
 exports[`ui:create:atomic when using an existing pageId (using the list prompt of available pages) the project has been generated properly 1`] = `
 HashedFolder {
   "children": [
+    HashedFile {
+      "hash": "bBk6DoprMUqcw8a48oUQpkyFxkE=",
+      "name": "deployment.esbuild.mjs",
+    },
     HashedFile {
       "hash": "+t+HILvU+0OvGuKuRvbcamfBMRw=",
       "name": "README.md",
@@ -230,7 +238,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "NHzOsUzxq1LVzaEqnsmOZ1h0WIQ=",
+  "hash": "RqdlEq3HbQDArgTsULeWXITI3bU=",
   "name": "normalizedDir",
 }
 `;
@@ -238,6 +246,10 @@ HashedFolder {
 exports[`ui:create:atomic when using the default page config (pageId not specified) the project has been generated properly 1`] = `
 HashedFolder {
   "children": [
+    HashedFile {
+      "hash": "bBk6DoprMUqcw8a48oUQpkyFxkE=",
+      "name": "deployment.esbuild.mjs",
+    },
     HashedFile {
       "hash": "+t+HILvU+0OvGuKuRvbcamfBMRw=",
       "name": "README.md",
@@ -352,7 +364,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "VWRCp9z9DmnNxYgJw4vGIb/TFio=",
+  "hash": "h+R1g/IgvZRep8lfPXfdcwWo30M=",
   "name": "normalizedDir",
 }
 `;
