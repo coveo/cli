@@ -1,7 +1,7 @@
-const {spawnSync} = require('child_process');
-const {copySync} = require('fs-extra');
-const {sep, resolve} = require('path');
-const {getPackageManager} = require('./utils');
+import {spawnSync} from 'node:child_process';
+import {cpSync} from 'node:fs';
+import {sep, resolve} from 'node:path';
+import {getPackageManager} from './utils.mjs';
 
 function installSearchTokenServerDependencies() {
   const child = spawnSync(getPackageManager(), ['install'], {
@@ -22,11 +22,12 @@ function isEnvFile(path) {
 }
 
 function copySearchTokenServerToRoot() {
-  copySync(
+  cpSync(
     resolve('node_modules', '@coveo', 'search-token-server'),
     resolve('server'),
     {
       filter: (src, dest) => !isNodeModule(dest) && !isEnvFile(dest),
+      recursive: true,
     }
   );
 }

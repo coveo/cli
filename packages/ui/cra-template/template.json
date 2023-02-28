@@ -16,8 +16,8 @@
     },
     "devDependencies": {
       "@testing-library/jest-dom": "5.16.5",
-      "@testing-library/react": "13.4.0",
-      "@testing-library/user-event": "^13.5.0",
+      "@testing-library/react": "14.0.0",
+      "@testing-library/user-event": "^14.0.0",
       "@types/jest": "29.4.0",
       "@types/node": "18.14.0",
       "@types/react": "18.0.28",
@@ -27,10 +27,10 @@
     "eslintConfig": {"extends": ["react-app", "react-app/jest"]},
     "scripts": {
       "prestart": "npm run setup-server && npm run setup-cleanup",
-      "setup-server": "node ./scripts/setup-server.js",
-      "setup-env": "node ./scripts/setup-env.js",
-      "setup-cleanup": "node ./scripts/clean-up.js",
-      "start-server": "node ./scripts/start-server.js",
+      "setup-server": "node ./scripts/setup-server.mjs",
+      "setup-env": "node ./scripts/setup-env.mjs",
+      "setup-cleanup": "node ./scripts/clean-up.mjs",
+      "start-server": "node ./scripts/start-server.mjs",
       "allocate-port": "node ./scripts/port-allocator.mjs",
       "start": "npm run allocate-port && concurrently --raw \"npm run start-server\" \"react-scripts start\""
     }

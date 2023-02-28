@@ -27,7 +27,7 @@
     "template.json"
   ],
   "dependencies": {
-    "fs-extra": "10.1.0"
+    "fs-extra": "11.1.0"
   },
   "devDependencies": {
     "@coveo/headless": "latest",
@@ -36,8 +36,8 @@
     "@emotion/styled": "11.10.6",
     "@mui/material": "5.11.10",
     "@testing-library/jest-dom": "5.16.5",
-    "@testing-library/react": "13.4.0",
-    "@testing-library/user-event": "^13.5.0",
+    "@testing-library/react": "14.0.0",
+    "@testing-library/user-event": "^14.0.0",
     "@types/jest": "29.4.0",
     "@types/node": "18.14.0",
     "@types/react": "18.0.28",
