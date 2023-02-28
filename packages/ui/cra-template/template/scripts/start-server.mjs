@@ -1,5 +1,5 @@
-import {spawn} from 'child_process';
-import {resolve, join} from 'path';
+import {spawn} from 'node:child_process';
+import {resolve, join} from 'node:path';
 import {config} from 'dotenv';
 import {getPackageManager} from './utils.mjs';
 config();

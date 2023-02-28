@@ -1,7 +1,7 @@
+import {appendFileSync, truncateSync, existsSync} from 'node:fs';
+import {EOL} from 'node:os';
 import getPort, {makeRange} from 'get-port';
-import {appendFileSync, truncateSync, existsSync} from 'fs';
 import {config} from 'dotenv';
-import {EOL} from 'os';
 const environment = config();
 
 const preferedWebAppPort = 3000;
