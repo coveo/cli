@@ -81,6 +81,6 @@ jobs:
             github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'CI',
+              workflow_id: 'build.yml',
               ref: process.env.BRANCH_NAME,
             });
