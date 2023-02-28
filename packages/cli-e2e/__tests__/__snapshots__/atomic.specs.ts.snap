@@ -4,7 +4,7 @@ exports[`ui:create:atomic when using an existing pageId (--pageId flag specified
 HashedFolder {
   "children": [
     HashedFile {
-      "hash": "/w5TNGJ1Eyx9Gpujw4YiJWCWFVw=",
+      "hash": "LxoNuFaz5CGsrnIuibJ670NpiF8=",
       "name": "coveo.deploy.json",
     },
     HashedFile {
@@ -116,7 +116,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "GdsFCjE1HA7zfQHVTEQlSEPIDtc=",
+  "hash": "VWddwHef8hB1rp5w3wBbHYOMlO0=",
   "name": "normalizedDir",
 }
 `;
@@ -125,7 +125,7 @@ exports[`ui:create:atomic when using an existing pageId (using the list prompt o
 HashedFolder {
   "children": [
     HashedFile {
-      "hash": "cnYZnz5FRA/2J/nMkyX7RIcQZ7k=",
+      "hash": "+4kqB2NvF84P7HVrAWeYrTaHH2o=,
       "name": "coveo.deploy.json",
     },
     HashedFile {
@@ -246,7 +246,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "uda6Zc9BdPXKbLTIz0/+Vpv6xpM=",
+  "hash": "OtZus6LTp76RvG14cLQ2vu22664=",
   "name": "normalizedDir",
 }
 `;
@@ -255,7 +255,7 @@ exports[`ui:create:atomic when using the default page config (pageId not specifi
 HashedFolder {
   "children": [
     HashedFile {
-      "hash": "dYko0IiSWlgayI7L2hB95RaS3P4=",
+      "hash": "n+3glYpPQVR131i7ZUd79C529g4=",
       "name": "coveo.deploy.json",
     },
     HashedFile {
@@ -376,7 +376,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "Hl2tulsCTpTLkakrrvRmMb7mY0c=",
+  "hash": "l2Jq7IGYaIzj2T07iBBlddcB1+c=",
   "name": "normalizedDir",
 }
 `;
