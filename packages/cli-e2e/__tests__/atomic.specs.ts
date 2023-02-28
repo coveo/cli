@@ -252,7 +252,6 @@ describe('ui:create:atomic', () => {
                 '**package.json',
                 'stencil.config.ts',
                 'coveo.deploy.json',
-                'deployment.esbuild.mjs',
                 '**index.html',
               ],
               ignoreRootName: true,
