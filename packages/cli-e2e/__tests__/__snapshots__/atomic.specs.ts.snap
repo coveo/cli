@@ -3,76 +3,21 @@
 exports[`ui:create:atomic when using an existing pageId (--pageId flag specified) the project has been generated properly 1`] = `
 HashedFolder {
   "children": [
-    HashedFolder {
-      "children": [
-        HashedFolder {
-          "children": [
-            HashedFolder {
-              "children": [
-                HashedFile {
-                  "hash": "svywi4m+5JDQ38UPkngnE1Mjtdo=",
-                  "name": "areEnvironmentVariablesSet.ts",
-                },
-                HashedFile {
-                  "hash": "awXFfDQB4u/SWLWIu/s7d5lDypg=",
-                  "name": "generateToken.ts",
-                },
-                HashedFile {
-                  "hash": "RE8gVn5L6IPgrgjSaHQgprTpOE4=",
-                  "name": "token.spec.ts",
-                },
-                HashedFile {
-                  "hash": "8CnT2j+TqLXbaxi+gAL9d/Alk3E=",
-                  "name": "token.ts",
-                },
-              ],
-              "hash": "WtXb6ZQYgvzwFIFJlF+w/4gpVUQ=",
-              "name": "token",
-            },
-          ],
-          "hash": "Jw1m1dA3f+wg0+kzN1w/f96o8K0=",
-          "name": "functions",
-        },
-        HashedFile {
-          "hash": "OVq4G+VOzVg6+LO7SDGMuYwA3gQ=",
-          "name": "jest.config.js",
-        },
-        HashedFile {
-          "hash": "Q5B4b7qfWLJaHE/TZpt/2vLRgUk=",
-          "name": "LICENSE",
-        },
-        HashedFile {
-          "hash": "3RItgq2aQ177ZrvBxVNrLLaaRLc=",
-          "name": "netlify.toml",
-        },
-        HashedFile {
-          "hash": "JcgnYZDTiQ6EqMwKIuEh9x+kLlA=",
-          "name": "README.md",
-        },
-        HashedFile {
-          "hash": "RmeGeAs5hovLIHxguToYky0yJDY=",
-          "name": "tsconfig.json",
-        },
-      ],
-      "hash": "SAqi9P1uzEYQKpk6WgZnft2+BRM=",
-      "name": "lambda",
+    HashedFile {
+      "hash": "/w5TNGJ1Eyx9Gpujw4YiJWCWFVw=",
+      "name": "coveo.deploy.json",
     },
     HashedFile {
-      "hash": "RH58BiYWbvwHsjuAvGykfQPEhA0=",
-      "name": "netlify.toml",
+      "hash": "k6JpHELUEupDoAHYpsDnK7PiRgk=",
+      "name": "deploy.esbuild.mjs",
     },
     HashedFile {
-      "hash": "Tl9+ts5pzf64nSy0AFYC4YrDfEU=",
+      "hash": "+t+HILvU+0OvGuKuRvbcamfBMRw=",
       "name": "README.md",
     },
     HashedFolder {
-      "children": [
-        HashedFile {
-          "hash": "Q005R5GLW6xqpD5rr3mDMF2rLo0=",
-          "name": "setup-lambda.mjs",
-        },
-      ],
-      "hash": "fuD+lsTS+ed8pIvaiB13YbKVwrg=",
+      "children": [],
+      "hash": "2jmj7l5rSw0yVb/vlWAYkK/YBwk=",
       "name": "scripts",
     },
     HashedFolder {
@@ -82,7 +27,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "yYnkMNFHBU75Q1vjLZNnBzeTT94=",
+                  "hash": "8AayDC90AmCwDykctBv05Cq9zu4=",
                   "name": "results-manager.tsx",
                 },
                 HashedFile {
@@ -90,7 +35,7 @@ HashedFolder {
                   "name": "template-1.html",
                 },
               ],
-              "hash": "MhsnUowMHXMKTVw7vJkMusd/TI0=",
+              "hash": "xinVubHLykKoiFWyLVsOJZ1dnxo=",
               "name": "results-manager",
             },
             HashedFolder {
@@ -100,11 +45,11 @@ HashedFolder {
                   "name": "sample-component.css",
                 },
                 HashedFile {
-                  "hash": "vgtDa2FVnWYn9t5C1jG63Pdz7hA=",
+                  "hash": "sWUDtgn9DiTjvYlLdoF4EaGoClw=",
                   "name": "sample-component.tsx",
                 },
               ],
-              "hash": "X9NLRdpTye/6iMyj9Y0ddiaI53Y=",
+              "hash": "pPdA06Q+ujtEyI7kflypbd5kiUg=",
               "name": "sample-component",
             },
             HashedFolder {
@@ -122,7 +67,7 @@ HashedFolder {
               "name": "sample-result-component",
             },
           ],
-          "hash": "P4L7XTrq124MhpCS0FC+QMWCH1s=",
+          "hash": "OQtU22HxeCjPk+8ge8q1pZB8oEM=",
           "name": "components",
         },
         HashedFile {
@@ -134,7 +79,7 @@ HashedFolder {
           "name": "html.d.ts",
         },
         HashedFile {
-          "hash": "hlBUDBUrW6Vub74g68bUqfs3OIM=",
+          "hash": "gWU4jwZiE3tQmRqeqwxi/y3nyjo=",
           "name": "index.ts",
         },
         HashedFolder {
@@ -152,20 +97,26 @@ HashedFolder {
           "hash": "FQZ6fv/Z/8DhwZWuUbrLwgTt6r8=",
           "name": "style",
         },
+        HashedFolder {
+          "children": [
+            HashedFile {
+              "hash": "Yhwg1zaohXJmi0xJFywAlsL02ZA=",
+              "name": "atomic.ts",
+            },
+          ],
+          "hash": "ZyOIYW/4w45sOzwmwIaFevE1VVM=",
+          "name": "utils",
+        },
       ],
-      "hash": "GHDqLhyug1yPs0slpP4pjcpTszA=",
+      "hash": "U+7Hr9D3n0q7m15xZpguRp28uQs=",
       "name": "src",
-    },
-    HashedFile {
-      "hash": "jVuOZ6BrKT9HUer88GsGfeySq/w=",
-      "name": "start-netlify.mjs",
     },
     HashedFile {
       "hash": "9nyo2P7hCKS4uXz6KBbyR2tzRtY=",
       "name": "tsconfig.json",
     },
   ],
-  "hash": "UxIfu4fnp2tHiAlJELJWWBZA03U=",
+  "hash": "GdsFCjE1HA7zfQHVTEQlSEPIDtc=",
   "name": "normalizedDir",
 }
 `;
@@ -174,11 +125,15 @@ exports[`ui:create:atomic when using an existing pageId (using the list prompt o
 HashedFolder {
   "children": [
     HashedFile {
-      "hash": "RH58BiYWbvwHsjuAvGykfQPEhA0=",
-      "name": "netlify.toml",
+      "hash": "cnYZnz5FRA/2J/nMkyX7RIcQZ7k=",
+      "name": "coveo.deploy.json",
     },
     HashedFile {
-      "hash": "Tl9+ts5pzf64nSy0AFYC4YrDfEU=",
+      "hash": "jblT3evFJskcsOWHet0Sg3eK1bQ=",
+      "name": "deploy.esbuild.mjs",
+    },
+    HashedFile {
+      "hash": "+t+HILvU+0OvGuKuRvbcamfBMRw=",
       "name": "README.md",
     },
     HashedFolder {
@@ -188,15 +143,11 @@ HashedFolder {
           "name": "clean-up.js",
         },
         HashedFile {
-          "hash": "8HGPil/NJ96KWhjo/uk9JBaq9us=",
-          "name": "setup-lambda.mjs",
-        },
-        HashedFile {
           "hash": "SPggJ4gGqtRc5+8WHpeKd/gQcf0=",
           "name": "utils.js",
         },
       ],
-      "hash": "RGm4yIYhtjB8PaZW7ipinrbth+A=",
+      "hash": "UEgD2PjQu6qgn3nWQVaFnfNtfCg=",
       "name": "scripts",
     },
     HashedFolder {
@@ -206,7 +157,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "825kP1s1AjeW6LxFVkzMpo89ocw=",
+                  "hash": "QJjgDAdWQehYt60rPIq3b5Urcng=",
                   "name": "results-manager.tsx",
                 },
                 HashedFile {
@@ -214,7 +165,7 @@ HashedFolder {
                   "name": "template-1.html",
                 },
               ],
-              "hash": "q/lRj2tA0uiP5qSDzwetWalpV04=",
+              "hash": "r0EMjBFOc48K7oQ+Nw+USWzManc=",
               "name": "results-manager",
             },
             HashedFolder {
@@ -224,11 +175,11 @@ HashedFolder {
                   "name": "sample-component.css",
                 },
                 HashedFile {
-                  "hash": "BmxCGos0rMicK/0OnfggnN3LfjA=",
+                  "hash": "DP1K1CMgX0s13uPyh6DxDf2KDUI=",
                   "name": "sample-component.tsx",
                 },
               ],
-              "hash": "xXlKrMsYuYL84uzxUsvWSINRar0=",
+              "hash": "hxdjpR//PsLO6dvB4OghA4MkP8A=",
               "name": "sample-component",
             },
             HashedFolder {
@@ -246,7 +197,7 @@ HashedFolder {
               "name": "sample-result-component",
             },
           ],
-          "hash": "RHBvkJnM5QZtfO3PXOmGTOmHcXg=",
+          "hash": "jgdhMAsXQx9A8vnWLg1TGR4yHko=",
           "name": "components",
         },
         HashedFile {
@@ -258,7 +209,7 @@ HashedFolder {
           "name": "html.d.ts",
         },
         HashedFile {
-          "hash": "VYQYwWUyFPlPYQDod3YJsXVOEiQ=",
+          "hash": "QUa6c9+PqpBiVxOjutgh5jYh3J0=",
           "name": "index.ts",
         },
         HashedFolder {
@@ -276,20 +227,26 @@ HashedFolder {
           "hash": "lRdUDVao1PTEjkh/JyuWMC0NvKk=",
           "name": "style",
         },
+        HashedFolder {
+          "children": [
+            HashedFile {
+              "hash": "s62u03kWBMqmtpvRgY8dy/usU/c=",
+              "name": "atomic.ts",
+            },
+          ],
+          "hash": "Q9gDKXuZHVN4ikM70Un69oZ/GKg=",
+          "name": "utils",
+        },
       ],
-      "hash": "ExzuDVlgzxuZSQpSLS3jWxn/eBE=",
+      "hash": "+DJ4YJ0vZ0RDgqhK0ALOf5Rp1IM=",
       "name": "src",
-    },
-    HashedFile {
-      "hash": "XRdANxlMd+KVd0HuNLxu+WqpRu0=",
-      "name": "start-netlify.mjs",
     },
     HashedFile {
       "hash": "9nyo2P7hCKS4uXz6KBbyR2tzRtY=",
       "name": "tsconfig.json",
     },
   ],
-  "hash": "O0tuaMFIZRiaGYGPVnuBFT55kJI=",
+  "hash": "uda6Zc9BdPXKbLTIz0/+Vpv6xpM=",
   "name": "normalizedDir",
 }
 `;
@@ -298,11 +255,15 @@ exports[`ui:create:atomic when using the default page config (pageId not specifi
 HashedFolder {
   "children": [
     HashedFile {
-      "hash": "RH58BiYWbvwHsjuAvGykfQPEhA0=",
-      "name": "netlify.toml",
+      "hash": "dYko0IiSWlgayI7L2hB95RaS3P4=",
+      "name": "coveo.deploy.json",
     },
     HashedFile {
-      "hash": "Tl9+ts5pzf64nSy0AFYC4YrDfEU=",
+      "hash": "jblT3evFJskcsOWHet0Sg3eK1bQ=",
+      "name": "deploy.esbuild.mjs",
+    },
+    HashedFile {
+      "hash": "+t+HILvU+0OvGuKuRvbcamfBMRw=",
       "name": "README.md",
     },
     HashedFolder {
@@ -312,15 +273,11 @@ HashedFolder {
           "name": "clean-up.js",
         },
         HashedFile {
-          "hash": "8HGPil/NJ96KWhjo/uk9JBaq9us=",
-          "name": "setup-lambda.mjs",
-        },
-        HashedFile {
           "hash": "SPggJ4gGqtRc5+8WHpeKd/gQcf0=",
           "name": "utils.js",
         },
       ],
-      "hash": "RGm4yIYhtjB8PaZW7ipinrbth+A=",
+      "hash": "UEgD2PjQu6qgn3nWQVaFnfNtfCg=",
       "name": "scripts",
     },
     HashedFolder {
@@ -330,7 +287,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "X8T+MmiPJFNu/lwXh6d29i/YhYo=",
+                  "hash": "LiPFXpS1sKZg/jHFeC2NZ0CJU6M=",
                   "name": "results-manager.tsx",
                 },
                 HashedFile {
@@ -338,7 +295,7 @@ HashedFolder {
                   "name": "template-1.html",
                 },
               ],
-              "hash": "W1lEfKcMoS9W1dKtbS/qCjUkWkQ=",
+              "hash": "+fkWdok/HnrqsmuNKot00n9mAGw=",
               "name": "results-manager",
             },
             HashedFolder {
@@ -348,11 +305,11 @@ HashedFolder {
                   "name": "sample-component.css",
                 },
                 HashedFile {
-                  "hash": "BmxCGos0rMicK/0OnfggnN3LfjA=",
+                  "hash": "DP1K1CMgX0s13uPyh6DxDf2KDUI=",
                   "name": "sample-component.tsx",
                 },
               ],
-              "hash": "xXlKrMsYuYL84uzxUsvWSINRar0=",
+              "hash": "hxdjpR//PsLO6dvB4OghA4MkP8A=",
               "name": "sample-component",
             },
             HashedFolder {
@@ -370,7 +327,7 @@ HashedFolder {
               "name": "sample-result-component",
             },
           ],
-          "hash": "v5QsIbKPhqUjN5T705ILECqNNNg=",
+          "hash": "mN3OMfRS4rnN0gSb4G3ikXw+WFg=",
           "name": "components",
         },
         HashedFile {
@@ -382,7 +339,7 @@ HashedFolder {
           "name": "html.d.ts",
         },
         HashedFile {
-          "hash": "VYQYwWUyFPlPYQDod3YJsXVOEiQ=",
+          "hash": "QUa6c9+PqpBiVxOjutgh5jYh3J0=",
           "name": "index.ts",
         },
         HashedFolder {
@@ -400,20 +357,26 @@ HashedFolder {
           "hash": "aAm3g7fNVc/yWUitXMGFxqC9GIg=",
           "name": "style",
         },
+        HashedFolder {
+          "children": [
+            HashedFile {
+              "hash": "s62u03kWBMqmtpvRgY8dy/usU/c=",
+              "name": "atomic.ts",
+            },
+          ],
+          "hash": "Q9gDKXuZHVN4ikM70Un69oZ/GKg=",
+          "name": "utils",
+        },
       ],
-      "hash": "DgwSDd7NKuEP9HKGZtLTMpgeU54=",
+      "hash": "x8pIc4K8x5uh6vXJzqxJo5+toHM=",
       "name": "src",
-    },
-    HashedFile {
-      "hash": "XRdANxlMd+KVd0HuNLxu+WqpRu0=",
-      "name": "start-netlify.mjs",
     },
     HashedFile {
       "hash": "9nyo2P7hCKS4uXz6KBbyR2tzRtY=",
       "name": "tsconfig.json",
     },
   ],
-  "hash": "MNJhwXQYJ1sBFRQW5tXDl7V/54U=",
+  "hash": "Hl2tulsCTpTLkakrrvRmMb7mY0c=",
   "name": "normalizedDir",
 }
 `;
