@@ -251,6 +251,7 @@ describe('ui:create:atomic', () => {
                 '**CHANGELOG.md',
                 '**package.json',
                 'stencil.config.ts',
+                'coveo.deploy.json',
                 '**index.html',
               ],
               ignoreRootName: true,
