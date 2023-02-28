@@ -179,7 +179,7 @@ export default function (plop: NodePlopAPI) {
             '../template/stencil.config.ts',
             '../template/README.md',
             '../template/coveo.deploy.json',
-            '../template/deploy.esbuild.mjs',
+            '../template/deployment.esbuild.mjs',
           ],
         },
         function generateTemplates(data) {
