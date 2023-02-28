@@ -1,6 +1,6 @@
 import {build} from 'esbuild';
 import {join} from 'node:path';
-import {appendFileSync, readFileSync, writeFileSync, mkdirSync} from 'node:fs'
+import {appendFileSync, readFileSync, writeFileSync, mkdirSync} from 'node:fs';
 
 function jsBundle() {
   const entry = join('dist/components/index.js');
@@ -41,7 +41,7 @@ function html() {
 }
 
 async function main() {
-  mkdirSync('dist/bundle', {recursive:true});
+  mkdirSync('dist/bundle', {recursive: true});
 
   await Promise.all([jsBundle(), cssBundle(), html()]);
 }
