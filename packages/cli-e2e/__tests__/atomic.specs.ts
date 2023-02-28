@@ -6,9 +6,7 @@ import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {npm} from '../utils/npm';
-import {jwtTokenPattern} from '../utils/matcher';
 import {EOL} from 'os';
-import {DummyServer} from '../utils/server';
 import {join, resolve} from 'path';
 import {hashElement} from 'folder-hash';
 import {existsSync, symlinkSync, unlinkSync} from 'fs';
@@ -21,8 +19,7 @@ interface BuildAppOptions {
 }
 
 describe('ui:create:atomic', () => {
-  const searchPageEndpoint = 'http://localhost:8888';
-  const tokenServerEndpoint = 'http://localhost:8888/.netlify/functions/token';
+  const searchPageEndpoint = 'http://localhost:3333';
   const searchInterfaceSelector = 'atomic-search-interface';
   let normalizedProjectDir = '';
   let originalProjectDir = '';
@@ -242,7 +239,7 @@ describe('ui:create:atomic', () => {
         expect(
           await hashElement(normalizedProjectDir, {
             folders: {
-              exclude: ['**node_modules', 'dist', 'www', '.netlify'],
+              exclude: ['**node_modules', 'dist', 'www'],
               ignoreRootName: true,
               ignoreBasename: true,
             },
@@ -318,19 +315,6 @@ describe('ui:create:atomic', () => {
             expect(await page.$(searchInterfaceSelector)).not.toBeNull();
           }, 60e3);
 
-          it('should retrieve the search token on the page load', async () => {
-            const tokenResponseListener =
-              page.waitForResponse(tokenServerEndpoint);
-            page.goto(searchPageEndpoint);
-            await page.waitForSelector(searchInterfaceSelector);
-
-            expect(
-              JSON.parse(await (await tokenResponseListener).text())
-            ).toMatchObject({
-              token: expect.stringMatching(jwtTokenPattern),
-            });
-          }, 60e3);
-
           it('should send a search query when the page is loaded', async () => {
             await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
             await page.waitForSelector(searchInterfaceSelector);
@@ -338,39 +322,6 @@ describe('ui:create:atomic', () => {
             expect(
               interceptedRequests.some(isSearchRequestOrResponse)
             ).toBeTruthy();
-          }, 60e3);
-        });
-
-        describe('when the default Stencil port is busy', () => {
-          let dummyServer: DummyServer;
-          let serverProcessManager: ProcessManager;
-
-          beforeAll(async () => {
-            serverProcessManager = new ProcessManager();
-            processManagers.push(serverProcessManager);
-
-            dummyServer = new DummyServer(3333);
-            await dummyServer.start();
-
-            const appTerminal = startApplication(
-              serverProcessManager,
-              buildAppOptions,
-              'stencil-port-test'
-            );
-            await waitForAppRunning(appTerminal);
-          }, 2 * 60e3);
-
-          afterAll(async () => {
-            await dummyServer.close();
-            await serverProcessManager.killAllProcesses();
-          }, 30e3);
-
-          it('Netlify should still load the Stencil app properly', async () => {
-            await page.goto(searchPageEndpoint, {
-              waitUntil: 'networkidle2',
-            });
-
-            expect(await page.$(searchInterfaceSelector)).not.toBeNull();
           }, 60e3);
         });
       }
