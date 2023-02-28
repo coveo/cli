@@ -1,4 +1,5 @@
 import {Component, h} from '@stencil/core';
+import {waitForAtomic} from '../../utils/atomic';
 {{#each page.results.templates}}
 import template{{inc @index}} from './template-{{inc @index}}.html';
 {{/each}}
@@ -12,6 +13,10 @@ import template{{inc @index}} from './template-{{inc @index}}.html';
   shadow: false,
 })
 export class ResultsManager {
+  public async componentWillLoad() {
+    return waitForAtomic();
+  }
+
   public render() {
     return <atomic-result-list {{#each page.results.attributes}}{{@key}}="{{{this}}}" {{/each}}>
       {{#each page.results.templates}}
