@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "author": "Coveo",
   "description": "Coveo CLI",
   "engines": {
@@ -9,8 +9,8 @@
   "dependencies": {
     "@amplitude/identify": "^1.9.0",
     "@amplitude/node": "^1.9.0",
-    "@coveo/cli-commons": "2.2.3",
-    "@coveo/cli-plugin-source": "2.0.4",
+    "@coveo/cli-commons": "2.3.0",
+    "@coveo/cli-plugin-source": "2.0.5",
     "@coveo/platform-client": "40.9.3",
     "@coveo/push-api-client": "^3.0.0",
     "@oclif/core": "1.24.0",
@@ -24,6 +24,7 @@
     "chalk": "4.1.2",
     "cli-progress": "^3.9.1",
     "extract-zip": "^2.0.1",
+    "fetch-undici-polyfill": "1.1.2",
     "fs-extra": "^11.0.0",
     "get-port": "5.1.1",
     "https-proxy-agent": "^5.0.0",
@@ -36,17 +37,16 @@
     "semver": "^7.3.4",
     "tmp": "^0.2.1",
     "ts-dedent": "2.2.0",
-    "tslib": "2.5.0",
-    "fetch-undici-polyfill": "1.1.2"
+    "tslib": "2.5.0"
   },
   "devDependencies": {
     "@amplitude/types": "1.10.2",
     "@babel/core": "7.21.0",
-    "@coveo/angular": "1.35.22",
-    "@coveo/cli-commons-dev": "6.0.2",
-    "@coveo/cra-template": "1.36.4",
-    "@coveo/create-atomic": "1.36.3",
-    "@coveo/create-headless-vue": "1.0.3",
+    "@coveo/angular": "1.35.23",
+    "@coveo/cli-commons-dev": "6.0.3",
+    "@coveo/cra-template": "1.36.5",
+    "@coveo/create-atomic": "1.36.4",
+    "@coveo/create-headless-vue": "1.1.0",
     "@oclif/test": "2.2.21",
     "@types/archiver": "5.3.1",
     "@types/async-retry": "1.4.5",
