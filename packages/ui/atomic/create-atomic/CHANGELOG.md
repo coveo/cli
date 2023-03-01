@@ -1,3 +1,10 @@
+## 1.36.4 (2023-03-01)
+
+### Bug Fixes
+
+- **atomic:** do not track lambda symlink ([#1098](https://github.com/coveo/cli/issues/1098)) ([11f8c08](https://github.com/coveo/cli/commits/11f8c089025647663c8688d53a7cf970d076b9ac))
+- **deps:** update all dependencies j:cdx-227 (major) ([#1054](https://github.com/coveo/cli/issues/1054)) ([03d4b34](https://github.com/coveo/cli/commits/03d4b3411164933fc0a25ca7aa3b3f644e8cdc08))
+
 ## 1.36.1 (2022-12-14)
 
 ### Bug Fixes

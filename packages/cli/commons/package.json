@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli-commons",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "author": "Coveo",
   "description": "Common utils for @coveo/cli plugins",
   "license": "Apache-2.0",
@@ -14,7 +14,7 @@
     }
   },
   "devDependencies": {
-    "@coveo/cli-commons-dev": "6.0.2",
+    "@coveo/cli-commons-dev": "6.0.3",
     "@types/jest": "29.4.0",
     "jest": "29.4.3",
     "jsonschema": "1.4.1",
@@ -27,7 +27,7 @@
     "@oclif/core": "1.24.0",
     "abortcontroller-polyfill": "1.7.5",
     "chalk": "4.1.2",
-    "fs-extra": "10.1.0",
+    "fs-extra": "11.1.0",
     "https-proxy-agent": "5.0.1",
     "isomorphic-fetch": "3.0.0",
     "semver": "7.3.8",

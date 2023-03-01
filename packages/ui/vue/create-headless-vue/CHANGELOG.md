@@ -1,3 +1,14 @@
+# 1.1.0 (2023-03-01)
+
+### Bug Fixes
+
+- **deps:** update all dependencies j:cdx-227 ([#1090](https://github.com/coveo/cli/issues/1090)) ([ae24142](https://github.com/coveo/cli/commits/ae24142d3ae4b68e04951301eb157f9e7ddb1095))
+- **vue:** bad key in generated readme ([#1089](https://github.com/coveo/cli/issues/1089)) ([7d9bfe1](https://github.com/coveo/cli/commits/7d9bfe1903015794b80fd7dbbb6c9f9d909e5c77))
+
+### Features
+
+- **vue:** update to vite 4 and remove express ([#1088](https://github.com/coveo/cli/issues/1088)) ([6d17a33](https://github.com/coveo/cli/commits/6d17a33a143e7044467f48232e230e6aea9a1c0a))
+
 ## 1.0.2 (2022-12-14)
 
 ### Bug Fixes

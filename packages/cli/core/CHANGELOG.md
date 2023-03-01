@@ -1,3 +1,18 @@
+# 2.3.0 (2023-03-01)
+
+### Bug Fixes
+
+- **atomic:** support non-us regions ([#1097](https://github.com/coveo/cli/issues/1097)) ([f551210](https://github.com/coveo/cli/commits/f551210b86ad6108461a8f8be591956812da921a))
+- **deps:** update all dependencies j:cdx-227 ([#1090](https://github.com/coveo/cli/issues/1090)) ([ae24142](https://github.com/coveo/cli/commits/ae24142d3ae4b68e04951301eb157f9e7ddb1095))
+- **deps:** update all dependencies j:cdx-227 (major) ([#1054](https://github.com/coveo/cli/issues/1054)) ([03d4b34](https://github.com/coveo/cli/commits/03d4b3411164933fc0a25ca7aa3b3f644e8cdc08))
+- **deps:** update oclif packages j:cdx-227 ([#1086](https://github.com/coveo/cli/issues/1086)) ([0a739f6](https://github.com/coveo/cli/commits/0a739f61b7f923e049c527c6e3f9749b81f9fb87))
+
+### Features
+
+- **deploy:** add new (but hidden) deploy command ([#1099](https://github.com/coveo/cli/issues/1099)) ([2080adb](https://github.com/coveo/cli/commits/2080adb5d8d59ae6d562475eaf42d3d572343324))
+- **deploy:** release & document deploy command ([#1118](https://github.com/coveo/cli/issues/1118)) ([127dda4](https://github.com/coveo/cli/commits/127dda490c9ab4fe8ad3239e15063885d9be729f))
+- **vue:** update to vite 4 and remove express ([#1088](https://github.com/coveo/cli/issues/1088)) ([6d17a33](https://github.com/coveo/cli/commits/6d17a33a143e7044467f48232e230e6aea9a1c0a))
+
 ## 2.2.3 (2023-01-12)
 
 ### Bug Fixes

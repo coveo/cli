@@ -1,3 +1,9 @@
+## 1.35.20 (2023-03-01)
+
+### Bug Fixes
+
+- **deps:** update all dependencies j:cdx-227 ([#1090](https://github.com/coveo/cli/issues/1090)) ([ae24142](https://github.com/coveo/cli/commits/ae24142d3ae4b68e04951301eb157f9e7ddb1095))
+
 ## 1.35.19 (2023-01-12)
 
 ## 1.35.17 (2022-12-14)
