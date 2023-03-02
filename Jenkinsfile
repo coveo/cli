@@ -1,14 +1,12 @@
 node('linux && docker') {
   checkout scm
   def releaseCommit
-  git config --global --add safe.directory '*' // For the current user and all repositories
-  git config --system --add safe.directory '*' // For all users and all repositories
-
 
   withDockerContainer(image: 'node:18', args: '-u=root') {
 
     stage('Setup') {
       // Fix dubious ownership error in Jenkins
+      sh "git config --global --add safe.directory ${WORKSPACE}"
       sh 'npm ci --ignore-scripts'
     }
 
