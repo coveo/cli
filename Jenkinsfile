@@ -1,12 +1,12 @@
 node('linux && docker') {
   checkout scm
   def releaseCommit
+  git config --global --add safe.directory $WORKSPACE
 
   withDockerContainer(image: 'node:18', args: '-u=root') {
 
     stage('Setup') {
       // Fix dubious ownership error in Jenkins
-      git config --global --add safe.directory $WORKSPACE
       sh 'npm ci --ignore-scripts'
     }
 
