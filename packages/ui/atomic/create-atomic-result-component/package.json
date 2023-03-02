@@ -21,7 +21,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@coveo/create-atomic-component-project": "0.0.1"
+    "@coveo/create-atomic-component-project": "0.1.0"
   },
   "devDependencies": {
     "@coveo/do-npm": "1.0.0",

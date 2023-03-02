@@ -1,0 +1,6 @@
+{
+  "name": "create-atomic-component",
+  "root": "packages/ui/atomic/create-atomic-component",
+  "sourceRoot": "packages/ui/atomic/create-atomic-component/template",
+  "projectType": "application"
+}
