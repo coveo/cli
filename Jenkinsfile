@@ -1,7 +1,9 @@
 node('linux && docker') {
   checkout scm
   def releaseCommit
-  git config --global --add safe.directory $WORKSPACE
+  git config --global --add safe.directory '*' // For the current user and all repositories
+  git config --system --add safe.directory '*' // For all users and all repositories
+
 
   withDockerContainer(image: 'node:18', args: '-u=root') {
 
