@@ -1,5 +1,5 @@
-const {resolve} = require('path');
-const {writeFileSync, existsSync} = require('fs');
+import {resolve} from 'node:path';
+import {writeFileSync, existsSync} from 'node:fs';
 
 function createEnvFile(filePath) {
   const {orgId, apiKey, platformUrl, user} = process.env;

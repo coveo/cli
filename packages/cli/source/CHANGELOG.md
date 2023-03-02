@@ -1,3 +1,11 @@
+## 2.0.5 (2023-03-01)
+
+### Bug Fixes
+
+- **deps:** update all dependencies j:cdx-227 ([#1090](https://github.com/coveo/cli/issues/1090)) ([ae24142](https://github.com/coveo/cli/commits/ae24142d3ae4b68e04951301eb157f9e7ddb1095))
+- **deps:** update all dependencies j:cdx-227 (major) ([#1054](https://github.com/coveo/cli/issues/1054)) ([03d4b34](https://github.com/coveo/cli/commits/03d4b3411164933fc0a25ca7aa3b3f644e8cdc08))
+- **deps:** update oclif packages j:cdx-227 ([#1086](https://github.com/coveo/cli/issues/1086)) ([0a739f6](https://github.com/coveo/cli/commits/0a739f61b7f923e049c527c6e3f9749b81f9fb87))
+
 ## 2.0.4 (2023-01-12)
 
 ### Bug Fixes

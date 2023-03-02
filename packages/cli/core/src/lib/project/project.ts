@@ -11,7 +11,7 @@ import archiver from 'archiver';
 import {InvalidProjectError} from '../errors';
 import extract from 'extract-zip';
 import {DotFolder, DotFolderConfig} from './dotFolder';
-import {readJsonSync, writeJsonSync, WriteOptions} from 'fs-extra';
+import {readJsonSync, writeJsonSync, JsonWriteOptions} from 'fs-extra';
 import {ResourceSnapshotType} from '@coveo/platform-client';
 import {fileDepthSearch} from '../utils/file';
 
@@ -20,7 +20,7 @@ interface ResourceManifest {
 }
 export class Project {
   public static readonly resourceFolderName = 'resources';
-  public static readonly jsonFormat: WriteOptions = {spaces: '\t'};
+  public static readonly jsonFormat: JsonWriteOptions = {spaces: '\t'};
   public constructor(private _pathToProject: string, orgId?: string) {
     if (!this.isCoveoProject) {
       this.makeCoveoProject(orgId);

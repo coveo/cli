@@ -1,3 +1,22 @@
+# release-10 (2023-03-01)
+
+### Bug Fixes
+
+- **atomic:** do not track lambda symlink ([#1098](https://github.com/coveo/cli/issues/1098)) ([11f8c08](https://github.com/coveo/cli/commits/11f8c089025647663c8688d53a7cf970d076b9ac))
+- **atomic:** support non-us regions ([#1097](https://github.com/coveo/cli/issues/1097)) ([f551210](https://github.com/coveo/cli/commits/f551210b86ad6108461a8f8be591956812da921a))
+- **deps:** update all dependencies j:cdx-227 ([#1090](https://github.com/coveo/cli/issues/1090)) ([ae24142](https://github.com/coveo/cli/commits/ae24142d3ae4b68e04951301eb157f9e7ddb1095))
+- **deps:** update all dependencies j:cdx-227 (major) ([#1054](https://github.com/coveo/cli/issues/1054)) ([03d4b34](https://github.com/coveo/cli/commits/03d4b3411164933fc0a25ca7aa3b3f644e8cdc08))
+- **deps:** update oclif packages j:cdx-227 ([#1086](https://github.com/coveo/cli/issues/1086)) ([0a739f6](https://github.com/coveo/cli/commits/0a739f61b7f923e049c527c6e3f9749b81f9fb87))
+- remove description field ([#1104](https://github.com/coveo/cli/issues/1104)) ([584f47d](https://github.com/coveo/cli/commits/584f47d8d9f341f23e13322802b2317c6b150448))
+- **vue:** bad key in generated readme ([#1089](https://github.com/coveo/cli/issues/1089)) ([7d9bfe1](https://github.com/coveo/cli/commits/7d9bfe1903015794b80fd7dbbb6c9f9d909e5c77))
+
+### Features
+
+- **accd:** add custom-component generators ([#1101](https://github.com/coveo/cli/issues/1101)) ([01442cc](https://github.com/coveo/cli/commits/01442ccdb7065c1e9ca5852084f846f2814501d0))
+- **deploy:** add new (but hidden) deploy command ([#1099](https://github.com/coveo/cli/issues/1099)) ([2080adb](https://github.com/coveo/cli/commits/2080adb5d8d59ae6d562475eaf42d3d572343324))
+- **deploy:** release & document deploy command ([#1118](https://github.com/coveo/cli/issues/1118)) ([127dda4](https://github.com/coveo/cli/commits/127dda490c9ab4fe8ad3239e15063885d9be729f))
+- **vue:** update to vite 4 and remove express ([#1088](https://github.com/coveo/cli/issues/1088)) ([6d17a33](https://github.com/coveo/cli/commits/6d17a33a143e7044467f48232e230e6aea9a1c0a))
+
 # release-9 (2023-01-12)
 
 ### Bug Fixes

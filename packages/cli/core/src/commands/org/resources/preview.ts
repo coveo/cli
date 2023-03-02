@@ -20,7 +20,6 @@ import {
   PreviewLevelValue,
   previewLevel,
   wait,
-  organization,
   snapshotId,
 } from '../../../lib/flags/snapshotCommonFlags';
 import {Project} from '../../../lib/project/project';
@@ -28,12 +27,13 @@ import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/report
 import {Snapshot} from '../../../lib/snapshot/snapshot';
 import {
   dryRun,
-  getTargetOrg,
   DryRunOptions,
   cleanupProject,
   getMissingVaultEntriesReportHandler,
   getErrorReportHandler,
 } from '../../../lib/snapshot/snapshotCommon';
+import {organization} from '../../../lib/flags/platformCommonFlags';
+import {getTargetOrg} from '../../../lib/utils/platform';
 export default class Preview extends CLICommand {
   public static description =
     'Preview the changes that running `coveo org:resources:push` would cause';
