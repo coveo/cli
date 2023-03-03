@@ -27,6 +27,17 @@ export function isSearchRequestOrResponse(
   return requestOrResponse.url().startsWith(searchUrl.href);
 }
 
+export function isSuccessfulSearchResponse(requestOrResponse: HTTPResponse) {
+  const searchUrl = new URL(
+    '/rest/search/v2?organizationId',
+    process.env.PLATFORM_HOST
+  );
+  return (
+    requestOrResponse.url().startsWith(searchUrl.href) &&
+    requestOrResponse.status() === 200
+  );
+}
+
 export async function createOrg(
   name: string,
   accessToken: string,

@@ -1,7 +1,7 @@
-import type {HTTPRequest, Browser, Page} from 'puppeteer';
+import type {Browser, Page, HTTPResponse} from 'puppeteer';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {answerPrompt, getProjectPath, setupUIProject} from '../utils/cli';
-import {isSearchRequestOrResponse} from '../utils/platform';
+import {isSuccessfulSearchResponse} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
@@ -264,7 +264,7 @@ describe('ui:create:atomic', () => {
       if (!skipBrowser) {
         describe('when the project is configured correctly', () => {
           let serverProcessManager: ProcessManager;
-          let interceptedRequests: HTTPRequest[] = [];
+          let interceptedResponse: HTTPResponse[] = [];
           let consoleInterceptor: BrowserConsoleInterceptor;
 
           beforeAll(async () => {
@@ -285,14 +285,14 @@ describe('ui:create:atomic', () => {
             );
             await consoleInterceptor.startSession();
 
-            page.on('request', (request: HTTPRequest) => {
-              interceptedRequests.push(request);
+            page.on('response', (response: HTTPResponse) => {
+              interceptedResponse.push(response);
             });
           });
 
           afterEach(async () => {
-            page.removeAllListeners('request');
-            interceptedRequests = [];
+            page.removeAllListeners('response');
+            interceptedResponse = [];
             await consoleInterceptor.endSession();
           });
 
@@ -321,7 +321,7 @@ describe('ui:create:atomic', () => {
             await page.waitForSelector(searchInterfaceSelector);
 
             expect(
-              interceptedRequests.some(isSearchRequestOrResponse)
+              interceptedResponse.some(isSuccessfulSearchResponse)
             ).toBeTruthy();
           }, 60e3);
         });
