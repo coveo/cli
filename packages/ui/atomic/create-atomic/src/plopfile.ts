@@ -177,9 +177,9 @@ export default function (plop: NodePlopAPI) {
             '../template/.env.example',
             '../template/tsconfig.json',
             '../template/stencil.config.ts',
-            '../template/netlify.toml',
             '../template/README.md',
-            '../template/start-netlify.mjs',
+            '../template/coveo.deploy.json',
+            '../template/deployment.esbuild.mjs',
           ],
         },
         function generateTemplates(data) {
@@ -236,11 +236,10 @@ export default function (plop: NodePlopAPI) {
           return `
           To get started:
           > cd ${project}
-          > npm run site:init (optional, sets up a new Netlify site)
           > npm start
   
-          To share your site with the world:
-          > npm run site:deploy
+          To share your site with the world, make sure you are logged in to the Coveo CLI and:
+          > npm run deploy
       
           Happy hacking!
           `;

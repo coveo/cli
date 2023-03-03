@@ -1,19 +1,15 @@
-async function renewAccessToken() {
-  const response = await fetch('.netlify/functions/token');
-  const {token} = await response.json();
-  return token;
-}
+import {waitForAtomic} from './utils/atomic';
 
 async function main() {
-  await customElements.whenDefined('atomic-search-interface');
+  await waitForAtomic();
   const searchInterface: HTMLAtomicSearchInterfaceElement =
     document.querySelector('atomic-search-interface')!;
 
   const platformUrl = process.env.PLATFORM_URL!;
   const organizationId = process.env.ORGANIZATION_ID!;
+  const accessToken = process.env.API_KEY!;
   await searchInterface.initialize({
-    accessToken: await renewAccessToken(),
-    renewAccessToken,
+    accessToken,
     organizationId,
     platformUrl,
   });

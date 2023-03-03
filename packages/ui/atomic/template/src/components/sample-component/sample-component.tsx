@@ -8,6 +8,7 @@ import {
   buildPager,
   Unsubscribe,
 } from '@coveo/headless';
+import {waitForAtomic} from '../../utils/atomic';
 
 /**
  * Sample custom Atomic component, initializing itself against a parent search interface in order to retrieve the bindings.
@@ -51,7 +52,8 @@ export class SampleComponent {
   // Using `componentWillLoad` will hang the parent atomic-search-interface initialization.
   public async connectedCallback() {
     try {
-      // Wait for the Atomic bindings to be resolved.
+      // Wait for the Atomic to load and bindings to be resolved.
+      await waitForAtomic();
       this.bindings = await initializeBindings(this.host);
 
       // Initialize controllers.

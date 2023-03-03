@@ -8,7 +8,8 @@
     <link href="/build/{{project}}.css" rel="stylesheet" />
     <!-- 
       When using the Coveo CDN - Make sure you're using the same minor version as the packaged Atomic.
-      E.g., if you have "@coveo/atomic@1.44.3" installed, use the "/atomic/v1.44/" path.
+      E.g., if you have "@coveo/atomic@2.0.0" installed, use the "/atomic/v2.0.0/" path.
+      When deploying with the Coveo CLI, the Atomic CDN defined in the coveo.deploy.json configuration file will be used.
     
       <script type="module" src="https://static.cloud.coveo.com/atomic/vMAJOR.MINOR/atomic.esm.js"></script> 
     -->
@@ -19,6 +20,12 @@
     <script type="module" src="/build/index.esm.js"></script>
   </head>
   <body>
-    {{{page.markup}}}
+    <!-- 
+      This is a non-functional element.
+      Contents of this element will be parsed and injected in the bundle's HTML when deploying.
+    -->
+    <atomic-hosted-page>
+      {{{page.markup}}}
+    </atomic-hosted-page>
   </body>
 </html>
