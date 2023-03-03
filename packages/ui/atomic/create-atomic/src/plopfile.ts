@@ -40,13 +40,13 @@ export default function (plop: NodePlopAPI) {
   }
 
   async function createSearchToken(
-    username: string,
+    name: string,
     platformClient: PlatformClient
   ) {
     return await platformClient.search.createToken({
       userIds: [
         {
-          name: username,
+          name,
           provider: 'Email Security Provider',
           type: RestUserIdType.User,
         },
