@@ -70,8 +70,40 @@ const DeployConfigSchema: Schema = {
 };
 
 export default class Deploy extends CLICommand {
-  public static description =
+  public static summary =
     'Deploy your search application to the Coveo infrastructure.';
+
+  public static description = `The target "config" must contain the following parameters:
+  {
+    "name": "The name of the hosted search page.",
+    "dir": "The directory of the hosted search page.",
+    "htmlEntryFile": {
+      "path": "The path to an HTML file containing the HTML markup of the hosted page."
+    },
+    "javascriptEntryFiles": [
+      {
+        "path": "The path to a bundled Javascript file.",
+        "isModule": "Whether the inline code should be treated as a JavaScript module. If this property is true, the type property will be set to "module" on the script tag."
+      }
+    ],
+    "javascriptUrls": [
+      {
+        "path": "The URL of the JavaScript source file.",
+        "isModule": "Whether the inline code should be treated as a JavaScript module. If this property is true, the type property will be set to "module" on the script tag."
+      }
+    ],
+    "cssEntryFiles": [
+      {
+        "path": "The path to a bundled CSS file."
+      }
+    ],
+    "cssUrls": [
+      {
+        "path": "The URL of the CSS stylesheet."
+      }
+    ]
+  }`;
+
   public static flags = {
     pageId: Flags.string({
       char: 'p',
@@ -90,6 +122,7 @@ export default class Deploy extends CLICommand {
       'The unique identifier of the organization where to deploy the hosted page.'
     ),
   };
+
   public static examples: Example[] = [
     {
       command: 'coveo ui:deploy',
