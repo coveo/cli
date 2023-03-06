@@ -7,7 +7,7 @@ import {defaultPageManifest} from './default/default-page.js';
 import {writeFileSync} from 'node:fs';
 import {join} from 'path';
 import {createPlatformClient} from './client.js';
-import PlatformClient, {RestUserIdType} from '@coveo/platform-client';
+import PlatformClient from '@coveo/platform-client';
 import ListPrompt from 'inquirer/lib/prompts/list.js';
 import {PromptQuestion} from 'node-plop';
 
