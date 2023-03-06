@@ -1067,7 +1067,7 @@ FLAGS
 
 DESCRIPTION
   Deploy your search application to the Coveo infrastructure.
-  The target `config` if present, must contain the following parameters:
+  The target `config` must contain the following parameters:
   {
     "name": "The name of the hosted search page.",
     "dir": "The directory of the hosted search page.",
