@@ -20,11 +20,11 @@ HashedFolder {
         HashedFolder {
           "children": [
             HashedFile {
-              "hash": "wRrWASx36kB/WHP3xotlHQbcLdo=",
+              "hash": "L08E7dMK5e0wD5P8meKHfkDDa3o=",
               "name": "index.css",
             },
             HashedFile {
-              "hash": "PzWUKvDClNOd5HSK8c6YTFV8/9Q=",
+              "hash": "2XR/MKCv0fo3uRpZRiTyOBoHk7s=",
               "name": "index.html",
             },
             HashedFile {
@@ -32,11 +32,11 @@ HashedFolder {
               "name": "index.ts",
             },
           ],
-          "hash": "KaLKYWk10KFfD5NR/eQK0Zlk4qc=",
+          "hash": "V7y/8CwkVmHHCoFc1OqeZ9uA7Uo=",
           "name": "pages",
         },
       ],
-      "hash": "k4Tz5Ow35z6eAe5vRRIeg5Q7EQM=",
+      "hash": "H2FkraODOnXLneM0nLxX/jx8A+g=",
       "name": "src",
     },
     HashedFile {
@@ -48,7 +48,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "OHBciH9SThvPSnDxVPfuXsAO43g=",
+  "hash": "0X8iVzkXeAggi7wkOPzz5dYFx1w=",
   "name": "testDirectory",
 }
 `;
