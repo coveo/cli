@@ -49,10 +49,15 @@ async function main() {
       `curl -L ${asset.browser_download_url} --output ${directory}/${asset.name}`
     );
   }
+  console.log('tag:', tag);
   // https://stackoverflow.com/a/1862542
-  const tagCommit = spawnSync('git', ['rev-list', '-n', '1', tag], {
+  const gitps = spawnSync('git', ['rev-list', '-n', '1', tag], {
     encoding: 'utf-8',
-  }).stdout.trim();
+  });
+  console.log('stdout:', gitps.stdout);
+  console.log('stderr:', gitps.stderr);
+  const tagCommit = gitps.stdout.trim();
+
   writeFileSync('latest-commit', tagCommit);
 
   readdirSync(topLevelDirectory, {withFileTypes: true}).forEach((file) => {
