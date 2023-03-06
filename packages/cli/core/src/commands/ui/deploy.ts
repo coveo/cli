@@ -70,44 +70,10 @@ const DeployConfigSchema: Schema = {
 };
 
 export default class Deploy extends CLICommand {
-  public static description =
+  public static summary =
     'Deploy your search application to the Coveo infrastructure.';
-  public static flags = {
-    pageId: Flags.string({
-      char: 'p',
-      description: 'The existing ID of the target Hosted search page.',
-      helpValue: '7944ff4a-9943-4999-a3f6-3e81a7f6fb0a',
-      required: false,
-    }),
-    config: Flags.string({
-      char: 'c',
-      description: 'The path to the deployment JSON configuration.',
-      helpValue: 'coveo.deploy.json',
-      default: 'coveo.deploy.json',
-      required: false,
-    }),
-    ...organization(
-      'The unique identifier of the organization where to deploy the hosted page.'
-    ),
-  };
-  public static examples: Example[] = [
-    {
-      command: 'coveo ui:deploy',
-      description:
-        'Create a new Hosted Page according to the configuration in the file "coveo.deploy.json"',
-    },
-    {
-      command: 'coveo ui:deploy -p 7944ff4a-9943-4999-a3f6-3e81a7f6fb0a',
-      description:
-        'Update the Hosted Page whose ID is "7944ff4a-9943-4999-a3f6-3e81a7f6fb0a" according to the configuration in the file "coveo.deploy.json"',
-    },
-    {
-      command: 'coveo ui:deploy -c ./configs/myconfig.json',
-      description:
-        'Create a new Hosted Page according to the configuration in the file located at "./configs/myconfig.json"',
-    },
-  ];
-  public static summary = `The target "config" must contain the following parameters:
+
+  public static description = `The target "config" must contain the following parameters:
   {
     "name": "The name of the hosted search page.",
     "dir": "The directory of the hosted search page.",
@@ -137,6 +103,43 @@ export default class Deploy extends CLICommand {
       }
     ]
   }`;
+
+  public static flags = {
+    pageId: Flags.string({
+      char: 'p',
+      description: 'The existing ID of the target Hosted search page.',
+      helpValue: '7944ff4a-9943-4999-a3f6-3e81a7f6fb0a',
+      required: false,
+    }),
+    config: Flags.string({
+      char: 'c',
+      description: 'The path to the deployment JSON configuration.',
+      helpValue: 'coveo.deploy.json',
+      default: 'coveo.deploy.json',
+      required: false,
+    }),
+    ...organization(
+      'The unique identifier of the organization where to deploy the hosted page.'
+    ),
+  };
+
+  public static examples: Example[] = [
+    {
+      command: 'coveo ui:deploy',
+      description:
+        'Create a new Hosted Page according to the configuration in the file "coveo.deploy.json"',
+    },
+    {
+      command: 'coveo ui:deploy -p 7944ff4a-9943-4999-a3f6-3e81a7f6fb0a',
+      description:
+        'Update the Hosted Page whose ID is "7944ff4a-9943-4999-a3f6-3e81a7f6fb0a" according to the configuration in the file "coveo.deploy.json"',
+    },
+    {
+      command: 'coveo ui:deploy -c ./configs/myconfig.json',
+      description:
+        'Create a new Hosted Page according to the configuration in the file located at "./configs/myconfig.json"',
+    },
+  ];
 
   @Trackable()
   @Preconditions(
