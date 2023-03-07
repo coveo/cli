@@ -91,7 +91,6 @@ The main config file of the Coveo CLI is stored in a JSON file in `configDir`.
 - [`coveo ui:create:atomic NAME`](#coveo-uicreateatomic-name)
 - [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
 - [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
-- [`coveo ui:deploy`](#coveo-uideploy)
 - [`coveo update [CHANNEL]`](#coveo-update-channel)
 - [`coveo version`](#coveo-version)
 
@@ -1048,42 +1047,6 @@ EXAMPLES
 ```
 
 _See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/@coveo/cli@2.3.0/packages/cli/core/src/commands/ui/create/vue.ts)_
-
-## `coveo ui:deploy`
-
-Deploy your search application to the Coveo infrastructure.
-
-```
-USAGE
-  $ coveo ui:deploy [-p <value>] [-c <value>] [-o <value>]
-
-FLAGS
-  -c, --config=coveo.deploy.json                     [default: coveo.deploy.json] The path to the deployment JSON
-                                                     configuration.
-  -o, --organization=targetorganizationg7dg3gd       The unique identifier of the organization where to deploy the
-                                                     hosted page. If not specified, the organization you are connected
-                                                     to will be used.
-  -p, --pageId=7944ff4a-9943-4999-a3f6-3e81a7f6fb0a  The existing ID of the target Hosted search page.
-
-DESCRIPTION
-  Deploy your search application to the Coveo infrastructure.
-
-EXAMPLES
-  Create a new Hosted Page according to the configuration in the file "coveo.deploy.json"
-
-    $ coveo ui:deploy
-
-  Update the Hosted Page whose ID is "7944ff4a-9943-4999-a3f6-3e81a7f6fb0a" according to the configuration in the file
-  "coveo.deploy.json"
-
-    $ coveo ui:deploy -p 7944ff4a-9943-4999-a3f6-3e81a7f6fb0a
-
-  Create a new Hosted Page according to the configuration in the file located at "./configs/myconfig.json"
-
-    $ coveo ui:deploy -c ./configs/myconfig.json
-```
-
-_See code: [src/commands/ui/deploy.ts](https://github.com/coveo/cli/blob/@coveo/cli@2.3.0/packages/cli/core/src/commands/ui/deploy.ts)_
 
 ## `coveo update [CHANNEL]`
 
