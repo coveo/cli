@@ -6,12 +6,12 @@ This is a starter project for building web components for Coveo Atomic using Ste
 
 <!-- TODO CDX-1358: Insert instruction to create other components -->
 If you used `npm init @coveo/atomic-component` or `npm init @coveo/atomic-result-component`, your component should already be in `src/components`.
-You can use either of this commands at the root of your project to add another component.
+You can use either of these commands at the root of your project to add another component.
 
 ## Testing your components locally
 
 You can test your component locally by adding them to `src/pages/index.html`.
-The code of the component should already be included, you just need to add the component tag to the markup of the page.
+The code of the component should already be included. You just need to add the component tag to the markup of the page.
 
 <!--
     TODO CDX-1356: tldr best practices and/or doc link.
@@ -26,7 +26,7 @@ The first step for both these strategies is to [publish to NPM](https://docs.npm
 You should run `npm publish` in the directory of the component or using the [workspace flag](https://docs.npmjs.com/cli/v9/using-npm/workspaces#running-commands-in-the-context-of-workspaces) to target it.
 If you want your component to stay private, we recommend you publish it either to the official npm registry as a [private package](https://docs.npmjs.com/about-private-packages) or to your own npm registry.
 
-If you do not want your component to be listed on the Atomic Custom Component marketplace, do change the keywords field in the package.json of your component(s) before publishing.
+If you do not want your component to be listed on the Atomic Custom Component marketplace, change the keywords field in the package.json of your component before publishing.
 
 ### Unpkg script tag
 
