@@ -23,7 +23,7 @@ There are two strategies we recommend for using custom components.
 
 The first step for both these strategies is to [publish to NPM](https://docs.npmjs.com/getting-started/publishing-npm-packages).
 
-You should run `npm publish` in the directory of the component or using the [workspace flag](https://docs.npmjs.com/cli/v9/using-npm/workspaces#running-commands-in-the-context-of-workspaces) to target it.
+You should run `npm publish` in the directory of the component or use the [workspace flag](https://docs.npmjs.com/cli/v9/using-npm/workspaces#running-commands-in-the-context-of-workspaces) to target it.
 If you want your component to stay private, we recommend you publish it either to the official npm registry as a [private package](https://docs.npmjs.com/about-private-packages) or to your own npm registry.
 
 If you do not want your component to be listed on the Atomic Custom Component marketplace, change the keywords field in the package.json of your component before publishing.
