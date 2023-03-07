@@ -12,7 +12,6 @@
     "@coveo/cli-commons": "2.3.0",
     "@coveo/cli-plugin-source": "2.0.5",
     "@coveo/platform-client": "40.12.0",
-    "@coveo/push-api-client": "^3.0.0",
     "@oclif/core": "1.24.0",
     "@oclif/plugin-help": "5.1.23",
     "@oclif/plugin-plugins": "2.1.12",
