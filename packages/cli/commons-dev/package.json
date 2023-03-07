@@ -22,7 +22,7 @@
     }
   },
   "dependencies": {
-    "fancy-test": "2.0.12",
+    "fancy-test": "2.0.13",
     "tslib": "2.5.0"
   },
   "devDependencies": {
