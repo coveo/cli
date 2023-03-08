@@ -15,15 +15,15 @@ import {
   impersonatePrivilege,
   viewSearchPagesPrivilege,
 } from '@coveo/cli-commons/preconditions/platformPrivilege';
-import {appendCmdIfWindows} from '../../../lib/utils/os';
-import {spawnProcess} from '../../../lib/utils/process';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {Config} from '@coveo/cli-commons/config/config';
 import {getPackageVersion} from '../../../lib/utils/misc';
-import {createAtomicApp} from '../../../lib/atomic/createAtomicProject';
+import {
+  atomicAppInitializerPackage,
+  createAtomicApp,
+} from '../../../lib/atomic/createAtomicProject';
 
 export default class Atomic extends CLICommand {
-  public static cliPackage = '@coveo/create-atomic';
   public static requiredNodeVersion = '16.x || 18.x';
   public static description =
     "Create a Coveo Headless-powered search page with Coveo's own Atomic framework. See <https://docs.coveo.com/atomic> and <https://docs.coveo.com/headless>.";
@@ -38,8 +38,8 @@ export default class Atomic extends CLICommand {
   public static flags = {
     version: Flags.string({
       char: 'v',
-      description: `The version of ${Atomic.cliPackage} to use.`,
-      default: getPackageVersion(Atomic.cliPackage) || 'latest',
+      description: `The version of ${atomicAppInitializerPackage} to use.`,
+      default: getPackageVersion(atomicAppInitializerPackage) || 'latest',
     }),
     pageId: Flags.string({
       char: 'p',
