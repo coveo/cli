@@ -1,0 +1,8 @@
+{
+  "extends": "./node_modules/gts/tsconfig-google.json",
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "outDir": "dist",
+    "moduleResolution": "Node"
+  }
+}
