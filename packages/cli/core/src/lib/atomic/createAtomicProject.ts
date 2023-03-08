@@ -1,23 +1,26 @@
+import {mkdirSync} from 'node:fs';
+import {resolve} from 'node:path';
 import {Configuration} from '@coveo/cli-commons/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {appendCmdIfWindows} from '../utils/os';
 import {spawnProcess} from '../utils/process';
 
-interface CreateProjectOptions {
+interface CreateAppOptions {
   initializerVersion: string;
   pageId?: string;
   projectName: string;
   cfg: Configuration;
 }
-export const atomicInitializerPackage = '@coveo/create-atomic';
+export const atomicAppInitializerPackage = '@coveo/create-atomic';
+export const atomicLibInitializerPackage = '@coveo/atomic-project';
 
-export async function createAtomicApp(options: CreateProjectOptions) {
+export async function createAtomicApp(options: CreateAppOptions) {
   const authenticatedClient = new AuthenticatedClient();
 
   const username = await authenticatedClient.getUsername();
   const cliArgs: string[] = [
-    `${atomicInitializerPackage}@${options.initializerVersion}`,
+    `${atomicAppInitializerPackage}@${options.initializerVersion}`,
     '--project',
     options.projectName,
     '--org-id',
@@ -38,4 +41,17 @@ export async function createAtomicApp(options: CreateProjectOptions) {
   }
 
   return spawnProcess(appendCmdIfWindows`npx`, cliArgs);
+}
+
+interface CreateLibOptions {
+  projectName: string;
+}
+
+export function createAtomicLib(options: CreateLibOptions) {
+  const projectDirectory = resolve(options.projectName);
+  mkdirSync(projectDirectory);
+  const cliArgs = ['init', atomicLibInitializerPackage];
+  return spawnProcess(appendCmdIfWindows`npm`, cliArgs, {
+    cwd: projectDirectory,
+  });
 }

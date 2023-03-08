@@ -1,23 +1,30 @@
+import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Config} from '@coveo/cli-commons/config/config';
-import {Command, Flags} from '@oclif/core';
-import {createAtomicApp} from '../../lib/atomic/createAtomicProject';
+import {Flags} from '@oclif/core';
+import {
+  createAtomicApp,
+  createAtomicLib,
+} from '../../lib/atomic/createAtomicProject';
 
-export default class AtomicInit extends Command {
-  static description = 'Scaffold a project to work with Coveo Atomic Framework';
+export default class AtomicInit extends CLICommand {
+  public static description =
+    'Scaffold a project to work with Coveo Atomic Framework';
 
-  static examples = [
+  public static examples = [
     '<%= config.bin %> <%= command.id %> --type=app myAwesomeSearchPage',
     '<%= config.bin %> <%= command.id %> --type=lib myCustomAtomicComponentsLibrary',
   ];
 
-  static flags = {
+  public static flags = {
     type: Flags.string({
       description: 'the kind of project to initialize',
       options: ['app', 'application', 'lib', 'library'],
     }),
   };
 
-  static args = [{name: 'name', description: 'the name of your project'}];
+  public static args = [
+    {name: 'name', description: 'the name of your project', required: true},
+  ];
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(AtomicInit);
@@ -29,11 +36,13 @@ export default class AtomicInit extends Command {
         break;
       case 'lib':
       case 'library':
-      //TODO
+        await createAtomicLib(args.name);
+        break;
       default:
         break;
     }
   }
+
   private async createAtomicApp(projectName: string) {
     const cfg = this.configuration.get();
     await createAtomicApp({
