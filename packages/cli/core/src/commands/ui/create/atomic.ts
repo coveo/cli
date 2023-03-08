@@ -19,9 +19,8 @@ import {appendCmdIfWindows} from '../../../lib/utils/os';
 import {spawnProcess} from '../../../lib/utils/process';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {Config} from '@coveo/cli-commons/config/config';
-import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {getPackageVersion} from '../../../lib/utils/misc';
+import {createAtomicApp} from '../../../lib/atomic/createAtomicProject';
 
 export default class Atomic extends CLICommand {
   public static cliPackage = '@coveo/create-atomic';
@@ -65,34 +64,15 @@ export default class Atomic extends CLICommand {
     )
   )
   public async run() {
-    await this.createProject();
-  }
-
-  private async createProject() {
     const {flags, args} = await this.parse(Atomic);
     const cfg = this.configuration.get();
-    const authenticatedClient = new AuthenticatedClient();
 
-    const username = await authenticatedClient.getUsername();
-    const cliArgs = [
-      `${Atomic.cliPackage}@${flags.version}`,
-      '--project',
-      args.name,
-      '--org-id',
-      cfg.organization,
-      '--api-key',
-      cfg.accessToken,
-      '--platform-url',
-      platformUrl({environment: cfg.environment, region: cfg.region}),
-      '--user',
-      username,
-    ];
-
-    if (flags.pageId) {
-      cliArgs.push('--page-id', flags.pageId);
-    }
-
-    return spawnProcess(appendCmdIfWindows`npx`, cliArgs);
+    await createAtomicApp({
+      initializerVersion: flags.version,
+      pageId: flags.pageId,
+      projectName: args.name,
+      cfg,
+    });
   }
 
   private get configuration() {
