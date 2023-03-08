@@ -104,6 +104,8 @@ export default class Deploy extends CLICommand {
     ]
   }`;
 
+  public static aliases: string[] = ['atomic:deploy'];
+
   public static flags = {
     pageId: Flags.string({
       char: 'p',
