@@ -122,6 +122,9 @@
       "auth": {
         "description": "manage authentification against the Coveo platform"
       },
+      "atomic": {
+        "description": "create customizable user interface with Coveo Atomic"
+      },
       "config": {
         "description": "manage Coveo CLI configuration"
       },
