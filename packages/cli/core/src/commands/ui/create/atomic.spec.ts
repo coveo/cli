@@ -7,7 +7,6 @@ jest.mock('../../../lib/oauth/oauth');
 jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
 jest.mock('@coveo/cli-commons/preconditions/authenticated');
-jest.mock('../../../lib/decorators/preconditions/netlify');
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('../../../lib/utils/misc');
 jest.mock('@coveo/platform-client');
@@ -28,7 +27,6 @@ import {
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {configurationMock} from '../../../__stub__/configuration';
 import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
-import {IsNetlifyCliVersionInRange} from '../../../lib/decorators/preconditions/netlify';
 
 describe('ui:create:atomic', () => {
   const mockedConfig = jest.mocked(Config);
@@ -41,16 +39,12 @@ describe('ui:create:atomic', () => {
   const createAtomicPackage = '@coveo/create-atomic';
   const mockedApiKeyPrivilege = jest.mocked(HasNecessaryCoveoPrivileges);
   const mockedIsAuthenticated = jest.mocked(IsAuthenticated);
-  const mockedIsNetlifyCliVersionInRange = jest.mocked(
-    IsNetlifyCliVersionInRange
-  );
 
   const preconditionStatus = {
     node: true,
     npx: true,
     apiKey: true,
     authentication: true,
-    netlify: true,
   };
 
   const doMockPreconditions = function () {
@@ -59,9 +53,6 @@ describe('ui:create:atomic', () => {
     mockedIsNpxInstalled.mockReturnValue(mockedPreconditions.npx);
     mockedApiKeyPrivilege.mockReturnValue(mockedPreconditions.apiKey);
     mockedIsAuthenticated.mockReturnValue(mockedPreconditions.authentication);
-    mockedIsNetlifyCliVersionInRange.mockReturnValue(
-      mockedPreconditions.netlify
-    );
   };
 
   const doMockSpawnProcess = () => {
@@ -131,7 +122,6 @@ describe('ui:create:atomic', () => {
     preconditionStatus.node = true;
     preconditionStatus.npx = true;
     preconditionStatus.apiKey = true;
-    preconditionStatus.netlify = true;
   });
 
   afterEach(() => {
@@ -159,18 +149,6 @@ describe('ui:create:atomic', () => {
     })
     .command(['ui:create:atomic', 'myapp'])
     .catch(/node Precondition Error/)
-    .it(
-      'should not execute the command if the preconditions are not respected'
-    );
-
-  test
-    .stdout()
-    .stderr()
-    .do(() => {
-      preconditionStatus.netlify = false;
-    })
-    .command(['ui:create:atomic', 'myapp'])
-    .catch(/netlify Precondition Error/)
     .it(
       'should not execute the command if the preconditions are not respected'
     );

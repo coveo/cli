@@ -73,13 +73,9 @@
     "typescript": "4.9.5"
   },
   "peerDependencies": {
-    "create-react-app": "*",
-    "netlify-cli": "^12.0.0"
+    "create-react-app": "*"
   },
   "peerDependenciesMeta": {
-    "netlify-cli": {
-      "optional": true
-    },
     "create-react-app": {
       "optional": true
     }

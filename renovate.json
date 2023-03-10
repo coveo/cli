@@ -32,12 +32,6 @@
       "allowedVersions": "2.x"
     },
     {
-      "matchPackagePatterns": ["netlify-cli"],
-      "groupSlug": "stencil",
-      "description": "🧊",
-      "allowedVersions": "12.x"
-    },
-    {
       "matchPackageNames": ["strip-ansi"],
       "allowedVersions": "6.x"
     },
