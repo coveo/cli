@@ -2,7 +2,7 @@ import {CliUx} from '@oclif/core';
 import {red, green, magenta} from 'chalk';
 
 
-functions isWindows() {
+function isWindows() {
   return process.platform === 'win32'
 }
 
