@@ -22,12 +22,10 @@ import {Config} from '@coveo/cli-commons/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {getPackageVersion} from '../../../lib/utils/misc';
-import {IsNetlifyCliVersionInRange} from '../../../lib/decorators/preconditions/netlify';
 
 export default class Atomic extends CLICommand {
   public static cliPackage = '@coveo/create-atomic';
   public static requiredNodeVersion = '16.x || 18.x';
-  public static requiredNetlifyCliVersion = '12.x';
   public static description =
     "Create a Coveo Headless-powered search page with Coveo's own Atomic framework. See <https://docs.coveo.com/atomic> and <https://docs.coveo.com/headless>.";
   public static examples = ['$ coveo ui:create:atomic myapp'];
@@ -60,7 +58,6 @@ export default class Atomic extends CLICommand {
     IsAuthenticated([AuthenticationType.OAuth]),
     IsNpxInstalled(),
     IsNodeVersionInRange(Atomic.requiredNodeVersion),
-    IsNetlifyCliVersionInRange(Atomic.requiredNetlifyCliVersion),
     HasNecessaryCoveoPrivileges(
       createApiKeyPrivilege,
       impersonatePrivilege,
