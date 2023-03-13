@@ -5,8 +5,8 @@ import {
 } from '../platform/authenticatedClient';
 import {Config} from '../config/config';
 import globalConfig from '../config/globalConfig';
-import {PreconditionFunction} from './preconditions';
 import {CLICommand} from '../command/cliCommand';
+import {DecoratorFunction} from '../decorators/decoratorFunction';
 
 const PRECONDITION_ERROR_CATEGORY = 'Authentication';
 export enum AuthenticationType {
@@ -26,7 +26,7 @@ export function IsAuthenticated(
     AuthenticationType.ApiKey,
     AuthenticationType.OAuth,
   ]
-): PreconditionFunction {
+): DecoratorFunction {
   return async function (_target: CLICommand) {
     const status = await getAuthenticationStatus();
     if (status === AuthenticationStatus.LOGGED_OUT) {

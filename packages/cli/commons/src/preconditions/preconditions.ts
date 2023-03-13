@@ -1,22 +1,12 @@
-import {CLICommand} from '../command/cliCommand';
+import {Before} from '../decorators/before';
+import { DecoratorFunction } from '../decorators/decoratorFunction';
 
-export type PreconditionFunction = (
-  target: CLICommand,
-  instance?: CLICommand
-) => Promise<never | void>;
+/**
+ * @deprecated use @type {DecoratorFunction}
+ */
+export type PreconditionFunction = DecoratorFunction;
 
-export function Preconditions(...preconditions: PreconditionFunction[]) {
-  return function (
-    target: CLICommand,
-    _propertyKey: string,
-    descriptor: PropertyDescriptor
-  ) {
-    const originalRunCommand = descriptor.value!;
-    descriptor.value = async function (this: CLICommand) {
-      for (const precondition of preconditions) {
-        await precondition.call(this, target);
-      }
-      return originalRunCommand.apply(this);
-    };
-  };
-}
+/**
+ * @deprecated use @function {Before}
+ */
+export const Preconditions = Before;
