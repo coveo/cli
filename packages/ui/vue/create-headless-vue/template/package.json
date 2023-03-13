@@ -13,7 +13,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "@coveo/headless": "2.8.8",
+    "@coveo/headless": "2.8.10",
     "browser-or-node": "^2.1.1",
     "vue": "^3.2.41",
     "vue-router": "^4.1.5",
@@ -23,7 +23,7 @@
   "devDependencies": {
     "@coveo/platform-client": "^40.9.3",
     "@rushstack/eslint-patch": "^1.1.4",
-    "@types/node": "18.14.6",
+    "@types/node": "18.15.0",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vitejs/plugin-vue-jsx": "^3.0.0",
     "@vue/eslint-config-prettier": "^7.0.0",
