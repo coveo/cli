@@ -6,6 +6,7 @@ import {Flags} from '@oclif/core';
 import inquirer from 'inquirer';
 import {
   atomicAppPreconditions,
+  atomicLibPreconditions,
   createAtomicApp,
   createAtomicLib,
 } from '../../lib/atomic/createAtomicProject';
@@ -41,7 +42,7 @@ export default class AtomicInit extends CLICommand {
         break;
       case 'lib':
       case 'library':
-        await createAtomicLib(args.name);
+        await this.createAtomicLib(args.name);
         break;
       default:
         throw new UnknownError();
@@ -58,6 +59,11 @@ export default class AtomicInit extends CLICommand {
       },
     ]);
     return responses.type;
+  }
+
+  @Preconditions(...atomicLibPreconditions)
+  private createAtomicLib(projectName: string) {
+    return createAtomicLib({projectName});
   }
 
   @Preconditions(...atomicAppPreconditions)

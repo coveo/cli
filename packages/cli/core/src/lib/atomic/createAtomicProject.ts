@@ -31,6 +31,10 @@ export const atomicLibInitializerPackage = '@coveo/atomic-project';
 
 const supportedNodeVersions = '16.x || 18.x';
 
+export const atomicLibPreconditions = [
+  IsNodeVersionInRange(supportedNodeVersions),
+];
+
 export const atomicAppPreconditions = [
   IsAuthenticated([AuthenticationType.OAuth]),
   IsNpxInstalled(),
