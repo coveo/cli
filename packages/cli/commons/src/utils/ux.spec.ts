@@ -1,7 +1,8 @@
 import {CliUx} from '@oclif/core';
 import {CLICommand} from '../command/cliCommand';
-import {formatOrgId, startSpinner, stopSpinner} from './ux';
 import {stderr} from 'stdout-stderr';
+import {startSpinner, stopSpinner, shouldUseColor, formatOrgId} from './ux';
+
 class FakeCommandNoError extends CLICommand {
   public async run() {
     startSpinner('spinniboiii');
@@ -23,6 +24,9 @@ class FakeCommandWithError extends CLICommand {
 }
 
 describe('ux', () => {
+  const originalPlatform = process.platform;
+  const originalEnv = process.env;
+
   beforeAll(() => {
     // @oclif/core has an issue preventing the first stream write to be properly mocked.
     // This is a bodge.
@@ -31,13 +35,14 @@ describe('ux', () => {
     CliUx.ux.action.stop();
     stderr.stop();
   });
-
   beforeEach(() => {
     stderr.start();
   });
 
   afterEach(() => {
     stderr.stop();
+    Object.defineProperty(process, 'platform', {value: originalPlatform});
+    process.env = originalEnv;
   });
 
   describe('startSpinner() & stopSpinner()', () => {
@@ -129,9 +134,62 @@ describe('ux', () => {
     });
   });
 
+  describe('shouldUseColors()', () => {
+    describe('when using Windows without WT', () => {
+      beforeEach(() => {
+        Object.defineProperty(process, 'platform', {value: 'win32'});
+        process.env = {};
+      });
+
+      it('should return false', () => {
+        expect(shouldUseColor()).toBe(false);
+      });
+    });
+
+    describe('when using Windows with WT', () => {
+      beforeEach(() => {
+        Object.defineProperty(process, 'platform', {value: 'win32'});
+        process.env = {WT_PROFILE_ID: 'potato'};
+      });
+
+      it('should return true', () => {
+        expect(shouldUseColor()).toBe(true);
+      });
+    });
+
+    describe('when using anything but Windows', () => {
+      beforeEach(() => {
+        Object.defineProperty(process, 'platform', {
+          value: 'unix',
+        });
+      });
+      it('should return true', () => {
+        expect(shouldUseColor()).toBe(true);
+      });
+    });
+  });
+
   describe('formatOrgId()', () => {
-    it('colors the color magenta', () => {
-      expect(formatOrgId('myOrgId')).toMatchSnapshot();
+    describe('when shouldUseColor returns true', () => {
+      beforeEach(() => {
+        Object.defineProperty(process, 'platform', {
+          value: 'unix',
+        });
+      });
+      it('colors the color magenta', () => {
+        expect(formatOrgId('myOrgId')).toMatchSnapshot();
+      });
+    });
+
+    describe('when shouldUseColor returns false', () => {
+      beforeEach(() => {
+        Object.defineProperty(process, 'platform', {value: 'win32'});
+        process.env = {};
+      });
+
+      it('returns the text without any modif', () => {
+        expect(formatOrgId('myOrgId')).toBe('myOrgId');
+      });
     });
   });
 });
