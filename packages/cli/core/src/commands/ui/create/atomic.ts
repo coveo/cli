@@ -1,30 +1,16 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Flags} from '@oclif/core';
-import {
-  IsNpxInstalled,
-  IsNodeVersionInRange,
-} from '../../../lib/decorators/preconditions/index';
-import {
-  Preconditions,
-  IsAuthenticated,
-  HasNecessaryCoveoPrivileges,
-  AuthenticationType,
-} from '@coveo/cli-commons/preconditions/index';
-import {
-  createApiKeyPrivilege,
-  impersonatePrivilege,
-  viewSearchPagesPrivilege,
-} from '@coveo/cli-commons/preconditions/platformPrivilege';
+import {Preconditions} from '@coveo/cli-commons/preconditions/index';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {Config} from '@coveo/cli-commons/config/config';
 import {getPackageVersion} from '../../../lib/utils/misc';
 import {
   atomicAppInitializerPackage,
+  atomicAppPreconditions,
   createAtomicApp,
 } from '../../../lib/atomic/createAtomicProject';
 
 export default class Atomic extends CLICommand {
-  public static requiredNodeVersion = '16.x || 18.x';
   public static description =
     "Create a Coveo Headless-powered search page with Coveo's own Atomic framework. See <https://docs.coveo.com/atomic> and <https://docs.coveo.com/headless>.";
   public static examples = ['$ coveo ui:create:atomic myapp'];
@@ -53,16 +39,7 @@ export default class Atomic extends CLICommand {
     eventName: 'ui create',
     overrideEventProperties: {framework: 'atomic'},
   })
-  @Preconditions(
-    IsAuthenticated([AuthenticationType.OAuth]),
-    IsNpxInstalled(),
-    IsNodeVersionInRange(Atomic.requiredNodeVersion),
-    HasNecessaryCoveoPrivileges(
-      createApiKeyPrivilege,
-      impersonatePrivilege,
-      viewSearchPagesPrivilege
-    )
-  )
+  @Preconditions(...atomicAppPreconditions)
   public async run() {
     const {flags, args} = await this.parse(Atomic);
     const cfg = this.configuration.get();

@@ -5,6 +5,20 @@ import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClie
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {appendCmdIfWindows} from '../utils/os';
 import {spawnProcess} from '../utils/process';
+import {
+  IsAuthenticated,
+  AuthenticationType,
+  HasNecessaryCoveoPrivileges,
+} from '@coveo/cli-commons/preconditions/index';
+import {
+  createApiKeyPrivilege,
+  impersonatePrivilege,
+  viewSearchPagesPrivilege,
+} from '@coveo/cli-commons/preconditions/platformPrivilege';
+import {
+  IsNpxInstalled,
+  IsNodeVersionInRange,
+} from '../decorators/preconditions';
 
 interface CreateAppOptions {
   initializerVersion: string;
@@ -14,6 +28,19 @@ interface CreateAppOptions {
 }
 export const atomicAppInitializerPackage = '@coveo/create-atomic';
 export const atomicLibInitializerPackage = '@coveo/atomic-project';
+
+const supportedNodeVersions = '16.x || 18.x';
+
+export const atomicAppPreconditions = [
+  IsAuthenticated([AuthenticationType.OAuth]),
+  IsNpxInstalled(),
+  IsNodeVersionInRange(supportedNodeVersions),
+  HasNecessaryCoveoPrivileges(
+    createApiKeyPrivilege,
+    impersonatePrivilege,
+    viewSearchPagesPrivilege
+  ),
+];
 
 export async function createAtomicApp(options: CreateAppOptions) {
   const authenticatedClient = new AuthenticatedClient();
