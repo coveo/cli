@@ -1,9 +1,11 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Config} from '@coveo/cli-commons/config/config';
 import {UnknownError} from '@coveo/cli-commons/errors/unknownError';
+import {Preconditions} from '@coveo/cli-commons/preconditions/index';
 import {Flags} from '@oclif/core';
 import inquirer from 'inquirer';
 import {
+  atomicAppPreconditions,
   createAtomicApp,
   createAtomicLib,
 } from '../../lib/atomic/createAtomicProject';
@@ -58,6 +60,7 @@ export default class AtomicInit extends CLICommand {
     return responses.type;
   }
 
+  @Preconditions(...atomicAppPreconditions)
   private async createAtomicApp(projectName: string) {
     const cfg = this.configuration.get();
     await createAtomicApp({
