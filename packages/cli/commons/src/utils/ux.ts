@@ -1,6 +1,19 @@
 import {CliUx} from '@oclif/core';
 import {red, green, magenta} from 'chalk';
 
+
+function isWindows() {
+  return process.platform === 'win32'
+}
+
+function isWindowsTerminal() {
+  return Boolean(process.env['WT_PROFILE_ID']);
+}
+
+export function shouldUseColor() {
+  return !isWindows() || isWindowsTerminal();
+}
+
 export function startSpinner(task: string, status?: string) {
   if (CliUx.ux.action.running) {
     CliUx.ux.action.stop(green('✔'));
@@ -19,4 +32,4 @@ export function stopSpinner(options?: {success?: boolean}) {
 }
 
 export const formatOrgId = (orgId: TemplateStringsArray | string) =>
-  magenta(orgId);
+  shouldUseColor() ? magenta(orgId) : orgId;
