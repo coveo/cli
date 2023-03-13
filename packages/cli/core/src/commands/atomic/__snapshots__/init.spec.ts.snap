@@ -44,18 +44,24 @@ exports[`atomic:init calls \`createAtomicApp\` when the user select application 
 
 exports[`atomic:init calls \`createAtomicLib\` properly 1`] = `
 [
-  "foo",
+  {
+    "projectName": "foo",
+  },
 ]
 `;
 
 exports[`atomic:init calls \`createAtomicLib\` properly 2`] = `
 [
-  "foo",
+  {
+    "projectName": "foo",
+  },
 ]
 `;
 
 exports[`atomic:init calls \`createAtomicLib\` when the user select library in the prompt 1`] = `
 [
-  "foo",
+  {
+    "projectName": "foo",
+  },
 ]
 `;

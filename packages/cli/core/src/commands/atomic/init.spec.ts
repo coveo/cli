@@ -9,6 +9,18 @@ import {
   createAtomicApp,
   createAtomicLib,
 } from '../../lib/atomic/createAtomicProject';
+jest.mock('@coveo/cli-commons/preconditions');
+import {
+  HasNecessaryCoveoPrivileges,
+  IsAuthenticated,
+} from '@coveo/cli-commons/preconditions';
+jest.mock('../../lib/decorators/preconditions');
+import {
+  IsNpxInstalled,
+  IsNodeVersionInRange,
+} from '../../lib/decorators/preconditions';
+
+import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
 
 describe('atomic:init', () => {
   const mockedCreateAtomicApp = jest.mocked(createAtomicApp);
@@ -16,7 +28,10 @@ describe('atomic:init', () => {
   const mockedInquirer = jest.mocked(inquirer);
   const mockedConfig = jest.mocked(Config);
   const mockedConfigGet = jest.fn();
-
+  const mockedIsNpxInstalled = jest.mocked(IsNpxInstalled);
+  const mockedIsNodeVersionInRange = jest.mocked(IsNodeVersionInRange);
+  const mockedApiKeyPrivilege = jest.mocked(HasNecessaryCoveoPrivileges);
+  const mockedIsAuthenticated = jest.mocked(IsAuthenticated);
   const doMockConfig = () => {
     mockedConfigGet.mockReturnValue({
       region: 'us',
@@ -32,9 +47,25 @@ describe('atomic:init', () => {
     );
   };
 
+  const preconditionStatus = {
+    node: true,
+    npx: true,
+    apiKey: true,
+    authentication: true,
+  };
+
+  const doMockPreconditions = function () {
+    const mockedPreconditions = mockPreconditions(preconditionStatus);
+    mockedIsNodeVersionInRange.mockReturnValue(mockedPreconditions.node);
+    mockedIsNpxInstalled.mockReturnValue(mockedPreconditions.npx);
+    mockedApiKeyPrivilege.mockReturnValue(mockedPreconditions.apiKey);
+    mockedIsAuthenticated.mockReturnValue(mockedPreconditions.authentication);
+  };
+
   beforeEach(() => {
     jest.resetAllMocks();
     doMockConfig();
+    doMockPreconditions();
   });
 
   test
