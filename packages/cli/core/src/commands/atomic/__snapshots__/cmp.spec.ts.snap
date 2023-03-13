@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`atomic:cmp calls \`npm init @coveo/atomic-component\` properly 1`] = `
+[
+  undefined,
+  [
+    "init",
+    "@coveo/atomic-component",
+    "foo",
+  ],
+]
+`;
+
+exports[`atomic:cmp calls \`npm init @coveo/atomic-component\` when the user select page in the prompt 1`] = `
+[
+  undefined,
+  [
+    "init",
+    "@coveo/atomic-component",
+    "foo",
+  ],
+]
+`;
+
+exports[`atomic:cmp calls \`npm init @coveo/atomic-result-component\` properly 1`] = `
+[
+  undefined,
+  [
+    "init",
+    "@coveo/atomic-result-component",
+    "foo",
+  ],
+]
+`;
+
+exports[`atomic:cmp calls \`npm init @coveo/atomic-result-component\` when the user select result in the prompt 1`] = `
+[
+  undefined,
+  [
+    "init",
+    "@coveo/atomic-result-component",
+    "foo",
+  ],
+]
+`;

@@ -57,7 +57,7 @@ export default class AtomicInit extends CLICommand {
       case 'page':
         return '@coveo/atomic-component';
       case 'result':
-        return '@coveo/atomic-component';
+        return '@coveo/atomic-result-component';
       default:
         throw new UnknownError();
     }
