@@ -8,8 +8,8 @@
     "lint": "prettier --check . && eslint ."
   },
   "dependencies": {
-    "@coveo/atomic": "2.19.12",
-    "@coveo/headless": "2.8.8",
+    "@coveo/atomic": "2.19.16",
+    "@coveo/headless": "2.8.10",
     "@stencil/core": "2.17.3"
   },
   "devDependencies": {
