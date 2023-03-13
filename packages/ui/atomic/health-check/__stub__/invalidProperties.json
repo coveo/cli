@@ -1,0 +1,12 @@
+{
+  "name": "invalid-properties",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "",
+  "description": "Short description",
+  "unpkg": "path/to/file",
+  "keywords": ["foo", "bar"],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

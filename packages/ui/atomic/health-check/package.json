@@ -1,27 +1,35 @@
 {
-  "name": "health-check",
-  "version": "1.0.0",
-  "description": "",
+  "name": "@coveo/atomic-component-health-check",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Health checker for Atomic custom components",
   "main": "./dist/index.js",
   "author": "Coveo",
+  "homepage": "https://github.com/coveo/cli#readme",
   "bin": "./dist/index.js",
   "license": "Apache-2.0",
   "scripts": {
     "build": "rimraf dist && tsc -b tsconfig.json",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "ll": "rm /usr/local/bin/health-check && npm run build && npm link"
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coveo/cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/coveo/cli/issues"
   },
   "files": [
     "dist"
   ],
   "keywords": [],
   "dependencies": {
-    "chalk": "^5.2.0",
+    "chalk": "4.1.2",
     "jsonschema": "^1.4.1"
   },
   "devDependencies": {
+    "@coveo/verdaccio-starter": "^1.0.0",
     "@types/node": "^18.14.6",
-    "gts": "^3.1.1",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
   }

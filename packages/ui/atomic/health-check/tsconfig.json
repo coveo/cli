@@ -1,8 +1,15 @@
 {
-  "extends": "./node_modules/gts/tsconfig-google.json",
+  "extends": "../../../../tsconfig.base.json",
   "compilerOptions": {
     "skipLibCheck": true,
     "outDir": "dist",
-    "moduleResolution": "Node"
-  }
+    "module": "Node16",
+    "target": "ESNext",
+    "moduleResolution": "Node16",
+    "sourceMap": false,
+    "declaration": false,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "exclude": ["node_modules", "src/**/*.spec.ts"]
 }

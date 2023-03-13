@@ -1,6 +1,6 @@
 import {ValidationError} from 'jsonschema';
-import chalk from 'chalk';
 import {prettifyError, prettifyJsonValidationError} from './error';
+import {fail, groupEnd, groupStart, log, newLine, success} from './logger';
 
 type Assertion = () => void | never;
 
@@ -10,11 +10,13 @@ export class Inspector {
   public check(assertion: Assertion, message: string) {
     try {
       assertion();
-      this.success(message);
+      success(message);
     } catch (error) {
       this.errorCount++;
-      this.fail(message);
-      this.printError(error); // TODO: not sure if should save logs in mem and print them at the end
+      fail(message);
+      this.printError(error);
+    } finally {
+      newLine();
     }
 
     return this;
@@ -22,10 +24,13 @@ export class Inspector {
 
   public report() {
     if (this.errorCount) {
-      ('cannot publish until all the above condition are met');
-      ('For more information visit http://best-practices'); // TODO: CDX-1356
+      log(
+        'Publish aborted because some conditions have not been met',
+        'Make sure to address the above errors before publishing again'
+        // TODO: CDX-1356: Add a link to custom component best practices
+      );
+      this.terminate();
     }
-    // this.formatError(this.error)
   }
 
   private printError(error: any) {
@@ -33,6 +38,7 @@ export class Inspector {
       error.forEach((err) => this.printError(err));
     }
 
+    groupStart();
     if (error instanceof ValidationError) {
       prettifyJsonValidationError(error);
     }
@@ -40,13 +46,10 @@ export class Inspector {
     if (error instanceof Error) {
       prettifyError(error);
     }
+    groupEnd();
   }
 
-  private success(message: string) {
-    console.log([chalk.green('✔'), message].join(' '));
-  }
-
-  private fail(message: string) {
-    console.log([chalk.red('!'), message].join(' '));
+  private terminate() {
+    process.exit(1);
   }
 }

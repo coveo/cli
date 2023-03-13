@@ -2,31 +2,29 @@ import {ComponentSchema} from './schema';
 import {join} from 'path';
 import {validate} from 'jsonschema';
 import {readFileSync, existsSync} from 'fs';
-
-export function ensureNaming() {
-  throw 'TODO:';
-}
+import {cwd} from 'process';
 
 export function ensureRequiredProperties() {
-  const jsonPkg = readFileSync(join(process.cwd(), 'package.json'));
+  const jsonPkg = readFileSync(join(cwd(), 'package.json'));
   const parsed = JSON.parse(jsonPkg.toString());
   const validation = validate(parsed, ComponentSchema);
   if (!validation.valid) {
-    throw validation.errors;
+    const error = new Error(
+      'The component package.json is lacking required properties:'
+    );
+    throw [error, ...validation.errors];
   }
 }
 
-// TODO: Checker naming
-
-// TODO: Checker for scope (for internal users only)
-
 export function ensureReadme() {
-  const exists = existsSync(join(process.cwd(), 'readme.md'));
+  const exists = existsSync(join(cwd(), 'readme.md'));
   if (!exists) {
-    throw new Error('missing README file');
+    throw new Error(
+      'Missing README file. Make sure to include a `README.md` file in your component directory'
+    );
   }
 }
 
 export function ensureInternalScope() {
-  // TODO: CDX-1266
+  // TODO: CDX-1266: Ensure internal components tags are tagged with the appropriate scope.
 }
