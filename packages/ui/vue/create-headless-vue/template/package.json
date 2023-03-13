@@ -21,7 +21,7 @@
     "zod": "^3.19.1"
   },
   "devDependencies": {
-    "@coveo/platform-client": "^40.9.3",
+    "@coveo/platform-client": "^42.0.0",
     "@rushstack/eslint-patch": "^1.1.4",
     "@types/node": "18.14.6",
     "@vitejs/plugin-vue": "^4.0.0",
