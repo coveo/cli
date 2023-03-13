@@ -1,6 +1,8 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Config} from '@coveo/cli-commons/config/config';
+import {UnknownError} from '@coveo/cli-commons/errors/unknownError';
 import {Flags} from '@oclif/core';
+import inquirer from 'inquirer';
 import {
   createAtomicApp,
   createAtomicLib,
@@ -28,8 +30,9 @@ export default class AtomicInit extends CLICommand {
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(AtomicInit);
+    const type = flags.type || (await this.askType());
 
-    switch (flags.type) {
+    switch (type) {
       case 'app':
       case 'application':
         await this.createAtomicApp(args.name);
@@ -39,8 +42,20 @@ export default class AtomicInit extends CLICommand {
         await createAtomicLib(args.name);
         break;
       default:
-        break;
+        throw new UnknownError();
     }
+  }
+
+  private async askType(): Promise<string> {
+    const responses = await inquirer.prompt([
+      {
+        name: 'type',
+        message: 'What kind of project do you want to scaffold?',
+        type: 'list',
+        choices: [{name: 'application'}, {name: 'library'}],
+      },
+    ]);
+    return responses.type;
   }
 
   private async createAtomicApp(projectName: string) {
