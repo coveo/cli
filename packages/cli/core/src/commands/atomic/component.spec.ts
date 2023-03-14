@@ -6,7 +6,7 @@ jest.mock('../../lib/utils/process');
 import {spawnProcess} from '../../lib/utils/process';
 jest.mock('../../lib/utils/os');
 
-describe('atomic:cmp', () => {
+describe('atomic:component', () => {
   const mockedSpawnProcess = jest.mocked(spawnProcess);
   const mockedInquirer = jest.mocked(inquirer);
 
@@ -17,7 +17,7 @@ describe('atomic:cmp', () => {
   test
     .stdout()
     .stderr()
-    .command(['atomic:cmp', '--type=page', 'foo'])
+    .command(['atomic:component', '--type=page', 'foo'])
     .it('calls `npm init @coveo/atomic-component` properly', () => {
       expect(mockedSpawnProcess).toBeCalledTimes(1);
       expect(mockedSpawnProcess.mock.lastCall).toMatchSnapshot();
@@ -26,7 +26,7 @@ describe('atomic:cmp', () => {
   test
     .stdout()
     .stderr()
-    .command(['atomic:cmp', '--type=result', 'foo'])
+    .command(['atomic:component', '--type=result', 'foo'])
     .it('calls `npm init @coveo/atomic-result-component` properly', () => {
       expect(mockedSpawnProcess).toBeCalledTimes(1);
       expect(mockedSpawnProcess.mock.lastCall).toMatchSnapshot();
@@ -38,7 +38,7 @@ describe('atomic:cmp', () => {
     })
     .stdout()
     .stderr()
-    .command(['atomic:cmp', 'foo'])
+    .command(['atomic:component', 'foo'])
     .it(
       'calls `npm init @coveo/atomic-result-component` when the user select result in the prompt',
       () => {
@@ -53,7 +53,7 @@ describe('atomic:cmp', () => {
     })
     .stdout()
     .stderr()
-    .command(['atomic:cmp', 'foo'])
+    .command(['atomic:component', 'foo'])
     .it(
       'calls `npm init @coveo/atomic-component` when the user select page in the prompt',
       () => {

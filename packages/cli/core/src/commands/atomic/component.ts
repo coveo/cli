@@ -10,6 +10,7 @@ import {spawnProcess} from '../../lib/utils/process';
 export default class AtomicInit extends CLICommand {
   public static description =
     'Scaffold a new custom component in your Coveo Atomic Component Library';
+  public static aliases = ['atomic:cmp'];
 
   public static examples = [
     '<%= config.bin %> <%= command.id %> --type=page myAwesomeComponent',
