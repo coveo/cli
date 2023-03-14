@@ -7,9 +7,9 @@
 
 Create a one-stop-shop topic for CLI user that uses Atomic:
 
-- `atomic:deploy` alias `ui:deploy`
+- `atomic:deploy` as an alias for `ui:deploy`
 - `atomic:init` would either 'run' `ui:create:atomic` or start a blank lib project `npm init @coveo/atomic-component-project`, depending on user input.
-- `atomic:cmp` would either `npm init @coveo/atomic-component` or `npm init @coveo/atomic-result-component`
+- `atomic:component` (also available with alias `atomic:cmp`) would either `npm init @coveo/atomic-component` or `npm init @coveo/atomic-result-component`
 
 # Motivation
 
