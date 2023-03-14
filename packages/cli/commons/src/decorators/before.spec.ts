@@ -1,7 +1,7 @@
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {PreconditionError} from '../errors/preconditionError';
 import {getFakeCommand} from '../utils/getFakeCommand';
-import {Preconditions} from './preconditions';
+import {Before} from './before';
 
 describe('preconditions', () => {
   const preconditions = new Array<jest.Mock<Promise<void>>>(5);
@@ -23,22 +23,25 @@ describe('preconditions', () => {
           )
         );
 
-        const fakeOriginalFunction = jest.fn(async () => {
+        const fakeOriginalFunction = jest.fn(async (arg: unknown) => {
           orderChecker('final');
         });
         const fakeCommand = getFakeCommand();
         const fakeDescriptor = {
           value: fakeOriginalFunction,
         };
+        const fakeParam = jest.fn();
 
-        await Preconditions(...preconditions)(fakeCommand, '', fakeDescriptor);
-        await fakeDescriptor.value();
+        Before(...preconditions)(fakeCommand, '', fakeDescriptor);
+
+        await fakeDescriptor.value(fakeParam);
 
         expect(orderChecker).toHaveBeenCalledTimes(preconditions.length + 1);
         for (let index = 0; index < preconditions.length; index++) {
           expect(orderChecker).toHaveBeenNthCalledWith(index + 1, index);
         }
-        expect(fakeOriginalFunction).toHaveBeenCalled();
+        expect(fakeOriginalFunction).toHaveBeenCalledTimes(1);
+        expect(fakeOriginalFunction).toHaveBeenCalledWith(fakeParam);
         expect(orderChecker).toHaveBeenNthCalledWith(
           preconditions.length + 1,
           'final'
@@ -75,7 +78,7 @@ describe('preconditions', () => {
           value: fakeOriginalFunction,
         };
 
-        await Preconditions(...preconditions)(fakeCommand, '', fakeDescriptor);
+        await Before(...preconditions)(fakeCommand, '', fakeDescriptor);
         await expect(fakeDescriptor.value()).rejects.toThrow(PreconditionError);
 
         expect(orderChecker).toHaveBeenCalledTimes(3);

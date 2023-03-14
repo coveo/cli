@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`beta warns that the command is in beta 1`] = `
+[
+  "foo is in beta, please report issue on https://github.com/coveo/cli/issues",
+]
+`;
