@@ -1,5 +1,5 @@
 import {CLICommand} from '../command/cliCommand';
-import { DecoratorFunction } from './decoratorFunction';
+import {DecoratorFunction} from './decoratorFunction';
 
 export function Before(...preconditions: DecoratorFunction[]) {
   return function (
@@ -8,11 +8,11 @@ export function Before(...preconditions: DecoratorFunction[]) {
     descriptor: PropertyDescriptor
   ) {
     const originalRunCommand = descriptor.value!;
-    descriptor.value = async function (this: CLICommand) {
+    descriptor.value = async function (this: CLICommand, ...args: unknown[]) {
       for (const precondition of preconditions) {
         await precondition.call(this, target);
       }
-      return originalRunCommand.apply(this);
+      return originalRunCommand.apply(this, args);
     };
   };
 }
