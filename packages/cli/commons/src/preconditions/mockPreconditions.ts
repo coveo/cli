@@ -1,6 +1,6 @@
 import {CLICommand} from '../command/cliCommand';
 import {PreconditionError} from '../errors/preconditionError';
-import {PreconditionFunction} from './preconditions';
+import {DecoratorFunction} from '../decorators/decoratorFunction';
 
 const thrower = (reason: string) => {
   throw new PreconditionError(`${reason} Precondition Error`);
@@ -12,7 +12,7 @@ export const mockPreconditions = <
   preconditionStatus: PreconditionStatus
 ) => {
   type PreconditionKeys = keyof PreconditionStatus & string;
-  type PreconditionPromises = Record<PreconditionKeys, PreconditionFunction>;
+  type PreconditionPromises = Record<PreconditionKeys, DecoratorFunction>;
 
   const keys: PreconditionKeys[] = Object.keys(preconditionStatus);
   const mockedPreconditions: Partial<PreconditionPromises> = {};
