@@ -1,4 +1,6 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
+import {Before} from '@coveo/cli-commons/decorators/before';
+import {Beta} from '@coveo/cli-commons/decorators/beta';
 import {UnknownError} from '@coveo/cli-commons/errors/unknownError';
 import {Flags} from '@oclif/core';
 import inquirer from 'inquirer';
@@ -25,6 +27,7 @@ export default class AtomicInit extends CLICommand {
     {name: 'name', description: 'the name of your component', required: true},
   ];
 
+  @Before(Beta())
   public async run(): Promise<void> {
     const {initializer, name} = await this.getSpawnOptions();
 

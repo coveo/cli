@@ -1,7 +1,8 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Config} from '@coveo/cli-commons/config/config';
+import {Before} from '@coveo/cli-commons/decorators/before';
+import {Beta} from '@coveo/cli-commons/decorators/beta';
 import {UnknownError} from '@coveo/cli-commons/errors/unknownError';
-import {Preconditions} from '@coveo/cli-commons/preconditions/index';
 import {Flags} from '@oclif/core';
 import inquirer from 'inquirer';
 import {
@@ -34,7 +35,6 @@ export default class AtomicInit extends CLICommand {
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(AtomicInit);
     const type = flags.type || (await this.askType());
-
     switch (type) {
       case 'app':
       case 'application':
@@ -61,15 +61,15 @@ export default class AtomicInit extends CLICommand {
     return responses.type;
   }
 
-  @Preconditions(...atomicLibPreconditions)
+  @Before(...atomicLibPreconditions, Beta())
   private createAtomicLib(projectName: string) {
     return createAtomicLib({projectName});
   }
 
-  @Preconditions(...atomicAppPreconditions)
-  private async createAtomicApp(projectName: string) {
+  @Before(...atomicAppPreconditions)
+  private createAtomicApp(projectName: string) {
     const cfg = this.configuration.get();
-    await createAtomicApp({
+    return createAtomicApp({
       initializerVersion: 'latest',
       projectName,
       cfg,
