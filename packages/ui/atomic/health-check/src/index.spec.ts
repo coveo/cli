@@ -1,4 +1,4 @@
-import {startVerdaccio} from '@coveo/verdaccio-starter';
+// import {startVerdaccio} from '@coveo/verdaccio-starter';
 import {spawnSync} from 'node:child_process';
 import {copyFileSync} from 'fs-extra';
 import {mkdirSync, emptyDir} from 'fs-extra';
@@ -6,8 +6,9 @@ import {join} from 'path';
 import {DirResult, dirSync} from 'tmp';
 import {bin} from '../package.json';
 
-const execPath = join(__dirname, bin);
-({verdaccioUrl, verdaccioProcess} = await startVerdaccio(PACKAGE_NAME));
+const execPath = join(__dirname, '..', bin);
+// ({verdaccioUrl, verdaccioProcess} = await startVerdaccio(PACKAGE_NAME));
+// TODO: test with verdaccio
 
 const pathToStub = join(__dirname, '..', '__stub__');
 const healthCheck = (cwd: string) => spawnSync('node', [execPath], {cwd});
@@ -81,15 +82,15 @@ describe('@coveo/atomic-component-health-check', () => {
     });
   });
 
-  describe('when all conditions as met', () => {
+  describe('when all conditions are met', () => {
     beforeEach(() => {
       addReadmeToProject('readme.md', testDirectory);
       addPackageJsonToProject('validPackage.json', testDirectory);
     });
 
-    it('should exit with status code 0', () => {
-      const {status} = healthCheck(testDirectory);
-      expect(status).toBe(0);
+    it('should print green checks only', () => {
+      const {stdout} = healthCheck(testDirectory);
+      expect(stdout.toString()).toMatchSnapshot();
     });
   });
 });

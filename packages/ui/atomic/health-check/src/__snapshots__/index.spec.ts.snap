@@ -1,16 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`@coveo/atomic-component-health-check when all conditions are met should print green checks only 1`] = `
+"[32m✔[39m [1mReadme file[22m
+
+[32m✔[39m [1mRequired properties in package.json[22m
+
+"
+`;
+
 exports[`@coveo/atomic-component-health-check when package.json conditions are not met should warn about invalid properties 1`] = `
 "[32m✔[39m [1mReadme file[22m
 
 [31m✖[39m [1mRequired properties in package.json[22m
-  The component package.json is lacking required properties:
-    [31m✖[39m [1mkeywords is not one of enum values: coveo-atomic-component[22m
-       Your component should include "coveo-atomic-component" in its keywords, otherwise it will not be indexed. For more info, visit https://docs.npmjs.com/cli/v9/configuring-npm/package-json#keywords
-    [31m✖[39m [1mdescription does not meet minimum length of 20[22m
-       You should provide a description of at least 20 characters explaining the component's purpose
-    [31m✖[39m [1mrepository is required[22m
-       You need to provide an URL to the component source code. For more info, visit https://docs.npmjs.com/cli/v9/configuring-npm/package-json#repository
+    [31m✖[39m [1mInvalid keywords: [22mThe package.json keywords should include "coveo-atomic-component", otherwise your component will not be listed along with other Coveo custom components. For more info, visit https://docs.npmjs.com/cli/v9/configuring-npm/package-json#keywords
+    [31m✖[39m [1mInvalid description: [22mThe component description should be at least 20 characters long
+    [31m✖[39m [1mInvalid repository.type: [22mMissing repository type
 
 Publish aborted because some conditions have not been met
 Make sure to address the above errors before publishing again
@@ -21,14 +25,10 @@ exports[`@coveo/atomic-component-health-check when package.json conditions are n
 "[32m✔[39m [1mReadme file[22m
 
 [31m✖[39m [1mRequired properties in package.json[22m
-  The component package.json is lacking required properties:
-    [31m✖[39m [1minstance requires property "unpkg"[22m
-    [31m✖[39m [1mkeywords is required[22m
-       Your component should include "coveo-atomic-component" in its keywords, otherwise it will not be indexed. For more info, visit https://docs.npmjs.com/cli/v9/configuring-npm/package-json#keywords
-    [31m✖[39m [1mdescription is required[22m
-       You should provide a description of at least 20 characters explaining the component's purpose
-    [31m✖[39m [1mrepository is required[22m
-       You need to provide an URL to the component source code. For more info, visit https://docs.npmjs.com/cli/v9/configuring-npm/package-json#repository
+    [31m✖[39m [1mInvalid unpkg: [22mYou should provide the path to the .esm.js file of your custom component. You can find it under the dist/ folder once you build the component
+    [31m✖[39m [1mInvalid keywords: [22mMissing keywords property. For more info, visit https://docs.npmjs.com/cli/v9/configuring-npm/package-json#keywords
+    [31m✖[39m [1mInvalid description: [22mYou should provide a description of at least 20 characters explaining the component's purpose
+    [31m✖[39m [1mInvalid repository: [22mMissing repository property. For more info, visit https://docs.npmjs.com/cli/v9/configuring-npm/package-json#repository
 
 Publish aborted because some conditions have not been met
 Make sure to address the above errors before publishing again
@@ -39,12 +39,7 @@ exports[`@coveo/atomic-component-health-check when readme condition is not met s
 "[31m✖[39m [1mReadme file[22m
   Missing README file. Make sure to include a \`README.md\` file in your component directory
 
-[31m✖[39m [1mRequired properties in package.json[22m
-  The component package.json is lacking required properties:
-    [31m✖[39m [1mkeywords is not one of enum values: coveo-atomic-component[22m
-       Your component should include "coveo-atomic-component" in its keywords, otherwise it will not be indexed. For more info, visit https://docs.npmjs.com/cli/v9/configuring-npm/package-json#keywords
-    [31m✖[39m [1mrepository is required[22m
-       You need to provide an URL to the component source code. For more info, visit https://docs.npmjs.com/cli/v9/configuring-npm/package-json#repository
+[32m✔[39m [1mRequired properties in package.json[22m
 
 Publish aborted because some conditions have not been met
 Make sure to address the above errors before publishing again

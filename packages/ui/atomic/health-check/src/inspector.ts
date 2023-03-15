@@ -1,21 +1,21 @@
 import {ZodError} from 'zod';
 import {prettifyError, prettifyZodError} from './error';
 import {bold} from 'chalk';
-import {fail, groupEnd, groupStart, log, newLine, success} from './logger';
+import {failure, groupEnd, groupStart, log, newLine, success} from './logger';
 
-type Assertion = () => void | never;
+export type Assertion = () => void | never;
 
 export class Inspector {
-  private errorCount = 0;
+  private hasErrors = false;
 
   public check(assertion: Assertion, message: string) {
     try {
       assertion();
       success(bold(message));
     } catch (error) {
-      this.errorCount++;
-      fail(bold(message));
+      failure(bold(message));
       this.printError(error);
+      this.hasErrors = true;
     } finally {
       newLine();
     }
@@ -24,7 +24,7 @@ export class Inspector {
   }
 
   public report() {
-    if (this.errorCount) {
+    if (this.hasErrors) {
       log(
         'Publish aborted because some conditions have not been met',
         'Make sure to address the above errors before publishing again'

@@ -22,6 +22,6 @@ export function success(message: string) {
   log([green('✔'), message].join(' '));
 }
 
-export function fail(message: string) {
+export function failure(message: string) {
   log([red('✖'), message].join(' '));
 }

@@ -5,7 +5,11 @@
   "author": "",
   "description": "Nulla fermentum ipsum vel quam euismod, id pulvinar magna aliquet. Aliquam in sapien sit amet est feugiat ultrices. Cras vulputate leo ut mattis interdum.",
   "unpkg": "path/to/file",
-  "keywords": ["coveo-atomic-component"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foo/bar.git"
+  },
+  "keywords": ["foo", "bar", "coveo-atomic-component"],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   }
