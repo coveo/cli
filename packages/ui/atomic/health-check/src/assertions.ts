@@ -1,19 +1,12 @@
-import {ComponentSchema} from './schema';
+import packageJsonSchema from './schema';
 import {join} from 'path';
-import {validate} from 'jsonschema';
 import {readFileSync, existsSync} from 'fs';
 import {cwd} from 'process';
 
 export function ensureRequiredProperties() {
   const jsonPkg = readFileSync(join(cwd(), 'package.json'));
   const parsed = JSON.parse(jsonPkg.toString());
-  const validation = validate(parsed, ComponentSchema);
-  if (!validation.valid) {
-    const error = new Error(
-      'The component package.json is lacking required properties:'
-    );
-    throw [error, ...validation.errors];
-  }
+  packageJsonSchema.parse(parsed);
 }
 
 export function ensureReadme() {

@@ -1,8 +1,7 @@
 {
-  "name": "@coveo/atomic-component-health-check",
   "private": true,
   "version": "0.0.1",
-  "description": "Health checker for Atomic custom components",
+  "description": "s",
   "main": "./dist/index.js",
   "author": "Coveo",
   "homepage": "https://github.com/coveo/cli#readme",
@@ -25,7 +24,7 @@
   "keywords": [],
   "dependencies": {
     "chalk": "4.1.2",
-    "jsonschema": "^1.4.1"
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@coveo/verdaccio-starter": "^1.0.0",

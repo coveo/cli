@@ -1,5 +1,6 @@
-import {ValidationError} from 'jsonschema';
-import {prettifyError, prettifyJsonValidationError} from './error';
+import {ZodError} from 'zod';
+import {prettifyError, prettifyZodError} from './error';
+import {bold} from 'chalk';
 import {fail, groupEnd, groupStart, log, newLine, success} from './logger';
 
 type Assertion = () => void | never;
@@ -10,10 +11,10 @@ export class Inspector {
   public check(assertion: Assertion, message: string) {
     try {
       assertion();
-      success(message);
+      success(bold(message));
     } catch (error) {
       this.errorCount++;
-      fail(message);
+      fail(bold(message));
       this.printError(error);
     } finally {
       newLine();
@@ -34,16 +35,11 @@ export class Inspector {
   }
 
   private printError(error: any) {
-    if (Array.isArray(error)) {
-      error.forEach((err) => this.printError(err));
-    }
-
     groupStart();
-    if (error instanceof ValidationError) {
-      prettifyJsonValidationError(error);
-    }
-
-    if (error instanceof Error) {
+    // TODO:
+    if (error instanceof ZodError) {
+      prettifyZodError(error);
+    } else if (error instanceof Error) {
       prettifyError(error);
     }
     groupEnd();

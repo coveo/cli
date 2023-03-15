@@ -1,4 +1,4 @@
-import {red, green, bold} from 'chalk';
+import {red, green} from 'chalk';
 
 export function log(...messages: string[]) {
   for (const message of messages) {
@@ -19,9 +19,9 @@ export function newLine() {
 }
 
 export function success(message: string) {
-  log([green('✔'), bold(message)].join(' '));
+  log([green('✔'), message].join(' '));
 }
 
 export function fail(message: string) {
-  log([red('✖'), bold(message)].join(' '));
+  log([red('✖'), message].join(' '));
 }
