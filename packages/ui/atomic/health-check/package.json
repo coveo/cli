@@ -1,11 +1,14 @@
 {
+  "name": "@coveo/atomic-component-health-check",
   "private": true,
   "version": "0.0.1",
   "description": "s",
   "main": "./dist/index.js",
   "author": "Coveo",
   "homepage": "https://github.com/coveo/cli#readme",
-  "bin": "./dist/index.js",
+  "bin": {
+    "component-health-check": "./dist/index.js"
+  },
   "license": "Apache-2.0",
   "scripts": {
     "build": "rimraf dist && tsc -b tsconfig.json",
