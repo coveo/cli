@@ -4,9 +4,8 @@ import {copyFileSync} from 'fs-extra';
 import {mkdirSync, emptyDir} from 'fs-extra';
 import {join} from 'path';
 import {DirResult, dirSync} from 'tmp';
-import {bin} from '../package.json';
 
-const execPath = join(__dirname, '..', bin);
+const execPath = join(__dirname, '..', 'dist');
 // ({verdaccioUrl, verdaccioProcess} = await startVerdaccio(PACKAGE_NAME));
 // TODO: test with verdaccio
 

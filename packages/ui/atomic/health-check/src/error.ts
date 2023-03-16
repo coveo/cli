@@ -1,5 +1,5 @@
 import {bold} from 'chalk';
-import {ZodError, z} from 'zod';
+import {ZodError} from 'zod';
 import {failure, groupEnd, groupStart, log} from './logger';
 
 export function prettifyZodError({errors}: ZodError, indent = true) {

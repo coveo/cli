@@ -5,13 +5,6 @@ exports[`Logger #failure should print an error message 1`] = `
 "
 `;
 
-exports[`Logger #groupStart and #groupEnd should indent messages 1`] = `
-"Sed iaculis odio ac
-Pellentesque eu lectus
-consectetur scelerisque
-"
-`;
-
 exports[`Logger #log should print multiple lines to stdout 1`] = `
 "Maecenas purus lacus
 Donec ut sem cursus
