@@ -21,11 +21,10 @@ export default z.object({
   description: z
     .string({
       required_error:
-        "You must provide a description at least 20 characters long to explain the component purpose.",
+        'You must provide a description at least 20 characters long to explain the component purpose.',
     })
     .min(20, {
-      message:
-        'The component description must be at least 20 characters long'.,
+      message: 'The component description must be at least 20 characters long',
     }),
   homepage: z
     .string({
