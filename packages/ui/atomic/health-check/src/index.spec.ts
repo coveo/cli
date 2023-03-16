@@ -1,5 +1,5 @@
 import {spawnSync} from 'node:child_process';
-import {copyFileSync} from 'fs-extra';
+import {cpSync} from 'fs-extra';
 import {mkdirSync, emptyDir} from 'fs-extra';
 import {join} from 'node:path';
 import {DirResult, dirSync} from 'tmp';
@@ -10,11 +10,11 @@ const pathToStub = join(__dirname, '..', '__stub__');
 const healthCheck = (cwd: string) => spawnSync('node', [execPath], {cwd});
 
 const addPackageJsonToProject = (stubFile: string, dest: string) => {
-  copyFileSync(join(pathToStub, stubFile), join(dest, 'package.json'));
+  cpSync(join(pathToStub, stubFile), join(dest, 'package.json'));
 };
 
 const addReadmeToProject = (stubFile: string, dest: string) => {
-  copyFileSync(join(pathToStub, stubFile), join(dest, 'readme.md'));
+  cpSync(join(pathToStub, stubFile), join(dest, 'readme.md'));
 };
 
 describe('@coveo/atomic-component-health-check', () => {
