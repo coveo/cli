@@ -1,4 +1,4 @@
-import {bold} from 'chalk';
+import chalk from 'chalk';
 import {ZodError} from 'zod';
 import {failure, groupEnd, groupStart, log} from './logger.js';
 
@@ -8,7 +8,7 @@ export function prettifyZodError({errors}: ZodError, indent = true) {
   }
 
   for (const error of errors) {
-    const prefix = bold(`Invalid ${error.path.join('.')}: `);
+    const prefix = chalk.bold(`Invalid ${error.path.join('.')}: `);
     failure(`${prefix}${error.message}`);
   }
 

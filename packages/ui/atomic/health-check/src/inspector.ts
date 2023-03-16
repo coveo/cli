@@ -1,6 +1,6 @@
 import {ZodError} from 'zod';
 import {prettifyError, prettifyZodError} from './error.js';
-import {bold} from 'chalk';
+import chalk from 'chalk';
 import {
   failure,
   groupEnd,
@@ -18,9 +18,9 @@ export class Inspector {
   public check(assertion: Assertion, message: string) {
     try {
       assertion();
-      success(bold(message));
+      success(chalk.bold(message));
     } catch (error) {
-      failure(bold(message));
+      failure(chalk.bold(message));
       this.printError(error);
       this.hasErrors = true;
     } finally {
