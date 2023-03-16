@@ -1,6 +1,6 @@
 {
   "name": "atomic-component-health-check",
-  "root": "packages/ui/health-check",
-  "sourceRoot": "packages/ui/health-check/src",
+  "root": "packages/ui/atomic/health-check",
+  "sourceRoot": "packages/ui/atomic/health-check/src",
   "projectType": "application"
 }
