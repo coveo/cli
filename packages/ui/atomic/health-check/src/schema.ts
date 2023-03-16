@@ -2,7 +2,7 @@ import {z} from 'zod';
 
 export default z.object({
   name: z.string({
-    required_error: 'You should provide a name to your custom component',
+    required_error: 'You must provide a name for your custom component.',
   }),
   unpkg: z.string({
     required_error:
