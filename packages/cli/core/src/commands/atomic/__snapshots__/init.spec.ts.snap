@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`atomic:init calls \`createAtomicApp\` properly 1`] = `
+[
+  {
+    "cfg": {
+      "environment": "prod",
+      "organization": "default-org",
+      "region": "us",
+    },
+    "initializerVersion": "latest",
+    "projectName": "foo",
+  },
+]
+`;
+
+exports[`atomic:init calls \`createAtomicApp\` properly 2`] = `
+[
+  {
+    "cfg": {
+      "environment": "prod",
+      "organization": "default-org",
+      "region": "us",
+    },
+    "initializerVersion": "latest",
+    "projectName": "foo",
+  },
+]
+`;
+
+exports[`atomic:init calls \`createAtomicApp\` when the user select application in the prompt 1`] = `
+[
+  {
+    "cfg": {
+      "environment": "prod",
+      "organization": "default-org",
+      "region": "us",
+    },
+    "initializerVersion": "latest",
+    "projectName": "foo",
+  },
+]
+`;
+
+exports[`atomic:init calls \`createAtomicLib\` properly 1`] = `
+[
+  {
+    "projectName": "foo",
+  },
+]
+`;
+
+exports[`atomic:init calls \`createAtomicLib\` properly 2`] = `
+[
+  {
+    "projectName": "foo",
+  },
+]
+`;
+
+exports[`atomic:init calls \`createAtomicLib\` when the user select library in the prompt 1`] = `
+[
+  {
+    "projectName": "foo",
+  },
+]
+`;

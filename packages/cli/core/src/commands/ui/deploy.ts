@@ -104,6 +104,8 @@ export default class Deploy extends CLICommand {
     ]
   }`;
 
+  public static aliases: string[] = ['atomic:deploy'];
+
   public static flags = {
     pageId: Flags.string({
       char: 'p',
@@ -125,17 +127,18 @@ export default class Deploy extends CLICommand {
 
   public static examples: Example[] = [
     {
-      command: 'coveo ui:deploy',
+      command: '<%= config.bin %> <%= command.id %>',
       description:
         'Create a new Hosted Page according to the configuration in the file "coveo.deploy.json"',
     },
     {
-      command: 'coveo ui:deploy -p 7944ff4a-9943-4999-a3f6-3e81a7f6fb0a',
+      command:
+        '<%= config.bin %> <%= command.id %> -p 7944ff4a-9943-4999-a3f6-3e81a7f6fb0a',
       description:
         'Update the Hosted Page whose ID is "7944ff4a-9943-4999-a3f6-3e81a7f6fb0a" according to the configuration in the file "coveo.deploy.json"',
     },
     {
-      command: 'coveo ui:deploy -c ./configs/myconfig.json',
+      command: '<%= config.bin %> <%= command.id %> -c ./configs/myconfig.json',
       description:
         'Create a new Hosted Page according to the configuration in the file located at "./configs/myconfig.json"',
     },
