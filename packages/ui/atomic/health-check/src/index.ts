@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import {ensureReadme, ensureRequiredProperties} from './assertions';
-import {Inspector} from './inspector';
+import {ensureReadme, ensureRequiredProperties} from './assertions.js';
+import {Inspector} from './inspector.js';
 
 try {
   new Inspector()

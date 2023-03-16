@@ -1,13 +1,10 @@
-// import {startVerdaccio} from '@coveo/verdaccio-starter';
 import {spawnSync} from 'node:child_process';
 import {copyFileSync} from 'fs-extra';
 import {mkdirSync, emptyDir} from 'fs-extra';
-import {join} from 'path';
+import {join} from 'node:path';
 import {DirResult, dirSync} from 'tmp';
 
 const execPath = join(__dirname, '..', 'dist');
-// ({verdaccioUrl, verdaccioProcess} = await startVerdaccio(PACKAGE_NAME));
-// TODO: test with verdaccio
 
 const pathToStub = join(__dirname, '..', '__stub__');
 const healthCheck = (cwd: string) => spawnSync('node', [execPath], {cwd});

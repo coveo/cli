@@ -1,9 +1,9 @@
-jest.mock('fs');
-jest.mock('./schema');
+jest.mock('node:fs');
+jest.mock('./schema.js');
 
-import {ensureReadme, ensureRequiredProperties} from './assertions';
-import {existsSync, readFileSync} from 'fs';
-import schema from './schema';
+import {ensureReadme, ensureRequiredProperties} from './assertions.js';
+import {existsSync, readFileSync} from 'node:fs';
+import schema from './schema.js';
 
 const mockedExistsSync = jest.mocked(existsSync);
 const mockedReadFileSync = jest.mocked(readFileSync);

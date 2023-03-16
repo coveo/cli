@@ -1,6 +1,6 @@
-import packageJsonSchema from './schema';
-import {join} from 'path';
-import {readFileSync, existsSync} from 'fs';
+import packageJsonSchema from './schema.js';
+import {join} from 'node:path';
+import {readFileSync, existsSync} from 'node:fs';
 import {cwd} from 'process';
 
 export function ensureRequiredProperties() {

@@ -1,7 +1,14 @@
 import {ZodError} from 'zod';
-import {prettifyError, prettifyZodError} from './error';
+import {prettifyError, prettifyZodError} from './error.js';
 import {bold} from 'chalk';
-import {failure, groupEnd, groupStart, log, newLine, success} from './logger';
+import {
+  failure,
+  groupEnd,
+  groupStart,
+  log,
+  newLine,
+  success,
+} from './logger.js';
 
 export type Assertion = () => void | never;
 
