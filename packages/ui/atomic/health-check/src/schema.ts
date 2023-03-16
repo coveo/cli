@@ -27,22 +27,13 @@ export default z.object({
       message:
         'The component description should be at least 20 characters long',
     }),
-  repository: z.object(
-    {
-      type: z.string({required_error: 'Missing repository type'}),
-      url: z
-        .string({
-          required_error:
-            'You need to provide an URL to the component source code. For more info, visit https://docs.npmjs.com/cli/v9/configuring-npm/package-json#repository',
-        })
-        .url({
-          message:
-            'The provided repository URL is invalid. Please provide a valid URL',
-        }),
-    },
-    {
+  homepage: z
+    .string({
       required_error:
-        'Missing repository property. For more info, visit https://docs.npmjs.com/cli/v9/configuring-npm/package-json#repository',
-    }
-  ),
+        'You need to provide an URL to the component source code. For more info, visit https://docs.npmjs.com/cli/v9/configuring-npm/package-json#homepage',
+    })
+    .url({
+      message:
+        'Please provide a valid url to the component homepage. For more info, visit https://docs.npmjs.com/cli/v9/configuring-npm/package-json#homepage',
+    }),
 });
