@@ -10,13 +10,12 @@ const mockedReadFileSync = jest.mocked(readFileSync);
 const mockedSchemaParse = jest.fn();
 
 describe('assertions', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     jest.mocked(schema).parse.mockImplementation(mockedSchemaParse);
   });
 
   afterEach(() => {
-    mockedExistsSync.mockReset();
-    mockedReadFileSync.mockReset();
+    jest.resetAllMocks();
   });
 
   it('#ensureRequiredProperties should parse package.json', () => {
