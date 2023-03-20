@@ -43,7 +43,6 @@ export class Inspector {
 
   private printError(error: any) {
     groupStart();
-    // TODO:
     if (error instanceof ZodError) {
       prettifyZodError(error);
     } else if (error instanceof Error) {
