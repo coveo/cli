@@ -1,9 +1,8 @@
 {
   "name": "@coveo/atomic-component-health-check",
-  "private": true,
   "type": "module",
   "version": "0.0.1",
-  "description": "Custom Atomic component health checker",
+  "description": "A Health checker for custom Atomic component",
   "main": "./dist/index.js",
   "author": "Coveo",
   "homepage": "https://github.com/coveo/cli#readme",
@@ -15,6 +14,7 @@
   },
   "license": "Apache-2.0",
   "scripts": {
+    "release:phase1": "npx -p=@coveord/release npm-publish",
     "build": "rimraf dist && tsc -b tsconfig.json",
     "test": "jest"
   },
