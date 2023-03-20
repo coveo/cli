@@ -12,8 +12,8 @@ exports[`@coveo/atomic-component-health-check when package.json conditions are n
 "[32m✔[39m [1mReadme file[22m
 
 [31m✖[39m [1mRequired properties in package.json[22m
-    [31m✖[39m [1mInvalid keywords: [22mThe package.json keywords should include "coveo-atomic-component", otherwise your component will not be listed along with other Coveo custom components. For more info, visit https://docs.npmjs.com/cli/v9/configuring-npm/package-json#keywords
-    [31m✖[39m [1mInvalid description: [22mThe component description should be at least 20 characters long
+    [31m✖[39m [1mInvalid keywords: [22mThe package.json \`keywords\` array should include \`coveo-atomic-component\`, otherwise your component will not be listed along with other Coveo custom components. See https://docs.npmjs.com/cli/v9/configuring-npm/package-json#keywords
+    [31m✖[39m [1mInvalid description: [22mThe component description must be at least 20 characters long
 
 Publish aborted because some conditions have not been met
 Make sure to address the above errors before publishing again
@@ -24,10 +24,10 @@ exports[`@coveo/atomic-component-health-check when package.json conditions are n
 "[32m✔[39m [1mReadme file[22m
 
 [31m✖[39m [1mRequired properties in package.json[22m
-    [31m✖[39m [1mInvalid unpkg: [22mYou should provide the path to the .esm.js file of your custom component. You can find it under the dist/ folder once you build the component
-    [31m✖[39m [1mInvalid keywords: [22mMissing keywords property. For more info, visit https://docs.npmjs.com/cli/v9/configuring-npm/package-json#keywords
-    [31m✖[39m [1mInvalid description: [22mYou should provide a description of at least 20 characters explaining the component's purpose
-    [31m✖[39m [1mInvalid homepage: [22mYou need to provide an URL to the component source code. For more info, visit https://docs.npmjs.com/cli/v9/configuring-npm/package-json#homepage
+    [31m✖[39m [1mInvalid unpkg: [22mYou must provide the path to the \`.esm.js\` file of your custom component. You can find it under the \`dist/\` folder once you build the component.
+    [31m✖[39m [1mInvalid keywords: [22mYou must populate the \`keywords\` property. See https://docs.npmjs.com/cli/v9/configuring-npm/package-json#keywords
+    [31m✖[39m [1mInvalid description: [22mYou must provide a description at least 20 characters long to explain the component purpose.
+    [31m✖[39m [1mInvalid homepage: [22mYou must provide a URL to the component source code. See https://docs.npmjs.com/cli/v9/configuring-npm/package-json#homepage
 
 Publish aborted because some conditions have not been met
 Make sure to address the above errors before publishing again
