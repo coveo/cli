@@ -31,7 +31,7 @@ You can add it to your package.json
 
 ## Testing
 
-Before running the tests, make sure to build the project with `npm run build`
+Before running the tests, make sure to build the project with `npm run build`.
 
 ## Contributing
 
