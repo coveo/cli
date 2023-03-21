@@ -1,4 +1,4 @@
-template/**/project.json
+template/project.json
 template/build
 template/dist
 template/src/components.d.ts
