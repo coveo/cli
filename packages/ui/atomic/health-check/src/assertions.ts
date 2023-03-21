@@ -18,6 +18,13 @@ export function ensureReadme() {
   }
 }
 
+export function ensureConsistentTagName() {
+  // TODO: get package name
+  // TODO: get stencil tag name from .tsx of dist folder
+  // TODO: compare both name
+  throw 'TODO:';
+}
+
 export function ensureInternalScope() {
   // TODO: CDX-1266: Ensure internal components tags are tagged with the appropriate scope.
 }

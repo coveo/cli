@@ -33,4 +33,6 @@ describe('assertions', () => {
     mockedExistsSync.mockReturnValue(true);
     expect(() => ensureReadme()).not.toThrow();
   });
+
+  it.todo('#ensureConsistentTagName');
 });
