@@ -23,8 +23,8 @@
     "generate": "stencil generate"
   },
   "dependencies": {
-    "@coveo/headless": "2.8.8",
-    "@coveo/atomic": "2.19.12",
+    "@coveo/headless": "2.8.10",
+    "@coveo/atomic": "2.19.16",
     "@stencil/core": "2.22.2"
   },
   "devDependencies": {
@@ -33,7 +33,7 @@
     "jest": "29.5.0",
     "jest-cli": "29.5.0",
     "rollup-plugin-html": "0.2.1",
-    "rimraf": "4.3.1"
+    "rimraf": "4.4.0"
   },
   "keywords": [
     "coveo-atomic-component"

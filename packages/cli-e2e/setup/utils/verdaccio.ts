@@ -16,7 +16,6 @@ const verdaccioedPackages = [
   '@coveo/cra-template',
   '@coveo/search-token-server',
   '@coveo/create-atomic',
-  '@coveo/search-token-lambda',
   '@coveo/cli-commons-dev',
   '@coveo/cli-commons',
   '@coveo/cli',

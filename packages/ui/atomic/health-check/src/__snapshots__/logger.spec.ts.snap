@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Logger #failure should print an error message 1`] = `
+"✖ Better luck next time
+"
+`;
+
+exports[`Logger #log should print multiple lines to stdout 1`] = `
+"Maecenas purus lacus
+Donec ut sem cursus
+"
+`;
+
+exports[`Logger #newLine should print a new line 1`] = `
+"
+"
+`;
+
+exports[`Logger #success should print a successful message 1`] = `
+"✔ You win!
+"
+`;
