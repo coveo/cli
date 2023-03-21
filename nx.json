@@ -18,6 +18,9 @@
         "{projectRoot}/dist",
         "{projectRoot}/tsconfig.build.tsbuildinfo"
       ]
+    },
+    "release:phase1": {
+      "dependsOn": ["^release:phase1"]
     }
   },
   "tasksRunnerOptions": {
