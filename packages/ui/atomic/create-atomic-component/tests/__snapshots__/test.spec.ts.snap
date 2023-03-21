@@ -8,7 +8,7 @@ HashedFolder {
       "name": "package.json",
     },
     HashedFile {
-      "hash": "t2ijBtfSMeYJbqfftNaaKO/djIo=",
+      "hash": "N3PrGyO2QUfOb9pDbRVMehuq9Gg=",
       "name": "readme.md",
     },
     HashedFolder {
@@ -124,7 +124,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "cC0Wean1txlHTD+SBm7YIU48M1g=",
+  "hash": "02fztNyoqSc3XGupfxRCD3hi2Qw=",
   "name": "no-args",
 }
 `;
@@ -137,7 +137,7 @@ HashedFolder {
       "name": "package.json",
     },
     HashedFile {
-      "hash": "t2ijBtfSMeYJbqfftNaaKO/djIo=",
+      "hash": "N3PrGyO2QUfOb9pDbRVMehuq9Gg=",
       "name": "readme.md",
     },
     HashedFolder {
@@ -215,7 +215,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "2t5KyIyK+FcaRp7Ntd31WjlWC8I=",
+  "hash": "Jb/ZxxxwDlN0ntsQG72kB7kuonc=",
   "name": "invalid-arg",
 }
 `;
@@ -228,7 +228,7 @@ HashedFolder {
       "name": "package.json",
     },
     HashedFile {
-      "hash": "t2ijBtfSMeYJbqfftNaaKO/djIo=",
+      "hash": "N3PrGyO2QUfOb9pDbRVMehuq9Gg=",
       "name": "readme.md",
     },
     HashedFolder {
@@ -306,7 +306,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "kJYhepAjKub7ArYL5LfX/99fWKw=",
+  "hash": "RLpz6xU7UTWv79b5o574nsSt+uc=",
   "name": "valid-arg",
 }
 `;
@@ -319,7 +319,7 @@ HashedFolder {
       "name": "package.json",
     },
     HashedFile {
-      "hash": "t2ijBtfSMeYJbqfftNaaKO/djIo=",
+      "hash": "N3PrGyO2QUfOb9pDbRVMehuq9Gg=",
       "name": "readme.md",
     },
     HashedFolder {
@@ -397,7 +397,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "t/GFk7L4NEfAj0XES3coVmL4+IY=",
+  "hash": "uoWd/LZbpVNlKhMcFzp98NmEbyQ=",
   "name": "no-args",
 }
 `;

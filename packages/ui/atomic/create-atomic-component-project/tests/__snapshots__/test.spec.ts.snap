@@ -8,7 +8,7 @@ HashedFolder {
       "name": "package.json",
     },
     HashedFile {
-      "hash": "t2ijBtfSMeYJbqfftNaaKO/djIo=",
+      "hash": "N3PrGyO2QUfOb9pDbRVMehuq9Gg=",
       "name": "readme.md",
     },
     HashedFolder {
@@ -48,7 +48,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "LzEeb5WHSemiEDqyaaWNWc8oURI=",
+  "hash": "FPm0bsBtl/XnGF0Mgxjes/nFtVw=",
   "name": "testDirectory",
 }
 `;
