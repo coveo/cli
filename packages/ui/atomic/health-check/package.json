@@ -16,6 +16,7 @@
   "scripts": {
     "release:phase1": "npx -p=@coveord/release npm-publish",
     "build": "rimraf dist && tsc -b tsconfig.json",
+    "prepublishOnly": "npm run build",
     "test": "jest"
   },
   "repository": {
