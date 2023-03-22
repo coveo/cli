@@ -33,21 +33,39 @@
     },
     {
       "matchPackageNames": ["strip-ansi"],
-      "allowedVersions": "6.x"
+      "matchCurrentVersion": "6.x",
+      "allowedVersions": "6.x",
+      "description": "CDX-768: Need to migrate E2E to ESM (not easy)"
     },
     {
       "matchPackageNames": ["get-port"],
-      "allowedVersions": "5.x"
+      "matchCurrentVersion": "5.x",
+      "allowedVersions": "5.x",
+      "description": "CDX-768: Need to migrate E2E to ESM (not easy)"
     },
     {
       "matchPackageNames": ["chalk"],
-      "allowedVersions": "4.x"
+      "matchCurrentVersion": "4.x",
+      "allowedVersions": "4.x",
+      "description": "CDX-768: Need to migrate E2E to ESM (not easy)"
+    },
+    {
+      "matchPackageNames": ["open"],
+      "matchCurrentVersion": "8.x",
+      "allowedVersions": "8.x",
+      "description": "CDX-768: Need to migrate E2E to ESM (not easy)"
+    },
+    {
+      "matchPackageNames": ["inquirer", "@types/inquirer"],
+      "matchCurrentVersion": "8.x",
+      "allowedVersions": "8.x",
+      "description": "CDX-768: Need to migrate E2E to ESM (not easy)"
     },
     {
       "matchPackageNames": ["fkill"],
       "matchCurrentVersion": "7.x",
       "allowedVersions": "7.x",
-      "description": "Need to migrate E2E to ESM (not easy)"
+      "description": "CDX-768: Need to migrate E2E to ESM (not easy)"
     },
     {
       "matchPackageNames": ["@types/node"],
