@@ -9,6 +9,12 @@
       "options": {
         "command": "exit 0"
       }
+    },
+    "test": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "exit 0"
+      }
     }
   }
 }
