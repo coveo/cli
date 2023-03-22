@@ -5,10 +5,16 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "nx:noop"
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "exit 0"
+      }
     },
     "test": {
-      "executor": "nx:noop"
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "exit 0"
+      }
     }
   }
 }
