@@ -1,7 +1,7 @@
 {
-  "name": "create-headless-vue-template",
-  "root": "packages/ui/vue/create-headless-vue/template",
-  "sourceRoot": "packages/ui/vue/create-headless-vue/template",
+  "name": "create-atomic-result-component-template",
+  "root": "packages/ui/create-atomic-result-component/template/src/components/sample-result-component",
+  "sourceRoot": "packages/ui/create-atomic-result-component/template/src/components/sample-result-component",
   "projectType": "library",
   "targets": {
     "build": {
