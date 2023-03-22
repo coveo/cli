@@ -5,6 +5,7 @@ This is a starter project for building web components for Coveo Atomic using Ste
 ## Getting Started
 
 <!-- TODO CDX-1358: Insert instruction to create other components -->
+
 If you used `npm init @coveo/atomic-component` or `npm init @coveo/atomic-result-component`, your component should already be in `src/components`.
 You can use either of these commands at the root of your project to add another component.
 
