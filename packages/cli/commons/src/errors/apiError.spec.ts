@@ -1,4 +1,4 @@
-import {APIError, AxiosErrorFromAPI} from './apiError';
+import {APIError} from './apiError';
 
 describe('APIError', () => {
   it('should print the tagline', () => {
@@ -38,24 +38,6 @@ describe('APIError', () => {
     ])(`$title`, ({response}) => {
       expect(() => {
         throw new APIError(response, 'This is a tagline');
-      }).toThrowErrorMatchingSnapshot();
-    });
-  });
-
-  describe('when the error is of type AxiosErrorFromAPI', () => {
-    it('it should print the status code', () => {
-      const axiosResponse: AxiosErrorFromAPI = {
-        response: {
-          status: 410,
-          data: {
-            errorCode: 'ORGANIZATION_GONE',
-            message: 'Your org is just gone',
-          },
-        },
-      };
-
-      expect(() => {
-        throw new APIError(axiosResponse);
       }).toThrowErrorMatchingSnapshot();
     });
   });

@@ -1,5 +1,4 @@
 import {DocumentBuilder} from '@coveo/push-api-client';
-import {doMockAxiosError, doMockAxiosSuccess} from './axiosMocks';
 
 export class BatchUploadDocumentsSuccess {
   constructor(private numberOfFiles: number = 2) {}
@@ -25,7 +24,7 @@ export class BatchUploadDocumentsSuccess {
 
   public onBatchUpload(callback: Function) {
     callback({
-      res: doMockAxiosSuccess(202, '👌'),
+      res: {status: 202, statusText: '👌'},
       batch: new Array(this.numberOfFiles)
         .fill(undefined)
         .map(this.getNewDocumentBuilder.bind(this)),
@@ -56,11 +55,11 @@ export class BatchUploadDocumentsError {
   }
   public onBatchError(callback: Function) {
     callback(
-      doMockAxiosError(
-        412,
-        'this is a bad request and you should feel bad',
-        'BAD_REQUEST'
-      ),
+      {
+        status: 412,
+        title: 'BAD_REQUEST',
+        detail: 'this is a bad request and you should feel bad',
+      },
       {
         batch: new Array(this.failedDocumentCount),
         progress: {

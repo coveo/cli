@@ -22,7 +22,6 @@ import {parse} from 'dotenv';
 import {DummyServer} from '../utils/server';
 import getPort from 'get-port';
 import {npm} from '../utils/npm';
-import axios from 'axios';
 import {jwtTokenPattern} from '../utils/matcher';
 import {join} from 'path';
 
@@ -402,7 +401,7 @@ describe('ui:create:react', () => {
     });
 
     it('should run the server on a new port', async () => {
-      const tokenRequest = await axios.get(tokenServerEndpoint());
+      const tokenRequest = await fetch(tokenServerEndpoint());
       expect(tokenRequest.data.token).toMatch(jwtTokenPattern);
     });
   });

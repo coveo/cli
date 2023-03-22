@@ -32,10 +32,3 @@ exports[`APIError when the error is of type APIErrorResponse it should print the
 This is a tagline
 Request ID: [31m123456qwerty[39m"
 `;
-
-exports[`APIError when the error is of type AxiosErrorFromAPI it should print the status code 1`] = `
-"
-Status code: 410
-Error code: [31mORGANIZATION_GONE[39m
-Message: [31mYour org is just gone[39m"
-`;

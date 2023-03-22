@@ -1,16 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios from 'axios';
 import {resolve} from 'node:path';
-import {Agent as HttpAgent} from 'node:http';
 import {promises as dnsPromises} from 'node:dns';
 import {URL} from 'node:url';
 import puppeteer from 'puppeteer';
 import type {Browser, Page} from 'puppeteer';
-const CHROME_JSON_DEBUG_URL = 'http://localhost:9222/json/version';
-
-interface JsonVersionFile {
-  webSocketDebuggerUrl: string;
-}
+const getHostIpV4 = async () => (await dnsPromises.resolve4('localhost'))[0];
 
 export const LOGS_PATH = resolve(__dirname, '..', 'artifacts/logs');
 export const SCREENSHOTS_PATH = resolve(
@@ -33,13 +27,11 @@ export async function closeAllPages(browser: Browser) {
 }
 
 async function getWsUrl(): Promise<string> {
-  const chromeDebugInfoRaw = (
-    await axios.get<JsonVersionFile>(CHROME_JSON_DEBUG_URL, {
-      httpAgent: new HttpAgent({family: 4}),
-    })
-  ).data;
+  const hostIpV4 = await getHostIpV4();
+  const chromeJsonDebugUrl = `http://${hostIpV4}:9222/json/version`;
+  const chromeDebugInfoRaw = await (await fetch(chromeJsonDebugUrl)).json();
   const wsUrl = new URL(chromeDebugInfoRaw.webSocketDebuggerUrl);
-  wsUrl.hostname = (await dnsPromises.resolve4(wsUrl.hostname))[0];
+  wsUrl.hostname = hostIpV4;
   return wsUrl.toString();
 }
 
