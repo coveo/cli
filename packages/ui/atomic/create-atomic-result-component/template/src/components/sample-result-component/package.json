@@ -17,6 +17,7 @@
     "prepublishOnly": "npm run build",
     "prebuild": "rimraf dist",
     "build": "stencil build --docs",
+    "prepublish": "atomic-meta-check",
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll",
@@ -28,6 +29,7 @@
     "@stencil/core": "2.22.2"
   },
   "devDependencies": {
+    "@coveo/atomic-component-health-check": "0.0.1",
     "@rollup/plugin-url": "8.0.1",
     "@types/jest": "29.4.0",
     "jest": "29.5.0",

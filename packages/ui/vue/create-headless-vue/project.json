@@ -2,5 +2,6 @@
   "name": "create-headless-vue",
   "root": "packages/ui/atomic/create-headless-vue",
   "sourceRoot": "packages/ui/atomic/create-headless-vue/template",
-  "projectType": "application"
+  "projectType": "application",
+  "implicitDependencies": ["create-headless-vue-template"]
 }
