@@ -30,11 +30,11 @@
     "access": "public"
   },
   "dependencies": {
-    "@coveo/platform-client": "42.2.0",
+    "@coveo/platform-client": "42.5.0",
     "abortcontroller-polyfill": "1.7.5",
     "detect-indent": "7.0.1",
     "https-proxy-agent": "5.0.1",
-    "inquirer": "9.1.4",
+    "inquirer": "9.1.5",
     "isomorphic-fetch": "3.0.0",
     "minimist": "1.2.8",
     "node-plop": "^0.31.0",
@@ -43,6 +43,6 @@
     "typescript": "4.9.5"
   },
   "devDependencies": {
-    "fs-extra": "11.1.0"
+    "fs-extra": "11.1.1"
   }
 }
