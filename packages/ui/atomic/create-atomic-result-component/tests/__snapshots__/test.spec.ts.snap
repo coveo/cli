@@ -20,6 +20,20 @@ HashedFolder {
                 HashedFolder {
                   "children": [
                     HashedFile {
+                      "hash": "ewQGf3/bnIIj+Rv249cv7K7YGsg=",
+                      "name": "atomic-docs.d.ts",
+                    },
+                    HashedFile {
+                      "hash": "uJJT7qiNu6Np6W/N49ZI1KxMksQ=",
+                      "name": "atomic-docs.json",
+                    },
+                  ],
+                  "hash": "kGQ/BAVN20NCKnFD2sHQRPxm+AI=",
+                  "name": "docs",
+                },
+                HashedFolder {
+                  "children": [
+                    HashedFile {
                       "hash": "/5yLi44o1uyQViLBqN4GTX4Wifo=",
                       "name": "cdn.js",
                     },
@@ -48,7 +62,7 @@ HashedFolder {
                   "name": "loader",
                 },
                 HashedFile {
-                  "hash": "WTygoJu28gB8AipVkRk9tM7AZdM=",
+                  "hash": "CX0g5ILYXXOkL+zo6VJlPDXWPWU=",
                   "name": "package.json",
                 },
                 HashedFolder {
@@ -74,7 +88,7 @@ HashedFolder {
                   "name": "src",
                 },
                 HashedFile {
-                  "hash": "o/wjp7ceO6Frr8oWEWwMMbpgj60=",
+                  "hash": "/I6cpMBEai4jB1K8BG/AfmtSUqs=",
                   "name": "stencil.config.ts",
                 },
                 HashedFile {
@@ -82,11 +96,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "C064tkBzrl34NFXWpycWeiBjxkw=",
+              "hash": "3rBAFb0aW4O5P7PauDxUa6Q3Lkk=",
               "name": "oh-wow-another-component-can-you-believe-it",
             },
           ],
-          "hash": "zhHfasNANEOeHZ2kzmxmVew/gCQ=",
+          "hash": "auZ6R0XSRO3NVemi2KEpnxhdG3A=",
           "name": "components",
         },
         HashedFile {
@@ -112,7 +126,7 @@ HashedFolder {
           "name": "pages",
         },
       ],
-      "hash": "aDqIqPHmOUMNdUBOGKv51BG0BeU=",
+      "hash": "4fyv5PF6bNDUvgV94owchi7mv7Y=",
       "name": "src",
     },
     HashedFile {
@@ -124,7 +138,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "vqlH/wn4AHcEEQzfS5NnCfyUzik=",
+  "hash": "4E2qaDAsJOVlbqHMbT1PV1JDwog=",
   "name": "no-args",
 }
 `;
@@ -147,7 +161,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "LyfVcHttd/GRxWyrbFuPp9WYyqw=",
+                  "hash": "FSfgS3SgNbSwj3u966JuRCwMZoc=",
                   "name": "package.json",
                 },
                 HashedFolder {
@@ -165,7 +179,7 @@ HashedFolder {
                   "name": "src",
                 },
                 HashedFile {
-                  "hash": "o/wjp7ceO6Frr8oWEWwMMbpgj60=",
+                  "hash": "/I6cpMBEai4jB1K8BG/AfmtSUqs=",
                   "name": "stencil.config.ts",
                 },
                 HashedFile {
@@ -173,11 +187,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "drOwFOoCP+txKnqE/Fe4MZQ0fX8=",
+              "hash": "w5faFgW3l2m+CZ9lfcv08B3FlhE=",
               "name": "atomic-nohypen",
             },
           ],
-          "hash": "Psa1vwdRY4EQZL9a/wLYgkRXEd8=",
+          "hash": "KkSkJoo0rlG+ngNhGUb3l0xSpjU=",
           "name": "components",
         },
         HashedFile {
@@ -203,7 +217,7 @@ HashedFolder {
           "name": "pages",
         },
       ],
-      "hash": "ydhh23XFIcdnMoaG0P267ZrwwHQ=",
+      "hash": "CojDD7v8r4n3Z013kUL3FgRsIZs=",
       "name": "src",
     },
     HashedFile {
@@ -215,7 +229,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "MUFB1seww85a1FX9SKiiSyOpOW4=",
+  "hash": "p5BINGewiPT7cGRE9sv6XK9GF8k=",
   "name": "invalid-arg",
 }
 `;
@@ -238,7 +252,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "XqcG/QmCnAQO044AbgJJcGrhswE=",
+                  "hash": "B2+TpcCRrf3siFvON05C0fgQHRg=",
                   "name": "package.json",
                 },
                 HashedFolder {
@@ -256,7 +270,7 @@ HashedFolder {
                   "name": "src",
                 },
                 HashedFile {
-                  "hash": "o/wjp7ceO6Frr8oWEWwMMbpgj60=",
+                  "hash": "/I6cpMBEai4jB1K8BG/AfmtSUqs=",
                   "name": "stencil.config.ts",
                 },
                 HashedFile {
@@ -264,11 +278,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "OF9MWF4qQrd6ppWaLFnSvx5dHfQ=",
+              "hash": "77Pb9PNBnkSyhT1YA+WblFAfDVE=",
               "name": "valid-component-name",
             },
           ],
-          "hash": "PnN2FufBNziNaHdsOtPgN7UnPLc=",
+          "hash": "sNTixgo4ZpANbpQZ2seovEXo2SA=",
           "name": "components",
         },
         HashedFile {
@@ -294,7 +308,7 @@ HashedFolder {
           "name": "pages",
         },
       ],
-      "hash": "rYazOqgSlzgHKpkTFOBUf6Yzjf8=",
+      "hash": "UdhjXbVhUZwKAtIngAhFDObYdR0=",
       "name": "src",
     },
     HashedFile {
@@ -306,7 +320,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "9jADuV+16bSriTgOb8C1P0ojFhM=",
+  "hash": "bBjDKUbNVVMCxdRdOREkP4OI990=",
   "name": "valid-arg",
 }
 `;
@@ -329,7 +343,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "Z+EMy90VzNJZA9QIeUlsNjb5h4o=",
+                  "hash": "5g3ilwGzuHMX4G2xx1GRCuHL4Ls=",
                   "name": "package.json",
                 },
                 HashedFolder {
@@ -347,7 +361,7 @@ HashedFolder {
                   "name": "src",
                 },
                 HashedFile {
-                  "hash": "o/wjp7ceO6Frr8oWEWwMMbpgj60=",
+                  "hash": "/I6cpMBEai4jB1K8BG/AfmtSUqs=",
                   "name": "stencil.config.ts",
                 },
                 HashedFile {
@@ -355,11 +369,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "ykyqze2Tr35iw3b0Sxv04GXZDfo=",
+              "hash": "HJaLNtWL1emw+TUDCogmj7Ab6R0=",
               "name": "sample-result-component",
             },
           ],
-          "hash": "cGhT4a6U0AOShn4z4IMLHxn1pks=",
+          "hash": "9Ul3egqZhkLwdU/kKKWs5OkpnyY=",
           "name": "components",
         },
         HashedFile {
@@ -385,7 +399,7 @@ HashedFolder {
           "name": "pages",
         },
       ],
-      "hash": "63zxIqQVzynjhJ7k4dmfUGu475w=",
+      "hash": "ugCs27Kka2I204iJkcpnA9siQDM=",
       "name": "src",
     },
     HashedFile {
@@ -397,7 +411,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "ibb+ZFZ01tV6JggI0MUSo3299I4=",
+  "hash": "Gttx+sMTT7aFiJQnnctep+bCKzI=",
   "name": "no-args",
 }
 `;
