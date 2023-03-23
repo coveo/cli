@@ -1,4 +1,5 @@
 import {DocumentBuilder} from '@coveo/push-api-client';
+import {errors} from '@coveo/push-api-client';
 
 export class BatchUploadDocumentsSuccess {
   constructor(private numberOfFiles: number = 2) {}
@@ -46,6 +47,7 @@ export class BatchUploadDocumentsSuccess {
 
 export class BatchUploadDocumentsError {
   constructor(
+    private fetchErrorInstance: errors.FetchError,
     private totalDocumentCount: number = 10,
     private failedDocumentCount: number = 2
   ) {}
@@ -54,20 +56,13 @@ export class BatchUploadDocumentsError {
     return this;
   }
   public onBatchError(callback: Function) {
-    callback(
-      {
-        status: 412,
-        title: 'BAD_REQUEST',
-        detail: 'this is a bad request and you should feel bad',
+    callback(this.fetchErrorInstance, {
+      batch: new Array(this.failedDocumentCount),
+      progress: {
+        remainingDocumentCount: this.remainingDocumentCount,
+        totalDocumentCount: this.totalDocumentCount,
       },
-      {
-        batch: new Array(this.failedDocumentCount),
-        progress: {
-          remainingDocumentCount: this.remainingDocumentCount,
-          totalDocumentCount: this.totalDocumentCount,
-        },
-      }
-    );
+    });
     return this;
   }
   public async batch() {}

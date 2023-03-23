@@ -2,21 +2,26 @@ jest.mock('@coveo/cli-commons/preconditions/trackable');
 jest.mock('@coveo/cli-commons/preconditions/authenticated');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
-jest.mock('@coveo/push-api-client');
+jest.mock('@coveo/push-api-client', () => {
+  const mock = jest.createMockFromModule<object>('@coveo/push-api-client');
+  const real = jest.requireActual('@coveo/push-api-client');
+  return {
+    __esModule: true,
+    ...mock,
+    errors: real.errors,
+  };
+});
 
 jest.mock('../../../lib/userFeedback');
 
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {PushSource} from '@coveo/push-api-client';
-import {
-  doMockAxiosError,
-  doMockAxiosSuccess,
-} from '../../../lib/__testsUtils__/axiosMocks';
+import {errors, PushSource} from '@coveo/push-api-client';
 import {IsAuthenticated} from '@coveo/cli-commons/preconditions';
 import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
 import {formatCliLog} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
 import {errorMessage, successMessage} from '../../../lib/userFeedback';
+import {Response} from 'undici';
 
 describe('source:push:delete', () => {
   const mockedIsAuthenticated = jest.mocked(IsAuthenticated);
@@ -56,10 +61,18 @@ describe('source:push:delete', () => {
       () =>
         ({
           deleteDocumentsOlderThan: mockDeleteOlderThan.mockReturnValue(
-            Promise.resolve(doMockAxiosSuccess(202, 'tiguidou'))
+            Promise.resolve({
+              status: 202,
+              title: 'TIGUIDOU',
+              detail: 'all is well',
+            })
           ),
           deleteDocument: mockDeleteDocument.mockReturnValue(
-            Promise.resolve(doMockAxiosSuccess(202, 'right trou'))
+            Promise.resolve({
+              status: 202,
+              title: 'TIGUIDOU',
+              detail: 'right trou',
+            })
           ),
         } as unknown as PushSource)
     );
@@ -140,9 +153,11 @@ describe('source:push:delete', () => {
 
   test
     .do(() => {
-      mockDeleteOlderThan.mockReturnValueOnce(
-        doMockAxiosSuccess(999, 'this document is gone')
-      );
+      mockDeleteOlderThan.mockReturnValueOnce({
+        status: 999,
+        title: 'WOOSH',
+        detail: 'this document is gone',
+      });
     })
     .stdout()
     .stderr()
@@ -155,14 +170,16 @@ describe('source:push:delete', () => {
     );
 
   test
-    .do(() => {
-      mockDeleteOlderThan.mockRejectedValueOnce(
-        doMockAxiosError(
-          412,
-          'this is a bad request and you should feel bad',
-          'BAD_REQUEST'
-        )
-      );
+    .do(async () => {
+      const err = await errors.FetchError.build({
+        json: () =>
+          Promise.resolve({
+            status: 412,
+            title: 'BAD_REQUEST',
+            detail: 'this is a bad request and you should feel bad',
+          }),
+      } as Response);
+      mockDeleteOlderThan.mockRejectedValueOnce(err).mockRejectedValueOnce(err);
     })
     .stdout()
     .stderr()
@@ -176,9 +193,11 @@ describe('source:push:delete', () => {
 
   test
     .do(() => {
-      mockDeleteDocument.mockReturnValueOnce(
-        doMockAxiosSuccess(999, 'this document is gone')
-      );
+      mockDeleteDocument.mockReturnValueOnce({
+        status: 999,
+        title: 'WOOSH',
+        detail: 'this document is gone',
+      });
     })
     .stdout()
     .stderr()
@@ -209,14 +228,16 @@ describe('source:push:delete', () => {
     );
 
   test
-    .do(() => {
-      mockDeleteDocument.mockRejectedValueOnce(
-        doMockAxiosError(
-          412,
-          'this is a bad request and you should feel bad',
-          'BAD_REQUEST'
-        )
-      );
+    .do(async () => {
+      const err = await errors.FetchError.build({
+        json: () =>
+          Promise.resolve({
+            status: 412,
+            title: 'BAD_REQUEST',
+            detail: 'this is a bad request and you should feel bad',
+          }),
+      } as Response);
+      mockDeleteDocument.mockRejectedValueOnce(err);
     })
     .stdout()
     .stderr()
@@ -229,12 +250,15 @@ describe('source:push:delete', () => {
     );
 
   test
-    .do(() => {
-      const err = doMockAxiosError(
-        412,
-        'this is a bad request and you should feel bad',
-        'BAD_REQUEST'
-      );
+    .do(async () => {
+      const err = await errors.FetchError.build({
+        json: () =>
+          Promise.resolve({
+            status: 412,
+            title: 'BAD_REQUEST',
+            detail: 'this is a bad request and you should feel bad',
+          }),
+      } as Response);
       mockDeleteDocument.mockRejectedValueOnce(err).mockRejectedValueOnce(err);
     })
     .stdout()
@@ -255,14 +279,16 @@ describe('source:push:delete', () => {
     );
 
   test
-    .do(() => {
-      mockDeleteDocument.mockRejectedValueOnce(
-        doMockAxiosError(
-          412,
-          'this is a bad request and you should feel bad',
-          'BAD_REQUEST'
-        )
-      );
+    .do(async () => {
+      const err = await errors.FetchError.build({
+        json: () =>
+          Promise.resolve({
+            status: 412,
+            title: 'BAD_REQUEST',
+            detail: 'this is a bad request and you should feel bad',
+          }),
+      } as Response);
+      mockDeleteDocument.mockRejectedValueOnce(err);
     })
     .stdout()
     .stderr()
