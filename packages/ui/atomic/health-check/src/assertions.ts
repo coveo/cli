@@ -1,9 +1,10 @@
 import packageJsonSchema from './schema.js';
-import {join} from 'node:path';
+import {join, basename} from 'node:path';
 import {cwd} from 'process';
 import {existsSync, readFileSync} from 'node:fs';
 
-const componentDocPath = join(cwd(), 'docs', 'atomic-docs.json');
+const docRelativePath = join('docs', 'atomic-docs.json');
+const componentDocPath = join(cwd(), docRelativePath);
 
 export function ensureRequiredProperties() {
   const parsed = getJsonPkg();
@@ -20,11 +21,10 @@ export function ensureReadme() {
 }
 
 export function ensureDocFile() {
-  // TODO: CDX-1388: make sure the atomic-docs.json creation is generated on build
   const exists = existsSync(componentDocPath);
   if (!exists) {
     throw new Error(
-      `Missing ${componentDocPath} file. Make sure to run \`npm run build\` in your component directory`
+      `Missing ${docRelativePath} file in component directory. Try running \`npm run build\` first`
     );
   }
 }
