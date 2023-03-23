@@ -30,7 +30,7 @@ export function ensureDocFile() {
 }
 
 export function ensureConsistentElementName() {
-  const {elementName} = getJsonPkg(); // TODO: CDX-1389: Add a custom property to component's package.json in create-atomic-component packages
+  const {elementName} = getJsonPkg();
   const jsonDocs = JSON.parse(readFileSync(componentDocPath).toString());
   const {components, filePath} = jsonDocs;
   const match = [...components].some(({tag}) => {
