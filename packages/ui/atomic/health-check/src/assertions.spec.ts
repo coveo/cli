@@ -34,5 +34,21 @@ describe('assertions', () => {
     expect(() => ensureReadme()).not.toThrow();
   });
 
-  it.todo('#ensureConsistentTagName');
+  // TODO: CDX-1388
+  it.todo('#ensureDocFile should throw when doc file is missing');
+
+  // TODO: CDX-1389
+  it.todo(
+    '#ensureConsistentTagName should throw when Stencil tag name does not match elementName'
+  );
+
+  // TODO: CDX-1390
+  it.todo(
+    '#ensureConsistentTagName should throw when name does not respect HTML specs'
+  );
+
+  // TODO: CDX-1366
+  it.todo(
+    '#ensureConsistentTagName should throw when name has redundant words'
+  );
 });
