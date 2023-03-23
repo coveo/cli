@@ -29,10 +29,6 @@ You can add it to your package.json:
 ...
 ```
 
-## Testing
-
-Before running the tests, make sure to build the project with `npm run build`.
-
 ## Contributing
 
 If you find a bug or have a feature request, please create an [issue](https://github.com/coveo/cli/issues) or submit a [pull request](https://github.com/coveo/cli/pulls).
