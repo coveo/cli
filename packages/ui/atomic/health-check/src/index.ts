@@ -2,7 +2,6 @@
 
 import {
   ensureConsistentElementName,
-  ensureDocFile,
   ensureReadme,
   ensureRequiredProperties,
 } from './assertions.js';
@@ -11,7 +10,6 @@ import {Inspector} from './inspector.js';
 try {
   new Inspector()
     .check(ensureReadme, 'Readme file')
-    .check(ensureDocFile, 'Documentation file')
     .check(ensureConsistentElementName, 'Component name')
     .check(ensureRequiredProperties, 'Required properties in package.json')
     // .check(ensureInternalScope, 'Valid scope') //TODO: CDX-1266

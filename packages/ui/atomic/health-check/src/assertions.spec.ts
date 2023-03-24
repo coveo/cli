@@ -2,6 +2,7 @@ jest.mock('node:fs');
 jest.mock('./schema.js');
 
 import {
+  ensureConsistentElementName,
   ensureDocFile,
   ensureReadme,
   ensureRequiredProperties,
@@ -48,18 +49,25 @@ describe('assertions', () => {
     expect(() => ensureDocFile()).not.toThrow();
   });
 
-  // TODO: CDX-1389
-  it.todo(
-    '#ensureConsistentTagName should throw when Stencil tag name does not match elementName'
-  );
+  it('#ensureConsistentElementName should throw when component tag name does not match elementName property', () => {
+    const pkgJson = {elementName: 'foo-cmp'};
+    const jsonDocs = {
+      components: [{tag: 'bar-cmp'}],
+    };
+    mockedReadFileSync
+      .mockReturnValueOnce(JSON.stringify(pkgJson))
+      .mockReturnValueOnce(JSON.stringify(jsonDocs));
+    expect(() => ensureConsistentElementName()).toThrow();
+  });
 
-  // TODO: CDX-1390
-  it.todo(
-    '#ensureConsistentTagName should throw when name does not respect HTML specs'
-  );
+  it('#ensureConsistentElementName should not throw when there is a match with at least one web component', () => {
+    const pkgJson = {elementName: 'foo-cmp'};
+    const jsonDocs = {components: [{tag: 'bar-cmp'}, {tag: 'foo-cmp'}]};
+    mockedExistsSync.mockReturnValue(true);
+    mockedReadFileSync
+      .mockReturnValueOnce(JSON.stringify(pkgJson))
+      .mockReturnValueOnce(JSON.stringify(jsonDocs));
 
-  // TODO: CDX-1366
-  it.todo(
-    '#ensureConsistentTagName should throw when name has redundant words'
-  );
+    expect(() => ensureConsistentElementName()).not.toThrow();
+  });
 });
