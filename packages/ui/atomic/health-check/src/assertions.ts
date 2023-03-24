@@ -1,5 +1,5 @@
 import packageJsonSchema from './schema.js';
-import {join, basename} from 'node:path';
+import {join} from 'node:path';
 import {cwd} from 'process';
 import {existsSync, readFileSync} from 'node:fs';
 
