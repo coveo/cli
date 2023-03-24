@@ -57,9 +57,4 @@ describe('assertions', () => {
   it.todo(
     '#ensureConsistentTagName should throw when name does not respect HTML specs'
   );
-
-  // TODO: CDX-1366
-  it.todo(
-    '#ensureConsistentTagName should throw when name has redundant words'
-  );
 });
