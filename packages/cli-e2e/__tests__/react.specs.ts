@@ -402,7 +402,7 @@ describe('ui:create:react', () => {
 
     it('should run the server on a new port', async () => {
       const tokenRequest = await fetch(tokenServerEndpoint());
-      expect(tokenRequest.data.token).toMatch(jwtTokenPattern);
+      expect((await tokenRequest.json()).token).toMatch(jwtTokenPattern);
     });
   });
 });

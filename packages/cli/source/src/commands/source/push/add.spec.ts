@@ -16,7 +16,6 @@ jest.mock('@coveo/push-api-client', () => {
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {errors, PushSource} from '@coveo/push-api-client';
-import {APIError} from '@coveo/cli-commons/errors/apiError';
 import {
   BatchUploadDocumentsError,
   BatchUploadDocumentsSuccess,
