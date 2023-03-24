@@ -30,27 +30,11 @@ export function ensureDocFile() {
 }
 
 export function ensureConsistentElementName() {
-  const {elementName} = getJsonPkg(); // TODO: CDX-1389: Add a custom property to component's package.json in create-atomic-component packages
-  const jsonDocs = JSON.parse(readFileSync(componentDocPath).toString());
-  const {components, filePath} = jsonDocs;
-  const match = [...components].some(({tag}) => {
-    tag === elementName;
-  });
-  if (!match) {
-    throw new Error(
-      `Component tag name in ${filePath} does not match the \`elementName\` property defined in your component's package.json file. Make sure both values are identical.`
-    );
-  }
-  ensureComponentNameStandard(elementName);
+  throw 'TODO: CDX-1389';
 }
 
 export function ensureInternalScope() {
   // TODO: CDX-1266: Ensure internal components tags are tagged with the appropriate scope.
-}
-
-function ensureComponentNameStandard(_name: string) {
-  // TODO: CDX-1366: check if the component name uses redundant words (atomic, coveo, ...)
-  // TODO: CDX-1390: check if the component name matches the PotentialCustomElementName production as defined in the HTML Standard.
 }
 
 function getJsonPkg() {
