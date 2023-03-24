@@ -66,6 +66,7 @@ const validJsonConfig: DeployConfig = {
       path: 'https://static.cloud.coveo.com/atomic/v2/themes/coveo.css',
     },
   ],
+  schemaVersion: '1.0.0',
 };
 
 describe('ui:deploy', () => {
@@ -257,6 +258,20 @@ describe('ui:deploy', () => {
       .catch(/instance requires property "htmlEntryFile"/)
       .it(
         'should exit with an error when the htmlEntryFile is not part of the JSON config'
+      );
+
+    test
+      .do(() => {
+        delete modifiedConfig.schemaVersion;
+        mockedReadJSON.mockImplementationOnce(() => modifiedConfig);
+        doActualValidate();
+      })
+      .stdout()
+      .stderr()
+      .command(['ui:deploy'])
+      .catch(/instance requires property "schemaVersion"/)
+      .it(
+        'should exit with an error when the schemaVersion is not part of the JSON config'
       );
 
     test
