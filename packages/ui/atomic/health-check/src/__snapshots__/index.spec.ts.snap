@@ -14,7 +14,7 @@ exports[`@coveo/atomic-component-health-check when component tag name does not m
 "[32m✔[39m [1mReadme file[22m
 
 [31m✖[39m [1mComponent name[22m
-  Component tag name from your .tsx file does not match the \`elementName\` property defined in your component's package.json file. Make sure both values are identical.
+  Component tag name from your .tsx file does not match the \`elementName\` property defined in your component's package.json file. Make sure both values are identical
 
 [32m✔[39m [1mRequired properties in package.json[22m
 
@@ -27,7 +27,7 @@ exports[`@coveo/atomic-component-health-check when package.json conditions are n
 "[32m✔[39m [1mReadme file[22m
 
 [31m✖[39m [1mComponent name[22m
-  Component tag name from your .tsx file does not match the \`elementName\` property defined in your component's package.json file. Make sure both values are identical.
+  Component tag name from your .tsx file does not match the \`elementName\` property defined in your component's package.json file. Make sure both values are identical
 
 [31m✖[39m [1mRequired properties in package.json[22m
     [31m✖[39m [1mInvalid elementName: [22mYou must provide a \`elementName\` property for your custom component. Its value should match the tag name used by your custom component. See https://stenciljs.com/docs/component#tag
@@ -43,7 +43,7 @@ exports[`@coveo/atomic-component-health-check when package.json conditions are n
 "[32m✔[39m [1mReadme file[22m
 
 [31m✖[39m [1mComponent name[22m
-  Component tag name from your .tsx file does not match the \`elementName\` property defined in your component's package.json file. Make sure both values are identical.
+  Component tag name from your .tsx file does not match the \`elementName\` property defined in your component's package.json file. Make sure both values are identical
 
 [31m✖[39m [1mRequired properties in package.json[22m
     [31m✖[39m [1mInvalid elementName: [22mYou must provide a \`elementName\` property for your custom component. Its value should match the tag name used by your custom component. See https://stenciljs.com/docs/component#tag
