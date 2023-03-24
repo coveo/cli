@@ -18,7 +18,7 @@ import angularChangelogConvention from 'conventional-changelog-angular';
 import {dirname, resolve, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import retry from 'async-retry';
-import {inc, compareBuild} from 'semver';
+import {inc, compareBuild, gt} from 'semver';
 import {json as fetchNpm} from 'npm-registry-fetch';
 
 const hasPackageJsonChanged = (directoryPath) => {
@@ -60,9 +60,16 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
     return;
   }
   const parsedCommits = parseCommits(commits, convention.parserOpts);
-  let currentVersion = getCurrentVersion(PATH);
-  let bumpInfo = convention.recommendedBumpOpts.whatBump(parsedCommits);
-  const nextGoldVersion = getNextVersion(currentVersion, bumpInfo);
+  let currentGitVersion = getCurrentVersion(PATH);
+  let currentNpmVersion = await describeNpmTag('@coveo/cli', 'latest');
+  const isRedo = gt(currentNpmVersion, currentGitVersion);
+  const bumpInfo = isRedo
+    ? {type: 'patch'}
+    : convention.recommendedBumpOpts.whatBump(parsedCommits);
+  const nextGoldVersion = getNextVersion(
+    isRedo ? currentNpmVersion : currentGitVersion,
+    bumpInfo
+  );
   const newVersion =
     isPrerelease && !privatePackage
       ? await getNextBetaVersion(packageJson.name, nextGoldVersion)
