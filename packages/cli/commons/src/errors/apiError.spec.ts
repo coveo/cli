@@ -1,61 +1,58 @@
-import {APIError, AxiosErrorFromAPI} from './apiError';
+import {CoveoPlatformClientError} from '@coveo/platform-client';
+import {APIError} from './apiError';
 
 describe('APIError', () => {
   it('should print the tagline', () => {
     expect(() => {
-      throw new APIError({}, 'This is a tagline');
+      throw new APIError(new CoveoPlatformClientError(), 'This is a tagline');
     }).toThrowErrorMatchingSnapshot();
   });
 
   it('should not print a tagline', () => {
     expect(() => {
-      throw new APIError({});
+      throw new APIError(new CoveoPlatformClientError());
     }).toThrowErrorMatchingSnapshot();
   });
 
   describe('when the error is of type APIErrorResponse', () => {
     it.each([
       {
-        title: 'it should print the message',
-        response: {message: 'something went wrong'},
+        title: 'it should print the details',
+        response: () => {
+          const err = new CoveoPlatformClientError();
+          err.detail = 'something went wrong';
+          return err;
+        },
       },
       {
         title: 'it should print the request Id',
-        response: {requestID: '123456qwerty'},
+        response: () => {
+          const err = new CoveoPlatformClientError();
+          err.xRequestId = '123456qwerty';
+          return err;
+        },
       },
       {
         title: 'it should print the error code',
-        response: {errorCode: 'YOU_SHALL_NOT_GET_MODE_INFO'},
+        response: () => {
+          const err = new CoveoPlatformClientError();
+          err.title = 'YOU_SHALL_NOT_GET_MODE_INFO';
+          return err;
+        },
       },
       {
         title: 'it should print everything',
-        response: {
-          errorCode: 'SOME_ERROR',
-          message: 'some more info',
-          requestID: '123456qwerty',
+        response: () => {
+          const err = new CoveoPlatformClientError();
+          err.xRequestId = '123456qwerty';
+          err.title = 'YOU_SHALL_NOT_GET_MODE_INFO';
+          err.detail = 'something went wrong';
+          return err;
         },
       },
     ])(`$title`, ({response}) => {
       expect(() => {
-        throw new APIError(response, 'This is a tagline');
-      }).toThrowErrorMatchingSnapshot();
-    });
-  });
-
-  describe('when the error is of type AxiosErrorFromAPI', () => {
-    it('it should print the status code', () => {
-      const axiosResponse: AxiosErrorFromAPI = {
-        response: {
-          status: 410,
-          data: {
-            errorCode: 'ORGANIZATION_GONE',
-            message: 'Your org is just gone',
-          },
-        },
-      };
-
-      expect(() => {
-        throw new APIError(axiosResponse);
+        throw new APIError(response(), 'This is a tagline');
       }).toThrowErrorMatchingSnapshot();
     });
   });

@@ -3,60 +3,32 @@
 exports[`source:push:delete returns an information message on deletion and success failure with multiple document uri 1`] = `
 [
   "Error while trying to delete document: [31mhttps://foo.com[39m.",
-  {
-    "response": {
-      "data": {
-        "errorCode": "BAD_REQUEST",
-        "message": "this is a bad request and you should feel bad",
-      },
-      "status": 412,
-    },
-  },
+  [Fetch Error: Response body:
+{"status":412,"title":"BAD_REQUEST","detail":"this is a bad request and you should feel bad"}],
 ]
 `;
 
 exports[`source:push:delete returns an information message on deletion failure with document uri 1`] = `
 [
   "Error while trying to delete document: [31mhttps://foo.com[39m.",
-  {
-    "response": {
-      "data": {
-        "errorCode": "BAD_REQUEST",
-        "message": "this is a bad request and you should feel bad",
-      },
-      "status": 412,
-    },
-  },
+  [Fetch Error: Response body:
+{"status":412,"title":"BAD_REQUEST","detail":"this is a bad request and you should feel bad"}],
 ]
 `;
 
 exports[`source:push:delete returns an information message on deletion failure with multiple document uri 1`] = `
 [
   "Error while trying to delete document: [31mhttps://foo.com/2[39m.",
-  {
-    "response": {
-      "data": {
-        "errorCode": "BAD_REQUEST",
-        "message": "this is a bad request and you should feel bad",
-      },
-      "status": 412,
-    },
-  },
+  [Fetch Error: Response body:
+{"status":412,"title":"BAD_REQUEST","detail":"this is a bad request and you should feel bad"}],
 ]
 `;
 
 exports[`source:push:delete returns an information message on deletion failure with older than 1`] = `
 [
   "Error while trying to delete document: [31molder than 12345[39m.",
-  {
-    "response": {
-      "data": {
-        "errorCode": "BAD_REQUEST",
-        "message": "this is a bad request and you should feel bad",
-      },
-      "status": 412,
-    },
-  },
+  [Fetch Error: Response body:
+{"status":412,"title":"BAD_REQUEST","detail":"this is a bad request and you should feel bad"}],
 ]
 `;
 
@@ -64,11 +36,9 @@ exports[`source:push:delete returns an information message on successful deletio
 [
   "The delete request for document: [32mhttps://foo.com[39m was accepted by the Push API.",
   {
-    "config": {},
-    "data": {},
-    "headers": {},
+    "detail": "this document is gone",
     "status": 999,
-    "statusText": "this document is gone",
+    "title": "WOOSH",
   },
 ]
 `;
@@ -77,11 +47,9 @@ exports[`source:push:delete returns an information message on successful deletio
 [
   "The delete request for document: [32mhttps://foo.com/2[39m was accepted by the Push API.",
   {
-    "config": {},
-    "data": {},
-    "headers": {},
+    "detail": "right trou",
     "status": 202,
-    "statusText": "right trou",
+    "title": "TIGUIDOU",
   },
 ]
 `;
@@ -90,11 +58,9 @@ exports[`source:push:delete returns an information message on successful deletio
 [
   "The delete request for document: [32molder than 12345[39m was accepted by the Push API.",
   {
-    "config": {},
-    "data": {},
-    "headers": {},
+    "detail": "this document is gone",
     "status": 999,
-    "statusText": "this document is gone",
+    "title": "WOOSH",
   },
 ]
 `;
