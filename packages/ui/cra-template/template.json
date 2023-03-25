@@ -3,7 +3,7 @@
     "dependencies": {
       "@coveo/headless": "latest",
       "@coveo/search-token-server": "1.35.20",
-      "@mui/material": "5.11.12",
+      "@mui/material": "5.11.14",
       "@emotion/react": "11.10.6",
       "@emotion/styled": "11.10.6",
       "concurrently": "7.6.0",
@@ -18,9 +18,9 @@
       "@testing-library/jest-dom": "5.16.5",
       "@testing-library/react": "14.0.0",
       "@testing-library/user-event": "^14.0.0",
-      "@types/jest": "29.4.0",
-      "@types/node": "18.15.1",
-      "@types/react": "18.0.28",
+      "@types/jest": "29.5.0",
+      "@types/node": "18.15.8",
+      "@types/react": "18.0.29",
       "@types/react-dom": "18.0.11",
       "@types/react-router-dom": "5.3.3"
     },
