@@ -3,7 +3,7 @@ import {join} from 'node:path';
 import {cwd} from 'process';
 import {existsSync, readFileSync} from 'node:fs';
 
-const docRelativePath = join('docs', 'stencil-docs.json.json');
+const docRelativePath = join('docs', 'stencil-docs.json');
 const componentDocPath = join(cwd(), docRelativePath);
 
 export function ensureRequiredProperties() {
