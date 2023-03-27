@@ -61,7 +61,7 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
   }
   const parsedCommits = parseCommits(commits, convention.parserOpts);
   let currentGitVersion = getCurrentVersion(PATH);
-  let currentNpmVersion = await describeNpmTag('@coveo/cli', 'latest');
+  let currentNpmVersion = await describeNpmTag(packageJson.name, 'latest');
   const isRedo = gt(currentNpmVersion, currentGitVersion);
   const bumpInfo = isRedo
     ? {type: 'patch'}
