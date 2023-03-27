@@ -1,0 +1,29 @@
+{
+  "timestamp": "2023-03-23T20:12:34",
+  "compiler": {
+    "name": "@stencil/core",
+    "version": "2.22.2",
+    "typescriptVersion": "4.9.4"
+  },
+  "components": [
+    {
+      "filePath": "./src/my-atomic-component.tsx",
+      "encapsulation": "shadow",
+      "tag": "clashing-component-name",
+      "readme": "...",
+      "docs": "...",
+      "docsTags": [],
+      "usage": {},
+      "props": [],
+      "methods": [],
+      "events": [],
+      "listeners": [],
+      "styles": [],
+      "slots": [],
+      "parts": [],
+      "dependents": [],
+      "dependencies": [],
+      "dependencyGraph": {}
+    }
+  ]
+}

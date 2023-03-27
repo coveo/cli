@@ -13,8 +13,12 @@ const addPackageJsonToProject = (stubFile: string, dest: string) => {
   cpSync(join(pathToStub, stubFile), join(dest, 'package.json'));
 };
 
-const addReadmeToProject = (stubFile: string, dest: string) => {
-  cpSync(join(pathToStub, stubFile), join(dest, 'readme.md'));
+const addReadmeToProject = (dest: string) => {
+  cpSync(join(pathToStub, 'readme.md'), join(dest, 'readme.md'));
+};
+
+const addJsonDocsToProject = (stubFile: string, dest: string) => {
+  cpSync(join(pathToStub, stubFile), join(dest, 'docs', 'stencil-docs.json'));
 };
 
 describe('@coveo/atomic-component-health-check', () => {
@@ -37,6 +41,7 @@ describe('@coveo/atomic-component-health-check', () => {
 
   describe('when readme condition is not met', () => {
     beforeAll(() => {
+      addJsonDocsToProject('matching-docs.json', testDirectory);
       addPackageJsonToProject('validPackage.json', testDirectory);
     });
 
@@ -53,7 +58,7 @@ describe('@coveo/atomic-component-health-check', () => {
 
   describe('when package.json conditions are not met', () => {
     beforeEach(() => {
-      addReadmeToProject('readme.md', testDirectory);
+      addReadmeToProject(testDirectory);
     });
 
     it('should exit with status code 1', () => {
@@ -78,9 +83,27 @@ describe('@coveo/atomic-component-health-check', () => {
     });
   });
 
+  describe('when component tag name does not match `elementName` property', () => {
+    beforeAll(() => {
+      addJsonDocsToProject('clashing-docs.json', testDirectory);
+      addPackageJsonToProject('validPackage.json', testDirectory);
+    });
+
+    it('should exit with status code 1', () => {
+      const {status} = healthCheck(testDirectory);
+      expect(status).toBe(1);
+    });
+
+    it('should warn about component name mismatch', () => {
+      const {stdout} = healthCheck(testDirectory);
+      expect(stdout.toString()).toMatchSnapshot();
+    });
+  });
+
   describe('when all conditions are met', () => {
     beforeEach(() => {
-      addReadmeToProject('readme.md', testDirectory);
+      addJsonDocsToProject('matching-docs.json', testDirectory);
+      addReadmeToProject(testDirectory);
       addPackageJsonToProject('validPackage.json', testDirectory);
     });
 
