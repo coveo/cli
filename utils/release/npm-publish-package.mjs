@@ -2,6 +2,7 @@
 
 import {
   getLastTag,
+  gitPull,
   parseCommits,
   getCommits,
   npmBumpVersion,
