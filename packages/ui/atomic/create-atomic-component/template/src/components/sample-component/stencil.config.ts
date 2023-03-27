@@ -15,7 +15,7 @@ export const config: Config = {
     },
     {
       type: 'docs-json',
-      file: 'docs/atomic-docs.json',
+      file: 'docs/stencil-docs.json',
     },
   ],
   rollupPlugins: {
