@@ -2,13 +2,10 @@ import {green} from 'chalk';
 import dedent from 'ts-dedent';
 import {wrapError} from '@coveo/cli-commons/errors/wrapError';
 import {CliUx} from '@oclif/core';
+import type {Response} from 'undici';
+import {errors} from '@coveo/push-api-client';
 
-export interface AxiosResponse {
-  status: number;
-  statusText: string;
-}
-
-export const successMessage = (tagLine: string, res?: AxiosResponse) => {
+export const successMessage = (tagLine: string, res?: Response) => {
   let message = dedent(`
       ${tagLine}
       `);
@@ -24,7 +21,7 @@ export const errorMessage = (
   e: unknown,
   options = {exit: false}
 ) => {
-  const error = wrapError(e);
+  const error = e instanceof errors.FetchError ? e : wrapError(e);
   error.message = dedent`${tagLine}
   ${error.message}`;
 

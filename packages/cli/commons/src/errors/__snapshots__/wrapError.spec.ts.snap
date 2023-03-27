@@ -2,6 +2,7 @@
 
 exports[`wrapError when the error is coming from the API should prettify error message from API 1`] = `
 "
+Status code: 500
 Error code: SOMETHING_WENT_WRONG
 Message: Some error message
 Request ID: some id"

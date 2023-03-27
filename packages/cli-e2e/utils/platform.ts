@@ -2,7 +2,6 @@ require('isomorphic-fetch');
 require('abortcontroller-polyfill');
 
 import PlatformClient from '@coveo/platform-client';
-import axios from 'axios';
 import {HTTPRequest, HTTPResponse} from 'puppeteer';
 
 export function getPlatformClient(organizationId: string, accessToken: string) {
@@ -47,16 +46,14 @@ export async function createOrg(
     `/rest/organizations?name=${name}&organizationTemplate=${organizationTemplate}`,
     process.env.PLATFORM_HOST
   );
-  try {
-    const request = await axios.post(url.href, {}, authHeader(accessToken));
-    return request.data.id;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      throw JSON.stringify(error.response?.data);
-    } else {
-      throw error;
-    }
-  }
+  return (
+    await (
+      await fetch(url.href, {
+        method: 'POST',
+        ...authHeader(accessToken),
+      })
+    ).json()
+  ).id;
 }
 
 function authHeader(accessToken: string) {

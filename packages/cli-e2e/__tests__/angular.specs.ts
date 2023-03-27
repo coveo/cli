@@ -28,7 +28,6 @@ import {readFileSync, writeFileSync, truncateSync, appendFileSync} from 'fs';
 import {DummyServer} from '../utils/server';
 import getPort from 'get-port';
 import {npm} from '../utils/npm';
-import axios from 'axios';
 import {jwtTokenPattern} from '../utils/matcher';
 
 // TODO CDX-804: Enable the tests back
@@ -466,8 +465,8 @@ describe('ui:create:angular', () => {
     });
 
     it('should run the server on a new port', async () => {
-      const tokenRequest = await axios.get(tokenServerEndpoint());
-      expect(tokenRequest.data.token).toMatch(jwtTokenPattern);
+      const tokenRequest = await fetch(tokenServerEndpoint());
+      expect((await tokenRequest.json()).token).toMatch(jwtTokenPattern);
     });
   });
 });

@@ -4,12 +4,19 @@ jest.mock('@coveo/cli-commons/preconditions/apiKeyPrivilege');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 
-jest.mock('@coveo/push-api-client');
+jest.mock('@coveo/push-api-client', () => {
+  const mock = jest.createMockFromModule<object>('@coveo/push-api-client');
+  const real = jest.requireActual('@coveo/push-api-client');
+  return {
+    __esModule: true,
+    ...mock,
+    errors: real.errors,
+  };
+});
 
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {CatalogSource} from '@coveo/push-api-client';
-import {APIError} from '@coveo/cli-commons/errors/apiError';
+import {CatalogSource, errors} from '@coveo/push-api-client';
 
 import {
   BatchUploadDocumentsError,
@@ -21,6 +28,8 @@ import {
   HasNecessaryCoveoPrivileges,
 } from '@coveo/cli-commons/preconditions';
 import {formatCliLog} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
+import {Response} from 'undici';
+import {CLIBaseError} from '@coveo/cli-commons/errors/cliBaseError';
 
 describe('source:catalog:add', () => {
   const mockedClient = jest.mocked(AuthenticatedClient);
@@ -60,9 +69,21 @@ describe('source:catalog:add', () => {
     );
   };
 
-  const doMockErrorUpload = () => {
-    mockBatchUpdate.mockReturnValue(new BatchUploadDocumentsError());
-    mockBatchStream.mockReturnValue(new BatchUploadDocumentsError());
+  const doMockErrorUpload = async () => {
+    const fetchErrorInstance = await errors.FetchError.build({
+      json: () =>
+        Promise.resolve({
+          status: 412,
+          title: 'BAD_REQUEST',
+          detail: 'this is a bad request and you should feel bad',
+        }),
+    } as Response);
+    mockBatchUpdate.mockReturnValue(
+      new BatchUploadDocumentsError(fetchErrorInstance)
+    );
+    mockBatchStream.mockReturnValue(
+      new BatchUploadDocumentsError(fetchErrorInstance)
+    );
   };
 
   const doMockAuthenticatedClient = () => {
@@ -260,8 +281,8 @@ describe('source:catalog:add', () => {
   });
 
   describe('when the batch upload fails', () => {
-    beforeEach(() => {
-      doMockErrorUpload();
+    beforeEach(async () => {
+      await doMockErrorUpload();
     });
 
     test
@@ -269,7 +290,7 @@ describe('source:catalog:add', () => {
       .stderr()
       .command(['source:catalog:add', 'mysource', '-f', 'somefile'])
       .catch((err) => {
-        expect(err).toBeInstanceOf(APIError);
+        expect(err).toBeInstanceOf(CLIBaseError);
         expect(err.message).toMatchSnapshot();
       })
       .it('returns an information message on add failure from the API');
@@ -279,7 +300,7 @@ describe('source:catalog:add', () => {
       .stderr()
       .command(['source:catalog:add', 'mysource', '-f', 'somefile'])
       .catch((err) => {
-        expect(err).toBeInstanceOf(APIError);
+        expect(err).toBeInstanceOf(CLIBaseError);
       })
       .it('returns a summary even if an error is thrown', (ctx) => {
         expect(ctx.stdout).toMatchSnapshot();

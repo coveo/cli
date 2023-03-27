@@ -3,12 +3,19 @@ jest.mock('@coveo/cli-commons/preconditions/authenticated');
 jest.mock('@coveo/cli-commons/preconditions/apiKeyPrivilege');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
-jest.mock('@coveo/push-api-client');
+jest.mock('@coveo/push-api-client', () => {
+  const mock = jest.createMockFromModule<object>('@coveo/push-api-client');
+  const real = jest.requireActual('@coveo/push-api-client');
+  return {
+    __esModule: true,
+    ...mock,
+    errors: real.errors,
+  };
+});
 
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {PushSource} from '@coveo/push-api-client';
-import {APIError} from '@coveo/cli-commons/errors/apiError';
+import {errors, PushSource} from '@coveo/push-api-client';
 import {
   BatchUploadDocumentsError,
   BatchUploadDocumentsSuccess,
@@ -19,6 +26,8 @@ import {
 } from '@coveo/cli-commons/preconditions';
 import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
 import {formatCliLog} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
+import {Response} from 'undici';
+import {CLIBaseError} from '@coveo/cli-commons/errors/cliBaseError';
 
 describe('source:push:add', () => {
   const mockSetSourceStatus = jest.fn();
@@ -47,9 +56,20 @@ describe('source:push:add', () => {
     );
   };
 
-  const doMockErrorBatchUpload = () => {
-    mockBatchUpdate.mockReturnValue(new BatchUploadDocumentsError());
+  const doMockBatchErrorUpload = async () => {
+    const fetchErrorInstance = await errors.FetchError.build({
+      json: () =>
+        Promise.resolve({
+          status: 412,
+          title: 'BAD_REQUEST',
+          detail: 'this is a bad request and you should feel bad',
+        }),
+    } as Response);
+    mockBatchUpdate.mockReturnValue(
+      new BatchUploadDocumentsError(fetchErrorInstance)
+    );
   };
+
   const doMockAuthenticatedClient = () => {
     mockedClient.mockImplementation(
       () =>
@@ -189,8 +209,8 @@ describe('source:push:add', () => {
   });
 
   describe('when the batch upload fails', () => {
-    beforeEach(() => {
-      doMockErrorBatchUpload();
+    beforeEach(async () => {
+      await doMockBatchErrorUpload();
     });
 
     test
@@ -198,9 +218,9 @@ describe('source:push:add', () => {
       .stderr()
       .command(['source:push:add', 'mysource', '-f', 'somepath'])
       .catch((err) => {
-        expect(err).toBeInstanceOf(APIError);
+        expect(err).toBeInstanceOf(CLIBaseError);
         expect(err.message).toMatchSnapshot();
       })
-      .it('returns an information message on add failure from the API');
+      .it('returns an information message on add failure');
   });
 });
