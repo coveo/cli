@@ -78,7 +78,9 @@ describe(PACKAGE_NAME, () => {
           },
           files: {
             include: ['*'],
-            exclude: ['**package-lock.json'],
+            // stencil-docs.json contains dynamic timestamp value.
+            // TODO: CDX-1393: E2E tests on health-check will test for stencil-docs.json file
+            exclude: ['**package-lock.json', 'stencil-docs.json'],
             ignoreRootName: true,
             ignoreBasename: true,
           },
