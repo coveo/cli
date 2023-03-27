@@ -11,6 +11,7 @@ import {
   generateChangelog,
   writeChangelog,
   describeNpmTag,
+  getSHA1FromRef,
 } from '@coveo/semantic-monorepo-tools';
 import {spawnSync} from 'node:child_process';
 import {appendFileSync, readFileSync, writeFileSync} from 'node:fs';
@@ -21,6 +22,7 @@ import retry from 'async-retry';
 import {inc, compareBuild, gte} from 'semver';
 import {json as fetchNpm} from 'npm-registry-fetch';
 import {changeMasterWriteAccess} from './lock-master.mjs';
+import dedent from 'ts-dedent';
 const hasPackageJsonChanged = (directoryPath) => {
   const {stdout, stderr, status} = spawnSync(
     'git',
@@ -44,7 +46,22 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
 
 // Run on each package, it generate the changelog, install the latest dependencies that are part of the workspace, publish the package.
 (async () => {
-  changeMasterWriteAccess(true);
+  // Lock-out master
+  await changeMasterWriteAccess(false);
+
+  // Verify master has not changed
+  const local = await getSHA1FromRef('master');
+  await gitPull();
+  const remote = await getSHA1FromRef('master');
+  if (local !== remote) {
+    await changeMasterWriteAccess(true);
+    throw new Error(dedent`
+      master branch changed before lockout.
+      pre-lock:${local}
+      post-lock:${remote}
+    `);
+  }
+
   const PATH = '.';
   const privatePackage = isPrivatePackage();
   const packageJson = JSON.parse(

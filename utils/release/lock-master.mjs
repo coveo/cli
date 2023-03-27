@@ -17,6 +17,12 @@ export async function changeMasterWriteAccess(canWrite) {
     repo: REPO_NAME,
     branch: 'master',
     ...currentProtection,
-    lock_branch: !canWrite,
+    restrictions: canWrite
+      ? null
+      : {
+          users: [],
+          apps: ['developer-experience-bot'],
+          teams: [],
+        },
   });
 }
