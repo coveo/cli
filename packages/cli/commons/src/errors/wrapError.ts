@@ -1,4 +1,5 @@
-import {APIError, isAxiosError, isErrorFromAPI} from './apiError';
+import {CoveoPlatformClientError} from '@coveo/platform-client';
+import {APIError} from './apiError';
 import {CLIBaseError} from './cliBaseError';
 import {UnknownError} from './unknownError';
 
@@ -7,7 +8,7 @@ export function wrapError(err: unknown): CLIBaseError {
     return new CLIBaseError(err);
   }
 
-  if (isAxiosError(err) || isErrorFromAPI(err)) {
+  if (err instanceof CoveoPlatformClientError) {
     return new APIError(err);
   }
 
