@@ -3,7 +3,7 @@ import {join} from 'node:path';
 import {cwd} from 'process';
 import {existsSync, readFileSync} from 'node:fs';
 
-const docRelativePath = join('docs', 'stencil-docs.json.json');
+const docRelativePath = join('docs', 'stencil-docs.json');
 const componentDocPath = join(cwd(), docRelativePath);
 
 export function ensureRequiredProperties() {
@@ -30,7 +30,17 @@ export function ensureDocFile() {
 }
 
 export function ensureConsistentElementName() {
-  throw 'TODO: CDX-1389';
+  ensureDocFile();
+  const {elementName} = getJsonPkg();
+  const {components} = JSON.parse(readFileSync(componentDocPath).toString());
+  const match = (components as Record<string, unknown>[]).some(
+    ({tag}) => tag === elementName
+  );
+  if (!match) {
+    throw new Error(
+      `Component tag name from your .tsx file does not match the \`elementName\` property defined in your component's package.json file. Make sure both values are identical`
+    );
+  }
 }
 
 export function ensureInternalScope() {
