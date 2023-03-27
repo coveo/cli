@@ -10,7 +10,7 @@
   "collection": "dist/collection/collection-manifest.json",
   "collection:main": "dist/collection/index.js",
   "unpkg": "dist/my-custom-components/my-custom-components.esm.js",
-  "elementName": "sample-result-component",
+  "elementName": "sample-component",
   "files": [
     "dist/",
     "loader/"

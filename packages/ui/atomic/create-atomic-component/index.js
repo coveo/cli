@@ -51,7 +51,7 @@ if (componentName) {
       srcPath: `src/components/${componentName}/package.json`,
       destPath: `src/components/${componentName}/package.json`,
       transform: (text) =>
-        text.replaceAll(/(@coveo\/)?sample-result-component/g, componentName),
+        text.replaceAll(/(@coveo\/)?sample-component/g, componentName),
     },
   ];
 
