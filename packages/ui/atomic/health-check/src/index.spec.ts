@@ -18,7 +18,7 @@ const addReadmeToProject = (dest: string) => {
 };
 
 const addJsonDocsToProject = (stubFile: string, dest: string) => {
-  cpSync(join(pathToStub, stubFile), join(dest, 'docs', 'atomic-docs.json'));
+  cpSync(join(pathToStub, stubFile), join(dest, 'docs', 'stencil-docs.json'));
 };
 
 describe('@coveo/atomic-component-health-check', () => {
