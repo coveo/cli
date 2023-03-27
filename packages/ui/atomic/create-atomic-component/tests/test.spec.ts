@@ -79,7 +79,7 @@ describe(PACKAGE_NAME, () => {
           },
           files: {
             include: ['*'],
-            exclude: ['**package-lock.json'],
+            exclude: ['**package-lock.json', 'stencil-docs.json'],
             ignoreRootName: true,
             ignoreBasename: true,
           },

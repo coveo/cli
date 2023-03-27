@@ -1,7 +1,12 @@
 jest.mock('node:fs');
 jest.mock('./schema.js');
 
-import {ensureReadme, ensureRequiredProperties} from './assertions.js';
+import {
+  ensureConsistentElementName,
+  ensureDocFile,
+  ensureReadme,
+  ensureRequiredProperties,
+} from './assertions.js';
 import {existsSync, readFileSync} from 'node:fs';
 import schema from './schema.js';
 
@@ -32,5 +37,37 @@ describe('assertions', () => {
   it('#ensureReadme should not throw if readme file is not missing', () => {
     mockedExistsSync.mockReturnValue(true);
     expect(() => ensureReadme()).not.toThrow();
+  });
+
+  it('#ensureDocFile should throw if doc file is missing', () => {
+    mockedExistsSync.mockReturnValue(false);
+    expect(() => ensureDocFile()).toThrow();
+  });
+
+  it('#ensureDocFile should not throw if doc file is not missing', () => {
+    mockedExistsSync.mockReturnValue(true);
+    expect(() => ensureDocFile()).not.toThrow();
+  });
+
+  it('#ensureConsistentElementName should throw when component tag name does not match elementName property', () => {
+    const pkgJson = {elementName: 'foo-cmp'};
+    const jsonDocs = {
+      components: [{tag: 'bar-cmp'}],
+    };
+    mockedReadFileSync
+      .mockReturnValueOnce(JSON.stringify(pkgJson))
+      .mockReturnValueOnce(JSON.stringify(jsonDocs));
+    expect(() => ensureConsistentElementName()).toThrow();
+  });
+
+  it('#ensureConsistentElementName should not throw when there is a match with at least one web component', () => {
+    const pkgJson = {elementName: 'foo-cmp'};
+    const jsonDocs = {components: [{tag: 'bar-cmp'}, {tag: 'foo-cmp'}]};
+    mockedExistsSync.mockReturnValue(true);
+    mockedReadFileSync
+      .mockReturnValueOnce(JSON.stringify(pkgJson))
+      .mockReturnValueOnce(JSON.stringify(jsonDocs));
+
+    expect(() => ensureConsistentElementName()).not.toThrow();
   });
 });

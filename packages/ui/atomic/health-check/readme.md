@@ -14,13 +14,13 @@ npm install health-check --save-dev
 ## Usage
 
 Once installed, you can use Health Check by running the bin file (`atomic-meta-check`) available in the node modules:
-It is meant to be used as a `prepublish` script.
+It is meant to be used as a `prepublishOnly` script.
 You can add it to your package.json:
 
 ```json
 ...
 "scripts": {
-    "prepublish": "atomic-meta-check",
+    "prepublishOnly": "npm run build && atomic-meta-check",
 },
 ...
 "devDependencies": {
@@ -28,10 +28,6 @@ You can add it to your package.json:
 },
 ...
 ```
-
-## Testing
-
-Before running the tests, make sure to build the project with `npm run build`.
 
 ## Contributing
 

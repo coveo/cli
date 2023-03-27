@@ -13,6 +13,10 @@ export const config: Config = {
     {
       type: 'docs-readme',
     },
+    {
+      type: 'docs-json',
+      file: 'docs/stencil-docs.json',
+    },
   ],
   rollupPlugins: {
     before: [
