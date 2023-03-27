@@ -1,3 +1,9 @@
+## 6.0.5 (2023-03-27)
+
+### Bug Fixes
+
+- **deps:** update all dependencies and jest snaps j:cdx-227 ([#1137](https://github.com/coveo/cli/issues/1137)) ([b72dc31](https://github.com/coveo/cli/commits/b72dc314043174ef9afaadb03e066c8830d7acc1)), closes [#1103](https://github.com/coveo/cli/issues/1103)
+
 ## 6.0.3 (2023-03-01)
 
 ### Bug Fixes

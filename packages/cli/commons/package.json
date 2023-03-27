@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli-commons",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "author": "Coveo",
   "description": "Common utils for @coveo/cli plugins",
   "license": "Apache-2.0",
@@ -14,7 +14,7 @@
     }
   },
   "devDependencies": {
-    "@coveo/cli-commons-dev": "6.0.4",
+    "@coveo/cli-commons-dev": "6.0.5",
     "@types/jest": "29.4.0",
     "jest": "29.5.0",
     "jsonschema": "1.4.1",

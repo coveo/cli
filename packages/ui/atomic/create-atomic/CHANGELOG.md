@@ -1,3 +1,15 @@
+## 1.37.1 (2023-03-27)
+
+### Bug Fixes
+
+- **atomic:** generate search/analytics API key instead of impersonate API key ([#1135](https://github.com/coveo/cli/issues/1135)) ([02d4ceb](https://github.com/coveo/cli/commits/02d4ceb400bc150882b1a3869a9a15603aa2efdc))
+- **deps:** update all dependencies and jest snaps j:cdx-227 ([#1137](https://github.com/coveo/cli/issues/1137)) ([b72dc31](https://github.com/coveo/cli/commits/b72dc314043174ef9afaadb03e066c8830d7acc1)), closes [#1103](https://github.com/coveo/cli/issues/1103)
+- **deps:** update all dependencies and jest snaps j:cdx-227 ([#1149](https://github.com/coveo/cli/issues/1149)) ([2f2273c](https://github.com/coveo/cli/commits/2f2273c7d86f2a2a8414ebbdf8cddb800c888e96)), closes [#1144](https://github.com/coveo/cli/issues/1144)
+
+### Features
+
+- **create-atomic:** adapt project to use ui:deploy instead of netlify ([#1131](https://github.com/coveo/cli/issues/1131)) ([97498ed](https://github.com/coveo/cli/commits/97498ed1ec2dcd4abfdbe992134cf5fcf18fd26b))
+
 ## 1.36.4 (2023-03-01)
 
 ### Bug Fixes
