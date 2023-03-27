@@ -36,6 +36,7 @@ export interface DeployConfig {
   javascriptUrls?: JavaScriptFileInput[];
   cssEntryFiles?: FileInput[];
   cssUrls?: FileInput[];
+  schemaVersion: string;
 }
 
 const FileInputSchema: Schema = {
@@ -57,7 +58,7 @@ const JavaScriptFileInputSchema: Schema = {
 
 const DeployConfigSchema: Schema = {
   type: 'object',
-  required: ['name', 'dir', 'htmlEntryFile'],
+  required: ['name', 'dir', 'htmlEntryFile', 'schemaVersion'],
   properties: {
     name: {type: 'string'},
     dir: {type: 'string'},
@@ -66,6 +67,7 @@ const DeployConfigSchema: Schema = {
     javascriptUrls: {type: 'array', items: JavaScriptFileInputSchema},
     cssEntryFiles: {type: 'array', items: FileInputSchema},
     cssUrls: {type: 'array', items: FileInputSchema},
+    schemaVersion: {type: 'string'},
   },
 };
 

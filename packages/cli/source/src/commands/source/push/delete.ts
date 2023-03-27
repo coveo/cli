@@ -8,12 +8,9 @@ import {
 } from '@coveo/cli-commons/preconditions/index';
 import dedent from 'ts-dedent';
 import {green, red} from 'chalk';
-import {
-  AxiosResponse,
-  errorMessage,
-  successMessage,
-} from '../../../lib/userFeedback';
+import {errorMessage, successMessage} from '../../../lib/userFeedback';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
+import {Response} from 'undici';
 
 export default class SourcePushDelete extends CLICommand {
   public static description =
@@ -133,7 +130,7 @@ export default class SourcePushDelete extends CLICommand {
     );
   }
 
-  private successMessageOnDeletion(toDelete: string, res: AxiosResponse) {
+  private successMessageOnDeletion(toDelete: string, res: Response) {
     return successMessage(
       `The delete request for document: ${green(
         toDelete

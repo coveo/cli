@@ -1,3 +1,28 @@
+# release-12 (2023-03-27)
+
+### Bug Fixes
+
+- **atomic:** add schemaVersion for deploy.json ([#1213](https://github.com/coveo/cli/issues/1213)) ([e7a6b2a](https://github.com/coveo/cli/commits/e7a6b2a02095522abdc25dc45544971956914e6d))
+- **atomic:** generate search/analytics API key instead of impersonate API key ([#1135](https://github.com/coveo/cli/issues/1135)) ([02d4ceb](https://github.com/coveo/cli/commits/02d4ceb400bc150882b1a3869a9a15603aa2efdc))
+- **cli-commons:** color orgId magenta only when on unix or WT ([#1143](https://github.com/coveo/cli/issues/1143)) ([82fd809](https://github.com/coveo/cli/commits/82fd809e43b36b9c160384b314abfe8b1ea76a75))
+- **deps:** update all dependencies and jest snaps j:cdx-227 ([#1137](https://github.com/coveo/cli/issues/1137)) ([b72dc31](https://github.com/coveo/cli/commits/b72dc314043174ef9afaadb03e066c8830d7acc1)), closes [#1103](https://github.com/coveo/cli/issues/1103)
+- **deps:** update all dependencies and jest snaps j:cdx-227 ([#1149](https://github.com/coveo/cli/issues/1149)) ([2f2273c](https://github.com/coveo/cli/commits/2f2273c7d86f2a2a8414ebbdf8cddb800c888e96)), closes [#1144](https://github.com/coveo/cli/issues/1144)
+
+- chore!: forced major bump (#1190) ([ef0b861](https://github.com/coveo/cli/commits/ef0b86154beea6602746e8f7c5a70e017a2ef7c4)), closes [#1190](https://github.com/coveo/cli/issues/1190)
+
+### Features
+
+- add health-check as prepublish script ([#1169](https://github.com/coveo/cli/issues/1169)) ([bfcaf69](https://github.com/coveo/cli/commits/bfcaf69497a42c10a43c2dd0435a82313d04bcbc)), closes [#1190](https://github.com/coveo/cli/issues/1190)
+- **cli-commons:** add beta decorators ([#1150](https://github.com/coveo/cli/issues/1150)) ([7b4c01f](https://github.com/coveo/cli/commits/7b4c01f8ec5e4dee7eecdeeb009c238c8f5c3e84))
+- **cli:** implement atomic topic ([#1141](https://github.com/coveo/cli/issues/1141)) ([8e3ddd6](https://github.com/coveo/cli/commits/8e3ddd63f4bfdce745c86e42a6ee213802f915b2))
+- **create-atomic:** adapt project to use ui:deploy instead of netlify ([#1131](https://github.com/coveo/cli/issues/1131)) ([97498ed](https://github.com/coveo/cli/commits/97498ed1ec2dcd4abfdbe992134cf5fcf18fd26b))
+- implement health-check pre-publish script ([#1155](https://github.com/coveo/cli/issues/1155)) ([5efc79a](https://github.com/coveo/cli/commits/5efc79a6d17c8754c05da65db2c2c5dea0f857b8))
+- improve custom component search page ([#1112](https://github.com/coveo/cli/issues/1112)) ([db1d2cb](https://github.com/coveo/cli/commits/db1d2cbf6bad6ecd3413e73d33d6ee400e5b8ade))
+
+### BREAKING CHANGES
+
+- bump to v1
+
 # release-11 (2023-03-02)
 
 # release-10 (2023-03-01)

@@ -1,6 +1,7 @@
 import stripAnsi from 'strip-ansi';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {APIError} from './apiError';
+import {CoveoPlatformClientError} from '@coveo/platform-client';
 import {CLIBaseError} from './cliBaseError';
 import {UnknownError} from './unknownError';
 import {wrapError} from './wrapError';
@@ -24,11 +25,11 @@ describe('wrapError', () => {
 
   describe('when the error is coming from the API', () => {
     beforeAll(() => {
-      const apiResponse = {
-        message: 'Some error message',
-        errorCode: 'SOMETHING_WENT_WRONG',
-        requestID: 'some id',
-      };
+      const apiResponse = new CoveoPlatformClientError();
+      apiResponse.status = 500;
+      apiResponse.detail = 'Some error message';
+      apiResponse.title = 'SOMETHING_WENT_WRONG';
+      apiResponse.xRequestId = 'some id';
       error = wrapError(apiResponse);
     });
 

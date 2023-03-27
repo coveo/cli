@@ -1,11 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`source:push:add when the batch upload fails returns an information message on add failure from the API 1`] = `
+exports[`source:push:add when the batch upload fails returns an information message on add failure 1`] = `
 "Error while trying to add document.
-
-Status code: 412
-Error code: [31mBAD_REQUEST[39m
-Message: [31mthis is a bad request and you should feel bad[39m"
+Response body:
+{"status":412,"title":"BAD_REQUEST","detail":"this is a bad request and you should feel bad"}"
 `;
 
 exports[`source:push:add when the batch upload is successful throws when no flags are specified 1`] = `"You must set the \`files\` flag. Use \`source:push:add --help\` to get more information."`;
