@@ -1,7 +1,11 @@
 jest.mock('node:fs');
 jest.mock('./schema.js');
 
-import {ensureReadme, ensureRequiredProperties} from './assertions.js';
+import {
+  ensureDocFile,
+  ensureReadme,
+  ensureRequiredProperties,
+} from './assertions.js';
 import {existsSync, readFileSync} from 'node:fs';
 import schema from './schema.js';
 
@@ -34,8 +38,15 @@ describe('assertions', () => {
     expect(() => ensureReadme()).not.toThrow();
   });
 
-  // TODO: CDX-1388
-  it.todo('#ensureDocFile should throw when doc file is missing');
+  it('#ensureDocFile should throw if doc file is missing', () => {
+    mockedExistsSync.mockReturnValue(false);
+    expect(() => ensureDocFile()).toThrow();
+  });
+
+  it('#ensureDocFile should not throw if doc file is not missing', () => {
+    mockedExistsSync.mockReturnValue(true);
+    expect(() => ensureDocFile()).not.toThrow();
+  });
 
   // TODO: CDX-1389
   it.todo(
