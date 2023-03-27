@@ -12,7 +12,7 @@ import {
   generateChangelog,
   writeChangelog,
   describeNpmTag,
-  getSHA1FromRef,
+  getSHA1fromRef,
 } from '@coveo/semantic-monorepo-tools';
 import {spawnSync} from 'node:child_process';
 import {appendFileSync, readFileSync, writeFileSync} from 'node:fs';
@@ -51,10 +51,10 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
   await changeMasterWriteAccess(false);
 
   // Verify master has not changed
-  const local = await getSHA1FromRef('master');
+  const local = await getSHA1fromRef('master');
   await gitPull();
-  const remote = await getSHA1FromRef('master');
-  if (local !== remote) {
+  const remote = await getSHA1fromRef('master');
+  if (!process.env.NO_LOCK && local !== remote) {
     await changeMasterWriteAccess(true);
     throw new Error(dedent`
       master branch changed before lockout.

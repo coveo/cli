@@ -12,6 +12,7 @@ import {
   gitDeleteRemoteBranch,
   gitPushTags,
   npmBumpVersion,
+  getSHA1fromRef,
 } from '@coveo/semantic-monorepo-tools';
 import {Octokit} from 'octokit';
 import {createAppAuth} from '@octokit/auth-app';
