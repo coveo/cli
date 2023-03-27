@@ -18,7 +18,7 @@ import angularChangelogConvention from 'conventional-changelog-angular';
 import {dirname, resolve, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import retry from 'async-retry';
-import {inc, compareBuild, gt} from 'semver';
+import {inc, compareBuild, gte} from 'semver';
 import {json as fetchNpm} from 'npm-registry-fetch';
 
 const hasPackageJsonChanged = (directoryPath) => {
@@ -61,8 +61,10 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
   }
   const parsedCommits = parseCommits(commits, convention.parserOpts);
   let currentGitVersion = getCurrentVersion(PATH);
-  let currentNpmVersion = await describeNpmTag(packageJson.name, 'latest');
-  const isRedo = gt(currentNpmVersion, currentGitVersion);
+  let currentNpmVersion = privatePackage
+    ? '0.0.0' // private package does not have a npm version, so we default to the 'lowest' possible
+    : await describeNpmTag(packageJson.name, 'latest');
+  const isRedo = gte(currentNpmVersion, currentGitVersion);
   const bumpInfo = isRedo
     ? {type: 'patch'}
     : convention.recommendedBumpOpts.whatBump(parsedCommits);
