@@ -20,7 +20,7 @@ import {fileURLToPath} from 'node:url';
 import retry from 'async-retry';
 import {inc, compareBuild, gte} from 'semver';
 import {json as fetchNpm} from 'npm-registry-fetch';
-
+import {changeMasterWriteAccess} from './lock-master.mjs';
 const hasPackageJsonChanged = (directoryPath) => {
   const {stdout, stderr, status} = spawnSync(
     'git',
@@ -44,6 +44,7 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
 
 // Run on each package, it generate the changelog, install the latest dependencies that are part of the workspace, publish the package.
 (async () => {
+  changeMasterWriteAccess(true);
   const PATH = '.';
   const privatePackage = isPrivatePackage();
   const packageJson = JSON.parse(
