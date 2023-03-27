@@ -14,6 +14,7 @@ import {
   npmBumpVersion,
 } from '@coveo/semantic-monorepo-tools';
 import {Octokit} from 'octokit';
+import {createAppAuth} from '@octokit/auth-app';
 import angularChangelogConvention from 'conventional-changelog-angular';
 import {dedent} from 'ts-dedent';
 import {readFileSync, writeFileSync} from 'fs';

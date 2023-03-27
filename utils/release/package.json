@@ -16,5 +16,8 @@
   "bin": {
     "npm-publish": "./npm-publish-package.mjs",
     "git-publish-all": "./git-publish-all.mjs"
+  },
+  "devDependencies": {
+    "@octokit/auth-app": "^4.0.9"
   }
 }
