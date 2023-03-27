@@ -4,7 +4,7 @@ exports[`@coveo/create-atomic-component-project should initialize a base project
 HashedFolder {
   "children": [
     HashedFile {
-      "hash": "T+7uUFOwtxWi7kfgvgjJd2t2pXM=",
+      "hash": "sxFXmGsIqCCG8Dv7KxQxiylMrHk=",
       "name": "package.json",
     },
     HashedFile {
@@ -48,7 +48,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "Ek0BFDw4qL73V7FNnEvHVjTVua4=",
+  "hash": "Giiehb7Y5DufGuBA/2e5QWBaxAo=",
   "name": "testDirectory",
 }
 `;
