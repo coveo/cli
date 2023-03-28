@@ -3,7 +3,17 @@ import {Octokit} from 'octokit';
 const REPO_OWNER = 'coveo';
 const REPO_NAME = 'cli';
 
-export async function changeMasterWriteAccess(canWrite) {
+export const limitWriteAccessToBot = () =>
+  changeBranchRestrictions({
+    users: [],
+    apps: ['developer-experience-bot'],
+    teams: [],
+  });
+
+export const removeWriteAccessRestrictions = () =>
+  changeBranchRestrictions(null);
+
+async function changeBranchRestrictions(restrictions) {
   const octokit = new Octokit({auth: process.env.GITHUB_CREDENTIALS});
 
   const currentProtection = await octokit.rest.repos.getBranchProtection({
@@ -17,12 +27,6 @@ export async function changeMasterWriteAccess(canWrite) {
     repo: REPO_NAME,
     branch: 'master',
     ...currentProtection,
-    restrictions: canWrite
-      ? null
-      : {
-          users: [],
-          apps: ['developer-experience-bot'],
-          teams: [],
-        },
+    restrictions,
   });
 }

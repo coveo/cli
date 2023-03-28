@@ -19,7 +19,7 @@ import {createAppAuth} from '@octokit/auth-app';
 import angularChangelogConvention from 'conventional-changelog-angular';
 import {dedent} from 'ts-dedent';
 import {readFileSync, writeFileSync} from 'fs';
-import {changeMasterWriteAccess} from './lock-master.mjs';
+import {removeWriteAccessRestrictions} from './lock-master.mjs';
 const CLI_PKG_MATCHER = /^@coveo\/cli@(?<version>\d+\.\d+\.\d+)$/gm;
 
 const getCliChangelog = () => {
@@ -169,7 +169,7 @@ const getCliChangelog = () => {
   await gitDeleteRemoteBranch('origin', tempBranchName);
 
   // Unlock the main branch
-  await changeMasterWriteAccess(true);
+  await removeWriteAccessRestrictions();
 
   // If `@coveo/cli` has not been released stop there, otherwise, create a GitHub release.
   const cliReleaseInfoMatch = CLI_PKG_MATCHER.exec(packagesReleased);
