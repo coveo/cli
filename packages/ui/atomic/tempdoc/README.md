@@ -1,4 +1,4 @@
-# Atomic Custom Component Starters (alpha)
+# Atomic Custom Component Starters (beta)
 
 > Note that the solutions and commands described here are in alpha. Their behavior may change without warning.
 
