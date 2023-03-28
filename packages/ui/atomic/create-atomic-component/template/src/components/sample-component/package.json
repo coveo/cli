@@ -10,15 +10,15 @@
   "collection": "dist/collection/collection-manifest.json",
   "collection:main": "dist/collection/index.js",
   "unpkg": "dist/my-custom-components/my-custom-components.esm.js",
+  "elementName": "sample-component",
   "files": [
     "dist/",
     "loader/"
   ],
   "scripts": {
-    "prepublishOnly": "npm run build && npm version patch",
+    "prepublishOnly": "npm run build && atomic-meta-check && npm version patch",
     "prebuild": "rimraf dist",
     "build": "stencil build --docs",
-    "prepublish": "atomic-meta-check",
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll",
     "generate": "stencil generate"
@@ -29,7 +29,7 @@
     "@stencil/core": "2.22.2"
   },
   "devDependencies": {
-    "@coveo/atomic-component-health-check": "1.0.0",
+    "@coveo/atomic-component-health-check": "1.0.1",
     "@rollup/plugin-url": "8.0.1",
     "@types/jest": "29.4.0",
     "jest": "29.5.0",

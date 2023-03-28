@@ -4,6 +4,10 @@ export default z.object({
   name: z.string({
     required_error: 'You must provide a name for your custom component.',
   }),
+  elementName: z.string({
+    required_error:
+      'You must provide a `elementName` property for your custom component. Its value should match the tag name used by your custom component. See https://stenciljs.com/docs/component#tag',
+  }),
   unpkg: z.string({
     required_error:
       'You must provide the path to the `.esm.js` file of your custom component. You can find it under the `dist/` folder once you build the component.',

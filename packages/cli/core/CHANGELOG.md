@@ -1,3 +1,16 @@
+## 2.4.1 (2023-03-27)
+
+### Bug Fixes
+
+- **atomic:** add schemaVersion for deploy.json ([#1213](https://github.com/coveo/cli/issues/1213)) ([e7a6b2a](https://github.com/coveo/cli/commits/e7a6b2a02095522abdc25dc45544971956914e6d))
+- **atomic:** generate search/analytics API key instead of impersonate API key ([#1135](https://github.com/coveo/cli/issues/1135)) ([02d4ceb](https://github.com/coveo/cli/commits/02d4ceb400bc150882b1a3869a9a15603aa2efdc))
+- **deps:** update all dependencies and jest snaps j:cdx-227 ([#1137](https://github.com/coveo/cli/issues/1137)) ([b72dc31](https://github.com/coveo/cli/commits/b72dc314043174ef9afaadb03e066c8830d7acc1)), closes [#1103](https://github.com/coveo/cli/issues/1103)
+- **deps:** update all dependencies and jest snaps j:cdx-227 ([#1149](https://github.com/coveo/cli/issues/1149)) ([2f2273c](https://github.com/coveo/cli/commits/2f2273c7d86f2a2a8414ebbdf8cddb800c888e96)), closes [#1144](https://github.com/coveo/cli/issues/1144)
+
+### Features
+
+- **cli:** implement atomic topic ([#1141](https://github.com/coveo/cli/issues/1141)) ([8e3ddd6](https://github.com/coveo/cli/commits/8e3ddd63f4bfdce745c86e42a6ee213802f915b2))
+
 # 2.3.0 (2023-03-01)
 
 ### Bug Fixes

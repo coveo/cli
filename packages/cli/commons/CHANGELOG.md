@@ -1,3 +1,15 @@
+## 2.4.1 (2023-03-27)
+
+### Bug Fixes
+
+- **cli-commons:** color orgId magenta only when on unix or WT ([#1143](https://github.com/coveo/cli/issues/1143)) ([82fd809](https://github.com/coveo/cli/commits/82fd809e43b36b9c160384b314abfe8b1ea76a75))
+- **deps:** update all dependencies and jest snaps j:cdx-227 ([#1137](https://github.com/coveo/cli/issues/1137)) ([b72dc31](https://github.com/coveo/cli/commits/b72dc314043174ef9afaadb03e066c8830d7acc1)), closes [#1103](https://github.com/coveo/cli/issues/1103)
+- **deps:** update all dependencies and jest snaps j:cdx-227 ([#1149](https://github.com/coveo/cli/issues/1149)) ([2f2273c](https://github.com/coveo/cli/commits/2f2273c7d86f2a2a8414ebbdf8cddb800c888e96)), closes [#1144](https://github.com/coveo/cli/issues/1144)
+
+### Features
+
+- **cli-commons:** add beta decorators ([#1150](https://github.com/coveo/cli/issues/1150)) ([7b4c01f](https://github.com/coveo/cli/commits/7b4c01f8ec5e4dee7eecdeeb009c238c8f5c3e84))
+
 # 2.3.0 (2023-03-01)
 
 ### Bug Fixes
