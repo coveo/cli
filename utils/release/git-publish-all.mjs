@@ -21,6 +21,8 @@ import {dedent} from 'ts-dedent';
 import {readFileSync, writeFileSync} from 'fs';
 import {removeWriteAccessRestrictions} from './lock-master.mjs';
 const CLI_PKG_MATCHER = /^@coveo\/cli@(?<version>\d+\.\d+\.\d+)$/gm;
+const REPO_OWNER = 'coveo';
+const REPO_NAME = 'cli';
 
 const getCliChangelog = () => {
   const changelog = readFileSync('packages/cli/core/CHANGELOG.md', {
@@ -33,8 +35,6 @@ const getCliChangelog = () => {
 
 // Commit, tag and push
 (async () => {
-  const REPO_OWNER = 'coveo';
-  const REPO_NAME = 'cli';
   const PATH = '.';
   const GIT_USERNAME = 'developer-experience-bot[bot]';
   const GIT_EMAIL =
@@ -98,6 +98,47 @@ const getCliChangelog = () => {
   }
   updateRootReadme();
 
+  const commit = await commitChanges(
+    releaseNumber,
+    gitNewTag,
+    packagesReleased,
+    octokit
+  );
+
+  // Add the tags locally...
+  for (const tag of packagesReleased.split('\n').concat(gitNewTag)) {
+    await gitTag(tag, commit);
+  }
+
+  // And push them
+  await gitPushTags();
+
+  // Unlock the main branch
+  await removeWriteAccessRestrictions();
+
+  // If `@coveo/cli` has not been released stop there, otherwise, create a GitHub release.
+  const cliReleaseInfoMatch = CLI_PKG_MATCHER.exec(packagesReleased);
+  if (!cliReleaseInfoMatch) {
+    return;
+  }
+  const releaseBody = getCliChangelog();
+  const cliLatestTag = cliReleaseInfoMatch[0];
+  const cliVersion = cliReleaseInfoMatch.groups.version;
+  await octokit.rest.repos.createRelease({
+    owner: REPO_OWNER,
+    repo: REPO_NAME,
+    tag_name: cliLatestTag,
+    name: `Release v${cliVersion}`,
+    body: releaseBody,
+  });
+})();
+
+async function commitChanges(
+  releaseNumber,
+  gitNewTag,
+  packagesReleased,
+  octokit
+) {
   // Get latest commit and name of the main branch.
   const mainBranchName = await getCurrentBranchName();
   const mainBranchCurrentSHA = await getSHA1fromRef(mainBranchName);
@@ -158,35 +199,10 @@ const getCliChangelog = () => {
     sha: commit.data.sha,
   });
 
-  // Add the tags locally...
-  for (const tag of packagesReleased.split('\n').concat(gitNewTag)) {
-    await gitTag(tag, commit.data.sha);
-  }
-  // And push them
-  await gitPushTags();
-
   // Delete the temp branch
   await gitDeleteRemoteBranch('origin', tempBranchName);
-
-  // Unlock the main branch
-  await removeWriteAccessRestrictions();
-
-  // If `@coveo/cli` has not been released stop there, otherwise, create a GitHub release.
-  const cliReleaseInfoMatch = CLI_PKG_MATCHER.exec(packagesReleased);
-  if (!cliReleaseInfoMatch) {
-    return;
-  }
-  const releaseBody = getCliChangelog();
-  const cliLatestTag = cliReleaseInfoMatch[0];
-  const cliVersion = cliReleaseInfoMatch.groups.version;
-  await octokit.rest.repos.createRelease({
-    owner: REPO_OWNER,
-    repo: REPO_NAME,
-    tag_name: cliLatestTag,
-    name: `Release v${cliVersion}`,
-    body: releaseBody,
-  });
-})();
+  return commit.data.sha;
+}
 
 function updateRootReadme() {
   const usageRegExp = /^<!-- usage -->(.|\n)*<!-- usagestop -->$/m;
