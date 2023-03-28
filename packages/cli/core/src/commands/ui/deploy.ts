@@ -10,7 +10,7 @@ import {
 } from '@coveo/cli-commons/preconditions/index';
 import {HostedPage, New} from '@coveo/platform-client';
 import {createSearchPagesPrivilege} from '@coveo/cli-commons/preconditions/platformPrivilege';
-import {Flags} from '@oclif/core';
+import {CliUx, Flags} from '@oclif/core';
 import {readJsonSync, ensureDirSync, readFileSync} from 'fs-extra';
 import {DeployConfigError} from '../../lib/errors/deployErrors';
 import {join} from 'path';
@@ -19,6 +19,7 @@ import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
 import {getTargetOrg} from '../../lib/utils/platform';
 import {Config} from '@coveo/cli-commons/config/config';
 import {organization} from '../../lib/flags/platformCommonFlags';
+import dedent from 'ts-dedent';
 
 interface FileInput {
   path: string;
@@ -159,12 +160,45 @@ export default class Deploy extends CLICommand {
     this.validateDeployConfigJson(deployConfigPath, deployConfig);
     const hostedPage = this.buildHostedPage(deployConfig);
 
-    if (flags.pageId) {
-      await this.updatePage({...hostedPage, id: flags.pageId});
+    const pageId = flags.pageId || (await this.getPageIdFromPage(hostedPage));
+
+    if (pageId) {
+      await this.updatePage({...hostedPage, id: pageId});
       return;
     }
 
     await this.createPage(hostedPage);
+  }
+
+  private async getPageIdFromPage(
+    hostedPage: New<HostedPage, null>
+  ): Promise<string | null> {
+    const {flags} = await this.parse(Deploy);
+    const orgId = getTargetOrg(this.configuration, flags.organization);
+    const client = await this.createClient();
+    const response = await client.hostedPages.list({
+      filter: hostedPage.name,
+      perPage: 1000,
+    });
+    const page = response.items
+      .filter((page) => page.name === hostedPage.name)
+      .pop();
+
+    if (!page) {
+      return null;
+    }
+    if (await this.confirmOverwrite(page.id, orgId)) {
+      return page.id;
+    } else {
+      this.error(
+        `Page name must be unique, try changing the "name" field in "coveo.deploy.json".`
+      );
+    }
+  }
+
+  private async confirmOverwrite(pageId: string, orgId: string) {
+    return await CliUx.ux.confirm(dedent`
+      Overwrite page with ID: "${pageId}" in organization ${orgId}?`);
   }
 
   private validateDeployConfigJson(
