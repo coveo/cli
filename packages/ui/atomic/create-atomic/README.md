@@ -26,3 +26,7 @@ create-atomic myapp
 ```
 
 If you run the project directly, you will be prompted to fill out your organization's authentication information.
+
+## Deploy to Coveo
+
+If you want to deploy your search page to Coveo, run `npm run deploy`.
