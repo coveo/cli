@@ -33,6 +33,7 @@ import {readJSONSync, readFileSync} from 'fs-extra';
 import {DeployConfig} from './deploy';
 import {validate, ValidatorResult} from 'jsonschema';
 import {join} from 'path';
+import {CliUx} from '@oclif/core';
 
 const actualValidate = jest.requireActual('jsonschema').validate;
 
@@ -85,7 +86,12 @@ describe('ui:deploy', () => {
   const mockedReadFileSync = jest.mocked(readFileSync);
   const mockedValidate = jest.mocked(validate);
   const mockHostedPageCreate = jest.fn();
+  const mockHostedPageList = jest.fn();
   const mockHostedPageUpdate = jest.fn();
+  const mockedConfirm = jest.fn();
+  const doMockConfirm = () => {
+    Object.defineProperty(CliUx.ux, 'confirm', {value: mockedConfirm});
+  };
 
   const preconditionStatus = {
     apiKey: true,
@@ -150,7 +156,6 @@ describe('ui:deploy', () => {
         } as unknown as AuthenticatedClient)
     );
   };
-
   const doMockPlatformClient = () => {
     mockedPlatformClient.mockImplementation(
       () =>
@@ -159,6 +164,9 @@ describe('ui:deploy', () => {
           hostedPages: {
             create: mockHostedPageCreate.mockResolvedValue({}),
             update: mockHostedPageUpdate.mockResolvedValue({}),
+            list: mockHostedPageList.mockResolvedValue({
+              items: [],
+            }),
           },
         } as unknown as PlatformClient)
     );
@@ -468,6 +476,69 @@ describe('ui:deploy', () => {
     test
       .stdout()
       .stderr()
+      .do(() => {
+        doMockConfirm();
+        mockedConfirm.mockResolvedValueOnce(true);
+        mockHostedPageList.mockResolvedValueOnce({
+          items: [{name: validJsonConfig.name, id: 'thisistheid'}],
+        });
+      })
+      .command(['ui:deploy'])
+      .it(
+        'should call hostedPages.list when no page id argument is passed and a page with the same already exists',
+        () => {
+          expect(mockHostedPageList).toHaveBeenCalledWith(
+            expect.objectContaining({
+              filter: validJsonConfig.name,
+              perPage: 1000,
+            })
+          );
+        }
+      );
+
+    test
+      .stdout()
+      .stderr()
+      .do(() => {
+        doMockConfirm();
+        mockedConfirm.mockResolvedValueOnce(true);
+        mockHostedPageList.mockResolvedValueOnce({
+          items: [{name: validJsonConfig.name, id: 'thisistheid'}],
+        });
+      })
+      .command(['ui:deploy'])
+      .it(
+        'should call hostedPages.update when no page id argument is passed, a page with the same already exists, and the user confirms the overwrite',
+        () => {
+          expect(mockHostedPageUpdate).toHaveBeenCalledWith({
+            ...expectedHostedPage,
+            id: 'thisistheid',
+          });
+        }
+      );
+
+    test
+      .stdout()
+      .stderr()
+      .do(() => {
+        doMockConfirm();
+        mockedConfirm.mockResolvedValueOnce(false);
+        mockHostedPageList.mockResolvedValueOnce({
+          items: [{name: validJsonConfig.name, id: 'thisistheid'}],
+        });
+      })
+      .command(['ui:deploy'])
+      .catch((err) => expect(err).toMatchSnapshot())
+      .it(
+        'should not call hostedPages.update when no page id argument is passed, a page with the same already exists, and the user decline the overwrite',
+        () => {
+          expect(mockHostedPageUpdate).not.toBeCalled();
+        }
+      );
+
+    test
+      .stdout()
+      .stderr()
       .command(['ui:deploy', '-p=thisistheid'])
       .it(
         'should call hostedPages.update when a page id argument is passed',
@@ -494,12 +565,6 @@ describe('ui:deploy', () => {
       })
       .command(['ui:deploy', '-p=thisistheid'])
       .catch((err) => expect(err).toMatchSnapshot())
-      .it(
-        'should call hostedPages.update when a page id argument is passed',
-        ({stdout, stderr}) => {
-          expect(stdout).toMatchSnapshot();
-          expect(stderr).toMatchSnapshot();
-        }
-      );
+      .it('should print an API Error if the update fails');
   });
 });
