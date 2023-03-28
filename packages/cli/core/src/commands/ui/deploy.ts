@@ -181,8 +181,7 @@ export default class Deploy extends CLICommand {
       perPage: 1000,
     });
     const page = response.items
-      .filter((page) => page.name === hostedPage.name)
-      .pop();
+      .find((page) => page.name === hostedPage.name);
 
     if (!page) {
       return null;
