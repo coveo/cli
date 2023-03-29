@@ -13,6 +13,7 @@ import {
   gitPushTags,
   npmBumpVersion,
   getSHA1fromRef,
+  gitSetupUser,
 } from '@coveo/semantic-monorepo-tools';
 import {Octokit} from 'octokit';
 import {createAppAuth} from '@octokit/auth-app';
@@ -39,16 +40,9 @@ const getCliChangelog = () => {
   const GIT_USERNAME = 'developer-experience-bot[bot]';
   const GIT_EMAIL =
     '91079284+developer-experience-bot[bot]@users.noreply.github.com';
-  const GIT_SSH_REMOTE = 'deploy';
   //#endregion
 
   // #region Setup Git
-  await gitSetupSshRemote(
-    REPO_OWNER,
-    REPO_NAME,
-    process.env.DEPLOY_KEY,
-    GIT_SSH_REMOTE
-  );
   await gitSetupUser(GIT_USERNAME, GIT_EMAIL);
   // #endregion
 
@@ -67,19 +61,21 @@ const getCliChangelog = () => {
   });
   //#endregion
 
-  const versionPrefix = 'release-';
-  const convention = await angularChangelogConvention;
-  const lastTag = await getLastTag(versionPrefix);
-  const commits = await getCommits(PATH, lastTag);
-  const packagesReleased = readFileSync('.git-message', {
-    encoding: 'utf-8',
-  }).trim();
+  // Define release # andversion
   const currentVersionTag = getCurrentVersion(PATH);
   currentVersionTag.inc('prerelease');
   const npmNewVersion = currentVersionTag.format();
+  // Write release version in the root package.json
+  await npmBumpVersion(npmNewVersion);
+
   const releaseNumber = currentVersionTag.prerelease;
   const gitNewTag = `release-${releaseNumber}`;
-  await npmBumpVersion(npmNewVersion);
+
+  // Find all changes since last release and generate the changelog.
+  const versionPrefix = 'release-';
+  const lastTag = await getLastTag(versionPrefix);
+  const commits = await getCommits(PATH, lastTag);
+  const convention = await angularChangelogConvention;
 
   let changelog = '';
   if (commits.length > 0) {
@@ -98,12 +94,29 @@ const getCliChangelog = () => {
   }
   updateRootReadme();
 
-  const commit = await commitChanges(
-    releaseNumber,
-    gitNewTag,
-    packagesReleased,
-    octokit
-  );
+  // Find all packages that have been released in this release.
+  const packagesReleased = readFileSync('.git-message', {
+    encoding: 'utf-8',
+  }).trim();
+
+  // Compile git commit message
+  const commitMessage = dedent`
+    [version bump] chore(release): release ${gitNewTag} [skip ci]
+
+    ${packagesReleased}
+
+    **/README.md
+    **/CHANGELOG.md
+    **/package.json
+    README.md
+    CHANGELOG.md
+    package.json
+    package-lock.json
+    packages/ui/cra-template/template.json
+  `;
+
+  // Craft the commit (complex process, see function)
+  const commit = await commitChanges(releaseNumber, commitMessage, octokit);
 
   // Add the tags locally...
   for (const tag of packagesReleased.split('\n').concat(gitNewTag)) {
@@ -133,12 +146,7 @@ const getCliChangelog = () => {
   });
 })();
 
-async function commitChanges(
-  releaseNumber,
-  gitNewTag,
-  packagesReleased,
-  octokit
-) {
+async function commitChanges(releaseNumber, commitMessage, octokit) {
   // Get latest commit and name of the main branch.
   const mainBranchName = await getCurrentBranchName();
   const mainBranchCurrentSHA = await getSHA1fromRef(mainBranchName);
@@ -158,22 +166,6 @@ async function commitChanges(
   // Update the HEAD of the temp branch to point to the new commit, then publish the temp branch.
   await gitUpdateRef('HEAD', commitTree);
   await gitPublishBranch('origin', tempBranchName);
-
-  // Compile the git message
-  const commitMessage = dedent`
-  [version bump] chore(release): release ${gitNewTag} [skip ci]
-
-  ${packagesReleased}
-
-  **/README.md
-  **/CHANGELOG.md
-  **/package.json
-  README.md
-  CHANGELOG.md
-  package.json
-  package-lock.json
-  packages/ui/cra-template/template.json
-  `;
 
   /**
    * Once we pushed the temp branch, the tree object is then known to the remote repository.
