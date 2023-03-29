@@ -146,6 +146,8 @@ export default class Deploy extends CLICommand {
         'Create a new Hosted Page according to the configuration in the file located at "./configs/myconfig.json"',
     },
   ];
+  private pageId: string | undefined;
+  private organization!: string;
 
   @Trackable()
   @Preconditions(
@@ -159,43 +161,62 @@ export default class Deploy extends CLICommand {
       readJsonSync(deployConfigPath, {throws: false}) || {};
     this.validateDeployConfigJson(deployConfigPath, deployConfig);
     const hostedPage = this.buildHostedPage(deployConfig);
+    await this.computeOrgId();
+    await this.computePageId(hostedPage);
 
-    const pageId = flags.pageId || (await this.getPageIdFromPage(hostedPage));
+    if (this.pageId) {
+      await this.updatePage({...hostedPage, id: this.pageId});
+    } else {
+      await this.createPage(hostedPage);
+    }
+  }
 
-    if (pageId) {
-      await this.updatePage({...hostedPage, id: pageId});
+  private async computeOrgId() {
+    const {flags} = await this.parse(Deploy);
+    this.organization = getTargetOrg(this.configuration, flags.organization);
+  }
+
+  private async computePageId(hostedPage: New<HostedPage, null>) {
+    const {flags} = await this.parse(Deploy);
+
+    this.pageId = await this.getPageIdFromFlag(flags);
+
+    if (this.pageId) {
       return;
     }
 
-    await this.createPage(hostedPage);
+    this.pageId = await this.getPageIdFromPageName(hostedPage);
+
+    if (this.pageId) {
+      await this.confirmOverwrite();
+    }
   }
 
-  private async getPageIdFromPage(
+  private async getPageIdFromFlag(flags: {
+    pageId: string | undefined;
+  }): Promise<string | undefined> {
+    return flags.pageId;
+  }
+
+  private async getPageIdFromPageName(
     hostedPage: New<HostedPage, null>
-  ): Promise<string | null> {
-    const {flags} = await this.parse(Deploy);
-    const orgId = getTargetOrg(this.configuration, flags.organization);
+  ): Promise<string | undefined> {
     const client = await this.createClient();
     const response = await client.hostedPages.list({
       filter: hostedPage.name,
     });
-    const page = response.items.find((page) => page.name === hostedPage.name);
+    return response.items.find((page) => page.name === hostedPage.name)?.id;
+  }
 
-    if (!page) {
-      return null;
-    }
-    if (await this.confirmOverwrite(page.id, orgId)) {
-      return page.id;
-    } else {
+  private async confirmOverwrite(): Promise<void | never> {
+    if (
+      !(await CliUx.ux.confirm(dedent`
+      Overwrite page with ID: "${this.pageId}" in organization ${this.organization}?`))
+    ) {
       this.error(
         `Page name must be unique, try changing the "name" field in "coveo.deploy.json".`
       );
     }
-  }
-
-  private async confirmOverwrite(pageId: string, orgId: string) {
-    return await CliUx.ux.confirm(dedent`
-      Overwrite page with ID: "${pageId}" in organization ${orgId}?`);
   }
 
   private validateDeployConfigJson(
@@ -244,9 +265,8 @@ export default class Deploy extends CLICommand {
   }
 
   private async createClient() {
-    const {flags} = await this.parse(Deploy);
     return await new AuthenticatedClient().getClient({
-      organization: getTargetOrg(this.configuration, flags.organization),
+      organization: this.organization,
     });
   }
 
