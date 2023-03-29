@@ -16,11 +16,13 @@ export const removeWriteAccessRestrictions = () =>
 async function changeBranchRestrictions(restrictions) {
   const octokit = new Octokit({auth: process.env.GITHUB_CREDENTIALS});
 
-  const currentProtection = await octokit.rest.repos.getBranchProtection({
-    owner: REPO_OWNER,
-    repo: REPO_NAME,
-    branch: 'master',
-  });
+  const currentProtection = (
+    await octokit.rest.repos.getBranchProtection({
+      owner: REPO_OWNER,
+      repo: REPO_NAME,
+      branch: 'master',
+    })
+  ).data;
 
   await octokit.rest.repos.updateBranchProtection({
     owner: REPO_OWNER,
