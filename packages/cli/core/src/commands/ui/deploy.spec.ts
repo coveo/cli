@@ -74,6 +74,7 @@ const validJsonConfig: DeployConfig = {
   schemaVersion: '1.0.0',
 };
 
+const pageTestId = 'thisistheid';
 describe('ui:deploy', () => {
   const mockedConfig = jest.mocked(Config);
   const mockedSpawnProcess = jest.mocked(spawnProcess);
@@ -480,7 +481,7 @@ describe('ui:deploy', () => {
         doMockConfirm();
         mockedConfirm.mockResolvedValueOnce(true);
         mockHostedPageList.mockResolvedValueOnce({
-          items: [{name: validJsonConfig.name, id: 'thisistheid'}],
+          items: [{name: validJsonConfig.name, id: pageTestId}],
         });
       })
       .command(['ui:deploy'])
@@ -502,7 +503,7 @@ describe('ui:deploy', () => {
         doMockConfirm();
         mockedConfirm.mockResolvedValueOnce(true);
         mockHostedPageList.mockResolvedValueOnce({
-          items: [{name: validJsonConfig.name, id: 'thisistheid'}],
+          items: [{name: validJsonConfig.name, id: pageTestId}],
         });
       })
       .command(['ui:deploy'])
@@ -511,7 +512,7 @@ describe('ui:deploy', () => {
         () => {
           expect(mockHostedPageUpdate).toHaveBeenCalledWith({
             ...expectedHostedPage,
-            id: 'thisistheid',
+            id: pageTestId,
           });
         }
       );
@@ -523,7 +524,7 @@ describe('ui:deploy', () => {
         doMockConfirm();
         mockedConfirm.mockResolvedValueOnce(false);
         mockHostedPageList.mockResolvedValueOnce({
-          items: [{name: validJsonConfig.name, id: 'thisistheid'}],
+          items: [{name: validJsonConfig.name, id: pageTestId}],
         });
       })
       .command(['ui:deploy'])
@@ -538,13 +539,13 @@ describe('ui:deploy', () => {
     test
       .stdout()
       .stderr()
-      .command(['ui:deploy', '-p=thisistheid'])
+      .command(['ui:deploy', `-p=${pageTestId}`])
       .it(
         'should call hostedPages.update when a page id argument is passed',
         () => {
           expect(mockHostedPageUpdate).toHaveBeenCalledWith({
             ...expectedHostedPage,
-            id: 'thisistheid',
+            id: pageTestId,
           });
         }
       );
@@ -562,7 +563,7 @@ describe('ui:deploy', () => {
           throw err;
         });
       })
-      .command(['ui:deploy', '-p=thisistheid'])
+      .command(['ui:deploy', `-p=${pageTestId}`])
       .catch((err) => expect(err).toMatchSnapshot())
       .it('should print an API Error if the update fails');
   });
