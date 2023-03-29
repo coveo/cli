@@ -8,7 +8,8 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '@coveo/cli-commons/preconditions/index';
-import {HostedPage, New} from '@coveo/platform-client';
+import type {HostedPage, New} from '@coveo/platform-client';
+import type PlatformClient from '@coveo/platform-client';
 import {createSearchPagesPrivilege} from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {CliUx, Flags} from '@oclif/core';
 import {readJsonSync, ensureDirSync, readFileSync} from 'fs-extra';
@@ -146,8 +147,12 @@ export default class Deploy extends CLICommand {
         'Create a new Hosted Page according to the configuration in the file located at "./configs/myconfig.json"',
     },
   ];
-  private pageId: string | undefined;
+
+  private flags!: {organization?: string; pageId?: string; config: string};
   private organization!: string;
+  private hostedPage!: New<HostedPage>;
+  private pageId: string | undefined;
+  private platformClient!: PlatformClient;
 
   @Trackable()
   @Preconditions(
@@ -155,57 +160,68 @@ export default class Deploy extends CLICommand {
     HasNecessaryCoveoPrivileges(createSearchPagesPrivilege)
   )
   public async run() {
-    const {flags} = await this.parse(Deploy);
-    const deployConfigPath = flags.config;
-    const deployConfig: DeployConfig =
-      readJsonSync(deployConfigPath, {throws: false}) || {};
-    this.validateDeployConfigJson(deployConfigPath, deployConfig);
-    const hostedPage = this.buildHostedPage(deployConfig);
+    await this.computeFlags();
     await this.computeOrgId();
-    await this.computePageId(hostedPage);
+    await this.instantiatePlatformClient();
+    await this.computeHostedPage();
+    await this.computePageId();
 
     if (this.pageId) {
-      await this.updatePage({...hostedPage, id: this.pageId});
+      await this.updatePage({...this.hostedPage, id: this.pageId});
     } else {
-      await this.createPage(hostedPage);
+      await this.createPage(this.hostedPage);
     }
   }
 
-  private async computeOrgId() {
-    const {flags} = await this.parse(Deploy);
-    this.organization = getTargetOrg(this.configuration, flags.organization);
+  private async computeFlags() {
+    this.flags = (await this.parse(Deploy)).flags;
   }
 
-  private async computePageId(hostedPage: New<HostedPage, null>) {
-    const {flags} = await this.parse(Deploy);
+  private async computeOrgId() {
+    this.organization = getTargetOrg(
+      this.configuration,
+      this.flags.organization
+    );
+  }
 
-    this.pageId = await this.getPageIdFromFlag(flags);
+  private async instantiatePlatformClient() {
+    this.platformClient = await new AuthenticatedClient().getClient({
+      organization: this.organization,
+    });
+  }
+
+  private async computeHostedPage() {
+    const deployConfigPath = this.flags.config;
+    const deployConfig: DeployConfig =
+      readJsonSync(deployConfigPath, {throws: false}) || {};
+    this.validateDeployConfigJson(deployConfigPath, deployConfig);
+    this.hostedPage = this.buildHostedPage(deployConfig);
+  }
+
+  private async computePageId() {
+    this.pageId = this.getPageIdFromFlags();
 
     if (this.pageId) {
       return;
     }
 
-    this.pageId = await this.getPageIdFromPageName(hostedPage);
+    this.pageId = await this.getPageIdFromHostedPage();
 
     if (this.pageId) {
       await this.confirmOverwrite();
     }
   }
 
-  private async getPageIdFromFlag(flags: {
-    pageId: string | undefined;
-  }): Promise<string | undefined> {
-    return flags.pageId;
+  private getPageIdFromFlags(): string | undefined {
+    return this.flags.pageId;
   }
 
-  private async getPageIdFromPageName(
-    hostedPage: New<HostedPage, null>
-  ): Promise<string | undefined> {
-    const client = await this.createClient();
-    const response = await client.hostedPages.list({
-      filter: hostedPage.name,
+  private async getPageIdFromHostedPage(): Promise<string | undefined> {
+    const response = await this.platformClient.hostedPages.list({
+      filter: this.hostedPage.name,
     });
-    return response.items.find((page) => page.name === hostedPage.name)?.id;
+    return response.items.find((page) => page.name === this.hostedPage.name)
+      ?.id;
   }
 
   private async confirmOverwrite(): Promise<void | never> {
@@ -264,17 +280,10 @@ export default class Deploy extends CLICommand {
     };
   }
 
-  private async createClient() {
-    return await new AuthenticatedClient().getClient({
-      organization: this.organization,
-    });
-  }
-
   private async createPage(page: New<HostedPage>) {
     startSpinner(`Creating new Hosted Page named "${page.name}".`);
 
-    const client = await this.createClient();
-    const response = await client.hostedPages.create(page);
+    const response = await this.platformClient.hostedPages.create(page);
     this.log(`Hosted Page creation successful with id "${response.id}".`);
     stopSpinner();
   }
@@ -282,8 +291,7 @@ export default class Deploy extends CLICommand {
   private async updatePage(page: HostedPage) {
     startSpinner(`Updating existing Hosted Page with the id "${page.id}".`);
 
-    const client = await this.createClient();
-    const response = await client.hostedPages.update(page);
+    const response = await this.platformClient.hostedPages.update(page);
     this.log(`Hosted Page update successful with id "${response.id}".`);
     stopSpinner();
   }
