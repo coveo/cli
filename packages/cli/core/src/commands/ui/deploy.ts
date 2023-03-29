@@ -150,9 +150,9 @@ export default class Deploy extends CLICommand {
 
   private flags!: {organization?: string; pageId?: string; config: string};
   private organization!: string;
+  private platformClient!: PlatformClient;
   private hostedPage!: New<HostedPage>;
   private pageId: string | undefined;
-  private platformClient!: PlatformClient;
 
   @Trackable()
   @Preconditions(
