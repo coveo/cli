@@ -468,8 +468,13 @@ describe('ui:deploy', () => {
       .stderr()
       .command(['ui:deploy'])
       .it(
-        'should call hostedPages.create when no page id argument is passed',
+        'should call hostedPages.list and hostedPages.create when no page id argument is passed',
         () => {
+          expect(mockHostedPageList).toHaveBeenCalledWith(
+            expect.objectContaining({
+              filter: expectedHostedPage.name,
+            })
+          );
           expect(mockHostedPageCreate).toHaveBeenCalledWith(expectedHostedPage);
         }
       );
@@ -486,13 +491,9 @@ describe('ui:deploy', () => {
       })
       .command(['ui:deploy'])
       .it(
-        'should call hostedPages.list when no page id argument is passed and a page with the same already exists',
+        'when no page id argument is passed and a page with the same name already exists, it should ask the user for confirmation',
         () => {
-          expect(mockHostedPageList).toHaveBeenCalledWith(
-            expect.objectContaining({
-              filter: validJsonConfig.name,
-            })
-          );
+          expect(mockedConfirm).toBeCalled();
         }
       );
 
@@ -508,7 +509,7 @@ describe('ui:deploy', () => {
       })
       .command(['ui:deploy'])
       .it(
-        'should call hostedPages.update when no page id argument is passed, a page with the same already exists, and the user confirms the overwrite',
+        'when no page id argument is passed, a page with the same name already exists, and the user confirms the overwrite, it should call hostedPages.update',
         () => {
           expect(mockHostedPageUpdate).toHaveBeenCalledWith({
             ...expectedHostedPage,
@@ -530,7 +531,7 @@ describe('ui:deploy', () => {
       .command(['ui:deploy'])
       .catch((err) => expect(err).toMatchSnapshot())
       .it(
-        'should not call hostedPages.update when no page id argument is passed, a page with the same already exists, and the user decline the overwrite',
+        'when no page id argument is passed, a page with the same name already exists, the user declines the overwrite, it should not call hostedPages.update',
         () => {
           expect(mockHostedPageUpdate).not.toBeCalled();
         }
@@ -541,7 +542,7 @@ describe('ui:deploy', () => {
       .stderr()
       .command(['ui:deploy', `-p=${pageTestId}`])
       .it(
-        'should call hostedPages.update when a page id argument is passed',
+        'when a page id argument is passed, it should call hostedPages.update',
         () => {
           expect(mockHostedPageUpdate).toHaveBeenCalledWith({
             ...expectedHostedPage,
