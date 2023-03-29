@@ -160,7 +160,7 @@ export default class Deploy extends CLICommand {
     const hostedPage = this.buildHostedPage(deployConfig);
 
     if (flags.pageId) {
-      this.updatePage({...hostedPage, id: flags.pageId});
+      await this.updatePage({...hostedPage, id: flags.pageId});
       return;
     }
 

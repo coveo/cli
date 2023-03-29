@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ui:deploy interacting with Platform client should call hostedPages.update when a page id argument is passed 1`] = `
+[APIError: 
+Status code: 418
+Error code: [31mSO_BAD[39m
+Message: [31mthis is bad[39m
+Request ID: [31mb33pb00p[39m]
+`;
+
+exports[`ui:deploy interacting with Platform client should call hostedPages.update when a page id argument is passed 2`] = `""`;
+
+exports[`ui:deploy interacting with Platform client should call hostedPages.update when a page id argument is passed 3`] = `
+"Updating existing Hosted Page with the id "thisistheid".... !
+"
+`;
