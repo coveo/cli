@@ -161,9 +161,9 @@ export default class Deploy extends CLICommand {
   )
   public async run() {
     await this.computeFlags();
-    await this.computeOrgId();
+    this.computeOrgId();
     await this.instantiatePlatformClient();
-    await this.computeHostedPage();
+    this.computeHostedPage();
     await this.computePageId();
 
     if (this.pageId) {
@@ -177,7 +177,7 @@ export default class Deploy extends CLICommand {
     this.flags = (await this.parse(Deploy)).flags;
   }
 
-  private async computeOrgId() {
+  private computeOrgId() {
     this.organization = getTargetOrg(
       this.configuration,
       this.flags.organization
@@ -190,7 +190,7 @@ export default class Deploy extends CLICommand {
     });
   }
 
-  private async computeHostedPage() {
+  private computeHostedPage() {
     const deployConfigPath = this.flags.config;
     const deployConfig: DeployConfig =
       readJsonSync(deployConfigPath, {throws: false}) || {};
@@ -230,7 +230,7 @@ export default class Deploy extends CLICommand {
       Overwrite page with ID: "${this.pageId}" in organization ${this.organization}?`))
     ) {
       this.error(
-        `Page name must be unique, try changing the "name" field in "coveo.deploy.json".`
+        'Page name must be unique, try changing the "name" field in "coveo.deploy.json".'
       );
     }
   }
