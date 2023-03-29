@@ -16,7 +16,11 @@ jest.mock('../../lib/utils/misc');
 import {test} from '@oclif/test';
 import {spawnProcess} from '../../lib/utils/process';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import PlatformClient, {HostedPage, New} from '@coveo/platform-client';
+import PlatformClient, {
+  CoveoPlatformClientError,
+  HostedPage,
+  New,
+} from '@coveo/platform-client';
 import {Config, Configuration} from '@coveo/cli-commons/config/config';
 import {
   HasNecessaryCoveoPrivileges,
@@ -472,6 +476,29 @@ describe('ui:deploy', () => {
             ...expectedHostedPage,
             id: 'thisistheid',
           });
+        }
+      );
+
+    test
+      .stdout()
+      .stderr()
+      .do(() => {
+        mockHostedPageUpdate.mockImplementationOnce(() => {
+          const err = new CoveoPlatformClientError();
+          err.title = 'SO_BAD';
+          err.detail = 'this is bad';
+          err.xRequestId = 'b33pb00p';
+          err.status = 418;
+          throw err;
+        });
+      })
+      .command(['ui:deploy', '-p=thisistheid'])
+      .catch((err) => expect(err).toMatchSnapshot())
+      .it(
+        'should call hostedPages.update when a page id argument is passed',
+        ({stdout, stderr}) => {
+          expect(stdout).toMatchSnapshot();
+          expect(stderr).toMatchSnapshot();
         }
       );
   });
