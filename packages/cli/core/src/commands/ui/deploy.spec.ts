@@ -490,7 +490,6 @@ describe('ui:deploy', () => {
           expect(mockHostedPageList).toHaveBeenCalledWith(
             expect.objectContaining({
               filter: validJsonConfig.name,
-              perPage: 1000,
             })
           );
         }

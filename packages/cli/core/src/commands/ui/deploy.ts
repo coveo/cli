@@ -178,10 +178,8 @@ export default class Deploy extends CLICommand {
     const client = await this.createClient();
     const response = await client.hostedPages.list({
       filter: hostedPage.name,
-      perPage: 1000,
     });
-    const page = response.items
-      .find((page) => page.name === hostedPage.name);
+    const page = response.items.find((page) => page.name === hostedPage.name);
 
     if (!page) {
       return null;
