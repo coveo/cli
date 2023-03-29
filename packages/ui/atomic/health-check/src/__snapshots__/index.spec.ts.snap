@@ -5,7 +5,7 @@ exports[`@coveo/atomic-component-health-check when all conditions are met should
 
 [32m✔[39m [1mComponent name[22m
 
-[32m✔[39m [1mRequired properties in package.json[22m
+[32m✔[39m [1mRequired PROPS in package.json[22m
 
 "
 `;
@@ -16,7 +16,7 @@ exports[`@coveo/atomic-component-health-check when component tag name does not m
 [31m✖[39m [1mComponent name[22m
   Component tag name from your .tsx file does not match the \`elementName\` property defined in your component's package.json file. Make sure both values are identical
 
-[32m✔[39m [1mRequired properties in package.json[22m
+[32m✔[39m [1mRequired PROPS in package.json[22m
 
 Publish aborted because some conditions have not been met
 Make sure to address the above errors before publishing again
@@ -29,7 +29,7 @@ exports[`@coveo/atomic-component-health-check when package.json conditions are n
 [31m✖[39m [1mComponent name[22m
   Component tag name from your .tsx file does not match the \`elementName\` property defined in your component's package.json file. Make sure both values are identical
 
-[31m✖[39m [1mRequired properties in package.json[22m
+[31m✖[39m [1mRequired PROPS in package.json[22m
     [31m✖[39m [1mInvalid elementName: [22mYou must provide a \`elementName\` property for your custom component. Its value should match the tag name used by your custom component. See https://stenciljs.com/docs/component#tag
     [31m✖[39m [1mInvalid keywords: [22mThe package.json \`keywords\` array should include \`coveo-atomic-component\`, otherwise your component will not be listed along with other Coveo custom components. See https://docs.npmjs.com/cli/v9/configuring-npm/package-json#keywords
     [31m✖[39m [1mInvalid description: [22mThe component description must be at least 20 characters long
@@ -45,7 +45,7 @@ exports[`@coveo/atomic-component-health-check when package.json conditions are n
 [31m✖[39m [1mComponent name[22m
   Component tag name from your .tsx file does not match the \`elementName\` property defined in your component's package.json file. Make sure both values are identical
 
-[31m✖[39m [1mRequired properties in package.json[22m
+[31m✖[39m [1mRequired PROPS in package.json[22m
     [31m✖[39m [1mInvalid elementName: [22mYou must provide a \`elementName\` property for your custom component. Its value should match the tag name used by your custom component. See https://stenciljs.com/docs/component#tag
     [31m✖[39m [1mInvalid unpkg: [22mYou must provide the path to the \`.esm.js\` file of your custom component. You can find it under the \`dist/\` folder once you build the component.
     [31m✖[39m [1mInvalid keywords: [22mYou must populate the \`keywords\` property. See https://docs.npmjs.com/cli/v9/configuring-npm/package-json#keywords
@@ -63,7 +63,7 @@ exports[`@coveo/atomic-component-health-check when readme condition is not met s
 
 [32m✔[39m [1mComponent name[22m
 
-[32m✔[39m [1mRequired properties in package.json[22m
+[32m✔[39m [1mRequired PROPS in package.json[22m
 
 Publish aborted because some conditions have not been met
 Make sure to address the above errors before publishing again

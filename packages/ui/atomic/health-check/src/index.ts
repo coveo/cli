@@ -11,7 +11,7 @@ try {
   new Inspector()
     .check(ensureReadme, 'Readme file')
     .check(ensureConsistentElementName, 'Component name')
-    .check(ensureRequiredProperties, 'Required properties in package.json')
+    .check(ensureRequiredProperties, 'Required PROPS in package.json')
     // .check(ensureInternalScope, 'Valid scope') //TODO: CDX-1266
     .report();
 } catch (error) {
