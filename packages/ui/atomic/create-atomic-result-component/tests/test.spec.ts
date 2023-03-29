@@ -1,3 +1,4 @@
+import stripAnsi from 'strip-ansi';
 import {ChildProcess} from 'node:child_process';
 import {join} from 'node:path';
 import {mkdirSync, readFileSync, writeFileSync} from 'node:fs';
@@ -132,9 +133,10 @@ describe(PACKAGE_NAME, () => {
       });
 
       it('should be able to pass health checks', () => {
-        const message = npmSync(['publish', '--dry-run', '-w', packageName], {
+        const {stdout} = npmSync(['publish', '--dry-run', '-w', packageName], {
           cwd: testDirectory,
-        }).stdout.toString();
+        });
+        const message = stripAnsi(stdout.toString());
         expect(message).not.toContain('✖');
         expect(message).toContain('✔ Readme file');
         expect(message).toContain('✔ Component name');
