@@ -1,7 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ui:deploy interacting with Platform client should not call hostedPages.update when no page id argument is passed, a page with the same already exists, and the user decline the overwrite 1`] = `[CLI Error: Page name must be unique, try changing the "name" field in "coveo.deploy.json".]`;
-
 exports[`ui:deploy interacting with Platform client should print an API Error if the update fails 1`] = `
 [APIError: 
 Status code: 418
@@ -9,3 +7,5 @@ Error code: [31mSO_BAD[39m
 Message: [31mthis is bad[39m
 Request ID: [31mb33pb00p[39m]
 `;
+
+exports[`ui:deploy interacting with Platform client when no page id argument is passed, a page with the same name already exists, the user declines the overwrite, it should not call hostedPages.update 1`] = `[CLI Error: Page name must be unique, try changing the "name" field in "coveo.deploy.json".]`;
