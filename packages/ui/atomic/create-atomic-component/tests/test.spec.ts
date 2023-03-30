@@ -1,3 +1,4 @@
+import stripAnsi from 'strip-ansi';
 import {ChildProcess} from 'node:child_process';
 import {join} from 'node:path';
 import {mkdirSync, readFileSync, writeFileSync} from 'node:fs';
@@ -113,29 +114,52 @@ describe(PACKAGE_NAME, () => {
     });
 
     describe('health-check', () => {
-      beforeAll(() => {
-        const pkgJsonPath = join(
-          testDirectory,
+      const componentJsonPackagePath = (testDir) =>
+        join(
+          testDir,
           'src',
           'components',
           packageName.replace(/@coveo\//, ''),
           'package.json'
         );
 
-        const json = readFileSync(pkgJsonPath).toString();
-        const updatedJson = {
-          ...JSON.parse(json),
+      const getComponentJsonPackage = (jsonPackagePath: string) => {
+        const json = readFileSync(jsonPackagePath).toString();
+        return JSON.parse(json);
+      };
+
+      const overwriteJsonPackage = (jsonPackagePath, json) => {
+        writeFileSync(jsonPackagePath, JSON.stringify(json, null, 2));
+      };
+
+      /**
+       * Add required properties so health check assertions are met
+       */
+      const addMissingPropertiesToJsonPackage = (json) => {
+        return {
+          ...json,
           description:
-            'Custom Atomic component for E2E testing: This is component should should pass all Health checks',
+            'Custom Atomic component for E2E testing: This is component should pass all Health checks',
           homepage: 'https://my-custom-atomic-component-source-code.com',
         };
-        writeFileSync(pkgJsonPath, JSON.stringify(updatedJson, null, 2));
+      };
+
+      const publish = (pkgName, cwd) => {
+        return npmSync(['publish', '--dry-run', '-w', pkgName], {
+          cwd,
+        });
+      };
+
+      beforeAll(() => {
+        const jsonPackagePath = componentJsonPackagePath(testDirectory);
+        const initialJson = getComponentJsonPackage(jsonPackagePath);
+        const updatedJson = addMissingPropertiesToJsonPackage(initialJson);
+        overwriteJsonPackage(jsonPackagePath, updatedJson);
       });
 
       it('should be able to pass health checks', () => {
-        const message = npmSync(['publish', '--dry-run', '-w', packageName], {
-          cwd: testDirectory,
-        }).stdout.toString();
+        const {stdout} = publish(packageName, testDirectory);
+        const message = stripAnsi(stdout.toString()).replace(/\n/g, '');
         expect(message).not.toContain('✖');
         expect(message).toContain('✔ Readme file');
         expect(message).toContain('✔ Component name');
@@ -143,11 +167,7 @@ describe(PACKAGE_NAME, () => {
       });
 
       it('should be able to publish without issues', () => {
-        expect(
-          npmSync(['publish', '--dry-run', '-w', packageName], {
-            cwd: testDirectory,
-          }).status
-        ).toBe(0);
+        expect(publish(packageName, testDirectory).status).toBe(0);
       });
     });
   });
