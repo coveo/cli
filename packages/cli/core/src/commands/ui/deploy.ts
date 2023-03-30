@@ -227,7 +227,7 @@ export default class Deploy extends CLICommand {
   private async confirmOverwrite(): Promise<void | never> {
     if (
       !(await CliUx.ux.confirm(dedent`
-      Overwrite page with ID: "${this.pageId}" in organization ${this.organization}?`))
+      Overwrite page with ID: "${this.pageId}" in organization ${this.organization}? (y/n)`))
     ) {
       this.error(
         'Page name must be unique, try changing the "name" field in "coveo.deploy.json".'
