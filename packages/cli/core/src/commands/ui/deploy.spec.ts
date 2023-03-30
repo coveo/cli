@@ -163,7 +163,7 @@ describe('ui:deploy', () => {
         ({
           initialize: () => Promise.resolve(),
           hostedPages: {
-            create: mockHostedPageCreate.mockResolvedValue({}),
+            create: mockHostedPageCreate.mockResolvedValue({id: 'somePageId'}),
             update: mockHostedPageUpdate.mockResolvedValue({}),
             list: mockHostedPageList.mockResolvedValue({
               items: [],
@@ -469,12 +469,14 @@ describe('ui:deploy', () => {
       .command(['ui:deploy'])
       .it(
         'should call hostedPages.list and hostedPages.create when no page id argument is passed',
-        () => {
+        ({stdout, stderr}) => {
           expect(mockHostedPageList).toHaveBeenCalledWith(
             expect.objectContaining({
               filter: expectedHostedPage.name,
             })
           );
+          expect(stdout).toMatchSnapshot();
+          expect(stderr).toMatchSnapshot();
           expect(mockHostedPageCreate).toHaveBeenCalledWith(expectedHostedPage);
         }
       );
@@ -543,7 +545,9 @@ describe('ui:deploy', () => {
       .command(['ui:deploy', `-p=${pageTestId}`])
       .it(
         'when a page id argument is passed, it should call hostedPages.update',
-        () => {
+        ({stdout, stderr}) => {
+          expect(stdout).toMatchSnapshot();
+          expect(stderr).toMatchSnapshot();
           expect(mockHostedPageUpdate).toHaveBeenCalledWith({
             ...expectedHostedPage,
             id: pageTestId,

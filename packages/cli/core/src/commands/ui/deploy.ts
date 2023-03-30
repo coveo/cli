@@ -227,7 +227,7 @@ export default class Deploy extends CLICommand {
   private async confirmOverwrite(): Promise<void | never> {
     if (
       !(await CliUx.ux.confirm(dedent`
-      Overwrite page with ID: "${this.pageId}" in organization ${this.organization}?`))
+      Overwrite page with ID: "${this.pageId}" in organization ${this.organization}? (y/n)`))
     ) {
       this.error(
         'Page name must be unique, try changing the "name" field in "coveo.deploy.json".'
@@ -284,15 +284,16 @@ export default class Deploy extends CLICommand {
     startSpinner(`Creating new Hosted Page named "${page.name}".`);
 
     const response = await this.platformClient.hostedPages.create(page);
-    this.log(`Hosted Page creation successful with id "${response.id}".`);
     stopSpinner();
+    this.log(
+      `To update your page, run "coveo ${this.identifier} -p=${response.id}".`
+    );
   }
 
   private async updatePage(page: HostedPage) {
     startSpinner(`Updating existing Hosted Page with the id "${page.id}".`);
 
-    const response = await this.platformClient.hostedPages.update(page);
-    this.log(`Hosted Page update successful with id "${response.id}".`);
+    await this.platformClient.hostedPages.update(page);
     stopSpinner();
   }
 
