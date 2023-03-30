@@ -10,9 +10,6 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
 const noLockRequired = Boolean(process.env.NO_LOCK);
 
 const ensureUpToDateBranch = async () => {
-  if (isPrerelease || noLockRequired) {
-    return;
-  }
   // Lock-out master
   await limitWriteAccessToBot();
 
@@ -30,4 +27,6 @@ const ensureUpToDateBranch = async () => {
   }
 };
 
-await ensureUpToDateBranch();
+if (!(isPrerelease || noLockRequired)) {
+  await ensureUpToDateBranch();
+}

@@ -2,6 +2,7 @@ import {Octokit} from 'octokit';
 
 const REPO_OWNER = 'coveo';
 const REPO_NAME = 'cli';
+const MAIN_BRANCH_NAME = 'master';
 
 export const limitWriteAccessToBot = () =>
   changeBranchRestrictions({
@@ -20,14 +21,14 @@ async function changeBranchRestrictions(restrictions) {
     await octokit.rest.repos.getBranchProtection({
       owner: REPO_OWNER,
       repo: REPO_NAME,
-      branch: 'master',
+      branch: MAIN_BRANCH_NAME,
     })
   ).data;
 
   await octokit.rest.repos.updateBranchProtection({
     owner: REPO_OWNER,
     repo: REPO_NAME,
-    branch: 'master',
+    branch: MAIN_BRANCH_NAME,
     ...currentProtection,
     restrictions,
   });
