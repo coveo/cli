@@ -90,8 +90,7 @@ describe('ui:deploy', () => {
       async () => {
         addPageNameToConfig('create');
         await deploy({debugName: 'ui-deploy-new'});
-
-        const regex = /Hosted Page creation successful with id "(.+)"/g;
+        const regex = /To update your page, run "coveo ui:deploy -p=(.+)/g;
         expect(stdout).toMatch(regex);
         const matches = regex.exec(stdout)!;
         const hostedPageId = matches[1];
@@ -113,12 +112,7 @@ describe('ui:deploy', () => {
 
         await deploy({id, debugName: 'ui-deploy-update'});
 
-        const regex = /Hosted Page update successful with id "(.+)"/g;
-        expect(stdout).toMatch(regex);
-        const matches = regex.exec(stdout)!;
-        const hostedPageId = matches[1];
-
-        const hostedPage = await platformClient.hostedPages.get(hostedPageId);
+        const hostedPage = await platformClient.hostedPages.get(id);
         expect(hostedPage.name).toEqual(pageName);
       },
       defaultTimeout
