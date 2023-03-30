@@ -12,6 +12,7 @@ export const config: Config = {
     },
     {
       type: 'docs-readme',
+      dir: './',
     },
     {
       type: 'docs-json',

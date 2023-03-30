@@ -28,21 +28,21 @@ describe('ui:deploy', () => {
     writeJsonSync(configPath, {...config, name: pageName});
   };
 
-  const deploy = async (id?: string) => {
+  const deploy = async (opts: {id?: string; debugName?: string}) => {
     const args: string[] = [
       process.env.CLI_EXEC_PATH!,
       'ui:deploy',
       `-o=${testOrgId}`,
     ];
-    if (id) {
-      args.push(`-p=${id}`);
+    if (opts.id) {
+      args.push(`-p=${opts.id}`);
     }
     const terminal = new Terminal(
       'node',
       args,
       {cwd: deployProjectPath},
       processManager,
-      'ui-deploy'
+      opts.debugName
     );
     terminal.orchestrator.process.stdout.on('data', stdoutListener);
     await terminal
@@ -74,7 +74,7 @@ describe('ui:deploy', () => {
       'creates a new hosted page',
       async () => {
         addPageNameToConfig('create');
-        await deploy();
+        await deploy({debugName: 'ui-deploy-new'});
 
         const regex = /Hosted Page creation successful with id "(.+)"/g;
         expect(stdout).toMatch(regex);
@@ -96,7 +96,7 @@ describe('ui:deploy', () => {
           name: `new-hosted-page-${process.env.TEST_RUN_ID}`,
         });
 
-        await deploy(id);
+        await deploy({id, debugName: 'ui-deploy-update'});
 
         const regex = /Hosted Page update successful with id "(.+)"/g;
         expect(stdout).toMatch(regex);

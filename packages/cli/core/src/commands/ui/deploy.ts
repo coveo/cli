@@ -8,9 +8,10 @@ import {
   IsAuthenticated,
   Preconditions,
 } from '@coveo/cli-commons/preconditions/index';
-import {HostedPage, New} from '@coveo/platform-client';
+import type {HostedPage, New} from '@coveo/platform-client';
+import type PlatformClient from '@coveo/platform-client';
 import {createSearchPagesPrivilege} from '@coveo/cli-commons/preconditions/platformPrivilege';
-import {Flags} from '@oclif/core';
+import {CliUx, Flags} from '@oclif/core';
 import {readJsonSync, ensureDirSync, readFileSync} from 'fs-extra';
 import {DeployConfigError} from '../../lib/errors/deployErrors';
 import {join} from 'path';
@@ -19,6 +20,7 @@ import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
 import {getTargetOrg} from '../../lib/utils/platform';
 import {Config} from '@coveo/cli-commons/config/config';
 import {organization} from '../../lib/flags/platformCommonFlags';
+import dedent from 'ts-dedent';
 
 interface FileInput {
   path: string;
@@ -146,25 +148,91 @@ export default class Deploy extends CLICommand {
     },
   ];
 
+  private flags!: {organization?: string; pageId?: string; config: string};
+  private organization!: string;
+  private platformClient!: PlatformClient;
+  private hostedPage!: New<HostedPage>;
+  private pageId: string | undefined;
+
   @Trackable()
   @Preconditions(
     IsAuthenticated([AuthenticationType.OAuth]),
     HasNecessaryCoveoPrivileges(createSearchPagesPrivilege)
   )
   public async run() {
-    const {flags} = await this.parse(Deploy);
-    const deployConfigPath = flags.config;
+    await this.computeFlags();
+    this.computeOrgId();
+    await this.instantiatePlatformClient();
+    this.computeHostedPage();
+    await this.computePageId();
+
+    if (this.pageId) {
+      await this.updatePage({...this.hostedPage, id: this.pageId});
+    } else {
+      await this.createPage(this.hostedPage);
+    }
+  }
+
+  private async computeFlags() {
+    this.flags = (await this.parse(Deploy)).flags;
+  }
+
+  private computeOrgId() {
+    this.organization = getTargetOrg(
+      this.configuration,
+      this.flags.organization
+    );
+  }
+
+  private async instantiatePlatformClient() {
+    this.platformClient = await new AuthenticatedClient().getClient({
+      organization: this.organization,
+    });
+  }
+
+  private computeHostedPage() {
+    const deployConfigPath = this.flags.config;
     const deployConfig: DeployConfig =
       readJsonSync(deployConfigPath, {throws: false}) || {};
     this.validateDeployConfigJson(deployConfigPath, deployConfig);
-    const hostedPage = this.buildHostedPage(deployConfig);
+    this.hostedPage = this.buildHostedPage(deployConfig);
+  }
 
-    if (flags.pageId) {
-      this.updatePage({...hostedPage, id: flags.pageId});
+  private async computePageId() {
+    this.pageId = this.getPageIdFromFlags();
+
+    if (this.pageId) {
       return;
     }
 
-    await this.createPage(hostedPage);
+    this.pageId = await this.getPageIdFromHostedPage();
+
+    if (this.pageId) {
+      await this.confirmOverwrite();
+    }
+  }
+
+  private getPageIdFromFlags(): string | undefined {
+    return this.flags.pageId;
+  }
+
+  private async getPageIdFromHostedPage(): Promise<string | undefined> {
+    const response = await this.platformClient.hostedPages.list({
+      filter: this.hostedPage.name,
+    });
+    return response.items.find((page) => page.name === this.hostedPage.name)
+      ?.id;
+  }
+
+  private async confirmOverwrite(): Promise<void | never> {
+    if (
+      !(await CliUx.ux.confirm(dedent`
+      Overwrite page with ID: "${this.pageId}" in organization ${this.organization}?`))
+    ) {
+      this.error(
+        'Page name must be unique, try changing the "name" field in "coveo.deploy.json".'
+      );
+    }
   }
 
   private validateDeployConfigJson(
@@ -212,18 +280,10 @@ export default class Deploy extends CLICommand {
     };
   }
 
-  private async createClient() {
-    const {flags} = await this.parse(Deploy);
-    return await new AuthenticatedClient().getClient({
-      organization: getTargetOrg(this.configuration, flags.organization),
-    });
-  }
-
   private async createPage(page: New<HostedPage>) {
     startSpinner(`Creating new Hosted Page named "${page.name}".`);
 
-    const client = await this.createClient();
-    const response = await client.hostedPages.create(page);
+    const response = await this.platformClient.hostedPages.create(page);
     this.log(`Hosted Page creation successful with id "${response.id}".`);
     stopSpinner();
   }
@@ -231,8 +291,7 @@ export default class Deploy extends CLICommand {
   private async updatePage(page: HostedPage) {
     startSpinner(`Updating existing Hosted Page with the id "${page.id}".`);
 
-    const client = await this.createClient();
-    const response = await client.hostedPages.update(page);
+    const response = await this.platformClient.hostedPages.update(page);
     this.log(`Hosted Page update successful with id "${response.id}".`);
     stopSpinner();
   }

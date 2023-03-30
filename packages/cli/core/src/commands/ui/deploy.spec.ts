@@ -16,7 +16,11 @@ jest.mock('../../lib/utils/misc');
 import {test} from '@oclif/test';
 import {spawnProcess} from '../../lib/utils/process';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import PlatformClient, {HostedPage, New} from '@coveo/platform-client';
+import PlatformClient, {
+  CoveoPlatformClientError,
+  HostedPage,
+  New,
+} from '@coveo/platform-client';
 import {Config, Configuration} from '@coveo/cli-commons/config/config';
 import {
   HasNecessaryCoveoPrivileges,
@@ -29,6 +33,7 @@ import {readJSONSync, readFileSync} from 'fs-extra';
 import {DeployConfig} from './deploy';
 import {validate, ValidatorResult} from 'jsonschema';
 import {join} from 'path';
+import {CliUx} from '@oclif/core';
 
 const actualValidate = jest.requireActual('jsonschema').validate;
 
@@ -69,6 +74,7 @@ const validJsonConfig: DeployConfig = {
   schemaVersion: '1.0.0',
 };
 
+const pageTestId = 'thisistheid';
 describe('ui:deploy', () => {
   const mockedConfig = jest.mocked(Config);
   const mockedSpawnProcess = jest.mocked(spawnProcess);
@@ -81,7 +87,12 @@ describe('ui:deploy', () => {
   const mockedReadFileSync = jest.mocked(readFileSync);
   const mockedValidate = jest.mocked(validate);
   const mockHostedPageCreate = jest.fn();
+  const mockHostedPageList = jest.fn();
   const mockHostedPageUpdate = jest.fn();
+  const mockedConfirm = jest.fn();
+  const doMockConfirm = () => {
+    Object.defineProperty(CliUx.ux, 'confirm', {value: mockedConfirm});
+  };
 
   const preconditionStatus = {
     apiKey: true,
@@ -146,7 +157,6 @@ describe('ui:deploy', () => {
         } as unknown as AuthenticatedClient)
     );
   };
-
   const doMockPlatformClient = () => {
     mockedPlatformClient.mockImplementation(
       () =>
@@ -155,6 +165,9 @@ describe('ui:deploy', () => {
           hostedPages: {
             create: mockHostedPageCreate.mockResolvedValue({}),
             update: mockHostedPageUpdate.mockResolvedValue({}),
+            list: mockHostedPageList.mockResolvedValue({
+              items: [],
+            }),
           },
         } as unknown as PlatformClient)
     );
@@ -455,8 +468,13 @@ describe('ui:deploy', () => {
       .stderr()
       .command(['ui:deploy'])
       .it(
-        'should call hostedPages.create when no page id argument is passed',
+        'should call hostedPages.list and hostedPages.create when no page id argument is passed',
         () => {
+          expect(mockHostedPageList).toHaveBeenCalledWith(
+            expect.objectContaining({
+              filter: expectedHostedPage.name,
+            })
+          );
           expect(mockHostedPageCreate).toHaveBeenCalledWith(expectedHostedPage);
         }
       );
@@ -464,15 +482,90 @@ describe('ui:deploy', () => {
     test
       .stdout()
       .stderr()
-      .command(['ui:deploy', '-p=thisistheid'])
+      .do(() => {
+        doMockConfirm();
+        mockedConfirm.mockResolvedValueOnce(true);
+        mockHostedPageList.mockResolvedValueOnce({
+          items: [{name: validJsonConfig.name, id: pageTestId}],
+        });
+      })
+      .command(['ui:deploy'])
       .it(
-        'should call hostedPages.update when a page id argument is passed',
+        'when no page id argument is passed and a page with the same name already exists, it should ask the user for confirmation',
+        () => {
+          expect(mockedConfirm).toBeCalled();
+        }
+      );
+
+    test
+      .stdout()
+      .stderr()
+      .do(() => {
+        doMockConfirm();
+        mockedConfirm.mockResolvedValueOnce(true);
+        mockHostedPageList.mockResolvedValueOnce({
+          items: [{name: validJsonConfig.name, id: pageTestId}],
+        });
+      })
+      .command(['ui:deploy'])
+      .it(
+        'when no page id argument is passed, a page with the same name already exists, and the user confirms the overwrite, it should call hostedPages.update',
         () => {
           expect(mockHostedPageUpdate).toHaveBeenCalledWith({
             ...expectedHostedPage,
-            id: 'thisistheid',
+            id: pageTestId,
           });
         }
       );
+
+    test
+      .stdout()
+      .stderr()
+      .do(() => {
+        doMockConfirm();
+        mockedConfirm.mockResolvedValueOnce(false);
+        mockHostedPageList.mockResolvedValueOnce({
+          items: [{name: validJsonConfig.name, id: pageTestId}],
+        });
+      })
+      .command(['ui:deploy'])
+      .catch((err) => expect(err).toMatchSnapshot())
+      .it(
+        'when no page id argument is passed, a page with the same name already exists, the user declines the overwrite, it should not call hostedPages.update',
+        () => {
+          expect(mockHostedPageUpdate).not.toBeCalled();
+        }
+      );
+
+    test
+      .stdout()
+      .stderr()
+      .command(['ui:deploy', `-p=${pageTestId}`])
+      .it(
+        'when a page id argument is passed, it should call hostedPages.update',
+        () => {
+          expect(mockHostedPageUpdate).toHaveBeenCalledWith({
+            ...expectedHostedPage,
+            id: pageTestId,
+          });
+        }
+      );
+
+    test
+      .stdout()
+      .stderr()
+      .do(() => {
+        mockHostedPageUpdate.mockImplementationOnce(() => {
+          const err = new CoveoPlatformClientError();
+          err.title = 'SO_BAD';
+          err.detail = 'this is bad';
+          err.xRequestId = 'b33pb00p';
+          err.status = 418;
+          throw err;
+        });
+      })
+      .command(['ui:deploy', `-p=${pageTestId}`])
+      .catch((err) => expect(err).toMatchSnapshot())
+      .it('should print an API Error if the update fails');
   });
 });
