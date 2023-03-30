@@ -3,9 +3,15 @@ import PlatformClient from '@coveo/platform-client';
 import {getPlatformClient} from '../utils/platform';
 import {getTestOrg} from '../utils/testOrgSetup';
 import {ProcessManager} from '../utils/processManager';
-import {getConfig, getUIProjectPath} from '../utils/cli';
+import {
+  answerPrompt,
+  getConfig,
+  getUIProjectPath,
+  isGenericYesNoPrompt,
+} from '../utils/cli';
 import {copySync, readJsonSync, writeJsonSync} from 'fs-extra';
 import {Terminal} from '../utils/terminal/terminal';
+import {EOL} from 'node:os';
 
 describe('ui:deploy', () => {
   let platformClient: PlatformClient;
@@ -44,14 +50,23 @@ describe('ui:deploy', () => {
       processManager,
       opts.debugName
     );
+
     terminal.orchestrator.process.stdout.on('data', stdoutListener);
-    await terminal
+    const terminalExitPromise = terminal
       .when('exit')
       .on('process')
       .do((proc) => {
         proc.stdout.off('data', stdoutListener);
       })
       .once();
+
+    await terminal
+      .when(isGenericYesNoPrompt)
+      .on('stdout')
+      .do(answerPrompt(`y${EOL}`))
+      .until(terminalExitPromise);
+
+    await terminalExitPromise;
   };
 
   beforeAll(async () => {
