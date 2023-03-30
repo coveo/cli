@@ -6,8 +6,7 @@ exports[`ui:deploy interacting with Platform client should call hostedPages.list
 `;
 
 exports[`ui:deploy interacting with Platform client should call hostedPages.list and hostedPages.create when no page id argument is passed 2`] = `
-"Creating new Hosted Page named "my page"....
-Creating new Hosted Page named "my page".... ✔
+"Creating new Hosted Page named "my page".... ✔
 "
 `;
 
@@ -22,8 +21,7 @@ Request ID: [31mb33pb00p[39m]
 exports[`ui:deploy interacting with Platform client when a page id argument is passed, it should call hostedPages.update 1`] = `""`;
 
 exports[`ui:deploy interacting with Platform client when a page id argument is passed, it should call hostedPages.update 2`] = `
-"Updating existing Hosted Page with the id "thisistheid"....
-Updating existing Hosted Page with the id "thisistheid".... ✔
+"Updating existing Hosted Page with the id "thisistheid".... ✔
 "
 `;
 
