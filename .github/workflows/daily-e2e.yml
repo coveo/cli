@@ -32,7 +32,7 @@ jobs:
       # ID of the test run to identify resources to teardown.
       TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}-dailyg'
     steps:
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
@@ -75,7 +75,7 @@ jobs:
       COVEO_DISABLE_AUTOUPDATE: true
       CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
@@ -99,7 +99,7 @@ jobs:
       TEST_RUN_ID: '${{ github.sha }}-${{ github.run_attempt }}-dailyg'
       CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
