@@ -4,32 +4,36 @@ const REPO_OWNER = 'coveo';
 const REPO_NAME = 'cli';
 const MAIN_BRANCH_NAME = 'master';
 
-export const limitWriteAccessToBot = () =>
-  changeBranchRestrictions({
-    users: [],
-    apps: ['developer-experience-bot'],
-    teams: [],
-  });
+export const limitWriteAccessToBot = () => changeBranchRestrictions(true);
 
 export const removeWriteAccessRestrictions = () =>
-  changeBranchRestrictions(null);
+  changeBranchRestrictions(false);
 
-async function changeBranchRestrictions(restrictions) {
+async function changeBranchRestrictions(onlyBot) {
   const octokit = new Octokit({auth: process.env.GITHUB_CREDENTIALS});
-
-  const currentProtection = (
-    await octokit.rest.repos.getBranchProtection({
+  if (onlyBot) {
+    await octokit.rest.repos.setTeamAccessRestrictions({
+      branch: MAIN_BRANCH_NAME,
       owner: REPO_OWNER,
       repo: REPO_NAME,
+      teams: [],
+    });
+    await octokit.rest.repos.setAdminBranchProtection({
       branch: MAIN_BRANCH_NAME,
-    })
-  ).data;
-
-  await octokit.rest.repos.updateBranchProtection({
-    owner: REPO_OWNER,
-    repo: REPO_NAME,
-    branch: MAIN_BRANCH_NAME,
-    ...currentProtection,
-    restrictions,
-  });
+      owner: REPO_OWNER,
+      repo: {},
+    });
+  } else {
+    await octokit.rest.repos.setTeamAccessRestrictions({
+      branch: MAIN_BRANCH_NAME,
+      owner: REPO_OWNER,
+      repo: REPO_NAME,
+      teams: ['dx'],
+    });
+    await octokit.rest.repos.setAdminBranchProtection({
+      branch: MAIN_BRANCH_NAME,
+      owner: REPO_OWNER,
+      repo: REPO_NAME,
+    });
+  }
 }
