@@ -1,35 +1,37 @@
+/**
+ * Because our release process creates release commits on our main branch,
+ * it needs to reserve the branch when running, so that no 'new commits' come up.
+ */
+
 import {Octokit} from 'octokit';
 
 const REPO_OWNER = 'coveo';
 const REPO_NAME = 'cli';
 const MAIN_BRANCH_NAME = 'master';
-
-export const limitWriteAccessToBot = () =>
-  changeBranchRestrictions({
-    users: [],
-    apps: ['developer-experience-bot'],
-    teams: [],
-  });
+const COVEO_CLI_MASTER = {
+  owner: REPO_OWNER,
+  repo: REPO_NAME,
+  branch: MAIN_BRANCH_NAME,
+};
+export const limitWriteAccessToBot = () => changeBranchRestrictions(true);
 
 export const removeWriteAccessRestrictions = () =>
-  changeBranchRestrictions(null);
+  changeBranchRestrictions(false);
 
-async function changeBranchRestrictions(restrictions) {
+async function changeBranchRestrictions(onlyBot) {
   const octokit = new Octokit({auth: process.env.GITHUB_CREDENTIALS});
+  if (onlyBot) {
+    await octokit.rest.repos.setTeamAccessRestrictions({
+      ...COVEO_CLI_MASTER,
+      teams: [],
+    });
 
-  const currentProtection = (
-    await octokit.rest.repos.getBranchProtection({
-      owner: REPO_OWNER,
-      repo: REPO_NAME,
-      branch: MAIN_BRANCH_NAME,
-    })
-  ).data;
-
-  await octokit.rest.repos.updateBranchProtection({
-    owner: REPO_OWNER,
-    repo: REPO_NAME,
-    branch: MAIN_BRANCH_NAME,
-    ...currentProtection,
-    restrictions,
-  });
+    await octokit.rest.repos.setAdminBranchProtection(COVEO_CLI_MASTER);
+  } else {
+    await octokit.rest.repos.setTeamAccessRestrictions({
+      ...COVEO_CLI_MASTER,
+      teams: ['dx'],
+    });
+    await octokit.rest.repos.deleteAdminBranchProtection(COVEO_CLI_MASTER);
+  }
 }
