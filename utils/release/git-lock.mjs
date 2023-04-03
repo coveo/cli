@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import {gitPull, getSHA1fromRef} from '@coveo/semantic-monorepo-tools';
-import dedent from 'ts-dedent';
+import {dedent} from 'ts-dedent';
 
 import {
   limitWriteAccessToBot,

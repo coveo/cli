@@ -14,13 +14,19 @@ import {
 } from '@coveo/semantic-monorepo-tools';
 import {spawnSync} from 'node:child_process';
 import {appendFileSync, readFileSync, writeFileSync} from 'node:fs';
+// @ts-ignore no dts is ok
 import angularChangelogConvention from 'conventional-changelog-angular';
 import {dirname, resolve, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import retry from 'async-retry';
-import {inc, compareBuild, gte} from 'semver';
+import {inc, compareBuild, gte, SemVer} from 'semver';
 import {json as fetchNpm} from 'npm-registry-fetch';
 
+/**
+ * Check if the package json in the provided folder has changed since the last commit
+ * @param {string} directoryPath
+ * @returns {boolean}
+ */
 const hasPackageJsonChanged = (directoryPath) => {
   const {stdout, stderr, status} = spawnSync(
     'git',
@@ -61,9 +67,11 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
   }
   const parsedCommits = parseCommits(commits, convention.parserOpts);
   let currentGitVersion = getCurrentVersion(PATH);
-  let currentNpmVersion = privatePackage
-    ? '0.0.0' // private package does not have a npm version, so we default to the 'lowest' possible
-    : await describeNpmTag(packageJson.name, 'latest');
+  let currentNpmVersion = new SemVer(
+    privatePackage
+      ? '0.0.0' // private package does not have a npm version, so we default to the 'lowest' possible
+      : await describeNpmTag(packageJson.name, 'latest')
+  );
   const isRedo = gte(currentNpmVersion, currentGitVersion);
   const bumpInfo = isRedo
     ? {type: 'patch'}
@@ -117,6 +125,10 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
   );
 })();
 
+/**
+ *
+ * @param {string} version
+ */
 async function updateWorkspaceDependent(version) {
   const topology = JSON.parse(
     readFileSync(join(rootFolder, 'topology.json'), {encoding: 'utf-8'})
@@ -134,7 +146,8 @@ async function updateWorkspaceDependent(version) {
   )) {
     if (
       dependencies.find(
-        (dependency) => dependency.target === dependencyPackageName
+        (/** @type {{target:string}} **/ dependency) =>
+          dependency.target === dependencyPackageName
       )
     ) {
       dependentPackages.push(name);
@@ -158,6 +171,12 @@ async function updateWorkspaceDependent(version) {
   }
 }
 
+/**
+ *
+ * @param {any} packageJson
+ * @param {string} dependency
+ * @param {string} version
+ */
 function updateDependency(packageJson, dependency, version) {
   for (const dependencyType of [
     'dependencies',
@@ -170,6 +189,11 @@ function updateDependency(packageJson, dependency, version) {
   }
 }
 
+/**
+ *
+ * @param {string} cmd
+ * @returns
+ */
 export const appendCmdIfWindows = (cmd) =>
   `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
 
@@ -180,15 +204,28 @@ function isPrivatePackage() {
   return packageJson.private;
 }
 
+/**
+ *
+ * @param {string} packageName
+ * @param {string} nextGoldVersion
+ * @returns {Promise<string>}
+ */
 async function getNextBetaVersion(packageName, nextGoldVersion) {
+  let nextBetaVersion = `${nextGoldVersion}-0`;
   const registryMeta = await fetchNpm(packageName);
+
+  /**
+   * @type {string[]}
+   */
+  // @ts-ignore force-cast.
   const versions = Object.keys(registryMeta.versions);
   const nextGoldMatcher = new RegExp(`${nextGoldVersion}-\\d+`);
   const matchingPreReleasedVersions = versions
     .filter((version) => nextGoldMatcher.test(version))
     .sort(compareBuild);
-  if (matchingPreReleasedVersions.length === 0) {
-    return `${nextGoldVersion}-0`;
+  const lastPrerelease = matchingPreReleasedVersions.pop();
+  if (lastPrerelease) {
+    nextBetaVersion = inc(lastPrerelease, 'prerelease') ?? nextBetaVersion;
   }
-  return inc(matchingPreReleasedVersions.pop(), 'prerelease');
+  return nextBetaVersion;
 }

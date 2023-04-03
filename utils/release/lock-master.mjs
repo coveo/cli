@@ -18,6 +18,10 @@ export const limitWriteAccessToBot = () => changeBranchRestrictions(true);
 export const removeWriteAccessRestrictions = () =>
   changeBranchRestrictions(false);
 
+/**
+ * Lock/Unlock the main branch to only allow the 🤖 to write on it.
+ * @param {boolean} onlyBot
+ */
 async function changeBranchRestrictions(onlyBot) {
   const octokit = new Octokit({auth: process.env.GITHUB_CREDENTIALS});
   if (onlyBot) {

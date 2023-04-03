@@ -14,9 +14,15 @@
     "semver": "7.3.8",
     "ts-dedent": "2.2.0"
   },
+  "devDependencies": {
+    "typescript": "4.9.5"
+  },
   "bin": {
     "git-lock": "./git-lock.mjs",
     "npm-publish": "./npm-publish-package.mjs",
     "git-publish-all": "./git-publish-all.mjs"
+  },
+  "scripts": {
+    "test": "tsc"
   }
 }
