@@ -126,7 +126,7 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
 })();
 
 /**
- *
+ * Update the version of the package in the other packages of the workspace
  * @param {string} version
  */
 async function updateWorkspaceDependent(version) {
@@ -205,6 +205,9 @@ function isPrivatePackage() {
 }
 
 /**
+ * Compute the next beta version of the package,
+ * based on what the next gold version would be,
+ * and the latest beta version published.
  *
  * @param {string} packageName
  * @param {string} nextGoldVersion
@@ -212,12 +215,13 @@ function isPrivatePackage() {
  */
 async function getNextBetaVersion(packageName, nextGoldVersion) {
   let nextBetaVersion = `${nextGoldVersion}-0`;
+
   const registryMeta = await fetchNpm(packageName);
 
   /**
    * @type {string[]}
    */
-  // @ts-ignore force-cast.
+  // @ts-ignore force-cast: `fetchNpm` do not returns a `Record<string,unknown>, which is hard to work with.
   const versions = Object.keys(registryMeta.versions);
   const nextGoldMatcher = new RegExp(`${nextGoldVersion}-\\d+`);
   const matchingPreReleasedVersions = versions

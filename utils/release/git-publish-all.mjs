@@ -155,7 +155,7 @@ const getCliChangelog = () => {
 })();
 
 /**
- *
+ * "Craft" the signed release commit.
  * @param {string|number} releaseNumber
  * @param {string} commitMessage
  * @param {Octokit} octokit
