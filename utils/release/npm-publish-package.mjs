@@ -172,10 +172,10 @@ async function updateWorkspaceDependent(version) {
 }
 
 /**
- *
- * @param {any} packageJson
- * @param {string} dependency
- * @param {string} version
+ * Update all instancies of the `dependency` in the `packageJson` to the given `version`.
+ * @param {any} packageJson the packageJson object to update
+ * @param {string} dependency the dependency to look for and update
+ * @param {string} version the version to update to.
  */
 function updateDependency(packageJson, dependency, version) {
   for (const dependencyType of [
@@ -190,7 +190,7 @@ function updateDependency(packageJson, dependency, version) {
 }
 
 /**
- *
+ * Append `.cmd` to the input if the runtime OS is Windows.
  * @param {string} cmd
  * @returns
  */
