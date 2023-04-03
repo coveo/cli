@@ -6,6 +6,7 @@ import {
   gitCommit,
   gitPush,
   gitAdd,
+  gitSetupSshRemote,
 } from '@coveo/semantic-monorepo-tools';
 import {dedent} from 'ts-dedent';
 
@@ -19,6 +20,9 @@ import {spawnSync} from 'node:child_process';
 const isPrerelease = process.env.IS_PRERELEASE === 'true';
 const noLockRequired = Boolean(process.env.NO_LOCK);
 const PATH = '.';
+const REPO_OWNER = 'coveo';
+const REPO_NAME = 'cli';
+const GIT_SSH_REMOTE = 'deploy';
 
 const ensureUpToDateBranch = async () => {
   // Lock-out master
@@ -42,10 +46,15 @@ const ensureUpToDateBranch = async () => {
  * This will make .github\workflows\git-lock-fail.yml run and thus fail the associated check.
  */
 const lockBranch = async () => {
+  const DEPLOY_KEY = process.env.DEPLOY_KEY;
+  if (DEPLOY_KEY === undefined) {
+    throw new Error('Deploy key is undefined');
+  }
+  await gitSetupSshRemote(REPO_OWNER, REPO_NAME, DEPLOY_KEY, GIT_SSH_REMOTE);
   writeFileSync('.git-lock', '');
   await gitAdd('.git-lock');
   await gitCommit('lock master', PATH);
-  await gitPush();
+  await gitPush(GIT_SSH_REMOTE);
   spawnSync('git', ['reset', '--hard', 'HEAD~1']);
 };
 
