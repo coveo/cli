@@ -204,6 +204,7 @@ async function commitChanges(releaseNumber, commitMessage, octokit) {
     repo: REPO_NAME,
     ref: `refs/heads/${mainBranchName}`,
     sha: commit.data.sha,
+    force: true,
   });
 
   // Delete the temp branch
