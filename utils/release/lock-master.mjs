@@ -18,20 +18,37 @@ export const limitWriteAccessToBot = () => changeBranchRestrictions(true);
 export const removeWriteAccessRestrictions = () =>
   changeBranchRestrictions(false);
 
+/**
+ * Lock/Unlock the main branch to only allow the 🤖 to write on it.
+ * @param {boolean} onlyBot
+ */
 async function changeBranchRestrictions(onlyBot) {
   const octokit = new Octokit({auth: process.env.GITHUB_CREDENTIALS});
   if (onlyBot) {
+    // Disallow direct write access to the team
     await octokit.rest.repos.setTeamAccessRestrictions({
       ...COVEO_CLI_MASTER,
       teams: [],
     });
-
+    // Requires branches to be up to date before merging
+    await octokit.rest.repos.updateStatusCheckProtection({
+      ...COVEO_CLI_MASTER,
+      strict: true,
+    });
+    // Requires admins to pass the status checks
     await octokit.rest.repos.setAdminBranchProtection(COVEO_CLI_MASTER);
   } else {
+    // Allow direct write access to the team
     await octokit.rest.repos.setTeamAccessRestrictions({
       ...COVEO_CLI_MASTER,
       teams: ['dx'],
     });
+    // Allow admins to bypass the status checks
     await octokit.rest.repos.deleteAdminBranchProtection(COVEO_CLI_MASTER);
+    // Do not requires branches to be up to date before merging
+    await octokit.rest.repos.updateStatusCheckProtection({
+      ...COVEO_CLI_MASTER,
+      strict: false,
+    });
   }
 }

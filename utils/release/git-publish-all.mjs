@@ -14,9 +14,17 @@ import {
   npmBumpVersion,
   getSHA1fromRef,
   gitSetupUser,
+  gitCreateBranch,
+  gitCheckoutBranch,
+  gitAdd,
+  gitWriteTree,
+  gitCommitTree,
+  gitUpdateRef,
+  gitPublishBranch,
 } from '@coveo/semantic-monorepo-tools';
 import {Octokit} from 'octokit';
 import {createAppAuth} from '@octokit/auth-app';
+// @ts-ignore no dts is ok.
 import angularChangelogConvention from 'conventional-changelog-angular';
 import {dedent} from 'ts-dedent';
 import {readFileSync, writeFileSync} from 'fs';
@@ -66,9 +74,9 @@ const getCliChangelog = () => {
   currentVersionTag.inc('prerelease');
   const npmNewVersion = currentVersionTag.format();
   // Write release version in the root package.json
-  await npmBumpVersion(npmNewVersion);
+  await npmBumpVersion(npmNewVersion, PATH);
 
-  const releaseNumber = currentVersionTag.prerelease;
+  const releaseNumber = currentVersionTag.prerelease[0];
   const gitNewTag = `release-${releaseNumber}`;
 
   // Find all changes since last release and generate the changelog.
@@ -136,7 +144,7 @@ const getCliChangelog = () => {
   }
   const releaseBody = getCliChangelog();
   const cliLatestTag = cliReleaseInfoMatch[0];
-  const cliVersion = cliReleaseInfoMatch.groups.version;
+  const cliVersion = cliReleaseInfoMatch?.groups?.version;
   await octokit.rest.repos.createRelease({
     owner: REPO_OWNER,
     repo: REPO_NAME,
@@ -146,6 +154,13 @@ const getCliChangelog = () => {
   });
 })();
 
+/**
+ * "Craft" the signed release commit.
+ * @param {string|number} releaseNumber
+ * @param {string} commitMessage
+ * @param {Octokit} octokit
+ * @returns {Promise<string>}
+ */
 async function commitChanges(releaseNumber, commitMessage, octokit) {
   // Get latest commit and name of the main branch.
   const mainBranchName = await getCurrentBranchName();
@@ -189,6 +204,7 @@ async function commitChanges(releaseNumber, commitMessage, octokit) {
     repo: REPO_NAME,
     ref: `refs/heads/${mainBranchName}`,
     sha: commit.data.sha,
+    force: true,
   });
 
   // Delete the temp branch
@@ -200,7 +216,10 @@ function updateRootReadme() {
   const usageRegExp = /^<!-- usage -->(.|\n)*<!-- usagestop -->$/m;
   const cliReadme = readFileSync('packages/cli/core/README.md', 'utf-8');
   let rootReadme = readFileSync('README.md', 'utf-8');
-  const cliUsage = usageRegExp.exec(cliReadme);
-  rootReadme.replace(usageRegExp, cliUsage[0]);
+  const cliUsage = usageRegExp.exec(cliReadme)?.[0];
+  if (!cliUsage) {
+    return;
+  }
+  rootReadme.replace(usageRegExp, cliUsage);
   writeFileSync('README.md', rootReadme);
 }
