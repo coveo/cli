@@ -15,12 +15,12 @@
   "license": "Apache-2.0",
   "scripts": {
     "release:phase1": "npx -p=@coveord/release npm-publish",
-    "build": "rimraf dist && tsc -b tsconfig.json",
+    "build": "rimraf dist && tsc -b tsconfig.build.json",
     "prepublishOnly": "npm run build",
-    "pretest": "npm run build",
-    "test": "jest",
-    "pretest-e2e": "npm run build",
-    "test-e2e": "node --experimental-vm-modules --no-warnings ../../../../node_modules/jest/bin/jest.js --testPathPattern=e2e"
+    "pretest": "rimraf dist && tsc -b tsconfig.json",
+    "test:unit": "jest --testPathIgnorePatterns=e2e",
+    "test:e2e": "node --experimental-vm-modules --no-warnings ../../../../node_modules/jest/bin/jest.js --testPathPattern=e2e",
+    "test": "npm run test:unit && npm run test:e2e"
   },
   "repository": {
     "type": "git",
