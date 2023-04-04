@@ -31,6 +31,7 @@ export async function publishPackages() {
         cwd: resolve(join(__dirname, '..', '..', '..')),
         env: {
           ...process.env,
+          NO_LOCK: 'true',
           npm_config_registry: verdaccioRegistry,
           DEBUG: '*',
         },
