@@ -7,6 +7,7 @@ import {
   gitPush,
   gitAdd,
   gitSetupSshRemote,
+  gitSetupUser,
 } from '@coveo/semantic-monorepo-tools';
 import {dedent} from 'ts-dedent';
 

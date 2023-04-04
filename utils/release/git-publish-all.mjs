@@ -13,7 +13,6 @@ import {
   gitPushTags,
   npmBumpVersion,
   getSHA1fromRef,
-  gitSetupUser,
   gitCreateBranch,
   gitCheckoutBranch,
   gitAdd,
