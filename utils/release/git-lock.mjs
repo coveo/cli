@@ -46,11 +46,6 @@ const ensureUpToDateBranch = async () => {
  * This will make .github\workflows\git-lock-fail.yml run and thus fail the associated check.
  */
 const lockBranch = async () => {
-  const DEPLOY_KEY = process.env.DEPLOY_KEY;
-  if (DEPLOY_KEY === undefined) {
-    throw new Error('Deploy key is undefined');
-  }
-  await gitSetupSshRemote(REPO_OWNER, REPO_NAME, DEPLOY_KEY, GIT_SSH_REMOTE);
   writeFileSync('.git-lock', '');
   await gitAdd('.git-lock');
   await gitCommit('lock master', PATH);
@@ -58,7 +53,21 @@ const lockBranch = async () => {
   spawnSync('git', ['reset', '--hard', 'HEAD~1']);
 };
 
+const setupGit = async () => {
+  const GIT_USERNAME = 'developer-experience-bot[bot]';
+  const GIT_EMAIL =
+    '91079284+developer-experience-bot[bot]@users.noreply.github.com';
+  const DEPLOY_KEY = process.env.DEPLOY_KEY;
+  if (DEPLOY_KEY === undefined) {
+    throw new Error('Deploy key is undefined');
+  }
+
+  await gitSetupUser(GIT_USERNAME, GIT_EMAIL);
+  await gitSetupSshRemote(REPO_OWNER, REPO_NAME, DEPLOY_KEY, GIT_SSH_REMOTE);
+};
+
 if (!(isPrerelease || noLockRequired)) {
+  await setupGit();
   await ensureUpToDateBranch();
   await lockBranch();
 }
