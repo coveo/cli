@@ -21,6 +21,7 @@ import {
   gitCommitTree,
   gitUpdateRef,
   gitPublishBranch,
+  gitSetRefOnCommit,
 } from '@coveo/semantic-monorepo-tools';
 import {Octokit} from 'octokit';
 import {createAppAuth} from '@octokit/auth-app';
@@ -32,6 +33,7 @@ import {removeWriteAccessRestrictions} from './lock-master.mjs';
 const CLI_PKG_MATCHER = /^@coveo\/cli@(?<version>\d+\.\d+\.\d+)$/gm;
 const REPO_OWNER = 'coveo';
 const REPO_NAME = 'cli';
+const GIT_SSH_REMOTE = 'deploy';
 
 const getCliChangelog = () => {
   const changelog = readFileSync('packages/cli/core/CHANGELOG.md', {
@@ -199,13 +201,12 @@ async function commitChanges(releaseNumber, commitMessage, octokit) {
   /**
    * We then update the mainBranch to this new verified commit.
    */
-  await octokit.rest.git.updateRef({
-    owner: REPO_OWNER,
-    repo: REPO_NAME,
-    ref: `refs/heads/${mainBranchName}`,
-    sha: commit.data.sha,
-    force: true,
-  });
+  await gitSetRefOnCommit(
+    GIT_SSH_REMOTE,
+    `refs/heads/${mainBranchName}`,
+    commit.data.sha,
+    true
+  );
 
   // Delete the temp branch
   await gitDeleteRemoteBranch('origin', tempBranchName);

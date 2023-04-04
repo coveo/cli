@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@coveo/cli-commons-dev": "6.0.5",
+    "@coveo/semantic-monorepo-tools": "1.7.0",
     "@oclif/test": "2.2.21",
     "@types/jest": "29.4.0",
     "@types/node": "18.15.1",
