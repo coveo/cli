@@ -204,7 +204,8 @@ async function commitChanges(releaseNumber, commitMessage, octokit) {
   await gitSetRefOnCommit(
     GIT_SSH_REMOTE,
     `refs/heads/${mainBranchName}`,
-    commit.data.sha
+    commit.data.sha,
+    true
   );
 
   // Delete the temp branch
