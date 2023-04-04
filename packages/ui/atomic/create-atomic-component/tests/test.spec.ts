@@ -1,7 +1,6 @@
-import stripAnsi from 'strip-ansi';
 import {ChildProcess} from 'node:child_process';
 import {join} from 'node:path';
-import {mkdirSync, readFileSync, writeFileSync} from 'node:fs';
+import {mkdirSync} from 'node:fs';
 import {npmSync} from '@coveo/do-npm';
 import {startVerdaccio} from '@coveo/verdaccio-starter';
 import {hashElement} from 'folder-hash';
@@ -9,7 +8,6 @@ import {DirResult, dirSync} from 'tmp';
 import treeKill from 'tree-kill-promise';
 
 const PACKAGE_NAME = '@coveo/create-atomic-component';
-const PACKAGE_NAME_HEALTH = '@coveo/atomic-component-health-check';
 
 describe(PACKAGE_NAME, () => {
   let verdaccioProcess: ChildProcess;
@@ -19,10 +17,7 @@ describe(PACKAGE_NAME, () => {
   let verdaccioUrl: string;
 
   beforeAll(async () => {
-    ({verdaccioUrl, verdaccioProcess} = await startVerdaccio([
-      PACKAGE_NAME,
-      PACKAGE_NAME_HEALTH,
-    ]));
+    ({verdaccioUrl, verdaccioProcess} = await startVerdaccio(PACKAGE_NAME));
     tempDirectory = dirSync({unsafeCleanup: true, keep: true});
     npmCache = join(tempDirectory.name, 'npm-cache');
     mkdirSync(npmCache);
@@ -111,64 +106,6 @@ describe(PACKAGE_NAME, () => {
           cwd: testDirectory,
         }).status
       ).toBe(0);
-    });
-
-    describe('health-check', () => {
-      const componentJsonPackagePath = (testDir) =>
-        join(
-          testDir,
-          'src',
-          'components',
-          packageName.replace(/@coveo\//, ''),
-          'package.json'
-        );
-
-      const getComponentJsonPackage = (jsonPackagePath: string) => {
-        const json = readFileSync(jsonPackagePath).toString();
-        return JSON.parse(json);
-      };
-
-      const overwriteJsonPackage = (jsonPackagePath, json) => {
-        writeFileSync(jsonPackagePath, JSON.stringify(json, null, 2));
-      };
-
-      /**
-       * Add required properties so health check assertions are met
-       */
-      const addMissingPropertiesToJsonPackage = (json) => {
-        return {
-          ...json,
-          description:
-            'Custom Atomic component for E2E testing: This is component should pass all Health checks',
-          homepage: 'https://my-custom-atomic-component-source-code.com',
-        };
-      };
-
-      const publish = (pkgName, cwd) => {
-        return npmSync(['publish', '--dry-run', '-w', pkgName], {
-          cwd,
-        });
-      };
-
-      beforeAll(() => {
-        const jsonPackagePath = componentJsonPackagePath(testDirectory);
-        const initialJson = getComponentJsonPackage(jsonPackagePath);
-        const updatedJson = addMissingPropertiesToJsonPackage(initialJson);
-        overwriteJsonPackage(jsonPackagePath, updatedJson);
-      });
-
-      it('should be able to pass health checks', () => {
-        const {stdout} = publish(packageName, testDirectory);
-        const message = stripAnsi(stdout.toString()).replace(/\n/g, '');
-        expect(message).not.toContain('✖');
-        expect(message).toContain('✔ Readme file');
-        expect(message).toContain('✔ Component name');
-        expect(message).toContain('✔ Required properties in package.json');
-      });
-
-      it('should be able to publish without issues', () => {
-        expect(publish(packageName, testDirectory).status).toBe(0);
-      });
     });
   });
 });
