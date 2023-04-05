@@ -32,6 +32,21 @@ The project with come with a pre-generated `package.json` file. However, you nee
 
 These properties are crucial for other developer to understand the purpose of your component as well as the homepage hosting the source code.
 
+Other fields will already populated if you create your custom component with the [Coveo CLI](https://docs.coveo.com/en/cli/).
+Some of them:
+
+#### name
+
+You must provide a name for your custom component.
+
+#### unpkg
+
+You must provide the path to the `.esm.js` file of your custom component. You can find it under the `dist/` folder once you build the component.
+
+#### keywords
+
+The package.json `keywords` array should include `coveo-atomic-component`, otherwise your component will not be listed along with other Coveo custom components. See https://docs.npmjs.com/cli/v9/configuring-npm/package-json#keywords
+
 ### Documenting your component
 
 Make sure a `readme.md` file is included in the component directory, which is the same location of the component's `package.json`.
@@ -39,18 +54,17 @@ The readme file should explain the puporse of your component as well as configur
 
 ### Component name
 
-This is already automatically handled. however, if you encounter this issue `TODO: add error message`, it's probably because you did a change to the component name and created an inconsistency.
+If you are getting the following error, continue reading. Otherwise, skip to the next section.
 
-```
+```bash
 Component tag name from your .tsx file does not match the \`elementName\` property defined in your component's package.json file. Make sure both values are identical
 ```
 
-TODO: explain why this is important:...
-The stencil component tag name should match the readme
-
-In this example,. we have a component named `my-custom-component`
+You should not get the above error unless you manually changed the component name in either your `.tsx` file or `package.json`.
+Assuming you have created a custom component called `my-custom-component`, you should end up with the following files
 
 ```tsx
+// src/components/my-custom-component/src/my-custom-component.tsx
 import {Component, h} from '@stencil/core';
 
 @Component({
@@ -72,6 +86,7 @@ export class MyCustomComponent {
 in the `package.json`, the `elementName` property needs to have the same tag name.
 
 ```json
+// src/components/my-custom-component/package.json
 {
   "name": "@coveo/my-custom-component",
   "description": "This compone TODO:",
@@ -84,17 +99,20 @@ in the `package.json`, the `elementName` property needs to have the same tag nam
 }
 ```
 
----
+As you can see, both the `tag` decorator in the `my-custom-component.tsx` file and `elementName` field in the `package.json` match. This should be automatic if you have created your custom component with the [Coveo CLI](https://docs.coveo.com/en/cli/). Otherwise, make sure to address the inconsistency before publishing.
 
-### Using StencilJS to build your component
+<!-- TODO: CDX-1266: Coveo internal components -->
 
-StencilJS is a powerful tool for building web components, and it integrates well with the Coveo atomic framework. StencilJS provides a range of features, including TypeScript support, JSX, and a Virtual DOM, that make it an excellent choice for building high-performance components.
+## Optional requirements
+
+### Writing tests
+
+Adding tests to your custom component will improve your component quality and prevent potential errors. Visit [Jest - Getting Started](https://jestjs.io/docs/getting-started) for more info.
 
 ### Using TypeScript
 
 TypeScript is a strongly typed superset of JavaScript that can help you catch errors and improve the quality of your code. By using TypeScript, you can catch errors at compile-time, rather than at runtime, which can save you time and effort in debugging.
 
- <!--
- TODO: CDX-1266: Coveo internal components
- 
- -->
+## Published
+
+Once your component is published and available in [npm](https://npmjs.com/) it will be indexed by Coveo and should be available in the [Custom Component Search page](https://docs.coveo.com/en/atomic/latest/cc-search/) shortly.
