@@ -21,6 +21,7 @@ import {
   gitUpdateRef,
   gitPublishBranch,
   gitSetRefOnCommit,
+  gitPush,
 } from '@coveo/semantic-monorepo-tools';
 import {Octokit} from 'octokit';
 import {createAppAuth} from '@octokit/auth-app';
@@ -199,6 +200,7 @@ async function commitChanges(releaseNumber, commitMessage, octokit) {
     commit.data.sha,
     true
   );
+  await gitPush(GIT_SSH_REMOTE, mainBranchName);
 
   // Delete the temp branch
   await gitDeleteRemoteBranch('origin', tempBranchName);
