@@ -1,3 +1,17 @@
+## 0.2.4 (2023-04-05)
+
+
+### Bug Fixes
+
+* move readme one level higher  ([#1230](https://github.com/coveo/cli/issues/1230)) ([25e56f5](https://github.com/coveo/cli/commits/25e56f554ba0307c643e30873328b7ab6d88f037))
+
+
+### Features
+
+* validate component element name ([#1203](https://github.com/coveo/cli/issues/1203)) ([ca54009](https://github.com/coveo/cli/commits/ca54009607fcf44fdb4087be1f8bb72e81230c40)), closes [#1205](https://github.com/coveo/cli/issues/1205) [#1207](https://github.com/coveo/cli/issues/1207)
+
+
+
 ## 0.2.1 (2023-03-27)
 
 ### Bug Fixes
