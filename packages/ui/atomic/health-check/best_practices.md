@@ -1,21 +1,49 @@
-Best Practices to Ensure All Assertions Are Passing:
+# Before publishing your custom Atomic component
 
-Before publishing your custom atomic component, it needs to respect a certain standard so it can easily be shared to other developers.
+Before publishing and sharing your custom atomic component with others, it needs to comply to a set of standards.
+
+This is a guide to publish a custom StencilJS component with the [Coveo Atomic framework](https://docs.coveo.com/en/atomic/latest/). This guide assumes you have basic knowledge of [StencilJS](https://stenciljs.com/docs/introduction) and TypeScript. If you are new to these technologies, we recommend reading the official documentation first.
+
+### Useful links on Coveo Atomic framework
+
+- [Coveo Atomic Tutorial](https://levelup.coveo.com/learn/courses/atomic)
+- [Create Custom Coveo Atomic Components](https://docs.coveo.com/en/atomic/latest/usage/create-custom-components/)
+
+## Minimum requirements
+
+The next sections will detail the minimum requirements needed by your component to make sure it can be published.
+Assuming you already have created a project with the CLI with the following command `coveo atomic:component my-custom-component`, you will end up with a project with the following structure:
+
+<!-- TODO: add link to how to create a custom component with the CLI -->
+
+```bash
+src/components/my-custom-component/
+├── package.json
+├── src
+│   ├── my-custom-component.css
+│   └── my-custom-component.tsx
+├── stencil.config.ts
+└── tsconfig.json
+```
 
 ### Required package.json fields
 
-Ensure that all required fields are provided in the package.json file of the component. Some of these required fields like `description` and `homepage` are crucial for other developer to understand the purpose of your component as well as the homepage to the source code.
+The project with come with a pre-generated `package.json` file. However, you need to fill additional fields like [description](https://docs.npmjs.com/cli/v9/configuring-npm/package-json#description) and [homepage](https://docs.npmjs.com/cli/v9/configuring-npm/package-json#homepage), which are required for publishing.
 
-To do this, you can run the ensureRequiredProperties() function. If a required field is missing, an error will be thrown with a description of the missing field.
+These properties are crucial for other developer to understand the purpose of your component as well as the homepage hosting the source code.
 
-### Readme file
+### Documenting your component
 
-Make sure that a README.md file is included in the component directory. You can run the ensureReadme() function to check if this file exists. If it doesn't exist, an error will be thrown.
-TODO: explain why this is important:
+Make sure a `readme.md` file is included in the component directory, which is the same location of the component's `package.json`.
+The readme file should explain the puporse of your component as well as configuration and usage instructions (if needed).
 
 ### Component name
 
 This is already automatically handled. however, if you encounter this issue `TODO: add error message`, it's probably because you did a change to the component name and created an inconsistency.
+
+```
+Component tag name from your .tsx file does not match the \`elementName\` property defined in your component's package.json file. Make sure both values are identical
+```
 
 TODO: explain why this is important:...
 The stencil component tag name should match the readme
@@ -58,12 +86,15 @@ in the `package.json`, the `elementName` property needs to have the same tag nam
 
 ---
 
-Ensure that the documentation file for the component is available in the docs/stencil-docs.json file. You can run the ensureDocFile() function to check if this file exists. If it doesn't exist, an error will be thrown.
+### Using StencilJS to build your component
 
-Verify that the elementName property in the package.json file matches the tag name used by the custom component. You can use the ensureConsistentElementName() function to check if the elementName matches the component tag name in the docs/stencil-docs.json file. If the elementName does not match, an error will be thrown.
+StencilJS is a powerful tool for building web components, and it integrates well with the Coveo atomic framework. StencilJS provides a range of features, including TypeScript support, JSX, and a Virtual DOM, that make it an excellent choice for building high-performance components.
 
-Ensure that the unpkg property is specified in the package.json file and that the path to the .esm.js file of the component is provided. You can use the Inspector class to check if the path is valid and the file exists.
+### Using TypeScript
 
-Check that the keywords property is populated and includes the coveo-atomic-component keyword. You can use the Inspector class to verify that the keywords property is an array and includes the required keyword.
+TypeScript is a strongly typed superset of JavaScript that can help you catch errors and improve the quality of your code. By using TypeScript, you can catch errors at compile-time, rather than at runtime, which can save you time and effort in debugging.
 
-By following these best practices, you can ensure that all assertions are passing and your custom component is ready for publication.
+ <!--
+ TODO: CDX-1266: Coveo internal components
+ 
+ -->
