@@ -1,20 +1,16 @@
 # release-13 (2023-04-05)
 
-
 ### Bug Fixes
 
-* **atomic:** ensure error is properly printed ([#1233](https://github.com/coveo/cli/issues/1233)) ([8a58643](https://github.com/coveo/cli/commits/8a586432a5e08bdce82e4c36200cd49d8d14539e))
-* **atomic:** simplify spinner+OK message ([#1235](https://github.com/coveo/cli/issues/1235)) ([8b9f537](https://github.com/coveo/cli/commits/8b9f537aef585c696d7f4934480238376645edef))
-* missing secrets mapping ([#1247](https://github.com/coveo/cli/issues/1247)) ([9ab352d](https://github.com/coveo/cli/commits/9ab352de5e0dc640d68c166a8e189f1f7364ca2a))
-* move readme one level higher  ([#1230](https://github.com/coveo/cli/issues/1230)) ([25e56f5](https://github.com/coveo/cli/commits/25e56f554ba0307c643e30873328b7ab6d88f037))
-
+- **atomic:** ensure error is properly printed ([#1233](https://github.com/coveo/cli/issues/1233)) ([8a58643](https://github.com/coveo/cli/commits/8a586432a5e08bdce82e4c36200cd49d8d14539e))
+- **atomic:** simplify spinner+OK message ([#1235](https://github.com/coveo/cli/issues/1235)) ([8b9f537](https://github.com/coveo/cli/commits/8b9f537aef585c696d7f4934480238376645edef))
+- missing secrets mapping ([#1247](https://github.com/coveo/cli/issues/1247)) ([9ab352d](https://github.com/coveo/cli/commits/9ab352de5e0dc640d68c166a8e189f1f7364ca2a))
+- move readme one level higher ([#1230](https://github.com/coveo/cli/issues/1230)) ([25e56f5](https://github.com/coveo/cli/commits/25e56f554ba0307c643e30873328b7ab6d88f037))
 
 ### Features
 
-* find pageId from name for update ([#1234](https://github.com/coveo/cli/issues/1234)) ([e79c766](https://github.com/coveo/cli/commits/e79c7661c39c114142dc0c56567fc1c75051f302))
-* validate component element name ([#1203](https://github.com/coveo/cli/issues/1203)) ([ca54009](https://github.com/coveo/cli/commits/ca54009607fcf44fdb4087be1f8bb72e81230c40)), closes [#1205](https://github.com/coveo/cli/issues/1205) [#1207](https://github.com/coveo/cli/issues/1207)
-
-
+- find pageId from name for update ([#1234](https://github.com/coveo/cli/issues/1234)) ([e79c766](https://github.com/coveo/cli/commits/e79c7661c39c114142dc0c56567fc1c75051f302))
+- validate component element name ([#1203](https://github.com/coveo/cli/issues/1203)) ([ca54009](https://github.com/coveo/cli/commits/ca54009607fcf44fdb4087be1f8bb72e81230c40)), closes [#1205](https://github.com/coveo/cli/issues/1205) [#1207](https://github.com/coveo/cli/issues/1207)
 
 # release-12 (2023-03-27)
 
