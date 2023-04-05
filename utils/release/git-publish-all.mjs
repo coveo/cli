@@ -13,7 +13,6 @@ import {
   gitPushTags,
   npmBumpVersion,
   getSHA1fromRef,
-  gitSetupUser,
   gitCreateBranch,
   gitCheckoutBranch,
   gitAdd,
@@ -47,14 +46,6 @@ const getCliChangelog = () => {
 // Commit, tag and push
 (async () => {
   const PATH = '.';
-  const GIT_USERNAME = 'developer-experience-bot[bot]';
-  const GIT_EMAIL =
-    '91079284+developer-experience-bot[bot]@users.noreply.github.com';
-  //#endregion
-
-  // #region Setup Git
-  await gitSetupUser(GIT_USERNAME, GIT_EMAIL);
-  // #endregion
 
   //#region GitHub authentication
   const authSecrets = {
