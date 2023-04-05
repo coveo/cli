@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli-plugin-source",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "Manage Coveo Sources with the Coveo CLI",
   "author": "Coveo",
   "homepage": "https://github.com/coveo/cli",
@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@coveo/cli-commons-dev": "6.0.5",
+    "@coveo/semantic-monorepo-tools": "1.7.0",
     "@oclif/test": "2.2.21",
     "@types/jest": "29.4.0",
     "@types/node": "18.15.1",
