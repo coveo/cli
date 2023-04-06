@@ -19,6 +19,10 @@ const verdaccioedPackages = [
   '@coveo/cli-commons-dev',
   '@coveo/cli-commons',
   '@coveo/cli',
+  '@coveo/atomic-component-health-check',
+  '@coveo/create-atomic-component',
+  '@coveo/create-atomic-component-project',
+  '@coveo/create-atomic-result-component',
 ];
 
 export async function publishPackages() {
