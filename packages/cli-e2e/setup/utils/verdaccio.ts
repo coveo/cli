@@ -11,6 +11,10 @@ const npmRegistry = 'https://registry.npmjs.org/';
 const verdaccioRegistry = 'http://localhost:4873';
 
 const verdaccioedPackages = [
+  '@coveo/atomic-component-health-check',
+  '@coveo/create-atomic-component',
+  '@coveo/create-atomic-component-project',
+  '@coveo/create-atomic-result-component',
   '@coveo/angular',
   '@coveo/create-headless-vue',
   '@coveo/cra-template',
@@ -19,10 +23,6 @@ const verdaccioedPackages = [
   '@coveo/cli-commons-dev',
   '@coveo/cli-commons',
   '@coveo/cli',
-  '@coveo/atomic-component-health-check',
-  '@coveo/create-atomic-component',
-  '@coveo/create-atomic-component-project',
-  '@coveo/create-atomic-result-component',
 ];
 
 export async function publishPackages() {
