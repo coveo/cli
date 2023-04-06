@@ -1,6 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`@coveo/create-atomic-result-component when called in an existing project should initialize a base project and a component 1`] = `
+exports[`@coveo/create-atomic-result-component when called in an existing project when initializing should ouptut a confirmation message upon success 1`] = `
+"
+  Project successfully configured
+
+  We suggest that you begin by typing:
+
+  $ cd oh-wow-another-component-can-you-believe-it
+  $ npm install
+  $ npm start
+
+  $ npm start
+    Starts the development server.
+
+  $ npm run build
+    Builds your project in production mode.
+
+  Further reading:
+
+   - TODO: CDX-1403 Add link to documentation in source code and error message
+
+  Happy coding!
+"
+`;
+
+exports[`@coveo/create-atomic-result-component when called in an existing project when initializing should setup a base project and a component 1`] = `
 HashedFolder {
   "children": [
     HashedFile {
@@ -58,7 +82,7 @@ HashedFolder {
                   "name": "loader",
                 },
                 HashedFile {
-                  "hash": "m72g1IuafeVxuftpwiEf0P7U9Hs=",
+                  "hash": "FlRYEx9uTMJ3poqkI5cjb4l0RvI=",
                   "name": "package.json",
                 },
                 HashedFile {
@@ -92,11 +116,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "/UeKxO8RDWb3bpf3lLIRuGDKqvY=",
+              "hash": "B/i6e+IXpJGatSXywgYQvQyklz0=",
               "name": "oh-wow-another-component-can-you-believe-it",
             },
           ],
-          "hash": "mIAvTEl8C0Rp1ZhjSjDSx5Jv+ZY=",
+          "hash": "QKBFKUmcM3aJs8/sScrmlOgKSvQ=",
           "name": "components",
         },
         HashedFile {
@@ -122,7 +146,7 @@ HashedFolder {
           "name": "pages",
         },
       ],
-      "hash": "tPw23MysVSOyc7TfIJc8PPs47CY=",
+      "hash": "domzLzNJeo89mchvOTzXP/C4ddA=",
       "name": "src",
     },
     HashedFile {
@@ -134,12 +158,36 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "2uJordD/sD+nMFqr4+vz2lF6O8k=",
+  "hash": "LsWkK0T6YnKMW5CmWiwZxYfulC0=",
   "name": "no-args",
 }
 `;
 
-exports[`@coveo/create-atomic-result-component when called with a component name without hyphen should initialize a base project and a component 1`] = `
+exports[`@coveo/create-atomic-result-component when called with a component name without hyphen when initializing should ouptut a confirmation message upon success 1`] = `
+"
+  Project successfully configured
+
+  We suggest that you begin by typing:
+
+  $ cd atomic-nohypen
+  $ npm install
+  $ npm start
+
+  $ npm start
+    Starts the development server.
+
+  $ npm run build
+    Builds your project in production mode.
+
+  Further reading:
+
+   - TODO: CDX-1403 Add link to documentation in source code and error message
+
+  Happy coding!
+"
+`;
+
+exports[`@coveo/create-atomic-result-component when called with a component name without hyphen when initializing should setup a base project and a component 1`] = `
 HashedFolder {
   "children": [
     HashedFile {
@@ -157,7 +205,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "RqzTOgcgdpChiiXWvgfh2XWXKZk=",
+                  "hash": "XjmEpRfIBhxO7+IlbNTgeDMJ4s4=",
                   "name": "package.json",
                 },
                 HashedFolder {
@@ -183,11 +231,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "vEYnzk97/2BvoV4BH1LXivB1gjw=",
+              "hash": "TGKcsIFNNJ9SorU4h7gTr/G2AVw=",
               "name": "atomic-nohypen",
             },
           ],
-          "hash": "a9v0UmI/L7+IWCMiEmI01GRfNGE=",
+          "hash": "+kxeNFwChAohBk59TAbDoiMVNOo=",
           "name": "components",
         },
         HashedFile {
@@ -213,7 +261,7 @@ HashedFolder {
           "name": "pages",
         },
       ],
-      "hash": "sv21vt8DSm/l6rHhKopUuLBml5g=",
+      "hash": "tiXQmM/Ev8CFvV7B/YvTs9mxDxQ=",
       "name": "src",
     },
     HashedFile {
@@ -225,12 +273,36 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "+8KdN/gr04cD1YXW0exHHJoqD0U=",
+  "hash": "kkbwXgUR0Vbuf0dLsqq2ngjvUWc=",
   "name": "invalid-arg",
 }
 `;
 
-exports[`@coveo/create-atomic-result-component when called with a valid component name should initialize a base project and a component 1`] = `
+exports[`@coveo/create-atomic-result-component when called with a valid component name when initializing should ouptut a confirmation message upon success 1`] = `
+"
+  Project successfully configured
+
+  We suggest that you begin by typing:
+
+  $ cd valid-component-name
+  $ npm install
+  $ npm start
+
+  $ npm start
+    Starts the development server.
+
+  $ npm run build
+    Builds your project in production mode.
+
+  Further reading:
+
+   - TODO: CDX-1403 Add link to documentation in source code and error message
+
+  Happy coding!
+"
+`;
+
+exports[`@coveo/create-atomic-result-component when called with a valid component name when initializing should setup a base project and a component 1`] = `
 HashedFolder {
   "children": [
     HashedFile {
@@ -248,7 +320,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "wVI5mKDZENMnvJhEPOwPPux1Nr4=",
+                  "hash": "qteO8MujS+T6e9UWi5YRvAefZ14=",
                   "name": "package.json",
                 },
                 HashedFolder {
@@ -274,11 +346,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "8YN/5Y0BEiDhPSqGcB+M1+rCYCc=",
+              "hash": "1FtwgQLiAdkEV6xADAaNlY377Us=",
               "name": "valid-component-name",
             },
           ],
-          "hash": "3kfaNa+BJWQpnusXtyOk2BOnyX4=",
+          "hash": "yZheSAwFbBTkDK5GRTOGLMiv3kQ=",
           "name": "components",
         },
         HashedFile {
@@ -304,7 +376,7 @@ HashedFolder {
           "name": "pages",
         },
       ],
-      "hash": "rphVET+65e9wzYvciiROQNStD6o=",
+      "hash": "9XC0J0Gj6nkl6lhQUNdGiVJkJxc=",
       "name": "src",
     },
     HashedFile {
@@ -316,12 +388,36 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "QkaNP3YOQuwkPZw0nt9MJrcpdEg=",
+  "hash": "bjEKFTMZsXkzyi2eedAEkphATrU=",
   "name": "valid-arg",
 }
 `;
 
-exports[`@coveo/create-atomic-result-component when called without any args should initialize a base project and a component 1`] = `
+exports[`@coveo/create-atomic-result-component when called without any args when initializing should ouptut a confirmation message upon success 1`] = `
+"
+  Project successfully configured
+
+  We suggest that you begin by typing:
+
+  $ cd undefined
+  $ npm install
+  $ npm start
+
+  $ npm start
+    Starts the development server.
+
+  $ npm run build
+    Builds your project in production mode.
+
+  Further reading:
+
+   - TODO: CDX-1403 Add link to documentation in source code and error message
+
+  Happy coding!
+"
+`;
+
+exports[`@coveo/create-atomic-result-component when called without any args when initializing should setup a base project and a component 1`] = `
 HashedFolder {
   "children": [
     HashedFile {
@@ -339,7 +435,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "QkIDUvdihfU0D6teL0UuK6NWxIY=",
+                  "hash": "Hbf7sLo9CFBSSEpdBpfmFjhyfYY=",
                   "name": "package.json",
                 },
                 HashedFolder {
@@ -365,11 +461,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "tdU5tRK4igktZnyqaENa+QGvKVg=",
+              "hash": "18GGm7K2Unm08jHQLcequcaZaRw=",
               "name": "sample-result-component",
             },
           ],
-          "hash": "VzVNVkTswRhcH3MA+XGauKICmv0=",
+          "hash": "PhuuhkqEoxhfybWmZYc5paXdi08=",
           "name": "components",
         },
         HashedFile {
@@ -395,7 +491,7 @@ HashedFolder {
           "name": "pages",
         },
       ],
-      "hash": "bM0c7IYSCMFHvDdZOntQf1O0xjg=",
+      "hash": "HnzqBqoJ+l67wXmvAJQdNsHAogM=",
       "name": "src",
     },
     HashedFile {
@@ -407,7 +503,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "fVztY/iFuzEHAN/Jbu7PREx4+nc=",
+  "hash": "4CnOx6rvb+blKPzdHNFBl42A0Lg=",
   "name": "no-args",
 }
 `;
