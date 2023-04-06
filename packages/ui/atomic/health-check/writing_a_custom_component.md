@@ -1,21 +1,45 @@
-# Create a custom Atomic component with the Coveo CLI
+# Custom Atomic component with the Coveo CLI
 
 ## Build a Coveo custom Atomic component
 
-Use the `coveo atomic:component` command to scaffold the boilerplate of a ....
+Use the `coveo atomic:component` command to scaffold your project so you can start building your custom Atomic component leveraging [StencilJs](https://stenciljs.com/docs/getting-started). Upon successfully creating your project, the CLI will print something similar to the following to the console:
 
-### Examples
+```bash
+? What kind of component do you want to scaffold? result
+✔ Project configured
 
+  We suggest that you begin by typing:
+
+  $ cd my-custom-component
+  $ npm install
+  $ npm start
+
+  $ npm start
+    Starts the development server.
+
+  $ npm run build
+    Builds your project in production mode.
+
+  Further reading:
+
+   - TODO: CDX-1403 Add link to documentation in source code and error message
+
+  Happy coding! 🎈
 ```
-$ coveo atomic:component my-awesome-component
+
+The first section describes a few commands required to finish getting your custom component bootstrapped.
+
+```bash
+  $ cd my-custom-component
+  $ npm install
+  $ npm start
 ```
 
-If you want to create a result component (a component to be placed in a result template, make sure to specify it with the `--type` flag)
+This will change your current directory to `my-custom-component`, install your dependencies for you, and start the development server.
 
-```
-$ coveo atomic:component --type=result mySuperResultComponent
+### Building my first component
 
-```
+After running the `coveo atomic:component`, you will find the following structure in the current working directory:
 
 ```bash
 .
@@ -37,15 +61,54 @@ $ coveo atomic:component --type=result mySuperResultComponent
 │       └── index.ts
 ├── stencil.config.ts
 └── tsconfig.json
-
 ```
 
-# Use a published Coveo custom Atomic component
+You will find the source code to your custom component in `src/components/my-awesome-component/my-awesome-component.tsx` file:
 
-Go to https://docs.coveo.com/en/atomic/latest/cc-search/
+```tsx
+import { Component } from "@stencil/core";
+import { ... } from "@coveo/atomic";
+import { ... } from "@coveo/headless";
 
-Click on `COPY UNPKG`
-You shoud end up with the following string in the clipboard
+@Component({
+  tag: "my-custom-component",
+  styleUrl: "my-custom-component.css",
+  shadow: true,
+})
+export class MyCustomComponent {
+  // ...
+
+  public async connectedCallback() {
+    // ...
+  }
+
+  public disconnectedCallback() {
+    // ...
+  }
+
+  public render() {
+    // ...
+  }
+}
+```
+
+> For more detail about Stencil component, visit, [Getting Started with StencilJs](https://stenciljs.com/docs/getting-started).
+
+Once compilted, the component can be used in HTML just like any other tag
+
+```html
+<my-custom-component hello="world"></my-custom-component>
+```
+
+Visit [TODO:]() for more info on how to publish and share your component with others.
+
+## Using a published Coveo custom Atomic component
+
+You can also use a already published custom Atomic component
+
+All published components can be find in the Coveo [Custom Atomic Component Search Page](https://docs.coveo.com/en/atomic/latest/cc-search/).
+
+To add one to your project, simply copy the [unpkg](https://unpkg.com/) link of the selected component by clicking on the `COPY UNPKG` button. Then, you shoud end up with a similar string in your clipboard.
 
 ```html
 <!-- Include the following script in the <head> of the page -->
@@ -55,7 +118,7 @@ You shoud end up with the following string in the clipboard
 <custom-per-page></custom-per-page>
 ```
 
-In your HTML page,
+You can now add these 2 lines directly in your HTML page:
 
 1. add the `<script>` in the head of the page
 2. add the custom component tag inside the `atomic-search-interface`
