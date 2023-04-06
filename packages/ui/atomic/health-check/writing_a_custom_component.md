@@ -100,7 +100,7 @@ Once compilted, the component can be used in HTML just like any other tag
 <my-custom-component hello="world"></my-custom-component>
 ```
 
-Visit [TODO:]() for more info on how to publish and share your component with others.
+Visit [TODO:CDX-1403]() for more info on how to publish and share your component with others.
 
 ## Using a published Coveo custom Atomic component
 
