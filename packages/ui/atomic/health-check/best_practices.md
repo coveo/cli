@@ -12,9 +12,7 @@ This is a guide to publish a custom StencilJS component with the [Coveo Atomic f
 ## Minimum requirements
 
 The next sections will detail the minimum requirements needed by your component to make sure it can be published.
-Assuming you already have created a project with the CLI with the following command `coveo atomic:component my-custom-component`, you will end up with a project with the following structure:
-
-<!-- TODO: add link to how to create a custom component with the CLI -->
+If you have created a project with the CLI using the following command `coveo atomic:component my-custom-component`, you should find a project with the following structure in your current working directory:
 
 ```bash
 src/components/my-custom-component/
@@ -26,35 +24,43 @@ src/components/my-custom-component/
 └── tsconfig.json
 ```
 
+For more info on how to create a custom Atomic component with the Coveo CLI, visit ...
+
+<!-- TODO: add link to how to create a custom component with the CLI -->
+
 ### Required package.json fields
 
-The project with come with a pre-generated `package.json` file. However, you need to fill additional fields like [description](https://docs.npmjs.com/cli/v9/configuring-npm/package-json#description) and [homepage](https://docs.npmjs.com/cli/v9/configuring-npm/package-json#homepage), which are required for publishing.
+The project comes with a pre-generated `package.json` file. However, you need to fill additional fields such as [description](https://docs.npmjs.com/cli/v9/configuring-npm/package-json#description) and [homepage](https://docs.npmjs.com/cli/v9/configuring-npm/package-json#homepage), which are required for publishing.
 
-These properties are crucial for other developer to understand the purpose of your component as well as the homepage hosting the source code.
+These fields are crucial for other developers to understand the purpose of your component as well as the homepage hosting its source code.
 
-Other fields will already populated if you create your custom component with the [Coveo CLI](https://docs.coveo.com/en/cli/).
-Some of them:
-
-#### name
-
-You must provide a name for your custom component.
+Other required fields will already be populated if you create your custom component with the [Coveo CLI](https://docs.coveo.com/en/cli/).
 
 #### unpkg
 
-You must provide the path to the `.esm.js` file of your custom component. You can find it under the `dist/` folder once you build the component.
+This custom field is essential for ... path to the `.esm.js` file of your custom component.... By default, it is located inside the `dist/` folder once the custom component has been built. If however, you change the [output targets](https://stenciljs.com/docs/output-targets) of your builds, make sure to also update `unpkg` path in the `package.json`.
 
 #### keywords
 
-The package.json `keywords` array should include `coveo-atomic-component`, otherwise your component will not be listed along with other Coveo custom components. See https://docs.npmjs.com/cli/v9/configuring-npm/package-json#keywords
+The package.json `keywords` array should include `coveo-atomic-component`, so it can be indexed by Coveo and listed in the [Custom Component Search page](https://docs.coveo.com/en/atomic/latest/cc-search/). You can add more keywords. See https://docs.npmjs.com/cli/v9/configuring-npm/package-json#keywords
 
 ### Documenting your component
 
-Make sure a `readme.md` file is included in the component directory, which is the same location of the component's `package.json`.
-The readme file should explain the puporse of your component as well as configuration and usage instructions (if needed).
+Make sure a `readme.md` file is included in the component directory, at the same location of the component's `package.json`.
+The readme file should explain the purpose of your component as well as configuration and usage instructions (if needed).
+
+```bash
+src/components/my-custom-component/
+├── package.json
+├── readme.md
+├── src
+├── stencil.config.ts
+└── tsconfig.json
+```
 
 ### Component name
 
-If you are getting the following error, continue reading. Otherwise, skip to the next section.
+If you are getting the following error while publishing, continue reading. Otherwise, skip to the next section.
 
 ```bash
 Component tag name from your .tsx file does not match the \`elementName\` property defined in your component's package.json file. Make sure both values are identical
