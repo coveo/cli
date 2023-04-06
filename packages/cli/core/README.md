@@ -7,15 +7,17 @@
 [![License](https://img.shields.io/npm/l/@coveo/cli.svg)](https://github.com/coveo/cli/blob/master/package.json)
 
 <!-- toc -->
-* [@coveo/cli](#coveocli)
-* [Usage](#usage)
-* [Configuration](#configuration)
-* [Commands](#commands)
+
+- [@coveo/cli](#coveocli)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g @coveo/cli
 $ coveo COMMAND
@@ -27,6 +29,7 @@ USAGE
   $ coveo COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
 # Configuration
@@ -54,46 +57,47 @@ The main config file of the Coveo CLI is stored in a JSON file in `configDir`.
 # Commands
 
 <!-- commands -->
-* [`coveo atomic:cmp NAME`](#coveo-atomiccmp-name)
-* [`coveo atomic:component NAME`](#coveo-atomiccomponent-name)
-* [`coveo atomic:deploy`](#coveo-atomicdeploy)
-* [`coveo atomic:init NAME`](#coveo-atomicinit-name)
-* [`coveo auth:login`](#coveo-authlogin)
-* [`coveo auth:token`](#coveo-authtoken)
-* [`coveo config:get [KEY]`](#coveo-configget-key)
-* [`coveo config:set`](#coveo-configset)
-* [`coveo help [COMMAND]`](#coveo-help-command)
-* [`coveo org:create NAME`](#coveo-orgcreate-name)
-* [`coveo org:list`](#coveo-orglist)
-* [`coveo org:resources:list`](#coveo-orgresourceslist)
-* [`coveo org:resources:model:create`](#coveo-orgresourcesmodelcreate)
-* [`coveo org:resources:monitor SNAPSHOTID`](#coveo-orgresourcesmonitor-snapshotid)
-* [`coveo org:resources:preview`](#coveo-orgresourcespreview)
-* [`coveo org:resources:pull`](#coveo-orgresourcespull)
-* [`coveo org:resources:push`](#coveo-orgresourcespush)
-* [`coveo org:search:dump`](#coveo-orgsearchdump)
-* [`coveo plugins`](#coveo-plugins)
-* [`coveo plugins:install PLUGIN...`](#coveo-pluginsinstall-plugin)
-* [`coveo plugins:inspect PLUGIN...`](#coveo-pluginsinspect-plugin)
-* [`coveo plugins:install PLUGIN...`](#coveo-pluginsinstall-plugin-1)
-* [`coveo plugins:link PLUGIN`](#coveo-pluginslink-plugin)
-* [`coveo plugins:uninstall PLUGIN...`](#coveo-pluginsuninstall-plugin)
-* [`coveo plugins:uninstall PLUGIN...`](#coveo-pluginsuninstall-plugin-1)
-* [`coveo plugins:uninstall PLUGIN...`](#coveo-pluginsuninstall-plugin-2)
-* [`coveo plugins:update`](#coveo-pluginsupdate)
-* [`coveo source:catalog:add SOURCEID`](#coveo-sourcecatalogadd-sourceid)
-* [`coveo source:catalog:new NAME`](#coveo-sourcecatalognew-name)
-* [`coveo source:list`](#coveo-sourcelist)
-* [`coveo source:push:add SOURCEID`](#coveo-sourcepushadd-sourceid)
-* [`coveo source:push:delete SOURCEID`](#coveo-sourcepushdelete-sourceid)
-* [`coveo source:push:new NAME`](#coveo-sourcepushnew-name)
-* [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
-* [`coveo ui:create:atomic NAME`](#coveo-uicreateatomic-name)
-* [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
-* [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
-* [`coveo ui:deploy`](#coveo-uideploy)
-* [`coveo update [CHANNEL]`](#coveo-update-channel)
-* [`coveo version`](#coveo-version)
+
+- [`coveo atomic:cmp NAME`](#coveo-atomiccmp-name)
+- [`coveo atomic:component NAME`](#coveo-atomiccomponent-name)
+- [`coveo atomic:deploy`](#coveo-atomicdeploy)
+- [`coveo atomic:init NAME`](#coveo-atomicinit-name)
+- [`coveo auth:login`](#coveo-authlogin)
+- [`coveo auth:token`](#coveo-authtoken)
+- [`coveo config:get [KEY]`](#coveo-configget-key)
+- [`coveo config:set`](#coveo-configset)
+- [`coveo help [COMMAND]`](#coveo-help-command)
+- [`coveo org:create NAME`](#coveo-orgcreate-name)
+- [`coveo org:list`](#coveo-orglist)
+- [`coveo org:resources:list`](#coveo-orgresourceslist)
+- [`coveo org:resources:model:create`](#coveo-orgresourcesmodelcreate)
+- [`coveo org:resources:monitor SNAPSHOTID`](#coveo-orgresourcesmonitor-snapshotid)
+- [`coveo org:resources:preview`](#coveo-orgresourcespreview)
+- [`coveo org:resources:pull`](#coveo-orgresourcespull)
+- [`coveo org:resources:push`](#coveo-orgresourcespush)
+- [`coveo org:search:dump`](#coveo-orgsearchdump)
+- [`coveo plugins`](#coveo-plugins)
+- [`coveo plugins:install PLUGIN...`](#coveo-pluginsinstall-plugin)
+- [`coveo plugins:inspect PLUGIN...`](#coveo-pluginsinspect-plugin)
+- [`coveo plugins:install PLUGIN...`](#coveo-pluginsinstall-plugin-1)
+- [`coveo plugins:link PLUGIN`](#coveo-pluginslink-plugin)
+- [`coveo plugins:uninstall PLUGIN...`](#coveo-pluginsuninstall-plugin)
+- [`coveo plugins:uninstall PLUGIN...`](#coveo-pluginsuninstall-plugin-1)
+- [`coveo plugins:uninstall PLUGIN...`](#coveo-pluginsuninstall-plugin-2)
+- [`coveo plugins:update`](#coveo-pluginsupdate)
+- [`coveo source:catalog:add SOURCEID`](#coveo-sourcecatalogadd-sourceid)
+- [`coveo source:catalog:new NAME`](#coveo-sourcecatalognew-name)
+- [`coveo source:list`](#coveo-sourcelist)
+- [`coveo source:push:add SOURCEID`](#coveo-sourcepushadd-sourceid)
+- [`coveo source:push:delete SOURCEID`](#coveo-sourcepushdelete-sourceid)
+- [`coveo source:push:new NAME`](#coveo-sourcepushnew-name)
+- [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
+- [`coveo ui:create:atomic NAME`](#coveo-uicreateatomic-name)
+- [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
+- [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
+- [`coveo ui:deploy`](#coveo-uideploy)
+- [`coveo update [CHANNEL]`](#coveo-update-channel)
+- [`coveo version`](#coveo-version)
 
 ## `coveo atomic:cmp NAME`
 
@@ -730,7 +734,7 @@ ALIASES
   $ coveo plugins:add
 
 EXAMPLES
-  $ coveo plugins:install myplugin 
+  $ coveo plugins:install myplugin
 
   $ coveo plugins:install https://github.com/someuser/someplugin
 
@@ -792,7 +796,7 @@ ALIASES
   $ coveo plugins:add
 
 EXAMPLES
-  $ coveo plugins:install myplugin 
+  $ coveo plugins:install myplugin
 
   $ coveo plugins:install https://github.com/someuser/someplugin
 
@@ -1329,4 +1333,5 @@ FLAG DESCRIPTIONS
 ```
 
 _See code: [@oclif/plugin-version](https://github.com/oclif/plugin-version/blob/v1.1.4/src/commands/version.ts)_
+
 <!-- commandsstop -->
