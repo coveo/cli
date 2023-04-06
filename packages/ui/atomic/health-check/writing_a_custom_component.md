@@ -7,7 +7,7 @@ Use the `coveo atomic:component` command to scaffold the boilerplate of a ....
 ### Examples
 
 ```
-$ coveo atomic:component myAwesomeComponent
+$ coveo atomic:component my-awesome-component
 ```
 
 If you want to create a result component (a component to be placed in a result template, make sure to specify it with the `--type` flag)
@@ -23,11 +23,11 @@ $ coveo atomic:component --type=result mySuperResultComponent
 ├── readme.md
 ├── src
 │   ├── components
-│   │   └── atomic-myAwesomeComponent
+│   │   └── my-awesome-component
 │   │       ├── package.json
 │   │       ├── src
-│   │       │   ├── atomic-myAwesomeComponent.css
-│   │       │   └── atomic-myAwesomeComponent.tsx
+│   │       │   ├── my-awesome-component.css
+│   │       │   └── my-awesome-component.tsx
 │   │       ├── stencil.config.ts
 │   │       └── tsconfig.json
 │   ├── html.d.ts
