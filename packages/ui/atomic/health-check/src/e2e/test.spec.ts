@@ -41,6 +41,7 @@ const addMissingPropertiesToJsonPackage = (json: {}) => {
 const publish = (pkgName: string, cwd: string) => {
   return npmSync(['publish', '--dry-run', '-w', pkgName], {
     cwd,
+    stdio: 'inherit',
   });
 };
 
@@ -113,6 +114,7 @@ describe(PACKAGE_NAME_HEALTH, () => {
       expect(
         npmSync(['install'], {
           cwd: testDirectory,
+          stdio: 'inherit',
           env: {
             ...process.env,
             npm_config_registry: verdaccioUrl,
@@ -126,6 +128,7 @@ describe(PACKAGE_NAME_HEALTH, () => {
       expect(
         npmSync(['run', 'build', '-w', pkgName], {
           cwd: testDirectory,
+          stdio: 'inherit',
         }).status
       ).toBe(0);
     });
