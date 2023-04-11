@@ -13,7 +13,6 @@ import {
   gitPushTags,
   npmBumpVersion,
   getSHA1fromRef,
-  gitSetupUser,
   gitCreateBranch,
   gitCheckoutBranch,
   gitAdd,
@@ -30,6 +29,7 @@ import angularChangelogConvention from 'conventional-changelog-angular';
 import {dedent} from 'ts-dedent';
 import {readFileSync, writeFileSync} from 'fs';
 import {removeWriteAccessRestrictions} from './lock-master.mjs';
+import {spawnSync} from 'child_process';
 const CLI_PKG_MATCHER = /^@coveo\/cli@(?<version>\d+\.\d+\.\d+)$/gm;
 const REPO_OWNER = 'coveo';
 const REPO_NAME = 'cli';
@@ -47,14 +47,6 @@ const getCliChangelog = () => {
 // Commit, tag and push
 (async () => {
   const PATH = '.';
-  const GIT_USERNAME = 'developer-experience-bot[bot]';
-  const GIT_EMAIL =
-    '91079284+developer-experience-bot[bot]@users.noreply.github.com';
-  //#endregion
-
-  // #region Setup Git
-  await gitSetupUser(GIT_USERNAME, GIT_EMAIL);
-  // #endregion
 
   //#region GitHub authentication
   const authSecrets = {
@@ -172,7 +164,7 @@ async function commitChanges(releaseNumber, commitMessage, octokit) {
   const tempBranchName = `release/${releaseNumber}`;
   await gitCreateBranch(tempBranchName);
   await gitCheckoutBranch(tempBranchName);
-
+  runPrecommit();
   // Stage all the changes...
   await gitAdd('.');
   //... and create a Git tree object with the changes. The Tree SHA will be used with GitHub APIs.
@@ -213,6 +205,9 @@ async function commitChanges(releaseNumber, commitMessage, octokit) {
   return commit.data.sha;
 }
 
+/**
+ * Update usage section at the root readme.
+ */
 function updateRootReadme() {
   const usageRegExp = /^<!-- usage -->(.|\n)*<!-- usagestop -->$/m;
   const cliReadme = readFileSync('packages/cli/core/README.md', 'utf-8');
@@ -224,3 +219,18 @@ function updateRootReadme() {
   rootReadme.replace(usageRegExp, cliUsage);
   writeFileSync('README.md', rootReadme);
 }
+
+/**
+ * Run `npm run pre-commit`
+ */
+function runPrecommit() {
+  spawnSync(appendCmdIfWindows`npm`, ['run', 'pre-commit']);
+}
+
+/**
+ * Append `.cmd` to the input if the runtime OS is Windows.
+ * @param {string|TemplateStringsArray} cmd
+ * @returns
+ */
+const appendCmdIfWindows = (cmd) =>
+  `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;

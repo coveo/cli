@@ -1,3 +1,14 @@
+## 2.4.4 (2023-04-05)
+
+### Bug Fixes
+
+- **atomic:** ensure error is properly printed ([#1233](https://github.com/coveo/cli/issues/1233)) ([8a58643](https://github.com/coveo/cli/commits/8a586432a5e08bdce82e4c36200cd49d8d14539e))
+- **atomic:** simplify spinner+OK message ([#1235](https://github.com/coveo/cli/issues/1235)) ([8b9f537](https://github.com/coveo/cli/commits/8b9f537aef585c696d7f4934480238376645edef))
+
+### Features
+
+- find pageId from name for update ([#1234](https://github.com/coveo/cli/issues/1234)) ([e79c766](https://github.com/coveo/cli/commits/e79c7661c39c114142dc0c56567fc1c75051f302))
+
 ## 2.4.1 (2023-03-27)
 
 ### Bug Fixes
