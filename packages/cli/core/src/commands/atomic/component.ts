@@ -7,6 +7,7 @@ import inquirer from 'inquirer';
 import {appendCmdIfWindows} from '../../lib/utils/os';
 import {spawnProcess} from '../../lib/utils/process';
 import {startSpinner} from '@coveo/cli-commons/utils/ux';
+import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 
 export default class AtomicInit extends CLICommand {
   public static description =
@@ -30,6 +31,7 @@ export default class AtomicInit extends CLICommand {
   ];
 
   @Before(Beta())
+  @Trackable()
   public async run(): Promise<void> {
     const {initializer, name} = await this.getSpawnOptions();
 
