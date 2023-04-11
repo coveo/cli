@@ -1,6 +1,6 @@
 import {camelize} from './transformers.js';
 
-describe('transformers', () => {
+describe('camelize', () => {
   it('should camelize first letter', () => {
     expect(camelize('myTag')).toBe('MyTag');
   });
@@ -13,3 +13,5 @@ describe('transformers', () => {
     expect(camelize('MySuperTag')).toBe('MySuperTag');
   });
 });
+
+// TODO: CDX-1406: add unit tests to transformer
