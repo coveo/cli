@@ -6,6 +6,7 @@ import {startVerdaccio} from '@coveo/verdaccio-starter';
 import {hashElement} from 'folder-hash';
 import {DirResult, dirSync} from 'tmp';
 import treeKill from 'tree-kill-promise';
+import {SpawnSyncReturns} from 'child_process';
 
 const PACKAGE_NAME = '@coveo/create-atomic-component';
 
@@ -60,31 +61,44 @@ describe(PACKAGE_NAME, () => {
       mkdirSync(testDirectory, {recursive: true});
     });
 
-    it('should initialize a base project and a component', async () => {
-      npmSync(['init', PACKAGE_NAME.replace('/create-', '/'), ...args], {
-        env: {
-          ...process.env,
-          npm_config_registry: verdaccioUrl,
-          npm_config_cache: npmCache,
-        },
-        cwd: testDirectory,
+    describe('when initializing', () => {
+      let commandOutput: SpawnSyncReturns<string | Buffer>;
+
+      beforeAll(() => {
+        commandOutput = npmSync(
+          ['init', PACKAGE_NAME.replace('/create-', '/'), ...args],
+          {
+            env: {
+              ...process.env,
+              npm_config_registry: verdaccioUrl,
+              npm_config_cache: npmCache,
+            },
+            cwd: testDirectory,
+          }
+        );
       });
 
-      expect(
-        await hashElement(testDirectory, {
-          folders: {
-            exclude: ['**node_modules', 'dist'],
-            ignoreRootName: true,
-            ignoreBasename: true,
-          },
-          files: {
-            include: ['*'],
-            exclude: ['**package-lock.json', 'stencil-docs.json'],
-            ignoreRootName: true,
-            ignoreBasename: true,
-          },
-        })
-      ).toMatchSnapshot();
+      it('should setup a base project and a component', async () => {
+        expect(
+          await hashElement(testDirectory, {
+            folders: {
+              exclude: ['**node_modules', 'dist'],
+              ignoreRootName: true,
+              ignoreBasename: true,
+            },
+            files: {
+              include: ['*'],
+              exclude: ['**package-lock.json', 'stencil-docs.json'],
+              ignoreRootName: true,
+              ignoreBasename: true,
+            },
+          })
+        ).toMatchSnapshot();
+      });
+
+      it('should ouptut a confirmation message upon success', () => {
+        expect(commandOutput.stdout.toString()).toMatchSnapshot();
+      });
     });
 
     it('should be able to install all deps without issues', () => {
