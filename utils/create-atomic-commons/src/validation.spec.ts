@@ -1,4 +1,3 @@
-// TODO: revisit
 import {ensureComponentValidity} from './validation.js';
 
 describe('validation', () => {
