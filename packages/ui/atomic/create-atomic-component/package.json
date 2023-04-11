@@ -22,6 +22,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@coveo/create-atomic-commons": "0.0.1",
     "@coveo/create-atomic-component-project": "0.2.1"
   },
   "devDependencies": {

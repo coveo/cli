@@ -1,13 +1,13 @@
 #!/usr/bin/env node
+import {
+  ensureComponentValidity,
+  camelize,
+  transform,
+  successMessage,
+} from '@coveo/create-atomic-commons';
 import '@coveo/create-atomic-component-project';
 import {dirname, resolve} from 'node:path';
-import {
-  cpSync,
-  renameSync,
-  unlinkSync,
-  writeFileSync,
-  readFileSync,
-} from 'node:fs';
+import {cpSync} from 'node:fs';
 import {cwd} from 'node:process';
 import {fileURLToPath} from 'node:url';
 
@@ -15,17 +15,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const templateRelativeDir = 'template';
 const templateDirPath = resolve(__dirname, templateRelativeDir);
 
-const camelize = (str) =>
-  str
-    .replace(/-(.)/g, (_, group) => group.toUpperCase())
-    .replace(/^./, (match) => match.toUpperCase());
-
 cpSync(templateDirPath, cwd(), {
   recursive: true,
 });
 
 let componentName = process.argv[2];
 if (componentName) {
+  ensureComponentValidity(componentName);
   if (!componentName?.includes('-')) {
     componentName = `atomic-${componentName}`;
   }
@@ -55,43 +51,7 @@ if (componentName) {
     },
   ];
 
-  // TODO: Refactor the transformers processing in an utils package
-  for (const transformer of transformers) {
-    if (!transformer.srcPath) {
-      continue;
-    }
-    if (!transformer.destPath) {
-      unlinkSync(transformer.srcPath);
-      continue;
-    }
-
-    renameSync(transformer.srcPath, transformer.destPath);
-    if (transformer.transform) {
-      writeFileSync(
-        transformer.destPath,
-        transformer.transform(readFileSync(transformer.destPath, 'utf8'))
-      );
-    }
-  }
+  transform(transformers);
 }
 
-console.log(`
-  Project successfully configured
-
-  We suggest that you begin by typing:
-
-  $ cd ${componentName}
-  $ npm install
-  $ npm start
-
-  $ npm start
-    Starts the development server.
-
-  $ npm run build
-    Builds your project in production mode.
-
-  Further reading:
-
-   - TODO: CDX-1403 Add link to documentation in source code and error message
-
-  Happy coding!`);
+successMessage(componentName);
