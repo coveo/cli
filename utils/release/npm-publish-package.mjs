@@ -189,14 +189,6 @@ function updateDependency(packageJson, dependency, version) {
   }
 }
 
-/**
- * Append `.cmd` to the input if the runtime OS is Windows.
- * @param {string} cmd
- * @returns
- */
-export const appendCmdIfWindows = (cmd) =>
-  `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
-
 function isPrivatePackage() {
   const packageJson = JSON.parse(
     readFileSync('package.json', {encoding: 'utf-8'})
