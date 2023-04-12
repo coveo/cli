@@ -22,9 +22,6 @@ let componentName = process.argv[2];
 
 if (componentName) {
   ensureComponentValidity(componentName);
-  if (!componentName?.includes('-')) {
-    componentName = `atomic-${componentName}`;
-  }
   const transformers = [
     {
       srcPath: 'src/components/sample-result-component',
@@ -53,4 +50,4 @@ if (componentName) {
   transform(transformers);
 }
 
-successMessage(componentName);
+successMessage(componentName || 'sample-result-component');

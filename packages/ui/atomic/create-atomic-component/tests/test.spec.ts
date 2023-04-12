@@ -9,6 +9,7 @@ import treeKill from 'tree-kill-promise';
 import {SpawnSyncReturns} from 'child_process';
 
 const PACKAGE_NAME = '@coveo/create-atomic-component';
+const UTILS_PACKAGE_NAME = '@coveo/create-atomic-commons';
 
 describe(PACKAGE_NAME, () => {
   let verdaccioProcess: ChildProcess;
@@ -18,7 +19,10 @@ describe(PACKAGE_NAME, () => {
   let verdaccioUrl: string;
 
   beforeAll(async () => {
-    ({verdaccioUrl, verdaccioProcess} = await startVerdaccio(PACKAGE_NAME));
+    ({verdaccioUrl, verdaccioProcess} = await startVerdaccio([
+      PACKAGE_NAME,
+      UTILS_PACKAGE_NAME,
+    ]));
     tempDirectory = dirSync({unsafeCleanup: true, keep: true});
     npmCache = join(tempDirectory.name, 'npm-cache');
     mkdirSync(npmCache);
@@ -48,12 +52,6 @@ describe(PACKAGE_NAME, () => {
       args: ['valid-component-name'],
       testDirname: 'valid-arg',
       packageName: 'valid-component-name',
-    },
-    {
-      describeName: 'when called with a component name without hyphen',
-      args: ['nohypen'],
-      testDirname: 'invalid-arg',
-      packageName: 'atomic-nohypen',
     },
   ])('$describeName', ({args, testDirname, packageName}) => {
     beforeAll(() => {

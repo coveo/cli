@@ -48,12 +48,6 @@ describe(PACKAGE_NAME, () => {
       testDirname: 'valid-arg',
       packageName: 'valid-component-name',
     },
-    {
-      describeName: 'when called with a component name without hyphen',
-      args: ['nohypen'],
-      testDirname: 'invalid-arg',
-      packageName: 'atomic-nohypen',
-    },
   ])('$describeName', ({args, testDirname, packageName}) => {
     beforeAll(() => {
       testDirectory = join(tempDirectory.name, testDirname);
