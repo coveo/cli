@@ -1,14 +1,7 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "skipLibCheck": true,
-    "outDir": "dist",
-    "module": "Node16",
-    "target": "ESNext",
-    "moduleResolution": "Node16",
-    "sourceMap": true,
-    "declaration": true,
-    "esModuleInterop": true
-  },
-  "exclude": ["node_modules", "src/**/*.spec.ts"]
+    "sourceMap": false,
+    "declaration": false
+  }
 }

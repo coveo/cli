@@ -17,7 +17,9 @@
     }
   },
   "scripts": {
+    "release:phase1": "npx -p=@coveord/release npm-publish",
     "build": "rimraf dist && tsc -b tsconfig.build.json",
+    "prepublishOnly": "npm run build",
     "pretest": "rimraf dist && tsc -b tsconfig.json",
     "test": "jest"
   },
