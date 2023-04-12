@@ -68,9 +68,5 @@ describe('validation', () => {
         '"dash-" tag cannot end with a dash (-)'
       );
     });
-
-    // it('should return undefined for valid tag names', () => {
-    //   expect(()=>ensureComponentValidity('my-component')).toThrowUndefined();
-    // });
   });
 });
