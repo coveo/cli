@@ -6,7 +6,7 @@ export type Transformer = {
   transform?: (text: string) => string;
 };
 
-export const camelize = (str) =>
+export const camelize = (str: string) =>
   str
     .replace(/-(.)/g, (_, group) => group.toUpperCase())
     .replace(/^./, (match) => match.toUpperCase());
