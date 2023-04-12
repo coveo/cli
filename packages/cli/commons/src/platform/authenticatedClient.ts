@@ -3,7 +3,7 @@ import PlatformClient from '@coveo/platform-client';
 import {Config, Configuration} from '../config/config';
 import {castEnvironmentToPlatformClient} from './environment';
 import globalConfig from '../config/globalConfig';
-import {lt} from 'semver';
+import 'fetch-undici-polyfill';
 
 export class AuthenticatedClient {
   public cfg: Config;
@@ -35,8 +35,9 @@ export class AuthenticatedClient {
     if (proxyServer) {
       setGlobalDispatcher(new ProxyAgent(proxyServer));
     }
-    if (lt(process.version, '18.0.0')) {
-      Object.assign(global, {FormData, fetch});
+    // TODO: CDX-1407, remove this https://developer.mozilla.org/en-US/docs/Web/API/FormData#browser_compatibility
+    if (!Object.keys(global).includes('FormData')) {
+      Object.assign(global, {FormData});
     }
     return new PlatformClient({
       globalRequestSettings,
