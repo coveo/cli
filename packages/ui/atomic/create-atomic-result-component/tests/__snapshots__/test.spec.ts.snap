@@ -16,10 +16,6 @@ exports[`@coveo/create-atomic-result-component when called in an existing projec
   $ npm run build
     Builds your project in production mode.
 
-  Further reading:
-
-   - TODO: CDX-1403 Add link to documentation in source code and error message
-
   Happy coding!
 "
 `;
@@ -179,10 +175,6 @@ exports[`@coveo/create-atomic-result-component when called with a valid componen
   $ npm run build
     Builds your project in production mode.
 
-  Further reading:
-
-   - TODO: CDX-1403 Add link to documentation in source code and error message
-
   Happy coding!
 "
 `;
@@ -293,10 +285,6 @@ exports[`@coveo/create-atomic-result-component when called without any args when
 
   $ npm run build
     Builds your project in production mode.
-
-  Further reading:
-
-   - TODO: CDX-1403 Add link to documentation in source code and error message
 
   Happy coding!
 "

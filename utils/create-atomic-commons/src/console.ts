@@ -14,9 +14,10 @@ export const successMessage = (componentName: string) => {
   $ npm run build
     Builds your project in production mode.
 
-  Further reading:
-
-   - TODO: CDX-1403 Add link to documentation in source code and error message
-
   Happy coding!`);
 };
+
+// TODO: append to success message
+// Further reading:
+
+//    - TODO: CDX-1403 Add link to documentation in source code and error message
