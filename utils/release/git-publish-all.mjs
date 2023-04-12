@@ -200,7 +200,7 @@ async function commitChanges(releaseNumber, commitMessage, octokit) {
     commit.data.sha,
     true
   );
-  await gitPush(GIT_SSH_REMOTE, mainBranchName);
+  await gitPush({remote: GIT_SSH_REMOTE, refs: [mainBranchName], force: true});
 
   // Delete the temp branch
   await gitDeleteRemoteBranch('origin', tempBranchName);
