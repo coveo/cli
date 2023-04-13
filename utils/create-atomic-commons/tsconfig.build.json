@@ -3,5 +3,6 @@
   "compilerOptions": {
     "sourceMap": false,
     "declaration": false
-  }
+  },
+  "exclude": ["node_modules", "src/**/*.spec.ts"]
 }

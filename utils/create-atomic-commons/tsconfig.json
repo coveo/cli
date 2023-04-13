@@ -7,8 +7,9 @@
     "target": "ESNext",
     "moduleResolution": "Node16",
     "sourceMap": true,
+    "lib": ["ESNext"],
     "declaration": true,
     "esModuleInterop": true
   },
-  "exclude": ["node_modules", "src/**/*.spec.ts"]
+  "exclude": ["node_modules"]
 }

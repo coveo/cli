@@ -6,48 +6,54 @@
  * @returns an error message if the tag has an invalid name, undefined if the tag name passes all checks
  */
 export const ensureComponentValidity = (tag: string): void | never => {
-  if (tag !== tag.trim()) {
-    throw new Error(`Tag can not contain white spaces`);
-  }
+  const errors: Error[] = [];
   if (tag !== tag.toLowerCase()) {
-    throw new Error(`Tag can not contain upper case characters`);
+    errors.push(new Error(`Tag can not contain upper case characters`));
   }
   if (tag.length === 0) {
-    throw new Error(`Received empty tag value`);
+    errors.push(new Error(`Received empty tag value`));
   }
 
   if (tag.indexOf(' ') > -1) {
-    throw new Error(`"${tag}" tag cannot contain a space`);
+    errors.push(new Error(`"${tag}" tag cannot contain a space`));
   }
 
   if (tag.indexOf(',') > -1) {
-    throw new Error(`"${tag}" tag cannot be used for multiple tags`);
+    errors.push(new Error(`"${tag}" tag cannot be used for multiple tags`));
   }
 
-  const invalidChars = tag.replace(/\w|-/g, '');
+  const invalidChars = tag.replace(/\w|-|\s/g, '');
   if (invalidChars !== '') {
-    throw new Error(
-      `"${tag}" tag contains invalid characters: ${invalidChars}`
+    errors.push(
+      new Error(`"${tag}" tag contains invalid characters: ${invalidChars}`)
     );
   }
 
   if (tag.indexOf('-') === -1) {
-    throw new Error(
-      `"${tag}" tag must contain a dash (-) to work as a valid web component`
+    errors.push(
+      new Error(
+        `"${tag}" tag must contain a dash (-) to work as a valid web component`
+      )
     );
   }
 
   if (tag.indexOf('--') > -1) {
-    throw new Error(
-      `"${tag}" tag cannot contain multiple dashes (--) next to each other`
+    errors.push(
+      new Error(
+        `"${tag}" tag cannot contain multiple dashes (--) next to each other`
+      )
     );
   }
 
   if (tag.indexOf('-') === 0) {
-    throw new Error(`"${tag}" tag cannot start with a dash (-)`);
+    errors.push(new Error(`"${tag}" tag cannot start with a dash (-)`));
   }
 
-  if (tag.lastIndexOf('-') === tag.length - 1) {
-    throw new Error(`"${tag}" tag cannot end with a dash (-)`);
+  if (tag.length > 0 && tag.lastIndexOf('-') === tag.length - 1) {
+    errors.push(new Error(`"${tag}" tag cannot end with a dash (-)`));
+  }
+
+  if (errors.length > 0) {
+    throw new AggregateError(errors, 'Invalid component tag name');
   }
 };
