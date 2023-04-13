@@ -61,6 +61,7 @@ describe(PACKAGE_NAME, () => {
         commandOutput = npmSync(
           ['init', PACKAGE_NAME.replace('/create-', '/'), ...args],
           {
+            stdio: 'inherit',
             env: {
               ...process.env,
               npm_config_registry: verdaccioUrl,
@@ -99,6 +100,7 @@ describe(PACKAGE_NAME, () => {
     it('should be able to install all deps without issues', () => {
       expect(
         npmSync(['install'], {
+          stdio: 'inherit',
           cwd: testDirectory,
           env: {
             ...process.env,
@@ -112,6 +114,7 @@ describe(PACKAGE_NAME, () => {
     it('should be able to build without issues', () => {
       expect(
         npmSync(['run', 'build', '-w', packageName], {
+          stdio: 'inherit',
           cwd: testDirectory,
         }).status
       ).toBe(0);
