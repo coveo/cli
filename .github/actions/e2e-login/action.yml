@@ -44,7 +44,7 @@ runs:
         echo "${{ env.E2E_TOKEN_PASSPHRASE }}" | gpg -a --batch --passphrase-fd 0 --symmetric --cipher-algo AES256 --output encodedConfig $CLI_CONFIG_PATH
         echo "cliConfigJson=$(base64 -w 0 encodedConfig)" >> $GITHUB_OUTPUT
     - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
-      if: always()
+      if: cancelled() || failure() || success()
       with:
         name: login-test-artifacts
         path: ./packages/cli-e2e/artifacts
