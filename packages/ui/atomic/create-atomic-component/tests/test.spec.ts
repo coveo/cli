@@ -97,27 +97,27 @@ describe(PACKAGE_NAME, () => {
       it('should ouptut a confirmation message upon success', () => {
         expect(commandOutput.stdout.toString()).toMatchSnapshot();
       });
-    });
 
-    it('should be able to install all deps without issues', () => {
-      expect(
-        npmSync(['install'], {
-          cwd: testDirectory,
-          env: {
-            ...process.env,
-            npm_config_registry: verdaccioUrl,
-            npm_config_cache: npmCache,
-          },
-        }).status
-      ).toBe(0);
-    });
+      it('should be able to install all deps without issues', () => {
+        expect(
+          npmSync(['install'], {
+            cwd: testDirectory,
+            env: {
+              ...process.env,
+              npm_config_registry: verdaccioUrl,
+              npm_config_cache: npmCache,
+            },
+          }).status
+        ).toBe(0);
+      });
 
-    it('should be able to build without issues', () => {
-      expect(
-        npmSync(['run', 'build', '-w', packageName], {
-          cwd: testDirectory,
-        }).status
-      ).toBe(0);
+      it('should be able to build without issues', () => {
+        expect(
+          npmSync(['run', 'build', '-w', packageName], {
+            cwd: testDirectory,
+          }).status
+        ).toBe(0);
+      });
     });
   });
 });
