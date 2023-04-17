@@ -22,10 +22,12 @@ export async function startVerdaccio(
       publishProxiedPackages
     );
   }
-  const computedPackagesToProxy = new Set<string>();
+  const computedPackagesToProxy = new Map<string, string[]>();
 
   if (!includeLocalDependent) {
-    packagesToProxy.forEach(computedPackagesToProxy.add);
+    packagesToProxy.forEach((packageName) =>
+      computedPackagesToProxy.set(packageName, [])
+    );
   } else {
     await computePackagesToProxy(
       Array.from(packagesToProxy),
@@ -33,7 +35,7 @@ export async function startVerdaccio(
     );
   }
   const port = await getPort();
-  const configPath = computeVerdaccioConfig(computedPackagesToProxy);
+  const configPath = computeVerdaccioConfig(computedPackagesToProxy.keys());
   const verdaccioProcess = await runVerdaccio(configPath, port);
   const verdaccioUrl = `http://localhost:${port}`;
   if (publishProxiedPackages) {
@@ -46,7 +48,7 @@ export async function startVerdaccio(
 
 async function computePackagesToProxy(
   packagesToProxy: string[],
-  computedPackagesToProxy: Set<string>
+  computedPackagesToProxy: Map<string, string[]>
 ) {
   const workspacePackages: Map<string, PackageJson> =
     await getWorkspacePackages();
@@ -58,12 +60,14 @@ async function computePackagesToProxy(
     if (!workspacePackages.has(currentPackage)) {
       continue;
     }
-    computedPackagesToProxy.add(currentPackage);
     const currentPackageJson = workspacePackages.get(currentPackage);
-    packagesToProxy.push(
+    const dependencies = [
       ...Object.keys(currentPackageJson?.dependencies ?? {}),
-      ...Object.keys(currentPackageJson?.peerDependencies ?? {})
-    );
+      ...Object.keys(currentPackageJson?.peerDependencies ?? {}),
+    ].filter((dep) => dep && workspacePackages.has(dep));
+
+    computedPackagesToProxy.set(currentPackage, dependencies);
+    packagesToProxy.push(...dependencies);
   }
 }
 
@@ -100,7 +104,7 @@ async function getWorkspacePackages() {
   return workspacePackages;
 }
 
-function computeVerdaccioConfig(packagesToProxy: Set<string>) {
+function computeVerdaccioConfig(packagesToProxy: Iterable<string>) {
   const tmpDir = dirSync({unsafeCleanup: true});
   const storagePath = join(tmpDir.name, 'storage');
   mkdirSync(storagePath);
@@ -129,12 +133,44 @@ function computeVerdaccioConfig(packagesToProxy: Set<string>) {
 }
 
 function doPublishProxiedPackages(
-  computedPackagesToProxy: Set<string>,
+  computedPackagesToProxy: Map<string, string[]>,
   verdaccioUrl: string,
   npmConfigPath: string
 ) {
-  for (const packageToProxy of computedPackagesToProxy) {
-    const packageDirectory = dirname(require.resolve(packageToProxy));
+  const computedPackagesToProxyArray = Array.from(computedPackagesToProxy);
+  const visitedSinceLastPublish = [];
+  while (computedPackagesToProxyArray.length > 0) {
+    if (
+      visitedSinceLastPublish.length === computedPackagesToProxyArray.length
+    ) {
+      throw new Error(
+        `Error while preping verdaccio probably due to circular dependencies
+      - visitedSinceLastPublish: ${JSON.stringify(visitedSinceLastPublish)}
+      - computedPackageToProxyArray: ${JSON.stringify(
+        computedPackagesToProxyArray
+      )}`
+      );
+    }
+
+    const currentPackage = computedPackagesToProxyArray.shift();
+    // If the package has some unpublished local deps, push it back into the list and mark it as visited
+    if (
+      currentPackage[1].some((dependencyName) =>
+        computedPackagesToProxyArray.some(
+          (packageEntryYetToPublish) =>
+            packageEntryYetToPublish[0] === dependencyName
+        )
+      )
+    ) {
+      visitedSinceLastPublish.includes(currentPackage[0]) ||
+        visitedSinceLastPublish.push(currentPackage[0]);
+      computedPackagesToProxyArray.push(currentPackage);
+      continue;
+    }
+
+    const packageDirectory = dirname(
+      require.resolve(join(currentPackage[0], 'package.json'))
+    );
     npm(['publish'], {
       env: {
         ...process.env,
@@ -144,12 +180,22 @@ function doPublishProxiedPackages(
       stdio: 'ignore',
       cwd: packageDirectory,
     });
+
+    visitedSinceLastPublish.length = 0;
+  }
+  // San-check: we should not have any visits on the last publish.
+  if (visitedSinceLastPublish.length) {
+    throw new Error(
+      `Error while preping verdaccio probably due to circular dependencies
+    - visitedSinceLastPublish: ${JSON.stringify(visitedSinceLastPublish)}
+    - computedPackageToProxy: ${JSON.stringify(computedPackagesToProxy)}`
+    );
   }
 }
 
-function getPackagesConfig(packagesToProxy: Set<string>) {
+function getPackagesConfig(packagesToProxy: Iterable<string>) {
   const packages = {};
-  for (const packageToProxy of packagesToProxy.values()) {
+  for (const packageToProxy of packagesToProxy) {
     Object.assign(packages, {
       [packageToProxy]: {
         access: ['$all', '$anonymous'],
