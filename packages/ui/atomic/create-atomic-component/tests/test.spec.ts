@@ -71,7 +71,6 @@ describe(PACKAGE_NAME, () => {
               npm_config_registry: verdaccioUrl,
               npm_config_cache: npmCache,
             },
-            stdio: 'inherit',
             cwd: testDirectory,
           }
         );
@@ -103,7 +102,6 @@ describe(PACKAGE_NAME, () => {
     it('should be able to install all deps without issues', () => {
       expect(
         npmSync(['install'], {
-          stdio: 'inherit',
           cwd: testDirectory,
           env: {
             ...process.env,
@@ -117,7 +115,6 @@ describe(PACKAGE_NAME, () => {
     it('should be able to build without issues', () => {
       expect(
         npmSync(['run', 'build', '-w', packageName], {
-          stdio: 'inherit',
           cwd: testDirectory,
         }).status
       ).toBe(0);
