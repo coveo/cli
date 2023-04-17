@@ -109,7 +109,7 @@ describe(PACKAGE_NAME, () => {
       });
 
       it('should be able to install all deps without issues', () => {
-        const output: SpawnSyncReturns<string | Buffer> = npmSync(['install'], {
+        const output: any = npmSync(['install'], {
           cwd: testDirectory,
           env: {
             ...process.env,
