@@ -56,7 +56,10 @@ describe(PACKAGE_NAME, () => {
   ])('$describeName', ({args, testDirname, packageName}) => {
     beforeAll(() => {
       testDirectory = join(tempDirectory.name, testDirname);
-      mkdirSync(testDirectory, {recursive: true});
+      const mkdiroutput = mkdirSync(testDirectory, {recursive: true});
+      console.log('*******mkdirSync**************');
+      console.log(mkdiroutput);
+      console.log('*********************');
     });
 
     describe('when initializing', () => {
@@ -74,6 +77,15 @@ describe(PACKAGE_NAME, () => {
             cwd: testDirectory,
           }
         );
+        process.stdout.write('********** commandOutput.stdout ***********\n');
+        process.stdout.write(`${commandOutput.stdout}\n`);
+        process.stdout.write('*********************\n');
+        process.stdout.write('********** commandOutput.stderr ***********\n');
+        process.stdout.write(`${commandOutput.stderr}\n`);
+        process.stdout.write('*********************\n');
+        process.stdout.write('********** commandOutput.status ***********\n');
+        process.stdout.write(`${commandOutput.status}\n`);
+        process.stdout.write('*********************\n');
       });
 
       it('should setup a base project and a component', async () => {
