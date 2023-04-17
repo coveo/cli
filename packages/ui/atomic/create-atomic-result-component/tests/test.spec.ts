@@ -51,7 +51,10 @@ describe(PACKAGE_NAME, () => {
   ])('$describeName', ({args, testDirname, packageName}) => {
     beforeAll(() => {
       testDirectory = join(tempDirectory.name, testDirname);
-      mkdirSync(testDirectory, {recursive: true});
+      const mkdiroutput = mkdirSync(testDirectory, {recursive: true});
+      process.stdout.write('*********************\n');
+      process.stdout.write(`${mkdiroutput}\n`);
+      process.stdout.write('*********************\n');
     });
 
     describe('when initializing', () => {
@@ -69,6 +72,16 @@ describe(PACKAGE_NAME, () => {
             cwd: testDirectory,
           }
         );
+
+        process.stdout.write('********** commandOutput.stdout ***********\n');
+        process.stdout.write(`${commandOutput.stdout}\n`);
+        process.stdout.write('*********************\n');
+        process.stdout.write('********** commandOutput.stderr ***********\n');
+        process.stdout.write(`${commandOutput.stderr}\n`);
+        process.stdout.write('*********************\n');
+        process.stdout.write('********** commandOutput.status ***********\n');
+        process.stdout.write(`${commandOutput.status}\n`);
+        process.stdout.write('*********************\n');
       });
 
       it('should setup a base project and a component', async () => {
@@ -96,16 +109,24 @@ describe(PACKAGE_NAME, () => {
       });
 
       it('should be able to install all deps without issues', () => {
-        expect(
-          npmSync(['install'], {
-            cwd: testDirectory,
-            env: {
-              ...process.env,
-              npm_config_registry: verdaccioUrl,
-              npm_config_cache: npmConfigCache,
-            },
-          }).status
-        ).toBe(0);
+        const output: SpawnSyncReturns<string | Buffer> = npmSync(['install'], {
+          cwd: testDirectory,
+          env: {
+            ...process.env,
+            npm_config_registry: verdaccioUrl,
+            npm_config_cache: npmConfigCache,
+          },
+        }).status;
+        process.stdout.write('********** commandOutput.stdout ***********\n');
+        process.stdout.write(`${output.stdout}\n`);
+        process.stdout.write('*********************\n');
+        process.stdout.write('********** commandOutput.stderr ***********\n');
+        process.stdout.write(`${output.stderr}\n`);
+        process.stdout.write('*********************\n');
+        process.stdout.write('********** commandOutput.status ***********\n');
+        process.stdout.write(`${output.status}\n`);
+        process.stdout.write('*********************\n');
+        expect(output).toBe(0);
       });
 
       it('should be able to build without issues', () => {
