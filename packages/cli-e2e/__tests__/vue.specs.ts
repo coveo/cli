@@ -186,6 +186,9 @@ describe('ui:create:vue', () => {
       ).toMatch(/Results 1-6/);
     }, 60e3);
 
+    //TODO: https://coveord.atlassian.net/browse/KIT-2414
+    it.todo('should not contain console errors nor warnings');
+
     it('should send a search query on searchbox submit', async () => {
       await page.goto(searchPageEndpoint(), {waitUntil: 'networkidle0'});
       await page.waitForSelector(searchboxSelector);
