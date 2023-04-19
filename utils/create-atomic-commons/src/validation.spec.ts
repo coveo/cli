@@ -69,7 +69,7 @@ describe('validation', () => {
     it('should error on upper case', () => {
       assertAllAggregateErrorsFired(
         upperCaseTag,
-        'Tag can not contain upper case characters'
+        'Tag cannot contain upper case characters'
       );
     });
 
@@ -132,7 +132,7 @@ describe('validation', () => {
     it('should error on multiple rules', () => {
       assertAllAggregateErrorsFired(
         messedUpTag,
-        'Tag can not contain upper case characters',
+        'Tag cannot contain upper case characters',
         `"${messedUpTag}" tag contains invalid characters: #@`,
         `"${messedUpTag}" tag cannot contain multiple dashes (--) next to each other`,
         `"${messedUpTag}" tag cannot start with a dash (-)`,

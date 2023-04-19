@@ -8,13 +8,13 @@
 export const ensureComponentValidity = (tag: string): void | never => {
   const errors: Error[] = [];
   if (tag !== tag.toLowerCase()) {
-    errors.push(new Error(`Tag can not contain upper case characters`));
+    errors.push(new Error(`Tag cannot contain upper case characters`));
   }
   if (tag.length === 0) {
     errors.push(new Error(`Received empty tag value`));
   }
 
-  if (tag.indexOf(' ') > -1) {
+  if (tag.includes(' ')) {
     errors.push(new Error(`"${tag}" tag cannot contain a space`));
   }
 
@@ -45,11 +45,11 @@ export const ensureComponentValidity = (tag: string): void | never => {
     );
   }
 
-  if (tag.indexOf('-') === 0) {
+  if (tag.startsWith('-')) {
     errors.push(new Error(`"${tag}" tag cannot start with a dash (-)`));
   }
 
-  if (tag.length > 0 && tag.lastIndexOf('-') === tag.length - 1) {
+  if (tag.endsWith('-')) {
     errors.push(new Error(`"${tag}" tag cannot end with a dash (-)`));
   }
 
