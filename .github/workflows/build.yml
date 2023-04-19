@@ -122,7 +122,7 @@ jobs:
       - name: Setup E2E tests
         run: node -r ts-node/register/transpile-only packages/cli-e2e/setup/ci-verdaccio.ts
       - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
-        if: always()
+        if: cancelled() || failure() || success()
         with:
           name: ${{matrix.os}}-verdaccio-publish-artifacts
           path: ./packages/cli-e2e/artifacts
