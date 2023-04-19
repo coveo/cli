@@ -41,7 +41,6 @@ const addMissingPropertiesToJsonPackage = (json: {}) => {
 const publish = (pkgName: string, cwd: string) => {
   return npmSync(['publish', '--dry-run', '-w', pkgName], {
     cwd,
-    stdio: 'inherit',
   });
 };
 
@@ -114,7 +113,6 @@ describe(PACKAGE_NAME_HEALTH, () => {
       expect(
         npmSync(['install'], {
           cwd: testDirectory,
-          stdio: 'inherit',
           env: {
             ...process.env,
             npm_config_registry: verdaccioUrl,
@@ -128,7 +126,6 @@ describe(PACKAGE_NAME_HEALTH, () => {
       expect(
         npmSync(['run', 'build', '-w', pkgName], {
           cwd: testDirectory,
-          stdio: 'inherit',
         }).status
       ).toBe(0);
     });
@@ -141,15 +138,14 @@ describe(PACKAGE_NAME_HEALTH, () => {
         overwriteJsonPackage(jsonPackagePath, updatedJson);
       });
 
-      // TODO: decomment once tested are done with windows
-      // it('should be able to pass health checks', () => {
-      //   const {stdout} = publish(pkgName, testDirectory);
-      //   const message = stripAnsi(stdout.toString()).replace(/\n/g, '');
-      //   expect(message).not.toContain('✖');
-      //   expect(message).toContain('✔ Readme file');
-      //   expect(message).toContain('✔ Component name');
-      //   expect(message).toContain('✔ Required properties in package.json');
-      // });
+      it('should be able to pass health checks', () => {
+        const {stdout} = publish(pkgName, testDirectory);
+        const message = stripAnsi(stdout.toString()).replace(/\n/g, '');
+        expect(message).not.toContain('✖');
+        expect(message).toContain('✔ Readme file');
+        expect(message).toContain('✔ Component name');
+        expect(message).toContain('✔ Required properties in package.json');
+      });
 
       it('should be able to publish without issues', () => {
         expect(publish(pkgName, testDirectory).status).toBe(0);
