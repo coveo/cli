@@ -51,10 +51,7 @@ describe(PACKAGE_NAME, () => {
   ])('$describeName', ({args, testDirname, packageName}) => {
     beforeAll(() => {
       testDirectory = join(tempDirectory.name, testDirname);
-      const mkdiroutput = mkdirSync(testDirectory, {recursive: true});
-      process.stdout.write('*********************\n');
-      process.stdout.write(`${mkdiroutput}\n`);
-      process.stdout.write('*********************\n');
+      mkdirSync(testDirectory, {recursive: true});
     });
 
     describe('when initializing', () => {
@@ -72,16 +69,6 @@ describe(PACKAGE_NAME, () => {
             cwd: testDirectory,
           }
         );
-
-        process.stdout.write('********** commandOutput.stdout ***********\n');
-        process.stdout.write(`${commandOutput.stdout}\n`);
-        process.stdout.write('*********************\n');
-        process.stdout.write('********** commandOutput.stderr ***********\n');
-        process.stdout.write(`${commandOutput.stderr}\n`);
-        process.stdout.write('*********************\n');
-        process.stdout.write('********** commandOutput.status ***********\n');
-        process.stdout.write(`${commandOutput.status}\n`);
-        process.stdout.write('*********************\n');
       });
 
       it('should setup a base project and a component', async () => {
@@ -117,15 +104,6 @@ describe(PACKAGE_NAME, () => {
             npm_config_cache: npmConfigCache,
           },
         }).status;
-        process.stdout.write('********** commandOutput.stdout ***********\n');
-        process.stdout.write(`${output.stdout}\n`);
-        process.stdout.write('*********************\n');
-        process.stdout.write('********** commandOutput.stderr ***********\n');
-        process.stdout.write(`${output.stderr}\n`);
-        process.stdout.write('*********************\n');
-        process.stdout.write('********** commandOutput.status ***********\n');
-        process.stdout.write(`${output.status}\n`);
-        process.stdout.write('*********************\n');
         expect(output).toBe(0);
       });
 
