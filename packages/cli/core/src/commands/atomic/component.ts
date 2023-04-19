@@ -1,5 +1,4 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Before} from '@coveo/cli-commons/decorators/before';
 import {UnknownError} from '@coveo/cli-commons/errors/unknownError';
 import {Flags} from '@oclif/core';
 import inquirer from 'inquirer';
