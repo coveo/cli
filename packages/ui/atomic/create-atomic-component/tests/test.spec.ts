@@ -9,7 +9,7 @@ import treeKill from 'tree-kill-promise';
 import {SpawnSyncReturns} from 'child_process';
 
 const PACKAGE_NAME = '@coveo/create-atomic-component';
-const UTILS_PACKAGE_NAME = '@coveo/create-atomic-commons';
+// const UTILS_PACKAGE_NAME = '@coveo/create-atomic-commons';
 
 describe(PACKAGE_NAME, () => {
   let verdaccioProcess: ChildProcess;
@@ -21,7 +21,7 @@ describe(PACKAGE_NAME, () => {
   beforeAll(async () => {
     ({verdaccioUrl, verdaccioProcess} = await startVerdaccio([
       PACKAGE_NAME,
-      UTILS_PACKAGE_NAME,
+      // UTILS_PACKAGE_NAME, // TODO: include @coveo/create-atomic-commons
     ]));
     tempDirectory = dirSync({unsafeCleanup: true, keep: true});
     npmCache = join(tempDirectory.name, 'npm-cache');
@@ -30,7 +30,6 @@ describe(PACKAGE_NAME, () => {
 
   afterAll(async () => {
     await treeKill(verdaccioProcess.pid);
-    console.log(tempDirectory.name);
     tempDirectory.removeCallback();
   });
 
@@ -97,27 +96,27 @@ describe(PACKAGE_NAME, () => {
       it('should ouptut a confirmation message upon success', () => {
         expect(commandOutput.stdout.toString()).toMatchSnapshot();
       });
+    });
 
-      it('should be able to install all deps without issues', () => {
-        expect(
-          npmSync(['install'], {
-            cwd: testDirectory,
-            env: {
-              ...process.env,
-              npm_config_registry: verdaccioUrl,
-              npm_config_cache: npmCache,
-            },
-          }).status
-        ).toBe(0);
-      });
+    it('should be able to install all deps without issues', () => {
+      expect(
+        npmSync(['install'], {
+          cwd: testDirectory,
+          env: {
+            ...process.env,
+            npm_config_registry: verdaccioUrl,
+            npm_config_cache: npmCache,
+          },
+        }).status
+      ).toBe(0);
+    });
 
-      it('should be able to build without issues', () => {
-        expect(
-          npmSync(['run', 'build', '-w', packageName], {
-            cwd: testDirectory,
-          }).status
-        ).toBe(0);
-      });
+    it('should be able to build without issues', () => {
+      expect(
+        npmSync(['run', 'build', '-w', packageName], {
+          cwd: testDirectory,
+        }).status
+      ).toBe(0);
     });
   });
 });

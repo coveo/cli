@@ -1,16 +1,111 @@
 #!/usr/bin/env node
-import {
-  ensureComponentValidity,
-  camelize,
-  transform,
-  successMessage,
-} from '@coveo/create-atomic-commons';
 import '@coveo/create-atomic-component-project';
 import {dirname, resolve} from 'node:path';
-import {cpSync} from 'node:fs';
+import {
+  cpSync,
+  renameSync,
+  unlinkSync,
+  writeFileSync,
+  readFileSync,
+} from 'node:fs';
 import {cwd} from 'node:process';
 import {fileURLToPath} from 'node:url';
 
+/***************** TODO: Move to @coveo/create-atomic-commons package ******************/
+const successMessage = (componentName) => {
+  console.log(`
+  Project successfully configured
+
+  We suggest that you begin by typing:
+
+  $ cd ${componentName}
+  $ npm install
+  $ npm start
+
+  $ npm start
+    Starts the development server.
+
+  $ npm run build
+    Builds your project in production mode.
+
+  Happy coding!`);
+};
+// TODO: append to success message
+// Further reading:
+//    - TODO: CDX-1403 Add link to documentation in source code and error message
+
+const camelize = (str) =>
+  str
+    .replace(/-(.)/g, (_, group) => group.toUpperCase())
+    .replace(/^./, (match) => match.toUpperCase());
+const transform = (transformers) => {
+  for (const {srcPath, destPath, transform} of transformers) {
+    if (!srcPath) {
+      continue;
+    }
+    if (!destPath) {
+      unlinkSync(srcPath);
+      continue;
+    }
+    renameSync(srcPath, destPath);
+    if (transform) {
+      writeFileSync(destPath, transform(readFileSync(destPath, 'utf8')));
+    }
+  }
+};
+
+// Taken from Stencil: https://github.com/ionic-team/stencil/blob/main/src/utils/validation.ts
+/**
+ * Validates that a component tag meets required naming conventions to be used for a web component
+ * @param tag the tag to validate
+ * @returns an error message if the tag has an invalid name, undefined if the tag name passes all checks
+ */
+const ensureComponentValidity = (tag) => {
+  const errors = [];
+  if (tag !== tag.toLowerCase()) {
+    errors.push(new Error(`Tag cannot contain upper case characters`));
+  }
+  if (tag.length === 0) {
+    errors.push(new Error(`Received empty tag value`));
+  }
+  if (tag.includes(' ')) {
+    errors.push(new Error(`"${tag}" tag cannot contain a space`));
+  }
+  if (tag.includes(',')) {
+    errors.push(new Error(`"${tag}" tag cannot be used for multiple tags`));
+  }
+  const invalidChars = tag.replace(/\w|-|\s/g, '');
+  if (invalidChars !== '') {
+    errors.push(
+      new Error(`"${tag}" tag contains invalid characters: ${invalidChars}`)
+    );
+  }
+  if (!tag.includes('-')) {
+    errors.push(
+      new Error(
+        `"${tag}" tag must contain a dash (-) to work as a valid web component`
+      )
+    );
+  }
+  if (tag.includes('--')) {
+    errors.push(
+      new Error(
+        `"${tag}" tag cannot contain multiple dashes (--) next to each other`
+      )
+    );
+  }
+  if (tag.startsWith('-')) {
+    errors.push(new Error(`"${tag}" tag cannot start with a dash (-)`));
+  }
+  if (tag.endsWith('-')) {
+    errors.push(new Error(`"${tag}" tag cannot end with a dash (-)`));
+  }
+  if (errors.length > 0) {
+    throw new AggregateError(errors, 'Invalid component tag name');
+  }
+};
+
+/***********************************/
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const templateRelativeDir = 'template';
 const templateDirPath = resolve(__dirname, templateRelativeDir);
