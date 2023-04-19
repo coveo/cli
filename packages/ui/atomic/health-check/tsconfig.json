@@ -6,8 +6,8 @@
     "module": "Node16",
     "target": "ESNext",
     "moduleResolution": "Node16",
-    "sourceMap": false,
-    "declaration": false,
+    "sourceMap": true,
+    "declaration": true,
     "esModuleInterop": true
   },
   "exclude": ["node_modules", "src/**/*.spec.ts"]
