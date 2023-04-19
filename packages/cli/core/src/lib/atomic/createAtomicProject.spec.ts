@@ -82,7 +82,7 @@ describe('createAtomicProject', () => {
       expect(mockedMkdirSync).toBeCalledWith('kewlProject');
     });
 
-    it('calls `npx @coveo/create-atomic-project` properly', async () => {
+    it('calls `npx @coveo/create-atomic-component-project` properly', async () => {
       await createAtomicLib({projectName: 'kewlProject'});
 
       expect(mockedSpawnProcess).toBeCalledTimes(1);
