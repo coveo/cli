@@ -1,7 +1,7 @@
 {
   "name": "@coveo/create-atomic-component-project",
   "version": "0.2.1",
-  "description": "",
+  "description": "Initialize a Coveo Atomic Library Project",
   "type": "module",
   "main": "index.js",
   "bin": "index.js",
@@ -16,7 +16,7 @@
     "test": "node --experimental-vm-modules --no-warnings ../../../../node_modules/jest/bin/jest.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Coveo",
   "license": "Apache-2.0",
   "publishConfig": {
     "access": "public"
