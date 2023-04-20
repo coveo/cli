@@ -35,6 +35,11 @@ describe(PACKAGE_NAME, () => {
 
   // TODO: CDX-1428: test ensureComponentValidity in a separate file
   describe('ensureComponentValidity', () => {
+    beforeAll(() => {
+      testDirectory = join(tempDirectory.name, 'cmp-validity');
+      mkdirSync(testDirectory, {recursive: true});
+    });
+
     const leadingSpaceTag = ' my-tag';
     const trailingSpaceTag = 'my-tag ';
     const surroundingSpacesTag = ' my-tag ';
@@ -52,7 +57,7 @@ describe(PACKAGE_NAME, () => {
       ...expectedErrorMessages: string[]
     ) => {
       const {stderr} = npmSync(
-        ['init', PACKAGE_NAME.replace('/create-', '/'), tag],
+        ['init', PACKAGE_NAME.replace('/create-', '/'), '--', tag],
         {
           env: {
             ...process.env,
@@ -142,7 +147,8 @@ describe(PACKAGE_NAME, () => {
       );
     });
   });
-  describe.skip.each([
+
+  describe.each([
     {
       describeName: 'when called without any args',
       args: [],
