@@ -24,15 +24,12 @@ describe('hooks:checkNodeVersion', () => {
       setProcessNodeVersion('v18.1.0');
     })
     .command(['help'])
-    .it(
-      'should fail when the Node version is not supported',
-      async ({stdout}) => {
-        expect(stdout).toContain('Coveo CLI might malfunction');
-        expect(stdout).toContain(
-          'Please update your NodeJS installation to the latest LTS version.'
-        );
-      }
-    );
+    .it('should fail when the Node version is not supported', ({stdout}) => {
+      expect(stdout).toContain('Coveo CLI might malfunction');
+      expect(stdout).toContain(
+        'Please update your NodeJS installation to the latest LTS version.'
+      );
+    });
 
   test
     .stdout()
@@ -41,13 +38,10 @@ describe('hooks:checkNodeVersion', () => {
       setProcessNodeVersion('v18.12.0');
     })
     .command(['help'])
-    .it(
-      'should not fail when the Node version is supported',
-      async ({stdout}) => {
-        expect(stdout).not.toContain('Coveo CLI might malfunction');
-        expect(stdout).not.toContain(
-          'Please update your NodeJS installation to the latest LTS version.'
-        );
-      }
-    );
+    .it('should not fail when the Node version is supported', ({stdout}) => {
+      expect(stdout).not.toContain('Coveo CLI might malfunction');
+      expect(stdout).not.toContain(
+        'Please update your NodeJS installation to the latest LTS version.'
+      );
+    });
 });
