@@ -15,7 +15,11 @@
     "release:phase1": "npx -p=@coveord/release npm-publish",
     "test": "node --experimental-vm-modules --no-warnings ../../../../node_modules/jest/bin/jest.js"
   },
-  "keywords": [],
+  "keywords": [
+    "coveo",
+    "cli",
+    "atomic"
+  ],
   "author": "Coveo",
   "license": "Apache-2.0",
   "publishConfig": {
