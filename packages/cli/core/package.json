@@ -4,7 +4,7 @@
   "author": "Coveo",
   "description": "Coveo CLI",
   "engines": {
-    "node": "16.x || 18.x"
+    "node": "^16.13.0 || ^18.12.0"
   },
   "dependencies": {
     "@amplitude/identify": "^1.9.0",
@@ -156,7 +156,7 @@
       "init": "./lib/hooks/init/set-global-config",
       "analytics": "./lib/hooks/analytics/analytics",
       "command_not_found": "./lib/hooks/commandNotFound/commandNotFound",
-      "prerun": "./lib/hooks/prerun/prerun",
+      "prerun": "./lib/hooks/prerun/checkNodeVersion",
       "postrun": "./lib/hooks/postrun/postrun"
     },
     "macos": {
