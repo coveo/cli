@@ -1,7 +1,6 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Config} from '@coveo/cli-commons/config/config';
 import {Before} from '@coveo/cli-commons/decorators/before';
-import {Beta} from '@coveo/cli-commons/decorators/beta';
 import {UnknownError} from '@coveo/cli-commons/errors/unknownError';
 import {Flags} from '@oclif/core';
 import inquirer from 'inquirer';
@@ -62,7 +61,7 @@ export default class AtomicInit extends CLICommand {
     return responses.type;
   }
 
-  @Before(...atomicLibPreconditions, Beta())
+  @Before(...atomicLibPreconditions)
   private createAtomicLib(projectName: string) {
     return createAtomicLib({projectName});
   }
