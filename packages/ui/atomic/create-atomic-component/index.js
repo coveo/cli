@@ -66,6 +66,7 @@ const ensureComponentValidity = (tag) => {
   const forbiddenLeadingHyphen = /^-/;
   const forbiddenTrailingHyphen = /-$/;
   const forbiddenMultiHyphen = /-{2,}/;
+  const shouldContainAtLeastOneHyphen = /-/;
 
   if (!alphaAndHyphenOnly.test(tag)) {
     errors.push(`"${tag}" can only contain lower case alphabetical characters`);
@@ -75,6 +76,11 @@ const ensureComponentValidity = (tag) => {
   }
   if (forbiddenTrailingHyphen.test(tag)) {
     errors.push(`"${tag}" cannot end with a dash (-)`);
+  }
+  if (!shouldContainAtLeastOneHyphen.test(tag)) {
+    errors.push(
+      `"${tag}" must contain a dash (-) to work as a valid web component`
+    );
   }
   if (forbiddenMultiHyphen.test(tag)) {
     errors.push(
