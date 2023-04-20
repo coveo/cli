@@ -17,6 +17,10 @@ exports[`@coveo/create-atomic-component when called in an existing project when 
     Builds your project in production mode.
 
   Happy coding!
+
+  Further reading:
+    https://docs.coveo.com/en/atomic/latest/cc-search/create-custom-components
+  
 "
 `;
 
@@ -28,7 +32,7 @@ HashedFolder {
       "name": "package.json",
     },
     HashedFile {
-      "hash": "GTHDDg2nmK65HaBZtDE0JI6kg10=",
+      "hash": "FC5dmhUPKYNzCgXh2lO/F7lRU70=",
       "name": "readme.md",
     },
     HashedFolder {
@@ -154,7 +158,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "bMwHtBWKJ+GUtae5VEHhFU3fzTU=",
+  "hash": "nllHCxTg/d1ATnxAV5tVwIncM3M=",
   "name": "no-args",
 }
 `;
@@ -176,6 +180,10 @@ exports[`@coveo/create-atomic-component when called with a valid component name 
     Builds your project in production mode.
 
   Happy coding!
+
+  Further reading:
+    https://docs.coveo.com/en/atomic/latest/cc-search/create-custom-components
+  
 "
 `;
 
@@ -187,7 +195,7 @@ HashedFolder {
       "name": "package.json",
     },
     HashedFile {
-      "hash": "GTHDDg2nmK65HaBZtDE0JI6kg10=",
+      "hash": "FC5dmhUPKYNzCgXh2lO/F7lRU70=",
       "name": "readme.md",
     },
     HashedFolder {
@@ -265,7 +273,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "Fk8stB1nC3303CQpU0wk5D+PCYo=",
+  "hash": "HTiclCZXApbYLWop5PIFLpZZ/PY=",
   "name": "valid-arg",
 }
 `;
@@ -287,6 +295,10 @@ exports[`@coveo/create-atomic-component when called without any args when initia
     Builds your project in production mode.
 
   Happy coding!
+
+  Further reading:
+    https://docs.coveo.com/en/atomic/latest/cc-search/create-custom-components
+  
 "
 `;
 
@@ -298,7 +310,7 @@ HashedFolder {
       "name": "package.json",
     },
     HashedFile {
-      "hash": "GTHDDg2nmK65HaBZtDE0JI6kg10=",
+      "hash": "FC5dmhUPKYNzCgXh2lO/F7lRU70=",
       "name": "readme.md",
     },
     HashedFolder {
@@ -376,7 +388,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "2JuVSvGFTpgTGnPExEpTRFT1um0=",
+  "hash": "8AS3f8mFOVBwZEv4hlBdrJRZsPo=",
   "name": "no-args",
 }
 `;
