@@ -40,12 +40,12 @@ exports[`createAtomicProject createAtomicApp() without options.pageId calls \`np
 ]
 `;
 
-exports[`createAtomicProject createAtomicLib() calls \`npx @coveo/create-atomic-project\` properly 1`] = `
+exports[`createAtomicProject createAtomicLib() calls \`npx @coveo/create-atomic-component-project\` properly 1`] = `
 [
   "npm",
   [
     "init",
-    "@coveo/atomic-project",
+    "@coveo/create-atomic-component-project",
   ],
   {
     "cwd": "kewlProject",

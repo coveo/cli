@@ -96,11 +96,11 @@ HashedFolder {
                       "name": "oh-wow-another-component-can-you-believe-it.css",
                     },
                     HashedFile {
-                      "hash": "cyiSAzblslLaM9FtFOxZflhDW5E=",
+                      "hash": "/LJZFrH80JVNAGsx3FvxhArXJss=",
                       "name": "oh-wow-another-component-can-you-believe-it.tsx",
                     },
                   ],
-                  "hash": "fDk5mo7oKtbUQEWcSOMYtlLW0QE=",
+                  "hash": "hn8xJ8lZaPPvjQFOUvWFX55LlDc=",
                   "name": "src",
                 },
                 HashedFile {
@@ -112,11 +112,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "N5/xI48+WS1snFLfbNWSI8q6KGo=",
+              "hash": "NOVPrUqAYRWIT5mqH43Bu9PVfHw=",
               "name": "oh-wow-another-component-can-you-believe-it",
             },
           ],
-          "hash": "F3kaZTQIBIA/6IzUuphCqcopeMg=",
+          "hash": "1yJJ4WoWpZUhjm52hoEmSAb6sNM=",
           "name": "components",
         },
         HashedFile {
@@ -142,7 +142,7 @@ HashedFolder {
           "name": "pages",
         },
       ],
-      "hash": "JNK1tIReSrBvRocM6sHIX3nXtHs=",
+      "hash": "SfCQyAPRB0o15xZkMFrCis90Ig8=",
       "name": "src",
     },
     HashedFile {
@@ -154,7 +154,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "9FFRWa/xrvmpbAzwi3gSiF0SVWo=",
+  "hash": "bMwHtBWKJ+GUtae5VEHhFU3fzTU=",
   "name": "no-args",
 }
 `;
@@ -207,11 +207,11 @@ HashedFolder {
                       "name": "valid-component-name.css",
                     },
                     HashedFile {
-                      "hash": "YZICfNAhO7c4mopg1lRMvtn4zoc=",
+                      "hash": "mSEayrhdQLFyjWOgicX78wD8seE=",
                       "name": "valid-component-name.tsx",
                     },
                   ],
-                  "hash": "GPCobV/2HmZJ0cpyuZQf9TQeVf8=",
+                  "hash": "TLrPzQ215bJQgHPDj+8uidPXAqo=",
                   "name": "src",
                 },
                 HashedFile {
@@ -223,11 +223,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "IoKHkjY34yyyxnsImtri+oJIhzw=",
+              "hash": "K8Tel/Zr8MkD/OdWNGNszVJoCYg=",
               "name": "valid-component-name",
             },
           ],
-          "hash": "85kB8BPG4L9Yz/mR/9FHHpMEXp8=",
+          "hash": "Rt8hzUGO/Jcgqrm7o1ec468Mf04=",
           "name": "components",
         },
         HashedFile {
@@ -253,7 +253,7 @@ HashedFolder {
           "name": "pages",
         },
       ],
-      "hash": "JzU+QMfDVYeAhJMSmwqTYr3GCL4=",
+      "hash": "1oVBMj4lrbAvPM5nF6unLMC8gd4=",
       "name": "src",
     },
     HashedFile {
@@ -265,7 +265,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "RoBQyGRIfpgVHCS+fzz2vflJowk=",
+  "hash": "Fk8stB1nC3303CQpU0wk5D+PCYo=",
   "name": "valid-arg",
 }
 `;
@@ -318,11 +318,11 @@ HashedFolder {
                       "name": "sample-component.css",
                     },
                     HashedFile {
-                      "hash": "5oFqFve0WaOV3g/ptfVo98a5B4Q=",
+                      "hash": "aeXDp+lsWoSvRwNcTKnynVf/9bk=",
                       "name": "sample-component.tsx",
                     },
                   ],
-                  "hash": "65UuO8iiPnNRHZur5KT+HoQqFCw=",
+                  "hash": "1fEyvhZ1KbN3o1NA6j8h5U8u3EM=",
                   "name": "src",
                 },
                 HashedFile {
@@ -334,11 +334,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "JPAZBionjfGS+CklzzmaFAlNRnU=",
+              "hash": "6GvfKxMXolejGxVLF5G164j+UbE=",
               "name": "sample-component",
             },
           ],
-          "hash": "DwStaCEpWgWT6QgVBP15843A3cg=",
+          "hash": "24Vkp1GZfHGq7VlvVgz9QvhxvTA=",
           "name": "components",
         },
         HashedFile {
@@ -364,7 +364,7 @@ HashedFolder {
           "name": "pages",
         },
       ],
-      "hash": "lI5vrni7RVALGhZ+ykLkZEvxtpA=",
+      "hash": "KiU7oOfB/c1FZTXoVVo/4oHDshk=",
       "name": "src",
     },
     HashedFile {
@@ -376,7 +376,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "kmxSAd28j/Ajf8a1di6XymMiB4U=",
+  "hash": "2JuVSvGFTpgTGnPExEpTRFT1um0=",
   "name": "no-args",
 }
 `;

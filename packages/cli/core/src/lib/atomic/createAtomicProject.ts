@@ -27,7 +27,8 @@ interface CreateAppOptions {
   cfg: Configuration;
 }
 export const atomicAppInitializerPackage = '@coveo/create-atomic';
-export const atomicLibInitializerPackage = '@coveo/atomic-project';
+export const atomicLibInitializerPackage =
+  '@coveo/create-atomic-component-project';
 
 const supportedNodeVersions = '16.x || 18.x';
 
