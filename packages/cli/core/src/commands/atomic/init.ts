@@ -23,7 +23,8 @@ export default class AtomicInit extends CLICommand {
 
   public static flags = {
     type: Flags.string({
-      description: 'The kind of project to initialize. Use `app`/`application` to start a new Atomic search page project, and `lib`/`library` to start a custom component library.',
+      description:
+        'The kind of project to initialize. Use `app`/`application` to start a new Atomic search page project, and `lib`/`library` to start a custom component library.',
       options: ['app', 'application', 'lib', 'library'],
     }),
   };
