@@ -11,7 +11,7 @@ import {
 import {cwd} from 'node:process';
 import {fileURLToPath} from 'node:url';
 
-/***************** TODO: Move to @coveo/create-atomic-commons package ******************/
+/***************** TODO: CDX-1428: Move to @coveo/create-atomic-commons package ******************/
 const successMessage = (componentName) => {
   console.log(`
   Project successfully configured
@@ -62,44 +62,26 @@ const transform = (transformers) => {
  */
 const ensureComponentValidity = (tag) => {
   const errors = [];
-  if (tag !== tag.toLowerCase()) {
-    errors.push(new Error(`Tag cannot contain upper case characters`));
+  const alphaAndHyphenOnly = /^[a-z\-]+$/;
+  const forbiddenLeadingHyphen = /^-/;
+  const forbiddenTrailingHyphen = /-$/;
+  const forbiddenMultiHyphen = /-{2,}/;
+
+  if (!alphaAndHyphenOnly.test(tag)) {
+    errors.push(`"${tag}" can only contain lower case alphabetical characters`);
   }
-  if (tag.length === 0) {
-    errors.push(new Error(`Received empty tag value`));
+  if (forbiddenLeadingHyphen.test(tag)) {
+    errors.push(`"${tag}" cannot start with a dash (-)`);
   }
-  if (tag.includes(' ')) {
-    errors.push(new Error(`"${tag}" tag cannot contain a space`));
+  if (forbiddenTrailingHyphen.test(tag)) {
+    errors.push(`"${tag}" cannot end with a dash (-)`);
   }
-  if (tag.includes(',')) {
-    errors.push(new Error(`"${tag}" tag cannot be used for multiple tags`));
-  }
-  const invalidChars = tag.replace(/\w|-|\s/g, '');
-  if (invalidChars !== '') {
+  if (forbiddenMultiHyphen.test(tag)) {
     errors.push(
-      new Error(`"${tag}" tag contains invalid characters: ${invalidChars}`)
+      `"${tag}" cannot contain multiple dashes (--) next to each other`
     );
   }
-  if (!tag.includes('-')) {
-    errors.push(
-      new Error(
-        `"${tag}" tag must contain a dash (-) to work as a valid web component`
-      )
-    );
-  }
-  if (tag.includes('--')) {
-    errors.push(
-      new Error(
-        `"${tag}" tag cannot contain multiple dashes (--) next to each other`
-      )
-    );
-  }
-  if (tag.startsWith('-')) {
-    errors.push(new Error(`"${tag}" tag cannot start with a dash (-)`));
-  }
-  if (tag.endsWith('-')) {
-    errors.push(new Error(`"${tag}" tag cannot end with a dash (-)`));
-  }
+
   if (errors.length > 0) {
     throw new AggregateError(errors, 'Invalid component tag name');
   }

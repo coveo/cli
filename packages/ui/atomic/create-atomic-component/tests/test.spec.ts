@@ -21,7 +21,7 @@ describe(PACKAGE_NAME, () => {
   beforeAll(async () => {
     ({verdaccioUrl, verdaccioProcess} = await startVerdaccio([
       PACKAGE_NAME,
-      // UTILS_PACKAGE_NAME, // TODO: include @coveo/create-atomic-commons
+      // UTILS_PACKAGE_NAME, // TODO: CDX-1428 include @coveo/create-atomic-commons
     ]));
     tempDirectory = dirSync({unsafeCleanup: true, keep: true});
     npmCache = join(tempDirectory.name, 'npm-cache');

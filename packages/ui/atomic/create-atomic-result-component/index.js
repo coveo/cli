@@ -11,7 +11,7 @@ import {
 import {cwd} from 'node:process';
 import {fileURLToPath} from 'node:url';
 
-/***************** TODO: Move to @coveo/create-atomic-commons package ******************/
+/***************** TODO: CDX-1428: Move to @coveo/create-atomic-commons package ******************/
 const successMessage = (componentName) => {
   console.log(`
   Project successfully configured
