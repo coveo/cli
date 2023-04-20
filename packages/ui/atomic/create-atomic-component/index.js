@@ -54,7 +54,7 @@ const transform = (transformers) => {
   }
 };
 
-// Taken from Stencil: https://github.com/ionic-team/stencil/blob/main/src/utils/validation.ts
+// Adapted from Stencil: https://github.com/ionic-team/stencil/blob/main/src/utils/validation.ts
 /**
  * Validates that a component tag meets required naming conventions to be used for a web component
  * @param tag the tag to validate
