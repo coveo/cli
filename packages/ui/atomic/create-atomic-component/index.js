@@ -28,11 +28,12 @@ const successMessage = (componentName) => {
   $ npm run build
     Builds your project in production mode.
 
-  Happy coding!`);
+  Happy coding!
+
+  Further reading:
+    https://docs.coveo.com/en/atomic/latest/cc-search/create-custom-components
+  `);
 };
-// TODO: append to success message
-// Further reading:
-//    - TODO: CDX-1403 Add link to documentation in source code and error message
 
 const camelize = (str) =>
   str

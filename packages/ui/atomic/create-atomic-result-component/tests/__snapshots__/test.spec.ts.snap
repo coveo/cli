@@ -16,7 +16,11 @@ exports[`@coveo/create-atomic-result-component when called in an existing projec
   $ npm run build
     Builds your project in production mode.
 
-  Happy coding!
+    Happy coding!
+
+    Further reading:
+      https://docs.coveo.com/en/atomic/latest/cc-search/create-custom-components
+    
 "
 `;
 
@@ -28,7 +32,7 @@ HashedFolder {
       "name": "package.json",
     },
     HashedFile {
-      "hash": "GTHDDg2nmK65HaBZtDE0JI6kg10=",
+      "hash": "dk1NzEu4Fb2ZY6TKzt21xMFvc2c=",
       "name": "readme.md",
     },
     HashedFolder {
@@ -154,7 +158,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "fOiiXc7V1Ng7ISbwla4bB+UQI6Q=",
+  "hash": "bj+rkbPM7Yun0q8eNlVRKpfNqp0=",
   "name": "no-args",
 }
 `;
@@ -175,7 +179,11 @@ exports[`@coveo/create-atomic-result-component when called with a valid componen
   $ npm run build
     Builds your project in production mode.
 
-  Happy coding!
+    Happy coding!
+
+    Further reading:
+      https://docs.coveo.com/en/atomic/latest/cc-search/create-custom-components
+    
 "
 `;
 
@@ -187,7 +195,7 @@ HashedFolder {
       "name": "package.json",
     },
     HashedFile {
-      "hash": "GTHDDg2nmK65HaBZtDE0JI6kg10=",
+      "hash": "dk1NzEu4Fb2ZY6TKzt21xMFvc2c=",
       "name": "readme.md",
     },
     HashedFolder {
@@ -265,7 +273,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "At0pimlg9Lc9J63UCz0eDYoOMWI=",
+  "hash": "i5tEadGBV7dyP/U65kaedZ8Rixg=",
   "name": "valid-arg",
 }
 `;
@@ -286,7 +294,11 @@ exports[`@coveo/create-atomic-result-component when called without any args when
   $ npm run build
     Builds your project in production mode.
 
-  Happy coding!
+    Happy coding!
+
+    Further reading:
+      https://docs.coveo.com/en/atomic/latest/cc-search/create-custom-components
+    
 "
 `;
 
@@ -298,7 +310,7 @@ HashedFolder {
       "name": "package.json",
     },
     HashedFile {
-      "hash": "GTHDDg2nmK65HaBZtDE0JI6kg10=",
+      "hash": "dk1NzEu4Fb2ZY6TKzt21xMFvc2c=",
       "name": "readme.md",
     },
     HashedFolder {
@@ -376,7 +388,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "AmmcXy4Is9oT03ImkvOUjOdTGiY=",
+  "hash": "zq+PfKq5zPPt8ovk3Y9jTZcQPAQ=",
   "name": "no-args",
 }
 `;
