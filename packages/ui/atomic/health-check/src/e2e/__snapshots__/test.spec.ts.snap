@@ -8,7 +8,7 @@ HashedFolder {
       "name": "package.json",
     },
     HashedFile {
-      "hash": "FC5dmhUPKYNzCgXh2lO/F7lRU70=",
+      "hash": "dk1NzEu4Fb2ZY6TKzt21xMFvc2c=",
       "name": "readme.md",
     },
     HashedFolder {
@@ -86,7 +86,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "HTiclCZXApbYLWop5PIFLpZZ/PY=",
+  "hash": "4r4PrEz6Kdd3ZlNlAxzqxWo/X3o=",
   "name": "create-atomic-component",
 }
 `;
@@ -99,7 +99,7 @@ HashedFolder {
       "name": "package.json",
     },
     HashedFile {
-      "hash": "FC5dmhUPKYNzCgXh2lO/F7lRU70=",
+      "hash": "dk1NzEu4Fb2ZY6TKzt21xMFvc2c=",
       "name": "readme.md",
     },
     HashedFolder {
@@ -177,7 +177,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "3HPSXtW0Kgajyx275M9V+pZcTTE=",
+  "hash": "i5tEadGBV7dyP/U65kaedZ8Rixg=",
   "name": "create-atomic-result-component",
 }
 `;
