@@ -16,10 +16,6 @@ exports[`@coveo/create-atomic-result-component when called in an existing projec
   $ npm run build
     Builds your project in production mode.
 
-  Further reading:
-
-   - TODO: CDX-1403 Add link to documentation in source code and error message
-
   Happy coding!
 "
 `;
@@ -163,121 +159,6 @@ HashedFolder {
 }
 `;
 
-exports[`@coveo/create-atomic-result-component when called with a component name without hyphen when initializing should ouptut a confirmation message upon success 1`] = `
-"
-  Project successfully configured
-
-  We suggest that you begin by typing:
-
-  $ cd atomic-nohypen
-  $ npm install
-  $ npm start
-
-  $ npm start
-    Starts the development server.
-
-  $ npm run build
-    Builds your project in production mode.
-
-  Further reading:
-
-   - TODO: CDX-1403 Add link to documentation in source code and error message
-
-  Happy coding!
-"
-`;
-
-exports[`@coveo/create-atomic-result-component when called with a component name without hyphen when initializing should setup a base project and a component 1`] = `
-HashedFolder {
-  "children": [
-    HashedFile {
-      "hash": "T+7uUFOwtxWi7kfgvgjJd2t2pXM=",
-      "name": "package.json",
-    },
-    HashedFile {
-      "hash": "GTHDDg2nmK65HaBZtDE0JI6kg10=",
-      "name": "readme.md",
-    },
-    HashedFolder {
-      "children": [
-        HashedFolder {
-          "children": [
-            HashedFolder {
-              "children": [
-                HashedFile {
-                  "hash": "IGOhdkcD6niBPfinrEZJAbtYmbg=",
-                  "name": "package.json",
-                },
-                HashedFolder {
-                  "children": [
-                    HashedFile {
-                      "hash": "0kZk+nhPZP6DNXEt1ds/y13pPn4=",
-                      "name": "atomic-nohypen.css",
-                    },
-                    HashedFile {
-                      "hash": "DHc1UOzcvrRyRP7cNfkhee0USQE=",
-                      "name": "atomic-nohypen.tsx",
-                    },
-                  ],
-                  "hash": "bBaaDceapg0y5AjIvm6Qiia9piQ=",
-                  "name": "src",
-                },
-                HashedFile {
-                  "hash": "DNTPZTeWJfCjTGqD+edK5gP5vUM=",
-                  "name": "stencil.config.ts",
-                },
-                HashedFile {
-                  "hash": "yMxJnSeOFw52ObOJrKQEh86v+HM=",
-                  "name": "tsconfig.json",
-                },
-              ],
-              "hash": "d/GY83hkkkQa8S1AcaW8L9fZn7g=",
-              "name": "atomic-nohypen",
-            },
-          ],
-          "hash": "0EdCS53Sx7n8ud1Dgz/rTJGBimg=",
-          "name": "components",
-        },
-        HashedFile {
-          "hash": "YVuwXfIZfjfeVyLQ6cMy3kUqC3A=",
-          "name": "html.d.ts",
-        },
-        HashedFolder {
-          "children": [
-            HashedFile {
-              "hash": "L08E7dMK5e0wD5P8meKHfkDDa3o=",
-              "name": "index.css",
-            },
-            HashedFile {
-              "hash": "2XR/MKCv0fo3uRpZRiTyOBoHk7s=",
-              "name": "index.html",
-            },
-            HashedFile {
-              "hash": "ZRD3OAMjlKnlu7Yh3iQv3gCcG8c=",
-              "name": "index.ts",
-            },
-          ],
-          "hash": "V7y/8CwkVmHHCoFc1OqeZ9uA7Uo=",
-          "name": "pages",
-        },
-      ],
-      "hash": "fAkuPPK+MgwH+PXy3JHHBgf5zII=",
-      "name": "src",
-    },
-    HashedFile {
-      "hash": "BVZfiCzL+2kulE12K4HLAIl3kJ8=",
-      "name": "stencil.config.ts",
-    },
-    HashedFile {
-      "hash": "yMxJnSeOFw52ObOJrKQEh86v+HM=",
-      "name": "tsconfig.json",
-    },
-  ],
-  "hash": "uFvcUCMocV3sV6WTWVH+Ms4fFSQ=",
-  "name": "invalid-arg",
-}
-`;
-
 exports[`@coveo/create-atomic-result-component when called with a valid component name when initializing should ouptut a confirmation message upon success 1`] = `
 "
   Project successfully configured
@@ -293,10 +174,6 @@ exports[`@coveo/create-atomic-result-component when called with a valid componen
 
   $ npm run build
     Builds your project in production mode.
-
-  Further reading:
-
-   - TODO: CDX-1403 Add link to documentation in source code and error message
 
   Happy coding!
 "
@@ -399,7 +276,7 @@ exports[`@coveo/create-atomic-result-component when called without any args when
 
   We suggest that you begin by typing:
 
-  $ cd undefined
+  $ cd sample-result-component
   $ npm install
   $ npm start
 
@@ -408,10 +285,6 @@ exports[`@coveo/create-atomic-result-component when called without any args when
 
   $ npm run build
     Builds your project in production mode.
-
-  Further reading:
-
-   - TODO: CDX-1403 Add link to documentation in source code and error message
 
   Happy coding!
 "
