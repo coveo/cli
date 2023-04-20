@@ -14,7 +14,7 @@ import {
 
 export default class AtomicInit extends CLICommand {
   public static description =
-    'Scaffold a project to work with Coveo Atomic Framework';
+    'Scaffold a project to work with the Coveo Atomic Framework.';
 
   public static examples = [
     '<%= config.bin %> <%= command.id %> --type=app myAwesomeSearchPage',
@@ -23,13 +23,14 @@ export default class AtomicInit extends CLICommand {
 
   public static flags = {
     type: Flags.string({
-      description: 'the kind of project to initialize',
+      description:
+        'The kind of project to initialize. Use `app`/`application` to start a new Atomic search page project, and `lib`/`library` to start a custom component library.',
       options: ['app', 'application', 'lib', 'library'],
     }),
   };
 
   public static args = [
-    {name: 'name', description: 'the name of your project', required: true},
+    {name: 'name', description: 'The name of your project.', required: true},
   ];
 
   public async run(): Promise<void> {
