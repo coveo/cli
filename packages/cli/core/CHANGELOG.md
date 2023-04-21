@@ -1,3 +1,27 @@
+## 2.5.1 (2023-04-21)
+
+
+### Bug Fixes
+
+* **atomic:** don't need peerDeps ([#1294](https://github.com/coveo/cli/issues/1294)) ([8a7e7a9](https://github.com/coveo/cli/commits/8a7e7a9ae60b3837d2e3820d1af824756e4db549))
+
+
+
+# 2.5.0 (2023-04-21)
+
+### Bug Fixes
+
+- **atomic:** remove create- prefix when using npm init ([#1290](https://github.com/coveo/cli/issues/1290)) ([f32c9fa](https://github.com/coveo/cli/commits/f32c9fa2d359fb206105a8d4ea144e772a68d763))
+- **atomic:** remove spinner in `atomic:cmp` ([#1291](https://github.com/coveo/cli/issues/1291)) ([68b4e06](https://github.com/coveo/cli/commits/68b4e0666924730e66986a8ddab4497dc27be3fb))
+- **atomic:** use the initializer version from CLI ([#1292](https://github.com/coveo/cli/issues/1292)) ([339925b](https://github.com/coveo/cli/commits/339925b5f187a7673e4eab649c50f952497c0c71))
+- **cli-core,cli-source,ui-react:** enforce LTS ([#1275](https://github.com/coveo/cli/issues/1275)) ([46cfeb2](https://github.com/coveo/cli/commits/46cfeb24c70ea96467e1d705537790dfaa929957))
+- **cli:** use proper package ([#1280](https://github.com/coveo/cli/issues/1280)) ([9324725](https://github.com/coveo/cli/commits/93247255d6d7d38265c7e62b7e3156f266fa7552))
+
+### Features
+
+- add confirmation message upon component creation ([#1270](https://github.com/coveo/cli/issues/1270)) ([e7294ce](https://github.com/coveo/cli/commits/e7294ce591b4c5b62ae63c3037b4ceb8c69f2d87))
+- **atomic:** remove beta tags ([#1283](https://github.com/coveo/cli/issues/1283)) ([4df0d2f](https://github.com/coveo/cli/commits/4df0d2fba2a182df78181e7611b880cf772358a9))
+
 ## 2.4.4 (2023-04-05)
 
 ### Bug Fixes

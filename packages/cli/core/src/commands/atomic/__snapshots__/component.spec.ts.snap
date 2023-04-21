@@ -5,7 +5,7 @@ exports[`atomic:component calls \`npm init @coveo/atomic-component\` properly 1`
   "npm",
   [
     "init",
-    "@coveo/atomic-component",
+    "@coveo/atomic-component@1.2.3",
     "foo",
   ],
 ]
@@ -16,7 +16,7 @@ exports[`atomic:component calls \`npm init @coveo/atomic-component\` when the us
   "npm",
   [
     "init",
-    "@coveo/atomic-component",
+    "@coveo/atomic-component@1.2.3",
     "foo",
   ],
 ]
@@ -27,7 +27,7 @@ exports[`atomic:component calls \`npm init @coveo/atomic-result-component\` prop
   "npm",
   [
     "init",
-    "@coveo/atomic-result-component",
+    "@coveo/atomic-result-component@1.2.3",
     "foo",
   ],
 ]
@@ -38,7 +38,7 @@ exports[`atomic:component calls \`npm init @coveo/atomic-result-component\` when
   "npm",
   [
     "init",
-    "@coveo/atomic-result-component",
+    "@coveo/atomic-result-component@1.2.3",
     "foo",
   ],
 ]

@@ -1,29 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`createAtomicProject createAtomicApp() without options.pageId calls \`npx @coveo/create-atomic\` properly 1`] = `
+exports[`createAtomicProject createAtomicApp() with options.initializerVersion set calls \`npx @coveo/create-atomic\` properly 1`] = `
 [
   "npx",
   [
-    "@coveo/create-atomic@latest",
-    "--project",
-    "potato",
-    "--org-id",
-    "bobbyOrg",
-    "--api-key",
-    "someToken",
-    "--platform-url",
-    "https://platformdev-au.cloud.coveo.com",
-    "--user",
-    "bob@coveo.com",
-  ],
-]
-`;
-
-exports[`createAtomicProject createAtomicApp() without options.pageId calls \`npx @coveo/create-atomic\` properly 2`] = `
-[
-  "npx",
-  [
-    "@coveo/create-atomic@latest",
+    "@coveo/create-atomic@test",
     "--project",
     "potato",
     "--org-id",
@@ -40,12 +21,73 @@ exports[`createAtomicProject createAtomicApp() without options.pageId calls \`np
 ]
 `;
 
+exports[`createAtomicProject createAtomicApp() with options.pageId calls \`npx @coveo/create-atomic\` properly 1`] = `
+[
+  "npx",
+  [
+    "@coveo/create-atomic@1.2.3",
+    "--project",
+    "potato",
+    "--org-id",
+    "bobbyOrg",
+    "--api-key",
+    "someToken",
+    "--platform-url",
+    "https://platformdev-au.cloud.coveo.com",
+    "--user",
+    "bob@coveo.com",
+    "--page-id",
+    "pageId",
+  ],
+]
+`;
+
+exports[`createAtomicProject createAtomicApp() without options.initializerVersion calls \`npx @coveo/create-atomic\` properly and calls getPackageVersion 1`] = `
+[
+  "npx",
+  [
+    "@coveo/create-atomic@1.2.3",
+    "--project",
+    "potato",
+    "--org-id",
+    "bobbyOrg",
+    "--api-key",
+    "someToken",
+    "--platform-url",
+    "https://platformdev-au.cloud.coveo.com",
+    "--user",
+    "bob@coveo.com",
+    "--page-id",
+    "pageId",
+  ],
+]
+`;
+
+exports[`createAtomicProject createAtomicApp() without options.pageId calls \`npx @coveo/create-atomic\` properly 1`] = `
+[
+  "npx",
+  [
+    "@coveo/create-atomic@1.2.3",
+    "--project",
+    "potato",
+    "--org-id",
+    "bobbyOrg",
+    "--api-key",
+    "someToken",
+    "--platform-url",
+    "https://platformdev-au.cloud.coveo.com",
+    "--user",
+    "bob@coveo.com",
+  ],
+]
+`;
+
 exports[`createAtomicProject createAtomicLib() calls \`npx @coveo/create-atomic-component-project\` properly 1`] = `
 [
   "npm",
   [
     "init",
-    "@coveo/create-atomic-component-project",
+    "@coveo/atomic-component-project",
   ],
   {
     "cwd": "kewlProject",
