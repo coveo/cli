@@ -44,10 +44,12 @@ export default class AtomicInit extends CLICommand {
 
     const initializerPackage = this.getInitializerPackage(type);
 
+    // TODO CDX-1340: Refactor the replace into a well named utils.
     return {
-      initializer: `${initializerPackage}@${getPackageVersion(
-        initializerPackage
-      )}`,
+      initializer: `${initializerPackage.replace(
+        '/create-',
+        '/'
+      )}@${getPackageVersion(initializerPackage)}`,
       name: args.name,
     };
   }
@@ -67,9 +69,9 @@ export default class AtomicInit extends CLICommand {
   private getInitializerPackage(type: string): string {
     switch (type) {
       case 'page':
-        return '@coveo/atomic-component';
+        return '@coveo/create-atomic-component';
       case 'result':
-        return '@coveo/atomic-result-component';
+        return '@coveo/create-atomic-result-component';
       default:
         throw new UnknownError();
     }
