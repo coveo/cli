@@ -33,7 +33,6 @@ export default class AtomicInit extends CLICommand {
     const {initializer, name} = await this.getSpawnOptions();
 
     const cliArgs = ['init', initializer, name];
-    startSpinner('Scaffolding project');
     await spawnProcess(appendCmdIfWindows`npm`, cliArgs);
   }
 
