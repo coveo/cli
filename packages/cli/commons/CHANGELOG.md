@@ -1,11 +1,17 @@
-## 2.4.2 (2023-04-21)
+## 2.4.3 (2023-04-21)
 
 
 ### Bug Fixes
 
-* **cli:** do not reassign fetch after polyfill ([#1271](https://github.com/coveo/cli/issues/1271)) ([85725f8](https://github.com/coveo/cli/commits/85725f8310e3395450b77c1a55939d7d9abfa3fe))
+* **atomic:** don't need peerDeps ([#1294](https://github.com/coveo/cli/issues/1294)) ([8a7e7a9](https://github.com/coveo/cli/commits/8a7e7a9ae60b3837d2e3820d1af824756e4db549))
 
 
+
+## 2.4.2 (2023-04-21)
+
+### Bug Fixes
+
+- **cli:** do not reassign fetch after polyfill ([#1271](https://github.com/coveo/cli/issues/1271)) ([85725f8](https://github.com/coveo/cli/commits/85725f8310e3395450b77c1a55939d7d9abfa3fe))
 
 ## 2.4.1 (2023-03-27)
 
