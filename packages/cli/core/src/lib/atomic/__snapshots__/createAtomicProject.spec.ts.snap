@@ -45,7 +45,7 @@ exports[`createAtomicProject createAtomicLib() calls \`npx @coveo/create-atomic-
   "npm",
   [
     "init",
-    "@coveo/create-atomic-component-project",
+    "@coveo/atomic-component-project",
   ],
   {
     "cwd": "kewlProject",
