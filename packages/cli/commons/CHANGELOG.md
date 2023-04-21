@@ -1,3 +1,12 @@
+## 2.4.2 (2023-04-21)
+
+
+### Bug Fixes
+
+* **cli:** do not reassign fetch after polyfill ([#1271](https://github.com/coveo/cli/issues/1271)) ([85725f8](https://github.com/coveo/cli/commits/85725f8310e3395450b77c1a55939d7d9abfa3fe))
+
+
+
 ## 2.4.1 (2023-03-27)
 
 ### Bug Fixes

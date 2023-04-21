@@ -1,3 +1,24 @@
+# 1.0.0 (2023-04-21)
+
+
+### Bug Fixes
+
+* **atomic:** wait for atomic to load/init on page component ([#1284](https://github.com/coveo/cli/issues/1284)) ([0113bf6](https://github.com/coveo/cli/commits/0113bf6e0b11cd47e6af988afc1434ea9f95cfbc))
+
+
+### Features
+
+* add confirmation message upon component creation ([#1270](https://github.com/coveo/cli/issues/1270)) ([e7294ce](https://github.com/coveo/cli/commits/e7294ce591b4c5b62ae63c3037b4ceb8c69f2d87))
+* **atomic:** release of ACCD ([#1287](https://github.com/coveo/cli/issues/1287)) ([5ce3cda](https://github.com/coveo/cli/commits/5ce3cda28a7a68ec1cef34e49f60b8f1e82da4b0))
+* sanitize custom component name on creation ([#1272](https://github.com/coveo/cli/issues/1272)) ([1c434b6](https://github.com/coveo/cli/commits/1c434b6c83fe688f37ff843c90aa01e84a5a1129))
+
+
+### BREAKING CHANGES
+
+* **atomic:** ACCD is now stable.
+
+
+
 ## 0.2.4 (2023-04-05)
 
 ### Bug Fixes

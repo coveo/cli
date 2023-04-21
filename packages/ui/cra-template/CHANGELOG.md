@@ -1,3 +1,12 @@
+## 1.36.8 (2023-04-21)
+
+
+### Bug Fixes
+
+* **cli-core,cli-source,ui-react:** enforce LTS ([#1275](https://github.com/coveo/cli/issues/1275)) ([46cfeb2](https://github.com/coveo/cli/commits/46cfeb24c70ea96467e1d705537790dfaa929957))
+
+
+
 ## 1.36.7 (2023-03-27)
 
 ### Bug Fixes

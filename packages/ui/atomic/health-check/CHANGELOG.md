@@ -1,3 +1,22 @@
+# 2.0.0 (2023-04-21)
+
+
+### Bug Fixes
+
+* **atomic:** wait for atomic to load/init on page component ([#1284](https://github.com/coveo/cli/issues/1284)) ([0113bf6](https://github.com/coveo/cli/commits/0113bf6e0b11cd47e6af988afc1434ea9f95cfbc))
+
+
+### Features
+
+* **atomic:** release of ACCD ([#1287](https://github.com/coveo/cli/issues/1287)) ([5ce3cda](https://github.com/coveo/cli/commits/5ce3cda28a7a68ec1cef34e49f60b8f1e82da4b0))
+
+
+### BREAKING CHANGES
+
+* **atomic:** ACCD is now stable.
+
+
+
 ## 1.0.4 (2023-04-05)
 
 ### Features
