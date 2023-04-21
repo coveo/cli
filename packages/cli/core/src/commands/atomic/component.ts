@@ -6,6 +6,7 @@ import {appendCmdIfWindows} from '../../lib/utils/os';
 import {spawnProcess} from '../../lib/utils/process';
 import {startSpinner} from '@coveo/cli-commons/utils/ux';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
+import {getPackageVersion} from '../../lib/utils/misc';
 
 export default class AtomicInit extends CLICommand {
   public static description =
@@ -41,8 +42,14 @@ export default class AtomicInit extends CLICommand {
     const {args, flags} = await this.parse(AtomicInit);
     const type = flags.type || (await this.askType());
 
-    const initializer = this.getInitializerPackage(type);
-    return {initializer, name: args.name};
+    const initializerPackage = this.getInitializerPackage(type);
+
+    return {
+      initializer: `${initializerPackage}@${getPackageVersion(
+        initializerPackage
+      )}`,
+      name: args.name,
+    };
   }
 
   private async askType(): Promise<string> {

@@ -19,9 +19,10 @@ import {
   IsNpxInstalled,
   IsNodeVersionInRange,
 } from '../decorators/preconditions';
+import {getPackageVersion} from '../utils/misc';
 
 interface CreateAppOptions {
-  initializerVersion: string;
+  initializerVersion?: string;
   pageId?: string;
   projectName: string;
   cfg: Configuration;
@@ -52,7 +53,10 @@ export async function createAtomicApp(options: CreateAppOptions) {
 
   const username = await authenticatedClient.getUsername();
   const cliArgs: string[] = [
-    `${atomicAppInitializerPackage}@${options.initializerVersion}`,
+    `${atomicAppInitializerPackage}@${
+      options.initializerVersion ??
+      getPackageVersion(atomicAppInitializerPackage)
+    }`,
     '--project',
     options.projectName,
     '--org-id',
