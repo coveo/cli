@@ -165,9 +165,10 @@ async function commitChanges(releaseNumber, commitMessage, octokit) {
   const tempBranchName = `release/${releaseNumber}`;
   await gitCreateBranch(tempBranchName);
   await gitCheckoutBranch(tempBranchName);
-  runPrecommit();
   // Stage all the changes...
   await gitAdd('.');
+  // Run manually `lint-staged`
+  runPrecommit();
   //... and create a Git tree object with the changes. The Tree SHA will be used with GitHub APIs.
   const treeSHA = await gitWriteTree();
   // Create a new commit that references the Git tree object.
