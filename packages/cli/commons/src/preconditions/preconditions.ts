@@ -1,5 +1,5 @@
 import {Before} from '../decorators/before';
-import { DecoratorFunction } from '../decorators/decoratorFunction';
+import {DecoratorFunction} from '../decorators/decoratorFunction';
 
 /**
  * @deprecated use @type {DecoratorFunction}
