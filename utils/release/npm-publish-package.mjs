@@ -19,7 +19,7 @@ import angularChangelogConvention from 'conventional-changelog-angular';
 import {dirname, resolve, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import retry from 'async-retry';
-import {inc, compareBuild, gte, SemVer} from 'semver';
+import {inc, compareBuild, gt, SemVer} from 'semver';
 import {json as fetchNpm} from 'npm-registry-fetch';
 
 /**
@@ -72,7 +72,7 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
       ? '0.0.0' // private package does not have a npm version, so we default to the 'lowest' possible
       : await describeNpmTag(packageJson.name, 'latest')
   );
-  const isRedo = gte(currentNpmVersion, currentGitVersion);
+  const isRedo = gt(currentNpmVersion, currentGitVersion);
   const bumpInfo = isRedo
     ? {type: 'patch'}
     : convention.recommendedBumpOpts.whatBump(parsedCommits);
