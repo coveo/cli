@@ -4,7 +4,6 @@ import {Flags} from '@oclif/core';
 import inquirer from 'inquirer';
 import {appendCmdIfWindows} from '../../lib/utils/os';
 import {spawnProcess} from '../../lib/utils/process';
-import {startSpinner} from '@coveo/cli-commons/utils/ux';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 
 export default class AtomicInit extends CLICommand {
@@ -33,7 +32,6 @@ export default class AtomicInit extends CLICommand {
     const {initializer, name} = await this.getSpawnOptions();
 
     const cliArgs = ['init', initializer, name];
-    startSpinner('Scaffolding project');
     await spawnProcess(appendCmdIfWindows`npm`, cliArgs);
   }
 
