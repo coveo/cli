@@ -32,6 +32,9 @@ export const atomicLibInitializerPackage =
 
 const supportedNodeVersions = '16.x || 18.x';
 
+const transformPackageNameToNpmInitializer = (packageName: string) =>
+  packageName.replace('/create-', '/');
+
 export const atomicLibPreconditions = [
   IsNodeVersionInRange(supportedNodeVersions),
 ];
@@ -82,7 +85,10 @@ interface CreateLibOptions {
 export function createAtomicLib(options: CreateLibOptions) {
   const projectDirectory = resolve(options.projectName);
   mkdirSync(projectDirectory);
-  const cliArgs = ['init', atomicLibInitializerPackage];
+  const cliArgs = [
+    'init',
+    transformPackageNameToNpmInitializer(atomicLibInitializerPackage),
+  ];
   return spawnProcess(appendCmdIfWindows`npm`, cliArgs, {
     cwd: projectDirectory,
   });
