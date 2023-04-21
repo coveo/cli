@@ -11,14 +11,93 @@ import {
 import {cwd} from 'node:process';
 import {fileURLToPath} from 'node:url';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const templateRelativeDir = 'template';
-const templateDirPath = resolve(__dirname, templateRelativeDir);
+/***************** TODO: CDX-1428: Move to @coveo/create-atomic-commons package ******************/
+const successMessage = (componentName) => {
+  console.log(`
+  Project successfully configured
+
+  We suggest that you begin by typing:
+
+  $ cd ${componentName}
+  $ npm install
+  $ npm start
+
+  $ npm start
+    Starts the development server.
+
+  $ npm run build
+    Builds your project in production mode.
+
+  Happy coding!
+
+  Further reading:
+    https://docs.coveo.com/en/atomic/latest/cc-search/create-custom-components
+  `);
+};
 
 const camelize = (str) =>
   str
     .replace(/-(.)/g, (_, group) => group.toUpperCase())
     .replace(/^./, (match) => match.toUpperCase());
+const transform = (transformers) => {
+  for (const {srcPath, destPath, transform} of transformers) {
+    if (!srcPath) {
+      continue;
+    }
+    if (!destPath) {
+      unlinkSync(srcPath);
+      continue;
+    }
+    renameSync(srcPath, destPath);
+    if (transform) {
+      writeFileSync(destPath, transform(readFileSync(destPath, 'utf8')));
+    }
+  }
+};
+
+// Adapted from Stencil: https://github.com/ionic-team/stencil/blob/main/src/utils/validation.ts
+/**
+ * Validates that a component tag meets required naming conventions to be used for a web component
+ * @param tag the tag to validate
+ * @returns an error message if the tag has an invalid name, undefined if the tag name passes all checks
+ */
+const ensureComponentValidity = (tag) => {
+  const errors = [];
+  const alphaAndHyphenOnly = /^[a-z\-]+$/;
+  const forbiddenLeadingHyphen = /^-/;
+  const forbiddenTrailingHyphen = /-$/;
+  const forbiddenMultiHyphen = /-{2,}/;
+  const shouldContainAtLeastOneHyphen = /-/;
+
+  if (!alphaAndHyphenOnly.test(tag)) {
+    errors.push(`"${tag}" can only contain lower case alphabetical characters`);
+  }
+  if (forbiddenLeadingHyphen.test(tag)) {
+    errors.push(`"${tag}" cannot start with a dash (-)`);
+  }
+  if (forbiddenTrailingHyphen.test(tag)) {
+    errors.push(`"${tag}" cannot end with a dash (-)`);
+  }
+  if (!shouldContainAtLeastOneHyphen.test(tag)) {
+    errors.push(
+      `"${tag}" must contain a dash (-) to work as a valid web component`
+    );
+  }
+  if (forbiddenMultiHyphen.test(tag)) {
+    errors.push(
+      `"${tag}" cannot contain multiple dashes (--) next to each other`
+    );
+  }
+
+  if (errors.length > 0) {
+    throw new AggregateError(errors, 'Invalid component tag name');
+  }
+};
+
+/***********************************/
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const templateRelativeDir = 'template';
+const templateDirPath = resolve(__dirname, templateRelativeDir);
 
 cpSync(templateDirPath, cwd(), {
   recursive: true,
@@ -26,10 +105,7 @@ cpSync(templateDirPath, cwd(), {
 
 let componentName = process.argv[2];
 if (componentName) {
-  if (!componentName?.includes('-')) {
-    componentName = `atomic-${componentName}`;
-  }
-
+  ensureComponentValidity(componentName);
   const transformers = [
     {
       srcPath: 'src/components/sample-component',
@@ -55,22 +131,7 @@ if (componentName) {
     },
   ];
 
-  // TODO: Refactor the transformers processing in an utils package
-  for (const transformer of transformers) {
-    if (!transformer.srcPath) {
-      continue;
-    }
-    if (!transformer.destPath) {
-      unlinkSync(transformer.srcPath);
-      continue;
-    }
-
-    renameSync(transformer.srcPath, transformer.destPath);
-    if (transformer.transform) {
-      writeFileSync(
-        transformer.destPath,
-        transformer.transform(readFileSync(transformer.destPath, 'utf8'))
-      );
-    }
-  }
+  transform(transformers);
 }
+
+successMessage(componentName || 'sample-component');

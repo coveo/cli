@@ -1,15 +1,15 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Before} from '@coveo/cli-commons/decorators/before';
-import {Beta} from '@coveo/cli-commons/decorators/beta';
 import {UnknownError} from '@coveo/cli-commons/errors/unknownError';
 import {Flags} from '@oclif/core';
 import inquirer from 'inquirer';
 import {appendCmdIfWindows} from '../../lib/utils/os';
 import {spawnProcess} from '../../lib/utils/process';
+import {startSpinner} from '@coveo/cli-commons/utils/ux';
+import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 
 export default class AtomicInit extends CLICommand {
   public static description =
-    'Scaffold a new custom component in your Coveo Atomic Component Library';
+    'Scaffold a new custom component. Meant to be executed in a component library created using the `coveo atomic:init --lib` command, or in an npm project, or in an empty folder.';
   public static aliases = ['atomic:cmp'];
 
   public static examples = [
@@ -19,20 +19,21 @@ export default class AtomicInit extends CLICommand {
 
   public static flags = {
     type: Flags.string({
-      description: 'the kind of component to initialize',
+      description: 'The kind of component to initialize.',
       options: ['page', 'result'],
     }),
   };
 
   public static args = [
-    {name: 'name', description: 'the name of your component', required: true},
+    {name: 'name', description: 'The name of your component.', required: true},
   ];
 
-  @Before(Beta())
+  @Trackable()
   public async run(): Promise<void> {
     const {initializer, name} = await this.getSpawnOptions();
 
     const cliArgs = ['init', initializer, name];
+    startSpinner('Scaffolding project');
     await spawnProcess(appendCmdIfWindows`npm`, cliArgs);
   }
 

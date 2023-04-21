@@ -20,6 +20,7 @@ exports[`@coveo/atomic-component-health-check when component tag name does not m
 
 Publish aborted because some conditions have not been met
 Make sure to address the above errors before publishing again
+Please visit https://docs.coveo.com/en/atomic/latest/cc-search/create-custom-components/#publish-your-custom-component for publish instructions.
 "
 `;
 
@@ -36,6 +37,7 @@ exports[`@coveo/atomic-component-health-check when package.json conditions are n
 
 Publish aborted because some conditions have not been met
 Make sure to address the above errors before publishing again
+Please visit https://docs.coveo.com/en/atomic/latest/cc-search/create-custom-components/#publish-your-custom-component for publish instructions.
 "
 `;
 
@@ -54,6 +56,7 @@ exports[`@coveo/atomic-component-health-check when package.json conditions are n
 
 Publish aborted because some conditions have not been met
 Make sure to address the above errors before publishing again
+Please visit https://docs.coveo.com/en/atomic/latest/cc-search/create-custom-components/#publish-your-custom-component for publish instructions.
 "
 `;
 
@@ -67,5 +70,6 @@ exports[`@coveo/atomic-component-health-check when readme condition is not met s
 
 Publish aborted because some conditions have not been met
 Make sure to address the above errors before publishing again
+Please visit https://docs.coveo.com/en/atomic/latest/cc-search/create-custom-components/#publish-your-custom-component for publish instructions.
 "
 `;

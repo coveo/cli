@@ -6,8 +6,10 @@ import {startVerdaccio} from '@coveo/verdaccio-starter';
 import {hashElement} from 'folder-hash';
 import {DirResult, dirSync} from 'tmp';
 import treeKill from 'tree-kill-promise';
+import {SpawnSyncReturns} from 'child_process';
 
 const PACKAGE_NAME = '@coveo/create-atomic-result-component';
+// const UTILS_PACKAGE_NAME = '@coveo/create-atomic-commons';
 
 describe(PACKAGE_NAME, () => {
   let verdaccioProcess: ChildProcess;
@@ -17,7 +19,10 @@ describe(PACKAGE_NAME, () => {
   let verdaccioUrl: string;
 
   beforeAll(async () => {
-    ({verdaccioUrl, verdaccioProcess} = await startVerdaccio(PACKAGE_NAME));
+    ({verdaccioUrl, verdaccioProcess} = await startVerdaccio([
+      PACKAGE_NAME,
+      // UTILS_PACKAGE_NAME, // TODO: CDX-1428 include @coveo/create-atomic-commons
+    ]));
     tempDirectory = dirSync({unsafeCleanup: true, keep: true});
     npmConfigCache = join(tempDirectory.name, 'npm-cache');
     mkdirSync(npmConfigCache);
@@ -26,6 +31,121 @@ describe(PACKAGE_NAME, () => {
   afterAll(async () => {
     await treeKill(verdaccioProcess.pid);
     tempDirectory.removeCallback();
+  });
+
+  // TODO: CDX-1428: test ensureComponentValidity in a separate file
+  describe('ensureComponentValidity', () => {
+    beforeAll(() => {
+      testDirectory = join(tempDirectory.name, 'cmp-validity');
+      mkdirSync(testDirectory, {recursive: true});
+    });
+
+    const leadingSpaceTag = ' my-tag';
+    const trailingSpaceTag = 'my-tag ';
+    const surroundingSpacesTag = ' my-tag ';
+    const upperCaseTag = 'My-Tag';
+    const spaceTag = 'my- tag';
+    const specialCharacterTags = ['你-好', 'my-@component', '!@#$!@#4-ohno'];
+    const dashlessTag = 'dashless';
+    const dashCrazyTag = 'dash--crazy';
+    const trailingDashTag = 'dash-';
+    const leadingDashTag = '-dash';
+    const messedUpTag = '-My#--Component@-';
+
+    const assertAllAggregateErrorsFired = (
+      tag: string,
+      ...expectedErrorMessages: string[]
+    ) => {
+      const {stderr} = npmSync(
+        ['init', PACKAGE_NAME.replace('/create-', '/'), '--', tag],
+        {
+          env: {
+            ...process.env,
+            npm_config_registry: verdaccioUrl,
+            npm_config_cache: npmConfigCache,
+          },
+          cwd: testDirectory,
+        }
+      );
+
+      expectedErrorMessages.forEach((expectedMessage) => {
+        expect(stderr.toString()).toEqual(
+          expect.stringContaining(expectedMessage)
+        );
+      });
+    };
+
+    it.each([
+      leadingSpaceTag,
+      trailingSpaceTag,
+      surroundingSpacesTag,
+      upperCaseTag,
+      spaceTag,
+      dashlessTag,
+      dashCrazyTag,
+      trailingDashTag,
+      leadingDashTag,
+      ...specialCharacterTags,
+    ])('should throw an invalid tag name Aggregate error for "%s"', (str) => {
+      expect(
+        assertAllAggregateErrorsFired(
+          str,
+          'AggregateError: Invalid component tag name'
+        )
+      );
+    });
+
+    it.each([
+      leadingSpaceTag,
+      trailingSpaceTag,
+      surroundingSpacesTag,
+      upperCaseTag,
+      spaceTag,
+      ...specialCharacterTags,
+    ])('should error on whitespace for "%s"', (str) => {
+      assertAllAggregateErrorsFired(
+        str,
+        `"${str}" can only contain lower case alphabetical characters`
+      );
+    });
+
+    it('should error if no dash', () => {
+      assertAllAggregateErrorsFired(
+        dashlessTag,
+        '"dashless" must contain a dash (-) to work as a valid web component'
+      );
+    });
+
+    it('should error on multiple dashes in a row', () => {
+      assertAllAggregateErrorsFired(
+        dashCrazyTag,
+        '"dash--crazy" cannot contain multiple dashes (--) next to each other'
+      );
+    });
+
+    it('should error on trailing dash', () => {
+      assertAllAggregateErrorsFired(
+        trailingDashTag,
+        '"dash-" cannot end with a dash (-)'
+      );
+    });
+
+    it('should error on leading dash', () => {
+      assertAllAggregateErrorsFired(
+        leadingDashTag,
+        '"-dash" cannot start with a dash (-)'
+      );
+    });
+
+    it('should error on multiple rules', () => {
+      assertAllAggregateErrorsFired(
+        messedUpTag,
+        `"${messedUpTag}" can only contain lower case alphabetical characters`,
+        `"${messedUpTag}" cannot contain multiple dashes (--) next to each other`,
+        `"${messedUpTag}" cannot start with a dash (-)`,
+        `"${messedUpTag}" cannot end with a dash (-)`
+      );
+    });
   });
 
   describe.each([
@@ -47,45 +167,52 @@ describe(PACKAGE_NAME, () => {
       testDirname: 'valid-arg',
       packageName: 'valid-component-name',
     },
-    {
-      describeName: 'when called with a component name without hyphen',
-      args: ['nohypen'],
-      testDirname: 'invalid-arg',
-      packageName: 'atomic-nohypen',
-    },
   ])('$describeName', ({args, testDirname, packageName}) => {
     beforeAll(() => {
       testDirectory = join(tempDirectory.name, testDirname);
       mkdirSync(testDirectory, {recursive: true});
     });
 
-    it('should initialize a base project and a component', async () => {
-      npmSync(['init', PACKAGE_NAME.replace('/create-', '/'), ...args], {
-        env: {
-          ...process.env,
-          npm_config_registry: verdaccioUrl,
-          npm_config_cache: npmConfigCache,
-        },
-        cwd: testDirectory,
+    describe('when initializing', () => {
+      let commandOutput: SpawnSyncReturns<string | Buffer>;
+
+      beforeAll(() => {
+        commandOutput = npmSync(
+          ['init', PACKAGE_NAME.replace('/create-', '/'), ...args],
+          {
+            env: {
+              ...process.env,
+              npm_config_registry: verdaccioUrl,
+              npm_config_cache: npmConfigCache,
+            },
+            cwd: testDirectory,
+          }
+        );
       });
 
-      expect(
-        await hashElement(testDirectory, {
-          folders: {
-            exclude: ['**node_modules', 'dist'],
-            ignoreRootName: true,
-            ignoreBasename: true,
-          },
-          files: {
-            include: ['*'],
-            // stencil-docs.json contains dynamic timestamp value.
-            // TODO: CDX-1393: E2E tests on health-check will test for stencil-docs.json file
-            exclude: ['**package-lock.json', 'stencil-docs.json'],
-            ignoreRootName: true,
-            ignoreBasename: true,
-          },
-        })
-      ).toMatchSnapshot();
+      it('should setup a base project and a component', async () => {
+        expect(
+          await hashElement(testDirectory, {
+            folders: {
+              exclude: ['**node_modules', 'dist'],
+              ignoreRootName: true,
+              ignoreBasename: true,
+            },
+            files: {
+              include: ['*'],
+              // stencil-docs.json contains dynamic timestamp value.
+              // TODO: CDX-1393: E2E tests on health-check will test for stencil-docs.json file
+              exclude: ['**package-lock.json', 'stencil-docs.json'],
+              ignoreRootName: true,
+              ignoreBasename: true,
+            },
+          })
+        ).toMatchSnapshot();
+      });
+
+      it('should ouptut a confirmation message upon success', () => {
+        expect(commandOutput.stdout.toString()).toMatchSnapshot();
+      });
     });
 
     it('should be able to install all deps without issues', () => {

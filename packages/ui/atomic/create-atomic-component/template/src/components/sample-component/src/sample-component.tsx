@@ -51,6 +51,8 @@ export class SampleComponent {
   // Using `componentWillLoad` will hang the parent atomic-search-interface initialization.
   public async connectedCallback() {
     try {
+      // Wait for the Atomic to load.
+      await customElements.whenDefined('atomic-search-interface');
       // Wait for the Atomic bindings to be resolved.
       this.bindings = await initializeBindings(this.host);
 

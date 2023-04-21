@@ -34,8 +34,8 @@ export class Inspector {
     if (this.hasErrors) {
       log(
         'Publish aborted because some conditions have not been met',
-        'Make sure to address the above errors before publishing again'
-        // TODO: CDX-1356: Add a link to custom component best practices
+        'Make sure to address the above errors before publishing again',
+        'Please visit https://docs.coveo.com/en/atomic/latest/cc-search/create-custom-components/#publish-your-custom-component for publish instructions.'
       );
       this.terminate();
     }

@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@coveo/cli-commons-dev": "6.0.5",
-    "@coveo/semantic-monorepo-tools": "1.7.0",
+    "@coveo/semantic-monorepo-tools": "2.0.0",
     "@oclif/test": "2.2.21",
     "@types/jest": "29.4.0",
     "@types/node": "18.15.1",
@@ -74,7 +74,7 @@
     "prepublishOnly": "rimraf lib && npm run build && oclif manifest"
   },
   "engines": {
-    "node": "16.x || 18.x"
+    "node": "^16.13.0 || ^18.12.0"
   },
   "bugs": "https://github.com/coveo/cli/issues",
   "keywords": [

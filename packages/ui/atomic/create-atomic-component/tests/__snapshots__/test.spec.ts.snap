@@ -1,6 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`@coveo/create-atomic-component when called in an existing project should initialize a base project and a component 1`] = `
+exports[`@coveo/create-atomic-component when called in an existing project when initializing should ouptut a confirmation message upon success 1`] = `
+"
+  Project successfully configured
+
+  We suggest that you begin by typing:
+
+  $ cd oh-wow-another-component-can-you-believe-it
+  $ npm install
+  $ npm start
+
+  $ npm start
+    Starts the development server.
+
+  $ npm run build
+    Builds your project in production mode.
+
+  Happy coding!
+
+  Further reading:
+    https://docs.coveo.com/en/atomic/latest/cc-search/create-custom-components
+  
+"
+`;
+
+exports[`@coveo/create-atomic-component when called in an existing project when initializing should setup a base project and a component 1`] = `
 HashedFolder {
   "children": [
     HashedFile {
@@ -8,7 +32,7 @@ HashedFolder {
       "name": "package.json",
     },
     HashedFile {
-      "hash": "GTHDDg2nmK65HaBZtDE0JI6kg10=",
+      "hash": "dk1NzEu4Fb2ZY6TKzt21xMFvc2c=",
       "name": "readme.md",
     },
     HashedFolder {
@@ -58,7 +82,7 @@ HashedFolder {
                   "name": "loader",
                 },
                 HashedFile {
-                  "hash": "yiVrDRqxiBgSnlvrvbq2hU/FKzQ=",
+                  "hash": "jnOdeBYlRtWhIPQeGkRLsA5b1Go=",
                   "name": "package.json",
                 },
                 HashedFile {
@@ -76,11 +100,11 @@ HashedFolder {
                       "name": "oh-wow-another-component-can-you-believe-it.css",
                     },
                     HashedFile {
-                      "hash": "cyiSAzblslLaM9FtFOxZflhDW5E=",
+                      "hash": "/LJZFrH80JVNAGsx3FvxhArXJss=",
                       "name": "oh-wow-another-component-can-you-believe-it.tsx",
                     },
                   ],
-                  "hash": "fDk5mo7oKtbUQEWcSOMYtlLW0QE=",
+                  "hash": "hn8xJ8lZaPPvjQFOUvWFX55LlDc=",
                   "name": "src",
                 },
                 HashedFile {
@@ -92,11 +116,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "b7ZiWLkYaPMVykmQ+xZ53k2Yqrg=",
+              "hash": "NOVPrUqAYRWIT5mqH43Bu9PVfHw=",
               "name": "oh-wow-another-component-can-you-believe-it",
             },
           ],
-          "hash": "e2aQoM2+QoXpD9JRtJyNhe5fxSI=",
+          "hash": "1yJJ4WoWpZUhjm52hoEmSAb6sNM=",
           "name": "components",
         },
         HashedFile {
@@ -122,7 +146,7 @@ HashedFolder {
           "name": "pages",
         },
       ],
-      "hash": "TCE/BDek+JgLHqWz9l3cx5y5jkE=",
+      "hash": "SfCQyAPRB0o15xZkMFrCis90Ig8=",
       "name": "src",
     },
     HashedFile {
@@ -134,103 +158,36 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "Gww6n26UJPneOT8mQHpZH529HDA=",
+  "hash": "VqGG5JHuEB44q4cI3bAlUJd3Ols=",
   "name": "no-args",
 }
 `;
 
-exports[`@coveo/create-atomic-component when called with a component name without hyphen should initialize a base project and a component 1`] = `
-HashedFolder {
-  "children": [
-    HashedFile {
-      "hash": "T+7uUFOwtxWi7kfgvgjJd2t2pXM=",
-      "name": "package.json",
-    },
-    HashedFile {
-      "hash": "GTHDDg2nmK65HaBZtDE0JI6kg10=",
-      "name": "readme.md",
-    },
-    HashedFolder {
-      "children": [
-        HashedFolder {
-          "children": [
-            HashedFolder {
-              "children": [
-                HashedFile {
-                  "hash": "fc7jKx3gKzFNJjPBLydk1NC8oJs=",
-                  "name": "package.json",
-                },
-                HashedFolder {
-                  "children": [
-                    HashedFile {
-                      "hash": "XemX7AoOihA4SgQsvWtcStjeiGo=",
-                      "name": "atomic-nohypen.css",
-                    },
-                    HashedFile {
-                      "hash": "tS25lkQb7dlQXKxuykh6R0/CIPo=",
-                      "name": "atomic-nohypen.tsx",
-                    },
-                  ],
-                  "hash": "Zd4hjEzrsZbYZVpDMlMpAGTqMoI=",
-                  "name": "src",
-                },
-                HashedFile {
-                  "hash": "DNTPZTeWJfCjTGqD+edK5gP5vUM=",
-                  "name": "stencil.config.ts",
-                },
-                HashedFile {
-                  "hash": "yMxJnSeOFw52ObOJrKQEh86v+HM=",
-                  "name": "tsconfig.json",
-                },
-              ],
-              "hash": "yQrwG5R1OlQsOCzR4mEtkMTTZnc=",
-              "name": "atomic-nohypen",
-            },
-          ],
-          "hash": "moWz8UqYjH6wemqe80X8UGBR+yI=",
-          "name": "components",
-        },
-        HashedFile {
-          "hash": "YVuwXfIZfjfeVyLQ6cMy3kUqC3A=",
-          "name": "html.d.ts",
-        },
-        HashedFolder {
-          "children": [
-            HashedFile {
-              "hash": "L08E7dMK5e0wD5P8meKHfkDDa3o=",
-              "name": "index.css",
-            },
-            HashedFile {
-              "hash": "2XR/MKCv0fo3uRpZRiTyOBoHk7s=",
-              "name": "index.html",
-            },
-            HashedFile {
-              "hash": "ZRD3OAMjlKnlu7Yh3iQv3gCcG8c=",
-              "name": "index.ts",
-            },
-          ],
-          "hash": "V7y/8CwkVmHHCoFc1OqeZ9uA7Uo=",
-          "name": "pages",
-        },
-      ],
-      "hash": "n+pCKYK47fiIepauJHP4gy84F/I=",
-      "name": "src",
-    },
-    HashedFile {
-      "hash": "BVZfiCzL+2kulE12K4HLAIl3kJ8=",
-      "name": "stencil.config.ts",
-    },
-    HashedFile {
-      "hash": "yMxJnSeOFw52ObOJrKQEh86v+HM=",
-      "name": "tsconfig.json",
-    },
-  ],
-  "hash": "fl3gWdx5fVLq4jkOxE6pF9w2E8k=",
-  "name": "invalid-arg",
-}
+exports[`@coveo/create-atomic-component when called with a valid component name when initializing should ouptut a confirmation message upon success 1`] = `
+"
+  Project successfully configured
+
+  We suggest that you begin by typing:
+
+  $ cd valid-component-name
+  $ npm install
+  $ npm start
+
+  $ npm start
+    Starts the development server.
+
+  $ npm run build
+    Builds your project in production mode.
+
+  Happy coding!
+
+  Further reading:
+    https://docs.coveo.com/en/atomic/latest/cc-search/create-custom-components
+  
+"
 `;
 
-exports[`@coveo/create-atomic-component when called with a valid component name should initialize a base project and a component 1`] = `
+exports[`@coveo/create-atomic-component when called with a valid component name when initializing should setup a base project and a component 1`] = `
 HashedFolder {
   "children": [
     HashedFile {
@@ -238,7 +195,7 @@ HashedFolder {
       "name": "package.json",
     },
     HashedFile {
-      "hash": "GTHDDg2nmK65HaBZtDE0JI6kg10=",
+      "hash": "dk1NzEu4Fb2ZY6TKzt21xMFvc2c=",
       "name": "readme.md",
     },
     HashedFolder {
@@ -248,7 +205,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "LmVu/QyaTHiFS26GF/vHeaDXX8g=",
+                  "hash": "kb+510dru/XkoLjyOuTY0YJSNwI=",
                   "name": "package.json",
                 },
                 HashedFolder {
@@ -258,11 +215,11 @@ HashedFolder {
                       "name": "valid-component-name.css",
                     },
                     HashedFile {
-                      "hash": "YZICfNAhO7c4mopg1lRMvtn4zoc=",
+                      "hash": "mSEayrhdQLFyjWOgicX78wD8seE=",
                       "name": "valid-component-name.tsx",
                     },
                   ],
-                  "hash": "GPCobV/2HmZJ0cpyuZQf9TQeVf8=",
+                  "hash": "TLrPzQ215bJQgHPDj+8uidPXAqo=",
                   "name": "src",
                 },
                 HashedFile {
@@ -274,11 +231,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "0K59AvxCPn7BwqnIu3af37eDsEI=",
+              "hash": "K8Tel/Zr8MkD/OdWNGNszVJoCYg=",
               "name": "valid-component-name",
             },
           ],
-          "hash": "I+3lYXnW6GAwwRvPyELNHjA167Y=",
+          "hash": "Rt8hzUGO/Jcgqrm7o1ec468Mf04=",
           "name": "components",
         },
         HashedFile {
@@ -304,7 +261,7 @@ HashedFolder {
           "name": "pages",
         },
       ],
-      "hash": "xaragSt9DKP7j+Rcgtk37p7T8f8=",
+      "hash": "1oVBMj4lrbAvPM5nF6unLMC8gd4=",
       "name": "src",
     },
     HashedFile {
@@ -316,12 +273,36 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "6j0qM7xqYdN1CIXAvQSDpNQnkYQ=",
+  "hash": "4r4PrEz6Kdd3ZlNlAxzqxWo/X3o=",
   "name": "valid-arg",
 }
 `;
 
-exports[`@coveo/create-atomic-component when called without any args should initialize a base project and a component 1`] = `
+exports[`@coveo/create-atomic-component when called without any args when initializing should ouptut a confirmation message upon success 1`] = `
+"
+  Project successfully configured
+
+  We suggest that you begin by typing:
+
+  $ cd sample-component
+  $ npm install
+  $ npm start
+
+  $ npm start
+    Starts the development server.
+
+  $ npm run build
+    Builds your project in production mode.
+
+  Happy coding!
+
+  Further reading:
+    https://docs.coveo.com/en/atomic/latest/cc-search/create-custom-components
+  
+"
+`;
+
+exports[`@coveo/create-atomic-component when called without any args when initializing should setup a base project and a component 1`] = `
 HashedFolder {
   "children": [
     HashedFile {
@@ -329,7 +310,7 @@ HashedFolder {
       "name": "package.json",
     },
     HashedFile {
-      "hash": "GTHDDg2nmK65HaBZtDE0JI6kg10=",
+      "hash": "dk1NzEu4Fb2ZY6TKzt21xMFvc2c=",
       "name": "readme.md",
     },
     HashedFolder {
@@ -339,7 +320,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "xCrtnOzUrowF/fiNKdByyF7vbj8=",
+                  "hash": "+GEgQV9dXe0SU0Mfy228R6xwR1k=",
                   "name": "package.json",
                 },
                 HashedFolder {
@@ -349,11 +330,11 @@ HashedFolder {
                       "name": "sample-component.css",
                     },
                     HashedFile {
-                      "hash": "5oFqFve0WaOV3g/ptfVo98a5B4Q=",
+                      "hash": "aeXDp+lsWoSvRwNcTKnynVf/9bk=",
                       "name": "sample-component.tsx",
                     },
                   ],
-                  "hash": "65UuO8iiPnNRHZur5KT+HoQqFCw=",
+                  "hash": "1fEyvhZ1KbN3o1NA6j8h5U8u3EM=",
                   "name": "src",
                 },
                 HashedFile {
@@ -365,11 +346,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "2srYNu3TLkPhv4GvzdPmqKbtauc=",
+              "hash": "6GvfKxMXolejGxVLF5G164j+UbE=",
               "name": "sample-component",
             },
           ],
-          "hash": "5afzJgs++v9oDzUBOEBBte6+B0k=",
+          "hash": "24Vkp1GZfHGq7VlvVgz9QvhxvTA=",
           "name": "components",
         },
         HashedFile {
@@ -395,7 +376,7 @@ HashedFolder {
           "name": "pages",
         },
       ],
-      "hash": "ST6LjsyHQVAXDJ8ZIpWrgWty3rU=",
+      "hash": "KiU7oOfB/c1FZTXoVVo/4oHDshk=",
       "name": "src",
     },
     HashedFile {
@@ -407,7 +388,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "MStox9AtldEXcJ9rH7Ey1c8GZXw=",
+  "hash": "h2ulDqEQVt9wc+D8POVZ6bX54ME=",
   "name": "no-args",
 }
 `;

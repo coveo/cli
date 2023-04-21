@@ -4,7 +4,7 @@
   "author": "Coveo",
   "description": "Coveo CLI",
   "engines": {
-    "node": "16.x || 18.x"
+    "node": "^16.13.0 || ^18.12.0"
   },
   "dependencies": {
     "@amplitude/identify": "^1.9.0",
@@ -43,6 +43,7 @@
     "@amplitude/types": "1.10.2",
     "@babel/core": "7.21.0",
     "@coveo/angular": "1.35.25",
+    "@coveo/atomic-component-health-check": "1.0.4",
     "@coveo/cli-commons-dev": "6.0.5",
     "@coveo/cra-template": "1.36.7",
     "@coveo/create-atomic": "1.37.1",
@@ -155,7 +156,7 @@
       "init": "./lib/hooks/init/set-global-config",
       "analytics": "./lib/hooks/analytics/analytics",
       "command_not_found": "./lib/hooks/commandNotFound/commandNotFound",
-      "prerun": "./lib/hooks/prerun/prerun",
+      "prerun": "./lib/hooks/prerun/checkNodeVersion",
       "postrun": "./lib/hooks/postrun/postrun"
     },
     "macos": {
