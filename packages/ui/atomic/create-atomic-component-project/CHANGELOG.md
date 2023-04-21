@@ -1,16 +1,21 @@
-# 1.0.0 (2023-04-21)
+## 1.0.1 (2023-04-21)
 
+
+### Bug Fixes
+
+* **atomic:** don't need peerDeps ([#1294](https://github.com/coveo/cli/issues/1294)) ([8a7e7a9](https://github.com/coveo/cli/commits/8a7e7a9ae60b3837d2e3820d1af824756e4db549))
+
+
+
+# 1.0.0 (2023-04-21)
 
 ### Features
 
-* **atomic:** release of ACCD ([#1287](https://github.com/coveo/cli/issues/1287)) ([5ce3cda](https://github.com/coveo/cli/commits/5ce3cda28a7a68ec1cef34e49f60b8f1e82da4b0))
-
+- **atomic:** release of ACCD ([#1287](https://github.com/coveo/cli/issues/1287)) ([5ce3cda](https://github.com/coveo/cli/commits/5ce3cda28a7a68ec1cef34e49f60b8f1e82da4b0))
 
 ### BREAKING CHANGES
 
-* **atomic:** ACCD is now stable.
-
-
+- **atomic:** ACCD is now stable.
 
 ## 0.2.1 (2023-03-27)
 
