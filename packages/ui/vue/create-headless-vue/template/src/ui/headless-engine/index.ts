@@ -1,4 +1,4 @@
-import { buildSearchEngine } from "@coveo/headless";
+import { buildSearchEngine, getOrganizationEndpoints } from "@coveo/headless";
 import type { SearchEngine } from "@coveo/headless";
 import getTokenEndpoint from "./getTokenEndpoint";
 import isEnvValid from "commons/isEnvValid";
@@ -21,7 +21,9 @@ async function getEngine(): Promise<SearchEngine> {
   const { token } = await res.json();
   return buildSearchEngine({
     configuration: {
-      platformUrl: import.meta.env.VITE_COVEO_PLATFORM_URL,
+      organizationEndpoints: getOrganizationEndpoints(
+        import.meta.env.VITE_COVEO_ORGANIZATION_ID
+      ),
       organizationId: import.meta.env.VITE_COVEO_ORGANIZATION_ID,
       accessToken: token,
       renewAccessToken: async () => {

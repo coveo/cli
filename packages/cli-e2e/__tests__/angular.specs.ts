@@ -227,8 +227,7 @@ describe('ui:create:angular', () => {
       await serverProcessManager.killAllProcesses();
     }, 5 * 60e3);
 
-    //TODO: https://coveord.atlassian.net/browse/KIT-2414
-    it.skip(
+    it(
       'should not contain console errors nor warnings',
       async () => {
         await page.goto(searchPageEndpoint(), {

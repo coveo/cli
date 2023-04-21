@@ -1,5 +1,9 @@
 import {Injectable} from '@angular/core';
-import {buildSearchEngine, SearchEngine} from '@coveo/headless';
+import {
+  buildSearchEngine,
+  SearchEngine,
+  getOrganizationEndpoints,
+} from '@coveo/headless';
 import {environment} from '../environments/environment';
 
 @Injectable({
@@ -13,7 +17,9 @@ export class EngineService {
   public init(accessToken: string) {
     this.engine = buildSearchEngine({
       configuration: {
-        platformUrl: environment.platformUrl,
+        organizationEndpoints: getOrganizationEndpoints(
+          environment.organizationId
+        ),
         organizationId: environment.organizationId,
         accessToken: accessToken,
         renewAccessToken: async () => {

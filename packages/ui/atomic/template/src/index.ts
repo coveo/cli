@@ -5,13 +5,14 @@ async function main() {
   const searchInterface: HTMLAtomicSearchInterfaceElement =
     document.querySelector('atomic-search-interface')!;
 
-  const platformUrl = process.env.PLATFORM_URL!;
   const organizationId = process.env.ORGANIZATION_ID!;
   const accessToken = process.env.API_KEY!;
   await searchInterface.initialize({
     accessToken,
     organizationId,
-    platformUrl,
+    organizationEndpoints: await searchInterface.getOrganizationEndpoints(
+      organizationId
+    ),
   });
 
   searchInterface.executeFirstSearch();

@@ -13,7 +13,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "@coveo/headless": "2.8.10",
+    "@coveo/headless": "2.12.0",
     "browser-or-node": "^2.1.1",
     "vue": "^3.2.41",
     "vue-router": "^4.1.5",
