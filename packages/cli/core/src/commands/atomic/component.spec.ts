@@ -6,18 +6,21 @@ jest.mock('../../lib/utils/os');
 import {appendCmdIfWindows} from '../../lib/utils/os';
 jest.mock('../../lib/utils/process');
 import {spawnProcess} from '../../lib/utils/process';
-jest.mock('../../lib/utils/os');
+jest.mock('../../lib/utils/misc');
+import {getPackageVersion} from '../../lib/utils/misc';
 
 describe('atomic:component', () => {
   const mockedSpawnProcess = jest.mocked(spawnProcess);
   const mockedInquirer = jest.mocked(inquirer);
   const mockAppendCmdIfWindows = jest.mocked(appendCmdIfWindows);
+  const mockedGetPackageVersion = jest.mocked(getPackageVersion);
 
   beforeEach(() => {
     jest.resetAllMocks();
     mockAppendCmdIfWindows.mockImplementation(
       (input: TemplateStringsArray) => `${input}`
     );
+    mockedGetPackageVersion.mockReturnValue('1.2.3');
   });
 
   test

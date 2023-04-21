@@ -5,6 +5,7 @@ import inquirer from 'inquirer';
 import {appendCmdIfWindows} from '../../lib/utils/os';
 import {spawnProcess} from '../../lib/utils/process';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
+import {getPackageVersion} from '../../lib/utils/misc';
 
 export default class AtomicInit extends CLICommand {
   public static description =
@@ -39,8 +40,16 @@ export default class AtomicInit extends CLICommand {
     const {args, flags} = await this.parse(AtomicInit);
     const type = flags.type || (await this.askType());
 
-    const initializer = this.getInitializerPackage(type);
-    return {initializer, name: args.name};
+    const initializerPackage = this.getInitializerPackage(type);
+
+    // TODO CDX-1340: Refactor the replace into a well named utils.
+    return {
+      initializer: `${initializerPackage.replace(
+        '/create-',
+        '/'
+      )}@${getPackageVersion(initializerPackage)}`,
+      name: args.name,
+    };
   }
 
   private async askType(): Promise<string> {
@@ -58,9 +67,9 @@ export default class AtomicInit extends CLICommand {
   private getInitializerPackage(type: string): string {
     switch (type) {
       case 'page':
-        return '@coveo/atomic-component';
+        return '@coveo/create-atomic-component';
       case 'result':
-        return '@coveo/atomic-result-component';
+        return '@coveo/create-atomic-result-component';
       default:
         throw new UnknownError();
     }
