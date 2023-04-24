@@ -197,7 +197,7 @@ function updateDependency(packageJson, dependency, version) {
  * @param {string} entryName the package to update across the tree
  */
 async function updateLockfileEntries(entryName) {
-  const arb = new Arborist({savePrefix: ''});
+  const arb = new Arborist({savePrefix: '', path: rootFolder});
   await arb.loadVirtual();
   await arb.buildIdealTree({
     update: {
