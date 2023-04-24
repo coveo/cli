@@ -11,14 +11,19 @@ jest.mock('../utils/process');
 import {spawnProcess} from '../utils/process';
 jest.mock('../utils/os');
 import {appendCmdIfWindows} from '../utils/os';
+jest.mock('../utils/misc');
+import {getPackageVersion} from '../utils/misc';
+
 import {createAtomicApp, createAtomicLib} from './createAtomicProject';
 
 describe('createAtomicProject', () => {
   const mockedSpawnProcess = jest.mocked(spawnProcess);
   const mockedAppendCmdIfWindows = jest.mocked(appendCmdIfWindows);
+  const mockedGetPackageVersion = jest.mocked(getPackageVersion);
   beforeEach(() => {
     jest.resetAllMocks();
     mockedAppendCmdIfWindows.mockImplementation((input) => `${input}`);
+    mockedGetPackageVersion.mockReturnValue('1.2.3');
   });
 
   describe('createAtomicApp()', () => {
@@ -41,7 +46,6 @@ describe('createAtomicProject', () => {
         region: Region.AU,
         version: '1.0.0',
       },
-      initializerVersion: 'latest',
       projectName: 'potato',
     };
 
@@ -57,9 +61,34 @@ describe('createAtomicProject', () => {
       });
     });
 
-    describe('without options.pageId', () => {
+    describe('with options.pageId', () => {
       it('calls `npx @coveo/create-atomic` properly', async () => {
         await createAtomicApp({...callOptions, pageId: 'pageId'});
+        expect(mockedSpawnProcess).toBeCalledTimes(1);
+        expect(mockedSpawnProcess.mock.lastCall).toMatchSnapshot();
+      });
+    });
+
+    describe('with options.initializerVersion set', () => {
+      it('calls `npx @coveo/create-atomic` properly', async () => {
+        await createAtomicApp({
+          ...callOptions,
+          initializerVersion: 'test',
+          pageId: 'pageId',
+        });
+        expect(mockedSpawnProcess).toBeCalledTimes(1);
+        expect(mockedSpawnProcess.mock.lastCall).toMatchSnapshot();
+      });
+    });
+
+    describe('without options.initializerVersion', () => {
+      it('calls `npx @coveo/create-atomic` properly and calls getPackageVersion', async () => {
+        await createAtomicApp({
+          ...callOptions,
+          initializerVersion: undefined,
+          pageId: 'pageId',
+        });
+        expect(mockedGetPackageVersion).toBeCalledTimes(1);
         expect(mockedSpawnProcess).toBeCalledTimes(1);
         expect(mockedSpawnProcess.mock.lastCall).toMatchSnapshot();
       });

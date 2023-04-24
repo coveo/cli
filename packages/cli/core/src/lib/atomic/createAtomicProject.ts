@@ -19,9 +19,10 @@ import {
   IsNpxInstalled,
   IsNodeVersionInRange,
 } from '../decorators/preconditions';
+import {getPackageVersion} from '../utils/misc';
 
 interface CreateAppOptions {
-  initializerVersion: string;
+  initializerVersion?: string;
   pageId?: string;
   projectName: string;
   cfg: Configuration;
@@ -31,6 +32,9 @@ export const atomicLibInitializerPackage =
   '@coveo/create-atomic-component-project';
 
 const supportedNodeVersions = '16.x || 18.x';
+
+const transformPackageNameToNpmInitializer = (packageName: string) =>
+  packageName.replace('/create-', '/');
 
 export const atomicLibPreconditions = [
   IsNodeVersionInRange(supportedNodeVersions),
@@ -52,7 +56,10 @@ export async function createAtomicApp(options: CreateAppOptions) {
 
   const username = await authenticatedClient.getUsername();
   const cliArgs: string[] = [
-    `${atomicAppInitializerPackage}@${options.initializerVersion}`,
+    `${atomicAppInitializerPackage}@${
+      options.initializerVersion ??
+      getPackageVersion(atomicAppInitializerPackage)
+    }`,
     '--project',
     options.projectName,
     '--org-id',
@@ -82,7 +89,10 @@ interface CreateLibOptions {
 export function createAtomicLib(options: CreateLibOptions) {
   const projectDirectory = resolve(options.projectName);
   mkdirSync(projectDirectory);
-  const cliArgs = ['init', atomicLibInitializerPackage];
+  const cliArgs = [
+    'init',
+    transformPackageNameToNpmInitializer(atomicLibInitializerPackage),
+  ];
   return spawnProcess(appendCmdIfWindows`npm`, cliArgs, {
     cwd: projectDirectory,
   });

@@ -8,7 +8,6 @@ exports[`atomic:init calls \`createAtomicApp\` properly 1`] = `
       "organization": "default-org",
       "region": "us",
     },
-    "initializerVersion": "latest",
     "projectName": "foo",
   },
 ]
@@ -22,7 +21,6 @@ exports[`atomic:init calls \`createAtomicApp\` properly 2`] = `
       "organization": "default-org",
       "region": "us",
     },
-    "initializerVersion": "latest",
     "projectName": "foo",
   },
 ]
@@ -36,7 +34,6 @@ exports[`atomic:init calls \`createAtomicApp\` when the user select application 
       "organization": "default-org",
       "region": "us",
     },
-    "initializerVersion": "latest",
     "projectName": "foo",
   },
 ]

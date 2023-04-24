@@ -1,7 +1,7 @@
 {
   "name": "@coveo/create-atomic-template",
   "description": "{{titleCase project}} project",
-  "version": "1.38.0",
+  "version": "1.38.1",
   "private": true,
   "scripts": {
     "release:phase1": "npx -p=@coveord/release npm-publish",
