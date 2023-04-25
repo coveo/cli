@@ -1,11 +1,8 @@
 ## 1.36.9 (2023-04-21)
 
-
 ### Bug Fixes
 
-* **atomic:** don't need peerDeps ([#1294](https://github.com/coveo/cli/issues/1294)) ([8a7e7a9](https://github.com/coveo/cli/commits/8a7e7a9ae60b3837d2e3820d1af824756e4db549))
-
-
+- **atomic:** don't need peerDeps ([#1294](https://github.com/coveo/cli/issues/1294)) ([8a7e7a9](https://github.com/coveo/cli/commits/8a7e7a9ae60b3837d2e3820d1af824756e4db549))
 
 ## 1.36.8 (2023-04-21)
 
