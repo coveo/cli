@@ -21,6 +21,7 @@ import {fileURLToPath} from 'node:url';
 import retry from 'async-retry';
 import {inc, compareBuild, gt, SemVer} from 'semver';
 import {json as fetchNpm} from 'npm-registry-fetch';
+import Arborist from '@npmcli/arborist';
 
 /**
  * Check if the package json in the provided folder has changed since the last commit
@@ -168,6 +169,7 @@ async function updateWorkspaceDependent(version) {
       dependentPackageJsonPath,
       JSON.stringify(dependentPackageJson)
     );
+    await updateLockfileEntries(dependencyPackageJson.name);
   }
 }
 
@@ -187,6 +189,22 @@ function updateDependency(packageJson, dependency, version) {
       packageJson[dependencyType][dependency] = version;
     }
   }
+}
+
+/**
+ * Check the dependency tree from the lockfile and make sure all entries
+ * of `entryName` satisfies the package.json files entries.
+ * @param {string} entryName the package to update across the tree
+ */
+async function updateLockfileEntries(entryName) {
+  const arb = new Arborist({savePrefix: '', path: rootFolder});
+  await arb.loadVirtual();
+  await arb.buildIdealTree({
+    update: {
+      names: [entryName],
+    },
+  });
+  await arb.reify();
 }
 
 function isPrivatePackage() {
