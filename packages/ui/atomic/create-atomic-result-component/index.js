@@ -12,13 +12,12 @@ import {cwd} from 'node:process';
 import {fileURLToPath} from 'node:url';
 
 /***************** TODO: CDX-1428: Move to @coveo/create-atomic-commons package ******************/
-const successMessage = (componentName) => {
+const successMessage = () => {
   console.log(`
   Project successfully configured
 
   We suggest that you begin by typing:
 
-  $ cd ${componentName}
   $ npm install
   $ npm start
 
@@ -134,4 +133,4 @@ if (componentName) {
   transform(transformers);
 }
 
-successMessage(componentName || 'sample-result-component');
+successMessage();
