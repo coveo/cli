@@ -6,7 +6,6 @@ exports[`@coveo/create-atomic-result-component when called in an existing projec
 
   We suggest that you begin by typing:
 
-  $ cd oh-wow-another-component-can-you-believe-it
   $ npm install
   $ npm start
 
@@ -169,7 +168,6 @@ exports[`@coveo/create-atomic-result-component when called with a valid componen
 
   We suggest that you begin by typing:
 
-  $ cd valid-component-name
   $ npm install
   $ npm start
 
@@ -284,7 +282,6 @@ exports[`@coveo/create-atomic-result-component when called without any args when
 
   We suggest that you begin by typing:
 
-  $ cd sample-result-component
   $ npm install
   $ npm start
 
