@@ -4,7 +4,7 @@ exports[`@coveo/atomic-component-health-check @coveo/create-atomic-component sho
 HashedFolder {
   "children": [
     HashedFile {
-      "hash": "T+7uUFOwtxWi7kfgvgjJd2t2pXM=",
+      "hash": "oNYr5PU1qGjrnrQmmNCEcfYvNgM=",
       "name": "package.json",
     },
     HashedFile {
@@ -18,7 +18,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "y4IIvstHlg1gCFr18elihw0MigY=",
+                  "hash": "KemKxsZLHiHNylz5a6Z2IK7PwBw=",
                   "name": "package.json",
                 },
                 HashedFolder {
@@ -44,11 +44,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "4E4ClqRwc1VwtlV9+JYlPrXiqy4=",
+              "hash": "MdfhPw3BWNSYK2+cqb5JCBKTSpI=",
               "name": "valid-component-name",
             },
           ],
-          "hash": "arQkUZHln+2qCN+DHgy7RbKom6s=",
+          "hash": "QXq8wEsNM1ZMS7Ou+h2wmWBghhs=",
           "name": "components",
         },
         HashedFile {
@@ -74,7 +74,7 @@ HashedFolder {
           "name": "pages",
         },
       ],
-      "hash": "h3conYWd+1BukHENJboigdUy+xg=",
+      "hash": "78a7AxTS7XRN0oh0UpSs49JxK0Q=",
       "name": "src",
     },
     HashedFile {
@@ -86,7 +86,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "kqauXKgvGB/2SjCTjSYfzEIfa44=",
+  "hash": "X21xbFQ7F4yHHuAr6nxokxpnb7I=",
   "name": "create-atomic-component",
 }
 `;
@@ -95,7 +95,7 @@ exports[`@coveo/atomic-component-health-check @coveo/create-atomic-result-compon
 HashedFolder {
   "children": [
     HashedFile {
-      "hash": "T+7uUFOwtxWi7kfgvgjJd2t2pXM=",
+      "hash": "oNYr5PU1qGjrnrQmmNCEcfYvNgM=",
       "name": "package.json",
     },
     HashedFile {
@@ -109,7 +109,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "3l9PUkuBLhUO48SK0p4VoIExonE=",
+                  "hash": "NMHnNJYUQzGCOq3aSmWl3tNp4fI=",
                   "name": "package.json",
                 },
                 HashedFolder {
@@ -135,11 +135,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "9pWrevd5K6XPsfII0Pytz6E8iSI=",
+              "hash": "evmFecMLmIelFBXZvhawgWv8oWg=",
               "name": "valid-component-name",
             },
           ],
-          "hash": "8uDhl39hvlvNJ5fSgRgay0Dt2EY=",
+          "hash": "TcERGSTeYN1rbMN/FyAlrUBM5QU=",
           "name": "components",
         },
         HashedFile {
@@ -165,7 +165,7 @@ HashedFolder {
           "name": "pages",
         },
       ],
-      "hash": "Y3n54utqjdcjApDAFb5kyESa5hE=",
+      "hash": "WH4OEE8ocXd+I5wm1fVgvdhN+BM=",
       "name": "src",
     },
     HashedFile {
@@ -177,7 +177,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "02E9SXyVt5Ixc8lVoOeRNkR3oGM=",
+  "hash": "H++4r0vIdCS/bp8KbwVzyRBbvdY=",
   "name": "create-atomic-result-component",
 }
 `;
