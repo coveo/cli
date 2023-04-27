@@ -27,11 +27,11 @@ HashedFolder {
                   "name": "results-manager.tsx",
                 },
                 HashedFile {
-                  "hash": "QmpidZewzj5B6dpIahLJ7SgHRYg=",
+                  "hash": "2WXM24xZscVOUHVUti5Z8stWW2A=",
                   "name": "template-1.html",
                 },
               ],
-              "hash": "xinVubHLykKoiFWyLVsOJZ1dnxo=",
+              "hash": "OlEsA/qWpj7+9r4LJ8V+2FRE1OE=",
               "name": "results-manager",
             },
             HashedFolder {
@@ -63,7 +63,7 @@ HashedFolder {
               "name": "sample-result-component",
             },
           ],
-          "hash": "OQtU22HxeCjPk+8ge8q1pZB8oEM=",
+          "hash": "5P8q9sBQYOIFBbud8itUocf8QuA=",
           "name": "components",
         },
         HashedFile {
@@ -104,7 +104,7 @@ HashedFolder {
           "name": "utils",
         },
       ],
-      "hash": "U+7Hr9D3n0q7m15xZpguRp28uQs=",
+      "hash": "dsgIsBDFqXlbLbe7NP7BBQivAQ4=",
       "name": "src",
     },
     HashedFile {
@@ -112,7 +112,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "DU0VcqNdxqNBVEbb7MLQdnNGzas=",
+  "hash": "Qq6kZ86WHOqNnrRKT3+GSGU54WY=",
   "name": "normalizedDir",
 }
 `;
@@ -153,11 +153,11 @@ HashedFolder {
                   "name": "results-manager.tsx",
                 },
                 HashedFile {
-                  "hash": "HSqagzHtY3dAr+XN0lW0CBZjNC8=",
+                  "hash": "xrt7puz0ZnvNnC32f8nDYJHvCcQ=",
                   "name": "template-1.html",
                 },
               ],
-              "hash": "r0EMjBFOc48K7oQ+Nw+USWzManc=",
+              "hash": "BPEklM42OInkFci0QuyGusyadQI=",
               "name": "results-manager",
             },
             HashedFolder {
@@ -189,7 +189,7 @@ HashedFolder {
               "name": "sample-result-component",
             },
           ],
-          "hash": "jgdhMAsXQx9A8vnWLg1TGR4yHko=",
+          "hash": "zcDXsMe88fA/wmx5tmFkfSQG7p4=",
           "name": "components",
         },
         HashedFile {
@@ -230,7 +230,7 @@ HashedFolder {
           "name": "utils",
         },
       ],
-      "hash": "+4mncZLlKHs8/DAq2/6TvXjVXMo=",
+      "hash": "pTZkzOzp06BoYgwM5MOoBZBqEQo=",
       "name": "src",
     },
     HashedFile {
@@ -238,7 +238,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "8ujv7RpVrRftD3Dpz5gYBUp3nz4=",
+  "hash": "ASwltAQXVBhkRRk/oFGSGnZO6CQ=",
   "name": "normalizedDir",
 }
 `;
