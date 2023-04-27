@@ -19,7 +19,7 @@ interface OAuthOptions {
 }
 
 export class OAuth {
-  private static readonly AllowedPorts = [32111, 52296];
+  private static readonly AllowedPorts = [52296, 32111];
 
   private opts: OAuthOptions;
   private _port: number | undefined = undefined;
