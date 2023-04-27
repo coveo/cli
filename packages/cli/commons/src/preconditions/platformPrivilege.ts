@@ -152,7 +152,6 @@ See https://docs.coveo.com/en/3357.`,
 
 export const readFieldsPrivilege: PlatformPrivilege = {
   models: [
-    ...readLinkPrivilege.models,
     {
       type: 'VIEW',
       targetDomain: 'FIELD',
