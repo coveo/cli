@@ -72,6 +72,11 @@
       "matchCurrentVersion": "18.x",
       "allowedVersions": "18.x",
       "description": "We stay on the LTS"
+    },
+    {
+      "matchPackageNames": ["@vue/tsconfig"],
+      "allowedVersions": "0.1.x",
+      "description": "CDX-1443: Need TypeScript 5"
     }
   ],
   "rangeStrategy": "auto",
