@@ -59,7 +59,7 @@ graph LR
 [drawbacks]: #drawbacks
 
 - Potential increase in complexity
-- Lack of control on our assertions: a bot will automatically update some assertions
+- Lack of control over our assertions: a bot will automatically update the Jest Snaps, which are what we 'expect' the code to do. (e.g `expect(something).toMatchSnapshot()`)
 
 # Rationale and alternatives
 
