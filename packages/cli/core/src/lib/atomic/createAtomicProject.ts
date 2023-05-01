@@ -91,7 +91,9 @@ export function createAtomicLib(options: CreateLibOptions) {
   mkdirSync(projectDirectory);
   const cliArgs = [
     'init',
-    transformPackageNameToNpmInitializer(atomicLibInitializerPackage),
+    `${transformPackageNameToNpmInitializer(
+      atomicLibInitializerPackage
+    )}@${getPackageVersion(atomicAppInitializerPackage)}`,
   ];
   return spawnProcess(appendCmdIfWindows`npm`, cliArgs, {
     cwd: projectDirectory,
