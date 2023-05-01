@@ -5,13 +5,13 @@
 
 [summary]: #summary
 
-Move and reworks some release steps to update Jest Snap when we do a release of the CLI while not doubling the release time.
+Move and rework some release steps to update Jest Snap when we do a release of the CLI while not doubling the release time.
 
 # Motivation
 
 [motivation]: #motivation
 
-When a release of the CLI happens, it will now makes some Jest Snap outdated, which causes the tests to fail.
+When a release of the CLI happens, it currently makes some Jest Snaps outdated causing the tests to fail.
 
 # Guide-level explanation
 
@@ -42,8 +42,8 @@ graph LR
 2. The release process split into two branches:
    - One branch start building the binaries right away.
      - It stores them in a GitHub Job Artifact.
-     - It 'noop' if the CLI does not to be build.
-   - The other branch refresh the Jest Snap and then proceed with the previous release process up to the Git commit/push.
+     - It would be a 'noop' if the CLI does not need to be build.
+   - The other branch refreshes the Jest Snap and then proceeds with the release process as before up to the Git commit/push.
 3. The creation of the GitHub release now occurs when both Git and the binary jobs are done, and only if the CLI needs to be built/released.
 
 # Reference-level explanation
@@ -76,7 +76,7 @@ graph LR
 
 [prior-art]: #prior-art
 
-It's really and oddity, I didn't find much prior art.
+It's really an oddity, I didn't find much prior art.
 
 # Unresolved questions
 
