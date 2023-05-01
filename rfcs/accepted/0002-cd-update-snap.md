@@ -26,8 +26,8 @@ graph LR
 
 1. We release to NPM
 2. We create and push a release commit and associated git tags
-3. We create a GitHub release for the CLI (if the CLI has changed)
-4. We build the CLI and add the binaries to the GitHub release
+3. We create a GitHub release for the CLI if needed.[^1]
+4. We build the CLI and add the binaries to the GitHub release if needed [^1]
 
 We need the release commit to include the snap udpates to keep the main branch green.
 To do so while not hampering our release process too much, our release process would change to look like this:
@@ -42,7 +42,7 @@ graph LR
 2. The release process split into two branches:
    - One branch start building the binaries right away.
      - It stores them in a GitHub Job Artifact.
-     - It would be a 'noop' if the CLI does not need to be build.
+     - It would be a 'noop' if the CLI does not need to be build. [^1]
    - The other branch refreshes the Jest Snap and then proceeds with the release process as before up to the Git commit/push.
 3. The creation of the GitHub release now occurs when both Git and the binary jobs are done, and only if the CLI needs to be built/released.
 
@@ -87,3 +87,5 @@ It's really an oddity, I didn't find much prior art.
 [future-possibilities]: #future-possibilities
 
 The Snap updater 'job' could be reused on contributors' PR to help resolves merge issues
+
+[^1]: When we do a release, we only releases the packages that have received changes (transitively or not). So if we trigger a release and the releases does not affect the `@coveo/cli` package, then the release process won't 'release' the Coveo CLI, because there'll be nothing to release. It will releases the other packages however.
