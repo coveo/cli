@@ -22,6 +22,7 @@ import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {npm} from '../utils/npm';
 import {join} from 'path';
 import waitOn from 'wait-on';
+import {cpSync} from 'fs';
 
 describe('ui:create:vue', () => {
   let browser: Browser;
@@ -111,6 +112,7 @@ describe('ui:create:vue', () => {
     processManagers.push(buildProcessManager);
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
+    cpSync(projectPath, join('artifacts', 'projects'));
     await buildProcessManager.killAllProcesses();
   }, 15 * 60e3);
 
