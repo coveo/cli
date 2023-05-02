@@ -126,6 +126,11 @@ jobs:
         with:
           name: ${{matrix.os}}-verdaccio-publish-artifacts
           path: ./packages/cli-e2e/artifacts
+      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        if: cancelled() || failure() || success()
+        with:
+          name: ${{matrix.os}}-verdaccio-published-packages
+          path: ./packages/cli-e2e/verdaccio
   e2e:
     name: End-to-end tests
     runs-on: ${{matrix.os}}
