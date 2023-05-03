@@ -112,7 +112,8 @@ describe('ui:create:vue', () => {
     processManagers.push(buildProcessManager);
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
-    cpSync(projectPath, join('artifacts', 'projects'), {recursive: true});
+    // cpSync(projectPath, join('artifacts', 'projects'), {recursive: true});
+    await waitOn({resources: ['src/ui/main.ts']}); // mayyybe wth.
     await buildProcessManager.killAllProcesses();
   }, 15 * 60e3);
 
