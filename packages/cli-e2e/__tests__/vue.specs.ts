@@ -20,7 +20,7 @@ import {
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
 import {npm} from '../utils/npm';
-import {join} from 'path';
+import {join, resolve} from 'path';
 import waitOn from 'wait-on';
 import {cpSync} from 'fs';
 
@@ -113,7 +113,9 @@ describe('ui:create:vue', () => {
     browser = await getNewBrowser();
     await buildApplication(buildProcessManager);
     // cpSync(projectPath, join('artifacts', 'projects'), {recursive: true});
-    await waitOn({resources: ['src/ui/main.ts']}); // mayyybe wth.
+    await waitOn({
+      resources: ['file:' + resolve(projectPath, 'src/ui/main.ts')],
+    }); // mayyybe wth.
     await buildProcessManager.killAllProcesses();
   }, 15 * 60e3);
 
