@@ -54,7 +54,7 @@ export async function authenticateCli() {
     }
     throw e;
   } finally {
-    await chrome?.kill();
+    chrome?.kill();
   }
 }
 

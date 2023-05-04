@@ -31,8 +31,8 @@ describe('auth', () => {
       processManager = new ProcessManager();
     }, 5 * 60e3);
 
-    afterAll(async () => {
-      await chrome.kill();
+    afterAll(() => {
+      chrome.kill();
     });
 
     afterEach(async () => {
