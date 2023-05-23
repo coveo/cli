@@ -2,8 +2,8 @@ import {test} from '@oclif/test';
 
 jest.mock('inquirer');
 import inquirer from 'inquirer';
-jest.mock('../../lib/utils/os');
-import {appendCmdIfWindows} from '../../lib/utils/os';
+jest.mock('@coveo/cli-commons/utils/os');
+import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
 jest.mock('../../lib/utils/process');
 import {spawnProcess} from '../../lib/utils/process';
 jest.mock('../../lib/utils/misc');

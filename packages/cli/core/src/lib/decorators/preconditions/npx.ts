@@ -1,4 +1,4 @@
-import {appendCmdIfWindows} from '../../utils/os';
+import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
 import {getBinInstalledPrecondition} from './binPreconditionsFactory';
 
 export const IsNpxInstalled = getBinInstalledPrecondition(

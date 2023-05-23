@@ -5,7 +5,7 @@ import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from '@coveo/cli-commons/utils/getFakeCommand';
 
 import {IsNpxInstalled} from './npx';
-import {appendCmdIfWindows} from '../../utils/os';
+import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {PreconditionError} from '@coveo/cli-commons/errors/preconditionError';
 
