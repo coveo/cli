@@ -15,7 +15,7 @@ import {
   IsAuthenticated,
   AuthenticationType,
 } from '@coveo/cli-commons/preconditions/index';
-import {appendCmdIfWindows} from '../../../lib/utils/os';
+import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
 import {IsNgVersionInRange} from '../../../lib/decorators/preconditions/ng';
 import {
   createApiKeyPrivilege,

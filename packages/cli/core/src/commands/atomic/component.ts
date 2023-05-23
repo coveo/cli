@@ -2,7 +2,7 @@ import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {UnknownError} from '@coveo/cli-commons/errors/unknownError';
 import {Flags} from '@oclif/core';
 import inquirer from 'inquirer';
-import {appendCmdIfWindows} from '../../lib/utils/os';
+import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
 import {spawnProcess} from '../../lib/utils/process';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {getPackageVersion} from '../../lib/utils/misc';

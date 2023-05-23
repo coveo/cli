@@ -5,7 +5,7 @@ import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from '@coveo/cli-commons/utils/getFakeCommand';
 
 import {IsNpmVersionInRange} from './npm';
-import {appendCmdIfWindows} from '../../utils/os';
+import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 
 describe('IsNpmVersionInRange', () => {
