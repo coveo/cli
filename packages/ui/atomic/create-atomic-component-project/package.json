@@ -39,7 +39,7 @@
     "folder-hash": "^4.0.4",
     "jest": "^29.4.1",
     "npm": "^9.4.0",
-    "puppeteer": "19.7.4",
+    "puppeteer": "19.11.1",
     "tmp": "^0.2.1",
     "tree-kill-promise": "^3.0.0",
     "ts-jest": "^29.0.5",

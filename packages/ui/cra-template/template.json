@@ -3,25 +3,25 @@
     "dependencies": {
       "@coveo/headless": "latest",
       "@coveo/search-token-server": "1.35.22",
-      "@mui/material": "5.11.12",
-      "@emotion/react": "11.10.6",
-      "@emotion/styled": "11.10.6",
+      "@mui/material": "5.12.2",
+      "@emotion/react": "11.10.8",
+      "@emotion/styled": "11.10.8",
       "concurrently": "7.6.0",
       "dotenv": "16.0.3",
       "get-port": "5.1.1",
       "typescript": "4.9.5",
       "react": "18.2.0",
       "react-dom": "18.2.0",
-      "react-router-dom": "6.9.0"
+      "react-router-dom": "6.11.0"
     },
     "devDependencies": {
       "@testing-library/jest-dom": "5.16.5",
       "@testing-library/react": "14.0.0",
       "@testing-library/user-event": "^14.0.0",
-      "@types/jest": "29.4.0",
-      "@types/node": "18.15.1",
-      "@types/react": "18.0.28",
-      "@types/react-dom": "18.0.11",
+      "@types/jest": "29.5.1",
+      "@types/node": "18.16.3",
+      "@types/react": "18.2.0",
+      "@types/react-dom": "18.2.1",
       "@types/react-router-dom": "5.3.3"
     },
     "eslintConfig": {"extends": ["react-app", "react-app/jest"]},
