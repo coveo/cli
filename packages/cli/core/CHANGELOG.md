@@ -1,3 +1,14 @@
+# 2.6.0 (2023-05-24)
+
+### Bug Fixes
+
+- **cli:** use getPackageVersion for create-atomic-component-project ([#1293](https://github.com/coveo/cli/issues/1293)) ([b045bfe](https://github.com/coveo/cli/commits/b045bfe713e1d7de9cc921703019c339778bdf2b)), closes [#1292](https://github.com/coveo/cli/issues/1292) [#1292](https://github.com/coveo/cli/issues/1292)
+
+### Features
+
+- **commons:** add npf (Node Package Fork) ([#1312](https://github.com/coveo/cli/issues/1312)) ([9955ddd](https://github.com/coveo/cli/commits/9955ddde00b4c65db92ff9a0729e8039f7d9a902))
+- **oauth:** swap default and fallback port ([#1305](https://github.com/coveo/cli/issues/1305)) ([3bf1e7a](https://github.com/coveo/cli/commits/3bf1e7a08872e3953d75450ba6e6edca7e713ad3))
+
 ## 2.5.1 (2023-04-21)
 
 ### Bug Fixes

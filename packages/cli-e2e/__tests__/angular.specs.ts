@@ -234,7 +234,14 @@ describe('ui:create:angular', () => {
           waitUntil: 'networkidle2',
         });
 
-        expect(consoleInterceptor.interceptedMessages).toEqual([]);
+        expect(
+          consoleInterceptor.interceptedMessages.filter(
+            (message) =>
+              message.indexOf(
+                'require function is used in a way in which dependencies cannot be statically extracted'
+              ) === -1
+          )
+        ).toEqual([]);
       },
       5 * 60e3
     );

@@ -1,3 +1,10 @@
+## 1.0.2 (2023-05-24)
+
+### Bug Fixes
+
+- **accd:** updates deps ([#1302](https://github.com/coveo/cli/issues/1302)) ([bebb09d](https://github.com/coveo/cli/commits/bebb09dca354cb33efaceffe844706d191a400c5))
+- remove unnecessary `cd` instruction from success message ([#1303](https://github.com/coveo/cli/issues/1303)) ([f23c4eb](https://github.com/coveo/cli/commits/f23c4eb2d2b3fdf0c77e22f078396b76eadd32d1))
+
 ## 1.0.1 (2023-04-21)
 
 ### Bug Fixes
