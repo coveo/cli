@@ -1,4 +1,4 @@
-import {appendCmdIfWindows} from '../../utils/os';
+import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
 import {getBinVersionPrecondition} from './binPreconditionsFactory';
 
 export const IsNpmVersionInRange = getBinVersionPrecondition(

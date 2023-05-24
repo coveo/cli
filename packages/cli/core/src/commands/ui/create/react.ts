@@ -5,7 +5,7 @@ import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {spawnProcess, spawnProcessOutput} from '../../../lib/utils/process';
 import {getPackageVersion} from '../../../lib/utils/misc';
-import {appendCmdIfWindows} from '../../../lib/utils/os';
+import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
 import {
   Preconditions,
   IsAuthenticated,

@@ -42,7 +42,7 @@ describe('ui:create:react', () => {
 
   const waitForAppRunning = (appTerminal: Terminal) =>
     appTerminal
-      .when(/You can now view .*-react-project in the browser/)
+      .when(/webpack compiled/)
       .on('stdout')
       .do()
       .once();

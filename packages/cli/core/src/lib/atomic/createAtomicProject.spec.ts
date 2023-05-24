@@ -9,8 +9,8 @@ import {PlatformEnvironment} from '@coveo/cli-commons/platform/environment';
 import {Region} from '@coveo/platform-client';
 jest.mock('../utils/process');
 import {spawnProcess} from '../utils/process';
-jest.mock('../utils/os');
-import {appendCmdIfWindows} from '../utils/os';
+jest.mock('@coveo/cli-commons/utils/os');
+import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
 jest.mock('../utils/misc');
 import {getPackageVersion} from '../utils/misc';
 

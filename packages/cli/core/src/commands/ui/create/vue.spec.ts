@@ -4,6 +4,7 @@ jest.mock('@coveo/cli-commons/preconditions/apiKeyPrivilege');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
 jest.mock('@coveo/cli-commons/preconditions/authenticated');
 
+jest.mock('@coveo/cli-commons/utils/os');
 jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('@coveo/platform-client');
@@ -11,7 +12,6 @@ jest.mock('@coveo/platform-client');
 jest.mock('../../../lib/utils/process');
 jest.mock('../../../lib/oauth/oauth');
 jest.mock('../../../lib/utils/misc');
-jest.mock('../../../lib/utils/os');
 
 jest.mock('node:fs');
 jest.mock('node:path');
@@ -46,7 +46,7 @@ import {
   writeFileSync,
 } from 'node:fs';
 import {formatAbsolutePath} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
-import {appendCmdIfWindows} from '../../../lib/utils/os';
+import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
 
 describe('ui:create:vue', () => {
   const mockedConfig = jest.mocked(Config);

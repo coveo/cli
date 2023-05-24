@@ -19,7 +19,7 @@ import {restoreCliConfig, setCliExecPath} from './setup/utils/utils';
     const chrome = await launchChrome({port: 9222, userDataDir: false});
     const browser = await connectToChromeBrowser();
     await loginWithOffice(browser);
-    await chrome.kill();
+    chrome.kill();
     await global.processManager.killAllProcesses();
   }
 })();
