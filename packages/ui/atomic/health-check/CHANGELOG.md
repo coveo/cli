@@ -1,9 +1,3 @@
-## 2.0.2 (2023-05-24)
-
-### Bug Fixes
-
-- **accd:** updates deps ([#1302](https://github.com/coveo/cli/issues/1302)) ([bebb09d](https://github.com/coveo/cli/commits/bebb09dca354cb33efaceffe844706d191a400c5))
-
 ## 2.0.1 (2023-04-21)
 
 ### Bug Fixes
