@@ -6,12 +6,14 @@ async function main() {
     document.querySelector('atomic-search-interface')!;
 
   const organizationId = process.env.ORGANIZATION_ID!;
+  const platformEnvironment = process.env.PLATFORM_ENVIRONMENT || 'prod';
   const accessToken = process.env.API_KEY!;
   await searchInterface.initialize({
     accessToken,
     organizationId,
     organizationEndpoints: await searchInterface.getOrganizationEndpoints(
-      organizationId
+      organizationId,
+      platformEnvironment as 'dev' | 'stg' | 'prod' | 'hipaa'
     ),
   });
 

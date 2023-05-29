@@ -22,7 +22,12 @@ async function getEngine(): Promise<SearchEngine> {
   return buildSearchEngine({
     configuration: {
       organizationEndpoints: getOrganizationEndpoints(
-        import.meta.env.VITE_COVEO_ORGANIZATION_ID
+        import.meta.env.VITE_COVEO_ORGANIZATION_ID,
+        import.meta.env.VITE_COVEO_PLATFORM_ENVIRONMENT as
+          | "prod"
+          | "hipaa"
+          | "stg"
+          | "dev"
       ),
       organizationId: import.meta.env.VITE_COVEO_ORGANIZATION_ID,
       accessToken: token,

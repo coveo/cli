@@ -5,6 +5,7 @@ exports[`ui:create:vue when a directory with the projectName exists when the dir
   "/foo/bar/myapp/.env",
   "VITE_COVEO_PLATFORM_URL=https://platformdev.cloud.coveo.com
 VITE_COVEO_ORGANIZATION_ID=my-org
+VITE_COVEO_PLATFORM_ENVIRONMENT=dev
 VITE_COVEO_USER_EMAIL=bob@coveo.com
 SERVER_COVEO_API_KEY=foo",
 ]
@@ -19,6 +20,7 @@ exports[`ui:create:vue when the projectName does not exists yet should write the
   "/foo/bar/myapp/.env",
   "VITE_COVEO_PLATFORM_URL=https://platformdev.cloud.coveo.com
 VITE_COVEO_ORGANIZATION_ID=my-org
+VITE_COVEO_PLATFORM_ENVIRONMENT=dev
 VITE_COVEO_USER_EMAIL=bob@coveo.com
 SERVER_COVEO_API_KEY=foo",
 ]
