@@ -27,6 +27,7 @@ type ReactProcessEnv = {
   apiKey: string;
   user: string;
   platformUrl: string;
+  platformEnvironment: string;
 };
 
 export default class React extends CLICommand {
@@ -91,6 +92,7 @@ export default class React extends CLICommand {
       apiKey: apiKey.value!,
       user: username,
       platformUrl: platformUrl({environment: cfg.environment}),
+      platformEnvironment: cfg.environment,
     };
 
     await spawnProcessOutput(appendCmdIfWindows`npm`, ['run', 'setup-env'], {

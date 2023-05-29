@@ -23,7 +23,12 @@ export async function initializeHeadlessEngine() {
   return buildSearchEngine({
     configuration: {
       organizationEndpoints: getOrganizationEndpoints(
-        process.env.REACT_APP_ORGANIZATION_ID!
+        process.env.REACT_APP_ORGANIZATION_ID!,
+        (process.env.REACT_APP_PLATFORM_ENVIRONMENT || 'prod') as
+          | 'prod'
+          | 'hipaa'
+          | 'stg'
+          | 'dev'
       ),
       organizationId: process.env.REACT_APP_ORGANIZATION_ID!,
       accessToken: await getSearchToken(),
