@@ -103,6 +103,8 @@ export default class Angular extends CLICommand {
       apiKey.value!,
       '--platform-url',
       platformUrl({environment: cfg.environment}),
+      '--platform-environment',
+      cfg.environment,
       '--user',
       username,
       '--skip-confirmation',

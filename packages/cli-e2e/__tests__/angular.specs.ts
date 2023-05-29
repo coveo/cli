@@ -237,9 +237,10 @@ describe('ui:create:angular', () => {
         expect(
           consoleInterceptor.interceptedMessages.filter(
             (message) =>
+              message.indexOf('Warnings while compiling') === -1 &&
               message.indexOf(
                 'require function is used in a way in which dependencies cannot be statically extracted'
-              ) === -1 && message.indexOf('compile warnings') === -1
+              ) === -1
           )
         ).toEqual([]);
       },

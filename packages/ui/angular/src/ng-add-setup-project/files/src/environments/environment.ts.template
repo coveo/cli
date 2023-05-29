@@ -24,6 +24,11 @@ export const environment = {
    * See https://docs.coveo.com/en/148/manage-an-organization/retrieve-the-organization-id
    */
   organizationId: '<%=orgId%>',
+  /**
+  * The environment of the Coveo platform.
+  * Can be `prod`, 'hipaa', `stg', 'dev',
+  */
+  platformEnvironment: '<%=platformEnvironment%>'
 };
 
 /*

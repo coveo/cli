@@ -18,7 +18,8 @@ export class EngineService {
     this.engine = buildSearchEngine({
       configuration: {
         organizationEndpoints: getOrganizationEndpoints(
-          environment.organizationId
+          environment.organizationId,
+          environment.platformEnvironment
         ),
         organizationId: environment.organizationId,
         accessToken: accessToken,
