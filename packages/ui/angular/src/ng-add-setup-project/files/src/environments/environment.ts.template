@@ -25,9 +25,9 @@ export const environment = {
    */
   organizationId: '<%=orgId%>',
   /**
-  * The environment of the Coveo platform.
-  * Can be `prod`, 'hipaa', `stg', 'dev',
-  */
+   * The environment of the Coveo platform.
+   * Can be `prod`, 'hipaa', `stg', 'dev',
+   */
   platformEnvironment: '<%=platformEnvironment%>'
 };
 
