@@ -19,7 +19,7 @@ export class EngineService {
       configuration: {
         organizationEndpoints: getOrganizationEndpoints(
           environment.organizationId,
-          environment.platformEnvironment
+          environment.platformEnvironment || 'prod'
         ),
         organizationId: environment.organizationId,
         accessToken: accessToken,
