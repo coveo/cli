@@ -235,7 +235,7 @@ describe('ui:create:atomic', () => {
         expect(stderr).toContain(message);
       });
 
-      it.only('the project has been generated properly', async () => {
+      it('the project has been generated properly', async () => {
         expect(
           await hashElement(normalizedProjectDir, {
             folders: {
