@@ -227,15 +227,22 @@ describe('ui:create:angular', () => {
       await serverProcessManager.killAllProcesses();
     }, 5 * 60e3);
 
-    //TODO: https://coveord.atlassian.net/browse/KIT-2414
-    it.skip(
-      'should not contain console errors nor warnings',
+    it(
+      'should not contain non-webpack related console warnings',
       async () => {
         await page.goto(searchPageEndpoint(), {
           waitUntil: 'networkidle2',
         });
 
-        expect(consoleInterceptor.interceptedMessages).toEqual([]);
+        expect(
+          consoleInterceptor.interceptedMessages.filter(
+            (message) =>
+              message.indexOf('Warnings while compiling') === -1 &&
+              message.indexOf(
+                'require function is used in a way in which dependencies cannot be statically extracted'
+              ) === -1
+          )
+        ).toEqual([]);
       },
       5 * 60e3
     );

@@ -71,6 +71,8 @@ export async function createAtomicApp(options: CreateAppOptions) {
       environment: options.cfg.environment,
       region: options.cfg.region,
     }),
+    '--platform-environment',
+    options.cfg.environment,
     '--user',
     username,
   ];

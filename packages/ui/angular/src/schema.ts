@@ -7,4 +7,5 @@ export interface CoveoSchema {
   apiKey: string;
   user: string;
   platformUrl?: string;
+  platformEnvironment?: string;
 }

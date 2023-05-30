@@ -28,15 +28,15 @@ HashedFolder {
               "name": "index.html",
             },
             HashedFile {
-              "hash": "ZRD3OAMjlKnlu7Yh3iQv3gCcG8c=",
+              "hash": "tGVlR0ig5LSS79ZPOfuAFDEvqMw=",
               "name": "index.ts",
             },
           ],
-          "hash": "V7y/8CwkVmHHCoFc1OqeZ9uA7Uo=",
+          "hash": "xRG1Nufl9fjocyirZh0onW5WXDE=",
           "name": "pages",
         },
       ],
-      "hash": "H2FkraODOnXLneM0nLxX/jx8A+g=",
+      "hash": "CGU/7aBOxi+ste/Dh/12CF3SkWI=",
       "name": "src",
     },
     HashedFile {
@@ -48,7 +48,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "Yi0LVLZXT5PB8OKTgHRep9cCMD0=",
+  "hash": "wLp7j9Fx1uWzj1DY9ZTalVbJ0PY=",
   "name": "testDirectory",
 }
 `;

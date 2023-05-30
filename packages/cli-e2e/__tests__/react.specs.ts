@@ -167,8 +167,7 @@ describe('ui:create:react', () => {
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
-    //TODO: https://coveord.atlassian.net/browse/KIT-2414
-    it.skip(
+    it(
       'should not contain console errors nor warnings',
       async () => {
         await page.goto(searchPageEndpoint(), {
