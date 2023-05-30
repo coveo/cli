@@ -3,6 +3,7 @@ import {
   buildSearchEngine,
   SearchEngine,
   getOrganizationEndpoints,
+  PlatformEnvironment,
 } from '@coveo/headless';
 import {environment} from '../environments/environment';
 
@@ -19,7 +20,7 @@ export class EngineService {
       configuration: {
         organizationEndpoints: getOrganizationEndpoints(
           environment.organizationId,
-          environment.platformEnvironment || 'prod'
+          (environment.platformEnvironment || 'prod') as PlatformEnvironment
         ),
         organizationId: environment.organizationId,
         accessToken: accessToken,
