@@ -101,16 +101,35 @@ describe('npf', () => {
 
       describe('when the dependency is missing', () => {
         beforeEach(() => {
-          mockedRequire.mockImplementationOnce(() => ({}));
+          mockedRequire.mockImplementationOnce(() => null);
         });
 
-        it('should initialize the project and install the dependency', () => {
-          npf('potato@1.2.3');
+        it.each([
+          {
+            packageSpec: 'potato',
+            packageName: 'potato',
+            itName:
+              'should initialize the project and install the dependency when there is no version requirement',
+          },
+          {
+            packageSpec: 'potato@1.2.3',
+            packageName: 'potato',
+            packageVersion: '1.2.3',
+            itName:
+              'should initialize the project and install the dependency when there is a version requirement',
+          },
+        ])('$itName', ({packageSpec, packageName, packageVersion}) => {
+          mockedNpa.mockReturnValueOnce({
+            name: packageName,
+            saveSpec: packageVersion,
+          } as unknown as Result);
+
+          npf(packageSpec);
 
           expect(mockedSpawnSync).toHaveBeenNthCalledWith(
             1,
             'npm',
-            ['install', '-E', 'potato@1.2.3'],
+            ['install', '-E', packageSpec],
             {cwd: fakeLazyLoadedDepFolderPath}
           );
         });
