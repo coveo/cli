@@ -90,15 +90,13 @@ exports[`createAtomicProject createAtomicApp() without options.pageId calls \`np
 ]
 `;
 
-exports[`createAtomicProject createAtomicLib() calls \`npx @coveo/create-atomic-component-project\` properly 1`] = `
+exports[`createAtomicProject createAtomicLib() calls npf properly 1`] = `
 [
-  "npm",
-  [
-    "init",
-    "@coveo/atomic-component-project@1.2.3",
-  ],
+  "@coveo/create-atomic-component-project@1.2.3",
+  [],
   {
     "cwd": "kewlProject",
+    "stdio": "inherit",
   },
 ]
 `;

@@ -2,44 +2,64 @@
 
 exports[`atomic:component calls \`npm init @coveo/atomic-component\` properly 1`] = `
 [
-  "npm",
+  "@coveo/create-atomic-component@1.2.3",
   [
-    "init",
-    "@coveo/atomic-component@1.2.3",
     "foo",
   ],
+  {
+    "stdio": "inherit",
+  },
 ]
 `;
 
 exports[`atomic:component calls \`npm init @coveo/atomic-component\` when the user select page in the prompt 1`] = `
 [
-  "npm",
+  "@coveo/create-atomic-component@1.2.3",
   [
-    "init",
-    "@coveo/atomic-component@1.2.3",
     "foo",
   ],
+  {
+    "stdio": "inherit",
+  },
 ]
 `;
 
 exports[`atomic:component calls \`npm init @coveo/atomic-result-component\` properly 1`] = `
 [
-  "npm",
+  "@coveo/create-atomic-result-component@1.2.3",
   [
-    "init",
-    "@coveo/atomic-result-component@1.2.3",
     "foo",
   ],
+  {
+    "stdio": "inherit",
+  },
 ]
 `;
 
 exports[`atomic:component calls \`npm init @coveo/atomic-result-component\` when the user select result in the prompt 1`] = `
 [
-  "npm",
+  "@coveo/create-atomic-result-component@1.2.3",
   [
-    "init",
-    "@coveo/atomic-result-component@1.2.3",
     "foo",
   ],
+  {
+    "stdio": "inherit",
+  },
 ]
 `;
+
+exports[`atomic:component when \`handleForkedProcess\` throw an error when the thrown error is an AggregatedError calls \`npm init @coveo/atomic-component\` properly 1`] = `
+[The quick brown fox jumps over the lazy dog.: The quick brown fox jumps over the lazy dog.
+ • Waltz, bad nymph, for quick jigs vex.
+ • Pack my box with five dozen liquor jugs.]
+`;
+
+exports[`atomic:component when \`handleForkedProcess\` throw an error when the thrown error is an AggregatedError calls \`npm init @coveo/atomic-result-component\` properly 1`] = `
+[The quick brown fox jumps over the lazy dog.: The quick brown fox jumps over the lazy dog.
+ • Waltz, bad nymph, for quick jigs vex.
+ • Pack my box with five dozen liquor jugs.]
+`;
+
+exports[`atomic:component when \`handleForkedProcess\` throw an error when the thrown error is not an AggregatedError calls \`npm init @coveo/atomic-component\` properly 1`] = `[Unknown CLI Error]`;
+
+exports[`atomic:component when \`handleForkedProcess\` throw an error when the thrown error is not an AggregatedError calls \`npm init @coveo/atomic-result-component\` properly 1`] = `[Unknown CLI Error]`;

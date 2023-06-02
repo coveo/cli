@@ -6,6 +6,8 @@ import {resolve} from 'node:path';
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {PlatformEnvironment} from '@coveo/cli-commons/platform/environment';
+jest.mock('@coveo/cli-commons/npm/npf');
+import npf from '@coveo/cli-commons/npm/npf';
 import {Region} from '@coveo/platform-client';
 jest.mock('../utils/process');
 import {spawnProcess} from '../utils/process';
@@ -18,6 +20,7 @@ import {createAtomicApp, createAtomicLib} from './createAtomicProject';
 
 describe('createAtomicProject', () => {
   const mockedSpawnProcess = jest.mocked(spawnProcess);
+  const mockedNpf = jest.mocked(npf);
   const mockedAppendCmdIfWindows = jest.mocked(appendCmdIfWindows);
   const mockedGetPackageVersion = jest.mocked(getPackageVersion);
   beforeEach(() => {
@@ -108,14 +111,14 @@ describe('createAtomicProject', () => {
       expect(mockedResolve).toBeCalledTimes(1);
       expect(mockedResolve).toBeCalledWith('kewlProject');
       expect(mockedMkdirSync).toBeCalledTimes(1);
-      expect(mockedMkdirSync).toBeCalledWith('kewlProject');
+      expect(mockedMkdirSync).toBeCalledWith('kewlProject', {recursive: true});
     });
 
-    it('calls `npx @coveo/create-atomic-component-project` properly', async () => {
+    it('calls npf properly', async () => {
       await createAtomicLib({projectName: 'kewlProject'});
 
-      expect(mockedSpawnProcess).toBeCalledTimes(1);
-      expect(mockedSpawnProcess.mock.lastCall).toMatchSnapshot();
+      expect(mockedNpf).toBeCalledTimes(1);
+      expect(mockedNpf.mock.lastCall).toMatchSnapshot();
     });
   });
 });
