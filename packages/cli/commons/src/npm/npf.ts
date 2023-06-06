@@ -29,7 +29,7 @@ export default function (
   packageSpec: string,
   args: string[] = [],
   opts?: ForkOptions
-): ChildProcess | null {
+): ChildProcess {
   if (!isPackageInstalled(packageSpec)) {
     installPackage(packageSpec);
   }
@@ -45,7 +45,7 @@ function isPackageInstalled(packageSpec: string): boolean {
   let packageJsonFromRequire = getPackageJsonFromLazyLoadDirectory(packageName);
   return packageVersion
     ? satisfies(packageJsonFromRequire?.version ?? '', packageVersion)
-    : true;
+    : Boolean(packageJsonFromRequire);
 }
 
 function installPackage(packageSpec: string) {

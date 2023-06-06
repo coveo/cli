@@ -4,7 +4,7 @@ import {Configuration} from '@coveo/cli-commons/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
-import {spawnProcess} from '../utils/process';
+import {handleForkedProcess, spawnProcess} from '../utils/process';
 import {
   IsAuthenticated,
   AuthenticationType,
@@ -20,6 +20,9 @@ import {
   IsNodeVersionInRange,
 } from '../decorators/preconditions';
 import {getPackageVersion} from '../utils/misc';
+import npf from '@coveo/cli-commons/npm/npf';
+import {SubprocessError} from '../errors/subprocessError';
+import {isErrorLike} from '../utils/errorSchemas';
 
 interface CreateAppOptions {
   initializerVersion?: string;
@@ -88,16 +91,22 @@ interface CreateLibOptions {
   projectName: string;
 }
 
-export function createAtomicLib(options: CreateLibOptions) {
+export async function createAtomicLib(options: CreateLibOptions) {
   const projectDirectory = resolve(options.projectName);
-  mkdirSync(projectDirectory);
-  const cliArgs = [
-    'init',
-    `${transformPackageNameToNpmInitializer(
-      atomicLibInitializerPackage
-    )}@${getPackageVersion(atomicAppInitializerPackage)}`,
-  ];
-  return spawnProcess(appendCmdIfWindows`npm`, cliArgs, {
+
+  mkdirSync(projectDirectory, {recursive: true});
+  const initializer = `${atomicLibInitializerPackage}@${getPackageVersion(
+    atomicLibInitializerPackage
+  )}`;
+
+  const forkedProcess = npf(initializer, [], {
+    stdio: 'inherit',
     cwd: projectDirectory,
   });
+  try {
+    await handleForkedProcess(forkedProcess);
+  } catch (error) {
+    if (isErrorLike(error))
+      throw new SubprocessError(error.name, error.message);
+  }
 }
