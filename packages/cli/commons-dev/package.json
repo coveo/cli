@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli-commons-dev",
-  "version": "6.0.5",
+  "version": "6.0.6",
   "author": "Coveo",
   "description": "Common utils for @coveo/cli plugins development",
   "license": "Apache-2.0",

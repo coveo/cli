@@ -1,3 +1,13 @@
+# 2.1.0 (2023-06-13)
+
+### Bug Fixes
+
+- **accd:** updates deps ([#1302](https://github.com/coveo/cli/issues/1302)) ([bebb09d](https://github.com/coveo/cli/commits/bebb09dca354cb33efaceffe844706d191a400c5))
+
+### Features
+
+- **organizationendpoints:** add support for organization endpoints for UI commands and projects ([#1289](https://github.com/coveo/cli/issues/1289)) ([3b7653d](https://github.com/coveo/cli/commits/3b7653dbf1b59015afb4575bd265ec0a91b2bcef))
+
 ## 2.0.1 (2023-04-21)
 
 ### Bug Fixes
