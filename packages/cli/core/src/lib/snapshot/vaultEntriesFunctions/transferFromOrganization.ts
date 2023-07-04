@@ -1,10 +1,10 @@
 import {VaultFetchStrategy, VaultEntryModel} from '@coveo/platform-client';
 import {CliUx} from '@oclif/core';
-import {bold} from 'chalk';
 import {
   formatOrgId,
   startSpinner,
   stopSpinner,
+  confirm,
 } from '@coveo/cli-commons/utils/ux';
 import dedent from 'ts-dedent';
 import {SnapshotMissingVaultEntriesFromOriginError} from '../../errors/vaultErrors';
@@ -26,11 +26,13 @@ export async function tryTransferFromOrganization({
   if (!originOrgId) {
     return false;
   }
-
-  const shouldTransfer = await CliUx.ux.confirm(
+  const shouldTransfer = await confirm(
     `\nWould you like to try transferring the vault entries from ${formatOrgId(
       originOrgId
-    )} to the destination organization ${formatOrgId(snapshot.targetId)}? (y/n)`
+    )} to the destination organization ${formatOrgId(
+      snapshot.targetId
+    )}? (y/n)`,
+    false
   );
   if (!shouldTransfer) {
     return false;
