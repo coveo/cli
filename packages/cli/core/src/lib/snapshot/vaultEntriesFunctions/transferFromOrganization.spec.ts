@@ -15,6 +15,7 @@ import {
   formatOrgId,
   startSpinner,
   stopSpinner,
+  confirm,
 } from '@coveo/cli-commons/utils/ux';
 import PlatformClient, {VaultFetchStrategy} from '@coveo/platform-client';
 import {CliUx} from '@oclif/core';
@@ -34,7 +35,7 @@ describe('#tryTransferFromOrganization', () => {
   const mockedSnapshotMissingVaultEntriesFromOriginError = jest.mocked(
     SnapshotMissingVaultEntriesFromOriginError
   );
-  const mockedCliConfirm = jest.mocked(CliUx.ux.confirm);
+  const mockedCliConfirm = jest.mocked(confirm);
   const mockedCliWarn = jest.mocked(CliUx.ux.warn);
   const mockedVaultList = jest.fn();
   const mockedVaultImport = jest.fn();

@@ -5,10 +5,7 @@ exports[`ui:deploy interacting with Platform client should call hostedPages.list
 "
 `;
 
-exports[`ui:deploy interacting with Platform client should call hostedPages.list and hostedPages.create when no page id argument is passed 2`] = `
-"Creating new Hosted Page named "my page".... ✔
-"
-`;
+exports[`ui:deploy interacting with Platform client should call hostedPages.list and hostedPages.create when no page id argument is passed 2`] = `""`;
 
 exports[`ui:deploy interacting with Platform client should print an API Error if the update fails 1`] = `
 [APIError: 
@@ -20,9 +17,6 @@ Request ID: [31mb33pb00p[39m]
 
 exports[`ui:deploy interacting with Platform client when a page id argument is passed, it should call hostedPages.update 1`] = `""`;
 
-exports[`ui:deploy interacting with Platform client when a page id argument is passed, it should call hostedPages.update 2`] = `
-"Updating existing Hosted Page with the id "thisistheid".... ✔
-"
-`;
+exports[`ui:deploy interacting with Platform client when a page id argument is passed, it should call hostedPages.update 2`] = `""`;
 
 exports[`ui:deploy interacting with Platform client when no page id argument is passed, a page with the same name already exists, the user declines the overwrite, it should not call hostedPages.update 1`] = `[CLI Error: Page name must be unique, try changing the "name" field in "coveo.deploy.json".]`;

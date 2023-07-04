@@ -2,11 +2,18 @@ jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
+jest.mock('@coveo/cli-commons/utils/ux');
+
 jest.mock('../../../lib/snapshot/snapshot');
 jest.mock('../../../lib/snapshot/snapshotFactory');
 jest.mock('../../../lib/project/project');
 
-import {CliUx} from '@oclif/core';
+import {
+  formatOrgId,
+  startSpinner,
+  stopSpinner,
+  confirm,
+} from '@coveo/cli-commons/utils/ux';
 import {test} from '@oclif/test';
 import {Project} from '../../../lib/project/project';
 import {Config} from '@coveo/cli-commons/config/config';
@@ -41,6 +48,10 @@ const mockedPreviewSnapshot = jest.fn();
 const mockedLastReport = jest.fn();
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockEvaluate = jest.fn();
+const mockedConfirm = jest.mocked(confirm);
+jest.mocked(startSpinner);
+jest.mocked(stopSpinner);
+const mockedFormatOrgId = jest.mocked(formatOrgId);
 
 const fakeProject = {
   deleteTemporaryZipFile: mockedDeleteTemporaryZipFile,
@@ -174,6 +185,10 @@ describe('org:resources:push', () => {
 
   beforeEach(() => {
     mockUserHavingAllRequiredPlatformPrivileges();
+    mockedFormatOrgId.mockImplementation(
+      (input: TemplateStringsArray | string) => input?.toString()
+    );
+    mockedConfirm.mockResolvedValue(true);
   });
 
   afterEach(() => {
@@ -217,7 +232,9 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
+      .do(() => {
+        mockedConfirm.mockResolvedValue(true);
+      })
       .command(['org:resources:push'])
       .it('should preview the snapshot', () => {
         expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
@@ -226,7 +243,9 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
+      .do(() => {
+        mockedConfirm.mockResolvedValue(true);
+      })
       .command(['org:resources:push'])
       .it('should apply the snapshot after confirmation', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledTimes(1);
@@ -235,7 +254,9 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(false))
+      .do(() => {
+        mockedConfirm.mockResolvedValue(false);
+      })
       .command(['org:resources:push'])
       .it('should not apply the snapshot if not confirmed', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledTimes(0);
@@ -244,7 +265,9 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
+      .do(() => {
+        mockedConfirm.mockResolvedValue(true);
+      })
       .command(['org:resources:push'])
       .it('should work with default connected org', () => {
         expect(
@@ -259,7 +282,9 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
+      .do(() => {
+        mockedConfirm.mockResolvedValue(true);
+      })
       .command(['org:resources:push', '-o', 'myorg'])
       .it('should work with specified target org', () => {
         expect(mockedProject).toHaveBeenCalledWith(expect.anything(), 'myorg');
@@ -275,7 +300,9 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
+      .do(() => {
+        mockedConfirm.mockResolvedValue(true);
+      })
       .command(['org:resources:push'])
       .it('should set a 60 seconds wait', () => {
         expect(
@@ -286,7 +313,9 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
+      .do(() => {
+        mockedConfirm.mockResolvedValue(true);
+      })
       .command(['org:resources:push', '-w', '99'])
       .it('should set a 99 seconds wait', () => {
         expect(
@@ -297,7 +326,9 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
+      .do(() => {
+        mockedConfirm.mockResolvedValue(true);
+      })
       .command(['org:resources:push'])
       .it('#should not apply missing resources', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledWith(false, {wait: 60});
@@ -306,7 +337,9 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
+      .do(() => {
+        mockedConfirm.mockResolvedValue(true);
+      })
       .command(['org:resources:push', '--deleteMissingResources'])
       .it('should apply missing resoucres', () => {
         expect(mockedApplySnapshot).toHaveBeenCalledWith(true, {wait: 60});
@@ -315,7 +348,9 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
+      .do(() => {
+        mockedConfirm.mockResolvedValue(true);
+      })
       .command(['org:resources:push'])
       .it('should delete the compressed folder', () => {
         expect(mockedDeleteTemporaryZipFile).toHaveBeenCalledTimes(1);
@@ -324,7 +359,9 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
+      .do(() => {
+        mockedConfirm.mockResolvedValue(true);
+      })
       .do(() => {
         mockedValidateSnapshot.mockImplementationOnce(() => {
           throw new Error('You shall not pass');
@@ -339,7 +376,9 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
+      .do(() => {
+        mockedConfirm.mockResolvedValue(true);
+      })
       .command(['org:resources:push'])
       .it('should delete the snapshot', () => {
         expect(mockedDeleteSnapshot).toHaveBeenCalledTimes(1);
@@ -356,7 +395,9 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
+      .do(() => {
+        mockedConfirm.mockResolvedValue(true);
+      })
       .command(['org:resources:push', '--previewLevel', 'light'])
       .it('should only display light preview', () => {
         expect(mockedPreviewSnapshot).toHaveBeenCalledWith(
@@ -369,7 +410,9 @@ describe('org:resources:push', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(true))
+      .do(() => {
+        mockedConfirm.mockResolvedValue(true);
+      })
       .command(['org:resources:push', '--previewLevel', 'detailed'])
       .it('should display light and expanded preview', () => {
         expect(mockedPreviewSnapshot).toHaveBeenCalledWith(
@@ -416,10 +459,12 @@ describe('org:resources:push', () => {
     });
 
     describe('when the user refuses to migrate or type in the missing vault entries', () => {
+      beforeEach(() => {
+        mockedConfirm.mockResolvedValue(false);
+      });
       test
         .stdout()
         .stderr()
-        .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(false))
         .command(['org:resources:push'])
         .catch(/Your destination organization is missing vault entries/)
         .it('should show the missingVaultEntries snapshot error');
@@ -427,7 +472,6 @@ describe('org:resources:push', () => {
       test
         .stdout()
         .stderr()
-        .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(false))
         .command(['org:resources:push'])
         .catch(() => {
           expect(mockedPreviewSnapshot).toHaveBeenCalledTimes(1);
