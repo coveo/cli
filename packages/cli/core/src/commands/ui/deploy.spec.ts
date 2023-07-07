@@ -2,6 +2,7 @@ jest.mock('child_process');
 jest.mock('fs-extra');
 jest.mock('jsonschema');
 
+jest.mock('@coveo/cli-commons/utils/ux');
 jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
 jest.mock('@coveo/cli-commons/preconditions/authenticated');
@@ -33,7 +34,7 @@ import {readJSONSync, readFileSync} from 'fs-extra';
 import {DeployConfig} from './deploy';
 import {validate, ValidatorResult} from 'jsonschema';
 import {join} from 'path';
-import {CliUx} from '@oclif/core';
+import {confirm} from '@coveo/cli-commons/utils/ux';
 
 const actualValidate = jest.requireActual('jsonschema').validate;
 
@@ -89,10 +90,7 @@ describe('ui:deploy', () => {
   const mockHostedPageCreate = jest.fn();
   const mockHostedPageList = jest.fn();
   const mockHostedPageUpdate = jest.fn();
-  const mockedConfirm = jest.fn();
-  const doMockConfirm = () => {
-    Object.defineProperty(CliUx.ux, 'confirm', {value: mockedConfirm});
-  };
+  const mockedConfirm = jest.mocked(confirm);
 
   const preconditionStatus = {
     apiKey: true,
@@ -174,6 +172,10 @@ describe('ui:deploy', () => {
   };
 
   let modifiedConfig: DeepPartial<DeployConfig>;
+
+  beforeAll(() => {
+    mockedConfirm.mockResolvedValue(true);
+  });
 
   beforeEach(() => {
     doMockedGetPackageVersion();
@@ -485,7 +487,6 @@ describe('ui:deploy', () => {
       .stdout()
       .stderr()
       .do(() => {
-        doMockConfirm();
         mockedConfirm.mockResolvedValueOnce(true);
         mockHostedPageList.mockResolvedValueOnce({
           items: [{name: validJsonConfig.name, id: pageTestId}],
@@ -503,7 +504,6 @@ describe('ui:deploy', () => {
       .stdout()
       .stderr()
       .do(() => {
-        doMockConfirm();
         mockedConfirm.mockResolvedValueOnce(true);
         mockHostedPageList.mockResolvedValueOnce({
           items: [{name: validJsonConfig.name, id: pageTestId}],
@@ -524,7 +524,6 @@ describe('ui:deploy', () => {
       .stdout()
       .stderr()
       .do(() => {
-        doMockConfirm();
         mockedConfirm.mockResolvedValueOnce(false);
         mockHostedPageList.mockResolvedValueOnce({
           items: [{name: validJsonConfig.name, id: pageTestId}],

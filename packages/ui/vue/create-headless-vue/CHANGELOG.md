@@ -1,3 +1,9 @@
+# 1.2.0 (2023-06-13)
+
+### Features
+
+- **organizationendpoints:** add support for organization endpoints for UI commands and projects ([#1289](https://github.com/coveo/cli/issues/1289)) ([3b7653d](https://github.com/coveo/cli/commits/3b7653dbf1b59015afb4575bd265ec0a91b2bcef))
+
 ## 1.1.2 (2023-03-27)
 
 ### Bug Fixes

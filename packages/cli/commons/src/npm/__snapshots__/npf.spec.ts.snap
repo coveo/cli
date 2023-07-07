@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`npf when a packageName cannot be resolved by npa should throw an InternalError 1`] = `
+"Internal CLI Error, please report to Coveo
+
+Message:
+  Package spec potato@1.2.3 seems invalid"
+`;
+
+exports[`npf when the packageName can be resolved by npa when the lazyLoad npm project does exists when the dependency is installed when the dependency has no entrypoint should throw an InternalError 1`] = `
+"Internal CLI Error, please report to Coveo
+
+Message:
+  Package potato does not have an entrypoint."
+`;

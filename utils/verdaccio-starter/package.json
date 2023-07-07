@@ -24,6 +24,6 @@
     "@npmcli/arborist": "^6.2.0",
     "get-port": "6.1.2",
     "tmp": "^0.2.1",
-    "verdaccio": "5.22.1"
+    "verdaccio": "5.24.1"
   }
 }

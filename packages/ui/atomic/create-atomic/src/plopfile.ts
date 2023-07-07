@@ -17,6 +17,7 @@ interface PlopData {
   'platform-url': string;
   'org-id': string;
   'api-key': string;
+  'platform-environment': string;
   page: IManifest;
   user: string;
 }
@@ -87,6 +88,13 @@ export default function (plop: NodePlopAPI) {
         message:
           'The Plaform URL to use. See https://docs.coveo.com/en/2976/coveo-solutions/deployment-regions-and-strategies',
         default: 'https://platform.cloud.coveo.com',
+      },
+      {
+        type: 'input',
+        name: 'platform-environment',
+        message:
+          'The Plaform Environment to use. See https://docs.coveo.com/en/mcc80216',
+        default: 'prod',
       },
       {
         type: 'input',

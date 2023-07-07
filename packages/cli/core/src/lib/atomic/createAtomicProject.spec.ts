@@ -6,19 +6,27 @@ import {resolve} from 'node:path';
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {PlatformEnvironment} from '@coveo/cli-commons/platform/environment';
+jest.mock('@coveo/cli-commons/npm/npf');
+import npf from '@coveo/cli-commons/npm/npf';
 import {Region} from '@coveo/platform-client';
 jest.mock('../utils/process');
 import {spawnProcess} from '../utils/process';
-jest.mock('../utils/os');
-import {appendCmdIfWindows} from '../utils/os';
+jest.mock('@coveo/cli-commons/utils/os');
+import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
+jest.mock('../utils/misc');
+import {getPackageVersion} from '../utils/misc';
+
 import {createAtomicApp, createAtomicLib} from './createAtomicProject';
 
 describe('createAtomicProject', () => {
   const mockedSpawnProcess = jest.mocked(spawnProcess);
+  const mockedNpf = jest.mocked(npf);
   const mockedAppendCmdIfWindows = jest.mocked(appendCmdIfWindows);
+  const mockedGetPackageVersion = jest.mocked(getPackageVersion);
   beforeEach(() => {
     jest.resetAllMocks();
     mockedAppendCmdIfWindows.mockImplementation((input) => `${input}`);
+    mockedGetPackageVersion.mockReturnValue('1.2.3');
   });
 
   describe('createAtomicApp()', () => {
@@ -41,7 +49,6 @@ describe('createAtomicProject', () => {
         region: Region.AU,
         version: '1.0.0',
       },
-      initializerVersion: 'latest',
       projectName: 'potato',
     };
 
@@ -57,9 +64,34 @@ describe('createAtomicProject', () => {
       });
     });
 
-    describe('without options.pageId', () => {
+    describe('with options.pageId', () => {
       it('calls `npx @coveo/create-atomic` properly', async () => {
         await createAtomicApp({...callOptions, pageId: 'pageId'});
+        expect(mockedSpawnProcess).toBeCalledTimes(1);
+        expect(mockedSpawnProcess.mock.lastCall).toMatchSnapshot();
+      });
+    });
+
+    describe('with options.initializerVersion set', () => {
+      it('calls `npx @coveo/create-atomic` properly', async () => {
+        await createAtomicApp({
+          ...callOptions,
+          initializerVersion: 'test',
+          pageId: 'pageId',
+        });
+        expect(mockedSpawnProcess).toBeCalledTimes(1);
+        expect(mockedSpawnProcess.mock.lastCall).toMatchSnapshot();
+      });
+    });
+
+    describe('without options.initializerVersion', () => {
+      it('calls `npx @coveo/create-atomic` properly and calls getPackageVersion', async () => {
+        await createAtomicApp({
+          ...callOptions,
+          initializerVersion: undefined,
+          pageId: 'pageId',
+        });
+        expect(mockedGetPackageVersion).toBeCalledTimes(1);
         expect(mockedSpawnProcess).toBeCalledTimes(1);
         expect(mockedSpawnProcess.mock.lastCall).toMatchSnapshot();
       });
@@ -79,14 +111,14 @@ describe('createAtomicProject', () => {
       expect(mockedResolve).toBeCalledTimes(1);
       expect(mockedResolve).toBeCalledWith('kewlProject');
       expect(mockedMkdirSync).toBeCalledTimes(1);
-      expect(mockedMkdirSync).toBeCalledWith('kewlProject');
+      expect(mockedMkdirSync).toBeCalledWith('kewlProject', {recursive: true});
     });
 
-    it('calls `npx @coveo/create-atomic-component-project` properly', async () => {
+    it('calls npf properly', async () => {
       await createAtomicLib({projectName: 'kewlProject'});
 
-      expect(mockedSpawnProcess).toBeCalledTimes(1);
-      expect(mockedSpawnProcess.mock.lastCall).toMatchSnapshot();
+      expect(mockedNpf).toBeCalledTimes(1);
+      expect(mockedNpf.mock.lastCall).toMatchSnapshot();
     });
   });
 });

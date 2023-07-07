@@ -70,7 +70,6 @@ export default class AtomicInit extends CLICommand {
   private createAtomicApp(projectName: string) {
     const cfg = this.configuration.get();
     return createAtomicApp({
-      initializerVersion: 'latest',
       projectName,
       cfg,
     });

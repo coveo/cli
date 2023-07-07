@@ -1,6 +1,6 @@
 {
   "name": "@coveo/create-atomic-result-component",
-  "version": "0.2.4",
+  "version": "1.1.0",
   "description": "Initialize a Coveo Atomic Result Component",
   "type": "module",
   "main": "index.js",
@@ -26,7 +26,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@coveo/create-atomic-component-project": "0.2.1"
+    "@coveo/create-atomic-component-project": "1.1.0"
   },
   "devDependencies": {
     "@coveo/do-npm": "1.0.0",
@@ -41,14 +41,6 @@
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5",
-    "tree-kill-promise": "3.0.1"
-  },
-  "peerDependencies": {
-    "@coveo/atomic-component-health-check": "1.0.4"
-  },
-  "peerDependenciesMeta": {
-    "@coveo/atomic-component-health-check": {
-      "optional": true
-    }
+    "tree-kill-promise": "3.0.14"
   }
 }

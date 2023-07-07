@@ -1,4 +1,5 @@
-import {spawn, SpawnOptions} from 'child_process';
+import {spawn, SpawnOptions, ChildProcess} from 'child_process';
+
 function isErrnoException(error: Error): error is NodeJS.ErrnoException {
   return Object.hasOwnProperty.call(error, 'errno');
 }
@@ -82,3 +83,14 @@ export async function spawnProcessOutput(
     });
   });
 }
+
+export const handleForkedProcess = (subprocess: ChildProcess) => {
+  return new Promise<void>((resolve, reject) => {
+    subprocess.on('exit', () => {
+      resolve();
+    });
+    subprocess.on('message', (message) => {
+      reject(message);
+    });
+  });
+};

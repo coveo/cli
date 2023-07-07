@@ -179,6 +179,8 @@ describe('ui:create:atomic', () => {
           'foo',
           '--platform-url',
           'https://platformdev.cloud.coveo.com',
+          '--platform-environment',
+          'dev',
           '--user',
           'bob@coveo.com',
         ]
@@ -204,6 +206,8 @@ describe('ui:create:atomic', () => {
           'foo',
           '--platform-url',
           'https://platformdev.cloud.coveo.com',
+          '--platform-environment',
+          'dev',
           '--user',
           'bob@coveo.com',
         ]
@@ -229,6 +233,8 @@ describe('ui:create:atomic', () => {
           'foo',
           '--platform-url',
           'https://platformdev.cloud.coveo.com',
+          '--platform-environment',
+          'dev',
           '--user',
           'bob@coveo.com',
           '--page-id',
@@ -261,6 +267,8 @@ describe('ui:create:atomic', () => {
             'foo',
             '--platform-url',
             'https://platform-eu.cloud.coveo.com',
+            '--platform-environment',
+            'prod',
             '--user',
             'bob@coveo.com',
           ]

@@ -12,7 +12,7 @@ import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClie
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {spawnProcess} from '../../../lib/utils/process';
 import {getPackageVersion} from '../../../lib/utils/misc';
-import {appendCmdIfWindows} from '../../../lib/utils/os';
+import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,
@@ -93,6 +93,7 @@ export default class Vue extends CLICommand {
       dedent`
         VITE_COVEO_PLATFORM_URL=${platformUrl({environment: cfg.environment})}
         VITE_COVEO_ORGANIZATION_ID=${cfg.organization}
+        VITE_COVEO_PLATFORM_ENVIRONMENT=${cfg.environment}
         VITE_COVEO_USER_EMAIL=${username}
         SERVER_COVEO_API_KEY=${apiKey.value!}
       `

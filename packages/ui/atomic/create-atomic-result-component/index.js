@@ -12,13 +12,37 @@ import {cwd} from 'node:process';
 import {fileURLToPath} from 'node:url';
 
 /***************** TODO: CDX-1428: Move to @coveo/create-atomic-commons package ******************/
-const successMessage = (componentName) => {
+class SerializableAggregateError extends AggregateError {
+  constructor(errors, message, options) {
+    super(errors, message, options);
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      stack: this.stack,
+      options: this.options,
+      errors: Array.from(this.errors),
+    };
+  }
+}
+
+const handleErrors = (error) => {
+  if (process.channel) {
+    process.send(error);
+    process.exit(1);
+  } else {
+    throw error;
+  }
+};
+
+const successMessage = () => {
   console.log(`
   Project successfully configured
 
   We suggest that you begin by typing:
 
-  $ cd ${componentName}
   $ npm install
   $ npm start
 
@@ -90,7 +114,9 @@ const ensureComponentValidity = (tag) => {
   }
 
   if (errors.length > 0) {
-    throw new AggregateError(errors, 'Invalid component tag name');
+    handleErrors(
+      new SerializableAggregateError(errors, 'Invalid component tag name')
+    );
   }
 };
 
@@ -134,4 +160,4 @@ if (componentName) {
   transform(transformers);
 }
 
-successMessage(componentName || 'sample-result-component');
+successMessage();

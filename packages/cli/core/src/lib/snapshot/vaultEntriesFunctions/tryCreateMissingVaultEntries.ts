@@ -1,5 +1,4 @@
-import {formatOrgId} from '@coveo/cli-commons/utils/ux';
-import {CliUx} from '@oclif/core';
+import {formatOrgId, confirm} from '@coveo/cli-commons/utils/ux';
 import {bold} from 'chalk';
 import {VaultHandler} from '../vaultHandler';
 import {VaultTransferFunctionsParam} from './interfaces';
@@ -8,10 +7,11 @@ export async function tryCreateMissingVaultEntries({
   reporter,
   snapshot,
 }: VaultTransferFunctionsParam) {
-  const shouldCreate = await CliUx.ux.confirm(
+  const shouldCreate = await confirm(
     `\nWould you like to create the missing vault entries in the destination organization ${formatOrgId(
       snapshot.targetId
-    )}? (y/n)`
+    )}? (y/n)`,
+    false
   );
   if (!shouldCreate) {
     return false;

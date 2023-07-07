@@ -3,8 +3,8 @@ import {resolve} from 'node:path';
 import {Configuration} from '@coveo/cli-commons/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
-import {appendCmdIfWindows} from '../utils/os';
-import {spawnProcess} from '../utils/process';
+import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
+import {handleForkedProcess, spawnProcess} from '../utils/process';
 import {
   IsAuthenticated,
   AuthenticationType,
@@ -19,9 +19,13 @@ import {
   IsNpxInstalled,
   IsNodeVersionInRange,
 } from '../decorators/preconditions';
+import {getPackageVersion} from '../utils/misc';
+import npf from '@coveo/cli-commons/npm/npf';
+import {SubprocessError} from '../errors/subprocessError';
+import {isErrorLike} from '../utils/errorSchemas';
 
 interface CreateAppOptions {
-  initializerVersion: string;
+  initializerVersion?: string;
   pageId?: string;
   projectName: string;
   cfg: Configuration;
@@ -31,6 +35,9 @@ export const atomicLibInitializerPackage =
   '@coveo/create-atomic-component-project';
 
 const supportedNodeVersions = '16.x || 18.x';
+
+const transformPackageNameToNpmInitializer = (packageName: string) =>
+  packageName.replace('/create-', '/');
 
 export const atomicLibPreconditions = [
   IsNodeVersionInRange(supportedNodeVersions),
@@ -52,7 +59,10 @@ export async function createAtomicApp(options: CreateAppOptions) {
 
   const username = await authenticatedClient.getUsername();
   const cliArgs: string[] = [
-    `${atomicAppInitializerPackage}@${options.initializerVersion}`,
+    `${atomicAppInitializerPackage}@${
+      options.initializerVersion ??
+      getPackageVersion(atomicAppInitializerPackage)
+    }`,
     '--project',
     options.projectName,
     '--org-id',
@@ -64,6 +74,8 @@ export async function createAtomicApp(options: CreateAppOptions) {
       environment: options.cfg.environment,
       region: options.cfg.region,
     }),
+    '--platform-environment',
+    options.cfg.environment,
     '--user',
     username,
   ];
@@ -79,11 +91,22 @@ interface CreateLibOptions {
   projectName: string;
 }
 
-export function createAtomicLib(options: CreateLibOptions) {
+export async function createAtomicLib(options: CreateLibOptions) {
   const projectDirectory = resolve(options.projectName);
-  mkdirSync(projectDirectory);
-  const cliArgs = ['init', atomicLibInitializerPackage];
-  return spawnProcess(appendCmdIfWindows`npm`, cliArgs, {
+
+  mkdirSync(projectDirectory, {recursive: true});
+  const initializer = `${atomicLibInitializerPackage}@${getPackageVersion(
+    atomicLibInitializerPackage
+  )}`;
+
+  const forkedProcess = npf(initializer, [], {
+    stdio: 'inherit',
     cwd: projectDirectory,
   });
+  try {
+    await handleForkedProcess(forkedProcess);
+  } catch (error) {
+    if (isErrorLike(error))
+      throw new SubprocessError(error.name, error.message);
+  }
 }

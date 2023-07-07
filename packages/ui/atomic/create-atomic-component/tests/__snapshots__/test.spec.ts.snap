@@ -6,7 +6,6 @@ exports[`@coveo/create-atomic-component when called in an existing project when 
 
   We suggest that you begin by typing:
 
-  $ cd oh-wow-another-component-can-you-believe-it
   $ npm install
   $ npm start
 
@@ -28,7 +27,7 @@ exports[`@coveo/create-atomic-component when called in an existing project when 
 HashedFolder {
   "children": [
     HashedFile {
-      "hash": "T+7uUFOwtxWi7kfgvgjJd2t2pXM=",
+      "hash": "On2XOtGKsiCQNf3sl4iW9KMVbUE=",
       "name": "package.json",
     },
     HashedFile {
@@ -82,7 +81,7 @@ HashedFolder {
                   "name": "loader",
                 },
                 HashedFile {
-                  "hash": "jnOdeBYlRtWhIPQeGkRLsA5b1Go=",
+                  "hash": "n8lKw21LwG/QmEJCb8e30Ubv9FE=",
                   "name": "package.json",
                 },
                 HashedFile {
@@ -116,11 +115,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "NOVPrUqAYRWIT5mqH43Bu9PVfHw=",
+              "hash": "UvXAs7n+IhX5YY+yKKYv3eE01NE=",
               "name": "oh-wow-another-component-can-you-believe-it",
             },
           ],
-          "hash": "1yJJ4WoWpZUhjm52hoEmSAb6sNM=",
+          "hash": "vXpuoDZlzWmwAcxKkLv4Ku9k7N4=",
           "name": "components",
         },
         HashedFile {
@@ -138,15 +137,15 @@ HashedFolder {
               "name": "index.html",
             },
             HashedFile {
-              "hash": "ZRD3OAMjlKnlu7Yh3iQv3gCcG8c=",
+              "hash": "tGVlR0ig5LSS79ZPOfuAFDEvqMw=",
               "name": "index.ts",
             },
           ],
-          "hash": "V7y/8CwkVmHHCoFc1OqeZ9uA7Uo=",
+          "hash": "xRG1Nufl9fjocyirZh0onW5WXDE=",
           "name": "pages",
         },
       ],
-      "hash": "SfCQyAPRB0o15xZkMFrCis90Ig8=",
+      "hash": "v6WK6mcKW4FuRYRyHmImKwfOtmU=",
       "name": "src",
     },
     HashedFile {
@@ -158,7 +157,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "VqGG5JHuEB44q4cI3bAlUJd3Ols=",
+  "hash": "6lJgpiIUtlDikxJGlMDXfGJbab4=",
   "name": "no-args",
 }
 `;
@@ -169,7 +168,6 @@ exports[`@coveo/create-atomic-component when called with a valid component name 
 
   We suggest that you begin by typing:
 
-  $ cd valid-component-name
   $ npm install
   $ npm start
 
@@ -191,7 +189,7 @@ exports[`@coveo/create-atomic-component when called with a valid component name 
 HashedFolder {
   "children": [
     HashedFile {
-      "hash": "T+7uUFOwtxWi7kfgvgjJd2t2pXM=",
+      "hash": "On2XOtGKsiCQNf3sl4iW9KMVbUE=",
       "name": "package.json",
     },
     HashedFile {
@@ -205,7 +203,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "kb+510dru/XkoLjyOuTY0YJSNwI=",
+                  "hash": "35WQZxNG+v2Eq1+yiY8nfuthAvU=",
                   "name": "package.json",
                 },
                 HashedFolder {
@@ -231,11 +229,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "K8Tel/Zr8MkD/OdWNGNszVJoCYg=",
+              "hash": "BzX+UvVK0zUXkLpsCntzfDazolI=",
               "name": "valid-component-name",
             },
           ],
-          "hash": "Rt8hzUGO/Jcgqrm7o1ec468Mf04=",
+          "hash": "sIF+huZEh1B0fntHmUWhbEYpKCg=",
           "name": "components",
         },
         HashedFile {
@@ -253,15 +251,15 @@ HashedFolder {
               "name": "index.html",
             },
             HashedFile {
-              "hash": "ZRD3OAMjlKnlu7Yh3iQv3gCcG8c=",
+              "hash": "tGVlR0ig5LSS79ZPOfuAFDEvqMw=",
               "name": "index.ts",
             },
           ],
-          "hash": "V7y/8CwkVmHHCoFc1OqeZ9uA7Uo=",
+          "hash": "xRG1Nufl9fjocyirZh0onW5WXDE=",
           "name": "pages",
         },
       ],
-      "hash": "1oVBMj4lrbAvPM5nF6unLMC8gd4=",
+      "hash": "zY9pQwGiDMQNU8rO5dIQi0PfqMM=",
       "name": "src",
     },
     HashedFile {
@@ -273,7 +271,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "4r4PrEz6Kdd3ZlNlAxzqxWo/X3o=",
+  "hash": "TnIk1rs0LHXQFSt46Q4Bob8zLdM=",
   "name": "valid-arg",
 }
 `;
@@ -284,7 +282,6 @@ exports[`@coveo/create-atomic-component when called without any args when initia
 
   We suggest that you begin by typing:
 
-  $ cd sample-component
   $ npm install
   $ npm start
 
@@ -306,7 +303,7 @@ exports[`@coveo/create-atomic-component when called without any args when initia
 HashedFolder {
   "children": [
     HashedFile {
-      "hash": "T+7uUFOwtxWi7kfgvgjJd2t2pXM=",
+      "hash": "On2XOtGKsiCQNf3sl4iW9KMVbUE=",
       "name": "package.json",
     },
     HashedFile {
@@ -320,7 +317,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "+GEgQV9dXe0SU0Mfy228R6xwR1k=",
+                  "hash": "iyMXrQ8HLVvWdSU9zBo8yewpUsM=",
                   "name": "package.json",
                 },
                 HashedFolder {
@@ -346,11 +343,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "6GvfKxMXolejGxVLF5G164j+UbE=",
+              "hash": "YiYL6woakEu6uzpQ74txEusXKmw=",
               "name": "sample-component",
             },
           ],
-          "hash": "24Vkp1GZfHGq7VlvVgz9QvhxvTA=",
+          "hash": "CljHyRkx3PbbiNzmG1+ajQDzEr8=",
           "name": "components",
         },
         HashedFile {
@@ -368,15 +365,15 @@ HashedFolder {
               "name": "index.html",
             },
             HashedFile {
-              "hash": "ZRD3OAMjlKnlu7Yh3iQv3gCcG8c=",
+              "hash": "tGVlR0ig5LSS79ZPOfuAFDEvqMw=",
               "name": "index.ts",
             },
           ],
-          "hash": "V7y/8CwkVmHHCoFc1OqeZ9uA7Uo=",
+          "hash": "xRG1Nufl9fjocyirZh0onW5WXDE=",
           "name": "pages",
         },
       ],
-      "hash": "KiU7oOfB/c1FZTXoVVo/4oHDshk=",
+      "hash": "v8iIrOCC+4HDfV0qu1AB0haZnxs=",
       "name": "src",
     },
     HashedFile {
@@ -388,7 +385,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "h2ulDqEQVt9wc+D8POVZ6bX54ME=",
+  "hash": "zN10WIbBHQRQzt2p7sBSVKZS57w=",
   "name": "no-args",
 }
 `;

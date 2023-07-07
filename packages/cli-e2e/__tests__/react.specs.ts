@@ -42,7 +42,7 @@ describe('ui:create:react', () => {
 
   const waitForAppRunning = (appTerminal: Terminal) =>
     appTerminal
-      .when(/You can now view .*-react-project in the browser/)
+      .when(/webpack compiled/)
       .on('stdout')
       .do()
       .once();
@@ -167,8 +167,7 @@ describe('ui:create:react', () => {
       await serverProcessManager.killAllProcesses();
     }, 30e3);
 
-    //TODO: https://coveord.atlassian.net/browse/KIT-2414
-    it.skip(
+    it(
       'should not contain console errors nor warnings',
       async () => {
         await page.goto(searchPageEndpoint(), {

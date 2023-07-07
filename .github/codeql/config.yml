@@ -1,0 +1,2 @@
+paths-ignore:
+  - ./cli/packages/cli-e2e/deploy-project/dist-folder/index.js

@@ -11,12 +11,12 @@ import {
 import type {HostedPage, New} from '@coveo/platform-client';
 import type PlatformClient from '@coveo/platform-client';
 import {createSearchPagesPrivilege} from '@coveo/cli-commons/preconditions/platformPrivilege';
-import {CliUx, Flags} from '@oclif/core';
+import {Flags} from '@oclif/core';
 import {readJsonSync, ensureDirSync, readFileSync} from 'fs-extra';
 import {DeployConfigError} from '../../lib/errors/deployErrors';
 import {join} from 'path';
 import {Example} from '@oclif/core/lib/interfaces';
-import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
+import {confirm, startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
 import {getTargetOrg} from '../../lib/utils/platform';
 import {Config} from '@coveo/cli-commons/config/config';
 import {organization} from '../../lib/flags/platformCommonFlags';
@@ -226,8 +226,11 @@ export default class Deploy extends CLICommand {
 
   private async confirmOverwrite(): Promise<void | never> {
     if (
-      !(await CliUx.ux.confirm(dedent`
-      Overwrite page with ID: "${this.pageId}" in organization ${this.organization}? (y/n)`))
+      !(await confirm(
+        dedent`
+      Overwrite page with ID: "${this.pageId}" in organization ${this.organization}? (y/n)`,
+        false
+      ))
     ) {
       this.error(
         'Page name must be unique, try changing the "name" field in "coveo.deploy.json".'

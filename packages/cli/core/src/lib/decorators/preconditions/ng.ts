@@ -1,4 +1,4 @@
-import {appendCmdIfWindows} from '../../utils/os';
+import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
 import {getBinVersionPrecondition} from './binPreconditionsFactory';
 
 const angularCliVersionMatcher = /^Angular CLI: (?<version>\d+\.\d+\.\d+)$/m;
