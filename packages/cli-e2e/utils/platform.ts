@@ -19,20 +19,14 @@ export function getPlatformHost(env: string) {
 export function isSearchRequestOrResponse(
   requestOrResponse: HTTPRequest | HTTPResponse
 ) {
-  const searchUrl = new URL(
-    '/rest/search/v2?organizationId',
-    process.env.PLATFORM_HOST
+  return (
+    requestOrResponse.url().indexOf('/rest/search/v2?organizationId') !== -1
   );
-  return requestOrResponse.url().startsWith(searchUrl.href);
 }
 
 export function isSuccessfulSearchResponse(requestOrResponse: HTTPResponse) {
-  const searchUrl = new URL(
-    '/rest/search/v2?organizationId',
-    process.env.PLATFORM_HOST
-  );
   return (
-    requestOrResponse.url().startsWith(searchUrl.href) &&
+    isSearchRequestOrResponse(requestOrResponse) &&
     requestOrResponse.status() === 200
   );
 }

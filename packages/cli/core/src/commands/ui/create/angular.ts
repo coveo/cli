@@ -15,7 +15,7 @@ import {
   IsAuthenticated,
   AuthenticationType,
 } from '@coveo/cli-commons/preconditions/index';
-import {appendCmdIfWindows} from '../../../lib/utils/os';
+import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
 import {IsNgVersionInRange} from '../../../lib/decorators/preconditions/ng';
 import {
   createApiKeyPrivilege,
@@ -103,6 +103,8 @@ export default class Angular extends CLICommand {
       apiKey.value!,
       '--platform-url',
       platformUrl({environment: cfg.environment}),
+      '--platform-environment',
+      cfg.environment,
       '--user',
       username,
       '--skip-confirmation',

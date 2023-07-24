@@ -34,8 +34,13 @@
     },
     "platformUrl": {
       "type": "string",
-      "description": "The target environment",
+      "description": "The target platform URL",
       "default": "https://platform.cloud.coveo.com"
+    },
+    "platformEnvironment": {
+      "type": "string",
+      "description": "The target platform environment",
+      "default": "prod"
     }
   },
   "required": ["orgId", "apiKey"]

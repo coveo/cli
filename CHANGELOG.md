@@ -1,3 +1,19 @@
+# release-16 (2023-06-13)
+
+### Bug Fixes
+
+- **accd:** updates deps ([#1302](https://github.com/coveo/cli/issues/1302)) ([bebb09d](https://github.com/coveo/cli/commits/bebb09dca354cb33efaceffe844706d191a400c5))
+- **cli:** use getPackageVersion for create-atomic-component-project ([#1293](https://github.com/coveo/cli/issues/1293)) ([b045bfe](https://github.com/coveo/cli/commits/b045bfe713e1d7de9cc921703019c339778bdf2b)), closes [#1292](https://github.com/coveo/cli/issues/1292) [#1292](https://github.com/coveo/cli/issues/1292)
+- remove unnecessary `cd` instruction from success message ([#1303](https://github.com/coveo/cli/issues/1303)) ([f23c4eb](https://github.com/coveo/cli/commits/f23c4eb2d2b3fdf0c77e22f078396b76eadd32d1))
+- remove unnecessary privilege ([#1301](https://github.com/coveo/cli/issues/1301)) ([db73b3b](https://github.com/coveo/cli/commits/db73b3bf0e569d7bd7d6063f1339f7214c64c90d))
+
+### Features
+
+- **accd:** handle errors from initializers in the CLI ([#1316](https://github.com/coveo/cli/issues/1316)) ([aee4429](https://github.com/coveo/cli/commits/aee4429bb83362a426ddb3f1f1f7b81c6b3be367))
+- **commons:** add npf (Node Package Fork) ([#1312](https://github.com/coveo/cli/issues/1312)) ([9955ddd](https://github.com/coveo/cli/commits/9955ddde00b4c65db92ff9a0729e8039f7d9a902))
+- **oauth:** swap default and fallback port ([#1305](https://github.com/coveo/cli/issues/1305)) ([3bf1e7a](https://github.com/coveo/cli/commits/3bf1e7a08872e3953d75450ba6e6edca7e713ad3))
+- **organizationendpoints:** add support for organization endpoints for UI commands and projects ([#1289](https://github.com/coveo/cli/issues/1289)) ([3b7653d](https://github.com/coveo/cli/commits/3b7653dbf1b59015afb4575bd265ec0a91b2bcef))
+
 # release-15 (2023-04-21)
 
 ### Bug Fixes

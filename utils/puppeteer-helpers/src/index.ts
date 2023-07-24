@@ -5,9 +5,7 @@ import type {HTTPRequest, HTTPResponse} from 'puppeteer';
 export function isSearchRequestOrResponse(
   requestOrResponse: HTTPRequest | HTTPResponse
 ) {
-  const searchUrl = new URL(
-    '/rest/search/v2?organizationId',
-    'https://platform.cloud.coveo.com'
+  return (
+    requestOrResponse.url().indexOf('/rest/search/v2?organizationId') !== -1
   );
-  return requestOrResponse.url().startsWith(searchUrl.href);
 }

@@ -2,10 +2,12 @@ import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {UnknownError} from '@coveo/cli-commons/errors/unknownError';
 import {Flags} from '@oclif/core';
 import inquirer from 'inquirer';
-import {appendCmdIfWindows} from '../../lib/utils/os';
-import {spawnProcess} from '../../lib/utils/process';
+import npf from '@coveo/cli-commons/npm/npf';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {getPackageVersion} from '../../lib/utils/misc';
+import {handleForkedProcess} from '../../lib/utils/process';
+import {SubprocessError} from '../../lib/errors/subprocessError';
+import {isAggregatedErrorLike} from '../../lib/utils/errorSchemas';
 
 export default class AtomicInit extends CLICommand {
   public static description =
@@ -31,9 +33,20 @@ export default class AtomicInit extends CLICommand {
   @Trackable()
   public async run(): Promise<void> {
     const {initializer, name} = await this.getSpawnOptions();
-
-    const cliArgs = ['init', initializer, name];
-    await spawnProcess(appendCmdIfWindows`npm`, cliArgs);
+    const forkedProcess = npf(initializer, [name], {stdio: 'inherit'});
+    try {
+      await handleForkedProcess(forkedProcess);
+    } catch (error) {
+      if (isAggregatedErrorLike(error)) {
+        const stderrMessageParts = [error.message];
+        stderrMessageParts.push(
+          ...error.errors.map((suberror) => ` • ${suberror}`)
+        );
+        throw new SubprocessError(error.message, stderrMessageParts.join('\n'));
+      } else {
+        throw error;
+      }
+    }
   }
 
   private async getSpawnOptions() {
@@ -44,10 +57,9 @@ export default class AtomicInit extends CLICommand {
 
     // TODO CDX-1340: Refactor the replace into a well named utils.
     return {
-      initializer: `${initializerPackage.replace(
-        '/create-',
-        '/'
-      )}@${getPackageVersion(initializerPackage)}`,
+      initializer: `${initializerPackage}@${getPackageVersion(
+        initializerPackage
+      )}`,
       name: args.name,
     };
   }

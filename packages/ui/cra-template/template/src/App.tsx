@@ -37,6 +37,7 @@ const isEnvValid = () => {
     'REACT_APP_API_KEY',
     'REACT_APP_USER_EMAIL',
     'REACT_APP_SERVER_PORT',
+    'REACT_APP_PLATFORM_ENVIRONMENT',
   ];
   const reducer = (previousValue: boolean, currentValue: string) =>
     previousValue && Boolean(process.env[currentValue]);

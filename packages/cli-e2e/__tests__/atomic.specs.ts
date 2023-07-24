@@ -299,8 +299,8 @@ describe('ui:create:atomic', () => {
           afterAll(async () => {
             await serverProcessManager.killAllProcesses();
           }, 5 * 30e3);
-          //TODO: https://coveord.atlassian.net/browse/KIT-2414
-          it.skip('should not contain console errors nor warnings', async () => {
+
+          it('should not contain console errors nor warnings', async () => {
             await page.goto(searchPageEndpoint, {
               waitUntil: 'networkidle2',
             });

@@ -1,4 +1,4 @@
-import {CliUx} from '@oclif/core';
+import {confirm} from '@coveo/cli-commons/utils/ux';
 
 import globalConfig from '@coveo/cli-commons/config/globalConfig';
 import {buildEvent} from '@coveo/cli-commons/analytics/eventUtils';
@@ -14,7 +14,7 @@ export async function confirmWithAnalytics(
   message: string,
   questionName: string
 ): Promise<boolean> {
-  const doAction = await CliUx.ux.confirm(message);
+  const doAction = await confirm(message, false);
   if (doAction) {
     trackEvent(`confirmed ${questionName}`);
     return true;

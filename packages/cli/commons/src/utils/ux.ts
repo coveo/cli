@@ -1,4 +1,5 @@
 import {CliUx} from '@oclif/core';
+import isCi from 'is-ci';
 import {red, green, magenta} from 'chalk';
 
 function isWindows() {
@@ -32,3 +33,6 @@ export function stopSpinner(options?: {success?: boolean}) {
 
 export const formatOrgId = (orgId: TemplateStringsArray | string) =>
   shouldUseColor() ? magenta(orgId) : orgId;
+
+export const confirm = (message: string, ciDefault: boolean) =>
+  isCi ? Promise.resolve(ciDefault) : CliUx.ux.confirm(message);

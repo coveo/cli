@@ -25,7 +25,7 @@ describe('OAuth', () => {
       mockedStartServer
     );
     mockedOpen.mockResolvedValue({unref: () => {}} as ChildProcess);
-    mockedGetPort.mockResolvedValue(32111);
+    mockedGetPort.mockResolvedValue(52296);
   });
 
   afterAll(() => {
@@ -42,13 +42,13 @@ describe('OAuth', () => {
 
   it('should call `get-port` to acquire a port', async () => {
     await new OAuth().getToken();
-    expect(mockedGetPort).toHaveBeenCalledWith({port: [32111, 52296]});
+    expect(mockedGetPort).toHaveBeenCalledWith({port: [52296, 32111]});
   });
 
   it('should use proper port for client server', async () => {
     await new OAuth().getToken();
     expect(mockedStartServer).toHaveBeenCalledWith(
-      32111,
+      52296,
       expect.anything(),
       expect.anything()
     );
@@ -71,7 +71,7 @@ describe('OAuth', () => {
 
     const defaultClientConfig = {
       client_id: 'cli',
-      redirect_uri: 'http://127.0.0.1:32111',
+      redirect_uri: 'http://127.0.0.1:52296',
       scope: 'full',
     };
 

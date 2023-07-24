@@ -1,3 +1,14 @@
+# 2.5.0 (2023-06-13)
+
+### Bug Fixes
+
+- remove unnecessary privilege ([#1301](https://github.com/coveo/cli/issues/1301)) ([db73b3b](https://github.com/coveo/cli/commits/db73b3bf0e569d7bd7d6063f1339f7214c64c90d))
+
+### Features
+
+- **accd:** handle errors from initializers in the CLI ([#1316](https://github.com/coveo/cli/issues/1316)) ([aee4429](https://github.com/coveo/cli/commits/aee4429bb83362a426ddb3f1f1f7b81c6b3be367))
+- **commons:** add npf (Node Package Fork) ([#1312](https://github.com/coveo/cli/issues/1312)) ([9955ddd](https://github.com/coveo/cli/commits/9955ddde00b4c65db92ff9a0729e8039f7d9a902))
+
 ## 2.4.3 (2023-04-21)
 
 ### Bug Fixes
