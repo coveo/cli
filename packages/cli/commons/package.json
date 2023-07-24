@@ -34,7 +34,7 @@
     "is-ci": "3.0.1",
     "isomorphic-fetch": "3.0.0",
     "npm-package-arg": "10.1.0",
-    "semver": "7.5.0",
+    "semver": "7.5.2",
     "ts-dedent": "2.2.0"
   },
   "scripts": {
