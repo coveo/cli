@@ -1,3 +1,9 @@
+## 2.6.1 (2023-07-26)
+
+### Bug Fixes
+
+- **cli:** use ci-friendly confirm ([1a3aab5](https://github.com/coveo/cli/commits/1a3aab557b93039e59966b2c7595873b7adf754b))
+
 # 2.6.0 (2023-06-13)
 
 ### Bug Fixes
