@@ -1,3 +1,4 @@
+#TODO: Split into smaller chunks/actions/reusable workflows
 name: Create release
 on:
   workflow_dispatch:
