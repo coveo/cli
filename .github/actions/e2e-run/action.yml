@@ -32,11 +32,11 @@ runs:
       run: |
         git config --global core.autocrlf false
         git config --global core.eol lf
-    - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+    - uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3
       with:
         cache: 'npm'
         node-version-file: '.nvmrc'
-    - uses: actions/setup-python@57ded4d7d5e986d7296eab16560982c6dd7c923b # v4
+    - uses: actions/setup-python@61a6322f88396a6271a6ee3565807d608ecaddd1 # v4
       with:
         cache: 'pip'
         python-version: '3.10'
