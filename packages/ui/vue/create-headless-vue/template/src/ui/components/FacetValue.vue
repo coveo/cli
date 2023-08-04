@@ -8,7 +8,7 @@
   </v-checkbox>
 </template>
 <script lang="ts">
-import { computed, ref, watch, type Ref } from "vue";
+import { computed, watch, type Ref, toRef } from "vue";
 
 let checkbox: Ref<boolean>;
 export default {
@@ -20,7 +20,7 @@ export default {
     },
   },
   setup(props) {
-    checkbox = ref(props.facetValue!.state);
+    checkbox = toRef(() => props.facetValue.state);
   },
   data() {
     watch(checkbox, () => this.$emit("toggle", this.$props.facetValue));
