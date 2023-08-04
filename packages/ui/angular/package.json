@@ -22,12 +22,12 @@
   "license": "Apache-2.0",
   "schematics": "./dist/collection.json",
   "dependencies": {
-    "@angular-devkit/core": "^15.0.0",
-    "@angular-devkit/schematics": "^15.0.0",
+    "@angular-devkit/core": "^15.2.9",
+    "@angular-devkit/schematics": "^15.2.9",
     "@angular/cdk": "^15.0.0",
-    "@angular/cli": "^15.0.0",
+    "@angular/cli": "^15.2.9",
     "@coveo/search-token-server": "1.35.23",
-    "@schematics/angular": "^15.0.0",
+    "@schematics/angular": "^15.2.9",
     "jest-config": "29.6.2"
   },
   "devDependencies": {
