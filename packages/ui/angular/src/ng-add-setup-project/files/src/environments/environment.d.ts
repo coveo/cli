@@ -4,4 +4,5 @@ export declare const environment: {
   defaultTokenEndpoint: string;
   platformUrl: string;
   organizationId: string;
+  platformEnvironment: 'prod' | 'hipaa' | 'stg' | 'dev';
 };

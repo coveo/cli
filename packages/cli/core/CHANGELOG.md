@@ -1,3 +1,22 @@
+## 2.6.1 (2023-07-26)
+
+### Bug Fixes
+
+- **cli:** use ci-friendly confirm ([1a3aab5](https://github.com/coveo/cli/commits/1a3aab557b93039e59966b2c7595873b7adf754b))
+
+# 2.6.0 (2023-06-13)
+
+### Bug Fixes
+
+- **cli:** use getPackageVersion for create-atomic-component-project ([#1293](https://github.com/coveo/cli/issues/1293)) ([b045bfe](https://github.com/coveo/cli/commits/b045bfe713e1d7de9cc921703019c339778bdf2b)), closes [#1292](https://github.com/coveo/cli/issues/1292) [#1292](https://github.com/coveo/cli/issues/1292)
+
+### Features
+
+- **accd:** handle errors from initializers in the CLI ([#1316](https://github.com/coveo/cli/issues/1316)) ([aee4429](https://github.com/coveo/cli/commits/aee4429bb83362a426ddb3f1f1f7b81c6b3be367))
+- **commons:** add npf (Node Package Fork) ([#1312](https://github.com/coveo/cli/issues/1312)) ([9955ddd](https://github.com/coveo/cli/commits/9955ddde00b4c65db92ff9a0729e8039f7d9a902))
+- **oauth:** swap default and fallback port ([#1305](https://github.com/coveo/cli/issues/1305)) ([3bf1e7a](https://github.com/coveo/cli/commits/3bf1e7a08872e3953d75450ba6e6edca7e713ad3))
+- **organizationendpoints:** add support for organization endpoints for UI commands and projects ([#1289](https://github.com/coveo/cli/issues/1289)) ([3b7653d](https://github.com/coveo/cli/commits/3b7653dbf1b59015afb4575bd265ec0a91b2bcef))
+
 ## 2.5.1 (2023-04-21)
 
 ### Bug Fixes

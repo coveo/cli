@@ -1,3 +1,17 @@
+## 1.1.1 (2023-07-26)
+
+# 1.1.0 (2023-06-13)
+
+### Bug Fixes
+
+- **accd:** updates deps ([#1302](https://github.com/coveo/cli/issues/1302)) ([bebb09d](https://github.com/coveo/cli/commits/bebb09dca354cb33efaceffe844706d191a400c5))
+- remove unnecessary `cd` instruction from success message ([#1303](https://github.com/coveo/cli/issues/1303)) ([f23c4eb](https://github.com/coveo/cli/commits/f23c4eb2d2b3fdf0c77e22f078396b76eadd32d1))
+
+### Features
+
+- **accd:** handle errors from initializers in the CLI ([#1316](https://github.com/coveo/cli/issues/1316)) ([aee4429](https://github.com/coveo/cli/commits/aee4429bb83362a426ddb3f1f1f7b81c6b3be367))
+- **organizationendpoints:** add support for organization endpoints for UI commands and projects ([#1289](https://github.com/coveo/cli/issues/1289)) ([3b7653d](https://github.com/coveo/cli/commits/3b7653dbf1b59015afb4575bd265ec0a91b2bcef))
+
 ## 1.0.1 (2023-04-21)
 
 ### Bug Fixes

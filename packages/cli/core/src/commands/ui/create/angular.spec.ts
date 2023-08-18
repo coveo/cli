@@ -178,6 +178,8 @@ describe('ui:create:angular', () => {
             'foo',
             '--platform-url',
             'https://platformdev.cloud.coveo.com',
+            '--platform-environment',
+            'dev',
             '--user',
             'bob@coveo.com',
             '--skip-confirmation',

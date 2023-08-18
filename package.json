@@ -1,7 +1,7 @@
 {
   "name": "cli-tools",
   "private": true,
-  "version": "1.0.0-15",
+  "version": "1.0.0-17",
   "author": "Coveo",
   "bin": {
     "coveo": "./bin/run"
@@ -46,7 +46,7 @@
     "patch-package": "6.5.1",
     "prettier": "2.8.8",
     "rimraf": "4.4.1",
-    "semver": "7.5.0",
+    "semver": "7.5.2",
     "ts-dedent": "2.2.0",
     "ts-node": "10.9.1",
     "typescript": "4.9.5",

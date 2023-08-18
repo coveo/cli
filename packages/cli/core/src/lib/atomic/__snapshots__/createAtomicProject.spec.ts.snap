@@ -13,6 +13,8 @@ exports[`createAtomicProject createAtomicApp() with options.initializerVersion s
     "someToken",
     "--platform-url",
     "https://platformdev-au.cloud.coveo.com",
+    "--platform-environment",
+    "dev",
     "--user",
     "bob@coveo.com",
     "--page-id",
@@ -34,6 +36,8 @@ exports[`createAtomicProject createAtomicApp() with options.pageId calls \`npx @
     "someToken",
     "--platform-url",
     "https://platformdev-au.cloud.coveo.com",
+    "--platform-environment",
+    "dev",
     "--user",
     "bob@coveo.com",
     "--page-id",
@@ -55,6 +59,8 @@ exports[`createAtomicProject createAtomicApp() without options.initializerVersio
     "someToken",
     "--platform-url",
     "https://platformdev-au.cloud.coveo.com",
+    "--platform-environment",
+    "dev",
     "--user",
     "bob@coveo.com",
     "--page-id",
@@ -76,21 +82,21 @@ exports[`createAtomicProject createAtomicApp() without options.pageId calls \`np
     "someToken",
     "--platform-url",
     "https://platformdev-au.cloud.coveo.com",
+    "--platform-environment",
+    "dev",
     "--user",
     "bob@coveo.com",
   ],
 ]
 `;
 
-exports[`createAtomicProject createAtomicLib() calls \`npx @coveo/create-atomic-component-project\` properly 1`] = `
+exports[`createAtomicProject createAtomicLib() calls npf properly 1`] = `
 [
-  "npm",
-  [
-    "init",
-    "@coveo/atomic-component-project@1.2.3",
-  ],
+  "@coveo/create-atomic-component-project@1.2.3",
+  [],
   {
     "cwd": "kewlProject",
+    "stdio": "inherit",
   },
 ]
 `;

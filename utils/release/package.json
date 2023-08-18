@@ -11,7 +11,7 @@
     "conventional-changelog-angular": "5.0.13",
     "npm-registry-fetch": "14.0.5",
     "octokit": "2.0.14",
-    "semver": "7.5.0",
+    "semver": "7.5.2",
     "ts-dedent": "2.2.0"
   },
   "devDependencies": {

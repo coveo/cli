@@ -1,13 +1,13 @@
 jest.mock('../../utils/process');
 jest.mock('../../utils/misc');
-jest.mock('../../utils/os');
+jest.mock('@coveo/cli-commons/utils/os');
 
 import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from '@coveo/cli-commons/utils/getFakeCommand';
 
 import {IsNgVersionInRange} from './ng';
 import {CliUx} from '@oclif/core';
-import {appendCmdIfWindows} from '../../utils/os';
+import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
 import {getPackageVersion} from '../../utils/misc';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
