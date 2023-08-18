@@ -2,7 +2,7 @@ node_modules
 .env
 artifacts
 verdaccio
-!verdaccio/config.yaml\
+!verdaccio/config.yaml
 
 # Ignore copied specs
 __tests__/*.specs.linux.ts
