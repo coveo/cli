@@ -23,7 +23,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "8AayDC90AmCwDykctBv05Cq9zu4=",
+                  "hash": "KwR4eJKGc+ZXRbIX4Jhn40THSpI=",
                   "name": "results-manager.tsx",
                 },
                 HashedFile {
@@ -31,7 +31,7 @@ HashedFolder {
                   "name": "template-1.html",
                 },
               ],
-              "hash": "OlEsA/qWpj7+9r4LJ8V+2FRE1OE=",
+              "hash": "HghfGR6Ktv9oQs8WZP2zA+IjlgE=",
               "name": "results-manager",
             },
             HashedFolder {
@@ -63,7 +63,7 @@ HashedFolder {
               "name": "sample-result-component",
             },
           ],
-          "hash": "5P8q9sBQYOIFBbud8itUocf8QuA=",
+          "hash": "ApFF74n5JpLwWNDx/OdGzyfLNlg=",
           "name": "components",
         },
         HashedFile {
@@ -104,7 +104,7 @@ HashedFolder {
           "name": "utils",
         },
       ],
-      "hash": "FyJL9RJjY9pJOAwJ9ab59ZOCIxI=",
+      "hash": "pdxbUpY5KiZ3MGOUP8EDlTMHT+w=",
       "name": "src",
     },
     HashedFile {
@@ -112,7 +112,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "es8MmhHTGyzddwEuVV7Raek2rME=",
+  "hash": "DAG8s9TW9ytbY3qpmV11XKI19DY=",
   "name": "normalizedDir",
 }
 `;
@@ -149,7 +149,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "QJjgDAdWQehYt60rPIq3b5Urcng=",
+                  "hash": "ggJcPENEYrkDlKP1rUoQNPE0JhM=",
                   "name": "results-manager.tsx",
                 },
                 HashedFile {
@@ -157,7 +157,7 @@ HashedFolder {
                   "name": "template-1.html",
                 },
               ],
-              "hash": "BPEklM42OInkFci0QuyGusyadQI=",
+              "hash": "kHLkOJ9S2RmK9QsYV4H3vFWRSOY=",
               "name": "results-manager",
             },
             HashedFolder {
@@ -189,7 +189,7 @@ HashedFolder {
               "name": "sample-result-component",
             },
           ],
-          "hash": "zcDXsMe88fA/wmx5tmFkfSQG7p4=",
+          "hash": "wLPpWj43ALvIz9yZsp4BFoMBbow=",
           "name": "components",
         },
         HashedFile {
@@ -230,7 +230,7 @@ HashedFolder {
           "name": "utils",
         },
       ],
-      "hash": "Dm21pBuPUdbHL1rDkseuuvBJ6t4=",
+      "hash": "U5+vyE+XIcINHyRyy8gupuIrRww=",
       "name": "src",
     },
     HashedFile {
@@ -238,7 +238,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "yNI0eUcbSsIRj08/Jz1INDLCLvQ=",
+  "hash": "0pRhSC9k+kvc1pLT71YqLWWkH0c=",
   "name": "normalizedDir",
 }
 `;
@@ -275,7 +275,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "LiPFXpS1sKZg/jHFeC2NZ0CJU6M=",
+                  "hash": "OvDBAuwZSXzJKEDTu2h16xwmS/4=",
                   "name": "results-manager.tsx",
                 },
                 HashedFile {
@@ -283,7 +283,7 @@ HashedFolder {
                   "name": "template-1.html",
                 },
               ],
-              "hash": "+fkWdok/HnrqsmuNKot00n9mAGw=",
+              "hash": "Dfe37MVrxMYCBJksItHWKh4iFRU=",
               "name": "results-manager",
             },
             HashedFolder {
@@ -315,7 +315,7 @@ HashedFolder {
               "name": "sample-result-component",
             },
           ],
-          "hash": "mN3OMfRS4rnN0gSb4G3ikXw+WFg=",
+          "hash": "2rr+UEKfg3sYGI7t3rEsd9NaqaI=",
           "name": "components",
         },
         HashedFile {
@@ -356,7 +356,7 @@ HashedFolder {
           "name": "utils",
         },
       ],
-      "hash": "inWZt3frzA8egVzFmMRQiBsgABU=",
+      "hash": "BbDf+PumRFJhCAZDIzDYgYIWO+8=",
       "name": "src",
     },
     HashedFile {
@@ -364,7 +364,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "c8JiUF+lYEw2HBxvArluBb06ma0=",
+  "hash": "qaUjZxOHtN3/gswBxyhbd1pU00g=",
   "name": "normalizedDir",
 }
 `;
