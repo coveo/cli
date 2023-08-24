@@ -1,3 +1,9 @@
+# release-18 (2023-08-24)
+
+### Bug Fixes
+
+- **cli:** remove deploy.example ([#1321](https://github.com/coveo/cli/issues/1321)) ([a79e335](https://github.com/coveo/cli/commits/a79e335a4b476c011945b56f417e13cbd295cf0d))
+
 # release-17 (2023-07-26)
 
 ### Bug Fixes
