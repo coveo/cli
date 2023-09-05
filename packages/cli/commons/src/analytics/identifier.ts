@@ -1,13 +1,16 @@
 import os from 'os';
-import {Identify} from '@amplitude/identify';
+import {
+  Identify,
+  identify as amplitudeIdentify,
+} from '@amplitude/analytics-node';
 import {machineId} from 'node-machine-id';
 import {createHash} from 'crypto';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import PlatformClient from '@coveo/platform-client';
 import {camelToSnakeCase} from '../utils/string';
-import type {NodeClient} from '@amplitude/node';
 import globalConfig from '../config/globalConfig';
 import {Configuration} from '../config/config';
+import type {EventOptions} from '@amplitude/analytics-types';
 
 export class Identifier {
   private authenticatedClient: AuthenticatedClient;
@@ -35,13 +38,14 @@ export class Identifier {
       identifier.set(camelToSnakeCase(key), value);
     });
 
-    const identify = (amplitudeClient: NodeClient) => {
-      const identifyEvent = {
-        ...identifier.identifyUser(userId, deviceId),
+    const identify = () => {
+      const identifyEvent: EventOptions = {
+        user_id: userId,
+        device_id: deviceId,
         ...this.getAmplitudeBaseEventProperties(),
         ...this.getOrganizationIdentifier(),
       };
-      amplitudeClient.logEvent(identifyEvent);
+      amplitudeIdentify(identifier, identifyEvent);
     };
 
     return {userId, deviceId, identify};
