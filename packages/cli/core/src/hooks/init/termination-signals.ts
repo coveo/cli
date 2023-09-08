@@ -7,7 +7,7 @@ export function handleTerminationSignals() {
   exitSignals.forEach((signal) =>
     process.on(signal, async (_sig: string, exitCode: number) => {
       await trackEvent(signal);
-      await flush();
+      flush();
       /**
        * Signal Exits: If Node.js receives a fatal signal such as SIGTERM or SIGHUP, then its exit code will be 128 plus the value of the signal code.
        * This is a standard POSIX practice, since exit codes are defined to be 7-bit integers, and signal exits set the high-order bit,
