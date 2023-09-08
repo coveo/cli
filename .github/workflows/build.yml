@@ -174,7 +174,7 @@ jobs:
           node: ${{ matrix.node }}
           spec: ${{ matrix.spec }}
           cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
-          npmRegistry: 'http://localhost:4873'
+          npmRegistry: 'http://127.0.0.1:4873'
   e2e-teardown:
     timeout-minutes: 15
     name: End-to-end teardown
