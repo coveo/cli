@@ -7,7 +7,7 @@ export const npmLogin = async () => {
   const args = [
     ...npm(),
     'login',
-    '--registry=http://localhost:4873',
+    '--registry=http://127.0.0.1:4873',
     '--auth-type=legacy',
   ];
   const npmLogin = new Terminal(args.shift()!, args);
