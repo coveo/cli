@@ -31,19 +31,9 @@ import {dedent} from 'ts-dedent';
 import {readFileSync, writeFileSync} from 'fs';
 import {removeWriteAccessRestrictions} from './lock-master.mjs';
 import {spawnSync} from 'child_process';
-const CLI_PKG_MATCHER = /^@coveo\/cli@(?<version>\d+\.\d+\.\d+)$/gm;
 const REPO_OWNER = 'coveo';
 const REPO_NAME = 'cli';
 const GIT_SSH_REMOTE = 'deploy';
-
-const getCliChangelog = () => {
-  const changelog = readFileSync('packages/cli/core/CHANGELOG.md', {
-    encoding: 'utf-8',
-  });
-  const versionH1Matcher = /^#+ \d+\.\d+\.\d+.*$/gm;
-  const lastVersionChanges = changelog.split(versionH1Matcher)[1];
-  return lastVersionChanges.trim();
-};
 
 // Commit, tag and push
 (async () => {
@@ -131,22 +121,6 @@ const getCliChangelog = () => {
 
   // Unlock the main branch
   await removeWriteAccessRestrictions();
-
-  // If `@coveo/cli` has not been released stop there, otherwise, create a GitHub release.
-  const cliReleaseInfoMatch = CLI_PKG_MATCHER.exec(packagesReleased);
-  if (!cliReleaseInfoMatch) {
-    return;
-  }
-  const releaseBody = getCliChangelog();
-  const cliLatestTag = cliReleaseInfoMatch[0];
-  const cliVersion = cliReleaseInfoMatch?.groups?.version;
-  await octokit.rest.repos.createRelease({
-    owner: REPO_OWNER,
-    repo: REPO_NAME,
-    tag_name: cliLatestTag,
-    name: `Release v${cliVersion}`,
-    body: releaseBody,
-  });
 })();
 
 /**

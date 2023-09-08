@@ -44,4 +44,4 @@ logs:
   - {type: stdout, format: pretty, level: trace}
 
 listen:
-  - localhost:4873 # default value
+  - 127.0.0.1:4873 # default value

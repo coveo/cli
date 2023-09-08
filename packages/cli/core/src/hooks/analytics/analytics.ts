@@ -1,12 +1,12 @@
-import {Event} from '@amplitude/node';
+import type {Event} from '@amplitude/analytics-types';
 import {Interfaces} from '@oclif/core';
 import {
   AuthenticatedClient,
   AuthenticationStatus,
   getAuthenticationStatus,
 } from '@coveo/cli-commons/platform/authenticatedClient';
-import {amplitudeClient} from './amplitudeClient';
-import {Identifier} from './identifier';
+import {track} from '@coveo/cli-commons/analytics/amplitudeClient';
+import {Identifier} from '@coveo/cli-commons/analytics/identifier';
 
 export interface AnalyticsHook {
   event: Event;
@@ -23,11 +23,11 @@ const hook = async function (options: AnalyticsHook) {
 
   const {userId, deviceId, identify} = await new Identifier().getIdentity();
   if (options.identify) {
-    identify(amplitudeClient);
+    identify();
   }
 
   await augmentEvent(options.event, platformIdentifier);
-  amplitudeClient.logEvent({
+  track({
     device_id: deviceId,
     ...(userId && {user_id: userId}),
     ...options.event,

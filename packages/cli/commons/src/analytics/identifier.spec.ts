@@ -1,4 +1,4 @@
-jest.mock('@amplitude/node');
+jest.mock('@amplitude/analytics-node');
 jest.mock('@amplitude/identify');
 jest.mock('@coveo/platform-client');
 jest.mock('../platform/authenticatedClient');
@@ -6,39 +6,36 @@ jest.mock('../config/config');
 jest.mock('../config/globalConfig');
 
 import os from 'os';
-import {Identify} from '@amplitude/identify';
+import {
+  Identify,
+  identify as amplitudeIdentify,
+} from '@amplitude/analytics-node';
 import {Config, Configuration} from '../config/config';
 import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {Identifier} from './identifier';
 import PlatformClient from '@coveo/platform-client';
 import {configurationMock, defaultConfiguration} from '../config/stub';
 import type {Interfaces} from '@oclif/core';
-import type {NodeClient} from '@amplitude/node';
 import globalConfig from '../config/globalConfig';
 
 describe('identifier', () => {
   const mockedGlobalConfig = jest.mocked(globalConfig);
   const mockedConfig = jest.mocked(Config);
-  const mockedIdentify = jest.mocked(Identify);
+  const mockedIdentifyClass = jest.mocked(Identify);
+  const mockedAmplitudeIdentifyFn = jest.mocked(amplitudeIdentify);
   const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
   const mockedPlatformClient = jest.mocked(PlatformClient);
   const mockUserGet = jest.fn();
   const mockSetIdentity = jest.fn();
-  const mockedLogEvent = jest.fn();
   const mockedOsVersion = jest.spyOn(os, 'release');
 
   let identity: Awaited<ReturnType<Identifier['getIdentity']>>;
-
-  const getDummyAmplitudeClient = () =>
-    ({
-      logEvent: mockedLogEvent,
-    } as unknown as NodeClient);
 
   const doMockOS = () => {
     mockedOsVersion.mockReturnValue('21.3.4');
   };
   const doMockIdentify = () => {
-    mockedIdentify.prototype.set.mockImplementation(mockSetIdentity);
+    mockedIdentifyClass.prototype.set.mockImplementation(mockSetIdentity);
   };
   const doMockPlatformClient = (email = '') => {
     mockedPlatformClient.mockImplementation(
@@ -191,17 +188,19 @@ describe('identifier', () => {
   describe('when logging for every user type', () => {
     beforeEach(async () => {
       identity = await new Identifier().getIdentity();
-      identity.identify(getDummyAmplitudeClient());
+      identity.identify();
     });
 
     it('should add the CLI version to the event', async () => {
-      expect(mockedLogEvent).toHaveBeenCalledWith(
+      expect(mockedAmplitudeIdentifyFn).toHaveBeenCalledWith(
+        expect.any(Identify),
         expect.objectContaining({app_version: '1.2.3'})
       );
     });
 
     it('should add the OS information to the event', async () => {
-      expect(mockedLogEvent).toHaveBeenCalledWith(
+      expect(mockedAmplitudeIdentifyFn).toHaveBeenCalledWith(
+        expect.any(Identify),
         expect.objectContaining({
           app_version: '1.2.3',
           os_name: 'darwin',

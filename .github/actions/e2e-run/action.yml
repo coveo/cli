@@ -17,6 +17,10 @@ inputs:
     description: 'The NPM Registry to use'
     required: false
     default: 'https://registry.npmjs.org/'
+  jestFlags:
+    description: 'Flags for Jest'
+    required: false
+    default: ''
 
 runs:
   using: composite
@@ -61,7 +65,7 @@ runs:
       shell: bash
       if: ${{inputs.os == 'windows-latest'}}
       working-directory: packages/cli-e2e
-      run: npm run jest:ci -- ${{inputs.spec}}
+      run: npm run jest:ci -- ${{inputs.spec}} ${{inputs.flag}}
       env:
         npm_config_registry: ${{inputs.npmRegistry}}
     - name: Tests
@@ -71,7 +75,7 @@ runs:
         DISPLAY: ':1'
         npm_config_registry: ${{inputs.npmRegistry}}
       working-directory: packages/cli-e2e
-      run: npm run jest:ci -- ${{inputs.spec}}
+      run: npm run jest:ci -- ${{inputs.spec}} ${{inputs.flag}}
     - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
       if: cancelled() || failure() || success()
       with:

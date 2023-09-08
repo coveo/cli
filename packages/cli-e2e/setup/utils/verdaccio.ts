@@ -8,7 +8,7 @@ import {dirSync} from 'tmp';
 import {writeFileSync} from 'node:fs';
 
 const npmRegistry = 'https://registry.npmjs.org/';
-const verdaccioRegistry = 'http://localhost:4873';
+const verdaccioRegistry = 'http://127.0.0.1:4873';
 
 const verdaccioedPackages = [
   '@coveo/atomic-component-health-check',

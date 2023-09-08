@@ -1,3 +1,15 @@
+## 2.6.2 (2023-08-24)
+
+### Bug Fixes
+
+- **cli:** remove deploy.example ([#1321](https://github.com/coveo/cli/issues/1321)) ([a79e335](https://github.com/coveo/cli/commits/a79e335a4b476c011945b56f417e13cbd295cf0d))
+
+## 2.6.1 (2023-07-26)
+
+### Bug Fixes
+
+- **cli:** use ci-friendly confirm ([1a3aab5](https://github.com/coveo/cli/commits/1a3aab557b93039e59966b2c7595873b7adf754b))
+
 # 2.6.0 (2023-06-13)
 
 ### Bug Fixes
