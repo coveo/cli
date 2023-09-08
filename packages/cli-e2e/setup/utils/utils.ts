@@ -96,11 +96,11 @@ export async function startVerdaccio() {
     'verdaccio'
   );
   await verdaccioTerminal
-    .when(/localhost:4873/)
+    .when(/127.0.0.1:4873/)
     .on('stdout')
     .do()
     .once();
-  await waitOn({resources: ['tcp:4873']});
+  await waitOn({resources: ['tcp:127.0.0.1:4873']});
 }
 
 export function useCIConfigIfEnvIncomplete() {
@@ -184,9 +184,9 @@ export const resolveBinary = (programName: string) => {
 const registryEnv: Record<string, string> = process.env.E2E_USE_NPM_REGISTRY
   ? {}
   : {
-      npm_config_registry: 'http://localhost:4873',
-      YARN_NPM_REGISTRY_SERVER: 'http://localhost:4873',
-      YARN_REGISTRY: 'http://localhost:4873',
+      npm_config_registry: 'http://127.0.0.1:4873',
+      YARN_NPM_REGISTRY_SERVER: 'http://127.0.0.1:4873',
+      YARN_REGISTRY: 'http://127.0.0.1:4873',
     };
 
 export function getCleanEnv(): Record<string, string> {

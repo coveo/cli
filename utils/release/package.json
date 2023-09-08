@@ -21,7 +21,9 @@
   "bin": {
     "git-lock": "./git-lock.mjs",
     "npm-publish": "./npm-publish-package.mjs",
-    "git-publish-all": "./git-publish-all.mjs"
+    "git-publish-all": "./git-publish-all.mjs",
+    "github-publish": "./create-github-release.mjs",
+    "is-cli-release": "./is-cli-release.mjs"
   },
   "scripts": {
     "test": "tsc"
