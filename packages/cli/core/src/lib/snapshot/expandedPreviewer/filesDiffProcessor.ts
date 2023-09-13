@@ -1,7 +1,7 @@
 import type {ResourceSnapshotType} from '@coveo/platform-client';
-import {readdirSync, rmSync} from 'fs';
+import {Dirent, readdirSync, rmSync} from 'fs';
 import {readJsonSync, writeJsonSync, JsonWriteOptions} from 'fs-extra';
-import {join} from 'path';
+import {join, extname} from 'path';
 import {Project} from '../../project/project';
 
 type ResourcesJSON = Object & {resourceName: string};
@@ -19,8 +19,8 @@ export function recursiveDirectoryDiff(
   nextDir: string,
   deleteMissingResources: boolean
 ) {
-  const currentFilePaths = getAllFilesPath(currentDir);
-  const nextFilePaths = getAllFilesPath(nextDir);
+  const currentFilePaths = getAllJsonFilesPath(currentDir);
+  const nextFilePaths = getAllJsonFilesPath(nextDir);
 
   nextFilePaths.forEach((filePath) => {
     const nextFileJson = readJsonSync(join(nextDir, filePath));
@@ -44,19 +44,26 @@ export function recursiveDirectoryDiff(
   }
 }
 
-function getAllFilesPath(
+function getAllJsonFilesPath(
   currentDir: string,
   filePaths: Set<string> = new Set<string>()
 ) {
   const files = readdirSync(currentDir, {withFileTypes: true});
   files.forEach((file) => {
     if (file.isDirectory()) {
-      getAllFilesPath(join(currentDir, file.name), filePaths);
+      getAllJsonFilesPath(join(currentDir, file.name), filePaths);
     } else {
-      filePaths.add(join(currentDir, file.name).replace(firstDirOfPath, ''));
+      if (isJsonFile(file)) {
+        filePaths.add(join(currentDir, file.name).replace(firstDirOfPath, ''));
+      }
     }
   });
   return filePaths;
+}
+
+function isJsonFile(file: Dirent) {
+  const fileExtension = extname(file.name);
+  return fileExtension.toLowerCase() === '.json';
 }
 
 function buildDiffedJson(
