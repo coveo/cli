@@ -20,6 +20,11 @@ export const config: Config = {
           dest: 'atomic',
           keepDirStructure: false,
         },
+        {
+          src: '../node_modules/@coveo/headless/dist/browser',
+          dest: 'headless',
+          keepDirStructure: false,
+        },
       ],
     },
     {
