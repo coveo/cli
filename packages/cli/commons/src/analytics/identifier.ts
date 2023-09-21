@@ -43,17 +43,11 @@ export class Identifier {
         user_id: userId,
         device_id: deviceId,
         ...this.getAmplitudeBaseEventProperties(),
-        ...this.getOrganizationIdentifier(),
       };
       amplitudeIdentify(identifier, identifyEvent);
     };
 
     return {userId, deviceId, identify};
-  }
-
-  private getOrganizationIdentifier() {
-    const {environment, region, organization} = this.configuration;
-    return {environment, region, organization};
   }
 
   private hash(word: string) {
