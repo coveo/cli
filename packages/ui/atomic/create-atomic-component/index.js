@@ -3,7 +3,6 @@ import '@coveo/create-atomic-component-project';
 import {dirname, resolve} from 'node:path';
 import {
   cpSync,
-  cwd,
   renameSync,
   unlinkSync,
   writeFileSync,

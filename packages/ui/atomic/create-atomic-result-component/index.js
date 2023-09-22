@@ -3,7 +3,6 @@ import '@coveo/create-atomic-component-project';
 import {dirname, resolve} from 'node:path';
 import {
   cpSync,
-  cwd,
   renameSync,
   unlinkSync,
   writeFileSync,
@@ -141,7 +140,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const templateRelativeDir = 'template';
 const templateDirPath = resolve(__dirname, templateRelativeDir);
 
-const cwdFiles = readdirSync(cwd(), {withFileTypes: true});
+/*const cwdFiles = readdirSync(cwd(), {withFileTypes: true});
 if (cwdFiles.length > 0) {
   if (cwdFiles.some((dirent) => dirent.name === 'package.json')) {
     return;
@@ -152,7 +151,7 @@ if (cwdFiles.length > 0) {
       )
     );
   }
-}
+}*/
 
 cpSync(templateDirPath, cwd(), {
   recursive: true,
