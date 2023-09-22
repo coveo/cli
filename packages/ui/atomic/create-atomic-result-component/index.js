@@ -3,6 +3,7 @@ import '@coveo/create-atomic-component-project';
 import {dirname, resolve} from 'node:path';
 import {
   cpSync,
+  cwd,
   renameSync,
   unlinkSync,
   writeFileSync,
@@ -24,6 +25,21 @@ class SerializableAggregateError extends AggregateError {
       stack: this.stack,
       options: this.options,
       errors: Array.from(this.errors),
+    };
+  }
+}
+
+class InvalidProjectDirectory extends Error {
+  name = 'Invalid project directory';
+  constructor(message) {
+    super(message);
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      stack: this.stack,
     };
   }
 }
@@ -124,6 +140,19 @@ const ensureComponentValidity = (tag) => {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const templateRelativeDir = 'template';
 const templateDirPath = resolve(__dirname, templateRelativeDir);
+
+const cwdFiles = readdirSync(cwd(), {withFileTypes: true});
+if (cwdFiles.length > 0) {
+  if (cwdFiles.some((dirent) => dirent.name === 'package.json')) {
+    return;
+  } else {
+    handleErrors(
+      new InvalidProjectDirectory(
+        'Current working directory is either not empty or not an npm project (no package.json found). Please try again in an empty directory.'
+      )
+    );
+  }
+}
 
 cpSync(templateDirPath, cwd(), {
   recursive: true,
