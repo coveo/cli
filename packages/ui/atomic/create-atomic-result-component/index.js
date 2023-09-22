@@ -140,52 +140,56 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const templateRelativeDir = 'template';
 const templateDirPath = resolve(__dirname, templateRelativeDir);
 
-/*const cwdFiles = readdirSync(cwd(), {withFileTypes: true});
-if (cwdFiles.length > 0) {
-  if (cwdFiles.some((dirent) => dirent.name === 'package.json')) {
-    return;
-  } else {
-    handleErrors(
-      new InvalidProjectDirectory(
-        'Current working directory is either not empty or not an npm project (no package.json found). Please try again in an empty directory.'
-      )
-    );
+const main = () => {
+  const cwdFiles = readdirSync(cwd(), {withFileTypes: true});
+  if (cwdFiles.length > 0) {
+    if (cwdFiles.some((dirent) => dirent.name === 'package.json')) {
+      return;
+    } else {
+      handleErrors(
+        new InvalidProjectDirectory(
+          'Current working directory is either not empty or not an npm project (no package.json found). Please try again in an empty directory.'
+        )
+      );
+    }
   }
-}*/
 
-cpSync(templateDirPath, cwd(), {
-  recursive: true,
-});
+  cpSync(templateDirPath, cwd(), {
+    recursive: true,
+  });
 
-let componentName = process.argv[2];
-if (componentName) {
-  ensureComponentValidity(componentName);
-  const transformers = [
-    {
-      srcPath: 'src/components/sample-result-component',
-      destPath: `src/components/${componentName}`,
-    },
-    {
-      srcPath: `src/components/${componentName}/src/sample-result-component.tsx`,
-      destPath: `src/components/${componentName}/src/${componentName}.tsx`,
-      transform: (text) =>
-        text
-          .replaceAll(/sample-result-component/g, componentName)
-          .replaceAll(/SampleResultComponent/g, camelize(componentName)),
-    },
-    {
-      srcPath: `src/components/${componentName}/src/sample-result-component.css`,
-      destPath: `src/components/${componentName}/src/${componentName}.css`,
-    },
-    {
-      srcPath: `src/components/${componentName}/package.json`,
-      destPath: `src/components/${componentName}/package.json`,
-      transform: (text) =>
-        text.replaceAll(/(@coveo\/)?sample-result-component/g, componentName),
-    },
-  ];
+  let componentName = process.argv[2];
+  if (componentName) {
+    ensureComponentValidity(componentName);
+    const transformers = [
+      {
+        srcPath: 'src/components/sample-result-component',
+        destPath: `src/components/${componentName}`,
+      },
+      {
+        srcPath: `src/components/${componentName}/src/sample-result-component.tsx`,
+        destPath: `src/components/${componentName}/src/${componentName}.tsx`,
+        transform: (text) =>
+          text
+            .replaceAll(/sample-result-component/g, componentName)
+            .replaceAll(/SampleResultComponent/g, camelize(componentName)),
+      },
+      {
+        srcPath: `src/components/${componentName}/src/sample-result-component.css`,
+        destPath: `src/components/${componentName}/src/${componentName}.css`,
+      },
+      {
+        srcPath: `src/components/${componentName}/package.json`,
+        destPath: `src/components/${componentName}/package.json`,
+        transform: (text) =>
+          text.replaceAll(/(@coveo\/)?sample-result-component/g, componentName),
+      },
+    ];
 
-  transform(transformers);
-}
+    transform(transformers);
+  }
 
-successMessage();
+  successMessage();
+};
+
+main();
