@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags} from '@oclif/core';
+import {Args, Flags} from '@oclif/core';
 import {join} from 'node:path';
 import {Config} from '@coveo/cli-commons/config/config';
 import {
@@ -51,13 +51,12 @@ export default class Vue extends CLICommand {
     '$ coveo ui:create:vue-v=1.2.3 myVueProject',
   ];
 
-  public static args = [
-    {
-      name: 'name',
+  public static args = {
+    name: Args.string({
       description: 'The name of the application to create.',
       required: true,
-    },
-  ];
+    }),
+  };
 
   @Trackable({
     eventName: 'ui create',

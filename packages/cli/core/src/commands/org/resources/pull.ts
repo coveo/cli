@@ -5,7 +5,7 @@ import {
   stopSpinner,
 } from '@coveo/cli-commons/utils/ux';
 
-import {Flags} from '@oclif/core';
+import {Command, Flags} from '@oclif/core';
 import {blueBright} from 'chalk';
 import {readJsonSync} from 'fs-extra';
 import {resolve} from 'path';
@@ -37,7 +37,6 @@ import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Example} from '@oclif/core/lib/interfaces';
 import {organization} from '../../../lib/flags/platformCommonFlags';
 import {getTargetOrg} from '../../../lib/utils/platform';
 
@@ -54,6 +53,8 @@ const PullCommandStrings = {
 
         `,
 };
+
+const getAllResourceTypes = () => Object.values(ResourceSnapshotType);
 
 export default class Pull extends CLICommand {
   public static description = 'Pull resources from an organization';
@@ -76,14 +77,14 @@ export default class Pull extends CLICommand {
       description: 'Overwrite resources directory if it exists.',
       default: false,
     }),
-    resourceTypes: Flags.enum<ResourceSnapshotType>({
+    resourceTypes: Flags.custom<ResourceSnapshotType[]>({
       char: 'r',
       helpValue: 'type1 type2',
       description: 'The resources types to pull from the organization.',
       multiple: true,
-      options: allowedResourceType,
-      default: allowedResourceType,
-    }),
+      options: getAllResourceTypes(),
+      default: () => Promise.resolve(getAllResourceTypes()),
+    })(),
     model: Flags.custom<SnapshotPullModel>({
       parse: (input: string): Promise<SnapshotPullModel> => {
         const model = readJsonSync(resolve(input));
@@ -99,7 +100,7 @@ export default class Pull extends CLICommand {
     }),
   };
 
-  public static examples: Example[] = [
+  public static examples: Command.Example[] = [
     {
       command: 'coveo org:resources:pull',
       description:

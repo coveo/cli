@@ -1,6 +1,6 @@
 import {ResourceSnapshotsReportModel} from '@coveo/platform-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {CliUx} from '@oclif/core';
+import {Args, Command, ux} from '@oclif/core';
 import {Config} from '@coveo/cli-commons/config/config';
 import {
   IsAuthenticated,
@@ -14,7 +14,6 @@ import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {startSpinner} from '@coveo/cli-commons/utils/ux';
-import {Example} from '@oclif/core/lib/interfaces';
 import {organization} from '../../../lib/flags/platformCommonFlags';
 import {getTargetOrg} from '../../../lib/utils/platform';
 
@@ -28,15 +27,14 @@ export default class Monitor extends CLICommand {
     ),
   };
 
-  public static args = [
-    {
-      name: 'snapshotId',
+  public static args = {
+    snapshotId: Args.string({
       description: 'The unique identifier of the target snapshot.',
       required: true,
-    },
-  ];
+    }),
+  };
 
-  public static examples: Example[] = [
+  public static examples: Command.Example[] = [
     {
       command:
         'coveo org:resources:monitor --organization myorgid --snapshotId mysnapshotid',
@@ -68,7 +66,7 @@ export default class Monitor extends CLICommand {
 
   private getErrorHandler() {
     return function (this: SnapshotReporter) {
-      CliUx.ux.log(ReportViewerStyles.error(this.resultCode));
+      ux.log(ReportViewerStyles.error(this.resultCode));
     };
   }
 
@@ -78,13 +76,13 @@ export default class Monitor extends CLICommand {
     const header = ReportViewerStyles.header(
       `Monitoring snapshot ${snapshotId}`
     );
-    CliUx.ux.log('');
+    ux.log('');
     startSpinner(header);
   }
 
   private refresh(report: ResourceSnapshotsReportModel) {
     const reporter = new SnapshotReporter(report);
-    CliUx.ux.action.status = reporter.status;
+    ux.action.status = reporter.status;
   }
 
   private async getSnapshot(): Promise<Snapshot> {

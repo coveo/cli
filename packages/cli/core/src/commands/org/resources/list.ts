@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {Config} from '@coveo/cli-commons/config/config';
 import {
@@ -16,7 +16,7 @@ export default class List extends CLICommand {
   public static description = 'List available Snapshots in an organization';
 
   public static flags = {
-    ...CliUx.ux.table.flags(),
+    ...ux.table.flags(),
     ...organization(
       'The unique identifier of the organization containing the snapshots.'
     ),
@@ -42,7 +42,7 @@ export default class List extends CLICommand {
       return;
     }
 
-    CliUx.ux.table(
+    ux.table(
       recordable(snapshots),
       {
         id: {},

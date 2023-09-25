@@ -42,7 +42,7 @@ export const withNormalizeInvalidFields = () => ({
 });
 
 export const withSourceVisibility = () => ({
-  sourceVisibility: Flags.enum({
+  sourceVisibility: Flags.custom<SourceVisibility>({
     options: [
       SourceVisibility.PRIVATE,
       SourceVisibility.SECURED,
@@ -52,5 +52,5 @@ export const withSourceVisibility = () => ({
       'Controls the content security option that should be applied to the items in a source. See https://docs.coveo.com/en/1779/index-content/content-security',
     default: SourceVisibility.SECURED,
     char: 'v',
-  }),
+  })(),
 });

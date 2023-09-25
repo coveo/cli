@@ -3,9 +3,7 @@ jest.mock('@coveo/cli-commons/utils/ux');
 
 const mockedUxInfo = jest.fn();
 jest.mock('@oclif/core', () => ({
-  CliUx: {
-    ux: {info: mockedUxInfo},
-  },
+  ux: {info: mockedUxInfo},
 }));
 
 jest.mock('./filesDiffProcessor');

@@ -2,7 +2,7 @@ import PlatformClient, {
   PrivilegeEvaluatorModel,
   PrivilegeModel,
 } from '@coveo/platform-client';
-import {FlagOutput} from '@oclif/core/lib/interfaces';
+import {FlagOutput} from '@oclif/core/lib/interfaces/parser';
 import {CLICommand} from '../command/cliCommand';
 import {Config} from '../config/config';
 import globalConfig from '../config/globalConfig';

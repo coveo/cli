@@ -1,4 +1,4 @@
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 import {red, italic, green, yellow, ChalkFunction} from 'chalk';
 import {ReportViewerSection} from './reportPreviewerSection';
 import {ReportViewerStyles} from './reportPreviewerStyles';
@@ -71,7 +71,7 @@ export class ReportViewer {
       const entries = Array.from(this.missingVaultEntries).map(
         ({vaultEntryId}) => vaultEntryId
       );
-      CliUx.ux.log(
+      ux.log(
         yellow(
           `Missing vault ${pluralizeIfNeeded(
             ReportViewer.entryPlurable,
@@ -87,7 +87,7 @@ export class ReportViewer {
     this: SnapshotReporter
   ) => void | Promise<void> {
     return function (this: SnapshotReporter) {
-      CliUx.ux.log(dedent`${green('No resources to change')}.
+      ux.log(dedent`${green('No resources to change')}.
 
       The target organization already matches the configuration.`);
       return;
@@ -109,11 +109,11 @@ export class ReportViewer {
     );
 
     if (changedResources.length === 0) {
-      CliUx.ux.log(ReportViewerStyles.header('\nNo changes detected'));
+      ux.log(ReportViewerStyles.header('\nNo changes detected'));
       return;
     }
 
-    CliUx.ux.table(recordable(changedResources), {
+    ux.table(recordable(changedResources), {
       resourceName: {
         header: ReportViewerStyles.header('\nPreviewing snapshot changes:'),
         get: (resource) => this.createSection(resource),
@@ -144,8 +144,8 @@ export class ReportViewer {
     allErrors: Map<Partial<ResourceSnapshotType>, Set<string>>,
     totalCount: number
   ) {
-    CliUx.ux.log(ReportViewerStyles.header('Error Report:'));
-    CliUx.ux.log(
+    ux.log(ReportViewerStyles.header('Error Report:'));
+    ux.log(
       ReportViewerStyles.error(
         `   ${totalCount} ${pluralizeIfNeeded(
           ReportViewer.resourcePlurable,
@@ -164,7 +164,7 @@ export class ReportViewer {
     resourceSnapshotType: string,
     errorOfThisResourceType: Set<string>
   ) {
-    CliUx.ux.log(`\n ${this.prettyPrintResourceName(resourceSnapshotType)}`);
+    ux.log(`\n ${this.prettyPrintResourceName(resourceSnapshotType)}`);
     ReportViewer.printAbridgedMessages(
       Array.from(errorOfThisResourceType),
       ReportViewer.errorPlurable,
@@ -179,14 +179,14 @@ export class ReportViewer {
   ) {
     let remainingErrorsToPrint = ReportViewer.maximumNumberOfErrorsToPrint;
     for (let j = 0; j < messages.length && remainingErrorsToPrint > 0; j++) {
-      CliUx.ux.log(chalker(`  • ${messages[j]}`));
+      ux.log(chalker(`  • ${messages[j]}`));
       remainingErrorsToPrint--;
     }
 
     const unprintedMessages =
       messages.length - ReportViewer.maximumNumberOfErrorsToPrint;
     if (unprintedMessages > 0) {
-      CliUx.ux.log(
+      ux.log(
         italic(
           `  (${unprintedMessages} more ${pluralizeIfNeeded(
             plurable,
@@ -198,6 +198,6 @@ export class ReportViewer {
   }
 
   private printNewLine() {
-    CliUx.ux.log('');
+    ux.log('');
   }
 }

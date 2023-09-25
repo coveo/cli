@@ -4,7 +4,7 @@ import type {
 } from '@coveo/platform-client';
 import {existsSync, mkdirSync, readdirSync, rmSync} from 'node:fs';
 import {join, relative, resolve} from 'node:path';
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 import {Project} from '../../project/project';
 import {spawnProcess, spawnProcessOutput} from '../../utils/process';
 import {SnapshotFactory} from '../snapshotFactory';
@@ -56,7 +56,7 @@ export class ExpandedPreviewer {
     await this.applySnapshotToPreview(dirPath);
     const commitHash = await this.getCommitHash(dirPath);
     stopSpinner({success: true});
-    CliUx.ux.info(dedent`
+    ux.info(dedent`
 
     A Git repository representing the modification has been created here:
     ${dirPath}

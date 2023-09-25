@@ -6,7 +6,7 @@ import {
   rmSync,
 } from 'fs';
 import {join} from 'path';
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 import archiver from 'archiver';
 import {InvalidProjectError} from '../errors';
 import extract from 'extract-zip';
@@ -97,7 +97,7 @@ export class Project {
       if (cachedManifest) {
         writeJsonSync(this.resourceManifestPath, cachedManifest);
       }
-      CliUx.ux.error(error as string | Error);
+      ux.error(error as string | Error);
     }
   }
 

@@ -2,7 +2,7 @@ import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Config} from '@coveo/cli-commons/config/config';
 import {Before} from '@coveo/cli-commons/decorators/before';
 import {UnknownError} from '@coveo/cli-commons/errors/unknownError';
-import {Flags} from '@oclif/core';
+import {Flags, Args} from '@oclif/core';
 import inquirer from 'inquirer';
 import {
   atomicAppPreconditions,
@@ -28,9 +28,12 @@ export default class AtomicInit extends CLICommand {
     }),
   };
 
-  public static args = [
-    {name: 'name', description: 'The name of your project.', required: true},
-  ];
+  public static args = {
+    name: Args.string({
+      description: 'The name of your project.',
+      required: true,
+    }),
+  };
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(AtomicInit);

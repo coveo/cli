@@ -1,6 +1,6 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {UnknownError} from '@coveo/cli-commons/errors/unknownError';
-import {Flags} from '@oclif/core';
+import {Args, Flags} from '@oclif/core';
 import inquirer from 'inquirer';
 import npf from '@coveo/cli-commons/npm/npf';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
@@ -9,7 +9,7 @@ import {handleForkedProcess} from '../../lib/utils/process';
 import {SubprocessError} from '../../lib/errors/subprocessError';
 import {isAggregatedErrorLike} from '../../lib/utils/errorSchemas';
 
-export default class AtomicInit extends CLICommand {
+export default class AtomicComponent extends CLICommand {
   public static description =
     'Scaffold a new custom component. Meant to be executed in a component library created using the `coveo atomic:init --lib` command, or in an npm project, or in an empty folder.';
   public static aliases = ['atomic:cmp'];
@@ -26,9 +26,12 @@ export default class AtomicInit extends CLICommand {
     }),
   };
 
-  public static args = [
-    {name: 'name', description: 'The name of your component.', required: true},
-  ];
+  public static args = {
+    name: Args.string({
+      description: 'The name of your component.',
+      required: true,
+    }),
+  };
 
   @Trackable()
   public async run(): Promise<void> {
@@ -50,7 +53,7 @@ export default class AtomicInit extends CLICommand {
   }
 
   private async getSpawnOptions() {
-    const {args, flags} = await this.parse(AtomicInit);
+    const {args, flags} = await this.parse(AtomicComponent);
     const type = flags.type || (await this.askType());
 
     const initializerPackage = this.getInitializerPackage(type);

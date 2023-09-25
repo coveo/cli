@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {CliUx, Flags} from '@oclif/core';
+import {ux, Flags, Command} from '@oclif/core';
 import {Config} from '@coveo/cli-commons/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {
@@ -9,7 +9,6 @@ import {
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {InvalidCommandError} from '../../lib/errors/InvalidCommandError';
 import {ConfigRenderer} from '@coveo/cli-commons/config/configRenderer';
-import type {Example} from '@oclif/core/lib/interfaces';
 
 export default class Set extends CLICommand {
   public static description = 'Modify the current Coveo CLI configuration.';
@@ -33,7 +32,7 @@ export default class Set extends CLICommand {
     }),
   };
 
-  public static examples: Example[] = [
+  public static examples: Command.Example[] = [
     {
       command: 'coveo config:set --organization myOrgId',
       description: 'connect to a different organization',
@@ -46,7 +45,7 @@ export default class Set extends CLICommand {
     const {flags} = await this.parse(Set);
     // TODO CDX-1246
     if (flags.environment || flags.region) {
-      CliUx.ux.error(
+      ux.error(
         'To connect to a different region or environment, use the `auth:login` command'
       );
     }

@@ -11,11 +11,10 @@ import {
 import type {HostedPage, New} from '@coveo/platform-client';
 import type PlatformClient from '@coveo/platform-client';
 import {createSearchPagesPrivilege} from '@coveo/cli-commons/preconditions/platformPrivilege';
-import {Flags} from '@oclif/core';
+import {Command, Flags} from '@oclif/core';
 import {readJsonSync, ensureDirSync, readFileSync} from 'fs-extra';
 import {DeployConfigError} from '../../lib/errors/deployErrors';
 import {join} from 'path';
-import {Example} from '@oclif/core/lib/interfaces';
 import {confirm, startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
 import {getTargetOrg} from '../../lib/utils/platform';
 import {Config} from '@coveo/cli-commons/config/config';
@@ -129,7 +128,7 @@ export default class Deploy extends CLICommand {
     ),
   };
 
-  public static examples: Example[] = [
+  public static examples: Command.Example[] = [
     {
       command: '<%= config.bin %> <%= command.id %>',
       description:

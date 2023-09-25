@@ -11,6 +11,7 @@ import {writeSourceContentPrivilege} from '@coveo/cli-commons/preconditions/plat
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {withSourceVisibility} from '../../../lib/commonFlags';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
+import {Args} from '@oclif/core';
 
 export default class SourcePushNew extends CLICommand {
   public static description =
@@ -20,13 +21,12 @@ export default class SourcePushNew extends CLICommand {
     ...withSourceVisibility(),
   };
 
-  public static args = [
-    {
-      name: 'name',
-      description: 'The name of the source to create.',
+  public static args = {
+    name: Args.string({
+      description: 'The name of the application to create.',
       required: true,
-    },
-  ];
+    }),
+  };
 
   @Trackable()
   @Preconditions(

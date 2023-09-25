@@ -19,13 +19,13 @@ export const wait = () => ({
 });
 
 export const previewLevel = () => ({
-  previewLevel: Flags.enum({
+  previewLevel: Flags.custom<PreviewLevelValue>({
     char: 'p',
     description:
       'The verbosity of the preview. The `light` preview is faster to generate but only contains a limited amount of information, as opposed to the `detailed` preview that takes more time to generate, but returns a diff representation of all the changes to apply.',
     options: Object.values(PreviewLevelValue),
     default: PreviewLevelValue.Detailed,
-  }),
+  })(),
 });
 
 export const snapshotId = () => ({
