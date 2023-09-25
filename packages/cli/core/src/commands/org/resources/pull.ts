@@ -54,8 +54,6 @@ const PullCommandStrings = {
         `,
 };
 
-const getAllResourceTypes = () => Object.values(ResourceSnapshotType);
-
 export default class Pull extends CLICommand {
   public static description = 'Pull resources from an organization';
 
@@ -82,8 +80,8 @@ export default class Pull extends CLICommand {
       helpValue: 'type1 type2',
       description: 'The resources types to pull from the organization.',
       multiple: true,
-      options: getAllResourceTypes(),
-      default: () => Promise.resolve(getAllResourceTypes()),
+      options: allowedResourceType,
+      default: () => Promise.resolve(allowedResourceType),
     })(),
     model: Flags.custom<SnapshotPullModel>({
       parse: (input: string): Promise<SnapshotPullModel> => {
