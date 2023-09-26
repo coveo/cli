@@ -42,21 +42,6 @@ class InvalidProjectDirectory extends Error {
   }
 }
 
-class InvalidProjectDirectory extends Error {
-  name = 'Invalid project directory';
-  constructor(message) {
-    super(message);
-  }
-
-  toJSON() {
-    return {
-      name: this.name,
-      message: this.message,
-      stack: this.stack,
-    };
-  }
-}
-
 const handleErrors = (error) => {
   if (process.channel) {
     process.send(error);
