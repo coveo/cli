@@ -7,6 +7,7 @@ import {
   unlinkSync,
   writeFileSync,
   readFileSync,
+  readdirSync,
 } from 'node:fs';
 import {cwd} from 'node:process';
 import {fileURLToPath} from 'node:url';

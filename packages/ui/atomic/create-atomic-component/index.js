@@ -7,6 +7,7 @@ import {
   unlinkSync,
   writeFileSync,
   readFileSync,
+  readdirSync,
 } from 'node:fs';
 import {cwd} from 'node:process';
 import {fileURLToPath} from 'node:url';
@@ -77,6 +78,7 @@ const camelize = (str) =>
   str
     .replace(/-(.)/g, (_, group) => group.toUpperCase())
     .replace(/^./, (match) => match.toUpperCase());
+
 const transform = (transformers) => {
   for (const {srcPath, destPath, transform} of transformers) {
     if (!srcPath) {
