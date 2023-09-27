@@ -1,3 +1,20 @@
+# release-18 (2023-08-24)
+
+### Bug Fixes
+
+- **cli:** remove deploy.example ([#1321](https://github.com/coveo/cli/issues/1321)) ([a79e335](https://github.com/coveo/cli/commits/a79e335a4b476c011945b56f417e13cbd295cf0d))
+
+# release-17 (2023-07-26)
+
+### Bug Fixes
+
+- **cli:** use ci-friendly confirm ([1a3aab5](https://github.com/coveo/cli/commits/1a3aab557b93039e59966b2c7595873b7adf754b))
+- **deps:** update dependency semver to v7.5.2 [security] j:cdx-227 ([#1319](https://github.com/coveo/cli/issues/1319)) ([e4b92d7](https://github.com/coveo/cli/commits/e4b92d72be92057a7d2ef6708c1dea75814ae259))
+
+### Features
+
+- **cli-commons:** add ci-friendly confirm ([30db525](https://github.com/coveo/cli/commits/30db525a680d0f15ce9e0e9a8c71aabb701bde02))
+
 # release-16 (2023-06-13)
 
 ### Bug Fixes

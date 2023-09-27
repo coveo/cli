@@ -1,7 +1,7 @@
 {
   "name": "cli-tools",
   "private": true,
-  "version": "1.0.0-16",
+  "version": "1.0.0-18",
   "author": "Coveo",
   "bin": {
     "coveo": "./bin/run"
@@ -46,7 +46,7 @@
     "patch-package": "6.5.1",
     "prettier": "2.8.8",
     "rimraf": "4.4.1",
-    "semver": "7.5.0",
+    "semver": "7.5.2",
     "ts-dedent": "2.2.0",
     "ts-node": "10.9.1",
     "typescript": "4.9.5",
@@ -86,11 +86,13 @@
     "commit-msg": "node ./hooks/commit-msg.js",
     "pre-commit": "lint-staged",
     "postinstall": "patch-package && nx run-many --target=postinstall --all",
-    "release": "npm run nx:graph && npm run release:phase0 && npm run release:phase1 && npm run release:phase2",
+    "release:npm": "npm run nx:graph && npm run release:phase0 && npm run release:phase1 && npm run release:phase2",
+    "release:git": "npx -p=@coveord/release git-publish-all",
+    "release:github": "npx -p=@coveord/release github-publish",
     "nx:graph": "nx graph --file=topology.json",
     "release:phase0": "npx -p=@coveord/release git-lock",
     "release:phase1": "nx run-many --target=release:phase1 --all --parallel=false --output-style=stream",
-    "release:phase2": "npx -p=@coveord/release git-publish-all"
+    "release:phase2": "npx -p=@coveord/release is-cli-release"
   },
   "workspaces": [
     "packages/*",

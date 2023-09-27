@@ -1,3 +1,13 @@
+# 2.6.0 (2023-07-26)
+
+### Bug Fixes
+
+- **deps:** update dependency semver to v7.5.2 [security] j:cdx-227 ([#1319](https://github.com/coveo/cli/issues/1319)) ([e4b92d7](https://github.com/coveo/cli/commits/e4b92d72be92057a7d2ef6708c1dea75814ae259))
+
+### Features
+
+- **cli-commons:** add ci-friendly confirm ([30db525](https://github.com/coveo/cli/commits/30db525a680d0f15ce9e0e9a8c71aabb701bde02))
+
 # 2.5.0 (2023-06-13)
 
 ### Bug Fixes
