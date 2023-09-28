@@ -40,14 +40,17 @@ export async function createOrg(
     `/rest/organizations?name=${name}&organizationTemplate=${organizationTemplate}`,
     process.env.PLATFORM_HOST
   );
-  return (
-    await (
-      await fetch(url.href, {
-        method: 'POST',
-        ...authHeader(accessToken),
-      })
-    ).json()
-  ).id;
+  const response = await (
+    await fetch(url.href, {
+      method: 'POST',
+      ...authHeader(accessToken),
+    })
+  ).json();
+
+  console.log('********* createOrg ************');
+  console.log(response);
+
+  return response.id;
 }
 
 function authHeader(accessToken: string) {
