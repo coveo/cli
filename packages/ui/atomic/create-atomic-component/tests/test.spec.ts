@@ -1,6 +1,6 @@
 import {ChildProcess} from 'node:child_process';
 import {join} from 'node:path';
-import {mkdirSync} from 'node:fs';
+import {mkdirSync, writeFileSync, rmSync} from 'node:fs';
 import {npmSync} from '@coveo/do-npm';
 import {startVerdaccio} from '@coveo/verdaccio-starter';
 import {hashElement} from 'folder-hash';
@@ -17,6 +17,29 @@ describe(PACKAGE_NAME, () => {
   let testDirectory: string;
   let npmCache: string;
   let verdaccioUrl: string;
+
+  const assertAllAggregateErrorsFired = (
+    tag: string,
+    ...expectedErrorMessages: string[]
+  ) => {
+    const {stderr} = npmSync(
+      ['init', PACKAGE_NAME.replace('/create-', '/'), '--', tag],
+      {
+        env: {
+          ...process.env,
+          npm_config_registry: verdaccioUrl,
+          npm_config_cache: npmCache,
+        },
+        cwd: testDirectory,
+      }
+    );
+
+    expectedErrorMessages.forEach((expectedMessage) => {
+      expect(stderr.toString()).toEqual(
+        expect.stringContaining(expectedMessage)
+      );
+    });
+  };
 
   beforeAll(async () => {
     ({verdaccioUrl, verdaccioProcess} = await startVerdaccio([
@@ -51,29 +74,6 @@ describe(PACKAGE_NAME, () => {
     const trailingDashTag = 'dash-';
     const leadingDashTag = '-dash';
     const messedUpTag = '-My#--Component@-';
-
-    const assertAllAggregateErrorsFired = (
-      tag: string,
-      ...expectedErrorMessages: string[]
-    ) => {
-      const {stderr} = npmSync(
-        ['init', PACKAGE_NAME.replace('/create-', '/'), '--', tag],
-        {
-          env: {
-            ...process.env,
-            npm_config_registry: verdaccioUrl,
-            npm_config_cache: npmCache,
-          },
-          cwd: testDirectory,
-        }
-      );
-
-      expectedErrorMessages.forEach((expectedMessage) => {
-        expect(stderr.toString()).toEqual(
-          expect.stringContaining(expectedMessage)
-        );
-      });
-    };
 
     it.each([
       leadingSpaceTag,
@@ -144,6 +144,65 @@ describe(PACKAGE_NAME, () => {
         `"${messedUpTag}" cannot contain multiple dashes (--) next to each other`,
         `"${messedUpTag}" cannot start with a dash (-)`,
         `"${messedUpTag}" cannot end with a dash (-)`
+      );
+    });
+  });
+
+  describe('ensureDirectoryValidity', () => {
+    const assertAggregateErrorsNotFired = (
+      tag: string,
+      expectedErrorMessages: string
+    ) => {
+      const {stderr} = npmSync(
+        ['init', PACKAGE_NAME.replace('/create-', '/'), '--', tag],
+        {
+          env: {
+            ...process.env,
+            npm_config_registry: verdaccioUrl,
+            npm_config_cache: npmCache,
+          },
+          cwd: testDirectory,
+        }
+      );
+
+      expect(stderr.toString()).not.toEqual(
+        expect.stringContaining(expectedErrorMessages)
+      );
+    };
+
+    beforeEach(() => {
+      testDirectory = join(tempDirectory.name, 'dir-validity');
+      mkdirSync(testDirectory, {recursive: true});
+    });
+
+    afterEach(() => {
+      rmSync(testDirectory, {recursive: true});
+    });
+
+    it('should not error when in empty directory', () => {
+      assertAggregateErrorsNotFired(
+        'component-name',
+        'Invalid project directory'
+      );
+    });
+
+    it('should not error when in non-empty directory with package.json', () => {
+      writeFileSync(join(testDirectory, 'package.json'), '{}');
+      assertAggregateErrorsNotFired(
+        'component-name',
+        'Invalid project directory'
+      );
+    });
+
+    it('should error when in non-empty directory without package.json', () => {
+      writeFileSync(
+        join(testDirectory, '__init__.py'),
+        "# Wait, this isn't a Headless project :O"
+      );
+
+      assertAllAggregateErrorsFired(
+        'component-name',
+        'Invalid project directory'
       );
     });
   });
