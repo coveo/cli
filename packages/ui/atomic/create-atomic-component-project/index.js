@@ -48,7 +48,7 @@ const main = () => {
     } else {
       handleErrors(
         new InvalidProjectDirectory(
-          'Current working directory is either not empty or not an npm project (no package.json found). Please try again in a valid project (see [When to Use the Coveo CLI](https://docs.coveo.com/en/cli/#when-to-use-the-coveo-cli).'
+          'Current working directory is either not empty or not an npm project (no package.json found). Please try again in a valid project (see [`atomic:cmp` documentation](https://docs.coveo.com/en/cli/#coveo-atomiccmp-name)).'
         )
       );
     }
