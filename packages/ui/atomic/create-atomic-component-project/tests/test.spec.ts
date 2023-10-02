@@ -1,6 +1,6 @@
 import {ChildProcess} from 'node:child_process';
 import {join} from 'node:path';
-import {mkdirSync} from 'node:fs';
+import {mkdirSync, writeFileSync, rmSync} from 'node:fs';
 import {lookup} from 'node:dns/promises';
 import {npmSync, npmAsync} from '@coveo/do-npm';
 import {getStdoutStderrBuffersFromProcess} from '@coveo/process-helpers';
@@ -133,6 +133,76 @@ describe(PACKAGE_NAME, () => {
     it('should do some search query when loading the page', async () => {
       await page.goto(serveAddress, {waitUntil: 'networkidle2'});
       expect(interceptedRequests.some(isSearchRequestOrResponse)).toBe(true);
+    });
+  });
+
+  describe('ensureDirectoryValidity', () => {
+    const assertAggregateErrorsNotFired = (
+      tag: string,
+      expectedErrorMessages: string
+    ) => {
+      const {stderr} = npmSync(
+        ['init', PACKAGE_NAME.replace('/create-', '/'), '--', tag],
+        {
+          env: {
+            ...process.env,
+            npm_config_registry: verdaccioUrl,
+            npm_config_cache: dirSync({unsafeCleanup: true}).name,
+          },
+          cwd: testDirectory,
+        }
+      );
+
+      expect(stderr.toString()).not.toEqual(
+        expect.stringContaining(expectedErrorMessages)
+      );
+    };
+
+    beforeEach(() => {
+      testDirectory = join(tempDirectory.name, 'dir-validity');
+      mkdirSync(testDirectory, {recursive: true});
+    });
+
+    afterEach(() => {
+      rmSync(testDirectory, {recursive: true});
+    });
+
+    it('should not error when in empty directory', () => {
+      assertAggregateErrorsNotFired(
+        'component-name',
+        'Invalid project directory'
+      );
+    });
+
+    it('should not error when in non-empty directory with package.json', () => {
+      writeFileSync(join(testDirectory, 'package.json'), '{}');
+      assertAggregateErrorsNotFired(
+        'component-name',
+        'Invalid project directory'
+      );
+    });
+
+    it('should error when in non-empty directory without package.json', () => {
+      writeFileSync(
+        join(testDirectory, '__init__.py'),
+        "# Wait, this isn't a Headless project :O"
+      );
+
+      const {stderr} = npmSync(
+        ['init', PACKAGE_NAME.replace('/create-', '/'), '--', 'component-name'],
+        {
+          env: {
+            ...process.env,
+            npm_config_registry: verdaccioUrl,
+            npm_config_cache: dirSync({unsafeCleanup: true}).name,
+          },
+          cwd: testDirectory,
+        }
+      );
+
+      expect(stderr.toString()).toEqual(
+        expect.stringContaining('Invalid project directory')
+      );
     });
   });
 });
