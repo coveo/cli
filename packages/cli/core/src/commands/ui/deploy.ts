@@ -287,6 +287,10 @@ export default class Deploy extends CLICommand {
     startSpinner(`Creating new Hosted Page named "${page.name}".`);
 
     const response = await this.platformClient.hostedPages.create(page);
+    console.log('*********************');
+    console.log(response);
+    console.log('*********************');
+
     stopSpinner();
     this.log(
       `To update your page, run "coveo ${this.identifier} -p=${response.id}".`
