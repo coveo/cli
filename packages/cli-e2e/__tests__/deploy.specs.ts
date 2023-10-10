@@ -84,7 +84,8 @@ describe('ui:deploy', () => {
     await processManager.killAllProcesses();
   });
 
-  describe('happy paths', () => {
+  // CDX-1489: unskip once service is fixed
+  describe.skip('happy paths', () => {
     it(
       'creates a new hosted page',
       async () => {
