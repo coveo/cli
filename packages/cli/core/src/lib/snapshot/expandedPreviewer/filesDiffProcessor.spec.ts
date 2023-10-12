@@ -187,4 +187,21 @@ describe('#recursiveDirectoryDiff', () => {
       );
     }
   );
+
+  fancyIt()('should ignore non json files', () => {
+    mockedReadDir.mockReturnValueOnce([]);
+    mockedReadDir.mockReturnValueOnce([
+      getFile('someFile.txt'),
+      getFile('someFile.json'),
+    ]);
+
+    recursiveDirectoryDiff('currentDir', 'nextDir', false);
+
+    expect(mockedReadJson).not.toHaveBeenCalledWith(
+      join('nextDir', 'someFile.txt')
+    );
+    expect(mockedReadJson).toHaveBeenCalledWith(
+      join('nextDir', 'someFile.json')
+    );
+  });
 });
