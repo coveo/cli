@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {
   Preconditions,
@@ -12,7 +12,7 @@ export default class List extends CLICommand {
   public static description = 'List Coveo organizations.';
 
   public static flags = {
-    ...CliUx.ux.table.flags(),
+    ...ux.table.flags(),
   };
 
   @Trackable()
@@ -25,7 +25,7 @@ export default class List extends CLICommand {
         'You do not have access to any organization. Make sure you are logged in the correct environment and region, with coveo auth:login'
       );
     } else {
-      CliUx.ux.table(
+      ux.table(
         recordable(orgs),
         {
           id: {},

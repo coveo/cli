@@ -2,7 +2,7 @@ import {green} from 'chalk';
 import {UploadBatchCallbackData} from '@coveo/push-api-client';
 import {errorMessage, successMessage} from './userFeedback';
 import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/utils/string';
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 import {UploadProgress} from '@coveo/push-api-client/dist/definitions/interfaces';
 import {logNewLine} from './addCommon';
 
@@ -73,22 +73,18 @@ export class AddDisplay {
       return `${count}${total ? ['/', total].join('') : ''}`;
     };
 
-    CliUx.ux.styledHeader('Push Summary');
+    ux.styledHeader('Push Summary');
 
-    CliUx.ux.log(
+    ux.log(
       `${formatCount(added)} ${pluralized(added)} successfully sent to the API`
     );
 
     if (failed > 0) {
-      CliUx.ux.log(
-        `${formatCount(failed)} ${pluralized(failed)} failed to be sent`
-      );
+      ux.log(`${formatCount(failed)} ${pluralized(failed)} failed to be sent`);
     }
 
     if (remaining && remaining > 0) {
-      CliUx.ux.log(
-        `${formatCount(remaining)} unprocessed ${pluralized(remaining)}`
-      );
+      ux.log(`${formatCount(remaining)} unprocessed ${pluralized(remaining)}`);
     }
 
     logNewLine();

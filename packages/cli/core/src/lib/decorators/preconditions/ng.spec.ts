@@ -6,7 +6,7 @@ import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from '@coveo/cli-commons/utils/getFakeCommand';
 
 import {IsNgVersionInRange} from './ng';
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
 import {getPackageVersion} from '../../utils/misc';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
@@ -22,7 +22,7 @@ describe('IsNgInstalled', () => {
   };
 
   const mockConfirm = () => {
-    Object.defineProperty(CliUx.ux, 'confirm', {value: jest.fn()});
+    Object.defineProperty(ux, 'confirm', {value: jest.fn()});
   };
   let fakeCommand: CLICommand;
 

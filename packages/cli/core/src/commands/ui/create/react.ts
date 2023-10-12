@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags} from '@oclif/core';
+import {Args, Flags} from '@oclif/core';
 import {Config} from '@coveo/cli-commons/config/config';
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
@@ -56,13 +56,12 @@ export default class React extends CLICommand {
     }),
   };
 
-  public static args = [
-    {
-      name: 'name',
+  public static args = {
+    name: Args.string({
       description: 'The name of the application to create.',
       required: true,
-    },
-  ];
+    }),
+  };
 
   @Trackable({
     eventName: 'ui create',

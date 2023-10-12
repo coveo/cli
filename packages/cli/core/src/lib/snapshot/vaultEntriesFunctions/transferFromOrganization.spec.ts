@@ -1,7 +1,7 @@
 const mockedCliConfirm = jest.fn();
 const mockedCliWarn = jest.fn();
 jest.mock('@oclif/core', () => ({
-  CliUx: {ux: {warn: mockedCliWarn, confirm: mockedCliConfirm}},
+  ux: {warn: mockedCliWarn, confirm: mockedCliConfirm},
 }));
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('../../project/project');
@@ -18,7 +18,7 @@ import {
   confirm,
 } from '@coveo/cli-commons/utils/ux';
 import PlatformClient, {VaultFetchStrategy} from '@coveo/platform-client';
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 import {Configuration} from '@coveo/cli-commons/config/config';
 import {SnapshotMissingVaultEntriesFromOriginError} from '../../errors/vaultErrors';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
@@ -36,7 +36,7 @@ describe('#tryTransferFromOrganization', () => {
     SnapshotMissingVaultEntriesFromOriginError
   );
   const mockedCliConfirm = jest.mocked(confirm);
-  const mockedCliWarn = jest.mocked(CliUx.ux.warn);
+  const mockedCliWarn = jest.mocked(ux.warn);
   const mockedVaultList = jest.fn();
   const mockedVaultImport = jest.fn();
   const mockedGetClient = jest.fn();

@@ -1,5 +1,5 @@
 import {VaultFetchStrategy, VaultEntryModel} from '@coveo/platform-client';
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 import {
   formatOrgId,
   startSpinner,
@@ -40,7 +40,7 @@ export async function tryTransferFromOrganization({
 
   const authenticatedClient = new AuthenticatedClient();
   if (!(await authenticatedClient.getUserHasAccessToOrg(originOrgId))) {
-    CliUx.ux.warn(dedent`
+    ux.warn(dedent`
         We mapped this snapshot to ${formatOrgId(originOrgId)}.
         If you want to transfer the vault entries from ${formatOrgId(
           originOrgId
@@ -57,7 +57,7 @@ export async function tryTransferFromOrganization({
   );
 
   if (missingEntriesFromOrigin.length > 0) {
-    CliUx.ux.warn(
+    ux.warn(
       new SnapshotMissingVaultEntriesFromOriginError(
         originOrgId,
         snapshot.targetId,
@@ -82,8 +82,8 @@ export async function tryTransferFromOrganization({
     return true;
   } catch (error) {
     stopSpinner({success: false});
-    CliUx.ux.warn('Error encountered while transferring vault entries`');
-    CliUx.ux.warn(typeof error === 'string' ? error : JSON.stringify(error));
+    ux.warn('Error encountered while transferring vault entries`');
+    ux.warn(typeof error === 'string' ? error : JSON.stringify(error));
     return false;
   }
 }

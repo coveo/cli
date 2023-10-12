@@ -1,6 +1,6 @@
 const mockedUxError = jest.fn();
 jest.mock('@oclif/core', () => ({
-  CliUx: {ux: {error: mockedUxError}},
+  ux: {error: mockedUxError},
 }));
 jest.mock('./configErrors');
 jest.mock('fs-extra');

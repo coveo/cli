@@ -26,6 +26,7 @@ import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClie
 import {formatErrorMessage} from '../../../lib/addCommon';
 import {getFileNames} from '../../../lib/getFileNames';
 import {AddDisplay} from '../../../lib/addDisplay';
+import {Args} from '@oclif/core';
 
 export default class SourcePushAdd extends CLICommand {
   public static description =
@@ -38,14 +39,13 @@ export default class SourcePushAdd extends CLICommand {
     ...withNormalizeInvalidFields(),
   };
 
-  public static args = [
-    {
-      name: 'sourceId',
+  public static args = {
+    sourceId: Args.string({
       required: true,
       description:
         'The identifier of the source on which to perform the add operation. See source:list to obtain the identifier.',
-    },
-  ];
+    }),
+  };
 
   private display = new AddDisplay();
 

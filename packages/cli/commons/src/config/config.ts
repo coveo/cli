@@ -1,5 +1,5 @@
 import {Region} from '@coveo/platform-client';
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 import {
   pathExistsSync,
   createFileSync,
@@ -52,20 +52,19 @@ export class Config {
       return content;
     } catch (e) {
       if (e instanceof IncompatibleConfigurationError) {
-        CliUx.ux.error(
+        ux.error(
           dedent`
             The configuration at ${this.configPath} is not compatible with this version of the CLI:
             ${e.message}`,
           {exit: false}
         );
       } else {
-        CliUx.ux.error(
-          `Error while reading configuration at ${this.configPath}`,
-          {exit: false}
-        );
+        ux.error(`Error while reading configuration at ${this.configPath}`, {
+          exit: false,
+        });
       }
       this.replace(DefaultConfig);
-      CliUx.ux.error(
+      ux.error(
         `Configuration has been reset to default value: ${JSON.stringify(
           DefaultConfig
         )}`,

@@ -1,6 +1,6 @@
 import {FilterHostType, SourceModel} from '@coveo/platform-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 import {
   IsAuthenticated,
   Preconditions,
@@ -15,7 +15,7 @@ export default class SourceList extends CLICommand {
     'List all available push sources in your Coveo organization';
 
   public static flags = {
-    ...CliUx.ux.table.flags(),
+    ...ux.table.flags(),
   };
 
   @Trackable()
@@ -43,7 +43,7 @@ export default class SourceList extends CLICommand {
       return;
     }
 
-    CliUx.ux.table(
+    ux.table(
       this.flattenSourceModels(sources.sourceModels),
       {
         id: {},

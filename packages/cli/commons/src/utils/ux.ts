@@ -1,4 +1,4 @@
-import {CliUx} from '@oclif/core';
+import {ux} from '@oclif/core';
 import isCi from 'is-ci';
 import {red, green, magenta} from 'chalk';
 
@@ -15,24 +15,24 @@ export function shouldUseColor() {
 }
 
 export function startSpinner(task: string, status?: string) {
-  if (CliUx.ux.action.running) {
-    CliUx.ux.action.stop(green('✔'));
+  if (ux.action.running) {
+    ux.action.stop(green('✔'));
   }
-  CliUx.ux.action.start(task, status);
+  ux.action.start(task, status);
 }
 
 export function stopSpinner(options?: {success?: boolean}) {
-  if (!CliUx.ux.action.running) {
+  if (!ux.action.running) {
     return;
   }
   const defaultOptions = {success: true};
   const {success} = {...defaultOptions, ...options};
   const symbol = success ? green('✔') : red.bold('!');
-  CliUx.ux.action.stop(`${symbol}`.trimEnd());
+  ux.action.stop(`${symbol}`.trimEnd());
 }
 
 export const formatOrgId = (orgId: TemplateStringsArray | string) =>
   shouldUseColor() ? magenta(orgId) : orgId;
 
 export const confirm = (message: string, ciDefault: boolean) =>
-  isCi ? Promise.resolve(ciDefault) : CliUx.ux.confirm(message);
+  isCi ? Promise.resolve(ciDefault) : ux.confirm(message);

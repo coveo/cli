@@ -25,7 +25,7 @@ import {
   getMissingVaultEntryReport,
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
-import {CliUx, Command} from '@oclif/core';
+import {ux, Command} from '@oclif/core';
 
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {IsGitInstalled} from '../../../lib/decorators/preconditions';
@@ -420,7 +420,7 @@ describe('org:resources:preview', () => {
       test
         .stdout()
         .stderr()
-        .stub(CliUx.ux, 'confirm', () => () => Promise.resolve(false))
+        .stub(ux, 'confirm', () => () => Promise.resolve(false))
         .command(['org:resources:preview'])
         .catch(/Your destination organization is missing vault entries/)
         .it('should throw an error for invalid snapshots');
