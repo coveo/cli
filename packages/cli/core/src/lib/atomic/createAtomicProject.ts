@@ -34,7 +34,7 @@ export const atomicAppInitializerPackage = '@coveo/create-atomic';
 export const atomicLibInitializerPackage =
   '@coveo/create-atomic-component-project';
 
-const supportedNodeVersions = '16.x || 18.x';
+const supportedNodeVersions = '>=18.1.1';
 
 const transformPackageNameToNpmInitializer = (packageName: string) =>
   packageName.replace('/create-', '/');
