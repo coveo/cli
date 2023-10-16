@@ -35,7 +35,7 @@ export default class React extends CLICommand {
   public static cliPackage = 'create-react-app@latest';
 
   /**
-   * "You’ll need to have Node 14.0.0 or later version on your local development machine"
+   * "You’ll need to have Node 18.1.1 or later version on your local development machine"
    *  https://github.com/facebook/create-react-app#creating-an-app
    */
   public static requiredNodeVersion = '>=18.1.1';
