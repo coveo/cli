@@ -35,7 +35,7 @@ describe('hooks:checkNodeVersion', () => {
     .stdout()
     .stderr()
     .do(() => {
-      setProcessNodeVersion('v18.12.0');
+      setProcessNodeVersion('v18.18.1');
     })
     .command(['help'])
     .it('should not fail when the Node version is supported', ({stdout}) => {
