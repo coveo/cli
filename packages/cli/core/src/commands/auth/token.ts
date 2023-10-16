@@ -7,8 +7,6 @@ import {Region} from '@coveo/platform-client';
 import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {formatOrgId} from '@coveo/cli-commons/utils/ux';
-import {readFile} from 'fs';
-import {} from 'readline';
 import {readFromStdinWithTimeout} from '../../lib/utils/process';
 
 export default class Token extends CLICommand {
