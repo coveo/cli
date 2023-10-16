@@ -69,7 +69,7 @@ describe('auth:token', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'prompt', () => async () => 'someToken')
+      .stub(CliUx.ux, 'prompt', () => () => 'someToken')
       .command(['auth:token', '-e', environment])
       .it(`writes the -e=${environment} flag to the configuration`, () => {
         expect(mockConfigSet).toHaveBeenCalledWith('environment', environment);
@@ -80,7 +80,7 @@ describe('auth:token', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'prompt', () => async () => 'someToken')
+      .stub(CliUx.ux, 'prompt', () => () => 'someToken')
       .command(['auth:token', '-r', region])
       .it(`writes the -r=${region} flag  and configuration`, () => {
         expect(mockConfigSet).toHaveBeenCalledWith(
@@ -94,7 +94,7 @@ describe('auth:token', () => {
     test
       .stdout()
       .stderr()
-      .stub(CliUx.ux, 'prompt', () => async () => 'this-is-the-token')
+      .stub(CliUx.ux, 'prompt', () => () => 'this-is-the-token')
       .command(['auth:token'])
       .it('save token from oauth service', () => {
         expect(mockConfigSet).toHaveBeenCalledWith(
@@ -111,7 +111,7 @@ describe('auth:token', () => {
     .do(() => {
       mockGetHasAccessToOrg.mockReturnValueOnce(Promise.resolve(true));
     })
-    .stub(CliUx.ux, 'prompt', () => async () => 'some-token')
+    .stub(CliUx.ux, 'prompt', () => () => 'some-token')
     .command(['auth:token'])
     .it(
       'succeed when the organization and the token flags are valid',
@@ -128,7 +128,7 @@ describe('auth:token', () => {
     })
     .stdout()
     .stderr()
-    .stub(CliUx.ux, 'prompt', () => async () => 'some-token')
+    .stub(CliUx.ux, 'prompt', () => () => 'some-token')
     .command(['auth:token'])
     .it(
       'find the org associated with the token and saves it in the config',
