@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags} from '@oclif/core';
+import {CliUx, Flags} from '@oclif/core';
 import {Config} from '@coveo/cli-commons/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {PlatformEnvironment} from '@coveo/cli-commons/platform/environment';
@@ -7,6 +7,9 @@ import {Region} from '@coveo/platform-client';
 import {withEnvironment, withRegion} from '../../lib/flags/platformCommonFlags';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {formatOrgId} from '@coveo/cli-commons/utils/ux';
+import {readFile} from 'fs';
+import {} from 'readline';
+import {readFromStdinWithTimeout} from '../../lib/utils/process';
 
 export default class Token extends CLICommand {
   private configuration!: Config;
@@ -18,12 +21,11 @@ export default class Token extends CLICommand {
   public static flags = {
     ...withRegion(),
     ...withEnvironment(),
-    token: Flags.string({
-      char: 't',
+    stdin: Flags.boolean({
+      char: 's',
       description:
-        'The API-Key that shall be used to authenticate you to the organization. See <https://github.com/coveo/cli/wiki/Using-the-CLI-using-an-API-Key>.',
-      required: true,
-      helpValue: 'xxx-api-key',
+        'Read the token from stdin. Default to true when running in a CI environment.',
+      default: process.env.CI === 'true',
     }),
   };
 
@@ -52,7 +54,14 @@ export default class Token extends CLICommand {
 
   private async saveToken() {
     const {flags} = await this.parse(Token);
-    this.configuration.set('accessToken', flags.token);
+
+    const tok = flags.stdin
+      ? await readFromStdinWithTimeout(1000)
+      : await CliUx.ux.prompt('Enter your access token: ', {
+          type: 'hide',
+        });
+
+    this.configuration.set('accessToken', tok);
     this.configuration.set('anonymous', true);
   }
 

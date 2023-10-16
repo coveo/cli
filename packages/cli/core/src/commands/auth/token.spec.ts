@@ -8,6 +8,7 @@ import {test} from '@oclif/test';
 import {Config} from '@coveo/cli-commons/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {PlatformEnvironment} from '@coveo/cli-commons/platform/environment';
+import {CliUx} from '@oclif/core';
 const mockedConfig = jest.mocked(Config);
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 
@@ -68,7 +69,8 @@ describe('auth:token', () => {
     test
       .stdout()
       .stderr()
-      .command(['auth:token', '-e', environment, '-t', 'someToken'])
+      .stub(CliUx.ux, 'prompt', () => async () => 'someToken')
+      .command(['auth:token', '-e', environment])
       .it(`writes the -e=${environment} flag to the configuration`, () => {
         expect(mockConfigSet).toHaveBeenCalledWith('environment', environment);
       });
@@ -78,7 +80,8 @@ describe('auth:token', () => {
     test
       .stdout()
       .stderr()
-      .command(['auth:token', '-r', region, '-t', 'someToken'])
+      .stub(CliUx.ux, 'prompt', () => async () => 'someToken')
+      .command(['auth:token', '-r', region])
       .it(`writes the -r=${region} flag  and configuration`, () => {
         expect(mockConfigSet).toHaveBeenCalledWith(
           'region',
@@ -91,7 +94,8 @@ describe('auth:token', () => {
     test
       .stdout()
       .stderr()
-      .command(['auth:token', '-t', 'this-is-the-token'])
+      .stub(CliUx.ux, 'prompt', () => async () => 'this-is-the-token')
+      .command(['auth:token'])
       .it('save token from oauth service', () => {
         expect(mockConfigSet).toHaveBeenCalledWith(
           'accessToken',
@@ -104,17 +108,11 @@ describe('auth:token', () => {
   test
     .stdout()
     .stderr()
-    .command(['auth:token'])
-    .exit(2)
-    .it('fails when the token flag is not set');
-
-  test
-    .stdout()
-    .stderr()
     .do(() => {
       mockGetHasAccessToOrg.mockReturnValueOnce(Promise.resolve(true));
     })
-    .command(['auth:token', '-t', 'some-token'])
+    .stub(CliUx.ux, 'prompt', () => async () => 'some-token')
+    .command(['auth:token'])
     .it(
       'succeed when the organization and the token flags are valid',
       (ctx) => {
@@ -130,7 +128,8 @@ describe('auth:token', () => {
     })
     .stdout()
     .stderr()
-    .command(['auth:token', '-t', 'some-token'])
+    .stub(CliUx.ux, 'prompt', () => async () => 'some-token')
+    .command(['auth:token'])
     .it(
       'find the org associated with the token and saves it in the config',
       () => {
