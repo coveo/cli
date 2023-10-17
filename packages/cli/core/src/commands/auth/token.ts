@@ -21,9 +21,8 @@ export default class Token extends CLICommand {
     ...withEnvironment(),
     stdin: Flags.boolean({
       char: 's',
-      description:
-        'Whether to read the token from stdin. Default to true when running in a CI environment.',
-      default: process.env.CI === 'true',
+      description: 'Whether to read the token from stdin.',
+      default: false,
     }),
   };
 

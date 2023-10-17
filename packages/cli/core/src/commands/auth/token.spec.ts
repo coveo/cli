@@ -94,7 +94,6 @@ describe('auth:token', () => {
     test
       .stdout()
       .stderr()
-      .env({CI: 'false'})
       .stub(CliUx.ux, 'prompt', () => () => 'this-is-the-token')
       .command(['auth:token'])
       .it('save token from oauth service', () => {
