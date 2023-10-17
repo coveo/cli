@@ -95,7 +95,7 @@ describe('auth:token', () => {
       .stdout()
       .stderr()
       .stub(CliUx.ux, 'prompt', () => () => 'this-is-the-token')
-      .command(['auth:token'])
+      .command(['auth:token', '--no-stdin'])
       .it('save token from oauth service', () => {
         expect(mockConfigSet).toHaveBeenCalledWith(
           'accessToken',
