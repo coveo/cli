@@ -39,7 +39,7 @@ runs:
     - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
       with:
         cache: 'npm'
-        node-version-file: '.nvmrc'
+        node-version: ${{inputs.node}}
     - uses: actions/setup-python@57ded4d7d5e986d7296eab16560982c6dd7c923b # v4
       with:
         cache: 'pip'
@@ -79,5 +79,5 @@ runs:
     - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
       if: cancelled() || failure() || success()
       with:
-        name: ${{inputs.os}}-${{inputs.spec}}-test-artifacts
+        name: ${{inputs.os}}-${{inputs.node}}-${{inputs.spec}}-test-artifacts
         path: ./packages/cli-e2e/artifacts
