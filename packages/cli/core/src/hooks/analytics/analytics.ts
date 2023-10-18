@@ -47,6 +47,7 @@ const augmentEvent = async (
   event.event_properties = {
     ...event.event_properties,
     organization_type: type,
+    organization,
     environment,
     region,
   };

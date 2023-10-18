@@ -74,7 +74,7 @@
     "prepublishOnly": "rimraf lib && npm run build && oclif manifest"
   },
   "engines": {
-    "node": "^16.13.0 || ^18.12.0"
+    "node": ">=18.18.1"
   },
   "bugs": "https://github.com/coveo/cli/issues",
   "keywords": [

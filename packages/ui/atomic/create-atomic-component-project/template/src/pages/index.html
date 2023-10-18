@@ -20,6 +20,15 @@
     <script type="module" src="/atomic/atomic.esm.js"></script>
     <!-- Custom Elements Lazy Loading -->
     <script type="module" src="/build/my-custom-components.esm.js"></script>
+    <!-- <script type="module">
+      /**
+       * To import modules from `@coveo/headless`, you can use the following syntax:
+       * import { moduleName } from "./headless/headless.esm.js";
+       * Replace `moduleName` with the specific module you want to import from the `@coveo/headless` library.
+       * For example, if you want to import the `buildSearchEngine`,  you would use:
+       */
+      import { buildSearchEngine } from "./headless/headless.esm.js";
+    </script> -->
   </head>
   <body>
     <atomic-search-interface
