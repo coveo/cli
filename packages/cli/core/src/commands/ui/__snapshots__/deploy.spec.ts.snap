@@ -1,7 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ui:deploy interacting with Platform client should call hostedPages.list and hostedPages.create when no page id argument is passed 1`] = `
-"To update your page, run "coveo ui:deploy -p=somePageId".
+"  console.error
+     ›   Warning: NodeJS v20.8.0 is not supported. The Coveo CLI might malfunction.
+     ›   Please update your NodeJS installation to the latest LTS version.
+
+      4 | const hook: Hook<'prerun'> = function () {
+      5 |   if (!satisfies(process.version, this.config.pjson.engines.node)) {
+    > 6 |     this.warn(
+        |          ^
+      7 |       dedent\`NodeJS \${process.version} is not supported. The Coveo CLI might malfunction.
+      8 |       Please update your NodeJS installation to the latest LTS version.\`
+      9 |     );
+
+      at warn (../../../node_modules/@oclif/core/lib/errors/index.js:59:13)
+      at Object.warn (../../../node_modules/@oclif/core/lib/config/config.js:227:39)
+      at Object.warn (src/hooks/prerun/checkNodeVersion.ts:6:10)
+      at ../../../node_modules/@oclif/core/lib/config/config.js:238:46
+          at async Promise.all (index 0)
+      at Config.runHook (../../../node_modules/@oclif/core/lib/config/config.js:248:9)
+      at Config.runCommand (../../../node_modules/@oclif/core/lib/config/config.js:271:9)
+      at Object.run (../../../node_modules/@oclif/test/lib/command.js:21:28)
+      at Object.run (../../../node_modules/fancy-test/lib/base.js:68:25)
+
+To update your page, run "coveo ui:deploy -p=somePageId".
 "
 `;
 
@@ -15,7 +37,31 @@ Message: [31mthis is bad[39m
 Request ID: [31mb33pb00p[39m]
 `;
 
-exports[`ui:deploy interacting with Platform client when a page id argument is passed, it should call hostedPages.update 1`] = `""`;
+exports[`ui:deploy interacting with Platform client when a page id argument is passed, it should call hostedPages.update 1`] = `
+"  console.error
+     ›   Warning: NodeJS v20.8.0 is not supported. The Coveo CLI might malfunction.
+     ›   Please update your NodeJS installation to the latest LTS version.
+
+      4 | const hook: Hook<'prerun'> = function () {
+      5 |   if (!satisfies(process.version, this.config.pjson.engines.node)) {
+    > 6 |     this.warn(
+        |          ^
+      7 |       dedent\`NodeJS \${process.version} is not supported. The Coveo CLI might malfunction.
+      8 |       Please update your NodeJS installation to the latest LTS version.\`
+      9 |     );
+
+      at warn (../../../node_modules/@oclif/core/lib/errors/index.js:59:13)
+      at Object.warn (../../../node_modules/@oclif/core/lib/config/config.js:227:39)
+      at Object.warn (src/hooks/prerun/checkNodeVersion.ts:6:10)
+      at ../../../node_modules/@oclif/core/lib/config/config.js:238:46
+          at async Promise.all (index 0)
+      at Config.runHook (../../../node_modules/@oclif/core/lib/config/config.js:248:9)
+      at Config.runCommand (../../../node_modules/@oclif/core/lib/config/config.js:271:9)
+      at Object.run (../../../node_modules/@oclif/test/lib/command.js:21:28)
+      at Object.run (../../../node_modules/fancy-test/lib/base.js:68:25)
+
+"
+`;
 
 exports[`ui:deploy interacting with Platform client when a page id argument is passed, it should call hostedPages.update 2`] = `""`;
 
