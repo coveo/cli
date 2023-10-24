@@ -38,7 +38,7 @@ export default class React extends CLICommand {
    * "You’ll need to have Node 18.18.1 or later version on your local development machine"
    *  https://github.com/facebook/create-react-app#creating-an-app
    */
-  public static requiredNodeVersion = '^18.18.1 || ^20.9.1';
+  public static requiredNodeVersion = '^18.18.1 || ^20.9.0';
 
   public static description =
     'Create a Coveo Headless-powered search page with the React web framework. See <https://docs.coveo.com/headless> and <https://reactjs.org/>.';
