@@ -39,7 +39,7 @@ runs:
     - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
       with:
         cache: 'npm'
-        node-version: ${{inputs.node}}
+        node-version-file: '.nvmrc'
     - uses: actions/setup-python@57ded4d7d5e986d7296eab16560982c6dd7c923b # v4
       with:
         cache: 'pip'
