@@ -34,7 +34,7 @@ export default class Vue extends CLICommand {
    * @see https://cli.vuejs.org/guide/installation.html for current requirements.
    * @see https://github.com/vuejs/vue-cli/blob/dev/CHANGELOG.md for upcoming requirements.
    */
-  public static requiredNodeVersion = '^18.18.1 || ^20.8.1';
+  public static requiredNodeVersion = '^18.18.1 || ^20.9.0';
   public static description =
     'Create a Coveo Headless-powered search page with the Vue3 and Vite. See <https://docs.coveo.com/headless> and <https://vuejs.org/>.';
 
