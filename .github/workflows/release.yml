@@ -179,7 +179,7 @@ jobs:
         with:
           cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
   release-git:
-    needs: [release-npm]
+    needs: [e2e, release-npm]
     environment: 'Release'
     runs-on: ubuntu-20.04
     env:
