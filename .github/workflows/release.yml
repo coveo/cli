@@ -12,6 +12,19 @@ on:
         type: boolean
         default: false
         required: false
+env:
+  # Platform environment to log into for the e2e tests.
+  PLATFORM_ENV: 'stg'
+  # Username used to log into the organization whose ID is stored in the ORG_ID variable
+  PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
+  # Password used to log into the organization whose ID is stored in the ORG_ID variable
+  PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
+  # API key to delete all the API keys created by the e2e tests
+  PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
+  # ID of the organization to log into for the e2e tests
+  ORG_ID: ${{ secrets.ORG_ID }}
+  # Passphrase use to encode/decode cliConfig
+  E2E_TOKEN_PASSPHRASE: ${{ secrets.E2E_TOKEN_PASSPHRASE }}
 
 jobs:
   e2e-setup-login:
