@@ -276,8 +276,10 @@ jobs:
         run: npm ci
       - name: Get CLI version
         run: |
-          echo "cliVersion=" >> "$GITHUB_ENV"
-          cat packages/cli/core/package.json | jq '.version' >> "$GITHUB_ENV"
+          {
+              printf "cliVersion="
+              cat packages/cli/core/package.json | jq -r '.version'
+          }  >> "$GITHUB_ENV"
       - name: Build
         run: npm run build
       - name: Setup Temporary Keychain
