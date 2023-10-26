@@ -148,10 +148,11 @@ jobs:
       - name: Find modified Snapshots
         id: snapshots-path
         run: |
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          echo "snapshotsPath<<$EOF" >> "$GITHUB_ENV"
-          git diff --name-only *.yml >> "$GITHUB_ENV"
-          echo "$EOF" >> "$GITHUB_ENV"
+          {
+            echo "snapshotsPath<<EOF"
+            git diff --name-only **/*.snap
+            echo EOF
+          } >> "$GITHUB_ENV"
       - name: Upload Jest Snapshots
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
         with:
