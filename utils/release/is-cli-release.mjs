@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import {readFileSync} from 'node:fs';
 import {setOutput} from '@actions/core';
 
