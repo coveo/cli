@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import {readFileSync} from 'node:fs';
 import {Octokit} from 'octokit';
 import {createAppAuth} from '@octokit/auth-app';
@@ -15,7 +17,7 @@ const getCliChangelog = () => {
   const lastVersionChanges = changelog.split(versionH1Matcher)[1];
   return lastVersionChanges.trim();
 };
-async () => {
+(async () => {
   //#region GitHub authentication
   const authSecrets = {
     appId: process.env.RELEASER_APP_ID,
@@ -51,4 +53,4 @@ async () => {
     body: releaseBody,
   });
   exportVariable('tag', cliLatestTag);
-};
+})();
