@@ -155,11 +155,11 @@ jobs:
             echo EOF
           } >> "$GITHUB_OUTPUT"
       - name: Upload Jest Snapshots
-        if: ${{ env.snapshotsPath != ''}}
+        if: ${{ steps.snapshots-path.outputs.snapshotsPath != ''}}
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
         with:
           name: release-e2e-snaps
-          path: ${{ env.snapshotsPath }}
+          path: ${{ steps.snapshots-path.outputs.snapshotsPath }}
   e2e-teardown:
     name: End-to-end teardown
     if: ${{ always() }}
@@ -217,11 +217,11 @@ jobs:
             echo EOF
           } >> "$GITHUB_OUTPUT"
       - name: Upload Jest Snapshots
-        if: ${{ env.snapshotsPath != ''}}
+        if: ${{ steps.snapshots-path.outputs.snapshotsPath != ''}}
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
         with:
           name: release-e2e-snaps
-          path: ${{ env.snapshotsPath }}
+          path: ${{ steps.snapshots-path.outputs.snapshotsPath }}
   release-git:
     needs: [e2e, release-npm, unit-tests]
     environment: 'Release'
