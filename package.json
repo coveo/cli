@@ -1,7 +1,7 @@
 {
   "name": "cli-tools",
   "private": true,
-  "version": "1.0.0-18",
+  "version": "1.0.0-19",
   "author": "Coveo",
   "bin": {
     "coveo": "./bin/run"
