@@ -207,7 +207,7 @@ jobs:
       - name: Build
         run: npm run build
       - name: Tests
-        run: npm run test
+        run: npm run test:ci:snap
       - name: Find modified Snapshots
         id: snapshots-path
         run: |
