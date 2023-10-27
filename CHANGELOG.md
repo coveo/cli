@@ -1,3 +1,27 @@
+# release-19 (2023-10-27)
+
+### Bug Fixes
+
+- only diff json files ([#1323](https://github.com/coveo/cli/issues/1323)) ([ae1361a](https://github.com/coveo/cli/commits/ae1361a4ca0f553103349ca436a309c61aa56732))
+
+### Features
+
+- add organization to event props ([#1325](https://github.com/coveo/cli/issues/1325)) ([3afcd0f](https://github.com/coveo/cli/commits/3afcd0f78112de9eae8f91218be3df01757f8d3e))
+- **cli:** change node support to 18.18.1 ([#1332](https://github.com/coveo/cli/issues/1332)) ([54c6937](https://github.com/coveo/cli/commits/54c6937829685e1af20949f082b2de484fa1f6c6))
+- **cli:** change node support to only 18-20 ([#1335](https://github.com/coveo/cli/issues/1335)) ([3e65207](https://github.com/coveo/cli/commits/3e6520737650901d2b176fadc8e2e56441a8d4da))
+- **cli:** deprecate config:set region and environment ([#1331](https://github.com/coveo/cli/issues/1331)) ([341d5a7](https://github.com/coveo/cli/commits/341d5a70ab92c492ff653242dabf50f154192710))
+- **cli:** node 20.9.0 lts ([#1337](https://github.com/coveo/cli/issues/1337)) ([af1c3ac](https://github.com/coveo/cli/commits/af1c3ac1796bdfd534b5d037f3a42e23aa3ab225))
+- **cli:** use hidden prompt or stdin for auth:token command ([#1334](https://github.com/coveo/cli/issues/1334)) ([012b6a4](https://github.com/coveo/cli/commits/012b6a45adc474f1d10a8adf5a881eb9faf5e6e8))
+- support imports from `/headless` ([#1326](https://github.com/coveo/cli/issues/1326)) ([d24bec4](https://github.com/coveo/cli/commits/d24bec48e5050ffdbba406fe130a7f7a83ca9b95))
+
+### BREAKING CHANGES
+
+- **cli:** those flags are no longer supported by the cli and the
+  alternative is to re-execute a login flow with auth:login
+
+This change is part of the effort for the next major release of the CLI
+(v3)
+
 # release-18 (2023-08-24)
 
 ### Bug Fixes

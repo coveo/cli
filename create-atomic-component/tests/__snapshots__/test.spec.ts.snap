@@ -1,0 +1,391 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`@coveo/create-atomic-component when called in an existing project when initializing should ouptut a confirmation message upon success 1`] = `
+"
+  Project successfully configured
+
+  We suggest that you begin by typing:
+
+  $ npm install
+  $ npm start
+
+  $ npm start
+    Starts the development server.
+
+  $ npm run build
+    Builds your project in production mode.
+
+  Happy coding!
+
+  Further reading:
+    https://docs.coveo.com/en/atomic/latest/cc-search/create-custom-components
+  
+"
+`;
+
+exports[`@coveo/create-atomic-component when called in an existing project when initializing should setup a base project and a component 1`] = `
+HashedFolder {
+  "children": [
+    HashedFile {
+      "hash": "On2XOtGKsiCQNf3sl4iW9KMVbUE=",
+      "name": "package.json",
+    },
+    HashedFile {
+      "hash": "dk1NzEu4Fb2ZY6TKzt21xMFvc2c=",
+      "name": "readme.md",
+    },
+    HashedFolder {
+      "children": [
+        HashedFolder {
+          "children": [
+            HashedFolder {
+              "children": [
+                HashedFolder {
+                  "children": [
+                    HashedFile {
+                      "hash": "ewQGf3/bnIIj+Rv249cv7K7YGsg=",
+                      "name": "stencil-docs.d.ts",
+                    },
+                  ],
+                  "hash": "OzYoobNX1XCpcFrvvtsD00f4Rwg=",
+                  "name": "docs",
+                },
+                HashedFolder {
+                  "children": [
+                    HashedFile {
+                      "hash": "/5yLi44o1uyQViLBqN4GTX4Wifo=",
+                      "name": "cdn.js",
+                    },
+                    HashedFile {
+                      "hash": "/5yLi44o1uyQViLBqN4GTX4Wifo=",
+                      "name": "index.cjs.js",
+                    },
+                    HashedFile {
+                      "hash": "BHkYREiqjkQizanFWrHUH+O5/HI=",
+                      "name": "index.d.ts",
+                    },
+                    HashedFile {
+                      "hash": "AVg2xEIhlYFa1JdLuHECP4RcRwg=",
+                      "name": "index.es2017.js",
+                    },
+                    HashedFile {
+                      "hash": "orpFM4J34T2gX7c3vGiovp0rdxM=",
+                      "name": "index.js",
+                    },
+                    HashedFile {
+                      "hash": "WNqwx6y7/TKh0xE/ENZlA00Dy/g=",
+                      "name": "package.json",
+                    },
+                  ],
+                  "hash": "sWhaIzdNtSJjLJC7gUXMjbEJdx0=",
+                  "name": "loader",
+                },
+                HashedFile {
+                  "hash": "sPYtbu6I3ccGfKbCoXGFIB4KHTo=",
+                  "name": "package.json",
+                },
+                HashedFile {
+                  "hash": "0paD+lp3fCIv4J/d+YrJ6gkGSbo=",
+                  "name": "readme.md",
+                },
+                HashedFolder {
+                  "children": [
+                    HashedFile {
+                      "hash": "qJnWpbM0djxX/iTkEr7sFyWoEKE=",
+                      "name": "components.d.ts",
+                    },
+                    HashedFile {
+                      "hash": "XemX7AoOihA4SgQsvWtcStjeiGo=",
+                      "name": "oh-wow-another-component-can-you-believe-it.css",
+                    },
+                    HashedFile {
+                      "hash": "/LJZFrH80JVNAGsx3FvxhArXJss=",
+                      "name": "oh-wow-another-component-can-you-believe-it.tsx",
+                    },
+                  ],
+                  "hash": "hn8xJ8lZaPPvjQFOUvWFX55LlDc=",
+                  "name": "src",
+                },
+                HashedFile {
+                  "hash": "DNTPZTeWJfCjTGqD+edK5gP5vUM=",
+                  "name": "stencil.config.ts",
+                },
+                HashedFile {
+                  "hash": "yMxJnSeOFw52ObOJrKQEh86v+HM=",
+                  "name": "tsconfig.json",
+                },
+              ],
+              "hash": "FrfYsEH74ln6VgpDwNHlSHLZMqA=",
+              "name": "oh-wow-another-component-can-you-believe-it",
+            },
+          ],
+          "hash": "K7acc/8RH7arWHNePKbmHUcPJTs=",
+          "name": "components",
+        },
+        HashedFile {
+          "hash": "YVuwXfIZfjfeVyLQ6cMy3kUqC3A=",
+          "name": "html.d.ts",
+        },
+        HashedFolder {
+          "children": [
+            HashedFile {
+              "hash": "L08E7dMK5e0wD5P8meKHfkDDa3o=",
+              "name": "index.css",
+            },
+            HashedFile {
+              "hash": "bFh3SmB411lXkJIWZnTDWhG9rfI=",
+              "name": "index.html",
+            },
+            HashedFile {
+              "hash": "tGVlR0ig5LSS79ZPOfuAFDEvqMw=",
+              "name": "index.ts",
+            },
+          ],
+          "hash": "qEEOwUr4MvYxD5CwMtkP/VqUL8Q=",
+          "name": "pages",
+        },
+      ],
+      "hash": "dDomUvCRWep4ytwIQHxYFtOsQ3o=",
+      "name": "src",
+    },
+    HashedFile {
+      "hash": "BVZfiCzL+2kulE12K4HLAIl3kJ8=",
+      "name": "stencil.config.ts",
+    },
+    HashedFile {
+      "hash": "yMxJnSeOFw52ObOJrKQEh86v+HM=",
+      "name": "tsconfig.json",
+    },
+  ],
+  "hash": "DNANdCMVjEkGCg0jZoJBiRE3pF8=",
+  "name": "no-args",
+}
+`;
+
+exports[`@coveo/create-atomic-component when called with a valid component name when initializing should ouptut a confirmation message upon success 1`] = `
+"
+  Project successfully configured
+
+  We suggest that you begin by typing:
+
+  $ npm install
+  $ npm start
+
+  $ npm start
+    Starts the development server.
+
+  $ npm run build
+    Builds your project in production mode.
+
+  Happy coding!
+
+  Further reading:
+    https://docs.coveo.com/en/atomic/latest/cc-search/create-custom-components
+  
+"
+`;
+
+exports[`@coveo/create-atomic-component when called with a valid component name when initializing should setup a base project and a component 1`] = `
+HashedFolder {
+  "children": [
+    HashedFile {
+      "hash": "On2XOtGKsiCQNf3sl4iW9KMVbUE=",
+      "name": "package.json",
+    },
+    HashedFile {
+      "hash": "dk1NzEu4Fb2ZY6TKzt21xMFvc2c=",
+      "name": "readme.md",
+    },
+    HashedFolder {
+      "children": [
+        HashedFolder {
+          "children": [
+            HashedFolder {
+              "children": [
+                HashedFile {
+                  "hash": "WNXSePDB0rxKykx0pmIcvvXf8lY=",
+                  "name": "package.json",
+                },
+                HashedFolder {
+                  "children": [
+                    HashedFile {
+                      "hash": "XemX7AoOihA4SgQsvWtcStjeiGo=",
+                      "name": "valid-component-name.css",
+                    },
+                    HashedFile {
+                      "hash": "mSEayrhdQLFyjWOgicX78wD8seE=",
+                      "name": "valid-component-name.tsx",
+                    },
+                  ],
+                  "hash": "TLrPzQ215bJQgHPDj+8uidPXAqo=",
+                  "name": "src",
+                },
+                HashedFile {
+                  "hash": "DNTPZTeWJfCjTGqD+edK5gP5vUM=",
+                  "name": "stencil.config.ts",
+                },
+                HashedFile {
+                  "hash": "yMxJnSeOFw52ObOJrKQEh86v+HM=",
+                  "name": "tsconfig.json",
+                },
+              ],
+              "hash": "OdOjUj6sQOlaJZL0xMsHtkmhLEM=",
+              "name": "valid-component-name",
+            },
+          ],
+          "hash": "pusjYN5OIG2nxlphCimdO2MRZoA=",
+          "name": "components",
+        },
+        HashedFile {
+          "hash": "YVuwXfIZfjfeVyLQ6cMy3kUqC3A=",
+          "name": "html.d.ts",
+        },
+        HashedFolder {
+          "children": [
+            HashedFile {
+              "hash": "L08E7dMK5e0wD5P8meKHfkDDa3o=",
+              "name": "index.css",
+            },
+            HashedFile {
+              "hash": "bFh3SmB411lXkJIWZnTDWhG9rfI=",
+              "name": "index.html",
+            },
+            HashedFile {
+              "hash": "tGVlR0ig5LSS79ZPOfuAFDEvqMw=",
+              "name": "index.ts",
+            },
+          ],
+          "hash": "qEEOwUr4MvYxD5CwMtkP/VqUL8Q=",
+          "name": "pages",
+        },
+      ],
+      "hash": "mfttHUbisEc5o1agWYdOGHcyMbM=",
+      "name": "src",
+    },
+    HashedFile {
+      "hash": "BVZfiCzL+2kulE12K4HLAIl3kJ8=",
+      "name": "stencil.config.ts",
+    },
+    HashedFile {
+      "hash": "yMxJnSeOFw52ObOJrKQEh86v+HM=",
+      "name": "tsconfig.json",
+    },
+  ],
+  "hash": "SjnhBdGoPcwxrzS0znwq8DkPeKE=",
+  "name": "valid-arg",
+}
+`;
+
+exports[`@coveo/create-atomic-component when called without any args when initializing should ouptut a confirmation message upon success 1`] = `
+"
+  Project successfully configured
+
+  We suggest that you begin by typing:
+
+  $ npm install
+  $ npm start
+
+  $ npm start
+    Starts the development server.
+
+  $ npm run build
+    Builds your project in production mode.
+
+  Happy coding!
+
+  Further reading:
+    https://docs.coveo.com/en/atomic/latest/cc-search/create-custom-components
+  
+"
+`;
+
+exports[`@coveo/create-atomic-component when called without any args when initializing should setup a base project and a component 1`] = `
+HashedFolder {
+  "children": [
+    HashedFile {
+      "hash": "On2XOtGKsiCQNf3sl4iW9KMVbUE=",
+      "name": "package.json",
+    },
+    HashedFile {
+      "hash": "dk1NzEu4Fb2ZY6TKzt21xMFvc2c=",
+      "name": "readme.md",
+    },
+    HashedFolder {
+      "children": [
+        HashedFolder {
+          "children": [
+            HashedFolder {
+              "children": [
+                HashedFile {
+                  "hash": "YtYrF1uzndR/VQF5Zq9TNFRZFaQ=",
+                  "name": "package.json",
+                },
+                HashedFolder {
+                  "children": [
+                    HashedFile {
+                      "hash": "XemX7AoOihA4SgQsvWtcStjeiGo=",
+                      "name": "sample-component.css",
+                    },
+                    HashedFile {
+                      "hash": "aeXDp+lsWoSvRwNcTKnynVf/9bk=",
+                      "name": "sample-component.tsx",
+                    },
+                  ],
+                  "hash": "1fEyvhZ1KbN3o1NA6j8h5U8u3EM=",
+                  "name": "src",
+                },
+                HashedFile {
+                  "hash": "DNTPZTeWJfCjTGqD+edK5gP5vUM=",
+                  "name": "stencil.config.ts",
+                },
+                HashedFile {
+                  "hash": "yMxJnSeOFw52ObOJrKQEh86v+HM=",
+                  "name": "tsconfig.json",
+                },
+              ],
+              "hash": "3NoNGgDXggN9aKRNQdioGEpwUas=",
+              "name": "sample-component",
+            },
+          ],
+          "hash": "etih1u8llZ5RQYnPBgmJoGyNPr0=",
+          "name": "components",
+        },
+        HashedFile {
+          "hash": "YVuwXfIZfjfeVyLQ6cMy3kUqC3A=",
+          "name": "html.d.ts",
+        },
+        HashedFolder {
+          "children": [
+            HashedFile {
+              "hash": "L08E7dMK5e0wD5P8meKHfkDDa3o=",
+              "name": "index.css",
+            },
+            HashedFile {
+              "hash": "bFh3SmB411lXkJIWZnTDWhG9rfI=",
+              "name": "index.html",
+            },
+            HashedFile {
+              "hash": "tGVlR0ig5LSS79ZPOfuAFDEvqMw=",
+              "name": "index.ts",
+            },
+          ],
+          "hash": "qEEOwUr4MvYxD5CwMtkP/VqUL8Q=",
+          "name": "pages",
+        },
+      ],
+      "hash": "VL0oxdo/RF+Bjsa1as6+XaL+kyM=",
+      "name": "src",
+    },
+    HashedFile {
+      "hash": "BVZfiCzL+2kulE12K4HLAIl3kJ8=",
+      "name": "stencil.config.ts",
+    },
+    HashedFile {
+      "hash": "yMxJnSeOFw52ObOJrKQEh86v+HM=",
+      "name": "tsconfig.json",
+    },
+  ],
+  "hash": "AgyflBDej8gMqDjYhorG5nuVSY4=",
+  "name": "no-args",
+}
+`;

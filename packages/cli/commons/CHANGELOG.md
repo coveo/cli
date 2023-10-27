@@ -1,3 +1,9 @@
+## 2.7.15 (2023-10-27)
+
+### Features
+
+- add organization to event props ([#1325](https://github.com/coveo/cli/issues/1325)) ([3afcd0f](https://github.com/coveo/cli/commits/3afcd0f78112de9eae8f91218be3df01757f8d3e))
+
 # 2.6.0 (2023-07-26)
 
 ### Bug Fixes
