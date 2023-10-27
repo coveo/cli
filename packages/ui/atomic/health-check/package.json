@@ -21,7 +21,7 @@
     "test:unit": "jest --testPathIgnorePatterns=e2e",
     "test:e2e": "node --experimental-vm-modules --no-warnings ../../../../node_modules/jest/bin/jest.js --testPathPattern=e2e",
     "test": "npm run test:unit && npm run test:e2e",
-    "test:ci": "node --experimental-vm-modules --no-warnings ../../../../node_modules/jest/bin/jest.js"
+    "test:ci:snap": "npm run test:unit -- -u && npm run test:e2e -- -u"
   },
   "repository": {
     "type": "git",
