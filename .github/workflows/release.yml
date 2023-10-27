@@ -427,6 +427,7 @@ jobs:
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
         with:
           name: release-binaries
+          path: release-binaries
       - name: Apply & delete the patch
         run: |
           git apply release.patch
@@ -448,6 +449,6 @@ jobs:
         uses: svenstaro/upload-release-action@7319e4733ec7a184d739a6f412c40ffc339b69c7 # 2.5.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./packages/cli/core/dist/**/*
+          file: ./release-binaries/**/*
           file_glob: true
           tag: ${{ env.tag }}
