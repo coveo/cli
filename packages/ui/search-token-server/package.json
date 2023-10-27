@@ -25,6 +25,7 @@
   "scripts": {
     "start": "ts-node server.ts",
     "test": "jest",
+    "test:ci:snap": "jest -u",
     "release:phase1": "npx -p=@coveord/release npm-publish"
   },
   "devDependencies": {

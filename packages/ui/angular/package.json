@@ -4,6 +4,7 @@
   "description": "Coveo schematic for angular",
   "scripts": {
     "test": "jest",
+    "test:ci:snap": "jest -u",
     "lint": "prettier --check . && eslint .",
     "build": "tsc -p tsconfig.json",
     "prebuild": "node ./scripts/clean.js",
