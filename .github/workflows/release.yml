@@ -153,7 +153,7 @@ jobs:
             echo 'snapshotsPath<<EOF'
             git diff --name-only **/*.snap
             echo EOF
-          } >> "$GITHUB_OUTPUT"
+          } >> "$GITHUB_ENV"
       - name: Upload Jest Snapshots
         if: ${{ env.snapshotsPath != ''}}
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
@@ -207,7 +207,7 @@ jobs:
       - name: Build
         run: npm run build
       - name: Tests
-        run: npm run test:ci:snap
+        run: npm run test
       - name: Find modified Snapshots
         id: snapshots-path
         run: |
@@ -215,7 +215,7 @@ jobs:
             echo 'snapshotsPath<<EOF'
             git diff --name-only **/*.snap
             echo EOF
-          } >> "$GITHUB_OUTPUT"
+          } >> "$GITHUB_ENV"
       - name: Upload Jest Snapshots
         if: ${{ env.snapshotsPath != ''}}
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
