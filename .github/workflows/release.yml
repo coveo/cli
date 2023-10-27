@@ -149,7 +149,6 @@ jobs:
       - name: Find modified Snapshots
         id: snapshots-path
         run: |
-          git diff --name-only **/*.snap
           {
             echo 'snapshotsPath<<EOF'
             git diff --name-only **/*.snap
@@ -182,8 +181,49 @@ jobs:
       - uses: ./.github/actions/e2e-clean
         with:
           cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
+  unit-tests:
+    name: Unit Tests
+    runs-on: 'ubuntu-20.04'
+    needs: [release-npm]
+    steps:
+      - name: Setup runner
+        # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+        with:
+          cache: 'npm'
+          node-version-file: '.nvmrc'
+      - name: Download artifacts
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+        with:
+          name: npm-release
+      - name: Apply & delete the patch
+        run: |
+          git apply release.patch
+          rm release.patch
+      - name: Setup repo
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Tests
+        run: npm run test
+      - name: Find modified Snapshots
+        id: snapshots-path
+        run: |
+          {
+            echo 'snapshotsPath<<EOF'
+            git diff --name-only **/*.snap
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+      - name: Upload Jest Snapshots
+        if: ${{ env.snapshotsPath != ''}}
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        with:
+          name: release-e2e-snaps
+          path: ${{ env.snapshotsPath }}
   release-git:
-    needs: [e2e, release-npm]
+    needs: [e2e, release-npm, unit-tests]
     environment: 'Release'
     runs-on: ubuntu-20.04
     env:
