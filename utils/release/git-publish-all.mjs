@@ -22,6 +22,8 @@ import {
   gitPublishBranch,
   gitSetRefOnCommit,
   gitPush,
+  gitSetupSshRemote,
+  gitSetupUser,
 } from '@coveo/semantic-monorepo-tools';
 import {Octokit} from 'octokit';
 import {createAppAuth} from '@octokit/auth-app';
@@ -31,6 +33,19 @@ import {dedent} from 'ts-dedent';
 import {readFileSync, writeFileSync} from 'fs';
 import {removeWriteAccessRestrictions} from './lock-master.mjs';
 import {spawnSync} from 'child_process';
+
+const setupGit = async () => {
+  const GIT_USERNAME = 'developer-experience-bot[bot]';
+  const GIT_EMAIL =
+    '91079284+developer-experience-bot[bot]@users.noreply.github.com';
+  const DEPLOY_KEY = process.env.DEPLOY_KEY;
+  if (DEPLOY_KEY === undefined) {
+    throw new Error('Deploy key is undefined');
+  }
+
+  await gitSetupUser(GIT_USERNAME, GIT_EMAIL);
+  await gitSetupSshRemote(REPO_OWNER, REPO_NAME, DEPLOY_KEY, GIT_SSH_REMOTE);
+};
 
 /**
  * Update usage section at the root readme.
@@ -43,8 +58,8 @@ function updateRootReadme() {
   if (!cliUsage) {
     return;
   }
-  rootReadme.replace(usageRegExp, cliUsage);
-  writeFileSync('README.md', rootReadme);
+
+  writeFileSync('README.md', rootReadme.replace(usageRegExp, cliUsage));
 }
 
 /**
@@ -143,6 +158,8 @@ const octokit = new Octokit({
 });
 //#endregion
 
+await setupGit();
+
 // Define release # andversion
 const currentVersionTag = getCurrentVersion(PATH);
 currentVersionTag.inc('prerelease');
@@ -190,6 +207,7 @@ const commitMessage = dedent`
     **/README.md
     **/CHANGELOG.md
     **/package.json
+    **/*.snap
     README.md
     CHANGELOG.md
     package.json
