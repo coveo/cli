@@ -13,6 +13,7 @@ on:
         default: false
         required: false
 env:
+  E2E_USE_NPM_REGISTRY: true
   # Platform environment to log into for the e2e tests.
   PLATFORM_ENV: 'stg'
   # Username used to log into the organization whose ID is stored in the ORG_ID variable
@@ -74,6 +75,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           VERSION: ${{ inputs.version }}
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
           DEBUG: ${{ inputs.debug && '*' || '' }}
       - name: Prepare artifacts
         run: |
@@ -126,7 +128,7 @@ jobs:
           cache: 'npm'
           node-version-file: '.nvmrc'
       - name: Download artifacts
-        uses: actions/download-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
         with:
           name: npm-release
       - name: Apply & delete the patch
@@ -147,15 +149,17 @@ jobs:
       - name: Find modified Snapshots
         id: snapshots-path
         run: |
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          echo "snapshotsPath<<$EOF" >> "$GITHUB_ENV"
-          git diff --name-only *.yml >> "$GITHUB_ENV"
-          echo "$EOF" >> "$GITHUB_ENV"
+          {
+            echo 'snapshotsPath<<EOF'
+            git diff --name-only **/*.snap
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
       - name: Upload Jest Snapshots
+        if: ${{ steps.snapshots-path.outputs.snapshotsPath != ''}}
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
         with:
           name: release-e2e-snaps
-          path: ${{ env.snapshotsPath }}
+          path: ${{ steps.snapshots-path.outputs.snapshotsPath }}
   e2e-teardown:
     name: End-to-end teardown
     if: ${{ always() }}
@@ -177,8 +181,49 @@ jobs:
       - uses: ./.github/actions/e2e-clean
         with:
           cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
-  release-git:
+  unit-tests:
+    name: Unit Tests
+    runs-on: 'ubuntu-20.04'
     needs: [release-npm]
+    steps:
+      - name: Setup runner
+        # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+        with:
+          cache: 'npm'
+          node-version-file: '.nvmrc'
+      - name: Download artifacts
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+        with:
+          name: npm-release
+      - name: Apply & delete the patch
+        run: |
+          git apply release.patch
+          rm release.patch
+      - name: Setup repo
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Tests
+        run: npm run test:ci:snap
+      - name: Find modified Snapshots
+        id: snapshots-path
+        run: |
+          {
+            echo 'snapshotsPath<<EOF'
+            git diff --name-only **/*.snap
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+      - name: Upload Jest Snapshots
+        if: ${{ steps.snapshots-path.outputs.snapshotsPath != ''}}
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        with:
+          name: release-e2e-snaps
+          path: ${{ steps.snapshots-path.outputs.snapshotsPath }}
+  release-git:
+    needs: [e2e, release-npm, unit-tests]
     environment: 'Release'
     runs-on: ubuntu-20.04
     env:
@@ -194,7 +239,7 @@ jobs:
           cache: 'npm'
           node-version-file: '.nvmrc'
       - name: Download NPM artifacts
-        uses: actions/download-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
         with:
           name: npm-release
       - name: Apply & delete the patch
@@ -202,7 +247,7 @@ jobs:
           git apply release.patch
           rm release.patch
       - name: Download E2E artifacts
-        uses: actions/download-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
         with:
           name: release-e2e-snaps
       - name: Install dependencies
@@ -263,7 +308,7 @@ jobs:
           cache: 'npm'
           node-version-file: '.nvmrc'
       - name: Download artifacts
-        uses: actions/download-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
         with:
           name: npm-release
       - name: Apply & delete the patch
@@ -274,8 +319,10 @@ jobs:
         run: npm ci
       - name: Get CLI version
         run: |
-          echo "cliVersion=" >> "$GITHUB_ENV"
-          cat packages/cli/core/package.json | jq '.version' >> "$GITHUB_ENV"
+          {
+              printf "CLI_VERSION="
+              cat packages/cli/core/package.json | jq -r '.version'
+          }  >> "$GITHUB_ENV"
       - name: Build
         run: npm run build
       - name: Setup Temporary Keychain
@@ -311,19 +358,19 @@ jobs:
           New-Item -Force -ItemType directory -Path tmp
           echo "${{ secrets.COVEO_PFX }}" > ./tmp/cert.txt
           certutil -decode ./tmp/cert.txt ./tmp/cert.pfx
-          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64.exe" -PassThru | Wait-Process
-          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-${{env.cliversion}}-${{env.commitSHA1}}-x86.exe" -PassThru | Wait-Process
+          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64.exe" -PassThru | Wait-Process
+          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-x86.exe" -PassThru | Wait-Process
       - name: Sign Executable (macOS)
         working-directory: ./packages/cli/core/dist/macos
         if: ${{matrix.os == 'macos-latest'}}
         run: |
           echo "Signing for ARM64 architecture"
           security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" build.keychain
-          productsign --sign $MACOS_WWDR_TEAM_ID coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64.pkg coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64-signed.pkg --keychain build.keychain
+          productsign --sign $MACOS_WWDR_TEAM_ID coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64.pkg coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64-signed.pkg --keychain build.keychain
 
           echo "Signing for X64 architecture"
           security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" build.keychain
-          productsign --sign $MACOS_WWDR_TEAM_ID coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64.pkg coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64-signed.pkg --keychain build.keychain
+          productsign --sign $MACOS_WWDR_TEAM_ID coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64.pkg coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64-signed.pkg --keychain build.keychain
       - name: Notarize Executable (macOS)
         working-directory: ./packages/cli/core/dist/macos
         if: ${{matrix.os == 'macos-latest'}}
@@ -335,20 +382,20 @@ jobs:
           xcrun notarytool store-credentials "notarytool-profile" --apple-id "${{ secrets.MACOS_APP_USERNAME }}" --team-id "${{ secrets.MACOS_WWDR_TEAM_ID }}" --password "${{ secrets.MACOS_APP_SPECIFIC_PWD }}"
 
           echo "Creating temp notarization archive"
-          ditto -c -k --keepParent "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64-signed.pkg" "notarization-arm64.zip"
-          ditto -c -k --keepParent "coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64-signed.pkg" "notarization-x64.zip"
+          ditto -c -k --keepParent "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64-signed.pkg" "notarization-arm64.zip"
+          ditto -c -k --keepParent "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64-signed.pkg" "notarization-x64.zip"
 
           echo "Notarizing app"
           xcrun notarytool submit "notarization-arm64.zip" --keychain-profile "notarytool-profile" --wait
           xcrun notarytool submit "notarization-x64.zip" --keychain-profile "notarytool-profile" --wait
 
           echo "Attaching staple"
-          xcrun stapler staple "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64-signed.pkg"
-          xcrun stapler staple "coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64-signed.pkg"
+          xcrun stapler staple "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64-signed.pkg"
+          xcrun stapler staple "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64-signed.pkg"
 
           echo "Deleting unsigned packages"
-          mv "coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64-signed.pkg" "coveo-${{env.cliversion}}-${{env.commitSHA1}}-x64.pkg"
-          mv "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64-signed.pkg" "coveo-${{env.cliversion}}-${{env.commitSHA1}}-arm64.pkg"
+          mv "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64-signed.pkg" "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64.pkg"
+          mv "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64-signed.pkg" "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64.pkg"
           rm notarization-arm64.zip notarization-x64.zip
       - name: Upload binaries
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
@@ -373,13 +420,14 @@ jobs:
           cache: 'npm'
           node-version-file: '.nvmrc'
       - name: Download NPM artifacts
-        uses: actions/download-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
         with:
           name: npm-release
       - name: Download binaries artifacts
-        uses: actions/download-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
         with:
           name: release-binaries
+          path: release-binaries
       - name: Apply & delete the patch
         run: |
           git apply release.patch
@@ -401,6 +449,6 @@ jobs:
         uses: svenstaro/upload-release-action@7319e4733ec7a184d739a6f412c40ffc339b69c7 # 2.5.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./packages/cli/core/dist/**/*
+          file: ./release-binaries/**/*
           file_glob: true
           tag: ${{ env.tag }}

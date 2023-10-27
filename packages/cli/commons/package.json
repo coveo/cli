@@ -40,6 +40,7 @@
   },
   "scripts": {
     "test": "jest",
+    "test:ci:snap": "jest -u",
     "build": "tsc -b tsconfig.build.json",
     "prepublishOnly": "npm run build",
     "release:phase1": "npx -p=@coveord/release npm-publish"
