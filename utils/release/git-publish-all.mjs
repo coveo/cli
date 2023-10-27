@@ -207,6 +207,7 @@ const commitMessage = dedent`
     **/README.md
     **/CHANGELOG.md
     **/package.json
+    **/*.snap
     README.md
     CHANGELOG.md
     package.json
