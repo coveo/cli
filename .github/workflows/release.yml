@@ -358,19 +358,19 @@ jobs:
           New-Item -Force -ItemType directory -Path tmp
           echo "${{ secrets.COVEO_PFX }}" > ./tmp/cert.txt
           certutil -decode ./tmp/cert.txt ./tmp/cert.pfx
-          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64.exe" -PassThru | Wait-Process
-          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-${{env.CLI_VERSION}}-${{env.commitSHA1}}-x86.exe" -PassThru | Wait-Process
+          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64.exe" -PassThru | Wait-Process
+          Start-Process -FilePath "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe" -ArgumentList "sign /f ./tmp/cert.pfx /p ${{ secrets.COVEO_PFX_PWD }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ./dist/win32/coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-x86.exe" -PassThru | Wait-Process
       - name: Sign Executable (macOS)
         working-directory: ./packages/cli/core/dist/macos
         if: ${{matrix.os == 'macos-latest'}}
         run: |
           echo "Signing for ARM64 architecture"
           security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" build.keychain
-          productsign --sign $MACOS_WWDR_TEAM_ID coveo-${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64.pkg coveo-${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64-signed.pkg --keychain build.keychain
+          productsign --sign $MACOS_WWDR_TEAM_ID coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64.pkg coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64-signed.pkg --keychain build.keychain
 
           echo "Signing for X64 architecture"
           security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" build.keychain
-          productsign --sign $MACOS_WWDR_TEAM_ID coveo-${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64.pkg coveo-${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64-signed.pkg --keychain build.keychain
+          productsign --sign $MACOS_WWDR_TEAM_ID coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64.pkg coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64-signed.pkg --keychain build.keychain
       - name: Notarize Executable (macOS)
         working-directory: ./packages/cli/core/dist/macos
         if: ${{matrix.os == 'macos-latest'}}
@@ -382,20 +382,20 @@ jobs:
           xcrun notarytool store-credentials "notarytool-profile" --apple-id "${{ secrets.MACOS_APP_USERNAME }}" --team-id "${{ secrets.MACOS_WWDR_TEAM_ID }}" --password "${{ secrets.MACOS_APP_SPECIFIC_PWD }}"
 
           echo "Creating temp notarization archive"
-          ditto -c -k --keepParent "coveo-${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64-signed.pkg" "notarization-arm64.zip"
-          ditto -c -k --keepParent "coveo-${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64-signed.pkg" "notarization-x64.zip"
+          ditto -c -k --keepParent "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64-signed.pkg" "notarization-arm64.zip"
+          ditto -c -k --keepParent "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64-signed.pkg" "notarization-x64.zip"
 
           echo "Notarizing app"
           xcrun notarytool submit "notarization-arm64.zip" --keychain-profile "notarytool-profile" --wait
           xcrun notarytool submit "notarization-x64.zip" --keychain-profile "notarytool-profile" --wait
 
           echo "Attaching staple"
-          xcrun stapler staple "coveo-${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64-signed.pkg"
-          xcrun stapler staple "coveo-${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64-signed.pkg"
+          xcrun stapler staple "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64-signed.pkg"
+          xcrun stapler staple "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64-signed.pkg"
 
           echo "Deleting unsigned packages"
-          mv "coveo-${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64-signed.pkg" "coveo-${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64.pkg"
-          mv "coveo-${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64-signed.pkg" "coveo-${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64.pkg"
+          mv "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64-signed.pkg" "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-x64.pkg"
+          mv "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64-signed.pkg" "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64.pkg"
           rm notarization-arm64.zip notarization-x64.zip
       - name: Upload binaries
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
