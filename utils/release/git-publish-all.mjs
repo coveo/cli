@@ -31,6 +31,96 @@ import {dedent} from 'ts-dedent';
 import {readFileSync, writeFileSync} from 'fs';
 import {removeWriteAccessRestrictions} from './lock-master.mjs';
 import {spawnSync} from 'child_process';
+
+/**
+ * Update usage section at the root readme.
+ */
+function updateRootReadme() {
+  const usageRegExp = /^<!-- usage -->(.|\n)*<!-- usagestop -->$/m;
+  const cliReadme = readFileSync('packages/cli/core/README.md', 'utf-8');
+  let rootReadme = readFileSync('README.md', 'utf-8');
+  const cliUsage = usageRegExp.exec(cliReadme)?.[0];
+  if (!cliUsage) {
+    return;
+  }
+  rootReadme.replace(usageRegExp, cliUsage);
+  writeFileSync('README.md', rootReadme);
+}
+
+/**
+ * Append `.cmd` to the input if the runtime OS is Windows.
+ * @param {string|TemplateStringsArray} cmd
+ * @returns
+ */
+const appendCmdIfWindows = (cmd) =>
+  `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
+
+/**
+ * Run `npm run pre-commit`
+ */
+function runPrecommit() {
+  spawnSync(appendCmdIfWindows`npm`, ['run', 'pre-commit']);
+}
+
+/**
+ * "Craft" the signed release commit.
+ * @param {string|number} releaseNumber
+ * @param {string} commitMessage
+ * @param {Octokit} octokit
+ * @returns {Promise<string>}
+ */
+async function commitChanges(releaseNumber, commitMessage, octokit) {
+  // Get latest commit and name of the main branch.
+  const mainBranchName = await getCurrentBranchName();
+  const mainBranchCurrentSHA = await getSHA1fromRef(mainBranchName);
+
+  // Create a temporary branch and check it out.
+  const tempBranchName = `release/${releaseNumber}`;
+  await gitCreateBranch(tempBranchName);
+  await gitCheckoutBranch(tempBranchName);
+  // Stage all the changes...
+  await gitAdd('.');
+  // ... run pre-commit (only run with `git commit`)...`
+  runPrecommit();
+  //... and create a Git tree object with the changes. The Tree SHA will be used with GitHub APIs.
+  const treeSHA = await gitWriteTree();
+  // Create a new commit that references the Git tree object.
+  const commitTree = await gitCommitTree(treeSHA, tempBranchName, 'tempcommit');
+
+  // Update the HEAD of the temp branch to point to the new commit, then publish the temp branch.
+  await gitUpdateRef('HEAD', commitTree);
+  await gitPublishBranch('origin', tempBranchName);
+
+  /**
+   * Once we pushed the temp branch, the tree object is then known to the remote repository.
+   * We can now create a new commit that references the tree object using the GitHub API.
+   * The fact that we use the API makes the commit 'verified'.
+   * The commit is directly created on the GitHub repository, not on the local repository.
+   */
+  const commit = await octokit.rest.git.createCommit({
+    message: commitMessage,
+    owner: REPO_OWNER,
+    repo: REPO_NAME,
+    tree: treeSHA,
+    parents: [mainBranchCurrentSHA],
+  });
+
+  /**
+   * We then update the mainBranch to this new verified commit.
+   */
+  await gitSetRefOnCommit(
+    GIT_SSH_REMOTE,
+    `refs/heads/${mainBranchName}`,
+    commit.data.sha,
+    true
+  );
+  await gitPush({remote: GIT_SSH_REMOTE, refs: [mainBranchName], force: true});
+
+  // Delete the temp branch
+  await gitDeleteRemoteBranch('origin', tempBranchName);
+  return commit.data.sha;
+}
+
 const REPO_OWNER = 'coveo';
 const REPO_NAME = 'cli';
 const GIT_SSH_REMOTE = 'deploy';
@@ -120,92 +210,3 @@ await gitPushTags();
 
 // Unlock the main branch
 await removeWriteAccessRestrictions();
-
-/**
- * "Craft" the signed release commit.
- * @param {string|number} releaseNumber
- * @param {string} commitMessage
- * @param {Octokit} octokit
- * @returns {Promise<string>}
- */
-async function commitChanges(releaseNumber, commitMessage, octokit) {
-  // Get latest commit and name of the main branch.
-  const mainBranchName = await getCurrentBranchName();
-  const mainBranchCurrentSHA = await getSHA1fromRef(mainBranchName);
-
-  // Create a temporary branch and check it out.
-  const tempBranchName = `release/${releaseNumber}`;
-  await gitCreateBranch(tempBranchName);
-  await gitCheckoutBranch(tempBranchName);
-  // Stage all the changes...
-  await gitAdd('.');
-  // ... run pre-commit (only run with `git commit`)...`
-  runPrecommit();
-  //... and create a Git tree object with the changes. The Tree SHA will be used with GitHub APIs.
-  const treeSHA = await gitWriteTree();
-  // Create a new commit that references the Git tree object.
-  const commitTree = await gitCommitTree(treeSHA, tempBranchName, 'tempcommit');
-
-  // Update the HEAD of the temp branch to point to the new commit, then publish the temp branch.
-  await gitUpdateRef('HEAD', commitTree);
-  await gitPublishBranch('origin', tempBranchName);
-
-  /**
-   * Once we pushed the temp branch, the tree object is then known to the remote repository.
-   * We can now create a new commit that references the tree object using the GitHub API.
-   * The fact that we use the API makes the commit 'verified'.
-   * The commit is directly created on the GitHub repository, not on the local repository.
-   */
-  const commit = await octokit.rest.git.createCommit({
-    message: commitMessage,
-    owner: REPO_OWNER,
-    repo: REPO_NAME,
-    tree: treeSHA,
-    parents: [mainBranchCurrentSHA],
-  });
-
-  /**
-   * We then update the mainBranch to this new verified commit.
-   */
-  await gitSetRefOnCommit(
-    GIT_SSH_REMOTE,
-    `refs/heads/${mainBranchName}`,
-    commit.data.sha,
-    true
-  );
-  await gitPush({remote: GIT_SSH_REMOTE, refs: [mainBranchName], force: true});
-
-  // Delete the temp branch
-  await gitDeleteRemoteBranch('origin', tempBranchName);
-  return commit.data.sha;
-}
-
-/**
- * Update usage section at the root readme.
- */
-function updateRootReadme() {
-  const usageRegExp = /^<!-- usage -->(.|\n)*<!-- usagestop -->$/m;
-  const cliReadme = readFileSync('packages/cli/core/README.md', 'utf-8');
-  let rootReadme = readFileSync('README.md', 'utf-8');
-  const cliUsage = usageRegExp.exec(cliReadme)?.[0];
-  if (!cliUsage) {
-    return;
-  }
-  rootReadme.replace(usageRegExp, cliUsage);
-  writeFileSync('README.md', rootReadme);
-}
-
-/**
- * Run `npm run pre-commit`
- */
-function runPrecommit() {
-  spawnSync(appendCmdIfWindows`npm`, ['run', 'pre-commit']);
-}
-
-/**
- * Append `.cmd` to the input if the runtime OS is Windows.
- * @param {string|TemplateStringsArray} cmd
- * @returns
- */
-const appendCmdIfWindows = (cmd) =>
-  `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
