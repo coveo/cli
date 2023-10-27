@@ -13,7 +13,8 @@
   ],
   "scripts": {
     "release:phase1": "npx -p=@coveord/release npm-publish",
-    "test": "node --experimental-vm-modules --no-warnings ../../../../node_modules/jest/bin/jest.js"
+    "test": "node --experimental-vm-modules --no-warnings ../../../../node_modules/jest/bin/jest.js",
+    "test:ci": "node --experimental-vm-modules --no-warnings ../../../../node_modules/jest/bin/jest.js"
   },
   "keywords": [
     "coveo",

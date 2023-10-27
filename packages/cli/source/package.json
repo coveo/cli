@@ -68,6 +68,7 @@
   "scripts": {
     "build": "tsc -b tsconfig.build.json",
     "test": "jest --colors",
+    "test:ci": "jest --colors",
     "lint": "prettier --config .prettierrc.js --check . && eslint .",
     "release:phase1": "npx -p=@coveord/release npm-publish",
     "postpack": "rimraf oclif.manifest.json",
