@@ -1,6 +1,6 @@
 {
   "name": "@coveo/create-atomic-result-component",
-  "version": "1.1.2",
+  "version": "1.2.15",
   "description": "Initialize a Coveo Atomic Result Component",
   "type": "module",
   "main": "index.js",
@@ -27,7 +27,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@coveo/create-atomic-component-project": "1.1.0"
+    "@coveo/create-atomic-component-project": "1.2.15"
   },
   "devDependencies": {
     "@coveo/do-npm": "1.0.0",
