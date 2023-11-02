@@ -39,7 +39,7 @@
   ],
   "dependencies": {
     "chalk": "4.1.2",
-    "zod": "3.21.4"
+    "zod": "3.22.3"
   },
   "devDependencies": {
     "@coveo/do-npm": "1.0.0",
