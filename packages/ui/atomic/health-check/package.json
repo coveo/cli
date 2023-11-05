@@ -1,7 +1,7 @@
 {
   "name": "@coveo/atomic-component-health-check",
   "type": "module",
-  "version": "2.1.2",
+  "version": "2.2.15",
   "description": "A Health checker for custom Atomic component",
   "main": "./dist/index.js",
   "author": "Coveo",
@@ -20,7 +20,8 @@
     "pretest": "rimraf dist && tsc -b tsconfig.json",
     "test:unit": "jest --testPathIgnorePatterns=e2e",
     "test:e2e": "node --experimental-vm-modules --no-warnings ../../../../node_modules/jest/bin/jest.js --testPathPattern=e2e",
-    "test": "npm run test:unit && npm run test:e2e"
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:ci:snap": "npm run test:unit -- -u && npm run test:e2e -- -u"
   },
   "repository": {
     "type": "git",

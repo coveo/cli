@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli-plugin-source",
-  "version": "2.0.12",
+  "version": "2.1.15",
   "description": "Manage Coveo Sources with the Coveo CLI",
   "author": "Coveo",
   "homepage": "https://github.com/coveo/cli",
@@ -14,7 +14,7 @@
     "/oclif.manifest.json"
   ],
   "dependencies": {
-    "@coveo/cli-commons": "2.6.0",
+    "@coveo/cli-commons": "2.7.15",
     "@coveo/platform-client": "44.1.0",
     "@coveo/push-api-client": "3.1.15",
     "@oclif/core": "1.24.0",
@@ -68,13 +68,14 @@
   "scripts": {
     "build": "tsc -b tsconfig.build.json",
     "test": "jest --colors",
+    "test:ci:snap": "jest --colors -u",
     "lint": "prettier --config .prettierrc.js --check . && eslint .",
     "release:phase1": "npx -p=@coveord/release npm-publish",
     "postpack": "rimraf oclif.manifest.json",
     "prepublishOnly": "rimraf lib && npm run build && oclif manifest"
   },
   "engines": {
-    "node": "^16.13.0 || ^18.12.0"
+    "node": "^18.18.1 || ^20.9.0"
   },
   "bugs": "https://github.com/coveo/cli/issues",
   "keywords": [

@@ -1,3 +1,9 @@
+## 1.2.15 (2023-10-27)
+
+### Features
+
+- support imports from `/headless` ([#1326](https://github.com/coveo/cli/issues/1326)) ([d24bec4](https://github.com/coveo/cli/commits/d24bec48e5050ffdbba406fe130a7f7a83ca9b95))
+
 # 1.1.0 (2023-06-13)
 
 ### Bug Fixes

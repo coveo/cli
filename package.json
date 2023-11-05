@@ -1,7 +1,7 @@
 {
   "name": "cli-tools",
   "private": true,
-  "version": "1.0.0-18",
+  "version": "1.0.0-19",
   "author": "Coveo",
   "bin": {
     "coveo": "./bin/run"
@@ -78,6 +78,7 @@
     "clean": "rimraf package-lock.json node_modules",
     "build": "nx run-many --target=build --all",
     "test": "nx run-many --target=test --all",
+    "test:ci:snap": "nx run-many --target=test:ci:snap --all",
     "lint": "nx run-many --target=lint --all && prettier --ignore-path .ci.prettierignore --check . && eslint .",
     "commit": "git-cz",
     "pr:report": "node ./scripts/pr-bot.js",

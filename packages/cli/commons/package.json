@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli-commons",
-  "version": "2.6.0",
+  "version": "2.7.15",
   "author": "Coveo",
   "description": "Common utils for @coveo/cli plugins",
   "license": "Apache-2.0",
@@ -40,6 +40,7 @@
   },
   "scripts": {
     "test": "jest",
+    "test:ci:snap": "jest -u",
     "build": "tsc -b tsconfig.build.json",
     "prepublishOnly": "npm run build",
     "release:phase1": "npx -p=@coveord/release npm-publish"

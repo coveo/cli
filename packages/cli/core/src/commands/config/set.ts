@@ -1,30 +1,18 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {CliUx, Flags} from '@oclif/core';
 import {Config} from '@coveo/cli-commons/config/config';
-import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {
-  IsAuthenticated,
-  Preconditions,
-} from '@coveo/cli-commons/preconditions/index';
-import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
-import {InvalidCommandError} from '../../lib/errors/InvalidCommandError';
 import {ConfigRenderer} from '@coveo/cli-commons/config/configRenderer';
+import {Before} from '@coveo/cli-commons/decorators/before';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
+import {IsAuthenticated} from '@coveo/cli-commons/preconditions/index';
+import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
+import {Flags} from '@oclif/core';
 import type {Example} from '@oclif/core/lib/interfaces';
+import {InvalidCommandError} from '../../lib/errors/InvalidCommandError';
 
 export default class Set extends CLICommand {
   public static description = 'Modify the current Coveo CLI configuration.';
 
   public static flags = {
-    // TODO CDX-1246
-    environment: Flags.string({
-      char: 'e',
-      hidden: true,
-    }),
-    // TODO CDX-1246
-    region: Flags.string({
-      char: 'r',
-      hidden: true,
-    }),
     organization: Flags.string({
       char: 'o',
       description:
@@ -41,15 +29,9 @@ export default class Set extends CLICommand {
   ];
 
   @Trackable()
-  @Preconditions(IsAuthenticated())
+  @Before(IsAuthenticated())
   public async run() {
     const {flags} = await this.parse(Set);
-    // TODO CDX-1246
-    if (flags.environment || flags.region) {
-      CliUx.ux.error(
-        'To connect to a different region or environment, use the `auth:login` command'
-      );
-    }
     if (Object.entries(flags).length === 0) {
       throw new InvalidCommandError('Command should contain at least 1 flag');
     }

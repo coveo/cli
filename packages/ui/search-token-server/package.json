@@ -1,6 +1,6 @@
 {
   "name": "@coveo/search-token-server",
-  "version": "1.35.23",
+  "version": "1.35.29",
   "main": "server.ts",
   "license": "Apache-2.0",
   "repository": {
@@ -25,6 +25,7 @@
   "scripts": {
     "start": "ts-node server.ts",
     "test": "jest",
+    "test:ci:snap": "jest -u",
     "release:phase1": "npx -p=@coveord/release npm-publish"
   },
   "devDependencies": {

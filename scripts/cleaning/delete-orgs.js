@@ -1,6 +1,3 @@
-require('isomorphic-fetch');
-require('abortcontroller-polyfill');
-
 const {homedir} = require('os');
 const {join} = require('path');
 const {config} = require('dotenv');
@@ -15,8 +12,8 @@ config({path: join(homedir(), '.env')});
 function wasCreatedByTheCli(testRunId = '') {
   return (key) =>
     testRunId
-      ? key.displayName?.startsWith(`cli-e2e-idwindows-latest-${testRunId}`) ||
-        key.displayName?.startsWith(`cli-e2e-idubuntu-20-04-${testRunId}`)
+      ? key.displayName?.startsWith('cli-e2e-id') &&
+        key.displayName?.includes(testRunId)
       : key.displayName?.match(/cli-e2e.*g/);
 }
 

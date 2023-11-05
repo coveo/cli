@@ -22,6 +22,8 @@ import {
   gitPublishBranch,
   gitSetRefOnCommit,
   gitPush,
+  gitSetupSshRemote,
+  gitSetupUser,
 } from '@coveo/semantic-monorepo-tools';
 import {Octokit} from 'octokit';
 import {createAppAuth} from '@octokit/auth-app';
@@ -31,97 +33,49 @@ import {dedent} from 'ts-dedent';
 import {readFileSync, writeFileSync} from 'fs';
 import {removeWriteAccessRestrictions} from './lock-master.mjs';
 import {spawnSync} from 'child_process';
-const REPO_OWNER = 'coveo';
-const REPO_NAME = 'cli';
-const GIT_SSH_REMOTE = 'deploy';
 
-// Commit, tag and push
-(async () => {
-  const PATH = '.';
-
-  //#region GitHub authentication
-  const authSecrets = {
-    appId: process.env.RELEASER_APP_ID,
-    privateKey: process.env.RELEASER_PRIVATE_KEY,
-    clientId: process.env.RELEASER_CLIENT_ID,
-    clientSecret: process.env.RELEASER_CLIENT_SECRET,
-    installationId: process.env.RELEASER_INSTALLATION_ID,
-  };
-
-  const octokit = new Octokit({
-    authStrategy: createAppAuth,
-    auth: authSecrets,
-  });
-  //#endregion
-
-  // Define release # andversion
-  const currentVersionTag = getCurrentVersion(PATH);
-  currentVersionTag.inc('prerelease');
-  const npmNewVersion = currentVersionTag.format();
-  // Write release version in the root package.json
-  await npmBumpVersion(npmNewVersion, PATH);
-
-  const releaseNumber = currentVersionTag.prerelease[0];
-  const gitNewTag = `release-${releaseNumber}`;
-
-  // Find all changes since last release and generate the changelog.
-  const versionPrefix = 'release-';
-  const lastTag = await getLastTag(versionPrefix);
-  const commits = await getCommits(PATH, lastTag);
-  const convention = await angularChangelogConvention;
-
-  let changelog = '';
-  if (commits.length > 0) {
-    const parsedCommits = parseCommits(commits, convention.parserOpts);
-    changelog = await generateChangelog(
-      parsedCommits,
-      gitNewTag,
-      {
-        host: 'https://github.com',
-        owner: REPO_OWNER,
-        repository: REPO_NAME,
-      },
-      convention.writerOpts
-    );
-    await writeChangelog(PATH, changelog);
-  }
-  updateRootReadme();
-
-  // Find all packages that have been released in this release.
-  const packagesReleased = readFileSync('.git-message', {
-    encoding: 'utf-8',
-  }).trim();
-
-  // Compile git commit message
-  const commitMessage = dedent`
-    [version bump] chore(release): release ${gitNewTag} [skip ci]
-
-    ${packagesReleased}
-
-    **/README.md
-    **/CHANGELOG.md
-    **/package.json
-    README.md
-    CHANGELOG.md
-    package.json
-    package-lock.json
-    packages/ui/cra-template/template.json
-  `;
-
-  // Craft the commit (complex process, see function)
-  const commit = await commitChanges(releaseNumber, commitMessage, octokit);
-
-  // Add the tags locally...
-  for (const tag of packagesReleased.split('\n').concat(gitNewTag)) {
-    await gitTag(tag, commit);
+const setupGit = async () => {
+  const GIT_USERNAME = 'developer-experience-bot[bot]';
+  const GIT_EMAIL =
+    '91079284+developer-experience-bot[bot]@users.noreply.github.com';
+  const DEPLOY_KEY = process.env.DEPLOY_KEY;
+  if (DEPLOY_KEY === undefined) {
+    throw new Error('Deploy key is undefined');
   }
 
-  // And push them
-  await gitPushTags();
+  await gitSetupUser(GIT_USERNAME, GIT_EMAIL);
+  await gitSetupSshRemote(REPO_OWNER, REPO_NAME, DEPLOY_KEY, GIT_SSH_REMOTE);
+};
 
-  // Unlock the main branch
-  await removeWriteAccessRestrictions();
-})();
+/**
+ * Update usage section at the root readme.
+ */
+function updateRootReadme() {
+  const usageRegExp = /^<!-- usage -->(.|\n)*<!-- usagestop -->$/m;
+  const cliReadme = readFileSync('packages/cli/core/README.md', 'utf-8');
+  let rootReadme = readFileSync('README.md', 'utf-8');
+  const cliUsage = usageRegExp.exec(cliReadme)?.[0];
+  if (!cliUsage) {
+    return;
+  }
+
+  writeFileSync('README.md', rootReadme.replace(usageRegExp, cliUsage));
+}
+
+/**
+ * Append `.cmd` to the input if the runtime OS is Windows.
+ * @param {string|TemplateStringsArray} cmd
+ * @returns
+ */
+const appendCmdIfWindows = (cmd) =>
+  `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
+
+/**
+ * Run `npm run pre-commit`
+ */
+function runPrecommit() {
+  spawnSync(appendCmdIfWindows`npm`, ['run', 'pre-commit']);
+}
 
 /**
  * "Craft" the signed release commit.
@@ -182,32 +136,95 @@ async function commitChanges(releaseNumber, commitMessage, octokit) {
   return commit.data.sha;
 }
 
-/**
- * Update usage section at the root readme.
- */
-function updateRootReadme() {
-  const usageRegExp = /^<!-- usage -->(.|\n)*<!-- usagestop -->$/m;
-  const cliReadme = readFileSync('packages/cli/core/README.md', 'utf-8');
-  let rootReadme = readFileSync('README.md', 'utf-8');
-  const cliUsage = usageRegExp.exec(cliReadme)?.[0];
-  if (!cliUsage) {
-    return;
-  }
-  rootReadme.replace(usageRegExp, cliUsage);
-  writeFileSync('README.md', rootReadme);
+const REPO_OWNER = 'coveo';
+const REPO_NAME = 'cli';
+const GIT_SSH_REMOTE = 'deploy';
+
+// Commit, tag and push
+const PATH = '.';
+
+//#region GitHub authentication
+const authSecrets = {
+  appId: process.env.RELEASER_APP_ID,
+  privateKey: process.env.RELEASER_PRIVATE_KEY,
+  clientId: process.env.RELEASER_CLIENT_ID,
+  clientSecret: process.env.RELEASER_CLIENT_SECRET,
+  installationId: process.env.RELEASER_INSTALLATION_ID,
+};
+
+const octokit = new Octokit({
+  authStrategy: createAppAuth,
+  auth: authSecrets,
+});
+//#endregion
+
+await setupGit();
+
+// Define release # andversion
+const currentVersionTag = getCurrentVersion(PATH);
+currentVersionTag.inc('prerelease');
+const npmNewVersion = currentVersionTag.format();
+// Write release version in the root package.json
+await npmBumpVersion(npmNewVersion, PATH);
+
+const releaseNumber = currentVersionTag.prerelease[0];
+const gitNewTag = `release-${releaseNumber}`;
+
+// Find all changes since last release and generate the changelog.
+const versionPrefix = 'release-';
+const lastTag = await getLastTag(versionPrefix);
+const commits = await getCommits(PATH, lastTag);
+const convention = await angularChangelogConvention;
+
+let changelog = '';
+if (commits.length > 0) {
+  const parsedCommits = parseCommits(commits, convention.parserOpts);
+  changelog = await generateChangelog(
+    parsedCommits,
+    gitNewTag,
+    {
+      host: 'https://github.com',
+      owner: REPO_OWNER,
+      repository: REPO_NAME,
+    },
+    convention.writerOpts
+  );
+  await writeChangelog(PATH, changelog);
+}
+updateRootReadme();
+
+// Find all packages that have been released in this release.
+const packagesReleased = readFileSync('.git-message', {
+  encoding: 'utf-8',
+}).trim();
+
+// Compile git commit message
+const commitMessage = dedent`
+    [version bump] chore(release): release ${gitNewTag} [skip ci]
+
+    ${packagesReleased}
+
+    **/README.md
+    **/CHANGELOG.md
+    **/package.json
+    **/*.snap
+    README.md
+    CHANGELOG.md
+    package.json
+    package-lock.json
+    packages/ui/cra-template/template.json
+  `;
+
+// Craft the commit (complex process, see function)
+const commit = await commitChanges(releaseNumber, commitMessage, octokit);
+
+// Add the tags locally...
+for (const tag of packagesReleased.split('\n').concat(gitNewTag)) {
+  await gitTag(tag, commit);
 }
 
-/**
- * Run `npm run pre-commit`
- */
-function runPrecommit() {
-  spawnSync(appendCmdIfWindows`npm`, ['run', 'pre-commit']);
-}
+// And push them
+await gitPushTags();
 
-/**
- * Append `.cmd` to the input if the runtime OS is Windows.
- * @param {string|TemplateStringsArray} cmd
- * @returns
- */
-const appendCmdIfWindows = (cmd) =>
-  `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
+// Unlock the main branch
+await removeWriteAccessRestrictions();

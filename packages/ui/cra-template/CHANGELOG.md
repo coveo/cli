@@ -1,3 +1,11 @@
+## 1.38.15 (2023-10-27)
+
+### Features
+
+- **cli:** change node support to 18.18.1 ([#1332](https://github.com/coveo/cli/issues/1332)) ([54c6937](https://github.com/coveo/cli/commits/54c6937829685e1af20949f082b2de484fa1f6c6))
+- **cli:** change node support to only 18-20 ([#1335](https://github.com/coveo/cli/issues/1335)) ([3e65207](https://github.com/coveo/cli/commits/3e6520737650901d2b176fadc8e2e56441a8d4da))
+- **cli:** node 20.9.0 lts ([#1337](https://github.com/coveo/cli/issues/1337)) ([af1c3ac](https://github.com/coveo/cli/commits/af1c3ac1796bdfd534b5d037f3a42e23aa3ab225))
+
 # 1.37.0 (2023-06-13)
 
 ### Features

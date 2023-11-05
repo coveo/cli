@@ -29,8 +29,8 @@ export default class Angular extends CLICommand {
    * Requirements Based on https://angular.io/guide/setup-local
    * and https://www.npmjs.com/package/@angular/cli package.json engines section.
    */
-  public static requiredNodeVersion = '^12.14.1 || >=14.0.0';
-  public static requiredNpmVersion = '^6.11.0 || ^7.5.6 || >=8.0.0';
+  public static requiredNodeVersion = '^18.18.1 || ^20.9.0';
+  public static requiredNpmVersion = '^9.8.1 || ^10.1.0';
   public static requiredNgVersion = '^15.0.0';
 
   public static description =

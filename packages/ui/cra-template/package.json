@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cra-template",
-  "version": "1.37.0",
+  "version": "1.38.15",
   "scripts": {
     "lint": "prettier --check . && eslint .",
     "release:phase1": "npx -p=@coveord/release npm-publish",
@@ -20,7 +20,7 @@
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": "^16.13.0 || ^18.12.0"
+    "node": "^18.18.1 || ^20.9.0"
   },
   "files": [
     "template",
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@coveo/headless": "latest",
-    "@coveo/search-token-server": "1.35.23",
+    "@coveo/search-token-server": "1.35.29",
     "@emotion/react": "11.10.8",
     "@emotion/styled": "11.10.8",
     "@mui/material": "5.12.2",
