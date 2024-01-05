@@ -1,6 +1,6 @@
 export class LoginSelectors {
   public static readonly loginWithOfficeButton =
-    'button[formaction^="/auth/office365"]';
+    'button[formaction^="/auth/oauth2/authorization/microsoft"]';
   public static readonly passwordView = 'div[data-viewid="2"]';
   public static readonly emailView = 'div[data-viewid="1"]';
   public static readonly emailInput = 'input[type="email"]';
