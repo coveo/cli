@@ -106,6 +106,14 @@ export class ExpandedPreviewer {
 
   private async initialPreviewCommit(dirPath: string) {
     await spawnProcess('git', ['init'], {cwd: dirPath, stdio: 'ignore'});
+    await spawnProcess('git', ['config', 'user.email', 'cli@coveo.com'], {
+      cwd: dirPath,
+      stdio: 'ignore',
+    });
+    await spawnProcess('git', ['config', 'user.name', 'Coveo CLI'], {
+      cwd: dirPath,
+      stdio: 'ignore',
+    });
     await spawnProcess('git', ['add', '.'], {cwd: dirPath, stdio: 'ignore'});
     await spawnProcess('git', ['commit', `--message=${this.orgId} currently`], {
       cwd: dirPath,
