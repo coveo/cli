@@ -1,3 +1,10 @@
+# release-20 (2024-01-15)
+
+### Bug Fixes
+
+- **deps:** update dependency zod to v3.22.3 [security] j:cdx-227 ([#1330](https://github.com/coveo/cli/issues/1330)) ([0129dd4](https://github.com/coveo/cli/commits/0129dd4aa0be3b76bdeca683a1e15f142f4a516a))
+- **snapshot:** ensure git author is known when committing ([#1405](https://github.com/coveo/cli/issues/1405)) ([1b653d8](https://github.com/coveo/cli/commits/1b653d8d290702c57c3738d858f1c429d09826dd))
+
 # release-19 (2023-10-27)
 
 ### Bug Fixes

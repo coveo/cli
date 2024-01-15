@@ -18,7 +18,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "WNXSePDB0rxKykx0pmIcvvXf8lY=",
+                  "hash": "qDpf4+hr9xUG+okvPDALEJlEqRg=",
                   "name": "package.json",
                 },
                 HashedFolder {
@@ -44,11 +44,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "OdOjUj6sQOlaJZL0xMsHtkmhLEM=",
+              "hash": "SQZmecyPO+BCAzeNl8KNpTq1hX0=",
               "name": "valid-component-name",
             },
           ],
-          "hash": "pusjYN5OIG2nxlphCimdO2MRZoA=",
+          "hash": "8SzcY63Ejw7oU8yO8oWZQCu5X1E=",
           "name": "components",
         },
         HashedFile {
@@ -74,7 +74,7 @@ HashedFolder {
           "name": "pages",
         },
       ],
-      "hash": "mfttHUbisEc5o1agWYdOGHcyMbM=",
+      "hash": "gcBCAP1cZMjfp/6fY0tYf4GeQ24=",
       "name": "src",
     },
     HashedFile {
@@ -86,7 +86,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "SjnhBdGoPcwxrzS0znwq8DkPeKE=",
+  "hash": "kxvb1m64K3EZF1apkuLEO9q+b+A=",
   "name": "create-atomic-component",
 }
 `;
@@ -109,7 +109,7 @@ HashedFolder {
             HashedFolder {
               "children": [
                 HashedFile {
-                  "hash": "TsYMWL2vEfN/Css0EnNr+FboO38=",
+                  "hash": "owuXxSaQ2zQuo2VEHF+SssEneTc=",
                   "name": "package.json",
                 },
                 HashedFolder {
@@ -135,11 +135,11 @@ HashedFolder {
                   "name": "tsconfig.json",
                 },
               ],
-              "hash": "5sJjww11rRZ4IWddpxlYramSviU=",
+              "hash": "69yStKUqOpgLNrywbPc0pBiI8D4=",
               "name": "valid-component-name",
             },
           ],
-          "hash": "Ch4M26OnLxd9fkyBZ07ynwGOb+8=",
+          "hash": "G89/rSrms7Qrv7KSGZIFt/KFtZU=",
           "name": "components",
         },
         HashedFile {
@@ -165,7 +165,7 @@ HashedFolder {
           "name": "pages",
         },
       ],
-      "hash": "wJTmvZEH0W87KuuNzKyuHp9lwaA=",
+      "hash": "GjL+xcup+MHLn7E7v7oB9xT7kSo=",
       "name": "src",
     },
     HashedFile {
@@ -177,7 +177,7 @@ HashedFolder {
       "name": "tsconfig.json",
     },
   ],
-  "hash": "JhBae+scXj5VDo4lpqteAya9cHg=",
+  "hash": "i9gmhaU27lQ2iA/tVRtBjSrGfpI=",
   "name": "create-atomic-result-component",
 }
 `;
