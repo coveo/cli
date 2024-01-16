@@ -60,8 +60,12 @@ export default class Token extends CLICommand {
           type: 'hide',
         });
 
-    this.configuration.set('accessToken', tok);
+    this.configuration.set('accessToken', this.sanitizeToken(tok));
     this.configuration.set('anonymous', true);
+  }
+
+  private sanitizeToken(token: string) {
+    return token.replace(/\n/gi, '').trim();
   }
 
   private async saveRegionAndEnvironment() {
