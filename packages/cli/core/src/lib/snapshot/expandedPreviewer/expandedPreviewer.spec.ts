@@ -276,7 +276,7 @@ describe('ExpandedPreviewer', () => {
       expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
         2,
         'git',
-        ['add', '.'],
+        ['config', 'user.email', '"cli@coveo.com"'],
         {
           cwd: previewPath,
           stdio: 'ignore',
@@ -285,7 +285,25 @@ describe('ExpandedPreviewer', () => {
       expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
         3,
         'git',
-        ['commit', '--message=someorg currently'],
+        ['config', 'user.name', '"Coveo CLI"'],
+        {
+          cwd: previewPath,
+          stdio: 'ignore',
+        }
+      );
+      expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
+        4,
+        'git',
+        ['add', '.'],
+        {
+          cwd: previewPath,
+          stdio: 'ignore',
+        }
+      );
+      expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
+        5,
+        'git',
+        ['commit', '--message="someorg currently"'],
         {
           cwd: previewPath,
           stdio: 'ignore',
