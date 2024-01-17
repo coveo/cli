@@ -5,7 +5,7 @@ import defaultSearchInterface from './default-search-interface.js';
 
 export const defaultPageManifest: IManifest = {
   config: {
-    title: 'Atomic Stencil Project',
+    name: 'Atomic Stencil Project',
   },
   markup: defaultSearchInterface,
   results: {
