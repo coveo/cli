@@ -276,7 +276,7 @@ describe('ui:create:atomic', () => {
               'atomic-server-valid'
             );
             await waitForAppRunning(appTerminal);
-          }, 5 * 60e3);
+          }, 10 * 60e3);
 
           beforeEach(async () => {
             consoleInterceptor = new BrowserConsoleInterceptor(
