@@ -29,7 +29,7 @@
     "@stencil/core": "2.22.3"
   },
   "devDependencies": {
-    "@coveo/atomic-component-health-check": "2.2.15",
+    "@coveo/atomic-component-health-check": "2.2.16",
     "@rollup/plugin-url": "8.0.1",
     "@types/jest": "29.5.1",
     "jest": "29.5.0",

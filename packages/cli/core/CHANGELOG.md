@@ -1,3 +1,9 @@
+## 3.0.16 (2024-01-15)
+
+### Bug Fixes
+
+- **snapshot:** ensure git author is known when committing ([#1405](https://github.com/coveo/cli/issues/1405)) ([1b653d8](https://github.com/coveo/cli/commits/1b653d8d290702c57c3738d858f1c429d09826dd))
+
 ## 3.0.15 (2023-10-27)
 
 ### Bug Fixes
