@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {CliUx, Flags} from '@oclif/core';
+import {Flags} from '@oclif/core';
 import {Config} from '@coveo/cli-commons/config/config';
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
