@@ -13,6 +13,7 @@ import {
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,
+  listSearchHubsPrivilege,
   viewSearchPagesPrivilege,
 } from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {
@@ -29,6 +30,7 @@ interface CreateAppOptions {
   pageId?: string;
   projectName: string;
   cfg: Configuration;
+  searchHub: string;
 }
 export const atomicAppInitializerPackage = '@coveo/create-atomic';
 export const atomicLibInitializerPackage =
@@ -50,7 +52,8 @@ export const atomicAppPreconditions = [
   HasNecessaryCoveoPrivileges(
     createApiKeyPrivilege,
     impersonatePrivilege,
-    viewSearchPagesPrivilege
+    viewSearchPagesPrivilege,
+    listSearchHubsPrivilege
   ),
 ];
 
@@ -78,6 +81,8 @@ export async function createAtomicApp(options: CreateAppOptions) {
     options.cfg.environment,
     '--user',
     username,
+    '--search-hub',
+    options.searchHub,
   ];
 
   if (options.pageId) {

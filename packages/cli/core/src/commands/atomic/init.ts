@@ -10,6 +10,8 @@ import {
   createAtomicApp,
   createAtomicLib,
 } from '../../lib/atomic/createAtomicProject';
+import {promptForSearchHub} from '../ui/create/shared';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 
 export default class AtomicInit extends CLICommand {
   public static description =
@@ -67,11 +69,14 @@ export default class AtomicInit extends CLICommand {
   }
 
   @Before(...atomicAppPreconditions)
-  private createAtomicApp(projectName: string) {
+  private async createAtomicApp(projectName: string) {
     const cfg = this.configuration.get();
+    const client = await new AuthenticatedClient().getClient();
+    const searchHub = await promptForSearchHub(client);
     return createAtomicApp({
       projectName,
       cfg,
+      searchHub,
     });
   }
 
