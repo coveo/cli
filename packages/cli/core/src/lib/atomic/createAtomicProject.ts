@@ -24,13 +24,13 @@ import {getPackageVersion} from '../utils/misc';
 import npf from '@coveo/cli-commons/npm/npf';
 import {SubprocessError} from '../errors/subprocessError';
 import {isErrorLike} from '../utils/errorSchemas';
+import {promptForSearchHub} from '../../commands/ui/create/shared';
 
 interface CreateAppOptions {
   initializerVersion?: string;
   pageId?: string;
   projectName: string;
   cfg: Configuration;
-  searchHub: string;
 }
 export const atomicAppInitializerPackage = '@coveo/create-atomic';
 export const atomicLibInitializerPackage =
@@ -59,7 +59,8 @@ export const atomicAppPreconditions = [
 
 export async function createAtomicApp(options: CreateAppOptions) {
   const authenticatedClient = new AuthenticatedClient();
-
+  const platformClient = await authenticatedClient.getClient();
+  const searchHub = await promptForSearchHub(platformClient);
   const username = await authenticatedClient.getUsername();
   const cliArgs: string[] = [
     `${atomicAppInitializerPackage}@${
@@ -82,7 +83,7 @@ export async function createAtomicApp(options: CreateAppOptions) {
     '--user',
     username,
     '--search-hub',
-    options.searchHub,
+    searchHub,
   ];
 
   if (options.pageId) {

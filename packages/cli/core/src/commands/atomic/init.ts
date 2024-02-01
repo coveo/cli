@@ -71,12 +71,9 @@ export default class AtomicInit extends CLICommand {
   @Before(...atomicAppPreconditions)
   private async createAtomicApp(projectName: string) {
     const cfg = this.configuration.get();
-    const client = await new AuthenticatedClient().getClient();
-    const searchHub = await promptForSearchHub(client);
     return createAtomicApp({
       projectName,
       cfg,
-      searchHub,
     });
   }
 
