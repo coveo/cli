@@ -236,3 +236,18 @@ export const readOrganizationPrivilege: PlatformPrivilege = {
       : `You are not authorized to view the organization. Make sure you are granted this privilege before running the command again.
       See https://docs.coveo.com/en/1707#organization-domain`,
 };
+
+export const listSearchHubsPrivilege: PlatformPrivilege = {
+  models: [
+    {
+      type: 'VIEW',
+      targetDomain: 'SEARCH_USAGE_METRICS',
+      targetId: '*',
+      owner: 'SEARCH_API',
+    },
+  ],
+  unsatisfiedConditionMessage: (anonymous: boolean) =>
+    anonymous
+      ? 'Your access token is missing the privilege to list available search hubs in your organization. Make sure to grant this privilege before running the command again. See https://docs.coveo.com/en/1707/#search-usage-metrics-domain.'
+      : 'You are not authorized to list available search hubs in your organization. Please contact an administrator of your Coveo organization and ask for that privilege. See https://docs.coveo.com/en/1707/#search-usage-metrics-domain.',
+};

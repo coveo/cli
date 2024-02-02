@@ -15,12 +15,14 @@ import {
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,
+  listSearchHubsPrivilege,
 } from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {
   IsNodeVersionInRange,
   IsNpxInstalled,
 } from '../../../lib/decorators/preconditions';
+import {promptForSearchHub} from './shared';
 
 type ReactProcessEnv = {
   orgId: string;
@@ -72,7 +74,11 @@ export default class React extends CLICommand {
     IsAuthenticated([AuthenticationType.OAuth]),
     IsNodeVersionInRange(React.requiredNodeVersion),
     IsNpxInstalled(),
-    HasNecessaryCoveoPrivileges(createApiKeyPrivilege, impersonatePrivilege)
+    HasNecessaryCoveoPrivileges(
+      createApiKeyPrivilege,
+      impersonatePrivilege,
+      listSearchHubsPrivilege
+    )
   )
   public async run() {
     const {args} = await this.parse(React);
@@ -81,11 +87,18 @@ export default class React extends CLICommand {
   }
 
   private async setupEnvironmentVariables(name: string) {
+    const authenticatedClient = new AuthenticatedClient();
+    const platformClient = await authenticatedClient.getClient();
+    const searchHub = await promptForSearchHub(platformClient);
+
     const {args} = await this.parse(React);
     const cfg = this.configuration.get();
-    const authenticatedClient = new AuthenticatedClient();
+
     const username = await authenticatedClient.getUsername();
-    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
+    const apiKey = await authenticatedClient.createImpersonateApiKey(
+      args.name,
+      searchHub
+    );
 
     const env: ReactProcessEnv = {
       orgId: cfg.organization,

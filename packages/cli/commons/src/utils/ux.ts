@@ -1,6 +1,7 @@
 import {CliUx} from '@oclif/core';
 import isCi from 'is-ci';
 import {red, green, magenta} from 'chalk';
+import inquirer from 'inquirer';
 
 function isWindows() {
   return process.platform === 'win32';
@@ -36,3 +37,26 @@ export const formatOrgId = (orgId: TemplateStringsArray | string) =>
 
 export const confirm = (message: string, ciDefault: boolean) =>
   isCi ? Promise.resolve(ciDefault) : CliUx.ux.confirm(message);
+
+export const prompt = (message: string, ciDefault: string) =>
+  isCi ? Promise.resolve(ciDefault) : CliUx.ux.prompt(message);
+
+export const promptChoices = async (
+  message: string,
+  choices: (string | inquirer.Separator)[],
+  ciDefault: string
+) => {
+  if (isCi) {
+    return ciDefault;
+  }
+  const response = await inquirer.prompt([
+    {
+      name: 'choice',
+      message,
+      type: 'list',
+      choices,
+    },
+  ]);
+
+  return response.choice;
+};

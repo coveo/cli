@@ -20,8 +20,10 @@ import {IsNgVersionInRange} from '../../../lib/decorators/preconditions/ng';
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,
+  listSearchHubsPrivilege,
 } from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
+import {promptForSearchHub} from './shared';
 
 export default class Angular extends CLICommand {
   public static templateName = '@coveo/angular';
@@ -66,7 +68,11 @@ export default class Angular extends CLICommand {
     IsNodeVersionInRange(Angular.requiredNodeVersion),
     IsNpmVersionInRange(Angular.requiredNpmVersion),
     IsNgVersionInRange(Angular.requiredNgVersion),
-    HasNecessaryCoveoPrivileges(createApiKeyPrivilege, impersonatePrivilege)
+    HasNecessaryCoveoPrivileges(
+      createApiKeyPrivilege,
+      impersonatePrivilege,
+      listSearchHubsPrivilege
+    )
   )
   public async run() {
     const {args, flags} = await this.parse(Angular);
@@ -86,10 +92,18 @@ export default class Angular extends CLICommand {
   }
 
   private async addCoveoToProject(applicationName: string, defaults: boolean) {
+    const authenticatedClient = new AuthenticatedClient();
+
+    const platformClient = await authenticatedClient.getClient();
+    const searchHub = await promptForSearchHub(platformClient);
+
     const {flags, args} = await this.parse(Angular);
     const cfg = this.configuration.get();
-    const authenticatedClient = new AuthenticatedClient();
-    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
+
+    const apiKey = await authenticatedClient.createImpersonateApiKey(
+      args.name,
+      searchHub
+    );
     const username = await authenticatedClient.getUsername();
     const schematicVersion =
       flags.version || getPackageVersion(Angular.templateName);

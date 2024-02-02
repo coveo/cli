@@ -16,6 +16,7 @@ import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
 import {
   createApiKeyPrivilege,
   impersonatePrivilege,
+  listSearchHubsPrivilege,
 } from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {
@@ -25,6 +26,7 @@ import {
 import {cwd} from 'node:process';
 import {mkdirSync, readdirSync, statSync, writeFileSync} from 'node:fs';
 import dedent from 'ts-dedent';
+import {promptForSearchHub} from './shared';
 
 export default class Vue extends CLICommand {
   public static packageName = '@coveo/create-headless-vue';
@@ -67,7 +69,11 @@ export default class Vue extends CLICommand {
     IsAuthenticated([AuthenticationType.OAuth]),
     IsNodeVersionInRange(Vue.requiredNodeVersion),
     IsNpxInstalled(),
-    HasNecessaryCoveoPrivileges(createApiKeyPrivilege, impersonatePrivilege)
+    HasNecessaryCoveoPrivileges(
+      createApiKeyPrivilege,
+      impersonatePrivilege,
+      listSearchHubsPrivilege
+    )
   )
   public async run() {
     const {args, flags} = await this.parse(Vue);
@@ -82,11 +88,17 @@ export default class Vue extends CLICommand {
   }
 
   private async createEnvFile(dirName: string) {
+    const authenticatedClient = new AuthenticatedClient();
+    const platformClient = await authenticatedClient.getClient();
+    const searchHub = await promptForSearchHub(platformClient);
     const {args} = await this.parse(Vue);
     const cfg = this.configuration.get();
-    const authenticatedClient = new AuthenticatedClient();
+
     const username = await authenticatedClient.getUsername();
-    const apiKey = await authenticatedClient.createImpersonateApiKey(args.name);
+    const apiKey = await authenticatedClient.createImpersonateApiKey(
+      args.name,
+      searchHub
+    );
 
     writeFileSync(
       join(dirName, '.env'),
