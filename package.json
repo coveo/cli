@@ -13,7 +13,7 @@
     "@actions/github": "5.1.1",
     "@commitlint/config-conventional": "17.6.1",
     "@commitlint/lint": "17.6.1",
-    "@coveo/platform-client": "44.1.0",
+    "@coveo/platform-client": "52.1.0",
     "@coveo/semantic-monorepo-tools": "2.1.2",
     "@coveord/release": "1.0.0",
     "@npmcli/arborist": "6.2.8",
