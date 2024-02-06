@@ -3,6 +3,9 @@ import {
   IManifestResponse,
   ISearchInterfaceConfigurationResponse,
 } from '@coveo/platform-client';
+import {readFileSync} from 'node:fs';
+import {homedir} from 'node:os';
+import {resolve} from 'node:path';
 
 /**
  * @coveo/platform-client's IManifestResponse with simplified configuration
@@ -17,6 +20,7 @@ export async function fetchPageManifest(
   type: 'next-gen' | 'legacy' | 'unknown'
 ) {
   let manifestGetters = [];
+  await getAndLogNgsp(pageId);
   if (type !== 'legacy') {
     manifestGetters.push(getNextGenManifest);
   }
@@ -67,4 +71,36 @@ async function getNextGenManifest(
       results: '--results--',
     },
   });
+}
+
+async function getAndLogNgsp(pageId: string) {
+  const {accessToken, organizationId} = getConfig();
+  const request = await fetch(
+    `https://platformstg.cloud.coveo.com/rest/organizations/${organizationId}/searchpage/v1/interfaces/${pageId}/manifest`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      method: 'POST',
+    }
+  );
+  console.log('---- Start of NGSP request ----');
+  console.log(`ok: ${request.ok}`);
+  console.log(`status: ${request.status}`);
+  console.log(`statusText: ${request.statusText}`);
+  console.log(`type: ${request.type}`);
+  console.log(`url: ${request.url}`);
+  console.log(`body: ${await request.text()}`);
+  console.log('---- End of NGSP request ----');
+}
+
+export function getConfigFilePath() {
+  const configsDir = process.platform === 'win32' ? 'AppData/Local' : '.config';
+  return resolve(homedir(), configsDir, '@coveo', 'cli', 'config.json');
+}
+
+export function getConfig() {
+  const pathToConfig = getConfigFilePath();
+
+  return JSON.parse(readFileSync(pathToConfig, {encoding: 'utf-8'}));
 }
