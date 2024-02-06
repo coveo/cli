@@ -7,7 +7,7 @@ import {
 /**
  * @coveo/platform-client's IManifestResponse with simplified configuration
  */
-export interface IManifest extends Omit<IManifestResponse, 'config'> {
+export interface IManifest extends Omit<IManifestResponse<never>, 'config'> {
   config: Pick<ISearchInterfaceConfigurationResponse, 'name'>;
 }
 
@@ -20,28 +20,22 @@ export async function fetchPageManifest(
   platformUrl: string
 ) {
   let manifestGetters = [];
-  // if (type !== 'next-gen') {
-  //   manifestGetters.push(getLegacyManifest);
-  // }
+  if (type !== 'next-gen') {
+    manifestGetters.push(getLegacyManifest);
+  }
   if (type !== 'legacy') {
     manifestGetters.push(getNextGenManifest);
   }
   for (const manifestGetter of manifestGetters) {
     let manifest: IManifest;
     try {
-      manifest = await manifestGetter(
-        client,
-        pageId,
-        apiKey,
-        orgId,
-        platformUrl
-      );
+      manifest = await manifestGetter(client, pageId);
     } catch (error) {
       continue;
     }
     return replaceResultsPlaceholder(manifest);
   }
-  throw 'PANIC';
+  throw new Error('Could not fetch the page manifest');
 }
 
 function replaceResultsPlaceholder(manifestResponse: IManifest) {
@@ -69,26 +63,11 @@ async function getLegacyManifest(
 
 async function getNextGenManifest(
   client: PlatformClient,
-  pageId: string,
-  apiKey: string,
-  orgId: string,
-  platformUrl: string
+  pageId: string
 ): Promise<IManifest> {
-  return (
-    await fetch(
-      `http://localhost:8222/rest/organizations/${orgId}/searchpage/v1/interfaces/${pageId}/manifest`,
-      {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: {
-          //@ts-ignore shush, it works.
-          pagePlaceholders: {
-            results: '--results--',
-          },
-        },
-        method: 'POST',
-      }
-    )
-  ).json() as Promise<IManifest>;
+  return await client.nextGenSearchPages.manifest(pageId, {
+    pagePlaceholders: {
+      results: '--results--',
+    },
+  });
 }

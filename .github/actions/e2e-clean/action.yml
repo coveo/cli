@@ -33,3 +33,7 @@ runs:
       shell: bash
       if: cancelled() || failure() || success()
       run: node ./scripts/cleaning/delete-api-keys.js
+    - name: Delete test NGSPs
+      shell: bash
+      if: cancelled() || failure() || success()
+      run: node ./scripts/cleaning/delete-ngsp.js

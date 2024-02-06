@@ -7,7 +7,7 @@ const manuallyEnterSearchHub = () =>
 
 export async function promptForSearchHub(client: PlatformClient) {
   const createSearchHub = await confirm(
-    'An API key will be created against your organization. We strongly recommends that you associate this API key with a search hub. Would you like to do so now ? y/n',
+    'An API key will be created against your organization. We strongly recommends that you associate this API key with a search hub. Would you like to do so now ? (y/n)',
     false
   );
   if (!createSearchHub) {

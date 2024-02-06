@@ -1,7 +1,7 @@
-import type {Browser, Page, HTTPResponse} from 'puppeteer';
+import type {Browser, Page, HTTPResponse, Platform} from 'puppeteer';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {answerPrompt, getProjectPath, setupUIProject} from '../utils/cli';
-import {isSuccessfulSearchResponse} from '../utils/platform';
+import {getPlatformClient, isSuccessfulSearchResponse} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
@@ -10,6 +10,7 @@ import {EOL} from 'os';
 import {join, resolve} from 'path';
 import {hashElement} from 'folder-hash';
 import {existsSync, symlinkSync, unlinkSync} from 'fs';
+import PlatformClient from '@coveo/platform-client';
 
 interface BuildAppOptions {
   id: string;
@@ -125,6 +126,16 @@ describe('ui:create:atomic', () => {
         buildTerminal
           .when(/\(y\)/)
           .on(stream)
+          .do(answerPrompt(`n${EOL}`))
+          .once()
+      )
+    );
+
+    await Promise.allSettled(
+      streams.map((stream) =>
+        buildTerminal
+          .when(/\(y\)/)
+          .on(stream)
           .do(answerPrompt(`y${EOL}`))
           .until(buildTerminalExitPromise)
       )
@@ -150,6 +161,23 @@ describe('ui:create:atomic', () => {
       `${debugName}-${options.id}`
     );
   };
+  let freshNgspId: string;
+  let platformClient: PlatformClient;
+  beforeAll(async () => {
+    platformClient = getPlatformClient(
+      process.env.ORG_ID!,
+      process.env.PLATFORM_API_KEY!
+    );
+    freshNgspId = (
+      await platformClient.nextGenSearchPages.create({
+        name: getProjectName('from-platform'),
+      })
+    ).id;
+  });
+
+  afterAll(async () => {
+    await platformClient.nextGenSearchPages.delete(freshNgspId);
+  });
 
   describe.each([
     {
@@ -159,6 +187,21 @@ describe('ui:create:atomic', () => {
         pageId: 'fffaafcc-6863-46cb-aca3-97522fcc0f5d',
         skipInstall: false,
       },
+      skipBrowser: false,
+    },
+    {
+      describeName: 'when using a fresh ngsp (--pageId flag specified)',
+      buildAppOptions: Object.defineProperties(
+        {
+          id: 'fresh-ngsp',
+          skipInstall: false,
+        },
+        {
+          pageId: {
+            get: () => freshNgspId,
+          },
+        }
+      ),
       skipBrowser: false,
     },
     {

@@ -19,9 +19,13 @@ function getClient(accessToken, env, organizationId) {
 }
 
 function wasCreatedBefore(amount, unit) {
-  return (key) => {
+  return (resource) => {
     const limit = moment().subtract(amount, unit);
-    return moment(key.createdDate).isBefore(limit);
+    for (const createField of ['createdDate', 'created']) {
+      if (resource[createField]) {
+        return moment(resource[createField]).isBefore(limit);
+      }
+    }
   };
 }
 
