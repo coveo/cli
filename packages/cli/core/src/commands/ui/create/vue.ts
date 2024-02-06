@@ -26,7 +26,7 @@ import {
 import {cwd} from 'node:process';
 import {mkdirSync, readdirSync, statSync, writeFileSync} from 'node:fs';
 import dedent from 'ts-dedent';
-import {promptForSearchHub} from './shared';
+import {promptForSearchHub} from '../../../lib/ui/shared';
 
 export default class Vue extends CLICommand {
   public static packageName = '@coveo/create-headless-vue';

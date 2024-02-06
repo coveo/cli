@@ -24,7 +24,7 @@ import {getPackageVersion} from '../utils/misc';
 import npf from '@coveo/cli-commons/npm/npf';
 import {SubprocessError} from '../errors/subprocessError';
 import {isErrorLike} from '../utils/errorSchemas';
-import {promptForSearchHub} from '../../commands/ui/create/shared';
+import {promptForSearchHub} from '../ui/shared';
 
 interface CreateAppOptions {
   initializerVersion?: string;
