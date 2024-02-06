@@ -84,14 +84,13 @@ async function getAndLogNgsp(pageId: string) {
       method: 'POST',
     }
   );
-  console.error('---- Start of NGSP request ----');
-  console.error(`ok: ${request.ok}`);
-  console.error(`status: ${request.status}`);
-  console.error(`statusText: ${request.statusText}`);
-  // console.error(`type: ${request.type}`);
-  console.error(`url: ${request.url}`);
-  console.error(`body: ${await request.text()}`);
-  console.error('---- End of NGSP request ----');
+  process.stderr.write('---- Start of NGSP request ----');
+  process.stderr.write(`ok: ${request.ok}`);
+  process.stderr.write(`status: ${request.status}`);
+  process.stderr.write(`statusText: ${request.statusText}`);
+  process.stderr.write(`url: ${request.url}`);
+  process.stderr.write(`body: ${await request.text()}`);
+  process.stderr.write('---- End of NGSP request ----');
 }
 
 export function getConfigFilePath() {
