@@ -3,7 +3,7 @@ import {
   IManifestResponse,
   ISearchInterfaceConfigurationResponse,
 } from '@coveo/platform-client';
-import {readFileSync} from 'node:fs';
+import {createWriteStream, readFileSync} from 'node:fs';
 import {homedir} from 'node:os';
 import {resolve} from 'node:path';
 
@@ -84,15 +84,22 @@ async function getAndLogNgsp(pageId: string) {
       method: 'POST',
     }
   );
-  process.stderr.write('---- Start of NGSP request ----');
-  process.stderr.write(`ok: ${request.ok}`);
-  process.stderr.write(`status: ${request.status}`);
-  process.stderr.write(`statusText: ${request.statusText}`);
-  process.stderr.write(`url: ${request.url}`);
-  process.stderr.write(`body: ${await request.text()}`);
-  process.stderr.write('---- End of NGSP request ----');
+  const logfilepath = resolve(
+    process.env.GITHUB_WORKSPACE!,
+    'packages/cli-e2e/artifacts',
+    `ngsp${pageId}.log`
+  );
+  const log = createWriteStream(logfilepath, {flags: 'a'});
+  log.write('---- Start of NGSP request ----');
+  log.write(`ok: ${request.ok}`);
+  log.write(`status: ${request.status}`);
+  log.write(`statusText: ${request.statusText}`);
+  log.write(`url: ${request.url}`);
+  log.write(`body: ${await request.text()}`);
+  log.write(`headers: ${JSON.stringify(request.headers.get('X-Request-ID'))}`);
+  log.write('---- End of NGSP request ----');
+  log.end();
 }
-
 export function getConfigFilePath() {
   const configsDir = process.platform === 'win32' ? 'AppData/Local' : '.config';
   return resolve(homedir(), configsDir, '@coveo', 'cli', 'config.json');
