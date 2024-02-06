@@ -315,7 +315,7 @@ describe('ui:create:atomic', () => {
             await serverProcessManager.killAllProcesses();
           }, 5 * 30e3);
 
-          //TODO: Shush for v3
+          //TODO CDX-1520: Should only have analytics warnings/error.
           it.skip('should not contain console errors nor warnings', async () => {
             await page.goto(searchPageEndpoint, {
               waitUntil: 'networkidle2',
