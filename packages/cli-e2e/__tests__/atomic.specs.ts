@@ -1,6 +1,11 @@
 import type {Browser, Page, HTTPResponse, Platform} from 'puppeteer';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
-import {answerPrompt, getProjectPath, setupUIProject} from '../utils/cli';
+import {
+  answerPrompt,
+  getProjectPath,
+  isGenericYesNoPrompt,
+  setupUIProject,
+} from '../utils/cli';
 import {getPlatformClient, isSuccessfulSearchResponse} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
@@ -126,16 +131,6 @@ describe('ui:create:atomic', () => {
         buildTerminal
           .when(/\(y\)/)
           .on(stream)
-          .do(answerPrompt(`n${EOL}`))
-          .once()
-      )
-    );
-
-    await Promise.allSettled(
-      streams.map((stream) =>
-        buildTerminal
-          .when(/\(y\)/)
-          .on(stream)
           .do(answerPrompt(`y${EOL}`))
           .until(buildTerminalExitPromise)
       )
@@ -191,17 +186,11 @@ describe('ui:create:atomic', () => {
     },
     {
       describeName: 'when using a fresh ngsp (--pageId flag specified)',
-      buildAppOptions: Object.defineProperties(
-        {
-          id: 'fresh-ngsp',
-          skipInstall: false,
-        },
-        {
-          pageId: {
-            get: () => freshNgspId,
-          },
-        }
-      ),
+      buildAppOptions: {
+        id: 'fresh-ngsp',
+        skipInstall: false,
+        pageId: '5a8eb80a-acc7-418d-a5a0-ad952fe1de96',
+      },
       skipBrowser: false,
     },
     {
