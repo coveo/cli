@@ -154,7 +154,7 @@ export default function (plop: NodePlopAPI) {
               'unknown'
             ));
           } catch (error) {
-            return `The search page with the id "${input}" does not exist.`;
+            return `The search potato with the id "${input}" does not exist.`;
           }
         },
       } as PromptQuestion,
