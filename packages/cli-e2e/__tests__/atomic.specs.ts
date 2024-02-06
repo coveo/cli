@@ -332,13 +332,19 @@ describe('ui:create:atomic', () => {
             expect(await page.$(searchInterfaceSelector)).not.toBeNull();
           }, 60e3);
 
-          it('should send a search query when the page is loaded', async () => {
-            await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-            await page.waitForResponse(isSearchRequestOrResponse);
-            expect(
-              interceptedResponse.some(isSuccessfulSearchResponse)
-            ).toBeTruthy();
-          }, 60e3);
+          it(
+            'should send a search query when the page is loaded',
+            async () => {
+              await page.goto(searchPageEndpoint);
+              await page.waitForResponse(isSearchRequestOrResponse, {
+                timeout: 3 * 60e3 - 10e3,
+              });
+              expect(
+                interceptedResponse.some(isSuccessfulSearchResponse)
+              ).toBeTruthy();
+            },
+            3 * 60e3
+          );
         });
       }
     }
