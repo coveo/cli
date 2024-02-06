@@ -24,7 +24,7 @@ async function main(amount, unit) {
     const pages = await platform.nextGenSearchPages.list({filter: 'cli-id'});
 
     const cliApiKeys = pages
-      .filter(page=>page.name.includes(testRunId))
+      .filter((page) => page.name.includes(testRunId))
       .filter(wasCreatedBefore(amount, unit));
 
     await deleteNgsp(platform, cliApiKeys);
