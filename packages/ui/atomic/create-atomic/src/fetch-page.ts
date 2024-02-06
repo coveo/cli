@@ -3,9 +3,9 @@ import {
   IManifestResponse,
   ISearchInterfaceConfigurationResponse,
 } from '@coveo/platform-client';
-import {createWriteStream, readFileSync} from 'node:fs';
+import {createWriteStream, mkdir, mkdirSync, readFileSync} from 'node:fs';
 import {homedir} from 'node:os';
-import {resolve} from 'node:path';
+import {dirname, resolve} from 'node:path';
 
 /**
  * @coveo/platform-client's IManifestResponse with simplified configuration
@@ -89,6 +89,7 @@ async function getAndLogNgsp(pageId: string) {
     'packages/cli-e2e/artifacts',
     `ngsp${pageId}.log`
   );
+  mkdirSync(dirname(logfilepath), {recursive: true});
   const log = createWriteStream(logfilepath, {flags: 'a'});
   log.write('---- Start of NGSP request ----');
   log.write(`ok: ${request.ok}`);
