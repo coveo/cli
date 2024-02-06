@@ -1,11 +1,6 @@
-import type {Browser, Page, HTTPResponse, Platform} from 'puppeteer';
+import type {Browser, Page, HTTPResponse} from 'puppeteer';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
-import {
-  answerPrompt,
-  getProjectPath,
-  isGenericYesNoPrompt,
-  setupUIProject,
-} from '../utils/cli';
+import {answerPrompt, getProjectPath, setupUIProject} from '../utils/cli';
 import {getPlatformClient, isSuccessfulSearchResponse} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
@@ -156,23 +151,6 @@ describe('ui:create:atomic', () => {
       `${debugName}-${options.id}`
     );
   };
-  let freshNgspId: string;
-  let platformClient: PlatformClient;
-  beforeAll(async () => {
-    platformClient = getPlatformClient(
-      process.env.ORG_ID!,
-      process.env.PLATFORM_API_KEY!
-    );
-    freshNgspId = (
-      await platformClient.nextGenSearchPages.create({
-        name: getProjectName('from-platform'),
-      })
-    ).id;
-  });
-
-  afterAll(async () => {
-    await platformClient.nextGenSearchPages.delete(freshNgspId);
-  });
 
   describe.each([
     {
