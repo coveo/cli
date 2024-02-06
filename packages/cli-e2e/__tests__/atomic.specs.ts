@@ -154,7 +154,8 @@ describe('ui:create:atomic', () => {
 
   describe.each([
     {
-      describeName: 'when using an existing pageId (--pageId flag specified)',
+      describeName:
+        'when using an existing legacy search page (--pageId flag specified)',
       buildAppOptions: {
         id: 'with-page-id',
         pageId: 'fffaafcc-6863-46cb-aca3-97522fcc0f5d',
@@ -163,9 +164,10 @@ describe('ui:create:atomic', () => {
       skipBrowser: false,
     },
     {
-      describeName: 'when using a fresh ngsp (--pageId flag specified)',
+      describeName:
+        'when using an existing next gen search page (--pageId flag specified)',
       buildAppOptions: {
-        id: 'fresh-ngsp',
+        id: 'ngsp-with-id',
         skipInstall: false,
         pageId: '5a8eb80a-acc7-418d-a5a0-ad952fe1de96',
       },

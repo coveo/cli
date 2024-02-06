@@ -14,17 +14,14 @@ export interface IManifest extends Omit<IManifestResponse<never>, 'config'> {
 export async function fetchPageManifest(
   client: PlatformClient,
   pageId: string,
-  type: 'next-gen' | 'legacy' | 'unknown',
-  apiKey: string,
-  orgId: string,
-  platformUrl: string
+  type: 'next-gen' | 'legacy' | 'unknown'
 ) {
   let manifestGetters = [];
-  if (type !== 'next-gen') {
-    manifestGetters.push(getLegacyManifest);
-  }
   if (type !== 'legacy') {
     manifestGetters.push(getNextGenManifest);
+  }
+  if (type !== 'next-gen') {
+    manifestGetters.push(getLegacyManifest);
   }
   for (const manifestGetter of manifestGetters) {
     let manifest: IManifest;
