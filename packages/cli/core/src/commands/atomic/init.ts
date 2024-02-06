@@ -10,8 +10,6 @@ import {
   createAtomicApp,
   createAtomicLib,
 } from '../../lib/atomic/createAtomicProject';
-import {promptForSearchHub} from '../ui/create/shared';
-import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 
 export default class AtomicInit extends CLICommand {
   public static description =

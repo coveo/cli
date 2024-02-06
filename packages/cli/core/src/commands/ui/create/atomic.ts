@@ -9,8 +9,6 @@ import {
   atomicAppPreconditions,
   createAtomicApp,
 } from '../../../lib/atomic/createAtomicProject';
-import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {promptForSearchHub} from './shared';
 
 export default class Atomic extends CLICommand {
   public static description =
