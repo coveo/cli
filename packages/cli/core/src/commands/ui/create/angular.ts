@@ -23,7 +23,7 @@ import {
   listSearchHubsPrivilege,
 } from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
-import {promptForSearchHub} from './shared';
+import {promptForSearchHub} from '../../../lib/ui/shared';
 
 export default class Angular extends CLICommand {
   public static templateName = '@coveo/angular';

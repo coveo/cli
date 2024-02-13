@@ -146,11 +146,12 @@ export default function (plop: NodePlopAPI) {
             ...(await listSearchPagesOptions(initPlatformClient(answers))),
           ];
         },
-        validate: async (input, answers: PlopData) => {
+        validate: async (input: string, answers: PlopData) => {
           try {
             return !!(await fetchPageManifest(
               initPlatformClient(answers),
-              input
+              input,
+              'unknown'
             ));
           } catch (error) {
             return `The search page with the id "${input}" does not exist.`;
@@ -165,9 +166,10 @@ export default function (plop: NodePlopAPI) {
           if (answers['page-id']) {
             answers.page = await fetchPageManifest(
               initPlatformClient(answers),
-              answers['page-id']
+              answers['page-id'],
+              'unknown'
             );
-            return `Hosted search page named "${answers.page.config.title}" has been downloaded`;
+            return `Hosted search page named "${answers.page.config.name}" has been downloaded`;
           }
 
           answers.page = defaultPageManifest;

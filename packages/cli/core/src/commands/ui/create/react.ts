@@ -22,7 +22,7 @@ import {
   IsNodeVersionInRange,
   IsNpxInstalled,
 } from '../../../lib/decorators/preconditions';
-import {promptForSearchHub} from './shared';
+import {promptForSearchHub} from '../../../lib/ui/shared';
 
 type ReactProcessEnv = {
   orgId: string;

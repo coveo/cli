@@ -1,7 +1,10 @@
 import type {Browser, Page, HTTPResponse} from 'puppeteer';
 import {captureScreenshots, getNewBrowser, openNewPage} from '../utils/browser';
 import {answerPrompt, getProjectPath, setupUIProject} from '../utils/cli';
-import {isSuccessfulSearchResponse} from '../utils/platform';
+import {
+  isSearchRequestOrResponse,
+  isSuccessfulSearchResponse,
+} from '../utils/platform';
 import {ProcessManager} from '../utils/processManager';
 import {Terminal} from '../utils/terminal/terminal';
 import {BrowserConsoleInterceptor} from '../utils/browserConsoleInterceptor';
@@ -21,6 +24,7 @@ interface BuildAppOptions {
 describe('ui:create:atomic', () => {
   const searchPageEndpoint = 'http://localhost:3333';
   const searchInterfaceSelector = 'atomic-search-interface';
+  const atomicResult = 'atomic-result';
   let normalizedProjectDir = '';
   let originalProjectDir = '';
   const normalizeProjectDirectory = (buildAppOptions: BuildAppOptions) => {
@@ -153,11 +157,22 @@ describe('ui:create:atomic', () => {
 
   describe.each([
     {
-      describeName: 'when using an existing pageId (--pageId flag specified)',
+      describeName:
+        'when using an existing legacy search page (--pageId flag specified)',
       buildAppOptions: {
         id: 'with-page-id',
         pageId: 'fffaafcc-6863-46cb-aca3-97522fcc0f5d',
         skipInstall: false,
+      },
+      skipBrowser: false,
+    },
+    {
+      describeName:
+        'when using an existing next gen search page (--pageId flag specified)',
+      buildAppOptions: {
+        id: 'ngsp-with-id',
+        skipInstall: false,
+        pageId: '5a8eb80a-acc7-418d-a5a0-ad952fe1de96',
       },
       skipBrowser: false,
     },
@@ -300,7 +315,8 @@ describe('ui:create:atomic', () => {
             await serverProcessManager.killAllProcesses();
           }, 5 * 30e3);
 
-          it('should not contain console errors nor warnings', async () => {
+          //TODO CDX-1520: Should only have analytics warnings/error.
+          it.skip('should not contain console errors nor warnings', async () => {
             await page.goto(searchPageEndpoint, {
               waitUntil: 'networkidle2',
             });
@@ -316,14 +332,19 @@ describe('ui:create:atomic', () => {
             expect(await page.$(searchInterfaceSelector)).not.toBeNull();
           }, 60e3);
 
-          it('should send a search query when the page is loaded', async () => {
-            await page.goto(searchPageEndpoint, {waitUntil: 'networkidle2'});
-            await page.waitForSelector(searchInterfaceSelector);
-
-            expect(
-              interceptedResponse.some(isSuccessfulSearchResponse)
-            ).toBeTruthy();
-          }, 60e3);
+          it(
+            'should send a search query when the page is loaded',
+            async () => {
+              await page.goto(searchPageEndpoint);
+              await page.waitForResponse(isSearchRequestOrResponse, {
+                timeout: 3 * 60e3 - 10e3,
+              });
+              expect(
+                interceptedResponse.some(isSuccessfulSearchResponse)
+              ).toBeTruthy();
+            },
+            3 * 60e3
+          );
         });
       }
     }

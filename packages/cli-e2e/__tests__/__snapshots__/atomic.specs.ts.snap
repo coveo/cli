@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ui:create:atomic when using an existing pageId (--pageId flag specified) the project has been generated properly 1`] = `
+exports[`ui:create:atomic when using an existing legacy search page (--pageId flag specified) the project has been generated properly 1`] = `
 HashedFolder {
   "children": [
     HashedFile {
@@ -113,6 +113,123 @@ HashedFolder {
     },
   ],
   "hash": "MX8XJmhwXYKcItyHsBvb0tWTjlM=",
+  "name": "normalizedDir",
+}
+`;
+
+exports[`ui:create:atomic when using an existing next gen search page (--pageId flag specified) the project has been generated properly 1`] = `
+HashedFolder {
+  "children": [
+    HashedFile {
+      "hash": "1YlrWbKI6kgpcX/5spCmIko0kgg=",
+      "name": "deployment.esbuild.mjs",
+    },
+    HashedFile {
+      "hash": "+t+HILvU+0OvGuKuRvbcamfBMRw=",
+      "name": "README.md",
+    },
+    HashedFolder {
+      "children": [],
+      "hash": "2jmj7l5rSw0yVb/vlWAYkK/YBwk=",
+      "name": "scripts",
+    },
+    HashedFolder {
+      "children": [
+        HashedFolder {
+          "children": [
+            HashedFolder {
+              "children": [
+                HashedFile {
+                  "hash": "KgjYp/iQUQT5BeQqpR/hXS7pOy0=",
+                  "name": "results-manager.tsx",
+                },
+                HashedFile {
+                  "hash": "Ko4cbmFzfOTdS1hr1HGU0cIrtOM=",
+                  "name": "template-1.html",
+                },
+              ],
+              "hash": "4hIP+uRwgSi1+UuvlB+7T+k79bI=",
+              "name": "results-manager",
+            },
+            HashedFolder {
+              "children": [
+                HashedFile {
+                  "hash": "XemX7AoOihA4SgQsvWtcStjeiGo=",
+                  "name": "sample-component.css",
+                },
+                HashedFile {
+                  "hash": "sWUDtgn9DiTjvYlLdoF4EaGoClw=",
+                  "name": "sample-component.tsx",
+                },
+              ],
+              "hash": "pPdA06Q+ujtEyI7kflypbd5kiUg=",
+              "name": "sample-component",
+            },
+            HashedFolder {
+              "children": [
+                HashedFile {
+                  "hash": "0kZk+nhPZP6DNXEt1ds/y13pPn4=",
+                  "name": "sample-result-component.css",
+                },
+                HashedFile {
+                  "hash": "uNaVrxKWu4DcnVJTCz+9hVGWQ2Q=",
+                  "name": "sample-result-component.tsx",
+                },
+              ],
+              "hash": "lIIVFoYP+9d6H0rrdSp9lYPxeWw=",
+              "name": "sample-result-component",
+            },
+          ],
+          "hash": "9ySon/mm3QAtSCUsyLo8J96FrkY=",
+          "name": "components",
+        },
+        HashedFile {
+          "hash": "2/Ssowtzkh/hx4e9vrMi11FFp1Q=",
+          "name": "components.d.ts",
+        },
+        HashedFile {
+          "hash": "/MC1IvlmPW0zAgfo82n8CnBDMrA=",
+          "name": "html.d.ts",
+        },
+        HashedFile {
+          "hash": "dIKI3aRn/2K6aO5RgC2zfGQ2wg8=",
+          "name": "index.ts",
+        },
+        HashedFolder {
+          "children": [],
+          "hash": "2jmj7l5rSw0yVb/vlWAYkK/YBwk=",
+          "name": "pages",
+        },
+        HashedFolder {
+          "children": [
+            HashedFile {
+              "hash": "GTe7oCz+pSCsM8PXrji6iYc3iq0=",
+              "name": "index.css",
+            },
+          ],
+          "hash": "6hnWHe6xxYFfk5iqbZDpprtBgUk=",
+          "name": "style",
+        },
+        HashedFolder {
+          "children": [
+            HashedFile {
+              "hash": "Yhwg1zaohXJmi0xJFywAlsL02ZA=",
+              "name": "atomic.ts",
+            },
+          ],
+          "hash": "ZyOIYW/4w45sOzwmwIaFevE1VVM=",
+          "name": "utils",
+        },
+      ],
+      "hash": "t8fIknhLbnltSfNoodcS9MQfGSM=",
+      "name": "src",
+    },
+    HashedFile {
+      "hash": "9nyo2P7hCKS4uXz6KBbyR2tzRtY=",
+      "name": "tsconfig.json",
+    },
+  ],
+  "hash": "yR554ZvROimOPuI3h7YM5DyVwQU=",
   "name": "normalizedDir",
 }
 `;

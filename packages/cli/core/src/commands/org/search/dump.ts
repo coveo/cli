@@ -269,7 +269,7 @@ export default class Dump extends CLICommand {
           }),
           ...(params.pipeline && {pipeline: params.pipeline}),
           ...(indexToken !== '' && {indexToken: indexToken}),
-        })) as SearchResponse;
+        })) as unknown as SearchResponse;
         return results;
       } catch (error) {
         if (this.isResponseExceededMaximumSizeError(error)) {
