@@ -92,7 +92,7 @@
     "release:github": "npx -p=@coveord/release github-publish",
     "nx:graph": "nx graph --file=topology.json",
     "release:phase0": "npx -p=@coveord/release git-lock",
-    "release:phase1": "nx run-many --target=release:phase1 --all --parallel=false --output-style=stream",
+    "release:phase1": "nx run-many --target=release:phase1 --all --parallel=false --output-style=stream && npx -p=@coveord/release reify",
     "release:phase2": "npx -p=@coveord/release is-cli-release"
   },
   "workspaces": [
