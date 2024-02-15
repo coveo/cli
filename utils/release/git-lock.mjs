@@ -3,9 +3,6 @@
 import {
   gitPull,
   getSHA1fromRef,
-  gitCommit,
-  gitPush,
-  gitAdd,
   gitSetupSshRemote,
   gitSetupUser,
 } from '@coveo/semantic-monorepo-tools';
@@ -15,8 +12,6 @@ import {
   limitWriteAccessToBot,
   removeWriteAccessRestrictions,
 } from './lock-master.mjs';
-import {writeFileSync} from 'node:fs';
-import {spawnSync} from 'node:child_process';
 
 const isPrerelease = process.env.IS_PRERELEASE === 'true';
 const noLockRequired = Boolean(process.env.NO_LOCK);
@@ -43,17 +38,6 @@ const ensureUpToDateBranch = async () => {
   }
 };
 
-/**
- * This will make .github\workflows\git-lock-fail.yml run and thus fail the associated check.
- */
-const lockBranch = async () => {
-  writeFileSync('.git-lock', '');
-  await gitAdd('.git-lock');
-  await gitCommit('[skip ci]: lock master', PATH);
-  await gitPush({remote: GIT_SSH_REMOTE});
-  spawnSync('git', ['reset', '--hard', 'HEAD~1']);
-};
-
 const setupGit = async () => {
   const GIT_USERNAME = 'developer-experience-bot[bot]';
   const GIT_EMAIL =
@@ -70,5 +54,4 @@ const setupGit = async () => {
 if (!(isPrerelease || noLockRequired)) {
   await setupGit();
   await ensureUpToDateBranch();
-  await lockBranch();
 }
