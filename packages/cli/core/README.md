@@ -23,7 +23,7 @@ $ npm install -g @coveo/cli
 $ coveo COMMAND
 running command...
 $ coveo (--version)
-@coveo/cli/3.0.16 linux-x64 node-v20.9.0
+@coveo/cli/3.2.0 linux-x64 node-v20.9.0
 $ coveo --help [COMMAND]
 USAGE
   $ coveo COMMAND
@@ -85,6 +85,12 @@ The main config file of the Coveo CLI is stored in a JSON file in `configDir`.
 - [`coveo plugins:uninstall PLUGIN...`](#coveo-pluginsuninstall-plugin-1)
 - [`coveo plugins:uninstall PLUGIN...`](#coveo-pluginsuninstall-plugin-2)
 - [`coveo plugins:update`](#coveo-pluginsupdate)
+- [`coveo source:catalog:add SOURCEID`](#coveo-sourcecatalogadd-sourceid)
+- [`coveo source:catalog:new NAME`](#coveo-sourcecatalognew-name)
+- [`coveo source:list`](#coveo-sourcelist)
+- [`coveo source:push:add SOURCEID`](#coveo-sourcepushadd-sourceid)
+- [`coveo source:push:delete SOURCEID`](#coveo-sourcepushdelete-sourceid)
+- [`coveo source:push:new NAME`](#coveo-sourcepushnew-name)
 - [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
 - [`coveo ui:create:atomic NAME`](#coveo-uicreateatomic-name)
 - [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
@@ -149,7 +155,7 @@ EXAMPLES
   $ coveo atomic:component --type=result mySuperResultComponent
 ```
 
-_See code: [src/commands/atomic/component.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/atomic/component.ts)_
+_See code: [src/commands/atomic/component.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/atomic/component.ts)_
 
 ## `coveo atomic:deploy`
 
@@ -246,7 +252,7 @@ EXAMPLES
   $ coveo atomic:init --type=lib myCustomAtomicComponentsLibrary
 ```
 
-_See code: [src/commands/atomic/init.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/atomic/init.ts)_
+_See code: [src/commands/atomic/init.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/atomic/init.ts)_
 
 ## `coveo auth:login`
 
@@ -274,7 +280,7 @@ EXAMPLES
   $ coveo auth:login
 ```
 
-_See code: [src/commands/auth/login.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/auth/login.ts)_
+_See code: [src/commands/auth/login.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/auth/login.ts)_
 
 ## `coveo auth:token`
 
@@ -299,7 +305,7 @@ EXAMPLES
   $ coveo auth:token
 ```
 
-_See code: [src/commands/auth/token.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/auth/token.ts)_
+_See code: [src/commands/auth/token.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/auth/token.ts)_
 
 ## `coveo config:get [KEY]`
 
@@ -329,7 +335,7 @@ EXAMPLES
     $ coveo config:get accessToken
 ```
 
-_See code: [src/commands/config/get.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/config/get.ts)_
+_See code: [src/commands/config/get.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/config/get.ts)_
 
 ## `coveo config:set`
 
@@ -352,7 +358,7 @@ EXAMPLES
     $ coveo config:set --organization myOrgId
 ```
 
-_See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/config/set.ts)_
+_See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/config/set.ts)_
 
 ## `coveo help [COMMAND]`
 
@@ -392,7 +398,7 @@ DESCRIPTION
   Create a new test Coveo organization.
 ```
 
-_See code: [src/commands/org/create.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/org/create.ts)_
+_See code: [src/commands/org/create.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/org/create.ts)_
 
 ## `coveo org:list`
 
@@ -418,7 +424,7 @@ DESCRIPTION
   List Coveo organizations.
 ```
 
-_See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/org/list.ts)_
+_See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/org/list.ts)_
 
 ## `coveo org:resources:list`
 
@@ -449,7 +455,7 @@ EXAMPLES
   $ coveo org:resources:list -o=myOrgId
 ```
 
-_See code: [src/commands/org/resources/list.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/org/resources/list.ts)_
+_See code: [src/commands/org/resources/list.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/org/resources/list.ts)_
 
 ## `coveo org:resources:model:create`
 
@@ -463,7 +469,7 @@ DESCRIPTION
   Create a Snapshot Pull Model
 ```
 
-_See code: [src/commands/org/resources/model/create.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/org/resources/model/create.ts)_
+_See code: [src/commands/org/resources/model/create.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/org/resources/model/create.ts)_
 
 ## `coveo org:resources:monitor SNAPSHOTID`
 
@@ -492,7 +498,7 @@ EXAMPLES
     $ coveo org:resources:monitor --organization myorgid --snapshotId mysnapshotid
 ```
 
-_See code: [src/commands/org/resources/monitor.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/org/resources/monitor.ts)_
+_See code: [src/commands/org/resources/monitor.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/org/resources/monitor.ts)_
 
 ## `coveo org:resources:preview`
 
@@ -528,7 +534,7 @@ EXAMPLES
   $ coveo org:resources:preview -o=myOrgId -d
 ```
 
-_See code: [src/commands/org/resources/preview.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/org/resources/preview.ts)_
+_See code: [src/commands/org/resources/preview.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/org/resources/preview.ts)_
 
 ## `coveo org:resources:pull`
 
@@ -583,7 +589,7 @@ EXAMPLES
     $ coveo org:resources:pull --resourceTypes QUERY_PIPELINE FIELD,
 ```
 
-_See code: [src/commands/org/resources/pull.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/org/resources/pull.ts)_
+_See code: [src/commands/org/resources/pull.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/org/resources/pull.ts)_
 
 ## `coveo org:resources:push`
 
@@ -627,7 +633,7 @@ EXAMPLES
     $ coveo org:resources:push --deleteMissingResources
 ```
 
-_See code: [src/commands/org/resources/push.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/org/resources/push.ts)_
+_See code: [src/commands/org/resources/push.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/org/resources/push.ts)_
 
 ## `coveo org:search:dump`
 
@@ -677,7 +683,7 @@ EXAMPLES
     $ coveo org:search:dump --fieldsToExclude ec_description ec_summary
 ```
 
-_See code: [src/commands/org/search/dump.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/org/search/dump.ts)_
+_See code: [src/commands/org/search/dump.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/org/search/dump.ts)_
 
 ## `coveo plugins`
 
@@ -919,6 +925,189 @@ DESCRIPTION
 
 _See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.1.12/src/commands/plugins/update.ts)_
 
+## `coveo source:catalog:add SOURCEID`
+
+Index a JSON document into a Coveo Catalog source. See https://docs.coveo.com/en/2956 for more information.
+
+```
+USAGE
+  $ coveo source:catalog:add [SOURCEID] [-f <value>] [-c <value> | ] [-m] [-n] [--fullUpload] [--skipFullUploadCheck]
+
+ARGUMENTS
+  SOURCEID  The identifier of the Catalog source on which to perform the add operation. See `source:list` to obtain the
+            identifier.
+
+FLAGS
+  -c, --maxConcurrent=<value>
+      [default: 10] The maximum number of requests to send concurrently. Increasing this value increases the speed at
+      which documents are indexed to the Coveo platform. However, if you run into memory or throttling issues, consider
+      reducing this value.
+
+  -f, --files=myfile.json...
+      Combinaison of JSON files and folders (containing JSON files) to push. Can be repeated.
+
+  -m, --[no-]createMissingFields
+      Analyse documents to detect and automatically create missing fields in the destination organization. When enabled,
+      an error will be thrown if a field is used to store data of inconsistent type across documents.
+
+  -n, --[no-]normalizeInvalidFields
+      Whether to normalize invalid fields detected from the documents. If set to `false`, an error will be thrown when
+      invalid fields are detected.
+
+  --fullUpload
+      Controls the way your items are added to your catalog source.
+
+      Setting this option to false will trigger a document update (Default operation). Useful to perform incremental
+      updates for smaller adjustments to your catalog that do not require pushing the entire catalog. A document update
+      must only be performed after a full catalog upload.
+      See https://docs.coveo.com/en/l62e0540
+
+      Setting this option to true will trigger a full catalog upload. This process acts as a full rebuild of your catalog
+      source. Therefore, previous items that are not included in the new payload will be deleted.
+      See https://docs.coveo.com/en/lb4a0344
+
+  --skipFullUploadCheck
+      Do not check whether a full catalog upload was triggered on the target source.
+
+DESCRIPTION
+  Index a JSON document into a Coveo Catalog source. See https://docs.coveo.com/en/2956 for more information.
+```
+
+_See code: [@coveo/cli-plugin-source](https://github.com/coveo/cli/blob/@coveo/cli@2.3.0/packages/cli/source/src/commands/source/catalog/add.ts)_
+
+## `coveo source:catalog:new NAME`
+
+Create a new catalog source in a Coveo organization
+
+```
+USAGE
+  $ coveo source:catalog:new [NAME] [-v PRIVATE|SECURED|SHARED]
+
+ARGUMENTS
+  NAME  The name of the source to create.
+
+FLAGS
+  -v, --sourceVisibility=(PRIVATE|SECURED|SHARED)  [default: SECURED] Controls the content security option that should
+                                                   be applied to the items in a source. See
+                                                   https://docs.coveo.com/en/1779/index-content/content-security
+
+DESCRIPTION
+  Create a new catalog source in a Coveo organization
+```
+
+_See code: [@coveo/cli-plugin-source](https://github.com/coveo/cli/blob/@coveo/cli@2.3.0/packages/cli/source/src/commands/source/catalog/new.ts)_
+
+## `coveo source:list`
+
+List all available push sources in your Coveo organization
+
+```
+USAGE
+  $ coveo source:list [--columns <value> | -x] [--sort <value>] [--filter <value>] [--output csv|json|yaml |  |
+    [--csv | --no-truncate]] [--no-header | ]
+
+FLAGS
+  -x, --extended     show extra columns
+  --columns=<value>  only show provided columns (comma-separated)
+  --csv              output is csv format [alias: --output=csv]
+  --filter=<value>   filter property by partial string matching, ex: name=foo
+  --no-header        hide table header from output
+  --no-truncate      do not truncate output to fit screen
+  --output=<option>  output in a more machine friendly format
+                     <options: csv|json|yaml>
+  --sort=<value>     property to sort by (prepend '-' for descending)
+
+DESCRIPTION
+  List all available push sources in your Coveo organization
+```
+
+_See code: [@coveo/cli-plugin-source](https://github.com/coveo/cli/blob/@coveo/cli@2.3.0/packages/cli/source/src/commands/source/list.ts)_
+
+## `coveo source:push:add SOURCEID`
+
+Index a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-Files-with-the-Coveo-CLI for more information.
+
+```
+USAGE
+  $ coveo source:push:add [SOURCEID] [-f <value>] [-c <value> | ] [-m] [-n]
+
+ARGUMENTS
+  SOURCEID  The identifier of the source on which to perform the add operation. See source:list to obtain the
+            identifier.
+
+FLAGS
+  -c, --maxConcurrent=<value>        [default: 10] The maximum number of requests to send concurrently. Increasing this
+                                     value increases the speed at which documents are indexed to the Coveo platform.
+                                     However, if you run into memory or throttling issues, consider reducing this value.
+  -f, --files=myfile.json...         Combinaison of JSON files and folders (containing JSON files) to push. Can be
+                                     repeated.
+  -m, --[no-]createMissingFields     Analyse documents to detect and automatically create missing fields in the
+                                     destination organization. When enabled, an error will be thrown if a field is used
+                                     to store data of inconsistent type across documents.
+  -n, --[no-]normalizeInvalidFields  Whether to normalize invalid fields detected from the documents. If set to `false`,
+                                     an error will be thrown when invalid fields are detected.
+
+DESCRIPTION
+  Index a JSON document into a Coveo Push source. See
+  https://github.com/coveo/cli/wiki/Pushing-JSON-Files-with-the-Coveo-CLI for more information.
+```
+
+_See code: [@coveo/cli-plugin-source](https://github.com/coveo/cli/blob/@coveo/cli@2.3.0/packages/cli/source/src/commands/source/push/add.ts)_
+
+## `coveo source:push:delete SOURCEID`
+
+Delete one or multiple items in a given Push source. See <https://docs.coveo.com/en/171> and <https://docs.coveo.com/en/131>
+
+```
+USAGE
+  $ coveo source:push:delete [SOURCEID] [-d <value> | -x <value>] [-c]
+
+ARGUMENTS
+  SOURCEID  The identifier of the Push source on which to perform the delete operation. To retrieve the list of
+            available Push source identifiers, use the `source:push:list` command.
+
+FLAGS
+  -c, --[no-]deleteChildren
+      Whether to delete all items that share the same base URI as the specified item to delete.
+
+  -d, --deleteOlderThan=2000-01-01T00:00:00-06:00 OR 1506700606240
+      If this flag is set, all items that have been added or updated in the source before the specified ISO 8601 date or
+      Unix timestamp in milliseconds will be deleted. The documents will be deleted using the default queueDelay, meaning
+      they will stay in the index for about 15 minutes after being marked for deletion.
+
+  -x, --delete=<value>...
+      The URIs of the items to delete. Can be repeated. If you want to delete more than one specific items, use the
+      `--deleteOlderThan` flag instead.
+
+DESCRIPTION
+  Delete one or multiple items in a given Push source. See <https://docs.coveo.com/en/171> and
+  <https://docs.coveo.com/en/131>
+```
+
+_See code: [@coveo/cli-plugin-source](https://github.com/coveo/cli/blob/@coveo/cli@2.3.0/packages/cli/source/src/commands/source/push/delete.ts)_
+
+## `coveo source:push:new NAME`
+
+Create a new push source in a Coveo organization
+
+```
+USAGE
+  $ coveo source:push:new [NAME] [-v PRIVATE|SECURED|SHARED]
+
+ARGUMENTS
+  NAME  The name of the source to create.
+
+FLAGS
+  -v, --sourceVisibility=(PRIVATE|SECURED|SHARED)  [default: SECURED] Controls the content security option that should
+                                                   be applied to the items in a source. See
+                                                   https://docs.coveo.com/en/1779/index-content/content-security
+
+DESCRIPTION
+  Create a new push source in a Coveo organization
+```
+
+_See code: [@coveo/cli-plugin-source](https://github.com/coveo/cli/blob/@coveo/cli@2.3.0/packages/cli/source/src/commands/source/push/new.ts)_
+
 ## `coveo ui:create:angular NAME`
 
 Create a Coveo Headless-powered search page with the Angular web framework. See <https://docs.coveo.com/headless> and <https://angular.io/>.
@@ -932,14 +1121,14 @@ ARGUMENTS
 
 FLAGS
   -d, --defaults         Whether to automatically select the default value for all prompts that have a default value.
-  -v, --version=<value>  [default: 1.36.6] The version of @coveo/angular to use.
+  -v, --version=<value>  [default: 1.36.8] The version of @coveo/angular to use.
 
 DESCRIPTION
   Create a Coveo Headless-powered search page with the Angular web framework. See <https://docs.coveo.com/headless> and
   <https://angular.io/>.
 ```
 
-_See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/ui/create/angular.ts)_
+_See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/ui/create/angular.ts)_
 
 ## `coveo ui:create:atomic NAME`
 
@@ -954,7 +1143,7 @@ ARGUMENTS
 
 FLAGS
   -p, --pageId=7944ff4a-9943-4999-a3f6-3e81a7f6fb0a  The hosted search page ID.
-  -v, --version=<value>                              [default: 1.38.17] The version of @coveo/create-atomic to use.
+  -v, --version=<value>                              [default: 1.40.0] The version of @coveo/create-atomic to use.
 
 DESCRIPTION
   Create a Coveo Headless-powered search page with Coveo's own Atomic framework. See <https://docs.coveo.com/atomic> and
@@ -964,7 +1153,7 @@ EXAMPLES
   $ coveo ui:create:atomic myapp
 ```
 
-_See code: [src/commands/ui/create/atomic.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/ui/create/atomic.ts)_
+_See code: [src/commands/ui/create/atomic.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/ui/create/atomic.ts)_
 
 ## `coveo ui:create:react NAME`
 
@@ -978,7 +1167,7 @@ ARGUMENTS
   NAME  The name of the application to create.
 
 FLAGS
-  -v, --version=<value>  [default: 1.38.15] Version of @coveo/cra-template to use.
+  -v, --version=<value>  [default: 1.38.17] Version of @coveo/cra-template to use.
 
 DESCRIPTION
   Create a Coveo Headless-powered search page with the React web framework. See <https://docs.coveo.com/headless> and
@@ -990,7 +1179,7 @@ EXAMPLES
   $ coveo ui:create:react --help
 ```
 
-_See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/ui/create/react.ts)_
+_See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/ui/create/react.ts)_
 
 ## `coveo ui:create:vue NAME`
 
@@ -1004,7 +1193,7 @@ ARGUMENTS
   NAME  The name of the application to create.
 
 FLAGS
-  -v, --version=<value>  [default: 1.2.0] The version of @coveo/create-headless-vue to use.
+  -v, --version=<value>  [default: 1.4.0] The version of @coveo/create-headless-vue to use.
 
 DESCRIPTION
   Create a Coveo Headless-powered search page with the Vue3 and Vite. See <https://docs.coveo.com/headless> and
@@ -1016,7 +1205,7 @@ EXAMPLES
   $ coveo ui:create:vue-v=1.2.3 myVueProject
 ```
 
-_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/ui/create/vue.ts)_
+_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/ui/create/vue.ts)_
 
 ## `coveo ui:deploy`
 
@@ -1088,7 +1277,7 @@ EXAMPLES
     $ coveo ui:deploy -c ./configs/myconfig.json
 ```
 
-_See code: [src/commands/ui/deploy.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.0.16/packages/cli/core/src/commands/ui/deploy.ts)_
+_See code: [src/commands/ui/deploy.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.0/packages/cli/core/src/commands/ui/deploy.ts)_
 
 ## `coveo update [CHANNEL]`
 
