@@ -323,6 +323,7 @@ jobs:
               printf "CLI_VERSION="
               cat packages/cli/core/package.json | jq -r '.version'
           }  >> "$GITHUB_ENV"
+        shell: bash
       - name: Build
         run: npm run build
       - name: Setup Temporary Keychain
