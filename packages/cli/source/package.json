@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli-plugin-source",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Manage Coveo Sources with the Coveo CLI",
   "author": "Coveo",
   "homepage": "https://github.com/coveo/cli",
