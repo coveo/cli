@@ -1,3 +1,11 @@
+## 2.3.1 (2024-02-21)
+
+# 2.3.0 (2024-02-20)
+
+### Features
+
+- **atomic:** add support for ngsp ([#1409](https://github.com/coveo/cli/issues/1409)) ([0602475](https://github.com/coveo/cli/commits/0602475c075348d7cc51ef55e1969012d1a1b485))
+
 ## 2.1.15 (2023-10-27)
 
 ### Features

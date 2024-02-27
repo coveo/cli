@@ -1,3 +1,18 @@
+# release-23 (2024-02-21)
+
+# release-22 (2024-02-21)
+
+# release-21 (2024-02-20)
+
+### Bug Fixes
+
+- sanitize access token when reading from stdin ([#1404](https://github.com/coveo/cli/issues/1404)) ([4db2b8c](https://github.com/coveo/cli/commits/4db2b8c40aef30aab7c38687a7df844082b68a61))
+
+### Features
+
+- **atomic:** add support for ngsp ([#1409](https://github.com/coveo/cli/issues/1409)) ([0602475](https://github.com/coveo/cli/commits/0602475c075348d7cc51ef55e1969012d1a1b485))
+- **cli:** add support to associate a search hub when creating a search page ([#1417](https://github.com/coveo/cli/issues/1417)) ([278de45](https://github.com/coveo/cli/commits/278de45dfaa796bc4578ce931e45916d50036ba6))
+
 # release-20 (2024-01-15)
 
 ### Bug Fixes

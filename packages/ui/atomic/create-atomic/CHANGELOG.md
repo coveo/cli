@@ -1,3 +1,10 @@
+# 1.40.0 (2024-02-20)
+
+### Features
+
+- **atomic:** add support for ngsp ([#1409](https://github.com/coveo/cli/issues/1409)) ([0602475](https://github.com/coveo/cli/commits/0602475c075348d7cc51ef55e1969012d1a1b485))
+- **cli:** add support to associate a search hub when creating a search page ([#1417](https://github.com/coveo/cli/issues/1417)) ([278de45](https://github.com/coveo/cli/commits/278de45dfaa796bc4578ce931e45916d50036ba6))
+
 # 1.38.0 (2023-06-13)
 
 ### Features
