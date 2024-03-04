@@ -43,7 +43,7 @@ Afterward, you can run `coveo update` at any time to update your CLI installatio
   - <https://static.cloud.coveo.com/cli/coveo-latest-x64.pkg>
 - Windows
   - <https://static.cloud.coveo.com/cli/coveo-latest-x64.exe>
-  - <https://static.cloud.coveo.com/cli/coveo-latest-x32.exe>
+  - <https://static.cloud.coveo.com/cli/coveo-latest-x86.exe>
 
 ### Option 2: Install via NPM
 
