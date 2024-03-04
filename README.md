@@ -13,7 +13,7 @@ Key features include the following:
 
 - Quickly create a [Coveo Headless](https://docs.coveo.com/headless)-powered search page for your Coveo organization, relying on popular frameworks like [Angular](https://angular.io), [React](https://reactjs.org/), and [Vue.js](https://vuejs.org/).
 - Quickly create a [Coveo Atomic](https://docs.coveo.com/atomic)-powered search page for your Coveo organization, with custom component examples and a search token provider.
-- Create and manage Coveo [organizations](https://docs.coveo.com/en/2015).
+- Create and manage Coveo [organizations](https://docs.coveo.com/en/3374).
 - Automate deployments between organizations.
 - Manage Coveo [Push API](https://docs.coveo.com/en/68) sources.
 - Perform [queries](https://docs.coveo.com/en/l25h0358) against a Coveo index.
