@@ -13,7 +13,7 @@ Key features include the following:
 
 - Quickly create a [Coveo Headless](https://docs.coveo.com/headless)-powered search page for your Coveo organization, relying on popular frameworks like [Angular](https://angular.io), [React](https://reactjs.org/), and [Vue.js](https://vuejs.org/).
 - Quickly create a [Coveo Atomic](https://docs.coveo.com/atomic)-powered search page for your Coveo organization, with custom component examples and a search token provider.
-- Create and manage Coveo [organizations](https://docs.coveo.com/en/2015).
+- Create and manage Coveo [organizations](https://docs.coveo.com/en/3374).
 - Automate deployments between organizations.
 - Manage Coveo [Push API](https://docs.coveo.com/en/68) sources.
 - Perform [queries](https://docs.coveo.com/en/l25h0358) against a Coveo index.
@@ -43,7 +43,7 @@ Afterward, you can run `coveo update` at any time to update your CLI installatio
   - <https://static.cloud.coveo.com/cli/coveo-latest-x64.pkg>
 - Windows
   - <https://static.cloud.coveo.com/cli/coveo-latest-x64.exe>
-  - <https://static.cloud.coveo.com/cli/coveo-latest-x32.exe>
+  - <https://static.cloud.coveo.com/cli/coveo-latest-x86.exe>
 
 ### Option 2: Install via NPM
 
@@ -74,7 +74,7 @@ $ npm install -g @coveo/cli
 $ coveo COMMAND
 running command...
 $ coveo (--version)
-@coveo/cli/3.0.16 linux-x64 node-v20.9.0
+@coveo/cli/3.2.2 linux-x64 node-v20.9.0
 $ coveo --help [COMMAND]
 USAGE
   $ coveo COMMAND
