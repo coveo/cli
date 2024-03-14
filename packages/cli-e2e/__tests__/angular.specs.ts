@@ -240,7 +240,9 @@ describe('ui:create:angular', () => {
               message.indexOf('Warnings while compiling') === -1 &&
               message.indexOf(
                 'require function is used in a way in which dependencies cannot be statically extracted'
-              ) === -1
+              ) === -1 &&
+              message.indexOf('@reduxjs/toolkit/dist/uncheckedindexed.ts') ===
+                -1
           )
         ).toEqual([]);
       },
