@@ -71,13 +71,8 @@ export class SnapshotReporter {
     const isResourceTypeReportAffected = (
       report: ResourceSnapshotsReportOperationModel
     ) => {
-      for (const operation of Object.values(report)) {
-        if (operation > 0) {
-          return true;
-        }
-      }
-      return false;
-    };
+    
+    Object.values(report).reduce((operation, total) => operation + total, 0) === 0;
     const changedResourcesTypes: ResourceSnapshotType[] = [];
     for (const resourceType of Object.keys(this.report.resourceOperations)) {
       if (
