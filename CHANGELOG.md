@@ -1,3 +1,9 @@
+# release-24 (2024-03-14)
+
+### Bug Fixes
+
+- **snapshot:** define resourceToPreview from resources changed. ([#1453](https://github.com/coveo/cli/issues/1453)) ([c4095f8](https://github.com/coveo/cli/commits/c4095f88c917dc79cf6600c0cd897fb30713c647))
+
 # release-23 (2024-02-21)
 
 # release-22 (2024-02-21)
