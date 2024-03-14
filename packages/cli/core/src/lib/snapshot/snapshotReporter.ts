@@ -67,6 +67,27 @@ export class SnapshotReporter {
       ) > 0;
   }
 
+  public getAffectedResourceTypes(): ResourceSnapshotType[] {
+    const isResourceTypeReportAffected = (
+      report: ResourceSnapshotsReportOperationModel
+    ) =>
+      Object.values(report).reduce(
+        (operation, total) => operation + total,
+        0
+      ) === 0;
+    const changedResourcesTypes: ResourceSnapshotType[] = [];
+    for (const resourceType of Object.keys(this.report.resourceOperations)) {
+      if (
+        isResourceTypeReportAffected(
+          this.report.resourceOperations[resourceType]
+        )
+      ) {
+        changedResourcesTypes.push(resourceType as ResourceSnapshotType);
+      }
+    }
+    return changedResourcesTypes;
+  }
+
   public hasChangedResources() {
     const totalUnchanges =
       this.getOperationTypeTotalCount('resourcesUnchanged');
