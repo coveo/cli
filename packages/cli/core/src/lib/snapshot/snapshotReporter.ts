@@ -70,11 +70,7 @@ export class SnapshotReporter {
   public getAffectedResourceTypes(): ResourceSnapshotType[] {
     const isResourceTypeReportAffected = (
       report: ResourceSnapshotsReportOperationModel
-    ) =>
-      Object.values(report).reduce(
-        (operation, total) => operation + total,
-        0
-      ) === 0;
+    ) => Object.values(report).some((operation) => operation > 0);
     const changedResourcesTypes: ResourceSnapshotType[] = [];
     for (const resourceType of Object.keys(this.report.resourceOperations)) {
       if (
