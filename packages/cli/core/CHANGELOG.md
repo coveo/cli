@@ -1,3 +1,9 @@
+## 3.2.4 (2024-03-18)
+
+### Bug Fixes
+
+- resource type predicate ([#1454](https://github.com/coveo/cli/issues/1454)) ([caef795](https://github.com/coveo/cli/commits/caef795896402696b7eca6295c5cfccd1a504d82)), closes [#1453](https://github.com/coveo/cli/issues/1453)
+
 ## 3.2.3 (2024-03-14)
 
 ### Bug Fixes
