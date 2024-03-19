@@ -15,6 +15,7 @@ import {DotFolder} from '../../project/dotFolder';
 import {cwd} from 'process';
 import {buildResourcesToExport} from '../pullModel/validation/model';
 import {startSpinner, stopSpinner} from '@coveo/cli-commons/utils/ux';
+import {SnapshotReporter} from '../snapshotReporter';
 
 export class ExpandedPreviewer {
   private static readonly previewDirectoryName = 'preview';
@@ -28,9 +29,8 @@ export class ExpandedPreviewer {
     private readonly projectToPreview: Project,
     private readonly shouldDelete: boolean
   ) {
-    this.resourcesToPreview = Object.keys(
-      report.resourceOperationResults
-    ) as ResourceSnapshotType[];
+    const reporter = new SnapshotReporter(report);
+    this.resourcesToPreview = reporter.getAffectedResourceTypes();
   }
 
   private static get previewDirectory() {
