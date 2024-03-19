@@ -22,7 +22,7 @@ uplinks:
 packages:
   # All templates packages and the search-token-server are published and fetched from Verdaccio
   # No uplink is allowed, so if it ain't published on Verdaccio, it'll fail.
-  '@coveo/@(angular|create-headless-vue|cra-template|search-token-server|create-atomic|search-token-lambda|cli-commons-dev|cli-plugin-source|cli-commons|cli|atomic-component-health-check)':
+  '@coveo/@(angular|create-headless-vue|cra-template|search-token-server|create-atomic|search-token-lambda|cli-commons-dev|cli-commons|cli-plugin-source|cli|atomic-component-health-check|create-atomic-component|create-atomic-component-project|create-atomic-result-component)':
     access: $all
     publish: $all
     unpublish: $all
