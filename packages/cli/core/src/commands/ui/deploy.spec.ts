@@ -197,18 +197,6 @@ describe('ui:deploy', () => {
   describe('when preconditions are not respected', () => {
     test
       .do(() => {
-        preconditionStatus.apiKey = false;
-      })
-      .stdout()
-      .stderr()
-      .command(['ui:deploy'])
-      .catch(/apiKey Precondition Error/)
-      .it(
-        'should not execute the command if the API key preconditions are not respected'
-      );
-
-    test
-      .do(() => {
         preconditionStatus.authentication = false;
       })
       .stdout()

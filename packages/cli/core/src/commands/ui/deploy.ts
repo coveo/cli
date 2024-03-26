@@ -156,7 +156,7 @@ export default class Deploy extends CLICommand {
 
   @Trackable()
   @Preconditions(
-    IsAuthenticated([AuthenticationType.OAuth]),
+    IsAuthenticated([AuthenticationType.OAuth, AuthenticationType.ApiKey]),
     HasNecessaryCoveoPrivileges(createSearchPagesPrivilege)
   )
   public async run() {
