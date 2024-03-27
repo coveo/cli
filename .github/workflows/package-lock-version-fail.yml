@@ -12,8 +12,8 @@ on:
 
 jobs:
   lockfile-version:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - name: Check lockfileVersion of all package-lock.json
         run: node scripts/check-lockfile-versions.js $(find ./ -xdev -wholename '**/package-lock.json')

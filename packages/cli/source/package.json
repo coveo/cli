@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "@coveo/cli-commons": "2.9.0",
-    "@coveo/platform-client": "52.1.0",
+    "@coveo/platform-client": "54.0.0",
     "@coveo/push-api-client": "4.0.1",
     "@oclif/core": "1.24.0",
     "@oclif/plugin-help": "5.1.23",
@@ -39,8 +39,8 @@
     "ts-node": "10.9.1",
     "tsconfig-paths": "4.2.0",
     "tslib": "2.5.0",
-    "typescript": "4.9.5",
-    "undici": "5.28.3"
+    "typescript": "5.4.3",
+    "undici": "6.10.2"
   },
   "oclif": {
     "bin": "coveo",
