@@ -38,11 +38,11 @@ jobs:
       # ID of the test run to identify resources to teardown.
       TEST_RUN_ID: 'idubuntu-20.04-${{ github.sha }}-${{ github.run_attempt }}-releaseg'
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3
         with:
           cache: 'npm'
           node-version-file: '.nvmrc'
@@ -58,11 +58,11 @@ jobs:
     outputs:
       shouldReleaseCli: $${{steps.release.outputs.shouldReleaseCli}}
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3
         with:
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
@@ -83,7 +83,7 @@ jobs:
           git commit -m "patch"
           git format-patch HEAD^1 --output=release.patch
       - name: Upload artifacts
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
         with:
           name: npm-release
           path: |
@@ -118,11 +118,11 @@ jobs:
             'vue.specs.ts',
           ]
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3
         with:
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
@@ -156,7 +156,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: Upload Jest Snapshots
         if: ${{ steps.snapshots-path.outputs.snapshotsPath != ''}}
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
         with:
           name: release-e2e-snaps
           path: ${{ steps.snapshots-path.outputs.snapshotsPath }}
@@ -170,7 +170,7 @@ jobs:
       TEST_RUN_ID: '${{ github.sha }}-${{ github.run_attempt }}-releaseg'
       CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
@@ -189,8 +189,8 @@ jobs:
       - name: Setup runner
         # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
+      - uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3
         with:
           cache: 'npm'
           node-version-file: '.nvmrc'
@@ -218,7 +218,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: Upload Jest Snapshots
         if: ${{ steps.snapshots-path.outputs.snapshotsPath != ''}}
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
         with:
           name: release-e2e-snaps
           path: ${{ steps.snapshots-path.outputs.snapshotsPath }}
@@ -229,11 +229,11 @@ jobs:
     env:
       GITHUB_CREDENTIALS: ${{ secrets.CLI_RELEASE }} # Required to lock master
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3
         with:
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
@@ -298,11 +298,11 @@ jobs:
             for: 'linux install kit'
 
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           # pulls all commits (needed for finding the @coveo/cli version to release)
           fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3
         with:
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
@@ -399,7 +399,7 @@ jobs:
           mv "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64-signed.pkg" "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64.pkg"
           rm notarization-arm64.zip notarization-x64.zip
       - name: Upload binaries
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
         with:
           name: release-binaries
           path: ./packages/cli/core/dist/**/*
@@ -411,11 +411,11 @@ jobs:
     env:
       GITHUB_CREDENTIALS: ${{ secrets.CLI_RELEASE }} # Required to lock master
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3
         with:
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
@@ -447,7 +447,7 @@ jobs:
           RELEASER_INSTALLATION_ID: ${{ secrets.RELEASER_INSTALLATION_ID }}
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
       - name: Upload binaries
-        uses: svenstaro/upload-release-action@7319e4733ec7a184d739a6f412c40ffc339b69c7 # 2.5.0
+        uses: svenstaro/upload-release-action@04733e069f2d7f7f0b4aebc4fbdbce8613b03ccd # 2.9.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./release-binaries/**/*
