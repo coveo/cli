@@ -126,10 +126,11 @@ export function shimNpm() {
     cwd: npmDir,
     env: {...process.env, npm_config_registry: 'https://registry.npmjs.org'},
   });
-  process.stdout.write('NPM Shim status: ' + shimProcess.status);
-  process.stdout.write('NPM Shim error: ' + shimProcess.error);
   if (shimProcess.status) {
     throw new Error('Failed to install npm');
+  }
+  if (shimProcess.error) {
+    throw shimProcess.error;
   }
   process.env[npmPathEnvVar] = resolve(
     npmDir,
