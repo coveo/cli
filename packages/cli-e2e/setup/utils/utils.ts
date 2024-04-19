@@ -122,10 +122,13 @@ export function shimNpm() {
   process.env[npmCachePathEnvVar] = join(npmDir, 'cache');
   copySync(join(__dirname, '..', '..', 'npm-shim'), npmDir);
   const npmCiArgs = [appendCmdIfWindows`npm`, 'ci'];
-  spawnSync(npmCiArgs.shift()!, npmCiArgs, {
+  const shimProcess = spawnSync(npmCiArgs.shift()!, npmCiArgs, {
     cwd: npmDir,
     env: {...process.env, npm_config_registry: 'https://registry.npmjs.org'},
   });
+  if (shimProcess.status) {
+    throw new Error('Failed to install npm');
+  }
   process.env[npmPathEnvVar] = resolve(
     npmDir,
     'node_modules',
