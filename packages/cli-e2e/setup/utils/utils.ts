@@ -223,7 +223,7 @@ export function getCleanEnv(): Record<string, string> {
 }
 
 export const appendCmdIfWindows = (cmd: TemplateStringsArray) =>
-  `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
+  `${cmd}${process.platform === 'win32' ? '.ps1' : ''}`;
 
 function isParent(parent: string, potentialChild: string) {
   return resolve(potentialChild).startsWith(resolve(parent));

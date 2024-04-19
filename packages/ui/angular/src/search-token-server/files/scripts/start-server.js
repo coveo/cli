@@ -21,7 +21,7 @@ function startServer() {
 }
 
 const appendCmdIfWindows = (cmd) =>
-  `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
+  `${cmd}${process.platform === 'win32' ? '.ps1' : ''}`;
 
 function main() {
   startServer();

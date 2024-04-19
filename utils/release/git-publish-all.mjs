@@ -68,7 +68,7 @@ function updateRootReadme() {
  * @returns
  */
 const appendCmdIfWindows = (cmd) =>
-  `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
+  `${cmd}${process.platform === 'win32' ? '.ps1' : ''}`;
 
 /**
  * Run `npm run pre-commit`
