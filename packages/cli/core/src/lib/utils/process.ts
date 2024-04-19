@@ -20,6 +20,7 @@ export function spawnProcess(
   return new Promise((resolve, reject) => {
     spawn(command, args, {
       stdio: ['inherit', 'inherit', 'inherit'],
+      shell: process.platform === 'win32' ? 'powershell' : undefined,
       ...options,
     }).on('close', (code) => {
       if (code !== 0) {
