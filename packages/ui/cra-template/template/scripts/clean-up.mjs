@@ -21,7 +21,10 @@ writeFileSync('package.json', pkgString);
   unlinkSync(join(__dirname, file))
 );
 
-spawnSync('git', ['add', '-A']);
+spawnSync('git', ['add', '-A'], {
+  shell: process.platform === 'win32' ? 'powershell' : undefined,
+});
 spawnSync('git', ['commit', '-m', 'initialize coveo react search page'], {
   stdio: ['pipe', 'pipe', 'inherit'],
+  shell: process.platform === 'win32' ? 'powershell' : undefined,
 });

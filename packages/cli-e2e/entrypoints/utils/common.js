@@ -29,11 +29,11 @@ const noSuchImage = (message) =>
   message.trim().startsWith('Error: No such image:');
 
 const isImagePresent = () => {
-  const imageInspect = spawnSync('docker', [
-    'image',
-    'inspect',
-    DOCKER_IMAGE_NAME,
-  ]);
+  const imageInspect = spawnSync(
+    'docker',
+    ['image', 'inspect', DOCKER_IMAGE_NAME],
+    {shell: process.platform === 'win32' ? 'powershell' : undefined}
+  );
 
   if (imageInspect.error) {
     if (noSuchImage(imageInspect.error.toString())) {

@@ -186,6 +186,7 @@ describe(PACKAGE_NAME, () => {
               npm_config_cache: npmCache,
             },
             cwd: testDirectory,
+            shell: process.platform === 'win32' ? 'powershell' : undefined,
           }
         );
       });

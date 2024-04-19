@@ -74,7 +74,9 @@ const appendCmdIfWindows = (cmd) =>
  * Run `npm run pre-commit`
  */
 function runPrecommit() {
-  spawnSync(appendCmdIfWindows`npm`, ['run', 'pre-commit']);
+  spawnSync(appendCmdIfWindows`npm`, ['run', 'pre-commit'], {
+    shell: process.platform === 'win32' ? 'powershell' : undefined,
+  });
 }
 
 /**

@@ -7,7 +7,11 @@ import {DirResult, dirSync} from 'tmp';
 const execPath = join(__dirname, '..', 'dist');
 
 const pathToStub = join(__dirname, '..', '__stub__');
-const healthCheck = (cwd: string) => spawnSync('node', [execPath], {cwd});
+const healthCheck = (cwd: string) =>
+  spawnSync('node', [execPath], {
+    cwd,
+    shell: process.platform === 'win32' ? 'powershell' : undefined,
+  });
 
 const addPackageJsonToProject = (stubFile: string, dest: string) => {
   cpSync(join(pathToStub, stubFile), join(dest, 'package.json'));

@@ -125,6 +125,7 @@ export function shimNpm() {
   const shimProcess = spawnSync(npmCiArgs.shift()!, npmCiArgs, {
     cwd: npmDir,
     env: {...process.env, npm_config_registry: 'https://registry.npmjs.org'},
+    shell: process.platform === 'win32' ? 'powershell' : undefined,
   });
   if (shimProcess.status) {
     throw new Error('Failed to install npm');

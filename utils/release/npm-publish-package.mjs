@@ -31,7 +31,11 @@ const hasPackageJsonChanged = (directoryPath) => {
   const {stdout, stderr, status} = spawnSync(
     'git',
     ['diff', '--exit-code', 'package.json'],
-    {cwd: directoryPath, encoding: 'utf-8'}
+    {
+      cwd: directoryPath,
+      encoding: 'utf-8',
+      shell: process.platform === 'win32' ? 'powershell' : undefined,
+    }
   );
   switch (status) {
     case 0:
