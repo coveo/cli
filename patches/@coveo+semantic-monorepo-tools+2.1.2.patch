@@ -1,0 +1,31 @@
+diff --git a/node_modules/@coveo/semantic-monorepo-tools/dist/npm/utils/appendCmdIfWindows.js b/node_modules/@coveo/semantic-monorepo-tools/dist/npm/utils/appendCmdIfWindows.js
+index 41bf1bc..9399f0f 100644
+--- a/node_modules/@coveo/semantic-monorepo-tools/dist/npm/utils/appendCmdIfWindows.js
++++ b/node_modules/@coveo/semantic-monorepo-tools/dist/npm/utils/appendCmdIfWindows.js
+@@ -1,3 +1,3 @@
+ export default function appendCmdIfWindows(cmd) {
+-    return `${cmd}${process.platform === "win32" ? ".cmd" : ""}`;
++    return `${cmd}${process.platform === "win32" ? ".ps1" : ""}`;
+ }
+diff --git a/node_modules/@coveo/semantic-monorepo-tools/dist/utils/spawn.js b/node_modules/@coveo/semantic-monorepo-tools/dist/utils/spawn.js
+index 99d96cb..31c2edd 100644
+--- a/node_modules/@coveo/semantic-monorepo-tools/dist/utils/spawn.js
++++ b/node_modules/@coveo/semantic-monorepo-tools/dist/utils/spawn.js
+@@ -5,7 +5,7 @@ export default function (command, args, logger = defaultLogger, options = {}) {
+     logger?.('executing "%s %s"', command, loggableArgs);
+     let stdout = "";
+     let stderr = "";
+-    const { encoding, ...spawnOptions } = { encoding: "utf-8", ...options };
++    const { encoding, ...spawnOptions } = { encoding: "utf-8", shell: process.platform=='win32' ? 'powershell': undefined, ...options };
+     return new Promise((resolve, reject) => {
+         const childProcess = spawn(command, args, spawnOptions);
+         childProcess.stdout.on("data", (data) => {
+diff --git a/node_modules/@coveo/semantic-monorepo-tools/src/npm/utils/appendCmdIfWindows.ts b/node_modules/@coveo/semantic-monorepo-tools/src/npm/utils/appendCmdIfWindows.ts
+index a911f5a..3fdb212 100644
+--- a/node_modules/@coveo/semantic-monorepo-tools/src/npm/utils/appendCmdIfWindows.ts
++++ b/node_modules/@coveo/semantic-monorepo-tools/src/npm/utils/appendCmdIfWindows.ts
+@@ -1,3 +1,3 @@
+ export default function appendCmdIfWindows(cmd) {
+-  return `${cmd}${process.platform === "win32" ? ".cmd" : ""}`;
++  return `${cmd}${process.platform === "win32" ? ".ps1" : ""}`;
+ }
