@@ -1,16 +1,16 @@
 diff --git a/node_modules/@coveo/semantic-monorepo-tools/dist/git/getCommits.js b/node_modules/@coveo/semantic-monorepo-tools/dist/git/getCommits.js
-index eacf77a..400ac14 100644
+index eacf77a..302c25a 100644
 --- a/node_modules/@coveo/semantic-monorepo-tools/dist/git/getCommits.js
 +++ b/node_modules/@coveo/semantic-monorepo-tools/dist/git/getCommits.js
-@@ -10,7 +10,7 @@ import getOptionalPositionalArgument from "../utils/getOptionalPositionalArgumen
-  * @return an array containing the commits and the process that was spawned
-  */
- export default async function (projectPath, from, to = "HEAD") {
--    const delimiter = `<--- ${randomBytes(64).toString("hex")} --->`;
-+    const delimiter = `"<--- ${randomBytes(64).toString("hex")} --->"`;
+@@ -13,7 +13,7 @@ export default async function (projectPath, from, to = "HEAD") {
+     const delimiter = `<--- ${randomBytes(64).toString("hex")} --->`;
      const gitParams = [
          "log",
-         `--pretty=format:%B%n-hash-%n%H ${delimiter}`,
+-        `--pretty=format:%B%n-hash-%n%H ${delimiter}`,
++        `--pretty="format:%B%n-hash-%n%H ${delimiter}"`,
+         "--dense",
+         `${from}..${to}`,
+     ].concat(getOptionalPositionalArgument(projectPath));
 diff --git a/node_modules/@coveo/semantic-monorepo-tools/dist/npm/utils/appendCmdIfWindows.js b/node_modules/@coveo/semantic-monorepo-tools/dist/npm/utils/appendCmdIfWindows.js
 index 41bf1bc..9399f0f 100644
 --- a/node_modules/@coveo/semantic-monorepo-tools/dist/npm/utils/appendCmdIfWindows.js
