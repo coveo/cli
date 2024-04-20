@@ -85,7 +85,10 @@ export function getBinInstalledPrecondition(
     return async function (target: CLICommand) {
       const output = await spawnProcessOutput(
         binaryName,
-        appliedOptions.params
+        appliedOptions.params,
+        {
+          shell: process.platform === 'win32' ? 'powershell' : undefined,
+        }
       );
       await checkIfBinIsInstalled(target, binaryName, appliedOptions, output);
     };
