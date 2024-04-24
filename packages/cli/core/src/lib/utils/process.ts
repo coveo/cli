@@ -57,7 +57,10 @@ export async function spawnProcessOutput(
       stderr: '',
     };
 
-    const child = spawn(command, args, options);
+    const child = spawn(command, args, {
+      shell: process.platform === 'win32' ? 'powershell' : undefined,
+      ...options,
+    });
 
     child.stdout?.on('data', (d) => {
       output.stdout += d;
