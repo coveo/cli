@@ -168,6 +168,7 @@ describe('ui:create:react', () => {
         [
           createReactAppPackage,
           'myapp',
+          '--use-npm',
           '--template',
           '@coveo/cra-template@1.0.0',
         ]
@@ -185,6 +186,7 @@ describe('ui:create:react', () => {
         [
           createReactAppPackage,
           'myapp',
+          '--use-npm',
           '--template',
           '@coveo/cra-template@1.2.3',
         ]
