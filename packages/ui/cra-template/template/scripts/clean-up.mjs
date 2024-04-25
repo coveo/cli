@@ -20,14 +20,10 @@ writeFileSync('package.json', pkgString);
 ['setup-server.mjs', 'setup-env.mjs', 'clean-up.mjs'].forEach((file) =>
   unlinkSync(join(__dirname, file))
 );
-console.log('git add');
-console.error('git add');
 spawnSync('git', ['add', '-A'], {
   shell: process.platform === 'win32' ? 'powershell' : undefined,
 });
-console.log('git commit');
-console.error('git commit');
-spawnSync('git', ['commit', '-m', 'initialize coveo react search page'], {
+spawnSync('git', ['commit', '-m', '"initialize coveo react search page"'], {
   stdio: ['pipe', 'pipe', 'inherit'],
   shell: process.platform === 'win32' ? 'powershell' : undefined,
 });
