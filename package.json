@@ -14,7 +14,7 @@
     "@commitlint/config-conventional": "17.6.1",
     "@commitlint/lint": "17.6.1",
     "@coveo/platform-client": "52.1.0",
-    "@coveo/semantic-monorepo-tools": "2.1.2",
+    "@coveo/semantic-monorepo-tools": "2.4.28",
     "@coveord/release": "1.0.0",
     "@npmcli/arborist": "6.2.8",
     "@nrwl/cli": "latest",
