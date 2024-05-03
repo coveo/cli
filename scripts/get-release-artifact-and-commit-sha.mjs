@@ -53,6 +53,7 @@ async function main() {
   // https://stackoverflow.com/a/1862542
   const gitps = spawnSync('git', ['rev-list', '-n', '1', tag], {
     encoding: 'utf-8',
+    shell: process.platform === 'win32' ? 'powershell' : undefined,
   });
   console.log('stdout:', gitps.stdout);
   console.log('stderr:', gitps.stderr);

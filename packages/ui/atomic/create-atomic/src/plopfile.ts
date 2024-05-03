@@ -243,6 +243,7 @@ export default function (plop: NodePlopAPI) {
             const {project} = data as PlopData;
             const installProcess = spawn(getPackageManager(), ['install'], {
               stdio: ['ignore', 'pipe', 'pipe'],
+              shell: process.platform === 'win32' ? 'powershell' : undefined,
               cwd: join(currentPath, project),
             });
 

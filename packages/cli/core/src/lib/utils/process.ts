@@ -20,6 +20,7 @@ export function spawnProcess(
   return new Promise((resolve, reject) => {
     spawn(command, args, {
       stdio: ['inherit', 'inherit', 'inherit'],
+      shell: process.platform === 'win32' ? 'powershell' : undefined,
       ...options,
     }).on('close', (code) => {
       if (code !== 0) {
@@ -56,7 +57,10 @@ export async function spawnProcessOutput(
       stderr: '',
     };
 
-    const child = spawn(command, args, options);
+    const child = spawn(command, args, {
+      shell: process.platform === 'win32' ? 'powershell' : undefined,
+      ...options,
+    });
 
     child.stdout?.on('data', (d) => {
       output.stdout += d;

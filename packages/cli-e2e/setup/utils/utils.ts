@@ -122,10 +122,17 @@ export function shimNpm() {
   process.env[npmCachePathEnvVar] = join(npmDir, 'cache');
   copySync(join(__dirname, '..', '..', 'npm-shim'), npmDir);
   const npmCiArgs = [appendCmdIfWindows`npm`, 'ci'];
-  spawnSync(npmCiArgs.shift()!, npmCiArgs, {
+  const shimProcess = spawnSync(npmCiArgs.shift()!, npmCiArgs, {
     cwd: npmDir,
     env: {...process.env, npm_config_registry: 'https://registry.npmjs.org'},
+    shell: process.platform === 'win32' ? 'powershell' : undefined,
   });
+  if (shimProcess.status) {
+    throw new Error('Failed to install npm');
+  }
+  if (shimProcess.error) {
+    throw shimProcess.error;
+  }
   process.env[npmPathEnvVar] = resolve(
     npmDir,
     'node_modules',
@@ -217,7 +224,7 @@ export function getCleanEnv(): Record<string, string> {
 }
 
 export const appendCmdIfWindows = (cmd: TemplateStringsArray) =>
-  `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
+  `${cmd}${process.platform === 'win32' ? '.ps1' : ''}`;
 
 function isParent(parent: string, potentialChild: string) {
   return resolve(potentialChild).startsWith(resolve(parent));

@@ -120,6 +120,7 @@ export default class React extends CLICommand {
       flags.version || getPackageVersion(React.templateName);
     const exitCode = await this.runReactCliCommand([
       name,
+      '--use-npm',
       '--template',
       `${React.templateName}@${templateVersion}`,
     ]);

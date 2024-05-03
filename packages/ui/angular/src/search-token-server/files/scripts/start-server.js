@@ -14,6 +14,7 @@ function startServer() {
     stdio: 'inherit',
     env: getEnvVariables(),
     cwd: resolve(serverPath),
+    shell: process.platform === 'win32' ? 'powershell' : undefined,
   });
   if (child.status !== 0) {
     process.exit(child.status);
@@ -21,7 +22,7 @@ function startServer() {
 }
 
 const appendCmdIfWindows = (cmd) =>
-  `${cmd}${process.platform === 'win32' ? '.cmd' : ''}`;
+  `${cmd}${process.platform === 'win32' ? '.ps1' : ''}`;
 
 function main() {
   startServer();

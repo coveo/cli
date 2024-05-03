@@ -7,6 +7,7 @@ function installSearchTokenServerDependencies() {
   const child = spawnSync(getPackageManager(), ['install'], {
     stdio: 'inherit',
     cwd: resolve('server'),
+    shell: process.platform === 'win32' ? 'powershell' : undefined,
   });
   if (child.status !== 0) {
     process.exit(child.status);

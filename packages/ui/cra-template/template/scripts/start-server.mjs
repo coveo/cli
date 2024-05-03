@@ -25,6 +25,7 @@ function startServer() {
     stdio: 'inherit',
     env: getEnvVariables(),
     cwd: resolve(serverPath),
+    shell: process.platform === 'win32' ? 'powershell' : undefined,
   });
   process.on('SIGINT', () => {
     child.kill();

@@ -78,6 +78,7 @@ export async function scaffoldDummyPackages() {
       {
         cwd: tmpdir,
         stdio: 'inherit',
+        shell: process.platform === 'win32' ? 'powershell' : undefined,
       }
     );
   }

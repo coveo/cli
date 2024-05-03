@@ -55,6 +55,7 @@ function installPackage(packageSpec: string) {
   }
   spawnSync(appendCmdIfWindows`npm`, ['install', '-E', packageSpec], {
     cwd: getLazyLoadedDependencyDirectoryPath(),
+    shell: process.platform === 'win32' ? 'powershell' : undefined,
   });
 }
 
@@ -90,6 +91,7 @@ function getPackageJsonFromLazyLoadDirectory(
 function initializeNpmProject() {
   spawnSync(appendCmdIfWindows`npm`, ['init', '-y'], {
     cwd: getLazyLoadedDependencyDirectoryPath(),
+    shell: process.platform === 'win32' ? 'powershell' : undefined,
   });
 }
 
