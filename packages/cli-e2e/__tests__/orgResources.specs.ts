@@ -286,5 +286,5 @@ describe('org:resources', () => {
     await retry(() => {
       expect(snapshotlist).toHaveLength(0);
     });
-  });
+  }, 60e3);
 });
