@@ -1,6 +1,6 @@
 {
   "name": "@coveo/angular",
-  "version": "1.36.9",
+  "version": "1.36.10",
   "description": "Coveo schematic for angular",
   "scripts": {
     "test": "jest",

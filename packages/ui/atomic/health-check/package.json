@@ -1,7 +1,7 @@
 {
   "name": "@coveo/atomic-component-health-check",
   "type": "module",
-  "version": "2.2.18",
+  "version": "2.2.19",
   "description": "A Health checker for custom Atomic component",
   "main": "./dist/index.js",
   "author": "Coveo",
