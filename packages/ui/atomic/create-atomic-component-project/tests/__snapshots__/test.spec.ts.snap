@@ -4,51 +4,51 @@ exports[`@coveo/create-atomic-component-project should initialize a base project
 HashedFolder {
   "children": [
     HashedFile {
-      "hash": "kJH2XVWhWdnme3CtyxJ2Wx94p90=",
+      "hash": "On2XOtGKsiCQNf3sl4iW9KMVbUE=",
       "name": "package.json",
     },
     HashedFile {
-      "hash": "CSzlp6SzDDKYsFtDpjr8ZDAjDFk=",
+      "hash": "dk1NzEu4Fb2ZY6TKzt21xMFvc2c=",
       "name": "readme.md",
     },
     HashedFolder {
       "children": [
         HashedFile {
-          "hash": "hDda5gtN4YPLmASHFgAZanGhSmY=",
+          "hash": "YVuwXfIZfjfeVyLQ6cMy3kUqC3A=",
           "name": "html.d.ts",
         },
         HashedFolder {
           "children": [
             HashedFile {
-              "hash": "zJQKmqArKzOvjuA1F/O2Cg38reo=",
+              "hash": "L08E7dMK5e0wD5P8meKHfkDDa3o=",
               "name": "index.css",
             },
             HashedFile {
-              "hash": "WBXXl7Em83GskL/B10/zRrjjpII=",
+              "hash": "bFh3SmB411lXkJIWZnTDWhG9rfI=",
               "name": "index.html",
             },
             HashedFile {
-              "hash": "r23wwW5wvO+H6ZGKVG5DjhD0mTo=",
+              "hash": "tGVlR0ig5LSS79ZPOfuAFDEvqMw=",
               "name": "index.ts",
             },
           ],
-          "hash": "tdtcK13ysg5WEMg91GUjcUhY+kw=",
+          "hash": "qEEOwUr4MvYxD5CwMtkP/VqUL8Q=",
           "name": "pages",
         },
       ],
-      "hash": "fUNKTOVxuuk5qjZcDlXuodaTL6U=",
+      "hash": "SRbkSC6gdgj3DuBoJV7nVX172OQ=",
       "name": "src",
     },
     HashedFile {
-      "hash": "pmsUQcrl+uttNjhQm9SN6CoAvrg=",
+      "hash": "BVZfiCzL+2kulE12K4HLAIl3kJ8=",
       "name": "stencil.config.ts",
     },
     HashedFile {
-      "hash": "t/QOxN7KS1NBexSRVje5xsn1qfk=",
+      "hash": "yMxJnSeOFw52ObOJrKQEh86v+HM=",
       "name": "tsconfig.json",
     },
   ],
-  "hash": "FRx+bkByopNl4n5yKKCnqFQz1nU=",
+  "hash": "VXylFfUrNgaDO/OzDaPhXtTLVUc=",
   "name": "testDirectory",
 }
 `;
