@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cra-template",
-  "version": "1.38.17",
+  "version": "1.38.18",
   "scripts": {
     "lint": "prettier --check . && eslint .",
     "release:phase1": "npx -p=@coveord/release npm-publish",
