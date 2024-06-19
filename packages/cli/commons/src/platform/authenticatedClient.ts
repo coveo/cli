@@ -1,9 +1,11 @@
+import 'core-js/actual/json/parse';
 import {setGlobalDispatcher, ProxyAgent, FormData, fetch} from 'undici';
-import PlatformClient from '@coveo/platform-client';
+import PlatformClient, {ResponseHandlers} from '@coveo/platform-client';
 import {Config, Configuration} from '../config/config';
 import {castEnvironmentToPlatformClient} from './environment';
 import globalConfig from '../config/globalConfig';
 import 'fetch-undici-polyfill';
+import {Response} from 'node-fetch';
 
 export class AuthenticatedClient {
   public cfg: Config;
@@ -39,12 +41,47 @@ export class AuthenticatedClient {
     if (!Object.keys(global).includes('FormData')) {
       Object.assign(global, {FormData});
     }
+
     return new PlatformClient({
       globalRequestSettings,
       environment: castEnvironmentToPlatformClient(resolvedConfig.environment),
       region: resolvedConfig.region,
       organizationId: resolvedConfig.organization,
       accessToken: resolvedConfig.accessToken!,
+      responseHandlers: [
+        {
+          canProcess: (response: Response): boolean => {
+            return response.ok;
+          },
+          process: async <T>(response: Response) => {
+            const content = await response.text();
+            return (
+              JSON.parse as (
+                text: string,
+                reviver?: (
+                  key: string,
+                  value: any,
+                  context: {source: any}
+                ) => any | undefined
+              ) => any
+            )(content, (key, value, context) => {
+              if (
+                key === 'rowid' &&
+                typeof value === 'number' &&
+                !Number.isSafeInteger(value)
+              ) {
+                return context.source;
+              }
+              return value;
+            });
+          },
+        },
+        ResponseHandlers.badGateway,
+        ResponseHandlers.blockedByWAF,
+        ResponseHandlers.error,
+        ResponseHandlers.htmlError,
+        ResponseHandlers.noContent,
+      ],
     });
   }
 

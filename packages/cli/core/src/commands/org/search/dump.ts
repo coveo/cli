@@ -260,6 +260,7 @@ export default class Dump extends CLICommand {
       try {
         const results = (await params.client.search.query({
           aq: this.getFilter(params, rowId),
+          maximumAge: 0,
           debug: true,
           organizationId: params.organizationId,
           numberOfResults: this.numberOfResultPerQuery,
