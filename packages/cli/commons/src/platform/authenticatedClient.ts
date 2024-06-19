@@ -42,6 +42,10 @@ export class AuthenticatedClient {
       Object.assign(global, {FormData});
     }
 
+    const {success, ...restOfDefaultResponseHandlers} = ResponseHandlers;
+    const defaultResponseHandlers = Object.values(
+      restOfDefaultResponseHandlers
+    ).map((handler) => handler);
     return new PlatformClient({
       globalRequestSettings,
       environment: castEnvironmentToPlatformClient(resolvedConfig.environment),
@@ -76,11 +80,7 @@ export class AuthenticatedClient {
             });
           },
         },
-        ResponseHandlers.badGateway,
-        ResponseHandlers.blockedByWAF,
-        ResponseHandlers.error,
-        ResponseHandlers.htmlError,
-        ResponseHandlers.noContent,
+        ...defaultResponseHandlers,
       ],
     });
   }
