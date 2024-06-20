@@ -261,6 +261,7 @@ export default class Dump extends CLICommand {
         const results = (await params.client.search.query({
           aq: this.getFilter(params, rowId),
           debug: true,
+          maximumAge: 0,
           organizationId: params.organizationId,
           numberOfResults: this.numberOfResultPerQuery,
           sortCriteria: '@rowid ascending',
