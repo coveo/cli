@@ -66,8 +66,8 @@ export class AuthenticatedClient {
               ) => any
             )(content, (key, value, context) => {
               if (
+                key === 'rowid' &&
                 typeof value === 'number' &&
-                Number.isInteger(value) &&
                 !Number.isSafeInteger(value)
               ) {
                 return context.source;
