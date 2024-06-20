@@ -11,7 +11,7 @@
     "@amplitude/identify": "^1.9.0",
     "@coveo/cli-commons": "2.9.3",
     "@coveo/cli-plugin-source": "2.3.3",
-    "@coveo/platform-client": "52.1.0",
+    "@coveo/platform-client": "54.9.3",
     "@oclif/core": "1.24.0",
     "@oclif/plugin-help": "5.1.23",
     "@oclif/plugin-plugins": "2.1.12",

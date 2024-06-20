@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "@coveo/cli-commons": "2.9.3",
-    "@coveo/platform-client": "52.1.0",
+    "@coveo/platform-client": "54.9.3",
     "@coveo/push-api-client": "4.0.1",
     "@oclif/core": "1.24.0",
     "@oclif/plugin-help": "5.1.23",
