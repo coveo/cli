@@ -1,5 +1,6 @@
 import {setGlobalDispatcher, ProxyAgent, FormData, fetch} from 'undici';
 import PlatformClient from '@coveo/platform-client';
+import {RestUserId, RestUserIdType} from '@coveo/platform-client';
 import {Config, Configuration} from '../config/config';
 import {castEnvironmentToPlatformClient} from './environment';
 import globalConfig from '../config/globalConfig';
@@ -76,6 +77,19 @@ export class AuthenticatedClient {
       privileges: [
         {targetDomain: 'IMPERSONATE', targetId: '*', owner: 'SEARCH_API'},
       ],
+    });
+  }
+
+  public async createSearchToken(
+    userIds: RestUserId[],
+    searchHub?: string,
+    filter?: string
+  ) {
+    const platformClient = await this.getClient();
+    return platformClient.search.createToken({
+      userIds,
+      searchHub,
+      filter,
     });
   }
 

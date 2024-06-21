@@ -9,6 +9,7 @@ import {
 } from './authenticatedClient';
 
 import {Config} from '../config/config';
+import {RestUserId, RestUserIdType} from '@coveo/platform-client';
 import PlatformClient from '@coveo/platform-client';
 import {
   castEnvironmentToPlatformClient,
@@ -168,6 +169,32 @@ describe('AuthenticatedClient', () => {
           privileges: [
             {owner: 'SEARCH_API', targetDomain: 'IMPERSONATE', targetId: '*'},
           ],
+        })
+      );
+    }
+  );
+
+  fancyIt()(
+    '#createSearchToken should create a search token with the given parameters',
+    async () => {
+      const userIds: RestUserId[] = [
+        {
+          name: 'mel',
+          provider: 'Email Security Provider',
+          type: 'User' as RestUserIdType,
+        },
+      ];
+      await new AuthenticatedClient().createSearchToken(
+        userIds,
+        'my-hub',
+        'filter'
+      );
+
+      expect(mockPlatformClient).toHaveBeenCalledWith(
+        expect.objectContaining({
+          userIds,
+          searchHub: 'my-hub',
+          filter: 'filter',
         })
       );
     }
