@@ -1,0 +1,57 @@
+[
+  {
+    "objecttype": "Product",
+    "ec_product_id": "001-red",
+    "documentId": "product://001-red",
+    "FileExtension": ".html",
+    "ec_name": "Coveo Soccer Shoes - Red",
+    "model": "Authentic",
+    "ec_brand": ["Coveo"],
+    "ec_description": "<p>The astonishing, the original, and always relevant Coveo style.</p>",
+    "color": ["Red"],
+    "ec_item_group_id": "001",
+    "ec_images": ["https://myimagegallery?productid"],
+    "gender": "Men",
+    "ec_price": 28.0,
+    "ec_category": "Soccer Shoes",
+    "title": "document 1"
+  },
+  {
+    "objecttype": "Product",
+    "ec_product_id": "002-red",
+    "documentId": "product://002-red",
+    "FileExtension": ".html",
+    "ec_name": "Coveo Indoor Soccer Shoes - Red",
+    "model": "Authentic",
+    "ec_brand": ["Coveo"],
+    "ec_description": "<p>The astonishing, the original, and always relevant Coveo style.</p>",
+    "color": ["Red"],
+    "ec_item_group_id": "002",
+    "ec_images": ["https://myimagegallery?productid"],
+    "gender": "Men",
+    "ec_price": 26.0,
+    "ec_category": "Soccer Shoes",
+    "title": "document 2"
+  },
+  {
+    "objecttype": "Availability",
+    "documentId": "client://c1",
+    "title": "Client 1",
+    "availableskus": ["001-red"],
+    "availabilityid": "s000000"
+  },
+  {
+    "objecttype": "Availability",
+    "documentId": "client://c2",
+    "title": "Client 2",
+    "availableskus": ["002-red"],
+    "availabilityid": "s000001"
+  },
+  {
+    "objecttype": "Availability",
+    "documentId": "client://c3",
+    "title": "Client 3",
+    "availableskus": ["001-red", "002-red"],
+    "availabilityid": "s000002"
+  }
+]
