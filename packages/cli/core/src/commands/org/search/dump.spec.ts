@@ -82,6 +82,21 @@ describe('org:search:dump', () => {
     })
     .stdout()
     .stderr()
+    .command(['org:search:dump', '-s', 'the_source_1'])
+    .it('should pass maximumAge 0 as a search parameter', () =>
+      expect(mockedSearch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          maximumAge: 0,
+        })
+      )
+    );
+
+  test
+    .do(() => {
+      mockReturnNumberOfResults(0);
+    })
+    .stdout()
+    .stderr()
     .command(['org:search:dump', '-s', 'the_source'])
     .it('should pass the source as a search filter', () =>
       expect(mockedSearch).toHaveBeenCalledWith(
