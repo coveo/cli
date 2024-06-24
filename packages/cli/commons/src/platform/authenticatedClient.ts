@@ -1,6 +1,6 @@
 import {setGlobalDispatcher, ProxyAgent, FormData, fetch} from 'undici';
-import PlatformClient from '@coveo/platform-client';
-import {RestUserId, RestUserIdType} from '@coveo/platform-client';
+import PlatformClient, {TokenModel} from '@coveo/platform-client';
+import {RestUserId} from '@coveo/platform-client';
 import {Config, Configuration} from '../config/config';
 import {castEnvironmentToPlatformClient} from './environment';
 import globalConfig from '../config/globalConfig';
@@ -90,6 +90,15 @@ export class AuthenticatedClient {
       userIds,
       searchHub,
       filter,
+    });
+  }
+
+  public async searchWithToken(token: TokenModel, query: string) {
+    const platformClient = await this.getClient({
+      accessToken: token.token,
+    });
+    return platformClient.search.query({
+      q: query,
     });
   }
 
