@@ -9,10 +9,10 @@ on:
 jobs:
   Merge:
     if: ${{ github.event_name == 'pull_request' || github.event.issue.pull_request }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     env:
       GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
     steps:
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
       - name: Run the Bot
         run: npx @coveo/merge-bot
