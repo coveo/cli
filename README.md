@@ -74,7 +74,7 @@ $ npm install -g @coveo/cli
 $ coveo COMMAND
 running command...
 $ coveo (--version)
-@coveo/cli/3.2.6 linux-x64 node-v20.12.2
+@coveo/cli/3.2.7 linux-x64 node-v20.12.2
 $ coveo --help [COMMAND]
 USAGE
   $ coveo COMMAND
