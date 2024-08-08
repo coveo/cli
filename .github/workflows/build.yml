@@ -21,7 +21,7 @@ env:
 jobs:
   lint:
     name: Lint
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-22.04'
     steps:
       - name: Setup runner
         if: ${{matrix.os == 'ubuntu-20.04'}}
@@ -33,8 +33,8 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.eol lf
           npm i -g npm@latest
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+      - uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4
         with:
           cache: 'npm'
           node-version-file: '.nvmrc'
@@ -60,8 +60,8 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.eol lf
           npm i -g npm@latest
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+      - uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4
         with:
           cache: 'npm'
           node-version-file: '.nvmrc'
@@ -74,15 +74,15 @@ jobs:
   e2e-setup-login:
     timeout-minutes: 15
     name: End-to-end login
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-22.04'
     outputs:
       cliConfigJson: ${{ steps.setup.outputs.cliConfigJson}}
     env:
       # ID of the test run to identify resources to teardown.
       TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+      - uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4
         with:
           cache: 'npm'
           node-version-file: '.nvmrc'
@@ -101,20 +101,20 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.eol lf
           npm i -g npm@latest
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4
         with:
           cache: 'npm'
           node-version-file: '.nvmrc'
-      - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3
+      - uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4
         if: ${{matrix.os == 'ubuntu-20.04'}}
         with:
           path: packages/cli-e2e/verdaccio
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-      - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3
+      - uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4
         if: ${{matrix.os == 'windows-latest'}}
         with:
           path: packages\cli-e2e\verdaccio
@@ -124,7 +124,7 @@ jobs:
         run: npm run build
       - name: Setup E2E tests
         run: node -r ts-node/register/transpile-only packages/cli-e2e/setup/ci-verdaccio.ts
-      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+      - uses: actions/upload-artifact@834a144ee995460fba8ed112a2fc961b36a5ec5a # v4
         if: cancelled() || failure() || success()
         with:
           name: ${{matrix.os}}-verdaccio-publish-artifacts
@@ -159,14 +159,14 @@ jobs:
       COVEO_DISABLE_AUTOUPDATE: true
       CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
-      - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+      - uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4
         if: ${{matrix.os == 'ubuntu-20.04'}}
         with:
           path: packages/cli-e2e/verdaccio
           key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
           restore-keys: verdaccio-${{matrix.os}}-${{ github.sha }}
-      - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3
+      - uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4
         if: ${{matrix.os == 'windows-latest'}}
         with:
           path: packages\cli-e2e\verdaccio
@@ -184,13 +184,13 @@ jobs:
     name: End-to-end teardown
     if: ${{ always() }}
     needs: [e2e, e2e-setup-login]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     env:
       # ID of the test run to identify resources to teardown.
       TEST_RUN_ID: '${{ github.sha }}-${{ github.run_attempt }}g'
       CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
       - uses: ./.github/actions/e2e-clean
         with:
           cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
@@ -198,7 +198,7 @@ jobs:
     name: End-to-end status reporter
     if: ${{ always() }}
     needs: e2e
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Check e2e matrix status
         if: ${{ needs.e2e.result != 'success' }}
@@ -208,14 +208,14 @@ jobs:
     name: Pre-release
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     needs: [e2e-report, lint, unit-tests]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     environment: prerelease
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4
         with:
           registry-url: 'https://registry.npmjs.org'
       - name: Install dependencies
