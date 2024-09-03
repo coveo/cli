@@ -40,6 +40,7 @@ import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Example} from '@oclif/core/lib/interfaces';
 import {organization} from '../../../lib/flags/platformCommonFlags';
 import {getTargetOrg} from '../../../lib/utils/platform';
+import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 
 const PullCommandStrings = {
   projectOverwriteQuestion: (
@@ -82,7 +83,7 @@ export default class Pull extends CLICommand {
       description: 'The resources types to pull from the organization.',
       multiple: true,
       options: allowedResourceType,
-      default: allowedResourceType,
+      required: false,
     }),
     model: Flags.custom<SnapshotPullModel>({
       parse: (input: string): Promise<SnapshotPullModel> => {
@@ -226,6 +227,10 @@ export default class Pull extends CLICommand {
     );
   }
 
+  private async getClient(targetOrg: string) {
+    return await new AuthenticatedClient().getClient({organization: targetOrg});
+  }
+
   private async getWaitOption(): Promise<WaitUntilDoneOptions> {
     const flags = await this.getFlags();
     return {wait: flags.wait};
@@ -239,7 +244,15 @@ export default class Pull extends CLICommand {
     const flags = await this.getFlags();
     return flags.model
       ? flags.model.resourcesToExport
-      : buildResourcesToExport(flags.resourceTypes!);
+      : flags.resourceTypes?.length
+      ? buildResourcesToExport(flags.resourceTypes)
+      : await this.getAllAvailableResourceTypes();
+  }
+
+  private async getAllAvailableResourceTypes(): Promise<SnapshotPullModelResources> {
+    const client = await this.getClient(await this.getTargetOrg());
+    const resourceTypes = await client.resourceSnapshot.listResourceAccess();
+    return buildResourcesToExport(resourceTypes);
   }
 
   private async getTargetOrg() {
