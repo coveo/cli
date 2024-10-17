@@ -30,7 +30,7 @@ env:
 jobs:
   e2e-setup-login:
     name: End-to-end login
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-24.04'
     timeout-minutes: 30
     outputs:
       cliConfigJson: ${{ steps.setup.outputs.cliConfigJson}}
@@ -38,11 +38,11 @@ jobs:
       # ID of the test run to identify resources to teardown.
       TEST_RUN_ID: 'idubuntu-20.04-${{ github.sha }}-${{ github.run_attempt }}-releaseg'
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4
         with:
           cache: 'npm'
           node-version-file: '.nvmrc'
@@ -52,17 +52,17 @@ jobs:
         id: setup
   release-npm:
     environment: 'Release'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     env:
       GITHUB_CREDENTIALS: ${{ secrets.CLI_RELEASE }} # Required to lock master
     outputs:
       shouldReleaseCli: $${{steps.release.outputs.shouldReleaseCli}}
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4
         with:
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
@@ -83,7 +83,7 @@ jobs:
           git commit -m "patch"
           git format-patch HEAD^1 --output=release.patch
       - name: Upload artifacts
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4
         with:
           name: npm-release
           path: |
@@ -97,7 +97,7 @@ jobs:
           # DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
   e2e:
     name: End-to-end tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     needs: [release-npm, e2e-setup-login]
     timeout-minutes: 60
     env:
@@ -118,17 +118,17 @@ jobs:
             'vue.specs.ts',
           ]
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4
         with:
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
           node-version-file: '.nvmrc'
       - name: Download artifacts
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4
         with:
           name: npm-release
       - name: Apply & delete the patch
@@ -156,7 +156,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: Upload Jest Snapshots
         if: ${{ steps.snapshots-path.outputs.snapshotsPath != ''}}
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4
         with:
           name: release-e2e-snaps
           path: ${{ steps.snapshots-path.outputs.snapshotsPath }}
@@ -164,13 +164,13 @@ jobs:
     name: End-to-end teardown
     if: ${{ always() }}
     needs: [e2e, e2e-setup-login]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     env:
       # ID of the test run to identify resources to teardown.
       TEST_RUN_ID: '${{ github.sha }}-${{ github.run_attempt }}-releaseg'
       CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
@@ -183,19 +183,19 @@ jobs:
           cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
   unit-tests:
     name: Unit Tests
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-24.04'
     needs: [release-npm]
     steps:
       - name: Setup runner
         # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
+      - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4
         with:
           cache: 'npm'
           node-version-file: '.nvmrc'
       - name: Download artifacts
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4
         with:
           name: npm-release
       - name: Apply & delete the patch
@@ -218,28 +218,28 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: Upload Jest Snapshots
         if: ${{ steps.snapshots-path.outputs.snapshotsPath != ''}}
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4
         with:
           name: release-e2e-snaps
           path: ${{ steps.snapshots-path.outputs.snapshotsPath }}
   release-git:
     needs: [e2e, release-npm, unit-tests]
     environment: 'Release'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     env:
       GITHUB_CREDENTIALS: ${{ secrets.CLI_RELEASE }} # Required to lock master
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4
         with:
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
           node-version-file: '.nvmrc'
       - name: Download NPM artifacts
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4
         with:
           name: npm-release
       - name: Apply & delete the patch
@@ -247,7 +247,7 @@ jobs:
           git apply release.patch
           rm release.patch
       - name: Download E2E artifacts
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4
         with:
           name: release-e2e-snaps
       - name: Install dependencies
@@ -298,17 +298,17 @@ jobs:
             for: 'linux install kit'
 
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
         with:
           # pulls all commits (needed for finding the @coveo/cli version to release)
           fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4
         with:
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
           node-version-file: '.nvmrc'
       - name: Download artifacts
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4
         with:
           name: npm-release
       - name: Apply & delete the patch
@@ -399,7 +399,7 @@ jobs:
           mv "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64-signed.pkg" "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64.pkg"
           rm notarization-arm64.zip notarization-x64.zip
       - name: Upload binaries
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4
         with:
           name: release-binaries
           path: ./packages/cli/core/dist/**/*
@@ -407,25 +407,25 @@ jobs:
     needs: [release-git, release-npm, build-binaries]
     if: ${{needs.release-npm.outputs.shouldReleaseCli}}
     environment: 'Release'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     env:
       GITHUB_CREDENTIALS: ${{ secrets.CLI_RELEASE }} # Required to lock master
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4
         with:
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
           node-version-file: '.nvmrc'
       - name: Download NPM artifacts
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4
         with:
           name: npm-release
       - name: Download binaries artifacts
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4
         with:
           name: release-binaries
           path: release-binaries
