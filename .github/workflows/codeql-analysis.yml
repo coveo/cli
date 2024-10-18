@@ -16,7 +16,7 @@ on:
 jobs:
   codeql:
     name: CodeQL
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     permissions:
       actions: read
       contents: read
@@ -29,12 +29,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@f3feb00acb00f31a6f60280e6ace9ca31d91c76a # v2
+        uses: github/codeql-action/init@f779452ac5af1c261dce0346a8f964149f49322b # v3
         with:
           languages: ${{ matrix.language }}
           config-file: .github/codeql/config.yml
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@f3feb00acb00f31a6f60280e6ace9ca31d91c76a # v2
+        uses: github/codeql-action/analyze@f779452ac5af1c261dce0346a8f964149f49322b # v3
