@@ -252,6 +252,9 @@ export default class Pull extends CLICommand {
   private async getAllAvailableResourceTypes(): Promise<SnapshotPullModelResources> {
     const client = await this.getClient(await this.getTargetOrg());
     const resourceTypes = await client.resourceSnapshot.listResourceAccess();
+    console.log('*********************');
+    console.log(resourceTypes);
+    console.log('*********************');
     return buildResourcesToExport(resourceTypes);
   }
 
