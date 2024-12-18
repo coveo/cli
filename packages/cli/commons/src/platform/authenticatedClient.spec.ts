@@ -164,7 +164,6 @@ describe('AuthenticatedClient', () => {
               },
             },
           },
-          enabled: true,
           privileges: [
             {owner: 'SEARCH_API', targetDomain: 'IMPERSONATE', targetId: '*'},
           ],
