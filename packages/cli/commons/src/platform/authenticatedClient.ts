@@ -72,7 +72,6 @@ export class AuthenticatedClient {
           },
         },
       }),
-      enabled: true,
       privileges: [
         {targetDomain: 'IMPERSONATE', targetId: '*', owner: 'SEARCH_API'},
       ],
