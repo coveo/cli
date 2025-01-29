@@ -77,6 +77,10 @@
       "matchPackageNames": ["@vue/tsconfig"],
       "allowedVersions": "0.1.x",
       "description": "CDX-1443: Need TypeScript 5"
+    },
+    {
+      "matchPackageNames": ["@coveo/headless", "@coveo/atomic"],
+      "description": "Atomic & Headless"
     }
   ],
   "rangeStrategy": "auto",

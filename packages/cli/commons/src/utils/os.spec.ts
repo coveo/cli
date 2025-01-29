@@ -11,13 +11,13 @@ describe('appendCmdIfWindows', () => {
     Object.defineProperty(process, 'platform', originalProcess!);
   });
 
-  it('should append cmd if process.platform is win32', () => {
+  it('should append .ps1 if process.platform is win32', () => {
     Object.defineProperty(process, 'platform', {
       writable: false,
       value: 'win32',
     });
 
-    return expect(appendCmdIfWindows`foo`).toEqual('foo.cmd');
+    return expect(appendCmdIfWindows`foo`).toEqual('foo.ps1');
   });
 
   it('should append cmd if process.platform is not win32', () => {

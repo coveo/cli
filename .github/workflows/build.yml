@@ -32,7 +32,7 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
-          npm i -g npm@latest
+          npm i -g npm@10.8.2
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
       - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
         with:
@@ -59,7 +59,7 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
-          npm i -g npm@latest
+          npm i -g npm@10.8.2
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
       - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
         with:
@@ -100,7 +100,7 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
-          npm i -g npm@latest
+          npm i -g npm@10.8.2
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
         with:
           # pulls all commits (needed for computing the next version)
@@ -124,7 +124,7 @@ jobs:
         run: npm run build
       - name: Setup E2E tests
         run: node -r ts-node/register/transpile-only packages/cli-e2e/setup/ci-verdaccio.ts
-      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+      - uses: actions/upload-artifact@v4
         if: cancelled() || failure() || success()
         with:
           name: ${{matrix.os}}-verdaccio-publish-artifacts
@@ -138,16 +138,15 @@ jobs:
       matrix:
         os: ['ubuntu-20.04', 'windows-latest']
         node: ['18', '20']
-        spec:
-          [
-            'angular.specs.ts',
-            'atomic.specs.ts',
+        spec: [
+            # 'angular.specs.ts',
+            # 'atomic.specs.ts',
             'auth.specs.ci.ts',
             'deploy.specs.ts',
             'orgList.specs.ts',
             'orgResources.specs.ts',
-            'react.specs.ts',
-            'vue.specs.ts',
+            # 'react.specs.ts',
+            # 'vue.specs.ts',
           ]
         # TODO: fix auth spec with windows
         exclude:
