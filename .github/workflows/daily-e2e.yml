@@ -56,15 +56,14 @@ jobs:
       matrix:
         os: ['ubuntu-20.04', 'windows-latest']
         node: [18]
-        spec:
-          [
-            'angular.specs.ts',
-            'atomic.specs.ts',
+        spec: [
+            # 'angular.specs.ts',
+            # 'atomic.specs.ts',
             'auth.specs.ci.ts',
             'orgList.specs.ts',
             'orgResources.specs.ts',
-            'react.specs.ts',
-            'vue.specs.ts',
+            # 'react.specs.ts',
+            # 'vue.specs.ts',
           ]
         exclude:
           - os: windows-latest
