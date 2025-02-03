@@ -28,6 +28,54 @@ env:
   E2E_TOKEN_PASSPHRASE: ${{ secrets.E2E_TOKEN_PASSPHRASE }}
 
 jobs:
+  release:
+    environment: 'Release'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@c95a14d0e5bab51a9f56296a4eb0e416910cd350
+        with:
+          egress-policy: audit
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Nodejs 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Verify installation
+        shell: bash
+        run: |
+          node --version
+          npm --version
+
+      - name: Modify git global config
+        shell: bash
+        run: |
+          git config --global --add safe.directory ${{ GITHUB_WORKSPACE }}
+
+      - name: Npm install
+        shell: bash
+        run: |
+          npm ci --ignore-scripts
+
+      - name: Release
+        env:
+          GITHUB_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          node ./scripts/get-release-artifact-and-commit-sha.mjs
+          LATEST_COMMIT=$(git rev-parse HEAD)
+          echo "LATEST_COMMIT=$LATEST_COMMIT" >> $GITHUB_ENV
+
+      - name: Call cli-cd to deploy package
+        run: node ./scripts/trigger-cli-cd.mjs
+        env:
+          GH_TOKEN: ${{ secrets.CLI_CD_DISPATCHER }}
+          LATEST_COMMIT: ${{ env.LATEST_COMMIT }}
+
   e2e-setup-login:
     name: End-to-end login
     runs-on: 'ubuntu-20.04'
@@ -50,6 +98,7 @@ jobs:
         run: npm i -g @coveo/cli@latest
       - uses: ./.github/actions/e2e-login
         id: setup
+
   release-npm:
     environment: 'Release'
     runs-on: ubuntu-20.04
@@ -95,6 +144,7 @@ jobs:
           # RELEASER_CLIENT_SECRET: ${{ secrets.RELEASER_CLIENT_SECRET }}
           # RELEASER_INSTALLATION_ID: ${{ secrets.RELEASER_INSTALLATION_ID }}
           # DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+
   e2e:
     name: End-to-end tests
     runs-on: ubuntu-20.04
@@ -160,6 +210,7 @@ jobs:
         with:
           name: release-e2e-snaps
           path: ${{ steps.snapshots-path.outputs.snapshotsPath }}
+
   e2e-teardown:
     name: End-to-end teardown
     if: ${{ always() }}
@@ -181,6 +232,7 @@ jobs:
       - uses: ./.github/actions/e2e-clean
         with:
           cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
+
   unit-tests:
     name: Unit Tests
     runs-on: 'ubuntu-20.04'
@@ -222,6 +274,7 @@ jobs:
         with:
           name: release-e2e-snaps
           path: ${{ steps.snapshots-path.outputs.snapshotsPath }}
+
   release-git:
     needs: [e2e, release-npm, unit-tests]
     environment: 'Release'
@@ -263,6 +316,7 @@ jobs:
           RELEASER_CLIENT_SECRET: ${{ secrets.RELEASER_CLIENT_SECRET }}
           RELEASER_INSTALLATION_ID: ${{ secrets.RELEASER_INSTALLATION_ID }}
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+
   build-binaries:
     needs: [release-npm]
     if: ${{needs.release-npm.outputs.shouldReleaseCli}}
@@ -403,6 +457,7 @@ jobs:
         with:
           name: release-binaries
           path: ./packages/cli/core/dist/**/*
+
   release-github:
     needs: [release-git, release-npm, build-binaries]
     if: ${{needs.release-npm.outputs.shouldReleaseCli}}
