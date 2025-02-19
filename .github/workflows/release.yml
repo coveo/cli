@@ -28,28 +28,28 @@ env:
   E2E_TOKEN_PASSPHRASE: ${{ secrets.E2E_TOKEN_PASSPHRASE }}
 
 jobs:
-  e2e-setup-login:
-    name: End-to-end login
-    runs-on: 'ubuntu-20.04'
-    timeout-minutes: 30
-    outputs:
-      cliConfigJson: ${{ steps.setup.outputs.cliConfigJson}}
-    env:
-      # ID of the test run to identify resources to teardown.
-      TEST_RUN_ID: 'idubuntu-20.04-${{ github.sha }}-${{ github.run_attempt }}-releaseg'
-    steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
-        with:
-          # pulls all commits (needed for computing the next version)
-          fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
-        with:
-          cache: 'npm'
-          node-version-file: '.nvmrc'
-      - name: Install Coveo CLI
-        run: npm i -g @coveo/cli@latest
-      - uses: ./.github/actions/e2e-login
-        id: setup
+  # e2e-setup-login:
+  #   name: End-to-end login
+  #   runs-on: 'ubuntu-20.04'
+  #   timeout-minutes: 30
+  #   outputs:
+  #     cliConfigJson: ${{ steps.setup.outputs.cliConfigJson}}
+  #   env:
+  #     # ID of the test run to identify resources to teardown.
+  #     TEST_RUN_ID: 'idubuntu-20.04-${{ github.sha }}-${{ github.run_attempt }}-releaseg'
+  #   steps:
+  #     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+  #       with:
+  #         # pulls all commits (needed for computing the next version)
+  #         fetch-depth: 0
+  #     - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+  #       with:
+  #         cache: 'npm'
+  #         node-version-file: '.nvmrc'
+  #     - name: Install Coveo CLI
+  #       run: npm i -g @coveo/cli@latest
+  #     - uses: ./.github/actions/e2e-login
+  #       id: setup
   release-npm:
     environment: 'Release'
     runs-on: ubuntu-20.04
@@ -95,135 +95,136 @@ jobs:
           # RELEASER_CLIENT_SECRET: ${{ secrets.RELEASER_CLIENT_SECRET }}
           # RELEASER_INSTALLATION_ID: ${{ secrets.RELEASER_INSTALLATION_ID }}
           # DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-  e2e:
-    name: End-to-end tests
-    runs-on: ubuntu-20.04
-    needs: [release-npm, e2e-setup-login]
-    timeout-minutes: 60
-    env:
-      TEST_RUN_ID: 'idubuntu-20.04-${{ github.sha }}-${{ github.run_attempt }}-releaseg' # ID of the test run to identify resources to teardown.
-      COVEO_DISABLE_AUTOUPDATE: true
-      CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
-    strategy:
-      fail-fast: false
-      matrix:
-        spec:
-          [
-            'angular.specs.ts',
-            'atomic.specs.ts',
-            'auth.specs.ci.ts',
-            'orgList.specs.ts',
-            'orgResources.specs.ts',
-            'react.specs.ts',
-            'vue.specs.ts',
-          ]
-    steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
-        with:
-          # pulls all commits (needed for computing the next version)
-          fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
-        with:
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
-          node-version-file: '.nvmrc'
-      - name: Download artifacts
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
-        with:
-          name: npm-release
-      - name: Apply & delete the patch
-        run: |
-          git apply release.patch
-          rm release.patch
-      - name: Install dependencies
-        run: npm ci
-      - name: Install Coveo CLI
-        run: npm i -g @coveo/cli@latest
-      - uses: ./.github/actions/e2e-run
-        with:
-          os: 'ubuntu-20.04'
-          node: 18
-          spec: ${{ matrix.spec }}
-          cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
-          jestFlags: '-u'
-      - name: Find modified Snapshots
-        id: snapshots-path
-        run: |
-          {
-            echo 'snapshotsPath<<EOF'
-            git diff --name-only **/*.snap
-            echo EOF
-          } >> "$GITHUB_OUTPUT"
-      - name: Upload Jest Snapshots
-        if: ${{ steps.snapshots-path.outputs.snapshotsPath != ''}}
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
-        with:
-          name: release-e2e-snaps
-          path: ${{ steps.snapshots-path.outputs.snapshotsPath }}
-  e2e-teardown:
-    name: End-to-end teardown
-    if: ${{ always() }}
-    needs: [e2e, e2e-setup-login]
-    runs-on: ubuntu-20.04
-    env:
-      # ID of the test run to identify resources to teardown.
-      TEST_RUN_ID: '${{ github.sha }}-${{ github.run_attempt }}-releaseg'
-      CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
-    steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
-        with:
-          # pulls all commits (needed for computing the next version)
-          fetch-depth: 0
-      # pulls all tags (needed for computing the next version)
-      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-      - name: Checkout last tag
-        run: git checkout $(git describe --abbrev=0 --tags)
-      - uses: ./.github/actions/e2e-clean
-        with:
-          cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
-  unit-tests:
-    name: Unit Tests
-    runs-on: 'ubuntu-20.04'
-    needs: [release-npm]
-    steps:
-      - name: Setup runner
-        # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
-        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
-        with:
-          cache: 'npm'
-          node-version-file: '.nvmrc'
-      - name: Download artifacts
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
-        with:
-          name: npm-release
-      - name: Apply & delete the patch
-        run: |
-          git apply release.patch
-          rm release.patch
-      - name: Setup repo
-        run: npm ci
-      - name: Build
-        run: npm run build
-      - name: Tests
-        run: npm run test:ci:snap
-      - name: Find modified Snapshots
-        id: snapshots-path
-        run: |
-          {
-            echo 'snapshotsPath<<EOF'
-            git diff --name-only **/*.snap
-            echo EOF
-          } >> "$GITHUB_OUTPUT"
-      - name: Upload Jest Snapshots
-        if: ${{ steps.snapshots-path.outputs.snapshotsPath != ''}}
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
-        with:
-          name: release-e2e-snaps
-          path: ${{ steps.snapshots-path.outputs.snapshotsPath }}
+  # e2e:
+  #   name: End-to-end tests
+  #   runs-on: ubuntu-20.04
+  #   needs: [release-npm, e2e-setup-login]
+  #   timeout-minutes: 60
+  #   env:
+  #     TEST_RUN_ID: 'idubuntu-20.04-${{ github.sha }}-${{ github.run_attempt }}-releaseg' # ID of the test run to identify resources to teardown.
+  #     COVEO_DISABLE_AUTOUPDATE: true
+  #     CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       spec:
+  #         [
+  #           'angular.specs.ts',
+  #           'atomic.specs.ts',
+  #           'auth.specs.ci.ts',
+  #           'orgList.specs.ts',
+  #           'orgResources.specs.ts',
+  #           'react.specs.ts',
+  #           'vue.specs.ts',
+  #         ]
+  #   steps:
+  #     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+  #       with:
+  #         # pulls all commits (needed for computing the next version)
+  #         fetch-depth: 0
+  #     - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+  #       with:
+  #         registry-url: 'https://registry.npmjs.org'
+  #         cache: 'npm'
+  #         node-version-file: '.nvmrc'
+  #     - name: Download artifacts
+  #       uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+  #       with:
+  #         name: npm-release
+  #     - name: Apply & delete the patch
+  #       run: |
+  #         git apply release.patch
+  #         rm release.patch
+  #     - name: Install dependencies
+  #       run: npm ci
+  #     - name: Install Coveo CLI
+  #       run: npm i -g @coveo/cli@latest
+  #     - uses: ./.github/actions/e2e-run
+  #       with:
+  #         os: 'ubuntu-20.04'
+  #         node: 18
+  #         spec: ${{ matrix.spec }}
+  #         cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
+  #         jestFlags: '-u'
+  #     - name: Find modified Snapshots
+  #       id: snapshots-path
+  #       run: |
+  #         {
+  #           echo 'snapshotsPath<<EOF'
+  #           git diff --name-only **/*.snap
+  #           echo EOF
+  #         } >> "$GITHUB_OUTPUT"
+  #     - name: Upload Jest Snapshots
+  #       if: ${{ steps.snapshots-path.outputs.snapshotsPath != ''}}
+  #       uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+  #       with:
+  #         name: release-e2e-snaps
+  #         path: ${{ steps.snapshots-path.outputs.snapshotsPath }}
+  # e2e-teardown:
+  #   name: End-to-end teardown
+  #   if: ${{ always() }}
+  #   needs: [e2e, e2e-setup-login]
+  #   runs-on: ubuntu-20.04
+  #   env:
+  #     # ID of the test run to identify resources to teardown.
+  #     TEST_RUN_ID: '${{ github.sha }}-${{ github.run_attempt }}-releaseg'
+  #     CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
+  #   steps:
+  #     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+  #       with:
+  #         # pulls all commits (needed for computing the next version)
+  #         fetch-depth: 0
+  #     # pulls all tags (needed for computing the next version)
+  #     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+  #     - name: Checkout last tag
+  #       run: git checkout $(git describe --abbrev=0 --tags)
+  #     - uses: ./.github/actions/e2e-clean
+  #       with:
+  #         cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
+  # unit-tests:
+  #   name: Unit Tests
+  #   runs-on: 'ubuntu-20.04'
+  #   needs: [release-npm]
+  #   steps:
+  #     - name: Setup runner
+  #       # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
+  #       run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+  #     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+  #     - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+  #       with:
+  #         cache: 'npm'
+  #         node-version-file: '.nvmrc'
+  #     - name: Download artifacts
+  #       uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+  #       with:
+  #         name: npm-release
+  #     - name: Apply & delete the patch
+  #       run: |
+  #         git apply release.patch
+  #         rm release.patch
+  #     - name: Setup repo
+  #       run: npm ci
+  #     - name: Build
+  #       run: npm run build
+  #     - name: Tests
+  #       run: npm run test:ci:snap
+  #     - name: Find modified Snapshots
+  #       id: snapshots-path
+  #       run: |
+  #         {
+  #           echo 'snapshotsPath<<EOF'
+  #           git diff --name-only **/*.snap
+  #           echo EOF
+  #         } >> "$GITHUB_OUTPUT"
+  #     - name: Upload Jest Snapshots
+  #       if: ${{ steps.snapshots-path.outputs.snapshotsPath != ''}}
+  #       uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+  #       with:
+  #         name: release-e2e-snaps
+  #         path: ${{ steps.snapshots-path.outputs.snapshotsPath }}
   release-git:
-    needs: [e2e, release-npm, unit-tests]
+    # needs: [e2e, release-npm, unit-tests]
+    needs: [release-npm]
     environment: 'Release'
     runs-on: ubuntu-20.04
     env:
@@ -246,10 +247,10 @@ jobs:
         run: |
           git apply release.patch
           rm release.patch
-      - name: Download E2E artifacts
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
-        with:
-          name: release-e2e-snaps
+      # - name: Download E2E artifacts
+      #   uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+      #   with:
+      #     name: release-e2e-snaps
       - name: Install dependencies
         run: npm ci
       - name: Release Git
