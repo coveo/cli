@@ -29,25 +29,7 @@ The REST APIs are on the opposite side of the spectrum: they go straight to the 
 
 ## Installation
 
-### Option 1: Install via an Executable
-
-Download and run the executable for your operating system to install the latest available version of the CLI.
-
-Afterward, you can run `coveo update` at any time to update your CLI installation to the latest version.
-
-- Linux
-  - <https://static.cloud.coveo.com/cli/coveo-latest_amd64.deb>
-  - <https://static.cloud.coveo.com/cli/coveo-latest_armel.deb>
-- Mac
-  - <https://static.cloud.coveo.com/cli/coveo-latest-arm64.pkg>
-  - <https://static.cloud.coveo.com/cli/coveo-latest-x64.pkg>
-- Windows
-  - <https://static.cloud.coveo.com/cli/coveo-latest-x64.exe>
-  - <https://static.cloud.coveo.com/cli/coveo-latest-x86.exe>
-
-### Option 2: Install via NPM
-
-You can alternatively install the CLI globally via [npm](https://www.npmjs.com/package/@coveo/cli):
+You can install the CLI via [npm](https://www.npmjs.com/package/@coveo/cli):
 
 ```sh
 npm install -g @coveo/cli
