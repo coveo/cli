@@ -15,7 +15,6 @@
     "@oclif/core": "1.24.0",
     "@oclif/plugin-help": "5.1.23",
     "@oclif/plugin-plugins": "2.1.12",
-    "@oclif/plugin-update": "3.0.12",
     "@oclif/plugin-version": "1.1.4",
     "abortcontroller-polyfill": "^1.7.1",
     "archiver": "^5.3.0",
@@ -108,7 +107,6 @@
     "bin": "coveo",
     "plugins": [
       "@oclif/plugin-help",
-      "@oclif/plugin-update",
       "@oclif/plugin-version",
       "@oclif/plugin-plugins",
       "@coveo/cli-plugin-source"
