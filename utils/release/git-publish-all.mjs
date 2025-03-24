@@ -223,7 +223,10 @@ const commitMessage = dedent`
 const commit = await commitChanges(releaseNumber, commitMessage, octokit);
 
 // Add the tags locally...
-for (const tag of packagesReleased.split('\n').concat(gitNewTag)) {
+for (const tag of packagesReleased
+  .split('\n')
+  .filter((value) => !!value)
+  .concat(gitNewTag)) {
   await gitTag(tag, commit);
 }
 
