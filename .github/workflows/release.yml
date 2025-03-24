@@ -288,16 +288,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-latest
-            pack-command: ' macos'
-            for: 'macos install kit'
-          - os: windows-latest
-            pack-command: ' win'
-            for: 'windows install kit'
           - os: ubuntu-20.04
             pack-command: ' deb'
             for: 'linux install kit'
-
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
         with:
