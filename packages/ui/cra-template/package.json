@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cra-template",
-  "version": "1.38.19",
+  "version": "1.38.22",
   "scripts": {
     "lint": "prettier --check . && eslint .",
     "release:phase1": "npx -p=@coveord/release npm-publish",
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@coveo/headless": "latest",
-    "@coveo/search-token-server": "1.37.0",
+    "@coveo/search-token-server": "1.37.3",
     "@emotion/react": "11.10.8",
     "@emotion/styled": "11.10.8",
     "@mui/material": "5.12.2",
