@@ -83,7 +83,7 @@ jobs:
           git commit -m "patch"
           git format-patch HEAD^1 --output=release.patch
       - name: Upload artifacts
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: npm-release
           path: |
@@ -240,7 +240,7 @@ jobs:
           cache: 'npm'
           node-version-file: '.nvmrc'
       - name: Download NPM artifacts
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
         with:
           name: npm-release
       - name: Apply & delete the patch
@@ -400,7 +400,7 @@ jobs:
           mv "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64-signed.pkg" "coveo-v${{env.CLI_VERSION}}-${{env.commitSHA1}}-arm64.pkg"
           rm notarization-arm64.zip notarization-x64.zip
       - name: Upload binaries
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: release-binaries
           path: ./packages/cli/core/dist/**/*
@@ -422,11 +422,11 @@ jobs:
           cache: 'npm'
           node-version-file: '.nvmrc'
       - name: Download NPM artifacts
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
         with:
           name: npm-release
       - name: Download binaries artifacts
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
         with:
           name: release-binaries
           path: release-binaries
