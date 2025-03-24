@@ -30,7 +30,7 @@ import {createAppAuth} from '@octokit/auth-app';
 // @ts-ignore no dts is ok.
 import angularChangelogConvention from 'conventional-changelog-angular';
 import {dedent} from 'ts-dedent';
-import {readFileSync, writeFileSync} from 'fs';
+import {readFileSync, writeFileSync, existsSync} from 'fs';
 import {removeWriteAccessRestrictions} from './lock-master.mjs';
 import {spawnSync} from 'child_process';
 
@@ -196,9 +196,11 @@ if (commits.length > 0) {
 updateRootReadme();
 
 // Find all packages that have been released in this release.
-const packagesReleased = readFileSync('.git-message', {
-  encoding: 'utf-8',
-}).trim();
+const packagesReleased = existsSync('.git-message')
+  ? readFileSync('.git-message', {
+      encoding: 'utf-8',
+    }).trim()
+  : '';
 
 // Compile git commit message
 const commitMessage = dedent`
