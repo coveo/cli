@@ -23,7 +23,7 @@ $ npm install -g @coveo/cli
 $ coveo COMMAND
 running command...
 $ coveo (--version)
-@coveo/cli/3.2.11 linux-x64 node-v20.12.2
+@coveo/cli/3.2.12 linux-x64 node-v20.12.2
 $ coveo --help [COMMAND]
 USAGE
   $ coveo COMMAND
@@ -58,7 +58,24 @@ The main config file of the Coveo CLI is stored in a JSON file in `configDir`.
 
 <!-- commands -->
 
+- [`coveo atomic:cmp NAME`](#coveo-atomiccmp-name)
+- [`coveo atomic:component NAME`](#coveo-atomiccomponent-name)
+- [`coveo atomic:deploy`](#coveo-atomicdeploy)
+- [`coveo atomic:init NAME`](#coveo-atomicinit-name)
+- [`coveo auth:login`](#coveo-authlogin)
+- [`coveo auth:token`](#coveo-authtoken)
+- [`coveo config:get [KEY]`](#coveo-configget-key)
+- [`coveo config:set`](#coveo-configset)
 - [`coveo help [COMMAND]`](#coveo-help-command)
+- [`coveo org:create NAME`](#coveo-orgcreate-name)
+- [`coveo org:list`](#coveo-orglist)
+- [`coveo org:resources:list`](#coveo-orgresourceslist)
+- [`coveo org:resources:model:create`](#coveo-orgresourcesmodelcreate)
+- [`coveo org:resources:monitor SNAPSHOTID`](#coveo-orgresourcesmonitor-snapshotid)
+- [`coveo org:resources:preview`](#coveo-orgresourcespreview)
+- [`coveo org:resources:pull`](#coveo-orgresourcespull)
+- [`coveo org:resources:push`](#coveo-orgresourcespush)
+- [`coveo org:search:dump`](#coveo-orgsearchdump)
 - [`coveo plugins`](#coveo-plugins)
 - [`coveo plugins:install PLUGIN...`](#coveo-pluginsinstall-plugin)
 - [`coveo plugins:inspect PLUGIN...`](#coveo-pluginsinspect-plugin)
@@ -68,7 +85,274 @@ The main config file of the Coveo CLI is stored in a JSON file in `configDir`.
 - [`coveo plugins:uninstall PLUGIN...`](#coveo-pluginsuninstall-plugin-1)
 - [`coveo plugins:uninstall PLUGIN...`](#coveo-pluginsuninstall-plugin-2)
 - [`coveo plugins:update`](#coveo-pluginsupdate)
+- [`coveo ui:create:angular NAME`](#coveo-uicreateangular-name)
+- [`coveo ui:create:atomic NAME`](#coveo-uicreateatomic-name)
+- [`coveo ui:create:react NAME`](#coveo-uicreatereact-name)
+- [`coveo ui:create:vue NAME`](#coveo-uicreatevue-name)
+- [`coveo ui:deploy`](#coveo-uideploy)
+- [`coveo update`](#coveo-update)
 - [`coveo version`](#coveo-version)
+
+## `coveo atomic:cmp NAME`
+
+Scaffold a new custom component. Meant to be executed in a component library created using the `coveo atomic:init --lib` command, or in an npm project, or in an empty folder.
+
+```
+USAGE
+  $ coveo atomic:cmp [NAME] [--type page|result]
+
+ARGUMENTS
+  NAME  The name of your component.
+
+FLAGS
+  --type=<option>  The kind of component to initialize.
+                   <options: page|result>
+
+DESCRIPTION
+  Scaffold a new custom component. Meant to be executed in a component library created using the `coveo atomic:init
+  --lib` command, or in an npm project, or in an empty folder.
+
+ALIASES
+  $ coveo atomic:cmp
+
+EXAMPLES
+  $ coveo atomic:cmp --type=page myAwesomeComponent
+
+  $ coveo atomic:cmp --type=result mySuperResultComponent
+```
+
+## `coveo atomic:component NAME`
+
+Scaffold a new custom component. Meant to be executed in a component library created using the `coveo atomic:init --lib` command, or in an npm project, or in an empty folder.
+
+```
+USAGE
+  $ coveo atomic:component [NAME] [--type page|result]
+
+ARGUMENTS
+  NAME  The name of your component.
+
+FLAGS
+  --type=<option>  The kind of component to initialize.
+                   <options: page|result>
+
+DESCRIPTION
+  Scaffold a new custom component. Meant to be executed in a component library created using the `coveo atomic:init
+  --lib` command, or in an npm project, or in an empty folder.
+
+ALIASES
+  $ coveo atomic:cmp
+
+EXAMPLES
+  $ coveo atomic:component --type=page myAwesomeComponent
+
+  $ coveo atomic:component --type=result mySuperResultComponent
+```
+
+_See code: [src/commands/atomic/component.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/atomic/component.ts)_
+
+## `coveo atomic:deploy`
+
+Deploy your search application to the Coveo infrastructure.
+
+```
+USAGE
+  $ coveo atomic:deploy [-p <value>] [-c <value>] [-o <value>]
+
+FLAGS
+  -c, --config=coveo.deploy.json                     [default: coveo.deploy.json] The path to the deployment JSON
+                                                     configuration.
+  -o, --organization=targetorganizationg7dg3gd       The unique identifier of the organization where to deploy the
+                                                     hosted page. If not specified, the organization you are connected
+                                                     to will be used.
+  -p, --pageId=7944ff4a-9943-4999-a3f6-3e81a7f6fb0a  The existing ID of the target Hosted search page.
+
+DESCRIPTION
+  Deploy your search application to the Coveo infrastructure.
+
+  The target "config" must contain the following parameters:
+  {
+  "name": "The name of the hosted search page.",
+  "dir": "The directory of the hosted search page.",
+  "htmlEntryFile": {
+  "path": "The path to an HTML file containing the HTML markup of the hosted page."
+  },
+  "javascriptEntryFiles": [
+  {
+  "path": "The path to a bundled Javascript file.",
+  "isModule": "Whether the inline code should be treated as a JavaScript module. If this property is true, the type
+  property will be set to "module" on the script tag."
+  }
+  ],
+  "javascriptUrls": [
+  {
+  "path": "The URL of the JavaScript source file.",
+  "isModule": "Whether the inline code should be treated as a JavaScript module. If this property is true, the type
+  property will be set to "module" on the script tag."
+  }
+  ],
+  "cssEntryFiles": [
+  {
+  "path": "The path to a bundled CSS file."
+  }
+  ],
+  "cssUrls": [
+  {
+  "path": "The URL of the CSS stylesheet."
+  }
+  ]
+  }
+
+ALIASES
+  $ coveo atomic:deploy
+
+EXAMPLES
+  Create a new Hosted Page according to the configuration in the file "coveo.deploy.json"
+
+    $ coveo atomic:deploy
+
+  Update the Hosted Page whose ID is "7944ff4a-9943-4999-a3f6-3e81a7f6fb0a" according to the configuration in the file
+  "coveo.deploy.json"
+
+    $ coveo atomic:deploy -p 7944ff4a-9943-4999-a3f6-3e81a7f6fb0a
+
+  Create a new Hosted Page according to the configuration in the file located at "./configs/myconfig.json"
+
+    $ coveo atomic:deploy -c ./configs/myconfig.json
+```
+
+## `coveo atomic:init NAME`
+
+Scaffold a project to work with the Coveo Atomic Framework.
+
+```
+USAGE
+  $ coveo atomic:init [NAME] [--type app|application|lib|library]
+
+ARGUMENTS
+  NAME  The name of your project.
+
+FLAGS
+  --type=<option>  The kind of project to initialize. Use `app`/`application` to start a new Atomic search page project,
+                   and `lib`/`library` to start a custom component library.
+                   <options: app|application|lib|library>
+
+DESCRIPTION
+  Scaffold a project to work with the Coveo Atomic Framework.
+
+EXAMPLES
+  $ coveo atomic:init --type=app myAwesomeSearchPage
+
+  $ coveo atomic:init --type=lib myCustomAtomicComponentsLibrary
+```
+
+_See code: [src/commands/atomic/init.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/atomic/init.ts)_
+
+## `coveo auth:login`
+
+Log in to the Coveo Platform using the OAuth2 flow.
+
+```
+USAGE
+  $ coveo auth:login [-r US|us|EU|eu|AU|au|CA|ca] [-e dev|stg|hipaa|prod] [-o <value>]
+
+FLAGS
+  -e, --environment=<option>  [default: prod] The Coveo Platform environment to log in to.
+                              <options: dev|stg|hipaa|prod>
+  -o, --organization=myOrgID  The identifier of the organization to log in to. If not specified, the CLI logs you in to
+                              the first available organization. See also commands `config:get`, `config:set`, and
+                              `org:list`.
+  -r, --region=<option>       [default: us] The Coveo Platform region to log in to. See
+                              <https://docs.coveo.com/en/2976>.
+                              <options: US|us|EU|eu|AU|au|CA|ca>
+
+DESCRIPTION
+  Log in to the Coveo Platform using the OAuth2 flow.
+  Note: TCP port 32111 or 52296 must be available.
+
+EXAMPLES
+  $ coveo auth:login
+```
+
+_See code: [src/commands/auth/login.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/auth/login.ts)_
+
+## `coveo auth:token`
+
+Log in to the Coveo Platform using an access token.
+
+```
+USAGE
+  $ coveo auth:token [-r US|us|EU|eu|AU|au|CA|ca] [-e dev|stg|hipaa|prod] [-s]
+
+FLAGS
+  -e, --environment=<option>  [default: prod] The Coveo Platform environment to log in to.
+                              <options: dev|stg|hipaa|prod>
+  -r, --region=<option>       [default: us] The Coveo Platform region to log in to. See
+                              <https://docs.coveo.com/en/2976>.
+                              <options: US|us|EU|eu|AU|au|CA|ca>
+  -s, --[no-]stdin            Whether to read the token from stdin. Default to true when running in a CI environment.
+
+DESCRIPTION
+  Log in to the Coveo Platform using an access token.
+
+EXAMPLES
+  $ coveo auth:token
+```
+
+_See code: [src/commands/auth/token.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/auth/token.ts)_
+
+## `coveo config:get [KEY]`
+
+Display the current Coveo CLI configuration.
+
+```
+USAGE
+  $ coveo config:get [KEY]
+
+ARGUMENTS
+  KEY  The config key for which to show the value
+
+DESCRIPTION
+  Display the current Coveo CLI configuration.
+
+EXAMPLES
+  Get all the configuration values
+
+    $ coveo config:get
+
+  Get the organization to which you are connected
+
+    $ coveo config:get organization
+
+  Get the access token given to you by the Coveo Platform
+
+    $ coveo config:get accessToken
+```
+
+_See code: [src/commands/config/get.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/config/get.ts)_
+
+## `coveo config:set`
+
+Modify the current Coveo CLI configuration.
+
+```
+USAGE
+  $ coveo config:set [-o <value>]
+
+FLAGS
+  -o, --organization=myOrgID  The identifier of the organization inside which to perform operations. See
+                              <https://docs.coveo.com/en/1562/#organization-id-and-other-information>.
+
+DESCRIPTION
+  Modify the current Coveo CLI configuration.
+
+EXAMPLES
+  connect to a different organization
+
+    $ coveo config:set --organization myOrgId
+```
+
+_See code: [src/commands/config/set.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/config/set.ts)_
 
 ## `coveo help [COMMAND]`
 
@@ -89,6 +373,308 @@ DESCRIPTION
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.23/src/commands/help.ts)_
+
+## `coveo org:create NAME`
+
+Create a new test Coveo organization.
+
+```
+USAGE
+  $ coveo org:create [NAME] [-s]
+
+ARGUMENTS
+  NAME  The name to assign to the new organization.
+
+FLAGS
+  -s, --[no-]setDefaultOrganization  Set the created organization as the default one
+
+DESCRIPTION
+  Create a new test Coveo organization.
+```
+
+_See code: [src/commands/org/create.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/org/create.ts)_
+
+## `coveo org:list`
+
+List Coveo organizations.
+
+```
+USAGE
+  $ coveo org:list [--columns <value> | -x] [--sort <value>] [--filter <value>] [--output csv|json|yaml |  |
+    [--csv | --no-truncate]] [--no-header | ]
+
+FLAGS
+  -x, --extended     show extra columns
+  --columns=<value>  only show provided columns (comma-separated)
+  --csv              output is csv format [alias: --output=csv]
+  --filter=<value>   filter property by partial string matching, ex: name=foo
+  --no-header        hide table header from output
+  --no-truncate      do not truncate output to fit screen
+  --output=<option>  output in a more machine friendly format
+                     <options: csv|json|yaml>
+  --sort=<value>     property to sort by (prepend '-' for descending)
+
+DESCRIPTION
+  List Coveo organizations.
+```
+
+_See code: [src/commands/org/list.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/org/list.ts)_
+
+## `coveo org:resources:list`
+
+List available Snapshots in an organization
+
+```
+USAGE
+  $ coveo org:resources:list [--columns <value> | -x] [--sort <value>] [--filter <value>] [--output csv|json|yaml |  |
+    [--csv | --no-truncate]] [--no-header | ] [-o <value>]
+
+FLAGS
+  -o, --organization=targetorganizationg7dg3gd  The unique identifier of the organization containing the snapshots. If
+                                                not specified, the organization you are connected to will be used.
+  -x, --extended                                show extra columns
+  --columns=<value>                             only show provided columns (comma-separated)
+  --csv                                         output is csv format [alias: --output=csv]
+  --filter=<value>                              filter property by partial string matching, ex: name=foo
+  --no-header                                   hide table header from output
+  --no-truncate                                 do not truncate output to fit screen
+  --output=<option>                             output in a more machine friendly format
+                                                <options: csv|json|yaml>
+  --sort=<value>                                property to sort by (prepend '-' for descending)
+
+DESCRIPTION
+  List available Snapshots in an organization
+
+EXAMPLES
+  $ coveo org:resources:list -o=myOrgId
+```
+
+_See code: [src/commands/org/resources/list.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/org/resources/list.ts)_
+
+## `coveo org:resources:model:create`
+
+Create a Snapshot Pull Model
+
+```
+USAGE
+  $ coveo org:resources:model:create
+
+DESCRIPTION
+  Create a Snapshot Pull Model
+```
+
+_See code: [src/commands/org/resources/model/create.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/org/resources/model/create.ts)_
+
+## `coveo org:resources:monitor SNAPSHOTID`
+
+Monitor a Snapshot operation
+
+```
+USAGE
+  $ coveo org:resources:monitor [SNAPSHOTID] [-w <value>] [-o <value>]
+
+ARGUMENTS
+  SNAPSHOTID  The unique identifier of the target snapshot.
+
+FLAGS
+  -o, --organization=targetorganizationg7dg3gd  The unique identifier of the organization containing the snapshot. If
+                                                not specified, the organization you are connected to will be used.
+  -w, --wait=seconds                            [default: 60] The maximum number of seconds to wait before the commands
+                                                exits with a timeout error. A value of zero means that the command will
+                                                wait indefinitely.
+
+DESCRIPTION
+  Monitor a Snapshot operation
+
+EXAMPLES
+  Monitor the status of the "mysnapshotid" snapshot in the "myorgid" organization.
+
+    $ coveo org:resources:monitor --organization myorgid --snapshotId mysnapshotid
+```
+
+_See code: [src/commands/org/resources/monitor.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/org/resources/monitor.ts)_
+
+## `coveo org:resources:preview`
+
+Preview the changes that running `coveo org:resources:push` would cause
+
+```
+USAGE
+  $ coveo org:resources:preview [-w <value>] [-p none|light|detailed] [-o <value>] [-s <value> | ] [-d]
+
+FLAGS
+  -d, --showMissingResources                    Preview resources deletion when enabled
+  -o, --organization=targetorganizationg7dg3gd  The unique identifier of the organization where to preview the changes
+                                                If not specified, the organization you are connected to will be used.
+  -p, --previewLevel=(none|light|detailed)      [default: detailed] The verbosity of the preview. The `light` preview is
+                                                faster to generate but only contains a limited amount of information, as
+                                                opposed to the `detailed` preview that takes more time to generate, but
+                                                returns a diff representation of all the changes to apply.
+  -s, --snapshotId=<value>                      The unique identifier of the snapshot to pull. If not specified, a new
+                                                snapshot will be created. You can list available snapshot in your
+                                                organization with org:resources:list
+  -w, --wait=seconds                            [default: 60] The maximum number of seconds to wait before the commands
+                                                exits with a timeout error. A value of zero means that the command will
+                                                wait indefinitely.
+
+DESCRIPTION
+  Preview the changes that running `coveo org:resources:push` would cause
+
+EXAMPLES
+  $ coveo org:resources:preview
+
+  $ coveo org:resources:preview -o=myOrgId
+
+  $ coveo org:resources:preview -o=myOrgId -d
+```
+
+_See code: [src/commands/org/resources/preview.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/org/resources/preview.ts)_
+
+## `coveo org:resources:pull`
+
+Pull resources from an organization
+
+```
+USAGE
+  $ coveo org:resources:pull [-w <value>] [-o <value>] [-g] [-f] [-m <value> | [-s <value> | -r
+    EXTENSION|FEATURED_RESULT|FIELD|FILTER|INSIGHT_PANEL_CONFIGURATION|INSIGHT_PANEL_INTERFACE|CATALOG|CATALOG_CONFIG|MA
+    PPING|QUERY_PARAMETER|QUERY_PIPELINE|QUERY_PIPELINE_CONDITION|RANKING_EXPRESSION|RANKING_WEIGHT|SEARCH_PAGE|SECURITY
+    _PROVIDER|SOURCE|STOP_WORD|SUBSCRIPTION|THESAURUS|TRIGGER|RESULT_RANKING|STATEMENT_GROUP] |  | ]
+
+FLAGS
+  -f, --overwrite                               Overwrite resources directory if it exists.
+  -g, --[no-]git                                Whether to create a git repository when creating a new project.
+  -m, --model=path/to/snapshot.json             The path to a snapshot pull model. This flag is useful when you want to
+                                                include only specific resource items in your snapshot (e.g., a subset of
+                                                sources). Use the "org:resources:model:create" command to create a new
+                                                Snapshot Pull Model
+  -o, --organization=targetorganizationg7dg3gd  The unique identifier of the organization from which to pull the
+                                                resources If not specified, the organization you are connected to will
+                                                be used.
+  -r, --resourceTypes=type1 type2...            The resources types to pull from the organization.
+  -s, --snapshotId=<value>                      The unique identifier of the snapshot to pull. If not specified, a new
+                                                snapshot will be created. You can list available snapshot in your
+                                                organization with org:resources:list
+  -w, --wait=seconds                            [default: 60] The maximum number of seconds to wait before the commands
+                                                exits with a timeout error. A value of zero means that the command will
+                                                wait indefinitely.
+
+DESCRIPTION
+  Pull resources from an organization
+
+EXAMPLES
+  Pull all resources from the organization in which you are authenticated
+
+    $ coveo org:resources:pull
+
+  Pull all resources from the organization whose ID is "myorgid" and do not timeout
+
+    $ coveo org:resources:pull --organization myorgid --wait 0
+
+  Pull only the resources specified in the snapshot pull model
+
+    $ coveo org:resources:pull --model my/snapshot/pull/model.json
+
+  Pull all query pipelines and fields available in the organization
+
+    $ coveo org:resources:pull --resourceTypes QUERY_PIPELINE FIELD,
+```
+
+_See code: [src/commands/org/resources/pull.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/org/resources/pull.ts)_
+
+## `coveo org:resources:push`
+
+Preview, validate and deploy your changes to the destination org
+
+```
+USAGE
+  $ coveo org:resources:push [-w <value>] [-p none|light|detailed] [-o <value>] [--deleteMissingResources]
+
+FLAGS
+  -o, --organization=targetorganizationg7dg3gd  The unique identifier of the organization where to send the changes If
+                                                not specified, the organization you are connected to will be used.
+  -p, --previewLevel=(none|light|detailed)      [default: detailed] The verbosity of the preview. The `light` preview is
+                                                faster to generate but only contains a limited amount of information, as
+                                                opposed to the `detailed` preview that takes more time to generate, but
+                                                returns a diff representation of all the changes to apply.
+  -w, --wait=seconds                            [default: 60] The maximum number of seconds to wait before the commands
+                                                exits with a timeout error. A value of zero means that the command will
+                                                wait indefinitely.
+  --deleteMissingResources                      Delete missing resources when enabled
+
+DESCRIPTION
+  Preview, validate and deploy your changes to the destination org
+
+EXAMPLES
+  Preview, validate and deploy resources to the organization in which you are authenticated
+
+    $ coveo org:resources:push
+
+  Preview, validate and deploy resources to the organization whose ID is "myorgid"
+
+    $ coveo org:resources:push --organization myorgid
+
+  Validate and deploy resources without displaying a preview
+
+    $ coveo org:resources:push --previewLevel none
+
+  Preview, validate and deploy resources, but also delete from the organization all the resources that are not
+  available inside the "resources/" directory
+
+    $ coveo org:resources:push --deleteMissingResources
+```
+
+_See code: [src/commands/org/resources/push.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/org/resources/push.ts)_
+
+## `coveo org:search:dump`
+
+Dump the content of one or more sources in CSV format.
+
+```
+USAGE
+  $ coveo org:search:dump -s <value> [-p <value>] [-x <value>] [-d <value>] [-n <value>] [-f <value>] [-c <value>]
+
+FLAGS
+  -c, --chunkSize=<value>           [default: 10000] The maximum number of results to dump into each CSV file.
+  -d, --destination=<value>         [default: .] The folder in which to create the CSV files. The data dump will fail if
+                                    the folder doesn't exist.
+  -f, --additionalFilter=<value>    The additional search filter to apply while getting the content. See
+                                    <https://docs.coveo.com/en/1552>.
+  -n, --name=<value>                [default: indexdump] The base name to use when creating a new CSV file. If more than
+                                    one file is created, the CLI will append `_2`, `_3`, etc. to each new file name
+                                    after the first one.
+  -p, --pipeline=<value>            The name of the query pipeline through which to get content. If not specified, the
+                                    default query pipeline is used. See <https://docs.coveo.com/en/180>
+  -s, --source=mySourceName...      (required) The names (not the identifiers) of the sources from which to get content.
+  -x, --fieldsToExclude=<value>...  The fields to exclude from the data dump. If not specified, all fields are included.
+
+DESCRIPTION
+  Dump the content of one or more sources in CSV format.
+
+  Note: DictionnaryFields/Values are experimentally supported. In case of failure, you should exclude them using the
+  `-x` flag.
+
+EXAMPLES
+  Get content indexed into the "My Web Source" and "My Sitemap Source" sources.
+
+    $ coveo org:search:dump --source "My Web Source" "My Sitemap Source"
+
+  Get all the products coming from the "Search" pipeline that are either in the "Shorts" or "Jackets" category.
+
+    $ coveo org:search:dump --source Products --pipeline Search --additionalFilter "@cat_categories==(Shorts, \
+      Jackets)"
+
+  Get all the products coming from the "Search" pipeline that are in the "Shorts" category and have the color "Black".
+
+    $ coveo org:search:dump --source Products --pipeline Search --additionalFilter "@cat_categories==Shorts AND \
+      @color==Black"
+
+  Get all the documents without the fields "ec_description" and "ec_summary" in them.
+
+    $ coveo org:search:dump --fieldsToExclude ec_description ec_summary
+```
+
+_See code: [src/commands/org/search/dump.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/org/search/dump.ts)_
 
 ## `coveo plugins`
 
@@ -329,6 +915,191 @@ DESCRIPTION
 ```
 
 _See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.1.12/src/commands/plugins/update.ts)_
+
+## `coveo ui:create:angular NAME`
+
+Create a Coveo Headless-powered search page with the Angular web framework. See <https://docs.coveo.com/headless> and <https://angular.io/>.
+
+```
+USAGE
+  $ coveo ui:create:angular [NAME] [-v <value>] [-d]
+
+ARGUMENTS
+  NAME  The name of the application to create.
+
+FLAGS
+  -d, --defaults         Whether to automatically select the default value for all prompts that have a default value.
+  -v, --version=<value>  [default: 1.36.15] The version of @coveo/angular to use.
+
+DESCRIPTION
+  Create a Coveo Headless-powered search page with the Angular web framework. See <https://docs.coveo.com/headless> and
+  <https://angular.io/>.
+```
+
+_See code: [src/commands/ui/create/angular.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/ui/create/angular.ts)_
+
+## `coveo ui:create:atomic NAME`
+
+Create a Coveo Headless-powered search page with Coveo's own Atomic framework. See <https://docs.coveo.com/atomic> and <https://docs.coveo.com/headless>.
+
+```
+USAGE
+  $ coveo ui:create:atomic [NAME] [-v <value>] [-p <value>]
+
+ARGUMENTS
+  NAME  The name of the application to create.
+
+FLAGS
+  -p, --pageId=7944ff4a-9943-4999-a3f6-3e81a7f6fb0a  The hosted search page ID.
+  -v, --version=<value>                              [default: 1.40.8] The version of @coveo/create-atomic to use.
+
+DESCRIPTION
+  Create a Coveo Headless-powered search page with Coveo's own Atomic framework. See <https://docs.coveo.com/atomic> and
+  <https://docs.coveo.com/headless>.
+
+EXAMPLES
+  $ coveo ui:create:atomic myapp
+```
+
+_See code: [src/commands/ui/create/atomic.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/ui/create/atomic.ts)_
+
+## `coveo ui:create:react NAME`
+
+Create a Coveo Headless-powered search page with the React web framework. See <https://docs.coveo.com/headless> and <https://reactjs.org/>.
+
+```
+USAGE
+  $ coveo ui:create:react [NAME] [-v <value>]
+
+ARGUMENTS
+  NAME  The name of the application to create.
+
+FLAGS
+  -v, --version=<value>  [default: 1.38.24] Version of @coveo/cra-template to use.
+
+DESCRIPTION
+  Create a Coveo Headless-powered search page with the React web framework. See <https://docs.coveo.com/headless> and
+  <https://reactjs.org/>.
+
+EXAMPLES
+  $ coveo ui:create:react myapp
+
+  $ coveo ui:create:react --help
+```
+
+_See code: [src/commands/ui/create/react.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/ui/create/react.ts)_
+
+## `coveo ui:create:vue NAME`
+
+Create a Coveo Headless-powered search page with the Vue3 and Vite. See <https://docs.coveo.com/headless> and <https://vuejs.org/>.
+
+```
+USAGE
+  $ coveo ui:create:vue [NAME] [-v <value>]
+
+ARGUMENTS
+  NAME  The name of the application to create.
+
+FLAGS
+  -v, --version=<value>  [default: 1.4.6] The version of @coveo/create-headless-vue to use.
+
+DESCRIPTION
+  Create a Coveo Headless-powered search page with the Vue3 and Vite. See <https://docs.coveo.com/headless> and
+  <https://vuejs.org/>.
+
+EXAMPLES
+  $ coveo ui:create:vue myVueProject
+
+  $ coveo ui:create:vue-v=1.2.3 myVueProject
+```
+
+_See code: [src/commands/ui/create/vue.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/ui/create/vue.ts)_
+
+## `coveo ui:deploy`
+
+Deploy your search application to the Coveo infrastructure.
+
+```
+USAGE
+  $ coveo ui:deploy [-p <value>] [-c <value>] [-o <value>]
+
+FLAGS
+  -c, --config=coveo.deploy.json                     [default: coveo.deploy.json] The path to the deployment JSON
+                                                     configuration.
+  -o, --organization=targetorganizationg7dg3gd       The unique identifier of the organization where to deploy the
+                                                     hosted page. If not specified, the organization you are connected
+                                                     to will be used.
+  -p, --pageId=7944ff4a-9943-4999-a3f6-3e81a7f6fb0a  The existing ID of the target Hosted search page.
+
+DESCRIPTION
+  Deploy your search application to the Coveo infrastructure.
+
+  The target "config" must contain the following parameters:
+  {
+  "name": "The name of the hosted search page.",
+  "dir": "The directory of the hosted search page.",
+  "htmlEntryFile": {
+  "path": "The path to an HTML file containing the HTML markup of the hosted page."
+  },
+  "javascriptEntryFiles": [
+  {
+  "path": "The path to a bundled Javascript file.",
+  "isModule": "Whether the inline code should be treated as a JavaScript module. If this property is true, the type
+  property will be set to "module" on the script tag."
+  }
+  ],
+  "javascriptUrls": [
+  {
+  "path": "The URL of the JavaScript source file.",
+  "isModule": "Whether the inline code should be treated as a JavaScript module. If this property is true, the type
+  property will be set to "module" on the script tag."
+  }
+  ],
+  "cssEntryFiles": [
+  {
+  "path": "The path to a bundled CSS file."
+  }
+  ],
+  "cssUrls": [
+  {
+  "path": "The URL of the CSS stylesheet."
+  }
+  ]
+  }
+
+ALIASES
+  $ coveo atomic:deploy
+
+EXAMPLES
+  Create a new Hosted Page according to the configuration in the file "coveo.deploy.json"
+
+    $ coveo ui:deploy
+
+  Update the Hosted Page whose ID is "7944ff4a-9943-4999-a3f6-3e81a7f6fb0a" according to the configuration in the file
+  "coveo.deploy.json"
+
+    $ coveo ui:deploy -p 7944ff4a-9943-4999-a3f6-3e81a7f6fb0a
+
+  Create a new Hosted Page according to the configuration in the file located at "./configs/myconfig.json"
+
+    $ coveo ui:deploy -c ./configs/myconfig.json
+```
+
+_See code: [src/commands/ui/deploy.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/ui/deploy.ts)_
+
+## `coveo update`
+
+Deprecated
+
+```
+USAGE
+  $ coveo update
+
+DESCRIPTION
+  Deprecated
+```
+
+_See code: [src/commands/update.ts](https://github.com/coveo/cli/blob/@coveo/cli@3.2.12/packages/cli/core/src/commands/update.ts)_
 
 ## `coveo version`
 
