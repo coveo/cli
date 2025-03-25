@@ -1,6 +1,7 @@
 {
   "enabled": true,
   "extends": [
+    "github>coveo/renovate-presets",
     ":semanticPrefixFixDepsChoreOthers",
     "helpers:pinGitHubActionDigests",
     "schedule:earlyMondays"
