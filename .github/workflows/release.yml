@@ -62,6 +62,8 @@ jobs:
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
+      - name: Ensure master is tracked
+        run: git branch master origin/master
       - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
         with:
           registry-url: 'https://registry.npmjs.org'
