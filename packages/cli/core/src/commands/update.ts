@@ -6,7 +6,6 @@ export default class Create extends CLICommand {
   public async run() {
     this.log(
       `The update command is deprecated. If you are using a binary install, please uninstall the Coveo CLI and reinstall it using npm. If you are already using an npm install, please update the Coveo CLI using npm.`
-`
     );
   }
 }
