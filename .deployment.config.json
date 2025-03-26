@@ -1,32 +1,43 @@
 {
+  "deployment_config_version": 19,
   "product": "cli",
   "team_name": "DX",
   "general": {
     "team_jenkins": "searchuibuilds",
     "notifications": {
-      "slack_channels": ["#searchuibuilds"]
+      "slack_channels": [
+        "#searchuibuilds"
+      ]
     },
     "environments_order": {
       "sequential": [
         "dev",
         "stg",
         {
-          "concurrent": ["prd", "hip"]
+          "concurrent": [
+            "prd",
+            "hip"
+          ]
         }
       ]
     },
-    "stg": {
-      "start_environment_automatically": true
-    },
-    "prd": {
-      "start_environment_automatically": true
-    },
-    "hip": {
-      "start_environment_automatically": true
-    },
     "aws_regions": {
-      "sequential": ["FIRST_MAIN_REGION"]
-    }
+      "sequential": [
+        "FIRST_MAIN_REGION"
+      ]
+    },
+    "overrides": [
+      {
+        "environments": [
+          "stg",
+          "prd",
+          "hip"
+        ],
+        "content": {
+          "start_environment_automatically": true
+        }
+      }
+    ]
   },
   "ordered_phases": [
     {
@@ -39,12 +50,19 @@
         "bucket": "{terraform.infra.infra.bucket_binaries}",
         "directory": "proda/StaticCDN/cli",
         "source": "./artifacts",
-        "hip": {
-          "disabled": true
-        },
         "parameters": {
           "acl": "public-read"
-        }
+        },
+        "overrides": [
+          {
+            "environments": [
+              "hip"
+            ],
+            "content": {
+              "disabled": true
+            }
+          }
+        ]
       }
     },
     {
@@ -52,31 +70,32 @@
       "team_jenkins": {
         "job_name": "cli-cloudfront-invalidation",
         "disabled": true,
-        "prd": {
-          "disabled": false
-        }
+        "overrides": [
+          {
+            "environments": [
+              "prd"
+            ],
+            "content": {
+              "disabled": false
+            }
+          }
+        ]
       }
     }
   ],
-  "snyk": {
-    "no_dependencies": true,
-    "no_container_images": true
-  },
-  "snyk_code": {
-    "no_scan": true
-  },
-  "observatory": {
-    "no_endpoint": true
-  },
-  "deployment_config_version": 2,
-  "package_rollout": {
-    "only_consider_changesets_after": "591040c6568cce03b031c3059cd4d4de87de8d7c",
-    "jira_issues_discovery": {
-      "stop_after_first_issue": true,
-      "branch_name": false,
-      "commit_message": false,
-      "pull_request_title": true,
-      "pull_request_description": true
+  "certifiers": {
+    "observatory": {
+      "no_endpoint": true
+    },
+    "package_rollout": {
+      "only_consider_changesets_after": "591040c6568cce03b031c3059cd4d4de87de8d7c",
+      "jira_issues_discovery": {
+        "stop_after_first_issue": true,
+        "branch_name": false,
+        "commit_message": false,
+        "pull_request_title": true,
+        "pull_request_description": true
+      }
     }
   }
 }
