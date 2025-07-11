@@ -58,13 +58,13 @@ jobs:
     outputs:
       shouldReleaseCli: $${{steps.release.outputs.shouldReleaseCli}}
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
       - name: Ensure master is tracked
         run: git branch master origin/master
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3
         with:
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
@@ -232,17 +232,17 @@ jobs:
     env:
       GITHUB_CREDENTIALS: ${{ secrets.CLI_RELEASE }} # Required to lock master
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3
         with:
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
           node-version-file: '.nvmrc'
       - name: Download NPM artifacts
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: npm-release
       - name: Apply & delete the patch
@@ -294,17 +294,17 @@ jobs:
             pack-command: ' deb'
             for: 'linux install kit'
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           # pulls all commits (needed for finding the @coveo/cli version to release)
           fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3
         with:
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
           node-version-file: '.nvmrc'
       - name: Download artifacts
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: npm-release
       - name: Apply & delete the patch
@@ -407,21 +407,21 @@ jobs:
     env:
       GITHUB_CREDENTIALS: ${{ secrets.CLI_RELEASE }} # Required to lock master
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3
         with:
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
           node-version-file: '.nvmrc'
       - name: Download NPM artifacts
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: npm-release
       - name: Download binaries artifacts
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: release-binaries
           path: release-binaries
@@ -443,7 +443,7 @@ jobs:
           RELEASER_INSTALLATION_ID: ${{ secrets.RELEASER_INSTALLATION_ID }}
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
       - name: Upload binaries
-        uses: svenstaro/upload-release-action@7319e4733ec7a184d739a6f412c40ffc339b69c7 # 2.5.0
+        uses: svenstaro/upload-release-action@81c65b7cd4de9b2570615ce3aad67a41de5b1a13 # 2.11.2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./release-binaries/**/*
