@@ -208,14 +208,14 @@ jobs:
     name: Pre-release
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     # needs: [e2e-report, lint, unit-tests]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     environment: prerelease
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           # pulls all commits (needed for computing the next version)
           fetch-depth: 0
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           registry-url: 'https://registry.npmjs.org'
           node-version-file: '.nvmrc'
