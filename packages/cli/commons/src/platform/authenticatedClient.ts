@@ -72,9 +72,7 @@ export class AuthenticatedClient {
           },
         },
       }),
-      privileges: [
-        {targetDomain: 'IMPERSONATE', targetId: '*', owner: 'SEARCH_API'},
-      ],
+      apiKeyTemplateId: 'AuthenticatedSearch'
     });
   }
 
