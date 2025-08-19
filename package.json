@@ -99,7 +99,6 @@
     "packages/*",
     "packages/ui/*",
     "packages/ui/atomic/*",
-    "packages/ui/atomic/*/template/*",
     "packages/ui/vue/create-headless-vue",
     "packages/ui/vue/create-headless-vue/template",
     "packages/cli/*",
