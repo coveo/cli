@@ -12,9 +12,6 @@ const verdaccioRegistry = 'http://127.0.0.1:4873';
 
 const verdaccioedPackages = [
   '@coveo/atomic-component-health-check',
-  '@coveo/create-atomic-component',
-  '@coveo/create-atomic-component-project',
-  '@coveo/create-atomic-result-component',
   '@coveo/angular',
   '@coveo/create-headless-vue',
   '@coveo/cra-template',
