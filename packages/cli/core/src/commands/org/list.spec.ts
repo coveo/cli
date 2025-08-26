@@ -23,6 +23,9 @@ describe('org:list', () => {
     publicContentOnly: false,
     readOnly: false,
     type: 'TRIAL',
+    configuration: {
+      servingExperimentAllowed: false,
+    },
   });
 
   const doMockPreconditions = function () {

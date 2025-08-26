@@ -164,9 +164,9 @@ describe('AuthenticatedClient', () => {
               },
             },
           },
-          privileges: [
-            {owner: 'SEARCH_API', targetDomain: 'IMPERSONATE', targetId: '*'},
-          ],
+        }),
+        expect.objectContaining({
+          apiKeyTemplateId: 'AuthenticatedSearch',
         })
       );
     }
