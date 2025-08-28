@@ -9,6 +9,8 @@ import {
   atomicLibPreconditions,
   createAtomicApp,
   createAtomicLib,
+  atomicAppInitializerPackage,
+  atomicLibInitializerPackage,
 } from '../../lib/atomic/createAtomicProject';
 
 export default class AtomicInit extends CLICommand {
@@ -25,6 +27,11 @@ export default class AtomicInit extends CLICommand {
       description:
         'The kind of project to initialize. Use `app`/`application` to start a new Atomic search page project, and `lib`/`library` to start a custom component library.',
       options: ['app', 'application', 'lib', 'library'],
+    }),
+    version: Flags.string({
+      char: 'v',
+      description: `The version of ${atomicAppInitializerPackage} or ${atomicLibInitializerPackage}  to use.`,
+      default: 'latest',
     }),
   };
 
@@ -62,16 +69,19 @@ export default class AtomicInit extends CLICommand {
   }
 
   @Before(...atomicLibPreconditions)
-  private createAtomicLib(projectName: string) {
-    return createAtomicLib({projectName});
+  private async createAtomicLib(projectName: string) {
+    const {flags} = await this.parse(AtomicInit);
+    return createAtomicLib({projectName, initializerVersion: flags.version});
   }
 
   @Before(...atomicAppPreconditions)
   private async createAtomicApp(projectName: string) {
     const cfg = this.configuration.get();
+    const {flags} = await this.parse(AtomicInit);
     return createAtomicApp({
       projectName,
       cfg,
+      initializerVersion: flags.version,
     });
   }
 
