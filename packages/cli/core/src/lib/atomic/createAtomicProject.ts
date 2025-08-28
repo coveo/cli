@@ -33,7 +33,7 @@ export const atomicAppInitializerPackage = '@coveo/create-atomic';
 export const atomicLibInitializerPackage =
   '@coveo/create-atomic-component-project';
 
-const supportedNodeVersions = '^18.18.1 || ^20.9.0';
+const supportedNodeVersions = '^22.0.0';
 
 export const atomicLibPreconditions = [
   IsNodeVersionInRange(supportedNodeVersions),
