@@ -14,7 +14,7 @@ env:
 jobs:
   close-snap:
     name: 'Close Jest Snap PR'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Delete the branch
