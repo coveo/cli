@@ -21,9 +21,6 @@ import {
   IsNodeVersionInRange,
 } from '../decorators/preconditions';
 import {getPackageVersion} from '../utils/misc';
-import npf from '@coveo/cli-commons/npm/npf';
-import {SubprocessError} from '../errors/subprocessError';
-import {isErrorLike} from '../utils/errorSchemas';
 import {promptForSearchHub} from '../ui/shared';
 
 interface CreateAppOptions {
@@ -36,10 +33,7 @@ export const atomicAppInitializerPackage = '@coveo/create-atomic';
 export const atomicLibInitializerPackage =
   '@coveo/create-atomic-component-project';
 
-const supportedNodeVersions = '^18.18.1 || ^20.9.0';
-
-const transformPackageNameToNpmInitializer = (packageName: string) =>
-  packageName.replace('/create-', '/');
+const supportedNodeVersions = '^18.18.1 || ^20.9.0 || ^22.0.0';
 
 export const atomicLibPreconditions = [
   IsNodeVersionInRange(supportedNodeVersions),
@@ -95,24 +89,18 @@ export async function createAtomicApp(options: CreateAppOptions) {
 
 interface CreateLibOptions {
   projectName: string;
+  initializerVersion?: string;
 }
 
 export async function createAtomicLib(options: CreateLibOptions) {
   const projectDirectory = resolve(options.projectName);
 
   mkdirSync(projectDirectory, {recursive: true});
-  const initializer = `${atomicLibInitializerPackage}@${getPackageVersion(
-    atomicLibInitializerPackage
-  )}`;
+  const initializer = `${atomicLibInitializerPackage}@${
+    options.initializerVersion ?? getPackageVersion(atomicLibInitializerPackage)
+  }`;
 
-  const forkedProcess = npf(initializer, [], {
-    stdio: 'inherit',
+  return spawnProcess(appendCmdIfWindows`npx`, [initializer], {
     cwd: projectDirectory,
   });
-  try {
-    await handleForkedProcess(forkedProcess);
-  } catch (error) {
-    if (isErrorLike(error))
-      throw new SubprocessError(error.name, error.message);
-  }
 }

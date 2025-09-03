@@ -2,12 +2,9 @@ import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {UnknownError} from '@coveo/cli-commons/errors/unknownError';
 import {Flags} from '@oclif/core';
 import inquirer from 'inquirer';
-import npf from '@coveo/cli-commons/npm/npf';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
-import {getPackageVersion} from '../../lib/utils/misc';
-import {handleForkedProcess} from '../../lib/utils/process';
-import {SubprocessError} from '../../lib/errors/subprocessError';
-import {isAggregatedErrorLike} from '../../lib/utils/errorSchemas';
+import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
+import {spawnProcess} from '../../lib/utils/process';
 
 export default class AtomicInit extends CLICommand {
   public static description =
@@ -24,6 +21,11 @@ export default class AtomicInit extends CLICommand {
       description: 'The kind of component to initialize.',
       options: ['page', 'result'],
     }),
+    version: Flags.string({
+      char: 'v',
+      description: `The version of @coveo/create-atomic-component or @coveo/create-atomic-result-component to use.`,
+      default: 'latest',
+    }),
   };
 
   public static args = [
@@ -33,20 +35,9 @@ export default class AtomicInit extends CLICommand {
   @Trackable()
   public async run(): Promise<void> {
     const {initializer, name} = await this.getSpawnOptions();
-    const forkedProcess = npf(initializer, [name], {stdio: 'inherit'});
-    try {
-      await handleForkedProcess(forkedProcess);
-    } catch (error) {
-      if (isAggregatedErrorLike(error)) {
-        const stderrMessageParts = [error.message];
-        stderrMessageParts.push(
-          ...error.errors.map((suberror) => ` • ${suberror}`)
-        );
-        throw new SubprocessError(error.message, stderrMessageParts.join('\n'));
-      } else {
-        throw error;
-      }
-    }
+
+    const cliArgs: string[] = [`${initializer}`, `${name}`];
+    await spawnProcess(appendCmdIfWindows`npx`, cliArgs);
   }
 
   private async getSpawnOptions() {
@@ -57,9 +48,7 @@ export default class AtomicInit extends CLICommand {
 
     // TODO CDX-1340: Refactor the replace into a well named utils.
     return {
-      initializer: `${initializerPackage}@${getPackageVersion(
-        initializerPackage
-      )}`,
+      initializer: `${initializerPackage}@${flags.version}`,
       name: args.name,
     };
   }

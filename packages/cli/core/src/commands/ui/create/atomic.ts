@@ -3,7 +3,6 @@ import {Flags} from '@oclif/core';
 import {Preconditions} from '@coveo/cli-commons/preconditions/index';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {Config} from '@coveo/cli-commons/config/config';
-import {getPackageVersion} from '../../../lib/utils/misc';
 import {
   atomicAppInitializerPackage,
   atomicAppPreconditions,
@@ -25,7 +24,7 @@ export default class Atomic extends CLICommand {
     version: Flags.string({
       char: 'v',
       description: `The version of ${atomicAppInitializerPackage} to use.`,
-      default: getPackageVersion(atomicAppInitializerPackage) || 'latest',
+      default: 'latest',
     }),
     pageId: Flags.string({
       char: 'p',

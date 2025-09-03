@@ -1,7 +1,0 @@
-{
-  "name": "create-atomic-result-component",
-  "root": "packages/ui/atomic/create-atomic-result-component",
-  "sourceRoot": "packages/ui/atomic/create-atomic-result-component/template",
-  "projectType": "application",
-  "implicitDependencies": ["create-atomic-result-component-template"]
-}
