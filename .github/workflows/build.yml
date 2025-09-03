@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
-    name: Build
+    name: Unit Tests
     runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
@@ -19,6 +19,9 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
+      - name: Tests
+        run: npm test
+
   prerelease:
     timeout-minutes: 15
     name: Pre-release
