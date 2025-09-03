@@ -17,7 +17,7 @@ describe('appendCmdIfWindows', () => {
       value: 'win32',
     });
 
-    return expect(appendCmdIfWindows`foo`).toEqual('foo.cmd');
+    return expect(appendCmdIfWindows`foo`).toEqual('foo.ps1');
   });
 
   it('should append cmd if process.platform is not win32', () => {
