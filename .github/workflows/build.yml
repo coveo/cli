@@ -5,210 +5,26 @@ on:
       - master
   pull_request:
   workflow_dispatch:
-env:
-  # Platform environment to log into for the e2e tests.
-  PLATFORM_ENV: 'stg'
-  # Username used to log into the organization whose ID is stored in the ORG_ID variable
-  PLATFORM_USER_NAME: ${{ secrets.PLATFORM_USER_NAME }}
-  # Password used to log into the organization whose ID is stored in the ORG_ID variable
-  PLATFORM_USER_PASSWORD: ${{ secrets.PLATFORM_USER_PASSWORD }}
-  # API key to delete all the API keys created by the e2e tests
-  PLATFORM_API_KEY: ${{ secrets.PLATFORM_API_KEY }}
-  # ID of the organization to log into for the e2e tests
-  ORG_ID: ${{ secrets.ORG_ID }}
-  # Passphrase use to encode/decode cliConfig
-  E2E_TOKEN_PASSPHRASE: ${{ secrets.E2E_TOKEN_PASSPHRASE }}
 jobs:
-  # lint:
-  #   name: Lint
-  #   runs-on: 'ubuntu-20.04'
-  #   steps:
-  #     - name: Setup runner
-  #       if: ${{matrix.os == 'ubuntu-20.04'}}
-  #       # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
-  #       run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-  #     - name: Setup runner
-  #       if: ${{matrix.os == 'windows-latest'}}
-  #       run: |
-  #         git config --global core.autocrlf false
-  #         git config --global core.eol lf
-  #         npm i -g npm@10.8.2
-  #     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
-  #     - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
-  #       with:
-  #         cache: 'npm'
-  #         node-version-file: '.nvmrc'
-  #     - name: Setup repo
-  #       run: npm ci
-  #     - name: Check linting
-  #       run: npm run lint
-  # unit-tests:
-  #   name: Unit Tests
-  #   runs-on: ${{matrix.os}}
-  #   strategy:
-  #     fail-fast: true
-  #     matrix:
-  #       os: ['ubuntu-20.04', 'windows-latest']
-  #   steps:
-  #     - name: Setup runner
-  #       if: ${{matrix.os == 'ubuntu-20.04'}}
-  #       # Ensure we can use as many file watcher as we want. see https://github.com/facebook/create-react-app/blob/master/docusaurus/docs/troubleshooting.md#npm-start-fail-due-to-watch-error
-  #       run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-  #     - name: Setup runner
-  #       if: ${{matrix.os == 'windows-latest'}}
-  #       run: |
-  #         git config --global core.autocrlf false
-  #         git config --global core.eol lf
-  #         npm i -g npm@10.8.2
-  #     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
-  #     - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
-  #       with:
-  #         cache: 'npm'
-  #         node-version-file: '.nvmrc'
-  #     - name: Setup repo
-  #       run: npm ci
-  #     - name: Build
-  #       run: npm run build
-  #     - name: Tests
-  #       run: npm run test
-  # e2e-setup-login:
-  #   timeout-minutes: 15
-  #   name: End-to-end login
-  #   runs-on: 'ubuntu-20.04'
-  #   outputs:
-  #     cliConfigJson: ${{ steps.setup.outputs.cliConfigJson}}
-  #   env:
-  #     # ID of the test run to identify resources to teardown.
-  #     TEST_RUN_ID: 'id${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}g'
-  #   steps:
-  #     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
-  #     - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
-  #       with:
-  #         cache: 'npm'
-  #         node-version-file: '.nvmrc'
-  #     - uses: ./.github/actions/e2e-login
-  #       id: setup
-  # e2e-setup-verdaccio:
-  #   strategy:
-  #     matrix:
-  #       os: ['ubuntu-20.04', 'windows-latest']
-  #   name: End-to-end publish packages
-  #   runs-on: ${{matrix.os}}
-  #   steps:
-  #     - name: Setup runner
-  #       if: ${{matrix.os == 'windows-latest'}}
-  #       run: |
-  #         git config --global core.autocrlf false
-  #         git config --global core.eol lf
-  #         npm i -g npm@10.8.2
-  #     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
-  #       with:
-  #         # pulls all commits (needed for computing the next version)
-  #         fetch-depth: 0
-  #     - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
-  #       with:
-  #         cache: 'npm'
-  #         node-version-file: '.nvmrc'
-  #     - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3
-  #       if: ${{matrix.os == 'ubuntu-20.04'}}
-  #       with:
-  #         path: packages/cli-e2e/verdaccio
-  #         key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-  #     - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3
-  #       if: ${{matrix.os == 'windows-latest'}}
-  #       with:
-  #         path: packages\cli-e2e\verdaccio
-  #         key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-  #     - run: npm ci
-  #     - name: Build
-  #       run: npm run build
-  #     - name: Setup E2E tests
-  #       run: node -r ts-node/register/transpile-only packages/cli-e2e/setup/ci-verdaccio.ts
-  #     - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
-  #       if: cancelled() || failure() || success()
-  #       with:
-  #         name: ${{matrix.os}}-verdaccio-publish-artifacts
-  #         path: ./packages/cli-e2e/artifacts
-  # e2e:
-  #   name: End-to-end tests
-  #   runs-on: ${{matrix.os}}
-  #   needs: [e2e-setup-login, e2e-setup-verdaccio]
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       os: ['ubuntu-20.04', 'windows-latest']
-  #       node: ['18', '20']
-  #       spec:
-  #         [
-  #           'angular.specs.ts',
-  #           'atomic.specs.ts',
-  #           'auth.specs.ci.ts',
-  #           'deploy.specs.ts',
-  #           'orgList.specs.ts',
-  #           'orgResources.specs.ts',
-  #           'react.specs.ts',
-  #           'vue.specs.ts',
-  #         ]
-  #       # TODO: fix auth spec with windows
-  #       exclude:
-  #         - os: windows-latest
-  #           spec: auth.specs.ci.ts
-  #   env:
-  #     # ID of the test run to identify resources to teardown.
-  #     TEST_RUN_ID: 'id${{ matrix.os }}-${{ matrix.node }}-${{ github.sha }}-${{ github.run_attempt }}g'
-  #     COVEO_DISABLE_AUTOUPDATE: true
-  #     CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
-  #   steps:
-  #     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
-  #     - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3
-  #       if: ${{matrix.os == 'ubuntu-20.04'}}
-  #       with:
-  #         path: packages/cli-e2e/verdaccio
-  #         key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-  #         restore-keys: verdaccio-${{matrix.os}}-${{ github.sha }}
-  #     - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3
-  #       if: ${{matrix.os == 'windows-latest'}}
-  #       with:
-  #         path: packages\cli-e2e\verdaccio
-  #         key: verdaccio-${{matrix.os}}-${{ github.sha }}-${{ github.run_attempt }}
-  #         restore-keys: verdaccio-${{matrix.os}}-${{ github.sha }}
-  #     - uses: ./.github/actions/e2e-run
-  #       with:
-  #         os: ${{ matrix.os }}
-  #         node: ${{ matrix.node }}
-  #         spec: ${{ matrix.spec }}
-  #         cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
-  #         npmRegistry: 'http://127.0.0.1:4873'
-  # e2e-teardown:
-  #   timeout-minutes: 15
-  #   name: End-to-end teardown
-  #   if: ${{ always() }}
-  #   needs: [e2e, e2e-setup-login]
-  #   runs-on: ubuntu-20.04
-  #   env:
-  #     # ID of the test run to identify resources to teardown.
-  #     TEST_RUN_ID: '${{ github.sha }}-${{ github.run_attempt }}g'
-  #     CLI_CONFIG_JSON: ${{needs.e2e-setup-login.outputs.cliConfigJson}}
-  #   steps:
-  #     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
-  #     - uses: ./.github/actions/e2e-clean
-  #       with:
-  #         cliConfigJson: ${{ env.CLI_CONFIG_JSON }}
-  # e2e-report:
-  #   name: End-to-end status reporter
-  #   if: ${{ always() }}
-  #   needs: e2e
-  #   runs-on: ubuntu-20.04
-  #   steps:
-  #     - name: Check e2e matrix status
-  #       if: ${{ needs.e2e.result != 'success' }}
-  #       run: exit 1
+  build:
+    name: Build
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+        with:
+          cache: 'npm'
+          node-version-file: '.nvmrc'
+      - name: Setup repo
+        run: npm ci
+      - name: Build
+        run: npm run build
   prerelease:
     timeout-minutes: 15
     name: Pre-release
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     # needs: [e2e-report, lint, unit-tests]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     environment: prerelease
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
