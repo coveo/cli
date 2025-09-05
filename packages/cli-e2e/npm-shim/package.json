@@ -10,6 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "npm": "^9.0.0"
+    "npm": "^11.0.0"
   }
 }

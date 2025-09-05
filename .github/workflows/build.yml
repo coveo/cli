@@ -10,7 +10,7 @@ jobs:
     name: Lint
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
       - uses: ./.github/actions/setup-node
       - name: Lint
         run: npm run lint
@@ -18,7 +18,7 @@ jobs:
     name: Unit Tests
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
       - uses: ./.github/actions/setup-node
       - name: Build
         run: npm run build
