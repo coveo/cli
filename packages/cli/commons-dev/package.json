@@ -22,12 +22,12 @@
     }
   },
   "dependencies": {
-    "fancy-test": "2.0.21",
+    "fancy-test": "3.0.16",
     "tslib": "2.5.0"
   },
   "devDependencies": {
-    "@types/jest": "29.5.1",
-    "typescript": "4.9.5"
+    "@types/jest": "30.0.0",
+    "typescript": "5.9.3"
   },
   "scripts": {
     "build": "tsc -b tsconfig.build.json",

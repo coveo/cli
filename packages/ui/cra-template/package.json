@@ -20,7 +20,7 @@
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": "^18.18.1 || ^20.9.0"
+    "node": "^18.18.1 || ^20.9.0 || ^22.0.0"
   },
   "files": [
     "template",
@@ -34,24 +34,24 @@
     "@coveo/search-token-server": "1.37.6",
     "@emotion/react": "11.10.8",
     "@emotion/styled": "11.10.8",
-    "@mui/material": "5.12.2",
-    "@testing-library/jest-dom": "5.16.5",
-    "@testing-library/react": "14.0.0",
+    "@mui/material": "7.3.4",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.0",
     "@testing-library/user-event": "^14.0.0",
-    "@types/jest": "29.5.1",
+    "@types/jest": "30.0.0",
     "@types/node": "18.16.3",
-    "@types/react": "18.2.0",
-    "@types/react-dom": "18.2.1",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
     "@types/react-router-dom": "5.3.3",
-    "concurrently": "7.6.0",
-    "dotenv": "16.0.3",
-    "eslint": "8.39.0",
+    "concurrently": "9.2.1",
+    "dotenv": "17.2.3",
+    "eslint": "9.37.0",
     "get-port": "5.1.1",
-    "prettier": "2.8.8",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-router-dom": "6.11.0",
-    "typescript": "4.9.5"
+    "prettier": "3.6.2",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-router-dom": "7.9.4",
+    "typescript": "5.9.3"
   },
   "publishConfig": {
     "access": "public"

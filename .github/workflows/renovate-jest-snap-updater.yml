@@ -34,10 +34,10 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.eol lf
           npm i -g npm@10.8.2
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6
         with:
           cache: 'npm'
           node-version-file: '.nvmrc'
@@ -61,7 +61,7 @@ jobs:
           git commit -am 'chore:refresh jest snap j:cdx-227'
           git push -f
       - name: Open PR
-        uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         continue-on-error: true
         env:
           DISPLAY_TITLE: ${{ github.event.workflow_run.display_title }}
