@@ -73,6 +73,11 @@ describe('createAtomicProject', () => {
     });
   });
 
+  // Helper function to extract written package.json content from mock
+  const getWrittenPackageJson = () => {
+    return JSON.parse(mockedWriteFileSync.mock.calls[0][1].toString().trim());
+  };
+
   describe('when Node version is < 20.19.0', () => {
     beforeEach(() => {
       // Mock Node version to 20.18.0
@@ -109,9 +114,7 @@ describe('createAtomicProject', () => {
         'utf8'
       );
 
-      const writtenContent = JSON.parse(
-        mockedWriteFileSync.mock.calls[0][1].toString().trim()
-      );
+      const writtenContent = getWrittenPackageJson();
       expect(writtenContent.scripts.start).toContain(
         '--experimental-detect-module'
       );
@@ -214,9 +217,7 @@ describe('createAtomicProject', () => {
         cfg: mockConfig,
       });
 
-      const writtenContent = JSON.parse(
-        mockedWriteFileSync.mock.calls[0][1].toString().trim()
-      );
+      const writtenContent = getWrittenPackageJson();
       expect(writtenContent.scripts.start).toBe(
         'node --experimental-detect-module ./node_modules/.bin/stencil build --dev --watch --serve'
       );
@@ -236,9 +237,7 @@ describe('createAtomicProject', () => {
         cfg: mockConfig,
       });
 
-      const writtenContent = JSON.parse(
-        mockedWriteFileSync.mock.calls[0][1].toString().trim()
-      );
+      const writtenContent = getWrittenPackageJson();
       expect(writtenContent.scripts.build).toBe(
         'node --experimental-detect-module ./node_modules/.bin/stencil build && node deployment.esbuild.mjs'
       );
@@ -260,9 +259,7 @@ describe('createAtomicProject', () => {
         cfg: mockConfig,
       });
 
-      const writtenContent = JSON.parse(
-        mockedWriteFileSync.mock.calls[0][1].toString().trim()
-      );
+      const writtenContent = getWrittenPackageJson();
       expect(writtenContent.scripts.start).toBe('echo "no stencil here"');
       expect(writtenContent.scripts.build).toBe('tsc');
       expect(writtenContent.scripts.test).toBe('jest');

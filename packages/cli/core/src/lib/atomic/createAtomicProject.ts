@@ -63,6 +63,10 @@ function shouldAddExperimentalDetectModuleFlag(): boolean {
   return lt(nodeVersion, '20.19.0');
 }
 
+// Command prefix to use for stencil when Node < 20.19.0
+const STENCIL_COMMAND_PREFIX =
+  'node --experimental-detect-module ./node_modules/.bin/stencil';
+
 /**
  * Modifies the package.json scripts to add --experimental-detect-module flag
  * to the build and start commands for Node versions < 20.19.0.
@@ -82,7 +86,7 @@ function patchPackageJsonScripts(projectPath: string): void {
       ) {
         packageJson.scripts.start = packageJson.scripts.start.replace(
           /^\s*stencil/,
-          'node --experimental-detect-module ./node_modules/.bin/stencil'
+          STENCIL_COMMAND_PREFIX
         );
       }
 
@@ -93,7 +97,7 @@ function patchPackageJsonScripts(projectPath: string): void {
       ) {
         packageJson.scripts.build = packageJson.scripts.build.replace(
           /^\s*stencil/,
-          'node --experimental-detect-module ./node_modules/.bin/stencil'
+          STENCIL_COMMAND_PREFIX
         );
       }
 
@@ -106,7 +110,9 @@ function patchPackageJsonScripts(projectPath: string): void {
   } catch (error) {
     // If we can't modify the package.json, we'll just log a warning but not fail
     // The user can manually add the flag if needed
-    console.warn(`Warning: Could not modify package.json scripts: ${error}`);
+    console.warn(
+      `Warning: Could not modify package.json scripts for project '${projectPath}': ${error}. You may need to manually add '--experimental-detect-module' to your stencil commands.`
+    );
   }
 }
 
