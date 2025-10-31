@@ -1,10 +1,10 @@
-import {mkdirSync} from 'node:fs';
-import {resolve} from 'node:path';
+import {mkdirSync, readFileSync, writeFileSync} from 'node:fs';
+import {resolve, join} from 'node:path';
 import {Configuration} from '@coveo/cli-commons/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
-import {handleForkedProcess, spawnProcess} from '../utils/process';
+import {spawnProcess} from '../utils/process';
 import {
   IsAuthenticated,
   AuthenticationType,
@@ -22,6 +22,7 @@ import {
 } from '../decorators/preconditions';
 import {getPackageVersion} from '../utils/misc';
 import {promptForSearchHub} from '../ui/shared';
+import {lt} from 'semver';
 
 interface CreateAppOptions {
   initializerVersion?: string;
@@ -50,6 +51,64 @@ export const atomicAppPreconditions = [
     listSearchHubsPrivilege
   ),
 ];
+
+/**
+ * Checks if the current Node.js version requires the --experimental-detect-module flag.
+ * Node versions < 20.19.0 have stricter ES module handling that requires this flag
+ * when using Stencil with ES module packages.
+ */
+function shouldAddExperimentalDetectModuleFlag(): boolean {
+  const nodeVersion = process.version;
+  // Check if Node version is less than 20.19.0
+  return lt(nodeVersion, '20.19.0');
+}
+
+/**
+ * Modifies the package.json scripts to add --experimental-detect-module flag
+ * to the build and start commands for Node versions < 20.19.0.
+ */
+function patchPackageJsonScripts(projectPath: string): void {
+  const packageJsonPath = join(projectPath, 'package.json');
+
+  try {
+    const packageJsonContent = readFileSync(packageJsonPath, 'utf8');
+    const packageJson = JSON.parse(packageJsonContent);
+
+    if (packageJson.scripts) {
+      // Update the start script - only if it starts with 'stencil' command
+      if (
+        packageJson.scripts.start &&
+        /^\s*stencil\b/.test(packageJson.scripts.start)
+      ) {
+        packageJson.scripts.start = packageJson.scripts.start.replace(
+          /^\s*stencil/,
+          'node --experimental-detect-module ./node_modules/.bin/stencil'
+        );
+      }
+
+      // Update the build script - only if it starts with 'stencil' command
+      if (
+        packageJson.scripts.build &&
+        /^\s*stencil\b/.test(packageJson.scripts.build)
+      ) {
+        packageJson.scripts.build = packageJson.scripts.build.replace(
+          /^\s*stencil/,
+          'node --experimental-detect-module ./node_modules/.bin/stencil'
+        );
+      }
+
+      writeFileSync(
+        packageJsonPath,
+        JSON.stringify(packageJson, null, 2) + '\n',
+        'utf8'
+      );
+    }
+  } catch (error) {
+    // If we can't modify the package.json, we'll just log a warning but not fail
+    // The user can manually add the flag if needed
+    console.warn(`Warning: Could not modify package.json scripts: ${error}`);
+  }
+}
 
 export async function createAtomicApp(options: CreateAppOptions) {
   const authenticatedClient = new AuthenticatedClient();
@@ -84,7 +143,16 @@ export async function createAtomicApp(options: CreateAppOptions) {
     cliArgs.push('--page-id', options.pageId);
   }
 
-  return spawnProcess(appendCmdIfWindows`npx`, cliArgs);
+  const exitCode = await spawnProcess(appendCmdIfWindows`npx`, cliArgs);
+
+  // If the project was created successfully and Node version < 20.19.0,
+  // patch the package.json to add the --experimental-detect-module flag
+  if (exitCode === 0 && shouldAddExperimentalDetectModuleFlag()) {
+    const projectPath = resolve(options.projectName);
+    patchPackageJsonScripts(projectPath);
+  }
+
+  return exitCode;
 }
 
 interface CreateLibOptions {
