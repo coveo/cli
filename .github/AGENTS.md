@@ -25,6 +25,7 @@ This document provides detailed technical context that AI agents need to effecti
 ## Project Overview
 
 **Coveo CLI** is a command-line interface for interacting with the Coveo platform. It provides:
+
 - Project scaffolding for Coveo Headless and Atomic implementations
 - Organization and resource management
 - Source management for Coveo Push API
@@ -78,7 +79,7 @@ core (depends on commons, commons-dev)
 - **cli-commons**: Shared production code (config management, platform API client, error classes, utilities)
 - **core**: Main CLI application (commands, CLI-specific logic, user interactions)
 - **source**: Commands for managing Coveo Push API sources
-- **ui/***: Project templates and scaffolding for UI frameworks
+- **ui/\***: Project templates and scaffolding for UI frameworks
 
 ---
 
@@ -86,14 +87,14 @@ core (depends on commons, commons-dev)
 
 ### Core Technologies
 
-| Technology | Purpose | Version |
-|------------|---------|---------|
-| **TypeScript** | Primary language | 4.9.5 |
-| **Node.js** | Runtime | ≥18 |
-| **npm** | Package manager | ≥8.5.4 |
-| **oclif** | CLI framework | 3.x |
-| **Jest** | Testing framework | Latest |
-| **nx** | Monorepo orchestration | Latest |
+| Technology     | Purpose                | Version |
+| -------------- | ---------------------- | ------- |
+| **TypeScript** | Primary language       | 4.9.5   |
+| **Node.js**    | Runtime                | ≥18     |
+| **npm**        | Package manager        | ≥8.5.4  |
+| **oclif**      | CLI framework          | 3.x     |
+| **Jest**       | Testing framework      | Latest  |
+| **nx**         | Monorepo orchestration | Latest  |
 
 ### Key Libraries
 
@@ -227,7 +228,9 @@ import {OAuth} from '../../lib/oauth/oauth';
 const mockedOAuth = jest.mocked(OAuth);
 
 // In test
-mockedOAuth.mockImplementation(() => ({ /* mock */ }));
+mockedOAuth.mockImplementation(() => ({
+  /* mock */
+}));
 ```
 
 ### Running Tests
@@ -321,15 +324,19 @@ export default class MyCommand extends CLICommand {
 ### TypeScript Patterns
 
 **Async/await over promises**:
+
 ```typescript
 // Good
 const result = await someAsyncOperation();
 
 // Avoid
-someAsyncOperation().then(result => { /* ... */ });
+someAsyncOperation().then((result) => {
+  /* ... */
+});
 ```
 
 **Strict typing**:
+
 ```typescript
 // Good - explicit types
 const config: Config = new Config(this.config.configDir);
@@ -339,6 +346,7 @@ const config = getSomeConfig();
 ```
 
 **Error handling**:
+
 ```typescript
 import {InternalError} from '@coveo/cli-commons/errors/internalError';
 
@@ -360,6 +368,7 @@ spawnSync(appendCmdIfWindows`npm`, ['install'], {
 ```
 
 **Path handling**:
+
 ```typescript
 // Always use node:path module
 import {join, resolve} from 'node:path';
@@ -388,12 +397,7 @@ Uses **npm workspaces** for package management:
 
 ```json
 {
-  "workspaces": [
-    "packages/*",
-    "packages/ui/*",
-    "packages/cli/*",
-    "utils/*"
-  ]
+  "workspaces": ["packages/*", "packages/ui/*", "packages/cli/*", "utils/*"]
 }
 ```
 
@@ -434,14 +438,12 @@ Packages use **project references** for incremental builds:
 // tsconfig.build.json
 {
   "extends": "./tsconfig.json",
-  "references": [
-    {"path": "../commons-dev"},
-    {"path": "../commons"}
-  ]
+  "references": [{"path": "../commons-dev"}, {"path": "../commons"}]
 }
 ```
 
 This enables:
+
 - Incremental compilation
 - Proper build order
 - Type checking across packages
@@ -537,12 +539,14 @@ public async run() {
 ### Build Issues
 
 **Stale TypeScript compilation**:
+
 ```bash
 rm -rf packages/*/lib
 npm run build
 ```
 
 **nx cache issues**:
+
 ```bash
 nx reset
 npm run build
@@ -551,6 +555,7 @@ npm run build
 ### Dependency Issues
 
 **Broken workspace links**:
+
 ```bash
 rm -rf node_modules package-lock.json
 rm -rf packages/*/node_modules
@@ -558,6 +563,7 @@ npm install
 ```
 
 **Outdated dependencies**:
+
 ```bash
 npm update --workspace=@coveo/cli
 ```
@@ -565,33 +571,39 @@ npm update --workspace=@coveo/cli
 ### Test Issues
 
 **Stale mocks**:
+
 - Ensure `jest.clearAllMocks()` in `beforeEach`
 - Check mock setup order
 
 **Tests passing locally but failing in CI**:
+
 - Check for race conditions in async tests
 - Verify no reliance on local state or file system
 - Ensure mocks are properly isolated
 
 ### TypeScript Errors
 
-**Cannot find module '@coveo/cli-commons/*'**:
+**Cannot find module '@coveo/cli-commons/\*'**:
+
 - Build the dependency first: `npm run build --workspace=@coveo/cli-commons`
 - Check `tsconfig.json` path mappings
 
 **Module resolution issues**:
+
 - Clear and rebuild: `rm -rf packages/*/lib && npm run build`
 - Check TypeScript project references in `tsconfig.build.json`
 
 ### Dev Mode Issues
 
 **Command not found in dev mode**:
+
 ```bash
 # Make sure you're running from repo root
 ./packages/cli/core/bin/dev --help
 ```
 
 **Changes not reflected**:
+
 - Dev mode uses ts-node, should hot-compile
 - If issues persist, try full rebuild: `npm run build`
 
@@ -601,25 +613,25 @@ npm update --workspace=@coveo/cli
 
 ### File Locations
 
-| Purpose | Location |
-|---------|----------|
-| CLI commands | `packages/cli/core/src/commands/` |
-| Shared utilities | `packages/cli/commons/src/` |
-| Test helpers | `packages/cli/commons-dev/src/testUtils/` |
-| E2E tests | `packages/cli-e2e/` |
-| Build scripts | `scripts/` |
-| Configuration | Root `package.json`, `nx.json`, `tsconfig.base.json` |
+| Purpose          | Location                                             |
+| ---------------- | ---------------------------------------------------- |
+| CLI commands     | `packages/cli/core/src/commands/`                    |
+| Shared utilities | `packages/cli/commons/src/`                          |
+| Test helpers     | `packages/cli/commons-dev/src/testUtils/`            |
+| E2E tests        | `packages/cli-e2e/`                                  |
+| Build scripts    | `scripts/`                                           |
+| Configuration    | Root `package.json`, `nx.json`, `tsconfig.base.json` |
 
 ### Common Tasks
 
-| Task | Command |
-|------|---------|
-| Run CLI locally | `./packages/cli/core/bin/dev [command]` |
-| Build all | `npm run build` |
-| Test all | `npm run test` |
-| Lint | `npm run lint` |
-| Format | `npm run pre-commit` (runs lint-staged) |
-| Clean | `rm -rf packages/*/lib && npm run build` |
+| Task            | Command                                  |
+| --------------- | ---------------------------------------- |
+| Run CLI locally | `./packages/cli/core/bin/dev [command]`  |
+| Build all       | `npm run build`                          |
+| Test all        | `npm run test`                           |
+| Lint            | `npm run lint`                           |
+| Format          | `npm run pre-commit` (runs lint-staged)  |
+| Clean           | `rm -rf packages/*/lib && npm run build` |
 
 ### Key Concepts
 

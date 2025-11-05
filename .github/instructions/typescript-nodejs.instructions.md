@@ -1,6 +1,6 @@
 ---
 applyTo: ['**/*.ts', '**/*.js', '**/*.mjs']
-description: "TypeScript and Node.js best practices for the Coveo CLI monorepo, including oclif CLI patterns, monorepo structure, and Windows PowerShell considerations."
+description: 'TypeScript and Node.js best practices for the Coveo CLI monorepo, including oclif CLI patterns, monorepo structure, and Windows PowerShell considerations.'
 ---
 
 # TypeScript and Node.js Guidelines for Coveo CLI
@@ -8,6 +8,7 @@ description: "TypeScript and Node.js best practices for the Coveo CLI monorepo, 
 ## Project Structure
 
 This is a **monorepo** managed with:
+
 - **npm workspaces** for package management
 - **nx** for build orchestration and dependency graph
 - **oclif** framework for CLI commands
@@ -106,6 +107,7 @@ public async run() {
 ### Flags Pattern
 
 Common flag patterns are exported from `lib/flags/`:
+
 - `withRegion()` - Platform region selection
 - `withEnvironment()` - Environment selection (prod, dev, etc.)
 
@@ -126,6 +128,7 @@ The CLI runs on Windows, macOS, and Linux. On **Windows**, the CLI uses **PowerS
 ### Key Patterns
 
 1. **Append `.ps1` extension on Windows**:
+
 ```typescript
 import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
 
@@ -135,6 +138,7 @@ spawnSync(appendCmdIfWindows`npm`, ['install'], {
 ```
 
 2. **Check platform before using shell-specific features**:
+
 ```typescript
 const shell = process.platform === 'win32' ? 'powershell' : undefined;
 ```
@@ -144,6 +148,7 @@ const shell = process.platform === 'win32' ? 'powershell' : undefined;
 ### PowerShell Considerations
 
 When writing code that spawns processes on Windows:
+
 - **Commands** need `.ps1` or `.cmd` extension on Windows
 - **Shell option** should be set to `'powershell'` on Windows
 - **Escape sequences** differ - test on Windows when using special characters
@@ -154,6 +159,7 @@ When writing code that spawns processes on Windows:
 ### Imports
 
 1. **Order**: Node built-ins, external packages, internal packages, relative imports
+
 ```typescript
 // Node built-ins
 import {join} from 'node:path';
@@ -172,6 +178,7 @@ import {OAuth} from '../../lib/oauth/oauth';
 ```
 
 2. **Use node: protocol**: For Node.js built-in modules, use `node:` prefix
+
 ```typescript
 import {fork} from 'node:child_process';
 import {resolve} from 'node:path';
@@ -180,6 +187,7 @@ import {resolve} from 'node:path';
 ### Error Handling
 
 Use custom error classes from `@coveo/cli-commons/errors/`:
+
 ```typescript
 import {InternalError} from '@coveo/cli-commons/errors/internalError';
 
@@ -197,6 +205,7 @@ throw new InternalError(`Descriptive error message`);
 ### File Location
 
 Tests are co-located with implementation files:
+
 ```
 src/commands/auth/login.ts
 src/commands/auth/login.spec.ts
@@ -225,6 +234,7 @@ describe('my:command', () => {
 ### Mocking Pattern
 
 Use `jest.mock()` at the top of test files:
+
 ```typescript
 jest.mock('../../lib/oauth/oauth');
 jest.mock('@coveo/cli-commons/config/config');
@@ -233,7 +243,9 @@ const mockedOAuth = jest.mocked(OAuth);
 const mockedConfig = jest.mocked(Config);
 
 // In test:
-mockedConfig.mockImplementation(() => ({ /* mock */ }));
+mockedConfig.mockImplementation(() => ({
+  /* mock */
+}));
 ```
 
 ## Package.json Exports

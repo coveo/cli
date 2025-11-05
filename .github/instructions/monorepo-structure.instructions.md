@@ -1,6 +1,6 @@
 ---
 applyTo: ['**/package.json', '**/tsconfig*.json', 'nx.json']
-description: "Monorepo structure, workspace management, and dependency topology for the Coveo CLI."
+description: 'Monorepo structure, workspace management, and dependency topology for the Coveo CLI.'
 ---
 
 # Monorepo Structure and Workspace Management
@@ -8,6 +8,7 @@ description: "Monorepo structure, workspace management, and dependency topology 
 ## Overview
 
 The Coveo CLI is a **monorepo** containing multiple related packages managed as a single repository. This approach allows:
+
 - Shared tooling and configuration
 - Coordinated versioning across packages
 - Easier cross-package refactoring
@@ -49,6 +50,7 @@ npm run lint   # Runs: nx run-many --target=lint --all
 ```
 
 **nx** automatically:
+
 - Determines build order based on dependencies
 - Caches build outputs
 - Runs tasks in parallel when possible
@@ -99,6 +101,7 @@ core (depends on commons and commons-dev)
 ### UI Packages (`packages/ui/`)
 
 Framework-specific templates and components:
+
 - Create search page scaffolding
 - Provide example implementations
 - Support Headless and Atomic libraries
@@ -106,6 +109,7 @@ Framework-specific templates and components:
 ### Utility Packages (`utils/`)
 
 Build-time and development utilities:
+
 - Not published to npm
 - Support development and release processes
 - Shared across the monorepo
@@ -148,6 +152,7 @@ npm run nx:graph  # Generates topology.json
 ```
 
 This graph determines:
+
 - Build order (topological sort)
 - Which packages need rebuilding when dependencies change
 - Release order during publishing
@@ -157,6 +162,7 @@ This graph determines:
 ### Root package.json
 
 Contains:
+
 - Workspace definitions
 - Shared dev dependencies
 - Monorepo-wide scripts
@@ -189,6 +195,7 @@ Each package has:
 ```
 
 **Key fields**:
+
 - `exports`: Defines public API surface
 - `files`: What gets published to npm
 - `scripts`: Package-specific tasks that nx runs
@@ -203,14 +210,12 @@ Uses **TypeScript Project References** for incremental builds:
 // tsconfig.build.json
 {
   "extends": "./tsconfig.json",
-  "references": [
-    {"path": "../commons-dev"},
-    {"path": "../commons"}
-  ]
+  "references": [{"path": "../commons-dev"}, {"path": "../commons"}]
 }
 ```
 
 This tells TypeScript:
+
 - Build dependencies first
 - Use compiled outputs from dependencies
 - Enable incremental compilation
@@ -232,6 +237,7 @@ Development uses path mappings for imports:
 ```
 
 This allows imports like:
+
 ```typescript
 import {Config} from '@coveo/cli-commons/config/config';
 ```
@@ -302,6 +308,7 @@ nx reset
 ### Version Synchronization
 
 During release:
+
 1. Determine which packages changed
 2. Calculate new version for each (based on commits)
 3. Update internal dependency versions
@@ -356,6 +363,7 @@ nx determines build order automatically:
 ### Incremental Builds
 
 TypeScript project references enable incremental compilation:
+
 - Only changed packages rebuild
 - Dependencies' compiled outputs are reused
 - Significantly faster than full rebuilds

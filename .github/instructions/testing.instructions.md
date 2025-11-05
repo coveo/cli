@@ -1,6 +1,6 @@
 ---
 applyTo: ['**/*.spec.ts', '**/*.test.ts']
-description: "Testing patterns, conventions, and best practices for the Coveo CLI monorepo."
+description: 'Testing patterns, conventions, and best practices for the Coveo CLI monorepo.'
 ---
 
 # Testing Guidelines for Coveo CLI
@@ -129,7 +129,7 @@ describe('auth:login', () => {
         ({
           getAllOrgsUserHasAccessTo: mockListOrgs,
           getUserHasAccessToOrg: jest.fn().mockResolvedValue(true),
-        } as unknown as AuthenticatedClient)
+        }) as unknown as AuthenticatedClient
     );
 
     mockedConfig.mockImplementation(
@@ -137,7 +137,7 @@ describe('auth:login', () => {
         ({
           get: mockConfigGet,
           set: mockConfigSet,
-        } as unknown as Config)
+        }) as unknown as Config
     );
   });
 
@@ -292,10 +292,7 @@ test
   .catch(/Error: Invalid flag/)
   .it('should fail with error message');
 
-test
-  .command(['my:command'])
-  .exit(1)
-  .it('should exit with code 1 on failure');
+test.command(['my:command']).exit(1).it('should exit with code 1 on failure');
 ```
 
 ## Testing Cross-Platform Behavior
@@ -374,6 +371,7 @@ it('should match snapshot', () => {
 ```
 
 Update snapshots with:
+
 ```bash
 npm run test -- -u
 ```
@@ -383,6 +381,7 @@ npm run test -- -u
 ### What to Test
 
 **Do test**:
+
 - Command logic and flag handling
 - Error conditions and edge cases
 - Integration between components
@@ -390,6 +389,7 @@ npm run test -- -u
 - User-facing output and messages
 
 **Don't test**:
+
 - Third-party libraries (they have their own tests)
 - Simple getters/setters without logic
 - Generated code or boilerplate
