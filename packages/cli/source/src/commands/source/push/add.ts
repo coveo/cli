@@ -29,7 +29,7 @@ import {AddDisplay} from '../../../lib/addDisplay';
 
 export default class SourcePushAdd extends CLICommand {
   public static description =
-    'Index a JSON document into a Coveo Push source. See https://github.com/coveo/cli/wiki/Pushing-JSON-Files-with-the-Coveo-CLI for more information.';
+    'Index a JSON document into a Coveo Push source. See [Pushing JSON Files with the Coveo CLI](https://github.com/coveo/cli/wiki/Pushing-JSON-Files-with-the-Coveo-CLI) for more information.';
 
   public static flags = {
     ...withFiles(),
