@@ -37,7 +37,7 @@ export default class AtomicInit extends CLICommand {
     const {initializer, name} = await this.getSpawnOptions();
 
     // Security: Validate component name to prevent command injection
-    // Component names must be lowercase alphanumeric with hyphens only
+    // Component names must be alphanumeric with hyphens only
     if (!/^[a-z0-9-]+$/i.test(name)) {
       this.error(
         'Invalid component name. Component names must contain only letters, numbers, and hyphens.',
