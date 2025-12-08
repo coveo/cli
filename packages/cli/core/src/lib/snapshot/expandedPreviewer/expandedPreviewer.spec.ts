@@ -261,7 +261,10 @@ describe('ExpandedPreviewer', () => {
 
       expect(mockedProject).toHaveBeenCalledWith(resolve(previewPath));
       expect(mockedSnapshotFactory.createFromOrg).toHaveBeenCalledWith(
-        fakeReport.resourceOperationResults,
+        {
+          EXTENSION: ['*'],
+          FIELD: ['*'],
+        },
         'someorg'
       );
       expect(mockedSnapshotDownload).toHaveBeenCalled();
@@ -276,7 +279,7 @@ describe('ExpandedPreviewer', () => {
       expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
         2,
         'git',
-        ['config', 'user.email', '"cli@coveo.com"'],
+        ['config', 'user.email', 'cli@coveo.com'],
         {
           cwd: previewPath,
           stdio: 'ignore',
@@ -285,7 +288,7 @@ describe('ExpandedPreviewer', () => {
       expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
         3,
         'git',
-        ['config', 'user.name', '"Coveo CLI"'],
+        ['config', 'user.name', 'Coveo CLI'],
         {
           cwd: previewPath,
           stdio: 'ignore',
@@ -303,7 +306,7 @@ describe('ExpandedPreviewer', () => {
       expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
         5,
         'git',
-        ['commit', '--message="someorg currently"'],
+        ['commit', '--message=someorg currently'],
         {
           cwd: previewPath,
           stdio: 'ignore',
@@ -331,7 +334,7 @@ describe('ExpandedPreviewer', () => {
 
     it('should commit the diff', () => {
       expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
-        4,
+        6,
         'git',
         ['add', '.'],
         {
@@ -340,7 +343,7 @@ describe('ExpandedPreviewer', () => {
         }
       );
       expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
-        5,
+        7,
         'git',
         ['commit', '--message=someorg after snapshot application'],
         {

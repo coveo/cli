@@ -2,18 +2,18 @@ jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
-jest.mock('../../../lib/snapshot/snapshotReporter');
-jest.mock('../../../lib/snapshot/snapshotFactory');
+jest.mock('../../../../lib/lib/snapshot/snapshotReporter');
+jest.mock('../../../../lib/lib/snapshot/snapshotFactory');
 
 import {Config} from '@coveo/cli-commons/config/config';
 import {ResourceSnapshotsReportType} from '@coveo/platform-client';
 import {test} from '@oclif/test';
 import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel';
 import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
-import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
-import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
-import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
-import {Snapshot} from '../../../lib/snapshot/snapshot';
+import {SnapshotReporter} from '../../../../lib/lib/snapshot/snapshotReporter';
+import {SnapshotReportStatus} from '../../../../lib/lib/snapshot/reportPreviewer/reportPreviewerDataModels';
+import {SnapshotFactory} from '../../../../lib/lib/snapshot/snapshotFactory';
+import {Snapshot} from '../../../../lib/lib/snapshot/snapshot';
 import {formatCliLog} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
