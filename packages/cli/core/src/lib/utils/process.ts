@@ -1,4 +1,5 @@
-import {spawn, SpawnOptions, ChildProcess} from 'child_process';
+import {SpawnOptions, ChildProcess} from 'child_process';
+import crossSpawn from 'cross-spawn';
 
 function isErrnoException(error: Error): error is NodeJS.ErrnoException {
   return Object.hasOwnProperty.call(error, 'errno');
@@ -18,9 +19,8 @@ export function spawnProcess(
   options: SpawnOptions = {}
 ): Promise<number> {
   return new Promise((resolve, reject) => {
-    spawn(command, args, {
+    crossSpawn(command, args, {
       stdio: ['inherit', 'inherit', 'inherit'],
-      shell: process.platform === 'win32' ? 'powershell' : undefined,
       ...options,
     }).on('close', (code) => {
       if (code !== 0) {
@@ -57,10 +57,7 @@ export async function spawnProcessOutput(
       stderr: '',
     };
 
-    const child = spawn(command, args, {
-      shell: process.platform === 'win32' ? 'powershell' : undefined,
-      ...options,
-    });
+    const child = crossSpawn(command, args, options);
 
     child.stdout?.on('data', (d) => {
       output.stdout += d;
