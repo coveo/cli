@@ -24,7 +24,6 @@ interface BuildAppOptions {
 describe('ui:create:atomic', () => {
   const searchPageEndpoint = 'http://localhost:3333';
   const searchInterfaceSelector = 'atomic-search-interface';
-  const atomicResult = 'atomic-result';
   let normalizedProjectDir = '';
   let originalProjectDir = '';
   const normalizeProjectDirectory = (buildAppOptions: BuildAppOptions) => {
