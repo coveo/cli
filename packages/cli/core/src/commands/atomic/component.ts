@@ -23,7 +23,8 @@ export default class AtomicInit extends CLICommand {
     }),
     version: Flags.string({
       char: 'v',
-      description: `The version of @coveo/create-atomic-component or @coveo/create-atomic-result-component to use.`,
+      description:
+        'The version of @coveo/create-atomic-component or @coveo/create-atomic-result-component to use.',
       default: 'latest',
     }),
   };
