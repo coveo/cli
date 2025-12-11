@@ -1,10 +1,10 @@
-jest.mock('../../../lib/decorators/preconditions/git');
+jest.mock('../../../../lib/lib/decorators/preconditions/git');
 jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
-jest.mock('../../../lib/snapshot/snapshotFactory');
-jest.mock('../../../lib/project/project');
-jest.mock('../../../lib/utils/process');
+jest.mock('../../../../lib/lib/snapshot/snapshotFactory');
+jest.mock('../../../../lib/lib/project/project');
+jest.mock('../../../../lib/lib/utils/process');
 
 import {join} from 'path';
 import {Config} from '@coveo/cli-commons/config/config';
@@ -16,18 +16,18 @@ import {
 import {test} from '@oclif/test';
 import {getDummySnapshotModel} from '../../../__stub__/resourceSnapshotsModel';
 import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
-import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
-import {Snapshot} from '../../../lib/snapshot/snapshot';
+import {SnapshotFactory} from '../../../../lib/lib/snapshot/snapshotFactory';
+import {Snapshot} from '../../../../lib/lib/snapshot/snapshot';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {CliUx} from '@oclif/core';
 import {PreconditionError} from '@coveo/cli-commons/errors/preconditionError';
 import {cwd} from 'process';
-import {Project} from '../../../lib/project/project';
-import {IsGitInstalled} from '../../../lib/decorators/preconditions';
+import {Project} from '../../../../lib/lib/project/project';
+import {IsGitInstalled} from '../../../../lib/lib/decorators/preconditions';
 import {
   MissingResourcePrivileges,
   MissingSnapshotPrivilege,
-} from '../../../lib/errors/snapshotErrors';
+} from '../../../../lib/lib/errors/snapshotErrors';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
@@ -77,6 +77,18 @@ const mockAuthenticatedClient = () => {
   const mockGetClient = jest.fn().mockResolvedValue({
     privilegeEvaluator: {
       evaluate: mockEvaluate,
+    },
+    resourceSnapshot: {
+      listResourceAccess: jest
+        .fn()
+        .mockResolvedValue([
+          ResourceSnapshotType.field,
+          ResourceSnapshotType.featuredResult,
+          ResourceSnapshotType.source,
+          ResourceSnapshotType.queryPipeline,
+          ResourceSnapshotType.searchPage,
+          ResourceSnapshotType.extension,
+        ]),
     },
   });
 

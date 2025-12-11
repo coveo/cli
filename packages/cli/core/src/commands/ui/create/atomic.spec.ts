@@ -1,32 +1,33 @@
-jest.mock('child_process');
-jest.mock('../../../lib/decorators/preconditions/npx');
-jest.mock('../../../lib/decorators/preconditions/node');
+jest.mock('../../../../lib/lib/decorators/preconditions/npx');
+jest.mock('../../../../lib/lib/decorators/preconditions/node');
 jest.mock('@coveo/cli-commons/preconditions/apiKeyPrivilege');
-jest.mock('../../../lib/utils/process');
-jest.mock('../../../lib/oauth/oauth');
+jest.mock('../../../../lib/lib/utils/process');
+jest.mock('../../../../lib/lib/oauth/oauth');
 jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
 jest.mock('@coveo/cli-commons/preconditions/authenticated');
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
-jest.mock('../../../lib/utils/misc');
+jest.mock('../../../../lib/lib/utils/misc');
 jest.mock('@coveo/platform-client');
+jest.mock('../../../../lib/lib/ui/shared');
 
 import {test} from '@oclif/test';
-import {spawnProcess} from '../../../lib/utils/process';
+import {spawnProcess} from '../../../../lib/lib/utils/process';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import PlatformClient from '@coveo/platform-client';
 import {Config, Configuration} from '@coveo/cli-commons/config/config';
 import {
   IsNpxInstalled,
   IsNodeVersionInRange,
-} from '../../../lib/decorators/preconditions/index';
+} from '../../../../lib/lib/decorators/preconditions/index';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
 } from '@coveo/cli-commons/preconditions/index';
-import {getPackageVersion} from '../../../lib/utils/misc';
+import {getPackageVersion} from '../../../../lib/lib/utils/misc';
 import {configurationMock} from '../../../__stub__/configuration';
 import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
+import {promptForSearchHub} from '../../../../lib/lib/ui/shared';
 
 describe('ui:create:atomic', () => {
   const mockedConfig = jest.mocked(Config);
@@ -39,6 +40,7 @@ describe('ui:create:atomic', () => {
   const createAtomicPackage = '@coveo/create-atomic';
   const mockedApiKeyPrivilege = jest.mocked(HasNecessaryCoveoPrivileges);
   const mockedIsAuthenticated = jest.mocked(IsAuthenticated);
+  const mockedPromptForSearchHub = jest.mocked(promptForSearchHub);
 
   const preconditionStatus = {
     node: true,
@@ -56,7 +58,7 @@ describe('ui:create:atomic', () => {
   };
 
   const doMockSpawnProcess = () => {
-    mockedSpawnProcess.mockReturnValue(Promise.resolve(0));
+    mockedSpawnProcess.mockResolvedValue(0);
   };
 
   const doMockedGetPackageVersion = () => {
@@ -119,6 +121,7 @@ describe('ui:create:atomic', () => {
     doMockConfiguration();
     doMockAuthenticatedClient();
     doMockPreconditions();
+    mockedPromptForSearchHub.mockResolvedValue('default');
     preconditionStatus.node = true;
     preconditionStatus.npx = true;
     preconditionStatus.apiKey = true;
@@ -170,7 +173,7 @@ describe('ui:create:atomic', () => {
         1,
         expect.stringContaining('npx'),
         [
-          `${createAtomicPackage}@1.0.0`,
+          `${createAtomicPackage}@latest`,
           '--project',
           'myapp',
           '--org-id',
@@ -183,6 +186,8 @@ describe('ui:create:atomic', () => {
           'dev',
           '--user',
           'bob@coveo.com',
+          '--search-hub',
+          'default',
         ]
       );
     });
@@ -210,6 +215,8 @@ describe('ui:create:atomic', () => {
           'dev',
           '--user',
           'bob@coveo.com',
+          '--search-hub',
+          'default',
         ]
       );
     });
@@ -224,7 +231,7 @@ describe('ui:create:atomic', () => {
         1,
         expect.stringContaining('npx'),
         [
-          `${createAtomicPackage}@1.0.0`,
+          `${createAtomicPackage}@latest`,
           '--project',
           'myapp',
           '--org-id',
@@ -237,6 +244,8 @@ describe('ui:create:atomic', () => {
           'dev',
           '--user',
           'bob@coveo.com',
+          '--search-hub',
+          'default',
           '--page-id',
           '123456',
         ]
@@ -258,7 +267,7 @@ describe('ui:create:atomic', () => {
           1,
           expect.stringContaining('npx'),
           [
-            `${createAtomicPackage}@1.0.0`,
+            `${createAtomicPackage}@latest`,
             '--project',
             'myapp',
             '--org-id',
@@ -271,6 +280,8 @@ describe('ui:create:atomic', () => {
             'prod',
             '--user',
             'bob@coveo.com',
+            '--search-hub',
+            'default',
           ]
         );
       });

@@ -1,20 +1,20 @@
-jest.mock('../../../lib/decorators/preconditions/git');
+jest.mock('../../../../lib/lib/decorators/preconditions/git');
 jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
-jest.mock('../../../lib/snapshot/snapshot');
-jest.mock('../../../lib/snapshot/snapshotFactory');
-jest.mock('../../../lib/project/project');
+jest.mock('../../../../lib/lib/snapshot/snapshot');
+jest.mock('../../../../lib/lib/snapshot/snapshotFactory');
+jest.mock('../../../../lib/lib/project/project');
 
 import {test} from '@oclif/test';
-import {Project} from '../../../lib/project/project';
+import {Project} from '../../../../lib/lib/project/project';
 import {join, normalize} from 'path';
 import {cwd} from 'process';
 import {Config} from '@coveo/cli-commons/config/config';
-import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
-import {Snapshot} from '../../../lib/snapshot/snapshot';
-import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
+import {SnapshotFactory} from '../../../../lib/lib/snapshot/snapshotFactory';
+import {Snapshot} from '../../../../lib/lib/snapshot/snapshot';
+import {SnapshotReporter} from '../../../../lib/lib/snapshot/snapshotReporter';
 import {
   ResourceSnapshotsReportType,
   ResourceSnapshotType,
@@ -28,11 +28,11 @@ import {
 import {CliUx, Command} from '@oclif/core';
 
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {IsGitInstalled} from '../../../lib/decorators/preconditions';
+import {IsGitInstalled} from '../../../../lib/lib/decorators/preconditions';
 import {
   MissingResourcePrivileges,
   MissingSnapshotPrivilege,
-} from '../../../lib/errors/snapshotErrors';
+} from '../../../../lib/lib/errors/snapshotErrors';
 
 const mockedSnapshotFactory = jest.mocked(SnapshotFactory);
 const mockedConfig = jest.mocked(Config);
