@@ -23,7 +23,8 @@ export default class AtomicInit extends CLICommand {
     }),
     version: Flags.string({
       char: 'v',
-      description: `The version of @coveo/create-atomic-component or @coveo/create-atomic-result-component to use.`,
+      description:
+        'The version of @coveo/create-atomic-component or @coveo/create-atomic-result-component to use.',
       default: 'latest',
     }),
   };
@@ -35,6 +36,15 @@ export default class AtomicInit extends CLICommand {
   @Trackable()
   public async run(): Promise<void> {
     const {initializer, name} = await this.getSpawnOptions();
+
+    // Security: Validate component name to prevent command injection
+    // Component names must be alphanumeric with hyphens only
+    if (!/^[a-z0-9-]+$/i.test(name)) {
+      this.error(
+        'Invalid component name. Component names must contain only letters, numbers, and hyphens.',
+        {exit: 1}
+      );
+    }
 
     const cliArgs: string[] = [`${initializer}`, `${name}`];
     await spawnProcess(appendCmdIfWindows`npx`, cliArgs);

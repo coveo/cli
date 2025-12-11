@@ -2,13 +2,13 @@ import {EventEmitter} from 'events';
 import type {ChildProcess} from 'child_process';
 import {handleForkedProcess, spawnProcess} from './process';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
-jest.mock('child_process');
-import {spawn} from 'child_process';
+jest.mock('cross-spawn');
+import crossSpawn from 'cross-spawn';
 
 describe('spawnProcess', () => {
-  const mockedSpawn = jest.mocked(spawn);
+  const mockedCrossSpawn = jest.mocked(crossSpawn);
   fancyIt()('should resolve with a success exit code', () => {
-    mockedSpawn.mockImplementationOnce(() => {
+    mockedCrossSpawn.mockImplementationOnce(() => {
       const emitter = new EventEmitter();
       process.nextTick(() => emitter.emit('close', 0));
       return emitter as ChildProcess;
@@ -21,7 +21,7 @@ describe('spawnProcess', () => {
   });
 
   fancyIt()('should reject', () => {
-    mockedSpawn.mockImplementationOnce(() => {
+    mockedCrossSpawn.mockImplementationOnce(() => {
       const emitter = new EventEmitter();
       process.nextTick(() => emitter.emit('close', 1));
       return emitter as ChildProcess;
