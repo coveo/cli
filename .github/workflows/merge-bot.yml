@@ -18,6 +18,6 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6
       - name: Run the Bot
         run: npx @coveo/merge-bot
