@@ -15,9 +15,6 @@ RUN apt-get update
 RUN apt-get install -y google-chrome-stable
 RUN update-alternatives --set x-www-browser /usr/bin/google-chrome-stable
 
-# Brew, used for mitmproxy
-RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
 RUN apt-get install -y git
 
 # Keyring deps
@@ -28,6 +25,8 @@ RUN apt-get install -yq libgconf-2-4
 RUN apt-get install -y make build-essential libssl-dev zlib1g-dev
 RUN apt-get install -y libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm
 RUN apt-get install -y libncurses5-dev libncursesw5-dev xz-utils tk-dev
+
+RUN apt-get install -y pipx python3-venv && pipx run mitmdump --version
 
 # For headless without headless.
 RUN apt-get install xvfb -y

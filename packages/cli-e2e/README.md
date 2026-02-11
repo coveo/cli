@@ -4,7 +4,7 @@
 
 ## Prerequisites
 
-- Have `mitmproxy` installed and its binary in your path[^1]
+- Have `pipx` installed and its binary in your path[^1]
 - Chrome.
 
 ## How to run the tests?
@@ -21,4 +21,4 @@
 
 3. ☕. Tests are long, if all goes well 10-12' on a good machine, 20-25' on a decent one, 30-40' if they fail.
 
-[^1]: mitmdump is the one of interest
+[^1]: Will be used for `mitmdump` from `mitmproxy`
