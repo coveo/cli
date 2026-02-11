@@ -1,7 +1,15 @@
-FROM node:lts-buster
+# The chrome repository only provides amd64 images, so we need to specify the platform to be able to install it.
+FROM --platform=linux/amd64 node:lts-buster
+
+# Debian buster is oldstable and thus moved to archive.debian.org, so we need to update the sources.list to be able to install packages.
+# TODO: Update to a newer Debian version once the latest LTS image is updated to it.
+RUN sed -i 's/deb.debian.org/archive.debian.org/g' /etc/apt/sources.list && \
+    sed -i 's|security.debian.org|archive.debian.org|g' /etc/apt/sources.list && \
+    sed -i '/buster-updates/d' /etc/apt/sources.list
 
 RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
 RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+
 RUN apt-get update
 
 RUN apt-get install -y google-chrome-stable
@@ -10,7 +18,7 @@ RUN update-alternatives --set x-www-browser /usr/bin/google-chrome-stable
 # Brew, used for mitmproxy
 RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-RUN apt-get install git
+RUN apt-get install -y git
 
 # Keyring deps
 RUN apt-get install -y dbus-x11
