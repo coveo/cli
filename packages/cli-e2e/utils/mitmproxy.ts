@@ -8,12 +8,11 @@ export const startMitmProxy = (
   processManager: ProcessManager,
   terminalDebugName = 'mitmproxy'
 ) => {
-  const mitmScript = join(__dirname, '..', 'mitmproxy', 'main.py');
   const serverTerminal = new Terminal(
-    'python',
+    'pipx',
     [
-      '-u',
-      mitmScript,
+      'run',
+      'mitmdump',
       '-p',
       '8080',
       '--listen-host',
