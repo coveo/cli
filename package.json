@@ -70,7 +70,7 @@
     "**/*.ts": "eslint --fix"
   },
   "engines": {
-    "node": ">=18",
+    "node": "^18.18.1 || ^20.9.0 || ^22.0.0 || ^24.0.0",
     "npm": ">=8.5.4"
   },
   "engineStrict": true,

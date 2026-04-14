@@ -2,7 +2,7 @@ node('linux && docker') {
   checkout scm
   def releaseCommit
 
-  withDockerContainer(image: 'node:18', args: '-u=root') {
+  withDockerContainer(image: 'node:24', args: '-u=root') {
 
     stage('Setup') {
       // Fix dubious ownership error in Jenkins
