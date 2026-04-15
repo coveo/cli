@@ -2,7 +2,7 @@ import {DocumentBuilder} from '@coveo/push-api-client';
 import {errors} from '@coveo/push-api-client';
 
 export class BatchUploadDocumentsSuccess {
-  constructor(private numberOfFiles: number = 2) {}
+  public constructor(private numberOfFiles: number = 2) {}
   private internalFakeFileCount: number = 0;
   private internalFakeBuilderCounter: number = 0;
 
@@ -46,7 +46,7 @@ export class BatchUploadDocumentsSuccess {
 }
 
 export class BatchUploadDocumentsError {
-  constructor(
+  public constructor(
     private fetchErrorInstance: errors.FetchError,
     private totalDocumentCount: number = 10,
     private failedDocumentCount: number = 2

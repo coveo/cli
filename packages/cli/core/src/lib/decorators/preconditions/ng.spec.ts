@@ -6,7 +6,7 @@ import {spawnProcessOutput} from '../../utils/process';
 import {getFakeCommand} from '@coveo/cli-commons/utils/getFakeCommand';
 
 import {IsNgVersionInRange} from './ng';
-import {CliUx} from '@oclif/core';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
 import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
 import {getPackageVersion} from '../../utils/misc';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';

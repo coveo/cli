@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`@coveo/atomic-component-health-check when all conditions are met should print green checks only 1`] = `
 "[32m✔[39m [1mReadme file[22m

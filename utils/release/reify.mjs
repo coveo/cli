@@ -44,9 +44,11 @@ function buildDependencyGraph(rootNode) {
         edge?.to?.package?.name &&
         rootNode.workspaces?.has(edge.to.package.name)
     );
-    return workspaces.map((edge) =>
-      edge.to instanceof Arborist.Link ? edge.to.target : edge.to
-    );
+    return workspaces
+      .map((edge) =>
+        edge.to instanceof Arborist.Link ? edge.to.target : edge.to
+      )
+      .filter((dependency) => dependency !== null);
   }
 
   /**

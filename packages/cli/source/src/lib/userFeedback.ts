@@ -1,11 +1,15 @@
-import {green} from 'chalk';
+import {green} from '@coveo/cli-commons/compat/chalk';
 import dedent from 'ts-dedent';
 import {wrapError} from '@coveo/cli-commons/errors/wrapError';
-import {CliUx} from '@oclif/core';
-import type {Response} from 'undici';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
 import {errors} from '@coveo/push-api-client';
 
-export const successMessage = (tagLine: string, res?: Response) => {
+type ResponseLike = {
+  status: number;
+  statusText: string;
+};
+
+export const successMessage = (tagLine: string, res?: ResponseLike) => {
   let message = dedent(`
       ${tagLine}
       `);

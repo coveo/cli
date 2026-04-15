@@ -1,5 +1,6 @@
 {
   "extends": "../../base.eslintrc",
+  "ignorePatterns": ["deploy-project"],
   "env": {
     "es6": true
   },

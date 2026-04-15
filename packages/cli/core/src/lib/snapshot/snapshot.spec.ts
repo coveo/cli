@@ -262,7 +262,7 @@ describe('Snapshot', () => {
 
           await snapshot.preview(someProject, previewParam);
 
-          expect(mockedExpandedPreviewer).toBeCalledWith(
+          expect(mockedExpandedPreviewer).toHaveBeenCalledWith(
             someReport,
             targetOrgId,
             someProject,
@@ -286,7 +286,7 @@ describe('Snapshot', () => {
       fancyIt()('should not generate the expanded preview', async () => {
         await snapshot.preview(new Project(''));
 
-        expect(mockedExpandedPreviewer).not.toBeCalled();
+        expect(mockedExpandedPreviewer).not.toHaveBeenCalled();
       });
     });
   });
@@ -441,8 +441,8 @@ describe('Snapshot', () => {
           `${someReport.id}.json`
         );
 
-        expect(mockedEnsureFileSync).toBeCalledWith(expectedFilePath);
-        expect(mockedWriteJsonSync).toBeCalledWith(
+        expect(mockedEnsureFileSync).toHaveBeenCalledWith(expectedFilePath);
+        expect(mockedWriteJsonSync).toHaveBeenCalledWith(
           expectedFilePath,
           someReport,
           {
@@ -616,7 +616,7 @@ describe('Snapshot', () => {
       });
 
       fancyIt()('should throw an Error', () => {
-        expect(() => snapshot.latestReport).toThrowError(
+        expect(() => snapshot.latestReport).toThrow(
           `No detailed report found for the snapshot ${snapshotId}`
         );
       });

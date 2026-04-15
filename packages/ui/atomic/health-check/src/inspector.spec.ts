@@ -42,22 +42,22 @@ describe('Inspector', () => {
     });
 
     it('should log success and fail messages', () => {
-      expect(mockedFail).toBeCalledTimes(1);
-      expect(mockedSuccess).toBeCalledTimes(2);
+      expect(mockedFail).toHaveBeenCalledTimes(1);
+      expect(mockedSuccess).toHaveBeenCalledTimes(2);
     });
 
     it('should log a report', () => {
       expect(() => {
         inspector.report();
       }).toThrow();
-      expect(mockedLog).toBeCalled();
+      expect(mockedLog).toHaveBeenCalled();
     });
 
     it('should exit the process', async () => {
       expect(() => {
         inspector.report();
       }).toThrow('process.exit: 1');
-      expect(mockedExit).toBeCalledTimes(1);
+      expect(mockedExit).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -71,19 +71,19 @@ describe('Inspector', () => {
     });
 
     it('should only log success messages', () => {
-      expect(mockedSuccess).toBeCalledTimes(3);
+      expect(mockedSuccess).toHaveBeenCalledTimes(3);
     });
 
     it('should not log fail messages', () => {
-      expect(mockedFail).not.toBeCalled();
+      expect(mockedFail).not.toHaveBeenCalled();
     });
 
     it('should not print a report', () => {
-      expect(mockedLog).not.toBeCalled();
+      expect(mockedLog).not.toHaveBeenCalled();
     });
 
     it('should not exit the process', async () => {
-      expect(mockedExit).not.toBeCalled();
+      expect(mockedExit).not.toHaveBeenCalled();
     });
   });
 });

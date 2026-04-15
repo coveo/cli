@@ -92,7 +92,7 @@ describe('ui:create:react', () => {
               })
             ),
           cfg: mockedConfig.getMockImplementation()!('./'),
-        } as unknown as AuthenticatedClient)
+        }) as unknown as AuthenticatedClient
     );
   };
 
@@ -101,7 +101,7 @@ describe('ui:create:react', () => {
       () =>
         ({
           initialize: () => Promise.resolve(),
-        } as PlatformClient)
+        }) as PlatformClient
     );
   };
 
@@ -168,7 +168,7 @@ describe('ui:create:react', () => {
     .stderr()
     .command(['ui:create:react', 'myapp'])
     .it('should start 1 spawn processes with the good template', () => {
-      expect(mockedSpawnProcess).nthCalledWith(
+      expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
         1,
         expect.stringContaining('npx'),
         [
@@ -186,7 +186,7 @@ describe('ui:create:react', () => {
     .stderr()
     .command(['ui:create:react', 'myapp', '-v=1.2.3'])
     .it('should use the version from the flag if provided', () => {
-      expect(mockedSpawnProcess).nthCalledWith(
+      expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
         1,
         expect.stringContaining('npx'),
         [
@@ -204,7 +204,7 @@ describe('ui:create:react', () => {
     .stderr()
     .command(['ui:create:react', 'myapp', '-v=1.2.3'])
     .it('should setup environment variables', () => {
-      expect(mockedSpawnProcessOutput).nthCalledWith(
+      expect(mockedSpawnProcessOutput).toHaveBeenNthCalledWith(
         1,
         expect.stringContaining('npm'),
         ['run', 'setup-env'],

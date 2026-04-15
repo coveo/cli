@@ -17,4 +17,4 @@ export const configurationMock: (
   () =>
     ({
       get: () => configuration,
-    } as Config);
+    }) as Config;

@@ -1,6 +1,6 @@
 import {ZodError} from 'zod';
 import {prettifyError, prettifyZodError} from './error.js';
-import chalk from 'chalk';
+import chalk from './chalk.js';
 import {
   failure,
   groupEnd,

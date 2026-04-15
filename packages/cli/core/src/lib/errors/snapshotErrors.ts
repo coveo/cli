@@ -1,4 +1,4 @@
-import {blueBright, bold} from 'chalk';
+import {blueBright, bold} from '@coveo/cli-commons/compat/chalk';
 import dedent from 'ts-dedent';
 import {Configuration} from '@coveo/cli-commons/config/config';
 import {Snapshot} from '../snapshot/snapshot';

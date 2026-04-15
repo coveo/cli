@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags, CliUx} from '@oclif/core';
+import {Flags, CliUx} from '@coveo/cli-commons/compat/oclif';
 import {readJSONSync, writeFileSync, writeJSONSync} from 'fs-extra';
 import {Parser} from 'json2csv';
 import {SingleBar} from 'cli-progress';
@@ -17,7 +17,7 @@ import {without} from '../../../lib/utils/list';
 import {join} from 'path';
 import dedent from 'ts-dedent';
 import {formatOrgId} from '@coveo/cli-commons/utils/ux';
-import {Example} from '@oclif/core/lib/interfaces';
+import {Example} from '@coveo/cli-commons/compat/oclif';
 type ResponseExceededMaximumSizeError = {message: string; type: string};
 
 interface RawResult {

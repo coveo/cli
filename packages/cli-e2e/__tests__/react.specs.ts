@@ -238,7 +238,7 @@ describe('ui:create:react', () => {
         gitDirtyWorkingTreeSpy
       );
 
-      expect(gitDirtyWorkingTreeSpy).not.toBeCalled();
+      expect(gitDirtyWorkingTreeSpy).not.toHaveBeenCalled();
     }, 10e3);
   });
 

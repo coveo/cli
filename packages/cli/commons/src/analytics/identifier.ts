@@ -24,9 +24,8 @@ export class Identifier {
     await platformClient.initialize();
 
     const identifier = new Identify();
-    const {userId, isInternalUser} = await this.getAnalyticsInfo(
-      platformClient
-    );
+    const {userId, isInternalUser} =
+      await this.getAnalyticsInfo(platformClient);
     const deviceId = await machineId();
     const identity = {
       ...this.getShellInfo(),
@@ -96,13 +95,13 @@ export class Identifier {
   }
 
   private getDeviceInfo() {
-    const {arch, windows, bin, userAgent, debug} = globalConfig.get();
+    const {arch, windows, bin, userAgent} = globalConfig.get();
     return {
       arch,
       windows,
       bin,
       userAgent,
-      debug,
+      debug: process.env.DEBUG === '1' || process.env.CLI_FLAGS_DEBUG === '1',
     };
   }
 

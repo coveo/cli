@@ -1,5 +1,5 @@
 const CurrentSchemaVersion = 'versionThatTheCliWant';
-jest.mock('@oclif/core', () => ({}));
+jest.mock('@coveo/cli-commons/compat/oclif', () => ({}));
 jest.mock('semver');
 jest.mock('./config');
 jest.mock('./configSchemaVersion', () => ({
@@ -52,7 +52,7 @@ describe('configErrors', () => {
           expect(new IncompatibleConfigurationError('potato').message).toBe(
             "Version found in config 'potato' is not parsable to a valid semantic version."
           );
-          expect(mockedCoerce).toBeCalledWith('potato');
+          expect(mockedCoerce).toHaveBeenCalledWith('potato');
         }
       );
     });
@@ -70,7 +70,7 @@ describe('configErrors', () => {
           expect(new IncompatibleConfigurationError('potato').message).toBe(
             "Version found in config 'potato' is greater than the one accepted by this version of the CLI."
           );
-          expect(mockedGt).toBeCalledWith(
+          expect(mockedGt).toHaveBeenCalledWith(
             mockedSemverInstance,
             CurrentSchemaVersion
           );
@@ -92,7 +92,7 @@ describe('configErrors', () => {
           expect(new IncompatibleConfigurationError('potato').message).toBe(
             "Version found in config 'potato' is less than the one accepted by this version of the CLI."
           );
-          expect(mockedLt).toBeCalledWith(
+          expect(mockedLt).toHaveBeenCalledWith(
             mockedSemverInstance,
             CurrentSchemaVersion
           );

@@ -1,11 +1,19 @@
 import {ResourceSnapshotsReportOperationModel} from '@coveo/platform-client';
 
-export type ReportViewerOperationName =
-  keyof ResourceSnapshotsReportOperationModel;
+export type ResourceOperationCountName = Exclude<
+  keyof ResourceSnapshotsReportOperationModel,
+  `${string}Names`
+>;
+
+export type ReportViewerOperationName = ResourceOperationCountName;
+export type ReportViewerOperationCounts = Pick<
+  ResourceSnapshotsReportOperationModel,
+  ResourceOperationCountName
+>;
 
 export interface ReportViewerResourceReportModel {
   name: string;
-  operations: ResourceSnapshotsReportOperationModel;
+  operations: ReportViewerOperationCounts;
 }
 
 export enum SnapshotReportStatus {

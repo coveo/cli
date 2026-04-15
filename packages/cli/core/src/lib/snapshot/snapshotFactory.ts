@@ -9,7 +9,7 @@ import {SnapshotPullModelResources} from './pullModel/interfaces';
 import {Snapshot, WaitUntilDoneOptions} from './snapshot';
 import {Project} from '../project/project';
 import {ensureResourcesAccess, ensureSnapshotAccess} from './snapshotAccess';
-import {Blob} from 'node:buffer';
+import {File} from 'node:buffer';
 
 export class SnapshotFactory {
   public static async createSnapshotFromProject(
@@ -21,7 +21,7 @@ export class SnapshotFactory {
     await ensureResourcesAccess(client, project.resourceTypes);
     const pathToZip = await project.compressResources();
     const file = readFileSync(pathToZip);
-    const blob = new Blob([file], {
+    const archive = new File([file], 'resources.zip', {
       type: 'application/zip',
     });
     const computedOptions: CreateFromFileOptions = {
@@ -29,7 +29,7 @@ export class SnapshotFactory {
     };
 
     const model = await client.resourceSnapshot.createFromFile(
-      blob,
+      archive,
       computedOptions
     );
     const snapshot = new Snapshot(model, client);

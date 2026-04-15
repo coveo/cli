@@ -174,7 +174,7 @@ const gitNewTag = `release-${releaseNumber}`;
 
 // Find all changes since last release and generate the changelog.
 const versionPrefix = 'release-';
-const lastTag = await getLastTag(versionPrefix);
+const lastTag = await getLastTag({prefix: versionPrefix});
 const commits = await getCommits(PATH, lastTag);
 const convention = await angularChangelogConvention;
 

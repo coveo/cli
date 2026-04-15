@@ -101,7 +101,7 @@ describe('ui:create:atomic', () => {
               })
             ),
           cfg: mockedConfig.getMockImplementation()!('./'),
-        } as unknown as AuthenticatedClient)
+        }) as unknown as AuthenticatedClient
     );
   };
 
@@ -110,7 +110,7 @@ describe('ui:create:atomic', () => {
       () =>
         ({
           initialize: () => Promise.resolve(),
-        } as PlatformClient)
+        }) as PlatformClient
     );
   };
 
@@ -169,7 +169,7 @@ describe('ui:create:atomic', () => {
     .command(['ui:create:atomic', 'myapp'])
     .it('should start 1 spawn processes with the good template', () => {
       expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
-      expect(mockedSpawnProcess).nthCalledWith(
+      expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
         1,
         expect.stringContaining('npx'),
         [
@@ -198,7 +198,7 @@ describe('ui:create:atomic', () => {
     .command(['ui:create:atomic', 'myapp', '-v=1.2.3'])
     .it('should use the version from the flag if provided', () => {
       expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
-      expect(mockedSpawnProcess).nthCalledWith(
+      expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
         1,
         expect.stringContaining('npx'),
         [
@@ -227,7 +227,7 @@ describe('ui:create:atomic', () => {
     .command(['ui:create:atomic', 'myapp', '--pageId', '123456'])
     .it('should pass on the pageId flag if provided', () => {
       expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
-      expect(mockedSpawnProcess).nthCalledWith(
+      expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
         1,
         expect.stringContaining('npx'),
         [
@@ -263,7 +263,7 @@ describe('ui:create:atomic', () => {
       .command(['ui:create:atomic', 'myapp'])
       .it('should start 1 spawn processes with the good template', () => {
         expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
-        expect(mockedSpawnProcess).nthCalledWith(
+        expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
           1,
           expect.stringContaining('npx'),
           [

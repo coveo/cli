@@ -15,7 +15,7 @@ export type SearchTokenServerConfig = z.infer<typeof zValidEnvironment>;
  * @returns true if the .env file is valid. false otherwise.
  */
 export default function isEnvValid(
-  env: unknown
+  env: unknown,
 ): env is z.infer<typeof zValidEnvironment> {
   return zValidEnvironment.safeParse(env).success;
 }

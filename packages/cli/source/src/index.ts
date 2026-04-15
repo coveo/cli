@@ -1,1 +1,1 @@
-export {run} from '@oclif/core';
+export {run} from '@coveo/cli-commons/compat/oclif';

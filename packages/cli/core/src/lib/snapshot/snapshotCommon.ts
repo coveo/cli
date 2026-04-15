@@ -35,7 +35,7 @@ export async function dryRun(
   const snapshot = await getSnapshotForDryRun(project, targetOrg, options);
 
   startSpinner('Validating snapshot');
-  let reporter = await internalDryRun(snapshot, options);
+  const reporter = await internalDryRun(snapshot, options);
 
   return {reporter, snapshot, project};
 }

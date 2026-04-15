@@ -1,7 +1,7 @@
 jest.mock('@coveo/cli-commons/analytics/amplitudeClient');
 jest.mock('@coveo/cli-commons/config/globalConfig');
 
-import type {Interfaces} from '@oclif/core';
+import type {Interfaces} from '@coveo/cli-commons/compat/oclif';
 import globalConfig from '@coveo/cli-commons/config/globalConfig';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {flush} from '@coveo/cli-commons/analytics/amplitudeClient';
@@ -15,7 +15,7 @@ describe('termination-signal', () => {
   const emit = (signal: string) => {
     const signalTuple = (<const>[signal, signal]) as [
       supportedExitSignals,
-      supportedExitSignals
+      supportedExitSignals,
     ];
 
     process.emit(...signalTuple);
@@ -24,7 +24,7 @@ describe('termination-signal', () => {
   const mockedAnalyticHook = jest.fn();
   const mockExit = jest
     .spyOn(process, 'exit')
-    .mockImplementation(() => ({} as unknown as never));
+    .mockImplementation(() => ({}) as unknown as never);
 
   beforeAll(() => {
     mockedGlobalConfig.get.mockReturnValue({

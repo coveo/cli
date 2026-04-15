@@ -1,5 +1,5 @@
 import {SourceVisibility} from '@coveo/push-api-client';
-import {Flags} from '@oclif/core';
+import {Flags} from '@coveo/cli-commons/compat/oclif';
 
 export const withFiles = () => ({
   files: Flags.string({
@@ -42,15 +42,15 @@ export const withNormalizeInvalidFields = () => ({
 });
 
 export const withSourceVisibility = () => ({
-  sourceVisibility: Flags.enum({
+  sourceVisibility: Flags.option({
     options: [
       SourceVisibility.PRIVATE,
       SourceVisibility.SECURED,
       SourceVisibility.SHARED,
-    ],
+    ] as const,
     description:
       'Controls the content security option that should be applied to the items in a source. See https://docs.coveo.com/en/1779/index-content/content-security',
     default: SourceVisibility.SECURED,
     char: 'v',
-  }),
+  }) as any,
 });

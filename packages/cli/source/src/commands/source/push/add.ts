@@ -38,7 +38,7 @@ export default class SourcePushAdd extends CLICommand {
     ...withNormalizeInvalidFields(),
   };
 
-  public static args = [
+  public static args: any = [
     {
       name: 'sourceId',
       required: true,

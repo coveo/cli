@@ -35,34 +35,30 @@ describe('ng-add-setup-project', () => {
   };
 
   const runInstallProjectDependencySchematic = async () => {
-    return await runner
-      .runSchematicAsync(
-        'install-project-dependencies',
-        {...defaultSchemaOptions},
-        appTree
-      )
-      .toPromise();
+    return runner.runSchematic(
+      'install-project-dependencies',
+      {
+        ...defaultSchemaOptions,
+      },
+      appTree
+    );
   };
   const collectionPath = join(__dirname, '../collection.json');
   const runner = new SchematicTestRunner('schematics', collectionPath);
   let appTree: UnitTestTree;
 
   beforeEach(async () => {
-    appTree = await runner
-      .runExternalSchematicAsync(
-        '@schematics/angular',
-        'workspace',
-        workspaceOptions
-      )
-      .toPromise();
-    appTree = await runner
-      .runExternalSchematicAsync(
-        '@schematics/angular',
-        'application',
-        appOptions,
-        appTree
-      )
-      .toPromise();
+    appTree = await runner.runExternalSchematic(
+      '@schematics/angular',
+      'workspace',
+      workspaceOptions
+    );
+    appTree = await runner.runExternalSchematic(
+      '@schematics/angular',
+      'application',
+      appOptions,
+      appTree
+    );
   });
 
   it('should install dependencies', async () => {

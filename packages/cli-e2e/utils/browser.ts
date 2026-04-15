@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {resolve} from 'node:path';
 import {promises as dnsPromises} from 'node:dns';
 import {URL} from 'node:url';

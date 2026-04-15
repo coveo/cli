@@ -19,7 +19,7 @@ import {getSuccessReport} from '../../../__stub__/resourceSnapshotsReportModel';
 import {SnapshotFactory} from '../../../../lib/lib/snapshot/snapshotFactory';
 import {Snapshot} from '../../../../lib/lib/snapshot/snapshot';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
-import {CliUx} from '@oclif/core';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
 import {PreconditionError} from '@coveo/cli-commons/errors/preconditionError';
 import {cwd} from 'process';
 import {Project} from '../../../../lib/lib/project/project';
@@ -53,7 +53,7 @@ const doMockConfig = () => {
     () =>
       ({
         get: mockedConfigGet,
-      } as unknown as Config)
+      }) as unknown as Config
   );
 };
 

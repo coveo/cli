@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags} from '@oclif/core';
+import {Flags} from '@coveo/cli-commons/compat/oclif';
 import {Config} from '@coveo/cli-commons/config/config';
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
@@ -59,7 +59,7 @@ export default class React extends CLICommand {
     }),
   };
 
-  public static args = [
+  public static args: any = [
     {
       name: 'name',
       description: 'The name of the application to create.',

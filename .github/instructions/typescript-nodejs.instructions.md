@@ -18,14 +18,12 @@ This is a **monorepo** managed with:
 The monorepo has three main categories:
 
 1. **CLI Packages** (`packages/cli/`)
-
    - `cli-commons-dev`: Development utilities (eslint config, test helpers) - **foundation layer**
    - `cli-commons`: Production utilities (error handling, config, platform client) - **shared layer**
    - `core`: The main CLI application - **application layer**
    - `source`: Source-specific commands
 
 2. **UI Packages** (`packages/ui/`)
-
    - Headless implementations (React, Vue, Angular)
    - Atomic components
    - Project scaffolding templates

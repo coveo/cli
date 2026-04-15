@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`source:push:delete returns an information message on deletion and success failure with multiple document uri 1`] = `
 [
@@ -65,12 +65,16 @@ exports[`source:push:delete returns an information message on successful deletio
 ]
 `;
 
-exports[`source:push:delete should warn the user when he tries to delete too many items and stop there 1`] = `""`;
-
 exports[`source:push:delete throws when incompatible flags for olderThan and documentUri are passed 1`] = `
 "The following error occurred:
-  [2m--delete=foo cannot also be provided when using --deleteOlderThan[22m
+  --delete=foo cannot also be provided when using --deleteOlderThan
 See more help with --help"
+`;
+
+exports[`source:push:delete should warn the user when he tries to delete too many items and stop there 1`] = `
+" ›   Warning: To delete large number of items, use the \`--deleteOlderThan\`
+ ›   option instead.
+"
 `;
 
 exports[`source:push:delete throws when no flags are specified 1`] = `"You must minimally set the \`delete\` or the \`deleteOlderThan\` flag. Use \`source:push:delete --help\` to get more information."`;

@@ -2,12 +2,12 @@ import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {Config} from '@coveo/cli-commons/config/config';
 import {ConfigRenderer} from '@coveo/cli-commons/config/configRenderer';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
-import type {Example} from '@oclif/core/lib/interfaces';
+import type {Example} from '@coveo/cli-commons/compat/oclif';
 
 export default class Get extends CLICommand {
   public static description = 'Display the current Coveo CLI configuration.';
 
-  public static args = [
+  public static args: any = [
     {
       name: 'key',
       description: 'The config key for which to show the value',

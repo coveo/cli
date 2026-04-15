@@ -30,7 +30,7 @@ describe('org:resources:model:create', () => {
           cfg: {
             get: mockedConfig,
           },
-        } as unknown as AuthenticatedClient)
+        }) as unknown as AuthenticatedClient
     );
   };
 

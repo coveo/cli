@@ -305,7 +305,7 @@ describe('ui:create:angular', () => {
         eslintErrorSpy
       );
 
-      expect(eslintErrorSpy).not.toBeCalled();
+      expect(eslintErrorSpy).not.toHaveBeenCalled();
     }, 60e3);
   });
 

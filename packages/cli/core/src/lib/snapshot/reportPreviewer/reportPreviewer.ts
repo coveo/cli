@@ -1,5 +1,11 @@
-import {CliUx} from '@oclif/core';
-import {red, italic, green, yellow, ChalkFunction} from 'chalk';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
+import {
+  red,
+  italic,
+  green,
+  yellow,
+  ChalkFunction,
+} from '@coveo/cli-commons/compat/chalk';
 import {ReportViewerSection} from './reportPreviewerSection';
 import {ReportViewerStyles} from './reportPreviewerStyles';
 import {SnapshotReporter} from '../snapshotReporter';

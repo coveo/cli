@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`ui:create:vue when a directory with the projectName exists when the directory is empty should write the .env file 1`] = `
 [

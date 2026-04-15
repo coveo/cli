@@ -1,18 +1,14 @@
 require('isomorphic-fetch');
 require('abortcontroller-polyfill');
 
-import {Request, Response, NextFunction} from 'express';
 import {
   PlatformClient,
   RestUserIdType,
   TokenModel,
 } from '@coveo/platform-client';
+import {TokenRequestHandler} from '../types';
 
-export function ensureTokenGenerated(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export const ensureTokenGenerated: TokenRequestHandler = (req, res, next) => {
   const platform: PlatformClient =
     req.app.locals.platform ||
     new PlatformClient({
@@ -75,7 +71,7 @@ export function ensureTokenGenerated(
        */
     })
     .then((data: TokenModel) => {
-      req.body.token = data.token;
+      res.locals.token = data.token;
       next();
     })
     .catch((err) => {
@@ -85,4 +81,4 @@ export function ensureTokenGenerated(
   if (!req.app.locals.platform) {
     req.app.locals.platform = platform;
   }
-}
+};

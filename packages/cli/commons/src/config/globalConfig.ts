@@ -1,4 +1,4 @@
-import {Interfaces} from '@oclif/core';
+import {Interfaces} from '@coveo/cli-commons/compat/oclif';
 
 /**
  * Singleton to save Oclif's config

@@ -1,13 +1,12 @@
 const mockedCliConfirm = jest.fn();
 const mockedCliWarn = jest.fn();
-jest.mock('@oclif/core', () => ({
+jest.mock('@coveo/cli-commons/compat/oclif', () => ({
   CliUx: {ux: {warn: mockedCliWarn, confirm: mockedCliConfirm}},
 }));
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('../../project/project');
 jest.mock('../snapshot');
 jest.mock('../snapshotReporter');
-jest.mock('@oclif/core/lib/errors/index');
 jest.mock('../../errors/vaultErrors');
 jest.mock('@coveo/cli-commons/utils/ux');
 
@@ -18,7 +17,7 @@ import {
   confirm,
 } from '@coveo/cli-commons/utils/ux';
 import PlatformClient, {VaultFetchStrategy} from '@coveo/platform-client';
-import {CliUx} from '@oclif/core';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
 import {Configuration} from '@coveo/cli-commons/config/config';
 import {SnapshotMissingVaultEntriesFromOriginError} from '../../errors/vaultErrors';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
@@ -48,7 +47,7 @@ describe('#tryTransferFromOrganization', () => {
       () =>
         ({
           getResourceManifest: () => ({orgId: 'someOriginOrg'}),
-        } as Partial<Project> as Project)
+        }) as Partial<Project> as Project
     );
   };
 
@@ -76,7 +75,7 @@ describe('#tryTransferFromOrganization', () => {
               vault: {list: mockedVaultList, import: mockedVaultImport},
             } as unknown as PlatformClient)
           ),
-        } as Partial<AuthenticatedClient> as AuthenticatedClient)
+        }) as Partial<AuthenticatedClient> as AuthenticatedClient
     );
   });
 
@@ -90,7 +89,7 @@ describe('#tryTransferFromOrganization', () => {
         () =>
           ({
             getResourceManifest: () => null,
-          } as Partial<Project> as Project)
+          }) as Partial<Project> as Project
       );
     });
 
@@ -139,7 +138,7 @@ describe('#tryTransferFromOrganization', () => {
         cfg: {} as Configuration,
       });
 
-      expect(mockedCliWarn).toBeCalledTimes(1);
+      expect(mockedCliWarn).toHaveBeenCalledTimes(1);
       expect(mockedCliWarn.mock.calls[0][0]).toMatchSnapshot();
     });
 
@@ -175,10 +174,10 @@ describe('#tryTransferFromOrganization', () => {
         projectPath: 'somePathYay',
         cfg: {} as Configuration,
       });
-      expect(mockedCliConfirm).toBeCalled();
-      expect(mockedAuthenticatedClient).toBeCalled();
-      expect(mockedGetUserHasAccessToOrg).toBeCalled();
-      expect(mockedVaultList).toBeCalledTimes(4);
+      expect(mockedCliConfirm).toHaveBeenCalled();
+      expect(mockedAuthenticatedClient).toHaveBeenCalled();
+      expect(mockedGetUserHasAccessToOrg).toHaveBeenCalled();
+      expect(mockedVaultList).toHaveBeenCalledTimes(4);
       for (let i = 0; i < fakeNumberOfPages; i++) {
         expect(mockedVaultList.mock.calls[i][0]).toMatchObject({page: i});
       }
@@ -207,13 +206,11 @@ describe('#tryTransferFromOrganization', () => {
         });
         expect(
           mockedSnapshotMissingVaultEntriesFromOriginError
-        ).toBeCalledTimes(1);
-        expect(mockedSnapshotMissingVaultEntriesFromOriginError).toBeCalledWith(
-          'someOriginOrg',
-          'someTargetId',
-          ['baz']
-        );
-        expect(mockedCliWarn).toBeCalledTimes(1);
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          mockedSnapshotMissingVaultEntriesFromOriginError
+        ).toHaveBeenCalledWith('someOriginOrg', 'someTargetId', ['baz']);
+        expect(mockedCliWarn).toHaveBeenCalledTimes(1);
         expect(mockedCliWarn.mock.calls[0][0]).toBeInstanceOf(
           SnapshotMissingVaultEntriesFromOriginError
         );
@@ -259,7 +256,7 @@ describe('#tryTransferFromOrganization', () => {
           projectPath: 'somePathYay',
           cfg: {} as Configuration,
         });
-        expect(mockedGetClient).toBeCalledTimes(2);
+        expect(mockedGetClient).toHaveBeenCalledTimes(2);
         expect(mockedGetClient).toHaveBeenNthCalledWith(
           1,
           expect.objectContaining({
@@ -272,8 +269,8 @@ describe('#tryTransferFromOrganization', () => {
             organization: 'someTargetId',
           })
         );
-        expect(mockedVaultImport).toBeCalledTimes(1);
-        expect(mockedVaultImport).toBeCalledWith(
+        expect(mockedVaultImport).toHaveBeenCalledTimes(1);
+        expect(mockedVaultImport).toHaveBeenCalledWith(
           'someSnapshotId',
           'someOriginOrg',
           VaultFetchStrategy.onlyMissing
@@ -296,7 +293,7 @@ describe('#tryTransferFromOrganization', () => {
             projectPath: 'somePathYay',
             cfg: {} as Configuration,
           });
-          expect(mockedCliWarn).toBeCalledTimes(2);
+          expect(mockedCliWarn).toHaveBeenCalledTimes(2);
           expect(mockedCliWarn).toHaveBeenNthCalledWith(2, 'ohno!');
         });
 

@@ -1,5 +1,5 @@
 import {CoveoPlatformClientError} from '@coveo/platform-client';
-import {red} from 'chalk';
+import {red} from '@coveo/cli-commons/compat/chalk';
 import {CLIBaseError} from './cliBaseError';
 
 export class APIError extends CLIBaseError {

@@ -93,7 +93,7 @@ describe('ui:create:angular', () => {
               })
             ),
           cfg: mockedConfig.getMockImplementation()!('./'),
-        } as unknown as AuthenticatedClient)
+        }) as unknown as AuthenticatedClient
     );
   };
 
@@ -102,7 +102,7 @@ describe('ui:create:angular', () => {
       () =>
         ({
           initialize: () => Promise.resolve(),
-        } as PlatformClient)
+        }) as PlatformClient
     );
   };
 
@@ -164,13 +164,13 @@ describe('ui:create:angular', () => {
       'should start a spawn process with the appropriate arguments',
       async () => {
         expect(mockedSpawnProcess).toHaveBeenCalledTimes(2);
-        expect(mockedSpawnProcess).nthCalledWith(
+        expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
           1,
           expect.stringContaining('ng'),
           ['new', 'myapp', '--style', 'scss', '--routing'],
           expect.objectContaining({})
         );
-        expect(mockedSpawnProcess).nthCalledWith(
+        expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
           2,
           expect.stringContaining('ng'),
           [

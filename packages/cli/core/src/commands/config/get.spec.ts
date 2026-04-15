@@ -15,7 +15,7 @@ describe('config:get', () => {
         ({
           get: mockGet,
           set: mockSet,
-        } as unknown as Config)
+        }) as unknown as Config
     );
     mockedConfig.userFacingConfigKeys = ['organization', 'region'];
   });

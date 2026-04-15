@@ -1,10 +1,6 @@
-import {Request, Response, NextFunction} from 'express';
+import {TokenRequestHandler} from '../types';
 
-export function environmentCheck(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export const environmentCheck: TokenRequestHandler = (req, res, next) => {
   if (
     process.env.ORGANIZATION_ID === undefined ||
     process.env.API_KEY === undefined ||
@@ -16,4 +12,4 @@ export function environmentCheck(
   } else {
     next();
   }
-}
+};

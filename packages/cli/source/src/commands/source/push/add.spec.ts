@@ -82,7 +82,7 @@ describe('source:push:add', () => {
               environment: 'prod',
             }),
           },
-        } as unknown as AuthenticatedClient)
+        }) as unknown as AuthenticatedClient
     );
   };
 
@@ -92,7 +92,7 @@ describe('source:push:add', () => {
         ({
           batchUpdateDocumentsFromFiles: mockBatchUpdate,
           setSourceStatus: mockSetSourceStatus,
-        } as unknown as PushSource)
+        }) as unknown as PushSource
     );
   };
 

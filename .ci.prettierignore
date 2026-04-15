@@ -1,6 +1,9 @@
 # Generated files
 CHANGELOG.md
 package-lock.json
+**/dist
+**/lib
+.coveo
 
 # Prettier run at the package level.
 packages/

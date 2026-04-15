@@ -1,5 +1,5 @@
 import {VaultFetchStrategy, VaultEntryModel} from '@coveo/platform-client';
-import {CliUx} from '@oclif/core';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
 import {
   formatOrgId,
   startSpinner,
@@ -97,7 +97,7 @@ async function getAllVaultEntriesFrom(orgId: string) {
   let totalPages = 0;
   let currentPage = 0;
   do {
-    let result = await client.vault.list({page: currentPage, perPage: 1});
+    const result = await client.vault.list({page: currentPage, perPage: 1});
     if (currentPage === 0) {
       totalPages = result.totalPages;
     }
@@ -119,7 +119,7 @@ function getEntriesMissingFromOrigin(
   originOrgVaultEntries: string[],
   missingVaultEntriesFromDestination: IterableIterator<VaultEntryAttributes>
 ) {
-  let missingEntriesFromOrigin = [];
+  const missingEntriesFromOrigin = [];
   for (const {vaultEntryId} of missingVaultEntriesFromDestination) {
     if (!originOrgVaultEntries.includes(vaultEntryId)) {
       missingEntriesFromOrigin.push(vaultEntryId);

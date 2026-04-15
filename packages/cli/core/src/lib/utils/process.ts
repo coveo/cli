@@ -99,16 +99,19 @@ export const handleForkedProcess = (subprocess: ChildProcess) => {
 export const readFromStdinWithTimeout = (
   timeoutMs: number
 ): Promise<string> => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     setTimeout(() => {
       reject(`Read stdin timeout after ${timeoutMs}ms`);
     }, timeoutMs);
-    const chunks: Buffer[] = [];
 
-    for await (const chunk of process.stdin) {
-      chunks.push(chunk);
-    }
+    void (async () => {
+      const chunks: Buffer[] = [];
 
-    resolve(Buffer.concat(chunks).toString('utf-8'));
+      for await (const chunk of process.stdin) {
+        chunks.push(chunk);
+      }
+
+      resolve(Buffer.concat(chunks).toString('utf-8'));
+    })();
   });
 };

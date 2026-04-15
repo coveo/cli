@@ -1,4 +1,4 @@
-import {CliUx} from '@oclif/core';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
 
 export interface FilesOrFolders {
   file?: string[]; // TODO: CDX-856: remove flag

@@ -1,6 +1,9 @@
 {
   "extends": "./tsconfig.json",
   "exclude": ["**/*.spec.ts"],
+  "compilerOptions": {
+    "rootDir": "src"
+  },
   "references": [
     {"path": "../commons/tsconfig.build.json"},
     {"path": "../commons-dev/tsconfig.build.json"}

@@ -5,8 +5,8 @@ import {
   stopSpinner,
 } from '@coveo/cli-commons/utils/ux';
 
-import {Flags} from '@oclif/core';
-import {blueBright} from 'chalk';
+import {Flags} from '@coveo/cli-commons/compat/oclif';
+import {blueBright} from '@coveo/cli-commons/compat/chalk';
 import {readJsonSync} from 'fs-extra';
 import {resolve} from 'path';
 import {cwd} from 'process';
@@ -37,7 +37,7 @@ import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {spawnProcess} from '../../../lib/utils/process';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Example} from '@oclif/core/lib/interfaces';
+import {Example} from '@coveo/cli-commons/compat/oclif';
 import {organization} from '../../../lib/flags/platformCommonFlags';
 import {getTargetOrg} from '../../../lib/utils/platform';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
@@ -77,14 +77,14 @@ export default class Pull extends CLICommand {
       description: 'Overwrite resources directory if it exists.',
       default: false,
     }),
-    resourceTypes: Flags.enum<ResourceSnapshotType>({
+    resourceTypes: Flags.option({
       char: 'r',
       helpValue: 'type1 type2',
       description: 'The resources types to pull from the organization.',
       multiple: true,
-      options: allowedResourceType,
+      options: allowedResourceType as readonly ResourceSnapshotType[],
       required: false,
-    }),
+    }) as any,
     model: Flags.custom<SnapshotPullModel>({
       parse: (input: string): Promise<SnapshotPullModel> => {
         const model = readJsonSync(resolve(input));
@@ -245,8 +245,8 @@ export default class Pull extends CLICommand {
     return flags.model
       ? flags.model.resourcesToExport
       : flags.resourceTypes?.length
-      ? buildResourcesToExport(flags.resourceTypes)
-      : await this.getAllAvailableResourceTypes();
+        ? buildResourcesToExport(flags.resourceTypes)
+        : await this.getAllAvailableResourceTypes();
   }
 
   private async getAllAvailableResourceTypes(): Promise<SnapshotPullModelResources> {

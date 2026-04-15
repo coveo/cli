@@ -4,7 +4,7 @@ import {Configuration} from '@coveo/cli-commons/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
-import {handleForkedProcess, spawnProcess} from '../utils/process';
+import {spawnProcess} from '../utils/process';
 import {
   IsAuthenticated,
   AuthenticationType,

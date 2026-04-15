@@ -1,5 +1,5 @@
-import {CliUx} from '@oclif/core';
-import {red, dim, green} from 'chalk';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
+import {red, dim, green} from '@coveo/cli-commons/compat/chalk';
 import {BuiltInTransformers, errors} from '@coveo/push-api-client';
 import {withNormalizeInvalidFields} from './commonFlags';
 import {pluralizeIfNeeded} from '@coveo/cli-commons/utils/string';

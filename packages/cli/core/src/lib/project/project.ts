@@ -6,7 +6,7 @@ import {
   rmSync,
 } from 'fs';
 import {join} from 'path';
-import {CliUx} from '@oclif/core';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
 import archiver from 'archiver';
 import {InvalidProjectError} from '../errors';
 import extract from 'extract-zip';
@@ -21,7 +21,10 @@ interface ResourceManifest {
 export class Project {
   public static readonly resourceFolderName = 'resources';
   public static readonly jsonFormat: JsonWriteOptions = {spaces: '\t'};
-  public constructor(private _pathToProject: string, orgId?: string) {
+  public constructor(
+    private _pathToProject: string,
+    orgId?: string
+  ) {
     if (!this.isCoveoProject) {
       this.makeCoveoProject(orgId);
     }
@@ -97,7 +100,7 @@ export class Project {
       if (cachedManifest) {
         writeJsonSync(this.resourceManifestPath, cachedManifest);
       }
-      CliUx.ux.error(error as string | Error);
+      return CliUx.ux.error(error as string | Error);
     }
   }
 
@@ -106,7 +109,7 @@ export class Project {
       const manifestJson =
         readJsonSync(this.resourceManifestPath, {throws: false}) ?? {};
       writeJsonSync(this.resourceManifestPath, {...manifestJson, orgId});
-    } catch (e: unknown) {
+    } catch {
       // noop
     }
   }

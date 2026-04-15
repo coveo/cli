@@ -4,6 +4,7 @@
     "outDir": "lib",
     "types": ["node", "jest"],
     "paths": {
+      "@oclif/test": ["../commons-dev/src/testUtils/oclifTestCompat"],
       "@coveo/cli-commons/*": ["../commons/src/*"],
       "@coveo/cli-commons-dev/*": ["../commons-dev/src/*"]
     }

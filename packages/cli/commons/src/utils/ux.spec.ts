@@ -1,4 +1,4 @@
-import {CliUx} from '@oclif/core';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
 import {CLICommand} from '../command/cliCommand';
 import {stderr} from 'stdout-stderr';
 import {startSpinner, stopSpinner, shouldUseColor, formatOrgId} from './ux';
@@ -28,7 +28,7 @@ describe('ux', () => {
   const originalEnv = process.env;
 
   beforeAll(() => {
-    // @oclif/core has an issue preventing the first stream write to be properly mocked.
+    // @oclif@coveo/cli-commons/compat/oclif has an issue preventing the first stream write to be properly mocked.
     // This is a bodge.
     stderr.start();
     CliUx.ux.action.start('test');

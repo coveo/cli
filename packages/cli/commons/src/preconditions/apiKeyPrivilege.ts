@@ -2,7 +2,7 @@ import PlatformClient, {
   PrivilegeEvaluatorModel,
   PrivilegeModel,
 } from '@coveo/platform-client';
-import {FlagOutput} from '@oclif/core/lib/interfaces';
+import {FlagOutput} from '@coveo/cli-commons/compat/oclif';
 import {CLICommand} from '../command/cliCommand';
 import {Config} from '../config/config';
 import globalConfig from '../config/globalConfig';
@@ -21,7 +21,7 @@ export function HasNecessaryCoveoPrivileges(
   ): Promise<void | never> {
     const {flags}: {flags: {organization?: string}} = hasGetFlagMethod(this)
       ? {flags: await this.getFlags()}
-      : await this.parse<{organization?: string}, FlagOutput, {}>(command.ctor);
+      : await this.parse(command.ctor as any);
     const authenticatedClient = new AuthenticatedClient();
     const client = await authenticatedClient.getClient();
     const {organization: target, anonymous} = await getConfiguration();

@@ -15,7 +15,7 @@ jest.mock('./middlewares/searchToken', () => {
   return originalMiddleware;
 });
 
-import {agent} from 'supertest';
+import request from 'supertest';
 import app from './app';
 import {Request, Response, NextFunction} from 'express';
 import PlatformClient, {RestUserIdType} from '@coveo/platform-client';
@@ -64,12 +64,15 @@ describe('server', () => {
           search: {
             createToken: mockedCreateToken,
           },
-        } as unknown as PlatformClient)
+        }) as unknown as PlatformClient
     );
   };
 
   beforeEach(() => {
     jest.resetModules();
+    mockedCreateToken.mockReset();
+    mockedMiddleware.mockReset();
+    mockedPlatformClient.mockReset();
     process.env = {...OLD_ENV};
     doMockPlatformClient();
   });
@@ -85,7 +88,7 @@ describe('server', () => {
     });
 
     it('should return a generic error message', async () => {
-      const res = await agent(app).get('/token');
+      const res = await request(app).get('/token');
       expect(res.body.message).toEqual('Something broke!');
     });
   });
@@ -96,11 +99,11 @@ describe('server', () => {
     });
 
     it('should return a JSON response', async () => {
-      await agent(app).get('/token').expect('Content-Type', /json/);
+      await request(app).get('/token').expect('Content-Type', /json/);
     });
 
     it('should return an error with a message', async () => {
-      const res = await agent(app).get('/token');
+      const res = await request(app).get('/token');
 
       expect(res.serverError).toBeTruthy();
       expect(res.body.message).toEqual(
@@ -121,7 +124,7 @@ describe('server', () => {
     });
 
     it('it should return an error', async () => {
-      const res = await agent(app).get('/token');
+      const res = await request(app).get('/token');
       expect(res.status).toBe(403);
       expect(res.body).not.toHaveProperty('token');
     });
@@ -138,11 +141,11 @@ describe('server', () => {
     });
 
     it('should correctly initialize the #platformClient based on environment variables', async () => {
-      await agent(app).get('/token');
+      await request(app).get('/token');
     });
 
     it('should correctly initialize the #platformClient based on environment variables', async () => {
-      await agent(app).get('/token');
+      await request(app).get('/token');
       expect(mockedPlatformClient).toHaveBeenLastCalledWith(
         expect.objectContaining({
           accessToken: 'xxx',
@@ -153,18 +156,18 @@ describe('server', () => {
     });
 
     it('should return JSON response', async () => {
-      await agent(app).get('/token').expect('Content-Type', /json/);
+      await request(app).get('/token').expect('Content-Type', /json/);
     });
 
     it('should not create multiple instances of #platformClient', async () => {
-      await agent(app).get('/token');
-      await agent(app).get('/token');
-      await agent(app).get('/token');
+      await request(app).get('/token');
+      await request(app).get('/token');
+      await request(app).get('/token');
       expect(mockedPlatformClient).toHaveBeenCalledTimes(1);
     });
 
     it('should correctly call #createToken with the appropriate arguments', async () => {
-      await agent(app).get('/token');
+      await request(app).get('/token');
       expect(mockedCreateToken).toHaveBeenLastCalledWith(
         expect.objectContaining({
           userIds: [
@@ -179,7 +182,7 @@ describe('server', () => {
     });
 
     it('should return a search token', async () => {
-      const res = await agent(app).get('/token');
+      const res = await request(app).get('/token');
       expect(res.status).toBe(200);
       expect(res.body).toEqual({token: 'this.is.a.search.token'});
     });

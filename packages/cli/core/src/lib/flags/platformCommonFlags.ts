@@ -1,5 +1,5 @@
 import {Region} from '@coveo/platform-client';
-import {Flags} from '@oclif/core';
+import {Flags} from '@coveo/cli-commons/compat/oclif';
 import {
   DEFAULT_ENVIRONMENT,
   DEFAULT_REGION,

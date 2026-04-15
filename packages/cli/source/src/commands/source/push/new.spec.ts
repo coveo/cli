@@ -32,7 +32,7 @@ describe('source:push:new', () => {
             Promise.resolve({
               source: {create: mockSourceCreate},
             }),
-        } as unknown as AuthenticatedClient)
+        }) as unknown as AuthenticatedClient
     );
   };
 

@@ -1,10 +1,31 @@
 import {
+  ResourceSnapshotsReportOperationModel,
   ResourceSnapshotsReportModel,
   ResourceSnapshotsReportResultCode,
   ResourceSnapshotsReportStatus,
   ResourceSnapshotsReportType,
   SnapshotsReportStages,
 } from '@coveo/platform-client';
+
+const buildOperation = (
+  overrides: Partial<ResourceSnapshotsReportOperationModel> = {}
+): ResourceSnapshotsReportOperationModel => ({
+  resourcesCreated: 0,
+  resourcesCreatedNames: [],
+  resourcesDeleted: 0,
+  resourcesDeletedNames: [],
+  resourcesInError: 0,
+  resourcesInErrorNames: [],
+  resourcesRecreated: 0,
+  resourcesRecreatedNames: [],
+  resourcesSynchronized: 0,
+  resourcesSynchronizedNames: [],
+  resourcesUnchanged: 0,
+  resourcesUnchangedNames: [],
+  resourcesUpdated: 0,
+  resourcesUpdatedNames: [],
+  ...overrides,
+});
 
 export const getReportWithNoProcessedResources = (
   snapshotId: string,
@@ -17,22 +38,8 @@ export const getReportWithNoProcessedResources = (
   status: ResourceSnapshotsReportStatus.Completed,
   resultCode: ResourceSnapshotsReportResultCode.Success,
   resourceOperations: {
-    EXTENSION: {
-      resourcesCreated: 0,
-      resourcesUpdated: 0,
-      resourcesRecreated: 0,
-      resourcesDeleted: 0,
-      resourcesInError: 0,
-      resourcesUnchanged: 0,
-    },
-    FIELD: {
-      resourcesCreated: 0,
-      resourcesUpdated: 0,
-      resourcesRecreated: 0,
-      resourcesDeleted: 0,
-      resourcesInError: 0,
-      resourcesUnchanged: 0,
-    },
+    EXTENSION: buildOperation(),
+    FIELD: buildOperation(),
   },
   resourceOperationResults: {},
   stagesToExecute: [],
@@ -55,22 +62,8 @@ export const getReportWithoutChanges = (
   status: ResourceSnapshotsReportStatus.Completed,
   resultCode: ResourceSnapshotsReportResultCode.Success,
   resourceOperations: {
-    EXTENSION: {
-      resourcesCreated: 0,
-      resourcesUpdated: 0,
-      resourcesRecreated: 0,
-      resourcesDeleted: 0,
-      resourcesInError: 0,
-      resourcesUnchanged: 8,
-    },
-    FIELD: {
-      resourcesCreated: 0,
-      resourcesUpdated: 0,
-      resourcesRecreated: 0,
-      resourcesDeleted: 0,
-      resourcesInError: 0,
-      resourcesUnchanged: 4,
-    },
+    EXTENSION: buildOperation({resourcesUnchanged: 8}),
+    FIELD: buildOperation({resourcesUnchanged: 4}),
   },
   resourceOperationResults: {},
   stagesToExecute: [],
@@ -114,30 +107,15 @@ export const getSuccessReport = (
   status: ResourceSnapshotsReportStatus.Completed,
   resultCode: ResourceSnapshotsReportResultCode.Success,
   resourceOperations: {
-    EXTENSION: {
+    EXTENSION: buildOperation({
       resourcesCreated: 1,
       resourcesUpdated: 1,
-      resourcesRecreated: 0,
       resourcesDeleted: 2,
-      resourcesInError: 0,
-      resourcesUnchanged: 0,
-    },
-    FIELD: {
-      resourcesCreated: 0,
+    }),
+    FIELD: buildOperation({
       resourcesUpdated: 1,
-      resourcesRecreated: 0,
-      resourcesDeleted: 0,
-      resourcesInError: 0,
-      resourcesUnchanged: 0,
-    },
-    FILTER: {
-      resourcesCreated: 0,
-      resourcesUpdated: 0,
-      resourcesRecreated: 0,
-      resourcesDeleted: 0,
-      resourcesInError: 0,
-      resourcesUnchanged: 0,
-    },
+    }),
+    FILTER: buildOperation(),
   },
   resourceOperationResults: {},
   stagesToExecute: [],
@@ -166,22 +144,14 @@ export const getErrorReport = (
     status: ResourceSnapshotsReportStatus.Completed,
     resultCode: ResourceSnapshotsReportResultCode.ResourcesInError,
     resourceOperations: {
-      EXTENSION: {
+      EXTENSION: buildOperation({
         resourcesCreated: 1,
-        resourcesUpdated: 0,
-        resourcesRecreated: 0,
         resourcesDeleted: 2,
-        resourcesInError: 0,
-        resourcesUnchanged: 0,
-      },
-      FIELD: {
-        resourcesCreated: 0,
+      }),
+      FIELD: buildOperation({
         resourcesUpdated: 1,
-        resourcesRecreated: 0,
-        resourcesDeleted: 0,
         resourcesInError: 7,
-        resourcesUnchanged: 0,
-      },
+      }),
     },
     resourceOperationResults: {
       FIELD: {
@@ -220,22 +190,14 @@ export const getMissingVaultEntryReport = (
     status: ResourceSnapshotsReportStatus.Completed,
     resultCode: ResourceSnapshotsReportResultCode.ResourcesInError,
     resourceOperations: {
-      EXTENSION: {
+      EXTENSION: buildOperation({
         resourcesCreated: 1,
-        resourcesUpdated: 0,
-        resourcesRecreated: 0,
         resourcesDeleted: 2,
-        resourcesInError: 0,
-        resourcesUnchanged: 0,
-      },
-      FIELD: {
-        resourcesCreated: 0,
+      }),
+      FIELD: buildOperation({
         resourcesUpdated: 1,
-        resourcesRecreated: 0,
-        resourcesDeleted: 0,
         resourcesInError: 7,
-        resourcesUnchanged: 0,
-      },
+      }),
     },
     resourceOperationResults: {
       FIELD: {

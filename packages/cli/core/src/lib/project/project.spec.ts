@@ -53,7 +53,7 @@ const doMockArchiver = () => {
         pipe: mockedPipe,
         directory: mockedPassDirectory,
         finalize: mockedFinalize,
-      } as unknown as Archiver)
+      }) as unknown as Archiver
   );
 };
 
@@ -185,9 +185,11 @@ describe('Project', () => {
 
       try {
         await project.compressResources();
-      } catch (error) {}
+      } catch {
+        // noop
+      }
 
-      expect(mockedWriteJSONSync).not.toBeCalled();
+      expect(mockedWriteJSONSync).not.toHaveBeenCalled();
     });
   });
 
@@ -233,8 +235,8 @@ describe('Project', () => {
 
         await project.compressResources();
 
-        expect(mockedRmSync).toBeCalledTimes(1);
-        expect(mockedWriteJSONSync).toBeCalledWith(
+        expect(mockedRmSync).toHaveBeenCalledTimes(1);
+        expect(mockedWriteJSONSync).toHaveBeenCalledWith(
           join(pathToResources, 'manifest.json'),
           expect.objectContaining({orgId: 'someOrgId'})
         );
@@ -247,8 +249,8 @@ describe('Project', () => {
 
           await project.compressResources();
 
-          expect(mockedRmSync).toBeCalledTimes(1);
-          expect(mockedWriteJSONSync).not.toBeCalled();
+          expect(mockedRmSync).toHaveBeenCalledTimes(1);
+          expect(mockedWriteJSONSync).not.toHaveBeenCalled();
         }
       );
     });
@@ -427,7 +429,7 @@ describe('Project', () => {
       fancyIt()('should overwrite the existing orgId', () => {
         mockedReadJSONSync.mockReturnValueOnce({orgId: 'foobar'});
         project.writeResourcesManifest('someOrgId');
-        expect(mockedWriteJSONSync).toBeCalledWith(
+        expect(mockedWriteJSONSync).toHaveBeenCalledWith(
           join(pathToResources, 'manifest.json'),
           expect.objectContaining({orgId: 'someOrgId'})
         );
@@ -436,7 +438,7 @@ describe('Project', () => {
       fancyIt()('should write a new manifest if none existed', () => {
         mockedReadJSONSync.mockReturnValueOnce(null);
         project.writeResourcesManifest('someOrgId');
-        expect(mockedWriteJSONSync).toBeCalledWith(
+        expect(mockedWriteJSONSync).toHaveBeenCalledWith(
           join(pathToResources, 'manifest.json'),
           expect.objectContaining({orgId: 'someOrgId'})
         );
@@ -463,8 +465,8 @@ describe('Project', () => {
 
         await project.compressResources();
 
-        expect(mockedRmSync).toBeCalledTimes(1);
-        expect(mockedWriteJSONSync).toBeCalledWith(
+        expect(mockedRmSync).toHaveBeenCalledTimes(1);
+        expect(mockedWriteJSONSync).toHaveBeenCalledWith(
           join(pathToResources, 'manifest.json'),
           expect.objectContaining({orgId: 'someOrgId'})
         );
@@ -477,8 +479,8 @@ describe('Project', () => {
 
           await project.compressResources();
 
-          expect(mockedRmSync).toBeCalledTimes(1);
-          expect(mockedWriteJSONSync).not.toBeCalled();
+          expect(mockedRmSync).toHaveBeenCalledTimes(1);
+          expect(mockedWriteJSONSync).not.toHaveBeenCalled();
         }
       );
     });

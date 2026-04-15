@@ -1,10 +1,10 @@
-import {getProjectFromWorkspace} from '@angular/cdk/schematics';
 import {getWorkspace} from '@schematics/angular/utility/workspace';
 import {ProjectType} from '@schematics/angular/utility/workspace-models';
 import {Rule, Tree, SchematicContext} from '@angular-devkit/schematics';
 
 import {RunSchematicTask} from '@angular-devkit/schematics/tasks';
 import {CoveoSchema} from '../schema';
+import {getProjectFromWorkspace} from '../common-rules/project';
 
 export default function (options: CoveoSchema): Rule {
   return async (tree: Tree, context: SchematicContext) => {

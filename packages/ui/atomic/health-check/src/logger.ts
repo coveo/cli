@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import chalk from './chalk.js';
 
 export function log(...messages: string[]) {
   for (const message of messages) {

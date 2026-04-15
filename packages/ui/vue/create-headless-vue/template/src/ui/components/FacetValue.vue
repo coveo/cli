@@ -27,7 +27,7 @@ export default {
     return {
       checkbox,
       label: computed(
-        () => `${this.facetValue.value} (${this.facetValue.numberOfResults})`
+        () => `${this.facetValue.value} (${this.facetValue.numberOfResults})`,
       ),
     };
   },

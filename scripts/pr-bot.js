@@ -9,7 +9,7 @@ const reportTitle = 'Pull Request Report';
 
 async function main() {
   const report = await buildReport();
-  sendReport(report);
+  await sendReport(report);
 }
 
 async function buildReport() {
@@ -27,9 +27,11 @@ async function sendReport(report) {
   const comments = await getPullRequestComments();
   const comment = findBundleSizeComment(comments.data);
 
-  comment
-    ? updatePullRequestComment(comment.id, report)
-    : createPullRequestComment(report);
+  if (comment) {
+    await updatePullRequestComment(comment.id, report);
+  } else {
+    await createPullRequestComment(report);
+  }
 }
 
 function findBundleSizeComment(comments) {

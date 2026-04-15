@@ -7,7 +7,7 @@ import isEnvValid from "../commons/isEnvValid.js";
 export default (config: Record<string, string>) => {
   if (!isEnvValid(config)) {
     console.error(
-      'Make sure to configure the environment variables in the ".env" file. Refer to the README to set up the server.'
+      'Make sure to configure the environment variables in the ".env" file. Refer to the README to set up the server.',
     );
     return { name: "coveo-invalid" };
   }

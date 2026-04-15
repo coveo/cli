@@ -10,7 +10,7 @@ import {test} from '@oclif/test';
 import {Config} from '@coveo/cli-commons/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {PlatformEnvironment} from '@coveo/cli-commons/platform/environment';
-import {CliUx} from '@oclif/core';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
 import {readFromStdinWithTimeout} from '../../../lib/lib/utils/process';
 const mockedConfig = jest.mocked(Config);
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
@@ -40,7 +40,7 @@ describe('auth:token', () => {
         ({
           getAllOrgsUserHasAccessTo: mockListOrgs,
           getUserHasAccessToOrg: mockGetHasAccessToOrg,
-        } as unknown as AuthenticatedClient)
+        }) as unknown as AuthenticatedClient
     );
 
     mockedConfig.mockImplementation(
@@ -48,7 +48,7 @@ describe('auth:token', () => {
         ({
           get: mockConfigGet,
           set: mockConfigSet,
-        } as unknown as Config)
+        }) as unknown as Config
     );
   });
 

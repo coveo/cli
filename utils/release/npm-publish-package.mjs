@@ -62,8 +62,8 @@ const isPrerelease = process.env.IS_PRERELEASE === 'true';
   const versionPrefix = `${packageJson.name}@`;
   const convention = await angularChangelogConvention;
   // TODO: CDX-1147 Remove catch
-  const lastTag = await getLastTag(versionPrefix).catch(() =>
-    getLastTag('release-')
+  const lastTag = await getLastTag({prefix: versionPrefix}).catch(() =>
+    getLastTag({prefix: 'release-'})
   );
   const commits = await getCommits(PATH, lastTag);
   if (commits.length === 0 && !hasPackageJsonChanged(PATH)) {

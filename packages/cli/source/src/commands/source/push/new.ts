@@ -1,6 +1,6 @@
 import {SourceType} from '@coveo/platform-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {green} from 'chalk';
+import {green} from '@coveo/cli-commons/compat/chalk';
 import dedent from 'ts-dedent';
 import {
   HasNecessaryCoveoPrivileges,
@@ -20,7 +20,7 @@ export default class SourcePushNew extends CLICommand {
     ...withSourceVisibility(),
   };
 
-  public static args = [
+  public static args: any = [
     {
       name: 'name',
       description: 'The name of the source to create.',

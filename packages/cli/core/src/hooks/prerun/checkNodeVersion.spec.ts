@@ -1,47 +1,46 @@
-import {test} from '@oclif/test';
+import hook from './checkNodeVersion';
 
 describe('hooks:checkNodeVersion', () => {
   const originalNodeVersion = process.version;
+
   const setProcessNodeVersion = (version: string) => {
     Object.defineProperty(process, 'version', {
+      configurable: true,
+      enumerable: true,
       value: version,
       writable: false,
-      enumerable: true,
-      configurable: true,
     });
   };
 
-  afterEach(async () => {
+  afterEach(() => {
     setProcessNodeVersion(originalNodeVersion);
-    // Oclif logger run with a 50ms delay this ensure the logger finish its job between each tests.
-    await new Promise((resolve) => setTimeout(resolve, 100));
   });
 
-  test
-    .stdout()
-    .stderr()
-    .do(() => {
-      setProcessNodeVersion('v18.1.0');
-    })
-    .command(['help'])
-    .it('should fail when the Node version is not supported', ({stdout}) => {
-      expect(stdout).toContain('Coveo CLI might malfunction');
-      expect(stdout).toContain(
-        'Please update your NodeJS installation to the latest LTS version.'
-      );
+  it('should fail when the Node version is not supported', async () => {
+    const warn = jest.fn();
+    setProcessNodeVersion('v18.1.0');
+
+    await hook.call({
+      config: {pjson: {engines: {node: '^24.0.0'}}},
+      warn,
     });
 
-  test
-    .stdout()
-    .stderr()
-    .do(() => {
-      setProcessNodeVersion('v18.18.1');
-    })
-    .command(['help'])
-    .it('should not fail when the Node version is supported', ({stdout}) => {
-      expect(stdout).not.toContain('Coveo CLI might malfunction');
-      expect(stdout).not.toContain(
-        'Please update your NodeJS installation to the latest LTS version.'
-      );
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0][0]).toContain('Coveo CLI might malfunction');
+    expect(warn.mock.calls[0][0]).toContain(
+      'Please update your NodeJS installation to the latest LTS version.'
+    );
+  });
+
+  it('should not fail when the Node version is supported', async () => {
+    const warn = jest.fn();
+    setProcessNodeVersion('v24.14.0');
+
+    await hook.call({
+      config: {pjson: {engines: {node: '^24.0.0'}}},
+      warn,
     });
+
+    expect(warn).not.toHaveBeenCalled();
+  });
 });

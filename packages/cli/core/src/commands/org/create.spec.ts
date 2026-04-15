@@ -22,7 +22,7 @@ const mockAuthenticatedClient = () => {
       ({
         getClient: () =>
           Promise.resolve({organization: {create: mockedCreate}}),
-      } as unknown as AuthenticatedClient)
+      }) as unknown as AuthenticatedClient
   );
 };
 
@@ -32,7 +32,7 @@ const mockConfig = () => {
       ({
         set: mockConfigSet,
         get: mockConfigGet,
-      } as unknown as Config)
+      }) as unknown as Config
   );
 };
 

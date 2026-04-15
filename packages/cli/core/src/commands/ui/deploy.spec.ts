@@ -41,8 +41,8 @@ const actualValidate = jest.requireActual('jsonschema').validate;
 type DeepPartial<T> = T extends Function
   ? T
   : T extends object
-  ? {[P in keyof T]?: DeepPartial<T[P]>}
-  : T;
+    ? {[P in keyof T]?: DeepPartial<T[P]>}
+    : T;
 
 const validJsonConfig: DeployConfig = {
   name: 'my page',
@@ -152,7 +152,7 @@ describe('ui:deploy', () => {
               })
             ),
           cfg: mockedConfig.getMockImplementation()!('./'),
-        } as unknown as AuthenticatedClient)
+        }) as unknown as AuthenticatedClient
     );
   };
   const doMockPlatformClient = () => {
@@ -167,7 +167,7 @@ describe('ui:deploy', () => {
               items: [],
             }),
           },
-        } as unknown as PlatformClient)
+        }) as unknown as PlatformClient
     );
   };
 
@@ -484,7 +484,7 @@ describe('ui:deploy', () => {
       .it(
         'when no page id argument is passed and a page with the same name already exists, it should ask the user for confirmation',
         () => {
-          expect(mockedConfirm).toBeCalled();
+          expect(mockedConfirm).toHaveBeenCalled();
         }
       );
 
@@ -522,7 +522,7 @@ describe('ui:deploy', () => {
       .it(
         'when no page id argument is passed, a page with the same name already exists, the user declines the overwrite, it should not call hostedPages.update',
         () => {
-          expect(mockHostedPageUpdate).not.toBeCalled();
+          expect(mockHostedPageUpdate).not.toHaveBeenCalled();
         }
       );
 

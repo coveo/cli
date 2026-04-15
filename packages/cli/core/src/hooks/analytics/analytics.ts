@@ -1,5 +1,5 @@
 import type {Event} from '@amplitude/analytics-types';
-import {Interfaces} from '@oclif/core';
+import {Interfaces} from '@coveo/cli-commons/compat/oclif';
 import {
   AuthenticatedClient,
   AuthenticationStatus,

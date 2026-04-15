@@ -129,7 +129,7 @@ describe('auth:login', () => {
         ({
           getAllOrgsUserHasAccessTo: mockListOrgs,
           getUserHasAccessToOrg: jest.fn().mockResolvedValue(true),
-        } as unknown as AuthenticatedClient)
+        }) as unknown as AuthenticatedClient
     );
 
     mockedConfig.mockImplementation(
@@ -137,7 +137,7 @@ describe('auth:login', () => {
         ({
           get: mockConfigGet,
           set: mockConfigSet,
-        } as unknown as Config)
+        }) as unknown as Config
     );
   });
 

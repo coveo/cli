@@ -53,7 +53,7 @@ describe('validate', () => {
         fancyIt()('should call the ErrorConstructor with true', () => {
           try {
             validateSnapshotPullModel({}, true);
-          } catch (error) {
+          } catch {
             expect(mockedUnknownSPMValidationError).toHaveBeenCalledWith(true);
           }
         });
@@ -63,7 +63,7 @@ describe('validate', () => {
         fancyIt()('should call the ErrorConstructor with false', () => {
           try {
             validateSnapshotPullModel({}, false);
-          } catch (error) {
+          } catch {
             expect(mockedUnknownSPMValidationError).toHaveBeenCalledWith(false);
           }
         });
@@ -73,7 +73,7 @@ describe('validate', () => {
         fancyIt()('should call the ErrorConstructor with false', () => {
           try {
             validateSnapshotPullModel({}, false);
-          } catch (error) {
+          } catch {
             expect(mockedUnknownSPMValidationError).toHaveBeenCalledWith(false);
           }
         });

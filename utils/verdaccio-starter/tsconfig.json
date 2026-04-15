@@ -4,10 +4,13 @@
     "skipLibCheck": true,
     "declaration": true,
     "declarationDir": "dist",
+    "lib": ["ESNext"],
     "module": "Node16",
     "moduleResolution": "node16",
+    "rootDir": "src",
     "target": "ESNext",
-    "sourceMap": true
+    "sourceMap": true,
+    "types": ["node"]
   },
   "exclude": ["node_modules"],
   "include": ["src"]
