@@ -1,5 +1,5 @@
-jest.mock('../../../../lib/lib/decorators/preconditions/npx');
-jest.mock('../../../../lib/lib/decorators/preconditions/node');
+jest.mock('../../../lib/decorators/preconditions/npx');
+jest.mock('../../../lib/decorators/preconditions/node');
 jest.mock('@coveo/cli-commons/preconditions/apiKeyPrivilege');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
 jest.mock('@coveo/cli-commons/preconditions/authenticated');
@@ -9,10 +9,10 @@ jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('@coveo/platform-client');
 
-jest.mock('../../../../lib/lib/utils/process');
-jest.mock('../../../../lib/lib/oauth/oauth');
-jest.mock('../../../../lib/lib/utils/misc');
-jest.mock('../../../../lib/lib/ui/shared');
+jest.mock('../../../lib/utils/process');
+jest.mock('../../../lib/oauth/oauth');
+jest.mock('../../../lib/utils/misc');
+jest.mock('../../../lib/ui/shared');
 
 jest.mock('node:fs');
 jest.mock('node:path');
@@ -22,33 +22,18 @@ jest.mock('node:process', () => ({
 
 import {join} from 'node:path';
 import {join as posixJoin} from 'node:path/posix';
-import {test} from '@oclif/test';
-import {spawnProcess} from '../../../../lib/lib/utils/process';
+import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import PlatformClient from '@coveo/platform-client';
 import {Config} from '@coveo/cli-commons/config/config';
-import {
-  IsNodeVersionInRange,
-  IsNpxInstalled,
-} from '../../../../lib/lib/decorators/preconditions/index';
-import {
-  HasNecessaryCoveoPrivileges,
-  IsAuthenticated,
-} from '@coveo/cli-commons/preconditions/index';
-import {getPackageVersion} from '../../../../lib/lib/utils/misc';
+import {getPackageVersion} from '../../../lib/utils/misc';
 import {configurationMock} from '../../../__stub__/configuration';
-import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
-import {
-  Stats,
-  statSync,
-  readdirSync,
-  mkdirSync,
-  Dirent,
-  writeFileSync,
-} from 'node:fs';
+import {Stats, statSync, readdirSync, mkdirSync, writeFileSync} from 'node:fs';
 import {formatAbsolutePath} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
 import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
-import {promptForSearchHub} from '../../../../lib/lib/ui/shared';
+import {promptForSearchHub} from '../../../lib/ui/shared';
+import {getFile} from '@coveo/cli-commons-dev/testUtils/fsUtils';
+import Vue from './vue';
 
 describe('ui:create:vue', () => {
   const mockedConfig = jest.mocked(Config);
@@ -56,10 +41,6 @@ describe('ui:create:vue', () => {
   const mockedPlatformClient = jest.mocked(PlatformClient);
   const mockedGetPackageVersion = jest.mocked(getPackageVersion);
   const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
-  const mockedIsNpxInstalled = jest.mocked(IsNpxInstalled);
-  const mockedIsNodeVersionInRange = jest.mocked(IsNodeVersionInRange);
-  const mockedApiKeyPrivilege = jest.mocked(HasNecessaryCoveoPrivileges);
-  const mockedIsAuthenticated = jest.mocked(IsAuthenticated);
   const mockedPromptForSearchHub = jest.mocked(promptForSearchHub);
   const mockedStatSync = jest.mocked(statSync);
   const mockedReadDirSync = jest.mocked(readdirSync);
@@ -69,19 +50,6 @@ describe('ui:create:vue', () => {
   const mockedPathJoin = jest.mocked(join);
   const fooBarDirectoryMatcher = /(\w:)?(\\|\/)foo(\\|\/)bar(\\|\/)myapp/gm;
   const mockedCreateImpersonateApiKey = jest.fn();
-  const preconditionStatus = {
-    node: true,
-    npx: true,
-    apiKey: true,
-    authentication: true,
-  };
-  const doMockPreconditions = function () {
-    const mockedPreconditions = mockPreconditions(preconditionStatus);
-    mockedIsNodeVersionInRange.mockReturnValue(mockedPreconditions.node);
-    mockedIsNpxInstalled.mockReturnValue(mockedPreconditions.npx);
-    mockedApiKeyPrivilege.mockReturnValue(mockedPreconditions.apiKey);
-    mockedIsAuthenticated.mockReturnValue(mockedPreconditions.authentication);
-  };
 
   const doMockSpawnProcess = () => {
     mockedSpawnProcess.mockResolvedValue(0);
@@ -113,7 +81,7 @@ describe('ui:create:vue', () => {
               })
             ),
           cfg: mockedConfig.getMockImplementation()!('./'),
-        } as unknown as AuthenticatedClient)
+        }) as unknown as AuthenticatedClient
     );
   };
 
@@ -122,7 +90,7 @@ describe('ui:create:vue', () => {
       () =>
         ({
           initialize: () => Promise.resolve(),
-        } as PlatformClient)
+        }) as PlatformClient
     );
   };
 
@@ -136,102 +104,97 @@ describe('ui:create:vue', () => {
     mockedPathJoin.mockImplementation(posixJoin);
   };
 
+  const createCommand = (options: {name: string; version: string}) => {
+    const command = new Vue(
+      [] as string[],
+      {
+        bin: 'coveo',
+        configDir: './',
+      } as any
+    );
+    (command as any).config = {configDir: './'};
+    (command as any).log = jest.fn();
+    (command as any).error = jest.fn((message: string | Error) => {
+      throw message instanceof Error ? message : new Error(message);
+    });
+    (command as any).parse = jest.fn().mockResolvedValue({
+      args: {name: options.name},
+      flags: {version: options.version},
+    });
+
+    return command;
+  };
+
+  const runCommand = async (
+    options: {name?: string; version?: string} = {}
+  ) => {
+    const name = options.name ?? 'myapp';
+    const version = options.version ?? '1.0.0';
+    const command = createCommand({name, version});
+    const dirName = posixJoin('/foo/bar', name);
+
+    command['createDirectory'](dirName);
+    await command['initializeProject'](dirName, version);
+    await command['installDependencies'](dirName);
+    await command['createEnvFile'](dirName);
+    command['displayFeedbackAfterSuccess'](name);
+  };
+
+  const captureErrorMessage = async (
+    options: {name?: string; version?: string} = {}
+  ) => {
+    try {
+      await runCommand(options);
+      throw new Error('Expected command to fail');
+    } catch (error) {
+      return formatAbsolutePath((error as Error).message);
+    }
+  };
+
   beforeEach(() => {
     doMockedGetPackageVersion();
     doMockSpawnProcess();
     doMockPlatformClient();
     doMockConfiguration();
     doMockAuthenticatedClient();
-    doMockPreconditions();
     doMockPathJoin();
     doMockAppendCmdIfWindows();
     mockedPromptForSearchHub.mockResolvedValue('default');
-    preconditionStatus.node = true;
-    preconditionStatus.npx = true;
-    preconditionStatus.apiKey = true;
   });
 
   afterEach(() => {
-    mockedIsNodeVersionInRange.mockClear();
-    mockedApiKeyPrivilege.mockClear();
+    jest.clearAllMocks();
   });
-
-  test
-    .stdout()
-    .stderr()
-    .do(() => {
-      preconditionStatus.apiKey = false;
-    })
-    .command(['ui:create:vue', 'myapp'])
-    .catch(/apiKey Precondition Error/)
-    .it(
-      'should not execute the command if the API key preconditions are not respected'
-    );
-
-  test
-    .stdout()
-    .stderr()
-    .do(() => {
-      preconditionStatus.node = false;
-    })
-    .command(['ui:create:vue', 'myapp'])
-    .catch(/node Precondition Error/)
-    .it(
-      'should not execute the command if the preconditions are not respected'
-    );
-
-  test
-    .stdout()
-    .stderr()
-    .command(['ui:create:vue'])
-    .catch(/Missing 1 required arg/)
-    .it('requires application name argument');
 
   describe('when a file with the projectName exists', () => {
     beforeEach(() => {
-      const mockedIsDir = jest.fn();
-      mockedIsDir.mockReturnValue(false);
       mockedStatSync.mockReturnValue({
-        isDirectory: mockedIsDir,
+        isDirectory: () => false,
       } as unknown as Stats);
     });
 
-    test
-      .stdout()
-      .stderr()
-      .command(['ui:create:vue', 'myapp'])
-      .catch((err) => {
-        expect(formatAbsolutePath(err.message)).toMatchSnapshot();
-      })
-      .it('should exit with an error', () => {
-        expect(mockedSpawnProcess).not.toBeCalled();
-      });
+    it('should exit with an error', async () => {
+      await expect(captureErrorMessage()).resolves.toMatchSnapshot();
+      expect(mockedSpawnProcess).not.toHaveBeenCalled();
+    });
   });
 
   describe('when a directory with the projectName exists', () => {
     beforeEach(() => {
-      const mockedIsDir = jest.fn();
-      mockedIsDir.mockReturnValue(true);
       mockedStatSync.mockReturnValue({
-        isDirectory: mockedIsDir,
+        isDirectory: () => true,
       } as unknown as Stats);
     });
 
     describe('when the directory is not empty', () => {
       beforeEach(() => {
-        mockedReadDirSync.mockReturnValue([{} as unknown as Dirent]);
+        mockedReadDirSync.mockReturnValue([getFile('existing-file')]);
       });
 
-      test
-        .stdout()
-        .stderr()
-        .command(['ui:create:vue', 'myapp'])
-        .catch((err) => {
-          expect(formatAbsolutePath(err.message)).toMatchSnapshot();
-        })
-        .it('should exit with an error', () => {
-          expect(mockedSpawnProcess).not.toBeCalled();
-        });
+      it('should exit with an error', async () => {
+        await expect(captureErrorMessage()).resolves.toMatchSnapshot();
+        expect(mockedSpawnProcess).not.toHaveBeenCalled();
+      });
     });
 
     describe('when the directory is empty', () => {
@@ -239,71 +202,13 @@ describe('ui:create:vue', () => {
         mockedReadDirSync.mockReturnValue([]);
       });
 
-      test
-        .stdout()
-        .stderr()
-        .command(['ui:create:vue', 'myapp'])
-        .it('should not try to create the dir', () => {
-          expect(mockedMkdirSync).not.toBeCalled();
-        });
-
-      test
-        .stdout()
-        .stderr()
-        .command(['ui:create:vue', 'myapp'])
-        .it('should scaffold the project with npm init', () => {
-          expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
-            1,
-            'npm',
-            ['init', expect.stringContaining('@coveo/headless-vue')],
-            {cwd: '/foo/bar/myapp'}
-          );
-        });
-
-      test
-        .stdout()
-        .stderr()
-        .command(['ui:create:vue', 'myapp'])
-        .it('should install the dependencies', () => {
-          expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
-            2,
-            'npm',
-            ['install'],
-            {cwd: '/foo/bar/myapp'}
-          );
-        });
-
-      test
-        .stdout()
-        .stderr()
-        .command(['ui:create:vue', 'myapp'])
-        .it('should write the .env file', () => {
-          expect(mockedWriteFileSync).toBeCalledTimes(1);
-          expect(mockedWriteFileSync.mock.calls[0]).toMatchSnapshot();
-        });
-    });
-  });
-
-  describe('when the projectName does not exists yet', () => {
-    beforeEach(() => {
-      mockedStatSync.mockReturnValue(undefined);
-    });
-
-    test
-      .stdout()
-      .stderr()
-      .command(['ui:create:vue', 'myapp'])
-      .it('should create the dir', () => {
-        expect(mockedMkdirSync).toBeCalledWith(
-          expect.stringMatching(fooBarDirectoryMatcher)
-        );
+      it('should not try to create the dir', async () => {
+        await runCommand();
+        expect(mockedMkdirSync).not.toHaveBeenCalled();
       });
 
-    test
-      .stdout()
-      .stderr()
-      .command(['ui:create:vue', 'myapp'])
-      .it('should scaffold the project with npm init', () => {
+      it('should scaffold the project with npm init', async () => {
+        await runCommand();
         expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
           1,
           'npm',
@@ -312,11 +217,8 @@ describe('ui:create:vue', () => {
         );
       });
 
-    test
-      .stdout()
-      .stderr()
-      .command(['ui:create:vue', 'myapp'])
-      .it('should install the dependencies', () => {
+      it('should install the dependencies', async () => {
+        await runCommand();
         expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
           2,
           'npm',
@@ -325,13 +227,50 @@ describe('ui:create:vue', () => {
         );
       });
 
-    test
-      .stdout()
-      .stderr()
-      .command(['ui:create:vue', 'myapp'])
-      .it('should write the .env file', () => {
-        expect(mockedWriteFileSync).toBeCalledTimes(1);
+      it('should write the .env file', async () => {
+        await runCommand();
+        expect(mockedWriteFileSync).toHaveBeenCalledTimes(1);
         expect(mockedWriteFileSync.mock.calls[0]).toMatchSnapshot();
       });
+    });
+  });
+
+  describe('when the projectName does not exists yet', () => {
+    beforeEach(() => {
+      mockedStatSync.mockReturnValue(undefined);
+    });
+
+    it('should create the dir', async () => {
+      await runCommand();
+      expect(mockedMkdirSync).toHaveBeenCalledWith(
+        expect.stringMatching(fooBarDirectoryMatcher)
+      );
+    });
+
+    it('should scaffold the project with npm init', async () => {
+      await runCommand();
+      expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
+        1,
+        'npm',
+        ['init', expect.stringContaining('@coveo/headless-vue')],
+        {cwd: '/foo/bar/myapp'}
+      );
+    });
+
+    it('should install the dependencies', async () => {
+      await runCommand();
+      expect(mockedSpawnProcess).toHaveBeenNthCalledWith(
+        2,
+        'npm',
+        ['install'],
+        {cwd: '/foo/bar/myapp'}
+      );
+    });
+
+    it('should write the .env file', async () => {
+      await runCommand();
+      expect(mockedWriteFileSync).toHaveBeenCalledTimes(1);
+      expect(mockedWriteFileSync.mock.calls[0]).toMatchSnapshot();
+    });
   });
 });

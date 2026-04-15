@@ -1,7 +1,7 @@
 jest.mock('../config/config');
 jest.mock('@coveo/platform-client');
 jest.mock('../config/globalConfig');
-import {Interfaces} from '@oclif/core';
+import {Interfaces} from '@coveo/cli-commons/compat/oclif';
 import {
   AuthenticatedClient,
   AuthenticationStatus,
@@ -38,7 +38,7 @@ describe('AuthenticatedClient', () => {
     () =>
       ({
         get: mockGet,
-      } as unknown as Config)
+      }) as unknown as Config
   );
   mockPlatformClient.mockImplementation(
     () =>
@@ -50,7 +50,7 @@ describe('AuthenticatedClient', () => {
         user: {
           get: mockGetUser,
         },
-      } as unknown as PlatformClient)
+      }) as unknown as PlatformClient
   );
 
   beforeAll(() => {

@@ -41,7 +41,7 @@ describe('org:list', () => {
       () =>
         ({
           getAllOrgsUserHasAccessTo: mockGetOrgs,
-        } as unknown as AuthenticatedClient)
+        }) as unknown as AuthenticatedClient
     );
     doMockPreconditions();
   });

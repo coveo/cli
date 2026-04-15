@@ -8,7 +8,7 @@ import {VaultHandler} from './vaultHandler';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
 import open from 'open';
-import {CliUx} from '@oclif/core';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
 import {ProcessAbort} from '../errors/processError';
 import {stdout, stderr} from 'stdout-stderr';
 
@@ -29,7 +29,7 @@ const doMockAuthenticatedClient = () => {
     () =>
       ({
         getClient: () => Promise.resolve({vault: {create: mockedCreate}}),
-      } as unknown as AuthenticatedClient)
+      }) as unknown as AuthenticatedClient
   );
 };
 
@@ -96,7 +96,7 @@ describe('VaultHandler', () => {
     });
 
     it('#createEntries should prompt instructions for the user', () => {
-      expect(mockedPrompt).toBeCalledTimes(1);
+      expect(mockedPrompt).toHaveBeenCalledTimes(1);
       expect(mockedPrompt.mock.lastCall).toMatchSnapshot();
     });
 
@@ -105,7 +105,7 @@ describe('VaultHandler', () => {
     });
 
     it('#createEntries should delete file', () => {
-      expect(mockedRmSync).toBeCalledWith(
+      expect(mockedRmSync).toHaveBeenCalledWith(
         expect.stringContaining(vaultEntryFile)
       );
     });

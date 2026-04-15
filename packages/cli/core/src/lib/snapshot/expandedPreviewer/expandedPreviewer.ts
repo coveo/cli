@@ -4,7 +4,7 @@ import type {
 } from '@coveo/platform-client';
 import {existsSync, mkdirSync, readdirSync, rmSync} from 'node:fs';
 import {join, relative, resolve} from 'node:path';
-import {CliUx} from '@oclif/core';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
 import {Project} from '../../project/project';
 import {spawnProcess, spawnProcessOutput} from '../../utils/process';
 import {SnapshotFactory} from '../snapshotFactory';

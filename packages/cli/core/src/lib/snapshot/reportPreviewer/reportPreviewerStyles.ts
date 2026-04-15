@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import chalk from '@coveo/cli-commons/compat/chalk';
 
 export const ReportViewerStyles = {
   green: (txt: string) => chalk.green(txt),

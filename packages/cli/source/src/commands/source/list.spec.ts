@@ -57,7 +57,7 @@ describe('source:push:list', () => {
             get: () => ({organization: 'foo'}),
           },
           getClient: () => Promise.resolve({source: {list: mockListSources}}),
-        } as unknown as AuthenticatedClient)
+        }) as unknown as AuthenticatedClient
     );
     doMockPreconditions();
     doMockListSource();

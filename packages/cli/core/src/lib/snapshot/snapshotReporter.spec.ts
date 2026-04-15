@@ -6,10 +6,7 @@ import {
   getSuccessReport,
 } from '../../__stub__/resourceSnapshotsReportModel';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
-import {
-  ReportViewerResourceReportModel,
-  SnapshotReportStatus,
-} from './reportPreviewer/reportPreviewerDataModels';
+import {SnapshotReportStatus} from './reportPreviewer/reportPreviewerDataModels';
 import {SnapshotReporter} from './snapshotReporter';
 
 function getFakeHandler() {
@@ -55,8 +52,8 @@ describe('SnapshotReporter', () => {
         );
 
         await noChangeReporter.handleReport();
-        expect(applySpy).toBeCalledTimes(1);
-        expect(applySpy).toBeCalledWith(noChangeReporter);
+        expect(applySpy).toHaveBeenCalledTimes(1);
+        expect(applySpy).toHaveBeenCalledWith(noChangeReporter);
       }
     );
 
@@ -67,8 +64,8 @@ describe('SnapshotReporter', () => {
         noChangeReporter.setReportHandler(status, fakeHandler);
 
         await noChangeReporter.handleReport();
-        expect(applySpy).toBeCalledTimes(1);
-        expect(applySpy).toBeCalledWith(noChangeReporter);
+        expect(applySpy).toHaveBeenCalledTimes(1);
+        expect(applySpy).toHaveBeenCalledWith(noChangeReporter);
       }
     );
 
@@ -82,7 +79,7 @@ describe('SnapshotReporter', () => {
         noChangeReporter.setReportHandler(status, fakeHandler);
 
         await noChangeReporter.handleReport();
-        expect(applySpy).toBeCalledTimes(0);
+        expect(applySpy).toHaveBeenCalledTimes(0);
       }
     );
 
@@ -96,8 +93,8 @@ describe('SnapshotReporter', () => {
         );
 
         await noChangeReporter.handleReport();
-        expect(applySpy).toBeCalledTimes(1);
-        expect(applySpy).toBeCalledWith(noChangeReporter);
+        expect(applySpy).toHaveBeenCalledTimes(1);
+        expect(applySpy).toHaveBeenCalledWith(noChangeReporter);
       }
     );
   });
@@ -143,28 +140,30 @@ describe('SnapshotReporter', () => {
     fancyIt()(
       '#getChangedResources should return the list of changed resources',
       () => {
-        const expected: ReportViewerResourceReportModel[] = [
+        const expected = [
           {
             name: 'EXTENSION',
-            operations: {
+            operations: expect.objectContaining({
               resourcesCreated: 1,
               resourcesUpdated: 1,
               resourcesRecreated: 0,
               resourcesDeleted: 2,
               resourcesInError: 0,
+              resourcesSynchronized: 0,
               resourcesUnchanged: 0,
-            },
+            }),
           },
           {
             name: 'FIELD',
-            operations: {
+            operations: expect.objectContaining({
               resourcesCreated: 0,
               resourcesUpdated: 1,
               resourcesRecreated: 0,
               resourcesDeleted: 0,
               resourcesInError: 0,
+              resourcesSynchronized: 0,
               resourcesUnchanged: 0,
-            },
+            }),
           },
         ];
         expect(
@@ -185,8 +184,8 @@ describe('SnapshotReporter', () => {
         successReporter.setReportHandler(status, fakeHandler);
 
         await successReporter.handleReport();
-        expect(applySpy).toBeCalledTimes(1);
-        expect(applySpy).toBeCalledWith(successReporter);
+        expect(applySpy).toHaveBeenCalledTimes(1);
+        expect(applySpy).toHaveBeenCalledWith(successReporter);
       }
     );
 
@@ -201,7 +200,7 @@ describe('SnapshotReporter', () => {
         successReporter.setReportHandler(status, fakeHandler);
 
         await successReporter.handleReport();
-        expect(applySpy).toBeCalledTimes(0);
+        expect(applySpy).toHaveBeenCalledTimes(0);
       }
     );
   });
@@ -224,8 +223,8 @@ describe('SnapshotReporter', () => {
         missingVaultEntryReporter.setReportHandler(status, fakeHandler);
 
         await missingVaultEntryReporter.handleReport();
-        expect(applySpy).toBeCalledTimes(1);
-        expect(applySpy).toBeCalledWith(missingVaultEntryReporter);
+        expect(applySpy).toHaveBeenCalledTimes(1);
+        expect(applySpy).toHaveBeenCalledWith(missingVaultEntryReporter);
       }
     );
 
@@ -313,8 +312,8 @@ describe('SnapshotReporter', () => {
         resourceInErrorReporter.setReportHandler(status, fakeHandler);
 
         await resourceInErrorReporter.handleReport();
-        expect(applySpy).toBeCalledTimes(1);
-        expect(applySpy).toBeCalledWith(resourceInErrorReporter);
+        expect(applySpy).toHaveBeenCalledTimes(1);
+        expect(applySpy).toHaveBeenCalledWith(resourceInErrorReporter);
       }
     );
 

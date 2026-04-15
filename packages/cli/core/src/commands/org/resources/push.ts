@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags} from '@oclif/core';
+import {Flags} from '@coveo/cli-commons/compat/oclif';
 import {formatOrgId, startSpinner} from '@coveo/cli-commons/utils/ux';
 import {
   HasNecessaryCoveoPrivileges,
@@ -31,7 +31,7 @@ import {
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {confirmWithAnalytics} from '../../../lib/utils/cli';
 import {SnapshotReportStatus} from '../../../lib/snapshot/reportPreviewer/reportPreviewerDataModels';
-import {Example} from '@oclif/core/lib/interfaces';
+import {Example} from '@coveo/cli-commons/compat/oclif';
 import {getTargetOrg} from '../../../lib/utils/platform';
 import {organization} from '../../../lib/flags/platformCommonFlags';
 

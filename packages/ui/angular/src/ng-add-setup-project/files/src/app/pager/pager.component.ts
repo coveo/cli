@@ -33,7 +33,6 @@ export class PagerComponent implements OnInit {
     if (!this.headlessResultPerPage.isSetTo(event.pageSize)) {
       // If page size change
       this.headlessResultPerPage.set(event.pageSize);
-      this;
     } else {
       this.headlessPager.selectPage(event.pageIndex + 1);
     }

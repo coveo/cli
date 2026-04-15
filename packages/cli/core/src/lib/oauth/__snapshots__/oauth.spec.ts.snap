@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`OAuth should throw an OAuthBusyError if both OAuth ports are busy 1`] = `
 "TCP port 32111 and 52296 are both busy.

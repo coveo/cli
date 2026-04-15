@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`npf when a packageName cannot be resolved by npa should throw an InternalError 1`] = `
 "Internal CLI Error, please report to Coveo

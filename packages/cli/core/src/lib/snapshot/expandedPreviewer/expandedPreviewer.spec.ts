@@ -2,7 +2,7 @@ jest.mock('node:fs');
 jest.mock('@coveo/cli-commons/utils/ux');
 
 const mockedUxInfo = jest.fn();
-jest.mock('@oclif/core', () => ({
+jest.mock('@coveo/cli-commons/compat/oclif', () => ({
   CliUx: {
     ux: {info: mockedUxInfo},
   },
@@ -54,7 +54,7 @@ describe('ExpandedPreviewer', () => {
 
   let nbOfExistingPreview: number;
   const mockExistingPreviews = () => {
-    const dirs = new Array<Dirent>();
+    const dirs: Dirent<any>[] = [];
     for (let i = 0; i < nbOfExistingPreview; i++) {
       dirs.push(getDirectory(`someOrgId-${i}`));
     }
@@ -72,7 +72,7 @@ describe('ExpandedPreviewer', () => {
           pathToProject: path,
           resourcePath: resolve(join(path, 'resources')),
           refresh: mockedProjectRefresh,
-        } as unknown as Project)
+        }) as unknown as Project
     );
   };
 
@@ -138,7 +138,7 @@ describe('ExpandedPreviewer', () => {
 
       await expandedPreviewer.preview();
 
-      expect(mockedReaddirSync).toBeCalledWith(join('.coveo/preview'), {
+      expect(mockedReaddirSync).toHaveBeenCalledWith(join('.coveo/preview'), {
         withFileTypes: true,
       });
       expect(mockedRmSync).toHaveBeenCalledTimes(4);
@@ -163,8 +163,8 @@ describe('ExpandedPreviewer', () => {
       );
       await expandedPreviewer.preview();
 
-      expect(mockedExistsSync).toBeCalledWith(join('.coveo/preview'));
-      expect(mockedReaddirSync).not.toBeCalled();
+      expect(mockedExistsSync).toHaveBeenCalledWith(join('.coveo/preview'));
+      expect(mockedReaddirSync).not.toHaveBeenCalled();
     });
   });
 
@@ -186,7 +186,7 @@ describe('ExpandedPreviewer', () => {
       );
       await expandedPreviewer.preview();
 
-      expect(mockedReaddirSync).toBeCalledWith(join('.coveo/preview'), {
+      expect(mockedReaddirSync).toHaveBeenCalledWith(join('.coveo/preview'), {
         withFileTypes: true,
       });
       expect(mockedRmSync).not.toHaveBeenCalled();
@@ -203,7 +203,7 @@ describe('ExpandedPreviewer', () => {
       );
       await expandedPreviewer.preview();
 
-      expect(mockedRecursiveDirectoryDiff).toBeCalledWith(
+      expect(mockedRecursiveDirectoryDiff).toHaveBeenCalledWith(
         expect.anything(),
         expect.anything(),
         false
@@ -221,7 +221,7 @@ describe('ExpandedPreviewer', () => {
       );
       await expandedPreviewer.preview();
 
-      expect(mockedRecursiveDirectoryDiff).toBeCalledWith(
+      expect(mockedRecursiveDirectoryDiff).toHaveBeenCalledWith(
         expect.anything(),
         expect.anything(),
         true
@@ -325,7 +325,7 @@ describe('ExpandedPreviewer', () => {
     });
 
     it('should write the diff between the snapshot of the target org and the snapshot on file', async () => {
-      expect(mockedRecursiveDirectoryDiff).toBeCalledWith(
+      expect(mockedRecursiveDirectoryDiff).toHaveBeenCalledWith(
         join('.coveo/preview', 'someorg-42', 'resources'),
         join('my/awesome/path', 'resources'),
         expect.anything()

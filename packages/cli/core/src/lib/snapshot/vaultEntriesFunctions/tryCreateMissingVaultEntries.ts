@@ -1,5 +1,4 @@
 import {formatOrgId, confirm} from '@coveo/cli-commons/utils/ux';
-import {bold} from 'chalk';
 import {VaultHandler} from '../vaultHandler';
 import {VaultTransferFunctionsParam} from './interfaces';
 

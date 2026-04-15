@@ -37,34 +37,28 @@ describe('search-token-server', () => {
     skipPackageJson: false,
   };
   const runSearchTokenServerSchematic = async () => {
-    return await runner
-      .runSchematicAsync(
-        'search-token-server',
-        {...defaultSchemaOptions},
-        appTree
-      )
-      .toPromise();
+    return runner.runSchematic(
+      'search-token-server',
+      {...defaultSchemaOptions},
+      appTree
+    );
   };
   const collectionPath = join(__dirname, '../collection.json');
   const runner = new SchematicTestRunner('schematics', collectionPath);
   let appTree: UnitTestTree;
 
   beforeEach(async () => {
-    appTree = await runner
-      .runExternalSchematicAsync(
-        '@schematics/angular',
-        'workspace',
-        workspaceOptions
-      )
-      .toPromise();
-    appTree = await runner
-      .runExternalSchematicAsync(
-        '@schematics/angular',
-        'application',
-        appOptions,
-        appTree
-      )
-      .toPromise();
+    appTree = await runner.runExternalSchematic(
+      '@schematics/angular',
+      'workspace',
+      workspaceOptions
+    );
+    appTree = await runner.runExternalSchematic(
+      '@schematics/angular',
+      'application',
+      appOptions,
+      appTree
+    );
   });
 
   it('should add a server directory', async () => {

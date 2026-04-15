@@ -1,4 +1,4 @@
-import type {Interfaces} from '@oclif/core';
+import type {Interfaces} from '@coveo/cli-commons/compat/oclif';
 jest.mock('node:fs');
 import {existsSync, mkdirSync} from 'node:fs';
 jest.mock('node:child_process');
@@ -64,7 +64,7 @@ describe('npf', () => {
 
     it('should create a require from the lazyLoaded package.json and resolve the name of the package', () => {
       npf('potato@1.2.3');
-      expect(mockedRequireResolve).toBeCalledWith('potato');
+      expect(mockedRequireResolve).toHaveBeenCalledWith('potato');
     });
 
     describe('when the lazyLoad npm project does not exists', () => {
@@ -76,9 +76,12 @@ describe('npf', () => {
       it('should initialize the project and install the dependency', () => {
         npf('potato@1.2.3');
 
-        expect(mockedMkdirSync).toBeCalledWith(fakeLazyLoadedDepFolderPath, {
-          recursive: true,
-        });
+        expect(mockedMkdirSync).toHaveBeenCalledWith(
+          fakeLazyLoadedDepFolderPath,
+          {
+            recursive: true,
+          }
+        );
         expect(mockedSpawnSync).toHaveBeenNthCalledWith(
           1,
           'npm',
@@ -151,7 +154,7 @@ describe('npf', () => {
 
           it('should forked the resolved entrypoint without install', () => {
             npf('potato');
-            expect(mockedSpawnSync).not.toBeCalled();
+            expect(mockedSpawnSync).not.toHaveBeenCalled();
             expect(mockedFork).toHaveBeenNthCalledWith(
               1,
               '/some/silly/path.js',
@@ -172,7 +175,7 @@ describe('npf', () => {
 
             it('should fork using the resolved entrypoint', () => {
               npf('potato@1.0.0');
-              expect(mockedSpawnSync).not.toBeCalled();
+              expect(mockedSpawnSync).not.toHaveBeenCalled();
               expect(mockedFork).toHaveBeenNthCalledWith(
                 1,
                 '/some/silly/path.js',

@@ -47,7 +47,7 @@ describe('org:resources:list', () => {
         ({
           getClient: () =>
             Promise.resolve({resourceSnapshot: {list: mockListSnapshots}}),
-        } as unknown as AuthenticatedClient)
+        }) as unknown as AuthenticatedClient
     );
     mockedConfig.mockImplementation(
       () =>
@@ -55,7 +55,7 @@ describe('org:resources:list', () => {
           get: {
             organization: 'foo',
           },
-        } as unknown as Config)
+        }) as unknown as Config
     );
   });
 

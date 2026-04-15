@@ -1,19 +1,19 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`ReportViewer when the report contains errors should print the same report 1`] = `
-" 
+"
 Previewing snapshot changes:
- ──────────────────────────── 
-    Extensions                
- +   1 to create              
- -   2 to delete              
-                              
-    Fields                    
- !   7 in error               
- ~   1 to update              
-                              
+ ─────────────────────────────
+    Extensions
+ +   1 to create
+ -   2 to delete
+
+    Fields
+ !   7 in error
+ ~   1 to update
+
 Error Report:
-   7 resources in error 
+   7 resources in error
 
  Fields
   • RESOURCE_ALREADY_EXISTS: Field foo already exists.
@@ -27,17 +27,17 @@ Error Report:
 `;
 
 exports[`ReportViewer when the report contains missing vault entries should print the same report 1`] = `
-" 
+"
 Previewing snapshot changes:
- ──────────────────────────── 
-    Extensions                
- +   1 to create              
- -   2 to delete              
-                              
-    Fields                    
- !   7 in error               
- ~   1 to update              
-                              
+ ─────────────────────────────
+    Extensions
+ +   1 to create
+ -   2 to delete
+
+    Fields
+ !   7 in error
+ ~   1 to update
+
 Missing vault entries in destination organization:
   • foo_4VNj5ds5-configuration.userIdentities.UserIdentity.password
   • bar_4VNj5ds5-configuration.userIdentities.UserIdentity.password
@@ -58,16 +58,16 @@ The target organization already matches the configuration.
 `;
 
 exports[`ReportViewer when the report does not contain errors should print resource changes 1`] = `
-" 
+"
 Previewing snapshot changes:
- ──────────────────────────── 
-    Extensions                
- +   1 to create              
- -   2 to delete              
- ~   1 to update              
-                              
-    Fields                    
- ~   1 to update              
-                              
+ ─────────────────────────────
+    Extensions
+ +   1 to create
+ -   2 to delete
+ ~   1 to update
+
+    Fields
+ ~   1 to update
+
 "
 `;

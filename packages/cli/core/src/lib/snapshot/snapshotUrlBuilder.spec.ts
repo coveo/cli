@@ -29,14 +29,6 @@ const getUSProdConfig = (): Configuration => ({
   accessToken: 'xxx',
 });
 
-const getEUDevConfig = (): Configuration => ({
-  version: CurrentSchemaVersion,
-  region: Region.EU,
-  environment: PlatformEnvironment.Dev,
-  organization: 'does not matter',
-  accessToken: 'xxx',
-});
-
 describe('SnapshotUrlBuilder', () => {
   let snapshotUrlBuilder: SnapshotUrlBuilder;
   let snapshot: Snapshot;

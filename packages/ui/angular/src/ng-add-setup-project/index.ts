@@ -1,4 +1,3 @@
-import {getProjectFromWorkspace} from '@angular/cdk/schematics';
 import {getWorkspace} from '@schematics/angular/utility/workspace';
 import {Rule, Tree, chain} from '@angular-devkit/schematics';
 
@@ -12,6 +11,7 @@ import {updateNgModule} from './rules/ng-module';
 import {addMaterialAngular, addToPackageJson} from './rules/dependencies';
 import {updateTsConfig} from './rules/tsconfig';
 import {configureStartCommand} from './rules/start';
+import {getProjectFromWorkspace} from '../common-rules/project';
 
 export default function (options: CoveoSchema): Rule {
   return async (tree: Tree) => {

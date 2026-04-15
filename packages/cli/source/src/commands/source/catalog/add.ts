@@ -1,8 +1,8 @@
 import {CatalogSource, BuiltInTransformers} from '@coveo/push-api-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags} from '@oclif/core';
+import {Flags} from '@coveo/cli-commons/compat/oclif';
 import {startSpinner} from '@coveo/cli-commons/utils/ux';
-import {bold} from 'chalk';
+import {bold} from '@coveo/cli-commons/compat/chalk';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
@@ -58,7 +58,7 @@ export default class SourceCatalogAdd extends CLICommand {
     }),
   };
 
-  public static args = [
+  public static args: any = [
     {
       name: 'sourceId',
       required: true,

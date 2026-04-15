@@ -1,8 +1,8 @@
-import {green} from 'chalk';
+import {green} from '@coveo/cli-commons/compat/chalk';
 import {UploadBatchCallbackData} from '@coveo/push-api-client';
 import {errorMessage, successMessage} from './userFeedback';
 import {Plurable, pluralizeIfNeeded} from '@coveo/cli-commons/utils/string';
-import {CliUx} from '@oclif/core';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
 import {UploadProgress} from '@coveo/push-api-client/dist/definitions/interfaces';
 import {logNewLine} from './addCommon';
 

@@ -19,7 +19,7 @@ describe('beta', () => {
 
   fancyIt()(`warns that the command is in beta`, async () => {
     await Beta()(fakeCommand);
-    expect(fakeCommand.warn).toBeCalledTimes(1);
+    expect(fakeCommand.warn).toHaveBeenCalledTimes(1);
     expect((fakeCommand.warn as jest.Mock).mock.lastCall).toMatchSnapshot();
   });
 });

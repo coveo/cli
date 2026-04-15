@@ -95,7 +95,11 @@ async function getWorkspacePackages() {
   const workspacePackages = new Map<string, PackageJson>();
   const arb = new Arborist({path: process.env['npm_config_local_prefix']});
   await arb.loadActual();
-  for (const child of arb.actualTree.fsChildren) {
+  const actualTree = arb.actualTree;
+  if (!actualTree) {
+    return workspacePackages;
+  }
+  for (const child of actualTree.fsChildren) {
     if (!child.package.name) {
       continue;
     }
@@ -138,7 +142,7 @@ function doPublishProxiedPackages(
   npmConfigPath: string
 ) {
   const computedPackagesToProxyArray = Array.from(computedPackagesToProxy);
-  const visitedSinceLastPublish = [];
+  const visitedSinceLastPublish: string[] = [];
   while (computedPackagesToProxyArray.length > 0) {
     if (
       visitedSinceLastPublish.length === computedPackagesToProxyArray.length
@@ -153,6 +157,9 @@ function doPublishProxiedPackages(
     }
 
     const currentPackage = computedPackagesToProxyArray.shift();
+    if (!currentPackage) {
+      continue;
+    }
     // If the package has some unpublished local deps, push it back into the list and mark it as visited
     if (
       currentPackage[1].some((dependencyName) =>
@@ -194,7 +201,10 @@ function doPublishProxiedPackages(
 }
 
 function getPackagesConfig(packagesToProxy: Iterable<string>) {
-  const packages = {};
+  const packages: Record<
+    string,
+    {access: string[]; publish: string[]; proxy?: string[]}
+  > = {};
   for (const packageToProxy of packagesToProxy) {
     Object.assign(packages, {
       [packageToProxy]: {

@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags} from '@oclif/core';
+import {Flags} from '@coveo/cli-commons/compat/oclif';
 import {Preconditions} from '@coveo/cli-commons/preconditions/index';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {Config} from '@coveo/cli-commons/config/config';
@@ -13,7 +13,7 @@ export default class Atomic extends CLICommand {
   public static description =
     "Create a Coveo Headless-powered search page with Coveo's own Atomic framework. See <https://docs.coveo.com/atomic> and <https://docs.coveo.com/headless>.";
   public static examples = ['$ coveo ui:create:atomic myapp'];
-  public static args = [
+  public static args: any = [
     {
       name: 'name',
       description: 'The name of the application to create.',

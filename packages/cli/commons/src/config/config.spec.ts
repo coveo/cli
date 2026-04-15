@@ -1,5 +1,5 @@
 const mockedUxError = jest.fn();
-jest.mock('@oclif/core', () => ({
+jest.mock('@coveo/cli-commons/compat/oclif', () => ({
   CliUx: {ux: {error: mockedUxError}},
 }));
 jest.mock('./configErrors');
@@ -100,8 +100,10 @@ describe('config', () => {
           join('foo', 'bar', 'config.json'),
           expect.objectContaining({})
         );
-        expect(mockedIncompatibleConfigurationError).toBeCalledWith('0.0.0');
-        expect(mockedUxError).toBeCalledWith(
+        expect(mockedIncompatibleConfigurationError).toHaveBeenCalledWith(
+          '0.0.0'
+        );
+        expect(mockedUxError).toHaveBeenCalledWith(
           dedent`
           The configuration at ${join(
             'foo',

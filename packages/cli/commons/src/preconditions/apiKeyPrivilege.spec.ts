@@ -2,7 +2,7 @@ jest.mock('../platform/authenticatedClient');
 jest.mock('../config/config');
 jest.mock('../config/globalConfig');
 
-import {Interfaces} from '@oclif/core';
+import {Interfaces} from '@coveo/cli-commons/compat/oclif';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
 import {Config} from '../config/config';
 import globalConfig from '../config/globalConfig';
@@ -105,7 +105,7 @@ describe('apiKeyPrivilege', () => {
         fakeCommand,
         fakeCommand
       );
-      expect(getSpy).toBeCalled();
+      expect(getSpy).toHaveBeenCalled();
     });
   });
 });

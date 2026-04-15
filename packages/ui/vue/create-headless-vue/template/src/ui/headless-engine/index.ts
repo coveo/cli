@@ -27,7 +27,7 @@ async function getEngine(): Promise<SearchEngine> {
           | "prod"
           | "hipaa"
           | "stg"
-          | "dev"
+          | "dev",
       ),
       organizationId: import.meta.env.VITE_COVEO_ORGANIZATION_ID,
       accessToken: token,

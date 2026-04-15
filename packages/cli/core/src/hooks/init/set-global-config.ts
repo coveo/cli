@@ -1,8 +1,11 @@
 import {handleTerminationSignals} from './termination-signals';
-import {Hook} from '@oclif/core';
+import {Hook, Interfaces} from '@coveo/cli-commons/compat/oclif';
 import globalConfig from '@coveo/cli-commons/config/globalConfig';
 
-const hook: Hook<'init'> = function (opts) {
+const hook: Hook<'init'> = function (
+  this: {config: {scopedEnvVarKey: (name: string) => string}},
+  opts: {config: Interfaces.Config}
+) {
   handleTerminationSignals();
   globalConfig.set(opts.config);
   process.env[this.config.scopedEnvVarKey('UPDATE_INSTRUCTIONS')] =

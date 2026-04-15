@@ -56,7 +56,7 @@ $ npm install -g @coveo/cli
 $ coveo COMMAND
 running command...
 $ coveo (--version)
-@coveo/cli/3.2.13 linux-x64 node-v20.12.2
+@coveo/cli/3.2.14 linux-x64 node-v24.14.0
 $ coveo --help [COMMAND]
 USAGE
   $ coveo COMMAND
@@ -79,6 +79,8 @@ You can check out all the available commands [here](https://github.com/coveo/cli
 The project is still under heavy development and more features are coming, stay tuned!
 
 ## Local Setup to Contribute
+
+This repository defaults to Node `24.14.0` through [`.nvmrc`](.nvmrc).
 
 To install all dependencies and link local packages, run:
 

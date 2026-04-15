@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`ui:deploy interacting with Platform client should call hostedPages.list and hostedPages.create when no page id argument is passed 1`] = `
 "To update your page, run "coveo ui:deploy -p=somePageId".
@@ -10,9 +10,9 @@ exports[`ui:deploy interacting with Platform client should call hostedPages.list
 exports[`ui:deploy interacting with Platform client should print an API Error if the update fails 1`] = `
 [APIError: 
 Status code: 418
-Error code: [31mSO_BAD[39m
-Message: [31mthis is bad[39m
-Request ID: [31mb33pb00p[39m]
+Error code: SO_BAD
+Message: this is bad
+Request ID: b33pb00p]
 `;
 
 exports[`ui:deploy interacting with Platform client when a page id argument is passed, it should call hostedPages.update 1`] = `""`;

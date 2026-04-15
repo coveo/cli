@@ -20,7 +20,7 @@ describe('atomic:component', () => {
     .stderr()
     .command(['atomic:component', '--type=page', 'test-component'])
     .it('calls `npx @coveo/create-atomic-component` properly', () => {
-      expect(mockedSpawnProcess).toBeCalledTimes(1);
+      expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
       expect(mockedSpawnProcess).toHaveBeenCalledWith(
         expect.stringMatching(/npx/),
         ['@coveo/create-atomic-component@latest', 'test-component']
@@ -32,7 +32,7 @@ describe('atomic:component', () => {
     .stderr()
     .command(['atomic:component', '--type=result', 'test-component'])
     .it('calls `npx @coveo/create-atomic-result-component` properly', () => {
-      expect(mockedSpawnProcess).toBeCalledTimes(1);
+      expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
       expect(mockedSpawnProcess).toHaveBeenCalledWith(
         expect.stringMatching(/npx/),
         ['@coveo/create-atomic-result-component@latest', 'test-component']
@@ -49,7 +49,7 @@ describe('atomic:component', () => {
       'test-component',
     ])
     .it('uses the specified version', () => {
-      expect(mockedSpawnProcess).toBeCalledTimes(1);
+      expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
       expect(mockedSpawnProcess).toHaveBeenCalledWith(
         expect.stringMatching(/npx/),
         ['@coveo/create-atomic-component@1.2.3', 'test-component']
@@ -66,7 +66,7 @@ describe('atomic:component', () => {
     .it(
       'calls `npx @coveo/create-atomic-result-component` when the user select result in the prompt',
       () => {
-        expect(mockedSpawnProcess).toBeCalledTimes(1);
+        expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
         expect(mockedSpawnProcess).toHaveBeenCalledWith(
           expect.stringMatching(/npx/),
           ['@coveo/create-atomic-result-component@latest', 'test-component']
@@ -84,7 +84,7 @@ describe('atomic:component', () => {
     .it(
       'calls `npx @coveo/create-atomic-component` when the user select page in the prompt',
       () => {
-        expect(mockedSpawnProcess).toBeCalledTimes(1);
+        expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
         expect(mockedSpawnProcess).toHaveBeenCalledWith(
           expect.stringMatching(/npx/),
           ['@coveo/create-atomic-component@latest', 'test-component']
@@ -147,7 +147,7 @@ describe('atomic:component', () => {
       .stderr()
       .command(['atomic:component', '--type=page', 'valid-component-name'])
       .it('should accept valid component names with hyphens', () => {
-        expect(mockedSpawnProcess).toBeCalledTimes(1);
+        expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
       });
 
     test
@@ -155,7 +155,7 @@ describe('atomic:component', () => {
       .stderr()
       .command(['atomic:component', '--type=page', 'my-component'])
       .it('should accept valid component names with multiple words', () => {
-        expect(mockedSpawnProcess).toBeCalledTimes(1);
+        expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
       });
 
     test
@@ -163,7 +163,7 @@ describe('atomic:component', () => {
       .stderr()
       .command(['atomic:component', '--type=page', 'component-v2'])
       .it('should accept valid component names with numbers', () => {
-        expect(mockedSpawnProcess).toBeCalledTimes(1);
+        expect(mockedSpawnProcess).toHaveBeenCalledTimes(1);
       });
   });
 });

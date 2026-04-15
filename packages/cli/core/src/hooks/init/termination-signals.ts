@@ -16,7 +16,6 @@ export function handleTerminationSignals() {
        * For example, signal SIGABRT has value 6, so the expected exit code will be 128 + 6, or 134.
        * For more info, visit https://nodejs.org/api/process.html#exit-codes
        */
-      // eslint-disable-next-line no-process-exit
       process.exit(128 + exitCode);
     })
   );

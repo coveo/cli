@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags} from '@oclif/core';
+import {Flags} from '@coveo/cli-commons/compat/oclif';
 import {join} from 'node:path';
 import {Config} from '@coveo/cli-commons/config/config';
 import {
@@ -36,7 +36,8 @@ export default class Vue extends CLICommand {
    * @see https://cli.vuejs.org/guide/installation.html for current requirements.
    * @see https://github.com/vuejs/vue-cli/blob/dev/CHANGELOG.md for upcoming requirements.
    */
-  public static requiredNodeVersion = '^18.18.1 || ^20.9.0';
+  public static requiredNodeVersion =
+    '^18.18.1 || ^20.9.0 || ^22.0.0 || ^24.0.0';
   public static description =
     'Create a Coveo Headless-powered search page with the Vue3 and Vite. See <https://docs.coveo.com/headless> and <https://vuejs.org/>.';
 
@@ -53,7 +54,7 @@ export default class Vue extends CLICommand {
     '$ coveo ui:create:vue-v=1.2.3 myVueProject',
   ];
 
-  public static args = [
+  public static args: any = [
     {
       name: 'name',
       description: 'The name of the application to create.',

@@ -73,7 +73,7 @@ const doMockConfig = () => {
     () =>
       ({
         get: mockedConfigGet,
-      } as unknown as Config)
+      }) as unknown as Config
   );
 };
 

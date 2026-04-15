@@ -1,10 +1,7 @@
-import {
-  addImportToModule,
-  getAppModulePath,
-  getProjectMainFile,
-} from '@angular/cdk/schematics';
+import {addImportToModule} from '@schematics/angular/utility/ast-utils';
+import {getAppModulePath} from '@schematics/angular/utility/ng-ast-utils';
+import type {ProjectDefinition} from '@schematics/angular/utility/workspace';
 import {InsertChange} from '@schematics/angular/utility/change';
-import {ProjectDefinition} from '@angular-devkit/core/src/workspace';
 import {Rule, Tree} from '@angular-devkit/schematics';
 import {CoveoSchema} from '../../schema';
 import {
@@ -89,4 +86,16 @@ export function getAdditionalImports(
   );
 
   return changes;
+}
+
+function getProjectMainFile(project: ProjectDefinition) {
+  const mainFile =
+    project.targets.get('build')?.options?.['main'] ??
+    project.targets.get('browser')?.options?.['main'];
+
+  if (typeof mainFile !== 'string') {
+    throw new Error('Could not determine the Angular project main file.');
+  }
+
+  return mainFile;
 }

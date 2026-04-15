@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags} from '@oclif/core';
+import {Flags} from '@coveo/cli-commons/compat/oclif';
 import {PushSource} from '@coveo/push-api-client';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {
@@ -7,10 +7,9 @@ import {
   Preconditions,
 } from '@coveo/cli-commons/preconditions/index';
 import dedent from 'ts-dedent';
-import {green, red} from 'chalk';
+import {green, red} from '@coveo/cli-commons/compat/chalk';
 import {errorMessage, successMessage} from '../../../lib/userFeedback';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
-import {Response} from 'undici';
 
 export default class SourcePushDelete extends CLICommand {
   public static description =
@@ -39,7 +38,7 @@ export default class SourcePushDelete extends CLICommand {
     }),
   };
 
-  public static args = [
+  public static args: any = [
     {
       name: 'sourceId',
       required: true,
@@ -66,7 +65,7 @@ export default class SourcePushDelete extends CLICommand {
     });
 
     if (flags.deleteOlderThan) {
-      this.doDeletionOlderThan(source);
+      await this.doDeletionOlderThan(source);
       return;
     }
 
@@ -130,7 +129,10 @@ export default class SourcePushDelete extends CLICommand {
     );
   }
 
-  private successMessageOnDeletion(toDelete: string, res: Response) {
+  private successMessageOnDeletion(
+    toDelete: string,
+    res: {status: number; statusText: string}
+  ) {
     return successMessage(
       `The delete request for document: ${green(
         toDelete

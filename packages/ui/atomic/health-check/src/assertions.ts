@@ -1,6 +1,6 @@
 import packageJsonSchema from './schema.js';
 import {join} from 'node:path';
-import {cwd} from 'process';
+import {cwd} from 'node:process';
 import {existsSync, readFileSync} from 'node:fs';
 
 const docRelativePath = join('docs', 'stencil-docs.json');

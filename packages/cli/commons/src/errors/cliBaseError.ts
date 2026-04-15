@@ -1,5 +1,12 @@
-import {CLIError} from '@oclif/core/lib/errors';
-import {Chalk, red, yellow, cyan} from 'chalk';
+import {Errors} from '@coveo/cli-commons/compat/oclif';
+import {Chalk, red, yellow, cyan} from '@coveo/cli-commons/compat/chalk';
+
+const CLIError =
+  Errors?.CLIError ??
+  class extends Error {
+    public oclif = {};
+  };
+type CLIError = InstanceType<typeof CLIError>;
 
 export enum SeverityLevel {
   Info = 'info',

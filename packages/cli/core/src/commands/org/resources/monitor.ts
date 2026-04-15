@@ -1,6 +1,6 @@
 import {ResourceSnapshotsReportModel} from '@coveo/platform-client';
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {CliUx} from '@oclif/core';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
 import {Config} from '@coveo/cli-commons/config/config';
 import {
   IsAuthenticated,
@@ -14,7 +14,7 @@ import {Snapshot, WaitUntilDoneOptions} from '../../../lib/snapshot/snapshot';
 import {SnapshotFactory} from '../../../lib/snapshot/snapshotFactory';
 import {SnapshotReporter} from '../../../lib/snapshot/snapshotReporter';
 import {startSpinner} from '@coveo/cli-commons/utils/ux';
-import {Example} from '@oclif/core/lib/interfaces';
+import {Example} from '@coveo/cli-commons/compat/oclif';
 import {organization} from '../../../lib/flags/platformCommonFlags';
 import {getTargetOrg} from '../../../lib/utils/platform';
 
@@ -28,7 +28,7 @@ export default class Monitor extends CLICommand {
     ),
   };
 
-  public static args = [
+  public static args: any = [
     {
       name: 'snapshotId',
       description: 'The unique identifier of the target snapshot.',

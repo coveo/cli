@@ -18,21 +18,21 @@ mockedAuthenticatedClient.mockImplementation(
   () =>
     ({
       getClient: () => Promise.resolve({search: {query: mockedSearch}}),
-    } as unknown as AuthenticatedClient)
+    }) as unknown as AuthenticatedClient
 );
 
 mockedParser.mockImplementation(
   () =>
     ({
       parse: jest.fn(),
-    } as unknown as Parser<unknown>)
+    }) as unknown as Parser<unknown>
 );
 
 mockedConfig.mockImplementation(
   () =>
     ({
       get: () => ({organization: 'the_org'}),
-    } as unknown as Config)
+    }) as unknown as Config
 );
 
 const mockFailedSearch = (err: Object, always: boolean) => {

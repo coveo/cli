@@ -57,7 +57,7 @@ const doMockConfig = () => {
     () =>
       ({
         get: mockedConfigGet,
-      } as unknown as Config)
+      }) as unknown as Config
   );
 };
 
@@ -139,7 +139,7 @@ describe('org:resources:monitor', () => {
             mockedSnapshotReporter.mock.calls.length - 1
           ][0].id;
         // First call is the one used prior to the refresh loop
-        expect(mockedSnapshotReporter).toBeCalledTimes(2);
+        expect(mockedSnapshotReporter).toHaveBeenCalledTimes(2);
         expect(firstReportParameterId).toBe(firstReport);
         // Last call is used when the refresh loop is complete.
         expect(lastReportParameterId).toBe(lastReport);

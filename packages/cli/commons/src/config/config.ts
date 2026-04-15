@@ -1,5 +1,5 @@
 import {Region} from '@coveo/platform-client';
-import {CliUx} from '@oclif/core';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
 import {
   pathExistsSync,
   createFileSync,

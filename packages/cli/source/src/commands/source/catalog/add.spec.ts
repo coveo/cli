@@ -104,7 +104,7 @@ describe('source:catalog:add', () => {
               environment: 'prod',
             }),
           },
-        } as unknown as AuthenticatedClient)
+        }) as unknown as AuthenticatedClient
     );
   };
 
@@ -115,7 +115,7 @@ describe('source:catalog:add', () => {
           batchUpdateDocumentsFromFiles: mockBatchUpdate,
           batchStreamDocumentsFromFiles: mockBatchStream,
           setSourceStatus: mockSetSourceStatus,
-        } as unknown as CatalogSource)
+        }) as unknown as CatalogSource
     );
   };
 

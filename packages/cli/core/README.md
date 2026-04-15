@@ -23,7 +23,7 @@ $ npm install -g @coveo/cli
 $ coveo COMMAND
 running command...
 $ coveo (--version)
-@coveo/cli/3.2.14 darwin-arm64 node-v22.18.0
+@coveo/cli/3.2.14 darwin-arm64 node-v24.14.0
 $ coveo --help [COMMAND]
 USAGE
   $ coveo COMMAND

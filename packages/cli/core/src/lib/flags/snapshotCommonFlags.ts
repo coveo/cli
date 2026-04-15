@@ -1,4 +1,4 @@
-import {Flags} from '@oclif/core';
+import {Flags} from '@coveo/cli-commons/compat/oclif';
 import {Snapshot} from '../snapshot/snapshot';
 
 export enum PreviewLevelValue {
@@ -19,13 +19,13 @@ export const wait = () => ({
 });
 
 export const previewLevel = () => ({
-  previewLevel: Flags.enum({
+  previewLevel: Flags.option({
     char: 'p',
     description:
       'The verbosity of the preview. The `light` preview is faster to generate but only contains a limited amount of information, as opposed to the `detailed` preview that takes more time to generate, but returns a diff representation of all the changes to apply.',
-    options: Object.values(PreviewLevelValue),
+    options: Object.values(PreviewLevelValue) as PreviewLevelValue[],
     default: PreviewLevelValue.Detailed,
-  }),
+  }) as any,
 });
 
 export const snapshotId = () => ({

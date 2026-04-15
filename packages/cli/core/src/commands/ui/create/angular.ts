@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags} from '@oclif/core';
+import {Flags} from '@coveo/cli-commons/compat/oclif';
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {Config} from '@coveo/cli-commons/config/config';
 import {spawnProcess} from '../../../lib/utils/process';
@@ -31,8 +31,9 @@ export default class Angular extends CLICommand {
    * Requirements Based on https://angular.io/guide/setup-local
    * and https://www.npmjs.com/package/@angular/cli package.json engines section.
    */
-  public static requiredNodeVersion = '^18.18.1 || ^20.9.0';
-  public static requiredNpmVersion = '^9.8.1 || ^10.1.0';
+  public static requiredNodeVersion =
+    '^18.18.1 || ^20.9.0 || ^22.0.0 || ^24.0.0';
+  public static requiredNpmVersion = '^9.8.1 || ^10.1.0 || ^11.0.0';
   public static requiredNgVersion = '^15.0.0';
 
   public static description =
@@ -51,7 +52,7 @@ export default class Angular extends CLICommand {
     }),
   };
 
-  public static args = [
+  public static args: any = [
     {
       name: 'name',
       description: 'The name of the application to create.',

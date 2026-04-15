@@ -1,5 +1,5 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
-import {Flags} from '@oclif/core';
+import {Flags} from '@coveo/cli-commons/compat/oclif';
 import {Config} from '@coveo/cli-commons/config/config';
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
@@ -40,7 +40,8 @@ export default class React extends CLICommand {
    * "You’ll need to have Node 18.18.1 or later version on your local development machine"
    *  https://github.com/facebook/create-react-app#creating-an-app
    */
-  public static requiredNodeVersion = '^18.18.1 || ^20.9.0';
+  public static requiredNodeVersion =
+    '^18.18.1 || ^20.9.0 || ^22.0.0 || ^24.0.0';
 
   public static description =
     'Create a Coveo Headless-powered search page with the React web framework. See <https://docs.coveo.com/headless> and <https://reactjs.org/>.';
@@ -58,7 +59,7 @@ export default class React extends CLICommand {
     }),
   };
 
-  public static args = [
+  public static args: any = [
     {
       name: 'name',
       description: 'The name of the application to create.',

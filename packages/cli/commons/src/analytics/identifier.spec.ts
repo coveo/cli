@@ -15,7 +15,7 @@ import {AuthenticatedClient} from '../platform/authenticatedClient';
 import {Identifier} from './identifier';
 import PlatformClient from '@coveo/platform-client';
 import {configurationMock, defaultConfiguration} from '../config/stub';
-import type {Interfaces} from '@oclif/core';
+import type {Interfaces} from '@coveo/cli-commons/compat/oclif';
 import globalConfig from '../config/globalConfig';
 
 describe('identifier', () => {
@@ -50,7 +50,7 @@ describe('identifier', () => {
           organization: {
             get: jest.fn().mockResolvedValue({type: 'Production'}),
           },
-        } as unknown as PlatformClient)
+        }) as unknown as PlatformClient
     );
   };
   const doMockConfiguration = (
@@ -72,7 +72,7 @@ describe('identifier', () => {
               })
             ),
           cfg: mockedConfig.getMockImplementation()!('./'),
-        } as unknown as AuthenticatedClient)
+        }) as unknown as AuthenticatedClient
     );
   };
 

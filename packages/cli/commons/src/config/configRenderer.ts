@@ -1,4 +1,4 @@
-import {CliUx} from '@oclif/core';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
 import {BaseConfiguration, Config} from './config';
 
 export class ConfigRenderer {

@@ -6,8 +6,12 @@ import helmet from 'helmet';
 import {ensureTokenGenerated} from './middlewares/searchToken';
 import {errorHandler} from './middlewares/errorHandler';
 import {environmentCheck} from './middlewares/environmentCheck';
+import {TokenRequestHandler} from './types';
 
 const app = express();
+const sendToken: TokenRequestHandler = (_req, res) => {
+  res.json({token: res.locals.token});
+};
 
 app.use(express.json());
 app.use(cors());
@@ -15,14 +19,7 @@ app.use(cookieSession({keys: ['key1', 'key2']}));
 app.use(csurf());
 app.use(helmet());
 
-app.get<Record<string, string>, any, {token: string}>(
-  '/token',
-  environmentCheck,
-  ensureTokenGenerated,
-  (req, res) => {
-    res.json({token: req.body.token});
-  }
-);
+app.get('/token', environmentCheck, ensureTokenGenerated, sendToken);
 
 app.use(errorHandler);
 

@@ -25,7 +25,7 @@ import {
   getMissingVaultEntryReport,
   getSuccessReport,
 } from '../../../__stub__/resourceSnapshotsReportModel';
-import {CliUx, Command} from '@oclif/core';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
 
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {IsGitInstalled} from '../../../../lib/lib/decorators/preconditions';
@@ -70,7 +70,7 @@ const doMockConfig = () => {
     () =>
       ({
         get: mockedConfigGet,
-      } as unknown as Config)
+      }) as unknown as Config
   );
 };
 
@@ -161,7 +161,7 @@ const mockSnapshotFactoryReturningSnapshotWithMissingVaultEntries = () => {
 
 describe('org:resources:preview', () => {
   const doMockPreconditions = function () {
-    const mockGit = (_target: Command) => Promise.resolve();
+    const mockGit = (_target: unknown) => Promise.resolve();
     mockedIsGitInstalled.mockReturnValue(mockGit);
   };
 

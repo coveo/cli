@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`IsNgInstalled when an unknown error happens while checking for ng should return false and warn 1`] = `
 "foo requires a valid Angular-CLI installation to run.

@@ -26,7 +26,7 @@ describe('url', () => {
         'https://foo.test/admin/#/some-org/organization/resource-snapshots/some-snapshot'
       );
 
-      expect(platformUrl).toBeCalledWith({
+      expect(platformUrl).toHaveBeenCalledWith({
         environment: PlatformEnvironment.Stg,
         region: Region.AU,
       });
@@ -44,7 +44,7 @@ describe('url', () => {
         'https://foo.test/admin/#/some-org/organization/resource-snapshots/some-snapshot/apply'
       );
 
-      expect(platformUrl).toBeCalledWith({
+      expect(platformUrl).toHaveBeenCalledWith({
         environment: PlatformEnvironment.Stg,
         region: Region.AU,
       });
@@ -62,7 +62,7 @@ describe('url', () => {
         'https://foo.test/admin/#/some-org/organization/resource-snapshots/create-snapshot'
       );
 
-      expect(platformUrl).toBeCalledWith({
+      expect(platformUrl).toHaveBeenCalledWith({
         environment: PlatformEnvironment.Stg,
         region: Region.AU,
       });

@@ -5,8 +5,8 @@ import {Before} from '@coveo/cli-commons/decorators/before';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {IsAuthenticated} from '@coveo/cli-commons/preconditions/index';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
-import {Flags} from '@oclif/core';
-import type {Example} from '@oclif/core/lib/interfaces';
+import {Flags} from '@coveo/cli-commons/compat/oclif';
+import type {Example} from '@coveo/cli-commons/compat/oclif';
 import {InvalidCommandError} from '../../lib/errors/InvalidCommandError';
 
 export default class Set extends CLICommand {

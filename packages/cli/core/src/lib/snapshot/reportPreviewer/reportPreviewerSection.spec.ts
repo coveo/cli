@@ -1,11 +1,16 @@
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
-import stripAnsi from 'strip-ansi';
 import dedent from 'ts-dedent';
 import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
 } from './reportPreviewerDataModels';
 import {ReportViewerSection} from './reportPreviewerSection';
+
+const ansiEscapePattern = new RegExp(
+  `${String.fromCharCode(27)}\\[[0-9;]*m`,
+  'g'
+);
+const stripAnsi = (value: string) => value.replaceAll(ansiEscapePattern, '');
 
 describe('ReportViewerSection', () => {
   const resourceWithChanges: ReportViewerResourceReportModel = {
@@ -15,6 +20,7 @@ describe('ReportViewerSection', () => {
       resourcesDeleted: 2,
       resourcesInError: 4,
       resourcesRecreated: 0,
+      resourcesSynchronized: 0,
       resourcesUnchanged: 5,
       resourcesUpdated: 0,
     },
@@ -27,6 +33,7 @@ describe('ReportViewerSection', () => {
       resourcesDeleted: 0,
       resourcesInError: 0,
       resourcesRecreated: 0,
+      resourcesSynchronized: 0,
       resourcesUnchanged: 0,
       resourcesUpdated: 0,
     },

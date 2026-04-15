@@ -1,15 +1,15 @@
-import chalk from 'chalk';
+import chalk from './chalk.js';
 import {ZodError} from 'zod';
 import {failure, groupEnd, groupStart, log} from './logger.js';
 
-export function prettifyZodError({errors}: ZodError, indent = true) {
+export function prettifyZodError(error: ZodError, indent = true) {
   if (indent) {
     groupStart();
   }
 
-  for (const error of errors) {
-    const prefix = chalk.bold(`Invalid ${error.path.join('.')}: `);
-    failure(`${prefix}${error.message}`);
+  for (const issue of error.issues) {
+    const prefix = chalk.bold(`Invalid ${issue.path.join('.')}: `);
+    failure(`${prefix}${issue.message}`);
   }
 
   if (indent) {

@@ -1,6 +1,6 @@
-import {CliUx} from '@oclif/core';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
 import isCi from 'is-ci';
-import {red, green, magenta} from 'chalk';
+import {red, green, magenta} from '@coveo/cli-commons/compat/chalk';
 import inquirer from 'inquirer';
 
 function isWindows() {
@@ -43,7 +43,7 @@ export const prompt = (message: string, ciDefault: string) =>
 
 export const promptChoices = async (
   message: string,
-  choices: (string | inquirer.Separator)[],
+  choices: any[],
   ciDefault: string
 ) => {
   if (isCi) {

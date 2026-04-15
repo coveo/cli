@@ -13,9 +13,9 @@ import {Snapshot} from './snapshot';
 import {SnapshotFactory} from './snapshotFactory';
 import {Project} from '../project/project';
 import {ensureResourcesAccess, ensureSnapshotAccess} from './snapshotAccess';
-import {Blob} from 'node:buffer';
+import {File} from 'node:buffer';
 
-const mockedBlob = jest.mocked(Blob);
+const mockedFile = jest.mocked(File);
 const mockedReadFileSync = jest.mocked(readFileSync);
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockedSnapshot = jest.mocked(Snapshot);
@@ -69,7 +69,7 @@ const doMockCompressResources = () => {
 const getFakeProject = () =>
   ({
     compressResources: mockedCompressResources,
-  } as unknown as Project);
+  }) as unknown as Project;
 
 describe('SnapshotFactory', () => {
   beforeEach(() => {
@@ -115,7 +115,7 @@ describe('SnapshotFactory', () => {
       '#createSnapshotFromProject should create a snapshot from Zip with appropriate parameters',
       () => {
         expect(mockedCreateSnapshotFromFile).toHaveBeenCalledWith(
-          mockedBlob.mock.instances[0],
+          mockedFile.mock.instances[0],
           {
             developerNotes: 'cli-created-from-zip',
           }

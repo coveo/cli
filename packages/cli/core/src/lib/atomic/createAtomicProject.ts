@@ -4,7 +4,7 @@ import {Configuration} from '@coveo/cli-commons/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {platformUrl} from '@coveo/cli-commons/platform/environment';
 import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
-import {handleForkedProcess, spawnProcess} from '../utils/process';
+import {spawnProcess} from '../utils/process';
 import {
   IsAuthenticated,
   AuthenticationType,
@@ -33,7 +33,7 @@ export const atomicAppInitializerPackage = '@coveo/create-atomic';
 export const atomicLibInitializerPackage =
   '@coveo/create-atomic-component-project';
 
-const supportedNodeVersions = '^18.18.1 || ^20.9.0 || ^22.0.0';
+const supportedNodeVersions = '^20.9.0 || ^22.11.0 || ^24.11.0';
 
 export const atomicLibPreconditions = [
   IsNodeVersionInRange(supportedNodeVersions),

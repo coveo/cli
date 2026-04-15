@@ -3,7 +3,6 @@ import {
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
 } from './reportPreviewerDataModels';
-import {ResourceSnapshotsReportOperationModel} from '@coveo/platform-client';
 
 class ReportViewerOperationLogFactory {
   public constructor(
@@ -38,6 +37,11 @@ export class ReportViewerSection {
       'yellow',
       (count) => `${count} to replace`
     ),
+    resourcesSynchronized: new ReportViewerOperationLogFactory(
+      '=',
+      'gray',
+      (count) => `${count} synchronized`
+    ),
     resourcesUpdated: new ReportViewerOperationLogFactory(
       '~',
       'yellow',
@@ -60,9 +64,7 @@ export class ReportViewerSection {
     ),
   };
 
-  private shouldPrintOperation(
-    operation: keyof ResourceSnapshotsReportOperationModel
-  ): boolean {
+  private shouldPrintOperation(operation: ReportViewerOperationName): boolean {
     const canBeDisplayed = this.operationsToDisplay.includes(operation);
     const isResourceAffectedByOperation =
       this.resource.operations[operation] > 0;

@@ -3,12 +3,12 @@ import {
   VaultValueType,
   VaultVisibilityType,
 } from '@coveo/platform-client';
-import {CliUx} from '@oclif/core';
+import {CliUx} from '@coveo/cli-commons/compat/oclif';
 import {readJsonSync, rmSync, writeJsonSync} from 'fs-extra';
 import open from 'open';
 import {join} from 'path';
 import {cwd} from 'process';
-import {inverse} from 'chalk';
+import {inverse} from '@coveo/cli-commons/compat/chalk';
 import {startSpinner} from '@coveo/cli-commons/utils/ux';
 import {
   InvalidVaultEntryError,

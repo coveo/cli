@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {MatSelectionListChange} from '@angular/material/list';
+import {MatListOption, MatSelectionListChange} from '@angular/material/list';
 import {buildFacet, Facet, FacetValue} from '@coveo/headless';
 import {EngineService} from '../engine.service';
 
@@ -19,7 +19,7 @@ export class FacetComponent implements OnInit {
   public constructor(private engineService: EngineService) {}
 
   public selectionChange(change: MatSelectionListChange) {
-    change.options.forEach((option) => {
+    change.options.forEach((option: MatListOption) => {
       this.headlessFacet.toggleSelect(option.value);
     });
   }

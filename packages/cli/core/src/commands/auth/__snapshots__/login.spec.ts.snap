@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`auth:login succeeds when no organization flag is passed, and uses the first available org instead 1`] = `
 "

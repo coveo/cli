@@ -18,7 +18,12 @@ module.exports = {
   clearMocks: true,
   testTimeout: 60e3,
   testMatch: ['**/?(*.)+(spec|test).?(it.)[jt]s?(x)'],
-  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
-    prefix: '<rootDir>/',
-  }),
+  moduleNameMapper: {
+    '^get-port$': '<rootDir>/src/__test__/getPortMock.ts',
+    '^inquirer$': '<rootDir>/src/__test__/inquirerMock.ts',
+    '^open$': '<rootDir>/src/__test__/openMock.ts',
+    ...pathsToModuleNameMapper(compilerOptions.paths, {
+      prefix: '<rootDir>/',
+    }),
+  },
 };

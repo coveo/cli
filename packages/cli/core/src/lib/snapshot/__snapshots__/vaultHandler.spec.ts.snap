@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`VaultHandler when the user does not fill all the vault entries values #createEntries should warn the user about missing vault entries 1`] = `
 [MockFunction] {

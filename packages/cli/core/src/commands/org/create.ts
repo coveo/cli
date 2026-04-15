@@ -4,7 +4,7 @@ import {
   startSpinner,
   stopSpinner,
 } from '@coveo/cli-commons/utils/ux';
-import {Flags} from '@oclif/core';
+import {Flags} from '@coveo/cli-commons/compat/oclif';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {
   Preconditions,
@@ -27,7 +27,7 @@ export default class Create extends CLICommand {
     }),
   };
 
-  public static args = [
+  public static args: any = [
     {
       name: 'name',
       helpValue: 'neworg-prod',

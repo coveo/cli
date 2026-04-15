@@ -1,6 +1,6 @@
 import {CLICommand} from '@coveo/cli-commons/command/cliCommand';
 import {UnknownError} from '@coveo/cli-commons/errors/unknownError';
-import {Flags} from '@oclif/core';
+import {Flags} from '@coveo/cli-commons/compat/oclif';
 import inquirer from 'inquirer';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
@@ -29,7 +29,7 @@ export default class AtomicInit extends CLICommand {
     }),
   };
 
-  public static args = [
+  public static args: any = [
     {name: 'name', description: 'The name of your component.', required: true},
   ];
 

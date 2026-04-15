@@ -26,7 +26,7 @@ describe('assertions', () => {
   it('#ensureRequiredProperties should parse package.json', () => {
     mockedReadFileSync.mockReturnValue('{}');
     ensureRequiredProperties();
-    expect(mockedSchemaParse).toBeCalled();
+    expect(mockedSchemaParse).toHaveBeenCalled();
   });
 
   it('#ensureReadme should throw if readme file is missing', () => {

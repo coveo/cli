@@ -36,7 +36,7 @@ describe('auth:login', () => {
         ({
           getAllOrgsUserHasAccessTo: mockListOrgs,
           getUserHasAccessToOrg: mockGetHasAccessToOrg,
-        } as unknown as AuthenticatedClient)
+        }) as unknown as AuthenticatedClient
     );
     mockedOAuth.mockImplementationOnce(
       () =>
@@ -45,7 +45,7 @@ describe('auth:login', () => {
             Promise.resolve({
               accessToken: 'this-is-the-token',
             }),
-        } as OAuth)
+        }) as OAuth
     );
 
     mockedConfig.mockImplementation(
@@ -53,7 +53,7 @@ describe('auth:login', () => {
         ({
           get: mockConfigGet,
           set: mockConfigSet,
-        } as unknown as Config)
+        }) as unknown as Config
     );
   });
 

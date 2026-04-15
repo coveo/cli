@@ -5,6 +5,7 @@ import {
   ResourceSnapshotType,
 } from '@coveo/platform-client';
 import {
+  ResourceOperationCountName,
   ReportViewerOperationName,
   ReportViewerResourceReportModel,
   SnapshotReportStatus,
@@ -90,9 +91,7 @@ export class SnapshotReporter {
     return totalUnchanges !== this.report.resourcesProcessed;
   }
 
-  public getOperationTypeTotalCount(
-    type: keyof ResourceSnapshotsReportOperationModel
-  ) {
+  public getOperationTypeTotalCount(type: ResourceOperationCountName) {
     const count = Object.values(this.report.resourceOperations).reduce(
       (count: number, current: ResourceSnapshotsReportOperationModel) =>
         count + current[type],

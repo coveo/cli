@@ -12,15 +12,13 @@ jest.mock('@coveo/push-api-client', () => {
   };
 });
 
-jest.mock('../../../lib/userFeedback');
-
 import {test} from '@oclif/test';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {errors, PushSource} from '@coveo/push-api-client';
 import {IsAuthenticated} from '@coveo/cli-commons/preconditions';
 import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
 import {formatCliLog} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
-import {errorMessage, successMessage} from '../../../lib/userFeedback';
+import * as userFeedback from '../../../../lib/lib/userFeedback';
 import {Response} from 'undici';
 
 describe('source:push:delete', () => {
@@ -28,9 +26,13 @@ describe('source:push:delete', () => {
   const mockedClient = jest.mocked(AuthenticatedClient);
   const mockedSource = jest.mocked(PushSource);
   const mockDeleteOlderThan = jest.fn();
-  const mockedErrorMessage = jest.mocked(errorMessage);
-  const mockedSuccessMessage = jest.mocked(successMessage);
+  const mockedErrorMessage = jest.fn();
+  const mockedSuccessMessage = jest.fn();
   const mockDeleteDocument = jest.fn();
+  const withUserFeedbackStubs = () =>
+    test
+      .stub(userFeedback, 'errorMessage', () => mockedErrorMessage)
+      .stub(userFeedback, 'successMessage', () => mockedSuccessMessage);
 
   const doMockPreconditions = function () {
     const preconditionStatus = {
@@ -52,7 +54,7 @@ describe('source:push:delete', () => {
               region: 'MARS',
             }),
           },
-        } as unknown as AuthenticatedClient)
+        }) as unknown as AuthenticatedClient
     );
   };
 
@@ -74,7 +76,7 @@ describe('source:push:delete', () => {
               detail: 'right trou',
             })
           ),
-        } as unknown as PushSource)
+        }) as unknown as PushSource
     );
   };
 
@@ -88,7 +90,7 @@ describe('source:push:delete', () => {
     jest.resetAllMocks();
   });
 
-  test
+  withUserFeedbackStubs()
     .stdout()
     .stderr()
     .command(['source:push:delete', 'mysource'])
@@ -97,7 +99,7 @@ describe('source:push:delete', () => {
     })
     .it('throws when no flags are specified');
 
-  test
+  withUserFeedbackStubs()
     .stdout()
     .stderr()
     .command(['source:push:delete', 'mysource', '-x', 'foo', '-d', 'bar'])
@@ -108,7 +110,7 @@ describe('source:push:delete', () => {
       'throws when incompatible flags for olderThan and documentUri are passed'
     );
 
-  test
+  withUserFeedbackStubs()
     .stdout()
     .stderr()
     .command(['source:push:delete', 'mysource', '-d', '2000/01/01'])
@@ -125,7 +127,7 @@ describe('source:push:delete', () => {
     '2000-01-01T06:00:00+00:00',
     'Monday, 2000-Jan-01 06:00:00 UTC',
   ].forEach((testCase) => {
-    test
+    withUserFeedbackStubs()
       .stdout()
       .stderr()
       .command(['source:push:delete', 'mysource', '-d', testCase])
@@ -140,7 +142,7 @@ describe('source:push:delete', () => {
       );
   });
 
-  test
+  withUserFeedbackStubs()
     .stdout()
     .stderr()
     .command(['source:push:delete', 'mysource', '-d', '123123123'])
@@ -151,7 +153,7 @@ describe('source:push:delete', () => {
       }
     );
 
-  test
+  withUserFeedbackStubs()
     .do(() => {
       mockDeleteOlderThan.mockReturnValueOnce({
         status: 999,
@@ -169,7 +171,7 @@ describe('source:push:delete', () => {
       }
     );
 
-  test
+  withUserFeedbackStubs()
     .do(async () => {
       const err = await errors.FetchError.build({
         json: () =>
@@ -191,7 +193,7 @@ describe('source:push:delete', () => {
       }
     );
 
-  test
+  withUserFeedbackStubs()
     .do(() => {
       mockDeleteDocument.mockReturnValueOnce({
         status: 999,
@@ -209,7 +211,7 @@ describe('source:push:delete', () => {
       }
     );
 
-  test
+  withUserFeedbackStubs()
     .stdout()
     .stderr()
     .command([
@@ -227,7 +229,7 @@ describe('source:push:delete', () => {
       }
     );
 
-  test
+  withUserFeedbackStubs()
     .do(async () => {
       const err = await errors.FetchError.build({
         json: () =>
@@ -249,7 +251,7 @@ describe('source:push:delete', () => {
       }
     );
 
-  test
+  withUserFeedbackStubs()
     .do(async () => {
       const err = await errors.FetchError.build({
         json: () =>
@@ -278,7 +280,7 @@ describe('source:push:delete', () => {
       }
     );
 
-  test
+  withUserFeedbackStubs()
     .do(async () => {
       const err = await errors.FetchError.build({
         json: () =>
@@ -307,7 +309,7 @@ describe('source:push:delete', () => {
       }
     );
 
-  test
+  withUserFeedbackStubs()
     .stdout()
     .stderr()
     .command([
@@ -320,7 +322,7 @@ describe('source:push:delete', () => {
     .it(
       'should warn the user when he tries to delete too many items and stop there',
       (ctx) => {
-        expect(mockDeleteDocument).not.toBeCalled();
+        expect(mockDeleteDocument).not.toHaveBeenCalled();
         expect(formatCliLog(ctx.stderr)).toMatchSnapshot();
       }
     );
