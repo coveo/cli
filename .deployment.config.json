@@ -4,7 +4,7 @@
   "general": {
     "team_jenkins": "searchuibuilds",
     "notifications": {
-      "slack_channels": ["#searchuibuilds"]
+      "slack_channels": ["#ops-dxui-deployments"]
     },
     "environments_order": {
       "sequential": [
