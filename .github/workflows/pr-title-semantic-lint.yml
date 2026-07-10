@@ -15,7 +15,8 @@ jobs:
           egress-policy: audit
 
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
-      - name: Ensure PR Title is Semantic
-        run: |
-          npm ci
-          npx @coveo/is-pr-title-semantic
+
+      - name: Semantic Pull Request
+        uses: step-security/action-semantic-pull-request@9142b539761b0ed6761de569f3a5020a7462a7f3
+        with:
+          requireScope: 'false'
