@@ -27,6 +27,7 @@ import {cwd} from 'node:process';
 import {mkdirSync, readdirSync, statSync, writeFileSync} from 'node:fs';
 import dedent from 'ts-dedent';
 import {promptForSearchHub} from '../../../lib/ui/shared';
+import {uiCreateDeprecationNotice} from '../../../lib/utils/deprecation';
 
 export default class Vue extends CLICommand {
   public static packageName = '@coveo/create-headless-vue';
@@ -76,6 +77,7 @@ export default class Vue extends CLICommand {
     )
   )
   public async run() {
+    this.warn(uiCreateDeprecationNotice);
     const {args, flags} = await this.parse(Vue);
 
     const dirName = join(cwd(), args.name);

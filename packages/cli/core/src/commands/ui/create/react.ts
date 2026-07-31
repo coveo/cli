@@ -23,6 +23,7 @@ import {
   IsNpxInstalled,
 } from '../../../lib/decorators/preconditions';
 import {promptForSearchHub} from '../../../lib/ui/shared';
+import {uiCreateDeprecationNotice} from '../../../lib/utils/deprecation';
 
 type ReactProcessEnv = {
   orgId: string;
@@ -81,6 +82,7 @@ export default class React extends CLICommand {
     )
   )
   public async run() {
+    this.warn(uiCreateDeprecationNotice);
     const {args} = await this.parse(React);
     await this.createProject(args.name);
     await this.setupEnvironmentVariables(args.name);
