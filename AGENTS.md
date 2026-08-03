@@ -1,6 +1,6 @@
 # AGENTS.md - Context for AI Coding Agents
 
-> **Note**: This file is specifically designed for AI coding agents. For human-readable project information, see [README.md](../README.md) and [CONTRIBUTING.md](CONTRIBUTING.md).
+> **Note**: This file is specifically designed for AI coding agents. For human-readable project information, see [README.md](README.md) and [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Purpose
 
@@ -122,6 +122,12 @@ core (depends on commons, commons-dev)
 git clone https://github.com/coveo/cli.git
 cd cli
 npm install  # Installs all workspace dependencies and links local packages
+```
+
+**Known issue**: On systems with an externally-managed Python environment (PEP 668, e.g. Homebrew Python on macOS), `npm install` can fail with `error: externally-managed-environment`. This comes from `packages/cli-e2e`'s `postinstall` script, which runs `pip install -r mitmproxy/requirements.txt --user` for E2E test tooling. If you hit this and don't need to run E2E tests, install with:
+
+```bash
+npm install --ignore-scripts
 ```
 
 ### Running the CLI Locally
@@ -655,6 +661,6 @@ npm update --workspace=@coveo/cli
 
 ---
 
-**Last Updated**: 2025-11-05  
+**Last Updated**: 2026-08-03  
 **Maintained for**: AI Coding Agents  
 **Questions**: See CONTRIBUTING.md or open an issue
