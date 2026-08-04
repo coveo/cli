@@ -1,0 +1,24 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.1.3/schema.json",
+  "changelog": [
+    "@changesets/changelog-github",
+    {
+      "repo": "coveo/cli",
+      "disableThanks": true
+    }
+  ],
+  "commit": false,
+  "fixed": [],
+  "linked": [],
+  "access": "public",
+  "baseBranch": "master",
+  "updateInternalDependencies": "patch",
+  "ignore": [],
+  "privatePackages": {
+    "version": false,
+    "tag": false
+  },
+  "___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": {
+    "onlyUpdatePeerDependentsWhenOutOfRange": true
+  }
+}
