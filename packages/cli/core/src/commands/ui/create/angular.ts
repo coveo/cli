@@ -24,6 +24,7 @@ import {
 } from '@coveo/cli-commons/preconditions/platformPrivilege';
 import {Trackable} from '@coveo/cli-commons/preconditions/trackable';
 import {promptForSearchHub} from '../../../lib/ui/shared';
+import {uiCreateDeprecationNotice} from '../../../lib/utils/deprecation';
 
 export default class Angular extends CLICommand {
   public static templateName = '@coveo/angular';
@@ -75,6 +76,7 @@ export default class Angular extends CLICommand {
     )
   )
   public async run() {
+    this.warn(uiCreateDeprecationNotice);
     const {args, flags} = await this.parse(Angular);
     await this.createProject(args.name, flags.defaults);
     await this.addCoveoToProject(args.name, flags.defaults);

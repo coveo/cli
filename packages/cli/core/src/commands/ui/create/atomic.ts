@@ -8,6 +8,7 @@ import {
   atomicAppPreconditions,
   createAtomicApp,
 } from '../../../lib/atomic/createAtomicProject';
+import {uiCreateDeprecationNotice} from '../../../lib/utils/deprecation';
 
 export default class Atomic extends CLICommand {
   public static description =
@@ -40,6 +41,7 @@ export default class Atomic extends CLICommand {
   })
   @Preconditions(...atomicAppPreconditions)
   public async run() {
+    this.warn(uiCreateDeprecationNotice);
     const {flags, args} = await this.parse(Atomic);
     const cfg = this.configuration.get();
 
