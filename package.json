@@ -11,6 +11,8 @@
   "devDependencies": {
     "@actions/core": "1.10.0",
     "@actions/github": "5.1.1",
+    "@changesets/changelog-github": "^0.7.0",
+    "@changesets/cli": "^2.31.0",
     "@commitlint/config-conventional": "17.6.1",
     "@commitlint/lint": "17.6.1",
     "@coveo/platform-client": "58.5.0",
@@ -93,7 +95,10 @@
     "nx:graph": "nx graph --file=topology.json",
     "release:phase0": "npx -p=@coveord/release git-lock",
     "release:phase1": "npm run build && nx run-many --target=release:phase1 --all --parallel=false --output-style=stream && npx -p=@coveord/release reify",
-    "release:phase2": "npx -p=@coveord/release is-cli-release"
+    "release:phase2": "npx -p=@coveord/release is-cli-release",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "npm run build && changeset publish"
   },
   "workspaces": [
     "packages/*",
