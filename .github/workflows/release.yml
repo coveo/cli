@@ -17,6 +17,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      id-token: write # required for npm trusted publishing (OIDC)
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
@@ -50,4 +51,6 @@ jobs:
           commitMode: github-api
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # No npm token: publishing authenticates via OIDC (npm trusted
+          # publishing). Setting NPM_TOKEN here would make the action write a
+          # token-based .npmrc instead of using OIDC.

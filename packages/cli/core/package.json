@@ -170,7 +170,11 @@
       }
     }
   },
-  "repository": "coveo/cli",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coveo/cli.git",
+    "directory": "packages/cli/core"
+  },
   "scripts": {
     "build": "rimraf lib && tsc -b tsconfig.build.json",
     "test": "jest --colors",
