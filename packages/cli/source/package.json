@@ -6,7 +6,11 @@
   "homepage": "https://github.com/coveo/cli",
   "license": "Apache-2.0",
   "main": "dist/index.js",
-  "repository": "coveo/cli",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coveo/cli.git",
+    "directory": "packages/cli/source"
+  },
   "files": [
     "/bin",
     "/lib",
