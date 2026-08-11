@@ -15,7 +15,7 @@
   "description": "Coveo template for Create React App.",
   "repository": {
     "type": "git",
-    "url": "git@github.com:coveo/cli.git",
+    "url": "git+https://github.com/coveo/cli.git",
     "directory": "packages/ui/cra-template"
   },
   "license": "Apache-2.0",

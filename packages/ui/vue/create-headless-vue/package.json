@@ -14,7 +14,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git@github.com:coveo/cli.git",
+    "url": "git+https://github.com/coveo/cli.git",
     "directory": "packages/ui/vue/create-headless-vue"
   },
   "main": "index.js",

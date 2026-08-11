@@ -2,6 +2,11 @@
   "name": "@coveo/angular",
   "version": "1.36.16",
   "description": "Coveo schematic for angular",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coveo/cli.git",
+    "directory": "packages/ui/angular"
+  },
   "scripts": {
     "test": "jest",
     "test:ci:snap": "jest -u",

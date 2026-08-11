@@ -24,7 +24,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/coveo/cli.git"
+    "url": "git+https://github.com/coveo/cli.git",
+    "directory": "packages/ui/atomic/health-check"
   },
   "bugs": {
     "url": "https://github.com/coveo/cli/issues"

@@ -4,6 +4,11 @@
   "author": "Coveo",
   "description": "Common utils for @coveo/cli plugins",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coveo/cli.git",
+    "directory": "packages/cli/commons"
+  },
   "files": [
     "lib/**"
   ],
