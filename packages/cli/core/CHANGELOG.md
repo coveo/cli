@@ -1,3 +1,9 @@
+## 3.3.0
+
+### Minor Changes
+
+- [#1554](https://github.com/coveo/cli/pull/1554) [`044c945`](https://github.com/coveo/cli/commit/044c945b105d53d36e14de3889cbd020838e7878) - Deprecate the `ui:create:*` commands (`angular`, `atomic`, `react`, `vue`). Each command now prints a notice pointing to `@coveo/create-ui` (`npm create @coveo/ui@latest`) before scaffolding. Scaffolding behavior is unchanged; the commands will be removed in a future release.
+
 ## 3.2.13 (2025-03-25)
 
 ## 3.2.12 (2025-03-25)
