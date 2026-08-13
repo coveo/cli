@@ -4,11 +4,18 @@ description: 'Setup Node.js, restore cache, and install dependencies'
 runs:
   using: 'composite'
   steps:
+    # No `registry-url`: it makes setup-node write an .npmrc containing
+    # `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}` and export a
+    # placeholder NODE_AUTH_TOKEN. Since we publish through npm trusted
+    # publishing (OIDC) and npm's OIDC exchange never throws, a failed
+    # exchange would silently fall back to that placeholder credential and
+    # publishing would fail with a misleading `E404 PUT /@coveo%2fcli`
+    # instead of an authentication error. All our dependencies come from the
+    # public registry, so no credentials are needed to install.
     - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
       with:
         cache: 'npm'
         node-version-file: '.nvmrc'
-        registry-url: 'https://registry.npmjs.org'
 
     - name: Install dependencies
       run: npm ci
