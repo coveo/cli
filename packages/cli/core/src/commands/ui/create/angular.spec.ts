@@ -1,36 +1,36 @@
-jest.mock('../../../../lib/lib/decorators/preconditions/npm');
-jest.mock('../../../../lib/lib/decorators/preconditions/node');
-jest.mock('../../../../lib/lib/decorators/preconditions/ng');
+jest.mock('../../../lib/decorators/preconditions/npm');
+jest.mock('../../../lib/decorators/preconditions/node');
+jest.mock('../../../lib/decorators/preconditions/ng');
 jest.mock('@coveo/cli-commons/preconditions/apiKeyPrivilege');
-jest.mock('../../../../lib/lib/utils/process');
-jest.mock('../../../../lib/lib/oauth/oauth');
+jest.mock('../../../lib/utils/process');
+jest.mock('../../../lib/oauth/oauth');
 jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
 jest.mock('@coveo/cli-commons/preconditions/authenticated');
 
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
-jest.mock('../../../../lib/lib/utils/misc');
+jest.mock('../../../lib/utils/misc');
 jest.mock('@coveo/platform-client');
-jest.mock('../../../../lib/lib/ui/shared');
+jest.mock('../../../lib/ui/shared');
 
 import {test} from '@oclif/test';
-import {spawnProcess} from '../../../../lib/lib/utils/process';
+import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import PlatformClient from '@coveo/platform-client';
 import {Config} from '@coveo/cli-commons/config/config';
 import {
   IsNpmVersionInRange,
   IsNodeVersionInRange,
-} from '../../../../lib/lib/decorators/preconditions/index';
-import {getPackageVersion} from '../../../../lib/lib/utils/misc';
-import {IsNgVersionInRange} from '../../../../lib/lib/decorators/preconditions/ng';
+} from '../../../lib/decorators/preconditions/index';
+import {getPackageVersion} from '../../../lib/utils/misc';
+import {IsNgVersionInRange} from '../../../lib/decorators/preconditions/ng';
 import {configurationMock} from '../../../__stub__/configuration';
 import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
 } from '@coveo/cli-commons/preconditions/index';
-import {promptForSearchHub} from '../../../../lib/lib/ui/shared';
+import {promptForSearchHub} from '../../../lib/ui/shared';
 
 describe('ui:create:angular', () => {
   const mockedConfig = jest.mocked(Config);
