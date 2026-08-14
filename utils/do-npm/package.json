@@ -22,6 +22,6 @@
   "dependencies": {
     "@npmcli/arborist": "^6.2.0",
     "tmp": "^0.2.1",
-    "npm": "^9.4.0"
+    "npm": "^11.5.1"
   }
 }
