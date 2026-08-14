@@ -1,5 +1,5 @@
-jest.mock('../../../../lib/lib/decorators/preconditions/npx');
-jest.mock('../../../../lib/lib/decorators/preconditions/node');
+jest.mock('../../../lib/decorators/preconditions/npx');
+jest.mock('../../../lib/decorators/preconditions/node');
 jest.mock('@coveo/cli-commons/preconditions/apiKeyPrivilege');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
 jest.mock('@coveo/cli-commons/preconditions/authenticated');
@@ -9,10 +9,10 @@ jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('@coveo/platform-client');
 
-jest.mock('../../../../lib/lib/utils/process');
-jest.mock('../../../../lib/lib/oauth/oauth');
-jest.mock('../../../../lib/lib/utils/misc');
-jest.mock('../../../../lib/lib/ui/shared');
+jest.mock('../../../lib/utils/process');
+jest.mock('../../../lib/oauth/oauth');
+jest.mock('../../../lib/utils/misc');
+jest.mock('../../../lib/ui/shared');
 
 jest.mock('node:fs');
 jest.mock('node:path');
@@ -23,19 +23,19 @@ jest.mock('node:process', () => ({
 import {join} from 'node:path';
 import {join as posixJoin} from 'node:path/posix';
 import {test} from '@oclif/test';
-import {spawnProcess} from '../../../../lib/lib/utils/process';
+import {spawnProcess} from '../../../lib/utils/process';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import PlatformClient from '@coveo/platform-client';
 import {Config} from '@coveo/cli-commons/config/config';
 import {
   IsNodeVersionInRange,
   IsNpxInstalled,
-} from '../../../../lib/lib/decorators/preconditions/index';
+} from '../../../lib/decorators/preconditions/index';
 import {
   HasNecessaryCoveoPrivileges,
   IsAuthenticated,
 } from '@coveo/cli-commons/preconditions/index';
-import {getPackageVersion} from '../../../../lib/lib/utils/misc';
+import {getPackageVersion} from '../../../lib/utils/misc';
 import {configurationMock} from '../../../__stub__/configuration';
 import {mockPreconditions} from '@coveo/cli-commons/preconditions/mockPreconditions';
 import {
@@ -48,7 +48,7 @@ import {
 } from 'node:fs';
 import {formatAbsolutePath} from '@coveo/cli-commons-dev/testUtils/jestSnapshotUtils';
 import {appendCmdIfWindows} from '@coveo/cli-commons/utils/os';
-import {promptForSearchHub} from '../../../../lib/lib/ui/shared';
+import {promptForSearchHub} from '../../../lib/ui/shared';
 
 describe('ui:create:vue', () => {
   const mockedConfig = jest.mocked(Config);

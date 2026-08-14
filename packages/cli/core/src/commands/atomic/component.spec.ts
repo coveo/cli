@@ -3,8 +3,8 @@ import {test} from '@oclif/test';
 jest.mock('inquirer');
 import inquirer from 'inquirer';
 // Mock the compiled JavaScript module that oclif/test will load
-jest.mock('../../../lib/lib/utils/process');
-import {spawnProcess} from '../../../lib/lib/utils/process';
+jest.mock('../../lib/utils/process');
+import {spawnProcess} from '../../lib/utils/process';
 
 describe('atomic:component', () => {
   const mockedInquirer = jest.mocked(inquirer);

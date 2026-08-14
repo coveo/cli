@@ -1,17 +1,17 @@
 // Mock the compiled JavaScript modules that oclif/test will load
-jest.mock('../../../lib/lib/oauth/oauth');
+jest.mock('../../lib/oauth/oauth');
 jest.mock('@coveo/cli-commons/config/config');
 jest.mock('@coveo/cli-commons/preconditions/trackable');
 jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('@coveo/platform-client');
-jest.mock('../../../lib/lib/utils/process');
+jest.mock('../../lib/utils/process');
 import {Region} from '@coveo/platform-client';
 import {test} from '@oclif/test';
 import {Config} from '@coveo/cli-commons/config/config';
 import {AuthenticatedClient} from '@coveo/cli-commons/platform/authenticatedClient';
 import {PlatformEnvironment} from '@coveo/cli-commons/platform/environment';
 import {CliUx} from '@oclif/core';
-import {readFromStdinWithTimeout} from '../../../lib/lib/utils/process';
+import {readFromStdinWithTimeout} from '../../lib/utils/process';
 const mockedConfig = jest.mocked(Config);
 const mockedAuthenticatedClient = jest.mocked(AuthenticatedClient);
 const mockedReadFromStdin = jest.mocked(readFromStdinWithTimeout);
