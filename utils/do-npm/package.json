@@ -17,11 +17,11 @@
     "@types/npmcli__package-json": "^2.0.0",
     "@types/tmp": "^0.2.3",
     "@verdaccio/types": "^10.7.0",
+    "npm": "11.19.0",
     "typescript": "^4.9.5"
   },
   "dependencies": {
     "@npmcli/arborist": "^6.2.0",
-    "tmp": "^0.2.1",
-    "npm": "^9.4.0"
+    "tmp": "^0.2.1"
   }
 }
