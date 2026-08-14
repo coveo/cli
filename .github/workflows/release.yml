@@ -54,3 +54,9 @@ jobs:
           # No npm token: publishing authenticates via OIDC (npm trusted
           # publishing). Setting NPM_TOKEN here would make the action write a
           # token-based .npmrc instead of using OIDC.
+          #
+          # npm logs the whole OIDC token exchange under the `oidc` prefix at
+          # verbose/silly level only, and never throws when the exchange
+          # fails. Without this, a broken trusted-publisher setup surfaces as
+          # an opaque registry error with no explanation.
+          NPM_CONFIG_LOGLEVEL: verbose
