@@ -42,7 +42,7 @@
   "devDependencies": {
     "@amplitude/analytics-types": "^2.1.2",
     "@amplitude/types": "1.10.2",
-    "@babel/core": "7.21.5",
+    "@babel/core": "7.29.6",
     "@coveo/angular": "1.36.16",
     "@coveo/atomic-component-health-check": "2.2.19",
     "@coveo/cli-commons-dev": "6.0.6",
