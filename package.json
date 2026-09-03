@@ -44,7 +44,7 @@
     "moment": "2.29.4",
     "npm": "11.19.0",
     "npm-registry-fetch": "^14.0.2",
-    "oclif": "3.4.3",
+    "oclif": "5.0.1",
     "octokit": "2.0.14",
     "patch-package": "6.5.1",
     "prettier": "2.8.8",
