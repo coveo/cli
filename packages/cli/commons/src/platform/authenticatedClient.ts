@@ -1,4 +1,4 @@
-import {setGlobalDispatcher, ProxyAgent, FormData, fetch} from 'undici';
+import {setGlobalDispatcher, ProxyAgent, fetch} from 'undici';
 import PlatformClient from '@coveo/platform-client';
 import {Config, Configuration} from '../config/config';
 import {castEnvironmentToPlatformClient} from './environment';
@@ -34,10 +34,6 @@ export class AuthenticatedClient {
       process.env['https_proxy'] || process.env['HTTPS_PROXY'];
     if (proxyServer) {
       setGlobalDispatcher(new ProxyAgent(proxyServer));
-    }
-    // TODO: CDX-1407, remove this https://developer.mozilla.org/en-US/docs/Web/API/FormData#browser_compatibility
-    if (!Object.keys(global).includes('FormData')) {
-      Object.assign(global, {FormData});
     }
     return new PlatformClient({
       globalRequestSettings,
