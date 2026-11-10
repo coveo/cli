@@ -9,6 +9,7 @@ import {
 import {Config} from '../config/config';
 import globalConfig from '../config/globalConfig';
 import type {
+  fetch as undiciFetch,
   Request as FetchRequest,
   RequestInfo,
   RequestInit,
@@ -74,7 +75,9 @@ describe('AuthenticatedClient token check', () => {
           }),
         } as unknown as Config)
     );
-    jest.spyOn(globalThis, 'fetch').mockImplementation(fakePlatform);
+    jest
+      .spyOn(globalThis as unknown as {fetch: typeof undiciFetch}, 'fetch')
+      .mockImplementation(fakePlatform);
   });
 
   afterEach(() => {

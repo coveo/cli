@@ -1,5 +1,10 @@
 name: Setup Node.js and Dependencies
 description: 'Setup Node.js, restore cache, and install dependencies'
+inputs:
+  node-version:
+    description: 'Node.js version to use instead of the one in .nvmrc'
+    required: false
+    default: ''
 
 runs:
   using: 'composite'
@@ -15,7 +20,9 @@ runs:
     - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
       with:
         cache: 'npm'
-        node-version-file: '.nvmrc'
+        # Default to .nvmrc; only pass one of the two (setup-node warns otherwise).
+        node-version: ${{ inputs.node-version }}
+        node-version-file: ${{ inputs.node-version == '' && '.nvmrc' || '' }}
 
     - name: Install dependencies
       run: npm ci

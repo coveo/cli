@@ -1,10 +1,9 @@
-jest.mock('fetch-undici-polyfill', () => {
-  Object.defineProperty(global, 'fetch', {value: jest.fn()});
-});
 jest.mock('http');
+jest.mock('@coveo/cli-commons/platform/authenticatedClient', () => ({
+  applyProxyFromEnvironment: jest.fn(),
+}));
 
 import {Region} from '@coveo/platform-client';
-import 'fetch-undici-polyfill';
 import {
   createServer,
   IncomingMessage,
@@ -14,6 +13,7 @@ import {
 } from 'http';
 import {URLSearchParams} from 'url';
 import {fancyIt} from '@coveo/cli-commons-dev/testUtils/it';
+import {applyProxyFromEnvironment} from '@coveo/cli-commons/platform/authenticatedClient';
 import {
   PlatformEnvironment,
   platformUrl,
@@ -25,7 +25,9 @@ import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
 type createServerInitialOverload = jest.MaybeMocked<{
   (requestListener?: RequestListener | undefined): Server;
 }>;
-const mockedFetch = global.fetch as jest.Mock;
+const mockedFetch = jest.fn();
+Object.defineProperty(global, 'fetch', {value: mockedFetch});
+const mockedApplyProxyFromEnvironment = jest.mocked(applyProxyFromEnvironment);
 
 const mockedCreateServer = jest.mocked(
   createServer
@@ -90,6 +92,16 @@ describe('OAuthClientServer', () => {
     fancyIt()('should close the server', () => {
       expect(mockedServerClose).toHaveBeenCalledTimes(1);
     });
+
+    fancyIt()(
+      'should apply the HTTPS_PROXY settings before requesting the token',
+      () => {
+        expect(mockedApplyProxyFromEnvironment).toHaveBeenCalled();
+        expect(
+          mockedApplyProxyFromEnvironment.mock.invocationCallOrder[0]
+        ).toBeLessThan(mockedFetch.mock.invocationCallOrder[0]);
+      }
+    );
 
     fancyIt()('should have returned an access token', () => {
       expect(accessToken).toEqual('token-returned-by-the-platform');

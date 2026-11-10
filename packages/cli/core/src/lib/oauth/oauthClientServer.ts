@@ -1,8 +1,13 @@
-import 'fetch-undici-polyfill';
 import {createServer, IncomingMessage, Server, ServerResponse} from 'http';
 import {URL, URLSearchParams} from 'url';
+import type {fetch as undiciFetch} from 'undici';
+import {applyProxyFromEnvironment} from '@coveo/cli-commons/platform/authenticatedClient';
 import {AuthorizationError, InvalidStateError} from './authorizationError';
 import {AuthorizationServiceConfiguration, ClientConfig} from './oauthConfig';
+
+// Node's built-in fetch, which @types/node 18.16 doesn't declare.
+declare const fetch: typeof undiciFetch;
+
 interface AccessTokenResponse {
   access_token: string;
 }
@@ -30,6 +35,7 @@ export class OAuthClientServer {
               throw new InvalidStateError(state, expectedState);
             }
             const body = this.getTokenQueryString(code);
+            applyProxyFromEnvironment();
             const authRequest = await fetch(tokenEndpoint, {
               method: 'POST',
               body,

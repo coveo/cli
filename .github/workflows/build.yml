@@ -34,3 +34,27 @@ jobs:
         run: npm run build
       - name: Tests
         run: npm test
+  build-other-node-versions:
+    # "Unit Tests" runs on .nvmrc's Node 24. This runs them on the other Node
+    # lines @coveo/cli supports (engines), so code or a locked dependency that
+    # doesn't work on one of them fails CI.
+    name: Unit Tests (Node ${{ matrix.node-version }})
+    runs-on: 'ubuntu-latest'
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18, 20, 22]
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - uses: ./.github/actions/setup-node
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Build
+        run: npm run build
+      - name: Tests
+        run: npm test

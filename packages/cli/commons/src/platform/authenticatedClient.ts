@@ -1,9 +1,19 @@
-import {setGlobalDispatcher, ProxyAgent, fetch} from 'undici';
+import {setGlobalDispatcher, ProxyAgent} from 'undici';
 import PlatformClient from '@coveo/platform-client';
 import {Config, Configuration} from '../config/config';
 import {castEnvironmentToPlatformClient} from './environment';
 import globalConfig from '../config/globalConfig';
-import 'fetch-undici-polyfill';
+
+/**
+ * Sends the requests made with Node's built-in fetch through the proxy set in
+ * HTTPS_PROXY (or https_proxy), if any.
+ */
+export function applyProxyFromEnvironment() {
+  const proxyServer = process.env['https_proxy'] || process.env['HTTPS_PROXY'];
+  if (proxyServer) {
+    setGlobalDispatcher(new ProxyAgent(proxyServer));
+  }
+}
 
 export class AuthenticatedClient {
   public cfg: Config;
@@ -30,11 +40,7 @@ export class AuthenticatedClient {
     const configFromDisk = this.cfg.get();
     const resolvedConfig = {...configFromDisk, ...overrideConfig};
     const globalRequestSettings: Record<string, unknown> = {};
-    const proxyServer =
-      process.env['https_proxy'] || process.env['HTTPS_PROXY'];
-    if (proxyServer) {
-      setGlobalDispatcher(new ProxyAgent(proxyServer));
-    }
+    applyProxyFromEnvironment();
     return new PlatformClient({
       globalRequestSettings,
       environment: castEnvironmentToPlatformClient(resolvedConfig.environment),
