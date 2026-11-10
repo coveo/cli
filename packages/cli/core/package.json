@@ -1,6 +1,6 @@
 {
   "name": "@coveo/cli",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "author": "Coveo",
   "description": "Coveo CLI",
   "engines": {
@@ -9,8 +9,8 @@
   "dependencies": {
     "@amplitude/analytics-node": "^1.3.3",
     "@amplitude/identify": "^1.9.0",
-    "@coveo/cli-commons": "2.9.11",
-    "@coveo/cli-plugin-source": "2.3.11",
+    "@coveo/cli-commons": "2.9.12",
+    "@coveo/cli-plugin-source": "2.3.12",
     "@coveo/platform-client": "58.5.0",
     "@oclif/core": "1.24.0",
     "@oclif/plugin-help": "5.1.23",

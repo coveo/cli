@@ -1,3 +1,10 @@
+## 2.3.12
+
+### Patch Changes
+
+- Updated dependencies [[`3603fa1`](https://github.com/coveo/cli/commit/3603fa1b804fafc35df299c8f0ea7985ef17fa83), [`cd7ec69`](https://github.com/coveo/cli/commit/cd7ec6946d7d642d1cfdee1d198e9fb86e723a75)]:
+  - @coveo/cli-commons@2.9.12
+
 ## 2.3.10 (2025-03-25)
 
 ## 2.3.9 (2025-03-25)
