@@ -1,3 +1,15 @@
+## 3.3.1
+
+### Patch Changes
+
+- [#1570](https://github.com/coveo/cli/pull/1570) [`3603fa1`](https://github.com/coveo/cli/commit/3603fa1b804fafc35df299c8f0ea7985ef17fa83) - Fix commands reporting an expired token right after `coveo auth:login` on Node.js 24.
+
+- [#1571](https://github.com/coveo/cli/pull/1571) [`cd7ec69`](https://github.com/coveo/cli/commit/cd7ec6946d7d642d1cfdee1d198e9fb86e723a75) - Fix fresh installs crashing on Node 18 and 20 with `TypeError: Cannot read properties of undefined (reading 'bind')`. `@coveo/cli` no longer depends on `fetch-undici-polyfill`, which installed `undici@latest` (undici 8 needs Node 22.19 or later). `@coveo/cli-commons` now declares the `undici` it uses for `HTTPS_PROXY` support, pinned to 6.29.1, the newest major that runs on every Node version the CLI supports.
+
+- Updated dependencies [[`3603fa1`](https://github.com/coveo/cli/commit/3603fa1b804fafc35df299c8f0ea7985ef17fa83), [`cd7ec69`](https://github.com/coveo/cli/commit/cd7ec6946d7d642d1cfdee1d198e9fb86e723a75)]:
+  - @coveo/cli-commons@2.9.12
+  - @coveo/cli-plugin-source@2.3.12
+
 ## 3.3.0
 
 ### Minor Changes
