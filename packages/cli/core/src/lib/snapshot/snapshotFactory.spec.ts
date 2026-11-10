@@ -2,7 +2,11 @@ jest.mock('@coveo/cli-commons/platform/authenticatedClient');
 jest.mock('fs');
 jest.mock('./snapshot');
 jest.mock('./snapshotAccess');
-jest.mock('node:buffer');
+// Only Blob: undici (loaded by authenticatedClient) needs the real Buffer.
+jest.mock('node:buffer', () => ({
+  ...jest.requireActual('node:buffer'),
+  Blob: jest.fn(),
+}));
 import {ResourceSnapshotType} from '@coveo/platform-client';
 import {readFileSync} from 'fs';
 import {join} from 'path';
