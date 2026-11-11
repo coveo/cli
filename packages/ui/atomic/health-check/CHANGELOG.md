@@ -1,3 +1,9 @@
+## 2.2.20
+
+### Patch Changes
+
+- [#1574](https://github.com/coveo/cli/pull/1574) [`5499c09`](https://github.com/coveo/cli/commit/5499c095ab49640f0c59bc6a93f2ad852a9eca50) - Republish through npm trusted publishing (OIDC). No code changes.
+
 ## 2.2.19 (2024-05-13)
 
 ## 2.2.17 (2024-02-21)

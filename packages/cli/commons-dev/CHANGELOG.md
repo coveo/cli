@@ -1,3 +1,9 @@
+## 6.0.7
+
+### Patch Changes
+
+- [#1574](https://github.com/coveo/cli/pull/1574) [`5499c09`](https://github.com/coveo/cli/commit/5499c095ab49640f0c59bc6a93f2ad852a9eca50) - Republish through npm trusted publishing (OIDC). No code changes.
+
 ## 6.0.6 (2023-06-13)
 
 ## 6.0.5 (2023-03-27)

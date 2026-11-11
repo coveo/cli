@@ -1,3 +1,12 @@
+## 1.36.17
+
+### Patch Changes
+
+- [#1574](https://github.com/coveo/cli/pull/1574) [`5499c09`](https://github.com/coveo/cli/commit/5499c095ab49640f0c59bc6a93f2ad852a9eca50) - Republish through npm trusted publishing (OIDC). No code changes.
+
+- Updated dependencies [[`5499c09`](https://github.com/coveo/cli/commit/5499c095ab49640f0c59bc6a93f2ad852a9eca50)]:
+  - @coveo/search-token-server@1.37.7
+
 ## 1.36.16 (2025-03-25)
 
 ## 1.36.15 (2025-03-25)
