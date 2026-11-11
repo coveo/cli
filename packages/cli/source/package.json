@@ -29,7 +29,7 @@
     "ts-dedent": "2.2.0"
   },
   "devDependencies": {
-    "@coveo/cli-commons-dev": "6.0.6",
+    "@coveo/cli-commons-dev": "6.0.7",
     "@coveo/semantic-monorepo-tools": "2.4.28",
     "@oclif/test": "2.2.21",
     "@types/jest": "29.5.1",
